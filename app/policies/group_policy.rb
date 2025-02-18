@@ -35,9 +35,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   desc "User owns the group's organization"
-  condition(:organization_owner) do
-    owns_group_organization?
-  end
+  condition(:organization_owner) { owns_organization?(@subject.organization) }
 
   rule { admin | organization_owner }.enable :admin_organization
 
@@ -126,6 +124,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     @subject.allow_runner_registration_token?
   end
 
+  condition(:allow_guest_plus_roles_to_pull_packages_enabled, scope: :subject) do
+    Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, @subject.root_ancestor)
+  end
+
   rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity
   end
@@ -210,6 +212,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { can?(:owner_access) }.policy do
     enable :destroy_user_achievement
+    enable :set_issue_created_at
+    enable :set_issue_updated_at
   end
 
   rule { ~public_group & ~has_access }.prevent :read_counts
@@ -252,6 +256,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_crm_organization
     enable :read_crm_contact
     enable :read_confidential_issues
+    enable :read_ci_cd_analytics
   end
 
   rule { maintainer }.policy do
@@ -279,6 +284,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_package
     enable :admin_runner
     enable :admin_integrations
+    enable :admin_protected_environments
     enable :change_visibility_level
 
     enable :read_usage_quotas
@@ -401,6 +407,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { can?(:admin_group_member) }.policy do
     # ability to read, approve or reject member access requests of other users
     enable :admin_member_access_request
+    enable :read_member_access_request
   end
 
   rule { support_bot & has_project_with_service_desk_enabled }.policy do
@@ -436,6 +443,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { can?(:remove_group) }.enable :view_edit_page
 
+  # TODO: Remove this rule and move :read_package permission from reporter to guest
+  # with the rollout of the FF allow_guest_plus_roles_to_pull_packages
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/512210
+  rule { guest & allow_guest_plus_roles_to_pull_packages_enabled }.enable :read_package
+
   def access_level(for_any_session: false)
     return GroupMember::NO_ACCESS if @user.nil?
     return GroupMember::NO_ACCESS unless user_is_user?
@@ -468,21 +480,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   def resource_access_token_creation_allowed?
     resource_access_token_create_feature_available? && group.root_ancestor.namespace_settings.resource_access_token_creation_allowed?
   end
-
-  # rubocop:disable Cop/UserAdmin -- specifically check the admin attribute
-  def owns_group_organization?
-    return false unless @user
-    return false unless user_is_user?
-    return false unless @subject.organization
-    # Ensure admins can't bypass admin mode.
-    return false if @user.admin? && !can?(:admin)
-
-    # Load the owners with a single query.
-    @subject.organization
-            .owner_user_ids
-            .include?(@user.id)
-  end
-  # rubocop:enable Cop/UserAdmin
 end
 
 GroupPolicy.prepend_mod_with('GroupPolicy')

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::GroupVariablesFinder, feature_category: :secrets_management do
+RSpec.describe Ci::GroupVariablesFinder, feature_category: :ci_variables do
   subject(:finder) { described_class.new(project, sort_key).execute }
 
   let_it_be(:user) { create(:user) }
@@ -23,7 +23,7 @@ RSpec.describe Ci::GroupVariablesFinder, feature_category: :secrets_management d
     let_it_be(:project) { project_without_group }
 
     it 'returns an empty array' do
-      expect(finder.to_a).to match_array([])
+      expect(finder.to_a).to be_empty
     end
   end
 

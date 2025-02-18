@@ -2,7 +2,7 @@ import { __, n__, s__, sprintf } from '~/locale';
 
 const digitText = ({ digit, bold = false } = {}) =>
   bold ? `%{strong_start}${digit}%{strong_end}` : digit;
-const noText = (bold = false) => (bold ? '%{strong_start}no%{strong_end}' : 'no');
+const noText = (bold = false) => (bold ? __('%{strong_start}no%{strong_end}') : __('no'));
 
 export const TESTS_FAILED_STATUS = 'failed';
 export const ERROR_STATUS = 'error';

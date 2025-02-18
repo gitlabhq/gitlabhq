@@ -7,7 +7,7 @@ module Types
       graphql_name 'WorkItemTypeDepthLimitReachedByType'
       description 'Represents Depth limit reached for the allowed work item type.'
 
-      field :work_item_type, Types::WorkItems::TypeType, null: false,
+      field :work_item_type, ::Types::WorkItems::TypeType, null: false,
         description: 'Work item type.'
 
       field :depth_limit_reached, GraphQL::Types::Boolean,

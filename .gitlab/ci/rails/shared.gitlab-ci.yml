@@ -114,7 +114,7 @@ include:
     - bundle exec gem list gitlab_quality-test_tooling
     - |
       section_start "failed-test-issues" "Report test failures"
-      if [ "$CREATE_RAILS_TEST_FAILURE_ISSUES" == "true" ]; then
+      if [[ "$CREATE_RAILS_TEST_FAILURE_ISSUES" == "true" ]] && [[ -n "$TEST_FAILURES_PROJECT_TOKEN" ]]; then
         input_file="rspec/rspec-${CI_JOB_ID}.json"
 
         # The actual failures will always be part of the retry report
@@ -129,12 +129,12 @@ include:
           --exclude-labels-for-search "QA,knapsack_report" \
           --related-issues-file "rspec/${CI_JOB_ID}-failed-test-issues.json";
       else
-        echoinfo "Not reporting test failures because \$CREATE_RAILS_TEST_FAILURE_ISSUES != 'true'"
+        echoinfo "Not reporting test failures because \$CREATE_RAILS_TEST_FAILURE_ISSUES != 'true' or TEST_FAILURES_PROJECT_TOKEN is not set"
       fi
       section_end "failed-test-issues"
     - |
       section_start "flaky-test-issues" "Report test flakiness"
-      if [ "$CREATE_RAILS_FLAKY_TEST_ISSUES" == "true" ]; then
+      if [[ "$CREATE_RAILS_FLAKY_TEST_ISSUES" == "true" ]] && [[ -n "$TEST_FAILURES_PROJECT_TOKEN" ]]; then
         if [ -f "rspec/rspec-retry-${CI_JOB_ID}.json" ]; then
           bundle exec flaky-test-issues \
             --token "${TEST_FAILURES_PROJECT_TOKEN}" \
@@ -144,46 +144,47 @@ include:
           echoerr "Not reporting test flakiness because 'rspec/rspec-retry-${CI_JOB_ID}.json' is missing!"
         fi
       else
-        echoinfo "Not reporting test flakiness because \$CREATE_RAILS_FLAKY_TEST_ISSUES != 'true'"
+        echoinfo "Not reporting test flakiness because \$CREATE_RAILS_FLAKY_TEST_ISSUES != 'true' or TEST_FAILURES_PROJECT_TOKEN is not set"
       fi
       section_end "flaky-test-issues"
     - |
       section_start "slow-test-issues" "Report test slowness"
-      if [ "$CREATE_RAILS_SLOW_TEST_ISSUES" == "true" ]; then
+      if [[ "$CREATE_RAILS_SLOW_TEST_ISSUES" == "true" ]] && [[ -n "$TEST_FAILURES_PROJECT_TOKEN" ]]; then
         bundle exec slow-test-issues \
           --token "${TEST_FAILURES_PROJECT_TOKEN}" \
           --project "gitlab-org/gitlab" \
           --input-files "rspec/rspec-*.json" \
           --related-issues-file "rspec/${CI_JOB_ID}-slow-test-issues.json";
       else
-        echoinfo "Not reporting test slowness because \$CREATE_RAILS_SLOW_TEST_ISSUES != 'true'"
+        echoinfo "Not reporting test slowness because \$CREATE_RAILS_SLOW_TEST_ISSUES != 'true' or TEST_FAILURES_PROJECT_TOKEN is not set"
       fi
       section_end "slow-test-issues"
     - |
       section_start "slow-test-merge-request-report-note" "Report test slowness in MR note"
-      if [ "$ADD_SLOW_TEST_NOTE_TO_MERGE_REQUEST" == "true" ]; then
+      if [[ "$ADD_SLOW_TEST_NOTE_TO_MERGE_REQUEST" == "true" ]] && [[ -n "$TEST_SLOW_NOTE_PROJECT_TOKEN" ]]; then
         bundle exec slow-test-merge-request-report-note \
           --token "${TEST_SLOW_NOTE_PROJECT_TOKEN}" \
           --project "gitlab-org/gitlab" \
           --input-files "rspec/rspec-*.json" \
           --merge_request_iid "$CI_MERGE_REQUEST_IID";
       else
-        echoinfo "Not reporting test slowness in MR note because \$ADD_SLOW_TEST_NOTE_TO_MERGE_REQUEST != 'true'"
+        echoinfo "Not reporting test slowness in MR note because \$ADD_SLOW_TEST_NOTE_TO_MERGE_REQUEST != 'true' or TEST_SLOW_NOTE_PROJECT_TOKEN is not set"
       fi
       section_end "slow-test-merge-request-report-note"
     - |
       section_start "knapsack-report-issues" "Report test files close to timing out"
-      if [ "$ALLOW_KNAPSACK_REPORT_CREATE_ISSUES" == "true" ]; then
+      if [[ "$ALLOW_KNAPSACK_REPORT_CREATE_ISSUES" == "true" ]] && [[ -n "$KNAPSACK_REPORT_ISSUES_PROJECT_TOKEN" ]]; then
         bundle exec knapsack-report-issues \
           --token "${KNAPSACK_REPORT_ISSUES_PROJECT_TOKEN}" \
           --project "gitlab-org/gitlab" \
           --input-file knapsack/rspec*_report.json \
           --expected-report knapsack/node_specs_expected_duration.json;
       else
-        echoinfo "Not reporting test files close to timing out because \$ALLOW_KNAPSACK_REPORT_CREATE_ISSUES != 'true'"
+        echoinfo "Not reporting test files close to timing out because \$ALLOW_KNAPSACK_REPORT_CREATE_ISSUES != 'true' or KNAPSACK_REPORT_ISSUES_PROJECT_TOKEN is not set"
       fi
       section_end "knapsack-report-issues"
     - tooling/bin/push_job_metrics || true
+    - scripts/minify-simplecov-resultsets.rb
 
 .base-artifacts:
   artifacts:
@@ -209,6 +210,10 @@ include:
     - !reference [.rspec-base, after_script]
 
 .rspec-base-pg14:
+  needs:
+    - !reference [.rspec-base, needs]
+    - job: "db:setup pg14"
+      optional: true
   extends:
     - .rspec-base
     - .use-pg14

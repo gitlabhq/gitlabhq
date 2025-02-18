@@ -6,6 +6,8 @@
           = s_('VisibilityLevel|This visibility level has been restricted by your administrator.')
         - elsif disallowed_visibility_level_by_parent?(form_model, level)
           = s_('VisibilityLevel|This visibility level is not allowed because the parent group has a more restrictive visibility level.')
+        - elsif disallowed_visibility_level_by_organization?(form_model, level)
+          = s_('VisibilityLevel|This visibility level is not allowed because the organization has a more restrictive visibility level.')
         - elsif disallowed_visibility_level_by_projects?(form_model, level) || disallowed_visibility_level_by_sub_groups?(form_model, level)
           - learn_more_link_start = '<a href="https://docs.gitlab.com/ee/user/public_access" target="_blank" rel="noopener noreferrer">'.html_safe # rubocop:disable Gitlab/DocumentationLinks/HardcodedUrl -- Not referencing this rails application; it is referencing another doc
           - learn_more_link_end = '</a>'.html_safe

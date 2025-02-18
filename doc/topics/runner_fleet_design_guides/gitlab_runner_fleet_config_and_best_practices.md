@@ -1,15 +1,17 @@
 ---
 stage: CI
 group: Runner
-description: Runner Fleet.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Runner Fleet.
+title: Design and configure a GitLab Runner fleet on Google Kubernetes Engine
 ---
 
-# Design and configure a GitLab Runner fleet on Google Kubernetes Engine
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
 
 This page describes how to analyze your CI/CD build requirements to design, configure,
 and validate a GitLab Runner fleet hosted on Google Kubernetes Engine (GKE).
@@ -506,8 +508,11 @@ tests:
     - my-custom-tag
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 For an easier configuration, use one GitLab Runner per cluster for job profile. This approach is recommended until GitLab supports either multiple GitLab Runner installations on the same cluster or multiple `[[runners]]` section in the `config.toml` template.
+
+{{< /alert >}}
 
 ### Set up monitoring and observability
 
@@ -523,7 +528,7 @@ As a final step in the deployment phase, you must establish a solution to monito
   - Network utilization
   - Disk utilization
 
-See the [Dedicated GitLab Runner monitoring page](https://docs.gitlab.com/runner/monitoring/index.html) for more details on how to proceed.
+See the [Dedicated GitLab Runner monitoring page](https://docs.gitlab.com/runner/monitoring/) for more details on how to proceed.
 
 ## Optimize
 

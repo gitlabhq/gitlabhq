@@ -2286,7 +2286,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#builds_enabled' do
-    let(:project) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     subject { project.builds_enabled }
 
@@ -2654,104 +2654,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       expect(described_class.service_desk_enabled).to include(project_with_service_desk_enabled)
       expect(described_class.service_desk_enabled).not_to include(project_with_service_desk_disabled)
-    end
-  end
-
-  describe '#service_desk_enabled?' do
-    let_it_be(:namespace) { create(:namespace) }
-
-    subject(:project) { build(:project, :private, :service_desk_enabled, namespace: namespace) }
-
-    before do
-      allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
-      allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
-    end
-
-    it 'is enabled' do
-      expect(project.service_desk_enabled?).to be_truthy
-      expect(project.service_desk_enabled).to be_truthy
-    end
-  end
-
-  describe '#default_service_desk_subaddress_part', feature_category: :service_desk do
-    let_it_be(:project) { create(:project, :service_desk_enabled) }
-
-    subject { project.default_service_desk_subaddress_part }
-
-    it 'contains the full path slug, project id and default suffix' do
-      is_expected.to eq("#{project.full_path_slug}-#{project.id}-issue-")
-    end
-  end
-
-  describe '#service_desk_address', feature_category: :service_desk do
-    let_it_be(:project, reload: true) { create(:project, :service_desk_enabled) }
-
-    subject { project.service_desk_address }
-
-    shared_examples 'with incoming email address' do
-      context 'when incoming email is enabled' do
-        before do
-          config = double(enabled: true, address: 'test+%{key}@mail.com')
-          allow(::Gitlab.config).to receive(:incoming_email).and_return(config)
-        end
-
-        it 'uses project full path as service desk address key' do
-          expect(project.service_desk_address).to eq("test+#{project.full_path_slug}-#{project.project_id}-issue-@mail.com")
-        end
-      end
-
-      context 'when incoming email is disabled' do
-        before do
-          config = double(enabled: false)
-          allow(::Gitlab.config).to receive(:incoming_email).and_return(config)
-        end
-
-        it 'uses project full path as service desk address key' do
-          expect(project.service_desk_address).to be_nil
-        end
-      end
-    end
-
-    context 'when service_desk_email is disabled' do
-      before do
-        allow(::Gitlab::Email::ServiceDeskEmail).to receive(:enabled?).and_return(false)
-      end
-
-      it_behaves_like 'with incoming email address'
-    end
-
-    context 'when service_desk_email is enabled' do
-      before do
-        config = double(enabled: true, address: 'foo+%{key}@bar.com')
-        allow(::Gitlab::Email::ServiceDeskEmail).to receive(:config).and_return(config)
-      end
-
-      context 'when project_key is set' do
-        it 'returns Service Desk alias address including the project_key' do
-          create(:service_desk_setting, project: project, project_key: 'key1')
-
-          expect(subject).to eq("foo+#{project.full_path_slug}-key1@bar.com")
-        end
-      end
-
-      context 'when project_key is not set' do
-        it 'returns Service Desk alias address including the project full path' do
-          expect(subject).to eq("foo+#{project.full_path_slug}-#{project.project_id}-issue-@bar.com")
-        end
-      end
-    end
-
-    context 'when custom email is enabled' do
-      let(:custom_email) { 'support@example.com' }
-
-      before do
-        setting = ServiceDeskSetting.new(project: project, custom_email: custom_email, custom_email_enabled: true)
-        allow(project).to receive(:service_desk_setting).and_return(setting)
-      end
-
-      it 'returns custom email address' do
-        expect(subject).to eq(custom_email)
-      end
     end
   end
 
@@ -4260,6 +4162,22 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it { is_expected.to be_truthy }
     end
 
+    context 'when a relation import is in progress but it is stale' do
+      before do
+        create(:relation_import_tracker, :started, :stale, project: project)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when a relation import has finished' do
+      before do
+        create(:relation_import_tracker, :finished, :stale, project: project)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
     context 'when direct transfer is in progress' do
       before do
         create(:bulk_import_entity, :project_entity, :started, project: project)
@@ -4475,6 +4393,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it "is the opposite of emails_disabled" do
       expect(project.emails_disabled?).to be_falsey
+    end
+  end
+
+  describe '#extended_prat_expiry_webhooks_execute?' do
+    let(:project) { build(:project, extended_prat_expiry_webhooks_execute: true) }
+
+    it "is the value of extended_prat_expiry_webhooks_execute" do
+      expect(project.extended_prat_expiry_webhooks_execute?).to eq(true)
     end
   end
 
@@ -6428,18 +6354,23 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe '#execute_hooks' do
     let(:data) { { ref: 'refs/heads/master', data: 'data' } }
+    let(:hook_scope) { :push_hooks }
+    let(:hook) { create(:project_hook, merge_requests_events: false, push_events: true) }
+    let_it_be_with_reload(:project) { create(:project) }
 
-    it 'executes active projects hooks with the specified scope' do
-      hook = create(:project_hook, merge_requests_events: false, push_events: true)
-      expect(ProjectHook).to receive(:select_active)
-        .with(:push_hooks, data)
+    shared_examples 'webhook is added to execution list' do
+      it 'executes webhook succesfully' do
+        expect(ProjectHook).to receive(:select_active)
+        .with(hook_scope, data)
         .and_return([hook])
-      project = create(:project, hooks: [hook])
 
-      expect_any_instance_of(ProjectHook).to receive(:async_execute).once
+        expect_any_instance_of(ProjectHook).to receive(:async_execute).once
 
-      project.execute_hooks(data, :push_hooks)
+        project.execute_hooks(data, hook_scope)
+      end
     end
+
+    it_behaves_like 'webhook is added to execution list'
 
     it 'does not execute project hooks that dont match the specified scope' do
       hook = create(:project_hook, merge_requests_events: true, push_events: false)
@@ -6496,6 +6427,72 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           project.execute_hooks(data, :merge_request_hooks)
         end
       end.not_to raise_error # Sidekiq::Worker::EnqueueFromTransactionError
+    end
+
+    context 'when resource access token hooks for expiry notification' do
+      let_it_be_with_reload(:project) { create(:project) }
+      let!(:hook) { create(:project_hook, project: project, resource_access_token_events: true) }
+      let!(:hook_scope) { :resource_access_token_hooks }
+
+      context 'when interval is seven days' do
+        let(:data) { { interval: :seven_days } }
+
+        it_behaves_like 'webhook is added to execution list'
+      end
+
+      context 'when feature flag is disabled' do
+        let(:data) { { interval: :thirty_days } }
+
+        before do
+          stub_feature_flags(extended_expiry_webhook_execution_setting: false)
+        end
+
+        it_behaves_like 'webhook is added to execution list'
+      end
+
+      context 'when setting extended_prat_expiry_webhooks_execute is disabled' do
+        before do
+          project.update!(extended_prat_expiry_webhooks_execute: false)
+        end
+
+        context 'when interval is thirty days' do
+          let(:data) { { interval: :thirty_days } }
+
+          it 'does not execute the hook' do
+            expect_any_instance_of(ProjectHook).not_to receive(:async_execute).once
+
+            project.execute_hooks(data, :resource_access_token_hooks)
+          end
+        end
+
+        context 'when interval is sixty days' do
+          let(:data) { { interval: :sixty_days } }
+
+          it 'does not execute the hook' do
+            expect_any_instance_of(ProjectHook).not_to receive(:async_execute).once
+
+            project.execute_hooks(data, :resource_access_token_hooks)
+          end
+        end
+      end
+
+      context 'when setting extended_prat_expiry_webhooks_execute is enabled' do
+        before do
+          project.update!(extended_prat_expiry_webhooks_execute: true)
+        end
+
+        context 'when interval is thirty days' do
+          let(:data) { { interval: :thirty_days } }
+
+          it_behaves_like 'webhook is added to execution list'
+        end
+
+        context 'when interval is sixty days' do
+          let(:data) { { interval: :sixty_days } }
+
+          it_behaves_like 'webhook is added to execution list'
+        end
+      end
     end
   end
 
@@ -7016,7 +7013,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     subject(:pages_url) { project.pages_url(pages_url_config) }
 
     it "lets URL builder handle the URL resolution" do
-      expect(::Gitlab::Pages::UrlBuilder).to receive(:new).with(project, pages_url_config).and_return(url_builder)
+      expect(::Gitlab::Pages::UrlBuilder)
+        .to receive(:new)
+        .with(project, pages_url_config)
+        .and_return(url_builder)
+
       expect(url_builder).to receive(:pages_url).and_return('http://namespace1.example.com/project-1/foo')
       expect(pages_url).to eq('http://namespace1.example.com/project-1/foo')
     end
@@ -7025,7 +7026,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let(:pages_url_config) { { path_prefix: 'foo' } }
 
       it "lets URL builder handle the URL resolution" do
-        expect(::Gitlab::Pages::UrlBuilder).to receive(:new).with(project, pages_url_config).and_return(url_builder)
+        expect(::Gitlab::Pages::UrlBuilder)
+          .to receive(:new)
+          .with(project, pages_url_config)
+          .and_return(url_builder)
+
         expect(url_builder).to receive(:pages_url).and_return('http://namespace1.example.com/project-1/foo')
         expect(pages_url).to eq('http://namespace1.example.com/project-1/foo')
       end
@@ -7805,46 +7810,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       project_with_pages_metadata_not_migrated.pages_metadatum.destroy!
 
       expect(described_class.pages_metadata_not_migrated).to contain_exactly(project_with_pages_metadata_not_migrated)
-    end
-  end
-
-  # this describe block tests the legacy behavior, it is to be removed with the
-  # fix_pages_ci_variables Feature flag.
-  describe '#pages_variables' do
-    let(:group) { build(:group, path: 'group') }
-    let(:project) { build(:project, path: 'project', namespace: group) }
-
-    it 'returns the pages variables' do
-      expect(project.pages_variables.to_hash).to eq({
-        'CI_PAGES_DOMAIN' => 'example.com'
-      })
-    end
-
-    context 'with fix_pages_ci_variables disabled' do
-      before do
-        stub_feature_flags(fix_pages_ci_variables: false)
-      end
-
-      it 'returns the pages variables' do
-        expect(project.pages_variables.to_hash).to eq({
-          'CI_PAGES_DOMAIN' => 'example.com',
-          'CI_PAGES_URL' => 'http://group.example.com/project'
-        })
-      end
-
-      it 'returns the pages variables' do
-        build(
-          :project_setting,
-          project: project,
-          pages_unique_domain_enabled: true,
-          pages_unique_domain: 'unique-domain'
-        )
-
-        expect(project.pages_variables.to_hash).to eq({
-          'CI_PAGES_DOMAIN' => 'example.com',
-          'CI_PAGES_URL' => 'http://unique-domain.example.com'
-        })
-      end
     end
   end
 
@@ -9146,12 +9111,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#wiki_comments_feature_flag_enabled?' do
+  describe '#continue_indented_text_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 
     it_behaves_like 'checks parent group and self feature flag' do
-      let(:feature_flag_method) { :wiki_comments_feature_flag_enabled? }
-      let(:feature_flag) { :wiki_comments }
+      let(:feature_flag_method) { :continue_indented_text_feature_flag_enabled? }
+      let(:feature_flag) { :continue_indented_text }
       let(:subject_project) { group_project }
     end
   end

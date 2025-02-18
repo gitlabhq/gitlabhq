@@ -11,7 +11,7 @@ import {
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_HIERARCHY,
-  WIDGET_TYPE_DESIGNS,
+  WIDGET_TYPE_LINKED_ITEMS,
 } from '~/work_items/constants';
 
 import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
@@ -45,32 +45,12 @@ export const config = {
             toReference({ __typename: 'LocalWorkItemChildIsExpanded', id: variables.id }),
         },
       },
+      MergeRequestConnection: {
+        merge: true,
+      },
       DesignManagement: {
         merge(existing = {}, incoming) {
           return { ...existing, ...incoming };
-        },
-      },
-      WorkItemDescriptionTemplateConnection: {
-        fields: {
-          nodes: {
-            read(_, { variables }) {
-              const templates = [
-                /* eslint-disable @gitlab/require-i18n-strings */
-                { name: 'template 1', content: 'A template' },
-                { name: 'template 2', content: 'Another template' },
-                { name: 'template 3', content: 'Secret template omg wow' },
-                { name: 'template 4', content: 'Another another template' },
-                /* eslint-enable @gitlab/require-i18n-strings */
-              ];
-              if (variables.search) {
-                return templates.filter(({ name }) => name.includes(variables.search));
-              }
-              if (variables.name) {
-                return templates.filter(({ name }) => name === variables.name);
-              }
-              return templates;
-            },
-          },
         },
       },
       Project: {
@@ -78,6 +58,11 @@ export const config = {
           projectMembers: {
             keyArgs: ['fullPath', 'search', 'relations', 'first'],
           },
+        },
+      },
+      Namespace: {
+        fields: {
+          merge: true,
         },
       },
       WorkItemWidgetNotes: {
@@ -186,9 +171,28 @@ export const config = {
                   };
                 }
 
-                // Prevent cache being overwritten when opening a design
-                if (incomingWidget?.type === WIDGET_TYPE_DESIGNS && context.variables.filenames) {
-                  return existingWidget;
+                // this ensures that we don’t override linkedItems.workItem when updating parent
+                if (incomingWidget?.type === WIDGET_TYPE_LINKED_ITEMS) {
+                  if (!incomingWidget.linkedItems) {
+                    return existingWidget;
+                  }
+
+                  const incomindNodes = incomingWidget.linkedItems?.nodes || [];
+                  const existingNodes = existingWidget.linkedItems?.nodes || [];
+
+                  const resultNodes = incomindNodes.map((incomingNode) => {
+                    const existingNode =
+                      existingNodes.find((n) => n.linkId === incomingNode.linkId) ?? {};
+                    return { ...existingNode, ...incomingNode };
+                  });
+
+                  return {
+                    ...incomingWidget,
+                    linkedItems: {
+                      ...incomingWidget.linkedItems,
+                      nodes: resultNodes,
+                    },
+                  };
                 }
 
                 return { ...existingWidget, ...incomingWidget };
@@ -226,10 +230,26 @@ export const config = {
         merge: true,
       },
       WorkItemType: {
+        // this prevents child and parent work item types from overriding each other
         fields: {
+          supportedConversionTypes: {
+            merge(__, incoming) {
+              return incoming;
+            },
+          },
           widgetDefinitions: {
             merge(existing = [], incoming) {
-              return [...existing, ...incoming];
+              if (existing.length === 0) {
+                return incoming;
+              }
+
+              return existing.map((existingWidget) => {
+                const incomingWidget = incoming.find(
+                  (w) => w.type && w.type === existingWidget.type,
+                );
+
+                return { ...existingWidget, ...incomingWidget };
+              });
             },
           },
         },

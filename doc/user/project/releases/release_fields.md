@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Release fields
 ---
-
-# Release fields
 
 The following fields are available when you create or edit a release.
 
@@ -51,7 +50,7 @@ A release contains the following types of assets:
 
 GitLab automatically generates `zip`, `tar.gz`, `tar.bz2`, and `tar`
 archived source code from the given Git tag. These assets are read-only,
-and [can be downloaded](../repository/index.md#download-repository-source-code).
+and [can be downloaded](../repository/_index.md#download-repository-source-code).
 
 ### Links
 
@@ -69,7 +68,11 @@ Each link as an asset has the following attributes:
 
 #### Permanent links to release assets
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375489) in GitLab 15.9, links for private releases can be accessed using a personal access token.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375489) in GitLab 15.9, links for private releases can be accessed using a personal access token.
+
+{{< /history >}}
 
 The assets associated with a release are accessible through a permanent URL.
 GitLab always redirects this URL to the actual asset
@@ -112,7 +115,7 @@ curl --location --output filename --header "PRIVATE-TOKEN: <your_access_token>" 
 
 #### Permanent links to latest release assets
 
-You can use the `filepath` from [permanent links to release assets](#permanent-links-to-release-assets) in combination with a [permanent link to the latest release](index.md#permanent-link-to-latest-release). The `filepath` must start with a slash (`/`).
+You can use the `filepath` from [permanent links to release assets](#permanent-links-to-release-assets) in combination with a [permanent link to the latest release](_index.md#permanent-link-to-latest-release). The `filepath` must start with a slash (`/`).
 
 The format of the URL is:
 
@@ -154,12 +157,12 @@ This field has no effect on the URL and it's only used for visual purposes in th
 
 #### Use a generic package for attaching binaries
 
-You can use [generic packages](../../packages/generic_packages/index.md)
+You can use [generic packages](../../packages/generic_packages/_index.md)
 to store any artifacts from a release or tag pipeline,
 that can also be used for attaching binary files to an individual release entry.
 You basically need to:
 
-1. [Push the artifacts to the Generic package registry](../../packages/generic_packages/index.md#publish-a-package).
+1. [Push the artifacts to the Generic package registry](../../packages/generic_packages/_index.md#publish-a-package).
 1. [Attach the package link to the release](#links).
 
 The following example generates release assets, publishes them
@@ -173,7 +176,7 @@ stages:
 
 variables:
   # Package version can only contain numbers (0-9), and dots (.).
-  # Must be in the format of X.Y.Z, i.e. should match /\A\d+\.\d+\.\d+\z/ regular expression.
+  # Must be in the format of X.Y.Z, and should match the /\A\d+\.\d+\.\d+\z/ regular expression.
   # See https://docs.gitlab.com/ee/user/packages/generic_packages/#publish-a-package-file
   PACKAGE_VERSION: "1.2.3"
   DARWIN_AMD64_BINARY: "myawesomerelease-darwin-amd64-${PACKAGE_VERSION}"
@@ -231,17 +234,23 @@ release:
     - release-cli create --name $CI_COMMIT_TAG --description "Release $CI_COMMIT_TAG" --ref $CI_COMMIT_TAG --tag-name $CI_COMMIT_TAG --assets-link=$env:assetjson
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Directly attaching [job artifacts](../../../ci/jobs/job_artifacts.md)
 links to a release is not recommended, because artifacts are ephemeral and
 are used to pass data in the same pipeline. This means there's a risk that
 they could either expire or someone might manually delete them.
 
+{{< /alert >}}
+
 ### Number of new and total features
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 On [GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/releases), you can view the number of new and total features in the project.
 

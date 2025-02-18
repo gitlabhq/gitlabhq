@@ -6,12 +6,12 @@
   stage: Enablement
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/387898
   body: |
-    Previously, the [GitLab database](https://docs.gitlab.com/omnibus/settings/database.html)
+    Previously, the [GitLab database](https://docs.gitlab.com/omnibus/settings/database/)
     configuration had a single `main:` section. This is being deprecated. The new
     configuration has both a `main:` and a `ci:` section.
 
     This deprecation affects users compiling GitLab from source, who will need
-    to [add the `ci:` section](https://docs.gitlab.com/ee/install/installation.html#configure-gitlab-db-settings).
+    to [add the `ci:` section](https://docs.gitlab.com/install/installation/#configure-gitlab-db-settings).
     Omnibus, the Helm chart, and Operator will handle this configuration
     automatically from GitLab 16.0 onwards.
   documentation_url: https://docs.gitlab.com/ee/install/installation.html#configure-gitlab-db-settings

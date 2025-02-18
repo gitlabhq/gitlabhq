@@ -7,9 +7,6 @@ identifiers:
 product_group: global_search
 milestone: '17.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151599
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

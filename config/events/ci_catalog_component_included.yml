@@ -12,9 +12,6 @@ identifiers:
 product_group: pipeline_authoring
 milestone: '16.11'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146834
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

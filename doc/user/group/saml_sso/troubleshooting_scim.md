@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting SCIM
 ---
 
-# Troubleshooting SCIM
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This section contains possible solutions for problems you might encounter.
 
@@ -28,7 +30,7 @@ When that user is added back to the SCIM app:
 - They can sign in using SSO.
 
 For users de-provisioned by SCIM before that date, their SAML identity is destroyed.
-To solve this problem, the user must [link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account).
+To solve this problem, the user must [link SAML to their existing GitLab.com account](_index.md#link-saml-to-your-existing-gitlabcom-account).
 
 ### GitLab Self-Managed
 
@@ -83,10 +85,13 @@ To change the identifier values to match, you can do one of the following:
   section.
 - Unlink all users simultaneously by removing all users from the SCIM app while provisioning is turned on.
 
-  WARNING:
-  This resets all users' roles in the top-level group and subgroups to the [configured default membership role](index.md#configure-gitlab).
+  {{< alert type="warning" >}}
+
+  This resets all users' roles in the top-level group and subgroups to the [configured default membership role](_index.md#configure-gitlab).
 - Use the [SAML API](../../../api/saml.md) or [SCIM API](../../../api/scim.md) to manually correct the `extern_uid` stored for users to match the SAML
   `NameId` or SCIM `externalId`.
+
+  {{< /alert >}}
 
 You must not:
 
@@ -99,18 +104,21 @@ Additionally, the user's primary email must match the email in your SCIM identit
 
 When the SCIM app changes:
 
-- Users can follow the instructions in the [Change the SAML app](index.md#change-the-identity-provider) section.
+- Users can follow the instructions in the [Change the SAML app](_index.md#change-the-identity-provider) section.
 - Administrators of the identity provider can:
   1. Remove users from the SCIM app, which:
      - In GitLab.com, removes all removed users from the group.
-     - In GitLab self-managed, blocks users.
+     - In GitLab Self-Managed, blocks users.
   1. Turn on sync for the new SCIM app to [link existing users](scim_setup.md#link-scim-and-saml-identities).
 
 ## SCIM app returns `"User has already been taken","status":409` error
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 Changing the SAML or SCIM configuration or provider can cause the following problems:
 
@@ -144,13 +152,16 @@ To resolve this issue, you can do either of the following:
 
 ## Search Rails logs for SCIM requests
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 GitLab.com administrators can search for SCIM requests in the `api_json.log` using the `pubsub-rails-inf-gprd-*` index in
 [Kibana](https://handbook.gitlab.com/handbook/support/workflows/kibana/#using-kibana). Use the following filters based
-on the internal [group SCIM API](../../../development/internal_api/index.md#group-scim-api):
+on the internal [group SCIM API](../../../development/internal_api/_index.md#group-scim-api):
 
 - `json.path`: `/scim/v2/groups/<group-path>`
 - `json.params.value`: `<externalId>`
@@ -170,6 +181,7 @@ when the:
 
 - User exists, but does not have a SAML identity linked.
 - User exists, has a SAML identity, **and** has a SCIM identity that is set to `active: false`.
+- User exists, but is not a member of the associated top-level group and SAML SSO enforcement is enabled.
 
 ```plaintext
 The member's email address is not linked to a SAML account or has an inactive
@@ -182,7 +194,7 @@ This might prevent the affected end user from accessing their account correctly.
 
 The first workaround is:
 
-1. Have the end user [link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account).
+1. Have the end user [link SAML to their existing GitLab.com account](_index.md#link-saml-to-your-existing-gitlabcom-account).
 1. After the user has done this, initiate a SCIM sync from your identity provider.
    If the SCIM sync completes without the same error, GitLab has
    successfully linked the SCIM identity to the existing user account, and the user
@@ -194,32 +206,16 @@ this:
 
 1. Optional. If you did not save your SCIM token when you first configured SCIM, [generate a new token](scim_setup.md#configure-gitlab). If you generate a new SCIM token, you **must** update the token in your identity provider's SCIM configuration, or SCIM will stop working.
 1. Locate your SCIM token.
-1. Use the API to [get a single SCIM provisioned user](../../../development/internal_api/index.md#get-a-single-scim-provisioned-user).
+1. Use the API to [get a single SCIM provisioned user](../../../development/internal_api/_index.md#get-a-single-scim-provisioned-user).
 1. Check the returned information to make sure that:
 
    - The user's identifier (`id`) and email match what your identity provider is sending.
    - `active` is set to `false`.
 
    If any of this information does not match, [contact GitLab Support](https://support.gitlab.com/).
-1. Use the API to [update the SCIM provisioned user's `active` value to `true`](../../../development/internal_api/index.md#update-a-single-scim-provisioned-user).
+1. Use the API to [update the SCIM provisioned user's `active` value to `true`](../../../development/internal_api/_index.md#update-a-single-scim-provisioned-user).
 1. If the update returns a status code `204`, have the user attempt to sign in
    using SAML SSO.
-
-## 403 Forbidden response for disable action
-
-If you [restrict group access by IP address](../access_and_permissions.md#restrict-group-access-by-ip-address),
-SCIM deprovisioning might fail with the error response:
-
-```plaintext
-{"message":"403 Forbidden"}
-```
-
-This is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429607) when restricting group access by IP
-address.
-
-To work around this issue, use the Group SCIM API to
-[update a single SCIM provisioned user](../../../development/internal_api/index.md#update-a-single-scim-provisioned-user)
-to set the user's `active` state to `false`.
 
 ## Azure Active Directory
 
@@ -291,8 +287,8 @@ In your Okta SCIM application, check that the SCIM **Base URL** is correct and p
 SCIM API endpoint URL. Check the following documentation to find information on this URL for:
 
 - [GitLab.com groups](scim_setup.md#configure-gitlab).
-- [GitLab Self-Managed instances](../../../administration/settings/scim_setup.md#configure-gitlab).
+- [GitLab Self-Managed](../../../administration/settings/scim_setup.md#configure-gitlab).
 
-For GitLab Self-Managed instances, ensure that GitLab is publicly available so Okta can connect to it. If needed,
+For GitLab Self-Managed, ensure your instance is publicly available so Okta can connect to it. If needed,
 you can [allow access to Okta IP addresses](https://help.okta.com/en-us/Content/Topics/Security/ip-address-allow-listing.htm)
 on your firewall.

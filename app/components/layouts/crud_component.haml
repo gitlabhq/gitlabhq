@@ -1,35 +1,44 @@
-%section
-  .crud.gl-bg-subtle.gl-border.gl-border-section.gl-rounded-base{ @options, class: ('js-toggle-container' if @toggle_text) }
-    %header.crud-header.gl-flex.gl-flex-wrap.gl-justify-between.gl-gap-x-5.gl-gap-y-2.gl-px-5.gl-py-4.gl-bg-section.gl-border-b.gl-border-section.gl-rounded-t-base
-      .gl-flex.gl-flex-col.gl-self-center
-        %h2.gl-text-base.gl-font-bold.gl-leading-normal.gl-inline-flex.gl-gap-3.gl-m-0{ data: { testid: 'crud-title' } }
-          = @title
-          - if @count
-            %span.gl-inline-flex.gl-items-center.gl-gap-2.gl-text-sm.gl-text-subtle{ data: { testid: 'crud-count' } }
-              - if @icon
-                = sprite_icon(@icon, css_class: icon_classes)
-              %span{ @count_options }
-                = @count
-        - if description? || @description
-          .gl-text-sm.gl-text-subtle.gl-leading-normal.gl-mt-2.gl-mb-0{ data: { testid: 'crud-description' } }
-            = description || @description
-      .gl-flex.gl-gap-3.gl-items-baseline{ data: { testid: 'crud-actions' } }
-        - if @toggle_text
-          = render Pajamas::ButtonComponent.new(size: :small, button_options: toggle_button_options_attrs) do
-            = @toggle_text
-        = actions
+= content_tag @container_tag, **options_attrs, id: id do
+  %header.crud-header.gl-flex.gl-flex-wrap.gl-justify-between.gl-gap-x-5.gl-gap-y-2.gl-px-5.gl-py-4.gl-bg-section.gl-border-b.gl-border-section.gl-rounded-t-base.gl-relative{ class: ('gl-pr-10' if @is_collapsible) }
+    .gl-flex.gl-flex-col.gl-self-center
+      %h2.gl-text-base.gl-font-bold.gl-leading-normal.gl-inline-flex.gl-gap-3.gl-m-0{ data: { testid: 'crud-title' } }
+        = @title
+        - if @count
+          %span.gl-inline-flex.gl-items-center.gl-gap-2.gl-text-sm.gl-text-subtle{ data: { testid: 'crud-count' } }
+            - if @icon
+              = sprite_icon(@icon, css_class: icon_classes)
+            %span{ @count_options }
+              = @count
+      - if description? || @description
+        .gl-text-sm.gl-text-subtle.gl-leading-normal.gl-mt-2.gl-mb-0{ data: { testid: 'crud-description' } }
+          = description || @description
+    .gl-flex.gl-gap-3.gl-items-baseline{ data: { testid: 'crud-actions' } }
+      = actions
 
-    - if form?
-      .gl-p-5.gl-pt-4.gl-bg-section.gl-border-b.gl-border-section{ form_options_attrs }
-        = form
+      - if @toggle_text
+        = render Pajamas::ButtonComponent.new(size: :small, button_options: toggle_button_options_attrs) do
+          = @toggle_text
 
-    .crud-body.gl-mx-5.gl-my-4{ body_options_attrs }
-      = body
+      - if @is_collapsible
+        .gl-border-l.gl-absolute.gl-right-5.gl-top-4.gl-h-6.gl-border-l-section.gl-pl-3
+          = render Pajamas::ButtonComponent.new(category: :tertiary,
+            size: :small,
+            button_text_classes: '!gl-overflow-visible',
+            button_options: { class: '-gl-mr-2 js-crud-collapsible-button has-tooltip', title: _('Collapse'), 'aria-expanded': 'true', 'aria-controls': id, data: { collapse_title: _('Expand'), expand_title: _('Collapse') } }) do
+            = sprite_icon('chevron-lg-up', css_class: '!-gl-mx-2 js-crud-collapsible-collapse')
+            = sprite_icon('chevron-lg-down', css_class: '!-gl-mx-2 gl-hidden js-crud-collapsible-expand')
 
-      - if pagination?
-        .crud-pagination.gl-flex.gl-justify-center.gl-p-5.gl-border-t.gl-border-t-section{ data: { testid: 'crud-pagination' } }
-          = pagination
+  - if form?
+    .gl-p-5.gl-pt-4.gl-bg-subtle.gl-border-b.gl-border-section{ form_options_attrs }
+      = form
 
-    - if footer?
-      .gl-px-5.gl-py-4.gl-bg-section.gl-border-t.gl-border-section.gl-rounded-b-base{ footer_options_attrs }
-        = footer
+  .crud-body.gl-mx-5.gl-my-4{ body_options_attrs }
+    = body
+
+    - if pagination?
+      .crud-pagination.gl-flex.gl-justify-center.gl-p-5.gl-border-t.gl-border-t-section{ data: { testid: 'crud-pagination' } }
+        = pagination
+
+  - if footer?
+    .gl-px-5.gl-py-4.gl-bg-section.gl-border-t.gl-border-section.gl-rounded-b-base{ footer_options_attrs }
+      = footer

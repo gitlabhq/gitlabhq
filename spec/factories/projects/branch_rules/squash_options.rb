@@ -2,7 +2,8 @@
 
 FactoryBot.define do
   factory :branch_rule_squash_option, class: 'Projects::BranchRules::SquashOption' do
-    protected_branch
+    project
+    protected_branch { association :protected_branch, project: project }
 
     trait :always do
       squash_option { :always }

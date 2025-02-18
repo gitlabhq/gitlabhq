@@ -64,7 +64,7 @@
 
     &.is-dropzone-hover {
       border-color: $green-500;
-      box-shadow: 0 0 2px $t-gray-a-24,
+      box-shadow: 0 0 2px var(--gl-color-alpha-dark-24),
         0 0 4px $green-500-focus;
 
       .comment-toolbar,
@@ -479,7 +479,7 @@ table {
 
 .uploading-error-icon,
 .uploading-error-message {
-  color: $red-500;
+  @apply gl-text-danger;
 }
 
 .uploading-error-message {

@@ -2,9 +2,8 @@
 stage: Monitor
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Use GitLab Observability with a Java Spring application'
 ---
-
-# Tutorial: Use GitLab Observability with a Java Spring application
 
 For more information, see the history of the [**Distributed tracing** feature](../../development/tracing.md).
 <!-- Update this note when observability_features flag is removed -->
@@ -15,7 +14,7 @@ In this tutorial, you'll learn how to create, configure, instrument, and monitor
 
 To follow along this tutorial, you must have:
 
-- A GitLab Ultimate subscription for GitLab.com or GitLab self-managed
+- A GitLab Ultimate subscription for GitLab.com or GitLab Self-Managed
 - A local installation of Ruby on Rails
 - Basic knowledge of Git, Java Spring, and the core concepts of [OpenTelemetry](https://opentelemetry.io/)
 
@@ -23,7 +22,7 @@ To follow along this tutorial, you must have:
 
 First, create a GitLab project and a corresponding access token.
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**.
 1. Select **Spring** and then **Use template**.
 1. Enter the project details.
@@ -101,7 +100,7 @@ The OpenTelemetry autoconfigure libraries read their configuration from environm
 
    ![Configuration menu](img/java_configuration_menu_v17_3.png)
 
-1. Add the following set of environment variables, replacing `{{PATH_TO_JAVA_AGENT}}`, `{{PROJECT_ID}}`, `{{PROJECT_ACCESS_TOKEN}}` and `{{SERVICE_NAME}}` with the correct values. If using GitLab Self-Managed, replace `gitlab.com` with your self-managed instance hostname.
+1. Add the following set of environment variables, replacing `{{PATH_TO_JAVA_AGENT}}`, `{{PROJECT_ID}}`, `{{PROJECT_ACCESS_TOKEN}}` and `{{SERVICE_NAME}}` with the correct values. If using GitLab Self-Managed, replace `gitlab.com` with your GitLab Self-Managed instance hostname.
    - `JAVA_TOOL_OPTIONS=-javaagent:{{PATH_TO_JAVA_AGENT}}/opentelemetry-javaagent.jar`
    - `OTEL_EXPORTER_OTLP_ENDPOINT=https://gitlab.com/api/v4/projects/{{PROJECT_ID}}/observability`
    - `OTEL_EXPORTER_OTLP_HEADERS=PRIVATE-TOKEN\={{PROJECT_ACCESS_TOKEN}}`

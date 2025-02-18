@@ -1,17 +1,23 @@
 ---
-description: "Learn how long your open merge requests have spent in code review, and what distinguishes the longest-running." # Up to ~200 chars long. They will be displayed in Google Search snippets. It may help to write the page intro first, and then reuse it here.
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how long your open merge requests have spent in code review, and what distinguishes the longest-running.
+title: Code review analytics
 ---
 
-# Code review analytics
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - Moved to GitLab Premium in 13.9.
+{{< /details >}}
+
+{{< history >}}
+
+- Moved to GitLab Premium in 13.9.
+
+{{< /history >}}
 
 Code review analytics displays a table of open merge requests that have at least one non-author comment.
 The review time is the amount of time since the first comment by a non-author in a merge request.

@@ -2,15 +2,21 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Agents API
 ---
 
-# Agents API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - Agent Tokens API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
+{{< /details >}}
+
+{{< history >}}
+
+- Agent Tokens API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
+
+{{< /history >}}
 
 Use the Agents API to work with the GitLab agent for Kubernetes.
 
@@ -28,7 +34,7 @@ Parameters:
 
 | Attribute | Type              | Required  | Description                                                                                                     |
 |-----------|-------------------|-----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`      | integer or string | yes       | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user |
+| `id`      | integer or string | yes       | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user |
 
 Response:
 
@@ -106,7 +112,7 @@ Parameters:
 
 | Attribute  | Type              | Required | Description                                                                                                     |
 |------------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user |
+| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user |
 | `agent_id` | integer           | yes      | ID of the agent                                                                                                 |
 
 Response:
@@ -168,7 +174,7 @@ Parameters:
 
 | Attribute | Type              | Required | Description                                                                                                     |
 |-----------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`      | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user |
+| `id`      | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user |
 | `name`    | string            | yes      | Name for the agent                                                                                              |
 
 Response:
@@ -232,7 +238,7 @@ Parameters:
 
 | Attribute  | Type              | Required | Description                                                                                                     |
 |------------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user |
+| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user |
 | `agent_id` | integer           | yes      | ID of the agent                                                                                                 |
 
 Example request:
@@ -243,7 +249,11 @@ curl --request DELETE --header "Private-Token: <your_access_token>" "https://git
 
 ## List tokens for an agent
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
+
+{{< /history >}}
 
 Returns a list of active tokens for an agent.
 
@@ -257,7 +267,7 @@ Supported attributes:
 
 | Attribute  | Type              | Required  | Description                                                                                                      |
 |------------|-------------------|-----------|------------------------------------------------------------------------------------------------------------------|
-| `id`       | integer or string | yes       | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user. |
+| `id`       | integer or string | yes       | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user. |
 | `agent_id` | integer or string | yes       | ID of the agent.                                                                                                 |
 
 Response:
@@ -305,12 +315,19 @@ Example response:
 ]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `last_used_at` field for a token is only returned when getting a single agent token.
+
+{{< /alert >}}
 
 ## Get a single agent token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
+
+{{< /history >}}
 
 Gets a single agent token.
 
@@ -326,7 +343,7 @@ Supported attributes:
 
 | Attribute  | Type              | Required | Description                                                                                                       |
 |------------|-------------------|----------|-------------------------------------------------------------------------------------------------------------------|
-| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user.  |
+| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user.  |
 | `agent_id` | integer           | yes      | ID of the agent.                                                                                                  |
 | `token_id` | integer           | yes      | ID of the token.                                                                                                  |
 
@@ -368,9 +385,13 @@ Example response:
 
 ## Create an agent token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
-> - Two-token limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361030/) in GitLab 16.1 with a [flag](../administration/feature_flags.md) named `cluster_agents_limit_tokens_created`.
-> - Two-token limit [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/412399) in GitLab 16.2. Feature flag `cluster_agents_limit_tokens_created` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
+- Two-token limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361030/) in GitLab 16.1 with a [flag](../administration/feature_flags.md) named `cluster_agents_limit_tokens_created`.
+- Two-token limit [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/412399) in GitLab 16.2. Feature flag `cluster_agents_limit_tokens_created` removed.
+
+{{< /history >}}
 
 Creates a new token for an agent.
 
@@ -386,7 +407,7 @@ Supported attributes:
 
 | Attribute     | Type              | Required | Description                                                                                                      |
 |---------------|-------------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`          | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user. |
+| `id`          | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user. |
 | `agent_id`    | integer           | yes      | ID of the agent.                                                                                                 |
 | `name`        | string            | yes      | Name for the token.                                                                                              |
 | `description` | string            | no       | Description for the token.                                                                                       |
@@ -407,8 +428,11 @@ The response is the new token with the following fields:
 | `last_used_at`       | string or null | ISO8601 datetime when the token was last used.                    |
 | `token`              | string         | The secret token value.                                           |
 
-NOTE:
+{{< alert type="note" >}}
+
 The `token` is only returned in the response of the `POST` endpoint and cannot be retrieved afterwards.
+
+{{< /alert >}}
 
 Example request:
 
@@ -436,7 +460,11 @@ Example response:
 
 ## Revoke an agent token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
+
+{{< /history >}}
 
 Revokes an agent token.
 
@@ -450,7 +478,7 @@ Supported attributes:
 
 | Attribute  | Type              | Required | Description                                                                                                      |
 |------------|-------------------|----------|---------------------------------------------------------------------------------------------------------------- -|
-| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user. |
+| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user. |
 | `agent_id` | integer           | yes      | ID of the agent.                                                                                                 |
 | `token_id` | integer           | yes      | ID of the token.                                                                                                 |
 
@@ -462,13 +490,20 @@ curl --request DELETE --header "Private-Token: <your_access_token>" "https://git
 
 ## Receptive agents
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
 
-[Receptive agents](../user/clusters/agent/index.md#receptive-agents) allow GitLab to integrate with Kubernetes clusters
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+
+{{< /history >}}
+
+[Receptive agents](../user/clusters/agent/_index.md#receptive-agents) allow GitLab to integrate with Kubernetes clusters
 that cannot establish a network connection to the GitLab instance, but can be connected to by GitLab.
 
 ### List URL configurations for a receptive agent
@@ -485,7 +520,7 @@ Supported attributes:
 
 | Attribute  | Type              | Required  | Description                                                                                                           |
 |------------|-------------------|-----------|-----------------------------------------------------------------------------------------------------------------------|
-| `id`       | integer or string | yes       | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user. |
+| `id`       | integer or string | yes       | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user. |
 | `agent_id` | integer or string | yes       | ID of the agent.                                                                                                      |
 
 Response:
@@ -521,8 +556,11 @@ Example response:
 ]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Either `public_key` or `client_cert` is set, but never both.
+
+{{< /alert >}}
 
 ### Get a single agent URL configuration
 
@@ -538,7 +576,7 @@ Supported attributes:
 
 | Attribute              | Type              | Required | Description                                                                                                            |
 |------------------------|-------------------|----------|------------------------------------------------------------------------------------------------------------------------|
-| `id`                   | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user.  |
+| `id`                   | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user.  |
 | `agent_id`             | integer           | yes      | ID of the agent.                                                                                                       |
 | `url_configuration_id` | integer           | yes      | ID of the URL configuration.                                                                                           |
 
@@ -573,8 +611,11 @@ Example response:
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Either `public_key` or `client_cert` is set, but never both.
+
+{{< /alert >}}
 
 ### Create an agent URL configuration
 
@@ -592,7 +633,7 @@ Supported attributes:
 
 | Attribute     | Type              | Required | Description                                                                                                           |
 |---------------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------------|
-| `id`          | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user. |
+| `id`          | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user. |
 | `agent_id`    | integer           | yes      | ID of the agent.                                                                                                      |
 | `url`         | string            | yes      | Agent URL for this URL configuration.                                                                                 |
 | `client_cert` | string            | no       | Client certificate in PEM format if mTLS authentication should be used. Must be provided with `client_key`.           |
@@ -652,8 +693,11 @@ Example response for mTLS:
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 If the `client_cert` and `client_key` are not provided, a private-public key pair is generated and JWT authentication is used instead of mTLS.
+
+{{< /alert >}}
 
 ### Delete an agent URL configuration
 
@@ -669,7 +713,7 @@ Supported attributes:
 
 | Attribute              | Type              | Required | Description                                                                                                           |
 |------------------------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------------|
-| `id`                   | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user. |
+| `id`                   | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user. |
 | `agent_id`             | integer           | yes      | ID of the agent.                                                                                                      |
 | `url_configuration_id` | integer           | yes      | ID of the URL configuration.                                                                                          |
 

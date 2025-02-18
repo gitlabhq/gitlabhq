@@ -2,32 +2,41 @@
 stage: Monitor
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Product analytics
 ---
 
-# Product analytics
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
-**Status:** Beta
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
 
-> - Introduced in GitLab 15.4 as an [experiment](../../policy/development_stages_support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
-> - `cube_api_proxy` changed to reference only the [product analytics API](../../api/product_analytics.md) in GitLab 15.6.
-> - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
-> - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
-> - Snowplow integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398253) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`. Disabled by default.
-> - Snowplow integration feature flag `product_analytics_snowplow_support` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130228) in GitLab 16.4.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/414865) from GitLab self-managed to GitLab.com in 16.7.
-> - Enabled in GitLab 16.7 as a [beta](../../policy/development_stages_support.md#beta) feature.
-> - `product_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/398653) by default in GitLab 16.11.
-> - Feature flag `product_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454059) in GitLab 17.1.
-> - Funnels support removed in GitLab 17.4.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167192) to beta and feature flags `product_analytics_admin_settings` and [`product_analytics_features`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167296) added in GitLab 17.5. Disabled by default.
+{{< /details >}}
 
-FLAG:
+{{< history >}}
+
+- Introduced in GitLab 15.4 as an [experiment](../../policy/development_stages_support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
+- `cube_api_proxy` changed to reference only the [product analytics API](../../api/product_analytics.md) in GitLab 15.6.
+- `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
+- `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
+- Snowplow integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398253) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`. Disabled by default.
+- Snowplow integration feature flag `product_analytics_snowplow_support` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130228) in GitLab 16.4.
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/414865) from GitLab Self-Managed to GitLab.com in 16.7.
+- Enabled in GitLab 16.7 as a [beta](../../policy/development_stages_support.md#beta) feature.
+- `product_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/398653) by default in GitLab 16.11.
+- Feature flag `product_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454059) in GitLab 17.1.
+- Funnels support removed in GitLab 17.4.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167192) to beta and feature flags `product_analytics_admin_settings` and [`product_analytics_features`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167296) added in GitLab 17.5. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is not ready for production use.
+
+{{< /alert >}}
 
 The product analytics feature empowers you to track user behavior and gain insights into how your
 applications are used and how users interact with your product.
@@ -81,12 +90,16 @@ accDescr: How data is collected, processed, and visualized in dashboards.
 
 ## Enable product analytics
 
-> - Introduced in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
-> - Moved behind a [flag](../../administration/feature_flags.md) named `product_analytics_admin_settings` in GitLab 15.7. Disabled by default.
-> - Feature flag `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
-> - Feature flag `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
-> - Feature flag `product_analytics_admin_settings` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/385602) by default in GitLab 16.11.
-> - Feature flag `product_analytics_admin_settings` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454342) in GitLab 17.1.
+{{< history >}}
+
+- Introduced in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
+- Moved behind a [flag](../../administration/feature_flags.md) named `product_analytics_admin_settings` in GitLab 15.7. Disabled by default.
+- Feature flag `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
+- Feature flag `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
+- Feature flag `product_analytics_admin_settings` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/385602) by default in GitLab 16.11.
+- Feature flag `product_analytics_admin_settings` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454342) in GitLab 17.1.
+
+{{< /history >}}
 
 To track events in your project's applications,
 you must enable and configure product analytics.
@@ -97,19 +110,24 @@ Your GitLab instance connects to a product analytics provider.
 A product analytics provider is the collection of services required to receive,
 process, store and query your analytics data.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle GitLab-managed provider
+{{< tab title="GitLab-managed provider" >}}
 
-DETAILS:
-**Offering:** GitLab.com
+{{< details >}}
+
+- Offering: GitLab.com
+
+{{< /details >}}
 
 On GitLab.com you can use a GitLab-managed provider offered only in the Google Cloud Platform zone `us-central-1`.
 
 If GitLab manages your product analytics provider, then your analytics data is retained for one year.
 You can request to delete your data at any time by [contacting support](https://about.gitlab.com/support/#contact-support).
 
-:::TabTitle Self-managed provider
+{{< /tab >}}
+
+{{< tab title="Self-managed provider" >}}
 
 >[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117804) in GitLab 16.0.
 
@@ -118,10 +136,12 @@ A self-managed product analytics provider is a deployed instance of the
 
 On GitLab.com, the self-managed provider details are defined in [project-level settings](#project-level-settings).
 
-On GitLab self-managed, you must define the self-managed analytics provider in [instance-level settings](#instance-level-settings).
+On GitLab Self-Managed, you must define the self-managed analytics provider in [instance-level settings](#instance-level-settings).
 If you need different providers for different projects, you can define additional analytics providers in [project-level settings](#project-level-settings).
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Instance-level settings
 
@@ -131,9 +151,12 @@ Prerequisites:
 
 - You must have administrator access for the instance.
 
-NOTE:
-These instance-level settings are required to enable product analytics on GitLab self-managed,
+{{< alert type="note" >}}
+
+These instance-level settings are required to enable product analytics on GitLab Self-Managed,
 and cascade to all projects by default.
+
+{{< /alert >}}
 
 To enable product analytics on your instance:
 
@@ -159,7 +182,11 @@ Prerequisites:
 
 ## Onboard a GitLab project
 
-> - Minimum required role [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154089/) in GitLab 17.1.
+{{< history >}}
+
+- Minimum required role [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154089/) in GitLab 17.1.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -175,9 +202,9 @@ To onboard a project:
 
 Then continue with the setup depending on the provider type.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle GitLab-managed provider
+{{< tab title="GitLab-managed provider" >}}
 
 Prerequisites:
 
@@ -195,7 +222,9 @@ Prerequisites:
 
 Your instance is being created, and the project onboarded.
 
-:::TabTitle Self-managed provider
+{{< /tab >}}
+
+{{< tab title="Self-managed provider" >}}
 
 1. Select **Connect your own provider**.
 1. Configure project-level settings for your self-managed provider:
@@ -208,15 +237,21 @@ Your instance is being created, and the project onboarded.
 
 Your instance is being created, and the project onboarded.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Instrument your application
 
-You can instrument code to collect data by using [tracking SDKs](index.md).
+You can instrument code to collect data by using [tracking SDKs](../_index.md).
 
 ## Product analytics dashboards
 
-> - Introduced in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `product_analytics_internal_preview`. Disabled by default.
+{{< history >}}
+
+- Introduced in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `product_analytics_internal_preview`. Disabled by default.
+
+{{< /history >}}
 
 Product analytics dashboards are a subset of dashboards under [Analytics dashboards](../../user/analytics/analytics_dashboards.md).
 
@@ -237,7 +272,11 @@ When product analytics is enabled and onboarded, two built-in dashboards are ava
 
 ### Filling missing data
 
-> - Introduced in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `product_analytics_dashboards`. Disabled by default.
+{{< history >}}
+
+- Introduced in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `product_analytics_dashboards`. Disabled by default.
+
+{{< /history >}}
 
 When [exporting data](#raw-data-export) or [viewing dashboards](../../user/analytics/analytics_dashboards.md#view-project-dashboards),
 if there is no data for a given day, the missing data is autofilled with `0`.
@@ -303,8 +342,12 @@ If the request is successful, the returned JSON includes an array of rows of res
 
 ## View product analytics usage quota
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424153) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `product_analytics_usage_quota`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/427838) in GitLab 16.7. Feature flag `product_analytics_usage_quota` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424153) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `product_analytics_usage_quota`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/427838) in GitLab 16.7. Feature flag `product_analytics_usage_quota` removed.
+
+{{< /history >}}
 
 Product analytics usage quota is calculated from the number of events received from instrumented applications.
 

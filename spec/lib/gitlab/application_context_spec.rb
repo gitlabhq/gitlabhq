@@ -191,23 +191,24 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
     end
 
     context 'when using a runner project' do
-      let_it_be_with_reload(:runner) { create(:ci_runner, :project, projects: [project]) }
+      let_it_be(:owner_project) { create(:project) }
+      let_it_be_with_reload(:runner) { create(:ci_runner, :project, projects: [owner_project]) }
 
-      it 'sets project path from runner project' do
+      it 'sets project path from owner project' do
         context = described_class.new(runner: runner)
 
-        expect(result(context)).to include(project: runner.runner_projects.first.project.full_path)
+        expect(result(context)).to include(project: runner.owner.full_path)
       end
 
       context 'when the runner serves multiple projects' do
         before do
-          create(:ci_runner_project, runner: runner, project: create(:project))
+          create(:ci_runner_project, runner: runner, project: project)
         end
 
-        it 'does not set project path' do
+        it 'sets project path from owner project' do
           context = described_class.new(runner: runner)
 
-          expect(result(context)).to include(project: nil)
+          expect(result(context)).to include(project: runner.owner.full_path)
         end
       end
     end

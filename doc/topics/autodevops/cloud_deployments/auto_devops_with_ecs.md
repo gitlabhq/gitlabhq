@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use Auto DevOps to deploy to Amazon ECS
 ---
-
-# Use Auto DevOps to deploy to Amazon ECS
 
 You can choose to target AWS ECS as a deployment platform instead of using Kubernetes.
 
@@ -20,7 +19,7 @@ To do so, follow these steps:
    - `ECS` if you're not enforcing any launch type check when deploying to ECS.
 
 When you trigger a pipeline, if you have Auto DevOps enabled and if you have correctly
-[entered AWS credentials as variables](../../../ci/cloud_deployment/index.md#authenticate-gitlab-with-aws),
+[entered AWS credentials as variables](../../../ci/cloud_deployment/_index.md#authenticate-gitlab-with-aws),
 your application is deployed to AWS ECS.
 
 If you have both a valid `AUTO_DEVOPS_PLATFORM_TARGET` variable and a Kubernetes cluster tied to your project,
@@ -29,7 +28,7 @@ only the deployment to Kubernetes runs.
 WARNING:
 Setting the `AUTO_DEVOPS_PLATFORM_TARGET` variable to `ECS` triggers jobs
 defined in the [`Jobs/Deploy/ECS.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy/ECS.gitlab-ci.yml).
-However, it's not recommended to [include](../../../ci/yaml/index.md#includetemplate)
+However, it's not recommended to [include](../../../ci/yaml/_index.md#includetemplate)
 it on its own. This template is designed to be used with Auto DevOps only. It may change
 unexpectedly causing your pipeline to fail if included on its own. Also, the job
 names within this template may also change. Do not override these jobs' names in your

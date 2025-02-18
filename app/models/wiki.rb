@@ -3,7 +3,7 @@
 class Wiki
   extend ::Gitlab::Utils::Override
   include HasRepository
-  include Repositories::CanHousekeepRepository
+  include ::Repositories::CanHousekeepRepository
   include Gitlab::Utils::StrongMemoize
   include GlobalID::Identification
   include Gitlab::Git::WrapsGitalyErrors
@@ -155,7 +155,7 @@ class Wiki
 
   # This is needed in:
   # - Storage::Hashed
-  # - Gitlab::GlRepository::RepoType#identifier_for_container
+  # - Gitlab::Repositories::RepoType#identifier_for_container
   #
   # We also need an `#id` to support `build_stubbed` in tests, where the
   # value doesn't matter.

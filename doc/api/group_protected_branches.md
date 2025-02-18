@@ -2,23 +2,32 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group-level protected branches API
 ---
 
-# Group-level protected branches API
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110603) in GitLab 15.9 [with a flag](../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
-> - Flag `group_protected_branches` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116779) [flag](../administration/feature_flags.md) to `allow_protected_branches_for_group` GitLab 15.11.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500250) in GitLab 17.6. Feature flag `group_protected_branches` removed.
+{{< /details >}}
 
-Use the Group-level protected branches API to manage protected branch rules.
-It provides endpoints to list, create, update, and delete protected branch rules that apply to projects within a group.
+{{< history >}}
 
-WARNING:
-Group-level protected branch settings are restricted to top-level groups only.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110603) in GitLab 15.9 [with a flag](../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
+- Flag `group_protected_branches` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116779) [flag](../administration/feature_flags.md) to `allow_protected_branches_for_group` GitLab 15.11.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500250) in GitLab 17.6. Feature flag `group_protected_branches` removed.
+
+{{< /history >}}
+
+Use the protected branches API for groups to manage protected branch rules.
+It provides endpoints to list, create, update, and delete protected branch rules that apply to projects belonging to a group.
+
+{{< alert type="warning" >}}
+
+Protected branch settings for groups are restricted to top-level groups only.
+
+{{< /alert >}}
 
 ## Valid access levels
 
@@ -43,7 +52,7 @@ GET /groups/:id/protected_branches
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `search` | string | no | Name or part of the name of protected branches to be searched for. |
 
 ```shell
@@ -117,7 +126,7 @@ GET /groups/:id/protected_branches/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `name` | string | yes | The name of the branch or wildcard. |
 
 ```shell
@@ -170,13 +179,13 @@ curl --request POST \
 
 | Attribute                                    | Type | Required | Description |
 | -------------------------------------------- | ---- | -------- | ----------- |
-| `id`                                         | integer or string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`                                         | integer or string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `name`                                       | string         | yes | The name of the branch or wildcard. |
 | `allow_force_push`                           | boolean        | no  | Allow all users with push access to force push. Default: `false`. |
 | `allowed_to_merge`                           | array          | no  | Array of access levels allowed to merge, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. |
 | `allowed_to_push`                            | array          | no  | Array of access levels allowed to push, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. |
 | `allowed_to_unprotect`                       | array          | no  | Array of access levels allowed to unprotect, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. |
-| `code_owner_approval_required`               | boolean        | no  | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/index.md). Default: `false`. |
+| `code_owner_approval_required`               | boolean        | no  | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/_index.md). Default: `false`. |
 | `merge_access_level`                         | integer        | no  | Access levels allowed to merge. Defaults: `40`, Maintainer role. |
 | `push_access_level`                          | integer        | no  | Access levels allowed to push. Defaults: `40`, Maintainer role. |
 | `unprotect_access_level`                     | integer        | no  | Access levels allowed to unprotect. Defaults: `40`, Maintainer role. |
@@ -219,7 +228,7 @@ Example response:
 }
 ```
 
-### Example with user / group level access
+### Example with user and group access
 
 Elements in the `allowed_to_push` / `allowed_to_merge` / `allowed_to_unprotect` array should take the
 form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Each user must have
@@ -352,7 +361,7 @@ curl --request DELETE \
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `name` | string | yes | The name of the branch. |
 
 Example response:
@@ -388,13 +397,13 @@ curl --request PATCH \
 
 | Attribute                                    | Type           | Required | Description                                                                                                                          |
 | -------------------------------------------- | ---- | -------- | ----------- |
-| `id`                                         | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths).                       |
+| `id`                                         | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).                       |
 | `name`                                       | string         | yes      | The name of the branch.                                                                                                               |
 | `allow_force_push`                           | boolean        | no       | When enabled, members who can push to this branch can also force push.                                                               |
 | `allowed_to_push`                            | array          | no       | Array of push access levels, with each described by a hash.                                                                          |
 | `allowed_to_merge`                           | array          | no       | Array of merge access levels, with each described by a hash.                                                                         |
 | `allowed_to_unprotect`                       | array          | no       | Array of unprotect access levels, with each described by a hash.                                                                     |
-| `code_owner_approval_required`               | boolean        | no       | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/index.md). Default: `false`. |
+| `code_owner_approval_required`               | boolean        | no       | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/_index.md). Default: `false`. |
 
 Elements in the `allowed_to_push`, `allowed_to_merge` and `allowed_to_unprotect` arrays should:
 

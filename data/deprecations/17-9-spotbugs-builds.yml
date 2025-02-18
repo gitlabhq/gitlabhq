@@ -1,0 +1,23 @@
+- title: "Support for project build as part of SpotBugs scans"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.9"
+  breaking_change: false
+  window: 1 # Note: a change window is not applicable to a non-breaking change
+  reporter: thiagocsf
+  stage: application security testing
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/513409
+  impact: low
+  scope: project
+  resolution_role: Developer
+  manual_task: true
+  body: |  # (required) Don't change this line.
+    The SpotBugs [SAST analyzer](https://docs.gitlab.com/user/application_security/sast/#supported-languages-and-frameworks)
+    can perform a build when the artifacts to be scanned aren't present. While this usually works well for simple projects, it can fail on more complex builds.
+
+    From GitLab 18.0, to resolve SpotBugs analyzer build failures, you should:
+
+    1. [Pre-compile](https://docs.gitlab.com/user/application_security/sast/#pre-compilation) the project.
+    1. Pass the artifacts you want to scan to the analyzer.
+  end_of_support_milestone: 18.0
+  tiers: [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/user/application_security/sast/troubleshooting.html#project-couldnt-be-built

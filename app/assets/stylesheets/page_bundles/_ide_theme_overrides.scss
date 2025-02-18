@@ -106,7 +106,7 @@
   }
 
   .common-note-form .md-area {
-    border-color: var(--ide-input-border, $border-color);
+    border-color: var(--ide-input-border, var(--gl-border-color-default));
   }
 
   .md table:not(.code) tr th {
@@ -123,7 +123,7 @@
   .card-header,
   .ide-terminal .top-bar,
   .ide-pipeline .top-bar {
-    border-color: var(--ide-border-color, $border-color);
+    border-color: var(--ide-border-color, var(--gl-border-color-default));
   }
 
   hr {
@@ -138,7 +138,7 @@
   .nav-links,
   .gl-tabs-nav,
   .common-note-form .md-area.is-focused .nav-links {
-    border-color: var(--ide-border-color-alt, $border-color);
+    border-color: var(--ide-border-color-alt, var(--gl-border-color-default));
   }
 
   pre {
@@ -188,7 +188,7 @@
   input[type='text'],
   input[type='search'],
   .filtered-search-box {
-    border-color: var(--ide-input-border, $border-color);
+    border-color: var(--ide-input-border, var(--gl-border-color-default));
     background: var(--ide-input-background, $white) !important;
   }
 
@@ -241,7 +241,7 @@
   .dropdown,
   .dropdown-menu-toggle {
     color: var(--ide-input-color, var(--gl-text-color-default)) !important;
-    border-color: var(--ide-btn-default-border, $border-color);
+    border-color: var(--ide-btn-default-border, var(--gl-border-color-default));
   }
 
   .dropdown-menu-toggle {
@@ -255,57 +255,37 @@
     }
   }
 
-  // In IDE, the only inverted buttons are `.btn-remove`
-  .btn-inverted.btn-remove:not(.gl-button) {
-    color: var(--ide-input-color, $red-500) !important;
-    background-color: var(--ide-input-background, $white) !important;
-    border-color: var(--ide-btn-default-border, $red-500);
-
-    &:hover,
-    &:focus {
-      color: var(--ide-input-color, $red-700) !important;
-      background-color: var(--ide-input-background, $red-100) !important;
-      border-color: var(--ide-btn-default-hover-border, $red-500) !important;
-    }
-
-    &:active {
-      color: var(--ide-input-color, $red-800) !important;
-      background-color: var(--ide-input-background, $red-200) !important;
-      border-color: var(--ide-btn-default-hover-border, $red-600) !important;
-    }
-  }
-
   // todo: remove this block after all default buttons have been migrated to gl-button
   .btn-default:not(.gl-button) {
     background-color: var(--ide-btn-default-background, $white) !important;
-    border-color: var(--ide-btn-default-border, $border-color);
+    border-color: var(--ide-btn-default-border, var(--gl-border-color-default));
 
     &:hover,
     &:focus {
-      border-color: var(--ide-btn-default-hover-border, $border-color) !important;
+      border-color: var(--ide-btn-default-hover-border, var(--gl-border-color-default)) !important;
       background-color: var(--ide-btn-default-background, $gray-50) !important;
     }
 
     &:active,
     .active {
-      border-color: var(--ide-btn-default-hover-border, $border-color) !important;
-      background-color: var(--ide-btn-default-background, $border-color) !important;
+      border-color: var(--ide-btn-default-hover-border, var(--gl-border-color-default)) !important;
+      background-color: var(--ide-btn-default-background, var(--gl-border-color-default)) !important;
     }
   }
 
   .dropdown-menu {
     color: var(--ide-text-color, var(--gl-text-color-default));
-    border-color: var(--ide-background, $border-color);
+    border-color: var(--ide-background, var(--gl-border-color-default));
     background-color: var(--ide-dropdown-background, $white);
 
     .nav-links {
       background-color: var(--ide-dropdown-hover-background, $white);
-      border-color: var(--ide-dropdown-hover-background, $border-color);
+      border-color: var(--ide-dropdown-hover-background, var(--gl-border-color-default));
     }
 
     .gl-tabs-nav {
       background-color: var(--ide-dropdown-hover-background, $white);
-      box-shadow: inset 0 -2px 0 0 var(--ide-dropdown-hover-background, $border-color);
+      box-shadow: inset 0 -2px 0 0 var(--ide-dropdown-hover-background, var(--gl-border-color-default));
     }
 
     .divider {

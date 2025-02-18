@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, feature_category: :secrets_management do
+RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, feature_category: :ci_variables do
   include Ci::TemplateHelpers
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, namespace: group) }
@@ -93,8 +93,6 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         value: project.ci_config_path_or_default },
       { key: 'CI_PAGES_DOMAIN',
         value: Gitlab.config.pages.host },
-      { key: 'CI_PAGES_URL',
-        value: Gitlab::Pages::UrlBuilder.new(project).pages_url },
       { key: 'CI_API_V4_URL',
         value: API::Helpers::Version.new('v4').root_url },
       { key: 'CI_API_GRAPHQL_URL',
@@ -118,10 +116,6 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
   end
 
   let(:builder) { described_class.new(pipeline) }
-
-  before do
-    stub_feature_flags(fix_pages_ci_variables: false)
-  end
 
   describe '#scoped_variables' do
     let(:environment_name) { job.expanded_environment_name }

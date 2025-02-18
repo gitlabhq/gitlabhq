@@ -17,7 +17,7 @@ RSpec.describe API::ProtectedTags, feature_category: :source_code_management do
     let(:route) { "/projects/#{project.id}/protected_tags" }
 
     shared_examples_for 'protected tags' do
-      it 'returns the protected tags' do
+      it 'returns the Protected Tags' do
         get api(route, user), params: { per_page: 100 }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -53,7 +53,7 @@ RSpec.describe API::ProtectedTags, feature_category: :source_code_management do
     let(:route) { "/projects/#{project.id}/protected_tags/#{tag_name}" }
 
     shared_examples_for 'protected tag' do
-      it 'returns the protected tag' do
+      it 'returns the Protected Tag' do
         get api(route, user)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -62,7 +62,7 @@ RSpec.describe API::ProtectedTags, feature_category: :source_code_management do
         expect(json_response['create_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MAINTAINER)
       end
 
-      context 'when protected tag does not exist' do
+      context 'when the Protected Tag does not exist' do
         let(:tag_name) { 'unknown' }
 
         it_behaves_like '404 response' do
@@ -79,7 +79,7 @@ RSpec.describe API::ProtectedTags, feature_category: :source_code_management do
 
       it_behaves_like 'protected tag'
 
-      context 'when protected tag contains a wildcard' do
+      context 'when the Protected Tag contains a wildcard' do
         let(:protected_name) { 'feature*' }
 
         it_behaves_like 'protected tag'
@@ -181,7 +181,7 @@ RSpec.describe API::ProtectedTags, feature_category: :source_code_management do
         expect(json_response['name']).to eq(protected_name)
       end
 
-      context 'when tag has a wildcard in its name' do
+      context 'when the Protected Tag has a wildcard in its name' do
         let(:tag_name) { 'feature/*' }
 
         it 'protects multiple tags with a wildcard in the name' do
@@ -209,33 +209,55 @@ RSpec.describe API::ProtectedTags, feature_category: :source_code_management do
   end
 
   describe 'DELETE /projects/:id/protected_tags/unprotect/:tag' do
-    before do
-      project.add_maintainer(user)
+    context 'when the user is not a project member' do
+      it 'hides the existence of the Protected Tag' do
+        delete api("/projects/#{project.id}/protected_tags/#{tag_name}", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
 
-    it 'unprotects a single tag' do
-      delete api("/projects/#{project.id}/protected_tags/#{tag_name}", user)
+    context 'when the user is a developer' do
+      before do
+        project.add_developer(user)
+      end
 
-      expect(response).to have_gitlab_http_status(:no_content)
+      it 'forbids deletion of the Protected Tag' do
+        delete api("/projects/#{project.id}/protected_tags/#{tag_name}", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
     end
 
-    it_behaves_like '412 response' do
-      let(:request) { api("/projects/#{project.id}/protected_tags/#{tag_name}", user) }
-    end
+    context 'when the user is a maintainer' do
+      before do
+        project.add_maintainer(user)
+      end
 
-    it "returns 404 if tag does not exist" do
-      delete api("/projects/#{project.id}/protected_tags/barfoo", user)
-
-      expect(response).to have_gitlab_http_status(:not_found)
-    end
-
-    context 'when tag has a wildcard in its name' do
-      let(:protected_name) { 'feature*' }
-
-      it 'unprotects a wildcard tag' do
+      it 'unprotects a single Protected Tag' do
         delete api("/projects/#{project.id}/protected_tags/#{tag_name}", user)
 
         expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/projects/#{project.id}/protected_tags/#{tag_name}", user) }
+      end
+
+      it "returns 404 if Protected Tag does not exist" do
+        delete api("/projects/#{project.id}/protected_tags/barfoo", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      context 'when Protected Tag has a wildcard in its name' do
+        let(:protected_name) { 'feature*' }
+
+        it 'unprotects a wildcard tag' do
+          delete api("/projects/#{project.id}/protected_tags/#{tag_name}", user)
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
       end
     end
   end

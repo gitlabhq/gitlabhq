@@ -9,10 +9,6 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :public, developers: user) }
   let_it_be(:issue) { create(:issue, project: project, due_date: Date.today, title: "Fix bug") }
 
-  before do
-    stub_feature_flags(todos_vue_application: false)
-  end
-
   context 'when user does not have todos' do
     before do
       sign_in(user)
@@ -27,7 +23,6 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
 
   context 'when user has todos' do
     before do
-      allow(Todo).to receive(:default_per_page).and_return(2)
       mr_merged = create(:merge_request, :simple, :merged, author: user, source_project: project)
       note = create(
         :note,
@@ -47,42 +42,6 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
 
     it 'passes axe automated accessibility testing' do
       expect(page).to be_axe_clean.within('#content-body')
-    end
-
-    context 'when user has the option to undo delete action' do
-      before do
-        within first('.todo') do
-          find_by_testid('check-icon').click
-        end
-        wait_for_requests # ensures page is fully loaded
-      end
-
-      it 'passes axe automated accessibility testing' do
-        expect(page).to be_axe_clean.within('#content-body')
-      end
-    end
-
-    context 'and filters with search options' do
-      it 'passes axe automated accessibility testing' do
-        click_button 'Author'
-        wait_for_requests # ensures page is fully loaded
-
-        expect(page).to be_axe_clean.within('.todos-filters')
-      end
-    end
-
-    context 'and filters with list options' do
-      it 'passes axe automated accessibility testing' do
-        click_button 'Action'
-        expect(page).to be_axe_clean.within('.todos-filters')
-      end
-    end
-
-    context 'and sorts the list' do
-      it 'passes axe automated accessibility testing' do
-        click_button 'Last created'
-        expect(page).to be_axe_clean.within('.todos-filters')
-      end
     end
   end
 

@@ -1,15 +1,17 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Use snippets to store and share code, text, and files from your browser. Snippets support version control, commenting, and embedding."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use snippets to store and share code, text, and files from your browser. Snippets support version control, commenting, and embedding.
+title: Snippets
 ---
 
-# Snippets
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 With GitLab snippets, you can store and share bits of code and text with other users.
 You can [comment on](#comment-on-snippets), [clone](#clone-snippets), and
@@ -21,8 +23,8 @@ and you can maintain your snippets with the [snippets API](../api/snippets.md).
 You can create and manage your snippets with:
 
 - The GitLab user interface.
-- The [GitLab Workflow extension for VS Code](../editor_extensions/visual_studio_code/index.md#create-a-snippet).
-- The [`glab` CLI](../editor_extensions/gitlab_cli/index.md).
+- The [GitLab Workflow extension for VS Code](../editor_extensions/visual_studio_code/_index.md#create-a-snippet).
+- The [`glab` CLI](../editor_extensions/gitlab_cli/_index.md).
 
 ![Example of a snippet](img/snippet_sample_v16_6.png)
 
@@ -34,11 +36,14 @@ GitLab provides two types of snippets:
 - **Project snippets**: Always related to a specific project.
   Project snippets can be visible publicly, or to only project members.
 
-NOTE:
+{{< alert type="note" >}}
+
 From July 2019, the `Internal` visibility setting is disabled for new projects, groups,
 and snippets on GitLab.com. Existing snippets using the `Internal`
 visibility setting keep this setting. You can read more about the change in the
 [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
+
+{{< /alert >}}
 
 ## Create snippets
 
@@ -48,15 +53,15 @@ You can create snippets in multiple ways, depending on whether you want to creat
    - **To create a personal snippet**, do one of the following:
      - On the [Snippets dashboard](https://gitlab.com/dashboard/snippets), select
        **New snippet**.
-     - From a project: On the left sidebar, select **Create new** (**{plus}**). Below **In GitLab**, select **New snippet**.
-     - From any other page: On the left sidebar, select **Create new** (**{plus}**) and then **New snippet**.
+     - From a project: On the left sidebar, select **Create new** ({{< icon name="plus" >}}). Below **In GitLab**, select **New snippet**.
+     - From any other page: On the left sidebar, select **Create new** ({{< icon name="plus" >}}) and then **New snippet**.
      - From the `glab` CLI, using the
        [`glab snippet create`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/snippet/create.md) command.
        For full instructions, see the command's documentation.
-     - If you installed the [GitLab Workflow extension for VS Code](../editor_extensions/visual_studio_code/index.md),
+     - If you installed the [GitLab Workflow extension for VS Code](../editor_extensions/visual_studio_code/_index.md),
        use the [`Gitlab: Create snippet` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#create-snippet).
    - **To create a project snippet**: Go to your project's page. Select
-     **Create new** (**{plus}**). Below **In this project**, select **New snippet**.
+     **Create new** ({{< icon name="plus" >}}). Below **In this project**, select **New snippet**.
 1. In **Title**, add a title.
 1. Optional. In **Description**, describe the snippet.
 1. In **Files**, give your file an appropriate name and extension, such as `example.rb` or `index.html`.
@@ -142,7 +147,7 @@ A single snippet can support up to 10 files, which helps keep related files toge
   used to bootstrap a project and manage its dependencies.
 
 If you need more than 10 files for your snippet, you should create a
-[wiki](project/wiki/index.md) instead. Wikis are available for projects at all
+[wiki](project/wiki/_index.md) instead. Wikis are available for projects at all
 subscription levels, and [groups](project/wiki/group.md) for
 [GitLab Premium](https://about.gitlab.com/pricing/).
 
@@ -225,11 +230,14 @@ which can encourage user collaboration.
 
 ## Mark snippet as spam
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-Administrators on GitLab Self-Managed instances can mark snippets as spam.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+Administrators on GitLab Self-Managed can mark snippets as spam.
 
 Prerequisites:
 
@@ -257,7 +265,7 @@ GitLab forwards the spam to Akismet.
   than 10 files results in an error.
 - Revisions are not visible to the user on the GitLab UI, but [an issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/39271)
   for updates.
-- The default [maximum size for a snippet](../administration/snippets/index.md) and current (as of 2024-04-17) is 50 MB.
+- The default [maximum size for a snippet](../administration/snippets/_index.md) and current (as of 2024-04-17) is 50 MB.
 - Git LFS is not supported.
 
 ### Reduce snippets repository size
@@ -266,7 +274,7 @@ Because versioned snippets are considered as part of the [namespace storage size
 it's recommended to keep snippets' repositories as compact as possible.
 
 For more information about tools to compact repositories,
-see the documentation on [reducing repository size](../user/project/repository/repository_size.md#methods-to-reduce-repository-size).
+see the documentation on [reducing repository size](project/repository/repository_size.md#methods-to-reduce-repository-size).
 
 ### Cannot enter text into the snippet text box
 
@@ -283,4 +291,4 @@ creating a new snippet, use this workaround:
 
 ## Related topics
 
-- [Configure snippet settings](../administration/snippets/index.md) on GitLab Self-Managed
+- [Configure snippet settings](../administration/snippets/_index.md) on GitLab Self-Managed

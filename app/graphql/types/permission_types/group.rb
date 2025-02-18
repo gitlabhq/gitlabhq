@@ -9,3 +9,5 @@ module Types
     end
   end
 end
+
+::Types::PermissionTypes::Group.prepend_mod

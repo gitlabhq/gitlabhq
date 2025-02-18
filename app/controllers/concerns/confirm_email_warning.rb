@@ -34,7 +34,8 @@ module ConfirmEmailWarning
   strong_memoize_attr :email
 
   def confirm_warning_message
-    _("Please check your email (%{email}) to verify that you own this address and unlock the power of CI/CD. Didn't receive it? %{resend_link}. Wrong email address? %{update_link}.")
+    _("Please check your email (%{email}) to verify that you own this address and unlock the power of CI/CD. " \
+      "Didn't receive it? %{resend_link}. Wrong email address? %{update_link}.")
   end
 
   def email_to_display

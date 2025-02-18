@@ -47,6 +47,11 @@ export default {
       required: false,
       default: true,
     },
+    accessControlForced: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -58,6 +63,9 @@ export default {
   computed: {
     internalValue: {
       get() {
+        if (this.accessControlForced && this.options.length > 0) {
+          return this.options[0].value;
+        }
         return this.value;
       },
       set(value) {
@@ -78,7 +86,8 @@ export default {
         this.disabledSelectInput ||
         this.disabledInput ||
         !this.featureEnabled ||
-        this.displayOptions.length < 2
+        this.displayOptions.length < 2 ||
+        this.accessControlForced
       );
     },
     valueWhenFeatureEnabled() {
@@ -112,7 +121,7 @@ export default {
 </script>
 
 <template>
-  <div :data-for="name" class="project-feature-controls gl-mx-0 gl-mt-2 gl-flex">
+  <div :data-for="name" class="project-feature-controls gl-mx-0 gl-mt-2 gl-flex gl-items-center">
     <input v-if="name" :name="name" :value="value" type="hidden" />
     <gl-toggle
       v-if="showToggle"

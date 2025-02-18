@@ -2,19 +2,24 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: CI/CD maintenance console commands
 ---
 
-# CI/CD maintenance console commands
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The following commands are run in the [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
 
-WARNING:
+{{< alert type="warning" >}}
+
 Any command that changes data directly could be damaging if not run correctly, or under the right conditions.
 We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+
+{{< /alert >}}
 
 ## Cancel all running pipelines and their jobs
 
@@ -83,11 +88,14 @@ ps = Ci::CreatePipelineService.new(schedule.project, user, ref: schedule.ref).ex
 
 ## Obtain runners registration token (deprecated)
 
-WARNING:
+{{< alert type="warning" >}}
+
 The ability to pass a runner registration token, and support for certain configuration arguments, was
 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal
 in GitLab 18.0. Runner authentication tokens should be used instead. For more information, see
 [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -99,11 +107,14 @@ Gitlab::CurrentSettings.current_application_settings.runners_registration_token
 
 ## Seed runners registration token (deprecated)
 
-WARNING:
+{{< alert type="warning" >}}
+
 The ability to pass a runner registration token, and support for certain configuration arguments, was
 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal
 in GitLab 18.0. Runner authentication tokens should be used instead. For more information, see
 [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
+
+{{< /alert >}}
 
 ```ruby
 appSetting = Gitlab::CurrentSettings.current_application_settings

@@ -3,6 +3,8 @@
 module Resolvers
   module Projects
     class UserContributedProjectsResolver < BaseResolver
+      prepend ::Projects::LookAheadPreloads
+
       type Types::ProjectType.connection_type, null: true
 
       argument :search, GraphQL::Types::String,
@@ -29,22 +31,30 @@ module Resolvers
 
       alias_method :user, :object
 
-      def resolve(**args)
+      def resolve_with_lookahead(**args)
         contributed_projects = ContributedProjectsFinder.new(
           user: user,
           current_user: current_user,
-          params: {
-            search: args[:search],
-            sort: args[:sort],
-            min_access_level: args[:min_access_level],
-            programming_language_name: args[:programming_language_name]
-          }
+          params: finder_params(args)
         ).execute
 
-        return contributed_projects if args[:include_personal]
+        return apply_lookahead(contributed_projects) if args[:include_personal]
 
-        contributed_projects.joined(user)
+        apply_lookahead(contributed_projects.joined(user))
+      end
+
+      private
+
+      def finder_params(args)
+        {
+          search: args[:search],
+          sort: args[:sort],
+          min_access_level: args[:min_access_level],
+          programming_language_name: args[:programming_language_name]
+        }
       end
     end
   end
 end
+
+Resolvers::Projects::UserContributedProjectsResolver.prepend_mod

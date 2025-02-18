@@ -102,6 +102,10 @@ module QA
         enabled?(ENV['SELECTIVE_EXECUTION_IMPROVED'], default: false)
       end
 
+      def mr_targeting_stable_branch?
+        /^[\d-]+-stable(-ee|-jh)?$/.match?(ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'] || "")
+      end
+
       def schedule_type
         ENV['SCHEDULE_TYPE']
       end
@@ -674,6 +678,13 @@ module QA
       # @return [Boolean]
       def ignore_runtime_data?
         enabled?(ENV["QA_IGNORE_RUNTIME_DATA"], default: false)
+      end
+
+      # Create uniq test users for each test
+      #
+      # @return [Boolean]
+      def create_unique_test_users?
+        enabled?(ENV["QA_CREATE_UNIQUE_TEST_USERS"], default: true)
       end
 
       private

@@ -1,11 +1,12 @@
 ---
-redirect_to: '../elasticsearch/troubleshooting/index.md'
-remove_date: '2025-03-09'
+redirect_to: ../elasticsearch/troubleshooting/_index.md
+remove_date: "2025-03-09"
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
-This document was moved to [another location](../elasticsearch/troubleshooting/index.md).
+This document was moved to [another location](../elasticsearch/troubleshooting/_index.md).
 
 <!-- This redirect file can be deleted after <2025-03-09>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

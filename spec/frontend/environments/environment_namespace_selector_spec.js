@@ -136,7 +136,7 @@ describe('~/environments/components/namespace_selector.vue', () => {
         'No selection shows all authorized resources in the cluster. Learn more.',
       );
       expect(link.attributes('target')).toBe('_blank');
-      expect(link.attributes('href')).toBe('/help/user/clusters/agent/index.md');
+      expect(link.attributes('href')).toBe('/help/user/clusters/agent/_index.md');
       expect(link.text()).toBe('Learn more.');
     });
 

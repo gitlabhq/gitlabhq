@@ -3,8 +3,10 @@
     .rd-app-settings
       %div{ data: { view_settings: true, show_whitespace: @show_whitespace.to_json, diff_view_type: @diff_view, update_user_endpoint: @update_user_endpoint } }
   .rd-app-body
-    .rd-app-sidebar
-    .rd-app-content
+    .rd-app-sidebar{ data: { file_browser: true, metadata_endpoint: @metadata_endpoint }, style: ("width: #{initial_sidebar_width}px" if initial_sidebar_width) }
+      .rd-app-sidebar-loading
+        = helpers.gl_loading_icon(size: 'sm')
+    .rd-app-content{ data: { sidebar_visible: true } }
       .code{ class: helpers.user_color_scheme }
         %div{ data: { diffs_list: true } }
           = render RapidDiffs::DiffFileComponent.with_collection(@diffs_slice, parallel_view: @diff_view == :parallel)

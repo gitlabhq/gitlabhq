@@ -46,10 +46,6 @@ export default {
       });
     },
   },
-  popoverOptions: {
-    triggers: 'hover',
-    placement: 'bottom',
-  },
 };
 </script>
 <template>
@@ -58,7 +54,7 @@ export default {
     <template #default="{ pathItem, pathId }">
       <gl-popover
         v-if="showPopover(pathItem)"
-        v-bind="$options.popoverOptions"
+        placement="bottom"
         :target="pathId"
         :css-classes="['stage-item-popover']"
         data-testid="stage-item-popover"

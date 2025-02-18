@@ -8,6 +8,7 @@ require 'gitlab/rspec/all'
 require 'gitlab/http_v2'
 require 'gitlab/http_v2/configuration'
 require 'gitlab/stub_requests'
+
 require 'webmock/rspec'
 
 RSpec.configure do |config|
@@ -44,6 +45,10 @@ Gitlab::HTTP_V2.configure do |config|
   end
 
   config.silent_mode_log_info_proc = ->(message, http_method) do
+    # no-op
+  end
+
+  config.log_with_level_proc = ->(log_level, message_params) do
     # no-op
   end
 end

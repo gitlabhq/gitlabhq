@@ -67,7 +67,8 @@ module ProjectsHelper
     data_attrs = {
       user_id: author.id,
       username: author.username,
-      name: author.name
+      name: author.name,
+      testid: "author-link"
     }
 
     inject_classes = ["author-link", opts[:extra_class]]
@@ -127,7 +128,7 @@ module ProjectsHelper
   end
 
   def link_to_data_loss_doc
-    link_to _('data loss'), help_page_path('user/project/repository/index.md', anchor: 'repository-path-changes'),
+    link_to _('data loss'), help_page_path('user/project/repository/_index.md', anchor: 'repository-path-changes'),
       target: '_blank', rel: 'noopener'
   end
 
@@ -450,7 +451,7 @@ module ProjectsHelper
   def project_permissions_panel_data(project)
     {
       packagesAvailable: ::Gitlab.config.packages.enabled,
-      packagesHelpPath: help_page_path('user/packages/index.md'),
+      packagesHelpPath: help_page_path('user/packages/_index.md'),
       currentSettings: project_permissions_settings(project),
       canAddCatalogResource: can_add_catalog_resource?(project),
       canSetDiffPreviewInEmail: can_set_diff_preview_in_email?(project, current_user),
@@ -459,22 +460,22 @@ module ProjectsHelper
       allowedVisibilityOptions: project_allowed_visibility_levels(project),
       visibilityHelpPath: help_page_path('user/public_access.md'),
       registryAvailable: Gitlab.config.registry.enabled,
-      registryHelpPath: help_page_path('user/packages/container_registry/index.md'),
+      registryHelpPath: help_page_path('user/packages/container_registry/_index.md'),
       lfsAvailable: Gitlab.config.lfs.enabled,
-      lfsHelpPath: help_page_path('topics/git/lfs/index.md'),
+      lfsHelpPath: help_page_path('topics/git/lfs/_index.md'),
       lfsObjectsExist: project.lfs_objects.exists?,
-      lfsObjectsRemovalHelpPath: help_page_path('topics/git/lfs/index.md',
+      lfsObjectsRemovalHelpPath: help_page_path('topics/git/lfs/_index.md',
         anchor: 'delete-a-git-lfs-file-from-repository-history'),
       pagesAvailable: Gitlab.config.pages.enabled,
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
-      pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?,
+      pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?(project.group),
       pagesHelpPath: help_page_path('user/project/pages/pages_access_control.md'),
-      issuesHelpPath: help_page_path('user/project/issues/index.md'),
+      issuesHelpPath: help_page_path('user/project/issues/_index.md'),
       membersPagePath: project_project_members_path(project),
-      environmentsHelpPath: help_page_path('ci/environments/index.md'),
+      environmentsHelpPath: help_page_path('ci/environments/_index.md'),
       featureFlagsHelpPath: help_page_path('operations/feature_flags.md'),
-      releasesHelpPath: help_page_path('user/project/releases/index.md'),
-      infrastructureHelpPath: help_page_path('user/infrastructure/index.md')
+      releasesHelpPath: help_page_path('user/project/releases/_index.md'),
+      infrastructureHelpPath: help_page_path('user/infrastructure/_index.md')
     }
   end
 
@@ -673,10 +674,19 @@ module ProjectsHelper
     end
 
     title = visibility_icon_description(project)
-    container_class = ['has-tooltip', css_class].compact.join(' ')
+    container_class = [
+      'has-tooltip gl-border-0 gl-bg-transparent gl-p-0 gl-leading-0 gl-text-inherit',
+      css_class
+    ].compact.join(' ')
     data = { container: 'body', placement: 'top' }
 
-    content_tag(:span, class: container_class, data: data, title: title) do
+    content_tag(
+      :button,
+      class: container_class,
+      data: data,
+      title: title,
+      type: 'button',
+      aria: { label: title }) do
       visibility_level_icon(project.visibility_level, options: { class: icon_css_class })
     end
   end
@@ -725,18 +735,15 @@ module ProjectsHelper
       contributed_dashboard_projects_path
     ]
 
-    dashboard_projects_landing_paths.include?(request.path) && !current_user.authorized_projects.present?
+    dashboard_projects_landing_paths.include?(request.path) && !current_user.authorized_projects.exists?
   end
 
   def delete_immediately_message(project)
-    message = _('This action deletes %{codeOpen}%{project_path_with_namespace}%{codeClose} and everything this ' \
-      'project contains. %{strongOpen}There is no going back.%{strongClose}')
-
-    ERB::Util.html_escape(message) % delete_message_data(project)
+    _('This action will permanently delete this project, including all its resources.')
   end
 
-  def project_delete_immediately_button_data(project)
-    project_delete_button_shared_data(project).merge({
+  def project_delete_immediately_button_data(project, button_text = nil)
+    project_delete_button_shared_data(project, button_text).merge({
       form_path: project_path(project, permanently_delete: true)
     })
   end
@@ -766,18 +773,20 @@ module ProjectsHelper
     }
   end
 
-  def project_delete_button_shared_data(project)
+  def project_delete_button_shared_data(project, button_text = nil)
     merge_requests_count = Projects::AllMergeRequestsCountService.new(project).count
     issues_count = Projects::AllIssuesCountService.new(project).count
     forks_count = Projects::ForksCountService.new(project).count
 
     {
       confirm_phrase: delete_confirm_phrase(project),
+      name_with_namespace: project.name_with_namespace,
       is_fork: project.forked? ? 'true' : 'false',
       issues_count: number_with_delimiter(issues_count),
       merge_requests_count: number_with_delimiter(merge_requests_count),
       forks_count: number_with_delimiter(forks_count),
-      stars_count: number_with_delimiter(project.star_count)
+      stars_count: number_with_delimiter(project.star_count),
+      button_text: button_text.presence || _('Delete project')
     }
   end
 
@@ -940,6 +949,7 @@ module ProjectsHelper
       containerRegistryEnabled: !!project.container_registry_enabled,
       lfsEnabled: !!project.lfs_enabled,
       emailsEnabled: project.emails_enabled?,
+      extendedPratExpiryWebhooksExecute: project.extended_prat_expiry_webhooks_execute?,
       showDiffPreviewInEmail: project.show_diff_preview_in_email?,
       monitorAccessLevel: feature.monitor_access_level,
       showDefaultAwardEmojis: project.show_default_award_emojis?,

@@ -29,12 +29,26 @@ const getKeyMap = () => {
   return keyMap;
 };
 
+const symbolMap = {
+  '?': s__('KeyboardKey|Question mark'),
+  '/': s__('KeyboardKey|Forward slash'),
+  '\\': s__('KeyboardKey|Backslash'),
+  '[': s__('KeyboardKey|Opening square bracket'),
+  ']': s__('KeyboardKey|Closing square bracket'),
+  ';': s__('KeyboardKey|Semicolon'),
+};
+
 export default {
   functional: true,
   props: {
     shortcuts: {
       type: Array,
       required: true,
+    },
+    labels: {
+      type: Object,
+      required: false,
+      default: null,
     },
   },
 
@@ -69,14 +83,25 @@ export default {
         } else if (key === ' ') {
           acc.push(` ${__('then')} `);
         } else {
-          acc.push(createElement('kbd', {}, [keyMap[key] ?? key]));
+          const ariaLabel = symbolMap[key];
+          // NVDA doesn't announce symbols for some reason (VoiceOver does)
+          // It also doesn't respect aria-label or aria-labelledby on <kbd>
+          // We have to substitute <kbd> element with a verbalized symbol inside a <span> for NVDA
+          if (ariaLabel) {
+            acc.push(
+              createElement('span', { attrs: { class: 'gl-sr-only' } }, ariaLabel),
+              createElement('kbd', { attrs: { 'aria-hidden': true } }, [keyMap[key] ?? key]),
+            );
+          } else {
+            acc.push(createElement('kbd', {}, [keyMap[key] ?? key]));
+          }
         }
       });
 
       return acc;
     }, []);
 
-    return createElement('div', { staticClass }, shortcuts);
+    return createElement('span', { staticClass }, shortcuts);
   },
 };
 </script>

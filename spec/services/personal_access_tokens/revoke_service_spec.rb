@@ -110,5 +110,16 @@ RSpec.describe PersonalAccessTokens::RevokeService, feature_category: :system_ac
         end
       end
     end
+
+    context 'when revoking the token fails' do
+      let_it_be(:current_user) { create(:user) }
+      let_it_be(:token) { create(:personal_access_token, user: current_user) }
+
+      before do
+        allow(token).to receive(:revoke!).and_return(false)
+      end
+
+      it_behaves_like 'an unsuccessfully revoked token'
+    end
   end
 end

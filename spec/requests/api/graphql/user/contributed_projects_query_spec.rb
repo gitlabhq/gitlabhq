@@ -36,6 +36,32 @@ RSpec.describe 'Getting contributedProjects of the user', feature_category: :gro
     end
   end
 
+  context 'when all fields are requested' do
+    let(:user_fields) do
+      "contributedProjects { nodes {#{all_graphql_fields_for('Project', max_depth: 1,
+        excluded: ['productAnalyticsState'])} } }"
+    end
+
+    it 'avoids N+1 queries', :use_sql_query_cache, :clean_gitlab_redis_cache do
+      post_graphql(query, current_user: current_user)
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: current_user)
+      end
+
+      new_project = create(:project, :public, name: 'New project', path: 'new-project')
+      new_project.add_developer(user)
+      travel_to(4.hours.from_now) { create(:push_event, project: new_project, author: user) }
+
+      # There is an N+1 query related to custom roles - https://gitlab.com/gitlab-org/gitlab/-/issues/515675
+      # There is an N+1 query for duo_features_enabled cascading setting - https://gitlab.com/gitlab-org/gitlab/-/issues/442164
+      # There is an N+1 query related to pipelines - https://gitlab.com/gitlab-org/gitlab/-/issues/515677
+      expect do
+        post_graphql(query, current_user: current_user)
+      end.not_to exceed_all_query_limit(control).with_threshold(5)
+    end
+  end
+
   describe 'sorting' do
     let(:user_fields_with_sort) { "contributedProjects(sort: #{sort_parameter}) { nodes { id } }" }
     let(:query_with_sort) { graphql_query_for(:user, user_params, user_fields_with_sort) }

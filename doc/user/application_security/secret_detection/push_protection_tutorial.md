@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Secret Detection
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Protect your project with secret push protection'
 ---
-
-# Tutorial: Protect your project with secret push protection
 
 If your application uses external resources, you usually need to authenticate your
 application with a **secret**, like a token or key. If a secret is pushed to a
@@ -38,7 +37,7 @@ Make sure you have the following before you complete this tutorial:
 - Some familiarity with command-line Git.
 
 Additionally, on GitLab Self-Managed only, ensure secret push protection is
-[enabled on the instance](secret_push_protection/index.md#allow-the-use-of-secret-push-protection-in-your-gitlab-instance).
+[enabled on the instance](secret_push_protection/_index.md#allow-the-use-of-secret-push-protection-in-your-gitlab-instance).
 
 ## Enable secret push protection
 
@@ -136,4 +135,4 @@ You only need to add `[skip secret push protection]` to one of the commit messag
 
 ## Next steps
 
-Consider enabling [pipeline secret detection](pipeline/index.md) to further improve the security of your projects.
+Consider enabling [pipeline secret detection](pipeline/_index.md) to further improve the security of your projects.

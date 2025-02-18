@@ -6,10 +6,23 @@ export default {
       required: false,
       default: '',
     },
-    description: {
+    headingClasses: {
       type: String,
       required: false,
       default: null,
+    },
+    description: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  computed: {
+    hasHeading() {
+      return this.$scopedSlots.heading || this.heading;
+    },
+    hasDescription() {
+      return this.$scopedSlots.description || this.description;
     },
   },
 };
@@ -17,14 +30,19 @@ export default {
 
 <template>
   <section class="settings-section js-search-settings-section">
-    <div class="settings-sticky-header">
+    <div v-if="hasHeading || hasDescription" class="settings-sticky-header">
       <div class="settings-sticky-header-inner">
-        <h2 class="gl-heading-2 !gl-mb-3" data-testid="settings-section-heading">
+        <h2
+          v-if="hasHeading"
+          class="gl-heading-2 !gl-mb-3"
+          :class="headingClasses"
+          data-testid="settings-section-heading"
+        >
           <slot v-if="$scopedSlots.heading" name="heading"></slot>
           <template v-else>{{ heading }}</template>
         </h2>
         <p
-          v-if="$scopedSlots.description || description"
+          v-if="hasDescription"
           class="gl-mb-3 gl-text-subtle"
           data-testid="settings-section-description"
         >

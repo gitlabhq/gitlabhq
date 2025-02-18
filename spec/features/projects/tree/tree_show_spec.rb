@@ -26,7 +26,8 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
     wait_for_requests
 
     expect(page).to be_axe_clean.within('.project-last-commit')
-    expect(page).to be_axe_clean.within('.nav-block')
+    expect(page).to be_axe_clean.within('.tree-ref-container')
+    expect(page).to be_axe_clean.within('.tree-controls')
     expect(page).to be_axe_clean.within('.tree-content-holder').skipping :'link-in-text-block'
   end
 

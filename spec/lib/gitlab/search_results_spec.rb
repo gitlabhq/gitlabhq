@@ -104,7 +104,7 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
 
       with_them do
         it 'returns an empty array' do
-          expect(results.aggregations(scope)).to match_array([])
+          expect(results.aggregations(scope)).to be_empty
         end
       end
     end

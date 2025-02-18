@@ -9,6 +9,7 @@ module Ci
     expose :description
     expose :owner, using: UserEntity
     expose :last_used
+    expose :expires_at
 
     expose :token do |trigger|
       can_admin_trigger?(trigger) ? trigger.token : trigger.short_token

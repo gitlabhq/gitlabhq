@@ -39,6 +39,11 @@ export default {
       default: false,
       required: false,
     },
+    newCommentTemplatePathsProp: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     const modifierKey = getModifierKey();
@@ -58,12 +63,18 @@ export default {
         bulletList: __('Add a bullet list'),
         numberedList: __('Add a numbered list'),
         taskList: __('Add a checklist'),
+        editorToolbar: __('Editor toolbar'),
       },
     };
   },
   computed: {
     codeSuggestionsEnabled() {
       return this.contentEditor.codeSuggestionsConfig?.canSuggest;
+    },
+    commentTemplatePaths() {
+      return this.newCommentTemplatePaths.length > 0
+        ? this.newCommentTemplatePaths
+        : this.newCommentTemplatePathsProp;
     },
   },
   methods: {
@@ -73,6 +84,17 @@ export default {
     insertSavedReply(savedReply) {
       this.tiptapEditor.chain().focus().pasteContent(savedReply).run();
     },
+    insertTable({ rows, cols }) {
+      this.tiptapEditor
+        .chain()
+        .focus()
+        .insertTable({
+          rows,
+          cols,
+          withHeaderRow: true,
+        })
+        .run();
+    },
   },
 };
 </script>
@@ -80,6 +102,8 @@ export default {
   <div
     class="gl-border-b gl-flex gl-w-full gl-flex-wrap gl-items-center gl-gap-y-2 gl-rounded-t-base gl-border-default gl-px-3 gl-py-3"
     data-testid="formatting-toolbar"
+    role="toolbar"
+    :aria-label="i18n.editorToolbar"
   >
     <div class="gl-flex">
       <toolbar-text-style-dropdown
@@ -184,7 +208,11 @@ export default {
         <header-divider />
       </div>
     </div>
-    <toolbar-table-button data-testid="table" @execute="trackToolbarControlExecution" />
+    <toolbar-table-button
+      data-testid="table"
+      @execute="trackToolbarControlExecution"
+      @insert-table="insertTable"
+    />
     <div class="gl-flex">
       <toolbar-attachment-button
         v-if="!hideAttachmentButton"
@@ -202,11 +230,11 @@ export default {
         :label="__('Add a quick action')"
         @execute="trackToolbarControlExecution"
       />
-      <header-divider v-if="newCommentTemplatePaths.length" />
+      <header-divider v-if="commentTemplatePaths.length" />
     </div>
     <comment-templates-modal
-      v-if="newCommentTemplatePaths.length"
-      :new-comment-template-paths="newCommentTemplatePaths"
+      v-if="commentTemplatePaths.length"
+      :new-comment-template-paths="commentTemplatePaths"
       @select="insertSavedReply"
     />
     <toolbar-more-dropdown data-testid="more" @execute="trackToolbarControlExecution" />

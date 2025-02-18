@@ -2,27 +2,38 @@
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Productivity analytics
 ---
 
-# Productivity analytics
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-You can use productivity analytics to identify:
+{{< /details >}}
+
+Productivity analytics display information about merge requests for groups.
+
+Use productivity analytics to identify:
 
 - Your development velocity based on how long it takes for a merge request to merge.
-- The most time consuming merge requests and potential causes.
-- Authors, labels, or milestones with the longest time to merge, or most changes.
+- Potential causes of merge requests that take a long time to merge.
+- Authors, labels, or milestones that take the longest time to merge or contain most changes.
 
-Use productivity analytics to view the following merge request statistics for your groups:
+To view merge request data for projects, use [merge request analytics](../analytics/merge_request_analytics.md).
 
-- Amount of time between merge request creation and merge.
-- Amount of time between commits, comments, and merge.
-- Complexity of changes, like number of lines of code per commit and number of files.
+## Charts
 
-To view merge request data for projects, use [Merge request analytics](../analytics/merge_request_analytics.md).
+Productivity analytics display the following charts:
+
+- Bar charts that illustrate the:
+  - Number of merge requests by number of days to merge.
+  - Time between commits, comments, and merge dates.
+  - Number of commits, lines of code, and files changed.
+- A scatterplot that illustrates the number of merge request metrics (such as number of commits per merge request) per day (merged date).
+- A table that lists merge request titles, time to merge, and duration between commits, comments, and merge dates.
+
+![Productivity analytics chart of merge requests over time](img/productivity_analytics_mrs_v17_9.png)
 
 ## View productivity analytics
 
@@ -33,35 +44,9 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Analyze > Productivity analytics**.
 1. Optional. Filter results:
-   1. From the **Projects** dropdown list, select a project.
-   1. To filter results by author, milestone, or label,
-      select **Filter results** and enter a value.
-   1. To adjust the date range:
-      - In the **From** field, select a start date.
-      - In the **To** field, select an end date.
 
-## View time metrics for merge requests
-
-To view time metrics for merge requests:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Analyze > Productivity analytics**.
-   Time metrics are displayed on the following charts:
-   - **Time to merge**: number of days it took for a merge requests to merge after they were created.
-   - **Trendline**: number of merge requests that were merged in a specific time period.
-1. Optional. Filter the results:
-   - To filter the **Trendline** chart, in the **Time to merge** chart, select a bar.
-   - To view a specific merge request, below the charts, from the **List** table select a merge request.
-
-## View commit statistics
-
-To view commit statistics for your group:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Analyze > Productivity analytics**.
-   Commit statistics are displayed under the **Trendline** scatterplot:
-   - The left histogram shows the number of hours between commits, comments, and merges.
-   - The right histogram shows the number of commits and changes per merge request.
-1. Optional. Filter results:
-   - To view different types of commit data, from the dropdown list next to each histogram, select an option.
-   - To view a specific merge request, below the charts, from the **List** table select a merge request.
+- To view analytics for a specific project, from the **Projects** dropdown list, select a project.
+- To filter results by author, milestone, or label, select **Filter results** and enter a value.
+- To adjust the date range:
+  - In the **From** field, select a start date.
+  - In the **To** field, select an end date.

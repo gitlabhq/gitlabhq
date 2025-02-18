@@ -2,10 +2,9 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Connect and use GitLab Duo in JetBrains IDEs."
+description: Connect and use GitLab Duo in JetBrains IDEs.
+title: JetBrains troubleshooting
 ---
-
-# JetBrains troubleshooting
 
 If the steps on this page don't solve your problem, check the
 [list of open issues](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/?sort=created_date&state=opened&first_page_size=100)
@@ -28,10 +27,10 @@ To enable debug logs in JetBrains:
 
 If you experience [certificate errors](#certificate-errors) or other connection errors, and
 use a HTTP proxy to connect to your GitLab instance, you must
-[configure the Language Server to use a proxy](../language_server/index.md#configure-the-language-server-to-use-a-proxy)
+[configure the Language Server to use a proxy](../language_server/_index.md#configure-the-language-server-to-use-a-proxy)
 for the GitLab Language Server.
 
-You can also [enable proxy authentication](../language_server/index.md#enable-proxy-authentication).
+You can also [enable proxy authentication](../language_server/_index.md#enable-proxy-authentication).
 
 ## Enable GitLab Language Server debug logs
 
@@ -101,3 +100,13 @@ To do this:
 1. Enable the **Ignore certificate errors** option.
 1. Select **Verify setup**.
 1. Select **OK** or **Save**.
+
+### Authentication fails in PyCharm
+
+If you encounter problems during the **Verify setup** phase of GitLab authentication, confirm you
+are running a supported version of PyCharm:
+
+1. Go to the [plugin compatibility](https://plugins.jetbrains.com/plugin/22325-gitlab-duo/versions) page.
+1. For **Compatibility**, select `PyCharm Community` or `PyCharm Professional`.
+1. For **Channels**, select your desired stability level for the GitLab plugin.
+1. For your version of PyCharm, select **Download** to download the correct GitLab plugin version, and install it.

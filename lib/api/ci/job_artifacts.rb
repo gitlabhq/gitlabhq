@@ -39,6 +39,7 @@ module API
                   'available only on Premium and Ultimate tiers.'
         end
         route_setting :authentication, job_token_allowed: true
+        route_setting :authorization, job_token_policies: :read_jobs
         get ':id/jobs/artifacts/:ref_name/download',
           urgency: :low,
           requirements: { ref_name: /.+/ } do
@@ -69,6 +70,7 @@ module API
                   'available only on Premium and Ultimate tiers.'
         end
         route_setting :authentication, job_token_allowed: true
+        route_setting :authorization, job_token_policies: :read_jobs
         get ':id/jobs/artifacts/:ref_name/raw/*artifact_path',
           urgency: :low,
           format: false,
@@ -101,6 +103,7 @@ module API
                   'available only on Premium and Ultimate tiers.'
         end
         route_setting :authentication, job_token_allowed: true
+        route_setting :authorization, job_token_policies: :read_jobs
         get ':id/jobs/:job_id/artifacts', urgency: :low do
           authorize_download_artifacts!
 
@@ -127,6 +130,7 @@ module API
                   'available only on Premium and Ultimate tiers.'
         end
         route_setting :authentication, job_token_allowed: true
+        route_setting :authorization, job_token_policies: :read_jobs
         get ':id/jobs/:job_id/artifacts/*artifact_path', urgency: :low, format: false do
           authorize_download_artifacts!
 

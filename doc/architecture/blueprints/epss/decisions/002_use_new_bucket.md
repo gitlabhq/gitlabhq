@@ -1,7 +1,10 @@
 ---
-redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/epss/decisions/002_use_new_bucket/'
-remove_date: '2025-07-08'
+redirect_to: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/epss/decisions/002_use_new_bucket/
+remove_date: "2025-07-08"
 ---
+
+<!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/epss/decisions/002_use_new_bucket/).
 

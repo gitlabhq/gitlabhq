@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GitHub importer developer documentation
 ---
-
-# GitHub importer developer documentation
 
 The GitHub importer is a parallel importer that uses Sidekiq.
 
@@ -84,8 +83,11 @@ This worker imports all pull requests. For every pull request a job for the
 This worker imports only direct repository collaborators who are not outside collaborators.
 For every collaborator, we schedule a job for the `Gitlab::GithubImport::ImportCollaboratorWorker` worker.
 
-NOTE:
+{{< alert type="note" >}}
+
 This stage is optional (controlled by `Gitlab::GithubImport::Settings`) and is selected by default.
+
+{{< /alert >}}
 
 ### 6. Stage::ImportIssuesAndDiffNotesWorker
 
@@ -137,8 +139,11 @@ Each job:
 1. Downloads the attachment.
 1. Replaces the old link with a newly-generated link to GitLab.
 
-NOTE:
+{{< alert type="note" >}}
+
 It's an optional stage that could consume significant extra import time (controlled by `Gitlab::GithubImport::Settings`).
+
+{{< /alert >}}
 
 ### 9. Stage::ImportProtectedBranchesWorker
 

@@ -80,9 +80,6 @@ export default {
     toggleTreeOpen(path) {
       this.$emit('toggleTreeOpen', path);
     },
-    clickedFile(path) {
-      this.$emit('clickFile', path);
-    },
     clickFile() {
       // Manual Action if a tree is selected/opened
       if (this.isTree && this.hasUrlAtCurrentRoute()) {
@@ -91,7 +88,7 @@ export default {
 
       if (this.$router && !this.hasUrlAtCurrentRoute()) this.$router.push(this.fileRouterUrl);
 
-      if (this.isBlob) this.clickedFile(this.file.path);
+      if (this.isBlob) this.$emit('clickFile', this.file);
     },
     scrollIntoView(isInit = false) {
       const block = isInit && this.isTree ? 'center' : 'nearest';

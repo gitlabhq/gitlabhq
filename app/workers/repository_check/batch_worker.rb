@@ -7,6 +7,7 @@ module RepositoryCheck
     data_consistency :always
 
     sidekiq_options retry: 3
+    include CronjobChildWorker
     include RepositoryCheckQueue
     include ExclusiveLeaseGuard
 

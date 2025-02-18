@@ -34,7 +34,7 @@ export function expandSection(sectionArg) {
   }
 
   InternalEvents.trackEvent('click_expand_panel_on_settings', {
-    label: $section.find('.settings-title').text(),
+    label: $section.find('[data-event-tracking="settings-block-title"]').text(),
   });
 }
 

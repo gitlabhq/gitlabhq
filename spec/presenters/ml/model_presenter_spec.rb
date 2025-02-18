@@ -103,6 +103,6 @@ RSpec.describe Ml::ModelPresenter, feature_category: :mlops do
   describe '#default_experiment_path' do
     subject { model1.present.default_experiment_path }
 
-    it { is_expected.to eq("/#{model1.project.full_path}/-/ml/experiments/#{model1.default_experiment.id}") }
+    it { is_expected.to eq("/#{model1.project.full_path}/-/ml/experiments/#{model1.default_experiment.iid}") }
   end
 end

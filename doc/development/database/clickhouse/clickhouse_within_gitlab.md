@@ -2,14 +2,16 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: ClickHouse within GitLab
 ---
-
-# ClickHouse within GitLab
 
 This document gives a high-level overview of how to develop features using ClickHouse in the GitLab Rails application.
 
-NOTE:
+{{< alert type="note" >}}
+
 Most of the tooling and APIs are considered unstable.
+
+{{< /alert >}}
 
 ## GDK setup
 
@@ -224,8 +226,11 @@ CsvBuilder::Gzip.new(iterator, column_mapping).render do |tempfile|
 end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 It's important to test and verify efficient batching of database records from PostgreSQL. Consider using the techniques described in the [Iterating tables in batches](../iterating_tables_in_batches.md).
+
+{{< /alert >}}
 
 ## Iterating over tables
 

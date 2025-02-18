@@ -1,142 +1,34 @@
 <script>
-import { GlButton, GlCollapse, GlIcon, GlBadge, GlLink, GlSprintf } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
-import pollIntervalQuery from '../graphql/queries/poll_interval.query.graphql';
-import folderQuery from '../graphql/queries/folder.query.graphql';
-import { ENVIRONMENT_COUNT_BY_SCOPE } from '../constants';
-import EnvironmentItem from './new_environment_item.vue';
+import { GlIcon, GlBadge, GlLink } from '@gitlab/ui';
 
 export default {
   components: {
-    EnvironmentItem,
-    GlButton,
-    GlCollapse,
     GlIcon,
     GlBadge,
     GlLink,
-    GlSprintf,
   },
   props: {
     nestedEnvironment: {
       type: Object,
       required: true,
     },
-    scope: {
-      type: String,
-      required: true,
-    },
-    search: {
-      type: String,
-      required: true,
-    },
-  },
-  data() {
-    return { visible: false, interval: undefined };
-  },
-  apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
-    folder: {
-      query: folderQuery,
-      variables() {
-        return {
-          environment: this.nestedEnvironment.latest,
-          scope: this.scope,
-          search: this.search,
-        };
-      },
-    },
-    interval: {
-      query: pollIntervalQuery,
-    },
-  },
-  i18n: {
-    collapse: __('Collapse'),
-    expand: __('Expand'),
-    link: s__('Environments|See all environments.'),
-    message: s__(
-      'Environments|Showing %{listedEnvironmentsCount} of %{totalEnvironmentsCount} environments in this folder.',
-    ),
   },
   computed: {
-    icons() {
-      return this.visible
-        ? { caret: 'chevron-lg-down', folder: 'folder-open' }
-        : { caret: 'chevron-lg-right', folder: 'folder' };
-    },
-    label() {
-      return this.visible ? this.$options.i18n.collapse : this.$options.i18n.expand;
-    },
     totalEnvironmentsCount() {
-      const count = ENVIRONMENT_COUNT_BY_SCOPE[this.scope];
-      return this.folder?.[count] ?? 0;
-    },
-    folderClass() {
-      return { 'gl-font-bold': this.visible };
+      return this.nestedEnvironment.size;
     },
     folderPath() {
       return this.nestedEnvironment.latest.folderPath;
-    },
-    environments() {
-      return this.folder?.environments ?? [];
-    },
-    listedEnvironmentsCount() {
-      return this.environments.length;
-    },
-    isMessageShowing() {
-      return this.listedEnvironmentsCount < this.totalEnvironmentsCount;
-    },
-  },
-  methods: {
-    toggleCollapse() {
-      this.visible = !this.visible;
-      if (this.visible) {
-        this.$apollo.queries.folder.startPolling(this.interval);
-      } else {
-        this.$apollo.queries.folder.stopPolling();
-      }
-    },
-    isFirstEnvironment(index) {
-      return index === 0;
     },
   },
 };
 </script>
 <template>
-  <div :class="{ 'gl-border-b gl-pb-5': !visible }" class="gl-pt-3">
-    <div class="gl-flex gl-w-full gl-items-center gl-px-3">
-      <gl-button
-        class="gl-mr-4"
-        :aria-label="label"
-        :icon="icons.caret"
-        size="small"
-        category="tertiary"
-        @click="toggleCollapse"
-      />
-      <gl-icon class="gl-mr-2" :name="icons.folder" variant="subtle" />
-      <div class="gl-mr-2 gl-text-subtle" :class="folderClass">
-        {{ nestedEnvironment.name }}
-      </div>
-      <gl-badge class="gl-mr-auto">{{ totalEnvironmentsCount }}</gl-badge>
-    </div>
-    <gl-collapse :visible="visible">
-      <environment-item
-        v-for="(environment, index) in environments"
-        :key="environment.name"
-        :environment="environment"
-        :class="{ '!gl-border-t !gl-mt-5': isFirstEnvironment(index) }"
-        in-folder
-      />
-      <div
-        v-if="isMessageShowing"
-        class="gl-border-b gl-bg-gray-10 gl-py-3 gl-text-center"
-        data-testid="environment-folder-message-element"
-      >
-        <gl-sprintf :message="$options.i18n.message">
-          <template #listedEnvironmentsCount>{{ listedEnvironmentsCount }}</template>
-          <template #totalEnvironmentsCount>{{ totalEnvironmentsCount }}</template>
-        </gl-sprintf>
-        <gl-link :href="folderPath">{{ $options.i18n.link }}</gl-link>
-      </div>
-    </gl-collapse>
+  <div class="gl-border-b gl-p-4">
+    <gl-icon class="gl-mr-2" name="folder" variant="subtle" />
+    <gl-link :href="folderPath">
+      {{ nestedEnvironment.name }}
+      <gl-badge class="gl-ml-2">{{ totalEnvironmentsCount }}</gl-badge>
+    </gl-link>
   </div>
 </template>

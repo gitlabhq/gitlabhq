@@ -17,9 +17,6 @@ events:
   unique: user.id
 - name: g_edit_by_snippet_ide
   unique: user.id
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

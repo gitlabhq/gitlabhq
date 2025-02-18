@@ -1055,7 +1055,7 @@ export function reviewFile({ commit, state }, { file, reviewed = true }) {
 
   setReviewsForMergeRequest(mrPath, reviews);
 
-  commit(types.SET_DIFF_FILE_VIEWED, { id: file.file_hash, seen: reviewed });
+  commit(types.SET_DIFF_FILE_VIEWED, { id: file.id, seen: reviewed });
   commit(types.SET_MR_FILE_REVIEWS, reviews);
 }
 

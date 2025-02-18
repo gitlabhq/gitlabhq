@@ -8,10 +8,10 @@ export const CODE_SNIPPET_SOURCES = [CODE_SNIPPET_SOURCE_API_FUZZING, CODE_SNIPP
 export const CODE_SNIPPET_SOURCE_SETTINGS = {
   [CODE_SNIPPET_SOURCE_API_FUZZING]: {
     datasetKey: 'apiFuzzingConfigurationPath',
-    docsPath: helpPagePath('user/application_security/api_fuzzing/index'),
+    docsPath: helpPagePath('user/application_security/api_fuzzing/_index'),
   },
   [CODE_SNIPPET_SOURCE_DAST]: {
     datasetKey: 'dastConfigurationPath',
-    docsPath: helpPagePath('user/application_security/dast/index'),
+    docsPath: helpPagePath('user/application_security/dast/_index'),
   },
 };

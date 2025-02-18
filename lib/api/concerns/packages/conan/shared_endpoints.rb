@@ -47,6 +47,56 @@ module API
               not_found! if Gitlab::FIPS.enabled?
               require_packages_enabled!
             end
+
+            namespace 'users' do
+              before do
+                authenticate!
+              end
+
+              format :txt
+              content_type :txt, 'text/plain'
+
+              desc 'Check for valid user credentials per conan CLI' do
+                detail 'This feature was introduced in GitLab 12.4'
+                success code: 200
+                failure [
+                  { code: 401, message: 'Unauthorized' },
+                  { code: 404, message: 'Not Found' }
+                ]
+                tags %w[conan_packages]
+              end
+
+              route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+              route_setting :authorization, skip_job_token_policies: true
+
+              get 'check_credentials', urgency: :default do
+                :ok
+              end
+            end
+
+            desc 'Search for packages' do
+              detail 'This feature was introduced in GitLab 12.4'
+              success code: 200
+              failure [
+                { code: 400, message: 'Bad Request' },
+                { code: 404, message: 'Not Found' }
+              ]
+              tags %w[conan_packages]
+            end
+
+            params do
+              requires :q, type: String, desc: 'Search query', documentation: { example: 'Hello*' }
+            end
+
+            route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+            route_setting :authorization, skip_job_token_policies: true
+
+            get 'conans/search', urgency: :low do
+              response = ::Packages::Conan::SearchService.new(search_project, current_user, query: params[:q]).execute
+              bad_request!(response.message) if response.error?
+
+              response.payload
+            end
           end
         end
       end

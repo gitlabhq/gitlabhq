@@ -8,12 +8,11 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, featur
   include_context 'for a cleanup tags service'
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :private) }
 
   let(:repository) { create(:container_repository, :root, project: project) }
   let(:service) { described_class.new(container_repository: repository, current_user: user, params: params) }
-  let(:tags) { %w[latest A Ba Bb C D E] }
+  let(:tags) { %w[latest A Ba Bb C D 17-8-stable] }
 
   before do
     project.add_maintainer(user) if user
@@ -37,7 +36,7 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, featur
         'Bb' => six_days_ago,
         'C' => one_month_ago,
         'D' => nil,
-        'E' => nil
+        '17-8-stable' => nil
       }
     )
   end
@@ -49,17 +48,17 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, featur
       let(:tags_page_size) { 2 }
 
       it_behaves_like 'when regex matching everything is specified',
-        delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[E]]
+        delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[17-8-stable]]
 
       it_behaves_like 'when regex matching everything is specified and latest is not kept',
-        delete_expectations: [%w[latest A], %w[Ba Bb], %w[C D], %w[E]]
+        delete_expectations: [%w[latest A], %w[Ba Bb], %w[C D], %w[17-8-stable]]
 
       it_behaves_like 'when delete regex matching specific tags is used'
 
       it_behaves_like 'when delete regex matching specific tags is used with overriding allow regex'
 
       it_behaves_like 'with allow regex value',
-        delete_expectations: [%w[A], %w[C D], %w[E]]
+        delete_expectations: [%w[A], %w[C D], %w[17-8-stable]]
 
       it_behaves_like 'when keeping only N tags',
         delete_expectations: [%w[Bb]]
@@ -87,6 +86,40 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, featur
       it_behaves_like 'when running a container_expiration_policy',
         delete_expectations: [%w[Bb], %w[C]]
 
+      it_behaves_like 'with protected rule having pattern ^\d{1,2}-\d{1,2}-stable$',
+        delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[17-8-stable]]
+
+      context 'with admin minimum_access_level_for_delete' do
+        it_behaves_like 'with protected rule having pattern ^\d{1,2}-\d{1,2}-stable$',
+          delete_expectations: [%w[A], %w[Ba Bb], %w[C D]],
+          minimum_access_level_for_delete: :admin
+      end
+
+      context 'without user' do
+        let(:user) { nil }
+
+        it_behaves_like 'with protected rule having pattern ^\d{1,2}-\d{1,2}-stable$',
+          delete_expectations: [%w[A], %w[Ba Bb], %w[C D]]
+      end
+
+      context 'with the skip_protected_tags param' do
+        let(:params) do
+          { 'skip_protected_tags' => true }
+        end
+
+        it_behaves_like 'with protected rule having pattern ^\d{1,2}-\d{1,2}-stable$',
+          delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[17-8-stable]]
+      end
+
+      context 'with the container_registry_protected_tags disabled' do
+        before do
+          stub_feature_flags(container_registry_protected_tags: false)
+        end
+
+        it_behaves_like 'with protected rule having pattern ^\d{1,2}-\d{1,2}-stable$',
+          delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[17-8-stable]]
+      end
+
       context 'with a timeout' do
         let(:params) do
           { 'name_regex_delete' => '.*' }
@@ -113,7 +146,7 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, featur
           end
 
           it_behaves_like 'when regex matching everything is specified',
-            delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[E]]
+            delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[17-8-stable]]
         end
       end
     end
@@ -122,14 +155,14 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, featur
       let(:tags_page_size) { 1000 }
 
       it_behaves_like 'when regex matching everything is specified',
-        delete_expectations: [%w[A Ba Bb C D E]]
+        delete_expectations: [%w[A Ba Bb C D 17-8-stable]]
 
       it_behaves_like 'when delete regex matching specific tags is used'
 
       it_behaves_like 'when delete regex matching specific tags is used with overriding allow regex'
 
       it_behaves_like 'with allow regex value',
-        delete_expectations: [%w[A C D E]]
+        delete_expectations: [%w[A C D 17-8-stable]]
 
       it_behaves_like 'when keeping only N tags',
         delete_expectations: [%w[Ba Bb C]]
@@ -148,6 +181,40 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, featur
 
       it_behaves_like 'when running a container_expiration_policy',
         delete_expectations: [%w[Ba Bb C]]
+
+      it_behaves_like 'with protected rule having pattern ^\d{1,2}-\d{1,2}-stable$',
+        delete_expectations: [%w[A Ba Bb C D 17-8-stable]]
+
+      context 'with admin minimum_access_level_for_delete' do
+        it_behaves_like 'with protected rule having pattern ^\d{1,2}-\d{1,2}-stable$',
+          delete_expectations: [%w[A Ba Bb C D]],
+          minimum_access_level_for_delete: :admin
+      end
+
+      context 'without user' do
+        let(:user) { nil }
+
+        it_behaves_like 'with protected rule having pattern ^\d{1,2}-\d{1,2}-stable$',
+          delete_expectations: [%w[A Ba Bb C D]]
+      end
+
+      context 'with the skip_protected_tags param' do
+        let(:params) do
+          { 'skip_protected_tags' => true }
+        end
+
+        it_behaves_like 'with protected rule having pattern ^\d{1,2}-\d{1,2}-stable$',
+          delete_expectations: [%w[A Ba Bb C D 17-8-stable]]
+      end
+
+      context 'with the container_registry_protected_tags disabled' do
+        before do
+          stub_feature_flags(container_registry_protected_tags: false)
+        end
+
+        it_behaves_like 'with protected rule having pattern ^\d{1,2}-\d{1,2}-stable$',
+          delete_expectations: [%w[A Ba Bb C D 17-8-stable]]
+      end
     end
 
     context 'with no tags page' do

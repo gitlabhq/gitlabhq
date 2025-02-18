@@ -36,7 +36,6 @@
     # This is needed by `trigger-omnibus-env` (`.gitlab/ci/test-on-omnibus/main.gitlab-ci.yml`).
     PARENT_PIPELINE_ID: $CI_PIPELINE_ID
     PARENT_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
-    SKIP_MESSAGE: Skipping test-on-omnibus due to mr containing only quarantine changes!
     GITLAB_QA_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-ee-qa:${CI_COMMIT_SHA}"  # This is used for the CI job image from https://gitlab.com/gitlab-org/quality/pipeline-common/-/blob/8.4.4/ci/base.gitlab-ci.yml
     QA_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-ee-qa:${CI_COMMIT_SHA}"  # This is used for the gitlab-qa image pulled from the E2E tests. If this is not defined, it'll be inferred from RELEASE_IMAGE_TAG below which is wrong because it should not contain the RUBY_VERSION suffix
     RELEASE_IMAGE_TAG: "${CI_COMMIT_SHA}-ruby${RUBY_VERSION}"  # This contains a RUBY_VERSION suffix because Omnibus build is depending on the RUBY_VERSION
@@ -199,7 +198,6 @@ e2e:test-on-gdk:
     QA_RUN_TYPE: e2e-test-on-gdk
     PIPELINE_NAME: E2E GDK
     DYNAMIC_PIPELINE_YML: ${CI_PROJECT_DIR}/qa/tmp/test-on-gdk-pipeline.yml
-    SKIP_MESSAGE: Skipping test-on-gdk due to mr containing only quarantine changes!
     GDK_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-qa-gdk:${CI_COMMIT_SHA}"
 
 e2e:test-product-analytics:
@@ -231,7 +229,6 @@ e2e:test-on-cng:
     QA_RUN_TYPE: e2e-test-on-cng
     PIPELINE_NAME: E2E CNG
     DYNAMIC_PIPELINE_YML: ${CI_PROJECT_DIR}/qa/tmp/test-on-cng-pipeline.yml
-    SKIP_MESSAGE: Skipping test-on-cng due to mr containing only quarantine changes!
 
 e2e:code-suggestions-eval:
   extends:

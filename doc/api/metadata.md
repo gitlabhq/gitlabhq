@@ -2,17 +2,23 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Metadata API
 ---
 
-# Metadata API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357032) in GitLab 15.2.
-> - `enterprise` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103969) in GitLab 15.6.
-> - `kas.externalK8sProxyUrl` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172373) in GitLab 17.6.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357032) in GitLab 15.2.
+- `enterprise` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103969) in GitLab 15.6.
+- `kas.externalK8sProxyUrl` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172373) in GitLab 17.6.
+
+{{< /history >}}
 
 Retrieve metadata information for this GitLab instance.
 

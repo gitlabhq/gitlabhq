@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Jenkins
 ---
 
-# Jenkins
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/246756) to GitLab Free in 13.7.
 
@@ -17,7 +19,7 @@ building, deploying and automating projects.
 
 You should use a Jenkins integration with GitLab when:
 
-- You plan to migrate your CI from Jenkins to [GitLab CI/CD](../ci/index.md)
+- You plan to migrate your CI from Jenkins to [GitLab CI/CD](../ci/_index.md)
   in the future, but need an interim solution.
 - You're invested in [Jenkins plugins](https://plugins.jenkins.io/) and choose
   to keep using Jenkins to build your apps.
@@ -26,7 +28,7 @@ This integration can trigger a Jenkins build when a change is pushed to GitLab.
 
 You cannot use this integration to trigger GitLab CI/CD pipelines from Jenkins. Instead,
 use the [pipeline triggers API endpoint](../api/pipeline_triggers.md) in a Jenkins job,
-authenticated with a [pipeline trigger token](../ci/triggers/index.md#create-a-pipeline-trigger-token).
+authenticated with a [pipeline trigger token](../ci/triggers/_index.md#create-a-pipeline-trigger-token).
 
 After you have configured a Jenkins integration, you trigger a build in Jenkins
 when you push code to your repository or create a merge request in GitLab. The
@@ -53,7 +55,7 @@ To configure a Jenkins integration with GitLab:
    - [Create a project access token](../user/project/settings/project_access_tokens.md#create-a-project-access-token)
      to use the token at the project level only. For instance, you can revoke
      the token in a project without affecting Jenkins integrations in other projects.
-   - [Create a group access token](../user/group/settings/group_access_tokens.md#create-a-group-access-token-using-ui)
+   - [Create a group access token](../user/group/settings/group_access_tokens.md#create-a-group-access-token)
      to use the token for all Jenkins integrations in all projects of that group.
 
 1. Set the access token scope to **API**.
@@ -65,7 +67,7 @@ Install and configure the Jenkins plugin to authorize the connection to GitLab.
 
 1. On the Jenkins server, select **Manage Jenkins > Manage Plugins**.
 1. Select the **Available** tab. Search for `gitlab-plugin` and select it to install.
-   See the [Jenkins GitLab documentation](https://wiki.jenkins.io/display/JENKINS/GitLab+Plugin)
+   See the [Jenkins GitLab documentation](https://plugins.jenkins.io/gitlab-plugin/)
    for other ways to install the plugin.
 1. Select **Manage Jenkins > Configure System**.
 1. In the **GitLab** section, select **Enable authentication for '/project' end-point**.
@@ -140,7 +142,7 @@ with your Jenkins server URL and authentication information.
    - Merge request
    - Tag push
 1. Enter the **Jenkins server URL**.
-1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](../user/project/integrations/index.md#ssl-verification).
+1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](../user/project/integrations/_index.md#ssl-verification).
 1. Enter the **Project name**.
    The project name should be URL-friendly, where spaces are replaced with underscores. To ensure
    the project name is valid, copy it from your browser's address bar while viewing the Jenkins
@@ -179,7 +181,7 @@ This issue has multiple possible causes and solutions:
 
 | Cause                                                            | Workaround  |
 |------------------------------------------------------------------|-------------|
-| GitLab is unable to reach your Jenkins instance at the address.  | If your GitLab instance is self-managed, ping the Jenkins instance at the domain provided on the GitLab instance.  |
+| GitLab is unable to reach your Jenkins instance at the address.  | For GitLab Self-Managed, ping the Jenkins instance at the domain provided on the GitLab instance.  |
 | The Jenkins instance is at a local address and is not included in the [GitLab installation's allowlist](../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).| Add the instance to the GitLab installation's allowlist.  |
 | The credentials for the Jenkins instance do not have sufficient access or are invalid.| Grant the credentials sufficient access or create valid credentials.  |
 |The **Enable authentication for `/project` end-point** checkbox is not selected in your [Jenkins plugin configuration](#configure-the-jenkins-server)| Select the checkbox.  |
@@ -202,7 +204,7 @@ To fix this issue:
 
 ### Merge request event does not trigger a Jenkins pipeline
 
-This issue might occur when the request exceeds the [webhook timeout limit](../user/gitlab_com/index.md#webhooks),
+This issue might occur when the request exceeds the [webhook timeout limit](../user/gitlab_com/_index.md#webhooks),
 which is set to 10 seconds by default.
 
 For this issue, check:
@@ -220,7 +222,7 @@ For this issue, check:
   WebHook Error => execution expired
   ```
 
-On GitLab Self-Managed instances, you can fix this issue by [increasing the webhook timeout value](../administration/instance_limits.md#webhook-timeout).
+On GitLab Self-Managed, you can fix this issue by [increasing the webhook timeout value](../administration/instance_limits.md#webhook-timeout).
 
 ### Enable job logs in Jenkins
 

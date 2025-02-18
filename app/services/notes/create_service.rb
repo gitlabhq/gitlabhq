@@ -97,8 +97,7 @@ module Notes
       end
     end
 
-    def when_saved(
-      note, skip_capture_diff_note_position: false, skip_merge_status_trigger: false)
+    def when_saved(note, skip_capture_diff_note_position: false, skip_merge_status_trigger: false)
       todo_service.new_note(note, current_user)
       clear_noteable_diffs_cache(note)
       Suggestions::CreateService.new(note).execute

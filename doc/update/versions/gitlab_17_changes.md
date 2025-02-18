@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab 17 changes
 ---
 
-# GitLab 17 changes
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This page contains upgrade information for minor and patch versions of GitLab 17.
 Ensure you review these instructions for:
@@ -58,6 +60,8 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   ```
 
 - Migration failures when upgrading from GitLab 16.x directly to GitLab 17.1.0 or 17.1.1.
+  This bug has been fixed with GitLab 17.1.2.
+  Upgrading from GitLab 16.x directly to 17.1.2 does not cause these issues.
 
   Due to a bug in GitLab 17.1.0 and 17.1.1 where a background job completion did not get enforced correctly, there
   can be failures when upgrading directly to GitLab 17.1.0 and 17.1.1.
@@ -74,7 +78,6 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   STDERR:
   ```
 
-  This issue occurs because the background migration that got introduced in GitLab 17.0 didn't complete.
   To upgrade, either:
 
   - Upgrade to GitLab 17.0 and wait until all background migrations are completed.
@@ -86,8 +89,12 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
     ```
 
   Now you should be able to complete the migrations in GitLab 17.1 and finish
-  the upgrade. This bug has been fixed with GitLab 17.1.2 and upgrading from GitLab 16.x directly to 17.1.2 will not
-  cause these issues.
+  the upgrade.
+
+- A [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/476542) in the Git versions shipped with
+  GitLab 17.0.x and GitLab 17.1.x causes a noticeable increase in CPU usage when under load. The primary cause of
+  this regression was resolved in the Git versions shipped with GitLab 17.2 so, for systems that see heavy peak loads,
+  you should upgrade to GitLab 17.2.
 
 ### Linux package installations
 
@@ -120,7 +127,7 @@ Before this automatic expiry date is applied, you should do the following to min
 
 For more information, see the:
 
-- [Deprecations and removals documentation](../../update/deprecations.md#non-expiring-access-tokens).
+- [Deprecations and removals documentation](../deprecations.md#non-expiring-access-tokens).
 - [Deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
 
 ## Issues to be aware of when upgrading from 17.1 and earlier
@@ -185,22 +192,69 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
    agent_configs_to_remove.delete_all
    ```
 
+## Issues to be aware of when upgrading from 17.5
+
+- Migration failures when upgrading from GitLab 17.5.
+
+  When upgrading from 17.5 to 17.6, there is a slight chance of encountering an error. During the migration process, you might see an error message like the one below:
+
+  ```shell
+  rake aborted!
+  StandardError: An error has occurred, all later migrations canceled:
+
+  PG::CheckViolation: ERROR: new row for relation "ci_deleted_objects" violates check constraint "check_98f90d6c53"
+  ```
+
+  This error occurs because the migration tries to update some of the rows from the `ci_deleted_objects` table so that they will be processed, but they could be old records with a missing value for a required check constraint.
+
+  To safely resolve this issue, follow these steps:
+
+  1. Run only the following migration to fix the records affected by the check constraint.
+  1. Re-run the migrations, and they should complete successfully.
+
+   ```shell
+   gitlab-rake db:migrate:up:ci VERSION=20241028085044
+   ```
+
+## 17.8.0
+
+- In GitLab 17.8.0, GitLab agent server for Kubernetes (KAS) does not start with the default settings on the GitLab Linux package (Omnibus) and Docker installations.
+  To resolve this issue, edit `/etc/gitlab/gitlab.rb`:
+
+  ```ruby
+  gitlab_kas['env'] = { 'OWN_PRIVATE_API_URL' => 'grpc://127.0.0.1:8155' }
+  ```
+
+  Multiple node installations should use the settings described in the [documentation](../../administration/clusters/kas.md).
+
+- S3 object storage uploads in Workhorse now only use [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164597).
+The `workhorse_use_aws_sdk_v2` feature flag has been removed. The AWS SDK v2
+[sets `Accept-Encoding: identity` and includes it as a signed header](https://github.com/aws/aws-sdk-go-v2/issues/2848).
+However, some proxy services, such as Cloudflare, [alter this header, causing a signature mismatch error](https://gitlab.com/gitlab-org/gitlab/-/issues/492973#note_2312726631).
+If you see [SignatureDoesNotMatch errors](https://repost.aws/knowledge-center/s3-presigned-url-signature-mismatch)
+ensure that your proxy server does not alter or remove signed HTTP headers.
+
 ## 17.7.0
 
 - Git 2.47.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
 - FIPS Linux packages now use the system Libgcrypt, except FIPS Linux packages for AmazonLinux 2. Previous versions of the FIPS Linux packages used the
   same Libgcrypt used by the regular Linux packages, which was a bug. For more information, see
-  [the FIPS documentation](../../development/fips_compliance.md#system-libgcrypt).
+  [the FIPS documentation](../../development/fips_gitlab.md#system-libgcrypt).
+- Linux `gitlab-runner` packages have broken out `gitlab-runner-helper-images` as a new required dependency. If you manually install `gitlab-runner` packages for upgrades,
+  be sure to also [download the helper images manually](https://docs.gitlab.com/runner/install/linux-manually/#download).
 
 ### OpenSSL 3 upgrade
 
-NOTE:
+{{< alert type="note" >}}
+
 Before upgrading to GitLab 17.7, use the [OpenSSL 3 guide](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html)
 to identify and assess the compatibility of your external integrations.
 
+{{< /alert >}}
+
 - The Linux package upgrades OpenSSL from v1.1.1w to v3.0.0.
 - Cloud Native GitLab (CNG) already upgraded to OpenSSL 3 in GitLab 16.7.0. If you are using Cloud Native GitLab, no
-  action is needed. However, note that [Cloud Native Hybrid](../../administration/reference_architectures/index.md#recommended-cloud-providers-and-services) installations
+  action is needed. However, note that [Cloud Native Hybrid](../../administration/reference_architectures/_index.md#recommended-cloud-providers-and-services) installations
   use the Linux packages for stateful components, such as Gitaly. For those components, you will need to verify
   the TLS versions, ciphers, and certificates that are used work with the security level changes discussed below.
 
@@ -232,13 +286,16 @@ security requirements for TLS, not SSH. [OpenSSH](https://www.openssh.com/) and
 [`gitlab-sshd`](../../administration/operations/gitlab_sshd.md) have their
 own configuration settings for the allowed cryptographic algorithms.
 
-Check the [GitLab documentation on securing your installation](../../security/index.md)
+Check the [GitLab documentation on securing your installation](../../security/_index.md)
 for more details.
 
 ## 17.5.0
 
-NOTE:
+{{< alert type="note" >}}
+
 The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
+
+{{< /alert >}}
 
 - S3 object storage access for the GitLab Runner distributed cache is now handled by the
   [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4987) instead of the MinIO client.
@@ -265,22 +322,22 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
   with S3 object storage uploads, you can downgrade to v1 of by disabling the `workhorse_use_aws_sdk_v2` [feature flag](../../administration/feature_flags.md#enable-or-disable-the-feature).
 - When you upgrade to GitLab 17.4, an OAuth application is generated for the Web IDE.
   If your GitLab server's external URL configuration in the `GitLab.rb` file contains uppercase letters, the Web IDE might fail to load.
-  To resolve this issue, see [update the OAuth callback URL](../../user/project/web_ide/index.md#update-the-oauth-callback-url).
+  To resolve this issue, see [update the OAuth callback URL](../../user/project/web_ide/_index.md#update-the-oauth-callback-url).
 - In accordance with [RFC 7540](https://datatracker.ietf.org/doc/html/rfc7540#section-3.3),
-  Gitaly and Praefect now reject TLS connections that do not support ALPN.
-  If you use an HTTP/2 or gRPC load balancer in front of Praefect with
+  Gitaly and Praefect reject TLS connections that do not support ALPN.
+  If you use a load balancer in front of Praefect with
   TLS enabled, you may encounter `FAIL: 14:connections to all backends failing` errors
-  if ALPN is not used. You can temporarily disable this enforcement
-  by setting `GRPC_ENFORCE_ALPN_ENABLED=false` in the
-  Praefect environment, but we strongly advise [using a TCP load balancer instead](../../administration/gitaly/praefect.md#load-balancer). With the Linux package, edit
-  `/etc/gitlab/gitlab.rb`:
+  if ALPN is not used. You can disable this enforcement by setting `GRPC_ENFORCE_ALPN_ENABLED=false` in the
+  Praefect environment. With the Linux package, edit `/etc/gitlab/gitlab.rb`:
 
     ```ruby
     praefect['env'] = { 'GRPC_ENFORCE_ALPN_ENABLED' => 'false' }
     ```
 
-  Then run `gitlab-ctl reconfigure`. Note that this setting will
-  be removed in the future.
+  Then run `gitlab-ctl reconfigure`.
+
+  ALPN enforcement has been disabled again in [GitLab 17.5.5 and other versions](../../administration/gitaly/praefect.md#alpn-enforcement).
+  Upgrading to one of those versions removes the need to set `GRPC_ENFORCE_ALPN_ENABLED`.
 
 ## 17.3.0
 

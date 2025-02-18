@@ -13,9 +13,6 @@ events:
   - name: delete_package_from_registry
     filter:
       label: pypi
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

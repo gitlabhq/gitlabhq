@@ -72,6 +72,7 @@ import {
   TOKEN_TITLE_TYPE,
   TOKEN_TITLE_CREATED,
   TOKEN_TITLE_CLOSED,
+  TOKEN_TITLE_SUBSCRIBED,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -85,6 +86,7 @@ import {
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_CREATED,
   TOKEN_TYPE_CLOSED,
+  TOKEN_TYPE_SUBSCRIBED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
@@ -93,6 +95,7 @@ import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/n
 import {
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
+  INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
 } from '~/work_items/constants';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import { makeDrawerUrlParam } from '~/work_items/utils';
@@ -165,6 +168,9 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagMixin(), hasNewIssueDropdown()],
+  provide: {
+    [INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION]: true,
+  },
   inject: [
     'autocompleteAwardEmojisPath',
     'calendarPath',
@@ -194,6 +200,7 @@ export default {
     'rssPath',
     'showNewIssueLink',
     'groupId',
+    'commentTemplatePaths',
   ],
   props: {
     eeSearchTokens: {
@@ -289,6 +296,7 @@ export default {
         iid: isIidSearch ? this.searchQuery.slice(1) : undefined,
         isProject: this.isProject,
         isSignedIn: this.isSignedIn,
+        searchByEpic: Boolean(this.apiFilterParams.epicId),
         sort: this.sortKey,
         state: this.state,
         ...this.pageParams,
@@ -424,6 +432,26 @@ export default {
           icon: 'issues',
           token: GlFilteredSearchToken,
           options: this.typeTokenOptions,
+        },
+        {
+          type: TOKEN_TYPE_SUBSCRIBED,
+          title: TOKEN_TITLE_SUBSCRIBED,
+          icon: 'notifications',
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            {
+              icon: 'notifications',
+              value: 'EXPLICITLY_SUBSCRIBED',
+              title: this.$options.i18n.subscribedExplicitly,
+            },
+            {
+              icon: 'notifications-off',
+              value: 'EXPLICITLY_UNSUBSCRIBED',
+              title: this.$options.i18n.unsubscribedExplicitly,
+            },
+          ],
         },
       ];
 
@@ -586,7 +614,7 @@ export default {
       return !isEmpty(this.activeIssuable);
     },
     issuesDrawerEnabled() {
-      return this.glFeatures?.issuesListDrawer;
+      return this.glFeatures?.issuesListDrawer || gon.current_user_use_work_items_view;
     },
   },
   watch: {
@@ -942,6 +970,7 @@ export default {
       :open="isIssuableSelected"
       :active-item="activeIssuable"
       :issuable-type="$options.issuableType"
+      :new-comment-template-paths="commentTemplatePaths"
       click-outside-exclude-selector=".issuable-list"
       @close="activeIssuable = null"
       @work-item-updated="updateIssuablesCache"

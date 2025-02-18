@@ -13,9 +13,6 @@ events:
   - name: delete_package_from_registry
     filter:
       property: user
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

@@ -7,3 +7,5 @@ module AuditEvents
     include AuditEvents::CommonModel
   end
 end
+
+AuditEvents::InstanceAuditEvent.prepend_mod

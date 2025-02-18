@@ -12,6 +12,7 @@ import micromatch from 'micromatch';
 import { getModifierKey } from '~/constants';
 import { s__, sprintf } from '~/locale';
 import { RecycleScroller } from 'vendor/vue-virtual-scroller';
+import { isElementClipped } from '~/lib/utils/common_utils';
 import DiffFileRow from './diff_file_row.vue';
 import TreeListHeight from './tree_list_height.vue';
 
@@ -42,19 +43,13 @@ export default {
     };
   },
   computed: {
-    ...mapState('diffs', [
-      'tree',
-      'renderTreeList',
-      'currentDiffFileId',
-      'viewedDiffFileIds',
-      'realSize',
-    ]),
-    ...mapGetters('diffs', ['allBlobs', 'linkedFile']),
+    ...mapState('diffs', ['renderTreeList', 'currentDiffFileId', 'viewedDiffFileIds', 'realSize']),
+    ...mapGetters('diffs', ['fileTree', 'allBlobs', 'linkedFile']),
     filteredTreeList() {
       let search = this.search.toLowerCase().trim();
 
       if (search === '') {
-        return this.renderTreeList ? this.tree : this.allBlobs;
+        return this.renderTreeList ? this.fileTree : this.allBlobs;
       }
 
       const searchSplit = search.split(',').filter((t) => t);
@@ -149,9 +144,11 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['toggleTreeOpen', 'goToFile', 'setRenderTreeList', 'setTreeOpen']),
+    ...mapActions('diffs', ['toggleTreeOpen', 'setRenderTreeList', 'setTreeOpen']),
 
     scrollVirtualScrollerToFileHash(hash) {
+      const item = document.querySelector(`[data-file-row="${hash}"]`);
+      if (item && !isElementClipped(item, this.$refs.scroller.$el)) return;
       const index = this.treeList.findIndex((f) => f.fileHash === hash);
       if (index !== -1) {
         this.$refs.scroller.scrollToItem?.(index);
@@ -232,9 +229,11 @@ export default {
                 :current-diff-file-id="currentDiffFileId"
                 :style="{ '--level': item.level }"
                 :class="{ 'tree-list-parent': item.level > 0 }"
-                class="gl-relative"
+                :tabindex="0"
+                class="gl-relative !gl-m-1"
+                :data-file-row="item.fileHash"
                 @toggleTreeOpen="toggleTreeOpen"
-                @clickFile="(path) => goToFile({ path })"
+                @clickFile="$emit('clickFile', $event)"
               />
             </template>
             <template #after>

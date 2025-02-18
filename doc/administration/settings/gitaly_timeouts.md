@@ -2,15 +2,17 @@
 stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Gitaly timeouts
 ---
 
-# Gitaly timeouts
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-[Gitaly](../gitaly/index.md) provides two types of configurable timeouts:
+{{< /details >}}
+
+[Gitaly](../gitaly/_index.md) provides two types of configurable timeouts:
 
 - Call timeouts, configured by using the GitLab UI.
 - Negotiation timeouts, configured by using Gitaly configuration files.
@@ -37,7 +39,11 @@ Different call timeouts are available for different Gitaly operations.
 
 ## Configure the negotiation timeouts
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5574) in GitLab 16.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5574) in GitLab 16.5.
+
+{{< /history >}}
 
 You might need to increase the negotiation timeout:
 
@@ -51,9 +57,9 @@ You can configure negotiation timeouts for:
 
 To configure these timeouts:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 Edit `/etc/gitlab/gitlab.rb`:
 
@@ -66,7 +72,9 @@ gitaly['configuration'] = {
 }
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 Edit `/home/git/gitaly/config.toml`:
 
@@ -76,7 +84,9 @@ upload_pack_negotiation = "10m"
 upload_archive_negotiation = "20m"
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 For the values, use the format of [`ParseDuration`](https://pkg.go.dev/time#ParseDuration) in Go.
 

@@ -4,13 +4,10 @@ require "fog/google"
 
 RSpec.describe QA::Tools::Ci::QaChanges do
   include QA::Support::Helpers::StubEnv
-  subject(:qa_changes) { described_class.new(mr_diff, mr_labels) }
-
-  let(:mr_labels) { [] }
+  subject(:qa_changes) { described_class.new(mr_diff) }
 
   before do
     allow(File).to receive(:directory?).and_return(false)
-    stub_env('SELECTIVE_EXECUTION_IMPROVED', false)
   end
 
   context "with spec only changes" do
@@ -23,16 +20,16 @@ RSpec.describe QA::Tools::Ci::QaChanges do
 
     it ".qa_tests return changed specs" do
       expect(qa_changes.qa_tests).to eq(
-        "qa/specs/features/test_spec.rb qa/specs/features/another_test_spec.rb"
+        ["qa/specs/features/test_spec.rb", "qa/specs/features/another_test_spec.rb"]
       )
     end
 
     it ".framework_changes? return false" do
-      expect(qa_changes.framework_changes?).to eq(false)
+      expect(qa_changes.framework_changes?).to be(false)
     end
 
     it ".quarantine_changes? return false" do
-      expect(qa_changes.quarantine_changes?).to eq(false)
+      expect(qa_changes.quarantine_changes?).to be(false)
     end
   end
 
@@ -40,15 +37,15 @@ RSpec.describe QA::Tools::Ci::QaChanges do
     let(:mr_diff) { [{ path: "qa/qa.rb" }] }
 
     it ".qa_tests do not return specific specs" do
-      expect(qa_changes.qa_tests).to be_nil
+      expect(qa_changes.qa_tests).to be_empty
     end
 
     it ".framework_changes? return true" do
-      expect(qa_changes.framework_changes?).to eq(true)
+      expect(qa_changes.framework_changes?).to be(true)
     end
 
     it ".quarantine_changes? return false" do
-      expect(qa_changes.quarantine_changes?).to eq(false)
+      expect(qa_changes.quarantine_changes?).to be(false)
     end
   end
 
@@ -56,7 +53,27 @@ RSpec.describe QA::Tools::Ci::QaChanges do
     let(:mr_diff) { [{ path: "qa/qa/specs/features/shared_context/some_context.rb", diff: "" }] }
 
     it ".qa_tests do not return specific specs" do
-      expect(qa_changes.qa_tests).to be_nil
+      expect(qa_changes.qa_tests).to be_empty
+    end
+  end
+
+  context "with empty diff" do
+    let(:mr_diff) { [] }
+
+    it ".framework_changes? return false" do
+      expect(qa_changes.framework_changes?).to be(false)
+    end
+
+    it ".quarantine_changes? return false" do
+      expect(qa_changes.quarantine_changes?).to be(false)
+    end
+
+    it ".only_spec_removal? return false" do
+      expect(qa_changes.only_spec_removal?).to be(false)
+    end
+
+    it ".qa_tests returns empty array" do
+      expect(qa_changes.qa_tests).to eq([])
     end
   end
 
@@ -64,28 +81,22 @@ RSpec.describe QA::Tools::Ci::QaChanges do
     let(:mr_diff) { [{ path: "Gemfile" }] }
 
     it ".framework_changes? return false" do
-      expect(qa_changes.framework_changes?).to eq(false)
+      expect(qa_changes.framework_changes?).to be(false)
     end
 
     it ".quarantine_changes? return false" do
-      expect(qa_changes.quarantine_changes?).to eq(false)
+      expect(qa_changes.quarantine_changes?).to be(false)
     end
 
-    context "without mr labels" do
-      it ".qa_tests do not return any specific specs" do
-        expect(qa_changes.qa_tests).to be_nil
-      end
-    end
-
-    context "with SELECTIVE_EXECUTION_IMPROVED enabled", skip: "Re-enable with gitlab-org/quality/analytics/team#18" do
+    context "with from_code_path_mapping option for #qa_tests" do
       let(:code_paths_mapping_data) do
         {
-          "./qa/specs/features/test_spec.rb:23": %w[./lib/model.rb ./lib/second.rb],
-          "./qa/specs/features/test_spec_2.rb:11": ['./app/controller.rb']
-        }.stringify_keys
+          "./qa/specs/features/test_spec.rb:23" => %w[./lib/model.rb ./lib/second.rb],
+          "./qa/specs/features/test_spec_2.rb:11" => ['./app/controller.rb']
+        }
       end
 
-      let(:selected_specs) { "qa/specs/features/test_spec.rb" }
+      let(:selected_specs) { ["qa/specs/features/test_spec.rb"] }
       let(:gcs_project_id) { 'gitlab-qa-resources' }
       let(:gcs_creds) { 'gcs-creds' }
       let(:gcs_bucket_name) { 'metrics-gcs-bucket' }
@@ -96,9 +107,7 @@ RSpec.describe QA::Tools::Ci::QaChanges do
       end
 
       before do
-        stub_env('SELECTIVE_EXECUTION_IMPROVED', true)
         stub_env('QA_CODE_PATH_MAPPINGS_GCS_CREDENTIALS', gcs_creds)
-        stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', "master")
 
         allow(QA::Tools::Ci::CodePathsMapping).to receive(:new).and_return(code_paths_mapping)
         allow(Fog::Storage::Google).to receive(:new)
@@ -106,32 +115,30 @@ RSpec.describe QA::Tools::Ci::QaChanges do
           .and_return(gcs_client)
       end
 
-      describe '#qa_tests' do
-        context 'when there is a match from code paths mapping' do
-          let(:mr_diff) { [{ path: 'lib/model.rb' }] }
+      context 'when there is a match from code paths mapping' do
+        let(:mr_diff) { [{ path: 'lib/model.rb' }] }
 
-          it "returns specific specs" do
-            expect(qa_changes.qa_tests.split(" ")).to include(selected_specs)
-          end
+        it "returns specific specs" do
+          expect(qa_changes.qa_tests(from_code_path_mapping: true)).to eq(selected_specs)
+        end
+      end
+
+      context 'when there is no match from code paths mapping' do
+        let(:mr_diff) { [{ path: 'lib/new.rb' }] }
+
+        it "returns nil" do
+          expect(qa_changes.qa_tests(from_code_path_mapping: true)).to be_empty
+        end
+      end
+
+      context 'when code paths mapping import returns nil' do
+        let(:mr_diff) { [{ path: 'lib/model.rb' }] }
+        let(:code_paths_mapping) do
+          instance_double(QA::Tools::Ci::CodePathsMapping, import: nil)
         end
 
-        context 'when there is no match from code paths mapping' do
-          let(:mr_diff) { [{ path: 'lib/new.rb' }] }
-
-          it "returns nil" do
-            expect(qa_changes.qa_tests).to be_nil
-          end
-        end
-
-        context 'when code paths mapping import returns nil' do
-          let(:mr_diff) { [{ path: 'lib/model.rb' }] }
-          let(:code_paths_mapping) do
-            instance_double(QA::Tools::Ci::CodePathsMapping, import: nil)
-          end
-
-          it "does not throw an error" do
-            expect(qa_changes.qa_tests).to be_nil
-          end
+        it "does not throw an error" do
+          expect(qa_changes.qa_tests(from_code_path_mapping: true)).to be_empty
         end
       end
     end
@@ -141,7 +148,7 @@ RSpec.describe QA::Tools::Ci::QaChanges do
     let(:mr_diff) { [{ path: "qa/qa/specs/features/test_spec.rb", diff: "+ , quarantine: true" }] }
 
     it ".quarantine_changes? return true" do
-      expect(qa_changes.quarantine_changes?).to eq(true)
+      expect(qa_changes.quarantine_changes?).to be(true)
     end
   end
 
@@ -150,7 +157,7 @@ RSpec.describe QA::Tools::Ci::QaChanges do
       let(:mr_diff) { [{ path: dependency_file }] }
 
       it ".qa_tests do not return specific specs" do
-        expect(qa_changes.qa_tests).to be_nil
+        expect(qa_changes.qa_tests).to be_empty
       end
     end
   end

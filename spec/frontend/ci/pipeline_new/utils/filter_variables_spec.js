@@ -3,19 +3,19 @@ import { mockVariables } from '../mock_data';
 
 describe('Filter variables utility function', () => {
   it('filters variables that do not contain a key', () => {
-    const expectedVaraibles = [
+    const expectedVariables = [
       {
-        variable_type: 'env_var',
         key: 'var_without_value',
-        secret_value: '',
+        value: '',
+        variableType: 'ENV_VAR',
       },
       {
-        variable_type: 'env_var',
         key: 'var_with_value',
-        secret_value: 'test_value',
+        value: 'test_value',
+        variableType: 'ENV_VAR',
       },
     ];
 
-    expect(filterVariables(mockVariables)).toEqual(expectedVaraibles);
+    expect(filterVariables(mockVariables)).toEqual(expectedVariables);
   });
 });

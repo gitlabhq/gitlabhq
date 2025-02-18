@@ -2,16 +2,18 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Description templates
 ---
 
-# Description templates
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can define templates to use as descriptions
-for your [issues](issues/index.md) and [merge requests](merge_requests/index.md).
+for your [issues](issues/_index.md) and [merge requests](merge_requests/_index.md).
 
 You can define these templates in a project, group, or instance. Projects
 inherit the templates defined at a higher level.
@@ -38,7 +40,7 @@ To create an issue description template:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Repository**.
-1. Next to the default branch, select **{plus}**.
+1. Next to the default branch, select {{< icon name="plus" >}}.
 1. Select **New file**.
 1. Next to the default branch, in the **File name** text box, enter `.gitlab/issue_templates/mytemplate.md`,
    where `mytemplate` is the name of your issue template.
@@ -58,7 +60,7 @@ To create a merge request description template for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Repository**.
-1. Next to the default branch, select **{plus}**.
+1. Next to the default branch, select {{< icon name="plus" >}}.
 1. Select **New file**.
 1. Next to the default branch, in the **File name** text box, enter `.gitlab/merge_request_templates/mytemplate.md`,
    where `mytemplate` is the name of your merge request template.
@@ -84,17 +86,27 @@ To discard any changes to the description you've made after selecting the templa
 
 ![Choosing a description template in an issue](img/description_templates_v14_7.png)
 
-NOTE:
+{{< alert type="note" >}}
+
 You can create shortcut links to create an issue using a designated template.
 For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal`. Read more about [creating issues using a URL with prefilled values](issues/create_issues.md#using-a-url-with-prefilled-values).
 
+{{< /alert >}}
+
 ### Supported variables in merge request templates
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89810) in GitLab 15.7.
+{{< history >}}
 
-NOTE:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89810) in GitLab 15.7.
+
+{{< /history >}}
+
+{{< alert type="note" >}}
+
 This feature is available only for
 [the default template](#set-a-default-template-for-merge-requests-and-issues).
+
+{{< /alert >}}
 
 When you save a merge request for the first time, GitLab replaces these variables in
 your merge request template with their values:
@@ -110,9 +122,12 @@ your merge request template with their values:
 
 ### Set instance-level description templates
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can set a description template at the **instance level** for issues
 and merge requests by using an [instance template repository](../../administration/settings/instance_template_repository.md).
@@ -123,9 +138,12 @@ that you can use when creating a new project in the instance.
 
 ### Set group-level description templates
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 With **group-level** description templates, you can select a project within the group to store
 your templates. Then, you can access these templates in other projects in the group.
@@ -136,7 +154,7 @@ Prerequisites:
 - You must have the Owner role for the group.
 - The project must be a direct child of the group.
 
-To re-use templates [you've created](../project/description_templates.md#create-an-issue-template):
+To re-use templates [you've created](description_templates.md#create-an-issue-template):
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
@@ -210,10 +228,13 @@ We use description templates for issues and merge requests in the
 [`.gitlab` folder](https://gitlab.com/gitlab-org/gitlab/-/tree/master/.gitlab) of the
 GitLab project, which you can refer to for some examples.
 
-NOTE:
+{{< alert type="note" >}}
+
 It's possible to use [quick actions](quick_actions.md) in description templates to quickly add
 labels, assignees, and milestones. The quick actions are only executed if the user submitting
 the issue or merge request has the permissions to perform the relevant actions.
+
+{{< /alert >}}
 
 Here is an example of a bug report template:
 

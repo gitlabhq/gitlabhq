@@ -16,7 +16,7 @@ import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 import WorkItemAbuseModal from '~/work_items/components/work_item_abuse_modal.vue';
 import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
-import WorkItemChangeTypeModal from '~/work_items/components/work_item_change_type_modal.vue';
+import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_change_type_modal.vue';
 import {
   STATE_OPEN,
   TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
@@ -30,6 +30,11 @@ import {
   TEST_ID_TOGGLE_ACTION,
   TEST_ID_REPORT_ABUSE,
   TEST_ID_NEW_RELATED_WORK_ITEM,
+  WORK_ITEM_TYPE_VALUE_INCIDENT,
+  WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_VALUE_KEY_RESULT,
+  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORK_ITEM_TYPE_VALUE_TASK,
 } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '~/work_items/graphql/update_work_item_notifications.mutation.graphql';
@@ -65,6 +70,7 @@ describe('WorkItemActions component', () => {
   const findCopyCreateNoteEmailButton = () =>
     wrapper.findByTestId(TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION);
   const findReportAbuseButton = () => wrapper.findByTestId(TEST_ID_REPORT_ABUSE);
+  const findSubmitAsSpamItem = () => wrapper.findByTestId('submit-as-spam-item');
   const findNewRelatedItemButton = () => wrapper.findByTestId(TEST_ID_NEW_RELATED_WORK_ITEM);
   const findChangeTypeButton = () => wrapper.findByTestId(TEST_ID_CHANGE_TYPE_ACTION);
   const findReportAbuseModal = () => wrapper.findComponent(WorkItemAbuseModal);
@@ -114,11 +120,16 @@ describe('WorkItemActions component', () => {
 
   const createComponent = ({
     canUpdate = true,
+    canUpdateMetadata = true,
     canDelete = true,
+    canReportSpam = true,
+    hasOkrsFeature = true,
     isConfidential = false,
     isDiscussionLocked = false,
-    subscribed = false,
+    isGroup = false,
     isParentConfidential = false,
+    okrsMvc = false,
+    subscribed = false,
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
     notificationsMutationHandler,
     lockDiscussionMutationHandler = lockDiscussionMutationResolver,
@@ -147,9 +158,12 @@ describe('WorkItemActions component', () => {
         fullPath: 'gitlab-org/gitlab-test',
         workItemId: 'gid://gitlab/WorkItem/1',
         workItemIid: '1',
-        isGroup: false,
+        workItemWebUrl: 'gitlab-org/gitlab-test/-/work_items/1',
+        isGroup,
         canUpdate,
+        canUpdateMetadata,
         canDelete,
+        canReportSpam,
         isConfidential,
         isDiscussionLocked,
         subscribed,
@@ -166,10 +180,11 @@ describe('WorkItemActions component', () => {
         $toast,
       },
       provide: {
-        fullPath: 'gitlab-org/gitlab-test',
         glFeatures: {
+          okrsMvc,
           workItemsBeta,
         },
+        hasOkrsFeature,
       },
       stubs: {
         GlModal: stubComponent(GlModal, {
@@ -219,7 +234,7 @@ describe('WorkItemActions component', () => {
       },
       {
         testId: TEST_ID_NEW_RELATED_WORK_ITEM,
-        text: 'New related task',
+        text: 'New related item',
       },
       {
         testId: TEST_ID_CHANGE_TYPE_ACTION,
@@ -249,20 +264,24 @@ describe('WorkItemActions component', () => {
         text: 'Report abuse',
       },
       {
+        testId: 'submit-as-spam-item',
+        text: 'Submit as spam',
+      },
+      {
         testId: TEST_ID_DELETE_ACTION,
         text: 'Delete task',
       },
     ]);
   });
 
-  it('includes a new related item option', () => {
-    createComponent({ workItemType: 'Task' });
+  it('renders "New related epic" instead of the default "New related item" when type is Epic', () => {
+    createComponent({ workItemType: 'Epic' });
 
     expect(findDropdownItemsActual()).toEqual(
       expect.arrayContaining([
         {
           testId: TEST_ID_NEW_RELATED_WORK_ITEM,
-          text: 'New related task',
+          text: 'New related epic',
         },
       ]),
     );
@@ -346,8 +365,8 @@ describe('WorkItemActions component', () => {
       expect(toast).toHaveBeenCalledWith('Confidentiality turned on.');
     });
 
-    it('does not render when canUpdate is false', () => {
-      createComponent({ canUpdate: false });
+    it('does not render when canUpdateMetadata is false', () => {
+      createComponent({ canUpdateMetadata: false });
       expect(findConfidentialityToggleButton().exists()).toBe(false);
     });
 
@@ -566,7 +585,71 @@ describe('WorkItemActions component', () => {
     });
   });
 
+  describe('allowed work item types for modal', () => {
+    describe('when group', () => {
+      it('passes empty array', () => {
+        createComponent({ isGroup: true });
+
+        expect(findCreateWorkItemModal().props('allowedWorkItemTypes')).toEqual([]);
+      });
+    });
+
+    describe('when okrs feature is not available', () => {
+      it('passes default of incident, issue, and task', () => {
+        createComponent({ hasOkrsFeature: false, okrsMvc: false });
+
+        expect(findCreateWorkItemModal().props('allowedWorkItemTypes')).toEqual([
+          WORK_ITEM_TYPE_VALUE_INCIDENT,
+          WORK_ITEM_TYPE_VALUE_ISSUE,
+          WORK_ITEM_TYPE_VALUE_TASK,
+        ]);
+      });
+    });
+
+    describe('when okrs feature is available', () => {
+      it('passes default of incident, issue, and task', () => {
+        createComponent({ hasOkrsFeature: true, okrsMvc: true });
+
+        expect(findCreateWorkItemModal().props('allowedWorkItemTypes')).toEqual([
+          WORK_ITEM_TYPE_VALUE_INCIDENT,
+          WORK_ITEM_TYPE_VALUE_ISSUE,
+          WORK_ITEM_TYPE_VALUE_TASK,
+          WORK_ITEM_TYPE_VALUE_KEY_RESULT,
+          WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+        ]);
+      });
+    });
+  });
+
+  describe('submit as spam item', () => {
+    it('renders the "Submit as spam" action', () => {
+      createComponent();
+
+      expect(findSubmitAsSpamItem().props('item')).toEqual({
+        href: 'gitlab-org/gitlab-test/-/issues/1/mark_as_spam',
+        text: 'Submit as spam',
+      });
+    });
+
+    it('does not render the "Submit as spam" action when not allowed', () => {
+      createComponent({ canReportSpam: false });
+
+      expect(findSubmitAsSpamItem().exists()).toBe(false);
+    });
+  });
+
   describe('new related item', () => {
+    it('passes related item data to create work item modal', () => {
+      createComponent();
+
+      expect(findCreateWorkItemModal().props('relatedItem')).toEqual({
+        id: 'gid://gitlab/WorkItem/1',
+        reference: 'gitlab-org/gitlab-test#1',
+        type: 'Task',
+        webUrl: 'gitlab-org/gitlab-test/-/work_items/1',
+      });
+    });
+
     it('opens the create work item modal', async () => {
       createComponent({ workItemType: 'Task' });
 
@@ -610,14 +693,14 @@ describe('WorkItemActions component', () => {
       expect(findWorkItemChangeTypeModal().exists()).toBe(true);
     });
 
-    it('hides the action in case of `workItemBeta` is disabled', () => {
-      createComponent({ workItemType: 'Task', workItemsBeta: false });
+    it('hides the action in case of Epic type', () => {
+      createComponent({ workItemType: 'Epic' });
 
       expect(findChangeTypeButton().exists()).toBe(false);
     });
 
-    it('hides the action in case of Epic type', () => {
-      createComponent({ workItemType: 'Epic' });
+    it('hides the action when there is no permission', () => {
+      createComponent({ canUpdateMetadata: false });
 
       expect(findChangeTypeButton().exists()).toBe(false);
     });

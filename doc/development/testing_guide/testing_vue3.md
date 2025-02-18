@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Vue 3 Testing
 ---
-
-# Vue 3 Testing
 
 As we transition to using Vue 3, it's important that our tests pass in Vue 3 mode.
 We're adding progressively stricter checks to our pipelines to enforce proper Vue 3 testing.
@@ -309,6 +308,48 @@ wrapper.findComponent(GlKeysetNavigation).vm.$emit('push');
 await waitForPromises()
 ```
 
+#### Debugging
+
+More often than not you will find yourself running into cryptic errors like the one below.
+
+```shell
+Unexpected calls to console (1) with:
+
+        [1] warn: [Vue Router warn]: uncaught error during route navigation:
+
+      23 |     .join('\n');
+      24 |
+    > 25 |   throw new Error(
+         |         ^
+      26 |     `Unexpected calls to console (${consoleCalls.length}) with:\n${consoleCallsList}\n`,
+      27 |   );
+      28 | };
+```
+
+In order to better understand what Vue router needs, use `jest.fn()` to override `console.warn` so you can see the output of the error.
+
+```javascript
+console.warn = jest.fn()
+
+afterEach(() => {
+  console.log(console.warn.mock.calls)
+})
+```
+
+This will turn the above into a digestible error. Don't forget to remove this code before you submit your MR.
+
+```shell
+'[Vue Router warn]: Record with path "/" is either missing a "component(s)" or "children" property.'
+```
+
+#### Component and Children property
+
+Unlike Vue router 3 (Vue 2), Vue router 4 requires a `component` or `children` property (with their respective `component`) to be defined. In some scenarios we have historically used Vue router to manage router query variables without a `router-view`, for example in `app/assets/javascripts/projects/your_work/components/app.vue`.
+
+This is an anti-pattern, as Vue router is overkill, a preferable approach would be to use vanilla JS to manage query routes with [URL searchParams](https://developer.mozilla.org/en-US/docs/Web/API/URL/searchParams) for example.
+
+When rewriting the component is not possible, passing the `App` component that the application is rendering without the use of `router-view` will let the tests pass, however, this opens up the possibility of introducing unwanted behavior in the future if a `<router-view />` is added to the component and should be used with care.
+
 ## Quarantine list
 
 The `scripts/frontend/quarantined_vue3_specs.txt` file is built up of all the known failing Vue 3 test files.
@@ -317,7 +358,7 @@ In order to not overwhelm us with failing pipelines, these files are skipped on 
 If you're reading this, it's likely you were sent here by a failing quarantine job.
 This job is confusing as it fails when a test passes and it passes if they all fail.
 The reason for this is because all newly passing tests should be [removed from the quarantine list](#removing-from-the-quarantine-list).
-Congratulate yourself on fixing a previously failing test and remove it fom the quarantine list to get this pipeline passing again.
+Congratulate yourself on fixing a previously failing test and remove it from the quarantine list to get this pipeline passing again.
 
 ### Removing from the quarantine list
 

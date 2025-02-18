@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Pry debugging
 ---
-
-# Pry debugging
 
 ## Invoking pry debugging
 
@@ -17,9 +16,12 @@ You can then connect to this session by using the [pry-shell](https://github.com
 You can watch [this video](https://www.youtube.com/watch?v=Lzs_PL_BySo), for more information about
 how to use the `pry-shell`.
 
-WARNING:
+{{< alert type="warning" >}}
+
 `binding.pry` can occasionally experience autoloading issues and fail during name resolution.
 If needed, `binding.irb` can be used instead with a more limited feature set.
+
+{{< /alert >}}
 
 ## `byebug` vs `binding.pry` vs `binding.irb`
 

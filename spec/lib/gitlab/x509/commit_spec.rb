@@ -5,7 +5,7 @@ RSpec.describe Gitlab::X509::Commit, feature_category: :source_code_management d
   let(:commit_sha) { '189a6c924013fc3fe40d6f1ec1dc20214183bc97' }
   let_it_be(:user) { create(:user, email: X509Helpers::User1.certificate_email) }
   let_it_be(:project) { create(:project, :repository, path: X509Helpers::User1.path, creator: user) }
-  let(:commit) { project.commit_by(oid: commit_sha ) }
+  let(:commit) { project.commit_by(oid: commit_sha) }
   let(:signature) { described_class.new(commit).signature }
   let(:store) { OpenSSL::X509::Store.new }
   let(:certificate) { OpenSSL::X509::Certificate.new(X509Helpers::User1.trust_cert) }

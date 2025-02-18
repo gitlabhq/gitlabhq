@@ -14,7 +14,7 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     Registration tokens and certain configuration arguments in the command `gitlab-runner register` that [registers](https://docs.gitlab.com/runner/register/) a runner, are deprecated.
     Authentication tokens will be used to register runners instead. Registration tokens, and support for certain configuration arguments,
-    will be removed in GitLab 18.0. For more information, see [Migrating to the new runner registration workflow](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html).
+    will be removed in GitLab 18.0. For more information, see [Migrating to the new runner registration workflow](https://docs.gitlab.com/ci/runners/new_creation_workflow/).
     The configuration arguments disabled for authentication tokens are:
 
     - `--locked`
@@ -25,5 +25,5 @@
     - `--tag-list`
     - `--maintenance-note`
 
-    This change is a breaking change. You should [create a runner in the UI](https://docs.gitlab.com/ee/ci/runners/runners_scope.html) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
+    This change is a breaking change. You should [create a runner in the UI](https://docs.gitlab.com/ci/runners/runners_scope/) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
   end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.

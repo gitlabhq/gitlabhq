@@ -18,9 +18,6 @@ events:
     filter:
       label: security_reports
       property: failed
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

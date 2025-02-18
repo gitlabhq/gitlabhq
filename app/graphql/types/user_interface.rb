@@ -7,6 +7,8 @@ module Types
     graphql_name 'User'
     description 'Representation of a GitLab user.'
 
+    implements Types::TodoableInterface
+
     field :user_permissions,
       type: Types::PermissionTypes::User,
       description: 'Permissions for the current user on the resource.',
@@ -14,9 +16,9 @@ module Types
       method: :itself
 
     field :id,
-      type: GraphQL::Types::ID,
+      type: Types::GlobalIDType[::User],
       null: false,
-      description: 'ID of the user.'
+      description: 'Global ID of the user.'
     field :bot,
       type: GraphQL::Types::Boolean,
       null: false,

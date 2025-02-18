@@ -9,5 +9,5 @@ description: Information related to sent email notifications that supports reply
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1173
 milestone: '8.0'
 gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463411
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514591
 table_size: over_limit

@@ -12,9 +12,6 @@ export const CYCLE_TIME_METRIC_TYPE = 'cycle_time';
 export const ISSUES_METRIC_TYPE = 'issues';
 export const DEPLOYS_METRIC_TYPE = 'deploys';
 
-export const METRIC_TYPE_SUMMARY = 'summary';
-export const METRIC_TYPE_TIME_SUMMARY = 'time_summary';
-
 const buildProjectMetricsPath = (namespacePath) =>
   buildApiUrl(PROJECT_VSA_METRICS_BASE).replace(':namespace_path', namespacePath);
 
@@ -74,15 +71,6 @@ export const getValueStreamStageCounts = (
 ) => {
   const stageBase = buildValueStreamStageDataPath({ namespacePath, valueStreamId, stageId });
   return axios.get(joinPaths(stageBase, 'count'), { params });
-};
-
-export const getValueStreamMetrics = ({
-  endpoint = METRIC_TYPE_SUMMARY,
-  requestPath: namespacePath,
-  params = {},
-}) => {
-  const metricBase = buildProjectMetricsPath(namespacePath);
-  return axios.get(joinPaths(metricBase, endpoint), { params });
 };
 
 export const getValueStreamSummaryMetrics = (namespacePath, params = {}) => {

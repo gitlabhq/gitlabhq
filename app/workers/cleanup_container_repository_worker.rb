@@ -2,6 +2,7 @@
 
 class CleanupContainerRepositoryWorker
   include ApplicationWorker
+  include CronjobChildWorker
 
   data_consistency :always
 

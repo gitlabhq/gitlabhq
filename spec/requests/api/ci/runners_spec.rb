@@ -481,7 +481,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
               it 'filters runners by version_prefix' do
                 perform_request
 
-                expect(json_response).to match_array []
+                expect(json_response).to be_empty
               end
             end
 
@@ -2217,13 +2217,13 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
       let(:current_user) { users.first }
       let(:runner) { project_runner2 }
 
-      it 'enables project runner' do
+      it 'assigns project runner' do
         expect { perform_request }.to change { project.runners.count }.by(+1)
 
         expect(response).to have_gitlab_http_status(:created)
       end
 
-      context 'when enabling already enabled runner' do
+      context 'when assigning already assigned runner' do
         let(:runner) { project_runner }
 
         it 'avoids changes' do
@@ -2233,34 +2233,34 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
         end
       end
 
-      context 'when enabling locked runner' do
+      context 'when assigning locked runner' do
         let(:runner) { project_runner2 }
 
         before_all do
           project_runner2.update!(locked: true)
         end
 
-        it 'does not enable runner' do
+        it 'does not assign runner' do
           expect { perform_request }.not_to change { project.runners.count }
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
 
-      context 'when enabling shared runner' do
+      context 'when assigning shared runner' do
         let(:runner) { shared_runner }
 
-        it 'does not enable runner' do
+        it 'does not assign runner' do
           perform_request
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
 
-      context 'when enabling group runner' do
+      context 'when assigning group runner' do
         let(:runner) { group_runner_a }
 
-        it 'does not enable runner' do
+        it 'does not assign runner' do
           perform_request
 
           expect(response).to have_gitlab_http_status(:forbidden)
@@ -2274,7 +2274,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
           let!(:new_project_runner) { create(:ci_runner, :project, projects: [project2]) }
           let(:runner) { new_project_runner }
 
-          it 'enables any project runner' do
+          it 'assigns any project runner' do
             expect { perform_request }.to change { project.runners.count }.by(+1)
 
             expect(response).to have_gitlab_http_status(:created)
@@ -2285,7 +2285,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
               create(:plan_limits, :default_plan, ci_registered_project_runners: 1)
             end
 
-            it 'does not enable runner' do
+            it 'does not assign runner' do
               expect { perform_request }.not_to change { project.runners.count }
 
               expect(response).to have_gitlab_http_status(:bad_request)
@@ -2316,7 +2316,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
         let(:current_user) { users.second }
         let(:runner) { project_runner }
 
-        it 'does not enable runner' do
+        it 'does not assign runner' do
           perform_request
 
           expect(response).to have_gitlab_http_status(:forbidden)
@@ -2330,7 +2330,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
       let(:runner) { new_project_runner }
       let(:current_user) { create(:user, guest_of: project) }
 
-      it 'does not enable runner' do
+      it 'does not assign runner' do
         perform_request
 
         expect(response).to have_gitlab_http_status(:forbidden)
@@ -2341,7 +2341,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
       let(:current_user) { nil }
       let(:runner) { project_runner }
 
-      it 'does not enable runner' do
+      it 'does not assign runner' do
         perform_request
 
         expect(response).to have_gitlab_http_status(:unauthorized)
@@ -2350,21 +2350,32 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
   end
 
   describe 'DELETE /projects/:id/runners/:runner_id' do
-    let(:runner_id) { runner.id }
-    let(:path) { "/projects/#{project.id}/runners/#{runner_id}" }
+    let(:runner_id) { two_projects_runner.id }
+    let(:project_to_delete_from) { project2 }
+    let(:path) { "/projects/#{project_to_delete_from.id}/runners/#{runner_id}" }
 
     subject(:perform_request) { delete api(path, current_user) }
 
     context 'authorized user' do
       let(:current_user) { users.first }
 
-      context 'when runner have more than one associated projects' do
-        let(:runner) { two_projects_runner }
+      context 'when runner have more than one associated project' do
+        let(:runner_id) { two_projects_runner.id }
 
-        it "disables project's runner" do
-          expect { perform_request }.to change { project.runners.count }.by(-1)
+        it "unassigns project's runner", :aggregate_failures do
+          expect { perform_request }.to change { project_to_delete_from.runners.count }.by(-1)
 
           expect(response).to have_gitlab_http_status(:no_content)
+        end
+
+        context 'when runner is unassigned from project owner' do
+          let(:project_to_delete_from) { project }
+
+          it "does not unassign project's runner" do
+            expect { perform_request }.not_to change { project_to_delete_from.runners.count }
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
         end
 
         it_behaves_like '412 response' do
@@ -2378,11 +2389,12 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
         end
       end
 
-      context 'when runner have one associated projects' do
-        let(:runner) { project_runner }
+      context 'when runner have a single associated project' do
+        let(:runner_id) { project_runner.id }
+        let(:project_to_delete_from) { project }
 
-        it "does not disable project's runner" do
-          expect { perform_request }.not_to change { project.runners.count }
+        it "does not unassign project's runner" do
+          expect { perform_request }.not_to change { project_to_delete_from.runners.count }
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -2400,10 +2412,9 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
     end
 
     context 'authorized user without permissions' do
-      let(:current_user) { users.second }
-      let(:runner) { project_runner }
+      let(:current_user) { create(:user, developer_of: project_to_delete_from) }
 
-      it "does not disable project's runner" do
+      it "does not unassign project's runner" do
         perform_request
 
         expect(response).to have_gitlab_http_status(:forbidden)
@@ -2412,9 +2423,8 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
 
     context 'unauthorized user' do
       let(:current_user) { nil }
-      let(:runner) { project_runner }
 
-      it "does not disable project's runner" do
+      it "does not unassign project's runner" do
         perform_request
 
         expect(response).to have_gitlab_http_status(:unauthorized)

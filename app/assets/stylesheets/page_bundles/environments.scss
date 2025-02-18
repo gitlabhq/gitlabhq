@@ -156,7 +156,7 @@
 
   i {
     cursor: pointer;
-    color: var(--gray-200, $gray-200);
+    @apply gl-text-disabled;
     padding-right: 10px;
   }
 }

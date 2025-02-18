@@ -2,18 +2,23 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Location-aware Git remote URL with AWS Route53
 ---
 
-# Location-aware Git remote URL with AWS Route53
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-NOTE:
-[GitLab Geo supports location-aware DNS including web UI and API traffic.](../secondary_proxy/index.md#configure-location-aware-dns)
+{{< /details >}}
+
+{{< alert type="note" >}}
+
+[GitLab Geo supports location-aware DNS including web UI and API traffic.](../secondary_proxy/_index.md#configure-location-aware-dns)
 This configuration is recommended over the location-aware Git remote URL
 described in this document.
+
+{{< /alert >}}
 
 You can provide GitLab users with a single remote URL that automatically uses
 the Geo site closest to them. This means users don't need to update their Git
@@ -46,7 +51,7 @@ In any case, you require:
 - A Route53 Hosted Zone managing your domain.
 
 If you haven't yet set up a Geo _primary_ site and _secondary_ site, see the
-[Geo setup instructions](../setup/index.md).
+[Geo setup instructions](../setup/_index.md).
 
 ## Create a traffic policy
 

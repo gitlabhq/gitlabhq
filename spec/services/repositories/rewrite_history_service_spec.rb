@@ -156,7 +156,7 @@ RSpec.describe Repositories::RewriteHistoryService, feature_category: :source_co
     let(:redactions) { ['p455w0rd'] }
 
     it 'triggers a RewriteHistoryWorker job' do
-      expect(Repositories::RewriteHistoryWorker).to receive(:perform_async).with(
+      expect(::Repositories::RewriteHistoryWorker).to receive(:perform_async).with(
         project_id: project.id, user_id: user.id, blob_oids: blob_oids, redactions: redactions
       )
 

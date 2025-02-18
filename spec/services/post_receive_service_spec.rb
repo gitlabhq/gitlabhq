@@ -301,6 +301,52 @@ RSpec.describe PostReceiveService, feature_category: :team_planning do
     end
   end
 
+  context "when broadcast message has a target_access_level" do
+    let_it_be(:unscoped_message) do
+      create(:broadcast_message, message: "Hello world!")
+    end
+
+    let_it_be(:guest_message) do
+      create(:broadcast_message, message: "Guests welcome!", target_access_levels: [Gitlab::Access::GUEST])
+    end
+
+    let_it_be(:dev_message) do
+      create(:broadcast_message, message: "Hi dev team!", target_access_levels: [Gitlab::Access::DEVELOPER, Gitlab::Access::MAINTAINER])
+    end
+
+    context "with limited access" do
+      before do
+        allow(user).to receive(:max_member_access_for_project).and_return(Gitlab::Access::GUEST)
+      end
+
+      it "does not show message for higher access levels" do
+        expect(subject).not_to include(build_alert_message(dev_message.message))
+        expect(subject).to include(build_alert_message(guest_message.message))
+      end
+    end
+
+    context "with multiple allowed access levels" do
+      before do
+        allow(user).to receive(:max_member_access_for_project).and_return(Gitlab::Access::DEVELOPER)
+      end
+
+      it "shows the correct message" do
+        expect(subject).not_to include(build_alert_message(guest_message.message))
+        expect(subject).to include(build_alert_message(dev_message.message))
+      end
+    end
+
+    context "with no matching access level" do
+      before do
+        allow(user).to receive(:max_member_access_for_project).and_return(Gitlab::Access::REPORTER)
+      end
+
+      it "shows the unscoped message" do
+        expect(subject).to include(build_alert_message(unscoped_message.message))
+      end
+    end
+  end
+
   context 'with a redirected data' do
     it 'returns redirected message on the response' do
       project_moved = Gitlab::Checks::ContainerMoved.new(project.repository, user, 'http', 'foo/baz')

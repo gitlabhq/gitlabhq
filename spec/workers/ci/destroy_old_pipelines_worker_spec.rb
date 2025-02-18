@@ -15,10 +15,15 @@ RSpec.describe Ci::DestroyOldPipelinesWorker, :clean_gitlab_redis_shared_state, 
   end
 
   describe '#perform' do
-    subject(:perform) { described_class.new.perform_work }
+    let(:worker) { described_class.new }
+
+    subject(:perform) { worker.perform_work }
 
     it 'destroys the configured amount of pipelines' do
       stub_const("#{described_class.name}::LIMIT", 1)
+
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:removed_count, 1)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:project, project.full_path)
 
       expect { perform }.to change { project.all_pipelines.count }.by(-1)
       expect(new_pipeline.reload).to be_present

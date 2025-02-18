@@ -18,7 +18,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       due_date: 1.week.from_now,
       created_at: 1.week.ago,
       last_edited_at: 1.day.ago,
-      last_edited_by: guest
+      last_edited_by: guest,
+      user_agent_detail: create(:user_agent_detail)
     )
   end
 
@@ -86,7 +87,11 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           'setWorkItemMetadata' => true,
           'createNote' => true,
           'adminWorkItemLink' => true,
-          'markNoteAsInternal' => true
+          'markNoteAsInternal' => true,
+          'moveWorkItem' => true,
+          'cloneWorkItem' => true,
+          'reportSpam' => false,
+          'summarizeComments' => false
         },
         'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )
@@ -99,7 +104,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
 
       it 'returns work item type information' do
         expect(work_item_data['workItemType']).to match(
-          expected_work_item_type_response(work_item.resource_parent, work_item.work_item_type).first
+          expected_work_item_type_response(work_item.resource_parent, current_user, work_item.work_item_type).first
         )
       end
     end
@@ -930,15 +935,15 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           let(:object_params) { { id: global_id_of(object) } }
           let(:result_fields) { {} }
 
-          let(:expected_fields) do
-            result_fields.merge({ 'filename' => design.filename, 'project' => id_hash(project) })
-          end
-
           it 'retrieves the object' do
             post_query
             data = design_collection_data[GraphqlHelpers.fieldnamerize(object_field_name)]
 
-            expect(data).to match(a_hash_including(expected_fields))
+            expect(data).to match(
+              a_hash_including(
+                result_fields.merge({ 'filename' => design.filename, 'project' => id_hash(project) })
+              )
+            )
           end
 
           context 'when the user is unauthorized' do
@@ -1294,7 +1299,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
 
           it 'avoids N + 1 queries', :use_sql_query_cache do
             # warm-up already done in the before block
-            control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            control = ActiveRecord::QueryRecorder.new do
               post_graphql(query, current_user: current_user)
             end
             expect(graphql_errors).to be_blank
@@ -1518,6 +1523,25 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
         'userPermissions' =>
           hash_including(
             'setWorkItemMetadata' => false
+          )
+      )
+    end
+  end
+
+  context 'when the user can submit a work item as spam' do
+    let(:current_user) { create(:user, :admin) }
+
+    before do
+      stub_application_setting(akismet_enabled: true)
+      post_graphql(query, current_user: current_user)
+    end
+
+    it 'returns correct user permission' do
+      expect(work_item_data).to include(
+        'id' => work_item.to_gid.to_s,
+        'userPermissions' =>
+          hash_including(
+            'reportSpam' => true
           )
       )
     end

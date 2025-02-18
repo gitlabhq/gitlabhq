@@ -67,6 +67,11 @@
     --system-note-icon-background-color: var(--gl-status-info-background-color);
   }
 
+  &.system-note-icon-warning {
+    --system-note-icon-color: var(--gl-status-warning-text-color);
+    --system-note-icon-background-color: var(--gl-status-warning-background-color);
+  }
+
   &:not(.mr-system-note-empty) {
     &::before {
       @include activity-line-gradient(transparent, var(--system-note-icon-background-color));

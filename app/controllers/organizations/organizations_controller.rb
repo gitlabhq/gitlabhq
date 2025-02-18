@@ -56,9 +56,13 @@ module Organizations
     private
 
     def activity_query_limit
-      return params[:limit].to_i unless !params[:limit] || params[:limit].to_i > DEFAULT_ACTIVITY_EVENT_LIMIT
+      limit = safe_params[:limit]
 
-      DEFAULT_ACTIVITY_EVENT_LIMIT
+      if limit && limit.to_i <= DEFAULT_ACTIVITY_EVENT_LIMIT
+        limit.to_i
+      else
+        DEFAULT_ACTIVITY_EVENT_LIMIT
+      end
     end
 
     def projects
@@ -77,7 +81,7 @@ module Organizations
     def load_events
       @events = EventCollection.new(
         projects,
-        offset: params[:offset].to_i,
+        offset: safe_params[:offset].to_i,
         filter: event_filter,
         # limit + 1 allows us to determine if we have another page.
         # This will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/382473
@@ -87,5 +91,11 @@ module Organizations
 
       Events::RenderService.new(current_user).execute(@events)
     end
+
+    def safe_params
+      params.permit(:limit, :offset)
+    end
   end
 end
+
+Organizations::OrganizationsController.prepend_mod

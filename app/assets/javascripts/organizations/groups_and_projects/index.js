@@ -8,7 +8,7 @@ import { userPreferenceSortName, userPreferenceSortDirection } from './utils';
 import App from './components/app.vue';
 
 export const createRouter = () => {
-  const routes = [{ path: '/', name: ORGANIZATION_ROOT_ROUTE_NAME }];
+  const routes = [{ path: '/', name: ORGANIZATION_ROOT_ROUTE_NAME, component: App }];
 
   const router = new VueRouter({
     routes,

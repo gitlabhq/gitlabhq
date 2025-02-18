@@ -2,13 +2,12 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting the GitLab Workflow extension for VS Code
 ---
-
-# Troubleshooting the GitLab Workflow extension for VS Code
 
 If you encounter any issues with the GitLab Workflow extension for VS Code, or have feature requests for it:
 
-1. Check the [extension documentation](index.md)
+1. Check the [extension documentation](_index.md)
    for known issues and solutions.
 1. Report bugs or request features in the
    [`gitlab-vscode-extension` issue queue](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues).
@@ -47,7 +46,7 @@ Request failed: Can't add GitLab account for https://gitlab.com. Check your inst
 Fetching resource from https://gitlab.com/api/v4/personal_access_tokens/self failed
 ```
 
-You must [enable proxy authentication](../language_server/index.md#enable-proxy-authentication)
+You must [enable proxy authentication](../language_server/_index.md#enable-proxy-authentication)
 for the GitLab Language Server.
 
 ## Configure self-signed certificates
@@ -84,7 +83,7 @@ Both have the `gitlab.com` and `gitlab-org/gitlab-vscode-extension` path.
 To fix this problem, check if your SSH URL is on a different host, or if it has extra segments in a path.
 If either is true, you can manually assign a Git repository to a GitLab project:
 
-1. In VS Code, on the left sidebar, select **GitLab Workflow** (**{tanuki}**).
+1. In VS Code, on the left sidebar, select **GitLab Workflow** ({{< icon name="tanuki" >}}).
 1. Select the project marked `(no GitLab project)`, then select **Manually assign GitLab project**:
    ![Assign GitLab project manually](img/manually_assign_v15_3.png)
 1. Select the correct project from the list.
@@ -149,3 +148,22 @@ you don't have to set a personal access token each time you delete your VS Code 
 - `GITLAB_WORKFLOW_TOKEN`: Your personal access token, which you created [when authenticating with GitLab](setup.md#authenticate-with-gitlab).
 
 The token configured in an environment variable is overridden if you configure a token for the same GitLab instance in the extension.
+
+### Connection and authorization error when using GDK
+
+When using VS Code with GDK, you might get an error that states that your system
+is unable to establish a secure TLS connection to a GitLab instance running on
+localhost.
+
+For example, if you are using `127.0.0.1:3000` as your GitLab server:
+
+```plaintext
+Request to https://127.0.0.1:3000/api/v4/version failed, reason: Client network
+socket disconnected before secure TLS connection was established
+```
+
+This issue occurs if you are running GDK on `http` and your GitLab instance is
+hosted on `https`.
+
+To resolve this, manually enter an `http` URL for your instance when you run the
+`GitLab: Authenticate` command.

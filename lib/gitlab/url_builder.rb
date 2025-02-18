@@ -14,6 +14,7 @@ module Gitlab
       # Using a case statement here is preferable for readability and maintainability.
       # See discussion in https://gitlab.com/gitlab-org/gitlab/-/issues/217397
       #
+      # rubocop:disable Metrics/AbcSize
       # rubocop:disable Metrics/CyclomaticComplexity
       def build(object, **options)
         # Objects are sometimes wrapped in a BatchLoader instance
@@ -22,6 +23,8 @@ module Gitlab
           board_url(object, **options)
         when ::Ci::Build
           instance.project_job_url(object.project, object, **options)
+        when ::Ci::Pipeline
+          instance.project_pipeline_url(object.project, object, **options)
         when Commit
           commit_url(object, **options)
         when Compare
@@ -58,6 +61,8 @@ module Gitlab
           wiki_url(object, **options)
         when WikiPage
           wiki_page_url(object.wiki, object, **options)
+        when WikiPage::Meta
+          wiki_page_url(object.container.wiki, object.canonical_slug, **options)
         when ::DesignManagement::Design
           design_url(object, **options)
         when ::Packages::Package
@@ -68,6 +73,7 @@ module Gitlab
           raise NotImplementedError, "No URL builder defined for #{object.inspect}"
         end
       end
+      # rubocop:enable Metrics/AbcSize
       # rubocop:enable Metrics/CyclomaticComplexity
 
       def board_url(board, **options)

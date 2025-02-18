@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: LDAP Rake tasks
 ---
 
-# LDAP Rake tasks
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The following are LDAP-related Rake tasks.
 
@@ -40,18 +42,24 @@ rake gitlab:ldap:check[50]
 
 ## Run a group sync
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The following task runs a [group sync](../auth/ldap/ldap_synchronization.md#group-sync) immediately.
 This is valuable when you'd like to update all configured group memberships against LDAP without
 waiting for the next scheduled group sync to be run.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you'd like to change the frequency at which a group sync is performed,
 [adjust the cron schedule](../auth/ldap/ldap_synchronization.md#adjust-ldap-group-sync-schedule)
 instead.
+
+{{< /alert >}}
 
 - Linux package installations:
 
@@ -87,10 +95,13 @@ main:
 
 `main` is the LDAP server ID. Together, the unique provider is `ldapmain`.
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you input an incorrect new provider, users cannot sign in. If this happens,
 run the task again with the incorrect provider as the `old_provider` and the
 correct provider as the `new_provider`.
+
+{{< /alert >}}
 
 - Linux package installations:
 
@@ -157,7 +168,7 @@ sudo gitlab-rake gitlab:ldap:rename_provider[old_provider,new_provider] force=ye
 
 ## Secrets
 
-GitLab can use [LDAP configuration secrets](../auth/ldap/index.md#use-encrypted-credentials) to read from an encrypted file.
+GitLab can use [LDAP configuration secrets](../auth/ldap/_index.md#use-encrypted-credentials) to read from an encrypted file.
 The following Rake tasks are provided for updating the contents of the encrypted file.
 
 ### Show secret

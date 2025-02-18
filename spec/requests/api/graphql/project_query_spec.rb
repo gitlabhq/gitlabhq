@@ -42,6 +42,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
           'id' => pipeline_trigger.to_global_id.to_s,
           'canAccessProject' => true,
           'description' => pipeline_trigger.description,
+          'expiresAt' => nil,
           'hasTokenExposed' => true,
           'lastUsed' => nil,
           'token' => pipeline_trigger.token
@@ -67,6 +68,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
             'id' => pipeline_trigger.to_global_id.to_s,
             'canAccessProject' => true,
             'description' => pipeline_trigger.description,
+            'expiresAt' => nil,
             'hasTokenExposed' => false,
             'lastUsed' => nil,
             'token' => pipeline_trigger.short_token

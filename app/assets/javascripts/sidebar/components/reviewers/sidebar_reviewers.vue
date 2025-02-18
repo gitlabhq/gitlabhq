@@ -208,10 +208,12 @@ export default {
     />
     <approval-summary short-text class="gl-mb-2">
       <gl-button
+        v-if="canUpdate"
         size="small"
         category="tertiary"
         variant="confirm"
         class="gl-ml-2 !gl-text-sm"
+        data-testid="sidebar-reviewers-assign-buton"
         @click="toggleDrawerOpen()"
       >
         {{ __('Assign') }}

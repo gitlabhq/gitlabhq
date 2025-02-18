@@ -16,7 +16,7 @@ class Commit
   include ActsAsPaginatedDiff
   include CacheMarkdownField
   include GlobalID::Identification
-  include Repositories::StreamableDiff
+  include ::Repositories::StreamableDiff
 
   participant :author
   participant :committer

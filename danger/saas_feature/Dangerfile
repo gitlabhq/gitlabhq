@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-SF_SEE_DOC = "see the [SaaS feature documentation](https://docs.gitlab.com/ee/development/ee_features.html#saas-only-feature)."
+SF_SEE_DOC = "see the [SaaS feature documentation](https://docs.gitlab.com/development/ee_features/#saas-only-feature)."
 
 SF_SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT.freeze
   ```suggestion

@@ -24,7 +24,8 @@ RSpec.describe 'Cluster agent registration', :js, feature_category: :deployment_
       end
     end
 
-    it 'allows the user to select an agent to install, and displays the resulting agent token' do
+    it 'allows the user to select an agent to install, and displays the resulting agent token',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/510927' do
       find_by_testid('clusters-default-action-button').click
 
       expect(page).to have_content('Create and register')

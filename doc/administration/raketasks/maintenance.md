@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Maintenance Rake tasks
 ---
 
-# Maintenance Rake tasks
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab provides Rake tasks for general maintenance.
 
@@ -79,11 +81,14 @@ Gitaly
 
 ## Show GitLab license information
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-This command shows information about your [GitLab license](../../administration/license.md) and
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+This command shows information about your [GitLab license](../license.md) and
 how many seats are used. It is only available on GitLab Enterprise
 installations: a license cannot be installed into GitLab Community Edition.
 
@@ -131,8 +136,8 @@ component servers like [Gitaly](../gitaly/configure_gitaly.md#run-gitaly-on-its-
 
 You may also have a look at our troubleshooting guides for:
 
-- [GitLab](../troubleshooting/index.md).
-- [Linux package installations](https://docs.gitlab.com/omnibus/index.html#troubleshooting).
+- [GitLab](../troubleshooting/_index.md).
+- [Linux package installations](https://docs.gitlab.com/omnibus/#troubleshooting).
 
 Additionally you should also [verify database values can be decrypted using the current secrets](check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).
 
@@ -203,7 +208,7 @@ Checking GitLab ... Finished
 
 In some cases it is necessary to rebuild the `authorized_keys` file,
 for example, if after an upgrade you receive `Permission denied (publickey)` when pushing [via SSH](../../user/ssh.md)
-and find `404 Key Not Found` errors in [the `gitlab-shell.log` file](../logs/index.md#gitlab-shelllog).
+and find `404 Key Not Found` errors in [the `gitlab-shell.log` file](../logs/_index.md#gitlab-shelllog).
 To rebuild `authorized_keys`, run:
 
 - Linux package installations:
@@ -301,8 +306,11 @@ clear it.
 
 To clear all exclusive leases:
 
-WARNING:
+{{< alert type="warning" >}}
+
 Don't run it while GitLab or Sidekiq is running
+
+{{< /alert >}}
 
 ```shell
 sudo gitlab-rake gitlab:exclusive_lease:clear
@@ -379,12 +387,18 @@ Starting with GitLab 17.1, migrations are executed in an
 
 ## Rebuild database indexes
 
-DETAILS:
-**Status:** Experiment
+{{< details >}}
 
-WARNING:
+- Status: Experiment
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature is experimental, and isn't enabled by default. Use caution when
 running in a production environment, and run during off-peak times.
+
+{{< /alert >}}
 
 Database indexes can be rebuilt regularly to reclaim space and maintain healthy
 levels of index bloat over time. Reindexing can also be run as a
@@ -449,7 +463,11 @@ To determine if there are any differences:
 
 ## Check the database for schema inconsistencies
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390719) in GitLab 15.11.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390719) in GitLab 15.11.
+
+{{< /history >}}
 
 This Rake task checks the database schema for any inconsistencies and prints them in the terminal.
 This task is a diagnostic tool to be used under the guidance of GitLab Support.

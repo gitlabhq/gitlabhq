@@ -2,15 +2,21 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: List branch rules for a project by using GraphQL
 ---
 
-# List branch rules for a project by using GraphQL
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106954) in GitLab 15.8.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106954) in GitLab 15.8.
+
+{{< /history >}}
 
 You can query for branch rules in a given project by using:
 
@@ -134,4 +140,4 @@ Instead of requesting access, it may be easier for you to run the query in the
 
 ## Related topics
 
-- [GraphQL API reference](reference/index.md)
+- [GraphQL API reference](reference/_index.md)

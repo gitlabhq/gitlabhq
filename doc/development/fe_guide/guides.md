@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Guides
 ---
-
-# Guides
 
 This section contains guides to help our developers.
 For example, you can find information about how to accomplish a specific task,

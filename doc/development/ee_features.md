@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Guidelines for implementing Enterprise Edition features
 ---
-
-# Guidelines for implementing Enterprise Edition features
 
 - **Place code in `ee/`**: Put all Enterprise Edition (EE) inside the `ee/` top-level directory. The
   rest of the code must be as close to the Community Edition (CE) files as possible.
@@ -194,7 +193,7 @@ Use the following questions to guide you:
    - Based on the plan you choose to use the feature in, add the feature identifier to `PREMIUM_FEATURES`
      or `ULTIMATE_FEATURES`.
 1. Will this feature be available globally (system-wide for the GitLab instance)?
-   - Features such as [Geo](../administration/geo/index.md) and
+   - Features such as [Geo](../administration/geo/_index.md) and
      [Database Load Balancing](../administration/postgresql/database_load_balancing.md) are used by the entire instance
      and cannot be restricted to individual user namespaces. These features are defined in the instance license.
      Add these features to `GLOBAL_FEATURES`.
@@ -302,7 +301,7 @@ FOSS context as well.
 
 To run pipelines in both contexts, add the `~"pipeline:run-as-if-foss"` label to the merge request.
 
-See the [As-if-FOSS jobs and cross project downstream pipeline](pipelines/index.md#as-if-foss-jobs-and-cross-project-downstream-pipeline) pipelines documentation for more information.
+See the [As-if-FOSS jobs and cross project downstream pipeline](pipelines/_index.md#as-if-foss-jobs-and-cross-project-downstream-pipeline) pipelines documentation for more information.
 
 ## Separation of EE code in the backend
 
@@ -1346,10 +1345,13 @@ export default {
 </template>
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 An EE component can be imported
 [asynchronously](https://v2.vuejs.org/v2/guide/components-dynamic-async.html#Async-Components) if
 its rendering within CE codebase relies on some check (e.g. a feature flag check).
+
+{{< /alert >}}
 
 Check `glFeatures` to ensure that the Vue components are guarded. The components render only when
 the license is present.
@@ -1378,8 +1380,11 @@ export default {
 </template>
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not use mixins unless ABSOLUTELY NECESSARY. Try to find an alternative pattern.
+
+{{< /alert >}}
 
 ##### Recommended alternative approach (named/scoped slots)
 

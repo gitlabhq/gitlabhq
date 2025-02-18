@@ -1,17 +1,23 @@
 ---
 stage: Security Risk Management
 group: Security Policies
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: External status checks
 ---
 
-# External status checks
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - `pending` status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413723) in GitLab 16.5
-> - Timeout interval of two minutes for `pending` status checks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388725) in GitLab 16.6.
+{{< /details >}}
+
+{{< history >}}
+
+- `pending` status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413723) in GitLab 16.5
+- Timeout interval of two minutes for `pending` status checks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388725) in GitLab 16.6.
+
+{{< /history >}}
 
 Status checks are API calls to external systems that request the status of an external requirement.
 
@@ -34,9 +40,13 @@ see [epic 3869](https://gitlab.com/groups/gitlab-org/-/epics/3869).
 
 ## Block merges of merge requests unless all status checks have passed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `only_allow_merge_if_all_status_checks_passed`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/372340) in GitLab 15.8.
-> - Enabled on self-managed and feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111492) in GitLab 15.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `only_allow_merge_if_all_status_checks_passed`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/372340) in GitLab 15.8.
+- Enabled on GitLab Self-Managed and feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111492) in GitLab 15.9.
+
+{{< /history >}}
 
 By default, merge requests in projects can be merged even if external status checks fail. To block the merging of merge requests when external checks fail:
 
@@ -98,14 +108,17 @@ Filling in the form and selecting the **Add status check** button creates a new 
 
 ### Update a status check service
 
-Within the **Status checks** sub-section, select **Edit** (**{pencil}**)
+Within the **Status checks** sub-section, select **Edit** ({{< icon name="pencil" >}})
 next to the status check you want to edit.
 The **Update status check** form is then shown.
 
 ![Status checks update form](img/status_checks_update_form_v14_0.png)
 
-NOTE:
+{{< alert type="note" >}}
+
 You cannot see or modify the value of the HMAC shared secret. To change the shared secret, delete and recreate the external status check with a new value for the shared secret.
+
+{{< /alert >}}
 
 Changing the values in the form and selecting the **Update status check** button updates the status check.
 
@@ -149,7 +162,7 @@ and ensures they come from a legitimate source.
 
 ## Delete a status check service
 
-Within the **Status checks** sub-section, select **Remove** (**{remove}**)
+Within the **Status checks** sub-section, select **Remove** ({{< icon name="remove" >}})
 next to the status check you want to delete.
 The **Remove status check?** modal is then shown.
 
@@ -161,14 +174,18 @@ the status check and it **is not** recoverable.
 
 ## Status checks widget
 
-> - UI [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91504) in GitLab 15.2.
-> - Ability to retry failed external status checks [added](https://gitlab.com/gitlab-org/gitlab/-/issues/383200) in GitLab 15.8.
-> - Widget [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111763) to poll for updates when there are pending status checks in GitLab 15.11.
+{{< history >}}
+
+- UI [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91504) in GitLab 15.2.
+- Ability to retry failed external status checks [added](https://gitlab.com/gitlab-org/gitlab/-/issues/383200) in GitLab 15.8.
+- Widget [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111763) to poll for updates when there are pending status checks in GitLab 15.11.
+
+{{< /history >}}
 
 The status checks widget displays in merge requests and displays the following statuses:
 
-- **pending** (**{status-neutral}**), while GitLab waits for a response from an external status check.
-- **success** (**{status-success}**) or **failed** (**{status-failed}**), when GitLab receives a response from an external status check.
+- **pending** ({{< icon name="status-neutral" >}}), while GitLab waits for a response from an external status check.
+- **success** ({{< icon name="status-success" >}}) or **failed** ({{< icon name="status-failed" >}}), when GitLab receives a response from an external status check.
 
 When there are pending status checks, the widget polls for updates every few seconds until it receives a **success** or **failed** response.
 
@@ -177,15 +194,18 @@ To retry a failed status check:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.
 1. Scroll to the merge request reports section, and expand the dropdown list to show the list of external status checks.
-1. Select **Retry** (**{retry}**) on the failed external status check row. The status check is put back into a pending state.
+1. Select **Retry** ({{< icon name="retry" >}}) on the failed external status check row. The status check is put back into a pending state.
 
 An organization might have a policy that does not allow merging merge requests if
 external status checks do not pass. However, the details in the widget are for informational
 purposes only.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab cannot guarantee that the external status checks are properly processed by
 the related external service.
+
+{{< /alert >}}
 
 ## Troubleshooting
 

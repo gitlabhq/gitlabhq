@@ -126,12 +126,19 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
 
     it_behaves_like 'enforcing job token policies', :read_environments do
       let(:request) do
-        get api("/projects/#{project.id}/environments"), params: { job_token: job.token }
+        get api("/projects/#{source_project.id}/environments"), params: { job_token: target_job.token }
       end
     end
   end
 
   describe 'POST /projects/:id/environments' do
+    it_behaves_like 'enforcing job token policies', :admin_environments do
+      let(:request) do
+        post api("/projects/#{source_project.id}/environments"),
+          params: { name: "mepmep", tier: 'staging', description: 'description', job_token: target_job.token }
+      end
+    end
+
     context 'as a member' do
       it 'creates an environment with valid params' do
         post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", tier: 'staging', description: 'description' }
@@ -262,6 +269,13 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   end
 
   describe 'POST /projects/:id/environments/stop_stale' do
+    it_behaves_like 'enforcing job token policies', :admin_environments do
+      let(:request) do
+        post api("/projects/#{source_project.id}/environments/stop_stale"),
+          params: { before: 1.week.ago.to_date.to_s, job_token: target_job.token }
+      end
+    end
+
     context 'as a maintainer' do
       it 'returns a 200' do
         post api("/projects/#{project.id}/environments/stop_stale", user), params: { before: 1.week.ago.to_date.to_s }
@@ -316,6 +330,13 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
 
   describe 'PUT /projects/:id/environments/:environment_id' do
     let_it_be(:url) { 'https://mepmep.whatever.ninja' }
+
+    it_behaves_like 'enforcing job token policies', :admin_environments do
+      let(:request) do
+        put api("/projects/#{source_project.id}/environments/#{environment.id}"),
+          params: { tier: 'production', job_token: target_job.token }
+      end
+    end
 
     it 'returns a 200 if external_url is changed' do
       put api("/projects/#{project.id}/environments/#{environment.id}", user),
@@ -492,6 +513,17 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   end
 
   describe 'DELETE /projects/:id/environments/:environment_id' do
+    it_behaves_like 'enforcing job token policies', :admin_environments do
+      before do
+        environment.stop
+      end
+
+      let(:request) do
+        delete api("/projects/#{source_project.id}/environments/#{environment.id}"),
+          params: { job_token: target_job.token }
+      end
+    end
+
     context 'as a maintainer' do
       it "rejects the requests in environment isn't stopped" do
         delete api("/projects/#{project.id}/environments/#{environment.id}", user)
@@ -544,6 +576,13 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   end
 
   describe 'POST /projects/:id/environments/:environment_id/stop' do
+    it_behaves_like 'enforcing job token policies', :admin_environments do
+      let(:request) do
+        post api("/projects/#{source_project.id}/environments/#{environment.id}/stop"),
+          params: { job_token: target_job.token }
+      end
+    end
+
     context 'as a maintainer' do
       context 'with a stoppable environment' do
         before do
@@ -576,6 +615,24 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
       end
     end
 
+    context 'as a reporter' do
+      it 'rejects the request' do
+        post api("/projects/#{project.id}/environments/#{environment.id}/stop", reporter)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'as a developer' do
+      it 'returns a 200' do
+        post api("/projects/#{project.id}/environments/#{environment.id}/stop", developer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('public_api/v4/environment')
+        expect(environment.reload).to be_stopped
+      end
+    end
+
     context 'a non member' do
       it 'rejects the request' do
         post api("/projects/#{project.id}/environments/#{environment.id}/stop", non_member)
@@ -588,6 +645,13 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   describe 'GET /projects/:id/environments/:environment_id' do
     let_it_be(:bridge_job) { create(:ci_bridge, :running, project: project, user: user) }
     let_it_be(:build_job) { create(:ci_build, :running, project: project, user: user) }
+
+    it_behaves_like 'enforcing job token policies', :read_environments do
+      let(:request) do
+        get api("/projects/#{source_project.id}/environments/#{environment.id}"),
+          params: { job_token: target_job.token }
+      end
+    end
 
     context 'as member of the project' do
       shared_examples "returns project environments" do
@@ -742,6 +806,16 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         expect(old_stopped_other_env.reload.auto_delete_at).to be_nil
         expect(new_stopped_other_env.reload.auto_delete_at).to be_nil
         expect(old_active_other_env.reload.auto_delete_at).to be_nil
+      end
+    end
+
+    it_behaves_like 'enforcing job token policies', :admin_environments do
+      before_all do
+        create(:environment, :with_review_app, :stopped, created_at: 31.days.ago, project: project)
+      end
+
+      let(:request) do
+        delete api("/projects/#{source_project.id}/environments/review_apps"), params: { job_token: target_job.token }
       end
     end
 

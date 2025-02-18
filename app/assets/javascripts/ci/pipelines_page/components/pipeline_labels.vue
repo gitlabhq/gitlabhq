@@ -45,7 +45,7 @@ export default {
       return `pipeline-url-autodevops-${this.pipeline.id}`;
     },
     autoDevopsHelpPath() {
-      return helpPagePath('topics/autodevops/index.md');
+      return helpPagePath('topics/autodevops/_index.md');
     },
     isApi() {
       return this.pipeline.source === API_ORIGIN;

@@ -18,7 +18,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-content-center">
+  <div class="gl-flex gl-content-center" data-testid="work-item-feedback">
     <gl-badge :id="$options.badgeId" variant="info" icon="information-o" href="#">{{
       title
     }}</gl-badge>

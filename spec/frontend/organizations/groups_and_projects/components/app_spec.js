@@ -60,14 +60,14 @@ describe('GroupsAndProjectsApp', () => {
   let mockApollo;
   let router;
 
-  const createComponent = ({
+  const createComponent = async ({
     routeQuery = { [FILTERED_SEARCH_TERM_KEY]: 'foo' },
     provide = {},
     userPreferencesUpdateHandler = userPreferencesUpdateSuccessHandler,
   } = {}) => {
     mockApollo = createMockApollo([[userPreferencesUpdate, userPreferencesUpdateHandler]]);
     router = createRouter();
-    router.push({ query: routeQuery });
+    await router.push({ query: routeQuery });
 
     wrapper = shallowMountExtended(App, {
       apolloProvider: mockApollo,
@@ -88,8 +88,8 @@ describe('GroupsAndProjectsApp', () => {
     router = null;
   });
 
-  it('renders page title as Groups and projects', () => {
-    createComponent();
+  it('renders page title as Groups and projects', async () => {
+    await createComponent();
 
     expect(findPageTitle().exists()).toBe(true);
   });
@@ -108,8 +108,8 @@ describe('GroupsAndProjectsApp', () => {
       expectedDisplayListboxSelectedProp,
       expectedRecentSearchesStorageKey,
     }) => {
-      beforeEach(() => {
-        createComponent({
+      beforeEach(async () => {
+        await createComponent({
           routeQuery: {
             display,
             [FILTERED_SEARCH_TERM_KEY]: 'foo',
@@ -145,8 +145,8 @@ describe('GroupsAndProjectsApp', () => {
     },
   );
 
-  it('renders filtered search bar with correct props', () => {
-    createComponent();
+  it('renders filtered search bar with correct props', async () => {
+    await createComponent();
 
     expect(findFilteredSearchAndSort().props()).toMatchObject({
       filteredSearchTokens: [],
@@ -161,8 +161,8 @@ describe('GroupsAndProjectsApp', () => {
   });
 
   describe('when `sort_name` query string is not a valid sort option', () => {
-    beforeEach(() => {
-      createComponent({ routeQuery: { sort_name: 'foo-bar' } });
+    beforeEach(async () => {
+      await createComponent({ routeQuery: { sort_name: 'foo-bar' } });
     });
 
     it('defaults to sorting by name', () => {
@@ -171,8 +171,8 @@ describe('GroupsAndProjectsApp', () => {
   });
 
   describe('when `userPreferenceSortName` and `userPreferenceSortDirection` is set', () => {
-    beforeEach(() => {
-      createComponent({
+    beforeEach(async () => {
+      await createComponent({
         provide: {
           userPreferenceSortName: SORT_ITEM_CREATED_AT.value,
           userPreferenceSortDirection: SORT_DIRECTION_DESC,
@@ -196,8 +196,8 @@ describe('GroupsAndProjectsApp', () => {
   });
 
   describe('when `userPreferenceDisplay` is set', () => {
-    beforeEach(() => {
-      createComponent({
+    beforeEach(async () => {
+      await createComponent({
         provide: {
           userPreferenceDisplay: RESOURCE_TYPE_PROJECTS,
         },
@@ -216,8 +216,8 @@ describe('GroupsAndProjectsApp', () => {
   });
 
   describe('actions', () => {
-    beforeEach(() => {
-      createComponent();
+    beforeEach(async () => {
+      await createComponent();
     });
 
     it('renders NewProjectButton', () => {
@@ -233,10 +233,11 @@ describe('GroupsAndProjectsApp', () => {
     describe('when search term is 3 characters or more', () => {
       const searchTerm = 'foo bar';
 
-      beforeEach(() => {
-        createComponent();
+      beforeEach(async () => {
+        await createComponent();
 
         findFilteredSearchAndSort().vm.$emit('filter', { [FILTERED_SEARCH_TERM_KEY]: searchTerm });
+        await waitForPromises();
       });
 
       it(`updates \`${FILTERED_SEARCH_TERM_KEY}\` query string`, () => {
@@ -247,8 +248,8 @@ describe('GroupsAndProjectsApp', () => {
     describe('when search term is less than 3 characters', () => {
       const searchTerm = 'fo';
 
-      beforeEach(() => {
-        createComponent({ routeQuery: {} });
+      beforeEach(async () => {
+        await createComponent({ routeQuery: {} });
 
         findFilteredSearchAndSort().vm.$emit('filter', { [FILTERED_SEARCH_TERM_KEY]: searchTerm });
       });
@@ -259,10 +260,11 @@ describe('GroupsAndProjectsApp', () => {
     });
 
     describe('when search term is empty but there are other filters', () => {
-      beforeEach(() => {
-        createComponent();
+      beforeEach(async () => {
+        await createComponent();
 
         findFilteredSearchAndSort().vm.$emit('filter', { foo: 'bar' });
+        await waitForPromises();
       });
 
       it('updates query string', () => {
@@ -273,7 +275,7 @@ describe('GroupsAndProjectsApp', () => {
 
   describe('when display listbox is changed', () => {
     beforeEach(async () => {
-      createComponent();
+      await createComponent();
 
       findListbox().vm.$emit('select', RESOURCE_TYPE_PROJECTS);
       await waitForPromises();
@@ -292,7 +294,7 @@ describe('GroupsAndProjectsApp', () => {
 
   describe('when sort item is changed', () => {
     beforeEach(async () => {
-      createComponent({
+      await createComponent({
         routeQuery: {
           display: RESOURCE_TYPE_PROJECTS,
           start_cursor: mockStartCursor,
@@ -322,7 +324,7 @@ describe('GroupsAndProjectsApp', () => {
 
   describe('when sort direction is changed', () => {
     beforeEach(async () => {
-      createComponent({
+      await createComponent({
         routeQuery: {
           display: RESOURCE_TYPE_PROJECTS,
           start_cursor: mockStartCursor,
@@ -355,7 +357,7 @@ describe('GroupsAndProjectsApp', () => {
     const errorHandler = jest.fn().mockRejectedValue(error);
 
     beforeEach(async () => {
-      createComponent({ userPreferencesUpdateHandler: errorHandler });
+      await createComponent({ userPreferencesUpdateHandler: errorHandler });
 
       findListbox().vm.$emit('select', RESOURCE_TYPE_PROJECTS);
       await waitForPromises();
@@ -367,8 +369,8 @@ describe('GroupsAndProjectsApp', () => {
   });
 
   describe(`when \`${FILTERED_SEARCH_TERM_KEY}\` query string is not set`, () => {
-    beforeEach(() => {
-      createComponent({ routeQuery: {} });
+    beforeEach(async () => {
+      await createComponent({ routeQuery: {} });
     });
 
     it('passes empty search query to `FilteredSearchAndSort`', () => {
@@ -378,13 +380,14 @@ describe('GroupsAndProjectsApp', () => {
 
   describe('when page is changed', () => {
     describe('when going to next page', () => {
-      beforeEach(() => {
-        createComponent({ routeQuery: { display: RESOURCE_TYPE_PROJECTS } });
+      beforeEach(async () => {
+        await createComponent({ routeQuery: { display: RESOURCE_TYPE_PROJECTS } });
         findProjectsView().vm.$emit('page-change', {
           endCursor: mockEndCursor,
           startCursor: null,
           hasPreviousPage: true,
         });
+        await waitForPromises();
       });
 
       it('sets `end_cursor` query string', () => {
@@ -396,8 +399,8 @@ describe('GroupsAndProjectsApp', () => {
     });
 
     describe('when going to previous page', () => {
-      it('sets `start_cursor` query string', () => {
-        createComponent({
+      it('sets `start_cursor` query string', async () => {
+        await createComponent({
           routeQuery: {
             display: RESOURCE_TYPE_PROJECTS,
             start_cursor: mockStartCursor,

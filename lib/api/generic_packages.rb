@@ -38,6 +38,7 @@ module API
           end
 
           route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
+          route_setting :authorization, job_token_policies: :admin_packages
 
           params do
             requires :package_name, type: String, desc: 'Package name', regexp: Gitlab::Regex.generic_package_name_regex, file_path: true
@@ -47,6 +48,7 @@ module API
           end
 
           put 'authorize' do
+            authorize_job_token_policies!(authorized_user_project)
             authorize_workhorse!(**authorize_workhorse_params)
           end
 
@@ -76,11 +78,13 @@ module API
           end
 
           route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
+          route_setting :authorization, job_token_policies: :admin_packages
 
           put do
             project = authorized_user_project
 
             authorize_upload!(project)
+            authorize_job_token_policies!(project)
             bad_request!('File is too large') if max_file_size_exceeded?
 
             track_package_event('push_package', :generic, project: project, namespace: project.namespace)
@@ -124,11 +128,13 @@ module API
           end
 
           route_setting :authentication, job_token_allowed: %i[request basic_auth], basic_auth_personal_access_token: true, deploy_token_allowed: true
+          route_setting :authorization, job_token_policies: :read_packages
 
           get do
             project = authorized_user_project(action: :read_package)
 
             authorize_read_package!(project)
+            authorize_job_token_policies!(project)
 
             package = ::Packages::Generic::PackageFinder.new(project).execute!(params[:package_name], params[:package_version])
             package_file = ::Packages::PackageFileFinder.new(package, encoded_file_name).execute!

@@ -99,6 +99,7 @@ export default {
     >
       <blob-chunks
         :chunk="chunk"
+        :language="file.language"
         :blame-link="file.blameUrl"
         :file-url="file.fileUrl"
         :position="position"

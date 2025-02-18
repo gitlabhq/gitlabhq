@@ -3,7 +3,7 @@
 module Packages
   module Protection
     class Rule < ApplicationRecord
-      enum package_type: Packages::Package.package_types.slice(:conan, :npm, :pypi)
+      enum package_type: Packages::Package.package_types.slice(:conan, :maven, :npm, :pypi)
       enum minimum_access_level_for_push:
           Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin),
         _prefix: :minimum_access_level_for_push

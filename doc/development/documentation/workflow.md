@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Documentation workflow
 ---
-
-# Documentation workflow
 
 Documentation at GitLab follows a workflow.
 
@@ -14,14 +13,14 @@ Ensure your documentation includes:
 
 - [Product availability details](styleguide/availability_details.md).
 - The GitLab [version](styleguide/availability_details.md) that introduced the feature.
-- Accurate [links](styleguide/index.md#links).
+- Accurate [links](styleguide/_index.md#links).
 - Accurate [user permissions](../../user/permissions.md).
 
-Ensure you've followed the [style guide](styleguide/index.md) and [word list](styleguide/word_list.md).
+Ensure you've followed the [style guide](styleguide/_index.md) and [word list](styleguide/word_list.md).
 
 ### Branch naming
 
-The [CI/CD pipeline for the main GitLab project](../pipelines/index.md) is configured to
+The [CI/CD pipeline for the main GitLab project](../pipelines/_index.md) is configured to
 run shorter, faster pipelines on merge requests that contain only documentation changes.
 
 If you submit documentation-only changes to Omnibus, Charts, or Operator,
@@ -60,19 +59,22 @@ When you author an issue or merge request, choose the
 [Documentation template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Documentation.md).
 It includes these labels, which are added to the merge request:
 
-- A [type label](../labels/index.md#type-labels), either `~"type::feature"` or `~"type::maintenance"`.
-- A [stage label](../labels/index.md#stage-labels) and [group label](../labels/index.md#group-labels).
+- A [type label](../labels/_index.md#type-labels), either `~"type::feature"` or `~"type::maintenance"`.
+- A [stage label](../labels/_index.md#stage-labels) and [group label](../labels/_index.md#group-labels).
   For example, `~devops::create` and `~group::source code`.
-- A `~documentation` [specialization label](../labels/index.md#specialization-labels).
+- A `~documentation` [specialization label](../labels/_index.md#specialization-labels).
 
-A member of the Technical Writing team adds the [`~Technical Writing` team label](../labels/index.md#team-labels).
+A member of the Technical Writing team adds the [`~Technical Writing` team label](../labels/_index.md#team-labels).
 
-NOTE:
+{{< alert type="note" >}}
+
 With the exception of `/doc/development/documentation`,
 technical writers do not review content in the `doc/development` directory.
 Any Maintainer can merge content in the `doc/development` directory.
 If you would like a technical writer review of content in the `doc/development` directory,
 ask in the `#docs` Slack channel.
+
+{{< /alert >}}
 
 ## Post-merge reviews
 
@@ -118,6 +120,6 @@ GitLab team members must follow the guidelines documented in the [internal handb
 
 - [Reviews and levels of edit](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#reviews)
 - [Technical writing assignments](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments)
-- The [Style Guide](styleguide/index.md)
+- The [Style Guide](styleguide/_index.md)
 - The [Word list](styleguide/word_list.md)
 - The [Markdown Guide](https://handbook.gitlab.com/docs/markdown-guide/)

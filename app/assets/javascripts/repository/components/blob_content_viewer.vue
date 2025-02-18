@@ -17,7 +17,13 @@ import highlightMixin from '~/repository/mixins/highlight_mixin';
 import projectInfoQuery from '../queries/project_info.query.graphql';
 import getRefMixin from '../mixins/get_ref';
 import { getRefType } from '../utils/ref_type';
-import { DEFAULT_BLOB_INFO, TEXT_FILE_TYPE, LFS_STORAGE, LEGACY_FILE_TYPES } from '../constants';
+import {
+  DEFAULT_BLOB_INFO,
+  TEXT_FILE_TYPE,
+  LFS_STORAGE,
+  LEGACY_FILE_TYPES,
+  EMPTY_FILE,
+} from '../constants';
 import BlobButtonGroup from './blob_button_group.vue';
 import ForkSuggestion from './fork_suggestion.vue';
 import { loadViewer } from './blob_viewers';
@@ -80,7 +86,7 @@ export default {
         const urlHash = getLocationHash(); // If there is a code line hash in the URL we render with the simple viewer
         const useSimpleViewer = usePlain || urlHash?.startsWith('L') || !this.hasRichViewer;
 
-        if (this.isTooLarge) return;
+        if (this.isUnsupportedLanguage(this.blobInfo.language) && this.isTooLarge) return;
         this.initHighlightWorker(this.blobInfo, this.isUsingLfs);
         this.switchViewer(useSimpleViewer ? SIMPLE_BLOB_VIEWER : RICH_BLOB_VIEWER); // By default, if present, use the rich viewer to render
       },
@@ -135,7 +141,11 @@ export default {
       return this.$apollo.queries.project.loading;
     },
     isBinaryFileType() {
-      return this.isBinary || this.blobInfo.simpleViewer?.fileType !== TEXT_FILE_TYPE;
+      return (
+        this.isBinary ||
+        (this.blobInfo.simpleViewer?.fileType !== TEXT_FILE_TYPE &&
+          this.blobInfo.simpleViewer?.fileType !== EMPTY_FILE)
+      );
     },
     currentRef() {
       return this.originalBranch || this.ref;
@@ -151,8 +161,16 @@ export default {
       return Boolean(this.viewer.renderError);
     },
     isTooLarge() {
+      const isSimpleViewer = this.activeViewerType === SIMPLE_BLOB_VIEWER;
       const { tooLarge, renderError } = this.viewer || {};
-      return tooLarge || renderError === 'collapsed';
+      const isTooLarge = tooLarge || renderError === 'collapsed' || renderError === 'too_large';
+
+      if (isSimpleViewer)
+        return this.isUnsupportedLanguage(this.blobInfo.language)
+          ? isTooLarge // If the languages is not supported by HLJS then check if the backend indicated the file is too large
+          : this.blobInfo.size >= this.$options.HLJS_MAX_SIZE; // For languages supported by HLJS, check the file size against the threshold
+
+      return isTooLarge; // If the backend indicates the rich viewer is too large, return true
     },
     blobViewer() {
       const { fileType } = this.viewer;
@@ -214,6 +232,13 @@ export default {
     },
     shouldRenderAiGenie() {
       return this.explainCodeAvailable && this.activeViewerType === 'simple' && !this.isTooLarge;
+    },
+    shouldHideViewerSwitcher() {
+      return (
+        this.isBinaryFileType ||
+        this.isUsingLfs ||
+        this.blobInfo.simpleViewer?.fileType === EMPTY_FILE
+      );
     },
   },
   watch: {
@@ -335,8 +360,9 @@ export default {
     <gl-loading-icon v-if="isLoading" size="sm" />
     <div v-if="blobInfo && !isLoading" id="fileHolder" class="file-holder">
       <blob-header
+        is-blob-page
         :blob="blobInfo"
-        :hide-viewer-switcher="isBinaryFileType || isUsingLfs"
+        :hide-viewer-switcher="shouldHideViewerSwitcher"
         :is-binary="isBinaryFileType"
         :active-viewer-type="viewer.type"
         :has-render-error="hasRenderError"
@@ -355,7 +381,7 @@ export default {
       >
         <template #actions>
           <blob-button-group
-            v-if="isLoggedIn && !blobInfo.archived"
+            v-if="isLoggedIn && !blobInfo.archived && !glFeatures.blobOverflowMenu"
             :path="path"
             :name="blobInfo.name"
             :replace-path="blobInfo.replacePath"

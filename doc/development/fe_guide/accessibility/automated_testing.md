@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Automated accessibility testing
 ---
-
-# Automated accessibility testing
 
 We use [axe-core](https://github.com/dequelabs/axe-core) [gems](https://github.com/dequelabs/axe-core-gems)
 to run automated accessibility tests in feature tests.

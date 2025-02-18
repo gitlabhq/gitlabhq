@@ -14,11 +14,15 @@ module Integrations
     def execute
       return error('Integration not found.', :not_found) unless integration
 
-      if handle_inherited_settings?
-        handle_inherited_settings
-      else
-        handle_default_settings
-      end
+      response = if handle_inherited_settings?
+                   handle_inherited_settings
+                 else
+                   handle_default_settings
+                 end
+
+      PropagateIntegrationWorker.perform_async(integration.id) unless response.error? || integration.project_level?
+
+      response
     end
 
     private

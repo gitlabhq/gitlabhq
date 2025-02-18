@@ -1,19 +1,22 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Sourcegraph
 ---
 
-# Sourcegraph
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-FLAG:
-On GitLab Self-Managed, by default this feature is available. To hide the feature,
-an administrator can [disable the feature flag](../administration/feature_flags.md) named `sourcegraph`.
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 On GitLab.com, this feature is available for public projects only.
+
+{{< /alert >}}
 
 [Sourcegraph](https://sourcegraph.com) provides code intelligence features in the GitLab UI.
 When enabled, participating projects display a code intelligence popover in
@@ -37,16 +40,19 @@ For more information, see [epic 2201](https://gitlab.com/groups/gitlab-org/-/epi
 
 ## Set up for GitLab Self-Managed
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Prerequisites:
 
-- You must have a Sourcegraph instance [configured and running](https://docs.sourcegraph.com/admin)
+- You must have a Sourcegraph instance [configured and running](https://sourcegraph.com/docs/admin)
   with your GitLab instance as an external service.
 - If your Sourcegraph instance uses a HTTPS connection to GitLab, you must
-  [configure HTTPS](https://docs.sourcegraph.com/admin/http_https_configuration)
+  [configure HTTPS](https://sourcegraph.com/docs/admin/http_https_configuration)
   for your Sourcegraph instance.
 
 In Sourcegraph:
@@ -55,7 +61,7 @@ In Sourcegraph:
 1. Optional. [Configure your GitLab external service](https://sourcegraph.com/docs/admin/code_hosts/gitlab).
    If your GitLab repositories are already searchable in Sourcegraph, you can skip this step.
 1. Confirm that you can search your repositories from GitLab in your Sourcegraph instance by running a test query.
-1. Add your GitLab instance URL to the [`corsOrigin` setting](https://docs.sourcegraph.com/admin/config/site_config#corsOrigin)
+1. Add your GitLab instance URL to the [`corsOrigin` setting](https://sourcegraph.com/docs/admin/config/site_config#corsOrigin)
    in your Sourcegraph configuration.
 
 Next, configure your GitLab instance to connect to your Sourcegraph instance.
@@ -76,7 +82,7 @@ Prerequisites:
 
 ## Enable Sourcegraph in user preferences
 
-Users on self-managed instances must also configure their user settings to use the
+Users on GitLab Self-Managed must also configure their user settings to use the
 Sourcegraph integration.
 
 On GitLab.com, the integration is available for all public projects.
@@ -84,7 +90,7 @@ Private projects are not supported.
 
 Prerequisites:
 
-- If on a self-managed instance, Sourcegraph must be enabled.
+- For GitLab Self-Managed, Sourcegraph must be enabled.
 
 To enable this feature in your GitLab user preferences:
 

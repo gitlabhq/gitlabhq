@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GitLab architecture overview
 ---
-
-# GitLab architecture overview
 
 ## Software delivery
 
@@ -36,7 +35,7 @@ Kubernetes platform. The largest known GitLab instance is on GitLab.com, which i
 
 A typical installation uses NGINX or Apache as a web server to proxy through
 [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab/tree/master/workhorse) and into the [Puma](https://puma.io)
-application server. GitLab serves web pages and the [GitLab API](../api/rest/index.md) using the Puma
+application server. GitLab serves web pages and the [GitLab API](../api/rest/_index.md) using the Puma
 application server. It uses Sidekiq as a job queue which, in turn, uses Redis as a non-persistent
 database backend for job information, metadata, and incoming jobs.
 
@@ -437,7 +436,7 @@ GitLab can be considered to have two layers from a process perspective:
 
 #### Alertmanager
 
-- [Project page](https://github.com/prometheus/alertmanager/blob/master/README.md)
+- [Project page](https://github.com/prometheus/alertmanager/blob/main/README.md)
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
   - [Charts](https://github.com/helm/charts/tree/master/stable/prometheus)
@@ -451,23 +450,23 @@ GitLab can be considered to have two layers from a process perspective:
 
 - Project page:
   - [Omnibus](https://github.com/certbot/certbot/blob/master/README.rst)
-  - [Charts](https://github.com/jetstack/cert-manager/blob/master/README.md)
+  - [Charts](https://github.com/cert-manager/cert-manager/blob/master/README.md)
 - Configuration:
-  - [Omnibus](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
+  - [Omnibus](https://docs.gitlab.com/omnibus/settings/ssl/)
   - [Charts](https://docs.gitlab.com/charts/installation/tls.html)
   - [Source](../install/installation.md#using-https)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/https.md)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/nginx.md)
 - Layer: Core Service (Processor)
 - GitLab.com: [Secrets Management](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#secrets-management)
 
 #### Consul
 
-- [Project page](https://github.com/hashicorp/consul/blob/master/README.md)
+- [Project page](https://github.com/hashicorp/consul/blob/main/README.md)
 - Configuration:
   - [Omnibus](../administration/consul.md)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
 - Layer: Core Service (Data)
-- GitLab.com: [Consul](../user/gitlab_com/index.md#consul)
+- GitLab.com: [Consul](../user/gitlab_com/_index.md#consul)
 
 Consul is a tool for service discovery and configuration. Consul is distributed, highly available, and extremely scalable.
 
@@ -496,7 +495,7 @@ Elasticsearch is a distributed RESTful search engine built for the cloud.
 
 - [Project page](https://gitlab.com/gitlab-org/gitaly/blob/master/README.md)
 - Configuration:
-  - [Omnibus](../administration/gitaly/index.md)
+  - [Omnibus](../administration/gitaly/_index.md)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/gitaly/)
   - [Source](../install/installation.md#install-gitaly)
 - Layer: Core Service (Data)
@@ -508,7 +507,7 @@ Gitaly is a service designed by GitLab to remove our need for NFS for Git storag
 
 - [Project page](https://gitlab.com/gitlab-org/gitaly/blob/master/README.md)
 - Configuration:
-  - [Omnibus](../administration/gitaly/index.md)
+  - [Omnibus](../administration/gitaly/_index.md)
   - [Source](../install/installation.md#install-gitaly)
 - Layer: Core Service (Data)
 - Process: `praefect`
@@ -519,7 +518,7 @@ repository updates to secondary nodes.
 #### GitLab Geo
 
 - Configuration:
-  - [Omnibus](../administration/geo/setup/index.md)
+  - [Omnibus](../administration/geo/setup/_index.md)
   - [Charts](https://docs.gitlab.com/charts/advanced/geo/)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/geo.md)
 - Layer: Core Service (Processor)
@@ -531,7 +530,7 @@ Geo is a premium feature built to help speed up the development of distributed t
 - [Project page](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter)
 - Configuration:
   - [Omnibus](../administration/monitoring/prometheus/gitlab_exporter.md)
-  - [Charts](https://docs.gitlab.com/charts/charts/gitlab/gitlab-exporter/index.html)
+  - [Charts](https://docs.gitlab.com/charts/charts/gitlab/gitlab-exporter/)
 - Layer: Monitoring
 - Process: `gitlab-exporter`
 - GitLab.com: [Monitoring of GitLab.com](https://handbook.gitlab.com/handbook/engineering/monitoring/)
@@ -543,9 +542,9 @@ GitLab Exporter is a process designed in house that allows us to export metrics 
 - [Project page](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent)
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
-  - [Charts](https://docs.gitlab.com/charts/charts/gitlab/kas/index.html)
+  - [Charts](https://docs.gitlab.com/charts/charts/gitlab/kas/)
 
-The [GitLab agent](../user/clusters/agent/index.md) is an active in-cluster
+The [GitLab agent](../user/clusters/agent/_index.md) is an active in-cluster
 component for solving GitLab and Kubernetes integration tasks in a secure and
 cloud-native way.
 
@@ -554,12 +553,12 @@ You can use it to sync deployments onto your Kubernetes cluster.
 #### GitLab Pages
 
 - Configuration:
-  - [Omnibus](../administration/pages/index.md)
+  - [Omnibus](../administration/pages/_index.md)
   - [Charts](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/37)
   - [Source](../install/installation.md#install-gitlab-pages)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/pages.md)
 - Layer: Core Service (Processor)
-- GitLab.com: [GitLab Pages](../user/gitlab_com/index.md#gitlab-pages)
+- GitLab.com: [GitLab Pages](../user/gitlab_com/_index.md#gitlab-pages)
 
 GitLab Pages is a feature that allows you to publish static websites directly from a repository in GitLab.
 
@@ -574,7 +573,7 @@ You can use it either for personal or business websites, such as portfolios, doc
   - [Source](https://docs.gitlab.com/runner/)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/runner.md)
 - Layer: Core Service (Processor)
-- GitLab.com: [Runners](../ci/runners/index.md)
+- GitLab.com: [Runners](../ci/runners/_index.md)
 
 GitLab Runner runs jobs and sends the results to GitLab.
 
@@ -583,7 +582,7 @@ GitLab CI/CD is the open-source continuous integration service included with Git
 #### GitLab Shell
 
 - [Project page](https://gitlab.com/gitlab-org/gitlab-shell/)
-- [Documentation](gitlab_shell/index.md)
+- [Documentation](gitlab_shell/_index.md)
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/)
@@ -591,7 +590,7 @@ GitLab CI/CD is the open-source continuous integration service included with Git
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
 
-[GitLab Shell](gitlab_shell/index.md) is a program designed at GitLab to handle SSH-based `git` sessions, and modifies the list of authorized keys. GitLab Shell is not a Unix shell nor a replacement for Bash or Zsh.
+[GitLab Shell](gitlab_shell/_index.md) is a program designed at GitLab to handle SSH-based `git` sessions, and modifies the list of authorized keys. GitLab Shell is not a Unix shell nor a replacement for Bash or Zsh.
 
 #### GitLab Workhorse
 
@@ -603,7 +602,7 @@ GitLab CI/CD is the open-source continuous integration service included with Git
 - Layer: Core Service (Processor)
 - Process: `gitlab-workhorse`
 
-[GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/workhorse) is a program designed at GitLab to help alleviate pressure from Puma. You can read more about the [historical reasons for developing](https://about.gitlab.com/blog/2016/04/12/a-brief-history-of-gitlab-workhorse/). It's designed to act as a smart reverse proxy to help speed up GitLab as a whole.
+[GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/development/workhorse) is a program designed at GitLab to help alleviate pressure from Puma. You can read more about the [historical reasons for developing](https://about.gitlab.com/blog/2016/04/12/a-brief-history-of-gitlab-workhorse/). It's designed to act as a smart reverse proxy to help speed up GitLab as a whole.
 
 #### Grafana
 
@@ -618,12 +617,12 @@ Grafana is an open source, feature rich metrics dashboard and graph editor for G
 
 #### Jaeger
 
-- [Project page](https://github.com/jaegertracing/jaeger/blob/master/README.md)
+- [Project page](https://github.com/jaegertracing/jaeger/blob/main/README.md)
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4104)
   - [Charts](https://docs.gitlab.com/charts/charts/globals#tracing)
-  - [Source](../development/distributed_tracing.md#enabling-distributed-tracing)
-  - [GDK](../development/distributed_tracing.md#using-jaeger-in-the-gitlab-development-kit)
+  - [Source](distributed_tracing.md#enabling-distributed-tracing)
+  - [GDK](distributed_tracing.md#using-jaeger-in-the-gitlab-development-kit)
 - Layer: Monitoring
 - GitLab.com: [Configuration to enable Tracing for a GitLab instance](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4104) issue.
 
@@ -632,7 +631,7 @@ It can be used for monitoring microservices-based distributed systems.
 
 #### Logrotate
 
-- [Project page](https://github.com/logrotate/logrotate/blob/master/README.md)
+- [Project page](https://github.com/logrotate/logrotate/blob/main/README.md)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate)
 - Layer: Core Service
@@ -643,9 +642,9 @@ to make sure we were logging responsibly. This is just a packaged version of the
 
 #### Mattermost
 
-- [Project page](https://github.com/mattermost/mattermost-server/blob/master/README.md)
+- [Project page](https://github.com/mattermost/mattermost/blob/master/README.md)
 - Configuration:
-  - [Omnibus](../integration/mattermost/index.md)
+  - [Omnibus](../integration/mattermost/_index.md)
   - [Charts](https://docs.mattermost.com/install/install-mmte-helm-gitlab-helm.html)
 - Layer: Core Service (Processor)
 - GitLab.com: [Mattermost](../user/project/integrations/mattermost.md)
@@ -668,7 +667,7 @@ MinIO is an object storage server released under the GNU AGPL v3.0. It is compat
 
 - Project page:
   - [Omnibus](https://github.com/nginx/nginx)
-  - [Charts](https://github.com/kubernetes/ingress-nginx/blob/master/README.md)
+  - [Charts](https://github.com/kubernetes/ingress-nginx/blob/main/README.md)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/nginx.html)
   - [Charts](https://docs.gitlab.com/charts/charts/nginx/)
@@ -692,7 +691,7 @@ NGINX has an Ingress port for all HTTP requests and routes them to the appropria
 
 #### Patroni
 
-- [Project Page](https://github.com/zalando/patroni)
+- [Project Page](https://github.com/patroni/patroni)
 - Configuration:
   - [Omnibus](../administration/postgresql/replication_and_failover.md#patroni)
 - Layer: Core Service (Data)
@@ -736,7 +735,7 @@ GitLab packages the popular Database to provide storage for Application meta dat
 
 #### PostgreSQL Exporter
 
-- [Project page](https://github.com/wrouesnel/postgres_exporter/blob/master/README.md)
+- [Project page](https://github.com/prometheus-community/postgres_exporter/blob/master/README.md)
 - Configuration:
   - [Omnibus](../administration/monitoring/prometheus/postgres_exporter.md)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
@@ -744,23 +743,23 @@ GitLab packages the popular Database to provide storage for Application meta dat
 - Process: `postgres-exporter`
 - GitLab.com: [Monitoring of GitLab.com](https://handbook.gitlab.com/handbook/engineering/monitoring/)
 
-[`postgres_exporter`](https://github.com/wrouesnel/postgres_exporter) is the community provided Prometheus exporter that delivers data about PostgreSQL to Prometheus for use in Grafana Dashboards.
+[`postgres_exporter`](https://github.com/prometheus-community/postgres_exporter) is the community provided Prometheus exporter that delivers data about PostgreSQL to Prometheus for use in Grafana Dashboards.
 
 #### Prometheus
 
-- [Project page](https://github.com/prometheus/prometheus/blob/master/README.md)
+- [Project page](https://github.com/prometheus/prometheus/blob/main/README.md)
 - Configuration:
-  - [Omnibus](../administration/monitoring/prometheus/index.md)
+  - [Omnibus](../administration/monitoring/prometheus/_index.md)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#prometheus)
 - Layer: Monitoring
 - Process: `prometheus`
-- GitLab.com: [Prometheus](../user/gitlab_com/index.md#prometheus)
+- GitLab.com: [Prometheus](../user/gitlab_com/_index.md#prometheus)
 
 Prometheus is a time-series tool that helps GitLab administrators expose metrics about the individual processes used to provide GitLab the service.
 
 #### Redis
 
-- [Project page](https://github.com/antirez/redis/blob/unstable/README.md)
+- [Project page](https://github.com/redis/redis/blob/unstable/README.md)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/redis.html)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#redis)
@@ -828,16 +827,16 @@ For monitoring deployed apps, see the [Sentry integration docs](../operations/er
 
 #### Sidekiq
 
-- [Project page](https://github.com/mperham/sidekiq/blob/master/README.md)
+- [Project page](https://github.com/sidekiq/sidekiq/blob/main/README.md)
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/)
-  - [minikube Minimal](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/index.html)
+  - [minikube Minimal](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/)
   - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
 - Process: `sidekiq`
-- GitLab.com: [Sidekiq](../user/gitlab_com/index.md#sidekiq)
+- GitLab.com: [Sidekiq](../user/gitlab_com/_index.md#sidekiq)
 
 Sidekiq is a Ruby background job processor that pulls jobs from the Redis queue and processes them. Background jobs allow GitLab to provide a faster request/response cycle by moving work into the background.
 
@@ -853,14 +852,14 @@ Starting with GitLab 13.0, Puma is the default web server.
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
 - Process: `puma`
-- GitLab.com: [Puma](../user/gitlab_com/index.md#puma)
+- GitLab.com: [Puma](../user/gitlab_com/_index.md#puma)
 
 [Puma](https://puma.io/) is a Ruby application server that is used to run the core Rails Application that provides the user facing features in GitLab. Often this displays in process output as `bundle` or `config.ru` depending on the GitLab version.
 
 #### LDAP Authentication
 
 - Configuration:
-  - [Omnibus](../administration/auth/ldap/index.md)
+  - [Omnibus](../administration/auth/ldap/_index.md)
   - [Charts](https://docs.gitlab.com/charts/charts/globals.html#ldap)
   - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/ldap.md)
@@ -875,7 +874,7 @@ Starting with GitLab 13.0, Puma is the default web server.
   - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
-- GitLab.com: [Mail configuration](../user/gitlab_com/index.md#mail-configuration)
+- GitLab.com: [Mail configuration](../user/gitlab_com/_index.md#mail-configuration)
 
 #### Inbound Email
 
@@ -885,7 +884,7 @@ Starting with GitLab 13.0, Puma is the default web server.
   - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
-- GitLab.com: [Mail configuration](../user/gitlab_com/index.md#mail-configuration)
+- GitLab.com: [Mail configuration](../user/gitlab_com/_index.md#mail-configuration)
 
 ## GitLab by request type
 
@@ -1011,12 +1010,12 @@ in Rails, scheduled to run whenever an SSH key is modified by a user.
 instead of keys. In this case, `AuthorizedKeysCommand` is replaced with an
 `AuthorizedPrincipalsCommand`. This extracts a username from the certificate
 without using the Rails internal API, which is used instead of `key_id` in the
-[`/api/internal/allowed`](internal_api/index.md) call later.
+[`/api/internal/allowed`](internal_api/_index.md) call later.
 
 GitLab Shell also has a few operations that do not involve Gitaly, such as
 resetting two-factor authentication codes. These are handled in the same way,
 except there is no round-trip into Gitaly - Rails performs the action as part
-of the [internal API](internal_api/index.md) call, and GitLab Shell streams the
+of the [internal API](internal_api/_index.md) call, and GitLab Shell streams the
 response back to the user directly.
 
 ## System layout

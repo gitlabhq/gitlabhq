@@ -1,9 +1,0 @@
----
-migration_job_name: ConvertCreditCardValidationDataToHashes
-description: |
-  This migration converts a credit card's expiration_date, last_digits, network & holder_name
-  to hash and store values in new columns.
-feature_category: user_profile
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129350
-milestone: '16.4'
-finalized_by: '20240630231802'

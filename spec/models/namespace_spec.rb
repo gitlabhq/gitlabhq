@@ -1138,7 +1138,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       let_it_be(:project_namespace) { user.namespace }
 
       context 'with no project' do
-        it { expect(project_namespace.all_container_repositories).to match_array([]) }
+        it { expect(project_namespace.all_container_repositories).to be_empty }
       end
 
       context 'with projects' do
@@ -1157,7 +1157,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       let_it_be(:subgroup2) { create(:group, parent: subgroup1) }
 
       context 'with no project' do
-        it { expect(project_namespace.all_container_repositories).to match_array([]) }
+        it { expect(project_namespace.all_container_repositories).to be_empty }
       end
 
       context 'with projects' do

@@ -2,9 +2,8 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Concept topic type
 ---
-
-# Concept topic type
 
 A concept introduces a single feature or concept.
 
@@ -24,7 +23,8 @@ If you start describing another concept, start a new concept and link to it.
 Concepts should be in this format:
 
 ```markdown
-# Title (a noun, like "Widgets")
+title: Title (a noun, like "Widgets")
+---
 
 A paragraph or two that explains what this thing is and why you would use it.
 

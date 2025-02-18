@@ -10,4 +10,4 @@
 
     In GitLab 17.0, the Rake task will be removed.
 
-    Instead, GitHub repositories can be imported by using the [API](https://docs.gitlab.com/ee/api/import.html#import-repository-from-github) or the [UI](https://docs.gitlab.com/ee/user/project/import/github.html).
+    Instead, GitHub repositories can be imported by using the [API](https://docs.gitlab.com/api/import/#import-repository-from-github) or the [UI](https://docs.gitlab.com/user/project/import/github/).

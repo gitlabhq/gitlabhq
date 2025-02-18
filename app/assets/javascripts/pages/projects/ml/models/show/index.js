@@ -5,4 +5,7 @@ import { ShowMlModel } from '~/ml/model_registry/apps';
 
 Vue.use(VueRouter);
 
-initSimpleApp('#js-mount-show-ml-model', ShowMlModel, { withApolloProvider: true });
+initSimpleApp('#js-mount-show-ml-model', ShowMlModel, {
+  withApolloProvider: true,
+  name: 'ShowMlModel',
+});

@@ -2,16 +2,18 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Troubleshooting problems with repository mirroring for GitLab projects."
+description: Troubleshooting problems with repository mirroring for GitLab projects.
+title: Troubleshooting repository mirroring
 ---
 
-# Troubleshooting repository mirroring
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-When mirroring fails, project maintainers can see a link similar to **{warning-solid}** **Pull mirroring failed 1 hour ago.**
+{{< /details >}}
+
+When mirroring fails, project maintainers can see a link similar to {{< icon name="warning-solid" >}} **Pull mirroring failed 1 hour ago.**
 on the project details page. Select this link to go directly to the mirroring settings,
 where GitLab displays an **Error** badge for the mirrored repository. You can hover your mouse cursor
 over the badge to display the text of the error:
@@ -54,7 +56,7 @@ This error can occur when a firewall performs a `Deep SSH Inspection` on outgoin
 ## Could not read username: terminal prompts disabled
 
 If you receive this error after creating a new project using
-[GitLab CI/CD for external repositories](../../../../ci/ci_cd_for_external_repos/index.md):
+[GitLab CI/CD for external repositories](../../../../ci/ci_cd_for_external_repos/_index.md):
 
 - In Bitbucket Cloud:
 
@@ -63,7 +65,7 @@ If you receive this error after creating a new project using
   terminal prompts disabled\n": exit status 128."
   ```
 
-- In Bitbucket Server (self-managed):
+- In Bitbucket Server (self-hosted):
 
   ```plaintext
   "2:fetch remote: "fatal: could not read Username for 'https://lab.example.com':
@@ -84,13 +86,13 @@ Check if the repository owner is specified in the URL of your mirrored repositor
      https://OWNER@bitbucket.org/ACCOUNTNAME/REPONAME.git
      ```
 
-   - In Bitbucket Server (self-managed):
+   - In Bitbucket Server (self-hosted):
 
      ```plaintext
      https://OWNER@lab.example.com/PATH_TO_REPO/REPONAME.git
      ```
 
-When connecting to the Cloud or self-managed Bitbucket repository for mirroring, the repository owner is required in the string.
+When connecting to the Cloud or self-hosted Bitbucket repository for mirroring, the repository owner is required in the string.
 
 ## Pull mirror is missing LFS files
 
@@ -111,14 +113,14 @@ Pipelines might not run for multiple reasons:
   [is not displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/346630)
   when checking the project afterwards.
 
-  When mirroring is set up using [CI/CD for external repositories](../../../../ci/ci_cd_for_external_repos/index.md)
+  When mirroring is set up using [CI/CD for external repositories](../../../../ci/ci_cd_for_external_repos/_index.md)
   this setting is enabled by default. If repository mirroring is manually reconfigured, triggering pipelines
   is off by default and this could be why pipelines stop running.
-- [`rules`](../../../../ci/yaml/index.md#rules) configuration prevents any jobs from
+- [`rules`](../../../../ci/yaml/_index.md#rules) configuration prevents any jobs from
   being added to the pipeline.
 - Pipelines are triggered using [the account that set up the pull mirror](https://gitlab.com/gitlab-org/gitlab/-/issues/13697).
   If the account is no longer valid, pipelines do not run.
-- [Branch protection](../../repository/branches/protected.md#run-pipelines-on-protected-branches)
+- [Branch protection](../branches/protected.md#run-pipelines-on-protected-branches)
   might prevent the account that set up mirroring from running pipelines.
 
 ## `The repository is being updated`, but neither fails nor succeeds visibly
@@ -147,11 +149,11 @@ fail nor succeed. They also do not leave a clear log. To check for this problem:
 
 1. After you run the command, the [background jobs page](../../../../administration/admin_area.md#background-jobs)
    should show new mirroring jobs being scheduled, especially when
-   [triggered manually](index.md#update-a-mirror).
+   [triggered manually](_index.md#update-a-mirror).
 
 ## Invalid URL
 
-If you receive this error while setting up mirroring over [SSH](index.md#ssh-authentication), make sure the URL is in a valid format.
+If you receive this error while setting up mirroring over [SSH](_index.md#ssh-authentication), make sure the URL is in a valid format.
 
 Mirroring **does not** support SCP-like clone URLs in the form of
 `git@gitlab.com:gitlab-org/gitlab.git`, with host and project path separated using `:`.
@@ -163,7 +165,7 @@ that includes the `ssh://` protocol, like `ssh://git@gitlab.com/gitlab-org/gitla
 This error is returned when the target host public SSH key changes.
 Public SSH keys rarely change. If host key verification fails,
 but you suspect the key is still valid, you must delete the repository mirror
-and create it again. For more information, see [Create a repository mirror](index.md#create-a-repository-mirror).
+and create it again. For more information, see [Create a repository mirror](_index.md#create-a-repository-mirror).
 
 ## Transfer mirror users and tokens to a single service account
 
@@ -173,8 +175,11 @@ Use case: If you have multiple users using their own GitHub credentials to set u
 repository mirroring, mirroring breaks when people leave the company. Use this
 script to migrate disparate mirroring users and tokens into a single service account:
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 ```ruby
 svc_user = User.find_by(username: 'ourServiceUser')
@@ -235,7 +240,7 @@ The error can be avoided by:
 
 ## Pull or push mirror fails to update: `The project is not mirrored`
 
-Pull and push mirrors fail to update when [GitLab Silent Mode](../../../../administration/silent_mode/index.md) is enabled.
+Pull and push mirrors fail to update when [GitLab Silent Mode](../../../../administration/silent_mode/_index.md) is enabled.
 When this happens, the option to allow mirroring on the UI is disabled.
 
 An administrator can check to confirm that GitLab Silent Mode is disabled.
@@ -291,4 +296,4 @@ For more information, see the [Git documentation on discovering references](http
 To resolve this, you can do either of the following:
 
 - Migrate the source repository to a "smart" server.
-- Mirror the repository using the [SSH protocol](index.md#ssh-authentication) (requires authentication).
+- Mirror the repository using the [SSH protocol](_index.md#ssh-authentication) (requires authentication).

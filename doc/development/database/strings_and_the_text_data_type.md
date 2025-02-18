@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Strings and the Text data type
 ---
-
-# Strings and the Text data type
 
 When adding new columns to store strings or other textual information:
 
@@ -34,9 +33,12 @@ but only for updating the declaration of the columns. We can then validate it at
 `VALIDATE CONSTRAINT`, which requires only a `SHARE UPDATE EXCLUSIVE LOCK` (only conflicts with other
 validations and index creation while it allows reads and writes).
 
-NOTE:
+{{< alert type="note" >}}
+
 Don't use text columns for `attr_encrypted` attributes. Use a
 [`:binary` column](../migration_style_guide.md#encrypted-attributes) instead.
+
+{{< /alert >}}
 
 ## Create a new table with text columns
 
@@ -143,9 +145,12 @@ Adding text limits to existing database columns requires multiple steps split in
    - Add a post-deployment migration to add the limit to the text column with `validate: false`.
    - Add a post-deployment migration to fix the existing records.
 
-     NOTE:
+     {{< alert type="note" >}}
+
      Depending on the size of the table, a background migration for cleanup could be required in the next release.
      See [text limit constraints on large tables](strings_and_the_text_data_type.md#text-limit-constraints-on-large-tables) for more information.
+
+     {{< /alert >}}
 
    - Create an issue for the next milestone to validate the text limit.
 
@@ -164,9 +169,12 @@ other processes that try to access it while running the update.
 Also, after checking our production database, we know that there are `issues` with more characters in
 their title than the 1024 character limit, so we cannot add and validate the constraint in one step.
 
-NOTE:
+{{< alert type="note" >}}
+
 Even if we did not have any record with a title larger than the provided limit, another
 instance of GitLab could have such records, so we would follow the same process either way.
+
+{{< /alert >}}
 
 #### Prevent new invalid records (current release)
 

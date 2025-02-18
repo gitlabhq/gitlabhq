@@ -2,15 +2,17 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Running Composer and npm scripts with deployment via SCP in GitLab CI/CD
 ---
 
-# Running Composer and npm scripts with deployment via SCP in GitLab CI/CD
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This guide covers the building of dependencies of a PHP project while compiling assets via an npm script using [GitLab CI/CD](../../index.md).
+{{< /details >}}
+
+This guide covers the building of dependencies of a PHP project while compiling assets via an npm script using [GitLab CI/CD](../../_index.md).
 
 While it is possible to create your own image with custom PHP and Node.js versions, for brevity we use an existing [Docker image](https://hub.docker.com/r/tetraweb/php/) that contains both PHP and Node.js installed.
 

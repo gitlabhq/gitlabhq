@@ -11,7 +11,7 @@
   manual_task: false  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   window: 3  # Can be "1", "2" or "3"
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    The [ZenTao product integration](https://docs.gitlab.com/ee/user/project/integrations/zentao.html) has been deprecated
+    The [ZenTao product integration](https://docs.gitlab.com/user/project/integrations/zentao/) has been deprecated
     and will be moved to the JiHu GitLab codebase.
 #
 # OPTIONAL END OF SUPPORT FIELDS

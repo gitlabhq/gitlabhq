@@ -54,7 +54,7 @@ RSpec.describe 'DeletePagesDeployment mutation', feature_category: :pages do
       end
 
       it 'has deleted_at set to nil' do
-        expect(returned_pages_deployment["deletedAt"]).to be(nil)
+        expect(returned_pages_deployment["deletedAt"]).to be_nil
       end
     end
   end

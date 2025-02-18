@@ -589,15 +589,27 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
       sign_in(user)
     end
 
-    context 'sorting by votes' do
-      it 'sorts most popular merge requests' do
-        get :merge_requests, params: { id: group.to_param, sort: 'upvotes_desc' }
-        expect(assigns(:merge_requests)).to eq [merge_request_2, merge_request_1]
-      end
+    it 'renders merge requests index template' do
+      get :merge_requests, params: { id: group.to_param }
 
-      it 'sorts least popular merge requests' do
-        get :merge_requests, params: { id: group.to_param, sort: 'downvotes_desc' }
-        expect(assigns(:merge_requests)).to eq [merge_request_2, merge_request_1]
+      expect(response).to render_template('groups/merge_requests')
+    end
+
+    context 'sorting by votes' do
+      context 'when vue_merge_request_list is disabled' do
+        before do
+          stub_feature_flags(vue_merge_request_list: false)
+        end
+
+        it 'sorts most popular merge requests' do
+          get :merge_requests, params: { id: group.to_param, sort: 'upvotes_desc' }
+          expect(assigns(:merge_requests)).to eq [merge_request_2, merge_request_1]
+        end
+
+        it 'sorts least popular merge requests' do
+          get :merge_requests, params: { id: group.to_param, sort: 'downvotes_desc' }
+          expect(assigns(:merge_requests)).to eq [merge_request_2, merge_request_1]
+        end
       end
     end
 

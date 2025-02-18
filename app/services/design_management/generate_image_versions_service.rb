@@ -22,7 +22,7 @@ module DesignManagement
 
     def execute
       # rubocop: disable CodeReuse/ActiveRecord
-      version.actions.includes(:design).each do |action|
+      version.actions.includes(:design).find_each do |action|
         generate_image(action)
       end
       # rubocop: enable CodeReuse/ActiveRecord

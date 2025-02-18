@@ -1,18 +1,27 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import DraftsCount from '~/batch_comments/components/drafts_count.vue';
-import { createStore } from '~/batch_comments/stores';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useBatchComments } from '~/batch_comments/store';
+
+Vue.use(PiniaVuePlugin);
 
 describe('Batch comments drafts count component', () => {
-  let store;
   let wrapper;
+  let pinia;
 
   beforeEach(() => {
-    store = createStore();
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
 
-    store.state.batchComments.drafts.push('comment');
+    useBatchComments().drafts.push('comment');
 
-    wrapper = mount(DraftsCount, { store });
+    wrapper = mount(DraftsCount, { pinia });
   });
 
   it('renders count', () => {
@@ -24,7 +33,7 @@ describe('Batch comments drafts count component', () => {
 
     expect(el.text()).toContain('draft');
 
-    store.state.batchComments.drafts.push('comment 2');
+    useBatchComments().drafts.push('comment 2');
     await nextTick();
 
     expect(el.text()).toContain('drafts');

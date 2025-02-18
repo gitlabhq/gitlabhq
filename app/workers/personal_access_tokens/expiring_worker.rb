@@ -99,7 +99,6 @@ module PersonalAccessTokens
     # https://gitlab.com/gitlab-org/gitlab/-/issues/495766
     #
     # rubocop: disable CodeReuse/ActiveRecord -- We need to specify batch size to avoid timing out of worker
-    # rubocop: disable Metrics/AbcSize -- complexity is necessary to add debugging info without doing so much refactoring that we potentially change the behavior
     def process_project_bot_tokens(interval = :seven_days)
       notifications_delivered = 0
       project_bot_ids_without_resource = []
@@ -116,33 +115,9 @@ module PersonalAccessTokens
         token_ids = tokens.pluck(:id)
         bot_user_ids = tokens.pluck(:user_id).uniq
 
-        extended_log(
-          "Checking #{interval} resource access token expiration email for tokens",
-          token_ids: token_ids,
-          bot_user_ids: bot_user_ids
-        )
-
         bot_users = User.id_in(bot_user_ids).with_personal_access_tokens_and_resources
 
-        if bot_users.count != bot_user_ids.count
-          extended_log(
-            "Bot users mismatch for #{interval}",
-            bot_user_ids: bot_user_ids,
-            returned_bot_ids: bot_users.map(&:id)
-          )
-        end
-
         bot_users.each do |project_bot|
-          if bot_user_notified_ids.include?(project_bot.id)
-            extended_log(
-              "Attempted duplicate delivery for #{interval} to bot user #{project_bot.id}",
-              bot_user_notified_ids: bot_user_notified_ids,
-              project_bot_id: project_bot.id
-            )
-
-            next
-          end
-
           if project_bot.resource_bot_resource.nil?
             project_bot_ids_without_resource << project_bot.id
 
@@ -154,9 +129,12 @@ module PersonalAccessTokens
               # project bot does not have more than 1 token
               expiring_user_token = project_bot.personal_access_tokens.first
 
-              # webhooks do not include information about when the token expires, so
-              # only trigger on seven_days interval to avoid changing existing behavior
-              execute_web_hooks(project_bot, expiring_user_token) if interval == :seven_days
+              # If feature flag is not enabled webhooks will only execute if interval is seven_days
+              resource_namespace = bot_resource_namepace(project_bot.resource_bot_resource)
+              if Feature.enabled?(:extended_expiry_webhook_execution_setting, resource_namespace) ||
+                  interval == :seven_days
+                execute_web_hooks(project_bot, expiring_user_token, { interval: interval })
+              end
 
               interval_days = PersonalAccessToken.notification_interval(interval)
               deliver_bot_notifications(project_bot, expiring_user_token.name, days_to_expire: interval_days)
@@ -194,7 +172,6 @@ module PersonalAccessTokens
       log_extra_metadata_on_done(
         :total_failed_notifications_for_resource_bots, project_bot_ids_with_failed_delivery.count)
     end
-    # rubocop: enable Metrics/AbcSize
 
     def fetch_bot_tokens(interval, min_expires_at = nil, exclude_user_ids = [])
       PersonalAccessToken
@@ -220,17 +197,6 @@ module PersonalAccessTokens
       notification_service.access_token_about_to_expire(user, token_names, days_to_expire: days_to_expire)
     end
 
-    def extended_log(message, extra_data = {})
-      return unless Feature.enabled?(:pats_expiring_worker_extended_logging, :instance)
-
-      Gitlab::AppLogger.info(
-        extra_data.merge(
-          message: message,
-          class: self.class
-        )
-      )
-    end
-
     def log_exception(ex, user)
       Gitlab::AppLogger.error(
         message: 'Failed to send notification about expiring resource access tokens',
@@ -241,13 +207,13 @@ module PersonalAccessTokens
       )
     end
 
-    def execute_web_hooks(bot_user, token)
+    def execute_web_hooks(bot_user, token, data = {})
       resource = bot_user.resource_bot_resource
 
       return unless resource
       return if resource.is_a?(Project) && !resource.has_active_hooks?(:resource_access_token_hooks)
 
-      hook_data = Gitlab::DataBuilder::ResourceAccessToken.build(token, :expiring, resource)
+      hook_data = Gitlab::DataBuilder::ResourceAccessTokenPayload.build(token, :expiring, resource, data)
       resource.execute_hooks(hook_data, :resource_access_token_hooks)
     end
 
@@ -255,5 +221,13 @@ module PersonalAccessTokens
       NotificationService.new
     end
     strong_memoize_attr :notification_service
+
+    def bot_resource_namepace(resource)
+      if resource.is_a?(Project)
+        resource.namespace
+      else
+        resource
+      end
+    end
   end
 end

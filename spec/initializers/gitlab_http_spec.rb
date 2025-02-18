@@ -17,6 +17,14 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
     expect { described_class.get('http://example.org') }.to raise_error(Net::ReadTimeout)
   end
 
+  describe 'log_with_level_proc' do
+    it 'calls AppJsonLogger with the correct log level and parameters' do
+      expect(::Gitlab::AppJsonLogger).to receive(:debug).with({ message: 'Test', caller: anything })
+
+      described_class.configuration.log_with_level(:debug, message: 'Test')
+    end
+  end
+
   context 'when silent_mode_enabled is true' do
     before do
       stub_application_setting(silent_mode_enabled: true)

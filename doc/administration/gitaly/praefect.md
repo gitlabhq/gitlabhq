@@ -2,18 +2,20 @@
 stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Configure Gitaly Cluster
 ---
 
-# Configure Gitaly Cluster
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Configure Gitaly Cluster using either:
 
 - Gitaly Cluster configuration instructions available as part of
-  [reference architectures](../reference_architectures/index.md) for installations of up to:
+  [reference architectures](../reference_architectures/_index.md) for installations of up to:
   - [60 RPS or 3,000 users](../reference_architectures/3k_users.md#configure-gitaly-cluster).
   - [100 RPS or 5,000 users](../reference_architectures/5k_users.md#configure-gitaly-cluster).
   - [200 RPS or 10,000 users](../reference_architectures/10k_users.md#configure-gitaly-cluster).
@@ -21,11 +23,14 @@ Configure Gitaly Cluster using either:
   - [1000 RPS or 50,000 users](../reference_architectures/50k_users.md#configure-gitaly-cluster).
 - The custom configuration instructions that follow on this page.
 
-Smaller GitLab installations may need only [Gitaly itself](index.md).
+Smaller GitLab installations may need only [Gitaly itself](_index.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 Gitaly Cluster is not yet supported in Kubernetes, Amazon ECS, or similar container environments. For more information, see
 [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).
+
+{{< /alert >}}
 
 ## Requirements
 
@@ -36,8 +41,11 @@ The minimum recommended configuration for a Gitaly Cluster requires:
 - 3 Praefect nodes
 - 3 Gitaly nodes (1 primary, 2 secondary)
 
-NOTE:
-[Disk requirements](index.md#disk-requirements) apply to Gitaly nodes.
+{{< alert type="note" >}}
+
+[Disk requirements](_index.md#disk-requirements) apply to Gitaly nodes.
+
+{{< /alert >}}
 
 You should configure an odd number of Gitaly nodes so that transactions have a tie-breaker in case one of the
 Gitaly nodes fails in a mutating RPC call.
@@ -45,9 +53,12 @@ Gitaly nodes fails in a mutating RPC call.
 See the [design document](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/design_ha.md)
 for implementation details.
 
-NOTE:
+{{< alert type="note" >}}
+
 If not set in GitLab, feature flags are read as false from the console and Praefect uses their
 default value. The default value depends on the GitLab version.
+
+{{< /alert >}}
 
 ### Network latency and connectivity
 
@@ -55,7 +66,7 @@ Network latency for Gitaly Cluster should ideally be measurable in single-digit 
 important for:
 
 - Gitaly node health checks. Nodes must be able to respond within 1 second.
-- Reference transactions that enforce [strong consistency](index.md#strong-consistency). Lower latencies mean Gitaly
+- Reference transactions that enforce [strong consistency](_index.md#strong-consistency). Lower latencies mean Gitaly
   nodes can agree on changes faster.
 
 Achieving acceptable latency between Gitaly nodes:
@@ -65,9 +76,9 @@ Achieving acceptable latency between Gitaly nodes:
   are designed for this type of synchronization. Latency of less than 2 ms should be sufficient for Gitaly Cluster.
 
 If you can't provide low network latencies for replication (for example, between distant locations), consider Geo. For
-more information, see [Comparison to Geo](index.md#comparison-to-geo).
+more information, see [Comparison to Geo](_index.md#comparison-to-geo).
 
-Gitaly Cluster [components](index.md#components) communicate with each other over many routes. Your firewall rules must
+Gitaly Cluster [components](_index.md#components) communicate with each other over many routes. Your firewall rules must
 allow the following for Gitaly Cluster to function properly:
 
 | From                   | To                     | Default port | TLS port |
@@ -81,10 +92,13 @@ allow the following for Gitaly Cluster to function properly:
 | Gitaly                 | Praefect               | `2305`       | `3305`   |
 | Gitaly                 | Gitaly                 | `8075`       | `9999`   |
 
-NOTE:
+{{< alert type="note" >}}
+
 Gitaly does not directly connect to Praefect. However, requests from Gitaly to the Praefect
 load balancer may still be blocked unless firewalls on the Praefect nodes allow traffic from
 the Gitaly nodes.
+
+{{< /alert >}}
 
 ### Praefect database storage
 
@@ -166,8 +180,11 @@ with secure tokens as you complete the setup process.
 
 We note in the instructions below where these secrets are required.
 
-NOTE:
+{{< alert type="note" >}}
+
 Linux package installations can use `gitlab-secrets.json` for `GITLAB_SHELL_SECRET_TOKEN`.
+
+{{< /alert >}}
 
 ### Customize time server setting
 
@@ -179,11 +196,14 @@ following to `gitlab.rb` on each node:
 
 ### PostgreSQL
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not store the GitLab application database and the Praefect
-database on the same PostgreSQL server if using [Geo](../geo/index.md).
+database on the same PostgreSQL server if using [Geo](../geo/_index.md).
 The replication state is internal to each instance of GitLab and should
 not be replicated.
+
+{{< /alert >}}
 
 These instructions help set up a single PostgreSQL database, which creates a single point of failure. To avoid this, you can configure your own clustered
 PostgreSQL. Support for PostgreSQL replication and failover using the Linux package is proposed in [epic 7814](https://gitlab.com/groups/gitlab-org/-/epics/7814).
@@ -193,7 +213,7 @@ Clustered database support for other databases (for example, Praefect and Geo da
 The following options are available:
 
 - For non-Geo installations, either:
-  - Use one of the documented [PostgreSQL setups](../postgresql/index.md).
+  - Use one of the documented [PostgreSQL setups](../postgresql/_index.md).
   - Use your own third-party database setup. This requires [manual setup](#manual-database-setup).
 - For Geo instances, either:
   - Set up a separate [PostgreSQL instance](https://www.postgresql.org/docs/11/high-availability.html).
@@ -455,11 +475,14 @@ praefect['configuration'] = {
 
 With this configuration, Praefect uses PgBouncer for both connection types.
 
-NOTE:
+{{< alert type="note" >}}
+
 Linux package installations handle the authentication requirements (using `auth_query`), but if you are preparing
 your databases manually and configuring an external PgBouncer, you must include `praefect` user and
 its password in the file used by PgBouncer. For example, `userlist.txt` if the [`auth_file`](https://www.pgbouncer.org/config.html#auth_file)
 configuration option is set. For more details, consult the PgBouncer documentation.
+
+{{< /alert >}}
 
 #### Configure Praefect to connect directly to PostgreSQL
 
@@ -502,9 +525,12 @@ If there are multiple Praefect nodes:
 
 To complete this section you need a [configured PostgreSQL server](#postgresql), including:
 
-WARNING:
+{{< alert type="warning" >}}
+
 Praefect should be run on a dedicated node. Do not run Praefect on the
 application server, or a Gitaly node.
+
+{{< /alert >}}
 
 On the **Praefect** node:
 
@@ -622,11 +648,14 @@ Updates to example must be made at:
    so we use `default` here as well. This cluster has three Gitaly nodes `gitaly-1`,
    `gitaly-2`, and `gitaly-3`, which are intended to be replicas of each other.
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    If you have data on an already existing storage called
    `default`, you should configure the virtual storage with another name and
-   [migrate the data to the Gitaly Cluster storage](index.md#migrate-to-gitaly-cluster)
+   [migrate the data to the Gitaly Cluster storage](_index.md#migrate-to-gitaly-cluster)
    afterwards.
+
+   {{< /alert >}}
 
    Replace `PRAEFECT_INTERNAL_TOKEN` with a strong secret, which is used by
    Praefect when communicating with Gitaly nodes in the cluster. This token is
@@ -637,10 +666,13 @@ Updates to example must be made at:
    More Gitaly nodes can be added to the cluster to increase the number of
    replicas. More clusters can also be added for very large GitLab instances.
 
-   NOTE:
-   When adding additional Gitaly nodes to a virtual storage, all storage names
+   {{< alert type="note" >}}
+
+When adding additional Gitaly nodes to a virtual storage, all storage names
    in that virtual storage must be unique. Additionally, all Gitaly node
    addresses referenced in the Praefect configuration must be unique.
+
+   {{< /alert >}}
 
    ```ruby
    # Name of storage hash must match storage name in gitlab_rails['repositories_storages'] on GitLab
@@ -734,7 +766,7 @@ for secure connections, you must:
 
 Additionally the certificate, or its certificate authority, must be installed on all Gitaly servers
 and on all Praefect clients that communicate with it following the procedure described in
-[GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates) (and repeated below).
+[GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates) (and repeated below).
 
 Note the following:
 
@@ -871,7 +903,11 @@ For self-compiled installations:
 
 #### Service discovery
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8971) in GitLab 15.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8971) in GitLab 15.10.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -938,9 +974,9 @@ You can also appoint an authoritative name server by setting it in this format:
 
 - `dns://[authority_host]:[authority_port]/[host]:[port]`
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Add the IP address for each Praefect node to the DNS service discovery address.
 1. On the Praefect clients (except Gitaly servers), edit `gitlab_rails['repositories_storages']` in
@@ -958,7 +994,9 @@ You can also appoint an authoritative name server by setting it in this format:
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Install a DNS service discovery service. Register all Praefect nodes with the service.
 1. On the Praefect clients (except Gitaly servers), edit `storages` in
@@ -974,7 +1012,9 @@ You can also appoint an authoritative name server by setting it in this format:
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ##### Configure service discovery with Consul
 
@@ -1027,8 +1067,11 @@ Prerequisites:
 
 ### Gitaly
 
-NOTE:
+{{< alert type="note" >}}
+
 Complete these steps for **each** Gitaly node.
+
+{{< /alert >}}
 
 To complete this section you need:
 
@@ -1037,7 +1080,7 @@ To complete this section you need:
   These should be dedicated nodes, do not run other services on these nodes.
 
 Every Gitaly server assigned to the Praefect cluster needs to be configured. The
-configuration is the same as a standard [standalone Gitaly server](index.md),
+configuration is the same as a standard [standalone Gitaly server](_index.md),
 except:
 
 - The storage names are exposed to Praefect, not GitLab
@@ -1196,9 +1239,12 @@ internal traffic from the GitLab application to the Praefect nodes. The
 specifics on which load balancer to use or the exact configuration is beyond the
 scope of the GitLab documentation.
 
-NOTE:
+{{< alert type="note" >}}
+
 The load balancer must be configured to accept traffic from the Gitaly nodes in
 addition to the GitLab nodes.
+
+{{< /alert >}}
 
 We hope that if you're managing fault-tolerant systems like GitLab, you have a load balancer
 of choice already. Some examples include [HAProxy](https://www.haproxy.org/)
@@ -1215,10 +1261,62 @@ example, clones) keep some connections open for extended periods.
 | 2305    | 2305         | TCP      |
 
 You must use a TCP load balancer. Using an HTTP/2 or gRPC load balancer
-with Praefect is not supported. If TLS is enabled, Praefect requires
-that the Application-Layer Protocol Negotiation (ALPN) extension is used per [RFC 7540](https://datatracker.ietf.org/doc/html/rfc7540#section-3.3).
-TCP load balancers pass ALPN directly without additional configuration. With a HTTP/2 or gRPC load balancer, ensuring that the ALPN is used
-[can be difficult](https://github.com/grpc/grpc-go/issues/7922).
+with Praefect does not work because of [Gitaly sidechannels](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/sidechannel.md).
+This optimization intercepts the gRPC handshaking process. It redirects all heavy Git operations to a more efficient "channel" than gRPC,
+but HTTP/2 or gRPC load balancers do not handle such requests properly.
+
+If TLS is enabled, [some versions of Praefect](#alpn-enforcement) require that the Application-Layer Protocol Negotiation (ALPN) extension is used per [RFC 7540](https://datatracker.ietf.org/doc/html/rfc7540#section-3.3).
+TCP load balancers pass ALPN directly without additional configuration:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Client as Client
+    participant LB as TCP Load Balancer
+    participant Praefect as Praefect
+
+    Client->>LB: Establish TLS Session (w/ ALPN Extension)
+    LB->>Praefect: Establish TLS Session (w/ ALPN Extension)
+    Client->>LB: Encrypted TCP packets
+    LB->>Praefect: Encrypted TCP packets
+    Praefect->>LB: Encrypted Response
+    LB->>Client: Encrypted Response
+```
+
+Some TCP load balancers can be configured to accept a TLS client connection and
+proxy the connection to Praefect with a new TLS connection. However, this only works
+if ALPN is supported on both connections.
+
+For this reason, NGINX's [`ngx_stream_proxy_module`](https://nginx.org/en/docs/stream/ngx_stream_proxy_module.html)
+does not work when the `proxy_ssl` configuration option is enabled:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Client as Client
+    participant NGINX as NGINX Stream Proxy
+    participant Praefect as Praefect
+
+    Client->>NGINX: Establish TLS Session (w/ ALPN Extension)
+    NGINX->>Praefect: Establish New TLS Session
+    Praefect->>NGINX: Connection failed: missing selected ALPN property
+```
+
+On step 2, ALPN is not used because [NGINX does not support this](https://mailman.nginx.org/pipermail/nginx-devel/2017-July/010307.html).
+For more information, [follow NGINX issue 406](https://github.com/nginx/nginx/issues/406) for more details.
+
+#### ALPN enforcement
+
+ALPN enforcement was enabled in some versions of GitLab. However, ALPN enforcement broke deployments and so is disabled
+[to provide a path to migrate](https://github.com/grpc/grpc-go/issues/7922). The following versions of GitLab have ALPN enforcement enabled:
+
+- GitLab 17.7.0
+- GitLab 17.6.0 - 17.6.2
+- GitLab 17.5.0 - 17.5.4
+- GitLab 17.4.x
+
+With [GitLab 17.5.5, 17.6.3, and 17.7.1](https://about.gitlab.com/releases/2025/01/08/patch-release-gitlab-17-7-1-released/),
+ALPN enforcement is disabled again. GitLab 17.4 and earlier never had ALPN enforcement enabled.
 
 ### GitLab
 
@@ -1256,10 +1354,13 @@ Particular attention should be shown to:
 1. Disable the default Gitaly service running on the GitLab host. It isn't needed
    because GitLab connects to the configured cluster.
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    If you have existing data stored on the default Gitaly storage,
-   you should [migrate the data to your Gitaly Cluster storage](index.md#migrate-to-gitaly-cluster)
+   you should [migrate the data to your Gitaly Cluster storage](_index.md#migrate-to-gitaly-cluster)
    first.
+
+   {{< /alert >}}
 
    ```ruby
    gitaly['enable'] = false
@@ -1392,7 +1493,7 @@ running multiple Gitaly storages.
 ### Grafana
 
 Grafana is included with GitLab, and can be used to monitor your Praefect
-cluster. See [Grafana Dashboard Service](../../administration/monitoring/performance/grafana_configuration.md)
+cluster. See [Grafana Dashboard Service](../monitoring/performance/grafana_configuration.md)
 for detailed documentation.
 
 To get started quickly:
@@ -1439,8 +1540,11 @@ cluster.
 Praefect supports configuring a replication factor on a per-repository basis, by assigning
 specific storage nodes to host a repository.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Configurable replication factors requires [repository-specific primary nodes](#repository-specific-primary-nodes).
+
+{{< /alert >}}
 
 Praefect does not store the actual replication factor, but assigns enough storages to host the repository
 so the desired replication factor is met. If a storage node is later removed from the virtual storage,
@@ -1503,7 +1607,7 @@ current assignments: gitaly-1, gitaly-2
 ### Repository storage recommendations
 
 The size of the required storage can vary between instances and depends on the set
-[replication factor](index.md#replication-factor). You might want to include implementing
+[replication factor](_index.md#replication-factor). You might want to include implementing
 repository storage redundancy.
 
 For a replication factor:
@@ -1514,7 +1618,11 @@ For a replication factor:
 
 ## Repository verification
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4080) in GitLab 15.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4080) in GitLab 15.0.
+
+{{< /history >}}
 
 Praefect stores metadata about the repositories in a database. If the repositories are modified on disk
 without going through Praefect, the metadata can become inaccurate. For example if a Gitaly node is
@@ -1586,13 +1694,20 @@ praefect['configuration'] = {
 
 #### Enable deletions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4080) and disabled by default in GitLab 15.0
-> - [Default enabled](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5321) in GitLab 15.9.
+{{< history >}}
 
-WARNING:
+- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4080) and disabled by default in GitLab 15.0
+- [Default enabled](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5321) in GitLab 15.9.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 Deletions were disabled by default prior to GitLab 15.9 due to a race condition with repository renames
 that can cause incorrect deletions, which is especially prominent in Geo instances as Geo performs more renames
-than instances without Geo. In GitLab 15.0 to 15.5, you should enable deletions only if the [`gitaly_praefect_generated_replica_paths` feature flag](index.md#praefect-generated-replica-paths) is enabled. The feature flag was removed in GitLab 15.6 making deletions always safe to enable.
+than instances without Geo. In GitLab 15.0 to 15.5, you should enable deletions only if the [`gitaly_praefect_generated_replica_paths` feature flag](_index.md#praefect-generated-replica-paths) is enabled. The feature flag was removed in GitLab 15.6 making deletions always safe to enable.
+
+{{< /alert >}}
 
 By default, the worker deletes invalid metadata records. It also logs the deleted records and outputs Prometheus
 metrics.

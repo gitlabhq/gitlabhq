@@ -2,12 +2,11 @@
 stage: Application Security Testing
 group: Static Analysis
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Security scanner integration
 ---
 
-# Security scanner integration
-
 Integrating a security scanner into GitLab consists of providing end users
-with a [CI/CD job definition](../../ci/jobs/index.md)
+with a [CI/CD job definition](../../ci/jobs/_index.md)
 they can add to their CI/CD configuration files to scan their GitLab projects.
 This job should then output its results in a GitLab-specified format. These results are then
 automatically presented in various places in GitLab, such as the Pipeline view, merge request
@@ -23,7 +22,7 @@ scanner, as well as requirements and guidelines for the Docker image.
 
 This section describes several important fields to add to the security scanner's job
 definition file. Full documentation on these and other available fields can be viewed
-in the [CI documentation](../../ci/yaml/index.md#image).
+in the [CI documentation](../../ci/yaml/_index.md#image).
 
 ### Name
 
@@ -39,40 +38,40 @@ For instance, the dependency scanning job based on the "MySec" scanner would be 
 
 ### Image
 
-The [`image`](../../ci/yaml/index.md#image) keyword is used to specify
+The [`image`](../../ci/yaml/_index.md#image) keyword is used to specify
 the [Docker image](../../ci/docker/using_docker_images.md#what-is-an-image)
 containing the security scanner.
 
 ### Script
 
-The [`script`](../../ci/yaml/index.md#script) keyword
+The [`script`](../../ci/yaml/_index.md#script) keyword
 is used to specify the commands to run the scanner.
 Because the `script` entry can't be left empty, it must be set to the command that performs the scan.
 It is not possible to rely on the predefined `ENTRYPOINT` and `CMD` of the Docker image
 to perform the scan automatically, without passing any command.
 
-The [`before_script`](../../ci/yaml/index.md#before_script)
+The [`before_script`](../../ci/yaml/_index.md#before_script)
 should not be used in the job definition because users may rely on this to prepare their projects before performing the scan.
 For instance, it is common practice to use `before_script` to install system libraries
 a particular project needs before performing SAST or Dependency Scanning.
 
-Similarly, [`after_script`](../../ci/yaml/index.md#after_script)
+Similarly, [`after_script`](../../ci/yaml/_index.md#after_script)
 should not be used in the job definition, because it may be overridden by users.
 
 ### Stage
 
 For consistency, scanning jobs should belong to the `test` stage when possible.
-The [`stage`](../../ci/yaml/index.md#stage) keyword can be omitted because `test` is the default value.
+The [`stage`](../../ci/yaml/_index.md#stage) keyword can be omitted because `test` is the default value.
 
 ### Fail-safe
 
 By default, scanning jobs do not block the pipeline when they fail,
-so the [`allow_failure`](../../ci/yaml/index.md#allow_failure) parameter should be set to `true`.
+so the [`allow_failure`](../../ci/yaml/_index.md#allow_failure) parameter should be set to `true`.
 
 ### Artifacts
 
 Scanning jobs must declare a report that corresponds to the type of scanning they perform,
-using the [`artifacts:reports`](../../ci/yaml/index.md#artifactsreports) keyword.
+using the [`artifacts:reports`](../../ci/yaml/_index.md#artifactsreports) keyword.
 Valid reports are:
 
 - `dependency_scanning`
@@ -194,7 +193,7 @@ It also generates text output on the standard output and standard error streams,
 ### Variables
 
 All CI/CD variables are passed to the scanner as environment variables.
-The scanned project is described by the [predefined CI/CD variables](../../ci/variables/index.md).
+The scanned project is described by the [predefined CI/CD variables](../../ci/variables/_index.md).
 
 #### SAST and Dependency Scanning
 
@@ -232,7 +231,7 @@ It is recommended to name the output file after the type of scanning, and to use
 Since all Secure reports are JSON files, it is recommended to use `.json` as a file extension.
 For instance, a suggested filename for a Dependency Scanning report is `gl-dependency-scanning.json`.
 
-The [`artifacts:reports`](../../ci/yaml/index.md#artifactsreports) keyword
+The [`artifacts:reports`](../../ci/yaml/_index.md#artifactsreports) keyword
 of the job definition must be consistent with the file path where the Security report is written.
 For instance, if a Dependency Scanning analyzer writes its report to the CI project directory,
 and if this report filename is `depscan.json`,
@@ -244,7 +243,7 @@ Following the POSIX exit code standard, the scanner exits with either `0` for su
 Success also includes the case when vulnerabilities are found.
 
 When a CI job fails, security report results are not ingested by GitLab, even if the job
-[allows failure](../../ci/yaml/index.md#allow_failure). However, the report artifacts are still uploaded to GitLab and available
+[allows failure](../../ci/yaml/_index.md#allow_failure). However, the report artifacts are still uploaded to GitLab and available
 for [download in the pipeline security tab](../../user/application_security/vulnerability_report/pipeline.md#downloading-security-scan-results).
 
 ### Logging
@@ -294,10 +293,10 @@ The report is a JSON document that combines vulnerabilities with possible remedi
 This documentation gives an overview of the report JSON format, recommendations, and examples to
 help integrators set its fields.
 The format is extensively described in the documentation of
-[SAST](../../user/application_security/sast/index.md#download-a-sast-report),
-[DAST](../../user/application_security/dast/browser/index.md),
-[Dependency Scanning](../../user/application_security/dependency_scanning/index.md#output),
-and [Container Scanning](../../user/application_security/container_scanning/index.md#reports-json-format)
+[SAST](../../user/application_security/sast/_index.md#download-a-sast-report),
+[DAST](../../user/application_security/dast/browser/_index.md),
+[Dependency Scanning](../../user/application_security/dependency_scanning/_index.md#output),
+and [Container Scanning](../../user/application_security/container_scanning/_index.md#reports-json-format)
 
 You can find the schemas for these scanners here:
 
@@ -310,7 +309,11 @@ You can find the schemas for these scanners here:
 
 ### Report validation
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351000) in GitLab 15.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351000) in GitLab 15.0.
+
+{{< /history >}}
 
 You must ensure that reports generated by the scanner pass validation against the schema version
 declared in your reports. Reports that don't pass validation are not ingested by GitLab, and an
@@ -407,14 +410,14 @@ The `id` should not collide with any other analyzers or scanners another integra
 ##### Scan Primary Identifiers
 
 The `scan.primary_identifiers` field is an optional field containing an array of
-[primary identifiers](../../user/application_security/terminology/index.md#primary-identifier)).
+[primary identifiers](../../user/application_security/terminology/_index.md#primary-identifier)).
 This is an exhaustive list of all rulesets for which the analyzer performed the scan.
 
 Even when the [`Vulnerabilities`](#vulnerabilities) array for a given scan may be empty, this optional field
 should contain the complete list of potential identifiers to inform the Rails application of which
 rules were executed.
 
-When populated, the Rails application [may automatically resolve previously detected vulnerabilities](../../user/application_security/iac_scanning/index.md#automatic-vulnerability-resolution) as no
+When populated, the Rails application [may automatically resolve previously detected vulnerabilities](../../user/application_security/iac_scanning/_index.md#automatic-vulnerability-resolution) as no
 longer relevant when their primary identifier is not included.
 
 ##### Name, message, and description
@@ -493,7 +496,7 @@ new generic identifiers to if needed. Analyzers may also produce vendor-specific
 identifiers, which don't belong in the [common library](https://gitlab.com/gitlab-org/security-products/analyzers/common).
 
 The first item of the `identifiers` array is called the
-[primary identifier](../../user/application_security/terminology/index.md#primary-identifier), and
+[primary identifier](../../user/application_security/terminology/_index.md#primary-identifier), and
 it is used to
 [track vulnerabilities](#tracking-and-merging-vulnerabilities) as new commits are pushed to the repository.
 
@@ -645,7 +648,7 @@ and needs to be investigated.
 
 The `remediations` field of the report is an array of remediation objects.
 Each remediation describes a patch that can be applied to
-[resolve](../../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability)
+[resolve](../../user/application_security/vulnerabilities/_index.md#resolve-a-vulnerability)
 a set of vulnerabilities.
 
 Here is an example of a report that contains remediations.

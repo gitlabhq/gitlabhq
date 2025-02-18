@@ -2,9 +2,8 @@
 stage: Foundations
 group: Global Search
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Advanced search development guidelines
 ---
-
-# Advanced search development guidelines
 
 This page includes information about developing and working with Elasticsearch.
 
@@ -76,9 +75,12 @@ source of security bugs so pay close attention to them!
 
 ### Architecture
 
-NOTE:
+{{< alert type="note" >}}
+
 We are migrating away from this architecture pattern in
 [this epic](https://gitlab.com/groups/gitlab-org/-/epics/13873).
+
+{{< /alert >}}
 
 The traditional setup, provided by `elasticsearch-rails`, is to communicate through its internal proxy classes.
 Developers would write model-specific logic in a module for the model to include in (for example, `SnippetsSearch`).
@@ -89,7 +91,7 @@ The `__elasticsearch__` methods would return a proxy object, for example:
 
 These proxy objects would talk to Elasticsearch server directly (see top half of the diagram).
 
-![Elasticsearch Architecture](img/elasticsearch_architecture_v12_3.svg)
+![Diagram showing how GitLab integrates with Elasticsearch across multiple indices](img/elasticsearch_architecture_v12_3.svg)
 
 In the planned new design, each model would have a pair of corresponding sub-classed proxy objects, in which
 model-specific logic is located. For example, `Snippet` would have `SnippetClassProxy` being a subclass
@@ -351,7 +353,7 @@ tail -f log/elasticsearch.log
 
 For `ActiveRecord` objects, the `ApplicationVersionedSearch` concern can be included on the model to index data based on callbacks. If that's not suitable, call `Elastic::ProcessBookkeepingService.track!()` with an instance of `Search::Elastic::Reference` whenever a document should be indexed.
 
-Always check for `Gitlab::CurrentSettings.elasticsearch_indexing?` and `use_elasticsearch?` because some self-managed instances do not have Elasticsearch enabled and [namespace limiting](../integration/advanced_search/elasticsearch.md#limit-the-amount-of-namespace-and-project-data-to-index) can be enabled.
+Always check for `Gitlab::CurrentSettings.elasticsearch_indexing?` and `use_elasticsearch?` because some GitLab Self-Managed instances do not have Elasticsearch enabled and [namespace limiting](../integration/advanced_search/elasticsearch.md#limit-the-amount-of-namespace-and-project-data-to-index) can be enabled.
 
 Also check that the index is able to handle the index request. For example, check that the index exists if it was added in the current major release by verifying that the migration to add the index was completed: `Elastic::DataMigrationService.migration_has_finished?`.
 
@@ -392,9 +394,16 @@ New scopes must be added to the following constants:
 - `ALLOWED_SCOPES` in `Gitlab::Search::AbuseDetection`
 - `search_tab_ability_map` method in `Search::Navigation`. Override in the EE version if needed
 
-NOTE:
-Global search can be disabled for a scope. Create an ops feature flag named `global_search_SCOPE_tab` that defaults to `true`
-and add it to the `global_search_enabled_for_scope?` method in [`SearchService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/search_service.rb).
+{{< alert type="note" >}}
+
+Global search can be disabled for a scope. You can do the following changes for disabling global search:
+
+{{< /alert >}}
+
+1. Add an application setting named `global_search_SCOPE_enabled` that defaults to `true` under the `search` jsonb accessor in [`app/models/application_setting.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/application_setting.rb).
+1. Add an entry in JSON schema validator file [`app/validators/json_schemas/application_setting_search.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/validators/json_schemas/application_setting_search.json)
+1. Add the setting checkbox in the Admin UI by creating an entry in `global_search_settings_checkboxes` method in [`ApplicationSettingsHelper`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/helpers/application_settings_helper.rb`).
+1. Add it to the `global_search_enabled_for_scope?` method in [`SearchService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/search_service.rb).
 
 #### Results classes
 
@@ -740,8 +749,11 @@ Requires `source_branch` field. Query with `source_branch` or `not_source_branch
 Requires `current_user`, `group_ids`, `traversal_id`, `search_level` fields. Query with `search_level` and
 filter on `namespace_visibility_level` based on permissions user has for each group.
 
-NOTE:
+{{< alert type="note" >}}
+
 Examples are shown for a logged in user. The JSON may be different for users with authorizations, admins, external, or anonymous users
+
+{{< /alert >}}
 
 ###### global
 
@@ -911,8 +923,11 @@ Filtering is applied for:
 - membership for direct membership to groups and projects or shared membership through direct access to a group
 - any feature access levels passed through `features`
 
-NOTE:
+{{< alert type="note" >}}
+
 Examples are shown for a logged in user. The JSON may be different for users with authorizations, admins, external, or anonymous users
+
+{{< /alert >}}
 
 ###### global
 
@@ -1221,8 +1236,11 @@ Create the following MRs and have them reviewed by a member of the Global Search
 
 ## Zero-downtime reindexing with multiple indices
 
-NOTE:
+{{< alert type="note" >}}
+
 This is not applicable yet as multiple indices functionality is not fully implemented.
+
+{{< /alert >}}
 
 Currently GitLab can only handle a single version of setting. Any setting/schema changes would require reindexing everything from scratch. Since reindexing can take a long time, this can cause search functionality downtime.
 
@@ -1258,7 +1276,7 @@ the volume of updates.
 
 All of the indexing happens in Sidekiq, so much of the relevant logs for the
 Elasticsearch integration can be found in
-[`sidekiq.log`](../administration/logs/index.md#sidekiqlog). In particular, all
+[`sidekiq.log`](../administration/logs/_index.md#sidekiqlog). In particular, all
 Sidekiq workers that make requests to Elasticsearch in any way will log the
 number of requests and time taken querying/writing to Elasticsearch. This can
 be useful to understand whether or not your cluster is keeping up with
@@ -1267,12 +1285,12 @@ indexing.
 Searching Elasticsearch is done via ordinary web workers handling requests. Any
 requests to load a page or make an API request, which then make requests to
 Elasticsearch, will log the number of requests and the time taken to
-[`production_json.log`](../administration/logs/index.md#production_jsonlog). These
+[`production_json.log`](../administration/logs/_index.md#production_jsonlog). These
 logs will also include the time spent on Database and Gitaly requests, which
 may help to diagnose which part of the search is performing poorly.
 
 There are additional logs specific to Elasticsearch that are sent to
-[`elasticsearch.log`](../administration/logs/index.md#elasticsearchlog)
+[`elasticsearch.log`](../administration/logs/_index.md#elasticsearchlog)
 that may contain information to help diagnose performance issues.
 
 ### Performance Bar

@@ -2,13 +2,15 @@
 stage: Growth
 group: Acquisition
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Read-only namespaces
 ---
 
-# Read-only namespaces
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 On GitLab.com, a top-level namespace is placed in a read-only state when it either:
 

@@ -9,14 +9,14 @@ RSpec.describe RapidDiffs::Viewers::Text::ParallelHunkComponent, type: :componen
   let(:new_line) { lines.find { |line| line.type == 'new' } }
   let(:hunk) do
     Gitlab::Diff::ViewerHunk.new(
-      header: lines.first,
+      header: Gitlab::Diff::ViewerHunkHeader.new(lines.first, 0, 0),
       lines: lines.drop(1)
     )
   end
 
   it "renders header" do
     render_component
-    expect(page).to have_text(hunk.header_text, count: 2)
+    expect(page).to have_text(hunk.header.text, count: 2)
   end
 
   it "renders lines" do
@@ -50,8 +50,9 @@ RSpec.describe RapidDiffs::Viewers::Text::ParallelHunkComponent, type: :componen
   end
 
   it "renders expand up" do
+    match_line = Gitlab::Diff::Line.new("", 'match', 1, 0, 0)
     diff_hunk = Gitlab::Diff::ViewerHunk.new(
-      header: Gitlab::Diff::Line.new("", 'match', 1, 0, 0),
+      header: Gitlab::Diff::ViewerHunkHeader.new(match_line, nil, 1),
       lines: lines.drop(1)
     )
     render_component(diff_hunk)
@@ -59,8 +60,9 @@ RSpec.describe RapidDiffs::Viewers::Text::ParallelHunkComponent, type: :componen
   end
 
   it "renders expand down" do
+    match_line = Gitlab::Diff::Line.new("", 'match', 100, 0, 0)
     diff_hunk = Gitlab::Diff::ViewerHunk.new(
-      header: Gitlab::Diff::Line.new("", 'match', 100, 0, 0),
+      header: Gitlab::Diff::ViewerHunkHeader.new(match_line, 1, nil),
       lines: []
     )
     render_component(diff_hunk)
@@ -68,10 +70,10 @@ RSpec.describe RapidDiffs::Viewers::Text::ParallelHunkComponent, type: :componen
   end
 
   it "renders both expand up and down" do
+    match_line = Gitlab::Diff::Line.new("", 'match', 1, 0, 0)
     diff_hunk = Gitlab::Diff::ViewerHunk.new(
-      header: Gitlab::Diff::Line.new("", 'match', 1, 0, 0),
-      lines: lines.drop(1),
-      prev: Gitlab::Diff::ViewerHunk.new(lines: [])
+      header: Gitlab::Diff::ViewerHunkHeader.new(match_line, 1, 1),
+      lines: lines.drop(1)
     )
     render_component(diff_hunk)
     expect(page).to have_selector('button svg use[href$="#expand-up"]')
@@ -79,14 +81,11 @@ RSpec.describe RapidDiffs::Viewers::Text::ParallelHunkComponent, type: :componen
   end
 
   it "renders expand both" do
-    last_prev_line = lines.first
+    match_line = lines.first
     diff_hunk = Gitlab::Diff::ViewerHunk.new(
-      header: lines.first,
-      lines: lines.drop(1),
-      prev: Gitlab::Diff::ViewerHunk.new(lines: [last_prev_line])
+      header: Gitlab::Diff::ViewerHunkHeader.new(match_line, 1, 10),
+      lines: lines.drop(1)
     )
-    allow(diff_hunk.lines.first).to receive(:old_pos).and_return(5)
-    allow(last_prev_line).to receive(:old_pos).and_return(2)
     render_component(diff_hunk)
     expect(page).to have_selector('button svg use[href$="#expand"]')
   end
@@ -99,5 +98,10 @@ RSpec.describe RapidDiffs::Viewers::Text::ParallelHunkComponent, type: :componen
         file_path: diff_file.file_path
       )
     )
+  end
+
+  it "renders testid" do
+    render_component
+    expect(page).to have_selector("[data-testid='hunk-lines-parallel']")
   end
 end

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Packages::Downloadable, feature_category: :package_registry do
   context 'with a package' do
     describe '#touch_last_downloaded_at' do
-      let_it_be(:package) { create(:package) }
+      let_it_be(:package) { create(:generic_package) }
 
       subject { package.touch_last_downloaded_at }
 

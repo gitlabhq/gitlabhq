@@ -11,9 +11,6 @@ status: removed
 milestone_removed: "14.0"
 time_frame: all
 data_source: database
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

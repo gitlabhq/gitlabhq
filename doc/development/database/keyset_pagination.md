@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Keyset pagination
 ---
-
-# Keyset pagination
 
 The keyset pagination library can be used in HAML-based views and the REST API within the GitLab project.
 
@@ -166,8 +165,11 @@ the primary key is covered by a database index.
 
 When two or more columns are used in the `ORDER BY` clause, it's advised to check the generated database query and make sure that the correct index configuration is used. More information can be found on the [pagination guideline page](pagination_guidelines.md#index-coverage).
 
-NOTE:
+{{< alert type="note" >}}
+
 While the query performance of the first page might look good, the second page (where the cursor attributes are used in the query) might yield poor performance. It's advised to always verify the performance of both queries: first page and second page.
+
+{{< /alert >}}
 
 Example database query with tie-breaker (`id`) column:
 

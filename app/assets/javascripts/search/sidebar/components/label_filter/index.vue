@@ -195,7 +195,7 @@ export default {
       <gl-label
         v-for="label in unappliedNewLabels"
         :key="label.key"
-        class="gl-mb-2 gl-mr-2 gl-bg-gray-10"
+        class="gl-mb-2 gl-mr-2 gl-bg-subtle"
         :data-key="label.key"
         :background-color="inactiveLabelColor(label)"
         :title="label.title"
@@ -205,7 +205,7 @@ export default {
       <gl-label
         v-for="label in unselectedLabels"
         :key="label.key"
-        class="gl-mb-2 gl-mr-2 gl-bg-gray-10"
+        class="gl-mb-2 gl-mr-2 gl-bg-subtle"
         :data-key="label.key"
         :background-color="inactiveLabelColor(label)"
         :title="label.title"
@@ -215,7 +215,7 @@ export default {
       <gl-label
         v-for="label in appliedSelectedLabels"
         :key="label.title"
-        class="gl-mb-2 gl-mr-2 gl-bg-gray-10"
+        class="gl-mb-2 gl-mr-2 gl-bg-subtle"
         :data-title="label.title"
         :background-color="label.color"
         :title="label.title"

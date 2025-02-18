@@ -1,8 +1,0 @@
----
-name: global_search_epics_tab
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130146
-rollout_issue_url:
-milestone: '16.5'
-type: ops
-group: group::global search
-default_enabled: true

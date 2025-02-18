@@ -10,6 +10,9 @@ export default {
   i18n: {
     loading: s__('Reports|Accessibility scanning results are being parsed'),
     error: s__('Reports|Accessibility scanning failed loading results'),
+    newErrorsHeader: __('New'),
+    existingErrorsHeader: __('Not fixed'),
+    resolvedErrorsHeader: __('Fixed'),
   },
   components: {
     MrWidget,
@@ -61,6 +64,7 @@ export default {
       return axios.get(this.mr.accessibilityReportPath).then((response) => {
         this.collapsedData = response.data;
         this.content = this.getContent(response.data);
+        this.$emit('loaded', this.collapsedData?.summary?.errored || 0);
 
         return response;
       });
@@ -95,43 +99,60 @@ export default {
       return sprintf(s__('AccessibilityReport|Message: %{message}'), { message });
     },
     getContent(collapsedData) {
-      const newErrors = collapsedData.new_errors.map((error) => {
+      const newErrors = collapsedData.new_errors.map((error, i) => {
         return {
-          header: __('New'),
+          header: i === 0 ? this.$options.i18n.newErrorsHeader : '',
           id: uniqueId('new-error-'),
           text: this.formatText(error.code),
           icon: { name: EXTENSION_ICONS.failed },
-          link: {
-            href: this.formatLearnMoreUrl(error.code),
-            text: __('Learn more'),
-          },
           supportingText: this.formatMessage(error.message),
+          actions: [
+            {
+              id: uniqueId('new-error-details-link-'),
+              text: __('Details'),
+              icon: 'external-link',
+              href: this.formatLearnMoreUrl(error.code),
+              variant: 'link',
+            },
+          ],
         };
       });
 
-      const existingErrors = collapsedData.existing_errors.map((error) => {
+      const existingErrors = collapsedData.existing_errors.map((error, i) => {
         return {
+          header: i === 0 ? this.$options.i18n.existingErrorsHeader : '',
           id: uniqueId('existing-error-'),
           text: this.formatText(error.code),
           icon: { name: EXTENSION_ICONS.failed },
-          link: {
-            href: this.formatLearnMoreUrl(error.code),
-            text: __('Learn more'),
-          },
           supportingText: this.formatMessage(error.message),
+          actions: [
+            {
+              id: uniqueId('existing-error-details-link-'),
+              text: __('Details'),
+              icon: 'external-link',
+              href: this.formatLearnMoreUrl(error.code),
+              variant: 'link',
+            },
+          ],
         };
       });
 
-      const resolvedErrors = collapsedData.resolved_errors.map((error) => {
+      const resolvedErrors = collapsedData.resolved_errors.map((error, i) => {
         return {
+          header: i === 0 ? this.$options.i18n.resolvedErrorsHeader : '',
           id: uniqueId('resolved-error-'),
           text: this.formatText(error.code),
           icon: { name: EXTENSION_ICONS.success },
-          link: {
-            href: this.formatLearnMoreUrl(error.code),
-            text: __('Learn more'),
-          },
           supportingText: this.formatMessage(error.message),
+          actions: [
+            {
+              id: uniqueId('resolved-error-details-link-'),
+              text: __('Details'),
+              icon: 'external-link',
+              href: this.formatLearnMoreUrl(error.code),
+              variant: 'link',
+            },
+          ],
         };
       });
 
@@ -150,5 +171,7 @@ export default {
     :content="content"
     :is-collapsible="shouldCollapse"
     :fetch-collapsed-data="fetchCollapsedData"
+    :label="__('Accessibility')"
+    path="accessibility"
   />
 </template>

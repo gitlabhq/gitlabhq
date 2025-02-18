@@ -16,9 +16,6 @@ options:
   events:
   - i_code_review_user_gitlab_cli_api_request
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

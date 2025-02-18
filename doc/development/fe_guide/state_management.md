@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: State management guidance
 ---
-
-# State management guidance
 
 At GitLab we support two solutions for client state management: [Apollo](https://www.apollographql.com/) and [Pinia](https://pinia.vuejs.org/).
 It is non-trivial to pick either of these as your primary state manager.
@@ -66,10 +65,13 @@ If you're still uncertain, prefer using Apollo before Pinia.
 
 ## Pinia
 
-WARNING:
+{{< alert type="warning" >}}
+
 **[Pilot Phase](https://gitlab.com/gitlab-org/gitlab/-/issues/479279)**: Adopt Pinia with caution.
 This is a new technology at GitLab and we might not have all the necessary precautions and best practices in place yet.
 If you're considering using Pinia please drop a message in the `#frontend` internal Slack channel for evaluation.
+
+{{< /alert >}}
 
 [Pinia](https://pinia.vuejs.org/) is the client-side state management tool Vue recommends.
 [Learn more about Pinia at GitLab](pinia.md).

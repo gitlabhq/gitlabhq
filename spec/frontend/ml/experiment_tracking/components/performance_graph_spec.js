@@ -18,16 +18,15 @@ describe('PerformanceGraph', () => {
     });
   };
 
-  const findGraph = () => wrapper.findComponent(PerformanceGraph);
-  const findLineChart = () => findGraph().findComponent(GlLineChart);
+  const findLineChart = () => wrapper.findComponent(GlLineChart);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   describe('rendering', () => {
     it('renders the component', () => {
       createWrapper();
 
-      expect(findGraph().props('candidates')).toEqual(MOCK_CANDIDATES);
-      expect(findGraph().props('metricNames')).toEqual(MOCK_METRICS);
+      expect(wrapper.props('candidates')).toEqual(MOCK_CANDIDATES);
+      expect(wrapper.props('metricNames')).toEqual(MOCK_METRICS);
       expect(findEmptyState().exists()).toBe(false);
     });
 
@@ -41,6 +40,16 @@ describe('PerformanceGraph', () => {
       expect(findLineChart().props('data')[0].data.length).toBe(4);
       expect(findLineChart().props('data')[1].data.length).toBe(5);
       expect(findLineChart().props('data')[2].data.length).toBe(1);
+    });
+
+    it('sorts the data by created_at in ascending order', () => {
+      createWrapper();
+
+      const data = findLineChart()
+        .props('data')[0]
+        .data.map(({ value }) => value[1]);
+
+      expect(data).toEqual([0.3, 0.4, 0.6, 0.5]);
     });
   });
 

@@ -50,7 +50,7 @@ module Projects
       )
 
       begin
-        Repositories::ReplicateService.new(pool_repository.object_pool.repository)
+        ::Repositories::ReplicateService.new(pool_repository.object_pool.repository)
           .execute(target_pool_repository.object_pool.repository, :object_pool)
       rescue StandardError => e
         target_pool_repository.destroy!

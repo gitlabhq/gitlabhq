@@ -2,10 +2,9 @@
 stage: Create
 group: Code Review
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-description: "Developer documentation for the backend design and flow of merge request diffs."
+description: Developer documentation for the backend design and flow of merge request diffs.
+title: Merge request diffs development guide
 ---
-
-# Merge request diffs development guide
 
 This document explains the backend design and flow of merge request diffs.
 It should help contributors:
@@ -18,10 +17,13 @@ can change often. The code better explains these details. The components
 mentioned here are the major parts of the application for how merge request diffs
 are generated, stored, and returned to users.
 
-NOTE:
+{{< alert type="note" >}}
+
 This page is a living document. Update it accordingly when the parts
 of the codebase touched in this document are changed or removed, or when new components
 are added.
+
+{{< /alert >}}
 
 ## Data model
 

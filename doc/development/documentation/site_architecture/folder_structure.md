@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Folder structure for documentation
 ---
-
-# Folder structure for documentation
 
 The documentation is separated by top-level audience folders [`user`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/doc/user),
 [`administration`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/doc/administration),
@@ -52,9 +51,9 @@ When working with directories and files:
 1. When creating or renaming a file or directory and it has more than one word
    in its name, use underscores (`_`) instead of spaces or dashes. For example,
    proper naming would be `import_project/import_from_github.md`. This applies
-   to both [image files](../styleguide/index.md#illustrations) and Markdown files.
+   to both [image files](../styleguide/_index.md#illustrations) and Markdown files.
 1. Do not upload video files to the product repositories.
-   [Link or embed videos](../styleguide/index.md#videos) instead.
+   [Link or embed videos](../styleguide/_index.md#videos) instead.
 1. In the `doc/user/` directory:
    - `doc/user/project/` should contain all project related documentation.
    - `doc/user/group/` should contain all group related documentation.

@@ -1,9 +1,8 @@
 @import 'mixins_and_variables_and_functions';
 
-$import-bar-height: $gl-spacing-scale-11;
+$import-bar-height: calc(#{$gl-spacing-scale-9} - 1px);
 
 .import-table-bar {
-  min-height: $import-bar-height;
   top: $calc-application-header-height;
 }
 

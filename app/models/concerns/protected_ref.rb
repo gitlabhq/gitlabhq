@@ -3,6 +3,7 @@
 module ProtectedRef
   extend ActiveSupport::Concern
 
+  include Gitlab::Utils::StrongMemoize
   include Importable
 
   included do
@@ -60,7 +61,9 @@ module ProtectedRef
   private
 
   def ref_matcher
-    @ref_matcher ||= RefMatcher.new(name)
+    strong_memoize_with(:ref_matcher, name) do
+      RefMatcher.new(name)
+    end
   end
 end
 

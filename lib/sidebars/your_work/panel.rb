@@ -32,6 +32,7 @@ module Sidebars
         add_menu(Sidebars::YourWork::Menus::MilestonesMenu.new(context))
         add_menu(Sidebars::YourWork::Menus::SnippetsMenu.new(context))
         add_menu(Sidebars::YourWork::Menus::ActivityMenu.new(context))
+        add_menu(Sidebars::YourWork::Menus::ImportHistoryMenu.new(context))
       end
     end
   end

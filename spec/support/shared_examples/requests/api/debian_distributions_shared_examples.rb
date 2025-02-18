@@ -119,7 +119,7 @@ RSpec.shared_examples 'Debian distributions read endpoint' do |desired_behavior,
       :public  | :invalid_token | :private_token | :unauthorized  | nil
       :private | :developer     | :private_token | success_status | success_body
       :private | :developer     | :basic         | :not_found     | nil
-      :private | :guest         | :private_token | :forbidden     | nil
+      :private | :guest         | :private_token | success_status | success_body
       :private | :not_a_member  | :private_token | :not_found     | nil
       :private | :anonymous     | :private_token | :not_found     | nil
       :private | :invalid_token | :private_token | :unauthorized  | nil

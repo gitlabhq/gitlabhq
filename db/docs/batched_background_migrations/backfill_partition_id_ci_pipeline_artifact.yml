@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillPartitionIdCiPipelineArtifact
-description: Fixes incorrect values for ci_pipeline_artifacts being in the wrong partition
-feature_category: continuous_integration
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141345
-milestone: '16.8'
-queued_migration_version: 20240109090354
-finalized_by: 20240122133127

@@ -1,0 +1,6 @@
+mutation wikiNoteToggleAwardEmoji($awardableId: AwardableID!, $name: String!) {
+  awardEmojiToggle(input: { awardableId: $awardableId, name: $name }) {
+    errors
+    toggledOn
+  }
+}

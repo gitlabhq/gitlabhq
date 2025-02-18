@@ -2,23 +2,22 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Connect and use GitLab Duo in Neovim."
+description: Connect and use GitLab Duo in Neovim.
+title: Install and set up the GitLab plugin for Neovim
 ---
-
-# Install and set up the GitLab plugin for Neovim
 
 Prerequisites:
 
-- For both GitLab.com and self-managed, you have GitLab version 16.1 or later.
+- For both GitLab.com and GitLab Self-Managed, you have GitLab version 16.1 or later.
   While many extension features might work with earlier versions, they are unsupported.
   - The GitLab Duo Code Suggestions feature requires GitLab version 16.8 or later.
 - You have [Neovim](https://neovim.io/) version 0.9 or later.
 
 To install the extension, follow the installation steps for your chosen plugin manager:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle No plugin manager
+{{< tab title="No plugin manager" >}}
 
 Run this command to include this project with
 [`packadd`](https://neovim.io/doc/user/repeat.html#%3Apackadd) on startup:
@@ -27,7 +26,9 @@ Run this command to include this project with
 git clone https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim.git ~/.local/share/nvim/site/pack/gitlab/start/gitlab.vim
 ```
 
-:::TabTitle `lazy.nvim`
+{{< /tab >}}
+
+{{< tab title="`lazy.nvim`" >}}
 
 Add this plugin to your [lazy.nvim](https://github.com/folke/lazy.nvim) configuration:
 
@@ -53,7 +54,9 @@ Add this plugin to your [lazy.nvim](https://github.com/folke/lazy.nvim) configur
 }
 ```
 
-:::TabTitle `packer.nvim`
+{{< /tab >}}
+
+{{< tab title="`packer.nvim`" >}}
 
 Declare the plugin in your [packer.nvim](https://github.com/wbthomason/packer.nvim) configuration:
 
@@ -63,7 +66,9 @@ use {
 }
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Authenticate with GitLab
 
@@ -98,7 +103,7 @@ To configure this extension:
    ```
 
 1. [Configure Omni Completion](#configure-omni-completion) to set up the key mapping to trigger Code Suggestions.
-1. Optional. [Configure `<Plug>` key mappings](index.md#configure-plug-key-mappings).
+1. Optional. [Configure `<Plug>` key mappings](_index.md#configure-plug-key-mappings).
 1. Optional. Set up helptags using `:helptags ALL` for access to
    [`:help gitlab.txt`](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/doc/gitlab.txt).
 

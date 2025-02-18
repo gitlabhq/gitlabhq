@@ -11,19 +11,21 @@ module QA
       let!(:runner) { create(:group_runner, group: group, name: executor, tags: [executor]) }
 
       before do
-        Flow::Login.sign_in
+        upstream_project.change_pipeline_variables_minimum_override_role('developer')
+        downstream_project.change_pipeline_variables_minimum_override_role('developer')
+
         add_ci_file(downstream_project, downstream_ci_file)
         add_ci_file(upstream_project, upstream_ci_file)
 
-        upstream_project.change_pipeline_variables_minimum_override_role('developer')
-        downstream_project.change_pipeline_variables_minimum_override_role('developer')
-        upstream_project.visit!
-        Flow::Pipeline.visit_latest_pipeline(status: 'Passed')
+        Flow::Login.sign_in
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: upstream_project)
+        Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: upstream_project, status: 'success')
+
+        upstream_project.visit_latest_pipeline
       end
 
       after do
         runner.remove_via_api!
-        [upstream_project, downstream_project].each(&:remove_via_api!)
       end
 
       it 'runs the pipeline with composed config',

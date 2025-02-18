@@ -13,9 +13,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - github_import_project_failure
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

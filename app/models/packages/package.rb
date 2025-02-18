@@ -44,14 +44,8 @@ class Packages::Package < ApplicationRecord
   has_many :dependency_links, inverse_of: :package, class_name: 'Packages::DependencyLink'
   has_many :tags, inverse_of: :package, class_name: 'Packages::Tag'
 
-  has_one :maven_metadatum, inverse_of: :package, class_name: 'Packages::Maven::Metadatum'
-
   has_many :build_infos, inverse_of: :package
   has_many :pipelines, through: :build_infos, disable_joins: true
-
-  accepts_nested_attributes_for :maven_metadatum
-
-  before_validation :prevent_concurrent_inserts, on: :create, if: :maven?
 
   validates :project, presence: true
   validates :name, presence: true
@@ -81,6 +75,7 @@ class Packages::Package < ApplicationRecord
 
   scope :search_by_name, ->(query) { fuzzy_search(query, [:name], use_minimum_char_limit: false) }
   scope :with_version, ->(version) { where(version: version) }
+  scope :with_version_like, ->(version) { where(arel_table[:version].matches(version)) }
   scope :without_version_like, ->(version) { where.not(arel_table[:version].matches(version)) }
   scope :with_package_type, ->(package_type) { where(package_type: package_type) }
   scope :without_package_type, ->(package_type) { where.not(package_type: package_type) }
@@ -145,23 +140,9 @@ class Packages::Package < ApplicationRecord
       pypi: 'Packages::Pypi::Package',
       terraform_module: 'Packages::TerraformModule::Package',
       nuget: 'Packages::Nuget::Package',
-      npm: 'Packages::Npm::Package'
+      npm: 'Packages::Npm::Package',
+      maven: 'Packages::Maven::Package'
     }.freeze
-  end
-
-  def self.only_maven_packages_with_path(path, use_cte: false)
-    if use_cte
-      # This is an optimization fence which assumes that looking up the Metadatum record by path (globally)
-      # and then filter down the packages (by project or by group and subgroups) will be cheaper than
-      # looking up all packages within a project or group and filter them by path.
-
-      inner_query = Packages::Maven::Metadatum.where(path: path).select(:id, :package_id)
-      cte = Gitlab::SQL::CTE.new(:maven_metadata_by_path, inner_query)
-      with(cte.to_arel)
-        .joins('INNER JOIN maven_metadata_by_path ON maven_metadata_by_path.package_id=packages_packages.id')
-    else
-      joins(:maven_metadatum).where(packages_maven_metadata: { path: path })
-    end
   end
 
   def self.by_name_and_file_name(name, file_name)
@@ -241,12 +222,6 @@ class Packages::Package < ApplicationRecord
   end
   strong_memoize_attr :package_settings
 
-  def sync_maven_metadata(user)
-    return unless maven? && version? && user
-
-    ::Packages::Maven::Metadata::SyncWorker.perform_async(user.id, project_id, name)
-  end
-
   def create_build_infos!(build)
     return unless build&.pipeline
 
@@ -294,3 +269,5 @@ class Packages::Package < ApplicationRecord
     connection.execute("SELECT pg_advisory_xact_lock(#{lock_expression})")
   end
 end
+
+Packages::Package.prepend_mod

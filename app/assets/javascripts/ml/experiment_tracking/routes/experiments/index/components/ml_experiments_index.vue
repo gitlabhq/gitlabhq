@@ -1,30 +1,37 @@
 <script>
 import {
+  GlAlert,
   GlAvatar,
   GlAvatarLink,
   GlButton,
   GlEmptyState,
+  GlKeysetPagination,
   GlLink,
   GlModalDirective,
   GlTableLite,
 } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
-import Pagination from '~/ml/experiment_tracking/components/pagination.vue';
+import getExperimentsQuery from '~/ml/experiment_tracking/graphql/queries/get_experiments.query.graphql';
 import { MLFLOW_USAGE_MODAL_ID } from '../constants';
+
+const GRAPHQL_PAGE_SIZE = 20;
 
 export default {
   name: 'MlExperimentsIndexApp',
   components: {
+    GlAlert,
     GlAvatar,
     GlAvatarLink,
     GlButton,
     GlEmptyState,
+    GlKeysetPagination,
     GlLink,
     GlTableLite,
     ModelExperimentsHeader,
-    Pagination,
     TimeAgoTooltip,
   },
   directives: {
@@ -36,12 +43,8 @@ export default {
     };
   },
   props: {
-    experiments: {
-      type: Array,
-      required: true,
-    },
-    pageInfo: {
-      type: Object,
+    projectPath: {
+      type: String,
       required: true,
     },
     emptyStateSvgPath: {
@@ -53,22 +56,88 @@ export default {
       required: false,
       default: '',
     },
-    count: {
-      type: Number,
-      required: true,
+  },
+  apollo: {
+    experiments: {
+      query: getExperimentsQuery,
+      variables() {
+        return this.queryVariables;
+      },
+      update(data) {
+        return data?.project?.mlExperiments ?? [];
+      },
+      error(error) {
+        this.errorMessage = sprintf(
+          s__('MlModelRegistry|Failed to load experiments with error: %{error}'),
+          { error: error.message },
+        );
+        Sentry.captureException(error);
+      },
+      skip() {
+        return this.skipQueries;
+      },
     },
   },
+  data() {
+    return {
+      experiments: [],
+      errorMessage: '',
+      skipQueries: false,
+      pageVariables: { first: GRAPHQL_PAGE_SIZE },
+    };
+  },
   computed: {
-    hasExperiments() {
-      return this.experiments.length > 0;
+    pageInfo() {
+      return this.experiments?.pageInfo ?? {};
+    },
+    showExperimentsTable() {
+      return this.count;
+    },
+    showEmptyState() {
+      return this.experiments?.count === 0 && !this.isLoading;
     },
     tableItems() {
-      return this.experiments.map((exp) => ({
-        nameColumn: { name: exp.name, path: exp.path },
-        candidateCountColumn: exp.candidate_count,
-        creatorColumn: exp.user,
-        lastActivityColumn: exp.updated_at,
+      return this.items.map((exp) => ({
+        nameColumn: {
+          name: exp.name,
+          path: exp.path,
+        },
+        candidateCountColumn: exp.candidateCount,
+        creatorColumn: { ...exp.creator, iid: getIdFromGraphQLId(exp.creator.id) },
+        lastActivityColumn: exp.updatedAt,
       }));
+    },
+    items() {
+      return this.experiments?.nodes ?? [];
+    },
+    count() {
+      return this.experiments?.count ?? 0;
+    },
+    isLoading() {
+      return this.$apollo.queries.experiments.loading;
+    },
+    queryVariables() {
+      return {
+        fullPath: this.projectPath,
+        first: GRAPHQL_PAGE_SIZE,
+        ...this.pageVariables,
+      };
+    },
+  },
+  methods: {
+    nextPage() {
+      this.pageVariables = {
+        first: GRAPHQL_PAGE_SIZE,
+        last: null,
+        after: this.pageInfo.endCursor,
+      };
+    },
+    prevPage() {
+      this.pageVariables = {
+        first: null,
+        last: GRAPHQL_PAGE_SIZE,
+        before: this.pageInfo.startCursor,
+      };
     },
   },
   i18n: {
@@ -96,7 +165,7 @@ export default {
   <div>
     <model-experiments-header :page-title="$options.i18n.titleLabel" :count="count" />
 
-    <template v-if="hasExperiments">
+    <template v-if="showExperimentsTable">
       <gl-table-lite :items="tableItems" :fields="$options.tableFields">
         <template #cell(nameColumn)="{ value: experiment }">
           <gl-link :href="experiment.path">
@@ -106,13 +175,13 @@ export default {
         <template #cell(creatorColumn)="{ value: creator }">
           <gl-avatar-link
             v-if="creator"
-            :href="creator.path"
+            :href="creator.webUrl"
             :title="creator.name"
             class="js-user-link gl-text-subtle"
-            :data-user-id="creator.id"
+            :data-user-id="creator.iid"
           >
             <gl-avatar
-              :src="creator.avatar_url"
+              :src="creator.avatarUrl"
               :size="16"
               :entity-name="creator.name"
               class="mr-2"
@@ -125,10 +194,10 @@ export default {
         </template>
       </gl-table-lite>
 
-      <pagination v-if="hasExperiments" v-bind="pageInfo" />
+      <gl-keyset-pagination v-bind="pageInfo" @prev="prevPage" @next="nextPage" />
     </template>
     <gl-empty-state
-      v-else
+      v-if="showEmptyState"
       :title="$options.i18n.emptyStateTitleLabel"
       :svg-path="emptyStateSvgPath"
       :svg-height="null"
@@ -145,5 +214,8 @@ export default {
         </gl-button>
       </template>
     </gl-empty-state>
+    <gl-alert v-if="errorMessage" variant="warning" :dismissible="false">
+      {{ errorMessage }}
+    </gl-alert>
   </div>
 </template>

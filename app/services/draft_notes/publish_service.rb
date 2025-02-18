@@ -34,7 +34,9 @@ module DraftNotes
 
       review = Review.create!(author: current_user, merge_request: merge_request, project: project)
 
-      created_notes = draft_notes.map do |draft_note|
+      created_notes = draft_notes.filter_map do |draft_note|
+        next unless draft_note.note.present?
+
         draft_note.review = review
         create_note_from_draft(
           draft_note,

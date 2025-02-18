@@ -1,4 +1,4 @@
-- title: "Deprecate custom role creation for group owners on self-managed"
+- title: "Deprecate custom role creation for group owners on GitLab Self-Managed"
   removal_milestone: "17.0"
   announcement_milestone: "16.9"
   breaking_change: true
@@ -6,12 +6,12 @@
   stage: govern
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/439284
   body: |  # (required) Don't change this line.
-    In self-managed GitLab 17.0, custom role creation will be removed for group Owners. This functionality will move to the instance level for administrators only.
+    In GitLab Self-Managed 17.0, custom role creation will be removed for group Owners. This functionality will move to the instance level for administrators only.
     Group Owners will be able to assign custom roles at the group level.
 
     Group owners on GitLab.com can continue to manage custom roles and assign at the group level.
 
-    If using the API to manage custom roles on a self-managed instance, a new instance endpoint has been added and is required to continue API operations.
+    If using the API to manage custom roles on GitLab Self-Managed, a new instance endpoint has been added and is required to continue API operations.
 
     - List all member roles on the instance - `GET /api/v4/member_roles`
     - Add member role to the instance - `POST /api/v4/member_roles`

@@ -1,0 +1,24 @@
+---
+key_path: redis_hll_counters.code_review.i_code_review_count_notes_in_ipynb_diff_commit
+description: Notes on ipynb commit diffs
+product_group: code_review
+product_categories:
+- code_review_workflow
+value_type: number
+status: active
+milestone: "15.0"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85398
+time_frame:
+- 28d
+- 7d
+data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - i_code_review_create_note_in_ipynb_diff_commit
+data_category: optional
+performance_indicator_type: []
+tiers:
+  - free
+  - premium
+  - ultimate

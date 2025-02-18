@@ -5,7 +5,11 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import ValueStreamMetrics from '~/analytics/shared/components/value_stream_metrics.vue';
 import { VSA_METRICS_GROUPS, FLOW_METRICS_QUERY_TYPE } from '~/analytics/shared/constants';
-import { toYmd, generateValueStreamsDashboardLink } from '~/analytics/shared/utils';
+import {
+  toYmd,
+  generateValueStreamsDashboardLink,
+  overviewMetricsRequestParams,
+} from '~/analytics/shared/utils';
 import PathNavigation from '~/analytics/cycle_analytics/components/path_navigation.vue';
 import StageTable from '~/analytics/cycle_analytics/components/stage_table.vue';
 import ValueStreamFilters from '~/analytics/cycle_analytics/components/value_stream_filters.vue';
@@ -121,6 +125,9 @@ export default {
     filterBarNamespacePath() {
       return this.groupPath || this.namespace.restApiRequestPath;
     },
+    overviewRequestParams() {
+      return overviewMetricsRequestParams(this.filterParams);
+    },
   },
   methods: {
     ...mapActions([
@@ -183,8 +190,8 @@ export default {
       />
     </div>
     <value-stream-metrics
-      :request-path="namespace.restApiRequestPath"
-      :request-params="filterParams"
+      :request-path="namespace.path"
+      :request-params="overviewRequestParams"
       :group-by="$options.VSA_METRICS_GROUPS"
       :dashboards-path="dashboardsPath"
       :query-type="$options.FLOW_METRICS_QUERY_TYPE"

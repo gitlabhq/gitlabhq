@@ -54,9 +54,7 @@ class ProjectPolicy < BasePolicy
   end
 
   desc "User owns the project's organization"
-  condition(:organization_owner) do
-    owns_project_organization?
-  end
+  condition(:organization_owner) { owns_organization?(@subject.organization) }
 
   rule { admin | organization_owner }.enable :read_all_organization_resources
 
@@ -205,7 +203,7 @@ class ProjectPolicy < BasePolicy
   end
 
   with_scope :subject
-  condition(:service_desk_enabled) { @subject.service_desk_enabled? }
+  condition(:service_desk_enabled) { ::ServiceDesk.enabled?(@subject) }
 
   with_scope :subject
   condition(:model_experiments_enabled) do
@@ -318,6 +316,10 @@ class ProjectPolicy < BasePolicy
   desc "User has either planner or reporter access"
   condition(:planner_or_reporter_access) do
     can?(:reporter_access) || can?(:planner_access)
+  end
+
+  condition(:allow_guest_plus_roles_to_pull_packages_enabled, scope: :subject) do
+    Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, @subject.root_ancestor)
   end
 
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
@@ -657,9 +659,18 @@ class ProjectPolicy < BasePolicy
     enable :admin_runner
     enable :manage_deploy_tokens
     enable :manage_merge_request_settings
+    enable :manage_protected_tags
     enable :change_restrict_user_defined_variables
     enable :create_protected_branch
     enable :admin_protected_branch
+    enable :admin_protected_environments
+  end
+
+  rule { can?(:manage_protected_tags) }.policy do
+    enable :read_protected_tags
+    enable :create_protected_tags
+    enable :update_protected_tags
+    enable :destroy_protected_tags
   end
 
   rule { can?(:admin_build) }.enable :manage_trigger
@@ -1037,6 +1048,7 @@ class ProjectPolicy < BasePolicy
     enable :import_project_members_from_another_project
     # ability to read, approve or reject member access requests of other users
     enable :admin_member_access_request
+    enable :read_member_access_request
   end
 
   rule { registry_enabled & can?(:admin_container_image) }.policy do
@@ -1096,6 +1108,12 @@ class ProjectPolicy < BasePolicy
     enable :read_ci_pipeline_schedules_plan_limit
   end
 
+  # TODO: Remove this rule and move :read_package permission from
+  # can?(:reporter_access) to can?(:guest_access)
+  # with the rollout of the FF allow_guest_plus_roles_to_pull_packages
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/512210
+  rule { can?(:guest_access) & allow_guest_plus_roles_to_pull_packages_enabled }.enable :read_package
+
   private
 
   def team_member?
@@ -1140,21 +1158,6 @@ class ProjectPolicy < BasePolicy
     project.group && project.group.requesters.exists?(user_id: @user.id)
   end
   # rubocop: enable CodeReuse/ActiveRecord
-
-  # rubocop:disable Cop/UserAdmin -- specifically check the admin attribute
-  def owns_project_organization?
-    return false unless @user
-    return false unless user_is_user?
-    return false unless @subject.organization
-    # Ensure admins can't bypass admin mode.
-    return false if @user.admin? && !can?(:admin)
-
-    # Load the owners with a single query.
-    @subject.organization
-            .owner_user_ids
-            .include?(@user.id)
-  end
-  # rubocop:enable Cop/UserAdmin
 
   def team_access_level
     return -1 if @user.nil?

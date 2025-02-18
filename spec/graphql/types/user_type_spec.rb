@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
   specify { expect(described_class.graphql_name).to eq('User') }
+  specify { expect(described_class.interfaces).to include(Types::TodoableInterface) }
 
   specify do
     runtime_type = described_class.resolve_type(build(:user), {})

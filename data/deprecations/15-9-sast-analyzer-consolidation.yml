@@ -6,7 +6,7 @@
   stage: secure  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390416  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    GitLab SAST uses various [analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/) to scan code for vulnerabilities.
+    GitLab SAST uses various [analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/) to scan code for vulnerabilities.
 
     We're reducing the number of supported analyzers used by default in GitLab SAST.
     This is part of our long-term strategy to deliver a faster, more consistent user experience across different programming languages.
@@ -23,7 +23,7 @@
     - whether you've excluded the Semgrep-based analyzer from running in the past.
     - which analyzer first discovered the vulnerabilities shown in the project's Vulnerability Report.
 
-    See [Vulnerability translation documentation](https://docs.gitlab.com/ee/user/application_security/sast/analyzers.html#vulnerability-translation) for further details.
+    See [Vulnerability translation documentation](https://docs.gitlab.com/user/application_security/sast/analyzers/#vulnerability-translation) for further details.
 
     If you applied customizations to the affected analyzer, or if you currently disable the Semgrep-based analyzer in your pipelines, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/390416#breaking-change).
 

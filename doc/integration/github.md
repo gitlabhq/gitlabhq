@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use GitHub as an OAuth 2.0 authentication provider
 ---
 
-# Use GitHub as an OAuth 2.0 authentication provider
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can integrate your GitLab instance with GitHub.com and GitHub Enterprise.
 You can import projects from GitHub, or sign in to GitLab
@@ -202,7 +204,7 @@ GitLab instance and GitHub Enterprise.
 
 To check for a connectivity issue:
 
-1. Go to the [`production.log`](../administration/logs/index.md#productionlog)
+1. Go to the [`production.log`](../administration/logs/_index.md#productionlog)
    on your GitLab server and look for the following error:
 
    ``` plaintext

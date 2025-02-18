@@ -1,20 +1,18 @@
-import { mountExtended } from 'helpers/vue_test_utils_helper';
-import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import DownstreamPipelines from '~/ci/pipeline_mini_graph/downstream_pipelines.vue';
+import DownstreamPipelineDropdown from '~/ci/pipeline_mini_graph/downstream_pipeline_dropdown.vue';
 import { downstreamPipelines, singlePipeline } from './mock_data';
 
 describe('Downstream Pipelines', () => {
   let wrapper;
 
-  const findCiIcons = () => wrapper.findAllComponents(CiIcon);
+  const findDownstreamDropdowns = () => wrapper.findAllComponents(DownstreamPipelineDropdown);
   const findPipelineCounter = () => wrapper.findByTestId('downstream-pipeline-counter');
-  const findDownstreamPipeline = () => wrapper.findByTestId('downstream-pipelines');
-  const findDownstreamPipelines = () => wrapper.findAllByTestId('downstream-pipelines');
   const findDownstreamPipelinesComponent = () => wrapper.findComponent(DownstreamPipelines);
 
   const createComponent = (props = {}) => {
-    wrapper = mountExtended(DownstreamPipelines, {
+    wrapper = shallowMountExtended(DownstreamPipelines, {
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
@@ -32,14 +30,8 @@ describe('Downstream Pipelines', () => {
       });
     });
 
-    it('should render the correct ci status icon', () => {
-      const findIcon = () => wrapper.findByTestId('status_success_borderless-icon');
-
-      expect(findIcon().exists()).toBe(true);
-    });
-
-    it('should have the correct title assigned for the tooltip', () => {
-      expect(findDownstreamPipeline().attributes('title')).toBe('trigger-downstream - passed');
+    it('should render 1 dropdown', () => {
+      expect(findDownstreamDropdowns()).toHaveLength(1);
     });
 
     it('should not render the pipeline counter', () => {
@@ -56,19 +48,14 @@ describe('Downstream Pipelines', () => {
     });
 
     describe('pipelines', () => {
-      it('should render three pipeline items', () => {
-        expect(findDownstreamPipelines().exists()).toBe(true);
-        expect(findDownstreamPipelines()).toHaveLength(3);
-      });
-
-      it('should render three ci status icons', () => {
-        expect(findCiIcons().exists()).toBe(true);
-        expect(findCiIcons()).toHaveLength(3);
+      it('should render three dropdowns', () => {
+        expect(findDownstreamDropdowns().exists()).toBe(true);
+        expect(findDownstreamDropdowns()).toHaveLength(3);
       });
 
       it('should correctly trim pipelines', () => {
         expect(findDownstreamPipelinesComponent().props('pipelines')).toHaveLength(4);
-        expect(findDownstreamPipelines()).toHaveLength(3);
+        expect(findDownstreamDropdowns()).toHaveLength(3);
       });
     });
 

@@ -3,106 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::EmailsOnPush, feature_category: :integrations do
-  let_it_be(:project) { create(:project, :repository) }
-
-  describe 'Validations' do
-    context 'when integration is active' do
-      before do
-        subject.active = true
-      end
-
-      it { is_expected.to validate_presence_of(:recipients) }
-    end
-
-    context 'when integration is inactive' do
-      before do
-        subject.active = false
-      end
-
-      it { is_expected.not_to validate_presence_of(:recipients) }
-    end
-
-    describe 'validates number of recipients' do
-      before do
-        stub_const("#{described_class}::RECIPIENTS_LIMIT", 2)
-      end
-
-      subject(:integration) { described_class.new(project: project, recipients: recipients, active: true) }
-
-      context 'valid number of recipients' do
-        let(:recipients) { 'foo@bar.com duplicate@example.com Duplicate@example.com invalid-email' }
-
-        it 'does not count duplicates and invalid emails' do
-          is_expected.to be_valid
-        end
-      end
-
-      context 'invalid number of recipients' do
-        let(:recipients) { 'foo@bar.com bar@foo.com bob@gitlab.com' }
-
-        it { is_expected.not_to be_valid }
-
-        it 'adds an error message' do
-          integration.valid?
-
-          expect(integration.errors).to contain_exactly('Recipients can\'t exceed 2')
-        end
-
-        context 'when integration is not active' do
-          before do
-            integration.active = false
-          end
-
-          it { is_expected.to be_valid }
-        end
-      end
-    end
-  end
-
-  describe '.new' do
-    context 'when properties is missing branches_to_be_notified' do
-      subject { described_class.new(properties: {}) }
-
-      it 'sets the default value to all' do
-        expect(subject.branches_to_be_notified).to eq('all')
-      end
-    end
-
-    context 'when branches_to_be_notified is already set' do
-      subject { described_class.new(properties: { branches_to_be_notified: 'protected' }) }
-
-      it 'does not overwrite it with the default value' do
-        expect(subject.branches_to_be_notified).to eq('protected')
-      end
-    end
-  end
-
-  describe '.valid_recipients' do
-    let(:recipients) { '<invalid> foobar valid@dup@asd Valid@recipient.com Dup@lica.te dup@lica.te Dup@Lica.te' }
-
-    it 'removes invalid email addresses and removes duplicates by keeping the original capitalization' do
-      expect(described_class.valid_recipients(recipients)).not_to contain_exactly('valid@dup@asd')
-      expect(described_class.valid_recipients(recipients)).to contain_exactly('Valid@recipient.com', 'Dup@lica.te')
-    end
-  end
+  it_behaves_like Integrations::Base::EmailsOnPush
 
   describe '#execute' do
+    let_it_be(:project) { create(:project, :repository) }
+
     let(:push_data) { { object_kind: 'push' } }
-    let(:integration) { create(:emails_on_push_integration, project: project) }
     let(:recipients) { 'test@gitlab.com' }
 
-    before do
-      subject.recipients = recipients
-    end
+    subject(:integration) { create(:emails_on_push_integration, project: project, recipients: recipients) }
 
     shared_examples 'sending email' do |branches_to_be_notified, branch_being_pushed_to|
       let(:push_data) { { object_kind: 'push', object_attributes: { ref: branch_being_pushed_to } } }
 
-      before do
-        subject.branches_to_be_notified = branches_to_be_notified
-      end
-
       it 'sends email' do
+        integration.update!(branches_to_be_notified: branches_to_be_notified)
+
         expect(EmailsOnPushWorker).not_to receive(:perform_async)
 
         integration.execute(push_data)
@@ -112,11 +28,9 @@ RSpec.describe Integrations::EmailsOnPush, feature_category: :integrations do
     shared_examples 'not sending email' do |branches_to_be_notified, branch_being_pushed_to|
       let(:push_data) { { object_kind: 'push', object_attributes: { ref: branch_being_pushed_to } } }
 
-      before do
-        subject.branches_to_be_notified = branches_to_be_notified
-      end
-
       it 'does not send email' do
+        integration.update!(branches_to_be_notified: branches_to_be_notified)
+
         expect(EmailsOnPushWorker).not_to receive(:perform_async)
 
         integration.execute(push_data)
@@ -134,8 +48,9 @@ RSpec.describe Integrations::EmailsOnPush, feature_category: :integrations do
 
     context 'when emails are enabled on the project' do
       before do
+        project = create(:project)
         create(:protected_branch, project: project, name: 'a-protected-branch')
-        expect(project).to receive(:emails_disabled?).and_return(true)
+        allow(project).to receive(:emails_disabled?).and_return(true)
       end
 
       using RSpec::Parameterized::TableSyntax

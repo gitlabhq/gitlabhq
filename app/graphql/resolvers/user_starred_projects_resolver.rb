@@ -2,6 +2,8 @@
 
 module Resolvers
   class UserStarredProjectsResolver < BaseResolver
+    prepend ::Projects::LookAheadPreloads
+
     type Types::ProjectType.connection_type, null: true
 
     argument :search, GraphQL::Types::String,
@@ -23,17 +25,27 @@ module Resolvers
 
     alias_method :user, :object
 
-    def resolve(**args)
-      StarredProjectsFinder.new(
+    def resolve_with_lookahead(**args)
+      projects = StarredProjectsFinder.new(
         user,
-        params: {
-          search: args[:search],
-          sort: args[:sort],
-          min_access_level: args[:min_access_level],
-          language_name: args[:programming_language_name]
-        },
+        params: finder_params(args),
         current_user: current_user
       ).execute
+
+      apply_lookahead(projects)
+    end
+
+    private
+
+    def finder_params(args)
+      {
+        search: args[:search],
+        sort: args[:sort],
+        min_access_level: args[:min_access_level],
+        language_name: args[:programming_language_name]
+      }
     end
   end
 end
+
+Resolvers::UserStarredProjectsResolver.prepend_mod

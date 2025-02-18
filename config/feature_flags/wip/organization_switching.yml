@@ -4,6 +4,6 @@ feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/440741
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148896
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/454890
 milestone: '16.11'
-group: group::tenant scale
+group: group::organizations
 type: wip
 default_enabled: false

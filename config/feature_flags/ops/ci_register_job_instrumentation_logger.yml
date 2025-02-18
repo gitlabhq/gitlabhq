@@ -1,0 +1,9 @@
+---
+name: ci_register_job_instrumentation_logger
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/450674
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177414
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/512402
+milestone: '17.9'
+group: group::pipeline authoring
+type: ops
+default_enabled: false

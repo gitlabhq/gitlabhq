@@ -2,10 +2,9 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Use the GitLab Workflow extension for VS Code to handle common GitLab tasks directly in VS Code."
+description: Use the GitLab Workflow extension for VS Code to handle common GitLab tasks directly in VS Code.
+title: Install and set up the GitLab Workflow extension for VS Code
 ---
-
-# Install and set up the GitLab Workflow extension for VS Code
 
 To install the GitLab Workflow extension for VS Code:
 
@@ -46,7 +45,7 @@ Then authenticate with GitLab.
 
 The extension matches your Git repository remote URL with the GitLab instance URL you specified
 for your token. If you have multiple accounts or projects, you can choose the one you want to use.
-For more details, see [Switch GitLab accounts in VS Code](index.md#switch-gitlab-accounts-in-vs-code).
+For more details, see [Switch GitLab accounts in VS Code](_index.md#switch-gitlab-accounts-in-vs-code).
 
 The extension shows information in the VS Code status bar if both:
 

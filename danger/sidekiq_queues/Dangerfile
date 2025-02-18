@@ -3,7 +3,7 @@
 SCALABILITY_REVIEW_MESSAGE = <<~MSG
 ## Sidekiq queue changes
 
-This merge request contains changes to Sidekiq queues. Please follow the [documentation on changing a queue's urgency](https://docs.gitlab.com/ee/development/sidekiq/worker_attributes.html#job-urgency).
+This merge request contains changes to Sidekiq queues. Please follow the [documentation on changing a queue's urgency](https://docs.gitlab.com/development/sidekiq/worker_attributes/#job-urgency).
 MSG
 
 ADDED_QUEUES_MESSAGE = <<~MSG

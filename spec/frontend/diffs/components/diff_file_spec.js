@@ -33,6 +33,7 @@ import createNotesStore from '~/notes/stores/modules';
 import diffsModule from '~/diffs/store/modules';
 import { SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED } from '~/diffs/i18n';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
+import notesEventHub from '~/notes/event_hub';
 import { getDiffFileMock } from '../mock_data/diff_file';
 import diffFileMockDataUnreadable from '../mock_data/diff_file_unreadable';
 import diffsMockData from '../mock_data/merge_request_diffs';
@@ -296,6 +297,48 @@ describe('DiffFile', () => {
         expect(eventHub.$emit).toHaveBeenCalledWith(EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN);
         expect(eventHub.$emit).toHaveBeenCalledWith(EVT_PERF_MARK_DIFF_FILES_END);
         expect(eventHub.$emit).toHaveBeenCalledWith(EVT_DISCUSSIONS_ASSIGNED);
+      });
+    });
+
+    describe('loadCollapsedDiff', () => {
+      it('subscribes to loadCollapsedDiff events', () => {
+        const [file] = store.state.diffs.diffFiles;
+        const spyOn = jest.spyOn(notesEventHub, '$on');
+        createComponent({ file });
+        expect(spyOn).toHaveBeenCalledWith(
+          `loadCollapsedDiff/${file.file_hash}`,
+          expect.any(Function),
+        );
+      });
+
+      it('resubscribes to loadCollapsedDiff events when diff file changes', async () => {
+        const [file] = store.state.diffs.diffFiles;
+        const newFile = getReadableFile();
+        newFile.file_hash = 'foo';
+        const spyOn = jest.spyOn(notesEventHub, '$on');
+        const spyOff = jest.spyOn(notesEventHub, '$off');
+        createComponent({ file });
+        wrapper.setProps({ file: newFile });
+        await nextTick();
+        expect(spyOff).toHaveBeenCalledWith(
+          `loadCollapsedDiff/${file.file_hash}`,
+          expect.any(Function),
+        );
+        expect(spyOn).toHaveBeenCalledWith(
+          `loadCollapsedDiff/${newFile.file_hash}`,
+          expect.any(Function),
+        );
+      });
+
+      it('unsubscribes to loadCollapsedDiff events when destroyed', () => {
+        const [file] = store.state.diffs.diffFiles;
+        const spyOff = jest.spyOn(notesEventHub, '$off');
+        createComponent({ file });
+        wrapper.destroy();
+        expect(spyOff).toHaveBeenCalledWith(
+          `loadCollapsedDiff/${file.file_hash}`,
+          expect.any(Function),
+        );
       });
     });
   });

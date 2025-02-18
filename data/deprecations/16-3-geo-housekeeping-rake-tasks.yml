@@ -7,14 +7,14 @@
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/416384
   body: |
     As part of the migration of the replication and verification to the
-    [Geo self-service framework (SSF)](https://docs.gitlab.com/ee/development/geo/framework.html),
+    [Geo self-service framework (SSF)](https://docs.gitlab.com/development/geo/framework/),
     the legacy replication for project repositories has been
     [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130565).
     As a result, the following Rake tasks that relied on legacy code have also been removed. The work invoked by these Rake tasks are now triggered automatically either periodically or based on trigger events.
 
     | Rake task | Replacement |
     | --------- | ----------- |
-    | `geo:git:housekeeping:full_repack` | [Moved to UI](https://docs.gitlab.com/ee/administration/housekeeping.html#heuristical-housekeeping). No equivalent Rake task in the SSF. |
+    | `geo:git:housekeeping:full_repack` | [Moved to UI](https://docs.gitlab.com/administration/housekeeping/#heuristical-housekeeping). No equivalent Rake task in the SSF. |
     | `geo:git:housekeeping:gc` | Always executed for new repositories, and then when it's needed. No equivalent Rake task in the SSF. |
     | `geo:git:housekeeping:incremental_repack` | Executed when needed. No equivalent Rake task in the SSF. |
     | `geo:run_orphaned_project_registry_cleaner` | Executed regularly by a registry [consistency worker](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/geo/secondary/registry_consistency_worker.rb) which removes orphaned registries. No equivalent Rake task in the SSF. |

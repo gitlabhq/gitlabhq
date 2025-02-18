@@ -109,7 +109,7 @@ export default {
   i18n: {
     widenFilters: s__('PackageRegistry|To widen your search, change or remove the filters above.'),
   },
-  terraformRegistryHelpUrl: helpPagePath('user/packages/terraform_module_registry/index'),
+  terraformRegistryHelpUrl: helpPagePath('user/packages/terraform_module_registry/_index'),
 };
 </script>
 

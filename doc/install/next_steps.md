@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Steps after installing GitLab
 ---
 
-# Steps after installing GitLab
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Here are a few resources you might want to check out after completing the
 installation.
@@ -33,25 +35,25 @@ installation.
 
 ## Pages
 
-- [GitLab Pages](../user/project/pages/index.md): Publish static websites directly from a repository in GitLab
+- [GitLab Pages](../user/project/pages/_index.md): Publish static websites directly from a repository in GitLab
 
 ## Security
 
-- [Secure GitLab](../security/index.md):
+- [Secure GitLab](../security/_index.md):
   Recommended practices to secure your GitLab instance.
 - Sign up for the GitLab [Security Newsletter](https://about.gitlab.com/company/preference-center/) to get notified for security updates upon release.
 
 ## Authentication
 
-- [LDAP](../administration/auth/ldap/index.md): Configure LDAP to be used as
+- [LDAP](../administration/auth/ldap/_index.md): Configure LDAP to be used as
   an authentication mechanism for GitLab.
 - [SAML and OAuth](../integration/omniauth.md): Authenticate via online services like Okta, Google, Azure AD, and more.
 
 ## Backup and upgrade
 
-- [Back up and restore GitLab](../administration/backup_restore/index.md): Learn the different
+- [Back up and restore GitLab](../administration/backup_restore/_index.md): Learn the different
   ways you can back up or restore GitLab.
-- [Upgrade GitLab](../update/index.md): Every month, a new feature-rich GitLab version
+- [Upgrade GitLab](../update/_index.md): Every month, a new feature-rich GitLab version
   is released. Learn how to upgrade to it, or to an interim release that contains a security fix.
 - [Release and maintenance policy](../policy/maintenance.md): Learn about GitLab
   policies governing version naming, as well as release pace for major, minor and patch releases.
@@ -69,12 +71,12 @@ installation.
 
 ## Scaling and replication
 
-- [Scaling GitLab](../administration/reference_architectures/index.md):
+- [Scaling GitLab](../administration/reference_architectures/_index.md):
   GitLab supports several different types of clustering.
-- [Geo replication](../administration/geo/index.md):
+- [Geo replication](../administration/geo/_index.md):
   Geo is the solution for widely distributed development teams.
 
 ## Install the product documentation
 
-This is an optional step. If you want to host the documentation on your own
+Optional. If you want to host the documentation on your own
 server, see how to [self-host the product documentation](../administration/docs_self_host.md).

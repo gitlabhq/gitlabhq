@@ -4,7 +4,7 @@
   = f.gitlab_ui_checkbox_component :lfs_enabled, checkbox_options: { checked: @group.lfs_enabled? } do |c|
     - c.with_label do
       = _('Projects in this group can use Git LFS')
-      = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index.md'), class: 'gl-ml-2'
+      = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/_index.md'), class: 'gl-ml-2'
     - c.with_help_text do
       = _('This setting can be overridden in each project.')
 .form-group.gl-form-group{ role: 'group' }

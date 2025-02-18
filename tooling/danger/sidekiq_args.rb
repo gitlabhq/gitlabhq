@@ -13,11 +13,11 @@ module Tooling
       AFTER_DEF_PERFORM_REGEX = /^[\s+]*def perform\b/
 
       MR_WARNING_COMMENT = <<~WARNING_COMMENT
-        Please follow the [Sidekiq development guidelines](https://docs.gitlab.com/ee/development/sidekiq/compatibility_across_updates.html#changing-the-arguments-for-a-worker) when changing Sidekiq worker arguments.
+        Please follow the [Sidekiq development guidelines](https://docs.gitlab.com/development/sidekiq/compatibility_across_updates/#changing-the-arguments-for-a-worker) when changing Sidekiq worker arguments.
       WARNING_COMMENT
 
       SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT
-        Please follow the [Sidekiq development guidelines](https://docs.gitlab.com/ee/development/sidekiq/compatibility_across_updates.html#changing-the-arguments-for-a-worker) when changing Sidekiq worker arguments.
+        Please follow the [Sidekiq development guidelines](https://docs.gitlab.com/development/sidekiq/compatibility_across_updates/#changing-the-arguments-for-a-worker) when changing Sidekiq worker arguments.
 
         In particular, check whether you are updating callers of this method in this MR, and ensure that your change will be backwards compatible across updates.
       SUGGEST_COMMENT

@@ -20,6 +20,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     route_setting :authentication, job_token_allowed: true, job_token_scope: :project
+    route_setting :authorization, skip_job_token_policies: true
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List container repositories within a project' do
         detail 'This feature was introduced in GitLab 11.8.'

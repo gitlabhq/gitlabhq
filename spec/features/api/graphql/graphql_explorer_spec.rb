@@ -44,6 +44,17 @@ RSpec.describe 'GraphQL Explorer', :js, feature_category: :api do
     expect_response(%("currentUser": { "id": "#{user.to_gid}" }))
   end
 
+  it 'allows user to execute a query with a custom header' do
+    visit '/-/graphql-explorer'
+
+    fill_in_editor('query { currentUser { id } }')
+    # Test with a non-existing URL endpoint, so that we expect a 404
+    fill_in_header('{ "REQUEST_PATH": "/alternative/path/graphql" }')
+    click_execute_button
+
+    expect_response(%("statusCode": 404))
+  end
+
   it 'allows user to execute one of multiple named queries' do
     visit '/-/graphql-explorer'
 
@@ -89,11 +100,21 @@ RSpec.describe 'GraphQL Explorer', :js, feature_category: :api do
     within '.graphiql-editor' do
       current_scope.click # focus the editor
 
-      # CodeMirror uses a hidden textarea
-      field = current_scope.find("textarea", visible: false)
+      enter_text_in_hidden_textarea(text)
+    end
+  end
 
-      field.send_keys :enter
-      field.send_keys text
+  def fill_in_header(header_json)
+    within '.graphiql-editor-tools' do
+      current_scope.find('button[data-name="headers"]').click # focus the header editor
+    end
+
+    within '.graphiql-editor-tool' do
+      current_scope.click
+
+      within '.graphiql-editor' do
+        enter_text_in_hidden_textarea(header_json)
+      end
     end
   end
 
@@ -103,5 +124,13 @@ RSpec.describe 'GraphQL Explorer', :js, feature_category: :api do
 
   def expect_response(text)
     expect(page).to have_css('.graphiql-response', text: text, normalize_ws: true)
+  end
+
+  def enter_text_in_hidden_textarea(text)
+    # CodeMirror uses a hidden textarea
+    field = current_scope.find("textarea", visible: false)
+
+    field.send_keys :enter
+    field.send_keys text
   end
 end

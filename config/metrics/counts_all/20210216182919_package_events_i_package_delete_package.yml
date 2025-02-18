@@ -11,9 +11,6 @@ time_frame: all
 data_source: internal_events
 events:
   - name: delete_package_from_registry
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

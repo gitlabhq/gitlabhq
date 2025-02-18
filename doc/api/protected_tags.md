@@ -2,13 +2,15 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Protected tags API
 ---
 
-# Protected tags API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## Valid access levels
 
@@ -20,7 +22,11 @@ These access levels are recognized:
 
 ## List protected tags
 
-> - Deploy key information [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116846) in GitLab 16.0.
+{{< history >}}
+
+- Deploy key information [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116846) in GitLab 16.0.
+
+{{< /history >}}
 
 Gets a list of [protected tags](../user/project/protected_tags.md) from a project.
 This function takes pagination parameters `page` and `per_page` to restrict the list of protected tags.
@@ -31,7 +37,7 @@ GET /projects/:id/protected_tags
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -72,7 +78,7 @@ GET /projects/:id/protected_tags/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `name` | string | yes | The name of the tag or wildcard. |
 
 ```shell
@@ -97,7 +103,11 @@ Example response:
 
 ## Protect repository tags
 
-> - `deploy_key_id` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166866) in GitLab 17.5.
+{{< history >}}
+
+- `deploy_key_id` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166866) in GitLab 17.5.
+
+{{< /history >}}
 
 Protects a single repository tag, or several project repository
 tags, using a wildcard protected tag.
@@ -124,7 +134,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `name` | string | yes | The name of the tag or wildcard. |
 | `allowed_to_create`   | array  | no | Array of access levels allowed to create tags, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
 | `create_access_level` | string | no | Access levels allowed to create. Default: `40`, for Maintainer role. |
@@ -201,11 +211,11 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `name` | string | yes | The name of the tag. |
 
 ## Related topics
 
 - [Tags API](tags.md) for all tags
-- [Tags](../user/project/repository/tags/index.md) user documentation
+- [Tags](../user/project/repository/tags/_index.md) user documentation
 - [Protected tags](../user/project/protected_tags.md) user documentation

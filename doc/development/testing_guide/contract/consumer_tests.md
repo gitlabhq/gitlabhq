@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Writing consumer tests
 ---
-
-# Writing consumer tests
 
 This tutorial guides you through writing a consumer test from scratch. To start, the consumer tests are written using [`jest-pact`](https://github.com/pact-foundation/jest-pact) that builds on top of [`pact-js`](https://github.com/pact-foundation/pact-js). This tutorial shows you how to write a consumer test for the `/discussions.json` REST API endpoint, which is `/:namespace_name/:project_name/-/merge_requests/:id/discussions.json`, that is called in the `MergeRequests#show` page. For an example of a GraphQL consumer test, see [`spec/contracts/consumer/specs/project/pipelines/show.spec.js`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/contracts/consumer/specs/project/pipelines/show.spec.js).
 
@@ -17,7 +16,7 @@ Then, populate it with the following function and parameters:
 - [`PactOptions`](#the-pactoptions-parameter)
 - [`PactFn`](#the-pactfn-parameter)
 
-For more information about how the contract test directory is structured, see [Test suite folder structure](index.md#test-suite-folder-structure).
+For more information about how the contract test directory is structured, see [Test suite folder structure](_index.md#test-suite-folder-structure).
 
 ### The `pactWith` function
 
@@ -47,7 +46,7 @@ pactWith(
 );
 ```
 
-For more information about how to name consumers and providers, see [Naming conventions](index.md#naming-conventions).
+For more information about how to name consumers and providers, see [Naming conventions](_index.md#naming-conventions).
 
 ### The `PactFn` parameter
 
@@ -226,7 +225,7 @@ pactWith(
 );
 ```
 
-There we have it! The consumer test is now set up. You can now try [running this test](index.md#run-the-consumer-tests).
+There we have it! The consumer test is now set up. You can now try [running this test](_index.md#run-the-consumer-tests).
 
 ## Improve test readability
 

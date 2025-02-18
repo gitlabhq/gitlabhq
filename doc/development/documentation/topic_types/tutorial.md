@@ -2,14 +2,13 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Tutorial page type
 ---
-
-# Tutorial page type
 
 A tutorial is page that contains an end-to-end walkthrough of a complex workflow or scenario.
 In general, you might consider using a tutorial when:
 
-- The workflow requires a number of sequential steps where each step consists
+- The workflow requires sequential steps where each step consists
   of sub-steps.
 - The steps cover a variety of GitLab features or third-party tools.
 
@@ -34,14 +33,15 @@ For tutorial Markdown files, you can either:
 
 In the left nav, add the tutorial near the relevant feature documentation.
 
-Add a link to the tutorial on one of the [tutorial pages](../../../tutorials/index.md).
+Add a link to the tutorial on one of the [tutorial pages](../../../tutorials/_index.md).
 
 ## Tutorial format
 
 Tutorials should be in this format:
 
 ```markdown
-# Title (starts with "Tutorial:" followed by an active verb, like "Tutorial: Create a website")
+title: Title (starts with "Tutorial:" followed by an active verb, like "Tutorial: Create a website")
+---
 
 A paragraph that explains what the tutorial does, and the expected outcome.
 
@@ -78,7 +78,7 @@ To do step 2:
 ```
 
 An example of a tutorial that follows this format is
-[Tutorial: Make your first Git commit](../../../tutorials/make_first_git_commit/index.md).
+[Tutorial: Make your first Git commit](../../../tutorials/make_first_git_commit/_index.md).
 
 ## Tutorial page title
 
@@ -88,13 +88,13 @@ In the left nav, use the full page title. Do not abbreviate it.
 Put the text in quotes so the pipeline succeeds. For example,
 `"Tutorial: Make your first Git commit"`.
 
-On [the **Learn GitLab with tutorials** page](../../../tutorials/index.md),
+On [the **Learn GitLab with tutorials** page](../../../tutorials/_index.md),
 do not use `Tutorial` in the title.
 
 ## Screenshots
 
 You can include screenshots in a tutorial to illustrate important steps in the process.
-In the core product documentation, you should [use illustrations sparingly](../styleguide/index.md#illustrations).
+In the core product documentation, you should [use illustrations sparingly](../styleguide/_index.md#illustrations).
 However, in tutorials, screenshots can help users understand where they are in a complex process.
 
 Try to balance the number of screenshots in the tutorial so they don't disrupt

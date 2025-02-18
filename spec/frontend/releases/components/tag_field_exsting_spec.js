@@ -42,8 +42,8 @@ describe('releases/components/tag_field_existing', () => {
     it('shows the tag name', () => {
       createComponent();
 
-      expect(findInput().attributes()).toMatchObject({
-        disabled: '',
+      expect(findInput().props()).toMatchObject({
+        disabled: true,
         value: TEST_TAG_NAME,
       });
     });

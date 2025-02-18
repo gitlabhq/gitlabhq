@@ -2,16 +2,22 @@
 stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Container registry metadata database
 ---
 
-# Container registry metadata database
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/development_stages_support.md) for GitLab Self-Managed.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/development_stages_support.md) for GitLab Self-Managed.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
+
+{{< /history >}}
 
 The metadata database enables many new registry features, including
 online garbage collection, and increases the efficiency of many registry operations.
@@ -34,7 +40,7 @@ in the Helm Charts documentation.
 ## Known Limitations
 
 - No support for online migrations.
-- Geo Support is not confirmed.
+- Geo functionality is limited. Additional features are proposed in [epic 15325](https://gitlab.com/groups/gitlab-org/-/epics/15325).
 - Registry database migrations must be run manually when upgrading versions.
 - No guarantee for registry [zero downtime during upgrades](../../update/zero_downtime.md) on multi-node Omnibus GitLab environments.
 
@@ -127,7 +133,8 @@ A few factors affect the duration of the migration:
 - The number of registry instances running.
 - Network latency between the registry, PostgresSQL and your configured Object Storage.
 
-NOTE:
+{{< alert type="note" >}}
+
 The migration only targets tagged images. Untagged and unreferenced manifests, and the layers
 exclusively referenced by them, are left behind and become inaccessible. Untagged images
 were never visible through the GitLab UI or API, but they can become "dangling" and
@@ -135,14 +142,19 @@ left behind in the backend. After migration to the new registry, all images are 
 to continuous online garbage collection, by default deleting any untagged and unreferenced manifests
 and layers that remain for longer than 24 hours.
 
+{{< /alert >}}
+
 Choose the one or three step method according to your registry installation.
 
 #### One-step migration
 
-WARNING:
+{{< alert type="warning" >}}
+
 The registry must be shut down or remain in `read-only` mode during the migration.
 Only choose this method if you do not need to write to the registry during the migration
 and your registry contains a relatively small amount of data.
+
+{{< /alert >}}
 
 1. Add the `database` section to your `/etc/gitlab/gitlab.rb` file, but start with the metadata database **disabled**:
 
@@ -232,9 +244,12 @@ Follow this guide to migrate your existing container registry data.
 This procedure is recommended for larger sets of data or if you are
 trying to minimize downtime while completing the migration.
 
-NOTE:
+{{< alert type="note" >}}
+
 Users have reported step one import completed at [rates of 2 to 4 TB per hour](https://gitlab.com/gitlab-org/gitlab/-/issues/423459).
 At the slower speed, registries with over 100TB of data could take longer than 48 hours.
+
+{{< /alert >}}
 
 ##### Pre-import repositories (step one)
 
@@ -242,10 +257,13 @@ For larger instances, this command can take hours to days to complete, depending
 on the size of your registry. You may continue to use the registry as normal while
 step one is being completed.
 
-WARNING:
+{{< alert type="warning" >}}
+
 It is [not yet possible](https://gitlab.com/gitlab-org/container-registry/-/issues/1162)
 to restart the migration, so it's important to let the migration run to completion.
 If you must halt the operation, you have to restart this step.
+
+{{< /alert >}}
 
 1. Add the `database` section to your `/etc/gitlab/gitlab.rb` file, but start with the metadata database **disabled**:
 
@@ -272,11 +290,14 @@ If you must halt the operation, you have to restart this step.
    sudo gitlab-ctl registry-database import --step-one
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 You should try to schedule the following step as soon as possible
 to reduce the amount of downtime required. Ideally, less than one week
 after step one completes. Any new data written to the registry between steps one and two,
 causes step two to take more time.
+
+{{< /alert >}}
 
 ##### Import all repository data (step two)
 
@@ -383,9 +404,12 @@ The registry must be enabled and the configuration section must have the databas
 
 1. The registry must stop if it's running. Type `y` to confirm and wait for the process to finish.
 
-NOTE:
+{{< alert type="note" >}}
+
 The `migrate up` command offers some extra flags that can be used to control how the migrations are applied.
 Run `sudo gitlab-ctl registry-database migrate up --help` for details.
+
+{{< /alert >}}
 
 ### Undo schema migrations
 
@@ -399,8 +423,11 @@ after this.
    sudo gitlab-ctl registry-database migrate down
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `migrate down` command offers some extra flags. Run `sudo gitlab-ctl registry-database migrate down --help` for details.
+
+{{< /alert >}}
 
 ## Online garbage collection monitoring
 
@@ -503,6 +530,61 @@ to each other. To restore the registry, you must apply both backups together.
 
 To downgrade the registry to a previous version after the migration is complete,
 you must restore to a backup of the desired version in order to downgrade.
+
+## Database architecture with Geo
+
+When using GitLab Geo with the container registry, you must configure separate database and
+object storage stacks for the registry at each site. Geo replication to the
+container registry uses events generated from registry notifications,
+rather than by database replication.
+
+### Prerequisites
+
+Each Geo site requires a separate, site-specific:
+
+1. PostgreSQL instance for the container registry database.
+1. Object storage instance for the container registry.
+1. Container registry configured to use these site-specific resources.
+
+This diagram illustrates the data flow and basic architecture:
+
+```mermaid
+flowchart TB
+    subgraph "Primary site"
+        P_Rails[GitLab Rails]
+        P_Reg[Container registry]
+        P_RegDB[(Registry database)]
+        P_Obj[(Object storage)]
+        P_Reg --> P_RegDB
+        P_RegDB --> P_Obj
+    end
+
+    subgraph "Secondary site"
+        S_Rails[GitLab Rails]
+        S_Reg[Container registry]
+        S_RegDB[(Registry database)]
+        S_Obj[(Object storage)]
+        S_Reg --> S_RegDB
+        S_RegDB --> S_Obj
+    end
+
+    P_Reg -- "Notifications" --> P_Rails
+    P_Rails -- "Events" --> S_Rails
+    S_Rails --> S_Reg
+
+    classDef primary fill:#d1f7c4
+    classDef secondary fill:#b8d4ff
+
+    class P_Rails,P_Reg,P_MainDB,P_RegDB,P_Obj primary
+    class S_Rails,S_Reg,S_MainDB,S_RegDB,S_Obj secondary
+```
+
+Use separate database instances on each site because:
+
+1. The main GitLab database is replicated to the secondary site as read-only.
+1. This replication cannot be selectively disabled for the registry database.
+1. The container registry requires write access to its database at both sites.
+1. Homogeneous setups ensure the greatest parity between Geo sites.
 
 ## Troubleshooting
 

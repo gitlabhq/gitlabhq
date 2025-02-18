@@ -7,7 +7,7 @@ export const STATUS_TYPES = {
   DANGER: 'danger',
 };
 
-export const UPGRADE_DOCS_URL = helpPagePath('update/index');
+export const UPGRADE_DOCS_URL = helpPagePath('update/_index');
 
 export const ABOUT_RELEASES_PAGE = `${PROMO_URL}/releases/categories/releases/`;
 

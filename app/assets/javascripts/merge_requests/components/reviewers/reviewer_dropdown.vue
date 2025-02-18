@@ -1,14 +1,22 @@
 <script>
-import { debounce } from 'lodash';
+import { debounce, difference } from 'lodash';
 import { GlCollapsibleListbox, GlButton, GlAvatar, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import userAutocompleteWithMRPermissionsQuery from '~/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
+
+import { SEARCH_SELECT_REVIEWER_EVENT, SELECT_REVIEWER_EVENT } from '../../constants';
+
 import UpdateReviewers from './update_reviewers.vue';
 import userPermissionsQuery from './queries/user_permissions.query.graphql';
+
+function toUsernames(reviewers) {
+  return reviewers.map((reviewer) => reviewer.username);
+}
 
 export default {
   apollo: {
@@ -31,6 +39,7 @@ export default {
     UpdateReviewers,
     InviteMembersTrigger,
   },
+  mixins: [InternalEvents.mixin()],
   inject: ['projectPath', 'issuableId', 'issuableIid', 'directlyInviteMembers'],
   props: {
     users: {
@@ -54,26 +63,31 @@ export default {
       search: '',
       searching: false,
       fetchedUsers: [],
-      currentSelectedReviewers: this.selectedReviewers.map((r) => r.username),
+      currentSelectedReviewers: toUsernames(this.selectedReviewers),
       userPermissions: {},
     };
   },
   computed: {
+    usersForList() {
+      let users;
+
+      if (this.fetchedUsers.length) {
+        users = this.fetchedUsers;
+      } else {
+        users = this.users;
+      }
+
+      return users;
+    },
     mappedUsers() {
       const items = [];
-      let users;
+      const users = this.usersForList;
 
       if (this.selectedReviewersToShow.length && !this.search) {
         items.push({
           text: __('Reviewers'),
           options: this.selectedReviewersToShow.map((user) => this.mapUser(user)),
         });
-      }
-
-      if (this.fetchedUsers.length) {
-        users = this.fetchedUsers;
-      } else {
-        users = this.users;
       }
 
       items.push({
@@ -96,7 +110,7 @@ export default {
   },
   watch: {
     selectedReviewers(newVal) {
-      this.currentSelectedReviewers = newVal.map((r) => r.username);
+      this.currentSelectedReviewers = toUsernames(newVal);
     },
   },
   created() {
@@ -142,6 +156,29 @@ export default {
     removeAllReviewers() {
       this.currentSelectedReviewers = [];
     },
+    trackReviewersSelectEvent() {
+      const telemetryEvent = this.search ? SEARCH_SELECT_REVIEWER_EVENT : SELECT_REVIEWER_EVENT;
+      const previousUsernames = toUsernames(this.selectedReviewers);
+      const listUsernames = toUsernames(this.usersForList);
+      // Reviewers are always shown first if they are in the list,
+      // so we should exclude them for when we check the position
+      const selectableList = difference(listUsernames, previousUsernames);
+      const additions = difference(this.currentSelectedReviewers, previousUsernames);
+
+      additions.forEach((added) => {
+        // Convert from 0- to 1-index
+        const listPosition = selectableList.findIndex((user) => user === added) + 1;
+
+        this.trackEvent(telemetryEvent, {
+          value: listPosition,
+          selectable_reviewers_count: selectableList.length,
+        });
+      });
+    },
+    processReviewers(updateReviewers) {
+      this.trackReviewersSelectEvent();
+      updateReviewers();
+    },
   },
   i18n: {
     selectReviewer: __('Select reviewer'),
@@ -170,7 +207,7 @@ export default {
         :searching="searching"
         @search="debouncedFetchAutocompleteUsers"
         @shown="shownDropdown"
-        @hidden="updateReviewers"
+        @hidden="processReviewers(updateReviewers)"
         @reset="removeAllReviewers"
       >
         <template #toggle>

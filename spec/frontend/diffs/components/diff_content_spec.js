@@ -1,8 +1,10 @@
 import { GlLoadingIcon } from '@gitlab/ui';
+import { createTestingPinia } from '@pinia/testing';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
 import waitForPromises from 'helpers/wait_for_promises';
 import { sprintf } from '~/locale';
 import { createAlert } from '~/alert';
@@ -16,13 +18,19 @@ import NoteForm from '~/notes/components/note_form.vue';
 import NoPreviewViewer from '~/vue_shared/components/diff_viewer/viewers/no_preview.vue';
 import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_diffable.vue';
 import { SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED } from '~/diffs/i18n';
+import { createCustomGetters } from 'helpers/pinia_helpers';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 import { getDiffFileMock } from '../mock_data/diff_file';
 
 Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 jest.mock('~/alert');
 
 describe('DiffContent', () => {
   let wrapper;
+  let pinia;
 
   const saveDiffDiscussionMock = jest.fn();
   const closeDiffFileCommentFormMock = jest.fn();
@@ -52,20 +60,6 @@ describe('DiffContent', () => {
         getUserData: getUserDataGetterMock,
       },
       modules: {
-        /*
-        we need extra batchComments since vue-test-utils does not
-        stub async components properly
-        */
-        batchComments: {
-          namespaced: true,
-          getters: {
-            draftsForFile: () => () => true,
-            draftsForLine: () => () => true,
-            shouldRenderDraftRow: () => () => true,
-            hasParallelDraftLeft: () => () => true,
-            hasParallelDraftRight: () => () => true,
-          },
-        },
         diffs: {
           namespaced: true,
           state: {
@@ -94,10 +88,32 @@ describe('DiffContent', () => {
         ...defaultProps,
         ...props,
       },
+      pinia,
       store: fakeStore,
       provide: { glFeatures },
     });
   };
+
+  beforeEach(() => {
+    pinia = createTestingPinia({
+      plugins: [
+        globalAccessorPlugin,
+        createCustomGetters(() => ({
+          legacyNotes: {},
+          legacyDiffs: {},
+          batchComments: {
+            draftsForFile: () => () => true,
+            draftsForLine: () => () => true,
+            shouldRenderDraftRow: () => () => true,
+            hasParallelDraftLeft: () => () => true,
+            hasParallelDraftRight: () => () => true,
+          },
+        })),
+      ],
+    });
+    useLegacyDiffs();
+    useNotes();
+  });
 
   describe('with text based files', () => {
     afterEach(() => {

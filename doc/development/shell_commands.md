@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Shell command development guidelines
 ---
-
-# Shell command development guidelines
 
 This document contains guidelines for working with processes and files in the GitLab codebase.
 These guidelines are meant to make your code more reliable _and_ secure.

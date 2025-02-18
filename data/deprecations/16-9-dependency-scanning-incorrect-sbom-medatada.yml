@@ -11,7 +11,7 @@
     - `gitlab:dependency_scanning:input_file`
     - `gitlab:dependency_scanning:package_manager`
 
-    These properties were added in GitLab 15.7 to the SBOM produced by Dependency Scanning. However, these properties were incorrect and didn't align with the [GitLab CycloneDX property taxonomy](https://docs.gitlab.com/ee/development/sec/cyclonedx_property_taxonomy.html).
+    These properties were added in GitLab 15.7 to the SBOM produced by Dependency Scanning. However, these properties were incorrect and didn't align with the [GitLab CycloneDX property taxonomy](https://docs.gitlab.com/development/sec/cyclonedx_property_taxonomy/).
     The following correct properties were added in GitLab 15.11 to address this:
 
     - `gitlab:dependency_scanning:input_file:path`

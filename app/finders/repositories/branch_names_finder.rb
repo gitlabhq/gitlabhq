@@ -12,15 +12,11 @@ module Repositories
     def execute
       return unless search && offset && limit
 
-      if Feature.enabled?(:branch_names_sorting, repository.project)
-        default_branch = repository.root_ref
-        all_branch_names = repository.search_branch_names(search).sort.lazy.to_a
-        deleted_branch = all_branch_names.delete(default_branch)
-        all_branch_names.unshift(deleted_branch) if deleted_branch
-        all_branch_names.drop(offset).take(limit) # rubocop:disable CodeReuse/ActiveRecord -- Results returned from redis not database
-      else
-        repository.search_branch_names(search).lazy.drop(offset).take(limit) # rubocop:disable CodeReuse/ActiveRecord -- Results returned from redis not database
-      end
+      default_branch = repository.root_ref
+      all_branch_names = repository.search_branch_names(search).sort.lazy.to_a
+      deleted_branch = all_branch_names.delete(default_branch)
+      all_branch_names.unshift(deleted_branch) if deleted_branch
+      all_branch_names.drop(offset).take(limit) # rubocop:disable CodeReuse/ActiveRecord -- Results returned from redis not database
     end
 
     private

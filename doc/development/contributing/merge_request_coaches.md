@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: How GitLab Merge Request Coaches can help you
 ---
-
-# How GitLab Merge Request Coaches can help you
 
 Welcome, GitLab contributor! As you work on your contributions, Merge Request (MR) Coaches are here to help you succeed. This guide explains how we can support you throughout your contribution journey.
 
@@ -41,7 +40,7 @@ Don't hesitate to ask for help if:
 
 ## Where to find us
 
-You can reach MR Coaches by commenting `@gitlab-bot help` on your merge request or issue
+You can reach MR Coaches by commenting `@gitlab-bot help` on your merge request or issue.
 
 ## What we look for in contributions
 

@@ -12,12 +12,6 @@ module Mutations
           required: false,
           description: copy_field_description(Types::Notes::NoteType, :body)
 
-        argument :confidential,
-          GraphQL::Types::Boolean,
-          required: false,
-          description: 'Confidentiality flag of a note. Default is false.',
-          deprecated: { reason: 'No longer allowed to update confidentiality of notes', milestone: '14.10' }
-
         private
 
         def pre_update_checks!(_note, _args)

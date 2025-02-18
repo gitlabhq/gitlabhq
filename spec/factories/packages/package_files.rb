@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :package_file, class: 'Packages::PackageFile' do
-    package
+    package { association(:generic_package) }
 
     file_name { 'somefile.txt' }
 
@@ -26,12 +26,14 @@ FactoryBot.define do
       transient do
         without_loaded_metadatum { false }
         conan_package_reference { package.conan_package_references.first }
+        conan_recipe_revision { package.conan_recipe_revisions.first }
       end
 
       trait(:conan_recipe_file) do
         after :create do |package_file, evaluator|
           unless evaluator.without_loaded_metadatum
-            create :conan_file_metadatum, :recipe_file, package_file: package_file
+            create :conan_file_metadatum, :recipe_file,
+              { package_file: package_file, recipe_revision: evaluator.conan_recipe_revision }.compact
           end
         end
 
@@ -45,7 +47,8 @@ FactoryBot.define do
       trait(:conan_recipe_manifest) do
         after :create do |package_file, evaluator|
           unless evaluator.without_loaded_metadatum
-            create :conan_file_metadatum, :recipe_file, package_file: package_file
+            create :conan_file_metadatum, :recipe_file,
+              { package_file: package_file, recipe_revision: evaluator.conan_recipe_revision }.compact
           end
         end
 
@@ -60,7 +63,8 @@ FactoryBot.define do
         after :create do |package_file, evaluator|
           unless evaluator.without_loaded_metadatum
             create :conan_file_metadatum, :package_file,
-              { package_file: package_file, package_reference: evaluator.conan_package_reference }.compact
+              { package_file: package_file, package_reference: evaluator.conan_package_reference,
+                recipe_revision: evaluator.conan_recipe_revision }.compact
           end
         end
 
@@ -75,7 +79,8 @@ FactoryBot.define do
         after :create do |package_file, evaluator|
           unless evaluator.without_loaded_metadatum
             create :conan_file_metadatum, :package_file,
-              { package_file: package_file, package_reference: evaluator.conan_package_reference }.compact
+              { package_file: package_file, package_reference: evaluator.conan_package_reference,
+                recipe_revision: evaluator.conan_recipe_revision }.compact
           end
         end
 
@@ -90,7 +95,8 @@ FactoryBot.define do
         after :create do |package_file, evaluator|
           unless evaluator.without_loaded_metadatum
             create :conan_file_metadatum, :package_file,
-              { package_file: package_file, package_reference: evaluator.conan_package_reference }.compact
+              { package_file: package_file, package_reference: evaluator.conan_package_reference,
+                recipe_revision: evaluator.conan_recipe_revision }.compact
           end
         end
 
@@ -312,7 +318,7 @@ FactoryBot.define do
     end
 
     trait(:gem) do
-      package
+      package { association(:rubygems_package, without_package_files: true) }
       file_fixture { 'spec/fixtures/packages/rubygems/package-0.0.1.gem' }
       file_name { 'package-0.0.1.gem' }
       file_sha1 { '5fe852b2a6abd96c22c11fa1ff2fb19d9ce58b57' }
@@ -320,7 +326,7 @@ FactoryBot.define do
     end
 
     trait(:unprocessed_gem) do
-      package
+      package { association(:rubygems_package, without_package_files: true) }
       file_fixture { 'spec/fixtures/packages/rubygems/package.gem' }
       file_name { 'package.gem' }
       file_sha1 { '5fe852b2a6abd96c22c11fa1ff2fb19d9ce58b57' }
@@ -328,7 +334,7 @@ FactoryBot.define do
     end
 
     trait(:gemspec) do
-      package
+      package { association(:rubygems_package, without_package_files: true) }
       file_fixture { 'spec/fixtures/packages/rubygems/package.gemspec' }
       file_name { 'package.gemspec' }
       file_sha1 { '5fe852b2a6abd96c22c11fa1ff2fb19d9ce58b57' }
@@ -336,7 +342,7 @@ FactoryBot.define do
     end
 
     trait(:pypi) do
-      package
+      package { association(:pypi_package, package_files: []) }
       file_fixture { 'spec/fixtures/packages/pypi/sample-project.tar.gz' }
       file_name { 'sample-project-1.0.0.tar.gz' }
       file_sha1 { '2c0cfbed075d3fae226f051f0cc771b533e01aff' }
@@ -346,7 +352,7 @@ FactoryBot.define do
     end
 
     trait(:generic) do
-      package
+      package { association(:generic_package) }
       file_fixture { 'spec/fixtures/packages/generic/myfile.tar.gz' }
       file_name { "#{package.name}.tar.gz" }
       file_sha256 { '440e5e148a25331bbd7991575f7d54933c0ebf6cc735a18ee5066ac1381bb590' }
@@ -354,7 +360,7 @@ FactoryBot.define do
     end
 
     trait(:generic_zip) do
-      package
+      package { association(:generic_package) }
       file_fixture { 'spec/fixtures/packages/generic/myfile.zip' }
       file_name { "#{package.name}.zip" }
       file_sha256 { '3559e770bd493b326e8ec5e6242f7206d3fbf94fa47c16f82d34a037daa113e5' }
@@ -362,7 +368,7 @@ FactoryBot.define do
     end
 
     trait(:rpm) do
-      package
+      package { association(:rpm_package) }
       file_fixture { 'spec/fixtures/packages/rpm/hello-0.0.1-1.fc29.x86_64.rpm' }
       file_name { 'hello-0.0.1-1.fc29.x86_64.rpm' }
       file_sha1 { '5fe852b2a6abd96c22c11fa1ff2fb19d9ce58b57' }
@@ -374,7 +380,7 @@ FactoryBot.define do
     end
 
     trait(:ml_model) do
-      package
+      package { association(:ml_model_package) }
       file_fixture { 'spec/fixtures/packages/ml_model/MLmodel' }
       file_name { 'MLmodel' }
       size { 527.bytes }

@@ -96,7 +96,7 @@ describe('pages/shared/wikis/components/wiki_sidebar_entry', () => {
     });
 
     it('displays text "There are no pages in this wiki yet"', () => {
-      expect(wrapper.text()).toContain('There are no pages in this wiki yet');
+      expect(wrapper.text()).toContain('There are no pages in this wiki yet.');
     });
 
     it('does not display + X more text', () => {

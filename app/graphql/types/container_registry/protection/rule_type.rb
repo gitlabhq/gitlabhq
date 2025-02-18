@@ -20,23 +20,24 @@ module Types
           null: false,
           description:
             'Container repository path pattern protected by the protection rule. ' \
-            'For example, `my-project/my-container-*`. Wildcard character `*` allowed.'
+            'Must start with the project’s full path. For example: `my-project/*-prod-*`. ' \
+            'Wildcard character `*` is allowed anywhere after the project’s full path.'
 
         field :minimum_access_level_for_delete,
           Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
           null: true,
           description:
             'Minimum GitLab access level required to delete container images from the container repository. ' \
-            'Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`.' \
-            'If the value is `nil`, the default minimum access level is `DEVELOPER`'
+            'Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. ' \
+            'If the value is `nil`, the default minimum access level is `DEVELOPER`.'
 
         field :minimum_access_level_for_push,
           Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
           null: true,
           description:
             'Minimum GitLab access level required to push container images to the container repository. ' \
-            'Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`.' \
-            'If the value is `nil`, the default minimum access level is `DEVELOPER`'
+            'Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. ' \
+            'If the value is `nil`, the default minimum access level is `DEVELOPER`.'
       end
     end
   end

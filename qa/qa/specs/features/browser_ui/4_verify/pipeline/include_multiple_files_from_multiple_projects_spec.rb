@@ -15,10 +15,9 @@ module QA
         add_included_files_for(main_project)
         add_included_files_for(project1)
         add_included_files_for(project2)
-        add_main_ci_file(main_project)
+        add_ci_file_to_main_project
 
-        main_project.visit!
-        Flow::Pipeline.visit_latest_pipeline(status: 'Passed')
+        main_project.visit_latest_pipeline
       end
 
       after do
@@ -43,7 +42,11 @@ module QA
       private
 
       def add_included_files_for(project)
-        files = [
+        create(:commit, project: project, commit_message: 'Add files', actions: included_files(project))
+      end
+
+      def included_files(project)
+        [
           {
             action: 'create',
             file_path: 'file1.yml',
@@ -63,12 +66,12 @@ module QA
             YAML
           }
         ]
-
-        create(:commit, project: project, commit_message: 'Add files', actions: files)
       end
 
-      def add_main_ci_file(project)
-        create(:commit, project: project, commit_message: 'Add config file', actions: [main_ci_file])
+      def add_ci_file_to_main_project
+        create(:commit, project: main_project, commit_message: 'Add config file', actions: [main_ci_file])
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: main_project)
+        Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: main_project, status: 'success')
       end
 
       def main_ci_file

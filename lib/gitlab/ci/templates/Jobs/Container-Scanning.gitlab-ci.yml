@@ -18,7 +18,7 @@
 # - For auto-remediation, a readable Dockerfile in the root of the project or as defined by the
 #   CS_DOCKERFILE_PATH variable.
 #
-# Configure container scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
+# Configure container scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/).
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/container_scanning/#available-variables
 
 variables:
@@ -32,7 +32,7 @@ container_scanning:
     # To provide a `vulnerability-allowlist.yml` file, override the GIT_STRATEGY variable in your
     # `.gitlab-ci.yml` file and set it to `fetch`.
     # For details, see the following links:
-    # https://docs.gitlab.com/ee/user/application_security/container_scanning/index.html#overriding-the-container-scanning-template
+    # https://docs.gitlab.com/ee/user/application_security/container_scanning/#overriding-the-container-scanning-template
     # https://docs.gitlab.com/ee/user/application_security/container_scanning/#vulnerability-allowlisting
     GIT_STRATEGY: none
   allow_failure: true

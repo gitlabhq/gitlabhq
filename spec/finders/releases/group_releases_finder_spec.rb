@@ -110,7 +110,7 @@ RSpec.describe Releases::GroupReleasesFinder, feature_category: :groups_and_proj
           end
 
           it 'does not return any releases' do
-            expect(releases).to match_array([])
+            expect(releases).to be_empty
           end
         end
 
@@ -148,7 +148,7 @@ RSpec.describe Releases::GroupReleasesFinder, feature_category: :groups_and_proj
           end
 
           it 'does not return any releases' do
-            expect(releases).to match_array([])
+            expect(releases).to be_empty
           end
         end
 
@@ -158,7 +158,7 @@ RSpec.describe Releases::GroupReleasesFinder, feature_category: :groups_and_proj
           end
 
           it 'does not return any releases' do
-            expect(releases).to match_array([])
+            expect(releases).to be_empty
           end
         end
 

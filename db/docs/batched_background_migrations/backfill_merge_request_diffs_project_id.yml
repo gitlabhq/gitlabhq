@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillMergeRequestDiffsProjectId
-description: Populates the new `merge_request_diffs.project_id` column after joining with the `merge_requests` table
-feature_category: code_review_workflow
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136800
-milestone: '16.7'
-queued_migration_version: 20231114043522
-finalized_by: 20231213080216

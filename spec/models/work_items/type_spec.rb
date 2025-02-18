@@ -195,9 +195,13 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
   describe 'validation' do
     describe 'name uniqueness' do
-      subject { create(:work_item_type) }
+      it 'validates uniqueness with a custom validator' do
+        create(:work_item_type, :non_default, name: 'Test Type')
 
-      it { is_expected.to validate_uniqueness_of(:name).case_insensitive }
+        new_type = build(:work_item_type, :non_default, name: ' TesT Type ')
+        expect(new_type).to be_invalid
+        expect(new_type.errors.full_messages).to include('Name has already been taken')
+      end
     end
 
     it { is_expected.not_to allow_value('s' * 256).for(:icon_name) }
@@ -484,13 +488,18 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
   end
 
   describe '#supported_conversion_types' do
+    let_it_be(:developer_user) { create(:user) }
     let_it_be(:resource_parent) { create(:project) }
     let_it_be(:issue_type) { create(:work_item_type, :issue) }
     let_it_be(:incident_type) { create(:work_item_type, :incident) }
     let_it_be(:task_type) { create(:work_item_type, :task) }
     let_it_be(:ticket_type) { create(:work_item_type, :ticket) }
 
-    subject { work_item_type.supported_conversion_types(resource_parent) }
+    before_all do
+      resource_parent.add_developer(developer_user)
+    end
+
+    subject { work_item_type.supported_conversion_types(resource_parent, developer_user) }
 
     context 'when work item type is issue' do
       let(:work_item_type) { issue_type }
@@ -531,7 +540,7 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
       it 'passes resource_parent to supported_conversion_base_types' do
         expect(work_item_type).to receive(:supported_conversion_base_types)
-          .with(resource_parent)
+          .with(resource_parent, developer_user)
           .and_call_original
 
         subject

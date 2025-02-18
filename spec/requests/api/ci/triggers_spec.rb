@@ -272,6 +272,67 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
         end
       end
 
+      context 'with optional parameters' do
+        it 'creates trigger with expiration' do
+          date = DateTime.now + 20.days
+
+          expect do
+            post api("/projects/#{project.id}/triggers", user),
+              params: { description: 'trigger', expires_at: date.iso8601(3) }
+          end.to change { project.triggers.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response).to include('description' => 'trigger')
+          expect(json_response).to include('expires_at' => date.utc.iso8601(3))
+        end
+      end
+
+      context 'when trigger expiration past limit' do
+        it 'does not create trigger' do
+          date = DateTime.now + 20.years
+
+          expect do
+            post api("/projects/#{project.id}/triggers", user),
+              params: { description: 'trigger', expires_at: date.iso8601(3) }
+          end.not_to change { project.triggers.count }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+
+        it 'creates trigger when feature flag turned off' do
+          stub_feature_flags(trigger_token_expiration: false)
+
+          date = DateTime.now + 20.years
+
+          expect do
+            post api("/projects/#{project.id}/triggers", user),
+              params: { description: 'trigger', expires_at: date.iso8601(3) }
+          end.to change { project.triggers.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response).to include('description' => 'trigger')
+          expect(json_response).to include('expires_at' => nil)
+        end
+      end
+
+      context 'when expiration is invalid date string' do
+        [
+          'abc',
+          '01/01/2050',
+          '25/26/27',
+          '2308'
+        ].each do |param|
+          it "rejects #{param}" do
+            expect do
+              post api("/projects/#{project.id}/triggers", user),
+                params: { description: 'trigger', expires_at: param }
+            end.not_to change { project.triggers.count }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+      end
+
       context 'when the CreateService returns a permissions error' do
         before do
           failure_response = instance_double(ServiceResponse, success?: false, reason: :forbidden, message: "Permissions error message")

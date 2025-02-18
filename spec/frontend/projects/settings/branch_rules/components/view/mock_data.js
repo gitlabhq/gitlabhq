@@ -133,6 +133,36 @@ const mergeAccessLevelEdges = [
 
 export const matchingBranchesCount = 3;
 
+export const squashOptionMockResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/6',
+      __typename: 'Project',
+      branchRules: {
+        __typename: 'BranchRuleConnection',
+        nodes: [
+          {
+            __typename: 'BranchRule',
+            name: 'main',
+            id: 'gid://gitlab/Projects/BranchRule/1',
+            squashOption: {
+              option: 'Encourage',
+              helpText: 'Checkbox is visible and selected by default.',
+              __typename: 'SquashOption',
+            },
+          },
+          {
+            __typename: 'BranchRule',
+            name: '*',
+            id: 'gid://gitlab/Projects/BranchRule/2',
+            squashOption: null,
+          },
+        ],
+      },
+    },
+  },
+};
+
 export const branchProtectionsMockResponse = {
   data: {
     project: {
@@ -301,6 +331,20 @@ export const editBranchRuleMockResponse = {
           },
         },
       },
+    },
+  },
+};
+
+export const editSquashOptionMockResponse = {
+  data: {
+    branchRuleSquashOptionUpdate: {
+      errors: [],
+      squashOption: {
+        option: 'Encourage',
+        helpText: 'Checkbox is visible and selected by default.',
+        __typename: 'SquashOption',
+      },
+      __typename: 'BranchRuleSquashOptionUpdatePayload',
     },
   },
 };

@@ -473,7 +473,7 @@ $command-palette-spacing: px-to-rem(14px);
       bottom: 0;
       left: 0;
       right: 0;
-      background-color: $t-gray-a-24;
+      @apply gl-bg-overlay;
       z-index: $super-sidebar-z-index - 1;
 
       @include media-breakpoint-up(xl) {

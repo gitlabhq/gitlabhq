@@ -2,14 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Configure external storage for merge request diffs on your GitLab instance."
+description: Configure external storage for merge request diffs on your GitLab instance.
+title: Merge request diffs storage
 ---
 
-# Merge request diffs storage
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Merge request diffs are size-limited copies of diffs associated with merge
 requests. When viewing a merge request, diffs are sourced from these copies
@@ -19,16 +21,17 @@ By default, merge request diffs are stored in the database, in a table named
 `merge_request_diff_files`. Larger installations may find this table grows too
 large, in which case, switching to external storage is recommended.
 
-Merge request diffs can be stored [on disk](#using-external-storage), or in
-[object storage](#using-object-storage). In general, it
-is better to store the diffs in the database than on disk. A compromise is available
-that only [stores outdated diffs](#alternative-in-database-storage) outside of database.
+Merge request diffs can be stored:
+
+- Completely [on disk](#using-external-storage).
+- Completely [on object storage](#using-object-storage).
+- Current diffs in the database, and [outdated diffs in object storage](#alternative-in-database-storage).
 
 ## Using external storage
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
@@ -48,7 +51,9 @@ that only [stores outdated diffs](#alternative-in-database-storage) outside of d
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
    GitLab then migrates your existing merge request diffs to external storage.
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
@@ -72,20 +77,25 @@ that only [stores outdated diffs](#alternative-in-database-storage) outside of d
 1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
    GitLab then migrates your existing merge request diffs to external storage.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Using object storage
 
-WARNING:
+{{< alert type="warning" >}}
+
 Migrating to object storage is not reversible.
+
+{{< /alert >}}
 
 Instead of storing the external diffs on disk, we recommended the use of an object
 store like AWS S3 instead. This configuration relies on valid AWS credentials to
 be configured already.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
@@ -97,7 +107,9 @@ be configured already.
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
    GitLab then migrates your existing merge request diffs to external storage.
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
@@ -111,7 +123,9 @@ be configured already.
 1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
    GitLab then migrates your existing merge request diffs to external storage.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 [Read more about using object storage with GitLab](object_storage.md).
 
@@ -129,9 +143,9 @@ in the database.
 
 To enable this feature, perform the following steps:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
@@ -141,7 +155,9 @@ To enable this feature, perform the following steps:
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
@@ -154,7 +170,9 @@ To enable this feature, perform the following steps:
 
 1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 With this feature enabled, diffs are initially stored in the database, rather
 than externally. They are moved to external storage after any of these

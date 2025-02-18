@@ -9,6 +9,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Do not use links in headings."
+vocab: false
 level: error
 ignorecase: true
 nonword: true

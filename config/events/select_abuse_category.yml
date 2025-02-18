@@ -6,8 +6,6 @@ identifiers:
 product_group: authorization
 milestone: '15.9'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167137
-distributions:
-- ce
 tiers:
 - free
 - premium

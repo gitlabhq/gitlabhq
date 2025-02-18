@@ -28,6 +28,8 @@ class ProjectHook < WebHook
 
   self.limit_scope = :project
 
+  has_many :web_hook_logs, foreign_key: 'web_hook_id', inverse_of: :web_hook
+
   belongs_to :project
   validates :project, presence: true
 

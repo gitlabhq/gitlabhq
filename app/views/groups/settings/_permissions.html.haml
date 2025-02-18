@@ -39,12 +39,14 @@
     = render_if_exists 'groups/settings/prevent_forking', f: f, group: @group
     = render_if_exists 'groups/settings/service_access_tokens_expiration_enforced', f: f, group: @group
     = render_if_exists 'groups/settings/enforce_ssh_certificates', f: f, group: @group
+    = render_if_exists 'groups/settings/extended_grat_expiry_webhook_execute', f: f, group: @group
     = render 'groups/settings/two_factor_auth', f: f, group: @group
     = render_if_exists 'groups/personal_access_token_expiration_policy', f: f, group: @group
     = render 'groups/settings/membership', f: f, group: @group
     = render_if_exists 'groups/settings/remove_dormant_members', f: f, group: @group
     = render_if_exists 'groups/settings/personal_access_tokens', f: f, group: @group
     = render_if_exists 'groups/settings/extensions_marketplace', f: f, group: @group
+    = render_if_exists 'groups/settings/pages_access_control', f: f, group: @group
 
     %h5= _('Customer relations')
     .form-group.gl-mb-3
@@ -59,7 +61,7 @@
         input_id: 'group_crm_source_group_id',
         selected: @group.crm_settings&.source_group_id,
         clearable: 'true',
-        description: s_("GroupSettings|The group from which to source contacts for issues in this group and it's subgroups.")
+        description: s_("GroupSettings|The group from which to source contacts for issues in this group and its subgroups.")
       } }
 
     - if Feature.enabled?(:group_hierarchy_optimization, @group, type: :beta)

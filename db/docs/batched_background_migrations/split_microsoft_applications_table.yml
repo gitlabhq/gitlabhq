@@ -1,0 +1,8 @@
+---
+migration_job_name: SplitMicrosoftApplicationsTable
+description: Splits group-specific entries out of SystemAccess::MicrosoftApplication to SystemAccess::GroupMicrosoftApplication
+feature_category: system_access
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177531
+milestone: '17.9'
+queued_migration_version: 20250127052138
+finalized_by: # version of the migration that finalized this BBM

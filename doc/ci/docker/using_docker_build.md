@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use Docker to build Docker images
 ---
 
-# Use Docker to build Docker images
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use GitLab CI/CD with Docker to create Docker images.
 For example, you can create a Docker image of your application,
@@ -84,7 +86,7 @@ For more information, see [security of the `docker` group](https://blog.zopyx.co
 "Docker-in-Docker" (`dind`) means:
 
 - Your registered runner uses the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html) or
-  the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/index.html).
+  the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/).
 - The executor uses a [container image of Docker](https://hub.docker.com/_/docker/), provided
   by Docker, to run your CI/CD jobs.
 
@@ -92,7 +94,7 @@ The Docker image includes all of the `docker` tools and can run
 the job script in context of the image in privileged mode.
 
 You should use Docker-in-Docker with TLS enabled,
-which is supported by [GitLab.com instance runners](../runners/index.md).
+which is supported by [GitLab.com instance runners](../runners/_index.md).
 
 You should always pin a specific version of the image, like `docker:24.0.5`.
 If you use a tag like `docker:latest`, you have no control over which version is used.
@@ -106,10 +108,13 @@ You can use the Docker executor to run jobs in a Docker container.
 
 The Docker daemon supports connections over TLS. TLS is the default in Docker 19.03.12 and later.
 
-WARNING:
+{{< alert type="warning" >}}
+
 This task enables `--docker-privileged`, which effectively disables the container's security mechanisms and exposes your host to privilege
 escalation. This action can cause container breakout. For more information, see
 [runtime privilege and Linux capabilities](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities).
+
+{{< /alert >}}
 
 To use Docker-in-Docker with TLS enabled:
 
@@ -289,9 +294,15 @@ build:
     - docker run my-docker-image /script/to/run/tests
 ```
 
+##### Docker-in-Docker with proxy enabled in the Docker executor
+
+You might need to configure proxy settings to use the `docker push` command.
+
+For more information, see [Proxy settings when using dind service](https://docs.gitlab.com/runner/configuration/proxy.html#proxy-settings-when-using-dind-service).
+
 #### Use the Kubernetes executor with Docker-in-Docker
 
-You can use the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/index.html) to run jobs in a Docker container.
+You can use the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/) to run jobs in a Docker container.
 
 ##### Docker-in-Docker with TLS enabled in Kubernetes
 
@@ -322,7 +333,9 @@ To use Docker-in-Docker with TLS enabled in Kubernetes:
    default:
      image: docker:24.0.5
      services:
-       - docker:24.0.5-dind
+       - name: docker:24.0.5-dind
+         variables:
+           HEALTHCHECK_TCP_PORT: "2376"
      before_script:
        - docker info
 
@@ -388,7 +401,9 @@ For example:
    default:
      image: docker:24.0.5
      services:
-       - docker:24.0.5-dind
+       - name: docker:24.0.5-dind
+         variables:
+           HEALTHCHECK_TCP_PORT: "2375"
      before_script:
        - docker info
 
@@ -510,7 +525,7 @@ services:
 If you are a GitLab Runner administrator, you can specify the `command` to configure the registry mirror
 for the Docker daemon. The `dind` service must be defined for the
 [Docker](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersdockerservices-section)
-or [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/index.html#define-a-list-of-services).
+or [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/#define-a-list-of-services).
 
 Docker:
 
@@ -578,7 +593,7 @@ detected by the `dind` service.
 If you are a GitLab Runner administrator, you can use
 the mirror for every `dind` service. Update the
 [configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
-to specify a [ConfigMap volume mount](https://docs.gitlab.com/runner/executors/kubernetes/index.html#configmap-volume).
+to specify a [ConfigMap volume mount](https://docs.gitlab.com/runner/executors/kubernetes/#configmap-volume).
 
 For example, if you have a `/tmp/daemon.json` file with the following
 content:
@@ -598,8 +613,11 @@ of this file. You can do this with a command like:
 kubectl create configmap docker-daemon --namespace gitlab-runner --from-file /tmp/daemon.json
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 You must use the namespace that the Kubernetes executor for GitLab Runner uses to create job pods.
+
+{{< /alert >}}
 
 After the ConfigMap is created, you can update the `config.toml`
 file to mount the file to `/etc/docker/daemon.json`. This update
@@ -667,8 +685,11 @@ When using Docker-in-Docker, Docker downloads all layers of your image every tim
 
 ## Use the OverlayFS driver
 
-NOTE:
+{{< alert type="note" >}}
+
 The instance runners on GitLab.com use the `overlay2` driver by default.
+
+{{< /alert >}}
 
 By default, when using `docker:dind`, Docker uses the `vfs` storage driver, which
 copies the file system on every run. You can avoid this disk-intensive operation by using a different driver, for example `overlay2`.
@@ -698,7 +719,7 @@ copies the file system on every run. You can avoid this disk-intensive operation
 ### Use the OverlayFS driver per project
 
 You can enable the driver for each project individually by using the `DOCKER_DRIVER`
-[CI/CD variable](../yaml/index.md#variables) in `.gitlab-ci.yml`:
+[CI/CD variable](../yaml/_index.md#variables) in `.gitlab-ci.yml`:
 
 ```yaml
 variables:
@@ -734,14 +755,14 @@ use one of these alternatives:
 To use Buildah with GitLab CI/CD, you need [a runner](https://docs.gitlab.com/runner/) with one
 of the following executors:
 
-- [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes/index.html).
+- [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes/).
 - [Docker](https://docs.gitlab.com/runner/executors/docker.html).
 - [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
 In this example, you use Buildah to:
 
 1. Build a Docker image.
-1. Push it to [GitLab container registry](../../user/packages/container_registry/index.md).
+1. Push it to [GitLab container registry](../../user/packages/container_registry/_index.md).
 
 In the last step, Buildah uses the `Dockerfile` under the
 root directory of the project to build the Docker image. Finally, it pushes the image to the
@@ -762,7 +783,7 @@ build:
     FQ_IMAGE_NAME: "$CI_REGISTRY_IMAGE/test"
   before_script:
     # GitLab container registry credentials taken from the
-    # [predefined CI/CD variables](../variables/index.md#predefined-cicd-variables)
+    # [predefined CI/CD variables](../variables/_index.md#predefined-cicd-variables)
     # to authenticate to the registry.
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
@@ -798,7 +819,7 @@ This error occurs because Docker starts on TLS automatically.
 - If you are upgrading from v18.09 or earlier, see the
   [upgrade guide](https://about.gitlab.com/blog/2019/07/31/docker-in-docker-with-docker-19-dot-03/).
 
-This error can also occur with the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/index.html#using-dockerdind) when attempts are made to access the Docker-in-Docker service before it has fully started up. For a more detailed explanation, see [issue 27215](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27215).
+This error can also occur with the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/#using-dockerdind) when attempts are made to access the Docker-in-Docker service before it has fully started up. For a more detailed explanation, see [issue 27215](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27215).
 
 ### Docker `no such host` error
 
@@ -806,7 +827,7 @@ You might get an error that says
 `docker: error during connect: Post https://docker:2376/v1.40/containers/create: dial tcp: lookup docker on x.x.x.x:53: no such host`.
 
 This issue can occur when the service's image name
-[includes a registry hostname](../../ci/services/index.md#available-settings-for-services). For example:
+[includes a registry hostname](../services/_index.md#available-settings-for-services). For example:
 
 ```yaml
 default:
@@ -815,7 +836,7 @@ default:
     - registry.hub.docker.com/library/docker:24.0.5-dind
 ```
 
-A service's hostname is [derived from the full image name](../../ci/services/index.md#accessing-the-services).
+A service's hostname is [derived from the full image name](../services/_index.md#accessing-the-services).
 However, the shorter service hostname `docker` is expected.
 To allow service resolution and access, add an explicit alias for the service name `docker`:
 

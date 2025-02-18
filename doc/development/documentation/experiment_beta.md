@@ -1,10 +1,9 @@
 ---
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects
 stage: none
 group: unassigned
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects
+title: Documenting experimental and beta features
 ---
-
-# Documenting experimental and beta features
 
 When you document an [experiment or beta](../../policy/development_stages_support.md) feature:
 
@@ -23,28 +22,39 @@ When the feature changes from experiment or beta to generally available:
 ## Features that require user enrollment or feedback
 
 To include details about how users should enroll or leave feedback,
-add it below the `FLAG:` note.
+add it below the `type=flag` alert.
 
 For example:
 
 ```markdown
 ## Great new feature
 
-DETAILS:
-**Status:** Experiment
+{{</* details */>}}
 
-> - [Introduced](https://issue-link) in GitLab 15.10. This feature is an [experiment](<link_to>/policy/development_stages_support.md).
+Status: Experiment
 
-FLAG:
+{{</* /details */>}}
+
+{{</* history */>}}
+
+- [Introduced](https://issue-link) in GitLab 15.10. This feature is an [experiment](<link_to>/policy/development_stages_support.md).
+
+{{</* /history */>}}
+
+{{</* alert type="flag" */>}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{</* /alert */>}}
 
 Use this new feature when you need to do this new thing.
 
 This feature is an [experiment](<link_to>/policy/development_stages_support.md). To join
 the list of users testing this feature, do this thing. If you find a bug,
 [open an issue](https://link).
+
 ```
 
 ## GitLab Duo features
@@ -55,12 +65,12 @@ Follow these guidelines when you document GitLab Duo features.
 
 When documenting a GitLab Duo experiment:
 
-- On the [top-level GitLab Duo page](../../user/gitlab_duo/index.md), add a topic to the
+- On the [top-level GitLab Duo page](../../user/gitlab_duo/_index.md), add a topic to the
   `Experimental features` section.
 - Document the feature near other similar features.
 - Make sure you add history and status values, including any
   [add-on information](styleguide/availability_details.md#gitlab-duo-pro-or-enterprise-add-on).
-- For features that are part of the [Early Access Program](../../policy/early_access_program/index.md#add-a-feature-to-the-program)
+- For features that are part of the [Early Access Program](../../policy/early_access_program/_index.md#add-a-feature-to-the-program)
   in the `#developer-relations-early-access-program` Slack channel,
   post a comment that mentions the feature and its status.
 
@@ -68,11 +78,11 @@ When documenting a GitLab Duo experiment:
 
 When a GitLab Duo experiment moves to beta:
 
-- On the [top-level GitLab Duo page](../../user/gitlab_duo/index.md), move the topic from the
+- On the [top-level GitLab Duo page](../../user/gitlab_duo/_index.md), move the topic from the
   `Experimental features` to the `Beta features` section.
 - Make sure you update the history and status values, including any
   [add-on information](styleguide/availability_details.md#gitlab-duo-pro-or-enterprise-add-on).
-- For features that are part of the [Early Access Program](../../policy/early_access_program/index.md#add-a-feature-to-the-program)
+- For features that are part of the [Early Access Program](../../policy/early_access_program/_index.md#add-a-feature-to-the-program)
   in the `#developer-relations-early-access-program` Slack channel,
   post a comment that mentions the feature and its status.
 
@@ -80,10 +90,10 @@ When a GitLab Duo experiment moves to beta:
 
 When a GitLab Duo feature becomes generally available:
 
-- On the [top-level GitLab Duo page](../../user/gitlab_duo/index.md), move the topic from the
+- On the [top-level GitLab Duo page](../../user/gitlab_duo/_index.md), move the topic from the
   `Beta features` or `Experimental features` section to the `Generally available features` section.
 - Make sure you update the history and status values, including any
   [add-on information](styleguide/availability_details.md#gitlab-duo-pro-or-enterprise-add-on).
-- For features that are part of the [Early Access Program](../../policy/early_access_program/index.md#add-a-feature-to-the-program)
+- For features that are part of the [Early Access Program](../../policy/early_access_program/_index.md#add-a-feature-to-the-program)
   in the `#developer-relations-early-access-program` Slack channel,
   post a comment that mentions the feature and its status.

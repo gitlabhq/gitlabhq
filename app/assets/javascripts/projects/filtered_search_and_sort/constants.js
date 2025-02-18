@@ -1,23 +1,28 @@
-import { __ } from '~/locale';
+import {
+  SORT_LABEL_NAME,
+  SORT_LABEL_CREATED,
+  SORT_LABEL_UPDATED,
+  SORT_LABEL_STARS,
+} from '~/groups_projects/constants';
 
 export const SORT_OPTION_NAME = {
   value: 'name',
-  text: __('Name'),
+  text: SORT_LABEL_NAME,
 };
 
 export const SORT_OPTION_CREATED = {
   value: 'created',
-  text: __('Created'),
+  text: SORT_LABEL_CREATED,
 };
 
 export const SORT_OPTION_UPDATED = {
   value: 'latest_activity',
-  text: __('Updated'),
+  text: SORT_LABEL_UPDATED,
 };
 
 export const SORT_OPTION_STARS = {
   value: 'stars',
-  text: __('Stars'),
+  text: SORT_LABEL_STARS,
 };
 
 export const SORT_DIRECTION_ASC = 'asc';

@@ -141,10 +141,10 @@ module Issues
       begin
         default_template = TemplateFinder.build(
           :issues,
-          issue.project,
+          project,
           {
             name: template[:name],
-            source_template_project_id: issue.project.id
+            source_template_project_id: template[:project_id]
           }
         ).execute
       rescue ::Gitlab::Template::Finders::RepoTemplateFinder::FileNotFoundError

@@ -41,6 +41,7 @@ module Gitlab
     config.active_support.executor_around_test_case = nil # New default is true
     config.active_support.isolation_level = nil # New default is thread
     config.active_support.key_generator_hash_digest_class = nil # New default is OpenSSL::Digest::SHA256
+    config.active_support.cache_format_version = nil
 
     # Rails 6.1
     config.action_dispatch.cookies_same_site_protection = nil # New default is :lax
@@ -88,7 +89,6 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/exceptions_app')
 
     unless ::Gitlab.next_rails?
-      config.active_support.cache_format_version = nil
       config.active_support.disable_to_s_conversion = false # New default is true
       config.active_support.use_rfc4122_namespaced_uuids = true
       ActiveSupport.to_time_preserves_timezone = false
@@ -346,7 +346,6 @@ module Gitlab
     config.assets.precompile << "page_bundles/pipeline.css"
     config.assets.precompile << "page_bundles/pipeline_editor.css"
     config.assets.precompile << "page_bundles/pipelines.css"
-    config.assets.precompile << "page_bundles/productivity_analytics.css"
     config.assets.precompile << "page_bundles/profile.css"
     config.assets.precompile << "page_bundles/profile_two_factor_auth.css"
     config.assets.precompile << "page_bundles/profiles/preferences.css"
@@ -368,7 +367,6 @@ module Gitlab
     config.assets.precompile << "page_bundles/terminal.css"
     config.assets.precompile << "page_bundles/terms.css"
     config.assets.precompile << "page_bundles/todos.css"
-    config.assets.precompile << "page_bundles/todos_vue.css"
     config.assets.precompile << "page_bundles/tree.css"
     config.assets.precompile << "page_bundles/users.css"
     config.assets.precompile << "page_bundles/web_ide_loader.css"

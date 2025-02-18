@@ -38,30 +38,18 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Component, feature_category: :dependen
           data.merge!(license_info)
         end
 
-        context "when the feature flag `license_scanning_with_sbom_licenses` is enabled" do
-          it "sets the license information" do
-            is_expected.to be_kind_of(::Gitlab::Ci::Reports::Sbom::Component)
-            expect(component.licenses.count).to eq(1)
-            expect(component.licenses.first.name).to eq(license_name)
-          end
-
-          context "when the license is defined by an expression" do
-            let(:license_info) do
-              { "licenses" => [{ "expression" => "EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0" }] }
-            end
-
-            it "ignores the license" do
-              expect(component.licenses).to be_empty
-            end
-          end
+        it "sets the license information" do
+          is_expected.to be_kind_of(::Gitlab::Ci::Reports::Sbom::Component)
+          expect(component.licenses.count).to eq(1)
+          expect(component.licenses.first.name).to eq(license_name)
         end
 
-        context "when the feature flag `license_scanning_with_sbom_licenses` is disabled" do
-          before do
-            stub_feature_flags(license_scanning_with_sbom_licenses: false)
+        context "when the license is defined by an expression" do
+          let(:license_info) do
+            { "licenses" => [{ "expression" => "EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0" }] }
           end
 
-          it "does not includes the license information" do
+          it "ignores the license" do
             expect(component.licenses).to be_empty
           end
         end

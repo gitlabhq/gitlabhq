@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Revert and undo changes
 ---
-
-# Revert and undo changes
 
 Git provides options for undoing changes at any point in the
 [Git workflow](get_started.md#understand-the-git-workflow).
@@ -217,9 +216,12 @@ The commits are now `A-B-C-D-E`.
 Alternatively, [cherry-pick](../../user/project/merge_requests/cherry_pick_changes.md#cherry-pick-a-single-commit)
 that commit into a new merge request.
 
-NOTE:
+{{< alert type="note" >}}
+
 Another solution is to reset to `B` and commit `E`. However, this solution results in `A-B-E`,
 which clashes with what others have locally. Don't use this solution if your branch is shared.
+
+{{< /alert >}}
 
 ### Recover undone commits
 
@@ -274,7 +276,7 @@ git revert B
 You can undo remote changes and change history.
 
 Even with an updated history, old commits can still be
-accessed by commit SHA. This is the case at least until all the automated cleanup
+accessed by commit SHA, at least until all the automated cleanup
 of detached commits is performed, or a cleanup is run manually. Even the cleanup might not remove old commits if there are still refs pointing to them.
 
 ![Modifying history causes problems on remote branch](img/rebase_reset_v10_0.png)
@@ -282,8 +284,11 @@ of detached commits is performed, or a cleanup is run manually. Even the cleanup
 You should not change the history when you're working in a public branch
 or a branch that might be used by others.
 
-NOTE:
+{{< alert type="note" >}}
+
 Never modify the commit history of your [default branch](../../user/project/repository/branches/default.md) or shared branch.
+
+{{< /alert >}}
 
 ### Modify history with `git rebase`
 
@@ -315,9 +320,12 @@ and delete commits.
 # Empty commits are commented out
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 If you decide to stop a rebase, do not close your editor.
 Instead, remove all uncommented lines and save.
+
+{{< /alert >}}
 
 Use `git rebase` carefully on shared and remote branches.
 Experiment locally before you push to the remote repository.
@@ -386,7 +394,7 @@ Permanently delete sensitive or confidential information that was accidentally c
 it's no longer accessible in your repository's history. This process replaces a list of strings with `***REMOVED***`.
 
 Alternatively, to completely delete specific files from a repository, see
-[Remove files](../../user/project/repository/repository_size.md#remove-files).
+[Remove blobs](../../user/project/repository/repository_size.md#remove-blobs).
 
 To redact text from your repository, see [Redact text from repository](../../user/project/merge_requests/revert_changes.md#redact-text-from-repository).
 
@@ -530,7 +538,7 @@ git revert <commit-sha>
 
 These commands remove the file from current branches, but do not expunge it from your repository's history.
 To completely remove all traces of the file, past and present, from your repository, see
-[Remove blobs](../../user/project/repository/repository_size.md#remove-files).
+[Remove blobs](../../user/project/repository/repository_size.md#remove-blobs).
 
 ## Compare `git revert` and `git reset`
 

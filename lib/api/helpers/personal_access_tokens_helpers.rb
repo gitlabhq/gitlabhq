@@ -3,10 +3,39 @@
 module API
   module Helpers
     module PersonalAccessTokensHelpers
+      extend Grape::API::Helpers
+
+      params :access_token_params do
+        optional :revoked, type: Boolean, desc: 'Filter tokens where revoked state matches parameter',
+          documentation: { example: false }
+        optional :state, type: String, desc: 'Filter tokens which are either active or not',
+          values: %w[active inactive], documentation: { example: 'active' }
+        optional :created_before, type: DateTime, desc: 'Filter tokens which were created before given datetime',
+          documentation: { example: '2022-01-01' }
+        optional :created_after, type: DateTime, desc: 'Filter tokens which were created after given datetime',
+          documentation: { example: '2021-01-01' }
+        optional :last_used_before, type: DateTime, desc: 'Filter tokens which were used before given datetime',
+          documentation: { example: '2021-01-01' }
+        optional :last_used_after, type: DateTime, desc: 'Filter tokens which were used after given datetime',
+          documentation: { example: '2022-01-01' }
+        optional :search, type: String, desc: 'Filters tokens by name', documentation: { example: 'token' }
+        optional :sort, type: String, desc: 'Sort tokens', documentation: { example: 'created_at_desc' }
+      end
+
       def finder_params(current_user)
         user_param =
           if current_user.can_admin_all_resources?
-            { user: user(params[:user_id]) }
+            if params[:user_id].present?
+              user = user(params[:user_id])
+
+              not_found! if user.nil?
+
+              { user: user }
+            else
+              not_found! if params.key?(:user_id)
+
+              {}
+            end
           else
             { user: current_user, impersonation: false }
           end

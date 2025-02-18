@@ -50,6 +50,9 @@ exports[`PypiInstallation renders all the messages 1`] = `
           id="reference-1"
         >
           <div
+            class="gl-new-dropdown-arrow"
+          />
+          <div
             class="gl-new-dropdown-inner"
           >
             <ul
@@ -222,7 +225,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
   <a
     class="gl-link"
     data-testid="pypi-docs-link"
-    href="/help/user/packages/pypi_repository/index"
+    href="/help/user/packages/pypi_repository/_index"
     rel="noopener"
     target="_blank"
   >

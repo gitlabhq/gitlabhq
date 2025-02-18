@@ -2,13 +2,15 @@
 stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Moving repositories managed by GitLab
 ---
 
-# Moving repositories managed by GitLab
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can move all repositories managed by GitLab to another file system or another server.
 
@@ -30,7 +32,7 @@ For more information, see:
   querying and scheduling snippet repository moves.
 - [The API documentation](../../api/group_repository_storage_moves.md) details the endpoints for
   querying and scheduling group repository moves.
-- [Migrate to Gitaly Cluster](../gitaly/index.md#migrate-to-gitaly-cluster).
+- [Migrate to Gitaly Cluster](../gitaly/_index.md#migrate-to-gitaly-cluster).
 
 ### Moving Repositories
 
@@ -55,8 +57,8 @@ To move repositories:
      [individual snippets](../../api/snippet_repository_storage_moves.md#schedule-a-repository-storage-move-for-a-snippet).
    - [All groups](#move-all-groups) or
      [individual groups](../../api/group_repository_storage_moves.md#schedule-a-repository-storage-move-for-a-group).
-1. If [Geo](../geo/index.md) is enabled,
-   [resync all repositories](../geo/replication/troubleshooting/synchronization_verification.md#queue-up-all-repositories-for-resync).
+1. If [Geo](../geo/_index.md) is enabled,
+   [resync all repositories](../geo/replication/troubleshooting/synchronization_verification.md#resync-all-resources-of-one-component).
 
 #### Move all projects
 
@@ -126,9 +128,12 @@ To move all snippets by using the API:
 
 #### Move all groups
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 To move all groups by using the API:
 
@@ -176,20 +181,23 @@ We look at three scenarios:
 - The target directory contains an outdated copy of the repositories.
 - How to deal with thousands of repositories.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Each of the approaches we list can or does overwrite data in the target directory
 `/mnt/gitlab/repositories`. Do not mix up the source and the target.
 
+{{< /alert >}}
+
 ### Recommended approach in all cases
 
-For either Gitaly or Gitaly Cluster targets, the GitLab [backup and restore capability](../../administration/backup_restore/index.md)
+For either Gitaly or Gitaly Cluster targets, the GitLab [backup and restore capability](../backup_restore/_index.md)
 should be used. Git repositories are accessed, managed, and stored on GitLab servers by Gitaly as a database. Data loss
 can result from directly accessing and copying Gitaly files using tools like `rsync`.
 
 - Backup performance can be improved by
-  [processing multiple repositories concurrently](../../administration/backup_restore/backup_gitlab.md#back-up-git-repositories-concurrently).
+  [processing multiple repositories concurrently](../backup_restore/backup_gitlab.md#back-up-git-repositories-concurrently).
 - Backups can be created of just the repositories using the
-  [skip feature](../../administration/backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup).
+  [skip feature](../backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup).
 
 No other method works for Gitaly Cluster targets.
 
@@ -224,9 +232,12 @@ If you want to compress the data before it goes over the network
 
 ### The target directory contains an outdated copy of the repositories: use `rsync`
 
-WARNING:
+{{< alert type="warning" >}}
+
 Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
+
+{{< /alert >}}
 
 If the target directory already contains a partial or outdated copy of the repositories it may be wasteful to copy all
 the data again with `tar`. In this scenario it is better to use `rsync` for Gitaly targets (use
@@ -245,9 +256,12 @@ If you want to see progress, replace `-a` with `-av`.
 
 #### Single `rsync` to another server
 
-WARNING:
+{{< alert type="warning" >}}
+
 Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
+
+{{< /alert >}}
 
 For Gitaly targets (use [recommended approach](#recommended-approach-in-all-cases) for Gitaly Cluster targets), if the
 `git` user on your source system has SSH access to the target server you can send the repositories over the network with

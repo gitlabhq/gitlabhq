@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Transaction guidelines
 ---
-
-# Transaction guidelines
 
 This document gives a few examples of the usage of database transactions in application code.
 
@@ -37,8 +36,11 @@ end
 This transaction involves two database tables. In case of an error, each `UPDATE`
 statement rolls back to the previous consistent state.
 
-NOTE:
+{{< alert type="note" >}}
+
 Avoid referencing the `ActiveRecord::Base` class and use `ApplicationRecord` instead.
+
+{{< /alert >}}
 
 ## Transaction and database locks
 

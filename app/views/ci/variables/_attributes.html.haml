@@ -1,25 +1,3 @@
 %p
   = s_('CiVariables|Variables can be accidentally exposed in a job log, or maliciously sent to a third party server. The masked variable feature can help reduce the risk of accidentally exposing variable values, but is not a guaranteed method to prevent malicious users from accessing variables.')
-  = link_to _('How can I make my variables more secure?'), help_page_path('ci/variables/index.md', anchor: 'cicd-variable-security'), target: '_blank', rel: 'noopener noreferrer'
-%p
-  = s_('CiVariables|Variables can have several attributes.')
-  = link_to _('Learn more.'), help_page_path('ci/variables/index.md', anchor: 'define-a-cicd-variable-in-the-ui'), target: '_blank', rel: 'noopener noreferrer'
-- if @group.present? || @project.present?
-  %ul
-    %li
-      = safe_format(s_('CiVariables|%{strong_start}Visibility:%{strong_end} Set the visibility level for the value. Can be visible, masked, or masked and hidden.'), tag_pair(tag.strong, :strong_start, :strong_end))
-    %li
-      = safe_format(s_('CiVariables|%{strong_start}Flags%{strong_end}'), tag_pair(tag.strong, :strong_start, :strong_end))
-      %ul
-        %li
-          = safe_format(s_('CiVariables|%{code_open}Protected:%{code_close} Only exposed to protected branches or protected tags.'), tag_pair(tag.code, :code_open, :code_close))
-        %li
-          = safe_format(s_('CiVariables|%{code_open}Expanded:%{code_close} Variables with %{code_open}$%{code_close} will be treated as the start of a reference to another variable.'), tag_pair(tag.code, :code_open, :code_close))
-- else
-  %ul
-    %li
-      = safe_format(s_('CiVariables|%{code_open}Protected:%{code_close} Only exposed to protected branches or protected tags.'), tag_pair(tag.code, :code_open, :code_close))
-    %li
-      = safe_format(s_('CiVariables|%{code_open}Masked:%{code_close} Hidden in job logs. Must match masking requirements.'), tag_pair(tag.code, :code_open, :code_close))
-    %li
-      = safe_format(s_('CiVariables|%{code_open}Expanded:%{code_close} Variables with %{code_open}$%{code_close} will be treated as the start of a reference to another variable.'), tag_pair(tag.code, :code_open, :code_close))
+  = link_to _('How can I make my variables more secure?'), help_page_path('ci/variables/_index.md', anchor: 'cicd-variable-security'), target: '_blank', rel: 'noopener noreferrer'

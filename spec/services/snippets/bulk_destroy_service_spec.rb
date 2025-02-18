@@ -22,8 +22,8 @@ RSpec.describe Snippets::BulkDestroyService, feature_category: :source_code_mana
     it 'deletes the snippets in bulk' do
       response = nil
 
-      expect(Repositories::DestroyService).to receive(:new).with(personal_snippet.repository).and_call_original
-      expect(Repositories::DestroyService).to receive(:new).with(project_snippet.repository).and_call_original
+      expect(::Repositories::DestroyService).to receive(:new).with(personal_snippet.repository).and_call_original
+      expect(::Repositories::DestroyService).to receive(:new).with(project_snippet.repository).and_call_original
 
       aggregate_failures do
         expect do
@@ -86,7 +86,7 @@ RSpec.describe Snippets::BulkDestroyService, feature_category: :source_code_mana
 
     context 'when an error is raised deleting the repository' do
       before do
-        allow_next_instance_of(Repositories::DestroyService) do |instance|
+        allow_next_instance_of(::Repositories::DestroyService) do |instance|
           allow(instance).to receive(:execute).and_return({ status: :error })
         end
       end
@@ -112,9 +112,9 @@ RSpec.describe Snippets::BulkDestroyService, feature_category: :source_code_mana
       it 'returns success' do
         response = nil
 
-        expect(Repositories::DestroyService).to receive(:new).with(personal_snippet.repository).and_call_original
-        expect(Repositories::DestroyService).to receive(:new).with(project_snippet.repository).and_call_original
-        expect(Repositories::DestroyService).to receive(:new).with(snippet_without_repo.repository).and_call_original
+        expect(::Repositories::DestroyService).to receive(:new).with(personal_snippet.repository).and_call_original
+        expect(::Repositories::DestroyService).to receive(:new).with(project_snippet.repository).and_call_original
+        expect(::Repositories::DestroyService).to receive(:new).with(snippet_without_repo.repository).and_call_original
 
         expect do
           response = subject.execute

@@ -6,11 +6,10 @@
       %td
         = _('Application ID')
       %td
-        .clipboard-group
-          .input-group
-            %input.label.label-monospace.monospace{ id: "application_id", type: "text", autocomplete: 'off', value: @application.uid, readonly: true, data: { testid: 'application-id-field' } }
-            .input-group-append
-              = clipboard_button(target: "#application_id", title: _("Copy ID"), category: :primary, size: :medium)
+        .btn-group
+          = render Pajamas::ButtonComponent.new(label: true, button_text_classes: 'gl-font-monospace', button_options: { data: { testid: 'application-id-field' } }) do
+            = @application.uid
+          = clipboard_button(text: @application.uid, title: _("Copy ID"), category: :primary, size: :medium)
     %tr
       %td
         = _('Secret')

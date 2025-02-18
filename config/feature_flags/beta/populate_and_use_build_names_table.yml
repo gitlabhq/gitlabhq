@@ -1,0 +1,9 @@
+---
+name: populate_and_use_build_names_table
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/423904
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147699
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/512149
+milestone: '16.11'
+group: group::pipeline execution
+type: beta
+default_enabled: false

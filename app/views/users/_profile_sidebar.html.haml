@@ -26,27 +26,27 @@
               #js-user-achievements{ data: { root_url: root_url, user_id: @user.id } }
 
             - user_local_time = local_time(@user.timezone)
-            %div{ itemprop: 'address', itemscope: true, itemtype: 'https://schema.org/PostalAddress' }
-            - unless @user.private_profile?
-              %h2.gl-text-base.gl-mb-2.gl-mt-4= s_('UserProfile|Info')
-              - if work_information(@user).present?
+            %div
+              - unless @user.private_profile?
+                %h2.gl-text-base.gl-mb-2.gl-mt-4= s_('UserProfile|Info')
+                - if work_information(@user).present?
+                  .gl-flex.gl-gap-2.gl-mb-2
+                    = sprite_icon('work', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
+                    %span
+                      = work_information(@user, with_schema_markup: true)
+                - if @user.location.present?
+                  .gl-flex.gl-gap-2.gl-mb-2{ itemprop: 'address', itemscope: true, itemtype: 'https://schema.org/PostalAddress' }
+                    = sprite_icon('location', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
+                    %span{ itemprop: 'addressLocality' }
+                      = @user.location
+                - if user_local_time.present?
+                  .gl-flex.gl-gap-2.gl-mb-2{ data: { testid: 'user-local-time' } }
+                    = sprite_icon('clock', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
+                    %span
+                      = user_local_time
                 .gl-flex.gl-gap-2.gl-mb-2
-                  = sprite_icon('work', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
-                  %span
-                    = work_information(@user, with_schema_markup: true)
-              - if @user.location.present?
-                .gl-flex.gl-gap-2.gl-mb-2
-                  = sprite_icon('location', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
-                  %span{ itemprop: 'addressLocality' }
-                    = @user.location
-              - if user_local_time.present?
-                .gl-flex.gl-gap-2.gl-mb-2{ data: { testid: 'user-local-time' } }
-                  = sprite_icon('clock', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
-                  %span
-                    = user_local_time
-              .gl-flex.gl-gap-2.gl-mb-2
-                = sprite_icon('calendar', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
-                %span= s_('Member since %{date}') % { date: l(@user.created_at.to_date, format: :long) }
+                  = sprite_icon('calendar', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
+                  %span= s_('Member since %{date}') % { date: l(@user.created_at.to_date, format: :long) }
 
             - if has_contact_info?(@user)
               .gl-text-default

@@ -12,7 +12,7 @@
     to explicitly set separate ports for metrics and health-checks.
     The newly introduced settings for `sidekiq['health_checks_*']`
     should always be set in `gitlab.rb`.
-    For more information, check the documentation for [configuring Sidekiq](https://docs.gitlab.com/ee/administration/sidekiq/index.html).
+    For more information, check the documentation for [configuring Sidekiq](https://docs.gitlab.com/administration/sidekiq/).
 
     These changes also require updates in either Prometheus to scrape the new endpoint or k8s health-checks to target the new
     health-check port to work properly, otherwise either metrics or health-checks will disappear.

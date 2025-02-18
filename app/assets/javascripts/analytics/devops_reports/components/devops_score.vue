@@ -7,7 +7,8 @@ import DevopsScoreCallout from './devops_score_callout.vue';
 
 const defaultHeaderAttrs = {
   thClass: '!gl-bg-white',
-  thAttr: { 'data-testid': 'header' },
+  // eslint-disable-next-line max-params
+  thAttr: (value, key, item, type) => (type === 'head' ? { 'data-testid': 'header' } : {}),
 };
 
 export default {
@@ -45,6 +46,7 @@ export default {
     {
       key: 'title',
       label: '',
+      isRowHeader: true,
       ...defaultHeaderAttrs,
     },
     {
@@ -100,6 +102,9 @@ export default {
         thead-class="gl-border-t-0 gl-border-b-solid gl-border-b-1 gl-border-b-default"
         stacked="sm"
       >
+        <template #cell(title)="{ item: { title } }">
+          <span class="gl-font-normal">{{ title }}</span>
+        </template>
         <template #cell(usage)="{ item }">
           <div data-testid="usageCol">
             <span>{{ item.usage }}</span>

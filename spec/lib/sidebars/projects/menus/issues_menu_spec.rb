@@ -69,7 +69,7 @@ RSpec.describe Sidebars::Projects::Menus::IssuesMenu, feature_category: :navigat
 
       describe 'when service desk is supported' do
         before do
-          allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(true)
+          allow(::ServiceDesk).to receive(:supported?).and_return(true)
         end
 
         describe 'when service desk is enabled' do
@@ -91,7 +91,7 @@ RSpec.describe Sidebars::Projects::Menus::IssuesMenu, feature_category: :navigat
 
       describe 'when service desk is unsupported' do
         before do
-          allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(false)
+          allow(::ServiceDesk).to receive(:supported?).and_return(false)
           project.update!(service_desk_enabled: true)
         end
 

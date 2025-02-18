@@ -56,6 +56,11 @@ export default {
       required: false,
       default: '',
     },
+    newCommentTemplatePaths: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     enablePreview: {
       type: Boolean,
       required: false,
@@ -385,6 +390,7 @@ export default {
       :suggestion-start-index="suggestionsStartIndex"
       :uploads-path="uploadsPath"
       :markdown-preview-path="markdownPreviewPath"
+      :new-comment-template-paths-prop="newCommentTemplatePaths"
       :drawio-enabled="drawioEnabled"
       :supports-quick-actions="supportsQuickActions"
       data-testid="markdownHeader"

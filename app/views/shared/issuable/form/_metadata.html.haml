@@ -46,7 +46,7 @@
         .row
           = form.label :merge_after, s_('MergeRequests|Merge can start'), class: 'col-12'
           .js-merge-request-schedule-input{ data: {
-            merge_after: issuable.merge_schedule&.merge_after&.strftime('%Y-%m-%dT%H:%MZ'),
+            merge_after: issuable.merge_schedule&.merge_after&.strftime('%Y-%m-%dT%H:%M%z'),
             param_key: issuable.class.model_name.param_key
           } }
           %p.gl-text-subtle.col-12= s_('MergeRequests|Requires that merge checks pass.')

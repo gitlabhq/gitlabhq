@@ -1,5 +1,9 @@
 - @sort ||= sort_value_latest_activity
-.dropdown.js-project-filter-dropdown-wrap.gl-inline{ class: '!gl-m-0' }
+- topic_view ||= false
+
+.dropdown.js-project-filter-dropdown-wrap.gl-inline-flex.gl-items-center.gl-gap-3{ class: '!gl-m-0' }
+  - if topic_view
+    %span.gl-text-sm.gl-text-subtle.gl-shrink-0= _("Sort by") + ":"
   = dropdown_toggle(projects_sort_options_hash[@sort], { toggle: 'dropdown', display: 'static' }, { id: 'sort-projects-dropdown' })
   %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
     %li.dropdown-header

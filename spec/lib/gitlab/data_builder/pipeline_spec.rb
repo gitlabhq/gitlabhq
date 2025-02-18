@@ -210,6 +210,48 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
 
         expect { described_class.build(pipeline.reload).with_retried_builds.to_json }.not_to exceed_query_limit(control)
       end
+
+      it 'with environments' do
+        pipeline = create(:ci_pipeline, user: user, project: project)
+
+        staging_env = create(:environment, project: project, name: 'staging')
+        prod_env = create(:environment, project: project, name: 'production')
+
+        create(:ci_build, :with_deployment,
+          :environment_with_deployment_tier,
+          user: user,
+          project: project,
+          pipeline: pipeline,
+          environment: staging_env.name)
+
+        create(:ci_build, :with_deployment,
+          :environment_with_deployment_tier,
+          user: user,
+          project: project,
+          pipeline: pipeline,
+          environment: prod_env.name)
+
+        control = ActiveRecord::QueryRecorder.new { described_class.build(pipeline.reload).to_json }
+
+        review_env = create(:environment, project: project, name: 'review/feat-1')
+        dev_env = create(:environment, project: project, name: 'development')
+
+        create_list(:ci_build, 3, :with_deployment,
+          :environment_with_deployment_tier,
+          user: user,
+          project: project,
+          pipeline: pipeline,
+          environment: review_env.name)
+
+        create(:ci_build, :with_deployment,
+          :environment_with_deployment_tier,
+          user: user,
+          project: project,
+          pipeline: pipeline,
+          environment: dev_env.name)
+
+        expect { described_class.build(pipeline.reload).to_json }.not_to exceed_query_limit(control)
+      end
     end
   end
 

@@ -1,3 +1,7 @@
+.rd-page-container {
+  max-width: none;
+}
+
 .rd-app-header {
   display: flex;
   padding: $gl-spacing-scale-3 0;
@@ -14,5 +18,41 @@
 
 .rd-app-body {
   display: flex;
-  flex-direction: column;
+
+  @include media-breakpoint-down(sm) {
+    flex-direction: column;
+  }
+}
+
+.rd-app-content {
+  flex: 1 0;
+}
+
+.rd-app-content[data-sidebar-visible] {
+  @include media-breakpoint-up(sm) {
+    padding-left: $gl-spacing-scale-4;
+  }
+
+  @include media-breakpoint-down(sm) {
+    padding-top: $gl-spacing-scale-4;
+  }
+}
+
+.rd-app-sidebar {
+  width: 320px;
+  flex: none;
+  padding-left: 0 !important;
+
+  @include media-breakpoint-down(sm) {
+    flex: 1;
+    width: auto !important;
+    padding: 0 !important;
+    position: static !important;
+  }
+}
+
+.rd-app-sidebar-loading {
+  display: flex;
+  justify-content: center;
+  padding: $gl-padding-8;
 }

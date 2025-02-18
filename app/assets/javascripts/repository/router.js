@@ -9,11 +9,21 @@ import { getRefType } from './utils/ref_type';
 
 Vue.use(VueRouter);
 
+const normalizePathParam = (pathParam) => {
+  // Vue Router 4 when there's more than one `:path` segment
+  if (Array.isArray(pathParam)) {
+    return joinPaths(...pathParam);
+  }
+
+  // Vue Router 3, or when there's zero or one `:path` segments.
+  return pathParam?.replace(/^\//, '') || '/';
+};
+
 export default function createRouter(base, baseRef) {
   const treePathRoute = {
     component: TreePage,
     props: (route) => ({
-      path: route.params.path?.replace(/^\//, '') || '/',
+      path: normalizePathParam(route.params.path),
       refType: getRefType(route.query.ref_type || null),
     }),
   };
@@ -36,25 +46,25 @@ export default function createRouter(base, baseRef) {
       {
         name: 'treePathDecoded',
         // Sometimes the ref needs decoding depending on how the backend sends it to us
-        path: `(/-)?/tree/${decodeURI(baseRef)}/:path*`,
+        path: `/:dash(-)?/tree/${decodeURI(baseRef)}/:path*`,
         ...treePathRoute,
       },
       {
         name: 'treePath',
         // Support without decoding as well just in case the ref doesn't need to be decoded
-        path: `(/-)?/tree/${escapeRegExp(baseRef)}/:path*`,
+        path: `/:dash(-)?/tree/${escapeRegExp(baseRef)}/:path*`,
         ...treePathRoute,
       },
       {
         name: 'blobPathDecoded',
         // Sometimes the ref needs decoding depending on how the backend sends it to us
-        path: `(/-)?/blob/${decodeURI(baseRef)}/:path*`,
+        path: `/:dash(-)?/blob/${decodeURI(baseRef)}/:path*`,
         ...blobPathRoute,
       },
       {
         name: 'blobPath',
         // Support without decoding as well just in case the ref doesn't need to be decoded
-        path: `(/-)?/blob/${escapeRegExp(baseRef)}/:path*`,
+        path: `/:dash(-)?/blob/${escapeRegExp(baseRef)}/:path*`,
         ...blobPathRoute,
       },
       {
@@ -80,7 +90,7 @@ export default function createRouter(base, baseRef) {
         'edit',
         decodeURI(baseRef),
         '-',
-        to.params.path || '',
+        normalizePathParam(to.params.path),
         needsClosingSlash && '/',
       ),
     );

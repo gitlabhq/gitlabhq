@@ -63,7 +63,7 @@ RSpec.describe 'getting a detailed sentry error', feature_category: :observabili
       expect(error_data['status']).to eql sentry_detailed_error.status.upcase
       expect(error_data['firstSeen']).to eql sentry_detailed_error.first_seen
       expect(error_data['lastSeen']).to eql sentry_detailed_error.last_seen
-      expect(error_data['gitlabCommit']).to be nil
+      expect(error_data['gitlabCommit']).to be_nil
       expect(error_data['externalBaseUrl']).to eq sentry_detailed_error.external_base_url
       expect(error_data['gitlabIssuePath']).to eq sentry_detailed_error.gitlab_issue
       expect(error_data['tags']['logger']).to eq sentry_detailed_error.tags[:logger]

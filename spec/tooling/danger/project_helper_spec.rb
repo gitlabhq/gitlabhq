@@ -30,7 +30,7 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
     end
 
     where(:path, :expected_categories) do
-      'doc/api/graphql/reference/index.md'               | [:docs, :backend]
+      'doc/api/graphql/reference/_index.md'              | [:docs, :backend]
       'doc/api/graphql/reference/some_other_file.txt'    | [:docs, :backend]
       'doc/api/openapi/openapi.yaml'                     | [:docs, :backend]
       'doc/api/openapi/any_other_file.yaml'              | [:docs, :backend]
@@ -90,7 +90,6 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
       'lib/foo'                    | [:backend]
       'rubocop/foo'                | [:backend]
       '.rubocop.yml'               | [:backend]
-      '.rubocop_todo.yml'          | [:backend]
       '.rubocop_todo/cop/name.yml' | [:backend]
       'gems/foo/.rubocop.yml'      | [:backend]
       'spec/foo'                   | [:backend]

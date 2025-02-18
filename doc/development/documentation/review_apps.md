@@ -3,15 +3,13 @@ stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 description: Learn how documentation review apps work.
+title: Documentation review apps
 ---
 
-# Documentation review apps
-
-GitLab team members can deploy a [review app](../../ci/review_apps/index.md) for merge requests with documentation
+GitLab team members can deploy a [review app](../../ci/review_apps/_index.md) for merge requests with documentation
 changes. The review app helps you preview what the changes would look like if they were deployed to either:
 
 - The [GitLab Docs site](https://docs.gitlab.com).
-- The [new GitLab Docs site](https://new.docs.gitlab.com). The site is still in development.
 
 Review apps deployments are available for these projects:
 
@@ -28,13 +26,10 @@ Prerequisites:
 - You must have the Developer role for the project. External contributors cannot run these jobs and
 should ask a GitLab team member to run the jobs for them.
 
-Merge requests with documentation changes have the following jobs available:
+For merge requests with documentation changes, you can manually trigger the following deploy job:
 
-- `review-docs-deploy`, which uses Nanoc static-site generation using
-  [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs).
-- `review-docs-hugo-deploy`: Optional. This review app is only for testing the Hugo static site generation from
-  [`gitlab-docs-hugo`](https://gitlab.com/gitlab-org/technical-writing-group/gitlab-docs-hugo),
-  which is still in development.
+- `review-docs-hugo-deploy`: Creates a review app to preview your documentation changes using the Hugo static site generation from
+  [`docs-gitlab-com`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com). This site replaced the previous site built with Nanoc.
 
 To deploy a review app and preview changes:
 
@@ -44,29 +39,22 @@ To deploy a review app and preview changes:
 1. When the pipeline finishes, select **View app** on either deployment to open a browser and review the
    changes introduced by the merge request.
 
-The `review-docs-cleanup` and `review-docs-hugo-cleanup` jobs are triggered automatically on merge. These job delete
+The `review-docs-hugo-cleanup` job is triggered automatically on merge. This job deletes
 the review app.
 
 ## How documentation review apps work
 
 Documentation review apps follow this process:
 
-1. You manually run the `review-docs-deploy` or `review-docs-hugo-deploy` job in a merge request.
+1. You manually run the `review-docs-hugo-deploy` job in a merge request.
 1. The job downloads (if outside of `gitlab` project) and runs the
    [`scripts/trigger-build.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/trigger-build.rb) script with
-   either:
+   the `docs-hugo deploy` flag, which triggers a pipeline in the `gitlab-org/technical-writing/docs-gitlab-com`
+   project.
 
-   - The `docs deploy` flag, which triggers a pipeline in the `gitlab-org/gitlab-docs` project.
-   - The `docs-hugo deploy` flag, which triggers a pipeline in the `gitlab-org/technical-writing-group/gitlab-docs-hugo`
-     project.
-
-   The `DOCS_BRANCH` environment variable determines which branch of either the `gitlab-org/gitlab-docs` project or the
-   `gitlab-org/technical-writing-group/gitlab-docs-hugo` project are used. If not set, the `main` branch is used.
-1. After the documentation preview site is built:
-   - For `nanoc` builds, the HTML files are uploaded as [artifacts](../../ci/yaml/index.md#artifacts) to a GCP bucket.
-     For implementation details, see
-     [issue `gitlab-com/gl-infra/reliability#11021`](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/11021).
-   - For `hugo` builds, a [parallel deployment](../../user/project/pages/index.md#parallel-deployments) is deployed.
+   The `DOCS_BRANCH` environment variable determines which branch of the
+   `gitlab-org/technical-writing/docs-gitlab-com` project to use. If not set, the `main` branch is used.
+1. After the documentation preview site is built, it is [deployed in parallel to other review apps](../../user/project/pages/_index.md#parallel-deployments).
 
 ## Troubleshooting
 
@@ -80,7 +68,7 @@ You might get an error in a review app deployment job that states:
 Server responded with code 401, message: 401 Unauthorized.
 ```
 
-This issue occurs when the `DOCS_PROJECT_API_TOKEN` (or `DOCS_HUGO_PROJECT_API_TOKEN`) has either:
+This issue occurs when the `DOCS_HUGO_PROJECT_API_TOKEN` has either:
 
 - Expired or been revoked and must be regenerated.
 - Been recreated, but the CI/CD variable in the projects that use it wasn't updated.
@@ -89,4 +77,4 @@ These conditions result in the deployment job for the documentation review app b
 the status of the downstream pipeline.
 
 To resolve this issue, contact the [Technical Writing team](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#contact-us). For more information on documentation review app tokens,
-see [GitLab docs site maintenance](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/maintenance.md).
+see [GitLab docs site maintenance](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/maintenance.md).

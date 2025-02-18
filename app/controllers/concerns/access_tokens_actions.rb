@@ -8,9 +8,6 @@ module AccessTokensActions
     before_action -> { check_permission(:destroy_resource_access_tokens) }, only: [:revoke]
     before_action -> { check_permission(:manage_resource_access_tokens) }, only: [:rotate]
     before_action -> { check_permission(:create_resource_access_tokens) }, only: [:create]
-    before_action do
-      push_frontend_feature_flag(:retain_resource_access_token_user_after_revoke, resource.root_ancestor)
-    end
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -48,9 +45,11 @@ module AccessTokensActions
     revoked_response = ResourceAccessTokens::RevokeService.new(current_user, resource, @resource_access_token).execute
 
     if revoked_response.success?
-      flash[:notice] = format(_("Revoked access token %{access_token_name}!"), access_token_name: @resource_access_token.name)
+      flash[:notice] =
+        format(_("Revoked access token %{access_token_name}!"), access_token_name: @resource_access_token.name)
     else
-      flash[:alert] = format(_("Could not revoke access token %{access_token_name}."), access_token_name: @resource_access_token.name)
+      flash[:alert] =
+        format(_("Could not revoke access token %{access_token_name}."), access_token_name: @resource_access_token.name)
     end
 
     redirect_to resource_access_tokens_path
@@ -72,8 +71,6 @@ module AccessTokensActions
   end
 
   def inactive
-    return render_404 unless Feature.enabled?(:retain_resource_access_token_user_after_revoke, resource.root_ancestor)
-
     tokens = inactive_access_tokens.page(page)
     add_pagination_headers(tokens)
 
@@ -102,9 +99,7 @@ module AccessTokensActions
 
     @scopes = Gitlab::Auth.available_scopes_for(resource)
     @active_access_tokens, @active_access_tokens_size = active_access_tokens
-    if Feature.enabled?(:retain_resource_access_token_user_after_revoke, resource.root_ancestor) # rubocop:disable Style/GuardClause
-      @inactive_access_tokens_size = inactive_access_tokens.size
-    end
+    @inactive_access_tokens_size = inactive_access_tokens.size
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 

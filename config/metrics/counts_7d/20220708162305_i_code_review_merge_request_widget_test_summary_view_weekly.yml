@@ -16,9 +16,6 @@ events:
     filter:
       label: test_summary
 data_category: optional
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

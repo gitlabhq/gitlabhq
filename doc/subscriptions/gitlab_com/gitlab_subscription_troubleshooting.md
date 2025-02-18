@@ -1,17 +1,19 @@
 ---
 stage: Fulfillment
 group: Subscription Management
-description: Seat usage, compute minutes, storage limits, renewal info.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Seat usage, compute minutes, storage limits, renewal info.
+title: Troubleshooting GitLab subscription
 ---
 
-# Troubleshooting GitLab subscription
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
 
-When you purchase or use subscriptions for GitLab.com or GitLab self-managed, you might encounter the following issues.
+{{< /details >}}
+
+When you purchase or use subscriptions for GitLab.com or GitLab Self-Managed, you might encounter the following issues.
 
 ## Credit card declined
 
@@ -55,7 +57,7 @@ To resolve this issue, try the following:
   - [FineShift Software Private Limited](https://partners.gitlab.com/English/directory/partner/1737250/fineshift-software-private-limited)
 
 - For cards issued outside of the United States: Ensure your card is enabled for international use, and verify if there are country-specific restrictions.
-- Contact your financial institution: Ask for the reason why your transaction was declined, and request that your card is enabled for this type of transaction. 
+- Contact your financial institution: Ask for the reason why your transaction was declined, and request that your card is enabled for this type of transaction.
 
 ## Error: `Attempt_Exceed_Limitation`
 
@@ -75,7 +77,7 @@ This issue occurs when you have an active subscription that:
 - Was [purchased through a reseller](../customers_portal.md#customers-that-purchased-through-a-reseller).
 - Is a multi-year subscription.
 
-To resolve this issue, contact your [GitLab sales representative](https://about.gitlab.com/sales/) to assist you with the purchase.
+To resolve this issue, contact your [GitLab sales representative](https://customers.gitlab.com/contact_us) to assist you with the purchase.
 
 ## No purchases listed in the Customers Portal account
 
@@ -87,11 +89,11 @@ To be added as a contact, [create a ticket with the GitLab Support team](https:/
 ## Unable to link subscription to namespace
 
 On GitLab.com, if you cannot link a subscription to your namespace, you might have insufficient permissions.
-Ensure that you have the Owner role for that namespace, and review the [transfer restrictions](index.md#transfer-restrictions).
+Ensure that you have the Owner role for that namespace, and review the [transfer restrictions](_index.md#transfer-restrictions).
 
 ## Subscription data fails to synchronize
 
-On GitLab self-managed, your subscription data might fail to synchronize.
+On GitLab Self-Managed, your subscription data might fail to synchronize.
 This issue can occur when network traffic between your GitLab instance and certain
 IP addresses is not allowed.
 

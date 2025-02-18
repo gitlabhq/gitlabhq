@@ -38,7 +38,7 @@ exports[`NpmInstallation renders all the messages 1`] = `
   >
     You may also need to setup authentication using an auth token.
     <gl-link-stub
-      href="/help/user/packages/npm_registry/index"
+      href="/help/user/packages/npm_registry/_index"
       target="_blank"
     >
       See the documentation

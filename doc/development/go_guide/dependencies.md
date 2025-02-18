@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Dependency Management in Go
 ---
-
-# Dependency Management in Go
 
 Go takes an unusual approach to dependency management, in that it is
 source-based instead of artifact-based. In an artifact-based dependency

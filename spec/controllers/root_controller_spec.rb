@@ -2,13 +2,28 @@
 
 require 'spec_helper'
 
-RSpec.describe RootController do
+RSpec.describe RootController, feature_category: :shared do
   describe 'GET index' do
     context 'when user is not logged in' do
       it 'redirects to the sign-in page' do
         get :index
 
         expect(response).to redirect_to(new_user_session_path)
+        expect(response).to have_gitlab_http_status(:found)
+      end
+
+      context 'when root redirect is enabled' do
+        before do
+          stub_application_setting(root_moved_permanently_redirection: true)
+        end
+
+        it 'redirects to the sign-in page with updated status and headers' do
+          get :index
+
+          expect(response).to have_gitlab_http_status(:moved_permanently)
+          expect(response).to redirect_to(new_user_session_path)
+          expect(response.headers["Cache-Control"]).to eq(described_class::CACHE_CONTROL_HEADER)
+        end
       end
 
       context 'when a custom home page URL is defined' do
@@ -20,6 +35,21 @@ RSpec.describe RootController do
           get :index
 
           expect(response).to redirect_to('https://gitlab.com')
+          expect(response).to have_gitlab_http_status(:found)
+        end
+
+        context 'when root redirect is enabled' do
+          before do
+            stub_application_setting(root_moved_permanently_redirection: true)
+          end
+
+          it 'redirects the user to the custom home page URL with updated status and headers' do
+            get :index
+
+            expect(response).to have_gitlab_http_status(:moved_permanently)
+            expect(response).to redirect_to('https://gitlab.com')
+            expect(response.headers["Cache-Control"]).to eq(described_class::CACHE_CONTROL_HEADER)
+          end
         end
       end
     end
@@ -41,6 +71,32 @@ RSpec.describe RootController do
           get :index
 
           expect(response).to redirect_to starred_dashboard_projects_path
+        end
+      end
+
+      context 'who has customized their dashboard setting for member projects' do
+        before do
+          user.dashboard = 'member_projects'
+        end
+
+        context 'when feature flag your_work_projects_vue is enabled' do
+          it 'redirects to their member projects list' do
+            get :index
+
+            expect(response).to redirect_to member_dashboard_projects_path
+          end
+        end
+
+        context 'when feature flag your_work_projects_vue is disabled' do
+          before do
+            stub_feature_flags(your_work_projects_vue: false)
+          end
+
+          it 'does not redirect' do
+            get :index
+
+            expect(response).not_to redirect_to member_dashboard_projects_path
+          end
         end
       end
 

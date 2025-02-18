@@ -31,6 +31,10 @@ module WorkItems
 
       private
 
+      def references(extractor)
+        WorkItem.id_in(extractor.issues.map(&:id)) + extractor.work_items
+      end
+
       def after_execute
         create_notes_async if new_links.any?
       end

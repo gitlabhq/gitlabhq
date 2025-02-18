@@ -11,5 +11,5 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     GitLab 18.0 removes the Repository X-Ray CI job:
 
-    - The initial implementation of [Repository X-Ray](https://docs.gitlab.com/ee/user/project/repository/code_suggestions/repository_xray.html), using a CI job, is deprecated in GitLab 17.6.
-    - This CI job is being replaced by an automated [background job](https://docs.gitlab.com/ee/user/project/repository/code_suggestions/repository_xray.html#how-repository-x-ray-works), triggered when a new commit is pushed to your project's default branch.
+    - The initial implementation of [Repository X-Ray](https://docs.gitlab.com/user/project/repository/code_suggestions/repository_xray/), using a CI job, is deprecated in GitLab 17.6.
+    - This CI job is being replaced by an automated [background job](https://docs.gitlab.com/user/project/repository/code_suggestions/repository_xray/#how-repository-x-ray-works), triggered when a new commit is pushed to your project's default branch.

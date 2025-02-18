@@ -90,7 +90,7 @@ describe('NewEditForm', () => {
     expect(findDescriptionField().exists()).toBe(true);
     expect(wrapper.findComponent(MarkdownField).props()).toMatchObject({
       markdownPreviewPath: defaultProvide.previewMarkdownPath,
-      markdownDocsPath: helpPagePath('user/organization/index', {
+      markdownDocsPath: helpPagePath('user/organization/_index', {
         anchor: 'supported-markdown-for-organization-description',
       }),
       textareaValue: '',
@@ -186,7 +186,7 @@ describe('NewEditForm', () => {
     });
     expect(wrapper.text()).toContain('Who can see this organization?');
     expect(findHelpPageLink().props()).toEqual({
-      href: 'user/organization/index',
+      href: 'user/organization/_index',
       anchor: 'view-an-organizations-visibility-level',
     });
     expect(findHelpPageLink().text()).toBe('Learn more about visibility levels');

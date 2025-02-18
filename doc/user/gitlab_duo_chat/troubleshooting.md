@@ -2,9 +2,8 @@
 stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Duo Chat troubleshooting
 ---
-
-# GitLab Duo Chat troubleshooting
 
 When working with GitLab Duo Chat, you might encounter the following issues.
 
@@ -35,7 +34,7 @@ You might get an error that states
 
 This error occurs when Chat is unable to find relevant documentation to answer your question. This can happen if the search query does not match any available documents or if there is an issue with the document search functionality.
 
-Please try again or refer to the [GitLab Duo Chat best practices documentation](best_practices.md) to refine your question.
+Try again or refer to the [GitLab Duo Chat best practices documentation](best_practices.md) to refine your question.
 
 ## `Error M3002`
 
@@ -92,7 +91,7 @@ Ensure your [GitLab Duo subscription tier](https://about.gitlab.com/gitlab-duo/#
 You might get an error that states
 `I'm sorry, I can't generate a response. Please try again. Error code: M4000`.
 
-This error occurs when an unexpected issue arises during the processing of a slash command request. Please try your request again. If the problem persists, ensure that the syntax of your command is correct.
+This error occurs when an unexpected issue arises during the processing of a slash command request. Try your request again. If the problem persists, ensure that the syntax of your command is correct.
 
 For more information about slash commands, refer to the documentation:
 
@@ -106,14 +105,14 @@ For more information about slash commands, refer to the documentation:
 You might get an error that states
 `I'm sorry, I can't generate a response. Please try again. Error code: M4001`.
 
-This error occurs when there is a problem finding the information needed to complete your request. Please try your request again.
+This error occurs when there is a problem finding the information needed to complete your request. Try your request again.
 
 ## `Error M4002`
 
 You might get an error that states
 `I'm sorry, I can't generate a response. Please try again. Error code: M4002`.
 
-This error occurs when there is a problem answering [questions related to CI/CD](../gitlab_duo_chat/examples.md#ask-about-cicd). Please try your request again.
+This error occurs when there is a problem answering [questions related to CI/CD](../gitlab_duo_chat/examples.md#ask-about-cicd). Try your request again.
 
 ## `Error M4003`
 
@@ -142,14 +141,14 @@ This error occurs when there is a problem when using [`Troubleshoot job`](../git
 You might get an error that states
 `I'm sorry, I can't generate a response. Please try again. Error code: M5000`.
 
-This error occurs when there is an issue while processing the content related to an item (like issue, epic, and merge request). Please try your request again.
+This error occurs when there is an issue while processing the content related to an item (like issue, epic, and merge request). Try your request again.
 
 ## `Error A1000`
 
 You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1000`.
 
-This error occurs when there is a timeout during processing. Please try your request again.
+This error occurs when there is a timeout during processing. Try your request again.
 
 ## `Error A1001`
 
@@ -169,49 +168,49 @@ Some possible reasons:
 To resolve the issue, try your request again.
 
 If the error persists, use the `/clear` command to reset the chat.
-If problem continues, please report the issue to the GitLab support team.
+If the problem continues, report the issue to the GitLab Support team.
 
 ## `Error A1002`
 
 You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1002`.
 
-This error occurs when no events are returned from AI gateway or GitLab failed to parse the events. Please try your request again.
+This error occurs when no events are returned from AI gateway or GitLab failed to parse the events. Try your request again.
 
 ## `Error A1003`
 
 You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1003`.
 
-This error occurs when streaming response from AI gateway failed. Please try your request again.
+This error occurs when streaming response from AI gateway failed. Try your request again.
 
 ## `Error A1004`
 
 You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1004`.
 
-This error occurs when an error occurred in the AI gateway process. Please try your request again.
+This error occurs when an error occurred in the AI gateway process. Try your request again.
 
 ## `Error A1005`
 
 You might get an error that states
 `I'm sorry, you've entered too many prompts. Please run /clear or /reset before asking the next question. Error code: A1005`.
 
-This error occurs when the length of prompts exceeds the max token limit of the LLM. Please clean up your conversation history with `/clear` or `/reset` and try your request again.
+This error occurs when the length of prompts exceeds the max token limit of the LLM. Start a new conversation with the `/new` command and try your request again.
 
 ## `Error A1006`
 
 You might get an error that states
 `I'm sorry, Duo Chat agent reached the limit before finding an answer for your question. Please try a different prompt or clear your conversation history with /clear. Error code: A1006`.
 
-This error occurs when ReAct agent failed to find a solution for your query. Please try a different prompt or clear your conversation history with `/clear`.
+This error occurs when ReAct agent failed to find a solution for your query. Try a different prompt or clear your conversation history with `/clear`.
 
 ## `Error A9999`
 
 You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A9999`.
 
-This error occurs when an unknown error occurs in ReAct agent. Please try your request again.
+This error occurs when an unknown error occurs in ReAct agent. Try your request again.
 
 ## `Error A6000`
 
@@ -219,7 +218,7 @@ You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try a more specific request or enter /clear to start a new chat. Error code: A6000`.
 
 This is a fallback error that occurs when there is a problem with GitLab Duo Chat.
-Please try a more specific request, enter `/clear` to start a new chat, or leave feedback to help us improve.
+Try a more specific request, enter `/clear` to start a new chat, or leave feedback to help us improve.
 
 ## `Error G3001`
 

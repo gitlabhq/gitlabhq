@@ -1,7 +1,10 @@
 ---
-redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/modular_monolith/decisions/003_stewardship/'
-remove_date: '2025-07-08'
+redirect_to: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/modular_monolith/decisions/003_stewardship/
+remove_date: "2025-07-08"
 ---
+
+<!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/modular_monolith/decisions/003_stewardship/).
 

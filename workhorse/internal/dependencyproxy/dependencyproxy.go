@@ -25,7 +25,14 @@ const dialTimeout = 10 * time.Second
 const responseHeaderTimeout = 10 * time.Second
 const uploadRequestGracePeriod = 60 * time.Second
 
-var defaultTransportOptions = []transport.Option{transport.WithDialTimeout(dialTimeout), transport.WithResponseHeaderTimeout(responseHeaderTimeout)}
+var defaultTransportOptions = []transport.Option{
+	transport.WithDialTimeout(dialTimeout),
+	transport.WithResponseHeaderTimeout(responseHeaderTimeout),
+	// Avoid automatic compression if the client did not request it because some object storage
+	// providers use HTTP chunked encoding and omit Content-Length when gzip is in use.
+	// The Docker client expects a Content-Length header when a HEAD request is made.
+	transport.WithDisabledCompression(),
+}
 
 type cacheKey struct {
 	ssrfFilter     bool

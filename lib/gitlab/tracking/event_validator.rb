@@ -20,10 +20,7 @@ module Gitlab
       end
 
       def validate!
-        unless Gitlab::Tracking::EventDefinition.internal_event_exists?(event_name)
-          raise UnknownEventError, "Unknown event: #{event_name}"
-        end
-
+        validate_event_name!
         validate_properties!
         validate_additional_properties!
       end
@@ -31,6 +28,13 @@ module Gitlab
       private
 
       attr_reader :event_name, :additional_properties, :kwargs
+
+      def validate_event_name!
+        return if Gitlab::Tracking::EventDefinition.internal_event_exists?(event_name)
+        return if Gitlab::UsageDataCounters::HLLRedisCounter.legacy_event?(event_name) && !Gitlab.dev_or_test_env?
+
+        raise UnknownEventError, "Unknown event: #{event_name}"
+      end
 
       def validate_properties!
         validate_property!(kwargs, :user, User)

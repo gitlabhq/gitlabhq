@@ -2,27 +2,35 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: npm API
 ---
 
-# npm API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This is the API documentation for [npm Packages](../../user/packages/npm_registry/index.md).
+{{< /details >}}
 
-WARNING:
+This is the API documentation for [npm Packages](../../user/packages/npm_registry/_index.md).
+
+{{< alert type="warning" >}}
+
 This API is used by the [npm package manager client](https://docs.npmjs.com/)
 and is not meant for manual consumption.
 
-For instructions on how to upload and install npm packages from the GitLab
-Package Registry, see the [npm package registry documentation](../../user/packages/npm_registry/index.md).
+{{< /alert >}}
 
-NOTE:
+For instructions on how to upload and install npm packages from the GitLab
+Package Registry, see the [npm package registry documentation](../../user/packages/npm_registry/_index.md).
+
+{{< alert type="note" >}}
+
 These endpoints do not adhere to the standard API authentication methods.
-See the [npm package registry documentation](../../user/packages/npm_registry/index.md)
+See the [npm package registry documentation](../../user/packages/npm_registry/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
+
+{{< /alert >}}
 
 ## Download a package
 
@@ -154,8 +162,12 @@ The examples in this document all use the project-level prefix.
 
 ### Group-level
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299834) in GitLab 16.0 [with a flag](../../administration/feature_flags.md) named `npm_group_level_endpoints`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121837) in GitLab 16.1. Feature flag `npm_group_level_endpoints` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299834) in GitLab 16.0 [with a flag](../../administration/feature_flags.md) named `npm_group_level_endpoints`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121837) in GitLab 16.1. Feature flag `npm_group_level_endpoints` removed.
+
+{{< /history >}}
 
 ```plaintext
 /groups/:id/-/packages/npm

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class GraphqlController < ApplicationController
+  include Gitlab::Auth::AuthFinders
   extend ::Gitlab::Utils::Override
 
   # Unauthenticated users have access to the API for public data
@@ -11,12 +12,9 @@ class GraphqlController < ApplicationController
   # Also, we allow anonymous users to access the API without a CSRF token so that it is easier for users
   # to get started with our GraphQL API.
   skip_before_action :verify_authenticity_token, if: -> {
-    Feature.enabled?(:fix_graphql_csrf, Feature.current_request) &&
-      (current_user.nil? || sessionless_user? || !any_mutating_query?)
+    current_user.nil? || sessionless_user? || !any_mutating_query?
   }
-  skip_before_action :check_two_factor_requirement, if: -> {
-    Feature.enabled?(:fix_graphql_csrf, Feature.current_request) && sessionless_user?
-  }
+  skip_before_action :check_two_factor_requirement, if: -> { sessionless_user? }
 
   # Header can be passed by tests to disable SQL query limits.
   DISABLE_SQL_QUERY_LIMIT_HEADER = 'HTTP_X_GITLAB_DISABLE_SQL_QUERY_LIMIT'
@@ -28,35 +26,11 @@ class GraphqlController < ApplicationController
   CACHED_INTROSPECTION_QUERY_STRING = CachedIntrospectionQuery.query_string
   INTROSPECTION_QUERY_OPERATION_NAME = 'IntrospectionQuery'
 
-  # If a user is using their session to access GraphQL, we need to have session
-  # storage, since the admin-mode check is session wide.
-  # We can't enable this for anonymous users because that would cause users using
-  # enforced SSO from using an auth token to access the API.
-  skip_around_action :set_session_storage, if: -> {
-    Feature.disabled?(:fix_graphql_csrf, Feature.current_request) && current_user.nil?
-  }
-
-  # Allow missing CSRF tokens, this would mean that if a CSRF is invalid or missing,
-  # the user won't be authenticated but can proceed as an anonymous user.
-  #
-  # If a CSRF is valid, the user is authenticated. This makes it easier to play
-  # around in GraphiQL.
-  prepend_before_action do
-    if Feature.disabled?(:fix_graphql_csrf, Feature.current_request)
-      self.forgery_protection_strategy = ProtectionMethods::NullSession
-    end
-  end
-
   # must come first: current_user is set up here
-  prepend_before_action(if: -> {
-    Feature.enabled?(:fix_graphql_csrf, Feature.current_request)
-  }) { authenticate_sessionless_user!(:graphql_api) }
-
-  before_action(if: -> {
-    Feature.disabled?(:fix_graphql_csrf, Feature.current_request)
-  }) { authenticate_sessionless_user!(:graphql_api) }
+  prepend_before_action { authenticate_sessionless_user!(:graphql_api) }
 
   before_action :authorize_access_api!
+  before_action(only: [:execute]) { check_dpop! }
   before_action :set_user_last_activity
   before_action :track_vs_code_usage
   before_action :track_jetbrains_usage
@@ -106,6 +80,12 @@ class GraphqlController < ApplicationController
     end
   end
 
+  rescue_from Gitlab::Auth::DpopValidationError do |exception|
+    log_exception(exception)
+
+    render_error(exception.message, status: :unauthorized)
+  end
+
   # ApplicationController has similar rescues but we declare these again here because the
   # `rescue_from StandardError` above would prevent these from bubbling up to ApplicationController.
   # These also return errors in a JSON format similar to GraphQL errors.
@@ -147,6 +127,18 @@ class GraphqlController < ApplicationController
   end
 
   private
+
+  def check_dpop!
+    return unless current_user && Feature.enabled?(:dpop_authentication, current_user)
+
+    token = extract_personal_access_token
+    return unless PersonalAccessToken.find_by_token(token.to_s) # The token is not PAT, exit early
+
+    # For authenticated requests we check if the user has DPoP enabled
+    ::Auth::DpopAuthenticationService.new(current_user: current_user,
+      personal_access_token_plaintext: token,
+      request: current_request).execute
+  end
 
   def permitted_params
     @permitted_params ||= multiplex? ? permitted_multiplex_params : permitted_standalone_query_params
@@ -325,7 +317,10 @@ class GraphqlController < ApplicationController
 
     # Merging to :metadata will ensure these are logged as top level keys
     payload[:metadata] ||= {}
+
     payload[:metadata][:graphql] = logs
+
+    payload[:metadata][:referer] = request.headers['Referer'] if logs.any? { |log| log[:operation_name] == 'GLQL' }
 
     payload[:exception_object] = @exception_object if @exception_object
   end

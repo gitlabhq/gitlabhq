@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Data Stores', :smoke, product_group: :tenant_scale do
+  RSpec.describe 'Data Stores', :smoke, product_group: :tenant_scale, feature_flag: {
+    name: 'new_project_creation_form'
+  } do
     describe 'Project' do
       shared_examples 'successful project creation' do
         it 'creates a new project' do
@@ -13,6 +15,7 @@ module QA
       end
 
       before do
+        Runtime::Feature.disable(:new_project_creation_form)
         Flow::Login.sign_in
         project
       end

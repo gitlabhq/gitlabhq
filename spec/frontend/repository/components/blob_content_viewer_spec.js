@@ -40,6 +40,7 @@ import {
   userPermissionsMock,
   propsMock,
   axiosMockResponse,
+  FILE_SIZE_3MB,
 } from '../mock_data';
 
 jest.mock('~/repository/components/blob_viewers');
@@ -405,36 +406,32 @@ describe('Blob content viewer component', () => {
       expect(findBlobContent().exists()).toBe(false);
     });
 
-    it.each`
-      viewer        | fileType      | storedExternally | tooLarge | renderError    | expectedTooLarge | loadViewerReturnValue
-      ${'empty'}    | ${'null'}     | ${false}         | ${false} | ${null}        | ${false}         | ${EmptyViewer}
-      ${'download'} | ${'download'} | ${false}         | ${false} | ${null}        | ${false}         | ${DownloadViewer}
-      ${'text'}     | ${'text'}     | ${false}         | ${false} | ${null}        | ${false}         | ${SourceViewer}
-      ${'unknown'}  | ${'unknown'}  | ${true}          | ${false} | ${null}        | ${false}         | ${LfsViewer}
-      ${'text'}     | ${'text'}     | ${false}         | ${true}  | ${null}        | ${true}          | ${TooLargeViewer}
-      ${'text'}     | ${'text'}     | ${true}          | ${true}  | ${null}        | ${true}          | ${TooLargeViewer}
-      ${'text'}     | ${'text'}     | ${false}         | ${false} | ${'collapsed'} | ${true}          | ${TooLargeViewer}
-    `(
-      'renders viewer component for $viewer files with storedExternally=$storedExternally, tooLarge=$tooLarge, and renderError=$renderError',
-      async ({
-        viewer,
-        fileType,
-        storedExternally,
-        tooLarge,
-        renderError,
-        expectedTooLarge,
-        loadViewerReturnValue,
-      }) => {
+    it.each([EmptyViewer, DownloadViewer, SourceViewer, LfsViewer, TooLargeViewer])(
+      'renders viewer component for %s files',
+      async (loadViewerReturnValue) => {
         loadViewer.mockReturnValue(loadViewerReturnValue);
+        await createComponent();
 
+        expect(wrapper.findComponent(loadViewerReturnValue).exists()).toBe(true);
+      },
+    );
+
+    it.each`
+      language  | size             | tooLarge | renderError    | expectedTooLarge
+      ${'ruby'} | ${100}           | ${false} | ${null}        | ${false}
+      ${'ruby'} | ${FILE_SIZE_3MB} | ${false} | ${null}        | ${true}
+      ${'nyan'} | ${null}          | ${true}  | ${null}        | ${true}
+      ${'nyan'} | ${null}          | ${false} | ${'collapsed'} | ${true}
+    `(
+      'correctly handles file size limits when language=$language, size=$size, tooLarge=$tooLarge, renderError=$renderError',
+      async ({ language, size, tooLarge, renderError, expectedTooLarge }) => {
         await createComponent({
           blob: {
             ...simpleViewerMock,
-            fileType,
-            storedExternally,
+            language,
+            size,
             simpleViewer: {
               ...simpleViewerMock.simpleViewer,
-              fileType: viewer,
               tooLarge,
               renderError,
             },
@@ -442,9 +439,28 @@ describe('Blob content viewer component', () => {
         });
 
         await waitForPromises();
+        expect(loadViewer).toHaveBeenCalledWith('text', false, expectedTooLarge);
+      },
+    );
 
-        expect(loadViewer).toHaveBeenCalledWith(viewer, storedExternally, expectedTooLarge);
-        expect(wrapper.findComponent(loadViewerReturnValue).exists()).toBe(true);
+    it.each`
+      language  | size    | tooLarge | renderError    | expectedTooLarge
+      ${'nyan'} | ${null} | ${true}  | ${null}        | ${true}
+      ${'nyan'} | ${null} | ${false} | ${'collapsed'} | ${true}
+      ${'nyan'} | ${null} | ${false} | ${'too_large'} | ${true}
+      ${'nyan'} | ${null} | ${false} | ${null}        | ${false}
+    `(
+      'correctly handles file size limits when language=$language, size=$size, tooLarge=$tooLarge, renderError=$renderError',
+      async ({ tooLarge, renderError, expectedTooLarge }) => {
+        await createComponent({
+          blob: {
+            ...richViewerMock,
+            richViewer: { ...richViewerMock.richViewer, tooLarge, renderError },
+          },
+        });
+
+        await waitForPromises();
+        expect(loadViewer).toHaveBeenCalledWith('markup', false, expectedTooLarge);
       },
     );
   });

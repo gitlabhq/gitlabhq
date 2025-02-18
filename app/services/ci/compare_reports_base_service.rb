@@ -12,9 +12,10 @@ module Ci
 
       base_report = get_report(base_pipeline)
       head_report = get_report(head_pipeline)
-      comparer = build_comparer(base_report, head_report)
 
       return parsing_payload(base_pipeline, head_pipeline) if base_report == :parsing || head_report == :parsing
+
+      comparer = build_comparer(base_report, head_report)
 
       {
         status: :parsed,

@@ -36,8 +36,8 @@ RSpec.describe 'Namespaces (JavaScript fixtures)', feature_category: :groups_and
   describe 'Storage', feature_category: :consumables_cost_management do
     describe GraphQL::Query, type: :request do
       include GraphqlHelpers
-      base_input_path = 'usage_quotas/storage/queries/'
-      base_output_path = 'graphql/usage_quotas/storage/'
+      base_input_path = 'usage_quotas/storage/namespace/queries/'
+      base_output_path = 'graphql/usage_quotas/storage/namespace/'
 
       context 'for namespace storage statistics query' do
         before do

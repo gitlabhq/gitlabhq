@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Frontend testing standards and style guidelines
 ---
-
-# Frontend testing standards and style guidelines
 
 There are two types of test suites encountered while developing frontend code
 at GitLab. We use Jest for JavaScript unit and integration testing,
@@ -16,7 +15,7 @@ Most of the time, you should use [RSpec](https://github.com/rspec/rspec-rails#fe
 Regression tests should be written for bug fixes to prevent them from recurring
 in the future.
 
-See the [Testing Standards and Style Guidelines](index.md) page for more
+See the [Testing Standards and Style Guidelines](_index.md) page for more
 information on general testing practices at GitLab.
 
 ## Vue.js testing
@@ -406,9 +405,12 @@ it('does something', () => {
 
 ### Mocking the current location in Jest
 
-NOTE:
+{{< alert type="note" >}}
+
 The value of `window.location.href` is reset before every test to avoid earlier
 tests affecting later ones.
+
+{{< /alert >}}
 
 If your tests require `window.location.href` to take a particular value, use
 the `setWindowLocation` helper:
@@ -1114,8 +1116,11 @@ it.each([
 );
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Only use template literal block if pretty print is not needed for spec output. For example, empty strings, nested objects etc.
+
+{{< /alert >}}
 
 For example, when testing the difference between an empty search string and a non-empty search string, the use of the array block syntax with the pretty print option would be preferred. That way the differences between an empty string (`''`) and a non-empty string (`'search string'`) would be visible in the spec output. Whereas with a template literal block, the empty string would be shown as a space, which could lead to a confusing developer experience.
 
@@ -1224,10 +1229,13 @@ import Subject from '~/feature/the_subject.vue';
 import _Thing from '~/feature/path/to/thing.vue';
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not disregard test timeouts. This could be a sign that there's
 actually a production problem. Use this opportunity to analyze the production webpack bundles and
 chunks and confirm that there is not a production issue with the asynchronous imports.
+
+{{< /alert >}}
 
 ## Overview of Frontend Testing Levels
 
@@ -1891,9 +1899,12 @@ RSpec.describe 'Pipeline', :js do
 end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 `expect_page_to_have_no_console_errors` will not work on `WEBDRIVER=firefox`. Logs are only captured when
 using the Chrome driver.
+
+{{< /alert >}}
 
 Sometimes, there are known console errors that we want to ignore. To ignore a set of messages, such that the test
 **will not** fail if the message is observed, you can pass an `allow:` parameter to
@@ -1938,4 +1949,4 @@ You are no longer required to manually keeping chromedriver in sync.
 
 ---
 
-[Return to Testing documentation](index.md)
+[Return to Testing documentation](_index.md)

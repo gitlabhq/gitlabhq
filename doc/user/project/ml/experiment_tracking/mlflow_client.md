@@ -2,20 +2,26 @@
 stage: ModelOps
 group: MLOps
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: MLflow client compatibility
 ---
 
-# MLflow client compatibility
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.11.
-> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/9341) in GitLab 17.8.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.11.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/9341) in GitLab 17.8.
+
+{{< /history >}}
 
 [MLflow](https://mlflow.org/) is a popular open source tool for Machine Learning experiment tracking.
-GitLab [Model experiment tracking](index.md) and GitLab
-[Model registry](../model_registry/index.md) are compatible with the MLflow client. The setup requires minimal changes to existing code.
+GitLab [Model experiment tracking](_index.md) and GitLab
+[Model registry](../model_registry/_index.md) are compatible with the MLflow client. The setup requires minimal changes to existing code.
 
 GitLab plays the role of a MLflow server. Running `mlflow server` is not necessary.
 
@@ -23,7 +29,7 @@ GitLab plays the role of a MLflow server. Running `mlflow server` is not necessa
 
 Prerequisites:
 
-- A [personal](../../../../user/profile/personal_access_tokens.md), [project](../../../../user/project/settings/project_access_tokens.md), or [group](../../../../user/group/settings/group_access_tokens.md) access token with at least the Developer role and the `api` scope.
+- A [personal](../../../profile/personal_access_tokens.md), [project](../../settings/project_access_tokens.md), or [group](../../../group/settings/group_access_tokens.md) access token with at least the Developer role and the `api` scope.
 - The project ID. To find the project ID:
   1. On the left sidebar, select **Search or go to** and find your project.
   1. Select **Settings > General**.
@@ -41,7 +47,7 @@ To use MLflow client compatibility from a local environment:
 1. If the training code contains the call to `mlflow.set_tracking_uri()`, remove it.
 
 In the model registry, you can copy the tracking URI from the overflow menu in the top right
-by selecting the vertical ellipsis (**{ellipsis_v}**).
+by selecting the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 
 ## Model experiments
 
@@ -52,15 +58,124 @@ After experiments are logged, they are listed under `/<your project>/-/ml/experi
 
 Runs are registered and can be explored by selecting an experiment, model, or model version.
 
+### Creating an experiment
+
+```python
+import mlflow
+
+# Create a new experiment
+experiment_id = mlflow.create_experiment(name="<your_experiment>")
+
+# Setting the active experiment also creates a new experiment if it doesn't exist.
+mlflow.set_experiment(experiment_name="<your_experiment>")
+```
+
+### Creating a run
+
+```python
+import mlflow
+
+# Creating a run requires an experiment ID or an active experiment
+mlflow.set_experiment(experiment_name="<your_experiment>")
+
+# Runs can be created with or without a context manager
+with mlflow.start_run() as run:
+    print(run.info.run_id)
+    # Your training code
+
+with mlflow.start_run():
+    # Your training code
+```
+
+### Logging parameters and metrics
+
+```python
+import mlflow
+
+mlflow.set_experiment(experiment_name="<your_experiment>")
+
+with mlflow.start_run():
+    # Parameter keys need to be unique in the scope of the run
+    mlflow.log_param(key="param_1", value=1)
+
+    # Metrics can be updated throughout the run
+    mlflow.log_metric(key="metrics_1", value=1)
+    mlflow.log_metric(key="metrics_1", value=2)
+```
+
+### Logging artifacts
+
+```python
+import mlflow
+
+mlflow.set_experiment(experiment_name="<your_experiment>")
+
+with mlflow.start_run():
+    # Plaintext text files can be logged as artifacts using `log_text`
+    mlflow.log_text('Hello, World!', artifact_file='hello.txt')
+
+    mlflow.log_artifact(
+        local_path='<local/path/to/file.txt>',
+        artifact_path='<optional relative path to log the artifact at>'
+    )
+```
+
+### Logging models
+
+Models can be logged using one of the supported [MLflow Model flavors](https://mlflow.org/docs/latest/models.html#built-in-model-flavors).
+Logging with a model flavor records the metadata, making it easier to manage, load, and deploy models across different tools and environments.
+
+```python
+import mlflow
+from sklearn.ensemble import RandomForestClassifier
+
+mlflow.set_experiment(experiment_name="<your_experiment>")
+
+with mlflow.start_run():
+    # Create and train a simple model
+    model = RandomForestClassifier(n_estimators=10, random_state=42)
+    model.fit(X_train, y_train)
+
+    # Log the model using MLflow sklearn mode flavour
+    mlflow.sklearn.log_model(model, artifact_path="")
+```
+
+### Loading a run
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/509595) in GitLab 17.9.
+
+{{< /history >}}
+
+You can load a run from the GitLab model registry to, for example, make predictions.
+
+```python
+import mlflow
+import mlflow.pyfunc
+
+run_id = "<your_run_id>"
+download_path = "models"  # Local folder to download to
+
+mlflow.pyfunc.load_model(f"runs:/{run_id}/", dst_path=download_path)
+
+sample_input = [[1,0,3,4],[2,0,1,2]]
+model.predict(data=sample_input)
+```
+
 ### Associating a run to a CI/CD job
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119454) in GitLab 16.1.
-> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/9423) to beta in GitLab 17.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119454) in GitLab 16.1.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/9423) to beta in GitLab 17.1.
+
+{{< /history >}}
 
 If your training code is being run from a CI/CD job, GitLab can use that information to enhance
 run metadata. To associate a run to a CI/CD job:
 
-1. In the [Project CI variables](../../../../ci/variables/index.md), include the following variables:
+1. In the [Project CI variables](../../../../ci/variables/_index.md), include the following variables:
    - `MLFLOW_TRACKING_URI`: `"<your gitlab endpoint>/api/v4/projects/<your project id>/ml/mlflow"`
    - `MLFLOW_TRACKING_TOKEN`: `<your_access_token>`
 
@@ -184,7 +299,7 @@ client.create_model_version(model_name, version, description=description, tags=t
 
 #### Updating a model
 
-```python\
+```python
 from mlflow import MlflowClient
 
 client = MlflowClient()

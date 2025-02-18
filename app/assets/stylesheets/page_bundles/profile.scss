@@ -44,17 +44,6 @@ $profile-grid-flex: 1fr;
   }
 }
 
-// Middle dot divider between each element in a list of items.
-.middle-dot-divider {
-  @include middle-dot-divider;
-}
-
-.middle-dot-divider-sm {
-  @include media-breakpoint-up(sm) {
-    @include middle-dot-divider;
-  }
-}
-
 .profile-readme-wrapper .read-more-trigger {
   bottom: 0;
   left: 0;

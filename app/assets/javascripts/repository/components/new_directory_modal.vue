@@ -9,7 +9,7 @@ import CommitChangesModal from './commit_changes_modal.vue';
 
 const DIR_LABEL = __('Directory name');
 const ERROR_MESSAGE = __('Error creating new directory. Please try again.');
-const COMMIT_MESSSAGE = __('Add new directory');
+const COMMIT_MESSAGE = __('Add new directory');
 
 export default {
   components: {
@@ -20,7 +20,7 @@ export default {
   i18n: {
     DIR_LABEL,
     ERROR_MESSAGE,
-    COMMIT_MESSSAGE,
+    COMMIT_MESSAGE,
   },
   props: {
     modalId: {
@@ -65,7 +65,7 @@ export default {
 
       formData.append('dir_name', this.dir);
       if (!formData.has('branch_name')) {
-        formData.append('branch_name', this.targetBranch);
+        formData.append('branch_name', this.originalBranch);
       }
 
       return axios
@@ -95,7 +95,7 @@ export default {
     :modal-id="modalId"
     :can-push-code="canPushCode"
     :can-push-to-branch="canPushToBranch"
-    :commit-message="$options.i18n.COMMIT_MESSSAGE"
+    :commit-message="$options.i18n.COMMIT_MESSAGE"
     :target-branch="targetBranch"
     :original-branch="originalBranch"
     v-on="$listeners"

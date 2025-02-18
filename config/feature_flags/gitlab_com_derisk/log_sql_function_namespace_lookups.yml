@@ -1,8 +1,0 @@
----
-name: log_sql_function_namespace_lookups
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162642
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/478870
-milestone: '17.4'
-type: gitlab_com_derisk
-group: group::database
-default_enabled: false

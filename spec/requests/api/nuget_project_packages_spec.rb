@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
@@ -111,7 +112,8 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
           update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
         end
 
-        it_behaves_like 'process nuget v2 $metadata service request', params[:user_role], params[:expected_status], params[:member]
+        it_behaves_like 'process nuget v2 $metadata service request', params[:user_role], params[:expected_status],
+          params[:member]
       end
     end
   end
@@ -165,7 +167,7 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
         'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access'             | :unauthorized
         'PUBLIC'  | :anonymous  | false | true  | 'process nuget download versions request'   | :success
         'PRIVATE' | :developer  | true  | true  | 'process nuget download versions request'   | :success
-        'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access'             | :forbidden
+        'PRIVATE' | :guest      | true  | true  | 'process nuget download versions request'   | :success
         'PRIVATE' | :developer  | true  | false | 'rejects nuget packages access'             | :unauthorized
         'PRIVATE' | :guest      | true  | false | 'rejects nuget packages access'             | :unauthorized
         'PRIVATE' | :developer  | false | true  | 'rejects nuget packages access'             | :not_found
@@ -199,11 +201,18 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
   end
 
   describe 'GET /api/v4/projects/:id/packages/nuget/download/*package_name/*package_version/*package_filename' do
-    let_it_be(:package) { create(:nuget_package, :with_symbol_package, :with_metadatum, project: project, name: package_name, version: '0.1') }
+    let_it_be(:package) do
+      create(:nuget_package, :with_symbol_package, :with_metadatum, project: project, name: package_name,
+        version: '0.1')
+    end
+
     let_it_be(:package_version) { package.version }
 
     let(:format) { 'nupkg' }
-    let(:url) { "/projects/#{target.id}/packages/nuget/download/#{package.name}/#{package_version}/#{package.name}.#{package_version}.#{format}" }
+    let(:url) do
+      "/projects/#{target.id}/packages/nuget/download/" \
+        "#{package.name}/#{package_version}/#{package.name}.#{package_version}.#{format}"
+    end
 
     subject { get api(url), headers: headers }
 
@@ -219,7 +228,7 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
         'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access'            | :unauthorized
         'PUBLIC'  | :anonymous  | false | true  | 'process nuget download content request'   | :success
         'PRIVATE' | :developer  | true  | true  | 'process nuget download content request'   | :success
-        'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access'            | :forbidden
+        'PRIVATE' | :guest      | true  | true  | 'process nuget download content request'   | :success
         'PRIVATE' | :developer  | true  | false | 'rejects nuget packages access'            | :unauthorized
         'PRIVATE' | :guest      | true  | false | 'rejects nuget packages access'            | :unauthorized
         'PRIVATE' | :developer  | false | true  | 'rejects nuget packages access'            | :not_found

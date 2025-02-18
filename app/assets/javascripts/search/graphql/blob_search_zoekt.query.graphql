@@ -5,6 +5,8 @@ query getBlobSearchQuery(
   $page: Int
   $chunkCount: Int
   $regex: Boolean
+  $includeArchived: Boolean
+  $includeForked: Boolean
 ) {
   blobSearch(
     search: $search
@@ -13,6 +15,8 @@ query getBlobSearchQuery(
     page: $page
     chunkCount: $chunkCount
     regex: $regex
+    includeArchived: $includeArchived
+    includeForked: $includeForked
   ) {
     fileCount
     files {
@@ -20,7 +24,7 @@ query getBlobSearchQuery(
       chunks {
         lines {
           lineNumber
-          richText
+          highlights
           text
         }
         matchCountInChunk
@@ -30,6 +34,7 @@ query getBlobSearchQuery(
       matchCountTotal
       path
       projectPath
+      language
     }
     matchCount
     perPage

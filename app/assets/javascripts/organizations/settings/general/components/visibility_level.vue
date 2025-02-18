@@ -56,7 +56,7 @@ export default {
           <template #group(visibilityLevel)-label-description>
             {{ $options.fields.visibilityLevel.labelDescription }}
             <help-page-link
-              href="user/organization/index"
+              href="user/organization/_index"
               anchor="view-an-organizations-visibility-level"
               >{{ $options.i18n.learnMore }}</help-page-link
             >.

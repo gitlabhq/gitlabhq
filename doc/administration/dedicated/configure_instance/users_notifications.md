@@ -1,15 +1,17 @@
 ---
-stage: SaaS Platforms
-group: GitLab Dedicated
-description: Manage Switchboard users and configure notification preferences, including SMTP email service settings.
+stage: GitLab Dedicated
+group: Switchboard
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Manage Switchboard users and configure notification preferences, including SMTP email service settings.
+title: GitLab Dedicated users and notifications
 ---
 
-# GitLab Dedicated users and notifications
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab Dedicated
+
+{{< /details >}}
 
 ## Add Switchboard users
 
@@ -20,7 +22,7 @@ Administrators can add Switchboard users to their GitLab Dedicated instance. The
 
 To add a new user to your GitLab Dedicated instance:
 
-1. From the **Tenants** page, select **Manage** next to the tenant instance.
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. From the top of the page, select **Users**.
 1. Select **New user**.
 1. Enter the **Email** and select a **Role** for the user.
@@ -45,6 +47,6 @@ You will see an alert confirming that your notification preferences have been up
 
 ## SMTP email service
 
-You can configure an [SMTP](../../../subscriptions/gitlab_dedicated/index.md#email-service) email service for your GitLab Dedicated instance.
+You can configure an [SMTP](../../../subscriptions/gitlab_dedicated/_index.md#email-service) email service for your GitLab Dedicated instance.
 
 To configure an SMTP email service, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with the credentials and settings for your SMTP server.

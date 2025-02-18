@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ContainerRegistry::Protection::UpdateTagRuleService, '#execute', feature_category: :container_registry do
+  include ContainerRegistryHelpers
+
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:current_user) { create(:user, maintainer_of: project) }
   let_it_be_with_reload(:container_protection_tag_rule) do
@@ -21,6 +23,10 @@ RSpec.describe ContainerRegistry::Protection::UpdateTagRuleService, '#execute', 
   end
 
   subject(:service_execute) { service.execute }
+
+  before do
+    stub_gitlab_api_client_to_support_gitlab_api(supported: true)
+  end
 
   shared_examples 'a successful service response' do
     let(:expected_attributes) { params }
@@ -73,8 +79,8 @@ RSpec.describe ContainerRegistry::Protection::UpdateTagRuleService, '#execute', 
     where(:params_invalid, :message_expected) do
       { tag_name_pattern: '' }      | ["Tag name pattern can't be blank"]
       { tag_name_pattern: '*' }     | ['Tag name pattern not valid RE2 syntax: no argument for repetition operator: *']
-      { minimum_access_level_for_delete: nil }  | ["Minimum access level for delete can't be blank"]
-      { minimum_access_level_for_push: nil }    | ["Minimum access level for push can't be blank"]
+      { minimum_access_level_for_delete: nil }  | ['Access levels should either both be present or both be nil']
+      { minimum_access_level_for_push: nil }    | ['Access levels should either both be present or both be nil']
       { minimum_access_level_for_delete: 1000 } | "'1000' is not a valid minimum_access_level_for_delete"
       { minimum_access_level_for_push: 1000 }   | "'1000' is not a valid minimum_access_level_for_push"
     end
@@ -157,5 +163,14 @@ RSpec.describe ContainerRegistry::Protection::UpdateTagRuleService, '#execute', 
     let(:current_user) { nil }
 
     it { expect { service_execute }.to raise_error(ArgumentError) }
+  end
+
+  context 'when the GitLab API is not supported' do
+    before do
+      stub_gitlab_api_client_to_support_gitlab_api(supported: false)
+    end
+
+    it_behaves_like 'an erroneous service response',
+      message: 'GitLab container registry API not supported'
   end
 end

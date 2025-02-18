@@ -60,7 +60,7 @@ module Gitlab
 
           case context
           when :block
-            ['DETAILS:', *parts].join("\n")
+            ['{{< details >}}', *parts, '{{< /details >}}'].join("\n")
           when :inline
             parts.join(' ')
           end

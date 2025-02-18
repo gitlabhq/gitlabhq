@@ -10,6 +10,7 @@ describe('Topic Badges', () => {
   let wrapper;
 
   const defaultProps = {
+    showLabel: true,
     topics: ['Vue.js', 'Ruby', 'JavaScript', 'docker'],
   };
 
@@ -17,6 +18,7 @@ describe('Topic Badges', () => {
   const findFirstBadge = () => wrapper.findComponent(GlBadge);
   const findMoreTopicsLabel = () => wrapper.findByTestId('more-topics-label');
   const findPopover = () => wrapper.findComponent(GlPopover);
+  const findTopicsLabel = () => wrapper.findByText('Topics:');
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(TopicBadges, {
@@ -90,8 +92,8 @@ describe('Topic Badges', () => {
     });
   });
 
-  describe('when topic has a name longer than 15 characters', () => {
-    it('truncates name and shows tooltip with full name', () => {
+  describe('truncation', () => {
+    it('truncates long name and shows tooltip with full name', () => {
       const topicWithLongName = 'topic with very very very long name';
 
       createComponent({
@@ -104,6 +106,50 @@ describe('Topic Badges', () => {
 
       expect(findFirstBadge().text()).toBe('topic with ver…');
       expect(tooltip.value).toBe(topicWithLongName);
+    });
+
+    it('does not show tooltip if topic is not truncated', () => {
+      createComponent();
+
+      const tooltip = getBinding(findFirstBadge().element, 'gl-tooltip');
+
+      expect(findFirstBadge().text()).toBe('Vue.js');
+      expect(tooltip.value).toBe(null);
+    });
+  });
+
+  describe('`showLabel` prop', () => {
+    describe('when `showLabel` is true', () => {
+      it('renders the topics label', () => {
+        createComponent();
+
+        expect(findTopicsLabel().exists()).toBe(true);
+      });
+    });
+
+    describe('when `showLabel` is false', () => {
+      it('does not render the topics label', () => {
+        createComponent({
+          props: {
+            showLabel: false,
+          },
+        });
+
+        expect(findTopicsLabel().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('with relative url', () => {
+    beforeEach(() => {
+      gon.relative_url_root = '/gitlab/something//';
+      createComponent();
+    });
+
+    it('passes correct url prop to badge', () => {
+      expect(findFirstBadge().props('href')).toBe(
+        `/gitlab/something/explore/projects/topics/${defaultProps.topics[0]}`,
+      );
     });
   });
 });

@@ -2,13 +2,15 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Items migrated when using direct transfer
 ---
 
-# Items migrated when using direct transfer
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Many items are migrated when using the direct transfer method, and some are excluded.
 
@@ -77,12 +79,19 @@ Some group items are excluded from migration because they:
 
 ## Migrated project items
 
-DETAILS:
-**Status:** Beta
+{{< details >}}
 
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
-> - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
-> - Project-only migrations using API [added](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
+- `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
+- Project-only migrations using API [added](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
+
+{{< /history >}}
 
 If you choose to migrate projects when you [select groups to migrate](direct_transfer_migrations.md#select-the-groups-and-projects-to-import),
 project items are migrated with the projects.
@@ -138,7 +147,7 @@ Project items that are migrated to the destination GitLab instance include:
 | Snippets                                | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/343438)        |
 | Settings                                | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339416)        |
 | Uploads                                 | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339401)        |
-| Vulnerability report                    | [GitLab 17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/501466)        |
+| Vulnerability reports <sup>3</sup>      | [GitLab 17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/501466)        |
 | Wikis                                   | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/345923)        |
 
 <!-- vale gitlab_base.OutdatedVersions = YES -->
@@ -148,6 +157,10 @@ Project items that are migrated to the destination GitLab instance include:
 1. Imported branches respect the [default branch protection settings](../../project/repository/branches/protected.md) of the destination group.
    These settings might cause an unprotected branch to be imported as protected.
 1. See [user contribution and membership mapping](direct_transfer_migrations.md#user-contribution-and-membership-mapping).
+1. Vulnerability reports are migrated without their status.
+   For more information, see [issue 512859](https://gitlab.com/gitlab-org/gitlab/-/issues/512859).
+   For the `ActiveRecord::RecordNotUnique` error when migrating vulnerability reports,
+   see [issue 509904](https://gitlab.com/gitlab-org/gitlab/-/issues/509904).
 
 ### Issue-related items
 
@@ -216,7 +229,14 @@ Some project items are excluded from migration because they:
   - Webhooks
 - Are not supported:
   - Agents
-  - Approval rules
+  - Merge request approval rules
+
+    {{< alert type="note" >}}
+
+    Approval rules related to project settings are imported.
+
+    {{< /alert >}}
+
   - Container registry
   - Environments
   - Feature flags

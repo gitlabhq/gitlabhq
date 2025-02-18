@@ -1,6 +1,7 @@
 import addExtraTokensForMergeRequests from 'ee_else_ce/filtered_search/add_extra_tokens_for_merge_requests';
 import getMergeRequestsQuery from 'ee_else_ce/merge_requests/list/queries/project/get_merge_requests.query.graphql';
 import getMergeRequestsCountsQuery from 'ee_else_ce/merge_requests/list/queries/project/get_merge_requests_counts.query.graphql';
+import getMergeRequestsApprovalsQuery from 'ee_else_ce/merge_requests/list/queries/project/get_merge_requests_approvals.query.graphql';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
@@ -25,4 +26,8 @@ addShortcutsExtension(ShortcutsNavigation);
 initIssuableByEmail();
 initCsvImportExportButtons();
 mountMoreActionsDropdown();
-mountMergeRequestListsApp({ getMergeRequestsQuery, getMergeRequestsCountsQuery });
+mountMergeRequestListsApp({
+  getMergeRequestsQuery,
+  getMergeRequestsApprovalsQuery,
+  getMergeRequestsCountsQuery,
+});

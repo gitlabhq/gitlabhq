@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.ciVariables', feature_category: :secrets_management do
+RSpec.describe 'Query.ciVariables', feature_category: :ci_variables do
   include GraphqlHelpers
 
   let(:query) do

@@ -486,6 +486,42 @@ entry.
 - [Remove default on `group_saved_replies_flag feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/75d49fe13646e1e0d3b68233ac4a965c86853917) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175647))
 - [Remove use_actual_plan_in_license_check flag](https://gitlab.com/gitlab-org/gitlab/-/commit/b8c3fe16aedb69c82ff52d1c695d72e933c4b946) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175649))
 
+## 17.7.4 (2025-02-11)
+
+### Security (8 changes)
+
+- [Security Duo Chat Escape Unknown Domain Hyperlinks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d3eafa571712e6891f16ecccaaefd82b147b75f6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4691))
+- [Hide sensitive workhorse headers and fix route confusion between web and workhorse routes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/af871eb34f21f862bce699839af69c88826a3420) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4762))
+- [Do not allow Planner role to update or delete incidents](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f5ae9423dbd353f571ffbea5a8ffe2ac77b587d6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4747))
+- [Reduce memory allocations on create PAT endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d443ded9eaed1300b888594125684db884c88e4d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4751))
+- [Prevent SSRF attacks for Workspaces](https://gitlab.com/gitlab-org/security/gitlab/-/commit/03fbdbe7b80e1028098df6bb10abc749b4f4b968) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4730))
+- [Prevent read code access when repository is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fb3eb2135770abcea4951ffe432cebb2065e7d3c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4700))
+- [Fixes XSS on the target branch in the merge request widget](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f4fd06e3450f686817104895eb6aca42af4fab11) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4736))
+- [Unsubscribe from actioncable channel when PAT is revoked](https://gitlab.com/gitlab-org/security/gitlab/-/commit/972f392e7daa6b60ed8ff03e6651944e1d045b40) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4726))
+
+## 17.7.3 (2025-01-22)
+
+### Fixed (1 change)
+
+- [Add BoardEpicConnection type policy for pagination](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f49b4349cecbbca2629e4abf9e2746d48537f350) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Fix protected variable exfiltration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ed6f52bb29b7dc1d6fad13c8d62725aa3a3c7283) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4714))
+- [Enhance rich viewer sanitization](https://gitlab.com/gitlab-org/security/gitlab/-/commit/68187f7e86b936d1d361c78160b3855db7ffa495) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4709))
+- [Avoid recursive sidekiq calls on cyclic work item hierarchies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/77692306d5122b9a3006667a4bbd695f4e983a33) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4673))
+- [Respect the private profile constraints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/325eea0ef21773481a0aa753cffacf05a835acbc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4698))
+
+## 17.7.2 (2025-01-14)
+
+### Fixed (1 change)
+
+- [Fix handling of short gzip metadata files](https://gitlab.com/gitlab-org/gitlab/-/commit/aaa32a37cf34a2e171f5ae1b7ce1259796605f92) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177633))
+
+### Changed (1 change)
+
+- [Remove `download_code` dependency from access to read merge requests](https://gitlab.com/gitlab-org/gitlab/-/commit/01a950b82192d6b93de58bf3678767f58c08c5f2) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176667))
+
 ## 17.7.1 (2025-01-08)
 
 ### Fixed (3 changes)
@@ -1313,6 +1349,36 @@ entry.
 - [Protected packages: Use CheckRuleExistenceService in npm push protection](https://gitlab.com/gitlab-org/gitlab/-/commit/a57fa587649d1280132d041b802b93ae172c403d) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166925))
 - [Finalize migration BackfillMlExperimentMetadataProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/0768d34e5d66ec56aa9104206120d2b691d3781f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172003))
 - [Finalize migration BackfillDastSiteValidationsProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/edb777429d66afe879a5bb8d4652a610eb39eb7c) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171199))
+
+## 17.6.5 (2025-02-11)
+
+### Security (7 changes)
+
+- [Security Duo Chat Escape Unknown Domain Hyperlinks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cdb737c04cdf611b2f6818a294b7157039adcce8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4692))
+- [Hide sensitive workhorse headers and fix route confusion between web and workhorse routes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dd5fb5b4e217868aa8602acee276883ae8e42126) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4763))
+- [Reduce memory allocations on create PAT endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d86c90fdfee1aef2eaa958ddc9e0ba379f8e221e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4752))
+- [Prevent SSRF attacks for Workspaces](https://gitlab.com/gitlab-org/security/gitlab/-/commit/16659a9efb33ec22055b927fd716f5acc80361e9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4731))
+- [Prevent read code access when repository is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ff08db2dd2efa55e4e868591c61c144ec3febe32) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4701))
+- [Fixes XSS on the target branch in the merge request widget](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1cc0ad7a4f3f0ab44dd959a58b3ed63786037a06) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4737))
+- [Unsubscribe from actioncable channel when PAT is revoked](https://gitlab.com/gitlab-org/security/gitlab/-/commit/26fff506ff66eedea4dc911eb1c9f4686d643650) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4727))
+
+## 17.6.4 (2025-01-22)
+
+### Fixed (2 changes)
+
+- [Add BoardEpicConnection type policy for pagination](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0fc02660321fef5d2fee627bd9b81c0aaca62a82) **GitLab Enterprise Edition**
+- [Fix handling of short gzip metadata files](https://gitlab.com/gitlab-org/security/gitlab/-/commit/09c5801a07e2dcbd48a44ea97cb56aa6fb141105)
+
+### Security (4 changes)
+
+- [Fix protected variable exfiltration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/da2d664ff802e6c961a8e463f39d5b7f179ba0f7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4715))
+- [Enhance rich viewer sanitization](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fca347dbd3660d89b1a58d39e1cf4ce680363988) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4710))
+- [Avoid recursive sidekiq calls on cyclic work item hierarchies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/db1de035fb5ddfee1849a411020f22f5808e811b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4660))
+- [Respect the private profile constraints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e834095ace85698c4c32f915e280158bb0ae9e88) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4699))
+
+### Other (1 change)
+
+- [Reorder migrations for ci_deleted_objects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/313e91e2a458db2ebcab4a8bb57384467ee295be)
 
 ## 17.6.3 (2025-01-08)
 

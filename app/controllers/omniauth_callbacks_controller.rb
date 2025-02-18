@@ -32,6 +32,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def handle_omniauth
     if ::AuthHelper.saml_providers.include?(oauth['provider'].to_sym)
       saml
+    elsif ::AuthHelper.oidc_providers.include?(oauth['provider'].to_sym)
+      openid_connect
     else
       omniauth_flow(Gitlab::Auth::OAuth)
     end
@@ -43,7 +45,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   # overridden in EE
   def openid_connect
-    handle_omniauth
+    omniauth_flow(Gitlab::Auth::OAuth)
   end
 
   def jwt
@@ -266,7 +268,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
         perform_registration_tasks(@user, oauth['provider']) if new_user
 
-        enqueue_after_sign_in_workers(@user)
+        enqueue_after_sign_in_workers(@user, auth_user)
 
         sign_in_and_redirect_or_verify_identity(@user, auth_user, new_user)
       end
@@ -296,7 +298,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       redirect_path = new_user_registration_path
       doc_pair = tag_pair(view_context.link_to(
         '',
-        help_page_path('user/profile/index.md', anchor: 'sign-in-services')),
+        help_page_path('user/profile/_index.md', anchor: 'sign-in-services')),
         :doc_start,
         :doc_end
       )
@@ -442,16 +444,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   # overridden in specific EE class
-  def enqueue_after_sign_in_workers(_user)
+  def enqueue_after_sign_in_workers(_user, _auth_user)
     true
   end
 
   def store_idp_two_factor_status(bypass_2fa)
-    if Feature.enabled?(:by_pass_two_factor_for_current_session)
-      session[:provider_2FA] = true if bypass_2fa
-    else
-      session.delete(:provider_2FA)
-    end
+    session[:provider_2FA] = true if bypass_2fa
   end
 
   def log_saml_response

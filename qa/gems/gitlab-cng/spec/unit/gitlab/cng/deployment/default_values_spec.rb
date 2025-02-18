@@ -6,6 +6,7 @@ RSpec.describe Gitlab::Cng::Deployment::DefaultValues do
   let(:ci_short_sha) { "0acb5ee6db08" }
   let(:image_repository) { "registry.gitlab.com/gitlab-org/build/cng-mirror" }
   let(:gitaly_version) { "7aa06a578d76bdc294ee8e9acb4f063e7d9f1d5f" }
+  let(:kas_version) { "7aa06a578d76bdc294ee8e9acb4f063e7d9f1d5f" }
   let(:shell_version) { "14.0.5" }
 
   let(:env) do
@@ -19,9 +20,11 @@ RSpec.describe Gitlab::Cng::Deployment::DefaultValues do
   before do
     described_class.instance_variable_set(:@ci_project_dir, nil)
     described_class.instance_variable_set(:@gitaly_version, nil)
+    described_class.instance_variable_set(:@kas_version, nil)
 
     allow(File).to receive(:read).with(File.join(ci_project_dir, "GITALY_SERVER_VERSION")).and_return(gitaly_version)
     allow(File).to receive(:read).with(File.join(ci_project_dir, "GITLAB_SHELL_VERSION")).and_return(shell_version)
+    allow(File).to receive(:read).with(File.join(ci_project_dir, "GITLAB_KAS_VERSION")).and_return(kas_version)
   end
 
   around do |example|
@@ -73,15 +76,19 @@ RSpec.describe Gitlab::Cng::Deployment::DefaultValues do
       "gitlab.webservice.image.repository" => "#{image_repository}/gitlab-webservice-ee",
       "gitlab.webservice.image.tag" => ci_commit_sha,
       "gitlab.webservice.workhorse.image" => "#{image_repository}/gitlab-workhorse-ee",
-      "gitlab.webservice.workhorse.tag" => ci_commit_sha
+      "gitlab.webservice.workhorse.tag" => ci_commit_sha,
+      "gitlab.kas.image.repository" => "#{image_repository}/gitlab-kas",
+      "gitlab.kas.image.tag" => kas_version
     })
   end
 
-  context "with semver gitaly version" do
+  context "with semver versions" do
     let(:gitaly_version) { "17.0.1" }
+    let(:kas_version) { "17.0.1" }
 
-    it "correctly sets gitaly image tag" do
+    it "correctly sets image tags for components with semver version" do
       expect(described_class.component_ci_versions["gitlab.gitaly.image.tag"]).to eq("v#{gitaly_version}")
+      expect(described_class.component_ci_versions["gitlab.kas.image.tag"]).to eq("v#{kas_version}")
     end
   end
 end

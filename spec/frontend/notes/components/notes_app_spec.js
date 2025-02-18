@@ -1,7 +1,10 @@
 import { mount, shallowMount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import { PiniaVuePlugin } from 'pinia';
+import VueApollo from 'vue-apollo';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -15,7 +18,6 @@ import notesEventHub from '~/notes/event_hub';
 import CommentForm from '~/notes/components/comment_form.vue';
 import NotesApp from '~/notes/components/notes_app.vue';
 import NotesActivityHeader from '~/notes/components/notes_activity_header.vue';
-import NotePreview from '~/notes/components/note_preview.vue';
 import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import * as constants from '~/notes/constants';
 import createStore from '~/notes/stores';
@@ -25,6 +27,11 @@ import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import { Mousetrap } from '~/lib/mousetrap';
 import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import noteQuery from '~/notes/graphql/note.query.graphql';
 import * as mockData from '../mock_data';
 
 jest.mock('~/behaviors/markdown/render_gfm');
@@ -43,11 +50,14 @@ const propsData = {
   notesFilterValue: TEST_NOTES_FILTER_VALUE,
 };
 
+Vue.use(PiniaVuePlugin);
+
 describe('note_app', () => {
   let axiosMock;
   let mountComponent;
   let wrapper;
   let store;
+  let pinia;
 
   const initStore = (notesData = propsData.notesData) => {
     store.dispatch('setNotesData', notesData);
@@ -74,6 +84,11 @@ describe('note_app', () => {
     $('body').attr('data-page', 'projects:merge_requests:show');
 
     axiosMock = new AxiosMockAdapter(axios);
+    Vue.use(VueApollo);
+
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
 
     store = createStore();
 
@@ -95,6 +110,7 @@ describe('note_app', () => {
             ...props,
           },
           store,
+          pinia,
         },
       );
     };
@@ -382,14 +398,15 @@ describe('note_app', () => {
     });
   });
 
-  describe('preview note shown inside skeleton notes', () => {
-    it.each`
-      urlHash        | exists
-      ${''}          | ${false}
-      ${'heading_1'} | ${false}
-      ${'note_123'}  | ${true}
-    `('`$exists` when url hash is `$urlHash`', ({ urlHash, exists }) => {
+  describe('preview note', () => {
+    let noteQueryHandler;
+
+    function hashFactory({ urlHash, authorId } = {}) {
       jest.spyOn(urlUtility, 'getLocationHash').mockReturnValue(urlHash);
+
+      noteQueryHandler = jest
+        .fn()
+        .mockResolvedValue(mockData.singleNoteResponseFactory({ urlHash, authorId }));
 
       store = createStore();
       store.state.isLoading = true;
@@ -398,12 +415,43 @@ describe('note_app', () => {
       wrapper = shallowMount(NotesApp, {
         propsData,
         store,
+        apolloProvider: createMockApollo([[noteQuery, noteQueryHandler]]),
         stubs: {
           'ordered-layout': OrderedLayout,
         },
       });
+    }
 
-      expect(wrapper.findComponent(NotePreview).exists()).toBe(exists);
+    it('calls query when note id exists', async () => {
+      hashFactory({ urlHash: 'note_123' });
+
+      expect(noteQueryHandler).toHaveBeenCalled();
+      await waitForPromises();
+
+      expect(wrapper.findComponent(NoteableDiscussion).exists()).toBe(true);
+    });
+
+    it('converts all ids from graphql to numeric', async () => {
+      hashFactory({ urlHash: 'note_1234', authorId: 5 });
+
+      await waitForPromises();
+
+      const note = wrapper.findComponent(NoteableDiscussion).props('discussion').notes[0];
+
+      expect(note.id).toBe('1234');
+      expect(note.author.id).toBe(5);
+    });
+
+    it('does not call query when note id does not exist', () => {
+      hashFactory();
+
+      expect(noteQueryHandler).not.toHaveBeenCalled();
+    });
+
+    it('does not call query when url hash is not a note', () => {
+      hashFactory({ urlHash: 'not_123' });
+
+      expect(noteQueryHandler).not.toHaveBeenCalled();
     });
   });
 

@@ -12,16 +12,20 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           raise NotImplementedError, "subclasses of #{self.class.name} must implement #{__method__}"
         end
 
-        def self.for_project(project)
-          new.for_project(project)
-        end
-
         def self.by_status(statuses)
           new.by_status(statuses)
         end
 
         def self.group_by_status
           new.group_by_status
+        end
+
+        def self.for_container(container)
+          if container.is_a?(Project)
+            new.for_project(container)
+          else
+            new.for_group(container)
+          end
         end
 
         def for_project(project)
@@ -34,6 +38,15 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
         def for_ref(ref)
           where(ref: ref)
+        end
+
+        def for_group(group)
+          traversal_path = group.traversal_path
+
+          condition =
+            Arel::Nodes::NamedFunction.new('startsWith', [Arel.sql('path'), Arel::Nodes.build_quoted(traversal_path)])
+
+          where(condition)
         end
 
         def within_dates(from_time, to_time)
@@ -53,7 +66,22 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
         end
 
         def group_by_status
-          group([@query_builder.table[:status]])
+          group(@query_builder.table[:status])
+        end
+
+        def group_by_timestamp_bin
+          group(timestamp_alias)
+        end
+
+        def timestamp_bin_function(time_series_period)
+          Arel::Nodes::NamedFunction.new(
+            'dateTrunc',
+            [
+              Arel::Nodes.build_quoted(time_series_period.to_s),
+              @query_builder.table[:started_at_bucket],
+              timezone
+            ]
+          ).as(timestamp_alias)
         end
 
         def count_pipelines_function
@@ -72,8 +100,16 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           Arel::Nodes::NamedFunction.new('toDateTime64', [
             Arel::Nodes::SqlLiteral.new(date.utc.strftime("'%Y-%m-%d %H:%M:%S'")),
             6,
-            Arel::Nodes.build_quoted('UTC')
+            timezone
           ])
+        end
+
+        def timestamp_alias
+          Arel.sql('timestamp')
+        end
+
+        def timezone
+          Arel::Nodes.build_quoted('UTC')
         end
       end
     end

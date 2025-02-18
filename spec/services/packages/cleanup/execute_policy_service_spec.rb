@@ -12,10 +12,10 @@ RSpec.describe Packages::Cleanup::ExecutePolicyService, feature_category: :packa
     subject(:execute) { service.execute }
 
     context 'with the keep_n_duplicated_files parameter' do
-      let_it_be(:package1) { create(:package, project: project) }
-      let_it_be(:package2) { create(:package, project: project) }
-      let_it_be(:package3) { create(:package, project: project) }
-      let_it_be(:package4) { create(:package, :pending_destruction, project: project) }
+      let_it_be(:package1) { create(:generic_package, project: project) }
+      let_it_be(:package2) { create(:generic_package, project: project) }
+      let_it_be(:package3) { create(:generic_package, project: project) }
+      let_it_be(:package4) { create(:generic_package, :pending_destruction, project: project) }
 
       let_it_be(:package_file1_1) { create(:package_file, package: package1, file_name: 'file_name1') }
       let_it_be(:package_file1_2) { create(:package_file, package: package1, file_name: 'file_name1') }

@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use Google OAuth 2.0 as an OAuth 2.0 authentication provider
 ---
 
-# Use Google OAuth 2.0 as an OAuth 2.0 authentication provider
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 To enable the Google OAuth 2.0 OmniAuth provider you must register your application
 with Google. Google generates a client ID and secret key for you to use.
@@ -50,7 +52,7 @@ To see your new project in the list, refresh the page.
 
 1. You should see a client ID and client secret. Note them down
    or keep this page open as you need them later.
-1. To enable projects to access [Google Kubernetes Engine](../user/infrastructure/clusters/index.md),
+1. To enable projects to access [Google Kubernetes Engine](../user/infrastructure/clusters/_index.md),
    you must also enable the:
    - Google Kubernetes Engine API
    - Cloud Resource Manager API

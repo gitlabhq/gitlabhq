@@ -348,40 +348,51 @@ RSpec.describe Projects::AutocompleteSourcesController do
       sign_in(user)
     end
 
-    context 'when feature flag is enabled' do
-      context 'when a group has crm enabled' do
-        context 'when a user can read contacts' do
-          it 'lists contacts' do
-            group.add_developer(user)
+    it 'lists contacts' do
+      group.add_developer(user)
 
-            get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path, type: issue.class.name }
+      get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path, type: issue.class.name }
 
-            emails = json_response.map { |contact_data| contact_data["email"] }
-            expect(emails).to match_array([contact_1.email, contact_2.email])
-          end
-        end
+      emails = json_response.map { |contact_data| contact_data["email"] }
+      expect(emails).to match_array([contact_1.email, contact_2.email])
+    end
 
-        context 'when a user can not read contacts' do
-          it 'renders 404' do
-            get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path, type: issue.class.name }
+    context 'with contacts outside of the root group' do
+      let!(:crm_group) { create(:group) }
+      let!(:crm_settings) { create(:crm_settings, group: group, source_group: crm_group) }
+      let!(:contact_1) { create(:contact, group: crm_group) }
+      let!(:contact_2) { create(:contact, group: crm_group) }
 
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
-        end
+      it 'lists contacts' do
+        project.add_developer(user)
+        crm_group.add_developer(user)
+
+        get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path, type: issue.class.name }
+
+        emails = json_response.map { |contact_data| contact_data["email"] }
+        expect(emails).to match_array([contact_1.email, contact_2.email])
+      end
+    end
+
+    context 'when a user can not read contacts' do
+      it 'renders 404' do
+        get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path, type: issue.class.name }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when a group has crm disabled' do
+      before do
+        create(:crm_settings, group: group, enabled: false)
       end
 
-      context 'when a group has crm disabled' do
-        before do
-          create(:crm_settings, group: group, enabled: false)
-        end
+      it 'renders 404' do
+        group.add_developer(user)
 
-        it 'renders 404' do
-          group.add_developer(user)
+        get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path, type: issue.class.name }
 
-          get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path, type: issue.class.name }
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

@@ -2,13 +2,15 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Vault authentication with GitLab OpenID Connect
 ---
 
-# Vault authentication with GitLab OpenID Connect
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 [Vault](https://www.vaultproject.io/) is a secrets management application offered by HashiCorp.
 It allows you to store and manage sensitive information such as secret environment
@@ -113,10 +115,13 @@ The `oidc_scopes` field must include `openid`.
 This configuration is saved under the name of the role you are creating. In this
 example, we are creating a `demo` role.
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you're using a public GitLab instance, such as GitLab.com, you must specify
 the `bound_claims` to allow access only to members of your group or project.
 Otherwise, anyone with a public account can access your Vault instance.
+
+{{< /alert >}}
 
 ## Sign in to Vault
 

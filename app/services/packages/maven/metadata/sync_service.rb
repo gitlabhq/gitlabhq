@@ -98,12 +98,11 @@ module Packages
         end
 
         def versionless_package_named(name)
-          project.packages
-                 .maven
-                 .displayable
-                 .with_name(name)
-                 .with_version(nil)
-                 .first
+          ::Packages::Maven::Package.for_projects(project)
+                                    .displayable
+                                    .with_name(name)
+                                    .with_version(nil)
+                                    .first
         end
 
         def package_name

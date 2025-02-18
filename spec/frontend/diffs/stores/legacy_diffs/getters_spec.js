@@ -12,7 +12,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { createCustomGetters } from 'helpers/pinia_helpers';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { useNotes } from '~/notes/store/legacy_notes';
-import { globalAccessorPlugin } from '~/pinia';
+import { globalAccessorPlugin } from '~/pinia/plugins';
 import discussion from '../../mock_data/diff_discussions';
 import diffsMockData from '../../mock_data/merge_request_diffs';
 
@@ -25,6 +25,7 @@ describe('Diffs Module Getters', () => {
       createCustomGetters(() => ({
         legacyDiffs: getters,
         legacyNotes: notesGetters,
+        legacyMrNotes: {},
         batchComments: {},
       })),
       globalAccessorPlugin,
@@ -43,6 +44,7 @@ describe('Diffs Module Getters', () => {
     getters = {};
     notesGetters = {};
     store = useLegacyDiffs();
+    useMrNotes();
     useNotes().$reset();
     store.$reset();
     discussionMock = { ...discussion };
@@ -377,6 +379,36 @@ describe('Diffs Module Getters', () => {
         },
       ]);
     });
+
+    it('assigns ids to files', () => {
+      store.treeEntries = {
+        file: {
+          type: 'blob',
+          path: 'file',
+          parentPath: '/',
+          fileHash: '111',
+          tree: [],
+        },
+      };
+      store.diffFiles = [{ id: '222', file_hash: '111' }];
+
+      expect(store.allBlobs).toEqual([
+        {
+          isHeader: true,
+          path: '/',
+          tree: [
+            {
+              parentPath: '/',
+              path: 'file',
+              tree: [],
+              type: 'blob',
+              fileHash: '111',
+              id: '222',
+            },
+          ],
+        },
+      ]);
+    });
   });
 
   describe('currentDiffIndex', () => {
@@ -441,7 +473,7 @@ describe('Diffs Module Getters', () => {
     beforeEach(() => {
       store.defaultSuggestionCommitMessage =
         '%{branch_name}%{project_path}%{project_name}%{username}%{user_full_name}%{file_paths}%{suggestions_count}%{files_count}';
-      useMrNotes().page = {
+      useMrNotes().$patch({
         mrMetadata: {
           branch_name: 'branch',
           project_path: '/path',
@@ -449,7 +481,7 @@ describe('Diffs Module Getters', () => {
           username: 'user',
           user_full_name: 'user userton',
         },
-      };
+      });
     });
 
     it.each`
@@ -463,7 +495,7 @@ describe('Diffs Module Getters', () => {
     `(
       'provides the correct "base" default commit message based on state ($specialState)',
       ({ specialState, output }) => {
-        useMrNotes().$patch({ page: { mrMetadata: specialState } });
+        useMrNotes().$patch({ mrMetadata: specialState });
 
         expect(store.suggestionCommitMessage()).toBe(output);
       },
@@ -524,6 +556,27 @@ describe('Diffs Module Getters', () => {
 
     it('returns null if no linked file is set', () => {
       expect(store.linkedFile).toBe(null);
+    });
+  });
+
+  describe('fileTree', () => {
+    it('returns fileTree', () => {
+      const diffFiles = [
+        { id: '111', file_hash: '222' },
+        { id: '333', file_hash: '444' },
+      ];
+      const tree = {
+        type: 'tree',
+        path: 'tree',
+        parentPath: '/',
+        fileHash: '444',
+        tree: [{ fileHash: '222', tree: [] }],
+      };
+      store.diffFiles = diffFiles;
+      store.tree = [tree];
+      expect(store.fileTree).toStrictEqual([
+        { ...tree, id: '333', tree: [{ ...tree.tree[0], id: '111' }] },
+      ]);
     });
   });
 

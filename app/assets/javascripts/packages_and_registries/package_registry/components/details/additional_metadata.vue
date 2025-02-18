@@ -100,7 +100,7 @@ export default {
     <additional-metadata-loader v-if="isLoading" />
     <div
       v-if="showMetadata"
-      class="gl-rounded-base gl-bg-gray-50 gl-shadow-inner-1-gray-100"
+      class="gl-rounded-base gl-bg-strong gl-shadow-inner-1-gray-100"
       data-testid="main"
     >
       <component

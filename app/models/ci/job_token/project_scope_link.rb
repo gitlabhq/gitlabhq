@@ -6,6 +6,8 @@
 module Ci
   module JobToken
     class ProjectScopeLink < Ci::ApplicationRecord
+      include BulkInsertSafe
+
       self.table_name = 'ci_job_token_project_scope_links'
 
       PROJECT_LINK_DIRECTIONAL_LIMIT = 200
@@ -20,6 +22,7 @@ module Ci
       scope :with_access_direction, ->(direction) { where(direction: direction) }
       scope :with_source, ->(project)   { where(source_project: project) }
       scope :with_target, ->(project)   { where(target_project: project) }
+      scope :autopopulated, -> { where(autopopulated: true) }
 
       validates :source_project, presence: true
       validates :target_project, presence: true

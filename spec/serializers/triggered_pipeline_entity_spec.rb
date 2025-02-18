@@ -18,8 +18,8 @@ RSpec.describe TriggeredPipelineEntity, feature_category: :continuous_integratio
     it do
       is_expected.to(
         include(
-          :id, :user, :active, :coverage, :source, :source_job,
-          :path, :details, :project
+          :id, :iid, :active, :coverage, :details, :name, :path, :project,
+          :source, :source_job, :user
         )
       )
     end

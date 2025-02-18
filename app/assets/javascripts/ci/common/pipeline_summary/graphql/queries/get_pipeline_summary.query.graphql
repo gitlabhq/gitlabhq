@@ -17,20 +17,20 @@ query getPipelineSummary($fullPath: ID!, $iid: ID!, $includeCommitInfo: Boolean!
       downstream {
         nodes {
           id
+          iid
+          name
           detailedStatus {
             id
             detailsPath
             icon
             label
+            tooltip
           }
           path
           project {
             id
             name
-          }
-          sourceJob {
-            id
-            retried
+            fullPath
           }
         }
       }

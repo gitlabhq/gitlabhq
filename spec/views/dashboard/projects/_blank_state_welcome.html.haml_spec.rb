@@ -25,7 +25,7 @@ RSpec.describe 'dashboard/projects/_blank_state_welcome.html.haml' do
     end
 
     context 'with project creation disabled' do
-      let_it_be(:user_projects_limit) { create(:user, projects_limit: 0 ) }
+      let_it_be(:user_projects_limit) { create(:user, projects_limit: 0) }
 
       before do
         allow(view).to receive(:current_user).and_return(user_projects_limit)

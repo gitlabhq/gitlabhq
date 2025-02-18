@@ -80,9 +80,9 @@ export default {
     'gl-p-3',
     'gl-border-0',
     '!gl-rounded-base',
-    'hover:gl-bg-gray-50',
+    'hover:gl-bg-strong',
     'dark:hover:gl-bg-gray-200',
-    'focus:gl-bg-gray-50',
+    'focus:gl-bg-strong',
     'dark:focus:gl-bg-gray-200',
     'hover:gl-text-strong',
     'focus:gl-text-strong',
@@ -129,7 +129,7 @@ export default {
       return this.highlightedJobs.length > 1 && !this.highlightedJobs.includes(jobName);
     },
     isParallel(group) {
-      return group.size > 1 && group.jobs.length > 1;
+      return group.jobs[0].name !== group.name;
     },
     singleJobExists(group) {
       const firstJobDefined = Boolean(group.jobs?.[0]);
@@ -207,8 +207,16 @@ export default {
         @mouseenter="$emit('jobHover', group.name)"
         @mouseleave="$emit('jobHover', '')"
       >
+        <div v-if="isParallel(group)" :class="{ 'gl-opacity-3': isFadedOut(group.name) }">
+          <job-group-dropdown
+            :group="group"
+            :stage-name="showStageName ? group.stageName : ''"
+            :pipeline-id="pipelineId"
+            :css-class-job-name="$options.jobClasses"
+          />
+        </div>
         <job-item
-          v-if="singleJobExists(group)"
+          v-else-if="singleJobExists(group)"
           :job="group.jobs[0]"
           :job-hovered="jobHovered"
           :skip-retry-modal="skipRetryModal"
@@ -221,14 +229,6 @@ export default {
           @pipelineActionRequestComplete="$emit('refreshPipelineGraph')"
           @setSkipRetryModal="$emit('setSkipRetryModal')"
         />
-        <div v-else-if="isParallel(group)" :class="{ 'gl-opacity-3': isFadedOut(group.name) }">
-          <job-group-dropdown
-            :group="group"
-            :stage-name="showStageName ? group.stageName : ''"
-            :pipeline-id="pipelineId"
-            :css-class-job-name="$options.jobClasses"
-          />
-        </div>
       </div>
     </template>
   </root-graph-layout>

@@ -1,11 +1,10 @@
 ---
 stage: Create
 group: Source Code
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Common commands and workflows.
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+title: Stage, commit, and push changes
 ---
-
-# Stage, commit, and push changes
 
 When you make changes to files in a repository, Git tracks the changes
 against the most recent version of the checked out branch. You can use
@@ -76,9 +75,12 @@ you must [force an update](git_rebase.md#force-push-to-a-remote-branch).
 
 ## Push options
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When you push changes to a branch, you can use client-side
 [Git push options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt).
@@ -106,14 +108,17 @@ For server-side controls and enforcement of best practices, see
 
 You can use push options to skip a CI/CD pipeline, or pass CI/CD variables.
 
-NOTE:
+{{< alert type="note" >}}
+
 Push options are not available for merge request pipelines. For more information,
 see [issue 373212](https://gitlab.com/gitlab-org/gitlab/-/issues/373212).
+
+{{< /alert >}}
 
 | Push option                    | Description | Example |
 |--------------------------------|-------------|---------|
 | `ci.skip`                      | Do not create a CI/CD pipeline for the latest push. Skips only branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). This does not skip pipelines for CI/CD integrations, such as Jenkins. | `git push -o ci.skip` |
-| `ci.variable="<name>=<value>"` | Provide [CI/CD variables](../../ci/variables/index.md) to the CI/CD pipeline, if one is created due to the push. Passes variables only to branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). | `git push -o ci.variable="MAX_RETRIES=10" -o ci.variable="MAX_TIME=600"` |
+| `ci.variable="<name>=<value>"` | Provide [CI/CD variables](../../ci/variables/_index.md) to the CI/CD pipeline, if one is created due to the push. Passes variables only to branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). | `git push -o ci.variable="MAX_RETRIES=10" -o ci.variable="MAX_TIME=600"` |
 
 ### Push options for Integrations
 
@@ -146,7 +151,7 @@ Git push options can perform actions for merge requests while pushing changes:
 
 ### Push options for secret push protection
 
-You can use push options to skip [secret push protection](../../user/application_security/secret_detection/secret_push_protection/index.md).
+You can use push options to skip [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md).
 
 | Push option                    | Description | Example |
 |--------------------------------|-------------|---------|

@@ -69,6 +69,7 @@ module API
             tags %w[terraform_state]
           end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+          route_setting :authorization, job_token_policies: :read_terraform_state
           get do
             remote_state_handler.find_with_lock do |state|
               no_content! unless state.latest_file && state.latest_file.exists?
@@ -92,6 +93,7 @@ module API
             tags %w[terraform_state]
           end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+          route_setting :authorization, job_token_policies: :admin_terraform_state
           post do
             authorize! :admin_terraform_state, user_project
 
@@ -120,6 +122,7 @@ module API
             tags %w[terraform_state]
           end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+          route_setting :authorization, job_token_policies: :admin_terraform_state
           delete do
             authorize! :admin_terraform_state, user_project
 
@@ -143,6 +146,7 @@ module API
             tags %w[terraform_state]
           end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+          route_setting :authorization, job_token_policies: :admin_terraform_state
           params do
             requires :ID, type: String, limit: 255, desc: 'Terraform state lock ID'
             requires :Operation, type: String, desc: 'Terraform operation'
@@ -192,6 +196,7 @@ module API
             tags %w[terraform_state]
           end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+          route_setting :authorization, job_token_policies: :admin_terraform_state
           params do
             optional :ID, type: String, limit: 255, desc: 'Terraform state lock ID'
           end

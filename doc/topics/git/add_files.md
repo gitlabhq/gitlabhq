@@ -1,11 +1,10 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Add, commit, and push a file to your Git repository using the command line."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Add, commit, and push a file to your Git repository using the command line.
+title: Add files to your branch
 ---
-
-# Add files to your branch
 
 You can use Git to add files to a Git repository.
 
@@ -49,22 +48,22 @@ To add a new file from the command line:
    git status
    ```
 
-   The filename should be green. The file is tracked locally by Git, but
+   The filename should be green. The file is staged (tracked locally) by Git, but
    has not been [committed and pushed](commit.md).
 
 ## Add a file to the last commit
 
-To add changes to a file to the last commit, instead of to a new commit:
+To add changes to a file to the last commit, instead of to a new commit, amend the existing commit:
 
 ```shell
 git add <filename>
 git commit --amend
 ```
 
-Append `--no-edit` to the `commit` command if you do not want to edit the commit message.
+If you do not want to edit the commit message, append `--no-edit` to the `commit` command.
 
 ## Related topics
 
-- [Add file from the UI](../../user/project/repository/index.md#add-a-file-from-the-ui)
+- [Add file from the UI](../../user/project/repository/_index.md#add-a-file-from-the-ui)
 - [Add file from the Web IDE](../../user/project/repository/web_editor.md#upload-a-file)
 - [Sign commits](../../user/project/repository/signed_commits/gpg.md)

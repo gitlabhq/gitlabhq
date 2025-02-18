@@ -25,7 +25,7 @@ RSpec.describe WebHooks::Events::ResendService, feature_category: :webhooks do
           service_result = service.execute
 
           expect(service_result).to be_error
-          expect(service_result.message).to eq("The hook URL has changed, and this log entry cannot be retried")
+          expect(service_result.message).to eq("The hook URL has changed. This log entry cannot be retried.")
         end
       end
 
@@ -54,7 +54,7 @@ RSpec.describe WebHooks::Events::ResendService, feature_category: :webhooks do
         service_result = service.execute
 
         expect(service_result).to be_error
-        expect(service_result.message).to eq("The current user is not authorized to resend a hook event")
+        expect(service_result.message).to eq("The current user is not authorized to resend a hook event.")
       end
     end
   end

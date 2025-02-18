@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Backwards compatibility across updates
 ---
-
-# Backwards compatibility across updates
 
 GitLab deployments can be broken down into many components. Updating GitLab is not atomic. Therefore, **many components must be backwards-compatible**.
 
@@ -52,8 +51,8 @@ Is it ok that some nodes have the new Rails version, but some nodes have the old
 Backward compatibility problems during updates are often very subtle. This is why it is worth
 familiarizing yourself with:
 
-- [Update instructions](../update/index.md)
-- [Reference architectures](../administration/reference_architectures/index.md)
+- [Update instructions](../update/_index.md)
+- [Reference architectures](../administration/reference_architectures/_index.md)
 - [GitLab.com's architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/)
 - [GitLab.com's upgrade pipeline](https://gitlab.com/gitlab-org/release/docs/blob/master/general/deploy/gitlab-com-deployer.md#upgrade-pipeline-default)
 
@@ -123,7 +122,7 @@ For major or minor version updates of Rails or Puma:
 
 ### Feature flags
 
-[Feature flags](feature_flags/index.md) are a tool, not a strategy, for handling backward compatibility problems.
+[Feature flags](feature_flags/_index.md) are a tool, not a strategy, for handling backward compatibility problems.
 
 For example, it is safe to add a new feature with frontend and API changes, if both
 frontend and API changes are disabled by default. This can be done with multiple
@@ -270,7 +269,7 @@ and set this column to `false`. The old servers were still updating the old colu
 that updated the new column from the old one. For the new servers though, they were only updating the new column and that same trigger
 was now working against us and setting it back to the wrong value.
 
-For more information, see [the relevant issue](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/9176).
+For more information, see [the relevant issue](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/9176).
 
 ### Sidebar wasn't loading for some users
 
@@ -315,7 +314,7 @@ variable `CI_NODE_TOTAL` being an integer failed. This was caused because after 
    instead of sending an integer value (for example, 9), it sent a serialized
    `Hash` value (`{:number=>9, :total=>9}`).
 
-If you look at the [deployment pipeline](https://ops.gitlab.net/gitlab-com/gl-infra/deployer/-/pipelines/202212),
+If you look at the [deployment pipeline](https://ops.gitlab.net/gitlab-com/gl-infra/deployer),
 you see all nodes were updated in parallel:
 
 ![GitLab.com deployment pipeline](img/deployment_pipeline_v13_3.png)

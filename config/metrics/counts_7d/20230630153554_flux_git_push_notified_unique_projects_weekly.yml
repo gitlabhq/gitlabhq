@@ -14,9 +14,6 @@ options:
   events:
     - flux_git_push_notified_unique_projects
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

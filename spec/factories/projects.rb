@@ -329,6 +329,13 @@ FactoryBot.define do
           'README.md' => 'readme'
         }
       end
+    end
+
+    # A basic repository with a single file 'test.txt'. It also has the HEAD as the default branch.
+    trait :small_repo do
+      custom_repo
+
+      files { { 'test.txt' => 'test' } }
 
       transient do
         create_tag { nil }
@@ -342,13 +349,6 @@ FactoryBot.define do
             project.repository.commit.sha)
         end
       end
-    end
-
-    # A basic repository with a single file 'test.txt'. It also has the HEAD as the default branch.
-    trait :small_repo do
-      custom_repo
-
-      files { { 'test.txt' => 'test' } }
 
       after(:create) do |project|
         Sidekiq::Worker.skipping_transaction_check do

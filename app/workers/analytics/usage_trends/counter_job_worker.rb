@@ -7,6 +7,7 @@ module Analytics
 
       extend ::Gitlab::Utils::Override
       include ApplicationWorker
+      include CronjobChildWorker
 
       data_consistency :sticky
 

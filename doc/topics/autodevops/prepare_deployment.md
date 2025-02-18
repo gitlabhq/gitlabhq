@@ -2,13 +2,15 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Prepare Auto DevOps for deployment
 ---
 
-# Prepare Auto DevOps for deployment
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If you enable Auto DevOps without setting the base domain and deployment
 strategy, GitLab can't deploy your application directly. Therefore, we
@@ -17,7 +19,7 @@ recommend that you prepare them before enabling Auto DevOps.
 ## Deployment strategy
 
 When using Auto DevOps to deploy your applications, choose the
-[continuous deployment strategy](../../ci/index.md)
+[continuous deployment strategy](../../ci/_index.md)
 that works best for your needs:
 
 | Deployment strategy | Setup | Methodology |
@@ -32,9 +34,12 @@ You can choose the deployment method when enabling Auto DevOps or later:
 1. Choose the deployment strategy.
 1. Select **Save changes**.
 
-NOTE:
+{{< alert type="note" >}}
+
 Use the [blue-green deployment](../../ci/environments/incremental_rollouts.md#blue-green-deployment) technique
 to minimize downtime and risk.
+
+{{< /alert >}}
 
 ## Auto DevOps base domain
 
@@ -48,7 +53,7 @@ To define the base domain, either:
 - In the instance: go to the **Admin** area, then **Settings > CI/CD > Continuous Integration and Delivery** and add it there.
 
 The base domain variable `KUBE_INGRESS_BASE_DOMAIN` follows the same order of precedence
-as other environment [variables](../../ci/variables/index.md#cicd-variable-precedence).
+as other environment [variables](../../ci/variables/_index.md#cicd-variable-precedence).
 
 If you don't specify the base domain in your projects and groups, Auto DevOps uses the instance-wide **Auto DevOps domain**.
 

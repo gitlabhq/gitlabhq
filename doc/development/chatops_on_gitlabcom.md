@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: ChatOps on GitLab.com
 ---
-
-# ChatOps on GitLab.com
 
 ChatOps on GitLab.com allows GitLab team members to run various automation tasks on GitLab.com using Slack.
 
@@ -26,7 +25,7 @@ To request access to ChatOps on GitLab.com:
    - Selecting the **Sign in with Google** button to sign in with your GitLab.com email address.
 
 1. Confirm that your username in [Internal GitLab for Operations](https://ops.gitlab.net/)
-   is the same as your username in [GitLab.com](https://gitlab.com/). If the usernames
+   is the same as your username in [GitLab.com](https://gitlab.com). If the usernames
    don't match, update the username in [User Settings/Account for the Ops instance](https://ops.gitlab.net/-/profile/account). Matching usernames are required to reduce the administrative effort of running multiple platforms. Matching usernames also help with tasks like managing access requests and offboarding.
 
 1. Comment in your onboarding issue, and tag your onboarding buddy and your manager.
@@ -58,7 +57,7 @@ To request access to ChatOps on GitLab.com:
 
 ## See also
 
-- [ChatOps Usage](../ci/chatops/index.md)
+- [ChatOps Usage](../ci/chatops/_index.md)
 - [Feature Flag Controls](feature_flags/controls.md)
 - [Understanding EXPLAIN plans](database/understanding_explain_plans.md)
-- [Feature Groups](feature_flags/index.md#feature-groups)
+- [Feature Groups](feature_flags/_index.md#feature-groups)

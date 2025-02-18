@@ -88,7 +88,7 @@ export default {
           data-testid="settings-block-title"
           @click="toggleExpanded"
         >
-          <h2 class="gl-heading-2 !gl-mb-2">
+          <h2 class="gl-heading-2 !gl-mb-2" data-event-tracking="settings-block-title">
             {{ title }}
           </h2>
         </button>

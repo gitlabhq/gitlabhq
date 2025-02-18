@@ -2,12 +2,14 @@
 stage: Security Risk Management
 group: Security Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Security report ingestion overview
 ---
 
-# Security report ingestion overview
+{{< alert type="warning" >}}
 
-WARNING:
 The `Vulnerability::Feedback` model is currently undergoing deprecation and should be actively avoided in all further development. It is currently maintained with feature parity to enable revert should any issues arise, but is intended to be removed in 16.0. Any interactions relating to the Feedback model are superseded by the `StateTransition`, `IssueLink`, and `MergeRequestLink` models. You can find out more on [in this epic](https://gitlab.com/groups/gitlab-org/-/epics/5629).
+
+{{< /alert >}}
 
 ## Commonly used terms
 
@@ -60,7 +62,7 @@ An instance of the `Vulnerabilities::Remediation` class. A remediation is repres
 Assumptions:
 
 - Project uses GitLab CI
-- Project uses [security scanning tools](../../user/application_security/index.md)
+- Project uses [security scanning tools](../../user/application_security/_index.md)
 - No Vulnerabilities are present in the database
 - All pipelines perform security scans
 
@@ -120,5 +122,5 @@ This style of creation was intended to be fast and seamless, but has proven diff
 The "No longer detected" badge on the vulnerability report is displayed if the `Vulnerability` record has `resolved_on_default_branch: true`.
 This is set by `Security::Ingestion::MarkAsResolvedService` when a pipeline runs on the default branch. Vulnerabilities which have
 `resolved_on_default_branch: false` and _are not_ present in the pipeline scan results are marked as resolved.
-[Secret Detection](../../user/application_security/secret_detection/index.md) and [manual](../../user/application_security/vulnerability_report/index.md#manually-add-a-vulnerability)
+[Secret Detection](../../user/application_security/secret_detection/_index.md) and [manual](../../user/application_security/vulnerability_report/_index.md#manually-add-a-vulnerability)
 vulnerabilities are excluded from this process.

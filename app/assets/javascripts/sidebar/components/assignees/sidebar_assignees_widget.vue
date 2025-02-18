@@ -14,6 +14,7 @@ import SidebarEditableItem from '../sidebar_editable_item.vue';
 import SidebarAssigneesRealtime from './assignees_realtime.vue';
 import IssuableAssignees from './issuable_assignees.vue';
 import SidebarInviteMembers from './sidebar_invite_members.vue';
+import { userTypes } from './constants';
 
 export const assigneesWidget = Vue.observable({
   updateAssignees: null,
@@ -110,10 +111,12 @@ export default {
         }
         const issuable = data.workspace?.issuable;
         if (issuable) {
-          this.selected = issuable.assignees.nodes.map((node) => ({
-            ...node,
-            canMerge: node.mergeRequestInteraction?.canMerge || false,
-          }));
+          this.selected = issuable.assignees.nodes
+            .filter((node) => node.type !== userTypes.placeholder)
+            .map((node) => ({
+              ...node,
+              canMerge: node.mergeRequestInteraction?.canMerge || false,
+            }));
         }
       },
       error() {
@@ -132,35 +135,40 @@ export default {
         fullPath: this.fullPath,
       };
     },
+    initialAssigneesExcludingPlaceholders() {
+      return this.filterOutPlaceholderUsers(this.initialAssignees);
+    },
     assignees() {
-      const currentAssignees = this.$apollo.queries.issuable.loading
-        ? this.initialAssignees
-        : this.issuable?.assignees?.nodes;
-      return currentAssignees || [];
+      const currentAssignees = this.issuableIsLoading
+        ? this.initialAssigneesExcludingPlaceholders
+        : this.issuable.assignees?.nodes;
+
+      return this.filterOutPlaceholderUsers(currentAssignees);
     },
     assigneeText() {
-      const items = this.$apollo.queries.issuable.loading ? this.initialAssignees : this.selected;
+      const items = this.issuableIsLoading
+        ? this.initialAssigneesExcludingPlaceholders
+        : this.selected;
       if (!items) {
         return __('Assignee');
       }
       return n__('Assignee', '%d Assignees', items.length);
     },
     isAssigneesLoading() {
-      return !this.initialAssignees && this.$apollo.queries.issuable.loading;
+      const hasNoInitialAssignees = this.initialAssigneesExcludingPlaceholders.length === 0;
+
+      return hasNoInitialAssignees && this.issuableIsLoading;
     },
     currentUser() {
       return {
         username: gon?.current_username,
         name: gon?.current_user_fullname,
         avatarUrl: gon?.current_user_avatar_url,
-        canMerge: this.issuable?.userPermissions?.canMerge || false,
+        canMerge: this.issuable.userPermissions?.canMerge || false,
       };
     },
     signedIn() {
       return this.currentUser.username !== undefined;
-    },
-    issuableAuthor() {
-      return this.issuable?.author;
     },
     assigneeShortcutDescription() {
       return shouldDisableShortcuts() ? null : ISSUE_MR_CHANGE_ASSIGNEE.description;
@@ -174,6 +182,12 @@ export default {
       return shouldDisableShortcuts()
         ? null
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
+    },
+    nonPlaceholderIssuableAuthor() {
+      return this.issuable.author?.type !== userTypes.placeholder ? this.issuable.author : null;
+    },
+    issuableIsLoading() {
+      return this.$apollo.queries.issuable.loading;
     },
   },
   watch: {
@@ -247,6 +261,9 @@ export default {
         this.collapseWidget();
       }
     },
+    filterOutPlaceholderUsers(users = []) {
+      return (users || []).filter((user) => user && user?.type !== userTypes.placeholder);
+    },
   },
 };
 </script>
@@ -296,7 +313,7 @@ export default {
           :current-user="currentUser"
           :issuable-type="issuableType"
           :is-editing="edit"
-          :issuable-author="issuableAuthor"
+          :issuable-author="nonPlaceholderIssuableAuthor"
           class="dropdown-menu-user -gl-mt-3 gl-w-full"
           @toggle="collapseWidget"
           @error="showError"

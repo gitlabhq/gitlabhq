@@ -1,0 +1,56 @@
+.multiple-choice-selector {
+  &-item {
+    @include gl-prefers-reduced-motion-transition;
+    transition: background-color $gl-transition-duration-medium $gl-easing-out-cubic,
+                border-color $gl-transition-duration-medium $gl-easing-out-cubic,
+                box-shadow $gl-transition-duration-medium $gl-easing-out-cubic;
+
+    &:not(:last-child) {
+      @apply gl-border-b;
+    }
+
+    &:first-child {
+      @apply gl-rounded-t-base;
+    }
+
+    &:last-child {
+      @apply gl-rounded-b-base;
+    }
+
+    // stylelint-disable-next-line gitlab/no-gl-class
+    &.multiple-choice-selector-item .gl-form-checkbox.gl-form-checkbox label,
+    &.multiple-choice-selector-item .gl-form-radio.gl-form-radio label {
+      width: 100%;
+      margin-bottom: 0;
+    }
+
+    &:has(input:checked) {
+      border: 1px solid var(--gl-control-border-color-selected-default);
+      box-shadow: 0 -1px 0 0 var(--gl-control-border-color-selected-default),
+                  inset -1px 0 0 0 var(--gl-control-border-color-selected-default),
+                  inset 0 -1px 0 0 var(--gl-control-border-color-selected-default),
+                  inset 1px 0 0 0 var(--gl-control-border-color-selected-default);
+      @apply gl-bg-subtle gl-rounded-base;
+    }
+
+    &:has(input:checked) + &:has(input:checked) {
+      @apply gl-rounded-t-none;
+    }
+
+    &:has(input:checked):has(+ & input:checked) {
+      @apply gl-rounded-b-none;
+    }
+
+    &:not(:last-child):has(input:checked) {
+      margin: -1px -1px 0;
+    }
+
+    &:last-child:has(input:checked) {
+      margin: -1px;
+    }
+  }
+
+  &-click-area {
+    @apply gl-absolute -gl-top-5 -gl-left-7 gl-w-full gl-h-full gl-p-5 gl-pl-7 gl-box-content -gl-z-1;
+  }
+}

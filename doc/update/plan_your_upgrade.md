@@ -2,17 +2,19 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Create an upgrade plan
 ---
 
-# Create an upgrade plan
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Creating an upgrade plan involves documenting:
 
-- The steps to take to upgrade your GitLab self-managed instance.
+- The steps to take to upgrade your instance.
 - The steps to take if the upgrade doesn't go smoothly.
 
 Your upgrade plan should include:
@@ -30,7 +32,7 @@ upgrade plan, document and share it with the answers to the following questions:
   to confirm that later updates are available.
 - Is it a single-node or a multi-node setup? If multi-node, document and share any architectural details about each node.
   Which external components are used? For example, Gitaly, PostgreSQL, or Redis?
-- Are you using [GitLab Geo](../administration/geo/index.md)? If so, document and share any architectural details about
+- Are you using [GitLab Geo](../administration/geo/_index.md)? If so, document and share any architectural details about
   each secondary node.
 - What else might be unique or interesting in your setup that might be important?
 - Are you running into any known issues with your current version of GitLab?
@@ -50,7 +52,7 @@ Create a backup of GitLab and all its data (database, repositories, uploads, bui
 artifacts, LFS objects, registry, pages). This is vital for making it possible
 to roll back GitLab to a working state if there's a problem with the upgrade:
 
-- Create a [GitLab backup](../administration/backup_restore/index.md).
+- Create a [GitLab backup](../administration/backup_restore/_index.md).
   Make sure to follow the instructions based on your installation method.
   Don't forget to back up the [secrets and configuration files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files).
 - Alternatively, create a snapshot of your instance. If this is a multi-node
@@ -64,9 +66,9 @@ If you have a test environment that mimics your production one, you should test 
 To restore your GitLab backup:
 
 - Before restoring, make sure to read about the
-  [prerequisites](../administration/backup_restore/index.md#restore-gitlab), most importantly,
+  [prerequisites](../administration/backup_restore/_index.md#restore-gitlab), most importantly,
   the versions of the backed up and the new GitLab instance must be the same.
-- [Restore GitLab](../administration/backup_restore/index.md#restore-gitlab).
+- [Restore GitLab](../administration/backup_restore/_index.md#restore-gitlab).
   Make sure to follow the instructions based on your installation method.
   Confirm that the [secrets and configuration files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files) are also restored.
 - If restoring from a snapshot, know the steps to do this.

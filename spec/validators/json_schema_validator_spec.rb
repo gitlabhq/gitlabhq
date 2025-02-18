@@ -227,4 +227,12 @@ RSpec.describe JsonSchemaValidator, feature_category: :shared do
       end
     end
   end
+
+  describe '#schema' do
+    let(:validator) { described_class.new(attributes: [:data], filename: "build_report_result_data") }
+
+    it 'is instance of JSONSchemer schema' do
+      expect(validator.schema).to be_a(JSONSchemer::Schema)
+    end
+  end
 end

@@ -1,4 +1,4 @@
-const argumentsParser = require('commander');
+const { program } = require('commander');
 
 const { GettextExtractor, JsExtractors } = require('gettext-extractor');
 const {
@@ -8,10 +8,12 @@ const {
 const vue2TemplateCompiler = require('vue-template-compiler');
 const ensureSingleLine = require('../../app/assets/javascripts/locale/ensure_single_line.cjs');
 
-const args = argumentsParser
+program
   .option('-f, --file <file>', 'Extract message from one single file')
   .option('-a, --all', 'Extract message from all js/vue files')
   .parse(process.argv);
+
+const args = program.opts();
 
 const extractor = decorateExtractorWithHelpers(new GettextExtractor());
 
@@ -78,6 +80,6 @@ async function main() {
 
 main().catch((error) => {
   console.warn(error.message);
-  args.outputHelp();
+  program.outputHelp();
   process.exit(1);
 });

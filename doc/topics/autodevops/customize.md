@@ -2,13 +2,15 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Customize Auto DevOps
 ---
 
-# Customize Auto DevOps
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can customize components of Auto DevOps to fit your needs. For example, you can:
 
@@ -26,7 +28,7 @@ least the Maintainer role:
 The banner can be disabled for:
 
 - A user, when they dismiss it themselves.
-- A project, by explicitly [disabling Auto DevOps](index.md#enable-or-disable-auto-devops).
+- A project, by explicitly [disabling Auto DevOps](_index.md#enable-or-disable-auto-devops).
 - An entire GitLab instance:
   - By an administrator running the following in a Rails console:
 
@@ -97,9 +99,12 @@ For example, to build a Docker image based on based on the
 To pass complex values like spaces and newlines, use Base64 encoding.
 Complex, unencoded values can cause issues with character escaping.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Do not pass secrets as Docker build arguments. Secrets might persist in your image. For more information, see
 [this discussion of best practices with secrets](https://github.com/moby/moby/issues/13490).
+
+{{< /alert >}}
 
 ## Custom container image
 
@@ -117,7 +122,7 @@ These variables also affect Auto Build and Auto Container Scanning. If you don't
 
 If you use Auto Container Scanning and set a value for `$CI_APPLICATION_REPOSITORY`, then you should
 also update `$CS_DEFAULT_BRANCH_IMAGE`. For more information, see
-[Setting the default branch image](../../user/application_security/container_scanning/index.md#setting-the-default-branch-image).
+[Setting the default branch image](../../user/application_security/container_scanning/_index.md#setting-the-default-branch-image).
 
 Here is an example setup in your `.gitlab-ci.yml`:
 
@@ -131,7 +136,7 @@ variables:
 
 You can extend and manage your Auto DevOps configuration with GitLab APIs:
 
-- [Use API calls to access settings](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls),
+- [Use API calls to access settings](../../api/settings.md#available-settings),
   which include `auto_devops_enabled`, to enable Auto DevOps on projects by default.
 - [Create a new project](../../api/projects.md#create-a-project).
 - [Edit groups](../../api/groups.md#update-group-attributes).
@@ -180,7 +185,7 @@ repository or by specifying a project CI/CD variable:
 - **Bundled chart** - If your project has a `./chart` directory with a `Chart.yaml`
   file in it, Auto DevOps detects the chart and uses it instead of the
   [default chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app).
-- **Project variable** - Create a [project CI/CD variable](../../ci/variables/index.md)
+- **Project variable** - Create a [project CI/CD variable](../../ci/variables/_index.md)
   `AUTO_DEVOPS_CHART` with the URL of a custom chart. You can also create five project
   variables:
 
@@ -219,7 +224,7 @@ For a full list of options, see [the official `helm upgrade` documentation](http
 ### Limit a Helm chart to one environment
 
 To limit a custom chart to one environment, add the environment scope to your CI/CD variables.
-For more information, see [Limit the environment scope of CI/CD variables](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
+For more information, see [Limit the environment scope of CI/CD variables](../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable).
 
 ## Customize `.gitlab-ci.yml`
 
@@ -237,7 +242,7 @@ To add custom behaviors to the CI/CD pipeline used by Auto DevOps:
    ```
 
 1. Add your changes to the `.gitlab-ci.yml` file. Your changes are merged with the Auto DevOps template. For more information about
-   how `include` merges your changes, see [the `include` documentation](../../ci/yaml/index.md#include).
+   how `include` merges your changes, see [the `include` documentation](../../ci/yaml/_index.md#include).
 
 To remove behaviors from the Auto DevOps pipeline:
 
@@ -277,11 +282,11 @@ However, this feature was [deprecated](https://gitlab.com/groups/gitlab-org/conf
 along with certificate-based integration.
 
 You should now use the `KUBE_NAMESPACE` environment variable and
-[limit its environment scope](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
+[limit its environment scope](../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable).
 
 ## Use images hosted in a local Docker registry
 
-You can configure many Auto DevOps jobs to run in an [offline environment](../../user/application_security/offline_deployments/index.md):
+You can configure many Auto DevOps jobs to run in an [offline environment](../../user/application_security/offline_deployments/_index.md):
 
 1. Copy the required Auto DevOps Docker images from Docker Hub and `registry.gitlab.com` to their local GitLab container registry.
 1. After the images are hosted and available in a local registry, edit `.gitlab-ci.yml` to point to the locally hosted images. For example:
@@ -302,10 +307,13 @@ You can configure many Auto DevOps jobs to run in an [offline environment](../..
 
 ## PostgreSQL database support
 
-WARNING:
+{{< alert type="warning" >}}
+
 Provisioning a PostgreSQL database by default was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387766)
 in GitLab 15.8 and will no longer be the default from 16.0. To enable database provisioning, set
 the associated [CI/CD variable](cicd_variables.md#database-variables).
+
+{{< /alert >}}
 
 To support applications that require a database,
 [PostgreSQL](https://www.postgresql.org/) is provisioned by default.
@@ -352,7 +360,7 @@ external managed provider like AWS Relational Database Service.
 To use an external managed provider:
 
 1. Disable the built-in PostgreSQL installation for the required environments with
-   environment-scoped [CI/CD variables](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
+   environment-scoped [CI/CD variables](../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable).
    Because the built-in PostgreSQL setup for review apps and staging is sufficient, you might only need to
    disable the installation for `production`.
 

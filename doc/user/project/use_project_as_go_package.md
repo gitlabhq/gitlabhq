@@ -1,20 +1,26 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use a project as a Go package
 ---
 
-# Use a project as a Go package
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - Changed in [GitLab 17.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161162) to return 404 errors for unauthorized `go get` requests.
+{{< /details >}}
+
+{{< history >}}
+
+- Changed in [GitLab 17.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161162) to return 404 errors for unauthorized `go get` requests.
+
+{{< /history >}}
 
 Prerequisites:
 
-- Contact your administrator to enable the [GitLab Go Proxy](../packages/go_proxy/index.md).
+- Contact your administrator to enable the [GitLab Go Proxy](../packages/go_proxy/_index.md).
 - To use a private project in a subgroup as a Go package, you must [authenticate Go requests](#authenticate-go-requests-to-private-projects). Go requests that are not authenticated cause
   `go get` to fail. You don't need to authenticate Go requests for projects that are not in subgroups.
 
@@ -23,9 +29,12 @@ To use a project as a Go package, use the `go get` and `godoc.org` discovery req
 - [`go-import`](https://pkg.go.dev/cmd/go#hdr-Remote_import_paths)
 - [`go-source`](https://github.com/golang/gddo/wiki/Source-Code-Links)
 
-NOTE:
+{{< alert type="note" >}}
+
 If you make a `go get` request with invalid HTTP credentials, you receive a 404 error.
 You can find the HTTP credentials in `~/.netrc` (MacOS and Linux) or `~/_netrc` (Windows).
+
+{{< /alert >}}
 
 ## Authenticate Go requests to private projects
 
@@ -86,7 +95,7 @@ To disable fetching:
 
 - If the module name or its prefix is in `GOPRIVATE` or `GONOPROXY`, Go does not query module
   proxies.
-- If the module name or its prefix is in `GONOPRIVATE` or `GONOSUMDB`, Go does not query
+- If the module name or its prefix is in `GOPRIVATE` or `GONOSUMDB`, Go does not query
   Checksum databases.
 
 ## Authenticate Git requests to private subgroups
@@ -135,7 +144,7 @@ For example, `GOPRIVATE=gitlab.com/namespace/* go mod tidy`.
 
 ## Fetch Go modules from Geo secondary sites
 
-Use [Geo](../../administration/geo/index.md) to access Git repositories that contain Go modules
+Use [Geo](../../administration/geo/_index.md) to access Git repositories that contain Go modules
 on secondary Geo servers.
 
 You can use SSH or HTTP to access the Geo secondary server.

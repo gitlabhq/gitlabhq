@@ -231,7 +231,7 @@ export default {
       @click="toggleSubscribed"
     >
       <gl-animated-notification-icon
-        :class="{ '!gl-text-blue-500': subscribed }"
+        :class="{ '!gl-text-status-info': subscribed }"
         :is-on="!subscribed"
       />
     </gl-button>
@@ -239,14 +239,14 @@ export default {
       v-if="!isMergeRequest"
       ref="tooltip"
       v-gl-tooltip.left.viewport
-      category="secondary"
+      category="tertiary"
       data-testid="subscribe-button"
       :title="notificationTooltip"
       class="sidebar-collapsed-icon sidebar-collapsed-container !gl-rounded-none !gl-border-0"
       @click="toggleSubscribed"
     >
       <gl-animated-notification-icon
-        :class="{ '!gl-text-blue-500': subscribed }"
+        :class="{ '!gl-text-status-info': subscribed }"
         :is-on="!subscribed"
       />
     </gl-button>

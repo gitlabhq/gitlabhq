@@ -17,6 +17,7 @@ export default {
     SettingsBlock,
   },
   mixins: [glFeatureFlagsMixin()],
+  inject: ['isContainerRegistryMetadataDatabaseEnabled'],
   props: {
     expanded: {
       type: Boolean,
@@ -26,10 +27,13 @@ export default {
   },
   computed: {
     showContainerProtectedTagsSettings() {
-      return this.glFeatures.containerRegistryProtectedTags;
+      return (
+        this.glFeatures.containerRegistryProtectedTags &&
+        this.isContainerRegistryMetadataDatabaseEnabled
+      );
     },
   },
-  containerRegistryHelpPath: helpPagePath('user/packages/container_registry/index.md'),
+  containerRegistryHelpPath: helpPagePath('user/packages/container_registry/_index.md'),
 };
 </script>
 

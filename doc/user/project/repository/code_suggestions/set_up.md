@@ -2,10 +2,9 @@
 stage: Create
 group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Set up Code Suggestions."
+description: Set up Code Suggestions.
+title: Set up Code Suggestions
 ---
-
-# Set up Code Suggestions
 
 You can use Code Suggestions in several different IDEs.
 To set up Code Suggestions, follow the instructions for your IDE.
@@ -20,7 +19,7 @@ To use Code Suggestions, you need:
 
 ## Configure editor extension
 
-Code Suggestions is part of an editor extension. To use Code Suggestions, you will:
+Code Suggestions is part of an editor extension. To use Code Suggestions:
 
 1. Install the extension in your IDE.
 1. Authenticate with GitLab from the IDE. You can use either OAuth or a personal access token.
@@ -43,7 +42,7 @@ However, you can confirm that Code Suggestions is turned on.
 To verify that Code Suggestions is turned on in VS Code:
 
 1. In VS Code, go to **Settings > Extensions > GitLab Workflow**.
-1. Select **Manage** (**{settings}**).
+1. Select **Manage** ({{< icon name="settings" >}}).
 1. Ensure that **GitLab › Duo Code Suggestions: Enabled** is selected.
 1. Optional. For **GitLab › Duo Code Suggestions: Enabled Supported Languages**,
    select the languages you want to suggest or generate code for.
@@ -68,7 +67,11 @@ To verify that Code Suggestions is turned on in JetBrains IDEs:
 
 #### Add a custom certificate for Code Suggestions
 
-> - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/561) in GitLab Duo 2.10.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/561) in GitLab Duo 2.10.0.
+
+{{< /history >}}
 
 GitLab Duo attempts to detect [trusted root certificates](https://www.jetbrains.com/help/idea/ssl-certificates.html)
 without configuration on your part. If needed, configure your JetBrains IDE to allow the GitLab Duo plugin
@@ -104,7 +107,7 @@ Code Suggestions provides a LSP (Language Server Protocol) server, to support th
 | Mode     | Key mappings                          | Type      | Description |
 |----------|---------------------------------------|-----------|-------------|
 | `INSERT` | <kbd>Control</kbd>+<kbd>x</kbd>, <kbd>Control</kbd>+<kbd>o</kbd> | Built-in | Requests completions from GitLab Duo Code Suggestions through the language server. |
-| `NORMAL` | `<Plug>(GitLabToggleCodeSuggestions)` | `<Plug>`  | Toggles Code Suggestions on or off for the current buffer. Requires [configuration](../../../../editor_extensions/neovim/index.md#configure-plug-key-mappings). |
+| `NORMAL` | `<Plug>(GitLabToggleCodeSuggestions)` | `<Plug>`  | Toggles Code Suggestions on or off for the current buffer. Requires [configuration](../../../../editor_extensions/neovim/_index.md#configure-plug-key-mappings). |
 
 ## Verify that Code Suggestions is on
 
@@ -115,8 +118,8 @@ For example, in Visual Studio:
 
 | Icon | Status | Meaning |
 | :--- | :----- | :------ |
-| **{tanuki-ai}** | **Ready** | You've configured and enabled GitLab Duo, and you're using a language that supports Code Suggestions. |
-| **{tanuki-ai-off}** | **Not configured** | You haven't entered a personal access token, or you're using a language that Code Suggestions doesn't support. |
+| {{< icon name="tanuki-ai" >}} | **Ready** | You've configured and enabled GitLab Duo, and you're using a language that supports Code Suggestions. |
+| {{< icon name="tanuki-ai-off" >}} | **Not configured** | You haven't entered a personal access token, or you're using a language that Code Suggestions doesn't support. |
 | ![The status icon for fetching Code Suggestions.](../../../../editor_extensions/img/code_suggestions_loading_v17_4.svg) | **Loading suggestion** | GitLab Duo is fetching Code Suggestions for you. |
 | ![The status icon for a Code Suggestions error.](../../../../editor_extensions/img/code_suggestions_error_v17_4.svg) | **Error** | GitLab Duo has encountered an error. |
 
@@ -124,15 +127,18 @@ For example, in Visual Studio:
 
 The process for turning off Code Suggestions is different for each IDE.
 
-NOTE:
+{{< alert type="note" >}}
+
 You cannot turn off code generation and code completion separately.
+
+{{< /alert >}}
 
 ### VS Code
 
 To turn off Code Suggestions in VS Code:
 
 1. Go to **Code > Settings > Extensions**.
-1. Select **Manage** (**{settings}**) **> Settings**.
+1. Select **Manage** ({{< icon name="settings" >}}) **> Settings**.
 1. Clear the **GitLab Duo Code Suggestions** checkbox.
 
 Instead, you can [set `gitlab.duoCodeSuggestions.enabled` to `false` in the VS Code `settings.json` file](../../../../editor_extensions/visual_studio_code/settings.md#extension-settings).
@@ -169,4 +175,4 @@ For more information, see the [JetBrains product documentation](https://www.jetb
 
 ### Turn off GitLab Duo
 
-Alternatively, you can [turn off GitLab Duo](../../../../user/gitlab_duo/turn_on_off.md#turn-off-gitlab-duo-features) (which includes Code Suggestions) completely for a group, project, or instance.
+Alternatively, you can [turn off GitLab Duo](../../../gitlab_duo/turn_on_off.md#turn-off-gitlab-duo-features) (which includes Code Suggestions) completely for a group, project, or instance.

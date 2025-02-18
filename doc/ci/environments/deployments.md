@@ -2,13 +2,15 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Deployments
 ---
 
-# Deployments
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When you deploy a version of your code to an environment, you create a deployment.
 There is usually only one active deployment per environment.
@@ -19,7 +21,7 @@ GitLab:
 - Tracks your deployments, so you always know what is deployed on your
   servers.
 
-If you have a deployment service like [Kubernetes](../../user/infrastructure/clusters/index.md)
+If you have a deployment service like [Kubernetes](../../user/infrastructure/clusters/_index.md)
 associated with your project, you can use it to assist with your deployments.
 
 After a deployment is created, you can roll it out to users.
@@ -44,24 +46,24 @@ deploy_prod:
 
 The `when: manual` action:
 
-- Exposes the **Run** (**{play}**) button for the job in the GitLab UI, with the text **Can be manually deployed to &lt;environment&gt;**.
+- Exposes the **Run** ({{< icon name="play" >}}) button for the job in the GitLab UI, with the text **Can be manually deployed to &lt;environment&gt;**.
 - Means the `deploy_prod` job must be triggered manually.
 
-You can find **Run** (**{play}**) in the pipelines, environments, deployments, and jobs views.
+You can find **Run** ({{< icon name="play" >}}) in the pipelines, environments, deployments, and jobs views.
 
 ## Track newly included merge requests per deployment
 
 GitLab can track newly included merge requests per deployment.
 When a deployment succeeds, the system calculates commit-diffs between the latest deployment and the previous deployment.
 You can fetch tracking information with the [Deployment API](../../api/deployments.md#list-of-merge-requests-associated-with-a-deployment)
-or view it at a post-merge pipeline in [merge request pages](../../user/project/merge_requests/index.md).
+or view it at a post-merge pipeline in [merge request pages](../../user/project/merge_requests/_index.md).
 
 To enable tracking configure your environment so either:
 
-- The [environment name](../yaml/index.md#environmentname) doesn't use folders with `/` (long-lived or top-level environments).
-- The [environment tier](index.md#deployment-tier-of-environments) is either `production` or `staging`.
+- The [environment name](../yaml/_index.md#environmentname) doesn't use folders with `/` (long-lived or top-level environments).
+- The [environment tier](_index.md#deployment-tier-of-environments) is either `production` or `staging`.
 
-  Here are some example configurations using the [`environment` keyword](../yaml/index.md#environment) in `.gitlab-ci.yml`:
+  Here are some example configurations using the [`environment` keyword](../yaml/_index.md#environment) in `.gitlab-ci.yml`:
 
   ```yaml
   # Trackable
@@ -102,9 +104,12 @@ Archived deployments are still available, in the UI or by using the API, for aud
 Also, you can still fetch the deployed commit from the repository
 with specifying the commit SHA (for example, `git checkout <deployment-sha>`), even after archive.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab preserves all commits as [`keep-around` refs](../../user/project/repository/repository_size.md#methods-to-reduce-repository-size)
 so that deployed commits are not garbage collected, even if it's not referenced by the deployment refs.
+
+{{< /alert >}}
 
 ## Deployment rollback
 
@@ -115,7 +120,7 @@ It points to the commit you're rolling back to.
 For the rollback to succeed, the deployment process must be defined in
 the job's `script`.
 
-Only the [deployment jobs](../jobs/index.md#deployment-jobs) are run.
+Only the [deployment jobs](../jobs/_index.md#deployment-jobs) are run.
 In cases where a previous job generates artifacts that must be regenerated
 on deploy, you must manually run the necessary jobs from the pipelines page.
 For example, if you use Terraform and your `plan` and `apply` commands are separated
@@ -134,17 +139,20 @@ To retry or roll back a deployment:
    - To retry a deployment, select **Re-deploy to environment**.
    - To roll back to a deployment, next to a previously successful deployment, select **Rollback environment**.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you have [prevented outdated deployment jobs](deployment_safety.md#prevent-outdated-deployment-jobs) in your project,
 the rollback buttons might be hidden or disabled.
 In this case, see [job retries for rollback deployments](deployment_safety.md#job-retries-for-rollback-deployments).
 
+{{< /alert >}}
+
 ## Related topics
 
-- [Environments](index.md)
+- [Environments](_index.md)
 - [Downstream pipelines for deployments](../pipelines/downstream_pipelines.md#downstream-pipelines-for-deployments)
 - [Deploy to multiple environments with GitLab CI/CD (blog post)](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/)
-- [Review apps](../review_apps/index.md)
+- [Review apps](../review_apps/_index.md)
 - [Track deployments of an external deployment tool](external_deployment_tools.md)
 
 ## Troubleshooting

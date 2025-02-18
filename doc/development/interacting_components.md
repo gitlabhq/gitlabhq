@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Developing against interacting components or features
 ---
-
-# Developing against interacting components or features
 
 It's not uncommon that a single code change can reflect and interact with multiple parts of GitLab
 codebase. Furthermore, an existing feature might have an underlying integration or behavior that
@@ -28,6 +27,6 @@ See also [File Storage in GitLab](file_storage.md).
 
 ### Forks
 
-GitLab supports a great amount of features for [merge requests](../user/project/merge_requests/index.md). One
+GitLab supports a great amount of features for [merge requests](../user/project/merge_requests/_index.md). One
 of them is the ability to create merge requests from and to [forks](../user/project/repository/forking_workflow.md#create-a-fork),
 which should also be highly considered and tested upon development phase.

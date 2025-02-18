@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Troubleshooting and debugging the database
 ---
-
-# Troubleshooting and debugging the database
 
 This section is to help give some copy-pasta you can use as a reference when you
 run into some head-banging database problems.

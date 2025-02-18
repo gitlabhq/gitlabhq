@@ -11,9 +11,7 @@ time_frame: all
 data_source: database
 performance_indicator_type:
 - customer_health_score
-distribution:
-- ce
-- ee
+- leading_indicator
 tiers:
 - free
 - premium

@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Fail Fast Testing
 ---
 
-# Fail Fast Testing
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 For applications that use RSpec for running tests, we've introduced the `Verify/Failfast`
 [template to run subsets of your test suite](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Verify/FailFast.gitlab-ci.yml),
@@ -20,7 +22,7 @@ that it believes to be relevant to the input files.
 
 `tff` is designed for Ruby on Rails projects, so the `Verify/FailFast` template is
 configured to run when changes to Ruby files are detected. By default, it runs in
-the [`.pre` stage](../yaml/index.md#stage-pre) of a GitLab CI/CD pipeline,
+the [`.pre` stage](../yaml/_index.md#stage-pre) of a GitLab CI/CD pipeline,
 before all other stages.
 
 ## Example use case
@@ -63,7 +65,7 @@ rspec-complete:
     - bundle exec rspec
 ```
 
-To run the most relevant specs first instead of the whole suite, [`include`](../yaml/index.md#include)
+To run the most relevant specs first instead of the whole suite, [`include`](../yaml/_index.md#include)
 the template by adding the following to your CI/CD configuration:
 
 ```yaml

@@ -2,9 +2,8 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Backport documentation changes
 ---
-
-# Backport documentation changes
 
 There are two types of backports:
 
@@ -18,12 +17,15 @@ There are two types of backports:
 ## Backport documentation changes to current stable release
 
 To backport documentation changes to the current stable release,
-follow the [standard process to contribute to documentation](index.md).
+follow the [standard process to contribute to documentation](_index.md).
 
 ## Backport documentation changes to older releases
 
-WARNING:
+{{< alert type="warning" >}}
+
 You should only rarely consider backporting documentation to older stable releases. Legitimate reasons to backport documentation include legal issues, emergency security fixes, and fixes to content that might prevent users from upgrading or cause data loss.
+
+{{< /alert >}}
 
 To backport documentation changes in documentation releases older than the
 current stable branch:
@@ -37,10 +39,10 @@ current stable branch:
 Prerequisites:
 
 - The person requesting the backport does this step. You must have at
-  least the Developer role for the [Technical Writing project](https://gitlab.com/gitlab-org/technical-writing).
+  least the Developer role for the [Technical Writing team tasks project](https://gitlab.com/gitlab-org/technical-writing/team-tasks).
 
-1. Open an [issue in the Technical Writing project](https://gitlab.com/gitlab-org/technical-writing/-/issues/new)
-using the [backport changes template](https://gitlab.com/gitlab-org/technical-writing/-/blob/main/.gitlab/issue_templates/backport_changes.md).
+1. Open an [issue in the Technical Writing team tasks project](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/issues/new)
+using the [backport changes template](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/blob/main/.gitlab/issue_templates/backport_changes.md).
 
 1. In the issue, state why the backport is needed. Include:
    - The background to this change.
@@ -85,14 +87,14 @@ For the change to appear in:
 - `docs.gitlab.com`, the release manager only has to merge the MR to the stable branch,
   and the technical writer needs to [deploy the backport changes](#deploy-the-backport-changes).
 - `gitlab.com/help`, the change needs to be part of a GitLab release. The release
-  manager can include the change in the next release they create. This is an optional step.
+  manager can include the change in the next release they create. This step is optional.
 
 ### Deploy the backport changes
 
 Prerequisites:
 
 - The technical writer assigned to the backport does this step. You must have at
-  least the Maintainer role for the [Technical Writing project](https://gitlab.com/gitlab-org/technical-writing).
+  least the Maintainer role for the [Technical Writing team tasks project](https://gitlab.com/gitlab-org/technical-writing/team-tasks).
 
 After the changes are merged to the appropriate stable branch,
 you must update the Docker image that holds that version's documentation.
@@ -100,8 +102,8 @@ you must update the Docker image that holds that version's documentation.
 The Docker image determines the contents that are displayed when you select the
 version dropdown list in the upper-right corner of the documentation.
 
-Run a [new pipeline](https://gitlab.com/gitlab-org/gitlab-docs/-/pipelines/new)
-in the `gitlab-docs` repository for every version of the documentation that needs
+Run a [new pipeline](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/pipelines/new)
+in the `docs-gitlab-com` repository for every version of the documentation that needs
 an update.
 
 Choose the branch name that matches the stable version, for example `16.11` or `17.0`.
@@ -114,8 +116,8 @@ If the backport change was made to one of the last three stable branches,
 update the main docs site:
 
 1. After the pipeline finishes and the Docker image is updated, go to the
-   [pipeline schedules](https://gitlab.com/gitlab-org/gitlab-docs/-/pipeline_schedules)
-   and run the **Build Docker images manually** schedule.
+   [pipeline schedules](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/pipeline_schedules)
+   and run the **Build Docker images pipeline (Manual)** schedule.
 
 1. A dialog with a link to the **pipelines** page appears. Select that link.
 
@@ -126,7 +128,7 @@ update the main docs site:
    **test:image:docs-latest** job in the **test** stage to finish first.
 
 1. When the **image:docs-latest** job is finished,
-  [run a new pipeline](https://gitlab.com/gitlab-org/gitlab-docs/-/pipelines/new)
+  [run a new pipeline](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/pipelines/new)
   that targets the main branch.
 
 1. After the pipeline finishes, go to `https://docs.gitlab.com` and verify that

@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GitLab EventStore
 ---
-
-# GitLab EventStore
 
 ## Background
 
@@ -302,9 +301,12 @@ end
 To subscribe the worker to a specific event in `lib/gitlab/event_store.rb`,
 add a line like this to the `Gitlab::EventStore.configure!` method:
 
-NOTE:
-New workers should be introduced with a feature flag in order to
+{{< alert type="warning" >}}
+
+New workers are recommended to be introduced with a feature flag in order to
 [ensure compatibility with canary deployments](sidekiq/compatibility_across_updates.md#adding-new-workers).
+
+{{< /alert >}}
 
 ```ruby
 module Gitlab
@@ -346,9 +348,12 @@ the condition is met.
 This technique can avoid scheduling Sidekiq jobs if the subscriber is interested in a
 small subset of events.
 
-WARNING:
+{{< alert type="warning" >}}
+
 When using conditional dispatch it must contain only cheap conditions because they are
 executed synchronously every time the given event is published.
+
+{{< /alert >}}
 
 For complex conditions it's best to subscribe to all the events and then handle the logic
 in the `handle_event` method of the subscriber worker.

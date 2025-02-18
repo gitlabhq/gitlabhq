@@ -1028,6 +1028,24 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       expect(group1.reload.name).to eq("#{new_group_name}_2")
     end
 
+    it 'updates the max_artifacts_size for admin users' do
+      expect(group1.max_artifacts_size).to be_nil
+
+      put api("/groups/#{group1.id}", admin, admin_mode: true), params: { max_artifacts_size: 1 }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(group1.reload.max_artifacts_size).to eq(1)
+      expect(json_response['max_artifacts_size']).to eq(1)
+    end
+
+    it 'does not update the max_artifacts_size for non admin users' do
+      put api("/groups/#{group1.id}", user1), params: { max_artifacts_size: 1 }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(group1.reload.max_artifacts_size).not_to eq(1)
+      expect(json_response['max_artifacts_size']).not_to eq(1)
+    end
+
     context 'a name is not passed in' do
       it 'does not mark name update throttling' do
         expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
@@ -1401,7 +1419,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           it 'returns no projects' do
             get api("/groups/#{group.id}/projects", project1_guest), params: { owned: true }
             project_ids = json_response.map { |proj| proj['id'] }
-            expect(project_ids).to match_array([])
+            expect(project_ids).to be_empty
           end
         end
 
@@ -1409,7 +1427,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           it 'returns no projects' do
             get api("/groups/#{group.id}/projects", project1_maintainer), params: { owned: true }
             project_ids = json_response.map { |proj| proj['id'] }
-            expect(project_ids).to match_array([])
+            expect(project_ids).to be_empty
           end
         end
 
@@ -2812,6 +2830,8 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         end
 
         context 'when organization is private' do
+          let_it_be(:organization) { create(:organization, :private) }
+
           it 'does not create the group' do
             post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
 

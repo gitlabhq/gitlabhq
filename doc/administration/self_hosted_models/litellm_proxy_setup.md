@@ -1,9 +1,10 @@
 ---
-redirect_to: 'supported_llm_serving_platforms.md'
-remove_date: '2025-01-22'
+redirect_to: supported_llm_serving_platforms.md
+remove_date: "2025-01-22"
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](supported_llm_serving_platforms.md).
 

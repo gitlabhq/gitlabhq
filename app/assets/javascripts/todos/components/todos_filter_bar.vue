@@ -59,10 +59,6 @@ export const SORT_OPTIONS = [
 ];
 const LEGAL_SORT_OPTIONS = SORT_OPTIONS.map(({ value }) => value);
 
-/**
- * The IDs must match the ones defined in the `todo_actions_options` method in
- * `app/helpers/todos_helper.rb`.
- */
 export const TARGET_TYPES = [
   {
     // eslint-disable-next-line @gitlab/require-i18n-strings
@@ -71,7 +67,7 @@ export const TARGET_TYPES = [
     title: s__('Todos|Issue'),
   },
   {
-    id: 'WorkItem', // Note: This ID has no equivalent in `app/helpers/todos_helper.rb`.
+    id: 'WorkItem',
     value: TODO_TARGET_TYPE_WORK_ITEM,
     title: s__('Todos|Work item'),
   },
@@ -92,7 +88,7 @@ export const TARGET_TYPES = [
   },
   {
     // eslint-disable-next-line @gitlab/require-i18n-strings
-    id: 'Epic', // Note: This ID has no equivalent in `app/helpers/todos_helper.rb`.
+    id: 'Epic',
     value: TODO_TARGET_TYPE_EPIC,
     title: s__('Todos|Epic'),
   },

@@ -2,13 +2,15 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Geo with Object storage
 ---
 
-# Geo with Object storage
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 > Verification of files stored in object storage was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8056) in GitLab 16.4 [with a flag](../../feature_flags.md) named `geo_object_storage_verification`. Enabled by default.
 
@@ -39,7 +41,11 @@ See [Object storage replication tests](geo_validation_tests.md#object-storage-re
 
 ## Enabling GitLab-managed object storage replication
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5551) in GitLab 15.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5551) in GitLab 15.1.
+
+{{< /history >}}
 
 **Secondary** sites can replicate files stored on the **primary** site regardless of
 whether they are stored on the local file system or in object storage.
@@ -53,7 +59,7 @@ To enable GitLab replication:
    checkbox to enable it.
 
 For LFS, follow the documentation to
-[set up LFS object storage](../../lfs/index.md#storing-lfs-objects-in-remote-object-storage).
+[set up LFS object storage](../../lfs/_index.md#storing-lfs-objects-in-remote-object-storage).
 
 For CI job artifacts, there is similar documentation to configure
 [jobs artifact object storage](../../cicd/job_artifacts.md#using-object-storage)

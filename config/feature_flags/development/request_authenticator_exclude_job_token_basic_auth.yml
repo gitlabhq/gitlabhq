@@ -1,8 +1,0 @@
----
-name: request_authenticator_exclude_job_token_basic_auth
-introduced_by_url: https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4322
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/474769
-milestone: "17.3"
-type: development
-group: group::pipeline security
-default_enabled: false

@@ -6,7 +6,8 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Put this link inline with the rest of the text."
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#links
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#inline-links
+vocab: false
 level: error
 nonword: true
 scope: raw

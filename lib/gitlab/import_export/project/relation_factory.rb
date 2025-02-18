@@ -120,6 +120,8 @@ module Gitlab
           when :ApprovalProjectRulesProtectedBranch then setup_merge_approval_protected_branch
           when :releases then setup_release
           when :merge_requests, :MergeRequest, :merge_request then setup_merge_request
+          when :approvals then setup_approval
+          when :events then setup_event
           end
 
           update_project_references
@@ -225,6 +227,14 @@ module Gitlab
 
         def setup_merge_request
           @relation_hash['merge_when_pipeline_succeeds'] = false
+        end
+
+        def setup_approval
+          @relation_hash = {} if @relation_hash['user_id'].nil?
+        end
+
+        def setup_event
+          @relation_hash = {} if @relation_hash['author_id'].nil?
         end
 
         def setup_protected_ref_access_level

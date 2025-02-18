@@ -1,11 +1,10 @@
 ---
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
 group: unassigned
-description: 'Writing styles, markup, formatting, and other standards for the GitLab RESTful APIs.'
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+description: Writing styles, markup, formatting, and other standards for the GitLab RESTful APIs.
+title: Documenting REST API resources
 ---
-
-# Documenting REST API resources
 
 REST API resources are documented in Markdown under
 [`/doc/api`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/api). Each
@@ -35,9 +34,9 @@ In the Markdown doc for a resource (AKA endpoint):
   for Premium, include that it's also available for Ultimate.
 - If an attribute is available only in certain offerings, add the offerings to the **Description**. If the attribute's
   description also has both offering and tier, combine them. For
-  example: _Self-managed, Premium and Ultimate only._
+  example: _GitLab Self-Managed, Premium and Ultimate only._
 
-After a new API documentation page is added, [add an entry in the global navigation](site_architecture/global_nav.md#add-a-navigation-entry). [Example](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/3497).
+After a new API documentation page is added, [add an entry in the global navigation](site_architecture/global_nav.md#add-a-navigation-entry). [Examples](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/commits/main/data/navigation.yaml).
 
 ## API topic template
 
@@ -47,13 +46,21 @@ required attributes first in the table.
 ````markdown
 ## API name
 
-> - History note.
+{{</* history */>}}
+
+- History note.
+
+{{</* /history */>}}
 
 One or two sentence description of what endpoint does.
 
 ### Method title
 
-> - History note.
+{{</* history */>}}
+
+- History note.
+
+{{</* /history */>}}
 
 Description of the method.
 
@@ -106,7 +113,11 @@ for the section. For example:
 ```markdown
 ### Edit a widget
 
-> - `widget_message` [introduced](https://link-to-issue) in GitLab 14.3.
+{{</* history */>}}
+
+ - `widget_message` [introduced](https://link-to-issue) in GitLab 14.3.
+
+{{</* /history */>}}
 ```
 
 If the API or attribute is deployed behind a feature flag,
@@ -122,7 +133,11 @@ To deprecate an attribute:
 1. Add a history note.
 
    ```markdown
-   > - `widget_name` [deprecated](https://link-to-issue) in GitLab 14.7.
+   {{</* history */>}}
+
+   - `widget_name` [deprecated](https://link-to-issue) in GitLab 14.7.
+
+   {{</* /history */>}}
    ```
 
 1. Add inline deprecation text to the description.
@@ -243,10 +258,13 @@ For information about writing attribute descriptions, see the [GraphQL API descr
 The following sections include a set of [cURL](https://curl.se/) examples
 you can use in the API documentation.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Do not use information for real users, URLs, or tokens. For documentation, refer to our
-relevant style guide sections on [Fake user information](styleguide/index.md#fake-user-information),
-[Fake URLs](styleguide/index.md#fake-urls), and [Fake tokens](styleguide/index.md#fake-tokens).
+relevant style guide sections on [fake user information](styleguide/_index.md#fake-user-information),
+[fake URLs](styleguide/_index.md#fake-urls), and [fake tokens](styleguide/_index.md#fake-tokens).
+
+{{< /alert >}}
 
 ### Simple cURL command
 
@@ -317,13 +335,13 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/users/25/keys"
 ```
 
-The above example is run by and administrator and will add an SSH public key
-titled `ssh-key` to user's account which has an ID of 25.
+The above example adds an SSH public key titled `ssh-key` to the account of
+a user with ID 25. The operation requires administrator access.
 
 ### Escape special characters
 
-Spaces or slashes (`/`) may sometimes result to errors, thus it is recommended
-to escape them when possible. In the example below we create a new issue which
+Spaces or slashes (`/`) can sometimes result in errors, so you should
+escape them when possible. In the example below we create a new issue which
 contains spaces in its title. Observe how spaces are escaped using the `%20`
 ASCII code.
 

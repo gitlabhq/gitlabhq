@@ -2,14 +2,16 @@
 stage: Monitor
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Use GitLab Observability with a Django application'
 ---
 
-# Tutorial: Use GitLab Observability with a Django application
+{{< alert type="flag" >}}
 
-FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history of the [**Distributed tracing** feature](../../development/tracing.md).
 <!-- Update this note when observability_features flag is removed -->
+
+{{< /alert >}}
 
 In this tutorial, we'll show you how to create, configure, instrument, and monitor a Django application using GitLab observability features.
 
@@ -19,7 +21,7 @@ In this tutorial, we'll show you how to create, configure, instrument, and monit
 
 To follow along this tutorial, you should have:
 
-- A GitLab Ultimate subscription for GitLab.com or GitLab self-managed
+- A GitLab Ultimate subscription for GitLab.com or GitLab Self-Managed
 - A local installation of Python 3 and Django (You can install it with `python -m pip install Django`.)
 - Basic knowledge of Git and Python
 - Basic knowledge of the core concepts of [OpenTelemetry](https://opentelemetry.io/)
@@ -29,7 +31,7 @@ To follow along this tutorial, you should have:
 First, create a GitLab project and a corresponding access token.
 This tutorial uses the project name `animals`.
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details.
    - In the **Project name** field, enter `animals`.
@@ -145,7 +147,7 @@ To create an application:
 
 1. To instrument the application, in the `manage.py` file, add the following code.
    - Replace `{{PROJECT_ACCESS_TOKEN}}` and `{{PROJECT_ID}}` with the values from your project.
-   - If you're using GitLab Self-Managed, replace `gitlab.com` with your self-managed instance hostname.
+   - If you're using GitLab Self-Managed, replace `gitlab.com` with your GitLab Self-Managed instance hostname.
 
    ```python
    resource = Resource(attributes={

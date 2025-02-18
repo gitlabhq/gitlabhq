@@ -6,6 +6,8 @@ module API
     include PaginationParams
     include Helpers::Unidiff
 
+    helpers ::API::Helpers::HeadersHelpers
+
     CONTEXT_COMMITS_POST_LIMIT = 20
 
     before { authenticate_non_get! }
@@ -444,6 +446,9 @@ module API
         present paginate(reviewers), with: Entities::MergeRequestReviewer
       end
 
+      params do
+        use :pagination
+      end
       desc 'Get single merge request commits' do
         detail 'Get a list of merge request commits.'
         success Entities::Commit
@@ -454,10 +459,23 @@ module API
       end
       get ':id/merge_requests/:merge_request_iid/commits', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
+        project = merge_request.target_project
+        merge_request_diff = merge_request.merge_request_diff
 
-        commits =
-          paginate(merge_request.merge_request_diff.merge_request_diff_commits)
-            .map { |commit| Commit.from_hash(commit.to_hash, merge_request.project) }
+        if ::Feature.enabled?(:commits_from_gitaly, project)
+          page = params[:page] > 0 ? params[:page] : 1
+          per_page = params[:per_page] > 0 ? params[:per_page] : Kaminari.config.default_per_page
+          limit = [per_page, Kaminari.config.max_per_page].min
+
+          gitaly_commits = merge_request_diff.commits(limit: limit, page: page, load_from_gitaly: true)
+
+          paginatable_array = Kaminari.paginate_array(gitaly_commits, total_count: merge_request_diff.commits_count).page(page).per(limit)
+          commits = paginate(paginatable_array)
+        else
+          commits =
+            paginate(merge_request.merge_request_diff.merge_request_diff_commits)
+              .map { |commit| Commit.from_hash(commit.to_hash, merge_request.project) }
+        end
 
         present commits, with: Entities::Commit
       end
@@ -586,6 +604,22 @@ module API
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
         present paginate(merge_request.merge_request_diff.paginated_diffs(params[:page], params[:per_page])).diffs, with: Entities::Diff, enable_unidiff: declared_params[:unidiff]
+      end
+
+      desc 'Get the merge request raw diffs' do
+        detail 'Get the raw diffs of a merge request that can used programmatically.'
+        failure [
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[merge_requests]
+      end
+      get ':id/merge_requests/:merge_request_iid/raw_diffs', feature_category: :code_review_workflow, urgency: :low do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
+
+        no_cache_headers
+
+        send_git_diff(merge_request.project.repository, merge_request.diff_refs)
       end
 
       desc 'Get single merge request pipelines' do

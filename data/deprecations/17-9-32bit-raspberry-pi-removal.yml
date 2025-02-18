@@ -1,0 +1,17 @@
+- title: "Raspberry Pi 32-bit packages are deprecated"
+  announcement_milestone: "17.9"
+  removal_milestone: "18.0"
+  breaking_change: true
+  reporter: dustinmm80
+  stage: systems
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/519113
+  impact: low
+  scope: instance
+  resolution_role: [Admin]
+  manual_task: true
+  tiers: [Free]
+  body: |  # (required) Don't change this line.
+    Starting from GitLab version 18.0, we will no longer provide 32-bit packages for Raspberry Pi.
+    You should use 64-bit Raspberry Pi OS and [install the `arm64` Debian packages](https://about.gitlab.com/install/#debian).
+    For information on backing up data on a 32-bit OS and restoring it to a 64-bit OS, see
+    [Upgrading operating systems for PostgreSQL](https://docs.gitlab.com/administration/postgresql/upgrading_os/).

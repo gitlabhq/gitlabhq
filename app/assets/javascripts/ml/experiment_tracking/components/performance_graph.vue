@@ -42,7 +42,8 @@ export default {
       return this.metricNames.map((metric) => {
         return {
           name: metric,
-          data: this.candidates
+          data: [...this.candidates]
+            .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
             .filter((candidate) => candidate[metric] !== undefined && candidate[metric] !== null)
             .map((candidate, index) => ({
               value: [index + 1, parseFloat(candidate[metric])],

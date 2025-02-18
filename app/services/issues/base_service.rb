@@ -8,6 +8,13 @@ module Issues
 
     EpicAssignmentError = Class.new(::ArgumentError)
 
+    override :available_callbacks
+    def available_callbacks
+      super + [
+        ::WorkItems::Callbacks::StartAndDueDate
+      ]
+    end
+
     def hook_data(issue, action, old_associations: {})
       issue.to_hook_data(current_user, old_associations: old_associations, action: action)
     end
@@ -154,7 +161,7 @@ module Issues
       return unless timestamp_params.any?
 
       timestamp_params.each do |param|
-        params.delete(param) unless current_user.can?(:"set_issue_#{param}", project)
+        params.delete(param) unless current_user.can?(:"set_issue_#{param}", container)
       end
     end
   end

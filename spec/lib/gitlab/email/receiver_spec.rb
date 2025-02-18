@@ -191,7 +191,7 @@ RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
       let!(:credential) { create(:service_desk_custom_email_credential, project: project) }
       let!(:verification) { create(:service_desk_custom_email_verification, :finished, project: project) }
 
-      let(:incoming_email) { project.service_desk_incoming_address }
+      let(:incoming_email) { ::ServiceDesk::Emails.new(project).send(:incoming_address) }
       let(:mail_key) { "5de1a83a6fc3c9fe34d756c7f484159e" }
       let(:email) { "support+#{mail_key}@example.com" }
       let(:meta_key) { :to_address }
@@ -262,7 +262,7 @@ RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
       end
 
       context 'for verification email' do
-        let(:mail_key) { project.default_service_desk_subaddress_part }
+        let(:mail_key) { ::ServiceDesk::Emails.new(project).default_subaddress_part }
         let(:email) { "support+verify@example.com" }
 
         it_behaves_like 'successful receive from Delivered-To header'
@@ -270,7 +270,7 @@ RSpec.describe Gitlab::Email::Receiver, feature_category: :shared do
       end
 
       context 'for email to custom email address' do
-        let(:mail_key) { project.default_service_desk_subaddress_part }
+        let(:mail_key) { ::ServiceDesk::Emails.new(project).default_subaddress_part }
         let(:email) { "support@example.com" }
 
         it_behaves_like 'successful receive from Delivered-To header'

@@ -14,7 +14,7 @@
 #   Example:
 #            expect { subject }
 #              .to trigger_internal_events('web_ide_viewed')
-#              .with(user: user, project: project, namespace: namepsace)
+#              .with(user: user, project: project, namespace: namespace)
 #
 # -- #increment_usage_metrics -------
 #       Use: Asserts that one or more usage metric was incremented by the right value.
@@ -79,6 +79,7 @@ module InternalEventsMatchHelpers
   def check_if_events_exist!(event_names)
     event_names.each do |event_name|
       next if Gitlab::Tracking::EventDefinition.internal_event_exists?(event_name)
+      next if Gitlab::UsageDataCounters::HLLRedisCounter.legacy_event?(event_name)
 
       raise ArgumentError, "Unknown event '#{event_name}'! #{name} matcher accepts only existing events"
     end
@@ -95,6 +96,10 @@ end
 
 RSpec::Matchers.define :trigger_internal_events do |*event_names|
   include InternalEventsMatchHelpers
+
+  def supports_value_expectations?
+    true
+  end
 
   description { "trigger the internal events: #{event_names.join(', ')}" }
 
@@ -117,13 +122,61 @@ RSpec::Matchers.define :trigger_internal_events do |*event_names|
     end
   end
 
-  match do |proc|
-    @event_names = event_names.flatten
-    @properties ||= {}
-    @chained_methods ||= [[:once]]
+  chain(:on_click) { @on_click = true }
+  chain(:on_load) { @on_load = true }
 
+  match do |input|
+    setup_match_context(event_names)
     check_if_params_provided!(:events, @event_names)
     check_if_events_exist!(@event_names)
+
+    input.is_a?(Proc) ? expect_events_to_fire(input) : expect_data_attributes(input)
+  end
+
+  match_when_negated do |input|
+    setup_match_context(event_names)
+    check_if_events_exist!(@event_names)
+
+    input.is_a?(Proc) ? expect_no_events_to_fire(input) : expect_data_attributes(input, negate: true)
+  end
+
+  private
+
+  def setup_match_context(event_names)
+    @event_names = event_names.flatten
+    @properties ||= {}
+  end
+
+  def expect_no_events_to_fire(proc)
+    # rubocop:disable RSpec/ExpectGitlabTracking -- Supersedes the #expect_snowplow_event helper for internal events
+    allow(Gitlab::Tracking).to receive(:event).and_call_original
+    allow(Gitlab::InternalEvents).to receive(:track_event).and_call_original
+    # rubocop:enable RSpec/ExpectGitlabTracking
+
+    collect_expectations do |event_name|
+      [
+        expect_no_snowplow_event(event_name),
+        expect_no_internal_event(event_name)
+      ]
+    end
+
+    proc.call
+
+    verify_expectations
+
+    true
+  rescue RSpec::Mocks::MockExpectationError => e
+    @failure_message = e.message
+    false
+  ensure
+    # prevent expectations from being satisfied outside of the block scope
+    unstub_expectations
+  end
+
+  def expect_events_to_fire(proc)
+    check_chain_methods_for_block!
+
+    @chained_methods ||= [[:once]]
 
     allow(Gitlab::InternalEvents).to receive(:track_event).and_call_original
     allow(Gitlab::Redis::HLL).to receive(:add).and_call_original
@@ -149,37 +202,37 @@ RSpec::Matchers.define :trigger_internal_events do |*event_names|
     unstub_expectations
   end
 
-  match_when_negated do |proc|
-    @event_names = event_names.flatten
+  # All `node` inputs should be compatible with the have_css matcher
+  # https://www.rubydoc.info/gems/capybara/Capybara/RSpecMatchers#have_css-instance_method
+  def expect_data_attributes(node, negate: false)
+    # ensure assertions work for Capybara::Node::Simple inputs
+    node = node.native if node.respond_to?(:native)
 
-    check_if_events_exist!(@event_names)
+    check_negated_chain_methods_for_node! if negate
+    check_chain_methods_for_node!
+    check_negated_events_limit_for_node! if negate
+    check_events_limit_for_node!
 
-    # rubocop:disable RSpec/ExpectGitlabTracking -- Supercedes the #expect_snowplow_event helper for internal events
-    allow(Gitlab::Tracking).to receive(:event).and_call_original
-    allow(Gitlab::InternalEvents).to receive(:track_event).and_call_original
-    # rubocop:enable RSpec/ExpectGitlabTracking
-
-    collect_expectations do |event_name|
-      [
-        expect_no_snowplow_event(event_name),
-        expect_no_internal_event(event_name)
-      ]
-    end
-
-    proc.call
-
-    verify_expectations
+    expect_data_attribute(node, 'tracking', @event_names.first)
+    expect_data_attribute(node, 'label', @additional_properties.try(:[], :label))
+    expect_data_attribute(node, 'property', @additional_properties.try(:[], :property))
+    expect_data_attribute(node, 'value', @additional_properties.try(:[], :value))
+    expect_data_attribute(node, 'tracking-load', @on_load)
 
     true
-  rescue RSpec::Mocks::MockExpectationError => e
+  rescue RSpec::Expectations::ExpectationNotMetError => e
     @failure_message = e.message
     false
-  ensure
-    # prevent expectations from being satisfied outside of the block scope
-    unstub_expectations
   end
 
-  private
+  # Keep this in sync with the constants in app/assets/javascripts/tracking/constants.js
+  def expect_data_attribute(node, attribute, value)
+    if value
+      expect(node).to have_css("[data-event-#{attribute}=\"#{value}\"]")
+    else
+      expect(node).not_to have_css("[data-event-#{attribute}]")
+    end
+  end
 
   def receive_expected_count_of(message)
     apply_chain_methods(receive(message), @chained_methods)
@@ -301,6 +354,39 @@ RSpec::Matchers.define :trigger_internal_events do |*event_names|
 
       doubled_module.expectations.pop
     end
+  end
+
+  def check_chain_methods_for_block!
+    return unless instance_variable_defined?(:@on_load) || instance_variable_defined?(:@on_click)
+
+    raise ArgumentError, "Chain methods :on_click, :on_load are only available for Capybara::Node::Simple type " \
+      "arguments"
+  end
+
+  def check_events_limit_for_node!
+    return if @event_names.length <= 1
+
+    raise ArgumentError, "Providing multiple event names to #{name} is only supported for block arguments"
+  end
+
+  def check_negated_events_limit_for_node!
+    return if @event_names.none?
+
+    raise ArgumentError, "Negated #{name} matcher accepts no arguments or chain methods when testing data attributes"
+  end
+
+  def check_chain_methods_for_node!
+    return unless @chained_methods
+
+    raise ArgumentError, "Chain methods #{@chained_methods.map(&:first).join(',')} are only available for " \
+      "block arguments"
+  end
+
+  def check_negated_chain_methods_for_node!
+    return unless instance_variable_defined?(:@on_load) || instance_variable_defined?(:@on_click) || @properties.any?
+
+    raise ArgumentError, "Chain methods :on_click, :on_load, :with are unavailable for negated #{name} matcher with " \
+      "for Capybara::Node::Simple type arguments"
   end
 end
 

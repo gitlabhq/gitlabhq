@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Audit events
 ---
 
-# Audit events
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 A security audit is an in-depth analysis and review of your infrastructure, which is used to display
 areas of concern and potentially hazardous practices. To assist with the audit process, GitLab provides
@@ -23,7 +25,7 @@ For example, you can use audit events to track:
 - Who added a new user or removed a user, and when.
 
 These events can be used to in an audit to assess risk, strengthen security measures, respond to incidents, and adhere to compliance. For a complete list the audit
-events GitLab provides, see [Audit event types](../../user/compliance/audit_event_types.md). For example:
+events GitLab provides, see [Audit event types](audit_event_types.md). For example:
 
 - Generate a report of audit events to provide to an external auditor requesting proof of certain logging capabilities.
 - Provide a report of all users showing their group and project memberships for a quarterly access review so the auditor can verify compliance with an organization's access management policy.
@@ -56,9 +58,12 @@ After upgrading to a paid tier, you can also see successful sign-in events on au
 
 ### Group audit events
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To view a group's audit events:
 
@@ -70,9 +75,12 @@ Group audit events can also be accessed using the [group audit events API](../..
 
 ### Project audit events
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Audit events**.
@@ -82,7 +90,11 @@ Project audit events can also be accessed using the [project audit events API](.
 
 ## Time zones
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/242014) in GitLab 15.7, GitLab UI shows dates and times in the user's local time zone instead of UTC.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/242014) in GitLab 15.7, GitLab UI shows dates and times in the user's local time zone instead of UTC.
+
+{{< /history >}}
 
 The time zone used for audit events depends on where you view them:
 
@@ -97,7 +109,7 @@ If you don't see the event you want in any of the epics, you can either:
 
 - Use the **Audit event proposal** issue template to
   [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Audit%20Event%20Proposal) to request it.
-- [Add it yourself](../../development/audit_event_guide/index.md).
+- [Add it yourself](../../development/audit_event_guide/_index.md).
 
 ## Administer topics
 

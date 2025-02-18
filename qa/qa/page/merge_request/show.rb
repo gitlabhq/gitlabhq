@@ -152,6 +152,10 @@ module QA
           element 'mr-collapsible-title'
         end
 
+        view 'app/helpers/projects_helper.rb' do
+          element 'author-link'
+        end
+
         def start_review
           has_active_element?('start-review-button', wait: 0.5)
           click_element('start-review-button')
@@ -288,6 +292,12 @@ module QA
 
         def has_title?(title)
           has_element?('title-content', text: title)
+        end
+
+        def has_author?(author_username)
+          within_element('author-link') do
+            has_text?(author_username)
+          end
         end
 
         def has_description?(description)

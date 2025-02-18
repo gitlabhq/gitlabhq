@@ -2,23 +2,25 @@
 stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Pages settings
 ---
 
-# GitLab Pages settings
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This document is a user guide to explore the options and settings
 GitLab Pages offers.
 
 To familiarize yourself with GitLab Pages first:
 
-- Read an [introduction to GitLab Pages](index.md).
-- Learn [how to get started with Pages](index.md#getting-started).
+- Read an [introduction to GitLab Pages](_index.md).
+- Learn [how to get started with Pages](_index.md#getting-started).
 - Learn how to enable GitLab Pages
-  across your GitLab instance on the [administrator documentation](../../../administration/pages/index.md).
+  across your GitLab instance on the [administrator documentation](../../../administration/pages/_index.md).
 
 ## GitLab Pages requirements
 
@@ -26,7 +28,7 @@ In brief, this is what you need to upload your website in GitLab Pages:
 
 1. Domain of the instance: domain name that is used for GitLab Pages
    (ask your administrator).
-1. GitLab CI/CD: a `.gitlab-ci.yml` file with a specific job named [`pages`](../../../ci/yaml/index.md#pages) in the root directory of your repository.
+1. GitLab CI/CD: a `.gitlab-ci.yml` file with a specific job named [`pages`](../../../ci/yaml/_index.md#pages) in the root directory of your repository.
 1. GitLab Runner enabled for the project.
 
 ## GitLab Pages on GitLab.com
@@ -84,13 +86,13 @@ work as long as you don't redirect HTTP to HTTPS.
 ## GitLab Pages in projects and groups
 
 You must host your GitLab Pages website in a project. This project can be
-[private, internal, or public](../../../user/public_access.md) and belong
-to a [group](../../group/index.md) or [subgroup](../../group/subgroups/index.md).
+[private, internal, or public](../../public_access.md) and belong
+to a [group](../../group/_index.md) or [subgroup](../../group/subgroups/_index.md).
 
-For [group websites](../../project/pages/getting_started_part_one.md#user-and-group-website-examples),
+For [group websites](../pages/getting_started_part_one.md#user-and-group-website-examples),
 the group must be at the top level and not a subgroup.
 
-For [project websites](../../project/pages/getting_started_part_one.md#project-website-examples),
+For [project websites](../pages/getting_started_part_one.md#project-website-examples),
 you can create your project first and access it under `http(s)://namespace.example.io/project-path`.
 
 ## Specific configuration options for Pages
@@ -127,7 +129,7 @@ deploy-pages:
     - if: $CI_COMMIT_BRANCH == "main"
 ```
 
-The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
+The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
 
 ### `.gitlab-ci.yml` for a static site generator
 
@@ -137,7 +139,7 @@ See this document for a [step-by-step guide](getting_started/pages_from_scratch.
 
 Remember that GitLab Pages are by default branch/tag agnostic and their
 deployment relies solely on what you specify in `.gitlab-ci.yml`. You can limit
-the `pages` job with [`rules:if`](../../../ci/yaml/index.md#rulesif),
+the `pages` job with [`rules:if`](../../../ci/yaml/_index.md#rulesif),
 whenever a new commit is pushed to a branch used specifically for your
 pages.
 
@@ -175,7 +177,7 @@ See an example that has different files in the [`main` branch](https://gitlab.co
 and the source files for Jekyll are in a [`pages` branch](https://gitlab.com/pages/jekyll-branched/tree/pages) which
 also includes `.gitlab-ci.yml`.
 
-The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
+The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
 
 ### Serving compressed assets
 
@@ -223,7 +225,7 @@ By pre-compressing the files and including both versions in the artifact, Pages
 can serve requests for both compressed and uncompressed content without
 needing to compress files on-demand.
 
-The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
+The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
 
 ### Resolving ambiguous URLs
 
@@ -268,15 +270,22 @@ for both the `/data` and `/data/` URL paths.
 
 ## Customize the default folder
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/859) in GitLab 16.1 with a Pages flag named `FF_CONFIGURABLE_ROOT_DIR`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1073) in GitLab 16.1.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/890) in GitLab 16.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/859) in GitLab 16.1 with a Pages flag named `FF_CONFIGURABLE_ROOT_DIR`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1073) in GitLab 16.1.
+- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/890) in GitLab 16.2.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/500000) to allow variables when passed to `publish` property in GitLab 17.9.
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) the `publish` property under the `pages` keyword in GitLab 17.9.
+
+{{< /history >}}
 
 By default, the [artifact](../../../ci/jobs/job_artifacts.md) folder
 that contains the static files of your site needs to have the name `public`.
 
-To change that folder name to any other value, add a `publish` property to your
-`deploy-pages` job configuration in `.gitlab-ci.yml`.
+To change that folder name to any other value, add a `pages.publish` property to your
+`deploy-pages` job configuration in `.gitlab-ci.yml`. The top-level `publish` keyword
+is deprecated as of GitLab 17.9 and must now be nested under the `pages` keyword.
 
 The following example publishes a folder named `dist` instead:
 
@@ -284,23 +293,29 @@ The following example publishes a folder named `dist` instead:
 deploy-pages:
   script:
     - npm run build
-  pages: true  # specifies that this is a Pages job
+  pages:  # specifies that this is a Pages job
+    publish: dist
   artifacts:
     paths:
       - dist
-  publish: dist
 ```
 
-If you're using a folder name other than `public`you must specify
+If you're using a folder name other than `public`, you must specify
 the directory to be deployed with Pages both as an artifact, and under the
-`publish` property. The reason you need both is that you can define multiple paths
+`pages.publish` property. The reason you need both is that you can define multiple paths
 as artifacts, and GitLab doesn't know which one you want to deploy.
 
-The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
+The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
+
+To use variables in the `pages.publish` field, see [`pages:pages.publish`](../../../ci/yaml/_index.md#pagespagespublish).
 
 ## Regenerate unique domain for GitLab Pages
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481746) in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481746) in GitLab 17.7.
+
+{{< /history >}}
 
 You can regenerate the unique domain for your GitLab Pages site.
 
@@ -310,7 +325,7 @@ If anyone tries to access the old URL, they'll receive a `404` error.
 Prerequisites
 
 - You must have at least the Maintainer role for the project.
-- The **Use unique domain** setting [must be enabled](index.md#unique-domains) in your project's Pages settings.
+- The **Use unique domain** setting [must be enabled](_index.md#unique-domains) in your project's Pages settings.
 
 To regenerate a unique domain for your GitLab Pages site:
 
@@ -371,4 +386,13 @@ deploy-pages:
 
 The `FF_USE_FASTZIP` variable enables the [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) which is needed for [`ARTIFACT_COMPRESSION_LEVEL`](../../../ci/runners/configure_runners.md#artifact-and-cache-settings).
 
-The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
+The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
+
+### `401` error when accessing private GitLab Pages sites in multiple browser tabs
+
+When you try to access a private Pages URL in two different tabs simultaneously without prior authentication,
+two different `state` values are returned for each tab.
+However, in the Pages session, only the most recent `state` value is stored for the given client.
+As a result, after submitting credentials, one of the tabs returns a `401 Unauthorized` error.
+
+To resolve the `401` error, refresh the page.

@@ -2,31 +2,43 @@
 stage: Security Risk Management
 group: Security Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Vulnerabilities API
 ---
 
-# Vulnerabilities API
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - `last_edited_at` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
-> - `start_date` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
-> - `updated_by_id` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
-> - `last_edited_by_id` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
-> - `due_date` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
+{{< /details >}}
 
-NOTE:
+{{< history >}}
+
+- `last_edited_at` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
+- `start_date` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
+- `updated_by_id` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
+- `last_edited_by_id` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
+- `due_date` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.
+
+{{< /history >}}
+
+{{< alert type="note" >}}
+
 The former Vulnerabilities API was renamed to Vulnerability Findings API
 and its documentation was moved to [a different location](vulnerability_findings.md).
 This document now describes the new Vulnerabilities API that provides access to
 [Vulnerabilities](https://gitlab.com/groups/gitlab-org/-/epics/634).
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 This API is in the process of being deprecated and considered unstable.
 The response payload may be subject to change or breakage
 across GitLab releases. Use the
-[GraphQL API](graphql/reference/index.md#queryvulnerabilities) instead. For more information, see [GraphQL examples](#replace-vulnerability-rest-api-with-graphql).
+[GraphQL API](graphql/reference/_index.md#queryvulnerabilities) instead. For more information, see [GraphQL examples](#replace-vulnerability-rest-api-with-graphql).
+
+{{< /alert >}}
 
 Every API call to vulnerabilities must be [authenticated](rest/authentication.md).
 
@@ -263,7 +275,7 @@ with the GraphQL API.
 
 ### GraphQL - Single vulnerability
 
-Use [`Query.vulnerability`](graphql/reference/index.md#queryvulnerability).
+Use [`Query.vulnerability`](graphql/reference/_index.md#queryvulnerability).
 
 ```graphql
 {
@@ -319,7 +331,7 @@ Example response:
 
 ### GraphQL - Confirm vulnerability
 
-Use [`Mutation.vulnerabilityConfirm`](graphql/reference/index.md#mutationvulnerabilityconfirm).
+Use [`Mutation.vulnerabilityConfirm`](graphql/reference/_index.md#mutationvulnerabilityconfirm).
 
 ```graphql
 mutation {
@@ -349,7 +361,7 @@ Example response:
 
 ### GraphQL - Resolve vulnerability
 
-Use [`Mutation.vulnerabilityResolve`](graphql/reference/index.md#mutationvulnerabilityresolve).
+Use [`Mutation.vulnerabilityResolve`](graphql/reference/_index.md#mutationvulnerabilityresolve).
 
 ```graphql
 mutation {
@@ -379,7 +391,7 @@ Example response:
 
 ### GraphQL - Dismiss vulnerability
 
-Use [`Mutation.vulnerabilityDismiss`](graphql/reference/index.md#mutationvulnerabilitydismiss).
+Use [`Mutation.vulnerabilityDismiss`](graphql/reference/_index.md#mutationvulnerabilitydismiss).
 
 ```graphql
 mutation {
@@ -409,7 +421,7 @@ Example response:
 
 ### GraphQL - Revert vulnerability to detected state
 
-Use [`Mutation.vulnerabilityRevertToDetected`](graphql/reference/index.md#mutationvulnerabilityreverttodetected).
+Use [`Mutation.vulnerabilityRevertToDetected`](graphql/reference/_index.md#mutationvulnerabilityreverttodetected).
 
 ```graphql
 mutation {

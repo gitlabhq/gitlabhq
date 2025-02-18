@@ -196,12 +196,20 @@ module Types
       null: true,
       resolver: Resolvers::Wikis::WikiPageResolver,
       experiment: { milestone: '17.6' },
-      description: 'Find a wiki page.'
+      description: 'Find a wiki page.',
+      calls_gitaly: true
     field :work_item, Types::WorkItemType,
       null: true,
       resolver: Resolvers::WorkItemResolver,
       experiment: { milestone: '15.1' },
       description: 'Find a work item.'
+
+    field :work_item_description_template_content, WorkItems::DescriptionTemplateType,
+      null: true,
+      resolver: Resolvers::WorkItems::DescriptionTemplateContentResolver,
+      experiment: { milestone: '17.9' },
+      description: 'Find a work item description template.',
+      calls_gitaly: true
 
     field :audit_event_definitions,
       Types::AuditEvents::DefinitionType.connection_type,
@@ -215,7 +223,7 @@ module Types
       description: 'Find an abuse report.',
       resolver: Resolvers::AbuseReportResolver
 
-    field :abuse_report_labels, ::Types::LabelType.connection_type,
+    field :abuse_report_labels, ::Types::AntiAbuse::AbuseReportLabelType.connection_type,
       null: true,
       experiment: { milestone: '16.3' },
       description: 'Abuse report labels.',
@@ -297,6 +305,8 @@ module Types
 
     def ci_pipeline_stage(id:)
       stage = ::Gitlab::Graphql::Lazy.force(GitlabSchema.find_by_gid(id))
+      return unless stage
+
       authorized = Ability.allowed?(current_user, :read_build, stage.project)
 
       return unless authorized

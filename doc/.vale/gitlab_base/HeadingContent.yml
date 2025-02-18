@@ -6,6 +6,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Rename the heading '%s', or re-purpose the content elsewhere."
+vocab: false
 level: warning
 link: https://docs.gitlab.com/ee/development/documentation/topic_types/concept.html#concept-topic-titles
 ignorecase: true

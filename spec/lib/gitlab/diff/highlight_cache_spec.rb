@@ -88,7 +88,7 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache, feature_
         #
         diff_file_size_kb = (diff_file.diff.diff.bytesize * 10)
 
-        stub_const("#{diff_file.diff.class}::DEFAULT_MAX_PATCH_BYTES", diff_file_size_kb - 1 )
+        stub_const("#{diff_file.diff.class}::DEFAULT_MAX_PATCH_BYTES", diff_file_size_kb - 1)
         expect(diff_file.diff.class).to receive(:patch_safe_limit_bytes).and_return(diff_file_size_kb + 1)
         expect(diff_file.diff.class)
           .to receive(:patch_safe_limit_bytes)

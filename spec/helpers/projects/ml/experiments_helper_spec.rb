@@ -144,33 +144,6 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
     end
   end
 
-  describe '#experiments_as_data' do
-    let(:experiments) { [experiment] }
-
-    subject { Gitlab::Json.parse(helper.experiments_as_data(project, experiments)) }
-
-    before do
-      allow(experiment).to receive(:candidate_count).and_return(2)
-    end
-
-    it 'generates the correct info' do
-      expected_info = {
-        "name" => experiment.name,
-        "path" => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",
-        "candidate_count" => 2,
-        "updated_at" => experiment.updated_at.strftime('%Y-%m-%dT%H:%M:%S.%LZ'),
-        "user" => {
-          "avatar_url" => experiment.user.avatar_url,
-          "id" => experiment.user_id,
-          "name" => experiment.user.name,
-          "path" => user_path(experiment.user)
-        }
-      }
-
-      expect(subject[0]).to eq(expected_info)
-    end
-  end
-
   describe '#page_info' do
     def paginator(cursor = nil)
       experiment.candidates.keyset_paginate(cursor: cursor, per_page: 1)

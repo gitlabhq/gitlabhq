@@ -2,20 +2,28 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Configure GitLab Duo on a self-managed instance
 ---
 
-# Configure GitLab Duo on a self-managed instance
+{{< details >}}
 
-DETAILS:
-**Offering:** GitLab Self-Managed, GitLab Dedicated
-**Tier:** Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 GitLab Duo is powered by large language models (LLMs), with data sent through an AI gateway.
-To use GitLab Duo on a self-managed instance, you can:
+To use GitLab Duo on a self-managed instance, you can do either of the following:
 
-1. Use the LLMs and the cloud-based AI gateway that's hosted by GitLab. This option is the default.
-1. [Use LLMs from the supported list and self-host the AI gateway and LLMs](../../administration/self_hosted_models/index.md).
-   This option provides full control over your data and security.
+- Use the LLMs and the cloud-based AI gateway that's hosted by GitLab. This is the default option.
+- [Use LLMs from the supported list and self-host the AI gateway and LLMs](../../administration/gitlab_duo_self_hosted/_index.md).
+  This option provides full control over your data and security.
+
+  {{< alert type="note" >}}
+
+You must have an Ultimate license with GitLab Duo Enterprise add-on to use GitLab Duo Self-Hosted.
+
+  {{< /alert >}}
 
 This page focuses on how to configure a self-managed instance if you're using the default, GitLab-hosted option.
 
@@ -24,7 +32,7 @@ This page focuses on how to configure a self-managed instance if you're using th
 - You must ensure both [outbound](#allow-outbound-connections-from-the-gitlab-instance)
   and [inbound](#allow-inbound-connections-from-clients-to-the-gitlab-instance) connectivity exists.
   Network firewalls can cause lag or delay.
-- [Silent Mode](../../administration/silent_mode/index.md) must not be turned on.
+- [Silent Mode](../../administration/silent_mode/_index.md) must not be turned on.
 - You must [activate your instance with an activation code](../../administration/license.md#activate-gitlab-ee).
 - GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
 
@@ -45,7 +53,7 @@ and [must be turned on](turn_on_off.md#turn-on-beta-and-experimental-features).
 
 ## Allow inbound connections from clients to the GitLab instance
 
-- GitLab instances must allow inbound connections from Duo clients ([IDEs](../../editor_extensions/index.md),
+- GitLab instances must allow inbound connections from Duo clients ([IDEs](../../editor_extensions/_index.md),
   Code Editors, and GitLab Web Frontend) on port 443 with `https://` and `wss://`.
 - Both `HTTP2` and the `'upgrade'` header must be allowed, because GitLab Duo
   uses both REST and WebSockets.
@@ -67,11 +75,18 @@ To resolve this problem, try editing your Apache proxy settings:
 
 ## Run a health check for GitLab Duo
 
-DETAILS:
-**Status:** Beta
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161997) in GitLab 17.3.
-> - [Download health check report added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165032) in GitLab 17.5.
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161997) in GitLab 17.3.
+- [Download health check report added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165032) in GitLab 17.5.
+
+{{< /history >}}
 
 You can determine if your instance meets the requirements to use GitLab Duo.
 When the health check completes, it displays a pass or fail result and the types of issues.
@@ -95,5 +110,5 @@ These tests are performed:
 | Test | Description |
 |-----------------|-------------|
 | Network | Tests whether your instance can connect to `customers.gitlab.com` and `cloud.gitlab.com`.<br><br>If your instance cannot connect to either destination, ensure that your firewall or proxy server settings [allow connection](setup.md). |
-| Synchronization | Tests whether your subscription: <br>- Has been activated with an activation code and can be synchronized with `customers.gitlab.com`.<br>- Has correct access credentials.<br>- Has been synchronized recently. If it hasn't or the access credentials are missing or expired, you can [manually synchronize](../../subscriptions/self_managed/index.md#manually-synchronize-subscription-data) your subscription data. |
+| Synchronization | Tests whether your subscription: <br>- Has been activated with an activation code and can be synchronized with `customers.gitlab.com`.<br>- Has correct access credentials.<br>- Has been synchronized recently. If it hasn't or the access credentials are missing or expired, you can [manually synchronize](../../subscriptions/self_managed/_index.md#manually-synchronize-subscription-data) your subscription data. |
 | System exchange | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |

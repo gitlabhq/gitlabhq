@@ -234,22 +234,6 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
               expect(resource.members.find_by(user_id: project_bot.id).expires_at).to be_nil
             end
 
-            context 'when retain_resource_access_token_user_after_revoke is disabled' do
-              before do
-                stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
-              end
-
-              it 'project bot membership expires when PAT expires' do
-                response = subject
-                access_token = response.payload[:access_token]
-                project_bot = access_token.user
-
-                expect(resource.members.find_by(user_id: project_bot.id).expires_at).to eq(
-                  max_pat_access_token_lifetime.to_date
-                )
-              end
-            end
-
             context 'when require_personal_access_token_expiry is set to false' do
               before do
                 stub_application_setting(require_personal_access_token_expiry: false)
@@ -280,20 +264,6 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
               project_bot = access_token.user
 
               expect(resource.members.find_by(user_id: project_bot.id).expires_at).to be_nil
-            end
-
-            context 'when retain_resource_access_token_user_after_revoke is disabled' do
-              before do
-                stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
-              end
-
-              it 'sets the project bot to expire on the same day as the token' do
-                response = subject
-                access_token = response.payload[:access_token]
-                project_bot = access_token.user
-
-                expect(resource.members.find_by(user_id: project_bot.id).expires_at).to eq(access_token.expires_at)
-              end
             end
           end
 

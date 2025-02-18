@@ -40,7 +40,7 @@ RSpec.describe 'CiJobTokenScopeRemoveProject', feature_category: :continuous_int
             fullPath
           }
           target {
-            ... on Project {
+            ... on CiJobTokenAccessibleProject {
               fullPath
             }
           }

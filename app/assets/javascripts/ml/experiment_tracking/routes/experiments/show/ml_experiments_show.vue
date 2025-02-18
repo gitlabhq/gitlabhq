@@ -89,6 +89,10 @@ export default {
       required: false,
       default: '',
     },
+    canWriteModelExperiments: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -114,7 +118,7 @@ export default {
       return s__('MlExperimentTracking|Experiment created %{timeAgo} by %{author}');
     },
     showDeleteButton() {
-      return !this.experiment.model_id;
+      return !this.experiment.model_id && this.canWriteModelExperiments;
     },
   },
   methods: {

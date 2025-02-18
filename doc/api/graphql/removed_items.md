@@ -2,17 +2,19 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GraphQL API removed items
 ---
 
-# GraphQL API removed items
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GraphQL is a versionless API, unlike the REST API.
 Occasionally, items have to be updated or removed from the GraphQL API.
-According to our [process for removing items](index.md#deprecation-and-removal-process), here are the items that have been removed.
+According to our [process for removing items](_index.md#deprecation-and-removal-process), here are the items that have been removed.
 
 For deprecations, see the [Deprecations by version page](../../update/deprecations.md).
 

@@ -62,6 +62,7 @@ module Groups
 
       def set_index_vars
         @applications = @group.oauth_applications.keyset_paginate(cursor: params[:cursor])
+        @applications_total_count = @group.oauth_applications.count
 
         # Don't overwrite a value possibly set by `create`
         @application ||= Doorkeeper::Application.new

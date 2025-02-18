@@ -16,6 +16,7 @@ import {
   GlSprintf,
   GlFormRadio,
   GlFormRadioGroup,
+  GlPopover,
 } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
@@ -29,10 +30,8 @@ import {
   ADD_VARIABLE_ACTION,
   DRAWER_EVENT_LABEL,
   EDIT_VARIABLE_ACTION,
-  ENVIRONMENT_SCOPE_LINK_TITLE,
   EVENT_ACTION,
   EXPANDED_VARIABLES_NOTE,
-  FLAG_LINK_TITLE,
   MASKED_VALUE_MIN_LENGTH,
   VARIABLE_ACTIONS,
   VISIBILITY_HIDDEN,
@@ -57,12 +56,10 @@ export const i18n = {
   editVariable: s__('CiVariables|Edit variable'),
   saveVariable: __('Save changes'),
   environments: __('Environments'),
-  environmentScopeLinkTitle: ENVIRONMENT_SCOPE_LINK_TITLE,
   expandedField: s__('CiVariables|Expand variable reference'),
   expandedDescription: EXPANDED_VARIABLES_NOTE,
   flags: __('Flags'),
   visibility: __('Visibility'),
-  flagsLinkTitle: FLAG_LINK_TITLE,
   key: __('Key'),
   keyFeedback: s__("CiVariables|A variable key can only contain letters, numbers, and '_'."),
   keyHelpText: s__(
@@ -75,22 +72,26 @@ export const i18n = {
     'CiVariables|Masked in job logs, and can never be revealed in the CI/CD settings after the variable is saved.',
   ),
   maskedDescription: s__(
-    'CiVariables|Masked in job logs but value can be revealed in CI/CD settings. Requires values to meet regular expressions requirements.',
+    'CiVariables|Masked in job logs but value can be revealed in CI/CD settings. Requires values to meet %{linkStart}regular expressions requirements%{linkEnd}.',
   ),
   visibleDescription: s__('CiVariables|Can be seen in job logs.'),
-  maskedValueMinLengthValidationText: s__(
-    'CiVariables|The value must have at least %{charsAmount} characters.',
-  ),
   modalDeleteMessage: s__('CiVariables|Do you want to delete the variable %{key}?'),
   protectedField: s__('CiVariables|Protect variable'),
   protectedDescription: s__(
     'CiVariables|Export variable to pipelines running on protected branches and tags only.',
   ),
+  maskedValueValidationErrorsTitle: s__('CiVariables|Unable to create masked variable because:'),
+  maskedValueMinLengthValidationText: s__(
+    'CiVariables|The value must have %{charsAmount} characters.',
+  ),
   unsupportedCharsValidationText: s__(
-    'CiVariables|This value cannot be masked because it contains the following characters: %{unsupportedChars}.',
+    'CiVariables|The value cannot contain the following characters: %{unsupportedChars}.',
+  ),
+  whitespaceCharsValidationText: s__(
+    'CiVariables|The value cannot contain the following characters: whitespace characters.',
   ),
   unsupportedAndWhitespaceCharsValidationText: s__(
-    'CiVariables|This value cannot be masked because it contains the following characters: %{unsupportedChars} and whitespace characters.',
+    'CiVariables|The value cannot contain the following characters: %{unsupportedChars} and whitespace characters.',
   ),
   valueFeedback: {
     rawHelpText: s__('CiVariables|Variable value will be evaluated as raw string.'),
@@ -100,8 +101,14 @@ export const i18n = {
   variableReferenceDescription: s__(
     'CiVariables|Unselect "Expand variable reference" if you want to use the variable value as a raw string.',
   ),
-  whitespaceCharsValidationText: s__(
-    'CiVariables|This value cannot be masked because it contains the following characters: whitespace characters.',
+  environmentsLabelHelpText: s__(
+    'CiVariables|You can use a specific environment name like %{codeStart}production%{codeEnd}, or include a wildcard (%{codeStart}*%{codeEnd}) to match multiple environments, like %{codeStart}review*%{codeEnd}.',
+  ),
+  environmentsLabelLinkText: s__(
+    'CiVariables|Learn how to %{linkStart}restrict CI/CD variables to specific environments%{linkEnd} for better security.',
+  ),
+  visibilityLabelHelpText: s__(
+    "CiVariables|Set the visibility level for the variable's value. The %{linkStart}Masked and hidden%{linkEnd} option is only available for new variables. You cannot update an existing variable to be hidden.",
   ),
   type: __('Type'),
   value: __('Value'),
@@ -127,13 +134,14 @@ export default {
     GlSprintf,
     GlFormRadio,
     GlFormRadioGroup,
+    GlPopover,
     HelpIcon,
   },
   directives: {
     GlModalDirective,
   },
   mixins: [trackingMixin],
-  inject: ['environmentScopeLink', 'isProtectedByDefault', 'maskableRawRegex', 'maskableRegex'],
+  inject: ['isProtectedByDefault', 'maskableRawRegex', 'maskableRegex'],
   props: {
     areEnvironmentsLoading: {
       type: Boolean,
@@ -252,7 +260,7 @@ export default {
       return [
         ...new Set(
           this.variable.value
-            .replace(WHITESPACE_REG_EX, '')
+            .replace(new RegExp(WHITESPACE_REG_EX, 'g'), '')
             .replace(this.maskedSupportedCharsRegEx, '')
             .split(''),
         ),
@@ -279,26 +287,26 @@ export default {
         false,
       );
     },
-    maskedValidationIssuesText() {
+    maskedValueValidationErrors() {
+      const errors = [];
+
       if (this.isMaskedReqsMet) {
-        return '';
+        return errors;
       }
 
-      let validationIssuesText = '';
-
       if (this.unsupportedCharsList.length && !this.isMaskedValueContainsWhitespaceChars) {
-        validationIssuesText = this.unsupportedCharsValidationText;
+        errors.push(this.unsupportedCharsValidationText);
       } else if (this.unsupportedCharsList.length && this.isMaskedValueContainsWhitespaceChars) {
-        validationIssuesText = this.unsupportedAndWhitespaceCharsValidationText;
+        errors.push(this.unsupportedAndWhitespaceCharsValidationText);
       } else if (!this.unsupportedCharsList.length && this.isMaskedValueContainsWhitespaceChars) {
-        validationIssuesText = this.$options.i18n.whitespaceCharsValidationText;
+        errors.push(this.$options.i18n.whitespaceCharsValidationText);
       }
 
       if (this.variable.value.length < MASKED_VALUE_MIN_LENGTH) {
-        validationIssuesText += ` ${this.maskedValueMinLengthValidationText}`;
+        errors.push(this.maskedValueMinLengthValidationText);
       }
 
-      return validationIssuesText.trim();
+      return errors;
     },
     modalTitle() {
       return this.isEditing ? this.$options.i18n.editVariable : this.$options.i18n.addVariable;
@@ -381,6 +389,8 @@ export default {
     },
     resetForm() {
       this.variable = { ...defaultVariableState };
+
+      this.visibility = VISIBILITY_VISIBLE;
     },
     setEnvironmentScope(scope) {
       this.variable = { ...this.variable, environmentScope: scope };
@@ -411,12 +421,22 @@ export default {
     },
   },
   awsTokenList,
-  flagLink: helpPagePath('ci/variables/index', {
-    anchor: 'define-a-cicd-variable-in-the-ui',
-  }),
-  variablesPrecedenceLink: helpPagePath('ci/variables/index', {
+  variablesPrecedenceLink: helpPagePath('ci/variables/_index', {
     anchor: 'cicd-variable-precedence',
   }),
+  environmentsLabelHelpLink: helpPagePath('ci/environments/_index', {
+    anchor: 'limit-the-environment-scope-of-a-cicd-variable',
+  }),
+  visibilityLabelHelpLink: helpPagePath('ci/variables/_index', {
+    anchor: 'hide-a-cicd-variable',
+  }),
+  maskedValueDocsLink: helpPagePath('ci/variables/_index', {
+    anchor: 'mask-a-cicd-variable',
+  }),
+  environmentsPopoverContainerId: 'environments-popover-container',
+  environmentsPopoverTargetId: 'environments-popover-target',
+  visibilityPopoverContainerId: 'visibility-popover-container',
+  visibilityPopoverTargetId: 'visibility-popover-target',
   i18n,
   variableOptions,
   deleteModal: {
@@ -487,15 +507,28 @@ export default {
             <span class="gl-mr-2">
               {{ $options.i18n.environments }}
             </span>
-            <gl-link
-              class="gl-flex"
-              :title="$options.i18n.environmentScopeLinkTitle"
-              :href="environmentScopeLink"
-              target="_blank"
-              data-testid="environment-scope-link"
+            <span
+              :id="$options.environmentsPopoverContainerId"
+              :data-testid="$options.environmentsPopoverContainerId"
             >
-              <help-icon />
-            </gl-link>
+              <help-icon :id="$options.environmentsPopoverTargetId" />
+              <gl-popover
+                :target="$options.environmentsPopoverTargetId"
+                :container="$options.environmentsPopoverContainerId"
+              >
+                <gl-sprintf :message="$options.i18n.environmentsLabelHelpText">
+                  <template #code="{ content }">
+                    <code>{{ content }}</code>
+                  </template>
+                </gl-sprintf>
+                <br /><br />
+                <gl-sprintf :message="$options.i18n.environmentsLabelLinkText">
+                  <template #link="{ content }">
+                    <gl-link :href="$options.environmentsLabelHelpLink">{{ content }}</gl-link>
+                  </template>
+                </gl-sprintf>
+              </gl-popover>
+            </span>
           </div>
         </template>
         <ci-environments-dropdown
@@ -518,6 +551,22 @@ export default {
         <template #label>
           <div class="-gl-mb-3">
             {{ $options.i18n.visibility }}
+            <span
+              :id="$options.visibilityPopoverContainerId"
+              :data-testid="$options.visibilityPopoverContainerId"
+            >
+              <help-icon :id="$options.visibilityPopoverTargetId" />
+              <gl-popover
+                :target="$options.visibilityPopoverTargetId"
+                :container="$options.visibilityPopoverContainerId"
+              >
+                <gl-sprintf :message="$options.i18n.visibilityLabelHelpText">
+                  <template #link="{ content }">
+                    <gl-link :href="$options.visibilityLabelHelpLink">{{ content }}</gl-link>
+                  </template>
+                </gl-sprintf>
+              </gl-popover>
+            </span>
           </div>
         </template>
         <gl-form-radio-group
@@ -531,11 +580,21 @@ export default {
             data-testid="ci-variable-visible-radio"
           >
             {{ $options.i18n.visibleField }}
-            <template #help> {{ $options.i18n.visibleDescription }} </template>
+            <template #help>{{ $options.i18n.visibleDescription }}</template>
           </gl-form-radio>
           <gl-form-radio :value="$options.VISIBILITY_MASKED" data-testid="ci-variable-masked-radio">
             {{ $options.i18n.maskedField }}
-            <template #help> {{ $options.i18n.maskedDescription }} </template>
+            <template #help>
+              <gl-sprintf :message="$options.i18n.maskedDescription">
+                <template #link="{ content }">
+                  <gl-link
+                    :href="$options.maskedValueDocsLink"
+                    data-testid="ci-variable-masked-value-docs-link"
+                    >{{ content }}</gl-link
+                  >
+                </template>
+              </gl-sprintf>
+            </template>
           </gl-form-radio>
           <gl-form-radio
             v-if="areHiddenVariablesAvailable"
@@ -552,18 +611,7 @@ export default {
       <gl-form-group class="-gl-mb-8 gl-border-none">
         <template #label>
           <div class="-gl-mb-3 gl-flex gl-items-center">
-            <span class="gl-mr-2">
-              {{ $options.i18n.flags }}
-            </span>
-            <gl-link
-              class="gl-flex"
-              :title="$options.i18n.flagsLinkTitle"
-              :href="$options.flagLink"
-              data-testid="ci-variable-flags-docs-link"
-              target="_blank"
-            >
-              <help-icon />
-            </gl-link>
+            {{ $options.i18n.flags }}
           </div>
         </template>
         <gl-form-checkbox v-model="variable.protected" data-testid="ci-variable-protected-checkbox">
@@ -617,12 +665,13 @@ export default {
       </p>
       <p class="gl-mb-0 gl-border-none !gl-pb-0 !gl-pt-3 gl-text-subtle">
         <gl-sprintf :message="$options.i18n.keyHelpText">
-          <template #link="{ content }"
-            ><gl-link
+          <template #link="{ content }">
+            <gl-link
               :href="$options.variablesPrecedenceLink"
               data-testid="ci-variable-precedence-docs-link"
-              >{{ content }}</gl-link
             >
+              {{ content }}
+            </gl-link>
           </template>
         </gl-sprintf>
       </p>
@@ -631,7 +680,6 @@ export default {
         label-for="ci-variable-value"
         class="-gl-mb-2 gl-border-none"
         data-testid="ci-variable-value-label"
-        :invalid-feedback="maskedValidationIssuesText"
         :state="isValueValid"
       >
         <p v-if="isEditingHiddenVariable" class="gl-mb-0 gl-mt-2" data-testid="hidden-variable-tip">
@@ -654,6 +702,12 @@ export default {
         >
           {{ $options.i18n.valueFeedback.rawHelpText }}
         </p>
+        <template #invalid-feedback>
+          <p class="gl-mb-0">{{ $options.i18n.maskedValueValidationErrorsTitle }}</p>
+          <ul class="gl-mb-0 gl-pl-6">
+            <li v-for="error in maskedValueValidationErrors" :key="error">{{ error }}</li>
+          </ul>
+        </template>
       </gl-form-group>
       <gl-alert
         v-if="hasVariableReference"
@@ -680,8 +734,9 @@ export default {
           variant="danger"
           category="secondary"
           data-testid="ci-variable-delete-button"
-          >{{ $options.i18n.deleteVariable }}</gl-button
         >
+          {{ $options.i18n.deleteVariable }}
+        </gl-button>
         <gl-button category="secondary" class="gl-mr-3" data-testid="cancel-button" @click="close"
           >{{ $options.i18n.cancel }}
         </gl-button>

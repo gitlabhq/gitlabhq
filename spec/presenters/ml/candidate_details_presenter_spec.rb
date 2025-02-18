@@ -6,8 +6,9 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
   let_it_be(:user) { build_stubbed(:user, :with_avatar) }
   let_it_be(:project) { build_stubbed(:project, :private, creator: user) }
   let_it_be(:experiment) { build_stubbed(:ml_experiments, user: user, project: project, iid: 100) }
+  let_it_be(:model_version) { build_stubbed(:ml_model_versions, project: project) }
   let_it_be(:candidate) do
-    build_stubbed(:ml_candidates, :with_artifact, experiment: experiment, user: user, project: project,
+    build_stubbed(:ml_candidates, :with_artifact, :with_ml_model, experiment: experiment, user: user, project: project,
       internal_id: 100)
   end
 
@@ -33,6 +34,8 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
   end
 
   let(:can_user_read_build) { true }
+  let(:can_write_model_experiments) { true }
+  let(:can_write_model_registry) { true }
 
   before do
     allow(candidate).to receive(:metrics).and_return(metrics)
@@ -42,6 +45,12 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
     allow(Ability).to receive(:allowed?)
                         .with(user, :read_build, candidate.ci_build)
                         .and_return(can_user_read_build)
+    allow(Ability).to receive(:allowed?)
+                        .with(user, :write_model_experiments, project)
+                        .and_return(can_write_model_experiments)
+    allow(Ability).to receive(:allowed?)
+                        .with(user, :write_model_registry, project)
+                        .and_return(can_write_model_registry)
   end
 
   describe '#present' do
@@ -79,15 +88,16 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
               author_web_url: nil,
               author_name: candidate.user.name,
               promote_path: "/#{project.full_path}/-/ml/candidates/#{candidate.iid}/promote",
-              can_promote: false
+              can_promote: true
             },
             params: params,
             metrics: metrics,
             metadata: [],
             projectPath: project.full_path,
-            can_write_model_registry: false,
+            can_write_model_experiments: true,
             markdown_preview_path: "/#{project.full_path}/-/preview_markdown",
             model_gid: '',
+            model_name: nil,
             latest_version: nil
           }
         }
@@ -172,6 +182,46 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
 
         it 'ciJob is nil' do
           expect(subject.dig('info', 'ciJob')).to be_nil
+        end
+      end
+
+      context 'when user cannot write model registry' do
+        let(:can_write_model_registry) { false }
+
+        it 'can_promote is false' do
+          expect(subject.dig('info', 'canPromote')).to be(false)
+        end
+      end
+
+      context 'when model version already exists' do
+        let_it_be(:candidate) do
+          build_stubbed(:ml_candidates, :with_artifact, :with_ml_model, experiment: experiment,
+            user: user, project: project, internal_id: 100, model_version: model_version)
+        end
+
+        it 'can_promote is false' do
+          expect(subject.dig('info', 'canPromote')).to be(false)
+        end
+      end
+
+      context 'when candidate package is generic' do
+        let_it_be(:candidate) do
+          build_stubbed(:ml_candidates, :with_artifact, :with_generic_package, experiment: experiment,
+            user: user, project: project, internal_id: 100)
+        end
+
+        it 'can_promote is false' do
+          expect(subject.dig('info', 'canPromote')).to be(false)
+        end
+      end
+
+      context 'when user is nil' do
+        subject(:present_as_json) do
+          Gitlab::Json.parse(described_class.new(candidate, nil).present_as_json)['candidate']
+        end
+
+        it 'ciJob is nil' do
+          expect(present_as_json.dig('info', 'ciJob')).to be_nil
         end
       end
     end

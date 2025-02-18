@@ -139,7 +139,7 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
 
       expect do
         subject.execute
-      end.to raise_error(Repositories::ReplicateService::Error, /Failed to verify \w+ repository checksum from \w+ to not matching checksum/)
+      end.to raise_error(::Repositories::ReplicateService::Error, /Failed to verify \w+ repository checksum from \w+ to not matching checksum/)
 
       expect(project).not_to be_repository_read_only
       expect(project.repository_storage).to eq('default')

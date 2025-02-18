@@ -109,19 +109,6 @@
       "type": "string",
       "pattern": "^(([A-Z][a-z]+)+::)*(([A-Z]+[a-z]+)+)$"
     },
-    "distribution": {
-      "type": [
-        "array",
-        "null"
-      ],
-      "items": {
-        "type": "string",
-        "enum": [
-          "ee",
-          "ce"
-        ]
-      }
-    },
     "performance_indicator_type": {
       "type": "array",
       "items": {
@@ -204,6 +191,9 @@
     },
     {
       "$ref": "status.json"
+    },
+    {
+      "$ref": "internal_events/valid_timeframe_for_unique_property.json"
     }
   ]
 }

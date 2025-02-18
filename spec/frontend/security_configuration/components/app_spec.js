@@ -11,9 +11,9 @@ import AutoDevopsAlert from '~/security_configuration/components/auto_dev_ops_al
 import AutoDevopsEnabledAlert from '~/security_configuration/components/auto_dev_ops_enabled_alert.vue';
 import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from '~/security_configuration/constants';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
-import PreReceiveSecretDetectionFeatureCard from '~/security_configuration/components/pre_receive_secret_detection_feature_card.vue';
+import SecretPushProtectionFeatureCard from '~/security_configuration/components/secret_push_protection_feature_card.vue';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
-import { securityFeaturesMock, provideMock, preReceiveSecretDetectionMock } from '../mock_data';
+import { securityFeaturesMock, provideMock, secretPushProtectionMock } from '../mock_data';
 
 const gitlabCiHistoryPath = 'test/historyPath';
 const { vulnerabilityTrainingDocsPath, projectFullPath } = provideMock;
@@ -58,8 +58,7 @@ describe('~/security_configuration/components/app', () => {
   const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findByTestId = (id) => wrapper.findByTestId(id);
   const findFeatureCards = () => wrapper.findAllComponents(FeatureCard);
-  const findPreReceiveSecretDetection = () =>
-    wrapper.findComponent(PreReceiveSecretDetectionFeatureCard);
+  const findSecretPushProtection = () => wrapper.findComponent(SecretPushProtectionFeatureCard);
   const findTrainingProviderList = () => wrapper.findComponent(TrainingProviderList);
   const findManageViaMRErrorAlert = () => wrapper.findByTestId('manage-via-mr-error-alert');
   const findLink = ({ href, text, container = wrapper }) => {
@@ -285,10 +284,10 @@ describe('~/security_configuration/components/app', () => {
     });
   });
 
-  describe('With pre receive secret detection', () => {
+  describe('With secret push protection', () => {
     beforeEach(() => {
       createComponent({
-        augmentedSecurityFeatures: [preReceiveSecretDetectionMock],
+        augmentedSecurityFeatures: [secretPushProtectionMock],
       });
     });
 
@@ -296,10 +295,8 @@ describe('~/security_configuration/components/app', () => {
       expect(findFeatureCards().length).toBe(0);
     });
     it('renders component with correct props', () => {
-      expect(findPreReceiveSecretDetection().exists()).toBe(true);
-      expect(findPreReceiveSecretDetection().props('feature')).toEqual(
-        preReceiveSecretDetectionMock,
-      );
+      expect(findSecretPushProtection().exists()).toBe(true);
+      expect(findSecretPushProtection().props('feature')).toEqual(secretPushProtectionMock);
     });
   });
 

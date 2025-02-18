@@ -17,3 +17,8 @@ export const CODE_THEME_SOLARIZED_LIGHT = 'solarized-light';
 
 export const BORDER_DARK = 'multimatch-divider-dark';
 export const BORDER_LIGHT = 'multimatch-divider-light';
+
+export const HIGHLIGHT_MARK = '​';
+export const HIGHLIGHT_MARK_REGEX = '\u200b';
+export const HIGHLIGHT_HTML_START = '<b class="hll">';
+export const HIGHLIGHT_HTML_END = '</b>';

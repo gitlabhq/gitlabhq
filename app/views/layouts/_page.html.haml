@@ -49,7 +49,7 @@
 
     %div{ class: "#{container_class unless @no_container} #{@content_class}" }
       %main.content{ id: "content-body", **page_itemtype }
-        = render "layouts/flash"
+        = render "layouts/flash" unless @hide_flash
         = yield :after_flash_content
         = yield :before_content
         = yield

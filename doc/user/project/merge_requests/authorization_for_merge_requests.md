@@ -2,23 +2,25 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "The most common merge request flows in GitLab use forks, protected branches, or both."
+description: The most common merge request flows in GitLab use forks, protected branches, or both.
+title: Merge request workflows
 ---
 
-# Merge request workflows
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-There are two main ways to have a merge request flow with GitLab:
+{{< /details >}}
 
-1. Working with [protected branches](../repository/branches/protected.md) in a single repository.
-1. Working with forks of an authoritative project.
+GitLab merge requests commonly follow one of these flows:
+
+- Working with [protected branches](../repository/branches/protected.md) in a single repository.
+- Working with forks of an authoritative project.
 
 ## Protected branch flow
 
-With the protected branch flow everybody works within the same GitLab project.
+With the protected branch flow, everybody works in the same GitLab project, instead of forks.
 
 The project maintainers get the Maintainer role and the regular developers
 get the Developer role.
@@ -47,18 +49,18 @@ To set up a protected branch flow:
 1. If your team has multiple branches, and you would like to manage who can merge changes and who
    explicitly has the option to push or force push, consider making those branches protected:
 
-   - [Manage and Protect Branches](../repository/branches/index.md#manage-and-protect-branches)
+   - [Manage and Protect Branches](../repository/branches/_index.md#manage-and-protect-branches)
    - [Protected Branches](../repository/branches/protected.md)
 
 1. Each change to the code comes through as a commit.
    You can specify the format and security measures such as requiring SSH key signing for changes
-   coming into your code base with push rules:
+   coming into your codebase with push rules:
 
    - [Push rules](../repository/push_rules.md)
 
 1. To ensure that the code is reviewed and checked by the right people in your team, use:
 
-   - [Code Owners](../codeowners/index.md)
+   - [Code Owners](../codeowners/_index.md)
    - [Merge request approval rules](approvals/rules.md)
 
 Also available in the Ultimate tier:

@@ -83,7 +83,7 @@ RSpec.describe DeviseEmailValidator do
 
   context 'when regexp is set as String' do
     it 'raise argument error' do
-      expect { described_class.new( { regexp: 'something' } ) }.to raise_error ArgumentError
+      expect { described_class.new({ regexp: 'something' }) }.to raise_error ArgumentError
     end
   end
 

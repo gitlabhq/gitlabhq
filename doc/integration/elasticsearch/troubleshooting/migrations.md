@@ -2,17 +2,19 @@
 stage: Foundations
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting Elasticsearch migrations
 ---
 
-# Troubleshooting Elasticsearch migrations
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When working with Elasticsearch migrations, you might encounter the following issues.
 
-If [`elasticsearch.log`](../../../administration/logs/index.md#elasticsearchlog) contains errors
+If [`elasticsearch.log`](../../../administration/logs/_index.md#elasticsearchlog) contains errors
 and retrying failed migrations does not work, contact GitLab Support.
 For more information, see [advanced search migrations](../../advanced_search/elasticsearch.md#advanced-search-migrations).
 
@@ -41,8 +43,11 @@ with the IP address of your Elasticsearch host.
 
 For a single-node Elasticsearch cluster, the functional cluster health status is yellow (never green). The reason is that the primary shard is allocated, but replicas cannot be as no other node to which Elasticsearch can assign a replica exists. This also applies if you are using the [Amazon OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/aes-handling-errors.html#aes-handling-errors-yellow-cluster-status) service.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Setting the number of replicas to `0` is discouraged (this is not allowed in the GitLab Elasticsearch Integration menu). If you are planning to add more Elasticsearch nodes (for a total of more than 1 Elasticsearch) the number of replicas needs to be set to an integer value larger than `0`. Failure to do so results in lack of redundancy (losing one node corrupts the index).
+
+{{< /alert >}}
 
 If you want to have a green status for your single-node Elasticsearch cluster, understand the risks and run the following query to set the number of replicas to `0`. The cluster no longer tries to create any shard replicas.
 
@@ -81,7 +86,7 @@ In some cases, Elasticsearch cannot connect to GitLab anymore because:
 - The Elasticsearch password has been updated on one side only (`Unauthorized [401] ... unable to authenticate user` errors).
 - A firewall or network issue impairs connectivity (`Failed to open TCP connection to <ip>:9200` errors).
 
-These errors are logged in [`gitlab-rails/elasticsearch.log`](../../../administration/logs/index.md#elasticsearchlog). To retrieve the errors, use [`jq`](../../../administration/logs/log_parsing.md):
+These errors are logged in [`gitlab-rails/elasticsearch.log`](../../../administration/logs/_index.md#elasticsearchlog). To retrieve the errors, use [`jq`](../../../administration/logs/log_parsing.md):
 
 ```shell
 $ jq --raw-output 'select(.severity == "ERROR") | [.error_class, .error_message] | @tsv' \
@@ -92,7 +97,7 @@ $ jq --raw-output 'select(.severity == "ERROR") | [.error_class, .error_message]
 `Elastic` workers and [Sidekiq jobs](../../../administration/admin_area.md#background-jobs) could also appear much more often
 because Elasticsearch frequently attempts to reindex if a previous job fails.
 You can use [`fast-stats`](https://gitlab.com/gitlab-com/support/toolbox/fast-stats#usage)
-or `jq` to count workers in the [Sidekiq logs](../../../administration/logs/index.md#sidekiq-logs):
+or `jq` to count workers in the [Sidekiq logs](../../../administration/logs/_index.md#sidekiq-logs):
 
 ```shell
 $ fast-stats --print-fields=count,score sidekiq/current

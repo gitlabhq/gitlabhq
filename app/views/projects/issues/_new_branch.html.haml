@@ -45,7 +45,7 @@
 
           %li.droplab-item-ignore.gl-ml-3.gl-mr-3.gl-mt-5
             - if can_create_confidential_merge_request?
-              #js-forked-project{ data: { namespace_path: @project.namespace.full_path, project_path: @project.full_path, new_fork_path: new_project_fork_path(@project), help_page_path: help_page_path('user/project/merge_requests/index.md') } }
+              #js-forked-project{ data: { namespace_path: @project.namespace.full_path, project_path: @project.full_path, new_fork_path: new_project_fork_path(@project), help_page_path: help_page_path('user/project/merge_requests/_index.md') } }
             .form-group
               %label{ for: 'new-branch-name' }
                 = _('Branch name')
@@ -63,5 +63,5 @@
               = create_mr_text
 
             - if can_create_confidential_merge_request?
-              %p.gl-text-orange-500.gl-text-sm.js-exposed-info-warning.gl-hidden
+              %p.gl-text-warning.gl-text-sm.js-exposed-info-warning.gl-hidden
                 = _('This may expose confidential information as the selected fork is in another namespace that can have other members.')

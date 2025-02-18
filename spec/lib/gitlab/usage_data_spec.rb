@@ -80,7 +80,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
   describe 'usage_activity_by_stage_package' do
     it 'includes accurate usage_activity_by_stage data' do
       for_defined_days_back do
-        create(:project, packages: [create(:package)] )
+        create(:project, packages: [create(:generic_package)])
       end
 
       expect(described_class.usage_activity_by_stage_package({})).to eq(

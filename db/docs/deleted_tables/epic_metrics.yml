@@ -1,0 +1,14 @@
+---
+table_name: epic_metrics
+classes:
+- Epic::Metrics
+feature_categories:
+- observability
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3126
+milestone: '10.2'
+gitlab_schema: gitlab_main_cell
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442042
+table_size: small
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179477
+removed_in_milestone: '17.9'

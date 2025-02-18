@@ -14,7 +14,6 @@ RSpec.describe Import::SourceUserPlaceholderReference, feature_category: :import
     it { is_expected.to validate_presence_of(:namespace_id) }
     it { is_expected.to validate_presence_of(:source_user_id) }
     it { is_expected.to validate_numericality_of(:numeric_key).only_integer.is_greater_than(0) }
-    it { expect(described_class).to validate_jsonb_schema(['composite_key']) }
     it { is_expected.to allow_value({ id: 1 }).for(:composite_key) }
     it { is_expected.to allow_value({ id: '1' }).for(:composite_key) }
     it { is_expected.to allow_value({ foo: '1', bar: 2 }).for(:composite_key) }

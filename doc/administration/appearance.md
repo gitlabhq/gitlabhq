@@ -2,15 +2,17 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Appearance
 ---
 
-# GitLab Appearance
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-You can update your settings to change the look and feel of your GitLab self-managed instance.
+{{< /details >}}
+
+You can update your settings to change the look and feel of your instance.
 
 To open the **Appearance** settings:
 
@@ -22,7 +24,7 @@ To open the **Appearance** settings:
 Customize the appearance of your **Homepage** button.
 
 The **Homepage** button is located on the upper-left corner of the left sidebar.
-Replace the default **GitLab logo** **{tanuki}** with any image.
+Replace the default **GitLab logo** {{< icon name="tanuki" >}} with any image.
 
 - The file should be less than 1 MB.
 - The image should be 24 pixels high. Images more than 24 px high will be resized.
@@ -38,7 +40,7 @@ Pipeline status emails also show your custom logo. However, some email applicati
 
 ## Customize the favicon
 
-Customize the appearance of the favicon. A favicon is the icon for a website that shows in your browser tabs. The **GitLab logo** **{tanuki}** is the default browser and CI/CD status favicon. Replace the default icon with any image that is `32 x 32` pixels and in `.png` or `.ico` format.
+Customize the appearance of the favicon. A favicon is the icon for a website that shows in your browser tabs. The **GitLab logo** {{< icon name="tanuki" >}} is the default browser and CI/CD status favicon. Replace the default icon with any image that is `32 x 32` pixels and in `.png` or `.ico` format.
 
 To change the favicon:
 
@@ -49,7 +51,11 @@ To change the favicon:
 
 ## Add system header and footer messages
 
-> - **Enable header and footer in emails** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344819) in GitLab 15.9.
+{{< history >}}
+
+- **Enable header and footer in emails** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344819) in GitLab 15.9.
+
+{{< /history >}}
 
 Add a small header message, a small footer message, or both, to the interface of your GitLab instance. These messages show on all projects and pages of the instance, such as the sign-in and register pages.
 
@@ -96,17 +102,28 @@ You can add also add a [customized help message](settings/help_page.md) below th
 
 ### Disable cookie-based language selector
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144484) in GitLab 16.10.
+{{< history >}}
 
-FLAG:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144484) in GitLab 16.10.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](feature_flags.md) named `disable_preferred_language_cookie`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
+
+{{< /alert >}}
 
 You can remove the cookie-based language selector from the footer of the sign-in and register pages by enabling the `disable_preferred_language_cookie` feature flag.
 
 ## Customize the Progressive Web App
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.9.
+
+{{< /history >}}
 
 Customize the icon, display name, short name, and description for your Progressive Web App (PWA). For more information, see [Progressive Web App](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps).
 
@@ -173,7 +190,34 @@ Add guidelines for profile images.
 
 ## Libravatar
 
-GitLab supports [Libravatar](https://www.libravatar.org) is for avatar images, but you must manually enable Libravatar support on the GitLab instance. For more information, see [Libravatar](../administration/libravatar.md) to use the service.
+GitLab supports [Libravatar](https://www.libravatar.org) is for avatar images, but you must manually enable Libravatar support on the GitLab instance. For more information, see [Libravatar](libravatar.md) to use the service.
+
+## Change the color theme for all new users
+
+To [change the default color theme](../user/profile/preferences.md#change-the-color-theme) for all new users:
+
+1. Add `gitlab_rails['gitlab_default_theme']` to your GitLab configuration file at `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['gitlab_default_theme'] = 2
+   ```
+
+1. [Reconfigure and restart GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
+
+As of GitLab 17.8, `gitlab_default_theme` can specify [a value from 1 to 10](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/17.8.0+ee.0/files/gitlab-config-template/gitlab.rb.template?ref_type=tags#L137) to set the default theme. 
+
+| Value | Color |
+| ------ | ------  |
+| 1       | Indigo |
+| 2       | Dark |
+| 3       | Light |
+| 4       | Blue |
+| 5       |Green|
+| 6       |Light Indigo|
+| 7       |Light Blue|
+| 8       |Light Green|
+| 9       |Red|
+| 10       |Light Red|
 
 <!-- ## Troubleshooting
 

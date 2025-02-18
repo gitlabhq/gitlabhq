@@ -15,7 +15,5 @@ options:
   events:
     - i_quickactions_checkin_reminder
 performance_indicator_type: []
-distribution:
-- ee
 tiers:
 - ultimate

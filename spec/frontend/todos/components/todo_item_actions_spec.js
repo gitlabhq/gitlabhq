@@ -36,7 +36,7 @@ describe('TodoItemActions', () => {
     },
   });
 
-  const createComponent = ({ props = {}, todosSnoozingEnabled = true } = {}) => {
+  const createComponent = ({ props = {} } = {}) => {
     const mockApollo = createMockApollo([
       [markAsDoneMutation, markAsDoneMutationSuccessHandler],
       [markAsPendingMutation, markAsPendingMutationSuccessHandler],
@@ -48,11 +48,6 @@ describe('TodoItemActions', () => {
         todo: mockTodo,
         isSnoozed: false,
         ...props,
-      },
-      provide: {
-        glFeatures: {
-          todosSnoozing: todosSnoozingEnabled,
-        },
       },
       mocks: {
         $toast: {
@@ -138,13 +133,5 @@ describe('TodoItemActions', () => {
         expect(findToggleSnoozedStatus().exists()).toBe(true);
       },
     );
-  });
-
-  describe('when the `todosSnoozing` feature flag is disabled', () => {
-    it('never renders the ToggleSnoozedStatus component', () => {
-      createComponent({ todosSnoozingEnabled: false, props: { isSnoozed: false } });
-
-      expect(findToggleSnoozedStatus().exists()).toBe(false);
-    });
   });
 });

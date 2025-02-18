@@ -15,9 +15,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - p_ci_templates_katalon
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

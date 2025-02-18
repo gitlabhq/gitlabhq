@@ -51,7 +51,7 @@ export default {
     />
     <gl-disclosure-dropdown
       placement="bottom-end"
-      toggle-text="Use an existing commit message"
+      :toggle-text="__('Use an existing commit message')"
       :category="aiCommitMessageEnabled ? 'primary' : 'tertiary'"
       :items="dropdownItems"
       size="small"
@@ -63,7 +63,7 @@ export default {
           class="gl-flex gl-items-center gl-border-b-1 gl-border-b-dropdown gl-px-4 gl-py-3 gl-border-b-solid"
         >
           <span class="gl-grow gl-pr-2 gl-text-sm gl-font-bold">
-            {{ __('Use existing commit message') }}
+            {{ __('Use an existing commit message') }}
           </span>
         </div>
       </template>

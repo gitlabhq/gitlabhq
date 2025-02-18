@@ -2,15 +2,21 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: External participants
 ---
 
-# External participants
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3758) in GitLab 17.0.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3758) in GitLab 17.0.
+
+{{< /history >}}
 
 External participants are users without a GitLab account that can interact with an issue or Service Desk ticket only by email.
 They get notified of public comments on an issue or ticket by [Service Desk emails](configure.md#customize-emails-sent-to-external-participants).
@@ -81,13 +87,13 @@ To see the email address of an external participant you must have at least the R
 The external participant's email address is obfuscated if both these conditions are true:
 
 - You are not a member of the project or have the Guest role.
-- The issue or ticket is public ([non-confidential](../issues/confidential_issues.md#confidential-issues)).
+- The issue or ticket is public ([non-confidential](../issues/confidential_issues.md)).
 
 The external participant's email address is then obfuscated in:
 
 - The author field of a Service Desk ticket.
 - All [system notes](../system_notes.md) that mention an external participant.
-- The [REST](../../../api/notes.md) and [GraphQL](../../../api/graphql/index.md) APIs.
+- The [REST](../../../api/notes.md) and [GraphQL](../../../api/graphql/_index.md) APIs.
 - The warning message below the comment editor.
 
 For example:
@@ -97,7 +103,7 @@ For example:
 ### Notifications sent to external participants
 
 External participants get notifications for all public comments on an issue.
-For private communication, use [internal notes](../../discussions/index.md#add-an-internal-note).
+For private communication, use [internal notes](../../discussions/_index.md#add-an-internal-note).
 
 External participants don't receive notifications for any other issue or ticket event.
 
@@ -120,10 +126,17 @@ To see a list of all external participants:
 
 ### Add an external participant
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a flag](../../../user/feature_flags.md) named `issue_email_participants`. Enabled by default.
+{{< history >}}
 
-FLAG:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a flag](../../feature_flags.md) named `issue_email_participants`. Enabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
 
 Add an external participant using the `/add_email` [quick action](../quick_actions.md) when you want
 to include them in the conversation at any time.
@@ -150,10 +163,17 @@ You should see a success message and a new system note with the email address.
 
 ### Remove an external participant
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a flag](../../../user/feature_flags.md) named `issue_email_participants`. Enabled by default.
+{{< history >}}
 
-FLAG:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a flag](../../feature_flags.md) named `issue_email_participants`. Enabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
 
 Remove an external participant from an issue or Service Desk ticket using the `/remove_email`
 [quick action](../quick_actions.md) when they should stop receiving notifications.

@@ -2,6 +2,7 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+title: Custom permissions
 ---
 
 <!--
@@ -14,20 +15,15 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
   edit `tooling/custom_roles/docs/templates/custom_abilities.md.erb`.
 -->
 
-# Custom permissions
-
 You can create a [custom role](../custom_roles.md) by adding one or more custom permissions to a base role.
 
-NOTE:
+{{< alert type="note" >}}
+
 Some permissions depend on other permissions.
 For example, the `admin_vulnerability` permission requires you to also include the `read_vulnerability` permission.
 Any dependencies are noted in the `Description` column for each permission.
 
-## Admin
-
-| Permission | Description | API Attribute | Scope | Introduced |
-|:-----------|:------------|:--------------|:------|:-----------|
-| Read-only access to admin dashboard | Read-only access to admin dashboard | [`read_admin_dashboard`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171581) | Instance | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/501549) |
+{{< /alert >}}
 
 ## Code review workflow
 
@@ -52,10 +48,10 @@ Any dependencies are noted in the `Description` column for each permission.
 
 | Permission | Description | API Attribute | Scope | Introduced |
 |:-----------|:------------|:--------------|:------|:-----------|
-| Manage group members | Add or remove users in a group, and assign roles to users. When assigning a role, users with this custom permission must select a role that has the same or fewer permissions as the default role used as the base for their custom role. | [`admin_group_member`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) | Group | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/17364) |
 | Archive project | Allows archiving of projects. | [`archive_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134998) | Project | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/425957) |
 | Delete group | Ability to delete or restore a group. This ability does not allow deleting top-level groups. Review the Retention period settings to prevent accidental deletion. | [`remove_group`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145166) | Group | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/425962) |
 | Delete project | Allows deletion of projects. | [`remove_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139696) | Project | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/425959) |
+| Manage group members | Add or remove users in a group, and assign roles to users. When assigning a role, users with this custom permission must select a role that has the same or fewer permissions as the default role used as the base for their custom role. | [`admin_group_member`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) | Group | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/17364) |
 
 ## Infrastructure as code
 
@@ -93,7 +89,7 @@ Any dependencies are noted in the `Description` column for each permission.
 | Permission | Description | API Attribute | Scope | Introduced |
 |:-----------|:------------|:--------------|:------|:-----------|
 | Approve merge request | Allows approval of merge requests. | [`admin_merge_request`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128302) | Project | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/412708) |
-|  | Create, read, update, and delete protected branches for a project. | [`admin_protected_branch`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162208) | Project | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/448823) |
+| Manage Protected Branches | Create, read, update, and delete protected branches for a project. | [`admin_protected_branch`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162208) | Project | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/448823) |
 | Manage push rules | Configure push rules for repositories at the group or project level. | [`admin_push_rules`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147872) | Group,<br> Project | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/421786) |
 | View repository code | Allows read-only access to the source code in the user interface. Does not allow users to edit or download repository archives, clone or pull repositories, view source code in an IDE, or view merge requests for private projects. You can download individual files because read-only access inherently grants the ability to make a local copy of the file. | [`read_code`](https://gitlab.com/gitlab-org/gitlab/-/issues/376180) | Group,<br> Project | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/20277) |
 

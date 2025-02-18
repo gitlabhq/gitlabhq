@@ -4,14 +4,21 @@ require 'spec_helper'
 
 RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_registry do
   let_it_be(:user) { create(:user) }
-  let_it_be(:conan_package_reference) { '1234567890abcdef1234567890abcdef12345678' }
-  let_it_be(:alternative_reference) { '1111111111111111111111111111111111111111' }
-  let_it_be(:package) { create(:conan_package, package_references: [conan_package_reference, alternative_reference]) }
+  let_it_be(:package) { create(:conan_package, without_recipe_revisions: true) }
+  let_it_be(:conan_package_reference) { package.conan_package_references.first }
+  let_it_be(:alternative_reference) { create(:conan_package_reference, package: package, recipe_revision: nil) }
+
   let_it_be(:project) { package.project }
   let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: package) }
-
   let(:params) { { package_scope: :instance } }
   let(:presenter) { described_class.new(package, user, project, params) }
+
+  before_all do
+    %i[conan_package_info conan_package_manifest conan_package].each do |file|
+      create(:conan_package_file, file, package: package,
+        conan_package_reference: alternative_reference, conan_recipe_revision: nil)
+    end
+  end
 
   shared_examples 'no existing package' do
     context 'when package does not exist' do
@@ -51,7 +58,7 @@ RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_r
       it { is_expected.to eq(expected_result) }
 
       context 'when there are multiple channels for the same package' do
-        let(:conan_metadatum) { create(:conan_metadatum, package_channel: 'newest' ) }
+        let(:conan_metadatum) { create(:conan_metadatum, package_channel: 'newest') }
         let!(:newest_package) { create(:conan_package, name: package.name, version: package.version, project: project, conan_metadatum: conan_metadatum) }
 
         it { is_expected.to eq(expected_result) }
@@ -94,7 +101,7 @@ RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_r
   end
 
   describe '#package_urls' do
-    let(:reference) { conan_package_reference }
+    let(:reference) { conan_package_reference.reference }
 
     let(:params) do
       {
@@ -115,9 +122,9 @@ RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_r
     context 'existing package' do
       let(:expected_result) do
         {
-          "conaninfo.txt" => "#{Settings.build_base_gitlab_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{conan_package_reference}/0/conaninfo.txt",
-          "conanmanifest.txt" => "#{Settings.build_base_gitlab_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{conan_package_reference}/0/conanmanifest.txt",
-          "conan_package.tgz" => "#{Settings.build_base_gitlab_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{conan_package_reference}/0/conan_package.tgz"
+          "conaninfo.txt" => "#{Settings.build_base_gitlab_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{reference}/0/conaninfo.txt",
+          "conanmanifest.txt" => "#{Settings.build_base_gitlab_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{reference}/0/conanmanifest.txt",
+          "conan_package.tgz" => "#{Settings.build_base_gitlab_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{reference}/0/conan_package.tgz"
         }
       end
 
@@ -134,9 +141,9 @@ RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_r
 
         let(:expected_result) do
           {
-            "conaninfo.txt" => "#{Settings.build_base_gitlab_url}/api/v4/projects/#{project.id}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{conan_package_reference}/0/conaninfo.txt",
-            "conanmanifest.txt" => "#{Settings.build_base_gitlab_url}/api/v4/projects/#{project.id}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{conan_package_reference}/0/conanmanifest.txt",
-            "conan_package.tgz" => "#{Settings.build_base_gitlab_url}/api/v4/projects/#{project.id}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{conan_package_reference}/0/conan_package.tgz"
+            "conaninfo.txt" => "#{Settings.build_base_gitlab_url}/api/v4/projects/#{project.id}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{reference}/0/conaninfo.txt",
+            "conanmanifest.txt" => "#{Settings.build_base_gitlab_url}/api/v4/projects/#{project.id}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{reference}/0/conanmanifest.txt",
+            "conan_package.tgz" => "#{Settings.build_base_gitlab_url}/api/v4/projects/#{project.id}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{reference}/0/conan_package.tgz"
           }
         end
 
@@ -147,13 +154,13 @@ RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_r
         it { is_expected.to eq(expected_result) }
 
         context 'requesting the alternative reference' do
-          let(:reference) { alternative_reference }
+          let(:reference) { alternative_reference.reference }
 
           let(:expected_result) do
             {
-              "conaninfo.txt" => "#{Settings.build_base_gitlab_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{alternative_reference}/0/conaninfo.txt",
-              "conanmanifest.txt" => "#{Settings.build_base_gitlab_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{alternative_reference}/0/conanmanifest.txt",
-              "conan_package.tgz" => "#{Settings.build_base_gitlab_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{alternative_reference}/0/conan_package.tgz"
+              "conaninfo.txt" => "#{Settings.build_base_gitlab_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{reference}/0/conaninfo.txt",
+              "conanmanifest.txt" => "#{Settings.build_base_gitlab_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{reference}/0/conanmanifest.txt",
+              "conan_package.tgz" => "#{Settings.build_base_gitlab_url}/api/v4/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{reference}/0/conan_package.tgz"
             }
           end
 
@@ -172,7 +179,7 @@ RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_r
   end
 
   describe '#package_snapshot' do
-    let(:reference) { conan_package_reference }
+    let(:reference) { conan_package_reference.reference }
     let(:params) { { conan_package_reference: reference } }
 
     subject { presenter.package_snapshot }

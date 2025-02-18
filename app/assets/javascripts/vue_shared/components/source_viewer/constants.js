@@ -10,6 +10,7 @@ export const ROUGE_TO_HLJS_LANGUAGE_MAP = {
   jinja: 'django',
   docker: 'dockerfile',
   batchfile: 'dos',
+  elixir: 'elixir',
   html: 'xml',
   hylang: 'hy',
   tex: 'latex',

@@ -2,13 +2,15 @@
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Repository analytics for projects
 ---
 
-# Repository analytics for projects
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Repository analytics is part of [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-foss)
 and is available to users with permission to clone the repository.
@@ -31,7 +33,7 @@ Depending on the size of GitLab installation and background job queues, it might
 Prerequisites:
 
 - You must have an initialized Git repository.
-- There must be at least one commit in the default branch (`main` by default), excluding commits in a project's [wiki](../project/wiki/index.md#track-wiki-events), which are not included in the analysis.
+- There must be at least one commit in the default branch (`main` by default), excluding commits in a project's [wiki](../project/wiki/_index.md#track-wiki-events), which are not included in the analysis.
 
 To view repository analytics for a project:
 

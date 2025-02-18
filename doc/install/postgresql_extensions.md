@@ -2,13 +2,15 @@
 stage: Tenant Scale
 group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Managing PostgreSQL extensions
 ---
 
-# Managing PostgreSQL extensions
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This guide documents how to manage PostgreSQL extensions for installations with an external
 PostgreSQL database.
@@ -21,7 +23,7 @@ You must load the following extensions into the main GitLab database (defaults t
 | `btree_gist` | 13.1                   |
 | `plpgsql`    | 11.7                   |
 
-If you are using [GitLab Geo](../administration/geo/index.md), you must load the following
+If you are using [GitLab Geo](../administration/geo/_index.md), you must load the following
 extensions into all secondary tracking databases (defaults to `gitlabhq_geo_production`):
 
 | Extension    | Minimum GitLab version |

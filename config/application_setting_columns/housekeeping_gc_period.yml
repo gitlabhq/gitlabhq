@@ -6,7 +6,7 @@ column: housekeeping_gc_period
 db_type: integer
 default: '200'
 description: Deprecated. Number of Git pushes after which `git gc` is run. Use `housekeeping_optimize_repository_period`
-  instead. For more information, see [Housekeeping fields](#housekeeping-fields).
+  instead. For more information, see [Housekeeping settings](#housekeeping-settings).
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

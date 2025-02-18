@@ -3,5 +3,6 @@
 
 = gl_tabs_nav({ class: 'gl-grow gl-border-0', data: { testid: 'admin-users-tabs' } }) do
   = gl_tab_link_to s_('AdminUsers|Users'), admin_users_path
-  = render_if_exists 'admin/users/role_promotion_requests_tab'
-  = gl_tab_link_to s_('AdminUsers|Cohorts'), admin_cohorts_path
+  - if can?(current_user, :admin_all_resources)
+    = render_if_exists 'admin/users/role_promotion_requests_tab'
+    = gl_tab_link_to s_('AdminUsers|Cohorts'), admin_cohorts_path

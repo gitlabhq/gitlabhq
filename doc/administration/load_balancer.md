@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Load Balancer for multi-node GitLab
 ---
 
-# Load Balancer for multi-node GitLab
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 In a multi-node GitLab configuration, you need a load balancer to route
 traffic to the application servers. The specifics on which load balancer to use
@@ -35,7 +37,7 @@ Configure your load balancers to pass connections on port 443 as 'TCP' rather
 than 'HTTP(S)' protocol. This passes the connection to the application nodes
 NGINX service untouched. NGINX has the SSL certificate and listen on port 443.
 
-See the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
+See the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/)
 for details on managing SSL certificates and configuring NGINX.
 
 ### Load Balancers terminate SSL without backend SSL
@@ -46,7 +48,7 @@ terminating SSL.
 
 Because communication between the load balancers and GitLab isn't secure,
 there is some additional configuration needed. See the
-[proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html#configure-a-reverse-proxy-or-load-balancer-ssl-termination)
+[proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl/#configure-a-reverse-proxy-or-load-balancer-ssl-termination)
 for details.
 
 ### Load Balancers terminate SSL with backend SSL
@@ -59,7 +61,7 @@ Traffic is secure between the load balancers and NGINX in this
 scenario. There is no need to add configuration for proxied SSL because the
 connection is secure all the way. However, configuration must be
 added to GitLab to configure SSL certificates. See
-the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
+the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/)
 for details on managing SSL certificates and configuring NGINX.
 
 ## Ports
@@ -72,7 +74,7 @@ for details on managing SSL certificates and configuring NGINX.
 | 443     | 443          | TCP or HTTPS (*1*) (*2*) |
 | 22      | 22           | TCP                      |
 
-- (*1*): [Web terminal](../ci/environments/index.md#web-terminals-deprecated) support requires
+- (*1*): [Web terminal](../ci/environments/_index.md#web-terminals-deprecated) support requires
   your load balancer to correctly handle WebSocket connections. When using
   HTTP or HTTPS proxying, this means your load balancer must be configured
   to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the
@@ -88,7 +90,7 @@ If you're using GitLab Pages with custom domain support you need some
 additional port configurations.
 GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 `pages_external_url` from `/etc/gitlab/gitlab.rb` at the new virtual IP address. See the
-[GitLab Pages documentation](pages/index.md) for more information.
+[GitLab Pages documentation](pages/_index.md) for more information.
 
 | LB Port | Backend Port  | Protocol  |
 | ------- | ------------- | --------- |
@@ -97,7 +99,7 @@ GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 
 - (*1*): The backend port for GitLab Pages depends on the
   `gitlab_pages['external_http']` and `gitlab_pages['external_https']`
-  setting. See [GitLab Pages documentation](pages/index.md) for more details.
+  setting. See [GitLab Pages documentation](pages/_index.md) for more details.
 - (*2*): Port 443 for GitLab Pages should always use the TCP protocol. Users can
   configure custom domains with custom SSL, which would not be possible
   if SSL was terminated at the load balancer.
@@ -117,10 +119,13 @@ Configure DNS for an alternate SSH hostname such as `altssh.gitlab.example.com`.
 
 ## Readiness check
 
-It is strongly recommend that multi-node deployments configure load balancers to use the [readiness check](../administration/monitoring/health_check.md#readiness) to ensure a node is ready to accept traffic, before routing traffic to it. This is especially important when using Puma, because there is a brief period during a restart where Puma doesn't accept requests.
+It is strongly recommend that multi-node deployments configure load balancers to use the [readiness check](monitoring/health_check.md#readiness) to ensure a node is ready to accept traffic, before routing traffic to it. This is especially important when using Puma, because there is a brief period during a restart where Puma doesn't accept requests.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Using the `all=1` parameter with the readiness check in GitLab versions 15.4 to 15.8 may cause [increased Praefect memory usage](https://gitlab.com/gitlab-org/gitaly/-/issues/4751) and lead to memory errors.
+
+{{< /alert >}}
 
 ## Troubleshooting
 
@@ -128,14 +133,14 @@ Using the `all=1` parameter with the readiness check in GitLab versions 15.4 to 
 
 If you are using the [AWS Classic Load Balancer](https://docs.aws.amazon.com/en_en/elasticloadbalancing/latest/classic/elb-ssl-security-policy.html#ssl-ciphers)
 in GitLab 15.0 or later, you must to enable the `AES256-GCM-SHA384` cipher in NGINX.
-See [AES256-GCM-SHA384 SSL cipher no longer allowed by default by NGINX](https://docs.gitlab.com/omnibus/update/gitlab_15_changes.html#aes256-gcm-sha384-ssl-cipher-no-longer-allowed-by-default-by-nginx)
+See [AES256-GCM-SHA384 SSL cipher no longer allowed by default by NGINX](../update/versions/gitlab_15_changes.md#1500)
 for more information.
 
 The default ciphers for a GitLab version can be
 viewed in the [`files/gitlab-cookbooks/gitlab/attributes/default.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/files/gitlab-cookbooks/gitlab/attributes/default.rb)
 file and selecting the Git tag that correlates with your target GitLab version
 (for example `15.0.5+ee.0`). If required by your load balancer, you can then define
-[custom SSL ciphers](https://docs.gitlab.com/omnibus/settings/ssl/index.html#use-custom-ssl-ciphers)
+[custom SSL ciphers](https://docs.gitlab.com/omnibus/settings/ssl/#use-custom-ssl-ciphers)
 for NGINX.
 
 ### Some pages and links are downloaded instead of rendered in the browser

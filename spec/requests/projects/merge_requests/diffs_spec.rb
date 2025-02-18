@@ -190,7 +190,7 @@ RSpec.describe 'Merge Requests Diffs', feature_category: :code_review_workflow d
       end
 
       context 'with the different expanded option' do
-        subject { go(page: 0, per_page: 5, expanded: true ) }
+        subject { go(page: 0, per_page: 5, expanded: true) }
 
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
         let(:expected_options) { collection_arguments(total_pages: 20) }

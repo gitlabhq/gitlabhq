@@ -5,23 +5,13 @@ class QueueBackfillComplianceViolationNullTargetProjectIds < Gitlab::Database::M
 
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
-  MIGRATION = "BackfillComplianceViolationNullTargetProjectIds"
-  DELAY_INTERVAL = 2.minutes
-  BATCH_SIZE = 1000
-  SUB_BATCH_SIZE = 100
-
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :merge_requests_compliance_violations,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op
+    # Requeued by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180053
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :merge_requests_compliance_violations, :id, [])
+    # noop
+    # Requeued by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180053
   end
 end

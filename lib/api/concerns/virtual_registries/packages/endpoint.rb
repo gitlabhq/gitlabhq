@@ -45,7 +45,7 @@ module API
                 case service_response.reason
                 when :unauthorized
                   unauthorized!
-                when :file_not_found_on_upstreams, :digest_not_found_in_cached_responses
+                when :file_not_found_on_upstreams, :digest_not_found_in_cache_entries
                   not_found!(service_response.message)
                 else
                   bad_request!(service_response.message)
@@ -73,11 +73,13 @@ module API
               end
 
               def authorized_upload_response
-                ::VirtualRegistries::CachedResponseUploader.workhorse_authorize(
+                ::VirtualRegistries::Cache::EntryUploader.workhorse_authorize(
                   has_length: true,
                   maximum_size: MAX_FILE_SIZE,
                   use_final_store_path: true,
-                  final_store_path_root_id: registry.id
+                  final_store_path_config: {
+                    override_path: upstream.object_storage_key_for(registry_id: registry.id)
+                  }
                 )
               end
 

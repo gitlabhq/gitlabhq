@@ -6,19 +6,7 @@ RSpec.describe Repositories::BranchNamesFinder, feature_category: :source_code_m
   let(:project) { create(:project, :repository) }
 
   describe '#execute' do
-    it 'returns all filtered branch names' do
-      stub_feature_flags(branch_names_sorting: false)
-      expect(create_branch_names_finder(0, 100, 'snippet/*').execute).to contain_exactly(
-        'snippet/edit-file',
-        'snippet/multiple-files',
-        'snippet/no-files',
-        'snippet/rename-and-edit-file',
-        'snippet/single-file'
-      )
-    end
-
     it 'returns a limited number of offset filtered branch names' do
-      stub_feature_flags(branch_names_sorting: false)
       starting_names = create_branch_names_finder(0, 3, 'snippet/*').execute
       offset_names = create_branch_names_finder(3, 2, 'snippet/*').execute
 

@@ -17,9 +17,6 @@ events:
       label: security_reports
 data_category: optional
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

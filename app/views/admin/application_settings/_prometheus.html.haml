@@ -16,6 +16,6 @@
       = f.label :metrics_method_call_threshold, _('Method call threshold (ms)'), class: 'label-bold'
       = f.number_field :metrics_method_call_threshold, class: 'form-control gl-form-input'
       .form-text.gl-text-subtle
-        Only track method calls that take longer to complete than the given duration.
+        = _('Only track method calls that take longer to complete than the given duration.')
 
   = f.submit _('Save changes'), pajamas_button: true

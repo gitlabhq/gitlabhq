@@ -6,6 +6,7 @@ FactoryBot.define do
   factory :organization, class: 'Organizations::Organization' do
     sequence(:name) { |n| "Organization ##{n}" }
     path { name.parameterize }
+    visibility_level { Organizations::Organization::PUBLIC }
 
     # The default organization ID is for specs that specifically target the default organization.
     # Most specs should just create a normal organization.

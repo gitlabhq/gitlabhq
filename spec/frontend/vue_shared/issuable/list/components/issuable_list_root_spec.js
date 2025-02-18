@@ -53,6 +53,7 @@ describe('IssuableListRoot component', () => {
         tabCounts: mockIssuableListProps.tabCounts,
         currentTab: mockIssuableListProps.currentTab,
         truncateCounts: false,
+        addPadding: false,
       });
     });
 
@@ -64,6 +65,12 @@ describe('IssuableListRoot component', () => {
 
     it('renders contents for slot "nav-actions" within IssuableTab component', () => {
       expect(findIssuableTabs().find('.js-new-issuable').text()).toBe('New issuable');
+    });
+
+    it('sets "addPadding" prop correctly when updated', async () => {
+      await wrapper.setProps({ addPadding: true });
+
+      expect(findIssuableTabs().props('addPadding')).toBe(true);
     });
   });
 

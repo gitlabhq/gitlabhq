@@ -27,13 +27,9 @@
   }
 
   li > .wiki-list {
-    min-height: 30px;
-    @apply gl-mx-2;
-    margin-bottom: 1px;
-
     &:hover,
     &.active {
-      background: var(--gray-50, $gray-50);
+      @apply gl-bg-neutral-50 dark:gl-bg-neutral-900;
     }
 
     &:hover {
@@ -140,22 +136,10 @@ ul.wiki-pages-list.content-list {
   .container-limited.limit-container-width {
     max-width: 100%;
   }
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-disclosure-dropdown {
-    display: none !important;
-  }
 }
 
-.edited-text {
-  color: var(--gray-500, $gray-500);
-  display: block;
-  margin: 16px 0 0;
-  font-size: $gl-font-size-small;
-
-  .author-link {
-    color: var(--gray-700, $gray-700);
-    font-size: $gl-font-size-small;
+.discussion {
+  .toggle-replies-widget {
+    border: 0;
   }
 }
-

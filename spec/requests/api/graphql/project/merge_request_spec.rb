@@ -24,11 +24,13 @@ RSpec.describe 'getting merge request information nested in a project', feature_
     # we exclude Project.pipeline because it needs arguments,
     # codequalityReportsComparer because it is behind a feature flag
     # and runners because the user is not an admin and therefore has no access
-    # and inboundAllowlistCount, groupsAllowlistCount the user has no access
+    # and inboundAllowlistCount, groupsAllowlistCount, groupAllowlistAutopopulatedIds,
+    #   inboundAllowlistAutopopulatedIds the user has no access
     # mergeTrains because it is a licensed feature
     let(:excluded) do
       %w[jobs pipeline runners codequalityReportsComparer
-        mlModels inboundAllowlistCount groupsAllowlistCount mergeTrains ciJobTokenAuthLogs mlExperiments]
+        mlModels inboundAllowlistCount groupsAllowlistCount mergeTrains ciJobTokenAuthLogs mlExperiments
+        groupAllowlistAutopopulatedIds inboundAllowlistAutopopulatedIds]
     end
 
     let(:mr_fields) { all_graphql_fields_for('MergeRequest', excluded: excluded) }

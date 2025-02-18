@@ -3,7 +3,6 @@ import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { reportToSentry } from '~/ci/utils';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { INSTRUMENT_TODO_ITEM_CLICK, TODO_STATE_DONE, TODO_STATE_PENDING } from '../constants';
 import markAsDoneMutation from './mutations/mark_as_done.mutation.graphql';
 import markAsPendingMutation from './mutations/mark_as_pending.mutation.graphql';
@@ -17,7 +16,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin(), glFeatureFlagMixin()],
+  mixins: [Tracking.mixin()],
   props: {
     todo: {
       type: Object,
@@ -30,9 +29,6 @@ export default {
   },
   computed: {
     showToggleSnoozed() {
-      if (!this.glFeatures.todosSnoozing) {
-        return false;
-      }
       return (!this.isSnoozed && this.isPending) || this.isSnoozed;
     },
     isDone() {
@@ -111,9 +107,8 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-gap-2 gl-self-start sm:gl-self-center" @click.prevent>
+  <div class="gl-flex gl-gap-2">
     <toggle-snoozed-status
-      v-if="glFeatures.todosSnoozing"
       :todo="todo"
       :is-snoozed="isSnoozed"
       :is-pending="isPending"

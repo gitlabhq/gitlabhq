@@ -49,6 +49,7 @@ export default {
     'issuableType',
     'isGroupBoard',
     'fullPath',
+    'commentTemplatePaths',
   ],
   props: {
     boardId: {
@@ -370,13 +371,19 @@ export default {
           :open="Boolean(activeIssuable && activeIssuable.iid)"
           :active-item="activeIssuable"
           :issuable-type="issuableType"
+          :new-comment-template-paths="commentTemplatePaths"
           click-outside-exclude-selector=".board-card"
-          @close="onDrawerClosed"
+          @close="
+            onDrawerClosed();
+            $emit('drawer-closed');
+          "
           @work-item-updated="updateBoardCard($event, activeIssuable)"
           @workItemDeleted="onIssuableDeleted(activeIssuable)"
           @attributesUpdated="onAttributeUpdated"
           @workItemStateUpdated="onStateUpdated"
           @workItemTypeChanged="updateBoardCard($event, activeIssuable)"
+          @opened="$emit('drawer-opened')"
+          @clicked-outside="$emit('drawer-closed')"
         />
       </template>
     </board-drawer-wrapper>

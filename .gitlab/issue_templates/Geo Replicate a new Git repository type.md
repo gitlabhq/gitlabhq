@@ -812,7 +812,7 @@ As illustrated by the above two examples, batch destroy logic cannot be handled 
 When requesting review from database reviewers:
 
 - [ ] Include a comment mentioning that the change is based on a documented template.
-- [ ] `replicables_for_current_secondary` and `available_replicables` may differ per Model. If their queries are new, then add [query plans](https://docs.gitlab.com/ee/development/database_review.html#query-plans) to the MR description. An easy place to gather SQL queries is your GDK's `log/test.log` when running tests of these methods.
+- [ ] `replicables_for_current_secondary` and `available_replicables` may differ per Model. If their queries are new, then add [query plans](https://docs.gitlab.com/development/database_review/#query-plans) to the MR description. An easy place to gather SQL queries is your GDK's `log/test.log` when running tests of these methods.
 
 ### Release Geo support of Cool Widgets
 

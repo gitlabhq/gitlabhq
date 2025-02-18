@@ -6,8 +6,6 @@ module Packages
       include ::Gitlab::Utils::StrongMemoize
 
       ERROR_REASON_INVALID_PARAMETER = :invalid_parameter
-      ERROR_RESPONSE_PACKAGE_PROTECTED =
-        ServiceResponse.error(message: 'Package protected.', reason: :package_protected)
       ERROR_RESPONSE_UNAUTHORIZED = ServiceResponse.error(message: 'Unauthorized', reason: :unauthorized)
 
       def execute

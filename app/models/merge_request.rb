@@ -67,6 +67,7 @@ class MergeRequest < ApplicationRecord
   delegate :suggested_reviewers, to: :predictions
 
   has_one :merge_schedule, class_name: 'MergeRequests::MergeSchedule', inverse_of: :merge_request
+  has_one :metrics, inverse_of: :merge_request, autosave: true
 
   belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
   manual_inverse_association :latest_merge_request_diff, :merge_request
@@ -100,6 +101,10 @@ class MergeRequest < ApplicationRecord
     class_name: 'MergeRequestsClosingIssues',
     inverse_of: :merge_request,
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+
+  has_one :approval_metrics,
+    class_name: 'MergeRequest::ApprovalMetrics',
+    inverse_of: :merge_request
 
   has_many :cached_closes_issues, through: :merge_requests_closing_issues, source: :issue
   has_many :pipelines_for_merge_request, foreign_key: 'merge_request_id', class_name: 'Ci::Pipeline', inverse_of: :merge_request
@@ -381,7 +386,7 @@ class MergeRequest < ApplicationRecord
       :assignees, :author, :unresolved_notes, :labels, :milestone,
       :timelogs, :latest_merge_request_diff, :reviewers,
       :merge_schedule,
-      target_project: :project_feature,
+      target_project: [:project_feature, :project_setting],
       metrics: [:latest_closed_by, :merged_by]
     )
   }
@@ -465,6 +470,18 @@ class MergeRequest < ApplicationRecord
       reviewers_subquery
         .where(Arel::Table.new("#{to_ability_name}_reviewers")[:state].in(states))
         .exists
+    )
+  end
+
+  scope :no_review_states, ->(states) do
+    where(
+      reviewers_subquery.exists
+    )
+    .where(
+      reviewers_subquery
+        .where(Arel::Table.new("#{to_ability_name}_reviewers")[:state].in(states))
+        .exists
+        .not
     )
   end
 
@@ -1666,8 +1683,8 @@ class MergeRequest < ApplicationRecord
   end
 
   def squash_on_merge?
-    return true if target_project.squash_always?
-    return false if target_project.squash_never?
+    return true if squash_always?
+    return false if squash_never?
 
     squash?
   end
@@ -1708,8 +1725,13 @@ class MergeRequest < ApplicationRecord
     project.only_allow_merge_if_all_discussions_are_resolved?(inherit_group_setting: true)
   end
 
+  # We use a heuristic of if there are pipeline created, being created, or a ci integration is setup
   def has_ci_enabled?
-    has_ci? || project.has_ci?
+    has_ci? || (Feature.enabled?(:change_ci_enabled_hurestic, self.project) ? pipeline_creating? : project.has_ci?)
+  end
+
+  def pipeline_creating?
+    Ci::PipelineCreation::Requests.pipeline_creating_for_merge_request?(self)
   end
 
   def environments_in_head_pipeline(deployment_status: nil)
@@ -2353,7 +2375,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def missing_required_squash?
-    !squash && target_project.squash_always?
+    !squash && squash_always?
   end
 
   def current_patch_id_sha
@@ -2425,6 +2447,12 @@ class MergeRequest < ApplicationRecord
 
     diff.paginated_diffs(1, limit).diff_files
   end
+
+  def squash_option
+    target_project.project_setting
+  end
+
+  delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?, to: :squash_option
 
   private
 

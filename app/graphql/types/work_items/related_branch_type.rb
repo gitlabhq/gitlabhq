@@ -16,7 +16,7 @@ module Types
       field :compare_path, GraphQL::Types::String, null: true,
         description: 'Path to comparison of branch to default branch.'
 
-      field :pipeline_status, Types::Ci::DetailedStatusType, null: true,
+      field :pipeline_status, ::Types::Ci::DetailedStatusType, null: true,
         description: 'Status of pipeline for the branch.'
     end
     # rubocop:enable Graphql/AuthorizeTypes

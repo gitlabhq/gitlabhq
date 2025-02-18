@@ -227,7 +227,7 @@ RSpec.shared_examples 'handling helm chart index requests' do
         :public  | :not_a_member | 'process helm service index request' | :success
         :public  | :anonymous    | 'process helm service index request' | :success
         :private | :reporter     | 'process helm service index request' | :success
-        :private | :guest        | 'rejects helm packages access'       | :forbidden
+        :private | :guest        | 'process helm service index request' | :success
         :private | :not_a_member | 'rejects helm packages access'       | :not_found
         :private | :anonymous    | 'rejects helm packages access'       | :unauthorized
       end
@@ -264,7 +264,7 @@ RSpec.shared_examples 'handling helm chart index requests' do
         :public  | :not_a_member | 'process helm service index request' | :success
         :public  | :anonymous    | 'process helm service index request' | :success
         :private | :reporter     | 'process helm service index request' | :success
-        :private | :guest        | 'rejects helm packages access'       | :forbidden
+        :private | :guest        | 'process helm service index request' | :success
         :private | :not_a_member | 'rejects helm packages access'       | :not_found
         :private | :anonymous    | 'rejects helm packages access'       | :unauthorized
       end

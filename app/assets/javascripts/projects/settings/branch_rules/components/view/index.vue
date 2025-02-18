@@ -13,6 +13,7 @@ import {
 import { InternalEvents } from '~/tracking';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import branchRulesQuery from 'ee_else_ce/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
+import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
 import { createAlert } from '~/alert';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
@@ -30,9 +31,11 @@ import {
   CHANGED_REQUIRE_CODEOWNER_APPROVAL,
 } from 'ee_else_ce/projects/settings/branch_rules/tracking/constants';
 import deleteBranchRuleMutation from '../../mutations/branch_rule_delete.mutation.graphql';
+import editSquashOptionMutation from '../../mutations/edit_squash_option.mutation.graphql';
 import BranchRuleModal from '../../../components/branch_rule_modal.vue';
 import Protection from './protection.vue';
 import AccessLevelsDrawer from './access_levels_drawer.vue';
+import SquashSettingsDrawer from './squash_settings_drawer.vue';
 import ProtectionToggle from './protection_toggle.vue';
 import {
   I18N,
@@ -43,7 +46,7 @@ import {
 } from './constants';
 
 const protectedBranchesHelpDocLink = helpPagePath('user/project/repository/branches/protected');
-const codeOwnersHelpDocLink = helpPagePath('user/project/codeowners/index');
+const codeOwnersHelpDocLink = helpPagePath('user/project/codeowners/_index');
 const pushRulesHelpDocLink = helpPagePath('user/project/repository/push_rules');
 const squashSettingsHelpDocLink = helpPagePath('user/project/merge_requests/squash_and_merge');
 
@@ -69,12 +72,14 @@ export default {
     GlButton,
     BranchRuleModal,
     AccessLevelsDrawer,
+    SquashSettingsDrawer,
     PageHeading,
     CrudComponent,
     SettingsSection,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
+    allowEditSquashSetting: { default: false },
     projectPath: {
       default: '',
     },
@@ -124,6 +129,24 @@ export default {
         createAlert({ message: error });
       },
     },
+    squashOption: {
+      query: squashOptionQuery,
+      variables() {
+        return {
+          projectPath: this.projectPath,
+        };
+      },
+      update({ project }) {
+        const squashOptions = project?.branchRules?.nodes || [];
+        return squashOptions.find((option) => option.name === this.branch)?.squashOption || {};
+      },
+      skip() {
+        return !this.showSquashSetting;
+      },
+      error(error) {
+        createAlert({ message: error });
+      },
+    },
   },
   data() {
     return {
@@ -135,9 +158,11 @@ export default {
       matchingBranchesCount: null,
       isAllowedToMergeDrawerOpen: false,
       isAllowedToPushAndMergeDrawerOpen: false,
+      isSquashSettingsDrawerOpen: false,
       isRuleUpdating: false,
       isAllowForcePushLoading: false,
       isCodeOwnersLoading: false,
+      squashOption: {},
     };
   },
   computed: {
@@ -228,8 +253,10 @@ export default {
     showSquashSetting() {
       return this.glFeatures.branchRuleSquashSettings && !this.branch?.includes('*'); // Squash settings are not available for wildcards
     },
-    squashOption() {
-      return this.branchRule?.squashOption;
+    showEditSquashSetting() {
+      return (
+        this.canAdminProtectedBranches && (this.allowEditSquashSetting || this.isAllBranchesRule)
+      );
     },
   },
   methods: {
@@ -325,6 +352,29 @@ export default {
           trackEvent: CHANGED_ALLOWED_TO_PUSH_AND_MERGE,
         });
       }
+    },
+    onEditSquashSettings(selectedOption) {
+      this.isRuleUpdating = true;
+      const branchRuleId = this.branchRule.id;
+
+      this.$apollo
+        .mutate({
+          mutation: editSquashOptionMutation,
+          variables: { input: { branchRuleId, squashOption: selectedOption } },
+        })
+        .then(({ data: { branchRuleSquashOptionUpdate } }) => {
+          if (branchRuleSquashOptionUpdate?.errors.length) {
+            createAlert({ message: this.$options.i18n.updateBranchRuleError });
+            return;
+          }
+
+          this.$apollo.queries.squashOption.refetch();
+        })
+        .catch(() => createAlert({ message: this.$options.i18n.updateBranchRuleError }))
+        .finally(() => {
+          this.isSquashSettingsDrawerOpen = false;
+          this.isRuleUpdating = false;
+        });
     },
     editBranchRule({
       name = this.branchRule.name,
@@ -553,10 +603,11 @@ export default {
           v-if="showSquashSetting"
           :header="$options.i18n.squashSettingHeader"
           :empty-state-copy="$options.i18n.squashSettingEmptyState"
-          :is-edit-available="false"
+          :is-edit-available="showEditSquashSetting"
           :icon="null"
           class="gl-mt-5"
           data-testid="squash-setting-content"
+          @edit="isSquashSettingsDrawerOpen = true"
         >
           <template #description>
             <gl-sprintf :message="$options.i18n.squashSettingHelpText">
@@ -575,6 +626,14 @@ export default {
           </template>
         </protection>
       </settings-section>
+
+      <squash-settings-drawer
+        :is-open="isSquashSettingsDrawerOpen"
+        :is-loading="isRuleUpdating"
+        :selected-option="squashOption.option"
+        @submit="onEditSquashSettings"
+        @close="isSquashSettingsDrawerOpen = false"
+      />
 
       <!-- Status checks -->
       <settings-section

@@ -312,7 +312,7 @@ RSpec.describe Gitlab::Git::Blob do
       blobs = described_class.batch_lfs_pointers(repository, [lfs_blob.id])
 
       expect(blobs.count).to eq(1)
-      expect(blobs).to all( be_a(described_class) )
+      expect(blobs).to all(be_a(described_class))
       expect(blobs).to be_an(Array)
     end
 
@@ -320,7 +320,7 @@ RSpec.describe Gitlab::Git::Blob do
       blobs = described_class.batch_lfs_pointers(repository, [lfs_blob.id].lazy)
 
       expect(blobs.count).to eq(1)
-      expect(blobs).to all( be_a(described_class) )
+      expect(blobs).to all(be_a(described_class))
     end
 
     it 'handles empty list of IDs gracefully' do

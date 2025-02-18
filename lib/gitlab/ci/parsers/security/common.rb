@@ -182,7 +182,7 @@ module Gitlab
           def create_scan
             return unless scan_data.is_a?(Hash)
 
-            report.scan = ::Gitlab::Ci::Reports::Security::Scan.new(scan_data)
+            report.add_scan(::Gitlab::Ci::Reports::Security::Scan.new(scan_data))
           end
 
           def set_report_version

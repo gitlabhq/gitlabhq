@@ -2,15 +2,21 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Geo sites API
 ---
 
-# Geo sites API
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369140) in GitLab 16.0.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369140) in GitLab 16.0.
+
+{{< /history >}}
 
 Use the Geo sites API to manage Geo site endpoints.
 
@@ -969,5 +975,8 @@ Example response:
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `health_status` parameter can only be in an "Healthy" or "Unhealthy" state, while the `health` parameter can be empty, "Healthy", or contain the actual error message.
+
+{{< /alert >}}

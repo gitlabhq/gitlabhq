@@ -36,7 +36,7 @@ export const Tracker = {
 
   /**
    * Dispatches a structured event:
-   * https://docs.gitlab.com/ee/development/snowplow/index.html#event-schema.
+   * https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/
    *
    * If the library is not initialized and events are trying to be
    * dispatched (data-attributes, load-events), they will be added
@@ -121,7 +121,7 @@ export const Tracker = {
    * Enable Snowplow automatic form tracking.
    * The config param requires at least one array of either forms
    * class names, or field name attributes.
-   * https://docs.gitlab.com/ee/development/snowplow/index.html#form-tracking.
+   * https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/
    *
    * @param {Object} config
    * @param {Array} contexts

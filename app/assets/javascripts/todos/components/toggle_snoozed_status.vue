@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlDisclosureDropdown, GlTooltip } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdown, GlDisclosureDropdownGroup, GlTooltip } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import dateFormat from '~/lib/dateformat';
 import { s__, sprintf } from '~/locale';
@@ -8,14 +8,17 @@ import { reportToSentry } from '~/ci/utils';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import Tracking from '~/tracking';
 import { INSTRUMENT_TODO_ITEM_CLICK } from '~/todos/constants';
-import snoozeTodoMutation from './mutations/snooze_todo.mutation.graphql';
+import { snoozeTodo } from '../utils';
 import unSnoozeTodoMutation from './mutations/un_snooze_todo.mutation.graphql';
+import SnoozeTodoModal from './snooze_todo_modal.vue';
 
 export default {
   components: {
     GlButton,
     GlDisclosureDropdown,
+    GlDisclosureDropdownGroup,
     GlTooltip,
+    SnoozeTodoModal,
   },
   mixins: [Tracking.mixin()],
   inject: ['currentTime'],
@@ -101,29 +104,23 @@ export default {
             },
           ],
         },
+        {
+          items: [
+            {
+              text: s__('Todos|Until a specific time and date'),
+              action: () => {
+                this.$refs['custom-snooze-time-modal'].show();
+              },
+            },
+          ],
+        },
       ];
     },
   },
   methods: {
     async snooze(until) {
       try {
-        const { data } = await this.$apollo.mutate({
-          mutation: snoozeTodoMutation,
-          variables: {
-            todoId: this.todo.id,
-            snoozeUntil: until,
-          },
-          optimisticResponse: {
-            todoSnooze: {
-              todo: {
-                id: this.todo.id,
-                snoozedUntil: until,
-                __typename: 'Todo',
-              },
-              errors: [],
-            },
-          },
-        });
+        const { data } = await snoozeTodo(this.$apollo, this.todo, until);
 
         if (data.errors?.length) {
           throw new Error(data.errors.join(', '));
@@ -174,7 +171,7 @@ export default {
     },
   },
   i18n: {
-    snooze: s__('Todos|Snooze'),
+    snooze: s__('Todos|Snooze...'),
     snoozeError: s__('Todos|Failed to snooze todo. Try again later.'),
     unSnooze: s__('Todos|Remove snooze'),
     unSnoozeError: s__('Todos|Failed to un-snooze todo. Try again later.'),
@@ -207,17 +204,21 @@ export default {
       @shown="isOpen = true"
       @hidden="isOpen = false"
     >
-      <template #list-item="{ item }">
-        <div class="gl-flex gl-justify-between gl-gap-5 gl-whitespace-nowrap">
-          <div>
-            {{ item.text }}
+      <gl-disclosure-dropdown-group :group="dropdownOptions[0]">
+        <template #list-item="{ item }">
+          <div class="gl-flex gl-justify-between gl-gap-5 gl-whitespace-nowrap">
+            <div>
+              {{ item.text }}
+            </div>
+            <div class="gl-text-right gl-text-secondary">{{ item.formattedDate }}</div>
           </div>
-          <div class="gl-text-right gl-text-secondary">{{ item.formattedDate }}</div>
-        </div>
-      </template>
+        </template>
+      </gl-disclosure-dropdown-group>
+      <gl-disclosure-dropdown-group bordered border-position="top" :group="dropdownOptions[1]" />
     </gl-disclosure-dropdown>
     <gl-tooltip v-if="!isOpen" :target="toggleId">
       {{ $options.i18n.snooze }}
     </gl-tooltip>
+    <snooze-todo-modal ref="custom-snooze-time-modal" :todo="todo" />
   </span>
 </template>

@@ -105,6 +105,12 @@ module QA
           )
         end
 
+        def has_comment_author?(author_username)
+          within_element('noteable-note-container') do
+            has_element?('author-name', text: author_username, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+          end
+        end
+
         def has_system_note?(note_text)
           has_element?('system-note-content', text: note_text, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
         end

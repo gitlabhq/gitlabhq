@@ -146,7 +146,11 @@ func TestSuccessfullRequest(t *testing.T) {
 	contentType := "foo"
 	dockerContentDigest := "sha256:asdf1234"
 	overriddenHeader := "originResourceServer"
-	originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+	originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Header["Accept-Encoding"] != nil {
+			t.Error("Expected Accept-Encoding to be nil")
+		}
+
 		w.Header().Set("Content-Length", contentLength)
 		w.Header().Set("Content-Type", contentType)
 		w.Header().Set("Docker-Content-Digest", dockerContentDigest)

@@ -2,13 +2,15 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Syntax of `CODEOWNERS` file
 ---
 
-# `CODEOWNERS` syntax
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The `CODEOWNERS` file uses a syntax to define ownership rules.
 Each line in the file represents a rule, and specifies a file path pattern and one or more owners.
@@ -19,8 +21,11 @@ The key elements are:
 - **Comments**: Lines starting with `#` are ignored.
 - **Sections**: Optional groupings of rules, defined using `[Section name]`.
 
-NOTE:
+{{< alert type="note" >}}
+
 If an entry is duplicated in a section, [the last entry is used](advanced.md#define-code-owners-for-specific-files-or-directories). Rules defined later in the file take precedence over earlier rules.
+
+{{< /alert >}}
 
 Here are some examples:
 
@@ -142,8 +147,12 @@ Examples:
 
 ### Set default Code Owner for a section
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371711) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `codeowners_default_owners`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115888) in GitLab 15.11. Feature flag `codeowners_default_owners` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371711) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `codeowners_default_owners`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115888) in GitLab 15.11. Feature flag `codeowners_default_owners` removed.
+
+{{< /history >}}
 
 If multiple file paths inside a section share the same ownership, define default
 Code Owners for the section.
@@ -210,12 +219,13 @@ section is marked as optional.
 
 ## Add a role as a Code Owner
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282438) in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `codeowner_role_approvers`.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/497504) in GitLab 17.8.
+{{< history >}}
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282438) in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `codeowner_role_approvers`.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/497504) in GitLab 17.8.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512623) in GitLab 17.9 Feature flag `codeowner_role_approvers` removed.
+
+{{< /history >}}
 
 You can add or set a role for direct project members as Code Owners:
 
@@ -241,23 +251,51 @@ role as Code Owners for `file.md`:
 
 ## Add a group as a Code Owner
 
-To set the members of a group or subgroup as a Code Owner:
+You can set **direct members** of a group or subgroup as a Code Owner.
+For more information about group membership, see [Membership types](../members/_index.md#membership-types).
 
-In the `CODEOWNERS` file, enter text that follows one of these patterns:
+To set direct members of a group or subgroup as a Code Owner:
+
+1. Open the `CODEOWNERS` file.
+1. Enter text that follows one of these patterns:
+
+   ```plaintext
+   # All direct group members as Code Owners for a file
+   file.md @group-x
+
+   # All direct subgroup members as Code Owners for a file
+   file.md @group-x/subgroup-y
+
+   # All direct group and direct subgroup members as Code Owners for a file
+   file.md @group-x @group-x/subgroup-y
+   ```
+
+1. Save the file.
+1. Commit and merge the changes.
+
+### Example configuration
 
 ```plaintext
-# All group members as Code Owners for a file
-file.md @group-x
-
-# All subgroup members as Code Owners for a file
-file.md @group-x/subgroup-y
-
-# All group and subgroup members as Code Owners for a file
-file.md @group-x @group-x/subgroup-y
+[Maintainers]
+* @gitlab-org/maintainers/group-name
 ```
 
-NOTE:
+In this example:
+
+- The group `group-name` is listed under the `[Maintainers]` section.
+- The `group-name` contains the following direct members:
+
+  ![List of group members.](../img/direct_group_members_v17_9.png)
+
+- In the merge request approval widget, the same direct members are listed as `Maintainers`:
+
+  ![Merge request maintainers.](../img/merge_request_maintainers_v17_9.png)
+
+{{< alert type="note" >}}
+
 When [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) is enabled, you cannot set a group or subgroup as a Code Owner. For more information, see [Incompatibility with Global SAML group memberships lock](troubleshooting.md#incompatibility-with-global-saml-group-memberships-lock).
+
+{{< /alert >}}
 
 If you encounter issues, refer to [User not shown as possible approver](troubleshooting.md#user-not-shown-as-possible-approver).
 
@@ -290,10 +328,13 @@ README.md @username
 internal/README.md
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 When using globstar paths, be cautious of unintended matches.
 For example, `README.md` without a leading `/` matches any `README.md`
 file in any directory or subdirectory of the repository.
+
+{{< /alert >}}
 
 ### Directory paths
 
@@ -334,6 +375,72 @@ Use `**` to match zero or more directories recursively:
 /docs/**/index.md
 ```
 
+### Exclusion patterns
+
+Prefix files or paths with `!` to exempt or exclude them from requiring code owner approval.
+Exclusions apply in their section. In the following example:
+
+- The `pom.xml` exclusion applies to the default section.
+- The `/config/**/*.rb` exclusion only affects Ruby files in the Ruby section.
+
+```plaintext
+# All files require approval from @username
+* @username
+
+# Except pom.xml which needs no approval
+!pom.xml
+
+[Ruby]
+# All ruby files require approval from @ruby-team
+*.rb @ruby-team
+
+# Except Ruby files in the config directory
+!/config/**/*.rb
+```
+
+The following guidelines explain how exclusion patterns behave:
+
+- Exclusions are evaluated in order in their section. For example:
+
+  ```plaintext
+  * @default-owner
+  !*.rb                      # Excludes all Ruby files.
+  /special/*.rb @ruby-owner  # This won't take effect as *.rb is already excluded.
+  ```
+
+- After a pattern is excluded, it cannot be included again in the same section:
+
+  ```plaintext
+  [Ruby]
+  *.rb @ruby-team           # All Ruby files need Ruby team approval.
+  !/config/**/*.rb          # Ruby files in config don't need Ruby team approval.
+  /config/routes.rb @ops    # This won't take effect as config Ruby files are excluded.
+  ```
+
+- Files matching an exclusion pattern do not require code owner approval for that section.
+  If you need different exclusions for different owners, use multiple sections:
+
+  ```plaintext
+  [Ruby]
+  *.rb @ruby-team
+  !/config/**/*.rb        # Config Ruby files don't need Ruby team approval.
+
+  [Config]
+  /config/**/* @ops-team  # Config files still require ops-team approval.
+  ```
+
+- Use exclusions for files that are automatically updated:
+
+  ```plaintext
+  * @default-owner
+
+  # Files updated by automation don't need approval.
+  !package-lock.json
+  !yarn.lock
+  !**/generated/**/*      # Any files in generated directories.
+  !.gitlab-ci.yml
+  ```
+
 ## Entry owners
 
 Entries must have one or more owners These can be groups, subgroups,
@@ -350,8 +457,8 @@ For more information on adding groups as Code Owners, see [Add a group as a Code
 
 ## Related topics
 
-- [Code Owners](index.md)
+- [Code Owners](_index.md)
 - [Advanced `CODEOWNERS` configuration](advanced.md)
-- [Merge request approvals](../merge_requests/approvals/index.md)
+- [Merge request approvals](../merge_requests/approvals/_index.md)
 - [Protected branches](../repository/branches/protected.md)
 - [Troubleshooting Code Owners](troubleshooting.md)

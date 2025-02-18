@@ -22,7 +22,7 @@ module Import
         end
 
         def [](user_identifier)
-          @source_user_mapper.find_source_user(user_identifier).mapped_user_id
+          @source_user_mapper.find_source_user(user_identifier)&.mapped_user_id
         end
       end
 
@@ -34,10 +34,8 @@ module Import
         @map ||= MockedHash.new(source_user_mapper)
       end
 
-      # Import::SourceUser with the respective user_identifier will always
-      # exist since they are created beforehand.
-      def include?(_user_identifier)
-        true
+      def include?(user_identifier)
+        !!map[user_identifier]
       end
 
       private

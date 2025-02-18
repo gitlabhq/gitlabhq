@@ -1,20 +1,22 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Configure PlantUML integration with GitLab Self-Managed."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Configure PlantUML integration with GitLab Self-Managed.
+title: PlantUML
 ---
 
-# PlantUML
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 With the [PlantUML](https://plantuml.com) integration, you can create diagrams in snippets, wikis, and repositories.
-This integration is enabled on GitLab.com for all SaaS users and does not require any additional configuration.
+This integration is enabled on GitLab.com for all users and does not require any additional configuration.
 
-To set up the integration on a self-managed instance, you must [configure your PlantUML server](#configure-your-plantuml-server).
+To set up the integration on your GitLab Self-Managed instance, you must [configure your PlantUML server](#configure-your-plantuml-server).
 
 After completing the integration, PlantUML converts `plantuml`
 blocks to an HTML image tag, with the source pointing to the PlantUML instance. The PlantUML
@@ -82,6 +84,29 @@ You can add parameters to block definitions:
 - `height`: Height attribute added to the image tag.
 
 Markdown does not support any parameters, and always uses PNG format.
+
+## Include diagram files
+
+You can include or embed a PlantUML diagram from separate files in the repository using
+the `include` directive. Use this to maintain complex diagrams in dedicated files, or to
+reuse diagrams. For example:
+
+- **Markdown**:
+
+  ````markdown
+  ```plantuml
+  ::include{file=diagram.puml}
+  ```
+  ````
+
+- **AsciiDoc**:
+
+  ```plaintext
+  [plantuml, format="png", id="myDiagram", width="200px"]
+  ----
+  include::diagram.puml[]
+  ----
+  ```
 
 ## Configure your PlantUML server
 
@@ -249,10 +274,13 @@ PlantUML integration is ready and listening for requests on port `8005`:
 
 To change the Tomcat defaults, edit the `/opt/tomcat/conf/server.xml` file.
 
-NOTE:
+{{< alert type="note" >}}
+
 The default URL is different when using this approach. The Docker-based image
 makes the service available at the root URL, with no relative path. Adjust
 the configuration below accordingly.
+
+{{< /alert >}}
 
 Next, you can:
 
@@ -273,7 +301,7 @@ following:
 - `http://plantuml:8005/`
 - `http://localhost:8005/plantuml/`
 
-If you're running [GitLab with TLS](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
+If you're running [GitLab with TLS](https://docs.gitlab.com/omnibus/settings/ssl/)
 you must configure this redirection, because PlantUML uses the insecure HTTP protocol.
 Newer browsers, such as [Google Chrome 86+](https://www.chromestatus.com/feature/4926989725073408),
 don't load insecure HTTP resources on pages served over HTTPS.

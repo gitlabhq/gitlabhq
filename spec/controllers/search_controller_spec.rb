@@ -267,31 +267,28 @@ RSpec.describe SearchController, feature_category: :global_search do
           end
         end
 
-        context 'tab feature flags' do
-          subject { get :show, params: { scope: scope, search: 'term' }, format: :html }
+        context 'for tab feature flags' do
+          subject(:show) { get :show, params: { scope: scope, search: 'term' }, format: :html }
 
-          where(:feature_flag, :scope) do
-            :global_search_code_tab           | 'blobs'
-            :global_search_issues_tab         | 'issues'
-            :global_search_merge_requests_tab | 'merge_requests'
-            :global_search_wiki_tab           | 'wiki_blobs'
-            :global_search_commits_tab        | 'commits'
-            :global_search_users_tab          | 'users'
+          where(:admin_setting, :scope) do
+            :global_search_issues_enabled         | 'issues'
+            :global_search_merge_requests_enabled | 'merge_requests'
+            :global_search_users_enabled          | 'users'
           end
 
           with_them do
             it 'returns 200 if flag is enabled' do
-              stub_feature_flags(feature_flag => true)
+              stub_application_setting(admin_setting => true)
 
-              subject
+              show
 
               expect(response).to have_gitlab_http_status(:ok)
             end
 
             it 'redirects with alert if flag is disabled' do
-              stub_feature_flags(feature_flag => false)
+              stub_application_setting(admin_setting => false)
 
-              subject
+              show
 
               expect(response).to redirect_to search_path
               expect(controller).to set_flash[:alert].to(/Global Search is disabled for this scope/)
@@ -580,7 +577,7 @@ RSpec.describe SearchController, feature_category: :global_search do
       it 'returns an empty array when given abusive search term' do
         get :autocomplete, params: { term: ('hal' * 4000), scope: 'projects' }
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to match_array([])
+        expect(json_response).to be_empty
       end
 
       describe 'rate limit scope' do

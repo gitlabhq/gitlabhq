@@ -2,9 +2,8 @@
 stage: Foundations
 group: Personal Productivity
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Cascading Settings
 ---
-
-# Cascading Settings
 
 Have you ever wanted to add a setting on a GitLab project and/or group that had a default value that was inherited from a parent in the hierarchy?
 
@@ -135,7 +134,7 @@ The only cascading setting that actually cascades values at the database level i
 
 ### Legacy cascading settings writes
 
-In the first iteration of the cascading settings framework, the "cascade" was as the application code-level, not the database level. The way this works is that the setting value in the `application_settings` table has a default value. At the `namespace_settings` level, it does not. As a result, namespaces have a `nil` value at the databse level but "inherit" the `application_settings` value.
+In the first iteration of the cascading settings framework, the "cascade" was as the application code-level, not the database level. The way this works is that the setting value in the `application_settings` table has a default value. At the `namespace_settings` level, it does not. As a result, namespaces have a `nil` value at the database level but "inherit" the `application_settings` value.
 
 If the group is updated to have a new setting value, that takes precedent over the default value at the `application_settings` level. And, any subgroups will inherit the parent group's setting value because they also have a `nil` value at the database level but inherit the parent value from the `namespace_settings` table. If one of the subgroups update the setting, however, then that overrides the parent group.
 
@@ -218,7 +217,7 @@ Renders the label for a `fieldset` setting.
 | `settings_path_helper` | Lambda function that generates a path to the ancestor setting. For example, `-> (locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') }`                                           | `Lambda`             | `true`                   |
 | `help_text`            | Text shown below the checkbox.                                                                                                                                                                                       | `String`             | `false` (`nil`)          |
 
-[`_lock_tooltips.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/b73353e47e283a7d9c9eda5bdedb345dcfb685b6/app/views/shared/namespaces/cascading_settings/_lock_tooltips.html.haml)
+[`_lock_tooltips.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/views/shared/namespaces/cascading_settings/_lock_tooltips.html.haml)
 
 Renders the mount element needed to initialize the JavaScript used to display the tooltip when hovering over the lock icon. This partial is only needed once per page.
 
@@ -226,7 +225,7 @@ Renders the mount element needed to initialize the JavaScript used to display th
 
 [`initCascadingSettingsLockTooltips`](https://gitlab.com/gitlab-org/gitlab/-/blob/acb2ef4dbbd06f93615e8e6a1c0a78e7ebe20441/app/assets/javascripts/namespaces/cascading_settings/index.js#L4)
 
-Initializes the JavaScript needed to display the tooltip when hovering over the lock icon (**{lock}**).
+Initializes the JavaScript needed to display the tooltip when hovering over the lock icon ({{< icon name="lock" >}}).
 This function should be imported and called in the [page-specific JavaScript](fe_guide/performance.md#page-specific-javascript).
 
 ### Put it all together
@@ -357,6 +356,6 @@ You can look into the following examples of MRs for implementing `cascading_lock
 - [Add cascading settings in Groups](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162101)
 - [Add cascading settings in Projects](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163050)
 
-### Reasoning for supporing both HAML and Vue
+### Reasoning for supporting both HAML and Vue
 
 It is the goal to build all new frontend features in Vue and to eventually move away from building features in HAML. However there are still HAML frontend features that utilize cascading settings, so support will remain with `initCascadingSettingsLockTooltips` until those components have been migrated into Vue.

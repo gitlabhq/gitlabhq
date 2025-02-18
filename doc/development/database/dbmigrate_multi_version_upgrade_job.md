@@ -2,11 +2,14 @@
 stage: Data Access
 group: Database
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: db:migrate:multi-version-upgrade job
 ---
 
-# db:migrate:multi-version-upgrade job
+{{< history >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/quality/quality-engineering/-/epics/19) in GitLab 16.11.
+- [Introduced](https://gitlab.com/groups/gitlab-org/quality/quality-engineering/-/epics/19) in GitLab 16.11.
+
+{{< /history >}}
 
 This job runs on the test stage of a merge request pipeline. It validates that migrations pass
 for multi-version upgrade from the latest [required upgrade stop](../../update/upgrade_paths.md)

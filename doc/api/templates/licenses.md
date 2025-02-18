@@ -2,13 +2,15 @@
 stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Licenses API
 ---
 
-# Licenses API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In GitLab, there is an API endpoint available for working with various open
 source license templates. For more information on the terms of various
@@ -130,9 +132,12 @@ GET /templates/licenses/:key
 | `project`  | string | no       | The copyrighted project name |
 | `fullname` | string | no       | The full-name of the copyright holder |
 
-NOTE:
+{{< alert type="note" >}}
+
 If you omit the `fullname` parameter but authenticate your request, the name of
 the authenticated user replaces the copyright holder placeholder.
+
+{{< /alert >}}
 
 Example request:
 

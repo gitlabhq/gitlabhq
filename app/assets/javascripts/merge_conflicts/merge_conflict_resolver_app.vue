@@ -36,7 +36,7 @@ export default {
   i18n: {
     commitStatSummary: __('Showing %{conflict}'),
     resolveInfo: __(
-      'To resolve the conflicts, either use interactive mode to select %{use_ours} or %{use_theirs}, or edit the files inline. Commit these changes into %{branch_name}.',
+      'Resolve source branch %{source_branch_name} conflicts using interactive mode to select %{use_ours} or %{use_theirs}, or manually using %{edit_inline}.',
     ),
   },
   computed: {
@@ -76,6 +76,22 @@ export default {
 </script>
 <template>
   <div id="conflicts">
+    <div data-testid="resolve-info">
+      <gl-sprintf :message="$options.i18n.resolveInfo">
+        <template #source_branch_name>
+          <a class="ref-name" :href="sourceBranchPath">{{ conflictsData.sourceBranch }}</a>
+        </template>
+        <template #use_ours>
+          <strong>{{ s__('MergeConflict|Use ours') }}</strong>
+        </template>
+        <template #use_theirs>
+          <strong>{{ s__('MergeConflict|Use theirs') }}</strong>
+        </template>
+        <template #edit_inline>
+          <strong>{{ s__('MergeConflict|Edit inline') }}</strong>
+        </template>
+      </gl-sprintf>
+    </div>
     <gl-loading-icon v-if="isLoading" size="lg" data-testid="loading-spinner" />
     <div v-if="hasError" class="nothing-here-block">
       {{ conflictsData.errorMessage }}
@@ -175,24 +191,6 @@ export default {
       </div>
       <div class="resolve-conflicts-form gl-mt-6">
         <div class="form-group row">
-          <div class="col-md-4">
-            <h4 class="gl-mt-0">
-              {{ __('Resolve conflicts on source branch') }}
-            </h4>
-            <div class="gl-mb-5" data-testid="resolve-info">
-              <gl-sprintf :message="$options.i18n.resolveInfo">
-                <template #use_ours>
-                  <strong>{{ s__('MergeConflict|Use ours') }}</strong>
-                </template>
-                <template #use_theirs>
-                  <strong>{{ s__('MergeConflict|Use theirs') }}</strong>
-                </template>
-                <template #branch_name>
-                  <a class="ref-name" :href="sourceBranchPath">{{ conflictsData.sourceBranch }}</a>
-                </template>
-              </gl-sprintf>
-            </div>
-          </div>
           <div class="col-md-8">
             <label class="label-bold" for="commit-message">
               {{ __('Commit message') }}

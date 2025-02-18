@@ -238,7 +238,7 @@ class Import::GithubController < Import::BaseController
   def provider_unauthorized
     session[access_token_key] = nil
     redirect_to new_import_url,
-      alert: "Access denied to your #{Gitlab::ImportSources.title(provider_name.to_s)} account."
+      alert: "Wrong credentials"
   end
 
   def provider_rate_limit(exception)

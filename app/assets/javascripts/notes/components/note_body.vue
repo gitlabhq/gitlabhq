@@ -216,7 +216,7 @@ export default {
     ></textarea>
     <!-- eslint-enable vue/no-mutating-props -->
     <note-edited-text
-      v-if="note.last_edited_at"
+      v-if="note.last_edited_at && note.last_edited_at !== note.created_at"
       :edited-at="note.last_edited_at"
       :edited-by="note.last_edited_by"
       :action-text="__('Edited')"

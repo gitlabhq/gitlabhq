@@ -2,13 +2,15 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: OpenTofu integration in merge requests
 ---
 
-# OpenTofu integration in merge requests
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Collaborating around Infrastructure as Code (IaC) changes requires both code changes and expected infrastructure changes to be checked and approved. GitLab provides a solution to help collaboration around OpenTofu code changes and their expected effects using the merge request pages. This way users don't have to build custom tools or rely on third-party solutions to streamline their IaC workflows.
 
@@ -19,18 +21,21 @@ you can expose details from `tofu plan` runs directly into a merge request widge
 enabling you to see statistics about the resources that OpenTofu creates,
 modifies, or destroys.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Like any other job artifact, OpenTofu plan data is viewable by anyone with the Guest role on the repository.
 Neither OpenTofu nor GitLab encrypts the plan file by default. If your OpenTofu `plan.json` or `plan.cache`
 files include sensitive data like passwords, access tokens, or certificates, you should
 encrypt the plan output or modify the project visibility settings. You should also **disable**
 [public pipelines](../../../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects)
-and set the [artifact's public flag to false](../../../ci/yaml/index.md#artifactspublic) (`public: false`).
+and set the [artifact's public flag to false](../../../ci/yaml/_index.md#artifactspublic) (`public: false`).
 This setting ensures artifacts are accessible only to GitLab administrators and project members with at least the Reporter role.
+
+{{< /alert >}}
 
 ## Configure OpenTofu report artifacts
 
-GitLab [integrates with OpenTofu](index.md#quickstart-an-opentofu-project-in-pipelines)
+GitLab [integrates with OpenTofu](_index.md#quickstart-an-opentofu-project-in-pipelines)
 through the OpenTofu CI/CD component. This component uses GitLab-managed OpenTofu state to display OpenTofu changes on merge requests.
 
 ### Automatically configure OpenTofu report artifacts
@@ -63,11 +68,14 @@ To manually configure a GitLab OpenTofu Report artifact:
      - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
    ```
 
-   NOTE:
-   In distributions that use Bash (for example, Ubuntu), `alias` statements are not
+   {{< alert type="note" >}}
+
+In distributions that use Bash (for example, Ubuntu), `alias` statements are not
    expanded in non-interactive mode. If your pipelines fail with the error
    `convert_report: command not found`, alias expansion can be activated explicitly
    by adding a `shopt` command to your script:
+
+   {{< /alert >}}
 
    ```yaml
    before_script:

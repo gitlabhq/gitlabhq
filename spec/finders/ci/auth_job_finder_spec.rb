@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
   let_it_be(:user, reload: true) { create(:user) }
   let_it_be(:job, refind: true) { create(:ci_build, status: :running, user: user) }
+  let_it_be(:canceling_job, refind: true) { create(:ci_build, :canceling, user: user) }
 
   let(:token) { job.token }
 
@@ -41,10 +42,22 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
       end
     end
 
-    it 'raises error if the job is not running' do
+    it 'raises error if the job is succeeded' do
       job.success!
 
       expect { execute }.to raise_error described_class::NotRunningJobError, 'Job is not running'
+    end
+
+    context 'when the job is canceling' do
+      let(:token) { canceling_job.token }
+
+      it 'raises error' do
+        expect { finder.execute! }.to raise_error described_class::NotRunningJobError, 'Job is not running'
+      end
+
+      it 'returns a job if allow_canceling is explicitly true' do
+        expect(finder.execute!(allow_canceling: true)).to eq(canceling_job)
+      end
     end
 
     it 'raises error if the job is erased' do

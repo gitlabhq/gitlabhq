@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Admin::Menus::AdminOverviewMenu, feature_category: :navigation do
+RSpec.describe Sidebars::Admin::Menus::AdminOverviewMenu, :enable_admin_mode, feature_category: :navigation do
   let(:user) { build_stubbed(:user, :admin) }
   let(:context) { Sidebars::Context.new(current_user: user, container: nil) }
 

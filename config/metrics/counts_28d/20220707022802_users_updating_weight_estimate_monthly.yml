@@ -14,9 +14,6 @@ performance_indicator_type: []
 options:
   events:
     - users_updating_weight_estimate
-distribution:
-- ce
-- ee
 tiers:
 - premium
 - ultimate

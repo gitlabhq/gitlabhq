@@ -19,7 +19,7 @@ module Ci
 
       def ci_docs_link(name, anchor)
         ApplicationController.helpers.link_to(
-          name, Rails.application.routes.url_helpers.help_page_url('ci/yaml/index.md', anchor: anchor)
+          name, Rails.application.routes.url_helpers.help_page_url('ci/yaml/_index.md', anchor: anchor)
         )
       end
     end

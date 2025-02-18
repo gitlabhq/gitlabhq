@@ -78,11 +78,8 @@ export const I18N_AGENT_TABLE = {
   versionMismatchText: s__(
     "ClusterAgents|The agent version do not match each other across your cluster's pods. This can happen when a new agent version was just deployed and Kubernetes is shutting down the old pods.",
   ),
-  versionOutdatedTitle: s__('ClusterAgents|Agent version update required'),
-  versionOutdatedText: s__(
-    'ClusterAgents|Your agent version is out of sync with your GitLab KAS version (v%{version}), which might cause compatibility problems. Update the agent installed on your cluster to the most recent version.',
-  ),
-  versionMismatchOutdatedTitle: s__('ClusterAgents|Agent version mismatch and update'),
+  versionWarningsTitle: s__('ClusterAgents|Agent version update required'),
+  versionWarningsMismatchTitle: s__('ClusterAgents|Agent version mismatch and update'),
   viewDocsText: s__('ClusterAgents|How do I update an agent?'),
   defaultConfigText: s__('ClusterAgents|Default configuration'),
   defaultConfigTooltip: s__('ClusterAgents|What is default configuration?'),
@@ -131,10 +128,6 @@ export const I18N_AGENT_MODAL = {
   registrationSuccess: s__('ClusterAgents|%{agentName} successfully created.'),
   registrationErrorTitle: s__('ClusterAgents|Failed to register an agent'),
   unknownError: s__('ClusterAgents|An unknown error occurred. Please try again.'),
-  maxAgentsSupport: s__('ClusterAgents|We only support 100 agents on the UI.'),
-  useTerraformText: s__(
-    'ClusterAgents|To manage more agents, %{linkStart}use Terraform%{linkEnd}.',
-  ),
   registerWithUITitle: s__('ClusterAgents|Option 2: Create and register an agent with the UI'),
   bootstrapWithFluxTitle: s__('ClusterAgents|Option 1: Bootstrap the agent with Flux'),
   bootstrapWithFluxDescription: s__(
@@ -213,7 +206,7 @@ export const AGENT_CARD_INFO = {
         'ClusterAgents|The GitLab agent provides an increased level of security when connecting Kubernetes clusters to GitLab. %{linkStart}Learn more about the GitLab agent.%{linkEnd}',
       ),
     ),
-    link: helpPagePath('user/clusters/agent/index'),
+    link: helpPagePath('user/clusters/agent/_index'),
   },
   footerText: sprintf(s__('ClusterAgents|View all %{number} agents')),
 };
@@ -290,3 +283,5 @@ export const AGENT_FEEDBACK_ISSUE = 'https://gitlab.com/gitlab-org/gitlab/-/issu
 export const AGENT_FEEDBACK_KEY = 'agent_feedback_banner';
 
 export const CONNECT_MODAL_ID = 'connect-to-cluster-modal';
+
+export const MAX_CONFIGS_SHOWN = 100;

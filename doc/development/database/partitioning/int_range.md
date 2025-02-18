@@ -2,11 +2,14 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Int range partitioning
 ---
 
-# Int range partitioning
+{{< history >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132148) in GitLab 16.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132148) in GitLab 16.8.
+
+{{< /history >}}
 
 ## Description
 
@@ -45,9 +48,12 @@ CREATE TABLE merge_request_diff_files (
 PARTITION BY RANGE(merge_request_diff_id);
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The primary key of a partitioned table must include the partition key as
 part of the primary key definition.
+
+{{< /alert >}}
 
 And we might have a list of partitions for the table, such as:
 
@@ -142,14 +148,17 @@ This step [queues a batched background migration](../batched_background_migratio
 
 This step must occur at least one release after the release that
 includes step (2). This gives time for the background
-migration to execute properly in self-managed installations. In this step,
+migration to execute properly in GitLab Self-Managed instances. In this step,
 add another post-deployment migration that cleans up after the
 background migration. This includes forcing any remaining jobs to
 execute, and copying data that may have been missed, due to dropped or
 failed jobs.
 
-WARNING:
+{{< alert type="warning" >}}
+
 A required stop must occur between steps 2 and 3 to allow the background migration from step 2 to complete successfully.
+
+{{< /alert >}}
 
 Once again, continuing the example, this migration would look like:
 

@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: API style guide
 ---
-
-# API style guide
 
 This style guide recommends best practices for API development.
 
@@ -12,8 +11,8 @@ This style guide recommends best practices for API development.
 
 We offer two types of API to our customers:
 
-- [REST API](../api/rest/index.md)
-- [GraphQL API](../api/graphql/index.md)
+- [REST API](../api/rest/_index.md)
+- [GraphQL API](../api/graphql/_index.md)
 
 To reduce the technical burden of supporting two APIs in parallel,
 they should share implementations as much as possible.
@@ -21,7 +20,7 @@ For example, they could share the same [services](reusing_abstractions.md#servic
 
 ## Frontend
 
-See the [frontend guide](fe_guide/index.md#introduction)
+See the [frontend guide](fe_guide/_index.md#introduction)
 on details on which API to use when developing in the frontend.
 
 ## Instance variables
@@ -31,7 +30,7 @@ to access them as we do in Rails views), local variables are fine.
 
 ## Entities
 
-Always use an [Entity](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/entities) to present the endpoint's payload.
+Always use an [Entity](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/api/entities) to present the endpoint's payload.
 
 ## Documentation
 
@@ -78,7 +77,7 @@ end
 We must not make breaking changes to our REST API v4, even in major GitLab releases.
 
 Our REST API maintains its own versioning independent of GitLab versioning.
-The current REST API version is `4`. [We commit to follow semantic versioning for our REST API](../api/rest/index.md),
+The current REST API version is `4`. [We commit to follow semantic versioning for our REST API](../api/rest/_index.md),
 which means we cannot make breaking changes until a major version change (most likely, `5`).
 
 Because version `5` is not scheduled, we allow rare [exceptions](#exceptions).
@@ -138,7 +137,7 @@ and can be changed or removed at any time without prior notice.
 
 While in the [experiment status](../policy/development_stages_support.md#experiment):
 
-- Use a feature flag that is [off by default](feature_flags/index.md#beta-type).
+- Use a feature flag that is [off by default](feature_flags/_index.md#beta-type).
 - When the flag is off:
   - Any added endpoints must return `404 Not Found`.
   - Any added arguments must be ignored.
@@ -148,7 +147,7 @@ While in the [experiment status](../policy/development_stages_support.md#experim
 
 While in the [beta status](../policy/development_stages_support.md#beta):
 
-- Use a feature flag that is [on by default](feature_flags/index.md#beta-type).
+- Use a feature flag that is [on by default](feature_flags/_index.md#beta-type).
 - The [API documentation](../api/api_resources.md) must [document the beta status](documentation/experiment_beta.md) and the feature flag [must be documented](documentation/feature_flags.md).
 - The [OpenAPI documentation](../api/openapi/openapi_interactive.md) must not describe the changes.
 
@@ -194,9 +193,12 @@ User.create(params) # imagine the user submitted `admin=1`... :)
 User.create(declared(params, include_parent_namespaces: false).to_h)
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 `declared(params)` return a `Hashie::Mash` object, on which you must
 call `.to_h`.
+
+{{< /alert >}}
 
 But we can use `params[key]` directly when we access single elements.
 
@@ -349,7 +351,7 @@ them to platform for further processing. It saves some back-and-forth
 from the server to the platform if we identify invalid parameters at the beginning.
 
 If you need to add a custom validator, it would be added to
-it's own file in the [`validators`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators) directory.
+it's own file in the [`validators`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/api/validations/validators) directory.
 Since we use [Grape](https://github.com/ruby-grape/grape) to add our API
 we inherit from the `Grape::Validations::Validators::Base` class in our validator class.
 Now, all you have to do is define the `validate_param!` method which takes
@@ -365,11 +367,11 @@ Grape::Validations.register_validator(<validator name as symbol>, ::API::Helpers
 ```
 
 Once you add the validator, make sure you add the `rspec`s for it into
-it's own file in the [`validators`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/api/validations/validators) directory.
+it's own file in the [`validators`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/lib/api/validations/validators) directory.
 
 ## Internal API
 
-The [internal API](internal_api/index.md) is documented for internal use. Keep it up to date so we know what endpoints
+The [internal API](internal_api/_index.md) is documented for internal use. Keep it up to date so we know what endpoints
 different components are making use of.
 
 ## Avoiding N+1 problems

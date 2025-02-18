@@ -18,15 +18,19 @@ module Mutations
           required: true,
           description: 'Description of the pipeline trigger token.'
 
+        argument :expires_at, Types::TimeType,
+          required: false,
+          description: 'Timestamp of when the pipeline trigger token expires.'
+
         field :pipeline_trigger, Types::Ci::PipelineTriggerType,
           null: true,
           description: 'Mutated pipeline trigger token.'
 
-        def resolve(project_path:, description:)
+        def resolve(project_path:, description:, expires_at: nil)
           project = authorized_find!(project_path)
 
           response = ::Ci::PipelineTriggers::CreateService.new(project: project, user: current_user,
-            description: description).execute
+            description: description, expires_at: expires_at).execute
 
           trigger = response.payload[:trigger]
 

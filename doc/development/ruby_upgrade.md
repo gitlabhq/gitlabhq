@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Ruby upgrade guidelines
 ---
-
-# Ruby upgrade guidelines
 
 We strive to run GitLab using the latest Ruby MRI releases to benefit from performance and
 security updates and new Ruby APIs. When upgrading Ruby across GitLab, we should do
@@ -139,20 +138,20 @@ This is typically necessary, since gems or Ruby applications that we maintain ou
 update these repositories for the GitLab Rails application to work with a new Ruby,
 it is good practice to keep Ruby versions in lock-step across all our repositories. For minor and major
 upgrades, add new CI/CD jobs to these repositories using the new Ruby.
-A [build matrix definition](../ci/yaml/index.md#parallelmatrix) can do this efficiently.
+A [build matrix definition](../ci/yaml/_index.md#parallelmatrix) can do this efficiently.
 
 #### Decide which repositories to update
 
 When upgrading Ruby, consider updating the repositories in the [`ruby/gems` group](https://gitlab.com/gitlab-org/ruby/gems/) as well.
 For reference, here is a list of merge requests that have updated Ruby for some of these projects in the past:
 
-- [GitLab LabKit](https://gitlab.com/gitlab-org/labkit-ruby) ([example](https://gitlab.com/gitlab-org/labkit-ruby/-/merge_requests/79))
+- [GitLab LabKit](https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby) ([example](https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/merge_requests/79))
 - [GitLab Exporter](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter) ([example](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter/-/merge_requests/150))
 - [GitLab Experiment](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment) ([example](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment/-/merge_requests/128))
-- [Gollum Lib](https://gitlab.com/gitlab-org/gollum-lib) ([example](https://gitlab.com/gitlab-org/gollum-lib/-/merge_requests/21))
-- [GitLab Sidekiq fetcher](https://gitlab.com/gitlab-org/sidekiq-reliable-fetch) ([example](https://gitlab.com/gitlab-org/sidekiq-reliable-fetch/-/merge_requests/33))
-- [Prometheus Ruby Mmap Client](https://gitlab.com/gitlab-org/prometheus-client-mmap) ([example](https://gitlab.com/gitlab-org/prometheus-client-mmap/-/merge_requests/59))
-- [GitLab-mail_room](https://gitlab.com/gitlab-org/gitlab-mail_room) ([example](https://gitlab.com/gitlab-org/gitlab-mail_room/-/merge_requests/16))
+- [Gollum Lib](https://gitlab.com/gitlab-org/ruby/gems/gollum-lib) ([example](https://gitlab.com/gitlab-org/ruby/gems/gollum-lib/-/merge_requests/21))
+- [GitLab Sidekiq fetcher](https://gitlab.com/gitlab-org/ruby/gems/sidekiq-reliable-fetch) ([example](https://gitlab.com/gitlab-org/ruby/gems/sidekiq-reliable-fetch/-/merge_requests/33))
+- [Prometheus Ruby Mmap Client](https://gitlab.com/gitlab-org/ruby/gems/prometheus-client-mmap) ([example](https://gitlab.com/gitlab-org/ruby/gems/prometheus-client-mmap/-/merge_requests/59))
+- [GitLab-mail_room](https://gitlab.com/gitlab-org/ruby/gems/gitlab-mail_room) ([example](https://gitlab.com/gitlab-org/ruby/gems/gitlab-mail_room/-/merge_requests/16))
 
 To assess which of these repositories are critical to be updated alongside the main GitLab application consider:
 
@@ -164,10 +163,13 @@ account of which repositories could be affected.
 For smaller version upgrades, it can be acceptable to delay updating libraries that are non-essential or where
 we are certain that the main application test suite would catch regressions under a new Ruby version.
 
-NOTE:
+{{< alert type="note" >}}
+
 Consult with the respective code owners whether it is acceptable to merge these changes ahead
 of updating the GitLab application. It might be best to get the necessary approvals
 but wait to merge the change until everything is ready.
+
+{{< /alert >}}
 
 ### Prepare the GitLab application MR
 
@@ -176,10 +178,13 @@ application with any necessary changes, similar to the gems and related systems.
 On top of that, update the documentation to reflect the version change in the installation
 and update instructions ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68363)).
 
-NOTE:
+{{< alert type="note" >}}
+
 Be especially careful with timing this merge request, since as soon as it is merged, all GitLab contributors
 will be affected by it and the changes will be deployed. You must ensure that this MR remains
 open until everything else is ready, but it can be useful to get approval early to reduce lead time.
+
+{{< /alert >}}
 
 ### Give developers time to upgrade (grace period)
 

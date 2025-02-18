@@ -143,6 +143,16 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_detail.vue', (
       });
       expect(findMetricsTab().text()).toContain('No logged metrics');
     });
+
+    it('handles null steps', () => {
+      wrapper = createWrapper({
+        candidate: {
+          ...defaultProps.candidate,
+          metrics: [{ name: 'AUC', value: '.55', step: undefined }],
+        },
+      });
+      expect(findMetricsTab().text()).toContain('Step 0AUC');
+    });
   });
 
   describe('MLflow ID copy button', () => {

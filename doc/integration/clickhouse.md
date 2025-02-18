@@ -2,12 +2,14 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: ClickHouse integration guidelines
 ---
 
-# ClickHouse integration guidelines
+{{< details >}}
 
-DETAILS:
-**Status:** Experiment
+- Status: Experiment
+
+{{< /details >}}
 
 This feature is an [experiment](../policy/development_stages_support.md).
 
@@ -23,16 +25,19 @@ To set up ClickHouse as the GitLab data storage:
 
 ### Run and configure ClickHouse
 
-The most straightforward way to run ClickHouse is with [ClickHouse Cloud](https://clickhouse.cloud/).
+The most straightforward way to run ClickHouse is with [ClickHouse Cloud](https://console.clickhouse.cloud/).
 You can also [run ClickHouse on your own server](https://clickhouse.com/docs/en/install). Refer to the ClickHouse
-documentation regarding [recommendations for self-managed instances](https://clickhouse.com/docs/en/install#recommendations-for-self-managed-clickhouse).
+documentation regarding [recommendations for GitLab Self-Managed](https://clickhouse.com/docs/en/install#recommendations-for-self-managed-clickhouse).
 
 When you run ClickHouse on a hosted server, various data points might impact the resource consumption, like the number
 of builds that run on your instance each month, the selected hardware, the data center choice to host ClickHouse, and more.
 Regardless, the cost should not be significant.
 
-NOTE:
+{{< alert type="note" >}}
+
 ClickHouse is a secondary data store for GitLab. Only specific data is stored in ClickHouse for analytics purposes.
+
+{{< /alert >}}
 
 To create necessary user and database objects:
 
@@ -51,9 +56,9 @@ To create necessary user and database objects:
 
 ### Configure the GitLab connection to ClickHouse
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package
+{{< tab title="Linux package" >}}
 
 To provide GitLab with ClickHouse credentials:
 
@@ -72,7 +77,9 @@ To provide GitLab with ClickHouse credentials:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Save the ClickHouse password as a Kubernetes Secret:
 
@@ -107,7 +114,9 @@ To provide GitLab with ClickHouse credentials:
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 To verify that your connection is set up successfully:
 

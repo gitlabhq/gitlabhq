@@ -2,22 +2,24 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Publish npm packages to the GitLab package registry using semantic-release
 ---
 
-# Publish npm packages to the GitLab package registry using semantic-release
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This guide demonstrates how to automatically publish npm packages to the [GitLab package registry](../../user/packages/npm_registry/index.md) by using [semantic-release](https://github.com/semantic-release/semantic-release).
+{{< /details >}}
+
+This guide demonstrates how to automatically publish npm packages to the [GitLab package registry](../../user/packages/npm_registry/_index.md) by using [semantic-release](https://github.com/semantic-release/semantic-release).
 
 You can also view or fork the complete [example source](https://gitlab.com/gitlab-examples/semantic-release-npm).
 
 ## Initialize the module
 
 1. Open a terminal and go to the project's repository.
-1. Run `npm init`. Name the module according to [the package registry's naming conventions](../../user/packages/npm_registry/index.md#naming-convention). For example, if the project's path is `gitlab-examples/semantic-release-npm`, name the module `@gitlab-examples/semantic-release-npm`.
+1. Run `npm init`. Name the module according to [the package registry's naming conventions](../../user/packages/npm_registry/_index.md#naming-convention). For example, if the project's path is `gitlab-examples/semantic-release-npm`, name the module `@gitlab-examples/semantic-release-npm`.
 
 1. Install the following npm packages:
 
@@ -94,19 +96,19 @@ As part of publishing a package, semantic-release increases the version number i
 
 <!-- markdownlint-disable MD044 -->
 
-1. On the left sidebar, select your avatar.
-1. Select **Preferences > Access tokens**.
+1. Open the left sidebar.
+1. Select **Settings > Access tokens**.
+1. In your project, select **Add new token**.
 1. In the **Token name** box, enter a token name.
-1. Under **select scopes**, select the **api** checkbox.
+1. Under **Select scopes**, select the **api** checkbox.
 1. Select **Create project access token**.
-1. Copy the value.
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Copy the token value.
+1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable**.
+1. Under **Visibility**, select **Masked**.
 1. In the **Key** box, enter `GITLAB_TOKEN`.
-1. In the **Value** box, paste the token.
-1. Select the **Mask variable** checkbox.
+1. In the **Value** box, enter the token value.
 1. Select **Add variable**.
 <!-- markdownlint-enable MD044 -->
 
@@ -116,7 +118,7 @@ semantic-release pulls its configuration information from a `.releaserc.json` fi
 
 ```json
 {
-  "branches": ["master"],
+  "branches": ["main"],
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
@@ -132,6 +134,8 @@ semantic-release pulls its configuration information from a `.releaserc.json` fi
   ]
 }
 ```
+
+In the previous semantic-release configuration example, you can change the branch name to your project's default branch.
 
 ## Begin publishing releases
 
@@ -177,7 +181,7 @@ npm install --save @gitlab-examples/semantic-release-npm
 
 ### Deleted Git tags reappear
 
-A [Git tag](../../user/project/repository/tags/index.md) deleted from the repository
+A [Git tag](../../user/project/repository/tags/_index.md) deleted from the repository
 can sometimes be recreated by `semantic-release` when GitLab runners use a cached
 version of the repository. If the job runs on a runner with a cached repository that
 still has the tag, `semantic-release` recreates the tag in the main repository.

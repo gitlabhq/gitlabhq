@@ -2,13 +2,15 @@
 stage: Verify
 group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Configuring runners
 ---
 
-# Configuring runners
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This document describes how to configure runners in the GitLab UI.
 
@@ -37,7 +39,7 @@ To set the maximum job timeout:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **CI/CD > Runners**.
-1. To the right of the runner, you want to edit, select **Edit** (**{pencil}**).
+1. To the right of the runner, you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes).
 1. Select **Save changes**.
 
@@ -51,7 +53,7 @@ To set the maximum job timeout:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Build > Runners**.
-1. To the right of the runner you want to edit, select **Edit** (**{pencil}**).
+1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes).
 1. Select **Save changes**.
 
@@ -66,7 +68,7 @@ To set the maximum job timeout:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. To the right of the runner you want to edit, select **Edit** (**{pencil}**).
+1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes). If not defined, the [job timeout for the project](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) is used instead.
 1. Select **Save changes**.
 
@@ -95,7 +97,11 @@ To set the maximum job timeout:
 
 ## Set `script` and `after_script` timeouts
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4335) in GitLab Runner 16.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4335) in GitLab Runner 16.4.
+
+{{< /history >}}
 
 To control the amount of time `script` and `after_script` runs before it terminates, specify a timeout value in the `.gitlab-ci.yml` file.
 
@@ -160,11 +166,14 @@ To work around this issue, ensure that the instance runner settings are consiste
 
 ## Reset the runner registration token for a project (deprecated)
 
-WARNING:
+{{< alert type="warning" >}}
+
 The option to pass a runner registration token and support for certain configuration arguments was
 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6. They are scheduled for removal
 in GitLab 18.0. Use runner authentication tokens instead. For more information, see
 [Migrating to the new runner registration workflow](new_creation_workflow.md).
+
+{{< /alert >}}
 
 If you think that a registration token for a project was revealed, you should
 reset it. A registration token can be used to register another runner for the project.
@@ -175,7 +184,7 @@ To reset the registration token:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. To the right of **New project runner**, select the vertical ellipsis (**{ellipsis_v}**).
+1. To the right of **New project runner**, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Reset registration token**.
 1. Select **Reset token**.
 
@@ -185,8 +194,12 @@ you use to provision and register new values.
 
 ## Authentication token security
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/377902) in GitLab 15.5. Feature flag `enforce_runner_token_expires_at` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/377902) in GitLab 15.5. Feature flag `enforce_runner_token_expires_at` removed.
+
+{{< /history >}}
 
 Each runner uses a [runner authentication token](../../api/runners.md#registration-and-authentication-tokens)
 to connect to and authenticate with a GitLab instance.
@@ -217,6 +230,8 @@ To reset the runner configuration authentication token:
    - [Create a group runner](runners_scope.md#create-a-group-runner-with-a-runner-authentication-token).
    - [Create a project runner](runners_scope.md#create-a-project-runner-with-a-runner-authentication-token).
 1. Optional. To verify that the previous runner authentication token has been revoked, use the [Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner).
+
+To reset runner configuration authentication tokens, you can also use the [Runners API](../../api/runners.md).
 
 ### Automatically rotate runner authentication tokens
 
@@ -255,7 +270,7 @@ Prerequisites:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **CI/CD > Runners**.
-1. To the right of the runner you want to protect, select **Edit** (**{pencil}**).
+1. To the right of the runner you want to protect, select **Edit** ({{< icon name="pencil" >}}).
 1. Select the **Protected** checkbox.
 1. Select **Save changes**.
 
@@ -267,7 +282,7 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Build > Runners**.
-1. To the right of the runner you want to protect, select **Edit** (**{pencil}**).
+1. To the right of the runner you want to protect, select **Edit** ({{< icon name="pencil" >}}).
 1. Select the **Protected** checkbox.
 1. Select **Save changes**.
 
@@ -280,13 +295,13 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. To the right of the runner you want to protect, select **Edit** (**{pencil}**).
+1. To the right of the runner you want to protect, select **Edit** ({{< icon name="pencil" >}}).
 1. Select the **Protected** checkbox.
 1. Select **Save changes**.
 
 ## Control jobs that a runner can run
 
-You can use [tags](../yaml/index.md#tags) to control the jobs a runner can run.
+You can use [tags](../yaml/_index.md#tags) to control the jobs a runner can run.
 For example, you can specify the `rails` tag for runners that have the dependencies to run
 Rails test suites.
 
@@ -303,7 +318,7 @@ To control the jobs that an instance runner can run:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **CI/CD > Runners**.
-1. To the right of the runner you want to edit, select **Edit** (**{pencil}**).
+1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Set the runner to run tagged or untagged jobs:
    - To run tagged jobs, in the **Tags** field, enter the job tags separated with a comma. For example, `macos`, `rails`.
    - To run untagged jobs, select the **Run untagged jobs** checkbox.
@@ -319,7 +334,7 @@ To control the jobs that a group runner can run:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Build > Runners**.
-1. To the right of the runner you want to edit, select **Edit** (**{pencil}**).
+1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Set the runner to run tagged or untagged jobs:
    - To run tagged jobs, in the **Tags** field, enter the job tags separated with a comma. For example, `macos`, `ruby`.
    - To run untagged jobs, select the **Run untagged jobs** checkbox.
@@ -336,7 +351,7 @@ To control the jobs that a project runner can run:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. To the right of the runner you want to edit, select **Edit** (**{pencil}**).
+1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Set the runner to run tagged or untagged jobs:
    - To run tagged jobs, in the **Tags** field, enter the job tags separated with a comma. For example, `macos`, `ruby`.
    - To run untagged jobs, select the **Run untagged jobs** checkbox.
@@ -430,7 +445,7 @@ osx job:
 
 ### Use CI/CD variables in tags
 
-In the `.gitlab-ci.yml` file, use [CI/CD variables](../variables/index.md) with `tags` for dynamic runner selection:
+In the `.gitlab-ci.yml` file, use [CI/CD variables](../variables/_index.md) with `tags` for dynamic runner selection:
 
 ```yaml
 variables:
@@ -446,7 +461,7 @@ variables:
 
 ## Configure runner behavior with variables
 
-You can use [CI/CD variables](../variables/index.md) to configure runner Git behavior
+You can use [CI/CD variables](../variables/_index.md) to configure runner Git behavior
 globally or for individual jobs:
 
 - [`GIT_STRATEGY`](#git-strategy)
@@ -471,13 +486,13 @@ You can also use variables to configure how many times a runner
 [attempts certain stages of job execution](#job-stages-attempts).
 
 When using the Kubernetes executor, you can use variables to
-[override Kubernetes CPU and memory allocations for requests and limits](https://docs.gitlab.com/runner/executors/kubernetes/index.html#overwrite-container-resources).
+[override Kubernetes CPU and memory allocations for requests and limits](https://docs.gitlab.com/runner/executors/kubernetes/#overwrite-container-resources).
 
 ### Git strategy
 
 The `GIT_STRATEGY` variable configures how the build directory is prepared and
 repository content is fetched. You can set this variable globally or per job
-in the [`variables`](../yaml/index.md#variables) section.
+in the [`variables`](../yaml/_index.md#variables) section.
 
 ```yaml
 variables:
@@ -504,7 +519,7 @@ This has limitations when using the [Docker Machine executor](https://docs.gitla
 A Git strategy of `none` also re-uses the local working copy, but skips all Git
 operations usually done by GitLab. GitLab Runner pre-clone scripts are also skipped,
 if present. This strategy could mean you need to add `fetch` and `checkout` commands
-to [your `.gitlab-ci.yml` script](../yaml/index.md#script).
+to [your `.gitlab-ci.yml` script](../yaml/_index.md#script).
 
 It can be used for jobs that operate exclusively on artifacts, like a deployment job.
 Git repository data may be present, but it's likely out of date. You should only
@@ -524,7 +539,7 @@ Use the `empty` Git strategy when:
 
 The `GIT_SUBMODULE_STRATEGY` variable is used to control if / how
 [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) are included when fetching the code before a build. You can set them
-globally or per-job in the [`variables`](../yaml/index.md#variables) section.
+globally or per-job in the [`variables`](../yaml/_index.md#variables) section.
 
 The three possible values are `none`, `normal`, and `recursive`:
 
@@ -563,7 +578,7 @@ You can provide additional flags to control advanced behavior using [`GIT_SUBMOD
 The `GIT_CHECKOUT` variable can be used when the `GIT_STRATEGY` is set to either
 `clone` or `fetch` to specify whether a `git checkout` should be run. If not
 specified, it defaults to true. You can set them globally or per-job in the
-[`variables`](../yaml/index.md#variables) section.
+[`variables`](../yaml/_index.md#variables) section.
 
 If set to `false`, the runner:
 
@@ -589,7 +604,7 @@ script:
 
 The `GIT_CLEAN_FLAGS` variable is used to control the default behavior of
 `git clean` after checking out the sources. You can set it globally or per-job in the
-[`variables`](../yaml/index.md#variables) section.
+[`variables`](../yaml/_index.md#variables) section.
 
 `GIT_CLEAN_FLAGS` accepts all possible options of the [`git clean`](https://git-scm.com/docs/git-clean)
 command.
@@ -613,7 +628,7 @@ script:
 ### Git fetch extra flags
 
 Use the `GIT_FETCH_EXTRA_FLAGS` variable to control the behavior of
-`git fetch`. You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
+`git fetch`. You can set it globally or per-job in the [`variables`](../yaml/_index.md#variables) section.
 
 `GIT_FETCH_EXTRA_FLAGS` accepts all options of the [`git fetch`](https://git-scm.com/docs/git-fetch) command. However, `GIT_FETCH_EXTRA_FLAGS` flags are appended after the default flags that can't be modified.
 
@@ -647,10 +662,14 @@ Where `$REFSPECS` is a value provided to the runner internally by GitLab.
 
 ### Sync or exclude specific submodules from CI jobs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/2249) in GitLab Runner 14.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/2249) in GitLab Runner 14.0.
+
+{{< /history >}}
 
 Use the `GIT_SUBMODULE_PATHS` variable to control which submodules have to be synced or updated.
-You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
+You can set it globally or per-job in the [`variables`](../yaml/_index.md#variables) section.
 
 The path syntax is the same as [`git submodule`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-ltpathgt82308203):
 
@@ -668,17 +687,20 @@ The path syntax is the same as [`git submodule`](https://git-scm.com/docs/git-su
      GIT_SUBMODULE_PATHS: ":(exclude)submoduleA :(exclude)submoduleB"
   ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Git ignores nested paths. To ignore a nested submodule, exclude
 the parent submodule and then manually clone it in the job's scripts. For example,
  `git clone <repo> --recurse-submodules=':(exclude)nested-submodule'`. Make sure
 to wrap the string in single quotes so the YAML can be parsed successfully.
 
+{{< /alert >}}
+
 ### Git submodule update flags
 
 Use the `GIT_SUBMODULE_UPDATE_FLAGS` variable to control the behavior of `git submodule update`
 when [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) is set to either `normal` or `recursive`.
-You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
+You can set it globally or per-job in the [`variables`](../yaml/_index.md#variables) section.
 
 `GIT_SUBMODULE_UPDATE_FLAGS` accepts all options of the
 [`git submodule update`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-update--init--remote-N--no-fetch--no-recommend-shallow-f--force--checkout--rebase--merge--referenceltrepositorygt--depthltdepthgt--recursive--jobsltngt--no-single-branch--ltpathgt82308203)
@@ -708,14 +730,21 @@ The configuration above results in `git submodule update` being called this way:
 git submodule update --init --depth 50 --recursive --remote --jobs 4
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 You should be aware of the implications for the security, stability, and reproducibility of
 your builds when using the `--remote` flag. In most cases, it is better to explicitly track
 submodule commits as designed, and update them using an auto-remediation/dependency bot.
 
+{{< /alert >}}
+
 ### Rewrite submodule URLs to HTTPS
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3198) in GitLab Runner 15.11.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3198) in GitLab Runner 15.11.
+
+{{< /history >}}
 
 Use the `GIT_SUBMODULE_FORCE_HTTPS` variable to force a rewrite of all Git and SSH submodule URLs to HTTPS.
 You can clone submodules that use absolute URLs on the same GitLab instance, even if they were
@@ -760,15 +789,19 @@ variables:
   GIT_DEPTH: "3"
 ```
 
-You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
+You can set it globally or per-job in the [`variables`](../yaml/_index.md#variables) section.
 
 ### Git submodule depth
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3651) in GitLab Runner 15.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3651) in GitLab Runner 15.5.
+
+{{< /history >}}
 
 Use the `GIT_SUBMODULE_DEPTH` variable to specify the depth of fetching and cloning submodules
 when [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) is set to either `normal` or `recursive`.
-You can set it globally or for a specific job in the [`variables`](../yaml/index.md#variables) section.
+You can set it globally or for a specific job in the [`variables`](../yaml/_index.md#variables) section.
 
 When you set the `GIT_SUBMODULE_DEPTH` variable, it overwrites the [`GIT_DEPTH`](#shallow-cloning) setting
 for the submodules only.
@@ -864,7 +897,7 @@ because `$CI_BUILDS_DIR` is not expanded.
 
 ### Ignore errors in `after_script`
 
-You can use [`after_script`](../yaml/index.md#after_script) in a job to define an array of commands
+You can use [`after_script`](../yaml/_index.md#after_script) in a job to define an array of commands
 that should run after the job's `before_script` and `script` sections. The `after_script` commands
 run regardless of the script termination status (failure or success).
 
@@ -898,7 +931,7 @@ variables:
   GET_SOURCES_ATTEMPTS: 3
 ```
 
-You can set them globally or per-job in the [`variables`](../yaml/index.md#variables) section.
+You can set them globally or per-job in the [`variables`](../yaml/_index.md#variables) section.
 
 ## System calls not available on GitLab.com instance runners
 
@@ -912,7 +945,7 @@ Use these settings to specify the size of the archive produced by a job.
 - On a slow network, uploads might be faster for smaller archives.
 - On a fast network where bandwidth and storage are not a concern, uploads might be faster using the fastest compression ratio, despite the archive produced being larger.
 
-For [GitLab Pages](../../user/project/pages/index.md) to serve
+For [GitLab Pages](../../user/project/pages/_index.md) to serve
 [HTTP Range requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests), artifacts
 should use the `ARTIFACT_COMPRESSION_LEVEL: fastest` setting, as only uncompressed zip archives
 support this feature.
@@ -946,7 +979,11 @@ variables:
 
 ## Artifact provenance metadata
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28940) in GitLab Runner 15.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28940) in GitLab Runner 15.1.
+
+{{< /history >}}
 
 Runners can generate and produce provenance metadata for all build artifacts.
 
@@ -964,7 +1001,7 @@ job1:
 
 The metadata renders in a plain text `.json` file stored with the artifact. The
 filename is `{ARTIFACT_NAME}-metadata.json`. `ARTIFACT_NAME` is the
-[name for the artifact](../jobs/job_artifacts.md#with-a-dynamically-defined-name)
+[name for the artifact](../jobs/job_artifacts.md#with-an-explicitly-defined-artifact-name)
 defined in the `.gitlab-ci.yml` file. If the name is not defined, the default filename is
 `artifacts-metadata.json`.
 
@@ -1177,7 +1214,11 @@ see the [in-toto statement](https://in-toto.io/Statement/v0.1).
 
 ## Staging directory
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3403) in GitLab Runner 15.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3403) in GitLab Runner 15.0.
+
+{{< /history >}}
 
 If you do not want to archive cache and artifacts in the system's default temporary directory, you can specify a different directory.
 
@@ -1191,7 +1232,11 @@ used, this location is also used as scratch space when archiving.
 
 ## Configure `fastzip` to improve performance
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3130) in GitLab Runner 15.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3130) in GitLab Runner 15.0.
+
+{{< /history >}}
 
 To tune `fastzip`, ensure the [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) flag is enabled.
 Then use any of the following environment variables.

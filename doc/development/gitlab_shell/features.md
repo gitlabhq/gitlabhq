@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GitLab Shell feature list
 ---
-
-# GitLab Shell feature list
 
 ## Discover
 
@@ -93,9 +92,9 @@ Expires: 2022-02-05
 Administrators can control PAT generation with SSH.
 To configure PAT settings in GitLab Shell:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit the `/etc/gitlab/gitlab.rb` file.
 1. Add or modify the following configuration:
@@ -110,7 +109,9 @@ To configure PAT settings in GitLab Shell:
 
 1. Save the file and [Restart GitLab](../../administration/restart_gitlab.md).
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Edit the `values.yaml` file:
 
@@ -133,7 +134,9 @@ To configure PAT settings in GitLab Shell:
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit the `docker-compose.yaml` file:
 
@@ -154,7 +157,9 @@ To configure PAT settings in GitLab Shell:
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit the `/home/git/gitlab-shell/config.yml` file:
 
@@ -178,8 +183,13 @@ To configure PAT settings in GitLab Shell:
    sudo service gitlab-shell restart
    ```
 
-::EndTabs
+{{< /tab >}}
 
-NOTE:
+{{< /tabs >}}
+
+{{< alert type="note" >}}
+
 These settings only affect PAT generation with SSH and do not
 impact PATs created through the web interface.
+
+{{< /alert >}}

@@ -2,27 +2,35 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Maven API
 ---
 
-# Maven API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This is the API documentation for [Maven Packages](../../user/packages/maven_repository/index.md).
+{{< /details >}}
 
-WARNING:
+This is the API documentation for [Maven Packages](../../user/packages/maven_repository/_index.md).
+
+{{< alert type="warning" >}}
+
 This API is used by the [Maven package manager client](https://maven.apache.org/)
 and is generally not meant for manual consumption.
 
-For instructions on how to upload and install Maven packages from the GitLab
-package registry, see the [Maven package registry documentation](../../user/packages/maven_repository/index.md).
+{{< /alert >}}
 
-NOTE:
+For instructions on how to upload and install Maven packages from the GitLab
+package registry, see the [Maven package registry documentation](../../user/packages/maven_repository/_index.md).
+
+{{< alert type="note" >}}
+
 These endpoints do not adhere to the standard API authentication methods.
-See [Maven package registry documentation](../../user/packages/maven_repository/index.md)
+See [Maven package registry documentation](../../user/packages/maven_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
+
+{{< /alert >}}
 
 ## Download a package file at the instance-level
 

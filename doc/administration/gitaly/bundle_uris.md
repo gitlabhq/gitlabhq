@@ -2,21 +2,30 @@
 stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Bundle URIs
 ---
 
-# Bundle URIs
+{{< details >}}
 
-DETAILS:
-**Status:** Experiment
+- Status: Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8939) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `gitaly_bundle_uri`. Disabled by default.
+{{< /details >}}
 
-FLAG:
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8939) in GitLab 17.0 [with a flag](../feature_flags.md) named `gitaly_bundle_uri`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is not available.
 To make it available, an administrator can [enable the feature flag](../feature_flags.md)
 named `gitaly_bundle_uri`.
 On GitLab.com and GitLab Dedicated, this feature is not available. This feature
 is not ready for production use.
+
+{{< /alert >}}
 
 Gitaly supports Git [bundle URIs](https://git-scm.com/docs/bundle-uri). Bundle
 URIs are locations where Git can download one or more bundles to bootstrap the
@@ -57,9 +66,9 @@ installation you have. For self-compiled installations, you must set the
 `AZURE_STORAGE_ACCOUNT` and `AZURE_STORAGE_KEY` environment variables outside of
 GitLab.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 Edit `/etc/gitlab/gitlab.rb` and configure the `bundle_uri.go_cloud_url`:
 
@@ -75,7 +84,9 @@ gitaly['configuration'] = {
 }
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
 
@@ -84,7 +95,9 @@ Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
 go_cloud_url = "azblob://<bucket>"
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Configure Google Cloud storage
 
@@ -101,9 +114,9 @@ For more information, see
 
 The destination bucket is configured using the `go_cloud_url` option.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 Edit `/etc/gitlab/gitlab.rb` and configure the `go_cloud_url`:
 
@@ -118,7 +131,9 @@ gitaly['configuration'] = {
 }
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
 
@@ -127,7 +142,9 @@ Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
 go_cloud_url = "gs://<bucket>"
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Configure S3 storage
 
@@ -143,9 +160,9 @@ For more information, see
 
 The destination bucket and region are configured using the `go_cloud_url` option.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 Edit `/etc/gitlab/gitlab.rb` and configure the `go_cloud_url`:
 
@@ -161,7 +178,9 @@ gitaly['configuration'] = {
 }
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
 
@@ -170,7 +189,9 @@ Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
 go_cloud_url = "s3://<bucket>?region=us-west-1"
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 #### Configure S3-compatible servers
 
@@ -184,9 +205,9 @@ The following parameters are supported:
 - `disabledSSL`: A value of `true` disables SSL.
 - `s3ForcePathStyle`: A value of `true` forces path-style addressing.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 Edit `/etc/gitlab/gitlab.rb` and configure the `go_cloud_url`:
 
@@ -202,7 +223,9 @@ gitaly['configuration'] = {
 }
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
 
@@ -211,7 +234,9 @@ Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
 go_cloud_url = "s3://<bucket>?region=minio&endpoint=my.minio.local:8080&disableSSL=true&s3ForcePathStyle=true"
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Generating bundles
 

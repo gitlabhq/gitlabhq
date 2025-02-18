@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Migrating from Bamboo
 ---
 
-# Migrating from Bamboo
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This migration guide looks at how you can migrate from Atlassian Bamboo to GitLab CI/CD.
 The focus is on [Bamboo Specs YAML](https://docs.atlassian.com/bamboo-specs-docs/8.1.12/specs.html?yaml)
@@ -16,12 +18,12 @@ exported from the Bamboo UI or stored in Spec repositories.
 
 ## GitLab CI/CD Primer
 
-If you are new to GitLab CI/CD, use the [Getting started guide](../index.md) to learn
-the basic concepts and how to create your first [`.gitlab-ci.yml` file](../quick_start/index.md).
-If you already have some experience using GitLab CI/CD, you can review [CI/CD YAML syntax reference](../yaml/index.md)
+If you are new to GitLab CI/CD, use the [Getting started guide](../_index.md) to learn
+the basic concepts and how to create your first [`.gitlab-ci.yml` file](../quick_start/_index.md).
+If you already have some experience using GitLab CI/CD, you can review [CI/CD YAML syntax reference](../yaml/_index.md)
 to see the full list of available keywords.
 
-You can also take a look at [Auto DevOps](../../topics/autodevops/index.md), which automatically
+You can also take a look at [Auto DevOps](../../topics/autodevops/_index.md), which automatically
 builds, tests, and deploys your application using a collection of
 pre-configured features and integrations.
 
@@ -29,12 +31,12 @@ pre-configured features and integrations.
 
 ### Offerings
 
-Atlassian offers Bamboo in its Cloud (SaaS) or Data center (Self-managed) options.
+Atlassian offers Bamboo in its Cloud (SaaS) or Data center (self-hosted) options.
 A third Server option is scheduled for [EOL on February 15, 2024](https://about.gitlab.com/blog/2023/09/26/atlassian-server-ending-move-to-a-single-devsecops-platform/).
 
-These options are similar to GitLab [SaaS](../../subscriptions/gitlab_com/index.md)
-and [Self-Managed](../../subscriptions/self_managed/index.md). GitLab also offers
-[GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md), a fully isolated
+These options are similar to [GitLab.com](../../subscriptions/gitlab_com/_index.md)
+and [GitLab Self-Managed](../../subscriptions/self_managed/_index.md). GitLab also offers
+[GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md), a fully isolated
 single-tenant SaaS service.
 
 ### Agents vs Runners
@@ -46,8 +48,8 @@ remote agents running external to the server.
 GitLab uses a similar concept to agents called [runners](https://docs.gitlab.com/runner/)
 which use [executors](https://docs.gitlab.com/runner/executors/) to run builds.
 
-Examples of executors are shell, Docker, or Kubernetes. You can choose to use GitLab [SaaS runners](../runners/index.md)
-or deploy your own [self-managed runners](https://docs.gitlab.com/runner/install/index.html).
+Examples of executors are shell, Docker, or Kubernetes. You can choose to use [GitLab.com runners](../runners/_index.md)
+or deploy your own [self-managed runners](https://docs.gitlab.com/runner/install/).
 
 ### Workflow
 
@@ -62,7 +64,7 @@ CI and deployments are treated separately in Bamboo. [Deployment project workflo
 is different from the build plans workflow. [Learn more](https://confluence.atlassian.com/bamboo/understanding-the-bamboo-ci-server-289277285.html)
 about Bamboo workflow.
 
-GitLab CI/CD uses a similar workflow. Jobs are organized into [stages](../yaml/index.md#stage),
+GitLab CI/CD uses a similar workflow. Jobs are organized into [stages](../yaml/_index.md#stage),
 and projects have individual `.gitlab-ci.yml` configuration files or include existing templates.
 
 ### Templating & Configuration as Code
@@ -82,11 +84,11 @@ Bamboo Specs can also be [repository-stored](https://confluence.atlassian.com/ba
 #### `.gitlab-ci.yml` configuration file
 
 GitLab, by default, uses a `.gitlab-ci.yml` file for CI/CD configuration.
-Alternatively, [Auto DevOps](../../topics/autodevops/index.md) can automatically build,
+Alternatively, [Auto DevOps](../../topics/autodevops/_index.md) can automatically build,
 test, and deploy your application without a manually configured `.gitlab-ci.yml` file.
 
 GitLab CI/CD configuration can be organized into templates that are reusable across projects.
-GitLab also provides pre-built [templates](../examples/index.md#cicd-templates)
+GitLab also provides pre-built [templates](../examples/_index.md#cicd-templates)
 that help you get started quickly and avoid re-inventing the wheel.
 
 ### Configuration
@@ -342,7 +344,7 @@ You can access variables in Bamboo using the format `${system.variableName}` for
 and `${bamboo.variableName}` for other types of variables. When using a variable in a script task,
 the full stops, are converted to underscores, `${bamboo.variableName}` becomes `$bamboo_variableName`.
 
-In GitLab, you can define [CI/CD variables](../variables/index.md) at these levels:
+In GitLab, you can define [CI/CD variables](../variables/_index.md) at these levels:
 
 - Instance
 - Group
@@ -390,7 +392,7 @@ In both GitLab and Bamboo, jobs in the same stage run in parallel, except where 
 that needs to be met before a job runs.
 
 The number of jobs that can run in Bamboo depends on availability of Bamboo agents
-and Bamboo license Size. With [GitLab CI/CD](../jobs/index.md), the number of parallel
+and Bamboo license Size. With [GitLab CI/CD](../jobs/_index.md), the number of parallel
 jobs depends on the number of runners integrated with the GitLab instance and the
 concurrency set in the runners.
 
@@ -442,7 +444,7 @@ job2:
 ```
 
 With GitLab, you can use [CI/CD templates](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/ci/templates)
-and [CI/CD components](../components/index.md) to compose your pipelines without the need to write
+and [CI/CD components](../components/_index.md) to compose your pipelines without the need to write
 everything yourself.
 
 #### Conditionals
@@ -581,7 +583,7 @@ In this example:
 
 - The name of the artifact is specific explicitly, but you can make it dynamic by using a CI/CD variable.
 - The `untracked` keyword sets the artifact to also include Git untracked files,
-  along with those specified explictly with `paths`.
+  along with those specified explicitly with `paths`.
 
 #### Caching
 
@@ -589,7 +591,7 @@ In Bamboo, [Git caches](https://confluence.atlassian.com/bamkb/how-stored-git-ca
 can be used to speed up builds. Git caches are configured in Bamboo administration settings
 and are stored either on the Bamboo server or remote agents.
 
-GitLab supports both Git Caches and Job cache. [Caches](../caching/index.md) are defined per job
+GitLab supports both Git Caches and Job cache. [Caches](../caching/_index.md) are defined per job
 using the `cache` keyword.
 
 For example, in a GitLab CI/CD `.gitlab-ci.yml` file:
@@ -644,8 +646,8 @@ Production:
     - ./.ci/deploy_prod.sh
 ```
 
-In GitLab CI/CD, You can create a [deployment job](../jobs/index.md#deployment-jobs)
-that deploys to an [environment](../environments/index.md) or creates a [release](../../user/project/releases/index.md).
+In GitLab CI/CD, You can create a [deployment job](../jobs/_index.md#deployment-jobs)
+that deploys to an [environment](../environments/_index.md) or creates a [release](../../user/project/releases/_index.md).
 
 For example, in a GitLab CI/CD `.gitlab-ci.yml` file:
 
@@ -659,9 +661,9 @@ deploy-to-production:
     name: production
 ```
 
-To create release instead, use the [`release`](../yaml/index.md#release)
+To create release instead, use the [`release`](../yaml/_index.md#release)
 keyword with the [release-cli](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs)
-tool to create releases for [Git tags](../../user/project/repository/tags/index.md).
+tool to create releases for [Git tags](../../user/project/repository/tags/_index.md).
 
 For example, in a GitLab CI/CD `.gitlab-ci.yml` file:
 
@@ -682,7 +684,7 @@ release_job:
 ### Security Scanning features
 
 Bamboo relies on third-party tasks provided in the Atlassian Marketplace to run security scans.
-GitLab provides [security scanners](../../user/application_security/index.md) out-of-the-box to detect
+GitLab provides [security scanners](../../user/application_security/_index.md) out-of-the-box to detect
 vulnerabilities in all parts of the SDLC. You can add these plugins in GitLab using templates, for example to add
 SAST scanning to your pipeline, add the following to your `.gitlab-ci.yml`:
 
@@ -692,7 +694,7 @@ include:
 ```
 
 You can customize the behavior of security scanners by using CI/CD variables, for example
-with the [SAST scanners](../../user/application_security/sast/index.md#available-cicd-variables).
+with the [SAST scanners](../../user/application_security/sast/_index.md#available-cicd-variables).
 
 ### Secrets Management
 
@@ -707,23 +709,24 @@ For secrets management in GitLab, you can use one of the supported integrations
 for an external service. These services securely store secrets outside of your GitLab project,
 though you must have a subscription for the service:
 
-- [HashiCorp Vault](../secrets/id_token_authentication.md#automatic-id-token-authentication-with-hashicorp-vault)
-- [Azure Key Vault](../secrets/azure_key_vault.md).
+- [HashiCorp Vault](../secrets/hashicorp_vault.md)
+- [Azure Key Vault](../secrets/azure_key_vault.md)
+- [Google Cloud Secret Manager](../secrets/gcp_secret_manager.md)
 
 GitLab also supports [OIDC authentication](../secrets/id_token_authentication.md)
 for other third party services that support OIDC.
 
 Additionally, you can make credentials available to jobs by storing them in CI/CD variables, though secrets
 stored in plain text are susceptible to accidental exposure, [the same as in Bamboo](https://confluence.atlassian.com/bamboo/bamboo-specs-encryption-970268127.html).
-You should always store sensitive information in [masked](../variables/index.md#mask-a-cicd-variable)
-and [protected](../variables/index.md#protect-a-cicd-variable) variables, which mitigates
+You should always store sensitive information in [masked](../variables/_index.md#mask-a-cicd-variable)
+and [protected](../variables/_index.md#protect-a-cicd-variable) variables, which mitigates
 some of the risk.
 
 Also, never store secrets as variables in your `.gitlab-ci.yml` file, which is public to all
 users with access to the project. Storing sensitive information in variables should
-only be done in [the project, group, or instance settings](../variables/index.md#define-a-cicd-variable-in-the-ui).
+only be done in [the project, group, or instance settings](../variables/_index.md#define-a-cicd-variable-in-the-ui).
 
-Review the [security guidelines](../variables/index.md#cicd-variable-security) to improve
+Review the [security guidelines](../variables/_index.md#cicd-variable-security) to improve
 the safety of your CI/CD variables.
 
 ### Migration Plan
@@ -752,26 +755,26 @@ the following questions in preparation:
 Before doing any migration work, you should first:
 
 1. Get familiar with GitLab.
-   - Read about the [key GitLab CI/CD features](../../ci/index.md).
-   - Follow tutorials to create [your first GitLab pipeline](../quick_start/index.md)
+   - Read about the [key GitLab CI/CD features](../_index.md).
+   - Follow tutorials to create [your first GitLab pipeline](../quick_start/_index.md)
      and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploy
      a static site.
-   - Review the [CI/CD YAML syntax reference](../yaml/index.md).
+   - Review the [CI/CD YAML syntax reference](../yaml/_index.md).
 1. Set up and configure GitLab.
 1. Test your GitLab instance.
-   - Ensure [runners](../runners/index.md) are available, either by using shared GitLab.com runners or installing new runners.
+   - Ensure [runners](../runners/_index.md) are available, either by using shared GitLab.com runners or installing new runners.
 
 #### Migration Steps
 
 1. Migrate projects from your SCM solution to GitLab.
-   - (Recommended) You can use the available [importers](../../user/project/import/index.md)
+   - (Recommended) You can use the available [importers](../../user/project/import/_index.md)
      to automate mass imports from external SCM providers.
    - You can [import repositories by URL](../../user/project/import/repo_by_url.md).
 1. Create a `.gitlab-ci.yml` file in each project.
 1. Export your Bamboo Projects/Plans as YAML Spec
 1. Migrate Bamboo YAML Spec configuration to GitLab CI/CD jobs and configure them to show results directly in merge requests.
-1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/index.md),
-   [environments](../environments/index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
+1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/_index.md),
+   [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md).
 1. Check if any CI/CD configuration can be reused across different projects, then create
    and share CI/CD templates.
 1. Check the [pipeline efficiency documentation](../pipelines/pipeline_efficiency.md)

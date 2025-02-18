@@ -382,7 +382,7 @@ function mountSidebarReferenceWidget() {
   });
 }
 
-function mountIssuableLockForm(store) {
+function mountIssuableLockForm(store, pinia) {
   const el = document.querySelector('.js-sidebar-lock-root');
 
   if (!el || !store) {
@@ -394,6 +394,7 @@ function mountIssuableLockForm(store) {
   return new Vue({
     el,
     name: 'SidebarLockRoot',
+    pinia,
     store,
     provide: {
       fullPath,
@@ -721,7 +722,7 @@ export function mountAssigneesDropdown() {
   });
 }
 
-export function mountSidebar(mediator, store) {
+export function mountSidebar(mediator, store, pinia) {
   mountSidebarTodoWidget();
   mountSidebarAssigneesWidget();
   mountSidebarReviewers(mediator);
@@ -730,7 +731,7 @@ export function mountSidebar(mediator, store) {
   mountSidebarMilestoneWidget();
   mountSidebarDueDateWidget();
   mountSidebarReferenceWidget();
-  mountIssuableLockForm(store);
+  mountIssuableLockForm(store, pinia);
   mountSidebarParticipantsWidget();
   mountSidebarSubscriptionsWidget();
   mountCopyEmailToClipboard();

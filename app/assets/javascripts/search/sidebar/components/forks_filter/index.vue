@@ -35,7 +35,10 @@ export default {
       },
       set(value) {
         const includeForked = [...value].pop() ?? false;
-        this.setQuery({ key: INCLUDE_FORKED_FILTER_PARAM, value: includeForked?.toString() });
+        this.setQuery({
+          key: INCLUDE_FORKED_FILTER_PARAM,
+          value: includeForked?.toString(),
+        });
       },
     },
   },

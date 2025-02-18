@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Resolvers::PackagePipelinesResolver do
   include GraphqlHelpers
 
-  let_it_be_with_reload(:package) { create(:package) }
+  let_it_be_with_reload(:package) { create(:generic_package) }
   let_it_be(:pipelines) { create_list(:ci_pipeline, 3, project: package.project) }
 
   let(:user) { package.project.first_owner }
@@ -96,7 +96,7 @@ RSpec.describe Resolvers::PackagePipelinesResolver do
     end
 
     context 'with many packages' do
-      let_it_be_with_reload(:other_package) { create(:package, project: package.project) }
+      let_it_be_with_reload(:other_package) { create(:generic_package, project: package.project) }
       let_it_be(:other_pipelines) { create_list(:ci_pipeline, 3, project: package.project) }
 
       let(:returned_pipelines) do
@@ -139,7 +139,7 @@ RSpec.describe Resolvers::PackagePipelinesResolver do
       end
 
       def create_package_with_pipelines(project)
-        extra_package = create(:package, project: project)
+        extra_package = create(:generic_package, project: project)
         create_list(:ci_pipeline, 3, project: project).each do |pipeline|
           create(:package_build_info, package: extra_package, pipeline: pipeline)
         end

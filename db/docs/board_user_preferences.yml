@@ -9,5 +9,5 @@ description: Preferences for issue boards stored on a per user basis, such as wh
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33892
 milestone: '13.1'
 gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463411
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514601
 table_size: small

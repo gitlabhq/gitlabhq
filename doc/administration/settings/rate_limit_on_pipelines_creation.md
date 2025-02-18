@@ -2,19 +2,25 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Rate limits on pipeline creation
 ---
 
-# Rate limits on pipeline creation
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362475) in GitLab 15.0.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362475) in GitLab 15.0.
+
+{{< /history >}}
 
 You can set a limit so that users and processes can't request more than a certain number of pipelines each minute. This limit can help save resources and improve stability.
 
-For example, if you set a limit of `10`, and `11` requests are sent to the [trigger API](../../ci/triggers/index.md) within one minute,
+For example, if you set a limit of `10`, and `11` requests are sent to the [trigger API](../../ci/triggers/_index.md) within one minute,
 the eleventh request is blocked. Access to the endpoint is allowed again after one minute.
 
 This limit is:

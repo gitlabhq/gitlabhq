@@ -6,7 +6,7 @@ class AddAiSettingsTable < Gitlab::Database::Migration[2.2]
   disable_ddl_transaction!
 
   def up
-    create_table :ai_settings do |t| # rubocop:disable Migration/EnsureFactoryForTable -- FactoryBot does not support Singleton classes https://github.com/thoughtbot/factory_bot/issues/642
+    create_table :ai_settings do |t|
       t.text :ai_gateway_url, limit: 2048 # Most browsers support URLs up to 2048 characters
       t.boolean :singleton, null: false, default: true, comment: 'Always true, used for singleton enforcement'
     end

@@ -2,26 +2,28 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Release CLI tool
 ---
 
-# GitLab Release CLI tool
+{{< alert type="warning" >}}
 
-WARNING:
 **The `release-cli` is in maintenance mode**.
 The `release-cli` does not accept new features.
 All new feature development happens in the `glab` CLI,
-so you should use the [`glab` CLI](../../../editor_extensions/gitlab_cli/index.md) whenever possible.
+so you should use the [`glab` CLI](../../../editor_extensions/gitlab_cli/_index.md) whenever possible.
 The `release-cli` is in maintenance mode, and [issue cli#7450](https://gitlab.com/gitlab-org/cli/-/issues/7450) proposes to deprecate it as the `glab` CLI matures.
+
+{{< /alert >}}
 
 The [GitLab Release CLI (`release-cli`)](https://gitlab.com/gitlab-org/release-cli)
 is a command-line tool for managing releases from the command line or from a CI/CD pipeline.
 You can use the release CLI to create, update, modify, and delete releases.
 
-When you [use a CI/CD job to create a release](index.md#creating-a-release-by-using-a-cicd-job),
+When you [use a CI/CD job to create a release](_index.md#creating-a-release-by-using-a-cicd-job),
 the `release` keyword entries are transformed into Bash commands and sent to the Docker
 container containing the `release-cli` tool. The tool then creates the release.
 
-You can also call the `release-cli` tool directly from a [`script`](../../../ci/yaml/index.md#script).
+You can also call the `release-cli` tool directly from a [`script`](../../../ci/yaml/_index.md#script).
 For example:
 
 ```shell
@@ -34,15 +36,18 @@ release-cli create --name "Release $CI_COMMIT_SHA" --description \
 
 ## Install the `release-cli` for the Shell executor
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The `release-cli` binaries are [available in the package registry](https://gitlab.com/gitlab-org/release-cli/-/packages).
 
 When you use a runner with the Shell executor, you can download and install
 the `release-cli` manually for your [supported OS and architecture](https://gitlab.com/gitlab-org/release-cli/-/packages).
-Once installed, [the `release` keyword](../../../ci/yaml/index.md#release) is available to use in your CI/CD jobs.
+Once installed, [the `release` keyword](../../../ci/yaml/_index.md#release) is available to use in your CI/CD jobs.
 
 ### Install on Unix/Linux
 

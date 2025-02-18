@@ -7,6 +7,7 @@
 extends: existence
 message: "Remove whitespace characters from the end of the line."
 link: https://docs.gitlab.com/ee/development/documentation/versions.html
+vocab: false
 level: warning
 scope: raw
 raw:

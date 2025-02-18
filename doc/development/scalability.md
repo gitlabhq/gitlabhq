@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GitLab scalability
 ---
-
-# GitLab scalability
 
 This section describes the current architecture of GitLab as it relates to
 scalability and reliability.
@@ -62,7 +61,7 @@ There are two ways to deal with this:
 
 Partitioning is a built-in PostgreSQL feature and requires minimal changes
 in the application. However, it
-[requires PostgreSQL 11](https://www.2ndquadrant.com/en/blog/partitioning-evolution-postgresql-11/).
+[requires PostgreSQL 11](https://www.enterprisedb.com/blog/postgresql-11-partitioning-evolution-postgres-96-11).
 
 For example, a natural way to partition is to
 [partition tables by dates](https://gitlab.com/groups/gitlab-org/-/epics/2023). For example,

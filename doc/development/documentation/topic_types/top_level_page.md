@@ -2,9 +2,8 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Top-level page type
 ---
-
-# Top-level page type
 
 The top-level page is at the highest level of each section in **Use GitLab** in the global navigation.
 This page type:
@@ -17,7 +16,8 @@ This page type:
 The top-level page should be in this format.
 
 ```markdown
-# Title (The name of the top-level page, like "Manage your organization")
+title: Title (The name of the top-level page, like "Manage your organization")
+---
 
 Briefly describe the workflow's key features. Use the active voice, for example, "Manage projects to track issues, plan work, and collaborate on code."
 
@@ -41,7 +41,7 @@ The title must be an active verb that describes the workflow, like **Manage your
 ## Metadata
 
 The `description` metadata on the top-level page determines the text that appears on the
-GitLab docs home page.
+GitLab documentation home page.
 
 Use the following metadata format:
 

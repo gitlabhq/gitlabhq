@@ -2,10 +2,9 @@
 stage: Data Access
 group: Database Frameworks
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: 'Learn how to operate on large time-decay data'
+description: Learn how to operate on large time-decay data
+title: Time-decay data
 ---
-
-# Time-decay data
 
 This document describes the *time-decay pattern* introduced in the
 [Database Scalability Working Group](https://handbook.gitlab.com/handbook/company/working-groups/database-scalability/#time-decay-data).
@@ -353,6 +352,9 @@ to align all access patterns with a specific time-decay related access method.
 
 ### CI tables
 
-NOTE:
+{{< alert type="note" >}}
+
 Requirements and analysis of the CI tables use case: still a work in progress. We intend
 to add more details after the analysis moves forward.
+
+{{< /alert >}}

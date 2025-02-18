@@ -21,10 +21,13 @@ class Admin::RunnerProjectsController < Admin::ApplicationController
     rp = Ci::RunnerProject.find(safe_params[:id])
     runner = rp.runner
 
-    ::Ci::Runners::UnassignRunnerService.new(rp, current_user).execute
-
-    flash[:success] = s_('Runners|Runner unassigned from project.')
-    redirect_to edit_admin_runner_url(runner), status: :found
+    if ::Ci::Runners::UnassignRunnerService.new(rp, current_user).execute.success?
+      flash[:success] = s_('Runners|Runner unassigned from project.')
+      redirect_to edit_admin_runner_url(runner), status: :found
+    else
+      redirect_to edit_admin_runner_url(runner), status: :found,
+        alert: s_('Runners|Failed unassigning runner from project')
+    end
   end
 
   private

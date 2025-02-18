@@ -44,7 +44,7 @@ export default {
     checkingBranchValidity: __('Checking branch validity'),
   },
   createMRModalId: 'create-merge-request-modal',
-  mergeRequestHelpPagePath: helpPagePath('user/project/merge_requests/index.md'),
+  mergeRequestHelpPagePath: helpPagePath('user/project/merge_requests/_index.md'),
   inject: ['groupPath'],
   props: {
     showModal: {

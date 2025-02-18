@@ -267,6 +267,18 @@ module SearchHelper
     _('The file could not be displayed because it is empty.')
   end
 
+  def search_navigation_json
+    search_navigation = Search::Navigation.new(
+      user: current_user,
+      project: @project,
+      group: @group,
+      options: nav_options
+    )
+
+    sorted_navigation = search_navigation.tabs.sort_by { |_, h| h[:sort] }
+    parse_navigation(sorted_navigation).to_json
+  end
+
   private
 
   def formatted_count(scope)
@@ -294,11 +306,11 @@ module SearchHelper
   # Autocomplete results for internal help pages
   def help_autocomplete
     [
-      { category: "Help", label: _("API Help"),                     url: help_page_path("api/index.md") },
+      { category: "Help", label: _("API Help"),                     url: help_page_path("api/_index.md") },
       { category: "Help", label: _("Markdown Help"),                url: help_page_path("user/markdown.md") },
       { category: "Help", label: _("Permissions Help"),             url: help_page_path("user/permissions.md") },
       { category: "Help", label: _("Public Access Help"),           url: help_page_path("user/public_access.md") },
-      { category: "Help", label: _("Rake Tasks Help"),              url: help_page_path("raketasks/index.md") },
+      { category: "Help", label: _("Rake Tasks Help"),              url: help_page_path("raketasks/_index.md") },
       { category: "Help", label: _("SSH Keys Help"),                url: help_page_path("user/ssh.md") },
       {
         category: "Help",
@@ -307,7 +319,7 @@ module SearchHelper
       },
       {
         category: "Help",
-        label: _("Webhooks Help"),
+        label: _("Webhooks help"),
         url: help_page_path("user/project/integrations/webhooks.md")
       }
     ]
@@ -416,7 +428,7 @@ module SearchHelper
   def users_autocomplete(term, limit = 5)
     unless current_user &&
         Ability.allowed?(current_user, :read_users_list) &&
-        Feature.enabled?(:global_search_users_tab, current_user, type: :ops)
+        ::Gitlab::CurrentSettings.global_search_users_enabled?
       return []
     end
 
@@ -508,7 +520,6 @@ module SearchHelper
       .permit(SEARCH_GENERIC_PARAMS)
 
     active_scope = @scope == scope_name
-
     active_type = params[:type].to_s == type.to_s
 
     result = {
@@ -518,11 +529,8 @@ module SearchHelper
       link: search_path(search_params),
       active: active_nav?(active_scope, active_type, type)
     }
-
     result[:count] = formatted_count(scope_name) if active_scope
-
     result[:count_link] = search_count_path(search_params) unless active_scope
-
     result
   end
 
@@ -530,17 +538,6 @@ module SearchHelper
     {
       show_snippets: search_service.show_snippets?
     }
-  end
-
-  def search_navigation_json
-    search_navigation = Search::Navigation.new(
-      user: current_user,
-      project: @project,
-      group: @group,
-      options: nav_options
-    )
-    sorted_navigation = search_navigation.tabs.sort_by { |_, h| h[:sort] }
-    parse_navigation(sorted_navigation).to_json
   end
 
   def parse_navigation(navigation)

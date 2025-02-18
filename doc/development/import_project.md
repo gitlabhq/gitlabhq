@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Test import project
 ---
-
-# Test import project
 
 For testing, we can import our own [GitLab CE](https://gitlab.com/gitlab-org/gitlab-foss/) project (named `gitlabhq` in this case) under a group named `qa-perf-testing`. Project tarballs that can be used for testing can be found over on the [performance-data](https://gitlab.com/gitlab-org/quality/performance-data) project. A different project could be used if required.
 
@@ -28,7 +27,7 @@ This method ignores all the errors silently (including the ones related to `GITA
 
 ### Import by using the `import-project` script
 
-A convenient script, [`bin/import-project`](https://gitlab.com/gitlab-org/quality/performance/blob/master/bin/import-project), is provided with [performance](https://gitlab.com/gitlab-org/quality/performance) project to import the Project tarball into a GitLab environment via API from the terminal.
+A convenient script, [`bin/import-project`](https://gitlab.com/gitlab-org/quality/performance/-/blob/main/bin/import-project), is provided with [performance](https://gitlab.com/gitlab-org/quality/performance) project to import the Project tarball into a GitLab environment via API from the terminal.
 
 It requires some preparation to use the script if you haven't done so already:
 
@@ -55,7 +54,7 @@ This method takes longer to import than the other methods and depends on several
 To test importing from GitHub Enterprise (GHE) to GitLab, you need a GHE instance. You can request a
 [GitHub Enterprise Server trial](https://docs.github.com/en/enterprise-cloud@latest/admin/overview/setting-up-a-trial-of-github-enterprise-server) and install it on Google Cloud Platform.
 
-- GitLab team members can use [Sandbox Cloud Realm](https://handbook.gitlab.com/handbook/infrastructure-standards/realms/sandbox/) for this purpose.
+- GitLab team members can use [Sandbox Cloud Realm](https://handbook.gitlab.com/handbook/company/infrastructure-standards/realms/sandbox/) for this purpose.
 - Others can request a [Google Cloud Platforms free trial](https://cloud.google.com/free).
 
 ### Import by using a Rake task

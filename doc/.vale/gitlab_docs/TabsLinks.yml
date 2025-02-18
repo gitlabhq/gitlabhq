@@ -6,7 +6,8 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Do not include tabs query parameters in links."
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#tabs
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#tabs
+vocab: false
 level: error
 scope: raw
 raw:

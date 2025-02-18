@@ -6,6 +6,7 @@ module Types
       graphql_name 'WikiPage'
 
       implements Types::Notes::NoteableInterface
+      implements Types::TodoableInterface
 
       description 'A wiki page'
 
@@ -18,6 +19,10 @@ module Types
 
       field :title, GraphQL::Types::String,
         null: false, description: 'Wiki page title.'
+
+      def web_url
+        Gitlab::UrlBuilder.build(object)
+      end
     end
   end
 end

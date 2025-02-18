@@ -27,14 +27,14 @@ module Ci
           return unless job.persisted?
           return unless key
 
-          scopes = job.scoped_user ? { scoped_user_id: job.scoped_user.id } : {}
+          payload = build_payload(job)
 
           ::Authn::Tokens::Jwt.rsa_encode(
             subject: job,
             signing_key: key,
             expire_time: expire_time(job),
             token_prefix: token_prefix,
-            custom_payload: scopes)
+            custom_payload: payload)
         end
 
         def decode(token)
@@ -46,6 +46,18 @@ module Ci
             subject_type: subject_type,
             token_prefix: token_prefix)
           new(jwt) if jwt
+        end
+
+        def build_payload(job)
+          base_payload = { cell_id: Gitlab.config.cell.id }
+          base_payload.merge(extra_payload(job)).compact_blank
+        end
+
+        def extra_payload(job)
+          {
+            scoped_user_id: job.scoped_user&.id,
+            organization_id: job.project.organization_id
+          }
         end
 
         def token_prefix
@@ -87,6 +99,16 @@ module Ci
         User.find_by_id(scoped_user_id) if scoped_user_id
       end
       strong_memoize_attr :scoped_user
+
+      def cell_id
+        @jwt.payload['cell_id']
+      end
+      strong_memoize_attr :cell_id
+
+      def organization
+        job&.project&.organization
+      end
+      strong_memoize_attr :organization
     end
   end
 end

@@ -10,9 +10,6 @@ identifiers:
 product_group: compliance
 milestone: "15.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107120
-distributions:
-#- ce
-- ee
 tiers:
 #- free
 - premium

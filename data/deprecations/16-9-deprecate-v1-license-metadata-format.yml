@@ -6,6 +6,8 @@
   reporter: thiagocsf
   stage: Secure
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/438477
+  impact: low
+  scope: instance
   body: |  # (required) Don't change this line.
     The license metadata format V1 dataset has been deprecated and will be removed
     in GitLab 18.0.

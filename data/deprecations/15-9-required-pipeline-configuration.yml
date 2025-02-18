@@ -9,12 +9,12 @@
   stage: Compliance Management  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/389467  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    Required pipeline configuration will be removed in GitLab 17.0. This impacts self-managed users on the Ultimate tier.
+    Required pipeline configuration will be removed in GitLab 17.0. This impacts users on GitLab Self-Managed on the Ultimate tier.
 
     You should replace required pipeline configuration with either:
 
-    - [Security policies scoped to compliance frameworks](https://docs.gitlab.com/ee/user/application_security/policies/scan_execution_policies.html#security-policy-scopes), which are experimental.
-    - [Compliance pipelines](https://docs.gitlab.com/ee/user/group/compliance_pipelines.html), which are available now.
+    - [Security policies scoped to compliance frameworks](https://docs.gitlab.com/user/application_security/policies/scan_execution_policies/#security-policy-scopes), which are experimental.
+    - [Compliance pipelines](https://docs.gitlab.com/user/group/compliance_pipelines/), which are available now.
 
     We recommend these alternative solutions because they provides greater flexibility, allowing required pipelines to be assigned to specific
     compliance framework labels.

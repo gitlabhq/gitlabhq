@@ -11,7 +11,7 @@
   issue_url: https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5794
   # Use the impact calculator https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
   impact: small
-  scope: [instance]
+  scope: instance
   resolution_role: [Admin]
   manual_task: true
   body: |  # (required) Don't change this line.
@@ -31,4 +31,4 @@
 
    We plan to remove this fallback support and support for NGINX controller image v1.3.1 in GitLab 18.0.
 
-   You can read more about it in the [charts release page](https://docs.gitlab.com/charts/releases/8_0.html#upgrade-to-86x-851-843-836).
+   You can read more about it in the [charts release page](https://docs.gitlab.com/charts/releases/8_0/#upgrade-to-86x-851-843-836).

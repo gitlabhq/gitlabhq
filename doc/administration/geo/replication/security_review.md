@@ -2,13 +2,15 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Geo security review (Q&A)
 ---
 
-# Geo security review (Q&A)
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The following security review of the Geo feature set focuses on security aspects of
 the feature as they apply to customers running their own GitLab instances. The review
@@ -126,7 +128,7 @@ from [owasp.org](https://owasp.org/).
 
 - Geo imposes no additional restrictions on operating system (see the
   [GitLab installation](https://about.gitlab.com/install/) page for more
-  details), however we recommend using the operating systems listed in the [Geo documentation](../index.md#requirements-for-running-geo).
+  details), however we recommend using the operating systems listed in the [Geo documentation](../_index.md#requirements-for-running-geo).
 
 ### What details regarding required OS components and lock‐down needs have been defined?
 

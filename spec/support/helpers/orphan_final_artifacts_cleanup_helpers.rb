@@ -3,7 +3,7 @@
 module OrphanFinalArtifactsCleanupHelpers
   def create_fog_file(final: true)
     path = if final
-             JobArtifactUploader.generate_final_store_path(root_id: 123)
+             JobArtifactUploader.generate_final_store_path(root_hash: 123)
            else
              JobArtifactUploader.generate_remote_id
            end

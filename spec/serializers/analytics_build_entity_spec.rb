@@ -45,7 +45,7 @@ RSpec.describe AnalyticsBuildEntity do
     end
 
     it 'contains the duration' do
-      expect(subject[:total_time]).to eq(hours: 1 )
+      expect(subject[:total_time]).to eq(hours: 1)
     end
 
     context 'no started at or finished at date' do

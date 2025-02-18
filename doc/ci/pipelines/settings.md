@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Customize pipeline configuration
 ---
 
-# Customize pipeline configuration
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can customize how pipelines run for your project.
 
@@ -81,13 +83,17 @@ You can set pending or running pipelines to cancel automatically when a pipeline
 1. Select the **Auto-cancel redundant pipelines** checkbox.
 1. Select **Save changes**.
 
-Use the [`interruptible`](../yaml/index.md#interruptible) keyword to indicate if a
+Use the [`interruptible`](../yaml/_index.md#interruptible) keyword to indicate if a
 running job can be canceled before it completes. After a job with
 `interruptible: false` starts, the entire pipeline is no longer considered interruptible.
 
 ## Prevent outdated deployment jobs
 
-> - Also preventing outdated manual or retried deployment jobs from running [added](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) in GitLab 15.5.
+{{< history >}}
+
+- Also preventing outdated manual or retried deployment jobs from running [added](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) in GitLab 15.5.
+
+{{< /history >}}
 
 Your project may have multiple concurrent deployment jobs that are
 scheduled to run in the same time frame.
@@ -108,11 +114,18 @@ For more information, see [Deployment safety](../environments/deployment_safety.
 
 ## Restrict roles that can cancel pipelines or jobs
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137301) in GitLab 16.7.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137301) in GitLab 16.7.
+
+{{< /history >}}
 
 You can customize which roles have permission to cancel pipelines or jobs.
 
@@ -144,9 +157,12 @@ To customize the path:
    - Is on an external site, enter the full URL.
 1. Select **Save changes**.
 
-NOTE:
-You cannot use your project's [pipeline editor](../pipeline_editor/index.md) to
+{{< alert type="note" >}}
+
+You cannot use your project's [pipeline editor](../pipeline_editor/_index.md) to
 edit CI/CD configuration files in other projects or on an external site.
+
+{{< /alert >}}
 
 ### Custom CI/CD configuration file examples
 
@@ -192,7 +208,7 @@ You can choose how your repository is fetched from GitLab when a job runs.
      for every job. However, the local working copy is always pristine.
    - `git fetch` is faster because it re-uses the local working copy (and falls
      back to clone if it doesn't exist). This is recommended, especially for
-     [large repositories](../../user/project/repository/monorepos/index.md#git-strategy).
+     [large repositories](../../user/project/repository/monorepos/_index.md#git-strategy).
 
 The configured Git strategy can be overridden by the [`GIT_STRATEGY` variable](../runners/configure_runners.md#git-strategy)
 in the `.gitlab-ci.yml` file.
@@ -211,7 +227,7 @@ a repository.
 
 Newly created projects have a default `git depth` value of `20`.
 
-This value can be overridden by the [`GIT_DEPTH` variable](../../user/project/repository/monorepos/index.md#shallow-cloning)
+This value can be overridden by the [`GIT_DEPTH` variable](../../user/project/repository/monorepos/_index.md#shallow-cloning)
 in the `.gitlab-ci.yml` file.
 
 ## Set a limit for how long jobs can run
@@ -239,7 +255,7 @@ test coverage of your projects. These badges are determined by the latest succes
 GitLab CI/CD pipelines are enabled by default on all new projects. If you use an external CI/CD server like
 Jenkins or Drone CI, you can disable GitLab CI/CD to avoid conflicts with the commits status API.
 
-You can disable GitLab CI/CD per project or [for all new projects on an instance](../../administration/cicd/index.md).
+You can disable GitLab CI/CD per project or [for all new projects on an instance](../../administration/cicd/_index.md).
 
 When you disable GitLab CI/CD:
 
@@ -255,21 +271,25 @@ To disable GitLab CI/CD in your project:
 1. In the **Repository** section, turn off **CI/CD**.
 1. Select **Save changes**.
 
-These changes do not apply to projects in an [external integration](../../user/project/integrations/index.md#available-integrations).
+These changes do not apply to projects in an [external integration](../../user/project/integrations/_index.md#available-integrations).
 
 ## Automatic pipeline cleanup
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**Status**: Beta
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498969) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `ci_delete_old_pipelines`. Disabled by default.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-FLAG:
-The availability of this feature is controlled by a feature flag. For more information, see the history.
+{{< /details >}}
 
-You can set a CI/CD pipeline expiry time to help manage pipeline storage and improve system performance.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498969) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `ci_delete_old_pipelines`. Disabled by default.
+- [Feature flag `ci_delete_old_pipelines`](https://gitlab.com/gitlab-org/gitlab/-/issues/503153) removed in GitLab 17.9.
+
+{{< /history >}}
+
+Users with the Owner role can set a CI/CD pipeline expiry time to help manage pipeline storage and improve system performance.
 The system automatically deletes pipelines that were created before the configured value.
 
 1. On the left sidebar, select **Search or go to** and find your project.

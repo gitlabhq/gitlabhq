@@ -34,13 +34,14 @@
           - approximate_projects_count = approximate_count_with_delimiters(@counts, Project)
           = s_('AdminArea|Projects')
           = render Pajamas::BadgeComponent.new(approximate_projects_count, variant: :muted)
-        = render Pajamas::ButtonComponent.new(href: new_project_path, size: :small) do
-          = s_('AdminArea|New project')
+        - if current_user.can_admin_all_resources?
+          = render Pajamas::ButtonComponent.new(href: new_project_path, size: :small) do
+            = s_('AdminArea|New project')
       - c.with_body do
         .gl-flex.gl-flex-col.gl-h-full
           - @projects.each do |project|
             .gl-flex.gl-py-4{ class: ('gl-border-b' if @projects.last != project) }
-              .gl-mr-auto.gl-overflow-hidden.gl-text-ellipsis
+              .gl-mr-auto
                 = link_to project.full_name, admin_project_path(project)
               %span.gl-whitespace-nowrap.gl-text-right.gl-text-sm.gl-text-subtle
                 #{time_ago_with_tooltip(project.created_at)}
@@ -59,7 +60,7 @@
         .gl-flex.gl-flex-col.gl-h-full
           - @users.each do |user|
             .gl-flex.gl-py-4{ class: ('gl-border-b' if @users.last != user) }
-              .gl-mr-auto.gl-overflow-hidden.gl-text-ellipsis
+              .gl-mr-auto
                 = link_to [:admin, user] do
                   = user.name
               %span.gl-whitespace-nowrap.gl-text-right.gl-text-sm.gl-text-subtle
@@ -82,7 +83,7 @@
         .gl-flex.gl-flex-col.gl-h-full
           - @groups.each do |group|
             .gl-flex.gl-py-4{ class: ('gl-border-b' if @groups.last != group) }
-              .gl-mr-auto.gl-overflow-hidden.gl-text-ellipsis
+              .gl-mr-auto
                 = link_to [:admin, group] do
                   = group.full_name
               %span.gl-whitespace-nowrap.gl-text-right.gl-text-sm.gl-text-subtle
@@ -104,7 +105,7 @@
 
         = feature_entry(_('LDAP'),
           enabled: Gitlab.config.ldap.enabled,
-          doc_href: help_page_path('administration/auth/ldap/index.md'))
+          doc_href: help_page_path('administration/auth/ldap/_index.md'))
 
         = feature_entry(_('Gravatar'),
           href: general_admin_application_settings_path(anchor: 'js-account-settings'),

@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Install GitLab under a relative URL
 ---
 
-# Install GitLab under a relative URL
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 While you should install GitLab on its own (sub)domain, sometimes
 this is not possible due to a variety of reasons. In that case, GitLab can also
@@ -50,9 +52,12 @@ See the [requirements](requirements.md) document for more information.
 
 ## Enable relative URL in GitLab
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not make any changes to your web server configuration file regarding
 relative URL. The relative URL support is implemented by GitLab Workhorse.
+
+{{< /alert >}}
 
 ---
 
@@ -115,9 +120,12 @@ Make sure to follow all steps below:
    -authBackend http://127.0.0.1:8080/gitlab
    ```
 
-   NOTE:
-   If you are using a custom init script, make sure to edit the above
+   {{< alert type="note" >}}
+
+If you are using a custom init script, make sure to edit the above
    GitLab Workhorse setting as needed.
+
+   {{< /alert >}}
 
 1. [Restart GitLab](../administration/restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 

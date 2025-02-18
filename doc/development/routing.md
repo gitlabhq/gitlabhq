@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Routing
 ---
-
-# Routing
 
 The GitLab backend is written primarily with Rails so it uses
 [Rails routing](https://guides.rubyonrails.org/routing.html). Beside Rails best

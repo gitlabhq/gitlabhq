@@ -2,9 +2,8 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: GitLab /help
 ---
-
-# GitLab /help
 
 Every GitLab instance includes documentation at `/help` (`https://gitlab.example.com/help`)
 that matches the version of the instance. For example, <https://gitlab.com/help>.
@@ -14,8 +13,8 @@ hour from the default branch of GitLab, Omnibus, Runner, Charts, and Operator.
 After a merge request that updates documentation is merged, it is available online
 in an hour or less.
 
-However, it's only available at `/help` on self-managed instances in the next released
-version. The date an update is merged can impact which self-managed release the update
+However, it's only available at `/help` on GitLab Self-Managed instances in the next released
+version. The date an update is merged can impact which GitLab Self-Managed release the update
 is present in.
 
 For example:
@@ -25,7 +24,7 @@ For example:
 1. It is merged on 2021-10-19 and available online the same day at <https://docs.gitlab.com>.
 1. GitLab 14.4 is released on 2021-10-22, based on the `gitlab` codebase from 2021-10-18
    (one day *before* the update was merged).
-1. The change shows up in the 14.5 self-managed release, due to missing the release cutoff
+1. The change shows up in the 14.5 GitLab Self-Managed release, due to missing the release cutoff
    for 14.4.
 
 If it is important that a documentation update is present in that month's release,
@@ -43,7 +42,11 @@ directory. For example:
 
 ### `_index.md` files
 
-> - Support for `_index.md` files [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144419) in GitLab 16.10.
+{{< history >}}
+
+- Support for `_index.md` files [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144419) in GitLab 16.10.
+
+{{< /history >}}
 
 The Hugo static site generator makes use of `_index.md` files. To allow for index pages to be
 named either `index.md` or `_index.md` in `/help`, GitLab maps requests for `index.md`, `index.html`, or `index`:
@@ -58,17 +61,6 @@ For example:
 - Mapping:
   - `doc/user/index.md` if it exists.
   - Otherwise, to `doc/user/_index.md`.
-
-## Source files
-
-`/help` can render Markdown files with the level 1 heading either:
-
-- Specified in YAML front matter using `title`. For example, `title: My Markdown file`.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145627) in GitLab 16.10.
-- Specified in the Markdown itself. For example, `# My Markdown file`.
-
-You should not specify the level 1 heading for a page using both methods at the same time, otherwise the level 1 heading
-is repeated.
 
 ## Linking to `/help`
 
@@ -157,5 +149,5 @@ Do not use `include ActionView::Helpers::UrlHelper` just to make the `link_to` m
 ## `/help` tests
 
 Several [RSpec tests](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/features/help_pages_spec.rb)
-are run to ensure GitLab documentation renders and works correctly. In particular, that [main docs landing page](../../index.md) works correctly from `/help`.
+are run to ensure GitLab documentation renders and works correctly. In particular, that [main docs landing page](../../_index.md) works correctly from `/help`.
 For example, [GitLab.com's `/help`](https://gitlab.com/help).

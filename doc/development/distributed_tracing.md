@@ -2,9 +2,8 @@
 stage: Monitor
 group: Platform Insights
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Distributed tracing development guidelines
 ---
-
-# Distributed tracing development guidelines
 
 GitLab is instrumented for distributed tracing. Distributed tracing in GitLab is currently considered **experimental**, as it has not yet been tested at scale on GitLab.com.
 
@@ -113,7 +112,7 @@ tracer:
   jaeger:
     enabled: true
     listen_address: 127.0.0.1
-    version: 1.43.0
+    version: 1.66.0
 ```
 
 After modifying the `gdk.yml` file, reconfigure your GDK by running
@@ -225,9 +224,12 @@ This configuration string uses the Jaeger driver `opentracing://jaeger` with the
 | `sampler_param` | `0.01` | Use a ratio of `0.01` to configure the `probabilistic` sampler to randomly sample _1%_ of traces. |
 | `service_name` | `api` | Override the service name used by the Jaeger backend. This parameter takes precedence over the application-supplied value. |
 
-NOTE:
+{{< alert type="note" >}}
+
 The same `GITLAB_TRACING` value should to be configured in the environment
 variables for all GitLab processes, including Workhorse, Gitaly, Rails, and Sidekiq.
+
+{{< /alert >}}
 
 ### 3. Start the GitLab application
 
@@ -260,6 +262,9 @@ not set.
 
 By default, the Jaeger search UI is available at <http://localhost:16686/search>.
 
-NOTE:
+{{< alert type="note" >}}
+
 Don't forget that you must generate traces by using the application before
 they appear in the Jaeger UI.
+
+{{< /alert >}}

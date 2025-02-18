@@ -1,6 +1,6 @@
 ---
 key_path: counts.count_total_internal_events_cli_closed
-description: Total count of when the CLI is gracefully closed
+description: Count of when the CLI is gracefully closed
 product_group: package_registry
 product_categories:
 - helm_chart_registry
@@ -10,7 +10,10 @@ value_type: number
 status: active
 milestone: '16.6'
 introduced_by_url: TODO
-time_frame: all
+time_frame:
+- 28d
+- 7d
+- all
 data_source: internal_events
 data_category: optional
 tiers:

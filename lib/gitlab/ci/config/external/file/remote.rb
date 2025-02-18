@@ -20,7 +20,9 @@ module Gitlab
 
             def content
               fetch_with_error_handling do
-                fetch_async_content.value
+                fetch_async_content.value.tap do |content|
+                  verify_integrity(content) if params[:integrity]
+                end
               end
             end
             strong_memoize_attr :content
@@ -75,6 +77,17 @@ module Gitlab
               end
 
               response.body if errors.none?
+            end
+
+            def verify_integrity(content)
+              expected_hash = params[:integrity].delete_prefix('sha256-')
+              actual_hash = Base64.strict_encode64(
+                Digest::SHA256.digest(content)
+              )
+
+              unless Rack::Utils.secure_compare(actual_hash, expected_hash)
+                errors.push("Remote file `#{masked_location}` failed integrity check!")
+              end
             end
           end
         end

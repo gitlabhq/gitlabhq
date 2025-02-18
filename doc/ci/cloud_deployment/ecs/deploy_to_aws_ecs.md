@@ -2,13 +2,15 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Deploy to Amazon Elastic Container Service
 ---
 
-# Deploy to Amazon Elastic Container Service
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This step-by-step guide helps you deploy a project hosted on GitLab.com to
 the Amazon [Elastic Container Service (ECS)](https://aws.amazon.com/ecs/).
@@ -17,7 +19,7 @@ In this guide, you begin by creating an ECS cluster manually using the AWS conso
 deploy a simple application that you create from a GitLab template.
 
 These instructions work for both GitLab.com and GitLab Self-Managed instances.
-Ensure your own [runners are configured](../../runners/index.md).
+Ensure your own [runners are configured](../../runners/_index.md).
 
 ## Prerequisites
 
@@ -43,7 +45,7 @@ For the first step here, you create a demo application from a project template.
 Use a GitLab project template to get started. As the name suggests, these projects provide a
 bare-bones application built on some well-known frameworks.
 
-1. In GitLab on the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. In GitLab on the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**, where you can choose from a Ruby on Rails, Spring, or
    NodeJS Express project. For this guide, use the Ruby on Rails template.
 1. Give your project a name. In this example, it's named `ecs-demo`. Make it public so that you can
@@ -59,7 +61,7 @@ container registry.
 [ECS](https://aws.amazon.com/ecs/) is a container orchestration service, meaning that you must
 provide a containerized application image during the infrastructure build. To do so, you can use
 GitLab [Auto Build](../../../topics/autodevops/stages.md#auto-build)
-and [Container Registry](../../../user/packages/container_registry/index.md).
+and [Container Registry](../../../user/packages/container_registry/_index.md).
 
 1. On the left sidebar, select **Search or go to** and find your `ecs-demo` project.
 1. Select **Set up CI/CD**. It brings you to a `.gitlab-ci.yml`
@@ -73,9 +75,7 @@ and [Container Registry](../../../user/packages/container_registry/index.md).
    ```
 
 1. Select **Commit Changes**. It automatically triggers a new pipeline. In this pipeline, the `build`
-   job containerizes the application and pushes the image to [GitLab container registry](../../../user/packages/container_registry/index.md).
-
-   ![A build pipeline running.](img/initial-pipeline_v13_10.png)
+   job containerizes the application and pushes the image to [GitLab container registry](../../../user/packages/container_registry/_index.md).
 
 1. Visit **Deploy > Container Registry**. Make sure the application image has been
    pushed.
@@ -203,12 +203,15 @@ create a deployer user on AWS:
 1. Select **Create user**.
 1. Take note of the **Access key ID** and **Secret access key** of the created user.
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not share the secret access key in a public place. You must save it in a secure place.
+
+{{< /alert >}}
 
 ### Setup credentials in GitLab to let pipeline jobs access to ECS
 
-You can register the access information in [GitLab CI/CD Variables](../../variables/index.md).
+You can register the access information in [GitLab CI/CD Variables](../../variables/_index.md).
 These variables are injected into the pipeline jobs and can access the ECS API.
 
 1. On the left sidebar, select **Search or go to** and find your `ecs-demo` project.
@@ -240,9 +243,12 @@ Change a file in the project and see if it's reflected in the demo application o
 
 Congratulations! You successfully set up continuous deployment to ECS.
 
-NOTE:
+{{< alert type="note" >}}
+
 ECS deploy jobs wait for the rollout to complete before exiting. To disable this behavior,
 set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
+
+{{< /alert >}}
 
 ## Set up review apps
 
@@ -258,18 +264,18 @@ Only one Review App at a time can be deployed because this service is shared by 
 
 ### Configure SAST
 
-To use [SAST](../../../user/application_security/sast/index.md) with ECS, add the following to your `.gitlab-ci.yml` file:
+To use [SAST](../../../user/application_security/sast/_index.md) with ECS, add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
    - template: Jobs/SAST.gitlab-ci.yml
 ```
 
-For more details and configuration options, see the [SAST documentation](../../../user/application_security/sast/index.md#configuration).
+For more details and configuration options, see the [SAST documentation](../../../user/application_security/sast/_index.md#configuration).
 
 ### Configure DAST
 
-To use [DAST](../../../user/application_security/dast/index.md) on non-default branches, [set up review apps](#set-up-review-apps)
+To use [DAST](../../../user/application_security/dast/_index.md) on non-default branches, [set up review apps](#set-up-review-apps)
 and add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
@@ -291,10 +297,10 @@ include:
   - template: Jobs/DAST-Default-Branch-Deploy.gitlab-ci.yml
 ```
 
-For more details and configuration options, see the [DAST documentation](../../../user/application_security/dast/index.md).
+For more details and configuration options, see the [DAST documentation](../../../user/application_security/dast/_index.md).
 
 ## Further reading
 
-- If you're interested in more of the continuous deployments to clouds, see [cloud deployments](../index.md).
-- If you want to quickly set up DevSecOps in your project, see [Auto DevOps](../../../topics/autodevops/index.md).
+- If you're interested in more of the continuous deployments to clouds, see [cloud deployments](../_index.md).
+- If you want to quickly set up DevSecOps in your project, see [Auto DevOps](../../../topics/autodevops/_index.md).
 - If you want to quickly set up the production-grade environment, see [the 5 Minute Production App](https://gitlab.com/gitlab-org/5-minute-production-app/deploy-template/-/blob/master/README.md).

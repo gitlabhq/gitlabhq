@@ -11,9 +11,6 @@ time_frame: none
 data_source: database
 instrumentation_class: ServicePingFeaturesMetric
 data_category: optional
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

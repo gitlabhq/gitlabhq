@@ -18,8 +18,10 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import toast from '~/vue_shared/plugins/global_toast';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 
+import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_change_type_modal.vue';
 import {
   sprintfWorkItem,
+  BASE_ALLOWED_CREATE_TYPES,
   I18N_WORK_ITEM_DELETE,
   I18N_WORK_ITEM_ARE_YOU_SURE_DELETE,
   I18N_WORK_ITEM_ARE_YOU_SURE_DELETE_HIERARCHY,
@@ -41,14 +43,14 @@ import {
   TEST_ID_LOCK_ACTION,
   TEST_ID_REPORT_ABUSE,
   TEST_ID_NEW_RELATED_WORK_ITEM,
-  WORK_ITEM_TYPE_VALUE_EPIC,
   WORK_ITEM_TYPE_ENUM_EPIC,
+  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_VALUE_MAP,
 } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '../graphql/update_work_item_notifications.mutation.graphql';
 import convertWorkItemMutation from '../graphql/work_item_convert.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
-import WorkItemChangeTypeModal from './work_item_change_type_modal.vue';
 import WorkItemStateToggle from './work_item_state_toggle.vue';
 import CreateWorkItemModal from './create_work_item_modal.vue';
 
@@ -100,6 +102,7 @@ export default {
   stateToggleTestId: TEST_ID_TOGGLE_ACTION,
   reportAbuseActionTestId: TEST_ID_REPORT_ABUSE,
   newRelatedItemTestId: TEST_ID_NEW_RELATED_WORK_ITEM,
+  inject: ['hasOkrsFeature'],
   props: {
     fullPath: {
       type: String,
@@ -135,7 +138,17 @@ export default {
       required: false,
       default: false,
     },
+    canUpdateMetadata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     canDelete: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canReportSpam: {
       type: Boolean,
       required: false,
       default: false,
@@ -161,6 +174,11 @@ export default {
       default: false,
     },
     workItemReference: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    workItemWebUrl: {
       type: String,
       required: false,
       default: null,
@@ -219,16 +237,21 @@ export default {
       required: false,
       default: () => [],
     },
+    namespaceFullName: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
       isLockDiscussionUpdating: false,
       isDropdownVisible: false,
       isCreateWorkItemModalVisible: false,
+      workItemTypes: [],
     };
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workItemTypes: {
       query: namespaceWorkItemTypesQuery,
       variables() {
@@ -240,7 +263,7 @@ export default {
         return data.workspace?.workItemTypes?.nodes;
       },
       skip() {
-        return !this.canUpdate || this.workItemType !== WORK_ITEM_TYPE_VALUE_KEY_RESULT;
+        return !this.canUpdateMetadata || this.workItemType !== WORK_ITEM_TYPE_VALUE_KEY_RESULT;
       },
     },
   },
@@ -258,19 +281,20 @@ export default {
           I18N_WORK_ITEM_ERROR_COPY_EMAIL,
           this.workItemType,
         ),
-        newRelatedItemLabel: sprintfWorkItem(I18N_WORK_ITEM_NEW_RELATED_ITEM, this.workItemType),
       };
+    },
+    newRelatedItemLabel() {
+      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC
+        ? sprintfWorkItem(I18N_WORK_ITEM_NEW_RELATED_ITEM, this.workItemType)
+        : s__('WorkItem|New related item');
     },
     areYouSureDeleteMessage() {
       return this.hasChildren
         ? sprintfWorkItem(I18N_WORK_ITEM_ARE_YOU_SURE_DELETE_HIERARCHY, this.workItemType)
         : sprintfWorkItem(I18N_WORK_ITEM_ARE_YOU_SURE_DELETE, this.workItemType);
     },
-    canLockWorkItem() {
-      return this.canUpdate;
-    },
     canPromoteToObjective() {
-      return this.canUpdate && this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT;
+      return this.canUpdateMetadata && this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT;
     },
     confidentialItem() {
       return {
@@ -294,14 +318,19 @@ export default {
     showDropdownTooltip() {
       return !this.isDropdownVisible ? this.$options.i18n.moreActions : '';
     },
+    submitAsSpamItem() {
+      const href = this.workItemWebUrl.replaceAll('work_items', 'issues').concat('/mark_as_spam');
+      return { text: __('Submit as spam'), href };
+    },
     isAuthor() {
       return this.workItemAuthorId === window.gon.current_user_id;
     },
     relatedItemData() {
       return {
         id: this.workItemId,
-        type: this.workItemType,
         reference: this.workItemReference,
+        type: this.workItemType,
+        webUrl: this.workItemWebUrl,
       };
     },
     isEpic() {
@@ -313,7 +342,24 @@ export default {
         : this.$options.i18n.confidentialityEnabled;
     },
     showChangeType() {
-      return !this.isEpic && this.glFeatures.workItemsBeta;
+      return !this.isEpic && this.canUpdateMetadata;
+    },
+    allowedWorkItemTypes() {
+      if (this.isGroup) {
+        return [];
+      }
+
+      if (this.glFeatures.okrsMvc && this.hasOkrsFeature) {
+        return BASE_ALLOWED_CREATE_TYPES.concat(
+          WORK_ITEM_TYPE_VALUE_KEY_RESULT,
+          WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+        );
+      }
+
+      return BASE_ALLOWED_CREATE_TYPES;
+    },
+    workItemTypeNameEnum() {
+      return WORK_ITEM_TYPE_VALUE_MAP[this.workItemType];
     },
   },
   methods: {
@@ -508,7 +554,7 @@ export default {
         :data-testid="$options.newRelatedItemTestId"
         @action="isCreateWorkItemModalVisible = true"
       >
-        <template #list-item>{{ i18n.newRelatedItemLabel }}</template>
+        <template #list-item>{{ newRelatedItemLabel }}</template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
@@ -528,7 +574,7 @@ export default {
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
-        v-if="canLockWorkItem"
+        v-if="canUpdateMetadata"
         :data-testid="$options.lockDiscussionTestId"
         @action="toggleDiscussionLock"
       >
@@ -539,7 +585,7 @@ export default {
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
-        v-if="canUpdate"
+        v-if="canUpdateMetadata"
         v-gl-tooltip.left.viewport.d0="confidentialTooltip"
         :item="confidentialItem"
         :data-testid="$options.confidentialityTestId"
@@ -565,6 +611,7 @@ export default {
       </gl-disclosure-dropdown-item>
 
       <gl-dropdown-divider />
+
       <gl-disclosure-dropdown-item
         v-if="!isAuthor"
         :data-testid="$options.reportAbuseActionTestId"
@@ -572,6 +619,12 @@ export default {
       >
         <template #list-item>{{ $options.i18n.reportAbuse }}</template>
       </gl-disclosure-dropdown-item>
+
+      <gl-disclosure-dropdown-item
+        v-if="glFeatures.workItemsBeta && canReportSpam"
+        :item="submitAsSpamItem"
+        data-testid="submit-as-spam-item"
+      />
 
       <template v-if="canDelete">
         <gl-disclosure-dropdown-item
@@ -599,9 +652,11 @@ export default {
     </gl-modal>
 
     <create-work-item-modal
+      :allowed-work-item-types="allowedWorkItemTypes"
+      :always-show-work-item-type-select="!isGroup"
       :visible="isCreateWorkItemModalVisible"
       :related-item="relatedItemData"
-      :work-item-type-name="workItemType.toUpperCase()"
+      :work-item-type-name="workItemTypeNameEnum"
       :show-project-selector="!isEpic"
       :is-group="isGroup"
       hide-button
@@ -612,13 +667,16 @@ export default {
       v-if="showChangeType"
       ref="workItemsChangeTypeModal"
       :work-item-id="workItemId"
+      :work-item-iid="workItemIid"
       :work-item-type="workItemType"
       :full-path="fullPath"
       :has-children="hasChildren"
       :has-parent="hasParent"
       :widgets="widgets"
       :allowed-child-types="allowedChildTypes"
+      :namespace-full-name="namespaceFullName"
       @workItemTypeChanged="$emit('workItemTypeChanged')"
+      @error="$emit('error', $event)"
     />
   </div>
 </template>

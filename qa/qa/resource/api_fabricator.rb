@@ -117,7 +117,7 @@ module QA
 
           body = extract_graphql_body(graphql_response)
 
-          unless graphql_response.code == HTTP_STATUS_OK && (body[:errors].nil? || body[:errors].empty?)
+          unless graphql_response.code == HTTP_STATUS_OK && body[:errors].blank?
             action = /mutation {\s+destroy/.match?(post_body) ? 'Deletion' : 'Fabrication'
             raise(ResourceFabricationFailedError, <<~MSG.strip)
               #{action} of #{self.class.name} using the API failed (#{graphql_response.code}) with `#{graphql_response}`.
@@ -126,7 +126,6 @@ module QA
           end
 
           body[:id] = extract_graphql_id(body) if body.key?(:id)
-
           body.deep_transform_keys { |key| key.to_s.underscore.to_sym }
         else
           response = post(Runtime::API::Request.new(api_client, post_path).url, post_body, args)
@@ -223,6 +222,8 @@ module QA
 
       def extract_graphql_body(graphql_response)
         parsed_body = parse_body(graphql_response)
+        return parsed_body if parsed_body[:errors].present?
+
         data = Hash[parsed_body.values[0]]
         Hash[data.values[0]]
       end

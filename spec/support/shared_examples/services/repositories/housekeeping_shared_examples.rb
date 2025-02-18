@@ -40,19 +40,19 @@ RSpec.shared_examples 'housekeeps repository' do
         it 'does not enqueue a job' do
           expect(resource.git_garbage_collect_worker_klass).not_to receive(:perform_async)
 
-          expect { subject.execute }.to raise_error(Repositories::HousekeepingService::LeaseTaken)
+          expect { subject.execute }.to raise_error(::Repositories::HousekeepingService::LeaseTaken)
         end
 
         it 'does not reset pushes_since_gc' do
           expect do
-            expect { subject.execute }.to raise_error(Repositories::HousekeepingService::LeaseTaken)
+            expect { subject.execute }.to raise_error(::Repositories::HousekeepingService::LeaseTaken)
           end.not_to change { resource.pushes_since_gc }
         end
 
         it 'does not yield' do
           expect do |block|
             expect { subject.execute(&block) }
-              .to raise_error(Repositories::HousekeepingService::LeaseTaken)
+              .to raise_error(::Repositories::HousekeepingService::LeaseTaken)
           end.not_to yield_with_no_args
         end
       end

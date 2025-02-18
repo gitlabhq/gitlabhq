@@ -17,7 +17,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to have_many(:dependency_links).inverse_of(:package) }
     it { is_expected.to have_many(:tags).inverse_of(:package) }
     it { is_expected.to have_many(:build_infos).inverse_of(:package) }
-    it { is_expected.to have_one(:maven_metadatum).inverse_of(:package) }
   end
 
   describe '.sort_by_attribute' do
@@ -96,7 +95,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
   end
 
   describe 'validations' do
-    subject { build(:package) }
+    subject { build(:maven_package) }
 
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id, :version, :package_type) }
@@ -105,51 +104,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       it { is_expected.to allow_value("my/domain/com/my-app").for(:name) }
       it { is_expected.to allow_value("my.app-11.07.2018").for(:name) }
       it { is_expected.not_to allow_value("my(dom$$$ain)com.my-app").for(:name) }
-    end
-
-    describe '#version' do
-      context 'maven package' do
-        subject { build_stubbed(:maven_package) }
-
-        it { is_expected.to allow_value('0').for(:version) }
-        it { is_expected.to allow_value('1').for(:version) }
-        it { is_expected.to allow_value('10').for(:version) }
-        it { is_expected.to allow_value('1.0').for(:version) }
-        it { is_expected.to allow_value('1.3.350.v20200505-1744').for(:version) }
-        it { is_expected.to allow_value('1.1-beta-2').for(:version) }
-        it { is_expected.to allow_value('1.2-SNAPSHOT').for(:version) }
-        it { is_expected.to allow_value('12.1.2-2-1').for(:version) }
-        it { is_expected.to allow_value('1.2.3-beta').for(:version) }
-        it { is_expected.to allow_value('10.2.3-beta').for(:version) }
-        it { is_expected.to allow_value('2.0.0.v200706041905-7C78EK9E_EkMNfNOd2d8qq').for(:version) }
-        it { is_expected.to allow_value('1.2-alpha-1-20050205.060708-1').for(:version) }
-        it { is_expected.to allow_value('703220b4e2cea9592caeb9f3013f6b1e5335c293').for(:version) }
-        it { is_expected.to allow_value('RELEASE').for(:version) }
-        it { is_expected.not_to allow_value('..1.2.3').for(:version) }
-        it { is_expected.not_to allow_value('1.2.3..beta').for(:version) }
-        it { is_expected.not_to allow_value('  1.2.3').for(:version) }
-        it { is_expected.not_to allow_value("1.2.3  \r\t").for(:version) }
-        it { is_expected.not_to allow_value("\r\t 1.2.3").for(:version) }
-        it { is_expected.not_to allow_value('1.2.3-4/../../').for(:version) }
-        it { is_expected.not_to allow_value('1.2.3-4%2e%2e%').for(:version) }
-        it { is_expected.not_to allow_value('../../../../../1.2.3').for(:version) }
-        it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
-      end
-    end
-
-    describe '#prevent_concurrent_inserts' do
-      let(:maven_package) { build(:maven_package, project_id: 5) }
-      let(:lock_key) do
-        maven_package.connection.quote("#{described_class.table_name}-#{maven_package.project_id}-#{maven_package.name}-#{maven_package.version}")
-      end
-
-      subject { maven_package.send(:prevent_concurrent_inserts) }
-
-      it 'executes advisory lock' do
-        expect(maven_package.connection).to receive(:execute).with("SELECT pg_advisory_xact_lock(hashtext(#{lock_key}))")
-
-        subject
-      end
     end
 
     Packages::Package.package_types.keys.without('conan').each do |pt|
@@ -244,6 +198,16 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       subject { described_class.with_version('1.0.1') }
 
       it 'includes only packages with specified version' do
+        is_expected.to match_array([package2, package3])
+      end
+    end
+
+    describe '.with_version_like' do
+      let(:version_pattern) { '%.0.1%' }
+
+      subject { described_class.with_version_like(version_pattern) }
+
+      it 'includes packages with the version pattern' do
         is_expected.to match_array([package2, package3])
       end
     end
@@ -390,8 +354,8 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
   context 'sorting' do
     let_it_be(:project) { create(:project, path: 'aaa') }
     let_it_be(:project2) { create(:project, path: 'bbb') }
-    let_it_be(:package1) { create(:package, project: project) }
-    let_it_be(:package2) { create(:package, project: project2) }
+    let_it_be(:package1) { create(:generic_package, project: project) }
+    let_it_be(:package2) { create(:generic_package, project: project2) }
 
     it 'orders packages by their projects name ascending' do
       expect(described_class.order_project_name).to eq([package1, package2])
@@ -402,8 +366,8 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
 
     context 'with additional packages' do
-      let_it_be(:package3) { create(:package, project: project2) }
-      let_it_be(:package4) { create(:package, project: project) }
+      let_it_be(:package3) { create(:generic_package, project: project2) }
+      let_it_be(:package4) { create(:generic_package, project: project) }
 
       it 'orders packages by their projects path asc, then package id desc' do
         expect(described_class.order_project_path).to eq([package4, package1, package3, package2])
@@ -571,47 +535,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
   end
 
-  describe '#sync_maven_metadata' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:package) { create(:maven_package) }
-
-    subject { package.sync_maven_metadata(user) }
-
-    shared_examples 'not enqueuing a sync worker job' do
-      it 'does not enqueue a sync worker job' do
-        expect(::Packages::Maven::Metadata::SyncWorker)
-          .not_to receive(:perform_async)
-
-        subject
-      end
-    end
-
-    it 'enqueues a sync worker job' do
-      expect(::Packages::Maven::Metadata::SyncWorker)
-        .to receive(:perform_async).with(user.id, package.project.id, package.name)
-
-      subject
-    end
-
-    context 'with no user' do
-      let(:user) { nil }
-
-      it_behaves_like 'not enqueuing a sync worker job'
-    end
-
-    context 'with a versionless maven package' do
-      let_it_be(:package) { create(:maven_package, version: nil) }
-
-      it_behaves_like 'not enqueuing a sync worker job'
-    end
-
-    context 'with a non maven package' do
-      let_it_be(:package) { create(:npm_package) }
-
-      it_behaves_like 'not enqueuing a sync worker job'
-    end
-  end
-
   describe '#mark_package_files_for_destruction' do
     let_it_be(:package) { create(:npm_package, :pending_destruction) }
 
@@ -637,7 +560,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
   end
 
   describe '#create_build_infos!' do
-    let_it_be(:package) { create(:package) }
+    let_it_be(:package) { create(:generic_package) }
     let_it_be(:pipeline) { create(:ci_pipeline) }
 
     let(:build) { double(pipeline: pipeline) }

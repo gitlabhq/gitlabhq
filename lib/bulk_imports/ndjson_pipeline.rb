@@ -7,6 +7,17 @@ module BulkImports
     include Pipeline
     include Pipeline::IndexCacheStrategy
 
+    IGNORE_PLACEHOLDER_USER_CREATION = {
+      'approvals' => ['user_id'],
+      'bridges' => ['user_id'],
+      'builds' => ['user_id'],
+      'ci_pipelines' => ['user_id'],
+      'events' => ['author_id'],
+      'generic_commit_statuses' => ['user_id'],
+      'issues' => ['last_edited_by_id'],
+      'notes' => %w[updated_by_id resolved_by_id]
+    }.freeze
+
     included do
       file_extraction_pipeline!
 
@@ -179,9 +190,14 @@ module BulkImports
       # Import::SourceUser records with source_user_identifier 100 and 101 will be
       # created if none are found in the database, along with a placeholder user
       # for each record.
-      def create_import_source_users(_relation_key, relation_hash)
+      def create_import_source_users(relation_key, relation_hash)
         relation_factory::USER_REFERENCES.each do |reference|
           next unless relation_hash[reference]
+
+          # Skip creating placeholder users for these relations.
+          # These may reference users that no longer exist in the source instance
+          # as they lack a foreign key constraint.
+          next if IGNORE_PLACEHOLDER_USER_CREATION[relation_key]&.include?(reference)
 
           source_user_mapper.find_or_create_source_user(
             source_name: nil,
@@ -215,6 +231,7 @@ module BulkImports
 
           user_references.each do |attribute, source_user_identifier|
             source_user = source_user_mapper.find_source_user(source_user_identifier)
+            next unless source_user
 
             # Do not create a reference if the object is already associated
             # with a real user.

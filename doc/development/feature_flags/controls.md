@@ -1,15 +1,17 @@
 ---
 stage: none
 group: unassigned
-info: "See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
+info: 'See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines'
+title: Use ChatOps to enable and disable feature flags
 ---
 
-# Use ChatOps to enable and disable feature flags
+{{< alert type="note" >}}
 
-NOTE:
 This document explains how to contribute to the development of the GitLab product.
 If you want to use feature flags to show and hide functionality in your own applications,
 view [this feature flags information](../../operations/feature_flags.md) instead.
+
+{{< /alert >}}
 
 To turn on/off features behind feature flags in any of the
 GitLab-provided environments, like staging and production, you need to
@@ -40,7 +42,7 @@ easier to measure the impact of both separately.
 The GitLab feature library (using
 [Flipper](https://github.com/jnunemaker/flipper), and covered in the
 [Feature flags process](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/) guide) supports rolling out changes to a percentage of
-time to users. This in turn can be controlled using [GitLab ChatOps](../../ci/chatops/index.md).
+time to users. This in turn can be controlled using [GitLab ChatOps](../../ci/chatops/_index.md).
 
 For an up to date list of feature flag commands see
 [the source code](https://gitlab.com/gitlab-com/chatops/blob/master/lib/chatops/commands/feature.rb).
@@ -122,7 +124,7 @@ Let's say you are releasing a new functionality that runs a few times per day, f
 hourly cron job. And this new functionality is controlled by the newly introduced feature flag.
 For example, [rewriting the database query for a cron job](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128759/diffs).
 In this case, releasing the feature flag for a percentage below 25% might give you slow feedback
-regarding whether to proceed with the rollout or not. Also, if the cron job fails, it will [retry](../sidekiq/index.md#retries).
+regarding whether to proceed with the rollout or not. Also, if the cron job fails, it will [retry](../sidekiq/_index.md#retries).
 So the consequences of something going wrong won't be that big. In this case, releasing with a percentage of 25% or 50%
 will be an acceptable choice.
 
@@ -260,7 +262,7 @@ You can use the `--user` option to enable a feature flag for a specific user:
 If you would like to gather feedback internally first,
 feature flags scoped to a user can also be enabled
 for GitLab team members with the `gitlab_team_members`
-[feature group](index.md#feature-groups):
+[feature group](_index.md#feature-groups):
 
 ```shell
 /chatops run feature set --feature-group=gitlab_team_members some_feature true
@@ -453,7 +455,7 @@ Changes to the issue format can be submitted in the
 #### Instance level
 
 Any feature flag change that affects any GitLab instance is automatically logged in
-[features_json.log](../../administration/logs/index.md#features_jsonlog).
+[features_json.log](../../administration/logs/_index.md#features_jsonlog).
 You can search the change history in [Kibana](https://handbook.gitlab.com/handbook/support/workflows/kibana/).
 You can also access the feature flag change history for GitLab.com [in Kibana](https://log.gprd.gitlab.net/goto/d060337c017723084c6d97e09e591fc6).
 
@@ -502,3 +504,22 @@ The record can be deleted once the MR is deployed to all the environments:
 ```shell
 /chatops run feature delete <feature-flag-name> --dev --pre --staging --staging-ref --production
 ```
+
+## Checking feature flag status
+
+You can use the following ChatOps command to see a feature flag's current state:
+
+```shell
+/chatops run feature get <feature-flag-name>
+```
+
+Since this is a read-only command, you can avoid cluttering the production channels by either:
+
+- Running it in the `#chatops-ops-test` Slack channel
+- Sending it as a direct message to the ChatOps bot
+
+The result of this command will display:
+
+- Whether the feature flag exists
+- Its current state (enabled/disabled)
+- Any percentage rollouts or actor-based gates that are configured

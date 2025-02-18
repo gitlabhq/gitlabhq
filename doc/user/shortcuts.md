@@ -2,13 +2,15 @@
 stage: Foundations
 group: Personal Productivity
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab keyboard shortcuts
 ---
 
-# GitLab keyboard shortcuts
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab has several keyboard shortcuts you can use to access its different
 features.
@@ -37,13 +39,13 @@ These shortcuts are available in most areas of GitLab:
 | <kbd>Shift</kbd> + <kbd>s</kbd>    | Go to your **Snippets** page. |
 | <kbd>s</kbd> / <kbd>/</kbd>        | Put cursor in the search bar. |
 | <kbd>Shift</kbd> + <kbd>i</kbd>    | Go to your **Issues** page. |
-| <kbd>Shift</kbd> + <kbd>m</kbd>    | Go to your [**Merge requests**](project/merge_requests/index.md) page. |
+| <kbd>Shift</kbd> + <kbd>m</kbd>    | Go to your [**Merge requests**](project/merge_requests/_index.md) page. |
 | <kbd>Shift</kbd> + <kbd>r</kbd>    | Go to your **Review requests** page. |
 | <kbd>Shift</kbd> + <kbd>t</kbd>    | Go to your **To-Do List** page. |
 | <kbd>p</kbd>, then <kbd>b</kbd>     | Show or hide the Performance Bar. |
 | <kbd>Escape</kbd>                  | Hide tooltips or popovers. |
 | <kbd>g</kbd>, then <kbd>x</kbd>     | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/) (GitLab SaaS only). |
-| <kbd>.</kbd>                       | Open the [Web IDE](project/web_ide/index.md). |
+| <kbd>.</kbd>                       | Open the [Web IDE](project/web_ide/_index.md). |
 
 Additionally, the following shortcuts are available when editing text in text
 fields (for example, comments, replies, issue descriptions, and merge request
@@ -82,14 +84,14 @@ relatively quickly to work, and they take you to another page in the project.
 | <kbd>g</kbd> + <kbd>i</kbd> | Go to the project **Issues** page (**Plan > Issues**). |
 | <kbd>i</kbd>                | Go to the **New Issue** page (**Plan > Issues**, select **New issue** ). |
 | <kbd>g</kbd> + <kbd>b</kbd> | Go to the project **Issue boards** page (**Plan > Issue boards**). |
-| <kbd>g</kbd> + <kbd>m</kbd> | Go to the project [**Merge requests**](project/merge_requests/index.md) page (**Code > Merge requests**). |
+| <kbd>g</kbd> + <kbd>m</kbd> | Go to the project [**Merge requests**](project/merge_requests/_index.md) page (**Code > Merge requests**). |
 | <kbd>g</kbd> + <kbd>p</kbd> | Go to the CI/CD **Pipelines** page (**Build > Pipelines**). |
 | <kbd>g</kbd> + <kbd>j</kbd> | Go to the CI/CD **Jobs** page (**Build > Jobs**). |
 | <kbd>g</kbd> + <kbd>e</kbd> | Go to the project **Environments** page (**Operate > Environments**). |
 | <kbd>g</kbd> + <kbd>k</kbd> | Go to the project **Kubernetes clusters** integration page (**Operate > Kubernetes clusters**). You must have at least [`maintainer` permissions](permissions.md) to access this page. |
 | <kbd>g</kbd> + <kbd>s</kbd> | Go to the project **Snippets** page (**Code > Snippets**). |
-| <kbd>g</kbd> + <kbd>w</kbd> | Go to the [project wiki](project/wiki/index.md) (**Plan > Wiki**), if enabled. |
-| <kbd>.</kbd>                | Open the [Web IDE](project/web_ide/index.md). |
+| <kbd>g</kbd> + <kbd>w</kbd> | Go to the [project wiki](project/wiki/_index.md) (**Plan > Wiki**), if enabled. |
+| <kbd>.</kbd>                | Open the [Web IDE](project/web_ide/_index.md). |
 
 ### Issues
 
@@ -109,7 +111,7 @@ These shortcuts are available when viewing issues:
 
 ### Merge requests
 
-These shortcuts are available when viewing [merge requests](project/merge_requests/index.md):
+These shortcuts are available when viewing [merge requests](project/merge_requests/_index.md):
 
 | macOS shortcut                    | Windows shortcut                  | Description |
 |-----------------------------------|-----------------------------------|-------------|
@@ -122,7 +124,7 @@ These shortcuts are available when viewing [merge requests](project/merge_reques
 | <kbd>c</kbd> + <kbd>r</kbd>       |                                   | Copy merge request reference. |
 | <kbd>r</kbd>                      |                                   | Start writing a comment. Pre-selected text is quoted in the comment. |
 | <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>Enter</kbd> | Publish your comment immediately. |
-| <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Control</kbd> + <kbd>Enter</kbd> | Add your comment in a pending state, as part of a [review](project/merge_requests/reviews/index.md#start-a-review). |
+| <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Control</kbd> + <kbd>Enter</kbd> | Add your comment in a pending state, as part of a [review](project/merge_requests/reviews/_index.md#start-a-review). |
 | <kbd>c</kbd>                      |                                   | Move to next commit. |
 | <kbd>x</kbd>                      |                                   | Move to previous commit. |
 | <kbd>f</kbd>                      |                                   | Toggle file browser. |
@@ -139,11 +141,11 @@ These shortcuts are available when browsing the files in a project (go to
 | <kbd>Enter</kbd>  | Open selection (only while searching for files, **Code > Repository**, then select **Find File**). |
 | <kbd>Escape</kbd> | Go back to the **Find File** screen (only while searching for files, **Code > Repository**, then select **Find File**). |
 | <kbd>y</kbd>      | Go to file permalink (only while viewing a file). |
-| <kbd>.</kbd>      | Open the [Web IDE](project/web_ide/index.md). |
+| <kbd>.</kbd>      | Open the [Web IDE](project/web_ide/_index.md). |
 
 ### Repository graph
 
-These shortcuts are available when viewing the project [repository graph](project/repository/index.md#repository-history-graph)
+These shortcuts are available when viewing the project [repository graph](project/repository/_index.md#repository-history-graph)
 page (go to **Code > Repository graph**):
 
 | Keyboard shortcut                                                  | Description |
@@ -165,7 +167,7 @@ These shortcuts are available when viewing incidents:
 
 ### Wiki pages
 
-This shortcut is available when viewing a [wiki page](project/wiki/index.md):
+This shortcut is available when viewing a [wiki page](project/wiki/_index.md):
 
 | Keyboard shortcut | Description     |
 |-------------------|-----------------|
@@ -225,11 +227,14 @@ These shortcuts are available when editing a file with the
 
 ## Epics
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-These shortcuts are available when viewing [epics](group/epics/index.md):
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+These shortcuts are available when viewing [epics](group/epics/_index.md):
 
 | Keyboard shortcut            | Description       |
 |------------------------------|-------------------|
@@ -239,7 +244,11 @@ These shortcuts are available when viewing [epics](group/epics/index.md):
 
 ## Disable keyboard shortcuts
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/202494) from the shortcuts page to user preferences in GitLab 16.4.
+{{< history >}}
+
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/202494) from the shortcuts page to user preferences in GitLab 16.4.
+
+{{< /history >}}
 
 To disable keyboard shortcuts:
 
@@ -250,7 +259,11 @@ To disable keyboard shortcuts:
 
 ## Enable keyboard shortcuts
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/202494) from the shortcuts page to user preferences in GitLab 16.4.
+{{< history >}}
+
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/202494) from the shortcuts page to user preferences in GitLab 16.4.
+
+{{< /history >}}
 
 To enable keyboard shortcuts:
 

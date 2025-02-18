@@ -216,6 +216,7 @@ RSpec.configure do |config|
   config.include UserWithNamespaceShim
   config.include OrphanFinalArtifactsCleanupHelpers, :orphan_final_artifacts_cleanup
   config.include ClickHouseHelpers, :click_house
+  config.include WorkItems::DataSync::AssociationsHelpers
 
   config.include_context 'when rendered has no HTML escapes', type: :view
 
@@ -277,8 +278,6 @@ RSpec.configure do |config|
   end
 
   config.before do |example|
-    stub_feature_flags(log_sql_function_namespace_lookups: false)
-
     if example.metadata.fetch(:stub_feature_flags, true)
       # The following can be removed when we remove the staged rollout strategy
       # and we can just enable it using instance wide settings
@@ -337,10 +336,6 @@ RSpec.configure do |config|
 
       # Experimental merge request dashboard
       stub_feature_flags(merge_request_dashboard: false)
-
-      # Since we are very early in the Vue migration, there isn't much value in testing when the feature flag is enabled
-      # Please see https://gitlab.com/gitlab-org/gitlab/-/issues/466081 for tracking revisiting this.
-      stub_feature_flags(your_work_projects_vue: false)
 
       # This feature flag allows enabling self-hosted features on Staging Ref: https://gitlab.com/gitlab-org/gitlab/-/issues/497784
       stub_feature_flags(allow_self_hosted_features_for_com: false)

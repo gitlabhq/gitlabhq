@@ -2,13 +2,15 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Run GraphQL API queries and mutations
 ---
 
-# Run GraphQL API queries and mutations
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This guide demonstrates basic usage of the GitLab GraphQL API.
 
@@ -46,7 +48,7 @@ You can run GraphQL queries in a `curl` request on the command line on your
 local computer. The requests `POST` to `/api/graphql`
 with the query as the payload. You can authorize your request by generating a
 [personal access token](../../user/profile/personal_access_tokens.md) to use as
-a bearer token. Read more about [GraphQL Authentication](index.md#authentication).
+a bearer token. Read more about [GraphQL Authentication](_index.md#authentication).
 
 Example:
 
@@ -58,7 +60,7 @@ curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_T
 ```
 
 To nest strings in the query string,
-wrap the data in single quotes or escape the strings with `\\`:
+wrap the data in single quotes or escape the strings with <code>&#92;&#92;</code>:
 
 ```shell
 curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_TOKEN" \
@@ -69,9 +71,12 @@ curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_T
 
 ### Rails console
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GraphQL queries can be run in a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session). For example, to search projects:
 
@@ -100,13 +105,16 @@ The GitLab GraphQL API can be used to perform:
 - Queries for data retrieval.
 - [Mutations](#mutations) for creating, updating, and deleting data.
 
-NOTE:
+{{< alert type="note" >}}
+
 In the GitLab GraphQL API, `id` refers to a
 [Global ID](https://graphql.org/learn/global-object-identification/),
 which is an object identifier in the format of `"gid://gitlab/Issue/123"`.
-For more information, see [Global IDs](index.md#global-ids).
+For more information, see [Global IDs](_index.md#global-ids).
 
-[GitLab GraphQL Schema](reference/index.md) outlines which objects and fields are
+{{< /alert >}}
+
+[GitLab GraphQL Schema](reference/_index.md) outlines which objects and fields are
 available for clients to query and their corresponding data types.
 
 Example: Get only the names of all the projects the currently authenticated user can
@@ -171,7 +179,7 @@ More about queries:
 
 If you've signed in to GitLab and use [GraphiQL](#graphiql), all queries are performed as
 you, the authenticated user. For more information, read about
-[GraphQL Authentication](index.md#authentication).
+[GraphQL Authentication](_index.md#authentication).
 
 ### Mutations
 
@@ -348,7 +356,7 @@ More about introspection:
 
 ### Query complexity
 
-The calculated [complexity score and limit](index.md#maximum-query-complexity) for a query can be revealed to clients by
+The calculated [complexity score and limit](_index.md#maximum-query-complexity) for a query can be revealed to clients by
 querying for `queryComplexity`.
 
 ```graphql
@@ -446,3 +454,15 @@ query {
 
 More about pagination and cursors:
 [GraphQL documentation](https://graphql.org/learn/pagination/)
+
+## Changing the query URL
+
+Sometimes, it is necessary to send GraphQL requests to a different URL. An example are the `GeoNode` queries, which only work against a secondary Geo site URL.
+
+To change the URL of a GraphQL request in the GraphiQL explorer, set a custom header in the Header area of GraphiQL (bottom left area, right where Variables are):
+
+```JSON
+{
+  "REQUEST_PATH": "<the URL to make the graphQL request against>"
+}
+```

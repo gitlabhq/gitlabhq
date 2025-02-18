@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Deduplicate database records in a database table
 ---
-
-# Deduplicate database records in a database table
 
 This guide describes a strategy for introducing database-level uniqueness constraint (unique index) to existing database tables with data.
 
@@ -113,8 +112,11 @@ def down
 end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 This is a destructive operation with no possibility of rolling back. Make sure that the deduplication logic is tested thoroughly.
+
+{{< /alert >}}
 
 Replacing the old index with a unique index:
 
@@ -134,8 +136,11 @@ Milestone 3:
 
 1. Remove the advisory lock by removing the `prevent_concurrent_inserts` ActiveRecord callback method.
 
-NOTE:
+{{< alert type="note" >}}
+
 This milestone must be after a [required stop](required_stops.md).
+
+{{< /alert >}}
 
 ## Deduplicate strategy for large tables
 
@@ -157,5 +162,8 @@ Milestone 3:
 1. Replace the existing index with a unique index.
 1. Remove the advisory lock by removing the `prevent_concurrent_inserts` ActiveRecord callback method.
 
-NOTE:
+{{< alert type="note" >}}
+
 This milestone must be after a [required stop](required_stops.md).
+
+{{< /alert >}}

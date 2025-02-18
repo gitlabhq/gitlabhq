@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Batching best practices
 ---
-
-# Batching best practices
 
 This document gives an overview about the available batching strategies we use at GitLab. We list the pros and cons of each strategy so engineers can pick the ideal approach for their use case.
 
@@ -24,7 +23,7 @@ Batching performance is closely related to pagination performance since the unde
 
 There are two main aspects to consider when implementing batching in background jobs: total runtime and data modification volume.
 
-Background jobs shouldn't run for a long time. A Sidekiq process can crash or it can be forcefully stopped (e.g. on restart or deployment). Additionally, due to our [error budget](../stage_group_observability/index.md#error-budget) rules, after 5 minutes of runtime, error budget violations will be added to the group where the feature is registered. When implementing batching in background jobs, make sure that you're familiar with our guidelines related to [idempotent jobs](../sidekiq/idempotent_jobs.md)
+Background jobs shouldn't run for a long time. A Sidekiq process can crash or it can be forcefully stopped (e.g. on restart or deployment). Additionally, due to our [error budget](../stage_group_observability/_index.md#error-budget) rules, after 5 minutes of runtime, error budget violations will be added to the group where the feature is registered. When implementing batching in background jobs, make sure that you're familiar with our guidelines related to [idempotent jobs](../sidekiq/idempotent_jobs.md)
 
 Updating or deleting a large volume of records can increase database replication lag and it can add extra strain to the primary database. It's advisable to limit the total number of records we process (or batch over) within the background job.
 
@@ -235,8 +234,11 @@ def perform
 end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 To avoid parallel processing of records, you might need to wrap the execution with a distributed Redis lock.
+
+{{< /alert >}}
 
 Example Redis lock usage:
 
@@ -261,11 +263,16 @@ Sidekiq jobs can consume substantial database resources. If your job only batche
 
 ## Batching strategies
 
-NOTE:
+{{< alert type="note" >}}
+
 To keep the examples easy to follow, we omit the code for limiting the runtime.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 Some examples include an optional variable assignment to the `cursor` variable. This is optional step which can be used when implementing the "continue later" mechanism.
+{{< /alert >}}
 
 ### Loop-based batching
 

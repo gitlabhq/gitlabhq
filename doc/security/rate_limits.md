@@ -2,17 +2,22 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Rate limits
 ---
 
-# Rate limits
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
-NOTE:
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 For GitLab.com, see
-[GitLab.com-specific rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
+[GitLab.com-specific rate limits](../user/gitlab_com/_index.md#gitlabcom-specific-rate-limits).
+
+{{< /alert >}}
 
 Rate limiting is a common technique used to improve the security and durability
 of a web application.
@@ -30,8 +35,11 @@ Most cases can be mitigated by limiting the rate of requests from a single IP ad
 Most [brute-force attacks](https://en.wikipedia.org/wiki/Brute-force_attack) are
 similarly mitigated by a rate limit.
 
-NOTE:
+{{< alert type="note" >}}
+
 The rate limits for API requests do not affect requests made by the frontend, because these requests are always counted as web traffic.
+
+{{< /alert >}}
 
 ## Configurable limits
 
@@ -48,7 +56,7 @@ You can set these rate limits in the **Admin** area of your instance:
 - [Rate limits on Git SSH operations](../administration/settings/rate_limits_on_git_ssh_operations.md)
 - [Files API rate limits](../administration/settings/files_api_rate_limits.md)
 - [Deprecated API rate limits](../administration/settings/deprecated_api_rate_limits.md)
-- [GitLab Pages rate limits](../administration/pages/index.md#rate-limits)
+- [GitLab Pages rate limits](../administration/pages/_index.md#rate-limits)
 - [Pipeline rate limits](../administration/settings/rate_limit_on_pipelines_creation.md)
 - [Incident management rate limits](../administration/settings/incident_management_rate_limits.md)
 - [Projects API rate limits](../administration/settings/rate_limit_on_projects_api.md)
@@ -88,12 +96,19 @@ For configuration information, see
 
 ## Non-configurable limits
 
-> - Rate limit on the `:user_id/status`, `:id/following`, `:id/followers`, `:user_id/keys`, `id/keys/:key_id`, `:id/gpg_keys`, and `:id/gpg_keys/:key_id` endpoints [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/452349) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `rate_limiting_user_endpoints`. Disabled by default.
+{{< history >}}
 
-FLAG:
+- Rate limit on the `:user_id/status`, `:id/following`, `:id/followers`, `:user_id/keys`, `id/keys/:key_id`, `:id/gpg_keys`, and `:id/gpg_keys/:key_id` endpoints [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/452349) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `rate_limiting_user_endpoints`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of multiple endpoints in this feature is controlled by a feature flag.
 For more information, see the history.
 These endpoints are available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 ### Repository archives
 
@@ -174,8 +189,12 @@ The **rate limit** is 20 calls per minute per IP address.
 
 ### Project Jobs API endpoint
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382985) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `ci_enforce_rate_limits_jobs_api`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/384186) in GitLab 16.0. Feature flag `ci_enforce_rate_limits_jobs_api` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382985) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `ci_enforce_rate_limits_jobs_api`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/384186) in GitLab 16.0. Feature flag `ci_enforce_rate_limits_jobs_api` removed.
+
+{{< /history >}}
 
 There is a rate limit for the endpoint `project/:id/jobs`, which is enforced to reduce timeouts when retrieving jobs.
 
@@ -183,7 +202,11 @@ The **rate limit** defaults to 600 calls per authenticated user. You can [config
 
 ### AI action
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118010) in GitLab 16.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118010) in GitLab 16.0.
+
+{{< /history >}}
 
 There is a rate limit for the GraphQL `aiAction` mutation, which is enforced to prevent from abusing this endpoint.
 
@@ -191,7 +214,11 @@ The **rate limit** is 160 calls per 8 hours per authenticated user.
 
 ### Delete a member using the API
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118296) in GitLab 16.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118296) in GitLab 16.0.
+
+{{< /history >}}
 
 There is a rate limit for [removing project or group members using the API endpoints](../api/members.md#remove-a-member-from-a-group-or-project) `/groups/:id/members` or `/project/:id/members`.
 
@@ -199,8 +226,12 @@ The **rate limit** is 60 deletions per minute.
 
 ### Notification emails
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `rate_limit_notification_emails`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.2. Feature flag `rate_limit_notification_emails` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `rate_limit_notification_emails`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.2. Feature flag `rate_limit_notification_emails` removed.
+
+{{< /history >}}
 
 There is a rate limit for notification emails related to a project or group.
 
@@ -208,7 +239,11 @@ The **rate limit** is 1,000 notifications per 24 hours per project or group per 
 
 ### FogBugz import
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.6.
+
+{{< /history >}}
 
 There is a rate limit for triggering project imports from FogBugz.
 

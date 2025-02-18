@@ -2,7 +2,6 @@
 
 $design-pin-diameter: 28px;
 $design-pin-diameter-sm: 24px;
-$t-gray-a-16-design-pin: rgba($black, 0.16);
 
 .layout-page.design-detail-layout {
   max-height: 100vh;
@@ -84,7 +83,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
   }
 
   &.on-image {
-    box-shadow: 0 2px 4px $t-gray-a-08, 0 0 1px $t-gray-a-24;
+    box-shadow: 0 2px 4px var(--gl-color-alpha-dark-8), 0 0 1px var(--gl-color-alpha-dark-24);
     border: var(--white, $white) 2px solid;
     will-change: transform, box-shadow, opacity;
     // NOTE: verbose transition property required for Safari
@@ -97,7 +96,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
     }
 
     &:active {
-      box-shadow: 0 0 4px $t-gray-a-16-design-pin, 0 4px 12px $t-gray-a-16-design-pin;
+      box-shadow: 0 0 4px var(--gl-shadow-color-default), 0 4px 12px var(--gl-shadow-color-default);
     }
 
     &.inactive {

@@ -14,23 +14,23 @@
   resolution_role: Maintainer  # Can be one of: [Admin, Owner, Maintainer, Developer]
   manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    With the [**Authorized groups and projects** setting](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#add-a-group-or-project-to-the-job-token-allowlist)
+    With the [**Authorized groups and projects** setting](https://docs.gitlab.com/ci/jobs/ci_job_token/#add-a-group-or-project-to-the-job-token-allowlist)
     introduced in GitLab 15.9 (renamed from **Limit access _to_ this project** in GitLab 16.3), you can control CI/CD job token access to your project.
     When set to **Only this project and any groups and projects in the allowlist**,
     only groups or projects added to the allowlist can use job tokens to access your project.
 
     For projects created before GitLab 15.9, the allowlist was disabled by default
-    ([**All groups and projects**](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#allow-any-project-to-access-your-project)
+    ([**All groups and projects**](https://docs.gitlab.com/ci/jobs/ci_job_token/#allow-any-project-to-access-your-project)
     access setting selected), allowing job token access from any project.
     The allowlist is now enabled by default in all new projects. In older
     projects, it might still be disabled or you might have manually selected
     the **All groups and projects** option to make access unrestricted.
 
-    Starting in GitLab 17.6, administrators for Self-managed and GitLab Dedicated instances can optionally
-    [enforce this more secure setting for all projects](https://docs.gitlab.com/ee/administration/settings/continuous_integration.html#job-token-permissions).
+    Starting in GitLab 17.6, administrators for GitLab Self-Managed and GitLab Dedicated instances can optionally
+    [enforce this more secure setting for all projects](https://docs.gitlab.com/administration/settings/continuous_integration/#job-token-permissions).
     This setting prevents project maintainers from selecting **All groups and projects**.
     This change ensures a higher level of security between projects.
-    In GitLab 18.0, this setting will be enabled by default on GitLab.com, Self-managed, and GitLab Dedicated.
+    In GitLab 18.0, this setting will be enabled by default on GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 
     To prepare for this change, project maintainers using job tokens for cross-project authentication
     should populate their project's **Authorized groups and projects** allowlists. They should then change

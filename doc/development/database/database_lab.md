@@ -1,13 +1,11 @@
 ---
+type: reference, howto
 stage: Data Access
 group: Database Frameworks
-type: reference, howto
-discretionary: yes
-description: Database access for engineers and related parties.
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+description: Database access for engineers and related parties.
+title: Database Lab and Postgres.ai
 ---
-
-# Database Lab and Postgres.ai
 
 Internal users at GitLab have access to the Database Lab Engine (DLE) and
 [postgres.ai](https://console.postgres.ai/) for testing performance of database queries
@@ -40,21 +38,24 @@ To access the DLE's services, you can:
   provides `EXPLAIN` (analyze, buffers) plans for queries executed there.
 - Migration testing by triggering a job as a part of a merge request.
 - Direct `psql` access to DLE instead of a production replica. Available to authorized users only.
-  To request `psql` access, file an [access request](https://handbook.gitlab.com/handbook/business-technology/end-user-services/onboarding-access-requests/access-requests/#individual-or-bulk-access-request).
+  To request `psql` access, file an [access request](https://handbook.gitlab.com/handbook/it/end-user-services/onboarding-access-requests/access-requests/#individual-or-bulk-access-request).
 
 For more assistance, use the `#database` Slack channel.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you need only temporary access to a production replica, instead of a Database Lab
 clone, follow the runbook procedure for connecting to the
 [database console with Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Database_Console_via_Teleport.md).
 This procedure is similar to [Rails console access with Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console).
 
+{{< /alert >}}
+
 ### Query testing
 
 You can access Database Lab's query analysis features either:
 
-- In [the Postgres.ai web console](https://console.postgres.ai/GitLab/joe-instances).
+- In [the Postgres.ai web console](https://console.postgres.ai/gitlab/joe-instances).
   Shows only the commands you run.
 
 #### Generate query plans
@@ -133,12 +134,15 @@ For information on testing migrations, review our
 
 ### Access the console with `psql`
 
-NOTE:
+{{< alert type="note" >}}
+
 You must have `AllFeaturesUser` [`psql` access](#access-database-lab-engine) to access the console with `psql`.
+
+{{< /alert >}}
 
 To access the database lab instances, you must:
 
-- File an [access request](https://handbook.gitlab.com/handbook/business-technology/end-user-services/onboarding-access-requests/access-requests/#individual-or-bulk-access-request).
+- File an [access request](https://handbook.gitlab.com/handbook/it/end-user-services/onboarding-access-requests/access-requests/#individual-or-bulk-access-request).
 - Have a user data bag entry in [chef-repo](https://gitlab.com/gitlab-com/gl-infra/chef-repo) with your SSH key and the `db-lab` role.
 - Configure `ssh` as follows:
 

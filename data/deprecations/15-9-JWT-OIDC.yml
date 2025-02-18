@@ -7,7 +7,7 @@
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366798  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    [ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html) with OIDC support
+    [ID tokens](https://docs.gitlab.com/ci/secrets/id_token_authentication/) with OIDC support
     were introduced in GitLab 15.7. These tokens are more configurable than the old JSON web tokens (JWTs), are OIDC compliant,
     and only available in CI/CD jobs that explicitly have ID tokens configured.
     ID tokens are more secure than the old `CI_JOB_JWT*` JSON web tokens which are exposed in every job,
@@ -17,14 +17,14 @@
     - `CI_JOB_JWT_V1`
     - `CI_JOB_JWT_V2`
 
-    To prepare for this change, configure your pipelines to use [ID tokens](https://docs.gitlab.com/ee/ci/yaml/index.html#id_tokens)
+    To prepare for this change, configure your pipelines to use [ID tokens](https://docs.gitlab.com/ci/yaml/#id_tokens)
     instead of the deprecated tokens. For OIDC compliance, the `iss` claim now uses
     the fully qualified domain name, for example `https://example.com`, previously
     introduced with the `CI_JOB_JWT_V2` token.
 
-    In GitLab 15.9 to 15.11, you can [enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication)
+    In GitLab 15.9 to 15.11, you can [enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ci/secrets/id_token_authentication/#enable-automatic-id-token-authentication)
     setting, which prevents the old tokens from being exposed to any jobs and enables
-    [ID token authentication for the `secrets:vault` keyword](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication).
+    [ID token authentication for the `secrets:vault` keyword](https://docs.gitlab.com/ci/secrets/id_token_authentication/#configure-automatic-id-token-authentication).
 
     In GitLab 16.0 and later:
 

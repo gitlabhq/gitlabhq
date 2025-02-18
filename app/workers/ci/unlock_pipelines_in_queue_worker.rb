@@ -3,6 +3,7 @@
 module Ci
   class UnlockPipelinesInQueueWorker
     include ApplicationWorker
+    include CronjobChildWorker
 
     data_consistency :always
 

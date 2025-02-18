@@ -2,6 +2,7 @@
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import { getDraft, clearDraft } from '~/lib/utils/autosave';
+import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import { getAutosaveKey, getIdFromGid } from '../utils';
 import WikiNote from './wiki_note.vue';
 import WikiDiscussionsSignedOut from './wiki_discussions_signed_out.vue';
@@ -17,6 +18,7 @@ export default {
     WikiCommentForm,
     DiscussionReplyPlaceholder,
     WikiDiscussionsSignedOut,
+    ToggleRepliesWidget,
   },
   inject: ['noteableType', 'currentUserData'],
   props: {
@@ -35,6 +37,7 @@ export default {
       replies: [],
       firstNote: {},
       placeholderNote: {},
+      collapsed: false,
     };
   },
   computed: {
@@ -106,6 +109,9 @@ export default {
     getUserPermissions(note) {
       return JSON.parse(JSON.stringify(note.userPermissions || {}));
     },
+    toggleCollapsed() {
+      this.collapsed = !this.collapsed;
+    },
   },
 };
 </script>
@@ -122,40 +128,52 @@ export default {
       <template v-if="replies.length || isReplying" #note-footer>
         <div
           data-testid="wiki-note-footer"
-          class="note-footer discussion-reply-holder clearfix gl-border-t-1 gl-border-t-[#dcdcde] gl-bg-subtle gl-px-5 gl-py-4 gl-border-t-solid"
+          class="gl-border-t-1 gl-border-t-[#dcdcde] gl-bg-subtle gl-border-t-solid"
         >
-          <div v-for="reply in replies" :key="reply.id">
-            <wiki-note
-              reply-note
-              data-testid="wiki-reply-note"
+          <toggle-replies-widget
+            v-if="replies.length"
+            :replies="replies"
+            :collapsed="collapsed"
+            @toggle="toggleCollapsed"
+          />
+
+          <div
+            v-if="!collapsed"
+            class="note-footer discussion-reply-holder clearfix gl-px-5 gl-py-4"
+          >
+            <div v-for="reply in replies" :key="reply.id">
+              <wiki-note
+                reply-note
+                data-testid="wiki-reply-note"
+                :noteable-id="noteableId"
+                :user-permissions="getUserPermissions(reply)"
+                :note="reply"
+                @note-deleted="$emit('note-deleted', reply.id)"
+              />
+            </div>
+
+            <div v-if="!!placeholderNote.body" class="notes main-notes-list timeline">
+              <placeholder-note reply-note :note="placeholderNote" />
+            </div>
+
+            <wiki-discussions-signed-out v-if="!userSignedId" />
+            <discussion-reply-placeholder
+              v-else-if="renderReplyPlaceHolder"
+              @focus="toggleReplying(true)"
+            />
+            <wiki-comment-form
+              v-else-if="renderCommentForm"
+              ref="commentForm"
+              is-reply
               :noteable-id="noteableId"
-              :user-permissions="getUserPermissions(reply)"
-              :note="reply"
-              @note-deleted="$emit('note-deleted', reply.id)"
+              :note-id="discussionId"
+              :discussion-id="firstNote.discussion.id"
+              @cancel="toggleReplying(false)"
+              @creating-note:start="setPlaceHolderNote"
+              @creating-note:success="updateNote"
+              @creating-note:done="setPlaceHolderNote({})"
             />
           </div>
-
-          <div v-if="!!placeholderNote.body" class="notes main-notes-list timeline">
-            <placeholder-note reply-note :note="placeholderNote" />
-          </div>
-
-          <wiki-discussions-signed-out v-if="!userSignedId" />
-          <discussion-reply-placeholder
-            v-else-if="renderReplyPlaceHolder"
-            @focus="toggleReplying(true)"
-          />
-          <wiki-comment-form
-            v-else-if="renderCommentForm"
-            ref="commentForm"
-            is-reply
-            :noteable-id="noteableId"
-            :note-id="discussionId"
-            :discussion-id="firstNote.discussion.id"
-            @cancel="toggleReplying(false)"
-            @creating-note:start="setPlaceHolderNote"
-            @creating-note:success="updateNote"
-            @creating-note:done="setPlaceHolderNote({})"
-          />
         </div>
       </template>
     </wiki-note>

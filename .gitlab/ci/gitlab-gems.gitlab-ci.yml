@@ -46,7 +46,4 @@ include:
       gem_name: "gitlab-housekeeper"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
-      gem_name: "openbao_client"
-  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
-    inputs:
       gem_name: "gitlab-active-context"

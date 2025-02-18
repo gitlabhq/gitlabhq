@@ -11,9 +11,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
   - incident_management_incident_closed
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

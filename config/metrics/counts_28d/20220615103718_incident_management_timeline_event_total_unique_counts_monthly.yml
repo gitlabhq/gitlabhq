@@ -20,9 +20,6 @@ events:
 performance_indicator_type:
   - gmau
   - paid_gmau
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

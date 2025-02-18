@@ -74,6 +74,7 @@ module ApplicationSettingImplementation
         disabled_direct_code_suggestions: false,
         disabled_oauth_sign_in_sources: [],
         disable_password_authentication_for_users_with_sso_identities: false,
+        root_moved_permanently_redirection: false,
         dns_rebinding_protection_enabled: Settings.gitlab['dns_rebinding_protection_enabled'],
         domain_allowlist: Settings.gitlab['domain_allowlist'],
         dsa_key_restriction: default_min_key_size(:dsa),
@@ -306,7 +307,8 @@ module ApplicationSettingImplementation
         scan_execution_policies_action_limit: 10,
         seat_control: 0,
         show_migrate_from_jenkins_banner: true,
-        ropc_without_client_credentials: true
+        ropc_without_client_credentials: true,
+        vscode_extension_marketplace: {}
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

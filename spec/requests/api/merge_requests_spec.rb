@@ -1814,6 +1814,25 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       expect(json_response.size).to eq(merge_request.commits.size)
       expect(json_response.first['id']).to eq(commit.id)
       expect(json_response.first['title']).to eq(commit.title)
+      expect(json_response.first['parent_ids']).to be_present
+    end
+
+    context 'when commits_from_gitaly feature flag is disabled' do
+      before do
+        stub_feature_flags(commits_from_gitaly: false)
+      end
+
+      it 'returns a 200 without parent_ids' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/commits", user)
+        commit = merge_request.commits.first
+
+        expect_successful_response_with_paginated_array
+        expect(json_response.size).to eq(merge_request.commits.size)
+        expect(json_response.first['id']).to eq(commit.id)
+        expect(json_response.first['title']).to eq(commit.title)
+
+        expect(json_response.first['parent_ids']).to eq([])
+      end
     end
 
     it 'returns a 404 when merge_request_iid not found' do
@@ -2024,6 +2043,46 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.size).to eq(1)
       end
+    end
+  end
+
+  describe 'GET /projects/:id/merge_requests/:merge_request_iid/raw_diffs' do
+    let_it_be(:merge_request) do
+      create(
+        :merge_request,
+        :simple,
+        author: user,
+        assignees: [user],
+        source_project: project,
+        target_project: project,
+        source_branch: 'markdown',
+        title: "Test",
+        created_at: base_time
+      )
+    end
+
+    it 'returns a 404 when merge_request_iid not found' do
+      get api("/projects/#{project.id}/merge_requests/0/raw_diffs", user)
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'returns a 404 when merge_request id is used instead of iid' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/raw_diffs", user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'when merge request author has only guest access' do
+      it_behaves_like 'rejects user from accessing merge request info' do
+        let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/raw_diffs" }
+      end
+    end
+
+    it 'returns the a workhorse git-diff url' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/raw_diffs", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-diff:")
     end
   end
 

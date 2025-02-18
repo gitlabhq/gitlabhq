@@ -8,5 +8,5 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     Long term service and support (LTSS) for [openSUSE Leap ends in December 2024](https://en.opensuse.org/Lifetime#openSUSE_Leap).
 
-    Therefore, we will longer support the openSUSE Leap 15.5 distribution for Linux package installs. Users should upgrade to
+    Therefore, we will no longer support the openSUSE Leap 15.5 distribution for Linux package installs. Users should upgrade to
     openSUSE Leap 15.6 for continued support.

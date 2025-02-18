@@ -16,30 +16,33 @@
       = render Pajamas::BadgeComponent.new(s_('AdminUsers|Deactivated'), variant: :neutral)
     - if @user.access_locked?
       = render Pajamas::BadgeComponent.new(s_('AdminUsers|Locked'), variant: :warning)
-    = render_if_exists 'admin/users/auditor_user_badge'
-    = render_if_exists 'admin/users/gma_user_badge'
+    - if can?(current_user, :admin_all_resources)
+      = render_if_exists 'admin/users/auditor_user_badge'
+      = render_if_exists 'admin/users/gma_user_badge'
 
-  .gl-my-3.gl-flex.gl-flex-wrap.-gl-my-2.-gl-mx-2
-    - if @user != current_user
-      - if impersonation_enabled?
-        .gl-p-2
-          %span.btn-group{ class: !@can_impersonate ? 'has-tooltip' : nil, title: @impersonation_error_text }
-            = render Pajamas::ButtonComponent.new(disabled: !@can_impersonate, method: :post, href: impersonate_admin_user_path(@user), button_options: { data: { testid: 'impersonate-user-link' } }) do
-              = _('Impersonate')
-      - if can_force_email_confirmation?(@user)
-        .gl-p-2
-          = render Pajamas::ButtonComponent.new(variant: :default, button_options: { class: 'js-confirm-modal-button', data: confirm_user_data(@user) }) do
-            = _('Confirm user')
-    .gl-p-2
-      = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_user_identity_path(@user)) do
-        = _('New identity')
-    .gl-p-2
-      #js-admin-user-actions{ data: admin_user_actions_data_attributes(@user) }
+  - if can?(current_user, :admin_all_resources)
+    .gl-my-3.gl-flex.gl-flex-wrap.-gl-my-2.-gl-mx-2
+      - if @user != current_user
+        - if impersonation_enabled?
+          .gl-p-2
+            %span.btn-group{ class: !@can_impersonate ? 'has-tooltip' : nil, title: @impersonation_error_text }
+              = render Pajamas::ButtonComponent.new(disabled: !@can_impersonate, method: :post, href: impersonate_admin_user_path(@user), button_options: { data: { testid: 'impersonate-user-link' } }) do
+                = _('Impersonate')
+        - if can_force_email_confirmation?(@user)
+          .gl-p-2
+            = render Pajamas::ButtonComponent.new(variant: :default, button_options: { class: 'js-confirm-modal-button', data: confirm_user_data(@user) }) do
+              = _('Confirm user')
+      .gl-p-2
+        = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_user_identity_path(@user)) do
+          = _('New identity')
+      .gl-p-2
+        #js-admin-user-actions{ data: admin_user_actions_data_attributes(@user) }
 = gl_tabs_nav do
   = gl_tab_link_to _("Account"), admin_user_path(@user)
-  = gl_tab_link_to _("Groups and projects"), projects_admin_user_path(@user)
-  = gl_tab_link_to _("SSH keys"), keys_admin_user_path(@user)
-  = gl_tab_link_to _("Identities"), admin_user_identities_path(@user)
-  - if impersonation_tokens_enabled?
-    = gl_tab_link_to _("Impersonation Tokens"), admin_user_impersonation_tokens_path(@user), data: { testid: 'impersonation-tokens-tab' }
+  - if can?(current_user, :admin_all_resources)
+    = gl_tab_link_to _("Groups and projects"), projects_admin_user_path(@user)
+    = gl_tab_link_to _("SSH keys"), keys_admin_user_path(@user)
+    = gl_tab_link_to _("Identities"), admin_user_identities_path(@user)
+    - if impersonation_tokens_enabled?
+      = gl_tab_link_to _("Impersonation Tokens"), admin_user_impersonation_tokens_path(@user), data: { testid: 'impersonation-tokens-tab' }
 .gl-mb-3

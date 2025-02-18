@@ -2,13 +2,15 @@
 stage: Foundations
 group: Personal Productivity
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Notification settings API
 ---
 
-# Notification settings API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Change [notification settings](../user/profile/notifications.md) using the REST API.
 
@@ -125,7 +127,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID, or [URL-encoded path, of the group or project](rest/index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID, or [URL-encoded path, of the group or project](rest/_index.md#namespaced-paths). |
 
 Example response:
 
@@ -151,7 +153,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID, or [URL-encoded path, of the group or project](rest/index.md#namespaced-paths) |
+| `id` | integer or string | yes | The ID, or [URL-encoded path, of the group or project](rest/_index.md#namespaced-paths) |
 | `level` | string | no | The global notification level |
 | `new_note` | boolean | no | Enable/disable this notification |
 | `new_issue` | boolean | no | Enable/disable this notification |

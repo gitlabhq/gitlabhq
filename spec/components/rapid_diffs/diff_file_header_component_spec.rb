@@ -11,13 +11,25 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
     expect(header).to have_text(diff_file.file_path)
   end
 
+  it "renders copy path button" do
+    clipboard_text = '{"text":"files/ruby/popen.rb","gfm":"`files/ruby/popen.rb`"}'
+    button_selector = '[data-testid="rd-diff-file-header"] [data-testid="rd-diff-file-copy-clipboard"]'
+    icon_selector = "#{button_selector} svg use"
+
+    render_component
+
+    expect(page.find(button_selector)['data-clipboard-text']).to eq(clipboard_text)
+    expect(page.find(button_selector)['title']).to eq(_('Copy file path'))
+    expect(page.find(icon_selector)['href']).to include('copy-to-clipboard')
+  end
+
   it "renders submodule info", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/489868' do
     allow(diff_file).to receive(:submodule?).and_return(true)
     allow_next_instance_of(SubmoduleHelper) do |instance|
       allow(instance).to receive(:submodule_links).and_return(nil)
     end
     render_component
-    expect(page.find('svg use')['href']).to include('folder-git')
+    expect(page.find('[data-testid="rd-diff-file-header-submodule"] svg use')['href']).to include('folder-git')
     expect(page).to have_text(diff_file.blob.name)
     expect(page).to have_text(diff_file.blob.id[0..7])
   end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.shared_examples 'avoid N+1 on environments serialization' do
   it 'avoids N+1 database queries with grouping', :request_store do
     create_environment_with_associations(project)

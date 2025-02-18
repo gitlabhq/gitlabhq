@@ -2,13 +2,15 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Migrate from TFVC to Git
 ---
 
-# Migrate from TFVC to Git
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Team Foundation Server (TFS), renamed [Azure DevOps Server](https://azure.microsoft.com/en-us/products/devops/server/)
 in 2019, is a set of tools developed by Microsoft which also includes
@@ -40,7 +42,7 @@ Advantages of migrating to Git/GitLab:
 
 - **No licensing costs:** Git is open source, while TFVC is proprietary.
 - **Shorter learning curve:** Git has a big community and a vast number of
-  tutorials to get you started (see our [Git topic](../../../topics/git/index.md)).
+  tutorials to get you started (see our [Git topic](../../../topics/git/_index.md)).
 - **Integration with modern tools:** After migrating to Git and GitLab, you have
   an open source, end-to-end software development platform with built-in version
   control, issue tracking, code review, CI/CD, and more.

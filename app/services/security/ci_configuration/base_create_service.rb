@@ -18,7 +18,7 @@ module Security
           docs_link = ActionController::Base.helpers.link_to(
             _('add at least one file to the repository'),
             Rails.application.routes.url_helpers.help_page_url(
-              'user/project/repository/index.md', anchor: 'add-files-to-a-repository'
+              'user/project/repository/_index.md', anchor: 'add-files-to-a-repository'
             ),
             target: '_blank',
             rel: 'noopener noreferrer'

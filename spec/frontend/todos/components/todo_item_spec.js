@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlFormCheckbox } from '@gitlab/ui';
 import TodoItem from '~/todos/components/todo_item.vue';
 import TodoItemTitle from '~/todos/components/todo_item_title.vue';
 import TodoItemTitleHiddenBySaml from '~/todos/components/todo_item_title_hidden_by_saml.vue';
@@ -24,7 +24,7 @@ describe('TodoItem', () => {
 
   const findTodoItemTimestamp = () => wrapper.findComponent(TodoItemTimestamp);
 
-  const createComponent = (props = {}, todosSnoozingEnabled = true) => {
+  const createComponent = (props = {}, todosBulkActions = true) => {
     wrapper = shallowMount(TodoItem, {
       propsData: {
         currentUserId: '1',
@@ -35,7 +35,7 @@ describe('TodoItem', () => {
       },
       provide: {
         currentTab: 0,
-        glFeatures: { todosSnoozing: todosSnoozingEnabled },
+        glFeatures: { todosBulkActions },
       },
     });
   };
@@ -96,6 +96,26 @@ describe('TodoItem', () => {
     expect(wrapper.emitted('change')).toHaveLength(1);
   });
 
+  describe('multi-select checkbox', () => {
+    it('renders a checkbox', () => {
+      createComponent();
+      expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(true);
+    });
+
+    it('emits select-change event when checkbox changes', async () => {
+      createComponent();
+      const checkbox = wrapper.findComponent(GlFormCheckbox);
+      await checkbox.vm.$emit('change', true);
+
+      expect(wrapper.emitted('select-change')[0]).toEqual([MR_REVIEW_REQUEST_TODO.id, true]);
+    });
+
+    it('does not render a checkbox with feature flag disabled', () => {
+      createComponent({}, false);
+      expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(false);
+    });
+  });
+
   describe('snoozed to-do items', () => {
     it.each`
       snoozedUntil           | expectedLabel
@@ -132,36 +152,6 @@ describe('TodoItem', () => {
       const icon = wrapper.findComponent(GlIcon);
       expect(icon.exists()).toBe(true);
       expect(icon.props('name')).toBe('clock');
-    });
-
-    it('renders the TodoItemTimestamp when the `todosSnoozing` feature flag is disabled and the item is snoozed', () => {
-      createComponent(
-        {
-          todo: {
-            ...MR_REVIEW_REQUEST_TODO,
-            snoozedUntil: mockForAnHour,
-          },
-        },
-        false,
-      );
-
-      expect(findTodoItemTimestamp().exists()).toBe(true);
-      expect(wrapper.text()).not.toContain('Snoozed until');
-    });
-
-    it('renders the TodoItemTimestamp when the `todosSnoozing` feature flag is disabled and the item was snoozed', () => {
-      createComponent(
-        {
-          todo: {
-            ...MR_REVIEW_REQUEST_TODO,
-            snoozedUntil: mockYesterday,
-          },
-        },
-        false,
-      );
-
-      expect(findTodoItemTimestamp().exists()).toBe(true);
-      expect(wrapper.text()).not.toContain('First sent 4 months ago');
     });
   });
 

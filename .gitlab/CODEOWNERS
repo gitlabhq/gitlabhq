@@ -1,8 +1,8 @@
 # When adding a group as a code owner, make sure to invite the group to the
 # project here: https://gitlab.com/gitlab-org/gitlab/-/project_members
-# As described in https://docs.gitlab.com/ee/user/project/codeowners/index.html
+# As described in https://docs.gitlab.com/ee/user/project/codeowners
 
-* @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-dx/qe-maintainers @gl-dx/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @gitlab-org/tw-leadership @gitlab-org/maintainers/kas-version-maintainers
+* @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-dx/maintainers @gl-dx/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @gitlab-org/tw-leadership @gitlab-org/maintainers/kas-version-maintainers
 
 .gitlab/CODEOWNERS @gitlab-org/development-leaders @gitlab-org/tw-leadership
 
@@ -13,7 +13,7 @@
 /GITLAB_KAS_VERSION @project_278964_bot_77e28085fcec07f14dfd31c689824b5b @gitlab-org/maintainers/kas-version-maintainers @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
 
 ## Allows automated updates to E2E test knapsack reports
-/qa/knapsack/**/*.json @project_278964_bot_f559eb4d5c7c39b8a5e0b3ca0fe68d9e @gl-dx
+/qa/knapsack/**/*.json @project_278964_bot_bd38289efeb650826d995b5f830ca9cb @gl-dx
 
 ## Files that are excluded from required approval
 ## These rules override the * rule above, so that changes to docs and templates
@@ -105,18 +105,18 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 /ee/spec/finders/
 /rubocop/rubocop-migrations.yml
 
-[Pipeline configuration] @gl-pipeline-maintainers
+[Pipeline configuration] @gl-dx/pipeline-maintainers
 /.gitlab-ci.yml
 /.gitlab/ci/
-/.gitlab/ci/docs.gitlab-ci.yml @gl-pipeline-maintainers @gl-docsteam
-/.gitlab/ci/frontend.gitlab-ci.yml @gl-pipeline-maintainers @gitlab-org/maintainers/frontend
-/.gitlab/ci/test-on-omnibus/ @gl-pipeline-maintainers @gl-dx/qe-maintainers
-/.gitlab/ci/qa.gitlab-ci.yml @gl-pipeline-maintainers @gl-dx/qe-maintainers
-/.gitlab/ci/qa-common/ @gl-pipeline-maintainers @gl-dx/qe-maintainers
-/.gitlab/ci/releases.gitlab-ci.yml @gl-pipeline-maintainers @gitlab-org/delivery
-/.gitlab/ci/reports.gitlab-ci.yml @gl-pipeline-maintainers @gitlab-com/gl-security/appsec
-/.gitlab/ci/review-apps/qa.gitlab-ci.yml @gl-pipeline-maintainers @gl-dx/qe-maintainers
-/.gitlab/ci/test-on-gdk/ @gl-pipeline-maintainers @gl-dx/qe-maintainers
+/.gitlab/ci/docs.gitlab-ci.yml @gl-dx/pipeline-maintainers @gl-docsteam
+/.gitlab/ci/frontend.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-org/maintainers/frontend
+/.gitlab/ci/test-on-omnibus/ @gl-dx/pipeline-maintainers @gl-dx/maintainers
+/.gitlab/ci/qa.gitlab-ci.yml @gl-dx/pipeline-maintainers @gl-dx/maintainers
+/.gitlab/ci/qa-common/ @gl-dx/pipeline-maintainers @gl-dx/maintainers
+/.gitlab/ci/releases.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-org/delivery
+/.gitlab/ci/reports.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-com/gl-security/appsec
+/.gitlab/ci/review-apps/qa.gitlab-ci.yml @gl-dx/pipeline-maintainers @gl-dx/maintainers
+/.gitlab/ci/test-on-gdk/ @gl-dx/pipeline-maintainers @gl-dx/maintainers
 /gems/gem.gitlab-ci.yml
 
 [Tooling] @gl-dx/eng-prod
@@ -353,6 +353,11 @@ Dangerfile
 [Merge Requests backend] @code-review-be/engineers
 /app/controllers/projects/merge_requests_controller.rb
 /app/controllers/projects/merge_requests/
+/app/models/concerns/diff_positionable_note.rb
+/app/models/concerns/note_on_diff.rb
+/app/models/diff_note.rb
+/app/models/draft_note.rb
+/app/models/legacy_diff_note.rb
 /app/models/merge_request.rb
 /app/services/merge_requests/
 /app/workers/merge_requests/
@@ -714,7 +719,7 @@ lib/gitlab/checks/**
 /doc/api/boards.md @msedlakjakubowski
 /doc/api/branches.md @brendan777
 /doc/api/bulk_imports.md @ashrafkhamis
-/doc/api/chat.md @fneill
+/doc/api/chat.md @jglassman1
 /doc/api/cluster_agents.md @phillipwells
 /doc/api/code_suggestions.md @jglassman1
 /doc/api/commits.md @brendan777
@@ -1019,12 +1024,14 @@ lib/gitlab/checks/**
 /doc/raketasks/spdx.md @rdickenson
 /doc/raketasks/x509_signatures.md @brendan777
 /doc/security/ @idurham
+/doc/security/hardening_nist_800_53.md @emily.sahlani
 /doc/solutions/ @jfullam @brianwald @Darwinjs
 /doc/solutions/integrations/index.md @jfullam @brianwald @Darwinjs
 /doc/solutions/integrations/servicenow.md @ashrafkhamis
 /doc/subscriptions/ @lciutacu
 /doc/subscriptions/gitlab_com/ @lyspin
 /doc/subscriptions/gitlab_dedicated/ @emily.sahlani
+/doc/subscriptions/gitlab_dedicated_for_government/ @emily.sahlani
 /doc/topics/ @msedlakjakubowski
 /doc/topics/autodevops/ @phillipwells
 /doc/topics/git/ @brendan777
@@ -1096,7 +1103,7 @@ lib/gitlab/checks/**
 /doc/user/get_started/get_started_projects.md @emily.sahlani
 /doc/user/get_started/getting_started_gitlab_duo.md @sselhorn
 /doc/user/gitlab_duo/ @sselhorn
-/doc/user/gitlab_duo_chat/ @fneill
+/doc/user/gitlab_duo_chat/ @jglassman1
 /doc/user/glql/ @msedlakjakubowski
 /doc/user/group/access_and_permissions.md @emily.sahlani
 /doc/user/group/clusters/ @phillipwells
@@ -1250,7 +1257,30 @@ lib/gitlab/checks/**
 /app/assets/javascripts/packages_and_registries/container_registry/
 /app/assets/javascripts/packages_and_registries/dependency_proxy/
 /app/assets/javascripts/packages_and_registries/harbor_registry/
+/app/concerns/dependency_proxy/
+/app/concerns/harbor/
+/app/concerns/registry/
+/app/controllers/groups/dependency_proxy/
+/app/controllers/groups/harbor/
+/app/controllers/groups/registry/
+/app/controllers/projects/harbor/
+/app/controllers/projects/registry/repositories_controller.rb
+/app/graphql/mutations/container_registry/
+/app/graphql/types/container_registry/
+/app/helpers/container_registry/
+/app/models/container_registry/
+/app/policies/container_expiration_policy_policy.rb
+/app/policies/container_repository_policy.rb
+/app/services/auth/container_registry_authentication_service.rb
+/app/services/container_registry/
+/app/views/groups/dependency_proxy/
+/app/views/groups/harbor/
+/app/views/groups/registry/repositories/
+/app/views/projects/harbor/
+/app/views/projects/registry/repositories/
+/ee/app/helpers/ee/container_registry/
 /ee/app/services/ee/auth/container_registry_authentication_service.rb
+/lib/container_registry/
 
 [Authentication] @gitlab-org/software-supply-chain-security/authentication/approvers
 /app/assets/javascripts/access_tokens/
@@ -1543,6 +1573,7 @@ lib/gitlab/checks/**
 /app/workers/stuck_ci_jobs_worker.rb
 /app/workers/update_external_pull_requests_worker.rb
 /lib/api/commit_statuses.rb
+/app/assets/javascripts/editor/schema/ci.json
 /ee/app/finders/merge_trains_finder.rb
 /ee/app/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service.rb
 /ee/app/services/auto_merge/merge_train_service.rb
@@ -1746,7 +1777,7 @@ ee/app/workers/ai/repository_xray/
 /ee/spec/fixtures/remote_development/
 /ee/spec/controllers/remote_development/
 /ee/spec/services/remote_development/
-/qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/workspaces/backend @gl-dx/qe-maintainers
+/qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/workspaces/backend @gl-dx/maintainers
 
 ^[Create::IDE - Remote Development Frontend] @gitlab-org/maintainers/workspaces/frontend
 /app/assets/javascripts/ide/components/shared/tokened_input.vue

@@ -29,7 +29,7 @@ RSpec.describe Gitlab::JiraImport::Stage::ImportLabelsWorker, feature_category: 
         jira_import.start!
 
         WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/label?maxResults=500&startAt=0')
-          .to_return(body: {}.to_json )
+          .to_return(body: {}.to_json)
       end
 
       it_behaves_like 'advance to next stage', :issues

@@ -31,6 +31,15 @@ module Types
         description: 'Ref.'
     end
 
+    field :ci_pipeline_creation_request, Types::Ci::PipelineCreation::RequestType,
+      authorize: :create_pipeline,
+      description: 'Get information about an asynchronous pipeline creation request.',
+      experiment: { milestone: '17.9' } do
+      argument :request_id, GraphQL::Types::String,
+        required: true,
+        description: 'ID of the pipeline creation request.'
+    end
+
     field :full_path, GraphQL::Types::ID,
       null: false,
       description: 'Full path of the project.'
@@ -370,7 +379,7 @@ module Types
 
     field :pipelines,
       null: true,
-      description: 'Build pipelines of the project.',
+      description: 'Pipelines of the project.',
       extras: [:lookahead],
       resolver: Resolvers::Ci::ProjectPipelinesResolver
 
@@ -389,13 +398,14 @@ module Types
 
     field :pipeline, Types::Ci::PipelineType,
       null: true,
-      description: 'Build pipeline of the project.',
+      description: 'Pipeline of the project. If no arguments are provided, returns the latest pipeline for the ' \
+        'head commit on the default branch',
       extras: [:lookahead],
       resolver: Resolvers::Ci::ProjectPipelineResolver
 
     field :pipeline_counts, Types::Ci::PipelineCountsType,
       null: true,
-      description: 'Build pipeline counts of the project.',
+      description: 'Pipeline counts of the project.',
       resolver: Resolvers::Ci::ProjectPipelineCountsResolver
 
     field :ci_variables, Types::Ci::ProjectVariableType.connection_type,
@@ -566,7 +576,7 @@ module Types
     field :pipeline_analytics, Types::Ci::AnalyticsType,
       null: true,
       description: 'Pipeline analytics.',
-      resolver: Resolvers::Ci::ProjectPipelineAnalyticsResolver
+      resolver: Resolvers::Ci::PipelineAnalyticsResolver
 
     field :ci_template, Types::Ci::TemplateType,
       null: true,
@@ -791,6 +801,10 @@ module Types
       null: false,
       description: "Project's Pages site uses a unique subdomain."
 
+    def ci_pipeline_creation_request(request_id:)
+      ::Ci::PipelineCreation::Requests.get_request(object, request_id)
+    end
+
     def pages_force_https
       project.pages_https_only?
     end
@@ -929,7 +943,11 @@ module Types
     def service_desk_address
       return unless Ability.allowed?(current_user, :admin_issue, project)
 
-      object.service_desk_address
+      ::ServiceDesk::Emails.new(object).address
+    end
+
+    def service_desk_enabled
+      ::ServiceDesk.enabled?(project)
     end
 
     def languages
@@ -994,7 +1012,7 @@ module Types
     def add_file_docs_link
       ActionController::Base.helpers.link_to _('add at least one file to the repository'),
         Rails.application.routes.url_helpers.help_page_url(
-          'user/project/repository/index.md',
+          'user/project/repository/_index.md',
           anchor: 'add-files-to-a-repository'),
         target: '_blank',
         rel: 'noopener noreferrer'

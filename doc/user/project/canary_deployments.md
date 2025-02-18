@@ -2,13 +2,15 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Canary deployments
 ---
 
-# Canary deployments
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Canary deployments are a popular [continuous deployment](https://en.wikipedia.org/wiki/Continuous_deployment)
 strategy, where a small portion of the fleet is updated to the new version of
@@ -58,23 +60,26 @@ canary deployment is promoted to production.
 
 Here's an example setup flow from scratch:
 
-1. Prepare an [Auto DevOps-enabled](../../topics/autodevops/index.md) project.
-1. Set up a [Kubernetes Cluster](../../user/infrastructure/clusters/index.md) in your project.
+1. Prepare an [Auto DevOps-enabled](../../topics/autodevops/_index.md) project.
+1. Set up a [Kubernetes Cluster](../infrastructure/clusters/_index.md) in your project.
 1. Install [NGINX Ingress](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx) in your cluster.
-1. Set up [the base domain](../../user/project/clusters/gitlab_managed_clusters.md#base-domain) based on the Ingress
+1. Set up [the base domain](clusters/gitlab_managed_clusters.md#base-domain) based on the Ingress
    Endpoint assigned above.
 1. Check if [`v2.0.0+` of `auto-deploy-image` is used in your Auto DevOps pipelines](../../topics/autodevops/upgrading_auto_deploy_dependencies.md#verify-dependency-versions).
    If it isn't, follow the documentation to specify the image version.
-1. [Run a new Auto DevOps pipeline](../../ci/pipelines/index.md#run-a-pipeline-manually)
+1. [Run a new Auto DevOps pipeline](../../ci/pipelines/_index.md#run-a-pipeline-manually)
    and make sure that the `production` job succeeds and creates a production environment.
 1. Configure a [`canary` deployment job for Auto DevOps pipelines](../../topics/autodevops/cicd_variables.md#deploy-policy-for-canary-environments).
-1. [Run a new Auto DevOps pipeline](../../ci/pipelines/index.md#run-a-pipeline-manually)
+1. [Run a new Auto DevOps pipeline](../../ci/pipelines/_index.md#run-a-pipeline-manually)
    and make sure that the `canary` job succeeds and creates a canary deployment with Canary Ingress.
 
 ### Show Canary Ingress deployments on deploy boards (deprecated)
 
-WARNING:
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+{{< /alert >}}
 
 To view canary deployments you must properly configure deploy boards:
 
@@ -100,23 +105,29 @@ can quickly notice them.
 
 #### How to check the current traffic weight on a Canary Ingress (deprecated)
 
-WARNING:
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
-1. Visit the [deploy board](../../user/project/deploy_boards.md).
+{{< /alert >}}
+
+1. Visit the [deploy board](deploy_boards.md).
 1. View the current weights on the right.
 
    ![Rollout Status Canary Ingress](img/canary_weight_v13_7.png)
 
 #### How to change the traffic weight on a Canary Ingress (deprecated)
 
-WARNING:
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+{{< /alert >}}
 
 You can change the traffic weight in your environment's deploy board by using [GraphiQL](../../api/graphql/getting_started.md#graphiql),
 or by sending requests to the [GraphQL API](../../api/graphql/getting_started.md#command-line).
 
-To use your [deploy board](../../user/project/deploy_boards.md):
+To use your [deploy board](deploy_boards.md):
 
 1. Go to **Operate > Environments** for your project.
 1. Set the new weight with the dropdown list on the right side.

@@ -21,18 +21,28 @@ RSpec.describe Import::SourceUsers::GenerateCsvService, feature_category: :impor
 
         csv_data = CSV.parse(result.payload)
 
-        expect(csv_data.size).to eq(3)
-        expect(csv_data[0]).to match_array(described_class::HEADERS)
+        expect(csv_data[0]).to match_array(described_class::COLUMN_MAPPING.keys)
 
-        expect(csv_data).to include(an_array_matching([
-          user_pending_assignment.source_hostname,
-          user_pending_assignment.import_type,
-          user_pending_assignment.source_user_identifier,
-          user_pending_assignment.source_name,
-          user_pending_assignment.source_username,
-          '',
-          ''
-        ]))
+        expect(csv_data[1..]).to match_array([
+          [
+            user_pending_assignment.source_hostname,
+            user_pending_assignment.import_type,
+            user_pending_assignment.source_user_identifier,
+            user_pending_assignment.source_name,
+            user_pending_assignment.source_username,
+            '',
+            ''
+          ],
+          [
+            rejected_user.source_hostname,
+            rejected_user.import_type,
+            rejected_user.source_user_identifier,
+            rejected_user.source_name,
+            rejected_user.source_username,
+            '',
+            ''
+          ]
+        ])
       end
 
       it 'returns only data for this namespace' do
@@ -63,12 +73,26 @@ RSpec.describe Import::SourceUsers::GenerateCsvService, feature_category: :impor
 
         subject(:service) { described_class.new(namespace, current_user: namespace.owner) }
 
-        it 'only returns the headers' do
+        it 'returns an error response and empty payload' do
+          result = service.execute
+          expect(result).not_to be_success
+          expect(result.status).to eq(:error)
+          expect(result.payload).to be_empty
+          expect(result.message).to eq('No placeholder users are awaiting reassignment.')
+        end
+      end
+
+      context 'when the generated file is over-sized' do
+        before do
+          stub_const('Import::SourceUsers::GenerateCsvService::FILESIZE_LIMIT', 1)
+        end
+
+        it 'truncates the output' do
           result = service.execute
           csv_data = CSV.parse(result.payload)
 
-          expect(csv_data.size).to eq(1)
-          expect(csv_data[0]).to match_array(described_class::HEADERS)
+          # Only the headers and the first row are written.
+          expect(csv_data.size).to eq(2)
         end
       end
     end

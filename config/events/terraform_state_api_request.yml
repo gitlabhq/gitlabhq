@@ -8,8 +8,6 @@ identifiers:
 product_group: environments
 milestone: '15.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166618
-distributions:
-- ce
 tiers:
 - free
 - premium

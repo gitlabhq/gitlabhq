@@ -4,6 +4,7 @@ module Packages
   module Cleanup
     class ExecutePolicyWorker
       include ApplicationWorker
+      include CronjobChildWorker
       include LimitedCapacity::Worker
       include Gitlab::Utils::StrongMemoize
 

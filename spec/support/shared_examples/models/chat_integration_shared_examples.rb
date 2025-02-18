@@ -391,9 +391,24 @@ RSpec.shared_examples "chat integration" do |integration_name, supports_deployme
 end
 
 RSpec.shared_examples 'supports group mentions' do |integration_factory|
-  it 'supports group mentions' do
+  it 'does not support group mentions for instance integrations' do
+    allow(subject).to receive(:instance?).and_return(true)
     allow(subject).to receive(:webhook).and_return('http://example.com')
-    allow(subject).to receive(:group_id).and_return(1)
+
+    expect(subject).not_to receive(:notify)
+
+    subject.execute(
+      object_kind: 'group_mention',
+      object_attributes: { action: 'new', object_kind: 'issue' },
+      mentioned: { name: 'John Doe', url: 'http://example.com' }
+    )
+  end
+
+  it 'supports group mentions for non-instance integrations' do
+    allow(subject).to receive(:instance?).and_return(false)
+    allow(subject).to receive(:webhook).and_return('http://example.com')
+    allow(subject).to receive(:group_level?).and_return(true)
+
     expect(subject).to receive(:notify).with(an_instance_of(Integrations::ChatMessage::GroupMentionMessage), {})
 
     subject.execute(

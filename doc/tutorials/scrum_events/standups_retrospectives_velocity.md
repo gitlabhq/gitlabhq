@@ -2,9 +2,8 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Stand-ups, retrospectives, and velocity
 ---
-
-# Stand-ups, retrospectives, and velocity
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
@@ -16,7 +15,7 @@ facilitate the following common Scrum ceremonies in both co-located and distribu
 - Story points
 - Velocity and volatility
 
-This page builds on the concepts and workflows from the [introductory Scrum tutorial](index.md).
+This page builds on the concepts and workflows from the [introductory Scrum tutorial](_index.md).
 If you haven't completed that tutorial, you should do so before you go further.
 
 ## Daily stand-ups
@@ -70,7 +69,7 @@ in his book, "The Art of Agile."
 
 ### Synchronous retrospectives
 
-It can be helpful to review the [iteration report](../../user/group/iterations/index.md#iteration-report)
+It can be helpful to review the [iteration report](../../user/group/iterations/_index.md#iteration-report)
 during retrospectives.
 
 To review an iteration report for a completed iteration:
@@ -124,9 +123,12 @@ For example, if you set the goal to deliver four to ten user stories per iterati
 with a point value greater than three into two or more smaller stories.
 Ideally, your team should work toward splitting or combining stories until they weigh one or two.
 
-NOTE:
+{{< alert type="note" >}}
+
 Stakeholders should never use story points to measure the team's performance or
 [compare one team to another](https://towardsdatascience.com/why-story-points-are-a-horrible-metric-for-software-engineers-421bc8971f11).
+
+{{< /alert >}}
 
 ## Velocity and volatility
 
@@ -291,7 +293,11 @@ If you're experiencing high volatility, you can explore the following:
 1. Understand where you have process bottlenecks.
 
    You can create a
-   [custom value stream analytics report](../../user/group/value_stream_analytics/index.md#create-a-value-stream-with-custom-stages)
+   [custom value stream analytics report](../../user/group/value_stream_analytics/_index.md#create-a-value-stream-with-custom-stages)
    that mirrors the workflow stages that a story progresses through in a sprint.
    This report can help focus discussions in your retrospectives on the specific workflow stages
    that take the longest during your sprint cycles.
+
+## Related topics
+
+- [Tutorial: Set up an issue board for a team stand-up](../boards_for_standups/_index.md)

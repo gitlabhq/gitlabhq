@@ -2,23 +2,31 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Cluster Environments (deprecated)
 ---
 
-# Cluster Environments (deprecated)
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Disabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
+{{< /details >}}
 
-WARNING:
+> - [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
-FLAG:
+{{< /alert >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `certificate_based_clusters`.
 
-Cluster environments provide a consolidated view of which CI [environments](../../ci/environments/index.md) are
+{{< /alert >}}
+
+Cluster environments provide a consolidated view of which CI [environments](../../ci/environments/_index.md) are
 deployed to the Kubernetes cluster and it:
 
 - Shows the project and the relevant environment related to the deployment.

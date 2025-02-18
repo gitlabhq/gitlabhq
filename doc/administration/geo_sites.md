@@ -2,16 +2,18 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Geo sites Admin area
 ---
 
-# Geo sites Admin area
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can configure various settings for GitLab Geo sites. For more information, see
-[Geo documentation](../administration/geo/index.md).
+[Geo documentation](geo/_index.md).
 
 On either the primary or secondary site:
 
@@ -37,7 +39,7 @@ the **primary** node is listed first as `Primary site`.
 
 | Setting                   | Description |
 |---------------------------|-------------|
-| Selective synchronization | Enable Geo [selective sync](../administration/geo/replication/selective_synchronization.md) for this **secondary** site. |
+| Selective synchronization | Enable Geo [selective sync](geo/replication/selective_synchronization.md) for this **secondary** site. |
 | Repository sync capacity  | Number of concurrent requests this **secondary** site makes to the **primary** site when backfilling repositories. |
 | File sync capacity        | Number of concurrent requests this **secondary** site makes to the **primary** site when backfilling files. |
 
@@ -83,11 +85,14 @@ The internal URL defaults to external URL. To change it:
 When enabled, the **Admin** area for Geo shows replication details for each site directly
 from the primary site's UI, and through the Geo secondary proxy, if enabled.
 
-WARNING:
+{{< alert type="warning" >}}
+
 We recommend using an HTTPS connection while configuring the Geo sites. To avoid
 breaking communication between **primary** and **secondary** sites when using
 HTTPS, customize your Internal URL to point to a load balancer with TLS
 terminated at the load balancer.
+
+{{< /alert >}}
 
 <!-- ## Troubleshooting
 

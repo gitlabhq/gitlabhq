@@ -2,9 +2,8 @@
 stage: Verify
 group: Pipeline Execution
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Add new tables to the CI database
 ---
-
-# Add new tables to the CI database
 
 The [pipeline data partitioning](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ci_data_decay/pipeline_partitioning/)
 design document describes how to partition existing tables in the CI domain. However,

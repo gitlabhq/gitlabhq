@@ -62,7 +62,7 @@ export default {
     {
       key: 'token',
       label: s__('Pipelines|Token'),
-      thClass: 'gl-w-12/20',
+      thClass: 'gl-w-10/20',
       tdClass: '!gl-align-middle',
     },
     {
@@ -80,6 +80,12 @@ export default {
     {
       key: 'lastUsed',
       label: s__('Pipelines|Last Used'),
+      thClass: 'gl-w-2/20',
+      tdClass: '!gl-align-middle',
+    },
+    {
+      key: 'expireTime',
+      label: s__('Pipelines|Expires'),
       thClass: 'gl-w-2/20',
       tdClass: '!gl-align-middle',
     },
@@ -222,6 +228,10 @@ export default {
       </template>
       <template #cell(lastUsed)="{ item }">
         <time-ago-tooltip v-if="item.lastUsed" :time="item.lastUsed" />
+        <span v-else>{{ __('Never') }}</span>
+      </template>
+      <template #cell(expireTime)="{ item }">
+        <time-ago-tooltip v-if="item.expiresAt" :time="item.expiresAt" />
         <span v-else>{{ __('Never') }}</span>
       </template>
       <template #cell(actions)="{ item }">

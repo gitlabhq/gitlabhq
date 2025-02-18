@@ -113,6 +113,11 @@ export default {
       required: false,
       default: false,
     },
+    newCommentTemplatePaths: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -179,6 +184,11 @@ export default {
     await this.setSerializedContent(this.markdown);
     markdownEditorEventHub.$emit(CONTENT_EDITOR_READY_EVENT);
     markdownEditorEventHub.$on(CONTENT_EDITOR_PASTE, this.pasteContent);
+
+    // Set Aria label
+    if (this.contentEditor?.tiptapEditor?.view?.dom) {
+      this.contentEditor.tiptapEditor.view.dom.setAttribute('aria-label', __('Rich text editor'));
+    }
   },
   beforeDestroy() {
     markdownEditorEventHub.$off(CONTENT_EDITOR_PASTE, this.pasteContent);
@@ -262,6 +272,7 @@ export default {
           ref="toolbar"
           :supports-quick-actions="supportsQuickActions"
           :hide-attachment-button="disableAttachments"
+          :new-comment-template-paths-prop="newCommentTemplatePaths"
           @enableMarkdownEditor="$emit('enableMarkdownEditor')"
         >
           <template #header-buttons><slot name="header-buttons"></slot></template>

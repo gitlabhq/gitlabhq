@@ -44,11 +44,31 @@ RSpec.describe Namespaces::Traversal::Cached, feature_category: :database do
         it 'invalidates the cache' do
           expect { create(:group, parent: group) }.to change { cache.reload.outdated_at }
         end
+
+        context 'when shared_namespace_locks feature flag is disabled' do
+          before do
+            stub_feature_flags(shared_namespace_locks: false)
+          end
+
+          it 'invalidates the cache' do
+            expect { create(:group, parent: group) }.to change { cache.reload.outdated_at }
+          end
+        end
       end
 
       context 'when a new project is added' do
         it 'invalidates the cache' do
           expect { create(:project, group: group) }.to change { cache.reload.outdated_at }
+        end
+
+        context 'when shared_namespace_locks feature flag is disabled' do
+          before do
+            stub_feature_flags(shared_namespace_locks: false)
+          end
+
+          it 'invalidates the cache' do
+            expect { create(:project, group: group) }.to change { cache.reload.outdated_at }
+          end
         end
       end
     end

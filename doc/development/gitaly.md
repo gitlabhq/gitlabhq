@@ -2,9 +2,8 @@
 stage: Systems
 group: Gitaly
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Gitaly development guidelines
 ---
-
-# Gitaly development guidelines
 
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) is a high-level Git RPC service used by GitLab Rails,
 Workhorse and GitLab Shell.
@@ -118,11 +117,14 @@ Usually, GitLab CE/EE tests use a local clone of Gitaly in
 `GITALY_SERVER_VERSION`. The `GITALY_SERVER_VERSION` file supports also
 branches and SHA to use a custom commit in [the repository](https://gitlab.com/gitlab-org/gitaly).
 
-NOTE:
+{{< alert type="note" >}}
+
 With the introduction of auto-deploy for Gitaly, the format of
 `GITALY_SERVER_VERSION` was aligned with Omnibus syntax.
 It no longer supports `=revision`, it evaluates the file content as a Git
 reference (branch or SHA). Only if it matches a semantic version does it prepend a `v`.
+
+{{< /alert >}}
 
 If you want to run tests locally against a modified version of Gitaly you
 can replace `tmp/tests/gitaly` with a symlink. This is much faster
@@ -156,7 +158,7 @@ running tests:
 GITALY_REPO_URL=https://gitlab.com/nick.thomas/gitaly bundle exec rspec spec/lib/gitlab/git/repository_spec.rb
 ```
 
-If your fork of Gitaly is private, you can generate a [Deploy Token](../user/project/deploy_tokens/index.md)
+If your fork of Gitaly is private, you can generate a [Deploy Token](../user/project/deploy_tokens/_index.md)
 and specify it in the URL:
 
 ```shell
@@ -165,7 +167,7 @@ GITALY_REPO_URL=https://gitlab+deploy-token-1000:token-here@gitlab.com/nick.thom
 
 To use a custom Gitaly repository in CI/CD, for instance if you want your
 GitLab fork to always use your own Gitaly fork, set `GITALY_REPO_URL`
-as a [CI/CD variable](../ci/variables/index.md).
+as a [CI/CD variable](../ci/variables/_index.md).
 
 ### Use a locally modified version of Gitaly RPC client
 
@@ -199,7 +201,7 @@ Re-run steps 2-5 each time you want to try out new changes.
 
 ---
 
-[Return to Development documentation](index.md)
+[Return to Development documentation](_index.md)
 
 ## Wrapping RPCs in feature flags
 
@@ -277,9 +279,12 @@ Pay attention to the name of the flag and the one used in the Rails console. The
 between them (dashes replaced by underscores and name prefix is changed). Make sure to prefix all
 flags with `gitaly_`.
 
-NOTE:
+{{< alert type="note" >}}
+
 If not set in GitLab, feature flags are read as false from the console and Gitaly uses their
 default value. The default value depends on the GitLab version.
+
+{{< /alert >}}
 
 ### Testing with GDK
 
@@ -364,9 +369,18 @@ These standard Git references are used by GitLab (through Gitaly) in any Git rep
 
 ### GitLab-specific references
 
+Commit chains that don't have Git references pointing to them can be removed when [housekeeping](../administration/housekeeping.md)
+runs. For commit chains that must remain accessible to a GitLab process or the UI, GitLab creates GitLab-specific reference to these
+commit chains to stop housekeeping removing them.
+
+These commit chains remain regardless of what users do to the repository. For example, deleting branches or force pushing.
+
+### Existing GitLab-specific references
+
 These GitLab-specific references are used exclusively by GitLab (through Gitaly):
 
-- `refs/keep-around/<object-id>`. References to commits that have pipeline jobs or merge requests. The `object-id` points to the commit the pipeline was run on.
+- `refs/keep-around/<object-id>`. Refers to commits used in the UI for merge requests, pipelines, and notes. Because `keep-around` references have no
+  lifecycle, don't use them for any new functionality.
 - `refs/merge-requests/<merge-request-iid>/`. [Merges](https://git-scm.com/docs/git-merge) merge two histories together. This ref namespace tracks information about a
   merge using the following refs under it:
   - `head`. Current `HEAD` of the merge request.
@@ -374,4 +388,30 @@ These GitLab-specific references are used exclusively by GitLab (through Gitaly)
   - If [merge trains are enabled](../ci/pipelines/merge_trains.md): `train`. Commit for the merge train.
 - `refs/pipelines/<pipeline-iid>`. References to pipelines. Temporarily used to store the pipeline commit object ID.
 - `refs/environments/<environment-slug>`. References to commits where deployments to environments were performed.
-- `refs/heads/revert-<source-commit-short-object-id>`. References to the commit's object ID created when [reverting changes](../user/project/merge_requests/revert_changes.md).
+
+### Create new GitLab-specific references
+
+GitLab-specific references are useful to ensure GitLab UI's continue to function but must be carefully managed otherwise they can cause performance
+degradation of the Git repositories they are created in.
+
+When creating new GitLab-specific references:
+
+1. Ensure Gitaly considers the new references as hidden. Hidden references are not accessible by users when they pull or fetch. Making GitLab-specific
+   references hidden prevents them from affecting end user Git performance.
+1. Ensure there is a defined lifecycle. Similar to PostgreSQL, Git repositories cannot handle an indefinite amount of data. Adding a large number of
+   references will eventually causes performance problems. Therefore, any created GitLab-specific reference should also be removed again when possible.
+1. Ensure the reference is namespaced for the feature it supports. To diagnose performance problems, references must be tied to the specific feature or model
+   in GitLab.
+
+### Test changes to GitLab-specific references
+
+Changing when GitLab-specific references are created can cause the GitLab UI or processes to fail long after the change is deployed because orphaned Git objects have a grace period before they are removed.
+
+To test changes to GitLab-specific references:
+
+1. [Locate the test repository on the file system](../administration/repository_storage_paths.md#translate-hashed-storage-paths).
+1. Force `git gc` to run on the server-side Gitaly repository:
+
+   ```shell
+   git gc --prune=now
+   ```

@@ -7,4 +7,4 @@ milestone: '17.6'
 queued_migration_version: 20240911101712
 # Replace with the approximate date you think it's best to ensure the completion of this BBM.
 finalize_after: '2024-09-16'
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: 20250123165454

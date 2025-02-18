@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_memory_store_caching, feature_category: :importers do
   let(:group) { create(:group, maintainers: importer_user) }
-  let(:project) { create(:project, :repository, group: group) }
   let(:members_mapper) { double('members_mapper').as_null_object }
+  let(:project) { create(:project, :repository, group: group) }
   let(:admin) { create(:admin) }
   let(:importer_user) { admin }
   let(:excluded_keys) { [] }
@@ -387,18 +387,19 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
   # `project_id`, `described_class.USER_REFERENCES`, noteable_id, target_id, and some project IDs are already
   # re-assigned by described_class.
   context 'Potentially hazardous foreign keys' do
+    let(:dummy_int) { project.id + 1 } # to avoid setting an integer that equals the current project.id
     let(:relation_sym) { :hazardous_foo_model }
     let(:relation_hash) do
       {
-        'integration_id' => 99,
-        'moved_to_id' => 99,
-        'namespace_id' => 99,
-        'ci_id' => 99,
-        'random_project_id' => 99,
-        'random_id' => 99,
-        'milestone_id' => 99,
-        'project_id' => 99,
-        'user_id' => 99
+        'integration_id' => dummy_int,
+        'moved_to_id' => dummy_int,
+        'namespace_id' => dummy_int,
+        'ci_id' => dummy_int,
+        'random_project_id' => dummy_int,
+        'random_id' => dummy_int,
+        'milestone_id' => dummy_int,
+        'project_id' => dummy_int,
+        'user_id' => dummy_int
       }
     end
 
@@ -412,19 +413,20 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     end
 
     it 'does not preserve any foreign key IDs' do
-      expect(created_object.values).not_to include(99)
+      expect(created_object.values).to match_array([created_object.project_id])
     end
   end
 
   context 'overrided model with pluralized name' do
+    let(:dummy_int) { project.id + 1 } # to avoid setting an integer that equals the current project.id
     let(:relation_sym) { :metrics }
 
     let(:relation_hash) do
       {
-        'id' => 99,
-        'merge_request_id' => 99,
+        'id' => dummy_int,
+        'merge_request_id' => dummy_int,
         'merged_at' => Time.now,
-        'merged_by_id' => 99,
+        'merged_by_id' => dummy_int,
         'latest_closed_at' => nil,
         'latest_closed_by_id' => nil
       }
@@ -436,9 +438,10 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
   end
 
   context 'Project references' do
+    let(:dummy_int) { project.id + 1 } # to avoid setting an integer that equals the current project.id
     let(:relation_sym) { :project_foo_model }
     let(:relation_hash) do
-      Gitlab::ImportExport::Project::RelationFactory::PROJECT_REFERENCES.map { |ref| { ref => 99 } }.inject(:merge)
+      Gitlab::ImportExport::Project::RelationFactory::PROJECT_REFERENCES.map { |ref| { ref => dummy_int } }.inject(:merge)
     end
 
     before do
@@ -451,7 +454,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     end
 
     it 'does not preserve any project foreign key IDs' do
-      expect(created_object.values).not_to include(99)
+      expect(created_object.values).not_to include(dummy_int)
     end
   end
 
@@ -503,6 +506,39 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
 
     it 'has preloaded project' do
       expect(created_object.project).to equal(project)
+    end
+
+    it 'builds an event' do
+      expect(created_object).to be_an(Event)
+    end
+
+    context 'when user ID maps to no user' do
+      let(:members_mapper) { double('members_mapper', map: {}) }
+
+      it 'does not build an event' do
+        expect(created_object).to be_nil
+      end
+    end
+  end
+
+  describe 'approval object' do
+    let(:relation_sym) { :approvals }
+    let(:relation_hash) do
+      {
+        'user_id' => admin.id
+      }
+    end
+
+    it 'builds an approvals' do
+      expect(created_object).to be_an(Approval)
+    end
+
+    context 'when user ID maps to no user' do
+      let(:members_mapper) { double('members_mapper', map: {}) }
+
+      it 'does not build an approval' do
+        expect(created_object).to be_nil
+      end
     end
   end
 

@@ -2,16 +2,21 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Sidekiq job migration Rake tasks
 ---
 
-# Sidekiq job migration Rake tasks
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-WARNING:
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This operation should be very uncommon. We do not recommend it for the vast majority of GitLab instances.
+
+{{< /alert >}}
 
 Sidekiq routing rules allow administrators to re-route certain background jobs from their regular queue to an alternative queue. By default, GitLab uses one queue per background job type. GitLab has over 400 background job types, and so correspondingly it has over 400 queues.
 

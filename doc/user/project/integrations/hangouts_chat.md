@@ -2,13 +2,15 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Google Chat
 ---
 
-# Google Chat
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can configure your project in GitLab to send notifications to a
 space of your choice in [Google Chat](https://chat.google.com/).
@@ -24,13 +26,13 @@ For more information, see [issue 438452](https://gitlab.com/gitlab-org/gitlab/-/
 To configure the integration in Google Chat:
 
 1. Go to the space where you want to receive notifications from GitLab.
-1. In the upper left, next to the space name, select the down arrow (**{chevron-down}**) > **Apps & integrations**.
+1. In the upper left, next to the space name, select the down arrow ({{< icon name="chevron-down" >}}) > **Apps & integrations**.
 1. In the **Webhooks** section, select **Add webhooks**.
 1. On the **Incoming webhooks** dialog:
    - In **Name**, enter a name for your webhook (for example, `GitLab integration`).
    - Optional. In **Avatar URL**, enter an avatar for your bot.
 1. Select **Save**.
-1. Next to the webhook URL, select the vertical ellipsis (**{ellipsis_v}**) > **Copy link**.
+1. Next to the webhook URL, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Copy link**.
 
 For more information about webhooks, see the
 [Google Chat documentation](https://developers.google.com/workspace/chat/quickstart/webhooks).

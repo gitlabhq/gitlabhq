@@ -16,7 +16,5 @@ options:
   events:
     - g_runner_fleet_read_jobs_statistics
 performance_indicator_type: []
-distribution:
-- ee
 tiers:
 - ultimate

@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
   let_it_be_with_refind(:other_runner) { create(:ci_runner, :project_type, projects: [project]) }
 
   let(:statuses) { [taggable, other_taggable] }
-  let(:config) { described_class::NoConfig.new }
+  let(:config) { nil }
 
   subject(:service) { described_class.new(statuses, config: config) }
 
@@ -43,6 +43,10 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
     end
 
     describe '#insert!' do
+      it 'generates a valid config' do
+        expect(service.config).to be_a(expected_configuration)
+      end
+
       context 'without tags' do
         it { expect(service.insert!).to be_truthy }
       end
@@ -98,103 +102,9 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
 
           it 'inserts taggings in batches' do
             recorder = ActiveRecord::QueryRecorder.new { service.insert! }
-            count = recorder.log.count { |query| query.include?('INSERT INTO "taggings"') }
+            count = recorder.log.count { |query| query.include?("INSERT INTO \"#{tagging_class.table_name}\"") }
 
             expect(count).to eq(3)
-          end
-        end
-
-        context 'with no config provided' do
-          it 'does not persist tag links' do
-            service.insert!
-
-            expect(taggable.tag_links).to be_empty
-            expect(other_taggable.tag_links).to be_empty
-          end
-        end
-
-        context 'with config provided by the factory' do
-          let(:config) { nil }
-
-          it 'generates a valid config' do
-            expect(service.config).to be_a(expected_configuration)
-          end
-
-          context 'with flags' do
-            before do
-              allow(service.config).to receive(:monomorphic_taggings?) { monomorphic_taggings }
-              allow(service.config).to receive(:polymorphic_taggings?) { polymorphic_taggings }
-            end
-
-            context 'when writing to both tables' do
-              let(:monomorphic_taggings) { true }
-              let(:polymorphic_taggings) { true }
-
-              it 'persists tag links and taggings' do
-                service.insert!
-
-                expect(taggable.tag_links).not_to be_empty
-                expect(other_taggable.tag_links).not_to be_empty
-
-                expect(tagged_with('tag1')).to contain_exactly(taggable)
-                expect(tagged_with('tag2')).to contain_exactly(taggable, other_taggable)
-                expect(tagged_with('tag3')).to contain_exactly(other_taggable)
-
-                expect(taggable.taggings).not_to be_empty
-                expect(other_taggable.taggings).not_to be_empty
-
-                expect(taggable_class.tagged_with('tag1')).to contain_exactly(taggable)
-                expect(taggable_class.tagged_with('tag2')).to contain_exactly(taggable, other_taggable)
-                expect(taggable_class.tagged_with('tag3')).to contain_exactly(other_taggable)
-              end
-            end
-
-            context 'when writing only to taggings' do
-              let(:monomorphic_taggings) { false }
-              let(:polymorphic_taggings) { true }
-
-              it 'persists taggings' do
-                service.insert!
-
-                expect(taggable.tag_links).to be_empty
-                expect(other_taggable.tag_links).to be_empty
-
-                expect(taggable.taggings).not_to be_empty
-                expect(other_taggable.taggings).not_to be_empty
-
-                expect(taggable_class.tagged_with('tag1')).to contain_exactly(taggable)
-                expect(taggable_class.tagged_with('tag2')).to contain_exactly(taggable, other_taggable)
-                expect(taggable_class.tagged_with('tag3')).to contain_exactly(other_taggable)
-              end
-            end
-
-            context 'when writing only to link table' do
-              let(:monomorphic_taggings) { true }
-              let(:polymorphic_taggings) { false }
-
-              it 'persists tag links' do
-                service.insert!
-
-                expect(taggable.tag_links).not_to be_empty
-                expect(other_taggable.tag_links).not_to be_empty
-
-                expect(tagged_with('tag1')).to contain_exactly(taggable)
-                expect(tagged_with('tag2')).to contain_exactly(taggable, other_taggable)
-                expect(tagged_with('tag3')).to contain_exactly(other_taggable)
-
-                expect(taggable.taggings).to be_empty
-                expect(other_taggable.taggings).to be_empty
-              end
-            end
-
-            def tagged_with(tag)
-              scope = tagging_class
-                .where(tag_id: Ci::Tag.where(name: tag))
-                .where(tagging_class.arel_table[taggable_id_column].eq(taggable_class.arel_table[:id]))
-                .where(tagging_class.arel_table[partition_column].eq(taggable_class.arel_table[partition_column]))
-
-              taggable_class.where_exists(scope)
-            end
           end
         end
       end

@@ -7,7 +7,8 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CiVerificationBadge from '~/ci/catalog/components/shared/ci_verification_badge.vue';
 import ProjectVisibilityIcon from '~/ci/catalog/components/shared/project_visibility_icon.vue';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
-import { catalogSinglePageResponse } from '../../mock';
+import TopicBadges from '~/vue_shared/components/topic_badges.vue';
+import { catalogSinglePageResponse, longResourceDescription } from '../../mock';
 
 const defaultEvent = { preventDefault: jest.fn, ctrlKey: false, metaKey: false };
 const baseRoute = '/';
@@ -49,6 +50,7 @@ describe('CiResourcesListItem', () => {
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findMarkdown = () => wrapper.findComponent(Markdown);
   const findTimeAgoMessage = () => wrapper.findComponent(GlSprintf);
+  const findTopicBadgesComponent = () => wrapper.findComponent(TopicBadges);
   const findVerificationBadge = () => wrapper.findComponent(CiVerificationBadge);
   const findVisibilityIcon = () => wrapper.findComponent(ProjectVisibilityIcon);
 
@@ -92,6 +94,19 @@ describe('CiResourcesListItem', () => {
       const markdown = findMarkdown();
       expect(markdown.exists()).toBe(true);
       expect(markdown.props().markdown).toBe(defaultProps.resource.description);
+    });
+
+    it('renders a truncated resource description', () => {
+      defaultProps.resource.description = longResourceDescription;
+      createComponent();
+
+      const markdown = findMarkdown();
+      expect(markdown.props().markdown.length).toBe(260);
+    });
+
+    it('hides the resource description on mobile devices', () => {
+      const markdown = findMarkdown();
+      expect(markdown.classes()).toEqual(expect.arrayContaining(['gl-hidden', 'md:gl-block']));
     });
   });
 
@@ -145,6 +160,26 @@ describe('CiResourcesListItem', () => {
         expect(findComponentNames().text()).toMatchInterpolatedText(
           '• Components: test-component, component_two, test-component, component_two, test-component',
         );
+      });
+    });
+  });
+
+  describe('project topics', () => {
+    describe('when there are no topics', () => {
+      it('does not render the topic badges component', () => {
+        createComponent();
+
+        expect(findTopicBadgesComponent().exists()).toBe(false);
+      });
+    });
+
+    describe('when there are topics', () => {
+      it('renders the topic badges component', () => {
+        const topics = ['vue.js', 'Ruby'];
+        createComponent({ props: { resource: { ...resource, topics } } });
+
+        expect(findTopicBadgesComponent().exists()).toBe(true);
+        expect(findTopicBadgesComponent().props('topics')).toBe(topics);
       });
     });
   });

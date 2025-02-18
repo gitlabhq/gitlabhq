@@ -42,7 +42,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_frontend_feature_flag(:mr_vulnerability_code_flow, project)
     push_frontend_feature_flag(:mr_show_reports_immediately, project)
   end
 
@@ -390,9 +389,27 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   private
 
+  def set_issuables_index
+    return if ::Feature.enabled?(:vue_merge_request_list, current_user) && request.format.html?
+
+    super
+  end
+
   def show_merge_request
     close_merge_request_if_no_source_project
     @merge_request.check_mergeability(async: true)
+
+    # We need to handle the exception that the auto merge was missed
+    # For example, the approval group was changed and now the approvals are passing
+    if Feature.enabled?(:process_auto_merge_on_load, @merge_request.project) &&
+        @merge_request.auto_merge_enabled? &&
+        @merge_request.mergeability_checks_pass?
+      Gitlab::EventStore.publish(
+        MergeRequests::MergeableEvent.new(
+          data: { merge_request_id: @merge_request.id }
+        )
+      )
+    end
 
     respond_to do |format|
       format.html do

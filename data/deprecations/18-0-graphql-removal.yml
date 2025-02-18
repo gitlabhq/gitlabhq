@@ -2,15 +2,16 @@
   # The milestones for the deprecation announcement, and the removal.
   removal_milestone: "18.0"
   announcement_milestone: "17.0"
-  # Change breaking_change to false if needed.
   breaking_change: true
-  window: 3  # Can be 1, 2, or 3 - The window when the breaking change will be deployed on GitLab.com
+  window: 3 # Can be 1, 2, or 3 - The window when the breaking change will be deployed on GitLab.com
   # The stage and GitLab username of the person reporting the change,
   # and a link to the deprecation issue
   reporter: dhershkovitch
   stage: verify
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/424417
-  body: |  # (required) Don't change this line.
+  impact: low
+  scope: instance # Can be one or a combination of: [instance, group, project]
+  body: | # (required) Don't change this line.
     The `previousStageJobsOrNeeds` field in GraphQL will be removed as it has been replaced by the `previousStageJobs` and `needs` fields.
 
 # ==============================

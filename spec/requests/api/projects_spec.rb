@@ -2671,7 +2671,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
             security_and_compliance_enabled
             issues_template
             merge_requests_template
-            pre_receive_secret_detection_enabled
+            secret_push_protection_enabled
           ]
         end
 
@@ -3225,7 +3225,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['default_branch']).to eq(project.default_branch)
         expect(json_response['ci_config_path']).to eq(project.ci_config_path)
         expect(json_response['forked_from_project']).to eq(project.forked_from_project)
-        expect(json_response['service_desk_address']).to eq(project.service_desk_address)
+        expect(json_response['service_desk_address']).to eq(::ServiceDesk::Emails.new(project).address)
         expect(json_response).not_to include(
           'ci_default_git_depth',
           'ci_forward_deployment_enabled',
@@ -4229,6 +4229,26 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to match('at least one parameter must be provided')
+    end
+
+    it 'changes the max_artifacts_size attribute' do
+      expect(project.max_artifacts_size).to be_nil
+
+      put api(path, admin, admin_mode: true), params: { max_artifacts_size: 1 }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(project.reload.max_artifacts_size).to eq(1)
+      expect(json_response['max_artifacts_size']).to eq(1)
+    end
+
+    it 'does not change the max_artifacts_size attribute when a user does not have permissions' do
+      project.add_maintainer(user2)
+
+      put api(path, user2), params: { max_artifacts_size: 1 }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(project.reload.max_artifacts_size).not_to eq(1)
+      expect(json_response['max_artifacts_size']).not_to eq(1)
     end
 
     context 'when unauthenticated' do
@@ -5700,14 +5720,14 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
   end
 
   describe 'POST /projects/:id/housekeeping' do
-    let(:housekeeping) { Repositories::HousekeepingService.new(project) }
+    let(:housekeeping) { ::Repositories::HousekeepingService.new(project) }
     let(:params) { {} }
     let(:path) { "/projects/#{project.id}/housekeeping" }
 
     subject(:request) { post api(path, user), params: params }
 
     before do
-      allow(Repositories::HousekeepingService).to receive(:new).with(project, :eager).and_return(housekeeping)
+      allow(::Repositories::HousekeepingService).to receive(:new).with(project, :eager).and_return(housekeeping)
     end
 
     context 'when authenticated as owner' do
@@ -5736,7 +5756,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         let(:params) { { task: :prune } }
 
         it 'triggers a prune' do
-          expect(Repositories::HousekeepingService).to receive(:new).with(project, :prune).and_return(housekeeping)
+          expect(::Repositories::HousekeepingService).to receive(:new).with(project, :prune).and_return(housekeeping)
           expect(housekeeping).to receive(:execute).once
 
           request
@@ -5749,7 +5769,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         let(:params) { { task: :unsupported_task } }
 
         it 'responds with bad_request' do
-          expect(Repositories::HousekeepingService).not_to receive(:new)
+          expect(::Repositories::HousekeepingService).not_to receive(:new)
 
           request
 
@@ -5759,7 +5779,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       context 'when housekeeping lease is taken' do
         it 'returns conflict' do
-          expect(housekeeping).to receive(:execute).once.and_raise(Repositories::HousekeepingService::LeaseTaken)
+          expect(housekeeping).to receive(:execute).once.and_raise(::Repositories::HousekeepingService::LeaseTaken)
 
           request
 

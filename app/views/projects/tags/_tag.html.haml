@@ -24,22 +24,20 @@
       %pre.wrap.gl-mt-3.gl-max-w-80
         = strip_signature(tag.message)
 
-  .row-fixed-content.flex-row
+  .row-fixed-content.flex-row.gl-gap-3.gl-mt-2
     - if tag.has_signature?
-      .gl-mr-3
-        = render partial: 'projects/commit/signature', object: tag.signature
+      = render partial: 'projects/commit/signature', object: tag.signature
 
     - if commit_status
-      = render 'ci/status/icon', status: commit_status, option_css_classes: 'gl-inline-flex gl-align-middle gl-mr-5'
+      = render 'ci/status/icon', status: commit_status, option_css_classes: 'gl-inline-flex gl-align-middle'
     - elsif @tag_pipeline_statuses && @tag_pipeline_statuses.any?
-      .gl-inline-flex.gl-align-middle.gl-mr-5
+      .gl-inline-flex.gl-align-middle
         %svg.s24
 
     - if can?(current_user, :admin_tag, @project)
-      = render 'edit_release_button', tag: tag, project: @project, release: release, option_css_classes: '!gl-mr-3'
+      = render 'edit_release_button', tag: tag, project: @project, release: release
 
-    .gl-mr-3
-      = render 'projects/buttons/download', project: @project, ref: tag.name, pipeline: @tags_pipelines[tag.name]
+    = render 'projects/buttons/download', project: @project, ref: tag.name, pipeline: @tags_pipelines[tag.name]
 
     - if can?(current_user, :admin_tag, @project)
       = render 'projects/buttons/remove_tag', project: @project, tag: tag

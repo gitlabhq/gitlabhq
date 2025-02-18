@@ -3,7 +3,6 @@ RSpec/SpecFilePathSuffix:
   Exclude:
     - 'ee/spec/frontend/fixtures/analytics/charts.rb'
     - 'ee/spec/frontend/fixtures/analytics/devops_reports/devops_adoption/enabled_namespaces.rb'
-    - 'ee/spec/frontend/fixtures/analytics/metrics.rb'
     - 'ee/spec/frontend/fixtures/analytics/value_streams.rb'
     - 'ee/spec/frontend/fixtures/analytics/value_streams_code_stage.rb'
     - 'ee/spec/frontend/fixtures/analytics/value_streams_issue_stage.rb'

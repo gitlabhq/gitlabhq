@@ -2,6 +2,7 @@
 
 class PagesDomainSslRenewalWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
+  include CronjobChildWorker
 
   data_consistency :always
 

@@ -1,0 +1,26 @@
+- title: Reject container image pull policies not in `allowed_pull_policies`
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "18.0"
+  announcement_milestone: "17.9"
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  window: # Can be 1, 2, or 3 - The window when the breaking change will be deployed on GitLab.com
+  reporter: deastman # The GitLab username of the person reporting the change
+  stage: verify
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/516107
+  # Use the impact calculator https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
+  impact: medium # Can be one of: [critical, high, medium, low]
+  scope: instance, group, project # Can be one or a combination of: [instance, group, project]
+  resolution_role: Maintainer # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: true # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  body: | # (required) Don't change this line.
+    All configured pull-policies should be present in the
+    [`allowed_pull_policies` configuration](https://docs.gitlab.com/runner/executors/docker/#allow-docker-pull-policies)
+    specified in the runner's `config.toml` file. If they are not, the job should fail with an `incompatible pull policy` error.
+
+    In the current implementation, when multiple pull policies are defined, jobs pass if at least one pull policy
+    matches those in `allowed-pull-policies`, even if other policies are not included.
+
+    In GitLab 18.0, jobs will fail only if none of the pull policies match those in `allowed-pull-policies`.
+    However, unlike the current behavior, jobs will use only the pull policies listed in `allowed-pull-policies`.
+    This distinction can cause jobs that currently pass to fail in GitLab 18.0.

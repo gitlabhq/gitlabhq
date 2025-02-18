@@ -11,7 +11,7 @@
 - verify_email_address = @service_desk_setting.custom_email_address_for_verification
 - code_open = '<code>'.html_safe
 - code_end = '</code>'.html_safe
-- service_desk_incoming_address = @service_desk_setting.project.service_desk_incoming_address
+- service_desk_incoming_address = ::ServiceDesk::Emails.new(@service_desk_setting.project).incoming_address
 
 %tr
   %td.text-content

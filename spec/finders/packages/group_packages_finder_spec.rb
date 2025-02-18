@@ -74,12 +74,12 @@ RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registr
             :developer  | :public  | :private | :all
             :maintainer | :public  | :private | :all
             :anonymous  | :private | :enabled | :none
-            :guest      | :private | :enabled | :none
+            :guest      | :private | :enabled | :all
             :reporter   | :private | :enabled | :all
             :developer  | :private | :enabled | :all
             :maintainer | :private | :enabled | :all
             :anonymous  | :private | :private | :none
-            :guest      | :private | :private | :none
+            :guest      | :private | :private | :all
             :reporter   | :private | :private | :all
             :developer  | :private | :private | :all
             :maintainer | :private | :private | :all
@@ -114,6 +114,31 @@ RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registr
             end
 
             it { is_expected.to match_array(expected_packages) }
+          end
+        end
+
+        context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+          let(:add_user_to_group) { false }
+
+          before do
+            subgroup.update!(visibility: 'private')
+            group.update!(visibility: 'private')
+
+            project.add_guest(user)
+            subproject.add_guest(user)
+
+            stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+          end
+
+          %w[enabled private].each do |repository_visibility|
+            context "when repository visiblity #{repository_visibility}" do
+              before do
+                project.update!(visibility: 'private', repository_access_level: repository_visibility)
+                subproject.update!(visibility: 'private', repository_access_level: repository_visibility)
+              end
+
+              it { is_expected.to match_array([]) }
+            end
           end
         end
 

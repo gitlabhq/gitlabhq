@@ -26,10 +26,14 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
     described_class.new(user, work_item)
   end
 
+  before do
+    stub_application_setting(akismet_enabled: true)
+  end
+
   context 'with project level work items' do
     context 'with private project' do
-      let(:project_work_item) { create(:work_item, project: private_project) }
-      let(:project_confidential_work_item) { create(:work_item, confidential: true, project: private_project) }
+      let(:project_work_item) { create(:work_item, project: private_project, user_agent_detail: create(:user_agent_detail)) }
+      let(:project_confidential_work_item) { create(:work_item, confidential: true, project: private_project, user_agent_detail: create(:user_agent_detail)) }
       let(:authored_project_work_item) { create(:work_item, project: private_project, author: guest_author) }
       let(:authored_project_confidential_work_item) { create(:work_item, confidential: true, project: private_project, author: guest_author) }
       let(:not_persisted_project_work_item) { build(:work_item, project: private_project) }
@@ -42,18 +46,30 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
         # disallowed
         expect(permissions(non_member_user, project_work_item)).to be_disallowed(
           :read_work_item, :read_issue, :read_note, :admin_work_item, :update_work_item, :delete_work_item,
-          :admin_parent_link, :admin_work_item_link, :create_note
+          :admin_parent_link, :admin_work_item_link, :create_note, :report_spam, :move_work_item, :clone_work_item,
+          :summarize_comments
         )
         expect(permissions(non_member_user, project_confidential_work_item)).to be_disallowed(
           :read_work_item, :read_issue, :read_note, :admin_work_item, :update_work_item, :delete_work_item,
-          :admin_parent_link, :admin_work_item_link, :create_note
+          :admin_parent_link, :admin_work_item_link, :create_note, :report_spam, :move_work_item, :clone_work_item,
+          :summarize_comments
         )
+      end
+
+      it 'checks non-admin abilities for spam reporting' do
+        expect(permissions(guest, project_work_item)).to be_disallowed(:report_spam)
+        expect(permissions(non_member_user, project_work_item)).to be_disallowed(:report_spam)
+      end
+
+      it 'checks admin abilities for spam reporting' do
+        expect(permissions(admin, project_work_item)).to be_allowed(:report_spam)
+        expect(permissions(admin, project_confidential_work_item)).to be_allowed(:report_spam)
       end
     end
 
     context 'with public project' do
-      let(:project_work_item) { create(:work_item, project: public_project) }
-      let(:project_confidential_work_item) { create(:work_item, confidential: true, project: public_project) }
+      let(:project_work_item) { create(:work_item, project: public_project, user_agent_detail: create(:user_agent_detail)) }
+      let(:project_confidential_work_item) { create(:work_item, confidential: true, project: public_project, user_agent_detail: create(:user_agent_detail)) }
       let(:authored_project_work_item) { create(:work_item, project: private_project, author: guest_author) }
       let(:authored_project_confidential_work_item) { create(:work_item, confidential: true, project: private_project, author: guest_author) }
       let(:not_persisted_project_work_item) { build(:work_item, project: public_project) }
@@ -71,12 +87,19 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
         # disallowed
         expect(permissions(non_member_user, project_work_item)).to be_disallowed(
           :admin_work_item, :update_work_item, :delete_work_item,
-          :admin_parent_link, :admin_work_item_link
+          :admin_parent_link, :admin_work_item_link, :report_spam, :move_work_item, :clone_work_item,
+          :summarize_comments
         )
         expect(permissions(non_member_user, project_confidential_work_item)).to be_disallowed(
           :read_work_item, :read_issue, :read_note, :admin_work_item, :update_work_item, :delete_work_item,
-          :admin_parent_link, :admin_work_item_link, :create_note
+          :admin_parent_link, :admin_work_item_link, :create_note, :report_spam, :move_work_item, :clone_work_item,
+          :summarize_comments
         )
+      end
+
+      it 'checks admin abilities for spam reporting' do
+        expect(permissions(admin, project_work_item)).to be_allowed(:report_spam)
+        expect(permissions(admin, project_confidential_work_item)).to be_allowed(:report_spam)
       end
     end
   end
@@ -103,11 +126,13 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
           # disallowed
           expect(permissions(non_member_user, work_item)).to be_disallowed(
             :read_work_item, :read_issue, :read_note, :admin_work_item, :update_work_item, :delete_work_item,
-            :admin_parent_link, :set_work_item_metadata, :admin_work_item_link, :create_note
+            :admin_parent_link, :set_work_item_metadata, :admin_work_item_link, :create_note,
+            :move_work_item, :clone_work_item, :summarize_comments
           )
           expect(permissions(non_member_user, confidential_work_item)).to be_disallowed(
             :read_work_item, :read_issue, :read_note, :admin_work_item, :update_work_item, :delete_work_item,
-            :admin_parent_link, :set_work_item_metadata, :admin_work_item_link, :create_note
+            :admin_parent_link, :set_work_item_metadata, :admin_work_item_link, :create_note,
+            :move_work_item, :clone_work_item, :summarize_comments
           )
         end
       end
@@ -139,11 +164,12 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
           # disallowed
           expect(permissions(non_member_user, work_item)).to be_disallowed(
             :admin_work_item, :update_work_item, :delete_work_item, :admin_parent_link, :set_work_item_metadata,
-            :admin_work_item_link
+            :admin_work_item_link, :move_work_item, :clone_work_item, :summarize_comments
           )
           expect(permissions(non_member_user, confidential_work_item)).to be_disallowed(
             :read_work_item, :read_issue, :read_note, :admin_work_item, :update_work_item, :delete_work_item,
-            :admin_parent_link, :set_work_item_metadata, :admin_work_item_link, :create_note
+            :admin_parent_link, :set_work_item_metadata, :admin_work_item_link, :create_note,
+            :move_work_item, :clone_work_item, :summarize_comments
           )
         end
       end

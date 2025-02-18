@@ -2,18 +2,20 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Registry exporter
 ---
 
-# Registry exporter
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The Registry exporter allows you to measure various Registry metrics.
 To enable it:
 
-1. [Enable Prometheus](index.md#configuring-prometheus).
+1. [Enable Prometheus](_index.md#configuring-prometheus).
 1. Edit `/etc/gitlab/gitlab.rb` and enable [debug mode](https://docs.docker.com/registry/#debug) for the Registry:
 
    ```ruby
@@ -26,4 +28,4 @@ To enable it:
 Prometheus automatically begins collecting performance data from
 the registry exporter exposed under `localhost:5001/metrics`.
 
-[← Back to the main Prometheus page](index.md)
+[← Back to the main Prometheus page](_index.md)

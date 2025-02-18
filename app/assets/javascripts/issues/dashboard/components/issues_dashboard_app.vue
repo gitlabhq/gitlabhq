@@ -42,6 +42,7 @@ import {
   TOKEN_TITLE_TYPE,
   TOKEN_TITLE_CREATED,
   TOKEN_TITLE_CLOSED,
+  TOKEN_TITLE_SUBSCRIBED,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -52,6 +53,7 @@ import {
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_CREATED,
   TOKEN_TYPE_CLOSED,
+  TOKEN_TYPE_SUBSCRIBED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
@@ -293,6 +295,26 @@ export default {
           icon: 'issues',
           token: GlFilteredSearchToken,
           options: this.typeTokenOptions,
+        },
+        {
+          type: TOKEN_TYPE_SUBSCRIBED,
+          title: TOKEN_TITLE_SUBSCRIBED,
+          icon: 'notifications',
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            {
+              icon: 'notifications',
+              value: 'EXPLICITLY_SUBSCRIBED',
+              title: __('Explicitly subscribed'),
+            },
+            {
+              icon: 'notifications-off',
+              value: 'EXPLICITLY_UNSUBSCRIBED',
+              title: __('Explicitly unsubscribed'),
+            },
+          ],
         },
       ];
 

@@ -32,9 +32,9 @@ export default {
       {{ line.new_line }}
     </td>
     <td
+      data-testid="suggestion-diff-content"
       class="line_content"
       :class="[{ 'd-table-cell': displayAsCell }, lineType]"
-      data-testid="suggestion-diff-content"
     >
       <span v-if="line.rich_text" v-safe-html="line.rich_text" class="line"></span>
       <span v-else-if="line.text" class="line">{{ line.text }}</span>

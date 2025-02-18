@@ -2,15 +2,21 @@
 stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use GCP Secret Manager secrets in GitLab CI/CD
 ---
 
-# Use GCP Secret Manager secrets in GitLab CI/CD
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11739) in GitLab and GitLab Runner 16.8.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11739) in GitLab and GitLab Runner 16.8.
+
+{{< /history >}}
 
 You can use secrets stored in the [Google Cloud (GCP) Secret Manager](https://cloud.google.com/security/products/secret-manager)
 in your GitLab CI/CD pipelines.
@@ -45,7 +51,7 @@ The principal is used to authorize access to the Secret Manager resources:
 1. Under **Attribute Mapping**, create the following mappings, where:
 
    - `attribute.X` is the name of the attribute to include as a claim in the Google token.
-   - `assertion.X` is the value to extract from the [GitLab claim](../cloud_services/index.md#how-it-works).
+   - `assertion.X` is the value to extract from the [GitLab claim](../cloud_services/_index.md#how-it-works).
 
    | Attribute (on Google)         | Assertion (from GitLab) |
    |-------------------------------|-------------------------|
@@ -77,7 +83,7 @@ After setting up WIF, you must grant the WIF principal access to the secrets in 
 
 ## Configure GitLab CI/CD to use GCP Secret Manager secrets
 
-You must [add these CI/CD variables](../variables/index.md#for-a-project) to provide details about
+You must [add these CI/CD variables](../variables/_index.md#for-a-project) to provide details about
 your GCP Secret Manager:
 
 - `GCP_PROJECT_NUMBER`: The GCP [Project Number](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
@@ -103,7 +109,11 @@ job_using_gcp_sm:
 
 ### Use secrets from a different GCP project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/37487) in GitLab 17.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/37487) in GitLab 17.0.
+
+{{< /history >}}
 
 Secret names in GCP are per-project. By default the secret named in `gcp_secret_manager:name`
 is read from the project specified in `GCP_PROJECT_NUMBER`.
@@ -150,7 +160,7 @@ This limit is imposed by Google Cloud IAM, tracked in [Google issue #264362370](
 The only fix for this issue is to use shorter names
 [for your branch and repository](https://github.com/google-github-actions/auth/blob/main/docs/TROUBLESHOOTING.md#subject-exceeds-the-127-byte-limit).
 
-## `The secrets provider can not be found. Check your CI/CD variables and try again.` message
+### `The secrets provider can not be found. Check your CI/CD variables and try again.` message
 
 You might receive this error when attempting to start a job configured to access GCP Secret Manager:
 

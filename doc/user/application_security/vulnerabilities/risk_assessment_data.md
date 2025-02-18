@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Vulnerability risk assessment data
 ---
-
-# Vulnerability risk assessment data
 
 Use vulnerability risk data to help assess the potential impact to your environment.
 
@@ -20,12 +19,13 @@ high severity and a low EPSS score.
 
 ## EPSS
 
-> - Introduced in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `epss_querying` (in issue [470835](https://gitlab.com/gitlab-org/gitlab/-/issues/470835)) and `epss_intgestion` (in issue [467672](https://gitlab.com/gitlab-org/gitlab/-/issues/467672)). Disabled by default.
-> - Renamed to `cve_enrichment_querying` and `cve_enrichment_ingestion` respectively and [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/481431) in GitLab 17.6.
+{{< history >}}
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
+- Introduced in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `epss_querying` (in issue [470835](https://gitlab.com/gitlab-org/gitlab/-/issues/470835)) and `epss_ingestion` (in issue [467672](https://gitlab.com/gitlab-org/gitlab/-/issues/467672)). Disabled by default.
+- Renamed to `cve_enrichment_querying` and `cve_enrichment_ingestion` respectively and [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/481431) in GitLab 17.6.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/11544) in GitLab 17.7. Feature flags `cve_enrichment_querying` and `cve_enrichment_ingestion` removed.
+
+{{< /history >}}
 
 The EPSS score provides an estimate of the likelihood a vulnerability in the CVE catalog will be
 exploited in the next 30 days. EPSS assigns each CVE a score between 0 to 1 (equivalent to 0% to
@@ -33,7 +33,11 @@ exploited in the next 30 days. EPSS assigns each CVE a score between 0 to 1 (equ
 
 ## KEV
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499407) in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499407) in GitLab 17.7.
+
+{{< /history >}}
 
 The KEV catalog lists vulnerabilities that are known to have been exploited. You should prioritize
 the remediation of vulnerabilities in the KEV catalog above other vulnerabilities. Attacks using
@@ -49,7 +53,7 @@ score, and KEV status for the vulnerability. EPSS scores are rounded to the seco
 
 For example, the following GraphQL API query returns all vulnerabilities in a given project and
 their CVE ID, EPSS score, and KEV status (`isKnownExploit`). Run the query in the
-[GraphQL explorer](../../../api/graphql/index.md#interactive-graphql-explorer) or any other GraphQL
+[GraphQL explorer](../../../api/graphql/_index.md#interactive-graphql-explorer) or any other GraphQL
 client.
 
 ```graphql
@@ -119,8 +123,11 @@ Example output:
 
 ## Vulnerability Prioritizer
 
-DETAILS:
-**Status:** Experiment
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
 
 Use the [Vulnerability Prioritizer CI/CD component](https://gitlab.com/explore/catalog/components/vulnerability-prioritizer) to help prioritize a project's vulnerabilities (namely CVEs). The component outputs a prioritization report in the `vulnerability-prioritizer` job's output.
 
@@ -130,6 +137,6 @@ Vulnerabilities are listed in the following order:
 1. Higher EPSS scores (closer to 1) are prioritized.
 1. Severities are ordered from `Critical` to `Low`.
 
-Only vulnerabilities detected by [dependency scanning](../dependency_scanning/index.md) and [container scanning](../container_scanning/index.md) are included because the Vulnerability Prioritizer CI/CD component requires data only available in Common Vulnerabilities and Exposures (CVE) records. Moreover, only [detected (**Needs triage**) and confirmed](../vulnerabilities/index.md#vulnerability-status-values) vulnerabilities are shown.
+Only vulnerabilities detected by [dependency scanning](../dependency_scanning/_index.md) and [container scanning](../container_scanning/_index.md) are included because the Vulnerability Prioritizer CI/CD component requires data only available in Common Vulnerabilities and Exposures (CVE) records. Moreover, only [detected (**Needs triage**) and confirmed](../vulnerabilities/_index.md#vulnerability-status-values) vulnerabilities are shown.
 
 To add the Vulnerability Prioritizer CI/CD component to your project's CI/CD pipeline, see the [Vulnerability Prioritizer documentation](https://gitlab.com/components/vulnerability-prioritizer).

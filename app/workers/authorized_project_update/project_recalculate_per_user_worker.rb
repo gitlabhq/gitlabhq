@@ -18,7 +18,7 @@ module AuthorizedProjectUpdate
 
       service = AuthorizedProjectUpdate::ProjectRecalculatePerUserService.new(project, user)
 
-      recalculate(project, service)
+      recalculate(service)
     end
   end
 end

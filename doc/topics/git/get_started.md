@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Get started with Git
 ---
-
-# Get started with Git
 
 Git is a version control system you use to track changes to your code and collaborate with others.
 GitLab is a web-based Git repository manager that provides CI/CD and other features to help you
@@ -30,7 +29,7 @@ including the complete history of all changes made to the files.
 Git tracks changes at the file level, so you can view the modifications made to individual
 files over time.
 
-For more information, see [Repositories](../../user/project/repository/index.md).
+For more information, see [Repositories](../../user/project/repository/_index.md).
 
 ## Working directories
 
@@ -56,7 +55,7 @@ In GitLab, the default branch is usually called `main`.
 ### Merge a branch
 
 After a feature is complete or a bug is fixed, you can merge your branch into the default branch.
-You can do this in a [Merge request](../../user/project/merge_requests/index.md).
+You can do this in a [Merge request](../../user/project/merge_requests/_index.md).
 Merging is a safe way to bring changes from one branch into another while preserving the
 history of the changes.
 
@@ -69,11 +68,14 @@ These must be resolved manually by reviewing and editing the code.
 After a successful merge, you can delete the branch if it is no longer needed.
 Deleting unnecessary branches helps keep your repository organized and manageable.
 
-NOTE:
-To ensure no work is lost, verify that all changes are incorporated into the default branch
+{{< alert type="note" >}}
+
+To ensure no work is lost, verify all changes are incorporated into the default branch
 before you delete the branch after the final merge.
 
-For more information, see [Branches](../../user/project/repository/branches/index.md).
+{{< /alert >}}
+
+For more information, see [Branches](../../user/project/repository/branches/_index.md).
 
 ## Understand the Git workflow
 
@@ -113,12 +115,11 @@ the Git client on your computer.
 
 The installation process varies depending on your operating system.
 For example, Windows, MacOS, or Linux.
-For information on how to install Git, see [Install Git](how_to_install_git/index.md).
+For information on how to install Git, see [Install Git](how_to_install_git/_index.md).
 
 ## Git commands
 
-To interact with Git from the command line, you can use Git commands.
-Here’s a list of the most commonly used Git commands:
+To interact with Git from the command line, you can use Git commands:
 
 - `git clone`: Clone a repository to your local machine.
 - `git branch`: List, create, or delete branches in your local repository.
@@ -155,4 +156,4 @@ GitLab provides a web-based interface for many Git operations, but you can also 
 Git from the command line to interact with GitLab. This provides you with additional
 flexibility and control.
 
-For a hands-on approach to learning Git commands, see [Tutorial: Make your first Git commit](../../tutorials/make_first_git_commit/index.md). For other helpful resources, see [Tutorials: Learn Git](../../tutorials/learn_git.md).
+For a hands-on approach to learning Git commands, see [Tutorial: Make your first Git commit](../../tutorials/make_first_git_commit/_index.md). For other helpful resources, see [Tutorials: Learn Git](../../tutorials/learn_git.md).

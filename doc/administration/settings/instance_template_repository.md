@@ -1,15 +1,17 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Configure a collection of file templates available for all projects on GitLab Self-Managed."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Configure a collection of file templates available for all projects on GitLab Self-Managed.
+title: Instance template repository
 ---
 
-# Instance template repository
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 In hosted systems, enterprises often have a need to share their own templates
 across teams. This feature allows an administrator to pick a project to be the
@@ -33,7 +35,7 @@ They are available in the [Web Editor](../../user/project/repository/web_editor.
 and through the [API settings](../../api/settings.md).
 
 These templates cannot be used as a value of the
-[`include:template`](../../ci/yaml/index.md#includetemplate) key in `.gitlab-ci.yml`.
+[`include:template`](../../ci/yaml/_index.md#includetemplate) key in `.gitlab-ci.yml`.
 
 ## Supported file types and locations
 

@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Upgrade
 ---
 
-# Upgrade
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 In most cases, upgrading GitLab is as easy as downloading the newest Docker
 image tag.
@@ -103,9 +105,12 @@ The following steps assume that you are converting to the same version.
 The restore overwrites all newer GitLab database content with the older state.
 A downgrade is only recommended where necessary. For example, if post-upgrade tests reveal problems that cannot be resolved quickly.
 
-WARNING:
+{{< alert type="warning" >}}
+
 You must have at least a database backup created with the exact same version and edition you are downgrading to.
 The backup is required to revert the schema changes (migrations) made during the upgrade.
+
+{{< /alert >}}
 
 To downgrade GitLab shortly after an upgrade:
 

@@ -19,4 +19,12 @@ RSpec.shared_examples 'projects squash option' do
       it { is_expected.to eq(human_squash_option) }
     end
   end
+
+  describe '#branch_rule' do
+    let(:described_instance) { described_class.new }
+
+    it 'returns a branch rule' do
+      expect(described_instance.branch_rule).to be_kind_of(Projects::BranchRule)
+    end
+  end
 end

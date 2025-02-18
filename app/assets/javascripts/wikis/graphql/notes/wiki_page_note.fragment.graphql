@@ -10,6 +10,15 @@ fragment WikiPageNote on Note {
   createdAt
   lastEditedAt
   url
+  awardEmoji {
+    nodes {
+      name
+      user {
+        id
+        name
+      }
+    }
+  }
   userPermissions {
     adminNote
     awardEmoji

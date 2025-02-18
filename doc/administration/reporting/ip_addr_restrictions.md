@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: IP address restrictions
 ---
 
-# IP address restrictions
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 IP address restrictions help prevent malicious users hiding their activities behind multiple IP addresses.
 
@@ -17,9 +19,12 @@ specified limit is reached, any requests made by the user from a new IP address 
 
 IP addresses are cleared from the list when no further requests have been made by the user from the IP address in the specified time period.
 
-NOTE:
+{{< alert type="note" >}}
+
 When a runner runs a CI/CD job as a particular user, the runner IP address is also stored against the user's list of
 unique IP addresses. Therefore, the IP addresses per user limit should take into account the number of configured active runners.
+
+{{< /alert >}}
 
 ## Configure IP address restrictions
 

@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Anti abuse settings",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "enforce_email_subaddress_restrictions": {
+      "type": "boolean",
+      "description": "Prevents registration and auto-bans users with email subaddresses matching banned users (e.g. if user+spam@example.com is banned, user+new@example.com is affected)."
+    }
+  }
+}

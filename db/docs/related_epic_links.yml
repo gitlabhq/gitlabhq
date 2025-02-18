@@ -8,14 +8,6 @@ description: Information on the relationship between two epics
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80499
 milestone: '14.9'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  group_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: source_id
-        table: epics
-        sharding_key: group_id
-        belongs_to: source
-desired_sharding_key_migration_job_name: BackfillRelatedEpicLinksGroupId
 table_size: small
+sharding_key:
+  group_id: namespaces

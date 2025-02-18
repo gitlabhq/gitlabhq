@@ -2,11 +2,10 @@
 stage: Monitor
 group: Platform Insights
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Logging development guidelines
 ---
 
-# Logging development guidelines
-
-[GitLab Logs](../administration/logs/index.md) play a critical role for both
+[GitLab Logs](../administration/logs/_index.md) play a critical role for both
 administrators and GitLab team members to diagnose problems in the field.
 
 ## Don't use `Rails.logger`
@@ -65,7 +64,7 @@ Suppose you want to log the events that happen in a project
 importer. You want to log issues created, merge requests, and so on, as the
 importer progresses. Here's what to do:
 
-1. Look at [the list of GitLab Logs](../administration/logs/index.md) to see
+1. Look at [the list of GitLab Logs](../administration/logs/_index.md) to see
    if your log message might belong with one of the existing log files.
 1. If there isn't a good place, consider creating a new filename, but
    check with a maintainer if it makes sense to do so. A log file should
@@ -332,7 +331,7 @@ When adding new attributes, make sure they're exposed within the context of the 
 - Pass them within the hash to the `with_context` (or `push`) method (make sure to pass a Proc if the
   method or variable shouldn't be evaluated right away)
 - Change `Gitlab::ApplicationContext` to accept these new values
-- Make sure the new attributes are accepted at [`Labkit::Context`](https://gitlab.com/gitlab-org/labkit-ruby/blob/master/lib/labkit/context.rb)
+- Make sure the new attributes are accepted at [`Labkit::Context`](https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/blob/master/lib/labkit/context.rb)
 
 See our <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [HOWTO: Use Sidekiq metadata logs](https://www.youtube.com/watch?v=_wDllvO_IY0) for further knowledge on
 creating visualizations in Kibana.
@@ -428,7 +427,7 @@ end
 
 ## Default logging locations
 
-For self-managed users and GitLab.com, GitLab is deployed in two ways:
+For GitLab Self-Managed and GitLab.com, GitLab is deployed in two ways:
 
 - [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab)
 - [Cloud Native GitLab](https://gitlab.com/gitlab-org/build/CNG) via a [Helm Chart](https://gitlab.com/gitlab-org/charts/gitlab)
@@ -534,7 +533,7 @@ viewed via `kubectl logs`.
    project. See
    [this example](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd/-/merge_requests/51/diffs).
 
-1. Be sure to update the [GitLab CE/EE documentation](../administration/logs/index.md) and the
+1. Be sure to update the [GitLab CE/EE documentation](../administration/logs/_index.md) and the
    [GitLab.com runbooks](https://gitlab.com/gitlab-com/runbooks/blob/master/docs/logging/README.md).
 
 ## Finding new log files in Kibana (GitLab.com only)

@@ -3,13 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe ContainerRegistry::Protection::CreateTagRuleService, '#execute', feature_category: :container_registry do
+  include ContainerRegistryHelpers
+
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:current_user) { create(:user, maintainer_of: project) }
 
-  let(:service) { described_class.new(project, current_user, params) }
+  let(:service) { described_class.new(project: project, current_user: current_user, params: params) }
   let(:params) { attributes_for(:container_registry_protection_tag_rule, project: project) }
 
   subject(:service_execute) { service.execute }
+
+  before do
+    stub_gitlab_api_client_to_support_gitlab_api(supported: true)
+  end
 
   shared_examples 'a successful service response' do
     it_behaves_like 'returning a success service response' do
@@ -75,8 +81,8 @@ RSpec.describe ContainerRegistry::Protection::CreateTagRuleService, '#execute', 
     where(:params_invalid, :message_expected) do
       { tag_name_pattern: '' }      | ["Tag name pattern can't be blank"]
       { tag_name_pattern: '*' }     | ["Tag name pattern not valid RE2 syntax: no argument for repetition operator: *"]
-      { minimum_access_level_for_delete: nil }  | ["Minimum access level for delete can't be blank"]
-      { minimum_access_level_for_push: nil }    | ["Minimum access level for push can't be blank"]
+      { minimum_access_level_for_delete: nil }  | ['Access levels should either both be present or both be nil']
+      { minimum_access_level_for_push: nil }    | ['Access levels should either both be present or both be nil']
       { minimum_access_level_for_delete: 1000 } | "'1000' is not a valid minimum_access_level_for_delete"
       { minimum_access_level_for_push: 1000 }   | "'1000' is not a valid minimum_access_level_for_push"
     end
@@ -124,5 +130,28 @@ RSpec.describe ContainerRegistry::Protection::CreateTagRuleService, '#execute', 
 
     it_behaves_like 'an erroneous service response',
       message: 'Unauthorized to create a protection rule for container image tags'
+  end
+
+  context 'when the maximum number of tag rules already exist in the project' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:current_user) { create(:user, maintainer_of: project) }
+
+    before do
+      ContainerRegistry::Protection::TagRule::MAX_TAG_RULES_PER_PROJECT.times do |i|
+        create(:container_registry_protection_tag_rule, project: project, tag_name_pattern: "#{i}*")
+      end
+    end
+
+    it_behaves_like 'an erroneous service response',
+      message: 'Maximum number of protection rules have been reached.'
+  end
+
+  context 'when the GitLab API is not supported' do
+    before do
+      stub_gitlab_api_client_to_support_gitlab_api(supported: false)
+    end
+
+    it_behaves_like 'an erroneous service response',
+      message: 'GitLab container registry API not supported'
   end
 end

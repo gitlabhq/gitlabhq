@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Merging translations from Crowdin
 ---
-
-# Merging translations from Crowdin
 
 Crowdin automatically syncs the `gitlab.pot` file with the Crowdin service, presenting
 newly added externalized strings to the community of translators.
@@ -68,8 +67,11 @@ have been fixed on the default branch.
 
 ## Recreate the GitLab integration in Crowdin
 
-NOTE:
+{{< alert type="note" >}}
+
 These instructions work only for GitLab Team Members.
+
+{{< /alert >}}
 
 If for some reason the GitLab integration in Crowdin doesn't exist, you can
 recreate it with the following steps:

@@ -11,7 +11,6 @@ inherit_from:
     <% Dir.glob('.rubocop_todo/**/*.yml').each do |rubocop_todo_yaml| %>
   - '<%= rubocop_todo_yaml %>'
     <% end %>
-  - '.rubocop_todo.yml'
   <% end %>
   - ./rubocop/rubocop-migrations.yml
   - ./rubocop/rubocop-usage-data.yml
@@ -30,6 +29,7 @@ AllCops:
   # The oldest supported Ruby version.
   TargetRubyVersion: 3.2
   TargetRailsVersion: 7.0
+  DefaultFormatter: <%= ENV['CI'] == '1' ? 'clang' : 'progress' %>
   Exclude:
     - 'gems/**/*'
     - 'qa/gems/**/*'
@@ -462,6 +462,11 @@ Gitlab/DocumentationLinks/HardcodedUrl:
     - scripts/**/*
     - spec/**/*
     - tooling/**/*
+
+Gitlab/DocumentationLinks/Link:
+  Enabled: true
+  Exclude:
+    - '**/*.haml'
 
 GitlabSecurity/PublicSend:
   Enabled: true
@@ -1251,3 +1256,7 @@ Tailwind/StringInterpolation:
   - '{,ee/,jh/}app/helpers/**/*.rb'
   - '{,ee/,jh/}app/components/**/*.{haml,rb}'
   - '{,ee/,jh/}app/views/**/*.haml'
+
+Cop/ActiveRecordDependent:
+  Include:
+    - ee/app/models/**/*.rb

@@ -211,7 +211,7 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
     description: s__('ValueStreamAnalytics|Median time from issue created to issue closed.'),
     groupLink: '-/analytics/value_stream_analytics',
     projectLink: '-/value_stream_analytics',
-    docsLink: helpPagePath('user/group/value_stream_analytics/index', {
+    docsLink: helpPagePath('user/group/value_stream_analytics/_index', {
       anchor: 'lifecycle-metrics',
     }),
     unit: UNITS.DAYS,
@@ -223,7 +223,7 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
     ),
     groupLink: '-/analytics/value_stream_analytics',
     projectLink: '-/value_stream_analytics',
-    docsLink: helpPagePath('user/group/value_stream_analytics/index', {
+    docsLink: helpPagePath('user/group/value_stream_analytics/_index', {
       anchor: 'lifecycle-metrics',
     }),
     unit: UNITS.DAYS,
@@ -234,7 +234,7 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
     description: s__('ValueStreamAnalytics|Number of new issues created.'),
     groupLink: '-/issues_analytics',
     projectLink: '-/analytics/issues_analytics',
-    docsLink: helpPagePath('user/group/issues_analytics/index'),
+    docsLink: helpPagePath('user/group/issues_analytics/_index'),
   },
   [FLOW_METRICS.COMMITS]: {
     label: s__('DORA4Metrics|Commits'),
@@ -257,7 +257,7 @@ export const VALUE_STREAM_METRIC_METADATA = {
     description: s__('ValueStreamAnalytics|Number of issues closed by month.'),
     groupLink: '-/issues_analytics',
     projectLink: '-/analytics/issues_analytics',
-    docsLink: helpPagePath('user/group/issues_analytics/index'),
+    docsLink: helpPagePath('user/group/issues_analytics/_index'),
   },
   [CONTRIBUTOR_METRICS.COUNT]: {
     description: s__(
@@ -302,11 +302,29 @@ export const VALUE_STREAM_METRIC_METADATA = {
   },
   [AI_METRICS.CODE_SUGGESTIONS_USAGE_RATE]: {
     description: s__(
+      'AiImpactAnalytics|Monthly user engagement with GitLab Duo Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors.',
+    ),
+    groupLink: '',
+    projectLink: '',
+    docsLink: helpPagePath('user/project/repository/code_suggestions/_index'),
+  },
+  [AI_METRICS.CODE_SUGGESTIONS_ACCEPTANCE_RATE]: {
+    description: s__(
+      'AiImpactAnalytics|Monthly GitLab Duo Code Suggestions accepted / total Code Suggestions generated.',
+    ),
+    groupLink: '',
+    projectLink: '',
+    docsLink: helpPagePath('user/project/repository/code_suggestions/_index', {
+      anchor: 'use-code-suggestions',
+    }),
+  },
+  [AI_METRICS.DUO_CHAT_USAGE_RATE]: {
+    description: s__(
       'AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors.',
     ),
     groupLink: '',
     projectLink: '',
-    docsLink: helpPagePath('user/project/repository/code_suggestions/index'),
+    docsLink: helpPagePath('user/gitlab_duo_chat/_index'),
   },
 };
 

@@ -104,10 +104,11 @@ RSpec.describe Issuable, feature_category: :team_planning do
         stub_const('Example', Class.new(ActiveRecord::Base))
 
         Example.class_eval do
-          include Issuable # adds :labels and :metrics, among others
+          include Issuable # adds :labels, among others
 
           belongs_to :author
           has_many :assignees
+          has_one :metrics
         end
       end
 

@@ -133,17 +133,6 @@ RSpec.shared_examples 'inactive resource access tokens' do |no_active_tokens_tex
     find("[data-testid='inactive-access-tokens']")
   end
 
-  context 'when feature flag is disabled' do
-    before do
-      stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
-    end
-
-    it 'does not show inactive tokens' do
-      visit resource_settings_access_tokens_path
-      expect(page).to have_no_selector("[data-testid='inactive-access-tokens']")
-    end
-  end
-
   it 'allows revocation of an active token' do
     visit resource_settings_access_tokens_path
     accept_gl_confirm(button_text: 'Revoke') { click_on 'Revoke' }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Repositories
-  class LfsStorageController < Repositories::GitHttpClientController
+  class LfsStorageController < ::Repositories::GitHttpClientController
     include LfsRequest
     include WorkhorseRequest
     include SendFileUpload
@@ -45,7 +45,8 @@ module Repositories
         oid: oid,
         size: size,
         uploaded_file: uploaded_file,
-        project: project
+        project: project,
+        repository_type: repo_type.name
       )
 
       response = service.execute

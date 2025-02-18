@@ -1,0 +1,21 @@
+---
+description: User selects a reviewer from the merge request reviewers sidebar after they have entered a search query and the list has updated
+internal_events: true
+action: user_selects_reviewer_from_mr_sidebar_after_search
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  value:
+    description: List position of the selected user
+  selectable_reviewers_count:
+    description: The total number of selectable reviewers in the list this reviewer was selected from
+product_group: code_review
+product_categories:
+- code_review_workflow
+milestone: '17.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180307
+tiers:
+- premium
+- ultimate

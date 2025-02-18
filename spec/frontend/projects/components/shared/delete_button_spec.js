@@ -10,6 +10,7 @@ describe('DeleteButton', () => {
 
   const findForm = () => wrapper.findComponent(GlForm);
   const findModal = () => wrapper.findComponent(DeleteModal);
+  const findDeleteButton = () => wrapper.findComponent(GlButton);
 
   const defaultPropsData = {
     confirmPhrase: 'foo',
@@ -19,6 +20,7 @@ describe('DeleteButton', () => {
     mergeRequestsCount: 2,
     forksCount: 3,
     starsCount: 4,
+    nameWithNamespace: 'Foo / Bar',
   };
 
   const createComponent = (propsData) => {
@@ -55,10 +57,21 @@ describe('DeleteButton', () => {
     );
   });
 
+  it('renders the button', () => {
+    createComponent();
+    expect(wrapper.findComponent(GlButton).exists()).toBe(true);
+    expect(wrapper.findComponent(GlButton).props('disabled')).toBe(false);
+  });
+
+  it('disables the button when the disabled prop is true', () => {
+    createComponent({ disabled: true });
+    expect(wrapper.findComponent(GlButton).props('disabled')).toBe(true);
+  });
+
   describe('when button is clicked', () => {
     beforeEach(() => {
       createComponent();
-      wrapper.findComponent(GlButton).vm.$emit('click');
+      findDeleteButton().vm.$emit('click');
     });
 
     it('opens modal', () => {
@@ -84,5 +97,21 @@ describe('DeleteButton', () => {
     createComponent();
 
     expect(wrapper.findByTestId('modal-footer-slot').exists()).toBe(true);
+  });
+
+  it('renders default text', () => {
+    createComponent();
+
+    const button = findDeleteButton();
+
+    expect(button.text()).toBe('Delete project');
+  });
+
+  it('renders custom text', () => {
+    createComponent({ buttonText: 'Delete project immediately' });
+
+    const button = findDeleteButton();
+
+    expect(button.text()).toBe('Delete project immediately');
   });
 });

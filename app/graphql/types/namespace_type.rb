@@ -7,6 +7,7 @@ module Types
     authorize :read_namespace
 
     implements Types::TodoableInterface
+    expose_permissions Types::PermissionTypes::Namespaces::Base
 
     field :id, GraphQL::Types::ID, null: false,
       description: 'ID of the namespace.'
@@ -54,6 +55,13 @@ module Types
       Types::Namespace::PackageSettingsType,
       null: true,
       description: 'Package settings for the namespace.'
+
+    field :ci_cd_settings,
+      Types::Ci::NamespaceSettingsType,
+      null: true,
+      experiment: { milestone: '17.9' },
+      description: 'Namespace CI/CD settings for the namespace.',
+      method: :namespace_settings
 
     field :shared_runners_setting,
       Types::Namespace::SharedRunnersSettingEnum,

@@ -24,7 +24,7 @@ export default {
       if (this.isResolved) {
         return sprintf(
           n__(
-            'All %{resolvableDiscussionsCount} thread resolved',
+            'The only thread is resolved',
             'All %{resolvableDiscussionsCount} threads resolved',
             this.mergeRequest.resolvableDiscussionsCount,
           ),

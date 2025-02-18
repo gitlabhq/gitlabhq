@@ -25,11 +25,29 @@ RSpec.describe API::UsageDataQueries, :aggregate_failures, feature_category: :se
         let(:path) { endpoint }
       end
 
-      it 'returns queries if user is admin' do
-        get api(endpoint, admin, admin_mode: true)
+      context "when user is admin" do
+        context "with an available NonSqlServicePing entry" do
+          it 'returns non sql metrics' do
+            query = 'SELECT COUNT("users"."id") FROM "users" WHERE active = 1'
+            create :queries_service_ping, payload: { active_user_count: query }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['active_user_count']).to start_with('SELECT COUNT("users"."id") FROM "users"')
+            get api(endpoint, admin, admin_mode: true)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['active_user_count']).to start_with('SELECT COUNT("users"."id") FROM "users"')
+          end
+        end
+
+        context "with no recent NonSqlServicePing entry" do
+          it 'returns default response' do
+            create :queries_service_ping, payload: { counts: { abc: 12 } }, created_at: 2.weeks.ago
+
+            get api(endpoint, admin, admin_mode: true)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to eq({})
+          end
+        end
       end
 
       it 'returns forbidden if user is not admin' do
@@ -71,6 +89,7 @@ RSpec.describe API::UsageDataQueries, :aggregate_failures, feature_category: :se
 
     context 'when querying sql metrics', type: :task do
       let(:file) { Rails.root.join('tmp', 'test', 'sql_metrics_queries.json') }
+      let(:time) { Time.utc(2021, 1, 1) }
 
       before do
         Rake.application.rake_require 'tasks/gitlab/usage_data'
@@ -83,11 +102,13 @@ RSpec.describe API::UsageDataQueries, :aggregate_failures, feature_category: :se
       end
 
       it 'matches the generated query' do
-        travel_to(Time.utc(2021, 1, 1)) do
+        data = Gitlab::Json.parse(File.read(file))
+
+        create :queries_service_ping, payload: data, created_at: time - 2.days
+
+        travel_to(time) do
           get api(endpoint, admin, admin_mode: true)
         end
-
-        data = Gitlab::Json.parse(File.read(file))
 
         expect(
           json_response['counts_weekly'].except('aggregated_metrics')

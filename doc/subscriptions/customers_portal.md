@@ -1,16 +1,15 @@
 ---
 stage: Fulfillment
 group: Subscription Management
-description: Payment and company details.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Payment and company details.
+title: The Customers Portal
 ---
-
-# The Customers Portal
 
 For some management tasks for your subscription and account, such as purchasing additional seats or storage and viewing invoices, you use the Customers Portal. See the following pages for specific instructions on managing your subscription:
 
-- [GitLab SaaS subscription](gitlab_com/index.md)
-- [Self-managed subscription](self_managed/index.md)
+- [GitLab SaaS subscription](gitlab_com/_index.md)
+- [Self-managed subscription](self_managed/_index.md)
 
 If you made your purchase through an authorized reseller, you must contact them directly to make changes to your subscription.
 For more information, see [Customers that purchased through a reseller](#customers-that-purchased-through-a-reseller).
@@ -19,8 +18,11 @@ For more information, see [Customers that purchased through a reseller](#custome
 
 You can sign in to Customers Portal either with your GitLab.com account or a one-time sign-in link sent to your email (if you have not yet [linked your Customers Portal account to your GitLab.com account](#link-a-gitlabcom-account)).
 
-NOTE:
+{{< alert type="note" >}}
+
 If you registered for Customers Portal with your GitLab.com account, sign in with this account.
+
+{{< /alert >}}
 
 To sign in to Customers Portal using your GitLab.com account:
 
@@ -34,8 +36,11 @@ To sign in to Customers Portal with your email and to receive a one-time sign-in
 1. Provide the **Email** for your Customers Portal profile. You will receive an email with a one-time sign-in link.
 1. In the email you received, select **Sign in**.
 
-NOTE:
+{{< alert type="note" >}}
+
 The one-time sign-in link expires in 24 hours and can only be used once.
+
+{{< /alert >}}
 
 ## Confirm Customers Portal email address
 
@@ -145,7 +150,7 @@ multiple credit cards to your account, so that purchases for different products 
 correct card.
 
 If you would like to use an alternative method to pay,
-[contact our Sales team](https://about.gitlab.com/sales/).
+[contact our Sales team](https://customers.gitlab.com/contact_us).
 
 To change your payment method:
 
@@ -201,7 +206,7 @@ To change the GitLab.com account linked to your Customers Portal profile:
 If you purchased a subscription through an authorized reseller (including GCP and AWS marketplaces), you have access to the Customers Portal to:
 
 - View your subscription.
-- Associate your subscription with the relevant group (GitLab SaaS) or download the license (GitLab self-managed).
+- Associate your subscription with the relevant group (GitLab.com) or download the license (GitLab Self-Managed).
 - Manage contact information.
 
 Other changes and requests must be done through the reseller, including:

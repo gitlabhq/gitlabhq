@@ -57,15 +57,25 @@ RSpec.describe 'PipelineSchedulePlay', feature_category: :continuous_integration
 
     context 'when mutation fails' do
       it do
-        expect(RunPipelineScheduleWorker)
-          .to receive(:perform_async)
-          .with(pipeline_schedule.id, current_user.id).and_return(nil)
+        expect(Ci::PipelineSchedules::PlayService)
+          .to receive_message_chain(:new, :execute)
+          .with(pipeline_schedule)
+          .and_return(nil)
 
         post_graphql_mutation(mutation, current_user: current_user)
 
         expect(mutation_response['pipelineSchedule']).to be_nil
         expect(mutation_response['errors']).to match_array(['Unable to schedule a pipeline to run immediately.'])
       end
+    end
+
+    context 'when PipelineScheduleService raises AccessDeniedError' do
+      before do
+        allow(Ci::PipelineSchedules::PlayService).to receive_message_chain(:new,
+          :execute).and_raise Gitlab::Access::AccessDeniedError
+      end
+
+      it_behaves_like 'a mutation on an unauthorized resource'
     end
   end
 end

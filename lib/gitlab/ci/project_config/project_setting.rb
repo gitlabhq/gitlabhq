@@ -84,5 +84,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::Ci::ProjectConfig::ProjectSetting.prepend_mod

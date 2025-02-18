@@ -114,6 +114,9 @@ end
 
 Settings.omniauth['providers'] ||= []
 
+Settings['oidc_provider'] ||= {}
+Settings.oidc_provider['openid_id_token_expire_in_seconds'] = 120 if Settings.oidc_provider['openid_id_token_expire_in_seconds'].nil?
+
 # Handle backward compatibility with the renamed kerberos_spnego provider
 # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96335#note_1094265436
 Gitlab.ee do
@@ -245,6 +248,7 @@ Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enab
 Settings.gitlab['max_request_duration_seconds'] ||= 57
 Settings.gitlab['display_initial_root_password'] = false if Settings.gitlab['display_initial_root_password'].nil?
 Settings.gitlab['weak_passwords_digest_set'] ||= YAML.safe_load(File.open(Rails.root.join('config', 'weak_password_digests.yml')), permitted_classes: [String]).to_set.freeze
+Settings.gitlab['log_decompressed_response_bytesize'] = ENV["GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE"].to_i > 0 ? ENV["GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE"].to_i : 0
 
 Gitlab.ee do
   Settings.gitlab['mirror_max_delay'] ||= 300
@@ -766,6 +770,9 @@ Gitlab.ee do
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker'] ||= {}
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['cron'] ||= '0 7 * * *'
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['job_class'] = 'AdjournedProjectsDeletionCronWorker'
+  Settings.cron_jobs['banned_user_project_deletion_cron_worker'] ||= {}
+  Settings.cron_jobs['banned_user_project_deletion_cron_worker']['cron'] ||= '0 19 * * *'
+  Settings.cron_jobs['banned_user_project_deletion_cron_worker']['job_class'] = 'AntiAbuse::BannedUserProjectDeletionCronWorker'
   Settings.cron_jobs['geo_verification_cron_worker'] ||= {}
   Settings.cron_jobs['geo_verification_cron_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['geo_verification_cron_worker']['job_class'] ||= 'Geo::VerificationCronWorker'
@@ -814,9 +821,6 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_index_bulk_cron_worker'] ||= {}
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['job_class'] ||= 'ElasticIndexBulkCronWorker'
-  Settings.cron_jobs['elastic_indexing_control_worker'] ||= {}
-  Settings.cron_jobs['elastic_indexing_control_worker']['cron'] ||= '*/1 * * * *'
-  Settings.cron_jobs['elastic_indexing_control_worker']['job_class'] ||= 'ElasticIndexingControlWorker'
   Settings.cron_jobs['elastic_index_embedding_bulk_cron_worker'] ||= {}
   Settings.cron_jobs['elastic_index_embedding_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_embedding_bulk_cron_worker']['job_class'] ||= 'Search::ElasticIndexEmbeddingBulkCronWorker'
@@ -835,9 +839,6 @@ Gitlab.ee do
   Settings.cron_jobs['search_zoekt_scheduling_worker'] ||= {}
   Settings.cron_jobs['search_zoekt_scheduling_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['search_zoekt_scheduling_worker']['job_class'] ||= 'Search::Zoekt::SchedulingWorker'
-  Settings.cron_jobs['search_index_curation_worker'] ||= {}
-  Settings.cron_jobs['search_index_curation_worker']['cron'] ||= '*/1 * * * *'
-  Settings.cron_jobs['search_index_curation_worker']['job_class'] ||= 'Search::IndexCurationWorker'
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker'] ||= {}
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker']['job_class'] ||= 'Search::Elastic::MetricsUpdateCronWorker'
@@ -880,6 +881,9 @@ Gitlab.ee do
   Settings.cron_jobs['security_orchestration_policy_rule_schedule_worker'] ||= {}
   Settings.cron_jobs['security_orchestration_policy_rule_schedule_worker']['cron'] ||= '*/15 * * * *'
   Settings.cron_jobs['security_orchestration_policy_rule_schedule_worker']['job_class'] = 'Security::OrchestrationPolicyRuleScheduleWorker'
+  Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker'] ||= {}
+  Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker']['cron'] ||= '* * * * *'
+  Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker']['job_class'] = 'Security::PipelineExecutionPolicies::ScheduleWorker'
   Settings.cron_jobs['security_scans_purge_worker'] ||= {}
   Settings.cron_jobs['security_scans_purge_worker']['cron'] ||= '0 */4 * * 6,0'
   Settings.cron_jobs['security_scans_purge_worker']['job_class'] = 'Security::Scans::PurgeWorker'
@@ -971,9 +975,18 @@ Gitlab.ee do
   Settings.cron_jobs['ai_conversation_cleanup_cron_worker'] ||= {}
   Settings.cron_jobs['ai_conversation_cleanup_cron_worker']['cron'] ||= '30 2 * * *'
   Settings.cron_jobs['ai_conversation_cleanup_cron_worker']['job_class'] = 'Ai::Conversation::CleanupCronWorker'
+  Settings.cron_jobs['ai_active_context_bulk_process_worker'] ||= {}
+  Settings.cron_jobs['ai_active_context_bulk_process_worker']['cron'] ||= '*/1 * * * *'
+  Settings.cron_jobs['ai_active_context_bulk_process_worker']['job_class'] ||= 'Ai::ActiveContext::BulkProcessWorker'
   Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker'] ||= {}
   Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker']['cron'] ||= '*/11 * * * *'
   Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker']['job_class'] = 'Namespaces::EnableDescendantsCacheCronWorker'
+  Settings.cron_jobs['delete_expired_dependency_exports_worker'] ||= {}
+  Settings.cron_jobs['delete_expired_dependency_exports_worker']['cron'] ||= '0 4 * * *'
+  Settings.cron_jobs['delete_expired_dependency_exports_worker']['job_class'] = 'Sbom::DeleteExpiredExportsWorker'
+  Settings.cron_jobs['analytics_dump_ai_user_metrics_database_write_buffer_cron_worker'] ||= {}
+  Settings.cron_jobs['analytics_dump_ai_user_metrics_database_write_buffer_cron_worker']['cron'] ||= "*/10 * * * *"
+  Settings.cron_jobs['analytics_dump_ai_user_metrics_database_write_buffer_cron_worker']['job_class'] = 'Analytics::DumpAiUserMetricsWriteBufferCronWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
@@ -987,7 +1000,7 @@ Gitlab.ee do
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['job_class'] = 'GitlabSubscriptions::ScheduleRefreshSeatsWorker'
     Settings.cron_jobs['namespaces_schedule_dormant_member_removal_worker'] ||= {}
     Settings.cron_jobs['namespaces_schedule_dormant_member_removal_worker']['cron'] ||= "0 */6 * * *"
-    Settings.cron_jobs['namespaces_schedule_dormant_member_removal_worker']['job_class'] = 'Namespaces::ScheduleDormantMemberRemoval'
+    Settings.cron_jobs['namespaces_schedule_dormant_member_removal_worker']['job_class'] = 'Namespaces::ScheduleDormantMemberRemovalWorker'
     Settings.cron_jobs['gitlab_subscriptions_offline_cloud_license_provision_worker']['status'] = 'disabled'
     Settings.cron_jobs['send_recurring_notifications_worker'] ||= {}
     Settings.cron_jobs['send_recurring_notifications_worker']['cron'] ||= '0 7 * * *'
@@ -1044,22 +1057,19 @@ Settings['workhorse'] ||= {}
 Settings.workhorse['secret_file'] ||= Rails.root.join('.gitlab_workhorse_secret')
 
 #
-# Topology Service
-#
-Settings['topology_service'] ||= {}
-Settings.topology_service['enabled'] ||= false
-Settings.topology_service['address'] ||= 'topology-service.gitlab.example.com:443'
-Settings.topology_service['ca_file'] ||= '/home/git/gitlab/config/topology-service-ca.pem'
-Settings.topology_service['certificate_file'] ||= '/home/git/gitlab/config/topology-service-cert.pem'
-Settings.topology_service['private_key_file'] ||= '/home/git/gitlab/config/topology-service-key.pem'
-
-#
 # Cells
 #
 Settings['cell'] ||= {}
 Settings.cell['id'] ||= nil
-Settings.cell['name'] ||= nil
-Settings.cell['skip_sequence_alteration'] ||= false
+Settings.cell['database'] ||= {}
+Settings.cell.database['skip_sequence_alteration'] ||= false
+# This ternary operation expression to be removed when we merge https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/4382
+Settings.cell['topology_service'] ||= Settings.respond_to?(:topology_service) ? Settings.topology_service || {} : {}
+Settings.cell.topology_service['enabled'] ||= false
+Settings.cell.topology_service['address'] ||= 'topology-service.gitlab.example.com:443'
+Settings.cell.topology_service['ca_file'] ||= '/home/git/gitlab/config/topology-service-ca.pem'
+Settings.cell.topology_service['certificate_file'] ||= '/home/git/gitlab/config/topology-service-cert.pem'
+Settings.cell.topology_service['private_key_file'] ||= '/home/git/gitlab/config/topology-service-key.pem'
 
 #
 # GitLab KAS
@@ -1069,6 +1079,7 @@ Settings.gitlab_kas['enabled'] ||= false
 Settings.gitlab_kas['secret_file'] ||= Rails.root.join('.gitlab_kas_secret')
 Settings.gitlab_kas['external_url'] ||= 'wss://kas.example.com'
 Settings.gitlab_kas['internal_url'] ||= 'grpc://localhost:8153'
+Settings.gitlab_kas['client_timeout_seconds'] ||= 5
 # Settings.gitlab_kas['external_k8s_proxy_url'] ||= 'grpc://localhost:8154' # NOTE: Do not set a default until all distributions have been updated with a correct value
 
 #
@@ -1093,9 +1104,18 @@ end
 Gitlab.ee do
   Settings['duo_workflow'] ||= {}
   executor_version = Rails.root.join('DUO_WORKFLOW_EXECUTOR_VERSION').read.chomp
+  # The os/arch for which duo-workflow-executor binary is build: https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor/-/packages/35054593
+  executor_binary_urls = %w[
+    linux/arm linux/amd64 linux/arm64 linux/386 linux/ppc64le darwin/arm64 darwin/amd64
+    freebsd/arm freebsd/386 freebsd/amd64 windows/amd64 windows/386
+  ].index_with do |os_info|
+    "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/#{os_info.sub('/', '-')}-duo-workflow-executor.tar.gz"
+  end
+
   Settings.duo_workflow.reverse_merge!(
     secure: true,
     executor_binary_url: "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/duo-workflow-executor.tar.gz",
+    executor_binary_urls: executor_binary_urls,
     executor_version: executor_version
   )
 

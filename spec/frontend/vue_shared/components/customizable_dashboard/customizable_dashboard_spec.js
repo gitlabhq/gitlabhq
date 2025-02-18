@@ -210,7 +210,7 @@ describe('CustomizableDashboard', () => {
       expect(findDashboardDescription().findComponent(GlLink).exists()).toBe(false);
     });
 
-    it('does not render the `Beta` badge', () => {
+    it('does not render the `Experiment/Beta` badge', () => {
       expect(findExperimentBadge().exists()).toBe(false);
     });
   });
@@ -274,6 +274,16 @@ describe('CustomizableDashboard', () => {
     });
   });
 
+  describe('when a dashboard is an experiment', () => {
+    beforeEach(() => {
+      createWrapper({}, { loadedDashboard: { ...betaDashboard, status: 'experiment' } });
+    });
+
+    it('renders the `Experiment` badge', () => {
+      expect(findExperimentBadge().props().type).toBe('experiment');
+    });
+  });
+
   describe('when mounted with the $route.editing param', () => {
     beforeEach(() => {
       createWrapper({}, { routeParams: { editing: true } });
@@ -332,14 +342,14 @@ describe('CustomizableDashboard', () => {
     });
 
     it('shows an input element with the title as value', () => {
-      expect(findTitleInput().attributes()).toMatchObject({
+      expect(findTitleInput().props()).toMatchObject({
         value: 'Analytics Overview',
-        required: '',
+        required: true,
       });
     });
 
     it('shows an input element with the description as value', () => {
-      expect(findDescriptionInput().attributes('value')).toBe('This is a dashboard');
+      expect(findDescriptionInput().props('value')).toBe('This is a dashboard');
     });
 
     it('emits an event when title is edited', async () => {

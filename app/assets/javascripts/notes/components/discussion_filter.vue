@@ -193,9 +193,8 @@ export default {
               name="mobile-issue-close"
               data-testid="dropdown-item-checkbox"
               :class="[
-                'gl-dropdown-item-check-icon',
+                'gl-new-dropdown-item-check-icon',
                 { 'gl-invisible': !isSortDropdownItemActive(key) },
-                'gl-text-blue-400',
               ]"
             />
             {{ text }}
@@ -221,9 +220,8 @@ export default {
               name="mobile-issue-close"
               data-testid="dropdown-item-checkbox"
               :class="[
-                'gl-dropdown-item-check-icon',
+                'gl-new-dropdown-item-check-icon',
                 { 'gl-invisible': filter.value !== currentValue },
-                'gl-text-blue-400',
               ]"
             />
             {{ filter.title }}

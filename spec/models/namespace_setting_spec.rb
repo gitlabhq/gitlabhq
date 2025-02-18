@@ -69,75 +69,9 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
       end
     end
 
-    describe 'allow_mfa_for_subgroups' do
-      context 'group is top-level group' do
-        it 'is valid' do
-          namespace_settings.allow_mfa_for_subgroups = false
-
-          expect(namespace_settings).to be_valid
-        end
-      end
-
-      context 'group is a subgroup' do
-        let(:namespace_settings) { subgroup.namespace_settings }
-
-        it 'is valid if true' do
-          namespace_settings.allow_mfa_for_subgroups = true
-
-          expect(namespace_settings).to be_valid
-        end
-
-        it 'is invalid if false' do
-          namespace_settings.allow_mfa_for_subgroups = false
-
-          expect(namespace_settings).to be_invalid
-        end
-
-        it 'is invalid if nil' do
-          namespace_settings.allow_mfa_for_subgroups = nil
-
-          expect(namespace_settings).to be_invalid
-        end
-      end
-    end
-
-    describe 'resource_access_token_creation_allowed' do
-      context 'group is top-level group' do
-        it 'is valid' do
-          namespace_settings.resource_access_token_creation_allowed = false
-
-          expect(namespace_settings).to be_valid
-        end
-      end
-
-      context 'group is a subgroup' do
-        let(:namespace_settings) { subgroup.namespace_settings }
-
-        it 'is invalid when resource access token creation is not enabled' do
-          namespace_settings.resource_access_token_creation_allowed = false
-
-          expect(namespace_settings).to be_invalid
-        end
-
-        it 'is valid when resource access tokens are enabled' do
-          namespace_settings.resource_access_token_creation_allowed = true
-
-          expect(namespace_settings).to be_valid
-        end
-
-        it 'is invalid if nil' do
-          namespace_settings.resource_access_token_creation_allowed = nil
-
-          expect(namespace_settings).to be_invalid
-        end
-      end
-    end
-
     context 'default_branch_protections_defaults validations' do
       let(:charset) { [*'a'..'z'] + [*0..9] }
       let(:value) { Array.new(byte_size) { charset.sample }.join }
-
-      it { expect(described_class).to validate_jsonb_schema(['default_branch_protection_defaults']) }
 
       context 'when json is more than 1kb' do
         let(:byte_size) { 1.1.kilobytes }

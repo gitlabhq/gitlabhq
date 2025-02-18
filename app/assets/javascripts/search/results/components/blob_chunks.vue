@@ -3,6 +3,7 @@ import { GlTooltipDirective, GlIcon, GlLink } from '@gitlab/ui';
 import GlSafeHtmlDirective from '~/vue_shared/directives/safe_html';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
+import { initLineHighlight } from '~/search/results/utils';
 import {
   EVENT_CLICK_BLOB_RESULT_LINE,
   EVENT_CLICK_BLOB_RESULT_BLAME_LINE,
@@ -30,6 +31,10 @@ export default {
       type: Object,
       required: true,
     },
+    language: {
+      type: String,
+      required: true,
+    },
     blameLink: {
       type: String,
       required: false,
@@ -45,14 +50,31 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      lines: this.chunk.lines.map((line) => ({
+        ...line,
+        richText: null,
+      })),
+    };
+  },
   computed: {
     codeTheme() {
       return gon.user_color_scheme || 'white';
     },
   },
+  mounted() {
+    this.chunk.lines.forEach(async (line, index) => {
+      this.lines[index].richText = await this.codeHighlighting(line);
+    });
+  },
   methods: {
-    highlightedRichText(richText) {
-      return richText.replace('<b>', '<b class="hll">');
+    codeHighlighting(line) {
+      return initLineHighlight({
+        line,
+        fileUrl: this.fileUrl,
+        language: this.language.toLowerCase(),
+      });
     },
     trackLineClick(lineNumber) {
       this.trackEvent(EVENT_CLICK_BLOB_RESULT_LINE, {
@@ -78,7 +100,7 @@ export default {
   >
     <div class="blob-content">
       <div
-        v-for="line in chunk.lines"
+        v-for="line in lines"
         :key="line.lineNumber"
         class="line_holder code-search-line gl-flex"
         data-testid="search-blob-line"
@@ -109,9 +131,21 @@ export default {
             </span>
           </div>
         </div>
-        <pre class="code highlight gl-grow" data-testid="search-blob-line-code">
-          <code class="!gl-inline">
-            <span v-safe-html="highlightedRichText(line.richText)" class="line"></span>
+        <pre
+          v-if="line.richText"
+          class="code highlight gl-flex gl-grow"
+          data-testid="search-blob-line-code-highlighted"
+        >
+          <code v-safe-html="line.richText" class="gl-leading-normal">
+          </code>
+        </pre>
+        <pre
+          v-else
+          class="code gl-flex gl-grow"
+          data-testid="search-blob-line-code-non-highlighted"
+        >
+          <code>
+            <span v-safe-html="line.text" class="line"></span>
           </code>
         </pre>
       </div>

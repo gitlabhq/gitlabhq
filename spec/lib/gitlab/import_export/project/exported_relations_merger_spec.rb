@@ -64,8 +64,8 @@ RSpec.describe Gitlab::ImportExport::Project::ExportedRelationsMerger do
           expect(result).to eq(false)
           expect(shared.errors).to match_array(
             [
-              /^undefined method `export_file' for nil:NilClass/,
-              /^undefined method `export_file' for nil:NilClass/
+              /^undefined method `export_file' for nil/,
+              /^undefined method `export_file' for nil/
             ]
           )
         end

@@ -138,13 +138,12 @@ module Packages
         end
 
         def versions_from_database
-          @package.project.packages
-                            .maven
-                            .displayable
-                            .with_name(@package.name)
-                            .has_version
-                            .order_created
-                            .pluck_versions
+          ::Packages::Maven::Package.for_projects(@package.project)
+                                    .displayable
+                                    .with_name(@package.name)
+                                    .has_version
+                                    .order_created
+                                    .pluck_versions
         end
         strong_memoize_attr :versions_from_database
 

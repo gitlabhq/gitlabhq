@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Update multiple database objects
 ---
-
-# Update multiple database objects
 
 You can update multiple database objects with new values for one or more columns.
 One method is to use `Relation#update_all`:

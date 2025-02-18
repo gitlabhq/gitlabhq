@@ -2,9 +2,8 @@
 stage: Tenant Scale
 group: Organizations
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Image scaling guide
 ---
-
-# Image scaling guide
 
 This section contains a brief overview of the GitLab image scaler and how to work with it.
 

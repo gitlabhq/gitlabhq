@@ -1,0 +1,44 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getExperiments(
+  $fullPath: ID!
+  $name: String
+  $orderBy: MlModelsOrderBy
+  $sort: SortDirectionEnum
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+) {
+  project(fullPath: $fullPath) {
+    id
+    mlExperiments(
+      name: $name
+      orderBy: $orderBy
+      sort: $sort
+      after: $after
+      before: $before
+      first: $first
+      last: $last
+    ) {
+      count
+      nodes {
+        id
+        name
+        candidateCount
+        updatedAt
+        path
+        modelId
+        creator {
+          id
+          name
+          webUrl
+          avatarUrl
+        }
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

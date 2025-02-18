@@ -8,6 +8,25 @@ description: Used to track the generation status of export batch files for group
   or projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111708
 milestone: '15.10'
-gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463854
 table_size: small
+gitlab_schema: gitlab_main_cell
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: export_id
+        table: bulk_import_exports
+        sharding_key: project_id
+        belongs_to: export
+  group_id:
+    references: namespaces
+    backfill_via:
+      parent:
+        foreign_key: export_id
+        table: bulk_import_exports
+        sharding_key: group_id
+        belongs_to: export
+desired_sharding_key_migration_job_name:
+- BackfillBulkImportExportBatchesProjectId
+- BackfillBulkImportExportBatchesGroupId

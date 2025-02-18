@@ -3,9 +3,8 @@ stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 description: Learn how to contribute to GitLab Documentation.
+title: Vale documentation tests
 ---
-
-# Vale documentation tests
 
 [Vale](https://vale.sh/) is a grammar, style, and word usage linter for the
 English language. Vale's configuration is stored in the [`.vale.ini`](https://vale.sh/docs/topics/config/) file located
@@ -22,7 +21,7 @@ You can use Vale:
 
 - [On the command line](https://vale.sh/docs/vale-cli/structure/).
 - [In a code editor](#configure-vale-in-your-editor).
-- [In a Git hook](index.md#configure-pre-push-hooks). Vale only reports errors in the Git hook (the same
+- [In a Git hook](_index.md#configure-pre-push-hooks). Vale only reports errors in the Git hook (the same
   configuration as the CI/CD pipelines), and does not report suggestions or warnings.
 
 ## Install Vale
@@ -103,9 +102,9 @@ The result types have these attributes:
 
 | Result type  | Displays in CI/CD job output | Displays in MR diff | Causes CI/CD jobs to fail | Vale rule link |
 |--------------|------------------------------|---------------------|---------------------------|----------------|
-| `error`      | **{check-circle}** Yes       | **{check-circle}** Yes | **{check-circle}** Yes | [Error-level Vale rules](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=master&scope=blobs&search=level%3A+error+file%3A%5Edoc&snippets=false&utf8=✓) |
-| `warning`    | **{dotted-circle}** No       | **{check-circle}** Yes | **{dotted-circle}** No | [Warning-level Vale rules](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=master&scope=blobs&search=level%3A+warning+file%3A%5Edoc&snippets=false&utf8=✓) |
-| `suggestion` | **{dotted-circle}** No       | **{dotted-circle}** No | **{dotted-circle}** No | [Suggestion-level Vale rules](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=master&scope=blobs&search=level%3A+suggestion+file%3A%5Edoc&snippets=false&utf8=✓) |
+| `error`      | {{< icon name="check-circle" >}} Yes       | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | [Error-level Vale rules](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=master&scope=blobs&search=level%3A+error+file%3A%5Edoc&snippets=false&utf8=✓) |
+| `warning`    | {{< icon name="dotted-circle" >}} No       | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | [Warning-level Vale rules](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=master&scope=blobs&search=level%3A+warning+file%3A%5Edoc&snippets=false&utf8=✓) |
+| `suggestion` | {{< icon name="dotted-circle" >}} No       | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | [Suggestion-level Vale rules](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=master&scope=blobs&search=level%3A+suggestion+file%3A%5Edoc&snippets=false&utf8=✓) |
 
 ## When to add a new Vale rule
 
@@ -281,9 +280,7 @@ find . -name '*.md' | sort | xargs vale --minAlertLevel warning --output line > 
 find . -name '*.md' | sort | xargs vale --minAlertLevel error --output line > ../../results.txt
 ```
 
-These results can be used with the
-[`create_issues.js` script](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/scripts/create_issues.js)
-to generate [documentation-related issues for Hackathons](https://handbook.gitlab.com/handbook/product/ux/technical-writing/workflow/#create-issues-for-a-hackathon).
+These results can be used to generate [documentation-related issues for Hackathons](https://handbook.gitlab.com/handbook/product/ux/technical-writing/workflow/#create-issues-for-a-hackathon).
 
 ## Enable custom rules locally
 

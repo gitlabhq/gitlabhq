@@ -51,15 +51,18 @@ export const getUniquePanelId = () => uniqueId('panel-');
  */
 export const getDashboardConfig = (hydratedDashboard) => {
   const { __typename: dashboardTypename, userDefined, slug, ...dashboardRest } = hydratedDashboard;
+
   return {
     ...dashboardRest,
     version: DASHBOARD_SCHEMA_VERSION,
     panels: hydratedDashboard.panels.map((panel) => {
       const { __typename: panelTypename, id, ...panelRest } = panel;
+      const { __typename: visualizationTypename, ...visualizationRest } = panel.visualization;
+
       return {
         ...panelRest,
         queryOverrides: panel.queryOverrides ?? {},
-        visualization: panel.visualization.slug,
+        visualization: visualizationRest,
       };
     }),
   };

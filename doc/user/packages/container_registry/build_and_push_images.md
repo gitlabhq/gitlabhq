@@ -2,13 +2,15 @@
 stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Build and push container images to the container registry
 ---
 
-# Build and push container images to the container registry
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Before you can build and push container images, you must [authenticate](authenticate_with_container_registry.md) with the container registry.
 
@@ -50,7 +52,7 @@ You can configure your `.gitlab-ci.yml` file to build and push container images 
 
 ## Use GitLab CI/CD
 
-You can use [GitLab CI/CD](../../../ci/index.md) to build and push container images to the
+You can use [GitLab CI/CD](../../../ci/_index.md) to build and push container images to the
 Container Registry. You can use CI/CD to test, build, and deploy your project from the container
 image you created.
 
@@ -60,7 +62,7 @@ You can use your own container images for Docker-in-Docker.
 
 1. Set up [Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-docker-in-docker).
 1. Update the `image` and `service` to point to your registry.
-1. Add a service [alias](../../../ci/services/index.md#available-settings-for-services).
+1. Add a service [alias](../../../ci/services/_index.md#available-settings-for-services).
 
 Your `.gitlab-ci.yml` should look similar to this:
 
@@ -89,7 +91,7 @@ You can use your own container images with Dependency Proxy.
 
 1. Set up [Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-docker-in-docker).
 1. Update the `image` and `service` to point to your registry.
-1. Add a service [alias](../../../ci/services/index.md#available-settings-for-services).
+1. Add a service [alias](../../../ci/services/_index.md#available-settings-for-services).
 
 Your `.gitlab-ci.yml` should look similar to this:
 
@@ -128,7 +130,7 @@ build:
     - docker push $CI_REGISTRY/group/project/image:latest
 ```
 
-You can use [CI/CD variables](../../../ci/variables/index.md) in your `.gitlab-ci.yml` file. For example:
+You can use [CI/CD variables](../../../ci/variables/_index.md) in your `.gitlab-ci.yml` file. For example:
 
 ```yaml
 build:
@@ -212,7 +214,10 @@ deploy:
   environment: production
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 This example explicitly calls `docker pull`. If you prefer to implicitly pull the container image using `image:`,
-and use either the [Docker](https://docs.gitlab.com/runner/executors/docker.html) or [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes/index.html) executor,
+and use either the [Docker](https://docs.gitlab.com/runner/executors/docker.html) or [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes/) executor,
 make sure that [`pull_policy`](https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work) is set to `always`.
+
+{{< /alert >}}

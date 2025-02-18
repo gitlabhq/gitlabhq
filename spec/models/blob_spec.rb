@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Blob do
+RSpec.describe Blob, feature_category: :source_code_management do
   include FakeBlobHelpers
 
   using RSpec::Parameterized::TableSyntax
@@ -285,6 +285,14 @@ RSpec.describe Blob do
     end
   end
 
+  describe '#file_hash' do
+    it 'returns the file hash' do
+      blob = fake_blob(path: 'README.md')
+
+      expect(blob.file_hash).to include('b3356305')
+    end
+  end
+
   describe '#simple_viewer' do
     context 'when the blob is empty' do
       it 'returns an empty viewer' do
@@ -367,6 +375,66 @@ RSpec.describe Blob do
         blob = fake_blob(path: 'file.wav', binary: true)
 
         expect(blob.rich_viewer).to be_a(BlobViewer::Audio)
+      end
+    end
+
+    context 'when the blob is a graph' do
+      context 'and PlantUML is enabled' do
+        it 'returns a matching viewer for PlantUML' do
+          blob = fake_blob(path: 'file.puml')
+          stub_application_setting(plantuml_enabled: true)
+
+          expect(blob.rich_viewer).to be_a(BlobViewer::Graph)
+        end
+      end
+
+      context 'and Kroki is enabled' do
+        it 'returns a matching viewer for PlantUML' do
+          blob = fake_blob(path: 'file.puml')
+          stub_application_setting(kroki_enabled: true)
+
+          expect(blob.rich_viewer).to be_a(BlobViewer::Graph)
+        end
+
+        it 'returns a matching viewer for GraphViz' do
+          blob = fake_blob(path: 'file.dot')
+          stub_application_setting(kroki_enabled: true)
+
+          expect(blob.rich_viewer).to be_a(BlobViewer::Graph)
+        end
+
+        it 'returns a matching viewer for Nomnoml' do
+          blob = fake_blob(path: 'file.noml')
+          stub_application_setting(kroki_enabled: true)
+
+          expect(blob.rich_viewer).to be_a(BlobViewer::Graph)
+        end
+      end
+
+      context 'default' do
+        it 'returns viewer for Mermaid' do
+          blob = fake_blob(path: 'file.mermaid')
+
+          expect(blob.rich_viewer).to be_a(BlobViewer::Graph)
+        end
+
+        it 'returns nil for PlantUML' do
+          blob = fake_blob(path: 'file.puml')
+
+          expect(blob.rich_viewer).to be_nil
+        end
+
+        it 'returns nil for GraphViz' do
+          blob = fake_blob(path: 'file.dot')
+
+          expect(blob.rich_viewer).to be_nil
+        end
+
+        it 'returns nil for GraphViz' do
+          blob = fake_blob(path: 'file.noml')
+
+          expect(blob.rich_viewer).to be_nil
+        end
       end
     end
   end

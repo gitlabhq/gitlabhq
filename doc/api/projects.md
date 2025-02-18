@@ -2,15 +2,31 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Projects API
 ---
 
-# Projects API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Manage [projects](../user/project/index.md) by using the REST API.
+{{< /details >}}
+
+The Projects API provides programmatic access to manage GitLab projects and configure their key settings. A project is a central hub for collaboration where you store code, track issues, and organize team activities.
+
+The Projects API contains endpoints that:
+
+- Retrieve project information and metadata
+- Create, edit, and remove projects
+- Control project visibility, access permissions, and security settings
+- Manage project features like issue tracking, merge requests, and CI/CD
+- Archive and unarchive projects
+- Transfer projects between namespaces
+- Manage deployment and container registry settings
+
+This page explains how to use the Projects REST API endpoints to interact with [GitLab projects](../user/project/_index.md).
+
+## Permissions
 
 Users with:
 
@@ -55,7 +71,7 @@ Supported attributes:
 
 | Attribute                | Type              | Required | Description |
 |:-------------------------|:------------------|:---------|:------------|
-| `id`                     | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                     | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `license`                | boolean           | No       | Include project license data. |
 | `statistics`             | boolean           | No       | Include project statistics. Available only to users with at least the Reporter role. |
 | `with_custom_attributes` | boolean           | No       | Include [custom attributes](custom_attributes.md) in response. _(administrators only)_ |
@@ -209,7 +225,7 @@ Example response:
   "marked_for_deletion_on": "2020-04-03",
   "compliance_frameworks": [ "sox" ],
   "warn_about_potentially_unwanted_characters": true,
-  "pre_receive_secret_detection_enabled": false,
+  "secret_push_protection_enabled": false,
   "statistics": {
     "commit_count": 37,
     "storage_size": 1038090,
@@ -306,9 +322,12 @@ target the upstream project by default.
 
 ### Templates for issues and merge requests
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/)
 can also see the `issues_template` and `merge_requests_template` parameters for managing
@@ -329,7 +348,11 @@ List projects.
 
 ### List all projects
 
-> - The `_links.cluster_agents` attribute in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 15.0.
+{{< history >}}
+
+- The `_links.cluster_agents` attribute in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 15.0.
+
+{{< /history >}}
 
 Get a list of all visible projects across GitLab for the authenticated user.
 When accessed without authentication, only public projects with _simple_ fields
@@ -375,7 +398,7 @@ Supported attributes:
 | `with_programming_language`   | string   | No       | Limit by projects which use the given programming language. |
 | `marked_for_deletion_on`      | date     | No       | Filter by date when project was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463939) in GitLab 17.1. Premium and Ultimate only. |
 
-This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination) for selected `order_by` options.
+This endpoint supports [keyset pagination](rest/_index.md#keyset-based-pagination) for selected `order_by` options.
 
 When `simple=true` or the user is unauthenticated this returns something like:
 
@@ -562,7 +585,7 @@ When the user is authenticated and `simple` is not set, this endpoint returns so
     "requirements_enabled": false,
     "requirements_access_level": "enabled",
     "security_and_compliance_enabled": false,
-    "pre_receive_secret_detection_enabled": false,
+    "secret_push_protection_enabled": false,
     "compliance_frameworks": [],
     "warn_about_potentially_unwanted_characters": true,
     "permissions": {
@@ -576,9 +599,12 @@ When the user is authenticated and `simple` is not set, this endpoint returns so
 ]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 `last_activity_at` is updated based on [project activity](../user/project/working_with_projects.md#view-project-activity)
 and [project events](events.md). `updated_at` is updated whenever the project record is changed in the database.
+
+{{< /alert >}}
 
 You can filter by [custom attributes](custom_attributes.md) with:
 
@@ -594,10 +620,10 @@ curl --globoff --request GET "https://gitlab.example.com/api/v4/projects?custom_
 
 #### Pagination limits
 
-You can use [offset-based pagination](rest/index.md#offset-based-pagination) to access
+You can use [offset-based pagination](rest/_index.md#offset-based-pagination) to access
 [up to 50,000 projects](https://gitlab.com/gitlab-org/gitlab/-/issues/34565).
 
-Use [keyset pagination](rest/index.md#keyset-based-pagination) to retrieve projects beyond this limit.
+Use [keyset pagination](rest/_index.md#keyset-based-pagination) to retrieve projects beyond this limit.
 Keyset pagination supports only `order_by=id`. Other sorting options aren't available.
 
 ### List a user's projects
@@ -609,10 +635,13 @@ Prerequisites:
 
 - To view [certain attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/520776fa8e5a11b8275b7c597d75246fcfc74c89/lib/api/entities/project.rb#L109-130), you must be an administrator or have the Owner role for the project.
 
-NOTE:
+{{< alert type="note" >}}
+
 Only the projects in the user's (specified in `user_id`) namespace are returned. Projects owned by the user in any group or subgroups are not returned. An empty list is returned if a profile is set to private.
 
-This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination)
+{{< /alert >}}
+
+This endpoint supports [keyset pagination](rest/_index.md#keyset-based-pagination)
 for selected `order_by` options.
 
 ```plaintext
@@ -733,7 +762,7 @@ Example response:
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
-    "pre_receive_secret_detection_enabled": false,
+    "secret_push_protection_enabled": false,
     "issue_branch_template": "gitlab/%{id}-%{title}",
     "marked_for_deletion_at": "2020-04-03", // Deprecated in favor of marked_for_deletion_on. Planned for removal in a future version of the REST API.
     "marked_for_deletion_on": "2020-04-03",
@@ -871,7 +900,7 @@ Example response:
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
-    "pre_receive_secret_detection_enabled": false,
+    "secret_push_protection_enabled": false,
     "issue_branch_template": "gitlab/%{id}-%{title}",
     "statistics": {
       "commit_count": 12,
@@ -1001,7 +1030,7 @@ Example response:
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
-    "pre_receive_secret_detection_enabled": false,
+    "secret_push_protection_enabled": false,
     "issue_branch_template": "gitlab/%{id}-%{title}",
     "statistics": {
       "commit_count": 37,
@@ -1124,7 +1153,7 @@ Example response:
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
-    "pre_receive_secret_detection_enabled": false,
+    "secret_push_protection_enabled": false,
     "issue_branch_template": "gitlab/%{id}-%{title}",
     "statistics": {
       "commit_count": 12,
@@ -1192,7 +1221,7 @@ Supported attributes:
 
 | Attribute    | Type              | Required | Description |
 |:-------------|:------------------|:---------|:------------|
-| `id`         | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`         | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `search`     | string            | No       | Search for specific users. |
 | `skip_users` | integer array     | No       | Filter out users with the specified IDs. |
 
@@ -1231,7 +1260,7 @@ Supported attributes:
 
 | Attribute                 | Type              | Required | Description |
 |:--------------------------|:------------------|:---------|:------------|
-| `id`                      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `search`                  | string            | No       | Search for specific groups. |
 | `shared_min_access_level` | integer           | No       | Limit to shared groups with at least this [role (`access_level`)](members.md#roles). |
 | `shared_visible_only`     | boolean           | No       | Limit to shared groups user has access to. |
@@ -1273,7 +1302,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `search`  | string            | No       | Search for specific groups. |
 
 Example response:
@@ -1307,7 +1336,7 @@ This endpoint is rate-limited to 60 requests per minute per:
 - User for authenticated users.
 - IP address for unauthenticated users.
 
-By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
 ```plaintext
 GET /projects/:id/invited_groups
@@ -1317,7 +1346,7 @@ Supported attributes:
 
 | Attribute                | Type             | Required | Description |
 |:-------------------------|:-----------------|:---------|:------------|
-| `id`                     | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`                     | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `search`                 | string           | no       | Return the list of authorized groups matching the search criteria |
 | `min_access_level`       | integer          | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles) |
 | `relation`               | array of strings | no       | Filter the groups by relation (direct or inherited) |
@@ -1350,7 +1379,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -1375,8 +1404,12 @@ Manage a project, including creation, deletion, and archival.
 
 ### Create a project
 
-> - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
-> - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
+{{< history >}}
+
+- `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+- `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
+
+{{< /history >}}
 
 Creates a new project owned by the authenticated user.
 
@@ -1418,7 +1451,7 @@ Supported general project attributes:
 | `issues_enabled`                                   | boolean | No                             | _(Deprecated)_ Enable issues for this project. Use `issues_access_level` instead. |
 | `jobs_enabled`                                     | boolean | No                             | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |
 | `lfs_enabled`                                      | boolean | No                             | Enable LFS. |
-| `merge_method`                                     | string  | No                             | Set the project's [merge method](../user/project/merge_requests/methods/index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
+| `merge_method`                                     | string  | No                             | Set the project's [merge method](../user/project/merge_requests/methods/_index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
 | `merge_pipelines_enabled`                          | boolean | No                             | Enable or disable merged results pipelines. |
 | `merge_requests_enabled`                           | boolean | No                             | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
 | `merge_trains_enabled`                             | boolean | No                             | Enable or disable merge trains. |
@@ -1443,7 +1476,7 @@ Supported general project attributes:
 | `snippets_enabled`                                 | boolean | No                             | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `squash_option`                                    | string  | No                             | One of `never`, `always`, `default_on`, or `default_off`. |
 | `tag_list`                                         | array   | No                             | The list of tags for a project; put array of tags, that should be finally assigned to a project. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0. Use `topics` instead. |
-| `template_name`                                    | string  | No                             | When used without `use_custom_template`, name of a [built-in project template](../user/project/index.md#create-a-project-from-a-built-in-template). When used with `use_custom_template`, name of a custom project template. |
+| `template_name`                                    | string  | No                             | When used without `use_custom_template`, name of a [built-in project template](../user/project/_index.md#create-a-project-from-a-built-in-template). When used with `use_custom_template`, name of a custom project template. |
 | `template_project_id`                              | integer | No                             | When used with `use_custom_template`, project ID of a custom project template. Using a project ID is preferable to using `template_name` because `template_name` can be ambiguous. Premium and Ultimate only. |
 | `topics`                                           | array   | No                             | The list of topics for a project; put array of topics, that should be finally assigned to a project. |
 | `use_custom_template`                              | boolean | No                             | Use either custom [instance](../administration/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template. Premium and Ultimate only. |
@@ -1457,28 +1490,29 @@ settings with access control options can be one of:
 - `disabled`: Disable the feature.
 - `private`: Enable and set the feature to **Only project members**.
 - `enabled`: Enable and set the feature to **Everyone with access**.
+- `public`: Enable and set the feature to **Everyone**. Only available for `pages_access_level`.
 
 | Attribute                              | Type   | Required | Description |
 |:---------------------------------------|:-------|:---------|:------------|
-| `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/index.md). |
+| `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/_index.md). |
 | `builds_access_level`                  | string | No       | Set visibility of [pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines). |
-| `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/index.md#change-visibility-of-the-container-registry). |
-| `environments_access_level`            | string | No       | Set visibility of [environments](../ci/environments/index.md). |
+| `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/_index.md#change-visibility-of-the-container-registry). |
+| `environments_access_level`            | string | No       | Set visibility of [environments](../ci/environments/_index.md). |
 | `feature_flags_access_level`           | string | No       | Set visibility of [feature flags](../operations/feature_flags.md). |
 | `forking_access_level`                 | string | No       | Set visibility of [forks](../user/project/repository/forking_workflow.md). |
-| `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/index.md). |
-| `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/index.md). |
-| `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/index.md). |
-| `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/index.md). |
-| `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/index.md#access-the-model-registry). |
-| `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/index.md). |
+| `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/_index.md). |
+| `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/_index.md). |
+| `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
+| `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/_index.md). |
+| `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/_index.md#access-the-model-registry). |
+| `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
 | `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
-| `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/index.md). |
-| `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/index.md). |
-| `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/index.md). |
-| `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/index.md). |
+| `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/_index.md). |
+| `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
+| `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
+| `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/_index.md). |
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
-| `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/index.md#enable-or-disable-a-project-wiki). |
+| `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/_index.md#enable-or-disable-a-project-wiki). |
 
 Example request:
 
@@ -1492,8 +1526,12 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 
 ### Create a project for a user
 
-> - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
-> - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
+{{< history >}}
+
+- `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+- `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
+
+{{< /history >}}
 
 Create a project for a user.
 
@@ -1541,7 +1579,7 @@ Supported general project attributes:
 | `jobs_enabled`                                     | boolean | No       | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |
 | `lfs_enabled`                                      | boolean | No       | Enable LFS. |
 | `merge_commit_template`                            | string  | No       | [Template](../user/project/merge_requests/commit_templates.md) used to create merge commit message in merge requests. |
-| `merge_method`                                     | string  | No       | Set the project's [merge method](../user/project/merge_requests/methods/index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
+| `merge_method`                                     | string  | No       | Set the project's [merge method](../user/project/merge_requests/methods/_index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
 | `merge_requests_enabled`                           | boolean | No       | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
 | `mirror_trigger_builds`                            | boolean | No       | Pull mirroring triggers builds. Premium and Ultimate only. |
 | `mirror`                                           | boolean | No       | Enables pull mirroring in a project. Premium and Ultimate only. |
@@ -1566,7 +1604,7 @@ Supported general project attributes:
 | `squash_option`                                    | string  | No       | One of `never`, `always`, `default_on`, or `default_off`. |
 | `suggestion_commit_message`                        | string  | No       | The commit message used to apply merge request [suggestions](../user/project/merge_requests/reviews/suggestions.md). |
 | `tag_list`                                         | array   | No       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0)_ The list of tags for a project; put array of tags, that should be finally assigned to a project. Use `topics` instead. |
-| `template_name`                                    | string  | No       | When used without `use_custom_template`, name of a [built-in project template](../user/project/index.md#create-a-project-from-a-built-in-template). When used with `use_custom_template`, name of a custom project template. |
+| `template_name`                                    | string  | No       | When used without `use_custom_template`, name of a [built-in project template](../user/project/_index.md#create-a-project-from-a-built-in-template). When used with `use_custom_template`, name of a custom project template. |
 | `topics`                                           | array   | No       | The list of topics for the project. |
 | `use_custom_template`                              | boolean | No       | Use either custom [instance](../administration/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template. Premium and Ultimate only. |
 | `visibility`                                       | string  | No       | See [project visibility level](#project-visibility-level). |
@@ -1579,33 +1617,38 @@ settings with access control options can be one of:
 - `disabled`: Disable the feature.
 - `private`: Enable and set the feature to **Only project members**.
 - `enabled`: Enable and set the feature to **Everyone with access**.
+- `public`: Enable and set the feature to **Everyone**. Only available for `pages_access_level`.
 
 | Attribute                              | Type   | Required | Description |
 |:---------------------------------------|:-------|:---------|:------------|
-| `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/index.md). |
+| `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/_index.md). |
 | `builds_access_level`                  | string | No       | Set visibility of [pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines). |
-| `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/index.md#change-visibility-of-the-container-registry). |
-| `environments_access_level`            | string | No       | Set visibility of [environments](../ci/environments/index.md). |
+| `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/_index.md#change-visibility-of-the-container-registry). |
+| `environments_access_level`            | string | No       | Set visibility of [environments](../ci/environments/_index.md). |
 | `feature_flags_access_level`           | string | No       | Set visibility of [feature flags](../operations/feature_flags.md). |
 | `forking_access_level`                 | string | No       | Set visibility of [forks](../user/project/repository/forking_workflow.md). |
-| `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/index.md). |
-| `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/index.md). |
-| `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/index.md). |
-| `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/index.md). |
-| `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/index.md#access-the-model-registry). |
-| `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/index.md). |
+| `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/_index.md). |
+| `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/_index.md). |
+| `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
+| `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/_index.md). |
+| `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/_index.md#access-the-model-registry). |
+| `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
 | `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
-| `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/index.md). |
-| `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/index.md). |
-| `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/index.md). |
-| `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/index.md). |
+| `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/_index.md). |
+| `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
+| `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
+| `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/_index.md). |
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
-| `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/index.md#enable-or-disable-a-project-wiki). |
+| `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/_index.md#enable-or-disable-a-project-wiki). |
 
 ### Edit a project
 
-> - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
-> - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
+{{< history >}}
+
+- `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+- `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
+
+{{< /history >}}
 
 Update an existing project.
 
@@ -1621,7 +1664,7 @@ Supported general project attributes:
 
 | Attribute                                          | Type              | Required | Description |
 |:---------------------------------------------------|:------------------|:---------|:------------|
-| `id`                                               | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                                               | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `allow_merge_on_skipped_pipeline`                  | boolean           | No       | Set whether or not merge requests can be merged with skipped jobs. |
 | `allow_pipeline_trigger_approve_deployment`        | boolean           | No       | Set whether or not a pipeline triggerer is allowed to approve deployments. Premium and Ultimate only. |
 | `only_allow_merge_if_all_status_checks_passed`     | boolean           | No       | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false.<br/><br/>[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. The feature flag was enabled by default in GitLab 15.9. Ultimate only. |
@@ -1639,7 +1682,7 @@ Supported general project attributes:
 | `ci_forward_deployment_enabled`                    | boolean           | No       | Enable or disable [prevent outdated deployment jobs](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_forward_deployment_rollback_allowed`           | boolean           | No       | Enable or disable [allow job retries for rollback deployments](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean           | No       | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.)_ |
-| `ci_separated_caches`                              | boolean           | No       | Set whether or not caches should be [separated](../ci/caching/index.md#cache-key-names) by branch protection status. |
+| `ci_separated_caches`                              | boolean           | No       | Set whether or not caches should be [separated](../ci/caching/_index.md#cache-key-names) by branch protection status. |
 | `ci_restrict_pipeline_cancellation_role`           | string            | No       | Set the [role required to cancel a pipeline or job](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs). One of `developer`, `maintainer`, or `no_one`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429921) in GitLab 16.8. Premium and Ultimate only. |
 | `ci_pipeline_variables_minimum_override_role`      | string            | No       | When `restrict_user_defined_variables` is enabled, you can specify which role can override variables. One of `owner`, `maintainer`, `developer` or `no_one_allowed`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1. |
 | `ci_push_repository_for_job_token_allowed`         | boolean           | No       | Enable or disable the ability to push to the project repository using job token. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) in GitLab 17.2. |
@@ -1658,8 +1701,9 @@ Supported general project attributes:
 | `jobs_enabled`                                     | boolean           | No       | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |
 | `keep_latest_artifact`                             | boolean           | No       | Disable or enable the ability to keep the latest artifact for this project. |
 | `lfs_enabled`                                      | boolean           | No       | Enable LFS. |
+| `max_artifacts_size`                               | integer           | No       | The maximum file size in megabytes for individual job artifacts. |
 | `merge_commit_template`                            | string            | No       | [Template](../user/project/merge_requests/commit_templates.md) used to create merge commit message in merge requests. |
-| `merge_method`                                     | string            | No       | Set the project's [merge method](../user/project/merge_requests/methods/index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
+| `merge_method`                                     | string            | No       | Set the project's [merge method](../user/project/merge_requests/methods/_index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
 | `merge_pipelines_enabled`                          | boolean           | No       | Enable or disable merged results pipelines. |
 | `merge_requests_enabled`                           | boolean           | No       | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
 | `merge_requests_template`                          | string            | No       | Default description for merge requests. Description is parsed with GitLab Flavored Markdown. See [Templates for issues and merge requests](#templates-for-issues-and-merge-requests). Premium and Ultimate only. |
@@ -1699,7 +1743,7 @@ Supported general project attributes:
 | `warn_about_potentially_unwanted_characters`       | boolean           | No       | Enable warnings about usage of potentially unwanted characters in this project. |
 | `wiki_enabled`                                     | boolean           | No       | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
 
-For example, to toggle the setting for [instance runners on a GitLab.com project](../ci/runners/index.md):
+For example, to toggle the setting for [instance runners on a GitLab.com project](../ci/runners/_index.md):
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \
@@ -1713,30 +1757,31 @@ settings with access control options can be one of:
 - `disabled`: Disable the feature.
 - `private`: Enable and set the feature to **Only project members**.
 - `enabled`: Enable and set the feature to **Everyone with access**.
+- `public`: Enable and set the feature to **Everyone**. Only available for `pages_access_level`.
 
 Supported project visibility attributes:
 
 | Attribute                              | Type   | Required | Description |
 |:---------------------------------------|:-------|:---------|:------------|
-| `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/index.md). |
+| `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/_index.md). |
 | `builds_access_level`                  | string | No       | Set visibility of [pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines). |
-| `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/index.md#change-visibility-of-the-container-registry). |
-| `environments_access_level`            | string | No       | Set visibility of [environments](../ci/environments/index.md). |
+| `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/_index.md#change-visibility-of-the-container-registry). |
+| `environments_access_level`            | string | No       | Set visibility of [environments](../ci/environments/_index.md). |
 | `feature_flags_access_level`           | string | No       | Set visibility of [feature flags](../operations/feature_flags.md). |
 | `forking_access_level`                 | string | No       | Set visibility of [forks](../user/project/repository/forking_workflow.md). |
-| `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/index.md). |
-| `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/index.md). |
-| `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/index.md). |
-| `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/index.md). |
-| `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/index.md#access-the-model-registry). |
-| `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/index.md). |
+| `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/_index.md). |
+| `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/_index.md). |
+| `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
+| `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/_index.md). |
+| `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/_index.md#access-the-model-registry). |
+| `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
 | `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
-| `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/index.md). |
-| `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/index.md). |
-| `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/index.md). |
-| `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/index.md). |
+| `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/_index.md). |
+| `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
+| `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
+| `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/_index.md). |
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
-| `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/index.md#enable-or-disable-a-project-wiki). |
+| `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/_index.md#enable-or-disable-a-project-wiki). |
 
 ### Import members
 
@@ -1755,8 +1800,8 @@ Supported attributes:
 
 | Attribute    | Type              | Required | Description |
 |:-------------|:------------------|:---------|:------------|
-| `id`         | integer or string | Yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the target project to receive the members. |
-| `project_id` | integer or string | Yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the source project to import the members from. |
+| `id`         | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the target project to receive the members. |
+| `project_id` | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the source project to import the members from. |
 
 Example request:
 
@@ -1815,7 +1860,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -1926,7 +1971,7 @@ Example response:
   "enforce_auth_checks_on_uploads": true,
   "suggestion_commit_message": null,
   "merge_commit_template": null,
-  "pre_receive_secret_detection_enabled": false,
+  "secret_push_protection_enabled": false,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "_links": {
     "self": "http://example.com/api/v4/projects",
@@ -1959,7 +2004,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -2071,7 +2116,7 @@ Example response:
   "suggestion_commit_message": null,
   "merge_commit_template": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
-  "pre_receive_secret_detection_enabled": false,
+  "secret_push_protection_enabled": false,
   "_links": {
     "self": "http://example.com/api/v4/projects",
     "issues": "http://example.com/api/v4/projects/1/issues",
@@ -2102,9 +2147,12 @@ Delete a project. This endpoint:
   The deletion happens after the number of days specified in the
   [default deletion delay](../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
-WARNING:
+{{< alert type="warning" >}}
+
 The option to delete projects immediately from deletion protection settings in the **Admin** area was
 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.9 and removed in GitLab 16.0.
+
+{{< /alert >}}
 
 ```plaintext
 DELETE /projects/:id
@@ -2114,15 +2162,18 @@ Supported attributes:
 
 | Attribute            | Type              | Required | Description |
 |:---------------------|:------------------|:---------|:------------|
-| `id`                 | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                 | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-a-single-project). Premium and Ultimate only. |
 | `permanently_remove` | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. Premium and Ultimate only. |
 
 ### Restore a project marked for deletion
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Restore a project that is marked for deletion.
 
@@ -2134,7 +2185,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ### Transfer a project to a new namespace
 
@@ -2151,7 +2202,7 @@ Supported attributes:
 
 | Attribute   | Type              | Required | Description |
 |:------------|:------------------|:---------|:------------|
-| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `namespace` | integer or string | Yes      | The ID or path of the namespace to transfer to project to. |
 
 Example request:
@@ -2271,13 +2322,17 @@ Example response:
   "mirror": false,
   "compliance_frameworks": [],
   "warn_about_potentially_unwanted_characters": true,
-  "pre_receive_secret_detection_enabled": false
+  "secret_push_protection_enabled": false
 }
 ```
 
 #### List groups available for project transfer
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371006) in GitLab 15.4
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371006) in GitLab 15.4
+
+{{< /history >}}
 
 Retrieve a list of groups to which the user can transfer a project.
 
@@ -2289,7 +2344,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `search`  | string            | No       | The group names to search for. |
 
 Example request:
@@ -2334,7 +2389,7 @@ Supported attributes:
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `avatar`  | string            | Yes      | The file to be uploaded. |
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 To upload an avatar from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`. The
@@ -2358,7 +2413,11 @@ Example response:
 
 ### Download a project avatar
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144039) in GitLab 16.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144039) in GitLab 16.9.
+
+{{< /history >}}
 
 Download a project avatar. You can access this endpoint without authentication if the project is publicly accessible.
 
@@ -2370,7 +2429,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-paths) of the project. |
+| `id`      | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 
 Example request:
 
@@ -2380,7 +2439,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ### Remove a project avatar
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92604) in GitLab 15.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92604) in GitLab 15.4.
+
+{{< /history >}}
 
 To remove a project avatar, use a blank value for the `avatar` attribute.
 
@@ -2409,7 +2472,7 @@ Supported attributes:
 |:---------------|:------------------|:---------|:------------|
 | `group_access` | integer           | Yes      | The [role (`access_level`)](members.md#roles) to grant the group. |
 | `group_id`     | integer           | Yes      | The ID of the group to share with. |
-| `id`           | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`           | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `expires_at`   | string            | No       | Share expiration date in ISO 8601 format. For example, `2016-09-26`. |
 
 ### Delete a shared project link in a group
@@ -2425,7 +2488,7 @@ Supported attributes:
 | Attribute  | Type              | Required | Description |
 |:-----------|:------------------|:---------|:------------|
 | `group_id` | integer           | Yes      | The ID of the group. |
-| `id`       | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`       | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -2445,17 +2508,24 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `task`    | string            | No       | `prune` to trigger manual prune of unreachable objects or `eager` to trigger eager housekeeping. |
 
 ## Real-time security scan
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com
-**Status:** Experiment
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/479210) in GitLab 17.6. This feature is an [experiment](../policy/development_stages_support.md).
+- Tier: Ultimate
+- Offering: GitLab.com
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/479210) in GitLab 17.6. This feature is an [experiment](../policy/development_stages_support.md).
+
+{{< /history >}}
 
 Returns SAST scan results for a single file in real-time.
 
@@ -2467,7 +2537,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -2521,13 +2591,13 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `wiki`    | boolean           | No       | Whether to download the wiki, rather than project, repository. |
 
 ## Get the path to repository storage
 
 Get the path to repository storage for specified project if Gitaly Cluster is not being used. If Gitaly Cluster is being used, see
-[Praefect-generated replica paths](../administration/gitaly/index.md#praefect-generated-replica-paths).
+[Praefect-generated replica paths](../administration/gitaly/_index.md#praefect-generated-replica-paths).
 
 Available for administrators only.
 
@@ -2539,7 +2609,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ```json
 [
@@ -2554,15 +2624,22 @@ Supported attributes:
 
 ## Secret push protection status
 
-DETAILS:
-**Tier:** Ultimate
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160960) in GitLab 17.3.
+- Tier: Ultimate
 
-If you have at least the Developer role, the following requests could also return the `pre_receive_secret_detection_enabled` value.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160960) in GitLab 17.3.
+
+{{< /history >}}
+
+If you have at least the Developer role, the following requests could also return the `secret_push_protection_enabled` value.
 Note that some of these requests have stricter requirements about roles. Refer to the endpoints above for clarification.
 Use this information to determine whether secret push protection is enabled for a project.
-To modify the `pre_receive_secret_detection_enabled` value, please use the [Project Security Settings API](project_security_settings.md).
+To modify the `secret_push_protection_enabled` value, please use the [Project Security Settings API](project_security_settings.md).
 
 - `GET /projects`
 - `GET /projects/:id`
@@ -2581,7 +2658,7 @@ Example response:
 {
   "id": 1,
   "project_id": 3,
-  "pre_receive_secret_detection_enabled": true,
+  "secret_push_protection_enabled": true,
   ...
 }
 ```

@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Adding Database Indexes
 ---
-
-# Adding Database Indexes
 
 Indexes can be used to speed up database queries, but when should you add a new
 index? Traditionally the answer to this question has been to add an index for
@@ -104,8 +103,11 @@ GitLab enforces a limit of **15 indexes** per table. This limitation:
 - Reduces maintenance overhead
 - Prevents excessive disk space usage
 
-NOTE:
+{{< alert type="note" >}}
+
 If you need to add an index to a table that already has 15 indexes, consider:
+
+{{< /alert >}}
 
 - Removing unused indexes
 - Combining existing indexes
@@ -151,7 +153,7 @@ consider [indexing asynchronously](#create-indexes-asynchronously).
 ### Add an index to support new or updated queries
 
 Always examine the query plans for new or updated queries. First, confirm they do not time-out
-or significantly exceed [the recommended query timings](query_performance.md#query-performance-guidelines)
+or significantly exceed [the recommended query timings](query_performance.md)
 without a dedicated index.
 
 If the queries don't time-out or breach the query timings:
@@ -173,10 +175,13 @@ Use two MRs to create the index in a post-deployment migration and make the appl
 - The second MR makes application code changes. It should merge only after the first MR's
   post-deployment migrations are executed on GitLab.com.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you can use a feature flag, you might be able to use a single MR
 to make the code changes behind the feature flag. Include the post-deployment migration at the same time.
 After the post-deployment migration executes, you can enable the feature flag.
+
+{{< /alert >}}
 
 For GitLab.com, we execute post-deployment migrations throughout a single release through continuous integration:
 
@@ -192,16 +197,16 @@ the post-deployment migrations included in the first MR were executed before mer
 
 #### New or updated queries might be slow on a large GitLab instance
 
-It's not possible to check query performance directly on self-managed instances.
+It's not possible to check query performance directly on GitLab Self-Managed instances.
 PostgreSQL produces an execution plan based on the data distribution, so
 guessing query performance is a hard task.
 
-If you are concerned about the performance of a query on self-managed instances
-and decide that self-managed instances must have an index, follow these recommendations:
+If you are concerned about the performance of a query on GitLab Self-Managed instances
+and decide that GitLab Self-Managed instances must have an index, follow these recommendations:
 
-- For self-managed instances following [zero-downtime](../../update/zero_downtime.md)
+- For GitLab Self-Managed instances following [zero-downtime](../../update/zero_downtime.md)
   upgrades, post-deploy migrations execute when performing an upgrade after the application code deploys.
-- For self-managed instances that do not follow a zero-downtime upgrade,
+- For GitLab Self-Managed instances that do not follow a zero-downtime upgrade,
   the administrator might choose to execute the post-deployment migrations for a release later,
   at the time of their choosing, after the regular migrations execute. The application code deploys when they upgrade.
 
@@ -224,7 +229,7 @@ You have two options depending on [how long it takes to create the index](../mig
 
 PostgreSQL's unique index acts as a constraint. Adding one to an existing table can be tricky.
 
-Unless the table is absolutely guaranteed to be tiny for GitLab.com and self-managed instances,
+Unless the table is absolutely guaranteed to be tiny for GitLab.com and GitLab Self-Managed instances,
 you must use multiple post-deployment migrations over multiple releases to:
 
 - Remove and(or) fix the duplicate records.
@@ -535,9 +540,12 @@ def down
 end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 `prepare_partitioned_async_index` only creates the indexes for partitions asynchronously. It doesn't attach the partition indexes to the partitioned table.
 In the [next step for the partitioned table](#create-the-index-synchronously-for-partitioned-table), `add_concurrent_partitioned_index` will not only add the index synchronously but also attach the partition indexes to the partitioned table.
+
+{{< /alert >}}
 
 ### Verify the MR was deployed and the index exists in production
 

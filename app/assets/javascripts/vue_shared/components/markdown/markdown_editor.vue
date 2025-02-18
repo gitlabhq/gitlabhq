@@ -134,6 +134,11 @@ export default {
       required: false,
       default: false,
     },
+    newCommentTemplatePaths: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     let editingMode;
@@ -373,6 +378,7 @@ export default {
       v-bind="$attrs"
       data-testid="markdown-field"
       :markdown-preview-path="renderMarkdownPath"
+      :new-comment-template-paths="newCommentTemplatePaths"
       :can-attach-file="!disableAttachments"
       :can-suggest="codeSuggestionsConfig.canSuggest"
       :line="codeSuggestionsConfig.line"
@@ -415,6 +421,7 @@ export default {
         ref="contentEditor"
         :render-markdown="renderMarkdown"
         :markdown-docs-path="markdownDocsPath"
+        :new-comment-template-paths="newCommentTemplatePaths"
         :uploads-path="uploadsPath"
         :markdown="markdown"
         :supports-quick-actions="supportsQuickActions"

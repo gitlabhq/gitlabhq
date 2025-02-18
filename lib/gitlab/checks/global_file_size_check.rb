@@ -39,7 +39,7 @@ module Gitlab
               blob_details: oversized_blobs.map { |blob| { "id" => blob.id, "size" => blob.size } }
             )
 
-            raise ::Gitlab::GitAccess::ForbiddenError, oversize_err_msg if enforce_global_file_size_limit?
+            raise ::Gitlab::GitAccess::ForbiddenError, oversize_err_msg
           end
         end
 
@@ -50,10 +50,6 @@ module Gitlab
 
       def file_size_limit
         project.actual_limits.file_size_limit_mb
-      end
-
-      def enforce_global_file_size_limit?
-        Feature.enabled?(:enforce_global_file_size_limit, project)
       end
     end
   end

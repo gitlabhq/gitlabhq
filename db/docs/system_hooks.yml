@@ -1,0 +1,10 @@
+---
+table_name: system_hooks
+classes:
+- NoStiSystemHook
+feature_categories:
+- webhooks
+description: Webhooks data for system hooks. NoStiSystemHook is a temporary model whilst migrating system hooks from web_hooks to system_hooks.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175729
+milestone: '17.9'
+gitlab_schema: gitlab_main_clusterwide

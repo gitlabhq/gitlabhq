@@ -3,11 +3,11 @@
     .file-header-content
       = external_snippet_icon('doc-text')
 
-      %strong.file-title-name
+      %strong.file-title-name.gl-text-strong
         %a.gitlab-embedded-snippets-title{ href: url_for(only_path: false, overwrite_params: nil), target: '_blank', rel: 'noopener noreferrer' }
           = blob.name
 
-      %small
+      %small.gl-text-subtle
         = number_to_human_size(blob.size)
       %a.gitlab-logo-wrapper{ href: url_for(only_path: false, overwrite_params: nil), title: 'View on GitLab', target: '_blank', rel: 'noopener noreferrer' }
         %img.gitlab-logo{ src: image_url('ext_snippet_icons/logo.svg'), alt: "GitLab logo" }

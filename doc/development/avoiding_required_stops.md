@@ -2,13 +2,12 @@
 stage: Systems
 group: Distribution
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Avoiding required stops
 ---
-
-# Avoiding required stops
 
 Required stops are any changes to GitLab [components](architecture.md) or
 dependencies that result in the need to upgrade to and stop at a specific
-`major.minor` version when [upgrading GitLab](../update/index.md).
+`major.minor` version when [upgrading GitLab](../update/_index.md).
 
 While Development maintains a [maintenance policy](../policy/maintenance.md)
 that results in a three-release (3 month) backport window - GitLab maintains a
@@ -55,7 +54,7 @@ contact the [Distribution team product manager](https://handbook.gitlab.com/hand
 is uncertainty about whether we should declare a required stop, the Distribution product
 manager may escalate to GitLab product leadership (VP or Chief Product Officer) to make
 a final determination. This may happen, for example, if a change might require a stop for
-a small subset of very large self-managed installations and there are well-defined workarounds
+a small subset of very large GitLab Self-Managed instances and there are well-defined workarounds
 if customers run into issues.
 
 ## Causes of required stops
@@ -72,10 +71,13 @@ zero-downtime upgrades. However, the **contract** phase will likely introduce
 a required stop when a migration/code change is introduced that requires
 that background migrations have completed before running or loading.
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you're considering adding or removing a migration, or introducing code that
 assumes that migrations have completed in a given release, first review
 the database-related documentation on [required stops](database/required_stops.md).
+
+{{< /alert >}}
 
 #### Examples
 
@@ -198,8 +200,8 @@ it might affect one of the following projects:
 ## Further reading
 
 - [Documentation: Database required stops](database/required_stops.md)
-- [Documentation: Upgrading GitLab](../update/index.md)
-  - [Package (Omnibus) upgrade](../update/package/index.md)
+- [Documentation: Upgrading GitLab](../update/_index.md)
+  - [Package (Omnibus) upgrade](../update/package/_index.md)
   - [Docker upgrade](../install/docker/upgrade.md)
   - [GitLab chart](https://docs.gitlab.com/charts/installation/upgrade.html)
 - [Example of required stop planning issue (17.3)](https://gitlab.com/gitlab-org/gitlab/-/issues/457453)

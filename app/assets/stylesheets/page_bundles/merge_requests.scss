@@ -414,7 +414,8 @@
     @apply gl-mt-5;
   }
 
-  &:empty {
+  &:empty,
+  &:has(.reports-widgets-container:empty) {
     display: none;
   }
 
@@ -575,7 +576,7 @@
     }
 
     .danger {
-      color: var(--red-500, $red-500);
+      @apply gl-text-danger;
     }
 
     .dropdown-menu {
@@ -752,7 +753,8 @@
   }
 }
 
-.container-fluid:not(.container-limited) {
+.container-fluid:not(.container-limited),
+.container-fluid.rd-page-container {
   .detail-page-header,
   .detail-page-description,
   .merge-request-tabs-container {

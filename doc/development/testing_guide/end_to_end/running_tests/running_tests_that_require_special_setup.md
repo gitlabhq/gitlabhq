@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Running tests that require special setup
 ---
-
-# Running tests that require special setup
 
 ## Jenkins tests
 
@@ -380,7 +379,7 @@ These tests spin up a Docker container [(`osixia/openldap`)](https://hub.docker.
 The container uses fixtures [checked into the GitLab-QA repository](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap) to create
 base data such as users and groups including the administrator group. The password for [all users](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap/2_add_users.ldif) including [the `tanuki` user](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap/tanuki.ldif) is `password`.
 
-A GitLab instance is also created in a Docker container based on our [LDAP setup](../../../../administration/auth/ldap/index.md) documentation.
+A GitLab instance is also created in a Docker container based on our [LDAP setup](../../../../administration/auth/ldap/_index.md) documentation.
 
 Tests that are tagged `:ldap_tls` enable TLS on GitLab using the certificate [checked into the GitLab-QA repository](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/tls_certificates/gitlab).
 
@@ -546,7 +545,7 @@ end
 
 You can verify whether GitLab is appropriately redirecting your session to the `canary` or `non-canary` nodes with the `menu.canary?` method.
 
-The above spec is verbose, written specifically this way to ensure the idea behind the implementation is clear. We recommend following the practices detailed within our [Beginner's guide to writing end-to-end tests](../beginners_guide/index.md).
+The above spec is verbose, written specifically this way to ensure the idea behind the implementation is clear. We recommend following the practices detailed within our [Beginner's guide to writing end-to-end tests](../beginners_guide/_index.md).
 
 ## Tests for GitLab as OpenID Connect (OIDC) and OAuth provider
 

@@ -6,7 +6,7 @@ RSpec.describe MergeRequests::CreateApprovalEventWorker, feature_category: :code
   let!(:user) { create(:user) }
   let!(:project) { create(:project) }
   let!(:merge_request) { create(:merge_request, source_project: project) }
-  let(:data) { { current_user_id: user.id, merge_request_id: merge_request.id } }
+  let(:data) { { current_user_id: user.id, merge_request_id: merge_request.id, approved_at: Time.current.iso8601 } }
   let(:approved_event) { MergeRequests::ApprovedEvent.new(data: data) }
 
   it_behaves_like 'subscribes to event' do

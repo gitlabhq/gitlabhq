@@ -11,6 +11,6 @@
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/422783
   body: |  # (required) Don't change this line.
     We moved compliance framework management to the framework and projects reports in the
-    [Compliance Center](https://docs.gitlab.com/ee/user/compliance/compliance_center/).
+    [Compliance Center](https://docs.gitlab.com/user/compliance/compliance_center/).
 
     Therefore, in GitLab 17.0, we are removing the management of compliance frameworks from the **General** settings page of groups and projects.

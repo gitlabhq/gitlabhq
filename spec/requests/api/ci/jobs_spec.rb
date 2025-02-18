@@ -141,6 +141,20 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         expect { perform_request }.not_to exceed_query_limit(control)
       end
 
+      context 'authentication via primary', :skip_before_request do
+        it 'targets the primary' do
+          expect(Gitlab::Database::LoadBalancing::SessionMap)
+            .to receive(:with_sessions).with([::ApplicationRecord, ::Ci::ApplicationRecord]).and_call_original
+
+          expect_next_instance_of(Gitlab::Database::LoadBalancing::ScopedSessions) do |session|
+            expect(session).to receive(:use_primary).and_call_original
+          end
+
+          perform_request
+          expect(response).to be_successful
+        end
+      end
+
       it_behaves_like 'returns common pipeline data' do
         let(:jobx) { running_job }
       end
@@ -254,8 +268,10 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       get api('/job/allowed_agents'), headers: headers, params: params
     end
 
-    before do
-      subject
+    before do |example|
+      unless example.metadata[:skip_before_request]
+        subject
+      end
     end
 
     context 'when token is valid and user is authorized' do
@@ -304,6 +320,20 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       end
 
       it_behaves_like 'valid allowed_agents request'
+
+      context 'authentication via primary', :skip_before_request do
+        it 'targets the primary' do
+          expect(Gitlab::Database::LoadBalancing::SessionMap)
+            .to receive(:with_sessions).with([::ApplicationRecord, ::Ci::ApplicationRecord]).and_call_original
+
+          expect_next_instance_of(Gitlab::Database::LoadBalancing::ScopedSessions) do |session|
+            expect(session).to receive(:use_primary).and_call_original
+          end
+
+          subject
+          expect(response).to be_successful
+        end
+      end
 
       context 'when deployment' do
         let(:job) { create(:ci_build, :artifacts, :with_deployment, environment: 'production', pipeline: pipeline, user: api_user, status: job_status) }

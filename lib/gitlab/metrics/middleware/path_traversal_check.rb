@@ -4,6 +4,10 @@ module Gitlab
   module Metrics
     module Middleware
       class PathTraversalCheck
+        include Gitlab::Metrics::SliConfig
+
+        puma_enabled!
+
         DURATION_APDEX_NAME = :path_traversal_check_request
         DURATION_APDEX_FEATURE_CATEGORY = { feature_category: :not_owned }.freeze
         DURATION_APDEX_SLI_DEFINITION = [

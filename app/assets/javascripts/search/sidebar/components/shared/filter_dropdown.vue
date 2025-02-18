@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlCollapsibleListbox } from '@gitlab/ui';
+import { GlIcon, GlCollapsibleListbox, GlAvatar } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { s__ } from '~/locale';
@@ -11,6 +11,7 @@ export default {
   components: {
     GlIcon,
     GlCollapsibleListbox,
+    GlAvatar,
   },
   props: {
     listData: {
@@ -123,7 +124,7 @@ export default {
 <template>
   <div>
     <gl-collapsible-listbox
-      class="ref-selector gl-w-full"
+      class="ref-selector gl-w-full gl-overflow-hidden"
       block
       searchable
       resetable
@@ -138,6 +139,7 @@ export default {
       :icon="icon"
       :loading="isLoading"
       :reset-button-label="s__('GlobalSearch|Reset')"
+      :is-check-centered="true"
       v-bind="$attrs"
       v-on="$listeners"
       @hidden="onHide"
@@ -146,7 +148,16 @@ export default {
       @reset="$emit('reset')"
     >
       <template #list-item="{ item }">
-        {{ item.text }}
+        <span class="gl-flex gl-items-center">
+          <gl-avatar
+            :size="32"
+            :entity-name="item.value"
+            :src="item.avatar_url"
+            :alt="item.value"
+            class="gl-mr-3"
+          />
+          <span>{{ item.text }}</span>
+        </span>
       </template>
       <template #footer>
         <div

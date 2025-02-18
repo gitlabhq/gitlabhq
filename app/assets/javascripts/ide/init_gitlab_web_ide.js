@@ -18,11 +18,11 @@ const getMRTargetProject = () => {
   return url.searchParams.get('target_project') || '';
 };
 
-const getCrossOriginExtensionHostFlagValue = (extensionsGallerySettings) => {
+const getCrossOriginExtensionHostFlagValue = (extensionMarketplaceSettings) => {
   return (
-    extensionsGallerySettings?.enabled ||
-    extensionsGallerySettings?.reason === 'opt_in_unset' ||
-    extensionsGallerySettings?.reason === 'opt_in_disabled'
+    extensionMarketplaceSettings?.enabled ||
+    extensionMarketplaceSettings?.reason === 'opt_in_unset' ||
+    extensionMarketplaceSettings?.reason === 'opt_in_disabled'
   );
 };
 
@@ -37,7 +37,7 @@ export const initGitlabWebIDE = async (el) => {
     forkInfo: forkInfoJSON,
     editorFont: editorFontJSON,
     codeSuggestionsEnabled,
-    extensionsGallerySettings: extensionsGallerySettingsJSON,
+    extensionMarketplaceSettings: extensionMarketplaceSettingsJSON,
     settingsContextHash,
     signOutPath,
   } = el.dataset;
@@ -47,8 +47,8 @@ export const initGitlabWebIDE = async (el) => {
     ? convertObjectPropsToCamelCase(JSON.parse(editorFontJSON), { deep: true })
     : null;
   const forkInfo = forkInfoJSON ? JSON.parse(forkInfoJSON) : null;
-  const extensionsGallerySettings = extensionsGallerySettingsJSON
-    ? convertObjectPropsToCamelCase(JSON.parse(extensionsGallerySettingsJSON), { deep: true })
+  const extensionMarketplaceSettings = extensionMarketplaceSettingsJSON
+    ? convertObjectPropsToCamelCase(JSON.parse(extensionMarketplaceSettingsJSON), { deep: true })
     : undefined;
 
   const oauthConfig = getOAuthConfig(el.dataset);
@@ -82,12 +82,16 @@ export const initGitlabWebIDE = async (el) => {
         signIn: el.dataset.signInPath,
       },
       featureFlags: {
-        crossOriginExtensionHost: getCrossOriginExtensionHostFlagValue(extensionsGallerySettings),
+        crossOriginExtensionHost: getCrossOriginExtensionHostFlagValue(
+          extensionMarketplaceSettings,
+        ),
         languageServerWebIDE: isLanguageServerEnabled,
       },
       editorFont,
-      extensionsGallerySettings,
-      ...(gon?.features?.webIdeSettingsContextHash && { settingsContextHash }),
+      // TODO: Use extensionMarketplaceSettings when https://gitlab.com/gitlab-org/gitlab-web-ide/-/merge_requests/425
+      // is merged and deployed.
+      extensionsGallerySettings: extensionMarketplaceSettings,
+      settingsContextHash,
       codeSuggestionsEnabled,
       handleContextUpdate: handleUpdateUrl,
       handleTracking,

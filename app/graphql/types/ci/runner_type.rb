@@ -108,11 +108,11 @@ module Types
       end
 
       def admin_url
-        Gitlab::Routing.url_helpers.admin_runner_url(runner) if can_admin_runners?
+        Gitlab::Routing.url_helpers.admin_runner_url(runner) if can_read_all_runners?
       end
 
       def edit_admin_url
-        Gitlab::Routing.url_helpers.edit_admin_runner_url(runner) if can_admin_runners?
+        Gitlab::Routing.url_helpers.edit_admin_runner_url(runner) if can_admin_all_runners?
       end
 
       def ephemeral_register_url
@@ -129,7 +129,7 @@ module Types
       end
 
       def register_admin_url
-        return unless can_admin_runners? && runner.registration_available?
+        return unless can_admin_all_runners? && runner.registration_available?
 
         Gitlab::Routing.url_helpers.register_admin_runner_url(runner)
       end
@@ -163,8 +163,12 @@ module Types
 
       private
 
-      def can_admin_runners?
+      def can_admin_all_runners?
         context[:current_user]&.can_admin_all_resources?
+      end
+
+      def can_read_all_runners?
+        context[:current_user]&.can?(:read_admin_cicd)
       end
     end
   end

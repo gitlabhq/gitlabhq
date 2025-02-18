@@ -292,8 +292,12 @@ module Gitlab
         end
         explanation do |users|
           reviewers = reviewers_to_add(users)
-          _('Assigns %{reviewer_users_sentence} as %{reviewer_text}.') % { reviewer_users_sentence: reviewer_users_sentence(users),
+          if reviewers.blank?
+            _("Failed to assign a reviewer because no user was specified.")
+          else
+            _('Assigns %{reviewer_users_sentence} as %{reviewer_text}.') % { reviewer_users_sentence: reviewer_users_sentence(users),
                                                                            reviewer_text: 'reviewer'.pluralize(reviewers.size) }
+          end
         end
         execution_message do |users = nil|
           reviewers = reviewers_to_add(users)
@@ -333,7 +337,11 @@ module Gitlab
           _('Request a review')
         end
         explanation do |users|
-          _('Requests a review from %{reviewer_users_sentence}.') % { reviewer_users_sentence: reviewer_users_sentence(users) }
+          if users.blank?
+            _("Failed to request a review because no user was specified.")
+          else
+            _('Requests a review from %{reviewer_users_sentence}.') % { reviewer_users_sentence: reviewer_users_sentence(users) }
+          end
         end
         execution_message do |users = nil|
           if users.blank?

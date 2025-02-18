@@ -91,22 +91,25 @@ export default {
         :key="group.id"
         class="shortcut-help-mapping gl-mb-4"
       >
-        <strong class="shortcut-help-mapping-title gl-inline-block gl-w-1/2">
-          {{ group.name }}
-        </strong>
-        <div
-          v-for="keybinding in group.keybindings"
-          :key="keybinding.id"
-          class="gl-flex gl-items-center"
+        <h3
+          class="shortcut-help-mapping-title gl-heading-5 gl-mb-0 gl-mt-4 gl-inline-block gl-w-1/2"
         >
-          <shortcut
-            class="gl-w-2/5 gl-shrink-0 gl-pr-4 gl-text-right"
-            :shortcuts="keybinding.defaultKeys"
-          />
-          <div class="gl-w-1/2 gl-shrink-0 gl-grow">
-            {{ keybinding.description }}
+          {{ group.name }}
+        </h3>
+        <dl class="gl-m-0">
+          <div
+            v-for="keybinding in group.keybindings"
+            :key="keybinding.id"
+            class="gl-flex gl-items-center"
+          >
+            <dt class="gl-w-2/5 gl-shrink-0 gl-pr-4 gl-text-right gl-font-normal">
+              <shortcut :shortcuts="keybinding.defaultKeys" />
+            </dt>
+            <dd class="gl-m-0 gl-w-1/2 gl-shrink-0 gl-grow">
+              {{ keybinding.description }}
+            </dd>
           </div>
-        </div>
+        </dl>
       </section>
     </div>
   </gl-modal>

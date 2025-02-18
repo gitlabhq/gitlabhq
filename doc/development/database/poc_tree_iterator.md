@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Batch iteration in a tree hierarchy (proof of concept)
 ---
-
-# Batch iteration in a tree hierarchy (proof of concept)
 
 The group hierarchy in GitLab is represented with a tree, where the root element
 is the top-level namespace, and the child elements are the subgroups or the
@@ -189,11 +188,14 @@ FROM result
         114 | {}           | {24,25,26,112,113,114} | jump
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Using this query to find all the namespace IDs in a group hierarchy is likely slower
 than other querying methods, such as the current `self_and_descendants` implementation
 based on the `traversal_ids` column. The query above should be only used when
 implementing batch iteration over the group hierarchy.
+
+{{< /alert >}}
 
 Rudimentary batching implementation in Ruby:
 

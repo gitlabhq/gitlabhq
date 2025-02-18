@@ -12,9 +12,6 @@ data_category: optional
 events:
   - name: request_api_proxy_access_via_pat
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

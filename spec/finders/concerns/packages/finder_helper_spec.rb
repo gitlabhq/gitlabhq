@@ -14,6 +14,10 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
       def respond_to_missing?
         true
       end
+
+      def packages_class
+        ::Packages::Generic::Package
+      end
     end
   end
 
@@ -21,10 +25,10 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
 
   describe '#packages_for_project' do
     let_it_be_with_reload(:project1) { create(:project) }
-    let_it_be(:package1) { create(:package, project: project1) }
-    let_it_be(:package2) { create(:package, :error, project: project1) }
+    let_it_be(:package1) { create(:generic_package, project: project1) }
+    let_it_be(:package2) { create(:generic_package, :error, project: project1) }
     let_it_be(:project2) { create(:project) }
-    let_it_be(:package3) { create(:package, project: project2) }
+    let_it_be(:package3) { create(:generic_package, project: project2) }
 
     subject { finder.packages_for_project(project1) }
 
@@ -38,9 +42,9 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
     let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
     let_it_be(:project) { create(:project, namespace: group) }
     let_it_be(:project2) { create(:project, namespace: subgroup) }
-    let_it_be(:package1) { create(:package, project: project) }
-    let_it_be(:package2) { create(:package, project: project2) }
-    let_it_be(:package3) { create(:package, :error, project: project2) }
+    let_it_be(:package1) { create(:generic_package, project: project) }
+    let_it_be(:package2) { create(:generic_package, project: project2) }
+    let_it_be(:package3) { create(:generic_package, :error, project: project2) }
 
     subject { finder.packages_for(user, within_group: group) }
 
@@ -129,11 +133,11 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
 
     let_it_be_with_reload(:group) { create(:group) }
     let_it_be_with_reload(:project1) { create(:project, namespace: group) }
-    let_it_be(:package1) { create(:package, project: project1) }
+    let_it_be(:package1) { create(:generic_package, project: project1) }
     let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
     let_it_be_with_reload(:project2) { create(:project, namespace: subgroup) }
-    let_it_be(:package2) { create(:package, project: project2) }
-    let_it_be(:package3) { create(:package, :error, project: project2) }
+    let_it_be(:package2) { create(:generic_package, project: project2) }
+    let_it_be(:package3) { create(:generic_package, :error, project: project2) }
 
     shared_examples 'returning both packages' do
       it { is_expected.to contain_exactly(package1, package2) }
@@ -164,15 +168,15 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
           'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :anonymous  | 'returning both packages'
           'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :maintainer | 'returning both packages'
           'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :developer  | 'returning both packages'
-          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :guest      | 'returning package1'
+          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :guest      | 'returning both packages'
           'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :anonymous  | 'returning package1'
           'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :maintainer | 'returning both packages'
           'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :developer  | 'returning both packages'
-          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning package1'
+          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning both packages'
           'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :anonymous  | 'returning package1'
           'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :maintainer | 'returning both packages'
           'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :developer  | 'returning both packages'
-          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning no packages'
+          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning both packages'
           'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :anonymous  | 'returning no packages'
         end
 
@@ -209,6 +213,33 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
             end
 
             it_behaves_like 'returning package1'
+          end
+        end
+
+        context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+          before_all do
+            group.add_guest(user)
+            subgroup.add_guest(user)
+            project1.add_guest(user)
+            project2.add_guest(user)
+          end
+
+          before do
+            stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+            project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project2_visibility, false))
+            subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get(subgroup_visibility, false))
+            project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
+            group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
+          end
+
+          where(:group_visibility, :subgroup_visibility, :project2_visibility, :shared_example_name) do
+            'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | 'returning package1'
+            'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | 'returning package1'
+            'PRIVATE' | 'PRIVATE' | 'PRIVATE' | 'returning no packages'
+          end
+
+          with_them do
+            it_behaves_like params[:shared_example_name]
           end
         end
       end
@@ -292,6 +323,20 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
       it { is_expected.to be_empty }
     end
 
+    shared_examples 'handles a group deploy token' do
+      let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true) }
+      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+
+      before do
+        project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get('PRIVATE', false))
+        subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get('PRIVATE', false))
+        project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get('PRIVATE', false))
+        group.update!(visibility_level: Gitlab::VisibilityLevel.const_get('PRIVATE', false))
+      end
+
+      it_behaves_like 'returning both projects'
+    end
+
     describe '#projects_visible_to_user' do
       subject { finder.projects_visible_to_user(user, within_group: group) }
 
@@ -303,15 +348,15 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
           'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :anonymous  | 'returning both projects'
           'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :maintainer | 'returning both projects'
           'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :developer  | 'returning both projects'
-          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :guest      | 'returning project1'
+          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :guest      | 'returning both projects'
           'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :anonymous  | 'returning project1'
           'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :maintainer | 'returning both projects'
           'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :developer  | 'returning both projects'
-          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning project1'
+          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning both projects'
           'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :anonymous  | 'returning project1'
           'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :maintainer | 'returning both projects'
           'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :developer  | 'returning both projects'
-          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning no project'
+          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning both projects'
           'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :anonymous  | 'returning no project'
         end
 
@@ -334,28 +379,7 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
         end
       end
 
-      context 'with a group deploy token' do
-        let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true) }
-        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
-
-        where(:group_visibility, :subgroup_visibility, :project2_visibility, :shared_example_name) do
-          'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | 'returning both projects'
-          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | 'returning both projects'
-          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | 'returning both projects'
-          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | 'returning both projects'
-        end
-
-        with_them do
-          before do
-            project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project2_visibility, false))
-            subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get(subgroup_visibility, false))
-            project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
-            group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
-          end
-
-          it_behaves_like params[:shared_example_name]
-        end
-      end
+      it_behaves_like 'handles a group deploy token'
     end
 
     describe '#projects_visible_to_user_including_public_registries' do
@@ -382,6 +406,38 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
 
       with_them do
         it_behaves_like params[:shared_example_name]
+      end
+    end
+
+    describe '#projects_visible_to_reporters' do
+      before_all do
+        project1.add_reporter(user)
+      end
+
+      let(:within_public_package_registry) { false }
+
+      subject do
+        finder.projects_visible_to_reporters(user,
+          within_group: group,
+          within_public_package_registry: within_public_package_registry)
+      end
+
+      it_behaves_like 'handles a group deploy token'
+
+      it_behaves_like 'returning project1'
+
+      context 'when within_public_package_registry set to true' do
+        let_it_be(:project_with_public_package_registry) { create(:project, group: group) }
+
+        let(:within_public_package_registry) { true }
+
+        before do
+          project_with_public_package_registry
+            .project_feature
+            .update_attribute(:package_registry_access_level, ::ProjectFeature::PUBLIC)
+        end
+
+        it { is_expected.to match_array [project1, project_with_public_package_registry] }
       end
     end
   end

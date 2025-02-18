@@ -2,13 +2,15 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Active sessions
 ---
 
-# Active sessions
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab lists all devices that have logged into your account. You can
 review the sessions, and revoke any you don't recognize.
@@ -37,10 +39,13 @@ To revoke an active session:
 1. On the left sidebar, select **Active Sessions**.
 1. Select **Revoke** next to a session. The current session cannot be revoked, as this would sign you out of GitLab.
 
-NOTE:
+{{< alert type="note" >}}
+
 When any session is revoked all **Remember me** tokens for all
 devices are revoked. For details about **Remember me**, see
-[cookies used for sign-in](index.md#cookies-used-for-sign-in).
+[cookies used for sign-in](_index.md#cookies-used-for-sign-in).
+
+{{< /alert >}}
 
 <!-- ## Troubleshooting
 

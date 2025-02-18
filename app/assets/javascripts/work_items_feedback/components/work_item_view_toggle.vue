@@ -4,6 +4,7 @@ import { uniqueId } from 'lodash';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { DOCS_URL_IN_EE_DIR } from '~/lib/utils/url_utility';
 import getUserPreferences from '../graphql/user_preferences.query.graphql';
 import setUseWorkItemsView from '../graphql/set_use_work_items_view.mutation.graphql';
 
@@ -20,7 +21,7 @@ export default {
       currentUser: {
         userPreferences: {},
       },
-      feedbackIssue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463598',
+      feedbackIssue: `${DOCS_URL_IN_EE_DIR}/user/project/issues/issue_work_items.html`,
     };
   },
   apollo: {
@@ -68,9 +69,9 @@ export default {
   badgeId: uniqueId(),
   i18n: {
     previewWorkItems: __(
-      'Preview the new issues experience, with real time updates and refreshed design. Some features are not yet supported, see feedback issue for details.',
+      'Preview the new issues experience, with real time updates and refreshed design.',
     ),
-    leaveFeedback: __('Leave feedback'),
+    leaveFeedback: __('Learn more'),
     newIssueLook: __('New issue look'),
   },
 };

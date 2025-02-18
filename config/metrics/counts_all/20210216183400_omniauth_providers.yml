@@ -7,8 +7,6 @@ value_type: object
 status: active
 time_frame: all
 data_source: system
-distribution:
-- ce
 tiers:
 - free
 - premium

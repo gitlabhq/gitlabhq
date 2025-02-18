@@ -27,7 +27,7 @@ RSpec.describe 'Query.synthetic_note(noteable_id, sha)', feature_category: :team
     it 'returns nil' do
       post_graphql(query, current_user: current_user)
 
-      expect(note_data).to be nil
+      expect(note_data).to be_nil
     end
   end
 
@@ -51,7 +51,7 @@ RSpec.describe 'Query.synthetic_note(noteable_id, sha)', feature_category: :team
       it 'returns nil' do
         post_graphql(query, current_user: current_user)
 
-        expect(note_data).to be nil
+        expect(note_data).to be_nil
       end
     end
   end

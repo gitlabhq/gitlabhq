@@ -18,4 +18,34 @@ RSpec.describe GitlabSchema.types['CiRunner'], feature_category: :runner do
 
     expect(described_class).to include_graphql_fields(*expected_fields)
   end
+
+  describe 'URLs to admin area', :enable_admin_mode do
+    let_it_be(:runner) { create(:ci_runner, :instance) }
+
+    let(:query) do
+      %(
+          query{
+            runners {
+              nodes {
+                adminUrl
+                editAdminUrl
+              }
+            }
+          }
+        )
+    end
+
+    subject(:response) { GitlabSchema.execute(query, context: { current_user: current_user }) }
+
+    context 'when current user is an admin' do
+      let_it_be(:current_user) { create(:admin) }
+
+      it 'is not nil' do
+        runner = response.dig('data', 'runners', 'nodes', 0)
+
+        expect(runner['adminUrl']).not_to be_nil
+        expect(runner['editAdminUrl']).not_to be_nil
+      end
+    end
+  end
 end

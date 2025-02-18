@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Responding to security incidents
 ---
-
-# Responding to security incidents
 
 When a security incident occurs, you should primarily follow the processes defined by your organization. The GitLab Security Operations team created this guide:
 
@@ -14,8 +13,11 @@ When a security incident occurs, you should primarily follow the processes defin
 
 Using this guide, you should feel confident in handling security incidents related to GitLab. Where necessary, the guide links to other parts of GitLab documentation.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Use the suggestions/recommendations mentioned in this guide at your own risk.
+
+{{< /alert >}}
 
 ## Common security incident scenarios
 
@@ -32,8 +34,8 @@ This scenario refers to security events where sensitive authentication or author
 
 This scenario might also include the exposure of sensitive information about third-party credentials through GitLab services. The exposure could occur through, for example, accidental commits to public GitLab projects, or misconfiguration of CI/CD settings. For more information, see:
 
-- [Overview of GitLab tokens](../security/tokens/index.md)
-- [GitLab CI/CD variable security](../ci/variables/index.md#cicd-variable-security)
+- [Overview of GitLab tokens](tokens/_index.md)
+- [GitLab CI/CD variable security](../ci/variables/_index.md#cicd-variable-security)
 
 #### Response
 
@@ -41,7 +43,7 @@ Security incidents related to credentials exposure can vary in severity from low
 
 - Determine the type and scope of the token.
 - Identify the token owner and the relevant team based on the token information.
-  - For personal access tokens, you might be able to use the [personal access token API](../api/personal_access_tokens.md#using-a-request-header) to quickly retrieve token details.
+  - For personal access tokens, you can use the [personal access token API](../api/personal_access_tokens.md#get-details-on-a-personal-access-token) to quickly retrieve token details.
 - [Revoke](../api/personal_access_tokens.md#revoke-a-personal-access-token) or [rotate](../api/group_access_tokens.md#rotate-a-group-access-token) the token after you have assessed its scope and potential impact. Revoking a production token is a balance between the security risk posed by the exposed token, and the availability risk revoking a token might cause. Only revoke the token if you are:
   - Confident in your understanding of the potential impact of token revocation.
   - Following your company's security incident response guidelines.
@@ -67,9 +69,9 @@ Security incidents related to credentials exposure can vary in severity from low
 If you suspect that a user account or bot account has been compromised, you should:
 
 - [Block the user](../administration/moderate_users.md#block-a-user) to mitigate any current risk.
-- Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected [CI/CD variables](../ci/variables/index.md) and [runner registration tokens](../security/tokens/index.md#runner-registration-tokens-deprecated).
-- [Reset user passwords](../security/reset_user_password.md).
-- Get the user to [enable two factor authentication](../user/profile/account/two_factor_authentication.md) (2FA), and consider [enforcing 2FA for an instance or group](../security/two_factor_authentication.md).
+- Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected [CI/CD variables](../ci/variables/_index.md) and [runner registration tokens](tokens/_index.md#runner-registration-tokens-deprecated).
+- [Reset user passwords](reset_user_password.md).
+- Get the user to [enable two factor authentication](../user/profile/account/two_factor_authentication.md) (2FA), and consider [enforcing 2FA for an instance or group](two_factor_authentication.md).
 - After completing an investigation and mitigating impacts, unblock the user.
 
 #### Event types
@@ -109,14 +111,14 @@ Under typical circumstances, the `CI_JOB_TOKEN` is not displayed in the job logs
 
 In such instances, you should:
 
-- Check if there are any recent modifications to the source code in the repository. You can check the commit history of the modified file to determine the actor who made the changes. If you suspect suspicious edits, investigate the user activity using the [suspected compromised user account guide](../security/responding_to_security_incidents.md#suspected-compromised-user-account).
+- Check if there are any recent modifications to the source code in the repository. You can check the commit history of the modified file to determine the actor who made the changes. If you suspect suspicious edits, investigate the user activity using the [suspected compromised user account guide](responding_to_security_incidents.md#suspected-compromised-user-account).
 - Any suspicious modification to any code that is called by that file can cause issues and should be investigated and may lead to exposed secrets.
 - Consider rotating the exposed secrets after determining the production impact of revocation.
 - Review [audit logs](../administration/audit_event_reports.md) available to you for any suspicious modifications to user and project settings.
 
 ##### Secrets exposed through misconfigured GitLab CI/CD
 
-When secrets stored as CI variables are not [masked](../ci/variables/index.md#mask-a-cicd-variable), they might be exposed in the job logs. For example, echoing environment variables or encountering a verbose error message. Depending on the project visibility, the job logs might be accessible within your company or over the Internet if your project is public. To mitigate this type of security incident, you should:
+When secrets stored as CI variables are not [masked](../ci/variables/_index.md#mask-a-cicd-variable), they might be exposed in the job logs. For example, echoing environment variables or encountering a verbose error message. Depending on the project visibility, the job logs might be accessible within your company or over the Internet if your project is public. To mitigate this type of security incident, you should:
 
 - Revoke exposed secrets by following the [exposed secrets guide](#credential-exposure-to-public-internet).
 - Consider masking the variables. This will prevent them from being directly reflected within the job logs. However, masking is not full-proof. For example, a masked variable may still be written to an artifact file or sent to a remote system.
@@ -141,7 +143,7 @@ It is important to [regularly update GitLab](../policy/maintenance.md), update y
 If you suspect that your GitLab instance has been compromised, you should:
 
 - Review the [audit events](../administration/audit_event_reports.md) available to you for suspicious account behavior.
-- Review [all users](../administration/moderate_users.md) (including the Administrative root user), and follow the steps in the [suspected compromised user account guide](../security/responding_to_security_incidents.md#suspected-compromised-user-account) if necessary.
+- Review [all users](../administration/moderate_users.md) (including the Administrative root user), and follow the steps in the [suspected compromised user account guide](responding_to_security_incidents.md#suspected-compromised-user-account) if necessary.
 - Review the Credentials Inventory, if available to you.
 - Change any sensitive credentials, variables, tokens, and secrets. For example, those located in instance configuration, database, CI/CD pipelines, or elsewhere.
 - Update to the latest version of GitLab and adopt a plan to update after every security patch release.
@@ -174,7 +176,7 @@ Security incidents can occur as a result of improperly configured project or gro
 If you suspect unauthorized modifications to project settings, consider taking the following steps:
 
 - Begin by reviewing the available [audit events](../administration/audit_event_reports.md) to identify the user responsible for the action.
-- If the user account appears suspicious, follow the steps outlined in the [suspected compromised user account guide](../security/responding_to_security_incidents.md#suspected-compromised-user-account).
+- If the user account appears suspicious, follow the steps outlined in the [suspected compromised user account guide](responding_to_security_incidents.md#suspected-compromised-user-account).
 - Consider reverting the settings to their original state by referring to the audit events and consulting the project owners and maintainers for guidance.
 
 #### Event types
@@ -188,16 +190,16 @@ Before you ask GitLab for help, search the [GitLab documentation](https://docs.g
 
 ### Security best practices
 
-Review the [GitLab Security documentation](../security/index.md) for what suggestions will work best for your environment and needs. For GitLab Self-Managed, consider reviewing our [diagram of GitLab components](../development/architecture.md#simplified-component-overview) to familiarize yourself with the various parts of a GitLab installation.
+Review the [GitLab Security documentation](_index.md) for what suggestions will work best for your environment and needs. For GitLab Self-Managed, consider reviewing our [diagram of GitLab components](../development/architecture.md#simplified-component-overview) to familiarize yourself with the various parts of a GitLab installation.
 
 #### Hardening Recommendations
 
-For more information about improving the security posture of your GitLab environment, see the [hardening recommendations](../security/hardening.md).
+For more information about improving the security posture of your GitLab environment, see the [hardening recommendations](hardening.md).
 
 You can also consider implementing abuse rate limiting as detailed in [Git abuse rate limit](../user/group/reporting/git_abuse_rate_limit.md). Setting abuse rate limits may be helpful to automatically mitigate certain types of security incidents.
 
 ### Detections
 
-GitLab SIRT maintains an active repository of detections in the [GitLab SIRT public project](https://gitlab.com/gitlab-com/gl-security/security-operations/gitlab-sirt-public/automated-incident-response/-/tree/main/detections).
+GitLab SIRT maintains an active repository of detections in the [GitLab SIRT public project](https://gitlab.com/gitlab-security-oss/guard/-/tree/main/detections).
 
-The detections in this repository are based on the audit events and in the general Sigma rule format. You can use sigma rule converter to get the rules in your desired format. Please refer to the repository for more information about Sigma format and tools related to it . Make sure you have GitLab audit logs ingested to your SIEM. You should follow the [audit event streaming guide](../administration/audit_event_streaming/index.md) to stream audit events to your desired destination.
+The detections in this repository are based on the audit events and in the general Sigma rule format. You can use sigma rule converter to get the rules in your desired format. Please refer to the repository for more information about Sigma format and tools related to it . Make sure you have GitLab audit logs ingested to your SIEM. You should follow the [audit event streaming guide](../administration/audit_event_streaming/_index.md) to stream audit events to your desired destination.

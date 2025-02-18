@@ -2,13 +2,12 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-description: "Writing styles, markup, formatting, and other standards for GraphQL API's GitLab Documentation."
+description: Writing styles, markup, formatting, and other standards for GraphQL API's GitLab Documentation.
+title: Creating a GraphQL example page
 ---
 
-# Creating a GraphQL example page
-
 GraphQL APIs are different from [RESTful APIs](restful_api_styleguide.md). Reference
-information is generated in our [GraphQL API resources](../../api/graphql/reference/index.md) page.
+information is generated in our [GraphQL API resources](../../api/graphql/reference/_index.md) page.
 
 However, it's helpful to include examples for how to use GraphQL for different
 use cases, with samples that readers can use directly in the GraphQL explorer, called
@@ -32,13 +31,15 @@ Add descriptive content and a title at the top of the page, for example:
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: List branch rules for a project by using GraphQL
 ---
 
-# List branch rules for a project by using GraphQL
+{{</* details */>}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{</* /details */>}}
 ```
 
 For help editing this content for your use case, ask a technical writer.
@@ -69,25 +70,25 @@ You can use GraphiQL to list the branch rules for a project.
 
 ## Related topics:
 
-- [GraphQL API reference](reference/index.md)
+- [GraphQL API reference](reference/_index.md)
 ```
 
 ## Add the GraphQL example to the global navigation
 
 Include a link to your new document in the global navigation (the list on the
 left side of the documentation website). To do so, open a second MR, against the
-[GitLab documentation repository](https://gitlab.com/gitlab-org/gitlab-docs/).
+[GitLab documentation repository](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/).
 
 The global navigation is set in the
-[`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/navigation.yaml) file,
-in the `content/_data` subdirectory. You can find the GraphQL section under the
+[`navigation.yaml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/navigation.yaml) file,
+in the `content/data` subdirectory. You can find the GraphQL section under the
 following line:
 
 ```yaml
-- category_title: GraphQL
+- title: GraphQL
 ```
 
 Be aware that CI tests for that second MR will fail with a bad link until the
 main MR that adds the new GraphQL page is merged. Therefore, only merge the MR against the
-[`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) repository after the content has
+[`docs-gitlab-com`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/) repository after the content has
 been merged and live on `docs.gitlab.com`.

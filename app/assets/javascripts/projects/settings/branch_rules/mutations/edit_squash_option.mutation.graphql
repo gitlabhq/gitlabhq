@@ -1,0 +1,9 @@
+mutation updateBranchRuleSquashOption($input: BranchRuleSquashOptionUpdateInput!) {
+  branchRuleSquashOptionUpdate(input: $input) {
+    errors
+    squashOption {
+      option
+      helpText
+    }
+  }
+}

@@ -1,15 +1,17 @@
 ---
-stage: SaaS Platforms
-group: GitLab Dedicated
-description: Data residency, isolation, availability, and scalability.
+stage: GitLab Dedicated
+group: Environment Automation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Data residency, isolation, availability, and scalability.
+title: Data residency and high availability
 ---
 
-# Data residency and high availability
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab Dedicated
+
+{{< /details >}}
 
 GitLab Dedicated offers enterprise-grade infrastructure and performance in a secure and reliable deployment.
 
@@ -58,12 +60,15 @@ You administer the application while GitLab manages the underlying infrastructur
 
 ## Availability and scalability
 
-GitLab Dedicated uses modified versions of the [Cloud Native Hybrid reference architectures](../../administration/reference_architectures/index.md#cloud-native-hybrid) with high availability.
+GitLab Dedicated uses modified versions of the [Cloud Native Hybrid reference architectures](../../administration/reference_architectures/_index.md#cloud-native-hybrid) with high availability.
 
 During [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance), GitLab matches you to the closest reference architecture size based on the number of users.
 
-NOTE:
+{{< alert type="note" >}}
+
 While the reference architectures serve as a foundation for GitLab Dedicated environments, they are not exhaustive. Additional cloud provider services beyond the standard reference architectures are used to enhance security and stability. As a result, GitLab Dedicated costs differ from standard reference architecture costs.
+
+{{< /alert >}}
 
 For more information, see the [Current Service Level Objective](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#current-service-level-objective).
 

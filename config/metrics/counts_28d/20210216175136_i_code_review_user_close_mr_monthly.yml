@@ -13,9 +13,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
   - i_code_review_user_close_mr
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

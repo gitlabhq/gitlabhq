@@ -21,7 +21,7 @@ module Tooling
 
       TEMPLATE_SOURCE_REGEX = %r{\s*template\s+sourced\s+from\s+(https?://\S+)}i
 
-      MAINTENANCE_POLICY_URL = 'https://docs.gitlab.com/ee/policy/maintenance.html'
+      MAINTENANCE_POLICY_URL = 'https://docs.gitlab.com/policy/maintenance/'
 
       MAINTENANCE_POLICY_MESSAGE = <<~MSG
       See the [release and maintenance policy](#{MAINTENANCE_POLICY_URL}) for more information.
@@ -36,7 +36,7 @@ module Tooling
       MSG
 
       VERSION_WARNING_MESSAGE = <<~MSG
-      Backporting to older releases requires an [exception request process](https://docs.gitlab.com/ee/policy/maintenance.html#backporting-to-older-releases)
+      Backporting to older releases requires an [exception request process](https://docs.gitlab.com/policy/maintenance/#backporting-to-older-releases)
       MSG
 
       FAILED_VERSION_REQUEST_MESSAGE = <<~MSG

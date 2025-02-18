@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Sentry monitoring in the frontend development of GitLab
 ---
-
-# Sentry monitoring in the frontend development of GitLab
 
 The GitLab Frontend team uses Sentry as an observability tool to monitor how the UI performs for
 users on `gitlab.com`.
@@ -13,9 +12,12 @@ GitLab.com is configured to report to our Sentry instance at **Admin > Metrics a
 
 We monitor two kinds of data: **Errors** and **Performance**.
 
-NOTE:
+{{< alert type="note" >}}
+
 The [Frontend Observability Working Group](https://handbook.gitlab.com/handbook/company/working-groups/frontend-observability/) is looking to improve how we use Sentry. GitLab team members can provide feedback at
 [issue #427402](https://gitlab.com/gitlab-org/gitlab/-/issues/427402).
+
+{{< /alert >}}
 
 ## Start using Sentry
 
@@ -67,9 +69,12 @@ Once errors are captured, they appear in Sentry. For example you can see the
 
 In the list, select any error to see more details... and ideally propose a solution for it!
 
-NOTE:
+{{< alert type="note" >}}
+
 We suggest filtering errors by the environments `gprd` and `gprd-cny`, as there is some spam in our
 environment data.
+
+{{< /alert >}}
 
 ### Exploring error data
 

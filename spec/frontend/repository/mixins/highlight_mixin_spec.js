@@ -29,9 +29,16 @@ describe('HighlightMixin', () => {
   const contentArray = Array.from({ length: 140 }, () => 'newline'); // simulate 140 lines of code
   const rawTextBlob = contentArray.join('\n');
   const languageMock = 'json';
+  const nameMock = 'test.json';
 
   const createComponent = (
-    { fileType = TEXT_FILE_TYPE, language = languageMock, externalStorageUrl, rawPath } = {},
+    {
+      fileType = TEXT_FILE_TYPE,
+      language = languageMock,
+      name = nameMock,
+      externalStorageUrl,
+      rawPath,
+    } = {},
     isUsingLfs = false,
   ) => {
     const simpleViewer = { fileType };
@@ -49,7 +56,7 @@ describe('HighlightMixin', () => {
         </div>`,
       created() {
         this.initHighlightWorker(
-          { rawTextBlob, simpleViewer, language, fileType, externalStorageUrl, rawPath },
+          { rawTextBlob, simpleViewer, language, name, fileType, externalStorageUrl, rawPath },
           isUsingLfs,
         );
       },
@@ -159,6 +166,18 @@ describe('HighlightMixin', () => {
       expect(mockAxios.history.get).toHaveLength(1);
       expect(mockAxios.history.get[0].url).toBe(rawPath);
       expect(workerMock.postMessage).toHaveBeenCalledWith(mockParams);
+    });
+  });
+
+  describe('Gleam language handling', () => {
+    beforeEach(() => workerMock.postMessage.mockClear());
+
+    it('sets language to gleam for .gleam files regardless of passed language', () => {
+      createComponent({ language: 'plaintext', name: 'test.gleam' });
+
+      expect(workerMock.postMessage.mock.calls[0][0]).toMatchObject({
+        language: 'gleam',
+      });
     });
   });
 });

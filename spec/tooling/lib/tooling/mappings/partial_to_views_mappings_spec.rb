@@ -273,7 +273,7 @@ RSpec.describe Tooling::Mappings::PartialToViewsMappings, feature_category: :too
       end
 
       it 'returns an empty array' do
-        expect(subject).to match_array([])
+        expect(subject).to be_empty
       end
     end
   end

@@ -4,7 +4,7 @@
   breaking_change: true
   reporter: iroussos
   body: |  # Do not modify this line, instead modify the lines below.
-    [Request profiling](https://docs.gitlab.com/ee/administration/monitoring/performance/index.html) is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0.
+    [Request profiling](https://docs.gitlab.com/administration/monitoring/performance/) is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0.
 
     We're working on [consolidating our profiling tools](https://gitlab.com/groups/gitlab-org/-/epics/7327) and making them more easily accessible.
     We [evaluated](https://gitlab.com/gitlab-org/gitlab/-/issues/350152) the use of this feature and we found that it is not widely used.
@@ -14,4 +14,4 @@
   stage: Monitor
   tiers: [Free, Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352488
-  documentation_url: https://docs.gitlab.com/ee/administration/monitoring/performance/index.html
+  documentation_url: https://docs.gitlab.com/ee/administration/monitoring/performance/

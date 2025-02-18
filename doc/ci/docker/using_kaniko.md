@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use kaniko to build Docker images
 ---
 
-# Use kaniko to build Docker images
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 [kaniko](https://github.com/GoogleContainerTools/kaniko) is a tool to build
 container images from a Dockerfile, inside a container or Kubernetes cluster.
@@ -26,7 +28,7 @@ method:
 To use kaniko with GitLab, [a runner](https://docs.gitlab.com/runner/) with one
 of the following executors is required:
 
-- [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes/index.html).
+- [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes/).
 - [Docker](https://docs.gitlab.com/runner/executors/docker.html).
 - [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
@@ -44,11 +46,11 @@ few important details:
 In the following example, kaniko is used to:
 
 1. Build a Docker image.
-1. Then push it to [GitLab container registry](../../user/packages/container_registry/index.md).
+1. Then push it to [GitLab container registry](../../user/packages/container_registry/_index.md).
 
 The job runs only when a tag is pushed. A `config.json` file is created under
 `/kaniko/.docker` with the needed GitLab container registry credentials taken from the
-[predefined CI/CD variables](../variables/index.md#predefined-cicd-variables)
+[predefined CI/CD variables](../variables/_index.md#predefined-cicd-variables)
 GitLab CI/CD provides. These are automatically read by the Kaniko tool.
 
 In the last step, kaniko uses the `Dockerfile` under the
@@ -70,7 +72,7 @@ build:
     - if: $CI_COMMIT_TAG
 ```
 
-If you authenticate against the [Dependency Proxy](../../user/packages/dependency_proxy/index.md#authenticate-within-cicd),
+If you authenticate against the [Dependency Proxy](../../user/packages/dependency_proxy/_index.md#authenticate-within-cicd),
 you must add the corresponding CI/CD variables for authentication to the `config.json` file:
 
 ```yaml
@@ -146,8 +148,8 @@ The [Least Privilege Container Builds with Kaniko on GitLab](https://www.youtube
 video is a walkthrough of the [Kaniko Docker Build](https://gitlab.com/guided-explorations/containers/kaniko-docker-build)
 Guided Exploration project pipeline. It was tested on:
 
-- [GitLab.com instance runners](../runners/index.md)
-- [The Kubernetes runner executor](https://docs.gitlab.com/runner/executors/kubernetes/index.html)
+- [GitLab.com instance runners](../runners/_index.md)
+- [The Kubernetes runner executor](https://docs.gitlab.com/runner/executors/kubernetes/)
 
 The example can be copied to your own group or instance for testing. More details
 on what other GitLab CI patterns are demonstrated are available at the project page.

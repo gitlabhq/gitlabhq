@@ -44,7 +44,9 @@ export default {
     class="board-add-new-list board gl-inline-block gl-h-full gl-shrink-0 gl-whitespace-normal gl-rounded-base gl-pl-2 gl-align-top"
     data-testid="board-add-new-column"
   >
-    <div class="gl-relative gl-flex gl-h-full gl-flex-col gl-rounded-base gl-bg-gray-50">
+    <div
+      class="gl-relative gl-flex gl-h-full gl-flex-col gl-rounded-base gl-bg-strong dark:gl-bg-subtle"
+    >
       <h3 class="gl-m-0 gl-px-5 gl-py-5 gl-text-size-h2" data-testid="board-add-column-form-title">
         {{ $options.i18n.newList }}
       </h3>

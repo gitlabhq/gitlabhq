@@ -120,6 +120,11 @@ export default {
       required: false,
       default: false,
     },
+    error: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     const form = {
@@ -200,21 +205,6 @@ export default {
       return !this.isUsingLfs || (this.isUsingLfs && this.lfsWarningDismissed);
     },
   },
-  watch: {
-    createNewBranch: {
-      handler(newValue) {
-        if (newValue) {
-          this.form.fields.branch_name.value = '';
-        } else {
-          this.form.fields.branch_name = {
-            ...this.form.fields.branch_name,
-            value: this.originalBranch,
-            state: true,
-          };
-        }
-      },
-    },
-  },
   methods: {
     show() {
       this.$refs[this.modalId].show();
@@ -233,9 +223,7 @@ export default {
       e.preventDefault(); // Prevent modal from closing
 
       if (this.showLfsWarning) {
-        this.lfsWarningDismissed = true;
-        await this.$nextTick();
-        this.$refs.message?.$el.focus();
+        await this.handleContinueLfsWarning();
         return;
       }
 
@@ -253,7 +241,7 @@ export default {
       this.$emit('submit-form', formData);
     },
   },
-  deleteLfsHelpPath: helpPagePath('topics/git/lfs', {
+  deleteLfsHelpPath: helpPagePath('topics/git/lfs/_index', {
     anchor: 'delete-a-git-lfs-file-from-repository-history',
   }),
   protectedBranchHelpPath: helpPagePath('user/project/repository/branches/protected'),
@@ -309,6 +297,7 @@ export default {
             :disabled="loading"
             required
           />
+          <p v-if="error" class="gl-mt-3 gl-text-red-600" data-testid="error">{{ error }}</p>
           <p v-if="showHint" class="form-text gl-text-subtle" data-testid="hint">
             {{ $options.i18n.COMMIT_MESSAGE_HINT }}
           </p>

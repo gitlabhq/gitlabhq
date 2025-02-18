@@ -186,7 +186,7 @@ export default {
       });
     },
     issuesHelpPagePath() {
-      return helpPagePath('user/project/settings/index', {
+      return helpPagePath('user/project/settings/_index', {
         anchor: 'configure-project-features-and-permissions',
       });
     },

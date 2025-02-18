@@ -13,9 +13,6 @@ events:
   - name: delete_package_from_registry
     filter:
       label: golang
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

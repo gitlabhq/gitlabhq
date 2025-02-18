@@ -96,21 +96,36 @@ function sassSmartImporter(url, prev) {
   return null;
 }
 
+/**
+ * Custom function to check if file exists in assets path.
+ * @param {sass.types.String} url - The value of the Sass variable.
+ * @returns {sass.types.String} - The path to the asset.
+ */
+function checkAssetUrl(url) {
+  const urlString = url.getValue();
+  const filePath = path.resolve(__dirname, '../../app/assets/images', urlString);
+
+  // Return as is if it's a data URL.
+  if (urlString.startsWith('data:')) {
+    return new sass.types.String(`url('${urlString}')`);
+  }
+
+  // If the file exists, return the absolute file path.
+  if (existsSync(filePath)) {
+    return new sass.types.String(`url('/assets/images/${urlString}')`);
+  }
+
+  // Otherwise, return the placeholder.
+  return new sass.types.String(TRANSPARENT_1X1_PNG);
+}
+
 const sassLoaderOptions = {
   sassOptions: {
     functions: {
-      'image-url($url)': function sassImageUrlStub() {
-        return new sass.types.String(TRANSPARENT_1X1_PNG);
-      },
-      'asset_path($url)': function sassAssetPathStub() {
-        return new sass.types.String(TRANSPARENT_1X1_PNG);
-      },
-      'asset_url($url)': function sassAssetUrlStub() {
-        return new sass.types.String(TRANSPARENT_1X1_PNG);
-      },
-      'url($url)': function sassUrlStub() {
-        return new sass.types.String(TRANSPARENT_1X1_PNG);
-      },
+      'image-url($url)': checkAssetUrl,
+      'asset_path($url)': checkAssetUrl,
+      'asset_url($url)': checkAssetUrl,
+      'url($url)': checkAssetUrl,
     },
     includePaths: SASS_INCLUDE_PATHS,
     importer: sassSmartImporter,

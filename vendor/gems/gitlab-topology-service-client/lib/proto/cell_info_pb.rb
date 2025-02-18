@@ -11,7 +11,6 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     end
     add_message "gitlab.cells.topology_service.CellInfo" do
       optional :id, :int64, 1, json_name: "id"
-      optional :name, :string, 2, json_name: "name"
       optional :address, :string, 3, json_name: "address"
       optional :session_prefix, :string, 4, json_name: "sessionPrefix"
       optional :sequence_range, :message, 5, "gitlab.cells.topology_service.SequenceRange", json_name: "sequenceRange"

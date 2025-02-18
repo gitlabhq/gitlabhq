@@ -6,7 +6,7 @@ column: default_project_creation
 db_type: integer
 default: '2'
 description: 'Default project creation protection. Can take: `0` _(No one)_, `1` _(Maintainers)_,
-  `2` _(Developers + Maintainers)_, or `3` _(Administrators)_.'
+  `2` _(Developers + Maintainers)_, `3` _(Administrators)_ or `4` _(Owners)_.'
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

@@ -2,7 +2,7 @@ import { GlFormCheckbox } from '@gitlab/ui';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { PROCESS_LABELS_DATA } from 'jest/search/mock_data';
 import LabelDropdownItems from '~/search/sidebar/components/label_filter/label_dropdown_items.vue';
 
@@ -16,18 +16,18 @@ describe('LabelDropdownItems', () => {
   };
 
   const createComponent = (Props = defaultProps) => {
-    wrapper = shallowMount(LabelDropdownItems, {
+    wrapper = shallowMountExtended(LabelDropdownItems, {
       propsData: {
         ...Props,
       },
     });
   };
 
-  const findAllLabelItems = () => wrapper.findAll('.label-filter-menu-item');
+  const findAllLabelItems = () => wrapper.findAllByTestId('label-filter-menu-item');
   const findFirstLabelCheckbox = () => findAllLabelItems().at(0).findComponent(GlFormCheckbox);
-  const findFirstLabelTitle = () => findAllLabelItems().at(0).findComponent('.label-title');
+  const findFirstLabelTitle = () => findAllLabelItems().at(0).find('.label-title');
   const findFirstLabelColor = () =>
-    findAllLabelItems().at(0).findComponent('[data-testid="label-color-indicator"]');
+    findAllLabelItems().at(0).find('[data-testid="label-color-indicator"]');
 
   describe('Renders correctly', () => {
     beforeEach(() => {

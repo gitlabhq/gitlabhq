@@ -1,15 +1,17 @@
 ---
-stage: SaaS Platforms
-group: GitLab Dedicated
-description: Configure SAML single sign-on (SSO) authentication for GitLab Dedicated.
+stage: GitLab Dedicated
+group: Switchboard
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Configure SAML single sign-on (SSO) authentication for GitLab Dedicated.
+title: SAML single sign-on for GitLab Dedicated
 ---
 
-# SAML single sign-on for GitLab Dedicated
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab Dedicated
+
+{{< /details >}}
 
 You can [configure SAML single sign-on (SSO)](../../../integration/saml.md#configure-saml-support-in-gitlab) for your GitLab Dedicated instance. Optionally, you can configure more than one SAML identity provider (IdP).
 
@@ -24,8 +26,11 @@ Prerequisites:
 - You must [set up the identity provider](../../../integration/saml.md#set-up-identity-providers) before you can configure SAML for GitLab Dedicated.
 - To configure GitLab to sign SAML authentication requests, you must create a private key and public certificate pair for your GitLab Dedicated instance.
 
-NOTE:
+{{< alert type="note" >}}
+
 You can only configure one SAML IdP with Switchboard. If you configured a SAML IdP on your GitLab Dedicated instance before the introduction of support for multiple IdPs, you can manage that provider through Switchboard. To configure additional SAML IdPs, [submit a support request](#activate-saml-with-a-support-request).
+
+{{< /alert >}}
 
 ## Activate SAML with Switchboard
 
@@ -105,8 +110,11 @@ If you are unable to use Switchboard to activate or update SAML for your GitLab 
 
 If [SAML request signing](../../../integration/saml.md#sign-saml-authentication-requests-optional) is desired, a certificate must be obtained. This certificate can be self-signed which has the advantage of not having to prove ownership of an arbitrary Common Name (CN) to a public Certificate Authority (CA).
 
-NOTE:
+{{< alert type="note" >}}
+
 Because SAML request signing requires certificate signing, you must complete these steps to use SAML with this feature enabled.
+
+{{< /alert >}}
 
 To enable SAML request signing:
 

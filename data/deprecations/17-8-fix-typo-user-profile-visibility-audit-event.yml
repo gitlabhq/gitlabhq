@@ -5,7 +5,9 @@
   window: 1
   reporter: nrosandich
   stage: Software Supply Chain Security
-  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382338
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/474386
+  impact: low
+  scope: instance
   body: | # (required) Don't change this line.
     To fix a typo in an audit event type, in GitLab 18.0 we'll rename the `user_profile_visiblity_updated` event type to
     `user_profile_visibility_updated`.

@@ -1,26 +1,32 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Use push rules to control the content and format of Git commits your repository will accept. Set standards for commit messages, and block secrets or credentials from being added accidentally."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use push rules to control the content and format of Git commits your repository will accept. Set standards for commit messages, and block secrets or credentials from being added accidentally.
+title: Push rules
 ---
 
-# Push rules
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - Maximum regular expression length for push rules [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/411901) from 255 to 511 characters in GitLab 16.3.
+{{< /details >}}
+
+{{< history >}}
+
+- Maximum regular expression length for push rules [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/411901) from 255 to 511 characters in GitLab 16.3.
+
+{{< /history >}}
 
 Push rules are [`pre-receive` Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#:~:text=pre%2Dreceive,with%20the%20push.) you
 can enable in a user-friendly interface. Push rules give you more control over what
 can and can't be pushed to your repository. While GitLab offers
-[protected branches](../repository/branches/protected.md), you may need more specific rules, such as:
+[protected branches](branches/protected.md), you may need more specific rules, such as:
 
 - Evaluating the contents of a commit.
 - Confirming commit messages match expected formats.
-- Enforcing [branch name rules](branches/index.md#name-your-branch).
+- Enforcing [branch name rules](branches/_index.md#name-your-branch).
 - Evaluating the details of files.
 - Preventing Git tag removal.
 
@@ -66,8 +72,11 @@ for an existing project to match new global push rules:
 
 Use these rules to validate users who make commits.
 
-NOTE:
-These push rules apply only to commits and not [tags](tags/index.md).
+{{< alert type="note" >}}
+
+These push rules apply only to commits and not [tags](tags/_index.md).
+
+{{< /alert >}}
 
 - **Reject unverified users**: Users must have a [confirmed email address](../../../security/user_email_confirmation.md).
 - **Check whether the commit author is a GitLab user**: The commit author and committer must have an email address that's been verified by GitLab.
@@ -106,7 +115,11 @@ Use these rules for your commit messages.
 
 ## Reject commits that aren't signed-off
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98810) in GitLab 15.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98810) in GitLab 15.5.
+
+{{< /history >}}
 
 Commits signed with the [Developer Certificate of Origin](https://developercertificate.org/) (DCO)
 certify the contributor wrote, or has the right to submit, the code contributed in that commit.
@@ -146,7 +159,7 @@ Some validation examples:
 
 Use these rules to prevent unintended consequences.
 
-- **Reject unsigned commits**: Commit [must be signed](signed_commits/index.md). This rule
+- **Reject unsigned commits**: Commit [must be signed](signed_commits/_index.md). This rule
   can block some legitimate commits [created in the Web IDE](#reject-unsigned-commits-push-rule-disables-web-ide),
   and allow [unsigned commits created in the GitLab UI](#unsigned-commits-created-in-the-gitlab-ui).
 - **Do not allow users to remove Git tags with `git push`**: Users cannot use `git push` to remove Git tags.
@@ -241,6 +254,13 @@ In Git, filenames include both the file's name, and all directories preceding th
 When you `git push`, each filename in the push is compared to the regular expression
 in **Prohibited filenames**.
 
+{{< alert type="note" >}}
+
+This feature uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax),
+which does not support positive or negative lookaheads.
+
+{{< /alert >}}
+
 The regular expression can:
 
 - Match file names in any location in your repository.
@@ -248,7 +268,6 @@ The regular expression can:
 - Match partial file names.
 - Exclude specific file types by extension.
 - Combine multiple expressions to exclude several patterns.
-- Allow only specific file types, and act as an allow list.
 
 #### Regular expression examples
 
@@ -297,25 +316,14 @@ You can combine multiple patterns into one expression. This example combines all
 (\.exe|^config\.yml|^directory-name\/config\.yml|(^|\/)install\.exe)$
 ```
 
-##### Allow specific file types
-
-You can use the prohibited file names feature as an allow list. This example allows only `.sh` and `.exe` files,
-regardless of their location or the operating system's directory format:
-
-```plaintext
-^.*\.(?!(exe|sh)$)[^.]+$
-```
-
-To prevent these file types instead of allowing them, change `!` to `=`.
-
 ## Related topics
 
 - [Git server hooks](../../../administration/server_hooks.md) (previously called server hooks), to create complex custom push rules
 - [Signing commits with GPG](signed_commits/gpg.md)
 - [Signing commits with SSH](signed_commits/ssh.md)
 - [Signing commits with X.509](signed_commits/x509.md)
-- [Protected branches](../repository/branches/protected.md)
-- [Secret detection](../../application_security/secret_detection/index.md)
+- [Protected branches](branches/protected.md)
+- [Secret detection](../../application_security/secret_detection/_index.md)
 
 ## Troubleshooting
 
@@ -349,8 +357,11 @@ or write a script to update each project using the [push rules API endpoint](../
 For example, to enable **Check whether the commit author is a GitLab user** and **Do not allow users to remove Git tags with `git push`** checkboxes,
 and create a filter for allowing commits from a specific email domain only through rails console:
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 ``` ruby
 Project.find_each do |p|

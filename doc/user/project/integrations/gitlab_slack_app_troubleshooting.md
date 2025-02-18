@@ -2,13 +2,15 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting GitLab for Slack app
 ---
 
-# Troubleshooting GitLab for Slack app
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When working with the GitLab for Slack app, you might encounter the following issues.
 
@@ -16,7 +18,7 @@ For administrator documentation, see [GitLab for Slack app administration](../..
 
 ## App does not appear in the list of integrations
 
-The GitLab for Slack app might not appear in the list of integrations. To have the GitLab for Slack app on your self-managed instance, an administrator must [enable the integration](../../../administration/settings/slack_app.md). On GitLab.com, the GitLab for Slack app is available by default.
+The GitLab for Slack app might not appear in the list of integrations. To have the GitLab for Slack app on your GitLab Self-Managed instance, an administrator must [enable the integration](../../../administration/settings/slack_app.md). On GitLab.com, the GitLab for Slack app is available by default.
 
 ## Error: `Project or alias not found`
 
@@ -37,7 +39,7 @@ To resolve this issue, ensure:
 
 Slash commands might return `/gitlab failed with the error "dispatch_failed"` in Slack.
 
-To resolve this issue, ensure an administrator has properly configured the [GitLab for Slack app settings](../../../administration/settings/slack_app.md) on your self-managed instance.
+To resolve this issue, ensure an administrator has properly configured the [GitLab for Slack app settings](../../../administration/settings/slack_app.md) on your GitLab Self-Managed instance.
 
 ## Notifications not received to a channel
 

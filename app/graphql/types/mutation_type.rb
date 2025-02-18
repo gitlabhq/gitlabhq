@@ -42,6 +42,7 @@ module Types
     mount_mutation Mutations::Repositories::Branches::Create, calls_gitaly: true
     mount_mutation Mutations::Repositories::Branches::Delete, calls_gitaly: true
     mount_mutation Mutations::Repositories::Tags::Create, calls_gitaly: true
+    mount_mutation Mutations::Repositories::Tags::Delete, calls_gitaly: true
     mount_mutation Mutations::Clusters::Agents::Create
     mount_mutation Mutations::Clusters::Agents::Delete
     mount_mutation Mutations::Clusters::AgentTokens::Create
@@ -127,6 +128,7 @@ module Types
     mount_mutation Mutations::Projects::SyncFork, calls_gitaly: true, experiment: { milestone: '15.9' }
     mount_mutation Mutations::Projects::TextReplace, calls_gitaly: true, experiment: { milestone: '17.1' }
     mount_mutation Mutations::Projects::Star, experiment: { milestone: '16.7' }
+    mount_mutation Mutations::Projects::BranchRules::SquashOptions::Update, experiment: { milestone: '17.9' }
     mount_mutation Mutations::BranchRules::Update, experiment: { milestone: '16.7' }
     mount_mutation Mutations::BranchRules::Create, experiment: { milestone: '16.7' }
     mount_mutation Mutations::Releases::Create
@@ -144,9 +146,12 @@ module Types
     mount_mutation Mutations::Todos::MarkDone
     mount_mutation Mutations::Todos::Restore
     mount_mutation Mutations::Todos::MarkAllDone
+    mount_mutation Mutations::Todos::ResolveMany, experiment: { milestone: '17.9' }
     mount_mutation Mutations::Todos::RestoreMany
     mount_mutation Mutations::Todos::Snooze, experiment: { milestone: '17.4' }
     mount_mutation Mutations::Todos::UnSnooze, experiment: { milestone: '17.4' }
+    mount_mutation Mutations::Todos::SnoozeMany, experiment: { milestone: '17.9' }
+    mount_mutation Mutations::Todos::UnsnoozeMany, experiment: { milestone: '17.9' }
     mount_mutation Mutations::Snippets::Destroy
     mount_mutation Mutations::Snippets::Update
     mount_mutation Mutations::Snippets::Create
@@ -180,6 +185,9 @@ module Types
     mount_mutation Mutations::Ci::JobTokenScope::RemoveGroup
     mount_mutation Mutations::Ci::JobTokenScope::RemoveProject
     mount_mutation Mutations::Ci::JobTokenScope::UpdateJobTokenPolicies, experiment: { milestone: '17.6' }
+    mount_mutation Mutations::Ci::JobTokenScope::AutopopulateAllowlist, experiment: { milestone: '17.9' }
+    mount_mutation Mutations::Ci::JobTokenScope::ClearAllowlistAutopopulations, experiment: { milestone: '17.9' }
+    mount_mutation Mutations::Ci::NamespaceSettingsUpdate, experiment: { milestone: '17.9' }
     mount_mutation Mutations::Ci::Pipeline::Cancel
     mount_mutation Mutations::Ci::Pipeline::Create
     mount_mutation Mutations::Ci::Pipeline::Destroy
@@ -210,9 +218,9 @@ module Types
     mount_mutation Mutations::Packages::BulkDestroy,
       extensions: [::Gitlab::Graphql::Limit::FieldCallCount => { limit: 1 }]
     mount_mutation Mutations::Packages::DestroyFile
-    mount_mutation Mutations::Packages::Protection::Rule::Create, experiment: { milestone: '16.5' }
-    mount_mutation Mutations::Packages::Protection::Rule::Delete, experiment: { milestone: '16.6' }
-    mount_mutation Mutations::Packages::Protection::Rule::Update, experiment: { milestone: '16.6' }
+    mount_mutation Mutations::Packages::Protection::Rule::Create
+    mount_mutation Mutations::Packages::Protection::Rule::Delete
+    mount_mutation Mutations::Packages::Protection::Rule::Update
     mount_mutation Mutations::Packages::DestroyFiles
     mount_mutation Mutations::Packages::Cleanup::Policy::Update
     mount_mutation Mutations::Echo

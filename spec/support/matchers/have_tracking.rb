@@ -12,13 +12,3 @@ RSpec::Matchers.define :have_tracking do |action:, label: nil, property: nil, te
     expect(rendered).to have_css(css)
   end
 end
-
-RSpec::Matchers.define :have_internal_tracking do |event:, label: nil, testid: nil|
-  match do |rendered|
-    css = "[data-event-tracking='#{event}']"
-    css += "[data-event-label='#{label}']" if label
-    css += "[data-testid='#{testid}']" if testid
-
-    expect(rendered).to have_css(css)
-  end
-end

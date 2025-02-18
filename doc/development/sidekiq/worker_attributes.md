@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Sidekiq worker attributes
 ---
-
-# Sidekiq worker attributes
 
 Worker classes can define certain attributes to control their behavior and add metadata.
 
@@ -224,7 +223,7 @@ We use the following approach to determine whether a worker is CPU-bound:
 
 ## Feature category
 
-All Sidekiq workers must define a known [feature category](../feature_categorization/index.md#sidekiq-workers).
+All Sidekiq workers must define a known [feature category](../feature_categorization/_index.md#sidekiq-workers).
 
 ## Job data consistency strategies
 
@@ -309,9 +308,9 @@ which permits you to safely toggle load balancing capabilities for a specific jo
 When `feature_flag` is disabled, the job defaults to `:always`, which means that the job always uses the primary database.
 
 The `feature_flag` property does not allow the use of
-[feature gates based on actors](../feature_flags/index.md).
+[feature gates based on actors](../feature_flags/_index.md).
 This means that the feature flag cannot be toggled only for particular
-projects, groups, or users, but instead, you can safely use [percentage of time rollout](../feature_flags/index.md).
+projects, groups, or users, but instead, you can safely use [percentage of time rollout](../feature_flags/_index.md).
 Since we check the feature flag on both Sidekiq client and server, rolling out a 10% of the time,
 likely results in 1% (`0.1` `[from client]*0.1` `[from server]`) of effective jobs using replicas.
 
@@ -387,9 +386,12 @@ class PausedWorker
 end
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 In case you want to remove the middleware for a worker, please set the strategy to `:deprecated` to disable it and wait until
 a required stop before removing it completely. That ensures that all paused jobs are resumed correctly.
+
+{{< /alert >}}
 
 ## Concurrency limit
 
@@ -411,9 +413,12 @@ Prometheus metrics are exposed to monitor workers using concurrency limit middle
 - `sidekiq_concurrency_limit_max_concurrent_jobs`
 - `sidekiq_concurrency_limit_current_concurrent_jobs_total`
 
-WARNING:
+{{< alert type="warning" >}}
+
 If there is a sustained workload over the limit, the `LIST` is going to grow until the limit is disabled or
 the workload drops under the limit.
+
+{{< /alert >}}
 
 You should use a lambda to define the limit. If it returns `nil` or `0`, the limit won't be applied.
 Negative numbers pause the execution.

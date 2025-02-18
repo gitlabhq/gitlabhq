@@ -53,6 +53,11 @@ export default {
       type: String,
       required: true,
     },
+    newCommentTemplatePaths: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     autocompleteDataSources: {
       type: Object,
       required: false,
@@ -228,6 +233,7 @@ export default {
     :is-modal="isModal"
     :autocomplete-data-sources="autocompleteDataSources"
     :markdown-preview-path="markdownPreviewPath"
+    :new-comment-template-paths="newCommentTemplatePaths"
     :class="{ 'gl-mb-4': hasReplies }"
     :assignees="assignees"
     :can-set-work-item-metadata="canSetWorkItemMetadata"
@@ -262,6 +268,7 @@ export default {
                   :class="{ 'gl-mb-4': hasReplies }"
                   :autocomplete-data-sources="autocompleteDataSources"
                   :markdown-preview-path="markdownPreviewPath"
+                  :new-comment-template-paths="newCommentTemplatePaths"
                   :assignees="assignees"
                   :work-item-id="workItemId"
                   :work-item-iid="workItemIid"
@@ -295,6 +302,7 @@ export default {
                         :is-modal="isModal"
                         :autocomplete-data-sources="autocompleteDataSources"
                         :markdown-preview-path="markdownPreviewPath"
+                        :new-comment-template-paths="newCommentTemplatePaths"
                         :assignees="assignees"
                         :work-item-id="workItemId"
                         :work-item-iid="workItemIid"
@@ -328,6 +336,7 @@ export default {
                       :add-padding="true"
                       :autocomplete-data-sources="autocompleteDataSources"
                       :markdown-preview-path="markdownPreviewPath"
+                      :new-comment-template-paths="newCommentTemplatePaths"
                       :is-discussion-locked="isDiscussionLocked"
                       :is-internal-thread="note.internal"
                       :is-work-item-confidential="isWorkItemConfidential"

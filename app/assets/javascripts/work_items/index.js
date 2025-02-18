@@ -32,7 +32,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
     groupPath,
     groupId,
     hasIssueWeightsFeature,
-    iid,
     issuesListPath,
     epicsListPath,
     labelsManagePath,
@@ -116,7 +115,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
       signInPath,
       hasIterationsFeature: parseBoolean(hasIterationsFeature),
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
-      newCommentTemplatePaths: JSON.parse(newCommentTemplatePaths),
       reportAbusePath,
       groupPath,
       groupId,
@@ -149,7 +147,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
     render(createElement) {
       return createElement(App, {
         props: {
-          iid: isGroup ? iid : undefined,
+          newCommentTemplatePaths: JSON.parse(newCommentTemplatePaths),
         },
       });
     },

@@ -2,16 +2,21 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use Shibboleth as an authentication provider
 ---
 
-# Use Shibboleth as an authentication provider
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
-NOTE:
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 Use the [GitLab SAML integration](saml.md) to integrate specific Shibboleth identity providers (IdPs). For Shibboleth federation support (Discovery Service), use this document.
+
+{{< /alert >}}
 
 To enable Shibboleth support in GitLab, use Apache instead of NGINX. Apache uses the `mod_shib2` module for Shibboleth authentication, and can pass attributes as headers to the OmniAuth Shibboleth provider.
 
@@ -19,7 +24,7 @@ You can use the bundled NGINX provided in the Linux package to run a Shibboleth 
 
 To enable the Shibboleth OmniAuth provider, you must:
 
-- [Install the Apache module](https://wiki.shibboleth.net/confluence/display/SP3/Apache).
+- [Install the Apache module](https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2065335062/Apache).
 - [Configure the Apache module](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache).
 
 To enable Shibboleth:

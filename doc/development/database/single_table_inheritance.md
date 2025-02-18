@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Single Table Inheritance
 ---
-
-# Single Table Inheritance
 
 **Summary:** Don't design new tables using Single Table Inheritance (STI). For existing tables that use STI as a pattern, avoid adding new types, and consider splitting them into separate tables.
 

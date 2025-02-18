@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use JWT as an authentication provider
 ---
 
-# Use JWT as an authentication provider
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 To enable the JWT OmniAuth provider, you must register your application with JWT.
 JWT provides you with a secret key for you to use.
@@ -69,12 +71,18 @@ JWT provides you with a secret key for you to use.
      }
    ```
 
-   NOTE:
-   For more information on each configuration option refer to
+   {{< alert type="note" >}}
+
+For more information on each configuration option refer to
    the [OmniAuth JWT usage documentation](https://github.com/mbleigh/omniauth-jwt#usage).
 
-   WARNING:
+   {{< /alert >}}
+
+   {{< alert type="warning" >}}
+
    Incorrectly configuring these settings can result in an insecure instance.
+
+   {{< /alert >}}
 
 1. Change `YOUR_APP_SECRET` to the client secret and set `auth_url` to your redirect URL.
 1. Save the configuration file.

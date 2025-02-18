@@ -6,7 +6,7 @@ column: housekeeping_enabled
 db_type: boolean
 default: 'true'
 description: Enable or disable Git housekeeping. Requires additional fields to be
-  set. For more information, see [Housekeeping fields](#housekeeping-fields).
+  set. For more information, see [Housekeeping settings](#housekeeping-settings).
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

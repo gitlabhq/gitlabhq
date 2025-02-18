@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 
 RSpec.describe Gitlab::SidekiqConfig::Worker do
   def create_worker(queue:, **attributes)
-    namespace = queue.include?(':') && queue.split(':').first
+    namespace = queue.include?(':') ? queue.split(':').first : nil
     inner_worker = double(
       name: attributes[:worker_name] || 'Foo::BarWorker',
       generated_queue_name: queue,
@@ -102,7 +102,8 @@ RSpec.describe Gitlab::SidekiqConfig::Worker do
         resource_boundary: :memory,
         weight: 2,
         idempotent: true,
-        tags: []
+        tags: [],
+        queue_namespace: nil
       }
 
       attributes_b = {
@@ -113,7 +114,8 @@ RSpec.describe Gitlab::SidekiqConfig::Worker do
         resource_boundary: :unknown,
         weight: 3,
         idempotent: false,
-        tags: [:no_disk_io]
+        tags: [:no_disk_io],
+        queue_namespace: nil
       }
 
       worker_a = create_worker(queue: 'a', **attributes_a)
@@ -125,6 +127,24 @@ RSpec.describe Gitlab::SidekiqConfig::Worker do
       expect(YAML.dump([worker_a, worker_b]))
         .to eq(YAML.dump([attributes_a.reverse_merge(name: 'a'),
                           attributes_b.reverse_merge(name: 'b')]))
+    end
+
+    it 'encodes the queue_namespace' do
+      attributes_a = {
+        worker_name: 'WorkerA',
+        feature_category: :source_code_management,
+        has_external_dependencies: false,
+        urgency: :low,
+        resource_boundary: :memory,
+        weight: 2,
+        idempotent: true,
+        tags: []
+      }
+
+      worker_a = create_worker(queue: 'test:a', **attributes_a)
+      attributes = YAML.dump(worker_a)
+
+      expect(attributes).to include("queue_namespace: :test")
     end
   end
 

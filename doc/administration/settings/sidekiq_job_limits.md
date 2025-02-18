@@ -2,15 +2,17 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Sidekiq job size limits
 ---
 
-# Sidekiq job size limits
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-[Sidekiq](../sidekiq/index.md) jobs get stored in
+{{< /details >}}
+
+[Sidekiq](../sidekiq/_index.md) jobs get stored in
 Redis. To avoid excessive memory for Redis, we:
 
 - Compress job arguments before storing them in Redis.

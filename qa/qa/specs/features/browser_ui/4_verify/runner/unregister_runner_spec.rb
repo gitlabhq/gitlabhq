@@ -11,6 +11,10 @@ module QA
       end
 
       it 'user unregisters a runner with authentication token',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/513860',
+          type: :stale
+        },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/510652' do
         Flow::Login.sign_in
 

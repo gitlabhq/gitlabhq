@@ -12,9 +12,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
   - p_ci_templates_5_min_production_app
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

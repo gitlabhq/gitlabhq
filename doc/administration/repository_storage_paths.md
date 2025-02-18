@@ -2,24 +2,29 @@
 stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Repository storage
 ---
 
-# Repository storage
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-GitLab stores [repositories](../user/project/repository/index.md) on repository storage. Repository
+{{< /details >}}
+
+GitLab stores [repositories](../user/project/repository/_index.md) on repository storage. Repository
 storage is either:
 
-- Physical storage configured with a `gitaly_address` that points to a [Gitaly node](gitaly/index.md).
-- [Virtual storage](gitaly/index.md#virtual-storage) that stores repositories on a Gitaly Cluster.
+- Physical storage configured with a `gitaly_address` that points to a [Gitaly node](gitaly/_index.md).
+- [Virtual storage](gitaly/_index.md#virtual-storage) that stores repositories on a Gitaly Cluster.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Repository storage could be configured as a `path` that points directly to the directory where the repositories are
 stored. GitLab directly accessing a directory containing repositories is deprecated. You should configure GitLab to
 access repositories through a physical or virtual storage.
+
+{{< /alert >}}
 
 For more information on:
 
@@ -28,8 +33,12 @@ For more information on:
 
 ## Hashed storage
 
-> - Support for legacy storage, where repository paths were generated based on the project path, has been completely removed in GitLab 14.0.
-> - **Storage name** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly storage name** and **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
+{{< history >}}
+
+- Support for legacy storage, where repository paths were generated based on the project path, has been completely removed in GitLab 14.0.
+- **Storage name** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly storage name** and **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
+
+{{< /history >}}
 
 Hashed storage stores projects on disk in a location based on a hash of the project's ID. This makes the folder
 structure immutable and eliminates the need to synchronize state from URLs to disk structure. This means that renaming a
@@ -66,7 +75,7 @@ translate between the human-readable project name and the hashed storage path. Y
 
 Administrators can look up a project's hashed path from its name or ID using:
 
-- The [**Admin** area](../administration/admin_area.md#administering-projects).
+- The [**Admin** area](admin_area.md#administering-projects).
 - A Rails console.
 
 To look up a project's hash path in the **Admin** area:
@@ -138,9 +147,12 @@ project. Object pool repositories are stored similarly to regular repositories i
 "@pools/#{hash[0..1]}/#{hash[2..3]}/#{hash}.git"
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Do not run `git prune` or `git gc` in object pool repositories, which are stored in the `@pools` directory.
 This can cause data loss in the regular repositories that depend on the object pool.
+
+{{< /alert >}}
 
 ### Translate hashed object pool storage paths
 
@@ -177,7 +189,7 @@ For example:
 
 If Gitaly Cluster is used, Praefect manages storage locations. The internal path used by Praefect for the repository
 differs from the hashed path. For more information, see
-[Praefect-generated replica paths](gitaly/index.md#praefect-generated-replica-paths).
+[Praefect-generated replica paths](gitaly/_index.md#praefect-generated-replica-paths).
 
 ### Object storage support
 
@@ -212,7 +224,7 @@ CI/CD artifacts are S3-compatible.
 
 #### LFS objects
 
-[LFS Objects in GitLab](../topics/git/lfs/index.md) implement a similar
+[LFS Objects in GitLab](../topics/git/lfs/_index.md) implement a similar
 storage pattern using two characters and two-level folders, following the Git implementation:
 
 ```ruby
@@ -222,7 +234,7 @@ storage pattern using two characters and two-level folders, following the Git im
 "shared/lfs-objects/89/09/029eb962194cfb326259411b22ae3f4a814b5be4f80651735aeef9f3229c"
 ```
 
-LFS objects are also [S3-compatible](lfs/index.md#storing-lfs-objects-in-remote-object-storage).
+LFS objects are also [S3-compatible](lfs/_index.md#storing-lfs-objects-in-remote-object-storage).
 
 ## Configure where new repositories are stored
 
@@ -245,12 +257,15 @@ By default, if repository weights have not been configured earlier:
 - `default` is weighted `100`.
 - All other storages are weighted `0`.
 
-NOTE:
+{{< alert type="note" >}}
+
 If all storage weights are `0` (for example, when `default` does not exist), GitLab attempts to
 create new repositories on `default`, regardless of the configuration or if `default` exists.
 See [the tracking issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) for more information.
 
+{{< /alert >}}
+
 ## Move repositories
 
 To move a repository to a different repository storage (for example, from `default` to `storage2`), use the
-same process as [migrating to Gitaly Cluster](gitaly/index.md#migrate-to-gitaly-cluster).
+same process as [migrating to Gitaly Cluster](gitaly/_index.md#migrate-to-gitaly-cluster).

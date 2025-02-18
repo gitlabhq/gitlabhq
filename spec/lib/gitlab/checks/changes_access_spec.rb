@@ -43,18 +43,10 @@ RSpec.describe Gitlab::Checks::ChangesAccess, feature_category: :source_code_man
     end
 
     context 'when time limit was reached' do
-      it 'raises a TimeoutError' do
-        logger = Gitlab::Checks::TimedLogger.new(start_time: timeout.ago, timeout: timeout)
-        access = described_class.new(
-          changes,
-          project: project,
-          user_access: user_access,
-          protocol: protocol,
-          logger: logger,
-          push_options: push_options
-        )
+      let(:logger) { Gitlab::Checks::TimedLogger.new(start_time: timeout.ago, timeout: timeout) }
 
-        expect { access.validate! }.to raise_error(Gitlab::Checks::TimedLogger::TimeoutError)
+      it 'raises a TimeoutError' do
+        expect { subject.validate! }.to raise_error(Gitlab::Checks::TimedLogger::TimeoutError)
       end
     end
   end
@@ -63,7 +55,7 @@ RSpec.describe Gitlab::Checks::ChangesAccess, feature_category: :source_code_man
     it 'calls #new_commits' do
       expect(project.repository).to receive(:new_commits).and_call_original
 
-      expect(subject.commits).to match_array([])
+      expect(subject.commits).to be_empty
     end
 
     context 'when change is for notes ref' do
@@ -72,7 +64,7 @@ RSpec.describe Gitlab::Checks::ChangesAccess, feature_category: :source_code_man
       end
 
       it 'does not return any commits' do
-        expect(subject.commits).to match_array([])
+        expect(subject.commits).to be_empty
       end
     end
 

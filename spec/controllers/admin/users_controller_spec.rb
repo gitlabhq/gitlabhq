@@ -616,7 +616,7 @@ RSpec.describe Admin::UsersController, :with_current_organization, feature_categ
     end
   end
 
-  describe 'POST create' do
+  describe 'POST #create' do
     let_it_be(:user_params) { attributes_for(:user) }
 
     it 'creates the user' do

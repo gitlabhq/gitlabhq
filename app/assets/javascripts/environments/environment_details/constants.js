@@ -72,8 +72,8 @@ export const translations = {
   rollbackButtonTitle: s__('Environments|Rollback environment'),
 };
 
-export const environmentsLearnMorePath = helpPagePath('ci/environments/index');
-export const environmentsHelpPagePath = helpPagePath('ci/yaml/index', { anchor: 'environment' });
+export const environmentsLearnMorePath = helpPagePath('ci/environments/_index');
+export const environmentsHelpPagePath = helpPagePath('ci/yaml/_index', { anchor: 'environment' });
 
 export const DEPLOYMENTS_SORT_OPTIONS = [
   {

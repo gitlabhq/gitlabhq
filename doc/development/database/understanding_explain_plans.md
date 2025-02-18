@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Understanding EXPLAIN plans
 ---
-
-# Understanding EXPLAIN plans
 
 PostgreSQL allows you to obtain query plans using the `EXPLAIN` command. This
 command can be invaluable when trying to determine how a query performs.

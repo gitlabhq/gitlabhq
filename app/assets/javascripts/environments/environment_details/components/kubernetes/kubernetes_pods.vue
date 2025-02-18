@@ -165,7 +165,7 @@ export default {
 
       <div
         v-if="statusFilter && podsSearch"
-        class="gl-mt-5 gl-rounded-base gl-bg-gray-50 gl-p-5"
+        class="gl-mt-5 gl-rounded-base gl-bg-strong gl-p-5"
         data-testid="pods-filtered-message"
       >
         <gl-sprintf :message="$options.i18n.filteredText">

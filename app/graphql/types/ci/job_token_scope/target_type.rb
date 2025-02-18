@@ -7,14 +7,14 @@ module Types
         graphql_name 'CiJobTokenScopeTarget'
         description 'Represents an object that is the target of a CI_JOB_TOKEN allowlist entry'
 
-        possible_types Types::ProjectType, Types::GroupType
+        possible_types Types::Ci::JobTokenAccessibleProjectType, Types::Ci::JobTokenAccessibleGroupType
 
         def self.resolve_type(object, _context)
           case object
           when Project
-            Types::ProjectType
+            Types::Ci::JobTokenAccessibleProjectType
           when Group
-            Types::GroupType
+            Types::Ci::JobTokenAccessibleGroupType
           else
             raise 'Unsupported CI job token scope target type'
           end

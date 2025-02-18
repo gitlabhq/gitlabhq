@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlButton, GlDisclosureDropdown, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdown, GlDropdownDivider, GlLoadingIcon } from '@gitlab/ui';
 
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert } from '~/alert';
@@ -46,6 +46,7 @@ describe('PipelineStageDropdown', () => {
 
   const findCiIcon = () => wrapper.findComponent(CiIcon);
   const findDropdownButton = () => wrapper.findComponent(GlButton);
+  const findDropdownDivider = () => wrapper.findComponent(GlDropdownDivider);
   const findJobDropdownItems = () => wrapper.findAllComponents(JobDropdownItem);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findStageDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
@@ -161,16 +162,54 @@ describe('PipelineStageDropdown', () => {
     });
   });
 
+  describe('when there are failed jobs', () => {
+    beforeEach(async () => {
+      pipelineStageResponse.mockResolvedValue(mockPipelineStageJobs);
+      await createComponent();
+      await clickStageDropdown();
+      await waitForPromises();
+    });
+
+    it('renders failed jobs title', () => {
+      expect(wrapper.findByText('Failed jobs').exists()).toBe(true);
+    });
+
+    it('renders divider', () => {
+      expect(findDropdownDivider().exists()).toBe(true);
+    });
+  });
+
+  describe('when there are no failed jobs', () => {
+    beforeEach(async () => {
+      const withoutFailedJob = { ...mockPipelineStageJobs };
+      withoutFailedJob.data.ciPipelineStage.jobs.nodes = [
+        mockPipelineStageJobs.data.ciPipelineStage.jobs.nodes[0],
+      ];
+
+      pipelineStageResponse.mockResolvedValue(withoutFailedJob);
+      await createComponent();
+      await clickStageDropdown();
+      await waitForPromises();
+    });
+
+    it('does not render failed jobs title', () => {
+      expect(wrapper.findByText('Failed jobs').exists()).toBe(false);
+    });
+
+    it('does not render divider', () => {
+      expect(findDropdownDivider().exists()).toBe(false);
+    });
+  });
+
   describe('polling', () => {
     beforeEach(async () => {
       pipelineStageResponse.mockResolvedValue(mockPipelineStageJobs);
       await createComponent();
-    });
-
-    it('starts polling when dropdown is open', async () => {
       await clickStageDropdown();
       await waitForPromises();
+    });
 
+    it('starts polling when dropdown is open', () => {
       expect(pipelineStageResponse).toHaveBeenCalledTimes(1);
 
       jest.advanceTimersByTime(8000);
@@ -179,9 +218,6 @@ describe('PipelineStageDropdown', () => {
     });
 
     it('stops polling when dropdown is closed', async () => {
-      await clickStageDropdown();
-      await waitForPromises();
-
       expect(pipelineStageResponse).toHaveBeenCalledTimes(1);
 
       jest.advanceTimersByTime(8000);

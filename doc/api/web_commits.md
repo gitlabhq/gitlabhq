@@ -2,15 +2,21 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Web Commits API
 ---
 
-# Web Commits API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442533) in GitLab 17.4.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442533) in GitLab 17.4.
+
+{{< /history >}}
 
 Use this API to retrieve information about commits created with the Web UI.
 

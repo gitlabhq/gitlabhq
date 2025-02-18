@@ -65,7 +65,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
 
         it 'contains errors and masks variables' do
           error_message = "Included file `[MASKED]xx/gitlab-ci.txt` does not have YAML extension!"
-          expect(pipeline.yaml_errors).to eq(error_message)
           expect(pipeline.error_messages.map(&:content)).to contain_exactly(error_message)
           expect(pipeline.errors.full_messages).to contain_exactly(error_message)
         end
@@ -90,7 +89,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
           error_message = 'build job: need test is not defined in current or prior stages'
           warning_message = /jobs:test may allow multiple pipelines to run/
 
-          expect(pipeline.yaml_errors).to eq(error_message)
           expect(pipeline.error_messages.map(&:content)).to contain_exactly(error_message)
           expect(pipeline.errors.full_messages).to contain_exactly(error_message)
 
@@ -107,7 +105,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
 
         it 'contains only errors' do
           error_message = 'jobs invalid config should implement the script:, run:, or trigger: keyword'
-          expect(pipeline.yaml_errors).to eq(error_message)
           expect(pipeline.error_messages.map(&:content)).to contain_exactly(error_message)
           expect(pipeline.errors.full_messages).to contain_exactly(error_message)
 

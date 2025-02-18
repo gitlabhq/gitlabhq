@@ -33,6 +33,30 @@ RSpec.describe Gitlab::Tracking::EventValidator, feature_category: :service_ping
       end
     end
 
+    context 'when event is a legacy event' do
+      before do
+        allow(Gitlab::Tracking::EventDefinition).to receive(:internal_event_exists?).and_return(false)
+        allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:legacy_event?).and_return(true)
+        allow(Gitlab).to receive(:dev_or_test_env?).and_return(is_dev_or_test)
+      end
+
+      context 'in production' do
+        let(:is_dev_or_test) { false }
+
+        it 'does not raise an error' do
+          expect { validate }.not_to raise_error
+        end
+      end
+
+      context 'in dev or test' do
+        let(:is_dev_or_test) { true }
+
+        it 'raises an error' do
+          expect { validate }.to raise_error(Gitlab::Tracking::EventValidator::UnknownEventError)
+        end
+      end
+    end
+
     context 'when properties have invalid types' do
       [
         { user: 'invalid_user' },

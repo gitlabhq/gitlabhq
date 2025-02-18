@@ -6,13 +6,16 @@ module CsvBuilder
 
     attr_reader :rows_written
 
-    def initialize(collection, header_to_value_hash, associations_to_preload = [], replace_newlines: false)
+    def initialize(
+      collection, header_to_value_hash, associations_to_preload = [], replace_newlines: false,
+      order_hint: :created_at)
       @header_to_value_hash = header_to_value_hash
       @collection = collection
       @truncated = false
       @rows_written = 0
       @associations_to_preload = associations_to_preload
       @replace_newlines = replace_newlines
+      @order_hint = order_hint
     end
 
     # Renders the csv to a string
@@ -57,7 +60,7 @@ module CsvBuilder
 
     def each(&block)
       if @associations_to_preload&.any? && @collection.respond_to?(:each_batch)
-        @collection.each_batch(order_hint: :created_at) do |relation|
+        @collection.each_batch(order_hint: @order_hint) do |relation|
           relation.preload(@associations_to_preload).order(:id).each(&block)
         end
       elsif @collection.respond_to?(:find_each)

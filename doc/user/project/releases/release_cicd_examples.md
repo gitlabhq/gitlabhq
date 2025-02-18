@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Release CI/CD examples
 ---
-
-# Release CI/CD examples
 
 GitLab release functionality is flexible, able to be configured to match your workflow. This page
 features example CI/CD release jobs. Each example demonstrates a method of creating a release in a
@@ -20,9 +19,12 @@ In this CI/CD example, the release is triggered by one of the following events:
 You can use this method if you prefer to create the Git tag manually, and create a release as a
 result.
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not provide Release notes when you create the Git tag in the UI. Providing release notes
 creates a release, resulting in the pipeline failing.
+
+{{< /alert >}}
 
 Key points in the following _extract_ of an example `.gitlab-ci.yml` file:
 
@@ -68,10 +70,13 @@ release_job:
     ref: '$CI_COMMIT_SHA'                          # The tag is created from the pipeline SHA.
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Environment variables set in `before_script` or `script` are not available for expanding
 in the same job. Read more about
 [potentially making variables available for expanding](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6400).
+
+{{< /alert >}}
 
 ## Create release metadata in a custom script
 
@@ -79,7 +84,7 @@ In this CI/CD example the release preparation is split into separate jobs for gr
 
 - The `prepare_job` job generates the release metadata. Any image can be used to run the job,
   including a custom image. The generated metadata is stored in the variable file `variables.env`.
-  This metadata is [passed to the downstream job](../../../ci/variables/index.md#pass-an-environment-variable-to-another-job).
+  This metadata is [passed to the downstream job](../../../ci/variables/_index.md#pass-an-environment-variable-to-another-job).
 - The `release_job` uses the content from the variables file to create a release, using the
   metadata passed to it in the variables file. This job must use the
   `registry.gitlab.com/gitlab-org/release-cli:latest` image because it contains the release CLI.
@@ -147,7 +152,7 @@ Creating a release using a CI/CD job could potentially trigger multiple pipeline
   1. A tag is created.
   1. A tag pipeline is triggered. The pipeline also runs `release` job.
 
-In the second workflow, the `release` job runs in multiple pipelines. To prevent this, you can use the [`workflow:rules` keyword](../../../ci/yaml/index.md#workflowrules) to determine if a release job should run in a tag pipeline:
+In the second workflow, the `release` job runs in multiple pipelines. To prevent this, you can use the [`workflow:rules` keyword](../../../ci/yaml/_index.md#workflowrules) to determine if a release job should run in a tag pipeline:
 
 ```yaml
 release_job:

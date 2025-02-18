@@ -11,9 +11,6 @@ time_frame: none
 data_source: system
 data_category: standard
 instrumentation_class: CollectedDataCategoriesMetric
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

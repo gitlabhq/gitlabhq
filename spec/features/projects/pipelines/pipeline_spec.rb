@@ -1251,7 +1251,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
       let(:pipeline) do
         create(
           :ci_pipeline,
-          :invalid,
+          :invalid_config_error,
           project: project,
           ref: 'master',
           sha: project.commit.id,
@@ -1260,6 +1260,8 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
       end
 
       before do
+        pipeline.add_error_message('invalid YAML')
+        pipeline.save!
         visit project_pipeline_path(project, pipeline)
       end
 
@@ -1270,11 +1272,11 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
       end
 
       it 'contains badge with tooltip which contains error' do
-        expect(pipeline).to have_yaml_errors
+        expect(pipeline.error_messages).not_to be_empty
 
         within_testid('pipeline-header') do
           expect(page).to have_selector(
-            %(span[title="#{pipeline.yaml_errors}"]))
+            %(span[title="#{pipeline.error_messages.first.content}"]))
         end
       end
 

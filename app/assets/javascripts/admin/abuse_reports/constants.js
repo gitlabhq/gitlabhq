@@ -25,7 +25,7 @@ export const FILTERED_SEARCH_TOKEN_USER = {
 export const FILTERED_SEARCH_TOKEN_REPORTER = {
   ...FILTERED_SEARCH_TOKEN_USER,
   type: 'reporter',
-  title: __('Reporter'),
+  title: s__('AbuseReport|Reporter'),
 };
 
 export const FILTERED_SEARCH_TOKEN_STATUS = {
@@ -115,7 +115,7 @@ export const ABUSE_CATEGORIES = {
   },
   copyright: {
     backgroundColor: '#c3e6cd',
-    textColor: 'gl-text-green-700',
+    textColor: 'gl-text-success',
     title: s__('AbuseReport|Copyright or trademark violation'),
   },
   malware: {

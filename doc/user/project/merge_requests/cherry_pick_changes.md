@@ -2,14 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Cherry-pick a Git commit when you want to add a single commit from one branch to another."
+description: Cherry-pick a Git commit when you want to add a single commit from one branch to another.
+title: Cherry-pick changes
 ---
 
-# Cherry-pick changes
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In Git, *cherry-picking* is taking a single commit from one branch and adding it
 as the latest commit on another branch. The rest of the commits in the source branch
@@ -54,7 +56,7 @@ Prerequisites:
 
 - You must have a role for the project that allows you to edit merge requests, and add
   code to the repository.
-- Your project must use the [merge method](methods/index.md#fast-forward-merge) **Merge Commit**,
+- Your project must use the [merge method](methods/_index.md#fast-forward-merge) **Merge Commit**,
   which is set in the project's **Settings > Merge requests**.
 
   [In GitLab 16.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/142152), fast-forwarded
@@ -108,7 +110,7 @@ when you view that file in your project's Git repository:
 ## View system notes for cherry-picked commits
 
 When you cherry-pick a merge commit in the GitLab UI or API, GitLab adds a [system note](../system_notes.md)
-to the related merge request thread. The format is **{cherry-pick-commit}**
+to the related merge request thread. The format is {{< icon name="cherry-pick-commit" >}}
 `[USER]` **picked the changes into the branch** `[BRANCHNAME]` with commit** `[SHA]` `[DATE]`:
 
 ![Cherry-pick tracking in merge request timeline](img/cherry_pick_mr_timeline_v15_4.png)

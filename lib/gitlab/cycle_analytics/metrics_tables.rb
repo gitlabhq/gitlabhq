@@ -11,12 +11,12 @@ module Gitlab
         MergeRequest.arel_table
       end
 
-      def mr_diff_table
-        MergeRequestDiff.arel_table
+      def mr_approval_metrics_table
+        MergeRequest::ApprovalMetrics.arel_table
       end
 
-      def mr_diff_commits_table
-        MergeRequestDiffCommit.arel_table
+      def mr_diff_table
+        MergeRequestDiff.arel_table
       end
 
       def mr_closing_issues_table

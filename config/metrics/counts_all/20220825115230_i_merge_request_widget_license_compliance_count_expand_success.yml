@@ -18,9 +18,6 @@ events:
   filter:
     label: license_compliance
     property: success
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

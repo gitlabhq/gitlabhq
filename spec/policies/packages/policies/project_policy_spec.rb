@@ -48,7 +48,7 @@ RSpec.describe Packages::Policies::ProjectPolicy, feature_category: :package_reg
 
       ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:anonymous)  | false
       ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:non_member) | false
-      ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:guest)      | false
+      ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:guest)      | true
       ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:reporter)   | true
       ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:developer)  | true
       ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:maintainer) | true
@@ -120,6 +120,17 @@ RSpec.describe Packages::Policies::ProjectPolicy, feature_category: :package_reg
           is_expected.to be_disallowed(:read_package)
         end
       end
+    end
+
+    context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+      let(:project) { private_project }
+      let(:current_user) { guest }
+
+      before do
+        stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+      end
+
+      it { is_expected.to be_disallowed(:read_package) }
     end
 
     context 'with admin' do

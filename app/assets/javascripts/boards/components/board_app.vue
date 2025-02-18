@@ -49,6 +49,7 @@ export default {
       addColumnFormVisible: false,
       isShowingEpicsSwimlanes: false,
       error: null,
+      isWorkItemDrawerOpened: false,
     };
   },
   apollo: {
@@ -92,6 +93,7 @@ export default {
 
   computed: {
     issuesDrawerEnabled() {
+      if (gon.current_user_use_work_items_view) return true;
       return Boolean(
         this.isIssueBoard ? this.glFeatures.issuesListDrawer : this.glFeatures.epicsListDrawer,
       );
@@ -141,6 +143,7 @@ export default {
     },
     setActiveId(id) {
       this.activeListId = id;
+      if (!id) this.isWorkItemDrawerOpened = false;
     },
     switchBoard(id) {
       this.boardId = id;
@@ -225,7 +228,7 @@ export default {
     <board-content
       :class="{
         'lg:gl-w-[calc(100%-480px)] xl:gl-w-[calc(100%-768px)] min-[1440px]:gl-w-[calc(100%-912px)]':
-          isAnySidebarOpen && issuesDrawerEnabled,
+          isAnySidebarOpen && issuesDrawerEnabled && isWorkItemDrawerOpened,
       }"
       :board-id="boardId"
       :add-column-form-visible="addColumnFormVisible"
@@ -238,6 +241,8 @@ export default {
       @setActiveList="setActiveId"
       @setAddColumnFormVisibility="addColumnFormVisible = $event"
       @setFilters="setFilters"
+      @drawer-closed="isWorkItemDrawerOpened = false"
+      @drawer-opened="isWorkItemDrawerOpened = true"
     />
     <board-settings-sidebar
       v-if="activeList"

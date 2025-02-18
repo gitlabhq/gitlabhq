@@ -6,13 +6,13 @@
   reporter: lohrc
   stage: data_stores
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/443347
-  impact: [low]
-  scope: [group]
+  impact: low
+  scope: group
   tiers: [core, premium, ultimate]
   body: |  # (required) Don't change this line.
     Group owners can access a project page in the group settings that lists the projects the group contains, with options to create, edit, or delete a project, as well as a link to the Members page for each project.
     All of this functionality is available on the group overview page and the respective Member pages of the projects.
     Due to low usage of the project page in the group settings and its limited accessibility, this page will be deprecated.
-    This change affects only the user interface. The underlying API will remain available, so project creation, edits, and deletions can still be performed using the [Projects API](https://docs.gitlab.com/ee/api/projects.html).
+    This change affects only the user interface. The underlying API will remain available, so project creation, edits, and deletions can still be performed using the [Projects API](https://docs.gitlab.com/api/projects/).
     In 17.9, we will implement a redirect to the group overview page from this page.
     The project page will be removed entirely from the group settings in 18.0.

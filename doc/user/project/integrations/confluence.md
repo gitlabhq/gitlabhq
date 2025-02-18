@@ -2,17 +2,19 @@
 stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Confluence Workspace
 ---
 
-# Confluence Workspace
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use a Confluence Cloud Workspace as your project wiki.
 
-This integration adds a link to a Confluence wiki instead of the [GitLab wiki](../wiki/index.md).
+This integration adds a link to a Confluence wiki instead of the [GitLab wiki](../wiki/_index.md).
 Any content you have in Confluence is not displayed in GitLab.
 
 When you turn on the integration:
@@ -52,8 +54,11 @@ If the integration has been turned on for the group, you can still turn it off f
 
 ### For all projects on the instance
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Prerequisites:
 

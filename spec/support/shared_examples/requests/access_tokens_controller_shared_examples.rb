@@ -35,18 +35,6 @@ RSpec.shared_examples 'GET resource access tokens available' do
     expect(assigns(:inactive_access_tokens_size)).to eq(3)
   end
 
-  context 'when retain_resource_access_token_user_after_revoke FF is disabled' do
-    before do
-      stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
-    end
-
-    it 'does not retrieve count of inactive access tokens' do
-      get_access_tokens
-
-      expect(assigns(:inactive_access_tokens_size)).to be_nil
-    end
-  end
-
   it 'returns for json response list of active access tokens' do
     get_access_tokens_json
 
@@ -121,14 +109,6 @@ RSpec.shared_examples 'GET inactive access tokens' do
 
   before_all do
     create(:personal_access_token, user: access_token_user)
-  end
-
-  context 'when retain_resource_access_token_user_after_revoke FF is disabled' do
-    before do
-      stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
-    end
-
-    it { expect(subject).to have_gitlab_http_status(:not_found) }
   end
 
   it 'returns list of inactive access tokens' do
@@ -232,44 +212,6 @@ RSpec.shared_examples 'POST resource access tokens available' do
 end
 
 RSpec.shared_examples 'PUT resource access tokens available' do
-  context "when retain bot user ff is disabled" do
-    before do
-      stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
-    end
-
-    it 'revokes the token' do
-      subject
-      expect(resource_access_token.reload).to be_revoked
-    end
-
-    it 'calls delete user worker' do
-      expect(DeleteUserWorker).to receive(:perform_async).with(
-        user.id,
-        access_token_user.id,
-        skip_authorization: true, reason_for_deletion: "Access token revoked"
-      )
-
-      subject
-    end
-
-    it 'removes membership of bot user' do
-      subject
-
-      resource_bots = if resource.is_a?(Project)
-                        resource.bots
-                      elsif resource.is_a?(Group)
-                        User.bots.id_in(resource.all_group_members.non_invite.pluck(:user_id))
-                      end
-
-      expect(resource_bots).not_to include(access_token_user)
-    end
-
-    it 'creates GhostUserMigration records to handle migration in a worker' do
-      expect { subject }.to(
-        change { Users::GhostUserMigration.count }.from(0).to(1))
-    end
-  end
-
   it 'revokes the token' do
     subject
     expect(resource_access_token.reload).to be_revoked

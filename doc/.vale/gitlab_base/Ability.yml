@@ -7,6 +7,7 @@
 extends: existence
 message: "Try to replace ('%s') with more precise language, unless this content is about security. See the word list for details."
 ignorecase: true
+vocab: false
 level: suggestion
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#ability-able
 tokens:

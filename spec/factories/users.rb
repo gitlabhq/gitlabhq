@@ -23,7 +23,9 @@ FactoryBot.define do
 
       if assign_ns
         org = user&.namespace&.organization ||
-          Organizations::Organization.order(:created_at).first ||
+          Organizations::Organization
+            .where(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+            .order(:created_at).first ||
           # We create an organization next even though we are building here. We need to ensure
           # that an organization exists so other entities can belong to the same organization
           create(:organization)
@@ -119,6 +121,7 @@ FactoryBot.define do
       name { 'Service account user' }
       user_type { :service_account }
       skip_confirmation { true }
+      email { "#{User::SERVICE_ACCOUNT_PREFIX}_#{generate(:username)}@#{User::NOREPLY_EMAIL_DOMAIN}" }
     end
 
     trait :migration_bot do
@@ -131,6 +134,10 @@ FactoryBot.define do
 
     trait :llm_bot do
       user_type { :llm_bot }
+    end
+
+    trait :ci_pipeline_bot do
+      user_type { :ci_pipeline_bot }
     end
 
     trait :duo_code_review_bot do

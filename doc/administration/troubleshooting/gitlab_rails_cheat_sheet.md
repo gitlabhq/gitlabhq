@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Rails Console Cheat Sheet
 ---
 
-# GitLab Rails Console Cheat Sheet
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This was the GitLab Support Team's collection of information regarding the GitLab Rails
 console, for use while troubleshooting. It is listed here for posterity,
@@ -22,19 +24,24 @@ our guide on [the Rails console](../operations/rails_console.md),
 and your [support options](https://about.gitlab.com/support/),
 before attempting the information pointed to from here.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Some of these scripts could be damaging if not run correctly,
 or under the right conditions. We highly recommend running them under the
 guidance of a Support Engineer, or running them in a test environment with a
 backup of the instance ready to be restored, just in case.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 As GitLab changes, changes to the code are inevitable,
 and so some scripts may not work as they once used to. These are not kept
 up-to-date as these scripts/commands were added as they were found/needed. As
 mentioned above, we recommend running these scripts under the supervision of a
 Support Engineer, who can also verify that they continue to work as they
 should and, if needed, update the script for the latest version of GitLab.
+{{< /alert >}}
 
 ## Mirrors
 
@@ -60,11 +67,11 @@ This content has been moved to [Activate GitLab EE with a license file or key](.
 
 ### Registry Disk Space Usage by Project
 
-Find this content in the [container registry troubleshooting documentation](../packages/container_registry.md#registry-disk-space-usage-by-project).
+To view storage space by project in the container registry, see [Registry Disk Space Usage by Project](../packages/container_registry.md#registry-disk-space-usage-by-project).
 
-### Run the Cleanup policy now
+### Run the cleanup policy
 
-Find this content in the [container registry troubleshooting documentation](../packages/container_registry.md#run-the-cleanup-policy-now).
+To reduce storage space in the container registry, see [Run the cleanup policy](../packages/container_registry.md#run-the-cleanup-policy).
 
 ## Sidekiq
 
@@ -74,25 +81,25 @@ This content has been moved to [Troubleshooting Sidekiq](../sidekiq/sidekiq_trou
 
 ### Reverify all uploads (or any SSF data type which is verified)
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#reverify-all-uploads-or-any-ssf-data-type-which-is-verified).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#resync-and-reverify-multiple-components).
 
 ### Artifacts
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#resync-and-reverify-individual-components).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).
 
 ### Repository verification failures
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#find-repository-verification-failures).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).
 
 ### Resync repositories
 
-Moved to [Geo replication troubleshooting - Resync repository types](../geo/replication/troubleshooting/synchronization_verification.md#resync-and-reverify-individual-components).
+Moved to [Geo replication troubleshooting - Resync repository types](../geo/replication/troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).
 
-Moved to [Geo replication troubleshooting - Resync project and project wiki repositories](../geo/replication/troubleshooting/synchronization_verification.md#resync-project-and-project-wiki-repositories).
+Moved to [Geo replication troubleshooting - Resync project and project wiki repositories](../geo/replication/troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).
 
 ### Blob types
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#resync-and-reverify-individual-components).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).
 
 ## Generate Service Ping
 

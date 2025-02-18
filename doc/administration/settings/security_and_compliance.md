@@ -2,19 +2,21 @@
 stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Security and compliance Admin area settings
 ---
 
-# Security and compliance Admin area settings
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
 
-The settings for package metadata synchronization are located in the [**Admin** area](index.md).
+{{< /details >}}
+
+The settings for package metadata synchronization are located in the [**Admin** area](_index.md).
 
 ## Choose package registry metadata to sync
 
-To choose the packages you want to synchronize with the GitLab Package Metadata Database for [License Compliance](../../user/compliance/license_scanning_of_cyclonedx_files/index.md) and [Continuous Vulnerability Scanning](../../user/application_security/continuous_vulnerability_scanning/index.md):
+To choose the packages you want to synchronize with the GitLab Package Metadata Database for [License Compliance](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md) and [Continuous Vulnerability Scanning](../../user/application_security/continuous_vulnerability_scanning/_index.md):
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Security and compliance**.

@@ -1,11 +1,11 @@
 - form = local_assigns.fetch(:form)
 
 .form-group
-  %b= s_('ProjectSettings|Merge suggestions')
-  %p.gl-text-subtle
+  = form.label :suggestion_commit_message, s_('ProjectSettings|Merge suggestions'), class: 'gl-mb-0'
+  %p.gl-text-subtle{ id: :suggestion_commit_message_description }
     = s_('ProjectSettings|The commit message used when applying merge request suggestions.')
   .mb-2
-    = form.text_area :suggestion_commit_message, class: 'form-control gl-form-input', rows: 4, placeholder: Gitlab::Suggestions::CommitMessage::DEFAULT_SUGGESTION_COMMIT_MESSAGE
+    = form.text_area :suggestion_commit_message, class: 'form-control gl-form-input', rows: 4, aria: { describedby: :suggestion_commit_message_description }, placeholder: Gitlab::Suggestions::CommitMessage::DEFAULT_SUGGESTION_COMMIT_MESSAGE
     %p.form-text.gl-text-subtle
       = s_('ProjectSettings|Leave empty to use default template.')
       = sprintf(s_('ProjectSettings|Maximum %{maxLength} characters.'), { maxLength: Project::MAX_SUGGESTIONS_TEMPLATE_LENGTH })

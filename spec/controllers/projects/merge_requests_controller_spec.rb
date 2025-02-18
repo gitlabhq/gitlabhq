@@ -89,6 +89,40 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       end
     end
 
+    context 'when the merge request has auto merge enabled' do
+      let(:merge_request) { create(:merge_request_with_diffs, :merge_when_checks_pass, target_project: project, source_project: merge_request_source_project, allow_collaboration: false) }
+
+      context 'when the merge request is mergeable' do
+        let(:pipeline) { create(:ci_pipeline, :success) }
+
+        before do
+          merge_request.update_attribute(:head_pipeline_id, pipeline.id)
+        end
+
+        it 'calls the auto merge process worker async' do
+          expect { go }.to publish_event(MergeRequests::MergeableEvent)
+            .with(merge_request_id: merge_request.id)
+        end
+
+        context 'when process_auto_merge_on_load is off' do
+          before do
+            stub_feature_flags(process_auto_merge_on_load: false)
+          end
+
+          it 'does not call the auto merge process worker' do
+            expect { go }.not_to publish_event(MergeRequests::MergeableEvent)
+          end
+        end
+      end
+
+      context 'when the merge request is not mergeable' do
+        it 'does not call the auto merge process worker' do
+          merge_request.update!(title: "Draft: #{merge_request.title}")
+          expect { go }.not_to publish_event(MergeRequests::MergeableEvent)
+        end
+      end
+    end
+
     describe 'as html' do
       it 'sets the endpoint_metadata_url' do
         go
@@ -363,67 +397,79 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       }
     end
 
-    context 'when the test is flaky', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450217' do
-      it_behaves_like "issuables list meta-data", :merge_request
+    it 'renders merge requests index template' do
+      get_merge_requests
+
+      expect(response).to render_template('projects/merge_requests/index')
     end
 
-    it_behaves_like 'set sort order from user preference' do
-      let(:sorting_param) { 'updated_asc' }
-    end
-
-    context 'when page param' do
-      let(:last_page) { project.merge_requests.page.total_pages }
-      let!(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
-
-      it 'redirects to last_page if page number is larger than number of pages' do
-        get_merge_requests(last_page + 1)
-
-        expect(response).to redirect_to(project_merge_requests_path(project, page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
+    context 'when vue_merge_request_list is disabled' do
+      before do
+        stub_feature_flags(vue_merge_request_list: false)
       end
 
-      it 'redirects to specified page' do
-        get_merge_requests(last_page)
-
-        expect(assigns(:merge_requests).current_page).to eq(last_page)
-        expect(response).to have_gitlab_http_status(:ok)
+      context 'when the test is flaky', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450217' do
+        it_behaves_like "issuables list meta-data", :merge_request
       end
 
-      it 'does not redirect to external sites when provided a host field' do
-        external_host = "www.example.com"
-        get :index,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            state: 'opened',
-            page: (last_page + 1).to_param,
-            host: external_host
-          }
-
-        expect(response).to redirect_to(project_merge_requests_path(project, page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
+      it_behaves_like 'set sort order from user preference' do
+        let(:sorting_param) { 'updated_asc' }
       end
-    end
 
-    context 'when filtering by opened state' do
-      context 'with opened merge requests' do
-        it 'lists those merge requests' do
-          expect(merge_request).to be_persisted
+      context 'when page param' do
+        let(:last_page) { project.merge_requests.page.total_pages }
+        let!(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
 
-          get_merge_requests
+        it 'redirects to last_page if page number is larger than number of pages' do
+          get_merge_requests(last_page + 1)
 
-          expect(assigns(:merge_requests)).to include(merge_request)
+          expect(response).to redirect_to(project_merge_requests_path(project, page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
+        end
+
+        it 'redirects to specified page' do
+          get_merge_requests(last_page)
+
+          expect(assigns(:merge_requests).current_page).to eq(last_page)
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it 'does not redirect to external sites when provided a host field' do
+          external_host = "www.example.com"
+          get :index,
+            params: {
+              namespace_id: project.namespace.to_param,
+              project_id: project,
+              state: 'opened',
+              page: (last_page + 1).to_param,
+              host: external_host
+            }
+
+          expect(response).to redirect_to(project_merge_requests_path(project, page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
         end
       end
 
-      context 'with reopened merge requests' do
-        before do
-          merge_request.close!
-          merge_request.reopen!
+      context 'when filtering by opened state' do
+        context 'with opened merge requests' do
+          it 'lists those merge requests' do
+            expect(merge_request).to be_persisted
+
+            get_merge_requests
+
+            expect(assigns(:merge_requests)).to include(merge_request)
+          end
         end
 
-        it 'lists those merge requests' do
-          get_merge_requests
+        context 'with reopened merge requests' do
+          before do
+            merge_request.close!
+            merge_request.reopen!
+          end
 
-          expect(assigns(:merge_requests)).to include(merge_request)
+          it 'lists those merge requests' do
+            get_merge_requests
+
+            expect(assigns(:merge_requests)).to include(merge_request)
+          end
         end
       end
     end

@@ -1,5 +1,8 @@
 <script>
-import { GlButton, GlIcon, GlAlert, GlTabs, GlTab, GlLink } from '@gitlab/ui';
+import { GlButton, GlAlert, GlTabs, GlTab, GlLink, GlBanner } from '@gitlab/ui';
+import mergeRequestIllustration from '@gitlab/svgs/dist/illustrations/merge-requests-sm.svg';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import TabTitle from './tab_title.vue';
 import MergeRequestsQuery from './merge_requests_query.vue';
 import CollapsibleSection from './collapsible_section.vue';
@@ -8,17 +11,18 @@ import MergeRequest from './merge_request.vue';
 export default {
   components: {
     GlButton,
-    GlIcon,
     GlAlert,
     GlTabs,
     GlTab,
     GlLink,
+    GlBanner,
+    UserCalloutDismisser,
     TabTitle,
     MergeRequestsQuery,
     CollapsibleSection,
     MergeRequest,
   },
-  inject: ['mergeRequestsSearchDashboardPath', 'newListsEnabled'],
+  inject: ['mergeRequestsSearchDashboardPath'],
   props: {
     tabs: {
       type: Array,
@@ -42,11 +46,34 @@ export default {
         .map((list) => ({ query: list.query, variables: list.variables }));
     },
   },
+  mergeRequestIllustration,
+  docsPath: helpPagePath('/tutorials/merge_requests/homepage.html'),
 };
 </script>
 
 <template>
   <div>
+    <user-callout-dismisser feature-name="new_merge_request_dashboard_welcome">
+      <template #default="{ shouldShowCallout, dismiss }">
+        <gl-banner
+          v-if="shouldShowCallout"
+          :title="__('New, streamlined merge request homepage!')"
+          variant="introduction"
+          :button-text="__('See how it works')"
+          :button-link="$options.docsPath"
+          :svg-path="$options.mergeRequestIllustration"
+          @close="dismiss"
+        >
+          <p>
+            {{
+              __(
+                "Welcome to the new merge request homepage! This page gives you a centralized view of all the merge requests you're working on. Know at a glance what merge requests need your attention first so you can spend less time checking in, and more time reviewing and responding to feedback.",
+              )
+            }}
+          </p>
+        </gl-banner>
+      </template>
+    </user-callout-dismisser>
     <gl-tabs no-key-nav>
       <gl-tab
         v-for="tab in tabs"
@@ -60,19 +87,18 @@ export default {
         </template>
         <div v-for="(lists, i) in tab.lists" :key="`lists_${i}`">
           <div
-            v-if="i === 1 && newListsEnabled"
-            class="gl-mt-8 gl-rounded-base gl-bg-gray-50 gl-px-4 gl-py-2 gl-font-bold gl-text-subtle"
+            v-if="i === 1"
+            class="gl-mb-5 gl-mt-8 gl-rounded-base gl-bg-strong gl-px-4 gl-py-2 gl-font-bold gl-text-subtle"
             data-testid="merge-request-count-explanation"
           >
             {{ __('Items below are excluded from the active count') }}
           </div>
           <merge-requests-query
-            v-for="list in lists"
+            v-for="(list, listIndex) in lists"
             :key="`list_${list.id}`"
             :query="list.query"
             :variables="list.variables"
             :hide-count="list.hideCount"
-            :class="{ '!gl-mt-3': i === 0 }"
           >
             <template #default="{ mergeRequests, count, hasNextPage, loadMore, loading, error }">
               <collapsible-section
@@ -81,37 +107,25 @@ export default {
                 :title="list.title"
                 :help-content="list.helpContent"
                 :loading="loading"
+                :class="{
+                  '!gl-mt-0': listIndex === 0,
+                  '!gl-mt-3': listIndex > 0,
+                }"
               >
                 <div>
                   <div class="gl-overflow-x-auto">
                     <table class="gl-w-full">
                       <colgroup>
-                        <col v-if="!newListsEnabled" style="width: 60px" />
-                        <col :style="newListsEnabled ? 'width: 210px;' : 'width: 70px;'" />
-                        <col
-                          :style="{ width: newListsEnabled ? '40%' : '47%', minWidth: '200px' }"
-                        />
+                        <col style="width: 210px" />
+                        <col :style="{ width: '40%', minWidth: '200px' }" />
                         <col style="width: 120px" />
                         <col style="width: 120px" />
-                        <col :style="newListsEnabled ? 'width: 220px;' : 'min-width: 200px;'" />
+                        <col style="width: 220px" />
                       </colgroup>
                       <thead class="gl-border-b gl-bg-subtle">
                         <tr>
-                          <th v-if="!newListsEnabled" class="gl-pb-3 gl-pl-5 gl-pr-3">
-                            <gl-icon name="pipeline" />
-                            <span class="gl-sr-only">{{ __('Pipeline status') }}</span>
-                          </th>
-                          <th
-                            class="gl-px-3 gl-pb-3"
-                            :class="{ 'gl-text-sm gl-text-subtle': newListsEnabled }"
-                          >
-                            <template v-if="newListsEnabled">
-                              {{ __('Status') }}
-                            </template>
-                            <template v-else>
-                              <gl-icon name="approval" />
-                              <span class="gl-sr-only">{{ __('Approvals') }}</span>
-                            </template>
+                          <th class="gl-pb-3 gl-pl-5 gl-pr-3 gl-text-sm gl-text-subtle">
+                            {{ __('Status') }}
                           </th>
                           <th class="gl-px-3 gl-pb-3 gl-text-sm gl-text-subtle">
                             {{ __('Title') }}
@@ -125,12 +139,7 @@ export default {
                           <th
                             class="gl-pb-3 gl-pl-3 gl-pr-5 gl-text-right gl-text-sm gl-text-subtle"
                           >
-                            <template v-if="newListsEnabled">
-                              {{ __('Checks') }}
-                            </template>
-                            <template v-else>
-                              {{ __('Activity') }}
-                            </template>
+                            {{ __('Checks') }}
                           </th>
                         </tr>
                       </thead>
@@ -146,10 +155,7 @@ export default {
                           />
                         </template>
                         <tr v-else>
-                          <td
-                            :colspan="newListsEnabled ? 5 : 6"
-                            :class="{ 'gl-py-6 gl-text-center': !error }"
-                          >
+                          <td colspan="5" :class="{ 'gl-py-6 gl-text-center': !error }">
                             <template v-if="loading">
                               {{ __('Loading...') }}
                             </template>
@@ -195,11 +201,12 @@ export default {
       </template>
     </gl-tabs>
     <div class="gl-mt-6 gl-text-center">
-      <gl-link v-if="newListsEnabled" href="https://gitlab.com/gitlab-org/gitlab/-/issues/512314">
+      <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/515912">
         {{ __('Leave feedback') }}
       </gl-link>
-      <gl-link v-else href="https://gitlab.com/gitlab-org/gitlab/-/issues/497573">
-        {{ __('Leave feedback') }}
+      <span class="gl-mx-2">|</span>
+      <gl-link :href="$options.docsPath">
+        {{ __('Documentation') }}
       </gl-link>
     </div>
   </div>

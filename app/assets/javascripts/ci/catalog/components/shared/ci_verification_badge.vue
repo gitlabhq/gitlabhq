@@ -13,7 +13,7 @@ export default {
     verifiedCreatorPopoverLink: s__('CiCatalog|What are verified component creators?'),
     verificationLevelPopoverLink: s__('CiCatalog|Learn more about designated creators'),
   },
-  verificationHelpPagePath: helpPagePath('ci/components/index', {
+  verificationHelpPagePath: helpPagePath('ci/components/_index', {
     anchor: 'verified-component-creators',
   }),
   verificationLevelOptions: VERIFICATION_LEVELS,

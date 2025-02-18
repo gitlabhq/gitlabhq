@@ -41,24 +41,9 @@ module Gitlab
       # Check that the DPoP is signed with a SSH key belonging to the user
       def valid_token_for_user!
         user_public_key = signing_key_for_user!
-        algorithm = algorithm_for_dpop_validation(user_public_key)
         openssh_public_key = convert_public_key_to_openssh_key!(user_public_key)
 
-        # Decode the JSON token again, this time with the key,
-        # the expected algorithm, verifying all the timestamps, etc
-        # Overwrites the attrs, in case .decode returns a different result
-        # when verify is true.
-        payload, header = JWT.decode(
-          token.data,
-          openssh_public_key,
-          true,
-          {
-            required_claims: %w[exp ath iat],
-            algorithm: algorithm,
-            verify_iat: true
-          }
-        )
-
+        payload, header = decode_json_token!(user_public_key, openssh_public_key)
         raise Gitlab::Auth::DpopValidationError, 'Unable to decode JWT' if payload.nil? || header.nil?
 
         jwk = header['jwk']
@@ -70,6 +55,27 @@ module Gitlab
         rescue StandardError => e
           raise Gitlab::Auth::DpopValidationError, e
         end
+      end
+
+      def decode_json_token!(user_public_key, openssh_public_key)
+        # Decode the JSON token again, this time with the key,
+        # the expected algorithm, verifying all the timestamps, etc
+        # Overwrites the attrs, in case .decode returns a different result
+        # when verify is true.
+        algorithm = algorithm_for_dpop_validation(user_public_key)
+
+        JWT.decode(
+          token.data,
+          openssh_public_key,
+          true,
+          {
+            required_claims: %w[exp ath iat],
+            algorithm: algorithm,
+            verify_iat: true
+          }
+        )
+      rescue JWT::DecodeError => e
+        raise Gitlab::Auth::DpopValidationError, "Malformed JWT, unable to decode. #{e.message}"
       end
 
       def signing_key_for_user!

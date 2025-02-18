@@ -40,7 +40,7 @@ RSpec.describe 'getting a package list for a group', feature_category: :package_
     it 'returns an error for the second group and data for the first' do
       expect(a_packages_names).to contain_exactly(group_one_package.name)
       expect_graphql_errors_to_include [/"packages" field can be requested only for 1 Group\(s\) at a time./]
-      expect(graphql_data_at(:b, :packages)).to be(nil)
+      expect(graphql_data_at(:b, :packages)).to be_nil
     end
   end
 

@@ -26,6 +26,7 @@ const initShowExperiment = () => {
     pageInfo,
     emptyStateSvgPath,
     mlflowTrackingUrl,
+    canWriteModelExperiments,
   } = element.dataset;
 
   const props = {
@@ -36,10 +37,12 @@ const initShowExperiment = () => {
     pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),
     emptyStateSvgPath,
     mlflowTrackingUrl,
+    canWriteModelExperiments: Boolean(canWriteModelExperiments),
   };
 
   return new Vue({
     el: element,
+    name: 'MlExperimentsShow',
     apolloProvider,
     render(h) {
       return h(MlExperimentsShow, { props });

@@ -9,7 +9,7 @@ module Types
           graphql_name 'WorkItemWidgetTimeTracking'
           description 'Represents a time tracking widget'
 
-          implements Types::WorkItems::WidgetInterface
+          implements ::Types::WorkItems::WidgetInterface
 
           field :time_estimate, GraphQL::Types::Int,
             null: true,
@@ -18,7 +18,7 @@ module Types
             null: true,
             description: 'Total time (in seconds) reported as spent on the work item.'
 
-          field :timelogs, Types::WorkItems::Widgets::TimeTracking::TimelogType.connection_type,
+          field :timelogs, ::Types::WorkItems::Widgets::TimeTracking::TimelogType.connection_type,
             null: true,
             description: 'Timelogs on the work item.'
         end

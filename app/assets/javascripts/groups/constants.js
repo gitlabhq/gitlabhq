@@ -1,9 +1,16 @@
 import { __, s__ } from '~/locale';
+import {
+  SORT_LABEL_NAME,
+  SORT_LABEL_CREATED,
+  SORT_LABEL_UPDATED,
+  SORT_LABEL_STARS,
+} from '~/groups_projects/constants';
 
 export const MAX_CHILDREN_COUNT = 20;
 
 export const ACTIVE_TAB_SUBGROUPS_AND_PROJECTS = 'subgroups_and_projects';
 export const ACTIVE_TAB_SHARED = 'shared';
+export const ACTIVE_TAB_SHARED_GROUPS = 'shared_groups';
 export const ACTIVE_TAB_INACTIVE = 'inactive';
 
 export const COMMON_STR = {
@@ -23,25 +30,25 @@ export const ITEM_TYPE = {
 };
 
 export const SORTING_ITEM_NAME = {
-  label: __('Name'),
+  label: SORT_LABEL_NAME,
   asc: 'name_asc',
   desc: 'name_desc',
 };
 
 export const SORTING_ITEM_CREATED = {
-  label: __('Created date'),
+  label: SORT_LABEL_CREATED,
   asc: 'created_asc',
   desc: 'created_desc',
 };
 
 export const SORTING_ITEM_UPDATED = {
-  label: __('Updated date'),
+  label: SORT_LABEL_UPDATED,
   asc: 'latest_activity_asc',
   desc: 'latest_activity_desc',
 };
 
 export const SORTING_ITEM_STARS = {
-  label: __('Stars'),
+  label: SORT_LABEL_STARS,
   asc: 'stars_asc',
   desc: 'stars_desc',
 };

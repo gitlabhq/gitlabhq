@@ -86,6 +86,14 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
   end
 
   describe 'PUT /api/v4/projects/:id/packages/generic/:package_name/:package_version/(*path)/:file_name/authorize' do
+    it_behaves_like 'enforcing job token policies', :admin_packages do
+      before do
+        source_project.add_developer(user)
+      end
+
+      let(:request) { authorize_upload_file(workhorse_headers.merge(job_token_header(target_job.token))) }
+    end
+
     context 'with valid project' do
       where(:project_visibility, :user_role, :member?, :authenticate_with, :expected_status) do
         'PUBLIC'  | :developer | true  | :personal_access_token         | :success
@@ -187,7 +195,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
       it 'sends use_final_store_path with true' do
         expect(::Packages::PackageFileUploader).to receive(:workhorse_authorize).with(
-          hash_including(use_final_store_path: true, final_store_path_root_id: project.id)
+          hash_including(use_final_store_path: true, final_store_path_config: { root_hash: project.id })
         ).and_call_original
 
         authorize_upload_file(workhorse_headers.merge(personal_access_token_header))
@@ -206,6 +214,14 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
     let(:file_upload) { fixture_file_upload('spec/fixtures/packages/generic/myfile.tar.gz') }
     let(:params) { { file: file_upload } }
+
+    it_behaves_like 'enforcing job token policies', :admin_packages do
+      before do
+        source_project.add_developer(user)
+      end
+
+      let(:request) { upload_file(params, workhorse_headers.merge(job_token_header(target_job.token))) }
+    end
 
     context 'authentication' do
       where(:project_visibility, :user_role, :member?, :authenticate_with, :expected_status) do
@@ -546,44 +562,6 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
             it_behaves_like 'returns a bad request'
           end
-
-          context 'with packages_allow_duplicate_exceptions disabled' do
-            before do
-              stub_feature_flags(packages_allow_duplicate_exceptions: false)
-            end
-
-            it_behaves_like 'returns a bad request'
-
-            context 'when regex matches package name' do
-              before do
-                package_settings.update_column(
-                  :generic_duplicate_exception_regex,
-                  ".*#{existing_package.name.last(3)}.*"
-                )
-              end
-
-              it_behaves_like 'creates a new package'
-            end
-
-            context 'when regex matches package version' do
-              before do
-                package_settings.update_column(
-                  :generic_duplicate_exception_regex,
-                  ".*#{existing_package.version.last(3)}.*"
-                )
-              end
-
-              it_behaves_like 'creates a new package'
-            end
-
-            context 'when regex does not match package name or version' do
-              before do
-                package_settings.update_column(:generic_duplicate_exception_regex, ".*zzz.*")
-              end
-
-              it_behaves_like 'returns a bad request'
-            end
-          end
         end
 
         context 'when package duplicates are allowed' do
@@ -621,44 +599,6 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
             end
 
             it_behaves_like 'creates a new package'
-          end
-
-          context 'with packages_allow_duplicate_exceptions disabled' do
-            before do
-              stub_feature_flags(packages_allow_duplicate_exceptions: false)
-            end
-
-            it_behaves_like 'creates a new package'
-
-            context 'when regex matches package name' do
-              before do
-                package_settings.update_column(
-                  :generic_duplicate_exception_regex,
-                  ".*#{existing_package.name.last(3)}.*"
-                )
-              end
-
-              it_behaves_like 'creates a new package'
-            end
-
-            context 'when regex matches package version' do
-              before do
-                package_settings.update_column(
-                  :generic_duplicate_exception_regex,
-                  ".*#{existing_package.version.last(3)}.*"
-                )
-              end
-
-              it_behaves_like 'creates a new package'
-            end
-
-            context 'when regex does not match package name or version' do
-              before do
-                package_settings.update_column(:generic_duplicate_exception_regex, ".*zzz.*")
-              end
-
-              it_behaves_like 'creates a new package'
-            end
           end
         end
 
@@ -751,6 +691,16 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
     let_it_be(:package) { create(:generic_package, project: project) }
     let_it_be(:package_file) { create(:package_file, :generic, package: package) }
 
+    it_behaves_like 'enforcing job token policies', :read_packages do
+      before do
+        source_project.add_developer(user)
+      end
+
+      let(:request) do
+        download_file(job_token_header(target_job.token))
+      end
+    end
+
     context 'authentication' do
       where(:project_visibility, :user_role, :member?, :authenticate_with, :expected_status) do
         'PUBLIC'  | :developer | true  | :personal_access_token         | :success
@@ -771,9 +721,9 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
         'PUBLIC'  | :guest     | false | :invalid_user_basic_auth       | :success
         'PUBLIC'  | :anonymous | false | :none                          | :success
         'PRIVATE' | :developer | true  | :personal_access_token         | :success
-        'PRIVATE' | :guest     | true  | :personal_access_token         | :forbidden
+        'PRIVATE' | :guest     | true  | :personal_access_token         | :success
         'PRIVATE' | :developer | true  | :user_basic_auth               | :success
-        'PRIVATE' | :guest     | true  | :user_basic_auth               | :forbidden
+        'PRIVATE' | :guest     | true  | :user_basic_auth               | :success
         'PRIVATE' | :developer | true  | :invalid_personal_access_token | :unauthorized
         'PRIVATE' | :guest     | true  | :invalid_personal_access_token | :unauthorized
         'PRIVATE' | :developer | true  | :invalid_user_basic_auth       | :unauthorized

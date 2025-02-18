@@ -39,6 +39,13 @@ ci_group_variables:
   - table: namespaces
     column: group_id
     on_delete: async_delete
+ci_instance_runner_monthly_usages:
+  - table: namespaces
+    column: root_namespace_id
+    on_delete: async_delete
+  - table: projects
+    column: project_id
+    on_delete: async_nullify
 ci_job_token_authorizations:
   - table: projects
     column: origin_project_id
@@ -193,6 +200,13 @@ ci_unit_tests:
 ci_variables:
   - table: projects
     column: project_id
+    on_delete: async_delete
+clusters_managed_resources:
+  - table: p_ci_builds
+    column: build_id
+    on_delete: async_delete  
+  - table: ci_builds
+    column: build_id
     on_delete: async_delete
 country_access_logs:
   - table: users
@@ -594,22 +608,6 @@ virtual_registries_packages_maven_cache_entries:
     on_delete: update_column_to
     target_column: status
     target_value: 2
-  - table: namespaces
-    column: group_id
-    on_delete: update_column_to
-    target_column: status
-    target_value: 2
-virtual_registries_packages_maven_cached_responses:
-  - table: virtual_registries_packages_maven_upstreams
-    column: upstream_id
-    on_delete: update_column_to
-    target_column: status
-    target_value: 2
-  - table: namespaces
-    column: group_id
-    on_delete: update_column_to
-    target_column: status
-    target_value: 2
 vulnerabilities:
   - table: users
     column: dismissed_by_id
@@ -623,6 +621,14 @@ vulnerabilities:
   - table: users
     column: author_id
     on_delete: async_delete
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+vulnerability_archived_records:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+vulnerability_archives:
   - table: projects
     column: project_id
     on_delete: async_delete
@@ -749,6 +755,13 @@ vulnerability_scanners:
   - table: projects
     column: project_id
     on_delete: async_delete
+vulnerability_severity_overrides:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: users
+    column: author_id
+    on_delete: async_nullify
 vulnerability_state_transitions:
   - table: projects
     column: project_id

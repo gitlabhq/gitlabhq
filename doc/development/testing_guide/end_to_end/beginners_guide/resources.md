@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Resource classes in GitLab QA
 ---
-
-# Resource classes in GitLab QA
 
 Resources are primarily created using Browser UI steps, but can also be created via the API or the CLI.
 
@@ -49,7 +48,7 @@ create the resource via the public GitLab API:
 - `#api_post_path`: The `POST` path to create a new resource.
 - `#api_post_body`: The `POST` body (as a Ruby hash) to create a new resource.
 
-> Be aware that many API resources are [paginated](../../../../api/rest/index.md#pagination).
+> Be aware that many API resources are [paginated](../../../../api/rest/_index.md#pagination).
 > If you don't find the results you expect, check if there is more that one page of results.
 
 Let's take the `Shirt` resource class, and add these three API methods:

@@ -208,7 +208,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter, feature_categ
       expect(importer).to receive(:validate_repository_size!)
 
       service = double
-      expect(Repositories::HousekeepingService)
+      expect(::Repositories::HousekeepingService)
         .to receive(:new).with(project, :gc).and_return(service)
       expect(service).to receive(:execute)
 

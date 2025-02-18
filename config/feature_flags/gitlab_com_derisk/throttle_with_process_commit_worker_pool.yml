@@ -1,9 +1,0 @@
----
-name: throttle_with_process_commit_worker_pool
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/472602
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171786
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/502783
-milestone: '17.6'
-group: group::source code
-type: gitlab_com_derisk
-default_enabled: false

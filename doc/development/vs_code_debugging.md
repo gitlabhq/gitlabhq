@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: VS Code debugging
 ---
-
-# VS Code debugging
 
 This document describes how to set up Rails debugging in [Visual Studio Code (VS Code)](https://code.visualstudio.com/) using the [GitLab Development Kit (GDK)](contributing/first_contribution/configure-dev-env-gdk.md).
 
@@ -86,8 +85,11 @@ The examples below contain launch configurations for `rails-web` and `rails-back
    }
    ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 The VS Code Ruby extension might have issues finding the correct Ruby installation and the appropriate `rdbg` command. In this case, add `"rdbgPath": "/home/user/.asdf/shims/` (in the case of asdf) to the launch configuration above.
+
+{{< /alert >}}
 
 ## Debugging
 
@@ -99,4 +101,4 @@ To start debugging, do one of the following:
 
 - Press <kbd>F5</kbd>.
 - Run the `Debug: Start Debugging` command.
-- Open the [Run and Debug view](https://code.visualstudio.com/docs/editor/debugging#_run-and-debug-view), select one of the launch profiles, then select **Play** (**{play}**).
+- Open the [Run and Debug view](https://code.visualstudio.com/docs/editor/debugging#_run-and-debug-view), select one of the launch profiles, then select **Play** ({{< icon name="play" >}}).

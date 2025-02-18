@@ -2,19 +2,21 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Self-compiled installation
 ---
 
-# Self-compiled installation
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This is the official installation guide to set up a production GitLab server
 using the source files. It was created for and tested on **Debian/Ubuntu** operating systems.
 Read [requirements.md](requirements.md) for hardware and operating system requirements.
 If you want to install on RHEL/CentOS, you should use the [Linux packages](https://about.gitlab.com/install/).
-For many other installation options, see the [main installation page](index.md).
+For many other installation options, see the [main installation page](_index.md).
 
 This guide is long because it covers many cases and includes all commands you
 need, this is [one of the few installation scripts that actually work out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
@@ -77,7 +79,7 @@ The following directories are created as you go through the installation steps:
 - `/home/git/repositories` - Bare repositories for all projects organized by
   namespace. This is where the Git repositories which are pushed/pulled are
   maintained for all projects. **This area contains critical data for projects.
-  [Keep a backup](../administration/backup_restore/index.md).**
+  [Keep a backup](../administration/backup_restore/_index.md).**
 
 The default locations for repositories can be configured in `config/gitlab.yml`
 of GitLab and `config.yml` of GitLab Shell.
@@ -126,9 +128,12 @@ sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdb
   runit-systemd
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab requires OpenSSL version 1.1. If your Linux distribution includes a different version of OpenSSL,
 you might have to install 1.1 manually.
+
+{{< /alert >}}
 
 ### Git
 
@@ -283,7 +288,7 @@ sudo apt-get install -y nodejs
 npm install --global yarn
 ```
 
-Visit the official websites for [node](https://nodejs.org/en/download/package-manager/) and [yarn](https://classic.yarnpkg.com/en/docs/install/) if you have any trouble with these steps.
+Visit the official websites for [node](https://nodejs.org/en/download) and [yarn](https://classic.yarnpkg.com/en/docs/install/) if you have any trouble with these steps.
 
 ## 6. System users
 
@@ -295,9 +300,12 @@ sudo adduser --disabled-login --gecos 'GitLab' git
 
 ## 7. Database
 
-NOTE:
+{{< alert type="note" >}}
+
 Only PostgreSQL is supported.
 In GitLab 17.0 and later, we [require PostgreSQL 14+](requirements.md#postgresql).
+
+{{< /alert >}}
 
 1. Install the database packages.
 
@@ -537,8 +545,11 @@ Make sure to replace `<X-Y-stable>` with the stable branch that matches the
 version you want to install. For example, if you want to install 11.8 you would
 use the branch name `11-8-stable`.
 
-WARNING:
+{{< alert type="warning" >}}
+
 You can change `<X-Y-stable>` to `master` if you want the *bleeding edge* version, but never install `master` on a production server!
+
+{{< /alert >}}
 
 ### Configure It
 
@@ -604,9 +615,12 @@ If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional ste
 
 ### Configure GitLab DB Settings
 
-NOTE:
+{{< alert type="note" >}}
+
 From [GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/387898), `database.yml` with only a section: `main:` is deprecated.
 In GitLab 17.0 and later, you must have the two `main:` and `ci:` sections in your `database.yml`.
+
+{{< /alert >}}
 
 ```shell
 sudo -u git cp config/database.yml.postgresql config/database.yml
@@ -647,8 +661,11 @@ connection [must be to the same database](../administration/postgresql/multiple_
 
 ### Install Gems
 
-NOTE:
+{{< alert type="note" >}}
+
 As of Bundler 1.5.2, you can invoke `bundle install -jN` (where `N` is the number of your processor cores) and enjoy parallel gems installation with measurable difference in completion time (~60% faster). Check the number of your cores with `nproc`. For more information, see this [post](https://thoughtbot.com/blog/parallel-gem-installing-using-bundler).
+
+{{< /alert >}}
 
 Make sure you have `bundle` (run `bundle -v`):
 
@@ -700,9 +717,12 @@ sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workh
 
 ### Install GitLab-Elasticsearch-indexer on Enterprise Edition
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab-Elasticsearch-Indexer uses [GNU Make](https://www.gnu.org/software/make/). The
 following command-line installs GitLab-Elasticsearch-Indexer in `/home/git/gitlab-elasticsearch-indexer`
@@ -763,7 +783,7 @@ sudo -u git -H editor config.toml
 ```
 
 For more information about configuring Gitaly see
-[the Gitaly documentation](../administration/gitaly/index.md).
+[the Gitaly documentation](../administration/gitaly/_index.md).
 
 ### Install the service
 
@@ -976,7 +996,7 @@ sudo editor /etc/nginx/sites-available/gitlab
 
 If you intend to enable GitLab Pages, there is a separate NGINX configuration you need
 to use. Read all about the needed configuration at the
-[GitLab Pages administration guide](../administration/pages/index.md).
+[GitLab Pages administration guide](../administration/pages/_index.md).
 
 If you want to use HTTPS, replace the `gitlab` NGINX configuration with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
 
@@ -1029,8 +1049,11 @@ sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
 If all items are green, congratulations on successfully installing GitLab!
 
-NOTE:
+{{< alert type="note" >}}
+
 Supply the `SANITIZE=true` environment variable to `gitlab:check` to omit project names from the output of the check command.
+
+{{< /alert >}}
 
 ### Initial Login
 

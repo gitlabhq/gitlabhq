@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Hardening - Configuration Recommendations
 ---
-
-# Hardening - Configuration Recommendations
 
 General hardening guidelines are outlined in the [main hardening documentation](hardening.md).
 
@@ -111,7 +110,7 @@ under [Configuring Git Protocol](../administration/git_protocol.md).
 
 ## Incoming Email
 
-You can configure a GitLab self-managed instance to allow for incoming email to be
+You can configure GitLab Self-Managed to allow for incoming email to be
 used for commenting or creating issues and merge requests by registered users on
 the GitLab instance. In a hardened environment you should not configure
 this feature as it involves outside communications sending in information.
@@ -136,9 +135,9 @@ nodes that only allow the other node to access those particular ports.
 
 ## Sidekiq Configuration
 
-In the [instructions for configuring an external Sidekiq](../administration/sidekiq/index.md)
+In the [instructions for configuring an external Sidekiq](../administration/sidekiq/_index.md)
 there are numerous references to configuring IP ranges. You must
-[configure HTTPS](../administration/sidekiq/index.md#enable-https),
+[configure HTTPS](../administration/sidekiq/_index.md#enable-https),
 and consider restricting those IP addresses to specific systems that Sidekiq talks to.
 You might have to adjust firewall rules at the operating system level as well.
 

@@ -91,7 +91,7 @@ export const typeConfig = {
     keyNamespace: 'gpgKeyPrimaryKeyid',
     helpLink: {
       label: __('Learn about signing commits'),
-      path: 'user/project/repository/signed_commits/index.md',
+      path: 'user/project/repository/signed_commits/_index.md',
     },
   },
   [signatureTypes.X509]: {

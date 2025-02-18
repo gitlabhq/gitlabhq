@@ -135,3 +135,5 @@ module Banzai
     end
   end
 end
+
+Banzai::Filter::IssuableReferenceExpansionFilter.prepend_mod

@@ -2,18 +2,24 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Integrate GitLab with GitGuardian to get alerts for policy violations and security issues before they can be exploited."
+description: Integrate GitLab with GitGuardian to get alerts for policy violations and security issues before they can be exploited.
+title: GitGuardian
 ---
 
-# GitGuardian
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435706) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `git_guardian_integration`. Enabled by default. Disabled on GitLab.com.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/438695#note_2226917025) in GitLab 17.7.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176391) in GitLab 17.8. Feature flag `git_guardian_integration` removed.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435706) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `git_guardian_integration`. Enabled by default. Disabled on GitLab.com.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/438695#note_2226917025) in GitLab 17.7.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176391) in GitLab 17.8. Feature flag `git_guardian_integration` removed.
+
+{{< /history >}}
 
 [GitGuardian](https://www.gitguardian.com/) is a cybersecurity service that detects sensitive data such as API keys
 and passwords in source code repositories.
@@ -73,20 +79,26 @@ GitLab is now ready to reject commits based on GitGuardian policies.
 
 ## Skip secret detection
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152064) in GitLab 17.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152064) in GitLab 17.0.
+
+{{< /history >}}
 
 You can skip GitGuardian secret detection, if needed. The options to skip
 secret detection for all commits in a push are identical to the options for
-[Native Secret Detection](../../application_security/secret_detection/secret_push_protection/index.md#skip-secret-push-protection). Either:
+[Native Secret Detection](../../application_security/secret_detection/secret_push_protection/_index.md#skip-secret-push-protection). Either:
 
 - Add `[skip secret push protection]` to one of the commit messages.
 - Use the `secret_push_protection.skip_all` [push option](../../../topics/git/commit.md#push-options-for-gitguardian-integration).
 
 ## Known issues
 
-- Pushes can be delayed or can time out. With the GitGuardian integration, pushes are sent to a third-party, and GitLab has no control over the connection with GitGuardian or the GitGuardian process.
+- Pushes can be delayed or can time out. With the GitGuardian integration:
+  - Pushes are sent to a third-party.
+  - GitLab has no control over the connection with GitGuardian or the GitGuardian process.
 - Due to a [GitGuardian API limitation](https://api.gitguardian.com/docs#operation/multiple_scan), the integration ignores files over the size of 1 MB. They are not scanned.
-- If a pushed file has a name over 256 characters long the push won't go through.
+- If a pushed file has a name over 256 characters, the push fails.
 - For more information, see [GitGuardian API documentation](https://api.gitguardian.com/docs#operation/multiple_scan).
 
 Troubleshooting steps below show how to mitigate some of these problems.
@@ -101,9 +113,10 @@ You might get an HTTP `500` error.
 
 This issue occurs for when requests time out for commits with a lot of changed files.
 
-If this happens with a commit with more than 50 files changed,
-the workaround is to break down your changes into smaller commits and push
-them one by one.
+If this issue happens when you change more than 50 files in a commit:
+
+1. Split your changes into smaller commits.
+1. Push the smaller commits one by one.
 
 ### Error: `Filename: ensure this value has at most 256 characters`
 

@@ -46,7 +46,7 @@ RSpec.describe 'Packages', feature_category: :package_registry do
 
       context 'deleting a package' do
         let_it_be(:project) { create(:project) }
-        let_it_be(:package) { create(:package, project: project) }
+        let_it_be(:package) { create(:generic_package, project: project) }
 
         it 'allows you to delete a package' do
           find_by_testid('delete-dropdown').click

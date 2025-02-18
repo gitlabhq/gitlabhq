@@ -2,20 +2,25 @@
 stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Epics API (deprecated)
 ---
 
-# Epics API (deprecated)
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-WARNING:
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
 and is planned for removal in v5 of the API.
 In GitLab 17.4 or later, if your administrator [enabled the new look for epics](../user/group/epics/epic_work_items.md), use the
-[Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead. For more information, see the [guide how to migrate your existing APIs](../api/graphql/epic_work_items_api_migration_guide.md).
+[Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead. For more information, see the [guide how to migrate your existing APIs](graphql/epic_work_items_api_migration_guide.md).
 This change is a breaking change.
+
+{{< /alert >}}
 
 Every API call to epic must be authenticated.
 
@@ -43,16 +48,22 @@ fields `start_date_is_fixed` and `due_date_is_fixed`, and four date fields `star
 By default, `GET` requests return 20 results at a time because the API results
 are paginated.
 
-Read more on [pagination](rest/index.md#pagination).
+Read more on [pagination](rest/_index.md#pagination).
 
-WARNING:
+{{< alert type="warning" >}}
+
 In [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) and later,
 the `reference` attribute in responses is deprecated in favor of `references`.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 `references.relative` is relative to the group that the epic is being requested from. When an epic
 is fetched from its origin group, the `relative` format is the same as the `short` format.
 When an epic is requested across groups, the `relative` format is expected to be the same as the `full` format.
+
+{{< /alert >}}
 
 ## List epics for a group
 
@@ -67,7 +78,7 @@ GET /groups/:id/epics?state=opened
 
 | Attribute           | Type             | Required   | Description                                                                                                                 |
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths)               |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)               |
 | `author_id`         | integer          | no         | Return epics created by the given user `id`                                                                                 |
 | `author_username`   | string           | no         | Return epics created by the user with the given `username`. |
 | `labels`            | string           | no         | Return epics matching a comma-separated list of labels names. Label names from the epic group or a parent group can be used |
@@ -207,7 +218,7 @@ GET /groups/:id/epics/:epic_iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths)                |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
 | `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
 
 ```shell
@@ -275,10 +286,13 @@ Example response:
 
 Creates a new epic.
 
-NOTE:
+{{< alert type="note" >}}
+
 Starting with GitLab [11.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6448), `start_date` and `end_date` should no longer be assigned
 directly, as they now represent composite values. You can configure it via the `*_is_fixed` and
 `*_fixed` fields instead.
+
+{{< /alert >}}
 
 ```plaintext
 POST /groups/:id/epics
@@ -286,7 +300,7 @@ POST /groups/:id/epics
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths)                |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
 | `title`             | string           | yes        | The title of the epic |
 | `labels`            | string           | no         | The comma-separated list of labels |
 | `description`       | string           | no         | The description of the epic. Limited to 1,048,576 characters.  |
@@ -370,7 +384,7 @@ PUT /groups/:id/epics/:epic_iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths)                |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
 | `epic_iid`          | integer/string   | yes        | The internal ID of the epic  |
 | `add_labels`        | string           | no         | Comma-separated label names to add to an issue. |
 | `confidential`      | boolean          | no         | Whether the epic should be confidential |
@@ -454,7 +468,7 @@ DELETE /groups/:id/epics/:epic_iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths)                |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
 | `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
 
 ```shell
@@ -473,7 +487,7 @@ POST /groups/:id/epics/:epic_iid/todo
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes   | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths)  |
+| `id`        | integer/string | yes   | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)  |
 | `epic_iid` | integer | yes          | The internal ID of a group's epic |
 
 ```shell

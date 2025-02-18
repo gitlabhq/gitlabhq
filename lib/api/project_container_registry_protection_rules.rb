@@ -23,7 +23,6 @@ module API
           ]
           tags %w[projects]
           is_array true
-          hidden true
         end
         get do
           present user_project.container_registry_protection_rules,
@@ -40,7 +39,6 @@ module API
             { code: 422, message: 'Unprocessable Entity' }
           ]
           tags %w[projects]
-          hidden true
         end
         params do
           requires :repository_path_pattern, type: String,
@@ -57,8 +55,10 @@ module API
           at_least_one_of :minimum_access_level_for_push, :minimum_access_level_for_delete
         end
         post do
-          response = ::ContainerRegistry::Protection::CreateRuleService.new(user_project,
-            current_user, declared_params).execute
+          response =
+            ::ContainerRegistry::Protection::CreateRuleService
+              .new(project: user_project, current_user: current_user, params: declared_params)
+              .execute
 
           render_api_error!({ error: response.message }, :unprocessable_entity) if response.error?
 
@@ -81,7 +81,6 @@ module API
               { code: 422, message: 'Unprocessable Entity' }
             ]
             tags %w[projects]
-            hidden true
           end
           params do
             optional :repository_path_pattern, type: String,
@@ -116,7 +115,6 @@ module API
               { code: 404, message: 'Not Found' }
             ]
             tags %w[projects]
-            hidden true
           end
           delete do
             protection_rule = user_project.container_registry_protection_rules.find(params[:protection_rule_id])

@@ -4,7 +4,7 @@ require 'securerandom'
 
 FactoryBot.define do
   factory :import_failure do
-    association :project, factory: :project
+    project { association(:project) if group.nil? }
 
     created_at { Time.parse('2020-01-01T00:00:00Z') }
     exception_class { 'RuntimeError' }

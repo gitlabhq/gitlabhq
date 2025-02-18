@@ -203,6 +203,8 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
     it 'returns expected result' do
       allow(helper).to receive(:current_user).and_return(current_user)
       allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive(:can?).with(current_user, :read_crm_contact, project.crm_group).and_return(true)
+      allow(helper).to receive(:can?).with(current_user, :read_crm_organization, project.crm_group).and_return(false)
       allow(helper).to receive(:image_path).and_return('#')
       allow(helper).to receive(:import_csv_namespace_project_issues_path).and_return('#')
       allow(helper).to receive(:issue_repositioning_disabled?).and_return(true)
@@ -215,6 +217,8 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
         can_create_issue: 'true',
         can_edit: 'true',
         can_import_issues: 'true',
+        can_read_crm_contact: 'true',
+        can_read_crm_organization: 'false',
         email: current_user&.notification_email_or_default,
         emails_help_page_path: help_page_path('development/emails.md', anchor: 'email-namespace'),
         export_csv_path: export_csv_project_issues_path(project),
@@ -273,6 +277,8 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
     it 'returns expected result' do
       allow(helper).to receive(:current_user).and_return(current_user)
       allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive(:can?).with(current_user, :read_crm_contact, group.crm_group).and_return(true)
+      allow(helper).to receive(:can?).with(current_user, :read_crm_organization, group.crm_group).and_return(false)
       allow(helper).to receive(:image_path).and_return('#')
       allow(helper).to receive(:url_for).and_return('#')
 
@@ -283,6 +289,8 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
         autocomplete_award_emojis_path: autocomplete_award_emojis_path,
         calendar_path: '#',
         can_create_projects: 'true',
+        can_read_crm_contact: 'true',
+        can_read_crm_organization: 'false',
         full_path: group.full_path,
         has_any_issues: false.to_s,
         has_any_projects: true.to_s,

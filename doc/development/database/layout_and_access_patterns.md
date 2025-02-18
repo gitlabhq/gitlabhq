@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Best practices for data layout and access patterns
 ---
-
-# Best practices for data layout and access patterns
 
 Certain patterns of data access, and especially data updates, can exacerbate strain
 on the database. Avoid them if possible.

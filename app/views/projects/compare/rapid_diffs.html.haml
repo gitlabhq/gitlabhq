@@ -18,7 +18,7 @@
     = render RapidDiffs::DiffFileComponent.with_collection(@diffs.diff_files, parallel_view: diff_view == :parallel)
 - else
   .container-fluid
-    = render Pajamas::CardComponent.new(card_options: { class: "gl-bg-gray-10" }) do |c|
+    = render Pajamas::CardComponent.new(card_options: { class: "gl-bg-subtle" }) do |c|
       - c.with_body do
         = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-commit-md.svg',
           title: s_("CompareRevisions|There isn't anything to compare")) do |c|

@@ -11,6 +11,13 @@ module EnforcesAdminAuthentication
 
   included do
     before_action :authenticate_admin!
+
+    def self.authorize!(ability, only:)
+      actions = Array(only)
+
+      skip_before_action :authenticate_admin!, only: actions
+      before_action -> { authorize_ability!(ability) }, only: actions
+    end
   end
 
   def authenticate_admin!
@@ -26,5 +33,13 @@ module EnforcesAdminAuthentication
 
   def storable_location?
     request.path != new_admin_session_path
+  end
+
+  private
+
+  def authorize_ability!(ability)
+    return authenticate_admin! if current_user.admin?
+
+    render_404 unless current_user.can?(ability)
   end
 end

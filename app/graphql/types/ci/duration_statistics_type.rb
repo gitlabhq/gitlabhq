@@ -7,7 +7,7 @@ module Types
       graphql_name 'CiDurationStatistics'
       description 'Histogram of durations for a group of CI/CD jobs or pipelines.'
 
-      PERCENTILES = ::Ci::CollectPipelineAnalyticsService::ALLOWED_PERCENTILES
+      PERCENTILES = ::Ci::CollectPipelineAnalyticsServiceBase::ALLOWED_PERCENTILES
 
       PERCENTILES.each do |p|
         field "p#{p}", Types::DurationType,

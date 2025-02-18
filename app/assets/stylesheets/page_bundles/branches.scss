@@ -19,7 +19,7 @@
 
     .bar {
       height: 4px;
-      background-color: $gray-100;
+      @apply gl-bg-neutral-400 dark:gl-bg-neutral-500;
     }
 
     .count {
@@ -30,7 +30,7 @@
   .graph-separator {
     width: $graph-separator-width;
     height: 18px;
-    background-color: $gray-100;
+    @apply gl-bg-neutral-400 dark:gl-bg-neutral-500;
   }
 }
 
@@ -38,15 +38,6 @@
 .branch-item .controls {
   flex: 0 0 auto;
   white-space: nowrap;
-}
-
-.branches-list .branch-item:not(:last-of-type) {
-  border-bottom: 1px solid $border-color;
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-dark & {
-    border-bottom-color: $gray-800;
-  }
 }
 
 .branch-item {

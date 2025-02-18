@@ -12,8 +12,8 @@
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,
   provider_type: @cluster.provider_type,
-  help_path: help_page_path('user/infrastructure/clusters/index.md'),
-  environments_help_path: help_page_path('ci/environments/index.md', anchor: 'create-a-static-environment'),
+  help_path: help_page_path('user/infrastructure/clusters/_index.md'),
+  environments_help_path: help_page_path('ci/environments/_index.md', anchor: 'create-a-static-environment'),
   clusters_help_path: help_page_path('user/project/clusters/deploy_to_cluster.md'),
   deploy_boards_help_path: help_page_path('user/project/deploy_boards.md', anchor: 'enabling-deploy-boards'),
   cluster_id: @cluster.id } }
@@ -30,6 +30,7 @@
   - if cluster_created?(@cluster)
     .js-toggle-container
       = gl_tabs_nav do
+        = render 'clusters/clusters/migrate_tab'
         = render 'clusters/clusters/details_tab'
         = render_if_exists 'clusters/clusters/environments_tab'
         = render 'clusters/clusters/advanced_settings_tab'

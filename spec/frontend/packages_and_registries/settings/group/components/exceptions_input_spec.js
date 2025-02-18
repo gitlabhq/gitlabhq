@@ -8,7 +8,6 @@ describe('Exceptions Input', () => {
   let wrapper;
 
   const defaultProps = {
-    duplicatesAllowed: false,
     duplicateExceptionRegex: 'foo',
     id: 'maven-duplicated-settings-regex-input',
     name: 'exceptionModel',

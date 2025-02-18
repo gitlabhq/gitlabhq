@@ -75,6 +75,10 @@ module WorkItems
     has_many :allowed_parent_types_by_name, -> { order_by_name_asc },
       through: :parent_restrictions, class_name: 'WorkItems::Type',
       foreign_key: :parent_type_id, source: :parent_type
+    has_many :user_preferences,
+      class_name: 'WorkItems::Types::UserPreference',
+      primary_key: :correct_id,
+      inverse_of: :work_item_type
 
     before_validation :strip_whitespace
     after_save :clear_reactive_cache!
@@ -82,7 +86,7 @@ module WorkItems
     # TODO: review validation rules
     # https://gitlab.com/gitlab-org/gitlab/-/issues/336919
     validates :name, presence: true
-    validates :name, uniqueness: { case_sensitive: false }
+    validates :name, custom_uniqueness: { unique_sql: 'TRIM(BOTH FROM lower(?))' }
     validates :name, length: { maximum: 255 }
     validates :icon_name, length: { maximum: 255 }
 
@@ -170,21 +174,29 @@ module WorkItems
       }
     end
 
-    def supported_conversion_types(resource_parent)
-      type_names = supported_conversion_base_types(resource_parent) - [base_type]
+    def supported_conversion_types(resource_parent, user)
+      type_names = supported_conversion_base_types(resource_parent, user) - [base_type]
       WorkItems::Type.by_type(type_names).order_by_name_asc
     end
 
-    def allowed_child_types(cache: false)
+    def allowed_child_types(cache: false, authorize: false, resource_parent: nil)
       cached_data = cache ? with_reactive_cache { |query_data| query_data[:allowed_child_types_by_name] } : nil
 
-      cached_data || allowed_child_types_by_name
+      types = cached_data || allowed_child_types_by_name
+
+      return types unless authorize
+
+      authorized_types(types, resource_parent, :child)
     end
 
-    def allowed_parent_types(cache: false)
+    def allowed_parent_types(cache: false, authorize: false, resource_parent: nil)
       cached_data = cache ? with_reactive_cache { |query_data| query_data[:allowed_parent_types_by_name] } : nil
 
-      cached_data || allowed_parent_types_by_name
+      types = cached_data || allowed_parent_types_by_name
+
+      return types unless authorize
+
+      authorized_types(types, resource_parent, :parent)
     end
 
     def descendant_types
@@ -213,8 +225,13 @@ module WorkItems
     end
 
     # resource_parent is used in EE
-    def supported_conversion_base_types(_resource_parent)
+    def supported_conversion_base_types(_resource_parent, _user)
       WorkItems::Type.base_types.keys.excluding(*EE_BASE_TYPES)
+    end
+
+    # overriden in EE to check for EE-specific restrictions
+    def authorized_types(types, _resource_parent, _relation)
+      types
     end
   end
 end

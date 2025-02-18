@@ -14,9 +14,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
   - p_ci_templates_implicit_auto_devops_build
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

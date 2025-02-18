@@ -6,7 +6,7 @@ namespace :tanuki_emoji do
     ALLOWED_ALIASES = [':)', ':('].freeze
     aliases = {}
 
-    TanukiEmoji.index.all.each do |emoji|
+    TanukiEmoji.index.all.find_each do |emoji|
       emoji.aliases.each do |emoji_alias|
         aliases[TanukiEmoji::Character.format_name(emoji_alias)] = emoji.name
       end
@@ -83,7 +83,7 @@ namespace :tanuki_emoji do
     FileUtils.rm_rf(emoji_dir) if Dir.exist?(emoji_dir)
     FileUtils.mkdir_p(emoji_dir, mode: 0700)
 
-    TanukiEmoji.index.all.each do |emoji|
+    TanukiEmoji.index.all.find_each do |emoji|
       source = File.join(TanukiEmoji.images_path, emoji.image_name)
       destination = File.join(emoji_dir, "#{emoji.name}.png")
 

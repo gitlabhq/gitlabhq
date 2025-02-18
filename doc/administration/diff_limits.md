@@ -2,28 +2,33 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Configure the maximum diff size to display on GitLab Self-Managed."
+description: Configure the maximum diff size to display on GitLab Self-Managed.
+title: Diff limits administration
 ---
 
-# Diff limits administration
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can set a maximum size for display of diff files (patches).
 
 For details about diff files, [view changes between files](../user/project/merge_requests/changes.md).
-Read more about the [built-in limits for merge requests and diffs](../administration/instance_limits.md#merge-requests).
+Read more about the [built-in limits for merge requests and diffs](instance_limits.md#merge-requests).
 
 ## Configure diff limits
 
-WARNING:
+{{< alert type="warning" >}}
+
 These settings are experimental. An increased maximum increases resource
 consumption of your instance. Keep this in mind when adjusting the maximum.
 
-To speed the loading time of merge request views and branch comparison views
-on your instance, you can configure three instance-level maximum values for diffs:
+{{< /alert >}}
+
+To speed the loading of merge request views and branch comparison views
+on your instance, configure these maximum values for diffs:
 
 | Value | Definition | Default value | Maximum value |
 | ----- | ---------- | :-----------: | :-----------: |

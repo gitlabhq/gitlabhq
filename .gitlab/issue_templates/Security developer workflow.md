@@ -70,10 +70,11 @@ After your merge request has been approved according to our [approval guidelines
 |-------------------------------------|------------|-----------------------------------------------------------|
 | Version affected                    | X.Y        |                                                           |
 | Date introduced on .com             | YYYY-MM-DD | #TODO for Engineering - please follow the format          |
+| MR that introduced the bug          |            | #TODO for Engineering - Link to the MR that introduced the bug|
 | Date detected                       | YYYY-MM-DD | #TODO for AppSec - please follow the format               |
 | GitLab EE only                      | Yes/No     |                                                           |
 | Upgrade notes                       |            |                                                           |
-| GitLab Settings updated             | Yes/No     |                                                           |
+| Creates, updates or removes GitLab settings?             | Yes/No     |                                                           |
 | Migration required                  | Yes/No     |                                                           |
 | Breaking change to UI or public API | Yes/No     | <!-- How should the breaking change be communicated? -->  |
 | Thanks                              |            |                                                           |
@@ -81,8 +82,8 @@ After your merge request has been approved according to our [approval guidelines
 [security process for engineers]: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md
 [secpick documentation]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/utilities/secpick_script.md
 [security merge request template]: https://gitlab.com/gitlab-org/security/gitlab/blob/master/.gitlab/merge_request_templates/Security%20Fix.md
-[approval guidelines]: https://docs.gitlab.com/ee/development/code_review.html#approval-guidelines
-[issue as linked]: https://docs.gitlab.com/ee/user/project/issues/related_issues.html#add-a-linked-issue
+[approval guidelines]: https://docs.gitlab.com/development/code_review/#approval-guidelines
+[issue as linked]: https://docs.gitlab.com/user/project/issues/related_issues/#add-a-linked-issue
 [issue really needs to follow the security workflow]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/engineer.md#making-sure-the-issue-needs-to-follow-the-security-release-workflow
 [breaking changes workflow]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/far_reaching_impact_fixes_or_breaking_change_fixes.md
 [Security Tracking Issue]: https://gitlab.com/gitlab-org/gitlab/-/issues/?label_name%5B%5D=upcoming%20security%20release

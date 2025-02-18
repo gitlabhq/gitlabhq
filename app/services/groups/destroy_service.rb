@@ -18,7 +18,7 @@ module Groups
 
       mark_deleted
 
-      group.projects.includes(:project_feature).each do |project|
+      group.projects.includes(:project_feature).find_each do |project|
         # Execute the destruction of the models immediately to ensure atomic cleanup.
         success = ::Projects::DestroyService.new(project, current_user).execute
 

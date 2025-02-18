@@ -14,9 +14,7 @@ data_category: operational
 instrumentation_class: CountCiInternalPipelinesMetric
 performance_indicator_type:
 - customer_health_score
-distribution:
-- ce
-- ee
+- leading_indicator
 tiers:
 - free
 - premium

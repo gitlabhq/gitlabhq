@@ -16,10 +16,10 @@
 #   - deploy
 #   - dast
 
-# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dast_api/index.html
+# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dast_api/
 
-# Configure API Security scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
-# List of available variables: https://docs.gitlab.com/ee/user/application_security/dast_api/index.html#available-cicd-variables
+# Configure API Security scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/).
+# List of available variables: https://docs.gitlab.com/ee/user/application_security/api_security_testing/configuration/variables.html#available-cicd-variables
 
 variables:
   # Setting this variable affects all Security templates

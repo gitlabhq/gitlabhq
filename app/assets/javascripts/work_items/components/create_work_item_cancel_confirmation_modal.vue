@@ -44,6 +44,7 @@ export default {
 <template>
   <gl-modal
     modal-id="create-work-item-cancel-confirmation-modal"
+    :aria-label="__('Confirmation')"
     :visible="isVisible"
     :scrollable="false"
     no-close-on-esc

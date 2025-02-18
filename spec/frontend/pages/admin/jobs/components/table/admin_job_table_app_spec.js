@@ -272,20 +272,39 @@ describe('Job table app', () => {
   });
 
   describe('cancel jobs button', () => {
-    it('should display cancel all jobs button', async () => {
-      createComponent({ cancelableHandler: cancelHandler, stubs: { JobsTableTabs } });
+    describe('when there are cancelable jobs', () => {
+      const options = {
+        cancelableHandler: cancelHandler,
+        stubs: { JobsTableTabs },
+      };
 
-      await waitForPromises();
+      it('should display cancel all jobs button', async () => {
+        createComponent({ ...options, provideOptions: { canUpdateAllJobs: true } });
 
-      expect(findCancelJobsButton().exists()).toBe(true);
+        await waitForPromises();
+
+        expect(findCancelJobsButton().exists()).toBe(true);
+      });
+
+      describe('when canUpdateAllJobs is false', () => {
+        it('should not display cancel all jobs button', async () => {
+          createComponent({ ...options, provideOptions: { canUpdateAllJobs: false } });
+
+          await waitForPromises();
+
+          expect(findCancelJobsButton().exists()).toBe(false);
+        });
+      });
     });
 
-    it('should not display cancel all jobs button', async () => {
-      createComponent();
+    describe('when there are no cancelable jobs', () => {
+      it('should not display cancel all jobs button', async () => {
+        createComponent({ provideOptions: { canUpdateAllJobs: true } });
 
-      await waitForPromises();
+        await waitForPromises();
 
-      expect(findCancelJobsButton().exists()).toBe(false);
+        expect(findCancelJobsButton().exists()).toBe(false);
+      });
     });
   });
 

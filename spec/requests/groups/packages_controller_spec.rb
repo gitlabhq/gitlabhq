@@ -16,7 +16,7 @@ RSpec.describe Groups::PackagesController, feature_category: :package_registry d
   end
 
   describe 'GET #show' do
-    let_it_be(:package) { create(:package, project: project) }
+    let_it_be(:package) { create(:generic_package, project: project) }
 
     subject do
       get group_package_path(group_id: group.full_path, id: package.id)

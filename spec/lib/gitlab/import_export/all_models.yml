@@ -84,6 +84,7 @@ issues:
 - observability_metrics
 - observability_logs
 - observability_traces
+- dates_source
 work_item_type:
 - issues
 - namespace
@@ -93,6 +94,7 @@ work_item_type:
 - parent_restrictions
 - allowed_child_types_by_name
 - allowed_parent_types_by_name
+- user_preferences
 events:
 - author
 - project
@@ -254,6 +256,9 @@ merge_requests:
 - approver_users
 - approver_groups
 - approved_by_users
+- v2_approval_rules
+- v2_approval_rules_projects
+- v2_approval_rules_merge_requests
 - draft_notes
 - merge_train_car
 - blocks_as_blocker
@@ -281,6 +286,7 @@ merge_requests:
 - scan_result_policy_reads_through_approval_rules
 - running_scan_result_policy_violations
 - failed_scan_result_policy_violations
+- approval_metrics
 external_pull_requests:
 - project
 merge_request_diff:
@@ -564,6 +570,8 @@ container_repositories:
 - project
 - name
 project:
+- instance_runner_monthly_usages
+- hosted_runner_monthly_usages
 - catalog_resource
 - catalog_resource_sync_events
 - catalog_resource_versions
@@ -766,6 +774,9 @@ project:
 - approval_merge_request_rules
 - approval_merge_request_rule_sources
 - approval_project_rules
+- v2_approval_rules
+- v2_approval_rules_projects
+- v2_approval_rules_merge_requests
 - approvers
 - approver_users
 - audit_events
@@ -776,6 +787,7 @@ project:
 - source_pipelines
 - sourced_pipelines
 - vulnerabilities
+- vulnerability_archives
 - vulnerability_exports
 - vulnerability_findings
 - vulnerability_feedback
@@ -901,6 +913,7 @@ project:
 - security_policies
 - approval_policy_rule_project_links
 - approval_policy_rules
+- security_pipeline_execution_config_links
 - secrets_manager
 - observability_metrics
 - observability_traces
@@ -909,6 +922,7 @@ project:
 - security_statistics
 - vulnerability_management_policies
 - project_control_compliance_statuses
+- approval_policies
 award_emoji:
 - awardable
 - user
@@ -1189,6 +1203,7 @@ vulnerabilities:
   - external_issue_links
   - issue_links
   - related_issues
+  - severity_overrides
   - state_transitions
   - notes
   - user_mentions

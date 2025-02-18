@@ -11,9 +11,6 @@ value_type: string
 status: active
 time_frame: none
 data_source: system
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

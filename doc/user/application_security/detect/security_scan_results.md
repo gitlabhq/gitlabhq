@@ -2,16 +2,15 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Security scan results
 ---
-
-# Security scan results
 
 GitLab provides security scan results both for developers and those responsible for triaging,
 analyzing, and remediating vulnerabilities.
 
 During feature development, security scan results are shown in the pipeline and merge request. For
 VS Code users, the
-[GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/index.md) also
+[GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/_index.md) also
 shows security scan results. Identifying risks during development means they can be
 evaluated and remediated proactively.
 
@@ -20,9 +19,12 @@ efficient triaging, analysis, and remediation.
 
 ## Merge request
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Output of all enabled application security tools is shown in a merge request widget. You can use
 this information to manage the risk of any issues identified in the source branch.

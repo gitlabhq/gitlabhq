@@ -2,14 +2,16 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "How to revert commits or merge requests in a GitLab project."
+description: How to revert commits or merge requests in a GitLab project.
+title: Revert changes
 ---
 
-# Revert changes
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can revert individual commits or an entire merge request in GitLab.
 
@@ -30,7 +32,7 @@ Prerequisites:
 
 - You must have a role for the project that allows you to edit merge requests, and add
   code to the repository.
-- Your project must use the [merge method](methods/index.md#fast-forward-merge) **Merge Commit**,
+- Your project must use the [merge method](methods/_index.md#fast-forward-merge) **Merge Commit**,
   set in your project's **Settings > Merge requests**.
 
   [In GitLab 16.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22236), you can revert
@@ -103,18 +105,26 @@ the command line, see [Revert and undo changes with Git](../../../topics/git/und
 
 ## Redact text from repository
 
-> - Introduced in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `rewrite_history_ui`. Disabled by default. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/450701`
-> - Enabled on GitLab.com in confidential issue `https://gitlab.com/gitlab-org/gitlab/-/issues/462999` in GitLab 17.2.
-> - Enabled on self-managed and GitLab Dedicated in confidential issue `https://gitlab.com/gitlab-org/gitlab/-/issues/462999` in GitLab 17.3.
+{{< history >}}
+
+- Introduced in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `rewrite_history_ui`. Disabled by default. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/450701`
+- Enabled on GitLab.com in confidential issue `https://gitlab.com/gitlab-org/gitlab/-/issues/462999` in GitLab 17.2.
+- Enabled on GitLab Self-Managed and GitLab Dedicated in confidential issue `https://gitlab.com/gitlab-org/gitlab/-/issues/462999` in GitLab 17.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/472018) in GitLab 17.9. Feature flag `rewrite_history_ui` removed.
+
+{{< /history >}}
 
 Permanently delete sensitive or confidential information that was accidentally committed, ensuring
 it's no longer accessible in your repository's history.
 Replaces a list of strings with `***REMOVED***`.
 
-WARNING:
+{{< alert type="warning" >}}
+
 **This action is irreversible.**
 After rewriting history and running housekeeping, the changes are permanent.
 Be aware of the following impacts when redacting text from your repository:
+
+{{< /alert >}}
 
 - Open merge requests might fail to merge and require manual rebasing.
 - Existing local clones are incompatible with the updated repository and must be re-cloned.
@@ -123,7 +133,7 @@ Be aware of the following impacts when redacting text from your repository:
 - Commit signatures are dropped during the rewrite process.
 
 Alternatively, to completely delete specific files from a repository, see
-[Remove blobs](../../../user/project/repository/repository_size.md#remove-files).
+[Remove blobs](../repository/repository_size.md#remove-blobs).
 
 Prerequisites:
 

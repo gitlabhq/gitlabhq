@@ -81,6 +81,7 @@ en:
       k8s_proxy: Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
       ai_features: Access to API endpoints needed for GitLab Duo features
       read_service_ping: Grant access to download Service Ping payload via API when authenticated as an admin user
+      self_rotate: Grants permission for token to rotate itself
       user:*: Grants access only if both the token owner and user:<id> has access to the resource.
     scope_desc:
       api: Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry.
@@ -102,6 +103,7 @@ en:
       manage_runner: Grants access to manage the runners.
       k8s_proxy: Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
       read_service_ping: Grant access to download Service Ping payload via API when authenticated as an admin user
+      self_rotate: Grants permission for token to rotate itself.
     group_access_token_scope_desc:
       api: Grants complete read and write access to the scoped group and related project API, including the container registry, the dependency proxy, and the package registry.
       read_api: Grants read access to the scoped group and related project API, including the package registry.
@@ -121,6 +123,7 @@ en:
       create_runner: Grants permission to create runners in a group.
       manage_runner: Grants access to manage the runners in a group.
       k8s_proxy: Grants permission to perform Kubernetes API calls using the agent for Kubernetes in a group.
+      self_rotate: Grants permission for token to rotate itself.
     project_access_token_scope_desc:
       api: Grants complete read and write access to the scoped project API, including the container registry, the dependency proxy, and the package registry.
       read_api: Grants read access to the scoped project API, including the Package Registry.
@@ -134,6 +137,7 @@ en:
       manage_runner: Grants access to manage the runners.
       k8s_proxy: Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
       ai_features: Grants access to GitLab Duo related API endpoints.
+      self_rotate: Grants permission for token to rotate itself.
     flash:
       applications:
         create:

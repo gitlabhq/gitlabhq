@@ -11,7 +11,7 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
 
   describe '#releases_help_page_path' do
     it 'returns the correct link to the help page' do
-      expect(helper.releases_help_page_path).to include('user/project/releases/index')
+      expect(helper.releases_help_page_path).to include('user/project/releases/_index')
     end
   end
 
@@ -163,6 +163,23 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
             expect(deployment_data['status']).to eq(deployment.status)
             expect(deployment_data['created_at']).to be_present
             expect(deployment_data['finished_at']).to be_nil
+          end
+        end
+
+        context 'when deployable is nil' do
+          let_it_be(:deployment_with_user) do
+            create(:deployment, environment: environment, project: project, sha: project.repository.commit.id,
+              deployable: nil)
+          end
+
+          before do
+            allow(release).to receive(:related_deployments).and_return([deployment_with_user])
+          end
+
+          it 'sets triggerer as nil' do
+            deployment_data = Gitlab::Json.parse(helper.data_for_show_page[:deployments]).first
+
+            expect(deployment_data['triggerer']).to be_nil
           end
         end
 

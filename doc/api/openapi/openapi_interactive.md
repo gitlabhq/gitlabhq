@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Interactive API documentation
 ---
-
-# Interactive API documentation
 
 Introduces the interactive documentation tool for the GitLab API.
 
@@ -14,13 +13,13 @@ The [OpenAPI specification](https://swagger.io/specification/) (formerly called 
 standard, language-agnostic interface to RESTful APIs. OpenAPI definition files are written in the
 YAML format, which is automatically rendered by the GitLab browser into a more human-readable interface.
 
-For general information about the GitLab APIs, see [API Docs](../index.md).
+For general information about the GitLab APIs, see [API Docs](../_index.md).
 
 ## Overview
 
 <!--
 The following link is absolute rather than relative because it needs to be viewed through the GitLab
-Open API file viewer: https://docs.gitlab.com/ee/user/project/repository/index.html#openapi-viewer.
+Open API file viewer: https://docs.gitlab.com/ee/user/project/repository/#openapi-viewer.
 -->
 The [interactive API documentation tool](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/api/openapi/openapi.yaml)
 allows API testing directly on the GitLab.com website. Only a few of the available endpoints are

@@ -37,7 +37,7 @@ module Snippets
     private
 
     def attempt_destroy!
-      result = Repositories::DestroyService.new(snippet.repository).execute
+      result = ::Repositories::DestroyService.new(snippet.repository).execute
 
       raise DestroyError if result[:status] == :error
 

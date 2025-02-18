@@ -34,6 +34,7 @@ class Blob < SimpleDelegator
     BlobViewer::SVG,
     BlobViewer::OpenApi,
     BlobViewer::GeoJson,
+    BlobViewer::Graph,
 
     BlobViewer::Image,
     BlobViewer::Sketch,
@@ -241,6 +242,10 @@ class Blob < SimpleDelegator
 
   def expand!
     @expanded = true
+  end
+
+  def file_hash
+    OpenSSL::Digest::SHA256.hexdigest(path)
   end
 
   private

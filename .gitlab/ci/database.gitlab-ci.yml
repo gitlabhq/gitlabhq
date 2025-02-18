@@ -1,6 +1,21 @@
 include:
   - local: .gitlab/ci/rails/shared.gitlab-ci.yml
 
+db:setup pg14:
+  stage: prepare
+  needs: []
+  extends:
+    - .use-pg14
+    - .default-before_script
+    - .ruby-cache
+    - .rails:rules:setup-test-env
+  script:
+    - source scripts/utils.sh
+    - run_timed_command "pg_dumpall -h postgres -U postgres > pg_dumpall.sql"
+  artifacts:
+    paths:
+      - pg_dumpall.sql
+
 db:rollback single-db-ci-connection:
   extends:
     - db:rollback
@@ -66,7 +81,7 @@ db:rollback:
     - .db-job-base
     - .rails:rules:db-rollback
   script:
-    - bundle exec rake db:migrate VERSION=20230721095222 # First 16-5-stable-ee migration
+    - bundle exec rake db:migrate VERSION=20231220225325 # First 16-9-stable-ee migration
     - bundle exec rake db:migrate
 
 db:rollback single-db:

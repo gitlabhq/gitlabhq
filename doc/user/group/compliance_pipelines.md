@@ -2,20 +2,25 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Compliance pipelines (deprecated)
 ---
 
 <!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
 
-# Compliance pipelines (deprecated)
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-WARNING:
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159841) in GitLab 17.3
-and is planned for removal in 18.0. Use [pipeline execution policy type](../application_security/policies/pipeline_execution_policies.md) instead.
+and is planned for removal in 19.0. Use [pipeline execution policy type](../application_security/policies/pipeline_execution_policies.md) instead.
 This change is a breaking change. For more information, see the [migration guide](#pipeline-execution-policies-migration).
+
+{{< /alert >}}
 
 Group owners can configure a compliance pipeline in a project separate to other projects. By default, the compliance
 pipeline configuration (for example, `.compliance-gitlab-ci.yml`) is run instead of the pipeline configuration (for example, `.gitlab-ci.yml`) of labeled
@@ -28,20 +33,23 @@ However, the compliance pipeline configuration can reference the `.gitlab-ci.yml
 - Jobs and variables defined in the compliance pipeline can't be changed by variables in the labeled project's
   `.gitlab-ci.yml` file.
 
-NOTE:
+{{< alert type="note" >}}
+
 Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/414004), project pipelines must be included first at the top of compliance pipeline configuration
 to prevent projects overriding settings downstream.
+
+{{< /alert >}}
 
 For more information, see:
 
 - [Example configuration](#example-configuration) for help configuring a compliance pipeline that runs jobs from
   labeled project pipeline configuration.
-- The [Create a compliance pipeline](../../tutorials/compliance_pipeline/index.md) tutorial.
+- The [Create a compliance pipeline](../../tutorials/compliance_pipeline/_index.md) tutorial.
 
 ## Pipeline execution policies migration
 
 To consolidate and simplify scan and pipeline enforcement, we have introduced pipeline execution policies. We deprecated
-compliance pipelines in GitLab 17.3 and will remove compliance pipelines in GitLab 18.0.
+compliance pipelines in GitLab 17.3 and will remove compliance pipelines in GitLab 19.0.
 
 Pipeline execution policies extend a project's `.gitlab-ci.yml` file with the configuration provided in separate YAML file
 (for example, `pipeline-execution.yml`) linked in the pipeline execution policy.
@@ -62,7 +70,7 @@ To migrate an existing compliance framework to use the pipeline execution policy
 1. In the banner than appears, select **Migrate pipeline to a policy** to create a new policy in the security policies.
 1. Edit the compliance framework again to remove the compliance pipeline.
 
-For more information, see [Security policy project](../application_security/policies/index.md#security-policy-project).
+For more information, see [Security policy project](../application_security/policies/_index.md#security-policy-project).
 
 If you receive a `Pipeline execution policy error: Job names must be unique` error during the migration, see the
 [relevant troubleshooting information](#error-job-names-must-be-unique).
@@ -91,7 +99,11 @@ To ensure that the correct compliance pipeline is included in a project:
 
 ## Configure a compliance pipeline
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11, compliance frameworks moved to compliance center.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11, compliance frameworks moved to compliance center.
+
+{{< /history >}}
 
 To configure a compliance pipeline:
 
@@ -113,7 +125,7 @@ The user running the pipeline in the labeled project must at least have the Repo
 When used to enforce scan execution, this feature has some overlap with
 [scan execution policies](../application_security/policies/scan_execution_policies.md). We have not
 [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312). For details on
-the similarities and differences between these features, see [Enforce scan execution](../application_security/index.md#enforce-scan-execution).
+the similarities and differences between these features, see [Enforce scan execution](../application_security/_index.md#enforce-scan-execution).
 
 ### Example configuration
 
@@ -220,7 +232,7 @@ With projects that use externally hosted configuration, you can try the this wor
         - if: $PROTECTED_PIPELINE_CI_PROJECT_PATH == null || $PROTECTED_PIPELINE_CI_CONFIG_PATH == null || $PROTECTED_PIPELINE_CI_REF == null
   ```
 
-- [CI/CD variables](../../ci/variables/index.md) must be added to projects with external
+- [CI/CD variables](../../ci/variables/_index.md) must be added to projects with external
   pipeline configuration. In this example:
 
   - `PROTECTED_PIPELINE_CI_PROJECT_PATH`: The path to the project hosting the configuration file, for example `group/subgroup/project`.
@@ -264,7 +276,7 @@ with no configuration file (and therefore no pipelines by default), the complian
 fails because the file specified in `include:project` is required.
 
 To only include a configuration file if it exists in a target project, use
-[`rules:exists:project`](../../ci/yaml/index.md#rulesexistsproject):
+[`rules:exists:project`](../../ci/yaml/_index.md#rulesexistsproject):
 
 ```yaml
 include:  # Execute individual project's configuration
@@ -289,7 +301,7 @@ running the pipeline.
 
 ## Ensure compliance jobs are always run
 
-Compliance pipelines [use GitLab CI/CD](../../ci/index.md) to give you an incredible amount of flexibility
+Compliance pipelines [use GitLab CI/CD](../../ci/_index.md) to give you an incredible amount of flexibility
 for defining any sort of compliance jobs you like. Depending on your goals, these jobs
 can be configured to be:
 
@@ -307,15 +319,15 @@ The following are a few best practices for ensuring that these jobs are always r
 as you define them and that downstream, project-level pipeline configurations
 cannot change them:
 
-- Add [a `rules:when:always` block](../../ci/yaml/index.md#when) to each of your compliance jobs. This ensures they are
+- Add [a `rules:when:always` block](../../ci/yaml/_index.md#when) to each of your compliance jobs. This ensures they are
   non-modifiable and are always run.
-- Explicitly set any [variables](../../ci/yaml/index.md#variables) the job references. This:
+- Explicitly set any [variables](../../ci/yaml/_index.md#variables) the job references. This:
   - Ensures that project-level pipeline configurations do not set them and alter their
     behavior. For example, see `before_script` and `after_script` configuration in the [example configuration](#example-configuration).
   - Includes any jobs that drive the logic of your job.
-- Explicitly set the [container image](../../ci/yaml/index.md#image) to run the job in. This ensures that your script
+- Explicitly set the [container image](../../ci/yaml/_index.md#image) to run the job in. This ensures that your script
   steps execute in the correct environment.
-- Explicitly set any relevant GitLab pre-defined [job keywords](../../ci/yaml/index.md#job-keywords).
+- Explicitly set any relevant GitLab pre-defined [job keywords](../../ci/yaml/_index.md#job-keywords).
   This ensures that your job uses the settings you intend and that they are not overridden by
   project-level pipelines.
 
@@ -375,7 +387,7 @@ This configuration doesn't overwrite the compliance pipeline and you get the fol
 
 Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857),
 compliance pipelines in GitLab 15.3 and later can prevent
-[prefilled variables](../../ci/pipelines/index.md#prefill-variables-in-manual-pipelines)
+[prefilled variables](../../ci/pipelines/_index.md#prefill-variables-in-manual-pipelines)
 from appearing when manually starting a pipeline.
 
 To workaround this issue, use `ref: '$CI_COMMIT_SHA'` instead of `ref: '$CI_COMMIT_REF_NAME'`

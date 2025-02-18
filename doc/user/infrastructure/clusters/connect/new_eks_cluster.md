@@ -2,12 +2,11 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Create an Amazon EKS cluster
 ---
 
-# Create an Amazon EKS cluster
-
 You can create a cluster on Amazon Elastic Kubernetes Service (EKS) through
-[Infrastructure as Code (IaC)](../../index.md). This process uses the AWS and
+[Infrastructure as Code (IaC)](../../_index.md). This process uses the AWS and
 Kubernetes Terraform providers to create EKS clusters. You connect the clusters to GitLab
 by using the GitLab agent for Kubernetes.
 
@@ -139,7 +138,7 @@ View the [AWS Terraform provider](https://registry.terraform.io/providers/hashic
 After configuring your project, manually trigger the provisioning of your cluster. In GitLab:
 
 1. On the left sidebar, go to **Build > Pipelines**.
-1. Next to **Play** (**{play}**), select the dropdown list icon (**{chevron-lg-down}**).
+1. Next to **Play** ({{< icon name="play" >}}), select the dropdown list icon ({{< icon name="chevron-lg-down" >}}).
 1. Select **Deploy** to manually trigger the deployment job.
 
 When the pipeline finishes successfully, you can view the new cluster:
@@ -154,7 +153,7 @@ After you provision the cluster, it is connected to GitLab and is ready for depl
 1. On the left sidebar, select **Operate > Kubernetes clusters**.
 1. In the list, view the **Connection status** column.
 
-For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../index.md).
+For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../_index.md).
 
 ## Remove the cluster
 
@@ -180,4 +179,4 @@ To remove all resources:
    ```
 
 1. On the left sidebar, select **Build > Pipelines** and select the most recent pipeline.
-1. For the `destroy` job, select **Play** (**{play}**).
+1. For the `destroy` job, select **Play** ({{< icon name="play" >}}).

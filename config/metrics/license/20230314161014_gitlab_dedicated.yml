@@ -11,7 +11,5 @@ data_source: database
 data_category: optional
 instrumentation_class: GitlabDedicatedMetric
 performance_indicator_type: []
-distribution:
-- ee
 tiers:
 - ultimate

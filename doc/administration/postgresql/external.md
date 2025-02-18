@@ -2,13 +2,15 @@
 stage: Data Access
 group: Database Operations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Configure GitLab using an external PostgreSQL service
 ---
 
-# Configure GitLab using an external PostgreSQL service
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 If you're hosting GitLab on a cloud provider, you can optionally use a
 managed service for PostgreSQL. For example, AWS offers a managed Relational
@@ -47,7 +49,7 @@ If you use a cloud-managed service, or provide your own PostgreSQL instance:
    gitlab_rails['db_password'] = 'DB password'
    ```
 
-   For more information on GitLab multi-node setups, refer to the [reference architectures](../reference_architectures/index.md).
+   For more information on GitLab multi-node setups, refer to the [reference architectures](../reference_architectures/_index.md).
 
 1. Reconfigure for the changes to take effect:
 

@@ -84,6 +84,15 @@ describe('Test report extension', () => {
     mock.restore();
   });
 
+  it('emits loaded event', async () => {
+    mockApi(HTTP_STATUS_OK, newFailedTestReports);
+    createComponent();
+
+    await waitForPromises();
+
+    expect(wrapper.emitted('loaded')[0]).toContain(2);
+  });
+
   describe('summary', () => {
     describe('loading state', () => {
       it('displays loading state initially', () => {

@@ -1,14 +1,16 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Project push rules API
 ---
 
-# Project push rules API
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can manage [push rules](../user/project/repository/push_rules.md) for projects by using the REST API.
 
@@ -24,7 +26,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 Example response:
 
@@ -61,7 +63,7 @@ Supported attributes:
 
 | Attribute                       | Type              | Required | Description |
 |:--------------------------------|:------------------|:---------|:------------|
-| `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `author_email_regex`            | string            | No       | All commit author emails must match this regular expression. |
 | `branch_name_regex`             | string            | No       | All branch names must match this regular expression. |
 | `commit_message_negative_regex` | string            | No       | No commit message is allowed to match this regular expression. |
@@ -88,7 +90,7 @@ Supported attributes:
 
 | Attribute                       | Type              | Required | Description |
 |:--------------------------------|:------------------|:---------|:------------|
-| `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `author_email_regex`            | string            | No       | All commit author emails must match this regular expression. |
 | `branch_name_regex`             | string            | No       | All branch names must match this regular expression. |
 | `commit_message_negative_regex` | string            | No       | No commit message is allowed to match this regular expression. |
@@ -115,4 +117,4 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |

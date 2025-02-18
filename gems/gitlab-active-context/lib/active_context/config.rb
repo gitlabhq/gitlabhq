@@ -2,7 +2,7 @@
 
 module ActiveContext
   class Config
-    Cfg = Struct.new(:enabled, :databases, :logger)
+    Cfg = Struct.new(:enabled, :databases, :logger, :indexing_enabled, :re_enqueue_indexing_workers, :migrations_path)
 
     class << self
       def configure(&block)
@@ -21,8 +21,22 @@ module ActiveContext
         current.databases || {}
       end
 
+      def migrations_path
+        current.migrations_path || Rails.root.join('ee/db/active_context/migrate')
+      end
+
       def logger
-        current.logger || Logger.new($stdout)
+        current.logger || ::Logger.new($stdout)
+      end
+
+      def indexing_enabled?
+        return false unless enabled?
+
+        current.indexing_enabled || false
+      end
+
+      def re_enqueue_indexing_workers?
+        current.re_enqueue_indexing_workers || false
       end
     end
 

@@ -10,6 +10,9 @@
 - project_attributes = @project&.attributes&.slice('id', 'namespace_id', 'name')&.merge(name_with_namespace: @project&.name_with_namespace)&.merge(full_path: @project&.full_path)
 
 - if @search_results && !(@search_results.respond_to?(:failed?) && @search_results.failed?(@scope))
+  - if search_service.level == 'global' && current_user
+    = render_if_exists 'shared/dashboard/saml_reauth_notice', groups_requiring_saml_reauth: user_groups_requiring_reauth
+
   - if @search_service_presenter.without_count?
     - page_description(_("%{scope} results for term '%{term}'") % { scope: @scope, term: @search_term })
   - else

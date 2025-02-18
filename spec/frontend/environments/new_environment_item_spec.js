@@ -163,6 +163,15 @@ describe('~/environments/components/new_environment_item.vue', () => {
 
       expect(findStopComponent().exists()).toBe(false);
     });
+
+    it('shows a button to stop the environment if the environment is in stopping state', () => {
+      wrapper = createWrapper({
+        propsData: { environment: { ...resolvedEnvironment, state: 'stopping' } },
+        apolloProvider: createApolloProvider(),
+      });
+
+      expect(findStopComponent().exists()).toBe(true);
+    });
   });
 
   describe('rollback', () => {

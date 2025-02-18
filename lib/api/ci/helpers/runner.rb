@@ -12,12 +12,14 @@ module API
         JOB_TOKEN_PARAM = :token
         LEGACY_SYSTEM_XID = '<legacy>'
 
-        # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/504277 is closed.
-        UnknownRunnerOwnerError = Class.new(StandardError)
-
         def authenticate_runner!(ensure_runner_manager: true, update_contacted_at: true)
           track_runner_authentication
           forbidden! unless current_runner
+
+          # TODO: Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/504963 (when ci_runners is swapped)
+          # This is because the new table will have check constraints for these scenarios, and therefore
+          # any orphaned runners will be missing
+          forbidden!('Runner is orphaned') if current_runner.sharding_key_id.nil? && !current_runner.instance_type?
 
           current_runner.heartbeat if update_contacted_at
           return unless ensure_runner_manager
@@ -56,9 +58,6 @@ module API
         end
 
         def current_runner_manager
-          # NOTE: Avoid orphaned runners, since we're not allowed to created records with a nil sharding_key_id
-          raise UnknownRunnerOwnerError if !current_runner.instance_type? && current_runner.sharding_key_id.nil?
-
           strong_memoize(:current_runner_manager) do
             system_xid = params.fetch(:system_id, LEGACY_SYSTEM_XID)
             current_runner&.ensure_manager(system_xid)
@@ -76,6 +75,10 @@ module API
         # HTTP status codes to terminate the job on GitLab Runner:
         # - 403
         def authenticate_job!(heartbeat_runner: false)
+          if current_job && Feature.enabled?(:ci_auth_job_finder_in_runner_api, current_job.project)
+            return authenticate_job_with_auth_job_finder!(heartbeat_runner: heartbeat_runner)
+          end
+
           job = current_job
 
           # 404 is not returned here because we want to terminate the job if it's
@@ -112,6 +115,52 @@ module API
           job
         end
 
+        # HTTP status codes to terminate the job on GitLab Runner:
+        # - 403
+        def authenticate_job_with_auth_job_finder!(heartbeat_runner: false)
+          # 404 is not returned here because we want to terminate the job if it's
+          # running. A 404 can be returned from anywhere in the networking stack which is why
+          # we are explicit about a 403, we should improve this in
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/327703
+          forbidden! unless current_job
+
+          # Ensure we go through the Ci::AuthJobFinder as part of this authentication
+          begin
+            job = job_from_token
+
+            forbidden! unless job
+          rescue ::Ci::AuthJobFinder::DeletedProjectError
+            forbidden!('Project has been deleted!')
+          rescue ::Ci::AuthJobFinder::ErasedJobError
+            forbidden!('Job has been erased!')
+          rescue ::Ci::AuthJobFinder::NotRunningJobError
+            # Pass current_job solely to load actual status of the job.
+            # AuthJobFinder currently returns no details.
+            job_forbidden!(current_job, 'Job is not processing on runner')
+          end
+
+          # Make sure that composite identity is propagated to `PipelineProcessWorker`
+          # when the build's status change.
+          # TODO: Once https://gitlab.com/gitlab-org/gitlab/-/issues/490992 is done we should
+          # remove this because it will be embedded in `Ci::AuthJobFinder`.
+          ::Gitlab::Auth::Identity.link_from_job(job)
+
+          # Only some requests (like updating the job or patching the trace) should trigger
+          # runner heartbeat. Operations like artifacts uploading are executed in context of
+          # the running job and in the job environment, which in many cases will cause the IP
+          # to be updated to not the expected value. And operations like artifacts downloads can
+          # be done even after the job is finished and from totally different runners - while
+          # they would then update the connection status of not the runner that they should.
+          # Runner requests done in context of job authentication should explicitly define when
+          # the heartbeat should be triggered.
+          if heartbeat_runner
+            job.runner&.heartbeat
+            job.runner_manager&.heartbeat(get_runner_ip)
+          end
+
+          job
+        end
+
         def authenticate_job_via_dependent_job!
           # Use primary for both main and ci database as authenticating in the scope of runners will load
           # Ci::Build model and other standard authn related models like License, Project and User.
@@ -122,6 +171,7 @@ module API
           forbidden! unless can?(current_user, :read_build, current_job)
         end
 
+        # current_job is queried by URL :id param with no authentication
         def current_job
           id = params[:id]
 
@@ -140,6 +190,20 @@ module API
         def job_token
           @job_token ||= (params[JOB_TOKEN_PARAM] || env[JOB_TOKEN_HEADER]).to_s
         end
+
+        def job_from_token
+          # Uses the Ci::AuthJobFinder, which we want to use
+          # as the sole centralized job token authentication service.
+          #
+          # If the token does not link to the URL-specified job,
+          # return a generic auth error with no build details.
+
+          return unless current_job
+          return unless current_job == ::Ci::AuthJobFinder.new(token: job_token).execute!(allow_canceling: true)
+
+          current_job
+        end
+        strong_memoize_attr :job_from_token
 
         def job_forbidden!(job, reason)
           header 'Job-Status', job.status

@@ -1,9 +1,10 @@
 - form = local_assigns.fetch(:form)
 
 = form.fields_for :project_setting do |settings|
-  .form-group
-    %b= s_('ProjectSettings|Squash commits when merging')
-    %p.gl-text-subtle
+  %fieldset.form-group{ aria: { describedby: :merge_request_squash_options_description } }
+    %legend{ class: 'gl-m-0 gl-heading-5 gl-border-0' }
+      = s_('ProjectSettings|Squash commits when merging')
+    %p.gl-text-subtle{ id: :merge_request_squash_options_description }
       = s_('ProjectSettings|Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests.')
       = link_to s_('ProjectSettings|What is squashing?'), help_page_path('user/project/merge_requests/squash_and_merge.md'), target: '_blank', rel: 'noopener noreferrer'
 

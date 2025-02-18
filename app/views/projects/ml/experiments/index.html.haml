@@ -2,9 +2,7 @@
 - page_title s_('MlExperimentTracking|Model experiments')
 
 #js-project-ml-experiments-index{ data: {
-  experiments: experiments_as_data(@project, @experiments),
-  page_info: formatted_page_info(@page_info),
+  project_path: @project.full_path,
   empty_state_svg_path: image_path('illustrations/status/status-new-md.svg'),
   mlflow_tracking_url: mlflow_tracking_url(@project),
-  count: Ml::Experiment.count_for_project(@project),
 } }

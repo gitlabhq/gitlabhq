@@ -12,7 +12,7 @@ module ServicePing
     validates :recorded_at, presence: true, uniqueness: true
 
     scope :for_current_reporting_cycle, -> do
-      where(created_at: RawUsageData::REPORTING_CADENCE.ago.beginning_of_day..)
+      where(created_at: REPORTING_CADENCE.ago.beginning_of_day..)
         .order(created_at: :desc)
     end
   end

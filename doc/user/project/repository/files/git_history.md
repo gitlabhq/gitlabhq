@@ -2,14 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "How to view a file's Git history in GitLab."
+description: How to view a file's Git history in GitLab.
+title: Git file history
 ---
 
-# Git file history
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Git file history provides information about the commit history associated
 with a file:
@@ -23,9 +25,9 @@ Each commit shows:
 - The user's name. Hover over the name to see the user's job title, location, local time, and current status message.
 - The date of the commit, in time-ago format. To see the precise date and time of
   the commit, hover over the date.
-- If the [commit is signed](../signed_commits/index.md), a **Verified** badge.
-- The commit SHA. GitLab shows the first 8 characters. Select **Copy commit SHA** (**{copy-to-clipboard}**) to copy the entire SHA.
-- A link to **browse** (**{folder-open}**) the file as it appeared at the time of this commit.
+- If the [commit is signed](../signed_commits/_index.md), a **Verified** badge.
+- The commit SHA. GitLab shows the first 8 characters. Select **Copy commit SHA** ({{< icon name="copy-to-clipboard" >}}) to copy the entire SHA.
+- A link to **browse** ({{< icon name="folder-open" >}}) the file as it appeared at the time of this commit.
 
 GitLab retrieves the user name and email information from the
 [Git configuration](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration)
@@ -50,7 +52,11 @@ To see a file's Git history in the UI:
 
 ## Limit history range of results
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423108) in GitLab 16.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423108) in GitLab 16.9.
+
+{{< /history >}}
 
 When reviewing history for old files, or files with many commits, you can
 limit the search results by date. Limiting the dates for commits helps fix

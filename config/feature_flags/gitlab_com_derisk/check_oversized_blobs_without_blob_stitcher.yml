@@ -1,9 +1,0 @@
----
-name: check_oversized_blobs_without_blob_stitcher
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/438245
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169154
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499148
-milestone: '17.6'
-group: group::source code
-type: gitlab_com_derisk
-default_enabled: false

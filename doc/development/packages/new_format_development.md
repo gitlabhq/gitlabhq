@@ -2,13 +2,12 @@
 stage: Package
 group: Package Registry
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Developing support for a new package format
 ---
 
-# Developing support for a new package format
+This document guides you through adding support to GitLab for a new a [package management system](../../administration/packages/_index.md).
 
-This document guides you through adding support to GitLab for a new a [package management system](../../administration/packages/index.md).
-
-See the already supported formats in the [Packages and registries documentation](../../user/packages/index.md)
+See the already supported formats in the [Packages and registries documentation](../../user/packages/_index.md)
 
 It is possible to add a new format with only backend changes.
 This guide is superficial and does not cover the way the code should be written.
@@ -66,15 +65,18 @@ As an MVC, we recommend beginning with a project-level endpoint. A typical itera
 
 Using instance-level endpoints requires [stricter naming conventions](#naming-conventions).
 
-NOTE:
+{{< alert type="note" >}}
+
 Composer package naming scope is Instance Level.
+
+{{< /alert >}}
 
 ### Naming conventions
 
 To avoid name conflict for instance-level endpoints you must define a package naming convention
 that gives a way to identify the project that the package belongs to. This generally involves using the project
 ID or full project path in the package name. See
-[Conan's naming convention](../../user/packages/conan_repository/index.md#package-recipe-naming-convention-for-instance-remotes) as an example.
+[Conan's naming convention](../../user/packages/conan_repository/_index.md#package-recipe-naming-convention-for-instance-remotes) as an example.
 
 For group and project-level endpoints, naming can be less constrained and it is up to the group and project
 members to be certain that there is no conflict between two package names. However, the system should prevent
@@ -123,7 +125,7 @@ The MVC usually has two phases:
 When implementing a new package manager, it is tempting to create one large merge request containing all of the
 necessary endpoints and services necessary to support basic usage. Instead:
 
-1. Put the API endpoints behind a [feature flag](../feature_flags/index.md).
+1. Put the API endpoints behind a [feature flag](../feature_flags/_index.md).
 1. Submit each endpoint or behavior (download, upload, etc) in a different merge request to shorten the review process.
 
 ### Analysis
@@ -151,7 +153,7 @@ During this phase, the idea is to collect as much information as possible about 
   1. Empty file structure (API file, base service for this package)
   1. Authentication system for "logging in" to the package manager
   1. Identify metadata and create applicable tables
-  1. Workhorse route for [object storage direct upload](../uploads/index.md#direct-upload)
+  1. Workhorse route for [object storage direct upload](../uploads/_index.md#direct-upload)
   1. Endpoints required for upload/publish
   1. Endpoints required for install/download
   1. Endpoints required for required actions
@@ -210,7 +212,7 @@ File uploads should be handled by GitLab Workhorse using object accelerated uplo
 the workhorse proxy that checks all incoming requests to GitLab intercept the upload request,
 upload the file, and forward a request to the main GitLab codebase only containing the metadata
 and file location rather than the file itself. An overview of this process can be found in the
-[development documentation](../uploads/index.md#direct-upload).
+[development documentation](../uploads/_index.md#direct-upload).
 
 In terms of code, this means a route must be added to the
 [GitLab Workhorse project](https://gitlab.com/gitlab-org/gitlab-workhorse) for each upload endpoint being added
@@ -241,7 +243,7 @@ the package format does not upload and store package files.
 #### Rate Limits on GitLab.com
 
 Package manager clients can make rapid requests that exceed the
-[GitLab.com standard API rate limits](../../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
+[GitLab.com standard API rate limits](../../user/gitlab_com/_index.md#gitlabcom-specific-rate-limits).
 This results in a `429 Too Many Requests` error.
 
 We have opened a set of paths to allow higher rate limits. Unless it is not possible,

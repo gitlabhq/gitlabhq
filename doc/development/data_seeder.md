@@ -3,9 +3,8 @@ stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Data Seeder test data harness created by the Test Data Working Group https://handbook.gitlab.com/handbook/company/working-groups/demo-test-data/
+title: Data Seeder
 ---
-
-# Data Seeder
 
 The Data Seeder is a test data seeding harness, that can seed test data into a user or group namespace.
 
@@ -76,9 +75,12 @@ To fetch the password for the GitLab instance that was created, execute the foll
 docker exec gitlab cat /etc/gitlab/initial_root_password
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 If you receive `cat: /etc/gitlab/initialize_root_password: No such file or directory`,
 please wait for a bit for GitLab to boot and try again.
+
+{{< /alert >}}
 
 You can then sign in to `http://localhost:8080/users/sign_in` using the credentials: `root / <Password taken from initial_root_password>`
 
@@ -119,8 +121,11 @@ Where `:file` is the file path. (This path reflects relative `.rb`, `.yml`, or `
 
 ## Linux package Setup
 
-WARNING:
+{{< alert type="warning" >}}
+
 While it is possible to use the Data Seeder with an Linux package installation, **use caution** if you do this when the instance is being used in a production setting.
+
+{{< /alert >}}
 
 Requires Git v2.26.0 or later.
 
@@ -458,8 +463,11 @@ projects:
 
 Variables:
 
-NOTE:
+{{< alert type="note" >}}
+
 It is not advised, but you may specify variables with spaces. These variables may be referred back to with underscores.
+
+{{< /alert >}}
 
 ### Referencing a variable
 

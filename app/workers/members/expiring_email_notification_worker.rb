@@ -3,6 +3,7 @@
 module Members
   class ExpiringEmailNotificationWorker
     include ApplicationWorker
+    include CronjobChildWorker
 
     data_consistency :always
     feature_category :system_access

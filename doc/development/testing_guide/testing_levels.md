@@ -2,22 +2,21 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Testing levels
 ---
-
-# Testing levels
 
 ![Testing priority triangle](img/testing_triangle_v15_7.png)
 
 _This diagram demonstrates the relative priority of each test type we use. `e2e` stands for end-to-end._
 
-As of 2019-05-01, we have the following distribution of tests per level:
+As of 2025-02-03, we have the following estimated distribution of tests per level:
 
-| Test level | Community Edition | Enterprise Edition  | Community + Enterprise Edition |
-| --------- | ---------- | -------------- | ----- |
-| Black-box tests at the system level (aka end-to-end or QA tests) | 68 (0.14%) | 31 (0.2%) | 99 (0.17%) |
-| White-box tests at the system level (aka system or feature tests) | 5,471 (11.9%) | 969 (7.4%) | 6440 (10.9%) |
-| Integration tests | 8,333 (18.2%) | 2,244 (17.2%) | 10,577 (17.9%) |
-| Unit tests | 32,031 (69.7%) | 9,778 (75.1%) | 41,809 (71%) |
+| Test level                                                        | Community Edition | Enterprise Edition | Community + Enterprise Edition |
+|-------------------------------------------------------------------|-------------------|--------------------|--------------------------------|
+| Black-box tests at the system level (aka end-to-end or QA tests)  | 401 (0.14%)       | 303 (0.10%)        | 704 (0.24%)                    |
+| White-box tests at the system level (aka system or feature tests) | 8,362 (2.90%)     | 4,082 (1.41%)      | 12,444 (4.31%)                 |
+| Integration tests                                                 | 39,716 (13.76%)   | 17,411 (6.03%)     | 57,127 (19.79%)                |
+| Unit tests                                                        | 139,504 (48.32%)  | 78,955 (27.35%)    | 218,459 (75.66%)               |
 
 ## Unit tests
 
@@ -478,7 +477,7 @@ Every new feature should come with a [test plan](https://gitlab.com/gitlab-org/g
 | ---------- | -------------- | ----- |
 | `qa/qa/specs/features/` | [Capybara](https://github.com/teamcapybara/capybara) + [RSpec](https://github.com/rspec/rspec-rails#feature-specs) + Custom QA framework | Tests should be placed under their corresponding [Product category](https://handbook.gitlab.com/handbook/product/categories/) |
 
-> See [end-to-end tests](end_to_end/index.md) for more information.
+> See [end-to-end tests](end_to_end/_index.md) for more information.
 
 Note that `qa/spec` contains unit tests of the QA framework itself, not to be
 confused with the application's [unit tests](#unit-tests) or
@@ -539,4 +538,4 @@ you should write an integration test using [Frontend integration tests](https://
 
 ---
 
-[Return to Testing documentation](index.md)
+[Return to Testing documentation](_index.md)

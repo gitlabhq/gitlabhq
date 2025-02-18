@@ -2,23 +2,33 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Signed commits from the GitLab UI
 ---
 
-# Signed commits from the GitLab UI
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19185) in GitLab 15.4.
-> - Displaying **Verified** badge for signed GitLab UI commits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124218) in GitLab 16.3 [with a flag](../../../../administration/feature_flags.md) named `gitaly_gpg_signing`. Disabled by default.
-> - Verifying the signatures using multiple keys specified in `rotated_signing_keys` option [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6163) in GitLab 16.3.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6876) on self-managed and GitLab Dedicated in GitLab 17.0.
+{{< /details >}}
 
-FLAG:
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19185) in GitLab 15.4.
+- Displaying **Verified** badge for signed GitLab UI commits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124218) in GitLab 16.3 [with a flag](../../../../administration/feature_flags.md) named `gitaly_gpg_signing`. Disabled by default.
+- Verifying the signatures using multiple keys specified in `rotated_signing_keys` option [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6163) in GitLab 16.3.
+- `gitaly_gpg_signing` feature flag [enabled by default](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6876) on GitLab Self-Managed and GitLab Dedicated in GitLab 17.0.
+- Default values for `committer_name` and `committer_email` fields [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/7620) GitLab 17.9.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 When you create a commit using the GitLab user interface, the commit is not pushed directly by you.
 Instead, the commit is created on your behalf.
@@ -44,12 +54,10 @@ Before you can use commit signing for GitLab UI commits, you must
 
 ## Committer field of the commits
 
-By default, when a commit is created on GitLab, the `Author` of the commit is set as the `Committer` of the commit.
-To avoid confusion, when the commit is signed, the signature should belong to the `Committer` of the commit.
-
-This is why you should [configure](../../../../administration/gitaly/configure_gitaly.md#configure-commit-signing-for-gitlab-ui-commits)
-the `Committer` field to point to the instance itself.
-For example, when this feature becomes enabled on GitLab.com, the `Committer` field is: `GitLab <noreply@gitlab.com>`.
+In Git, commits have both an author and a committer.
+For web commits, the `Committer` field is configurable.
+By default it is set to `GitLab <noreply@gitlab.com>`. To update this field, see
+[Configure commit signing for GitLab UI commits](../../../../administration/gitaly/configure_gitaly.md#configure-commit-signing-for-gitlab-ui-commits).
 
 GitLab provides multiple security features that rely on the `Committer` field to be set to the user who creates the commit.
 For example:

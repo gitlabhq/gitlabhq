@@ -7,6 +7,7 @@ import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_DESCRIPTION,
+  WIDGET_TYPE_HIERARCHY,
 } from '~/work_items/constants';
 import { createWorkItemQueryResponse } from '../mock_data';
 
@@ -140,6 +141,52 @@ describe('work items graphql resolvers', () => {
 
         const queryResult = await query();
         expect(queryResult).toMatchObject({ title: 'Title' });
+      });
+    });
+
+    describe('with parent input', () => {
+      it('updates parent if set', async () => {
+        await mutate({
+          parent: {
+            confidential: false,
+            id: 'gid://gitlab/WorkItem/1259',
+            iid: '56',
+            title: 'PARENT',
+            webUrl: 'http://127.0.0.1:3000/groups/flightjs/-/epics/56',
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/8',
+              name: 'Epic',
+              iconName: 'issue-type-epic',
+              __typename: 'WorkItemType',
+            },
+            __typename: 'WorkItem',
+          },
+        });
+
+        const queryResult = await query(WIDGET_TYPE_HIERARCHY);
+        expect(queryResult).toMatchObject({
+          parent: {
+            confidential: false,
+            id: 'gid://gitlab/WorkItem/1259',
+            iid: '56',
+            title: 'PARENT',
+            webUrl: 'http://127.0.0.1:3000/groups/flightjs/-/epics/56',
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/8',
+              name: 'Epic',
+              iconName: 'issue-type-epic',
+              __typename: 'WorkItemType',
+            },
+            __typename: 'WorkItem',
+          },
+        });
+      });
+
+      it('updates parent if cleared', async () => {
+        await mutate({ parent: null });
+
+        const queryResult = await query(WIDGET_TYPE_HIERARCHY);
+        expect(queryResult).toMatchObject({ parent: null });
       });
     });
 

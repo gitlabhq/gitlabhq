@@ -1,7 +1,10 @@
 ---
-redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/gitlab_ci_events/proposal-5-combined-proposal/'
-remove_date: '2025-07-08'
+redirect_to: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/gitlab_ci_events/proposal-5-combined-proposal/
+remove_date: "2025-07-08"
 ---
+
+<!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/gitlab_ci_events/proposal-5-combined-proposal/).
 

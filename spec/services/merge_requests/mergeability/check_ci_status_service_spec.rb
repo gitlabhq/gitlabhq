@@ -7,7 +7,6 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService, feature_catego
 
   let(:project) do
     build(:project,
-      auto_devops_status,
       only_allow_merge_if_pipeline_succeeds: only_allow_merge_if_pipeline_succeeds,
       allow_merge_on_skipped_pipeline: allow_merge_on_skipped_pipeline)
   end
@@ -23,7 +22,6 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService, feature_catego
   let(:only_allow_merge_if_pipeline_succeeds) { false }
   let(:auto_merge_strategy) { nil }
   let(:auto_merge_enabled) { false }
-  let(:auto_devops_status) { :auto_devops_disabled }
 
   let(:params) { { skip_ci_check: skip_check } }
   let(:skip_check) { false }
@@ -128,7 +126,10 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService, feature_catego
 
         context 'when the auto merge strategy is STATEGY_MERGE_WHEN_CHECKS_PASS and ci is enabled' do
           let(:auto_merge_strategy) { ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS }
-          let(:auto_devops_status) { :auto_devops }
+
+          before do
+            allow(merge_request).to receive(:has_ci_enabled?).and_return(true)
+          end
 
           it_behaves_like 'a valid diff head pipeline is required'
         end

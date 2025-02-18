@@ -43,7 +43,7 @@ class IssuePolicy < IssuablePolicy
     if group_issue?
       subject_container.has_project_with_service_desk_enabled?
     else
-      subject_container.service_desk_enabled?
+      ::ServiceDesk.enabled?(subject_container)
     end
   end
 
@@ -51,6 +51,11 @@ class IssuePolicy < IssuablePolicy
   # work items context once epics are fully migrated to work items.
   condition(:group_level_issues_license_available) do
     epics_license_available?
+  end
+
+  # this is temporarily needed until we rollout implementation of move and clone for all work item types
+  condition(:supports_move_and_clone, scope: :subject) do
+    @subject.supports_move_and_clone?
   end
 
   rule { group_issue & can?(:read_group) }.policy do
@@ -147,6 +152,11 @@ class IssuePolicy < IssuablePolicy
 
   rule { planner_or_reporter_access }.policy do
     enable :mark_note_as_internal
+  end
+
+  rule { can?(:admin_issue) & supports_move_and_clone }.policy do
+    enable :move_issue
+    enable :clone_issue
   end
 
   rule { is_incident & ~can?(:reporter_access) }.policy do

@@ -132,6 +132,7 @@ export default {
           }
           if (data) {
             this.collapsedData = data;
+            this.$emit('loaded', this.collapsedData.new_errors.length);
           }
           return {
             headers,
@@ -158,5 +159,7 @@ export default {
     :widget-name="$options.name"
     :status-icon-name="statusIcon"
     :is-collapsible="shouldCollapse"
+    :label="$options.i18n.label"
+    path="code-quality"
   />
 </template>

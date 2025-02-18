@@ -11,6 +11,8 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee, feature_
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
   let(:issuable) { create(:issue, project: project) }
 
+  let(:assignee) { { 'id' => 2000, 'login' => 'github_assignee' } }
+
   let(:issue_event) do
     Gitlab::GithubImport::Representation::IssueEvent.from_json_hash(
       'id' => 6501124486,
@@ -18,7 +20,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee, feature_
       'event' => event_type,
       'commit_id' => nil,
       'created_at' => '2022-04-26 18:30:53 UTC',
-      'assignee' => { 'id' => 2000, 'login' => 'github_assignee' },
+      'assignee' => assignee,
       'issue' => { 'number' => issuable.iid, pull_request: issuable.is_a?(MergeRequest) }
     )
   end
@@ -63,6 +65,16 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee, feature_
             note_id: Note.last.id
           )
         )
+    end
+
+    context 'when assignee is nil' do
+      let(:assignee) { nil }
+
+      it 'references `@ghost`' do
+        importer.execute(issue_event)
+
+        expect(issuable.notes.last.note).to end_with('`@ghost`')
+      end
     end
   end
 

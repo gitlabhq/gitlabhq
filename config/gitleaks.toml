@@ -8,7 +8,7 @@ path = "/gitleaks.toml"
   description = "global allow list"
   regexTarget = "match"
   regexes = [
-    # spotted in doc/user/application_security/secret_detection/index.md and some frontend specs
+    # spotted in doc/user/application_security/secret_detection/_index.md and some frontend specs
     "glpat-1234567890abcdefghij",
     # doc/user/application_security/secret_detection/remove_secrets_tutorial.md
     "glpat-12345678901234567890",

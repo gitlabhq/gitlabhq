@@ -1,0 +1,46 @@
+- title: "Application Security Testing analyzers major version update"
+  announcement_milestone: "17.9"
+  removal_milestone: "18.0"
+  breaking_change: true
+  window: 1
+  reporter: thiagocsf
+  stage: application security testing
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/513417
+  impact: low
+  scope: project
+  resolution_role: Developer
+  manual_task: false
+  body: |  # Do not modify this line, instead modify the lines below.
+    The Application Security Testing stage will be bumping the major versions of its analyzers in
+    tandem with the GitLab 18.0 release.
+
+    If you are not using the default included templates, or have pinned your analyzer versions, you
+    must update your CI/CD job definition to either remove the pinned version or update
+    the latest major version.
+
+    Users of GitLab 17.0 to GitLab 17.11 will continue to experience analyzer updates until the
+    release of GitLab 18.0, after which all newly fixed bugs and released features will be
+    released only in the new major version of the analyzers.
+
+    We do not backport bugs and features to deprecated versions as per our maintenance policy. As
+    required, security patches will be backported within the latest 3 minor releases.
+
+    Specifically, the following analyzers are being deprecated and will no longer be updated after
+    the GitLab 18.0 release:
+
+    - GitLab Advanced SAST: version 1
+    - Container Scanning: version 7
+    - Dependency Scanning: version 0
+    - Gemnasium: [all versions](https://gitlab.com/gitlab-org/gitlab/-/issues/501308)
+    - DAST: version 5
+    - DAST API: version 4
+    - Fuzz API: version 4
+    - IaC Scanning: version 5
+    - Pipeline Secret Detection: version 6
+    - Static Application Security Testing (SAST): version 5 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/)
+      - `kics`
+      - `kubesec`
+      - `pmd-apex`
+      - `semgrep`
+      - `sobelow`
+      - `spotbugs`

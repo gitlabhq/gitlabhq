@@ -12,7 +12,7 @@ RSpec.describe 'Projects > Files > User views files page', feature_category: :so
   end
 
   it 'user sees folders and submodules sorted together, followed by files', :js do
-    rows = all('td.tree-item-file-name').map(&:text)
+    rows = all('th.tree-item-file-name').map(&:text)
     tree = project.repository.tree
 
     folders = tree.trees.map(&:name)

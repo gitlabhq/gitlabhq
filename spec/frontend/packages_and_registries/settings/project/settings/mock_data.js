@@ -265,3 +265,9 @@ export const updateContainerProtectionRepositoryRuleMutationPayload = ({
     },
   },
 });
+
+export const containerProtectionTagRuleMutationInput = {
+  tagNamePattern: 'v.+',
+  minimumAccessLevelForPush: 'MAINTAINER',
+  minimumAccessLevelForDelete: 'MAINTAINER',
+};

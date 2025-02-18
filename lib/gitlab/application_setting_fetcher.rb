@@ -24,13 +24,7 @@ module Gitlab
       def cached_application_settings
         return in_memory_application_settings if ENV['IN_MEMORY_APPLICATION_SETTINGS'] == 'true'
 
-        begin
-          ::ApplicationSetting.cached
-        rescue StandardError
-          # In case Redis isn't running
-          # or the Redis UNIX socket file is not available
-          # or the DB is not running (we use migrations in the cache key)
-        end
+        ::ApplicationSetting.cached
       end
 
       def uncached_application_settings

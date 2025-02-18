@@ -7,9 +7,6 @@ value_type: number
 status: active
 time_frame: all
 data_source: database
-distribution:
-- ce
-- ee
 tiers:
 - free
 performance_indicator_type: []

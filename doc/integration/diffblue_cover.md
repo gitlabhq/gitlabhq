@@ -1,17 +1,17 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: >-
-  How to configure the Diffblue Cover GitLab integration - Cover Pipeline for
-  GitLab
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: How to configure the Diffblue Cover GitLab integration - Cover Pipeline for GitLab
+title: Diffblue Cover
 ---
 
-# Diffblue Cover
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can integrate the [Diffblue Cover](https://www.diffblue.com/) reinforcement learning AI tool into your CI/CD pipelines, to automatically write and maintain Java unit tests for your GitLab projects.
 The Diffblue Cover Pipeline for GitLab integration allows you to automatically:
@@ -47,9 +47,12 @@ To integrate Diffblue Cover into your pipeline:
      In general, use a GitLab [project access token](../user/project/settings/project_access_tokens.md) with the `Developer` role, plus `api` and `write_repository` scopes.
      If necessary you can use a [group access token](../user/group/settings/group_access_tokens.md) or a [personal access token](../user/profile/personal_access_tokens.md), again with the `Developer` role, plus `api` and `write_repository` scopes.
 
-     NOTE:
+     {{< alert type="note" >}}
+
      Using an access token with excessive permissions is a security risk.
      If you use a Personal access token, consider creating a dedicated user with access limited to just the project, minimizing the impact of the token being leaked.
+
+     {{< /alert >}}
 
 1. Select **Save changes**.
    Your Diffblue Cover integration is now <mark style="color:green;">**Active**</mark> and ready for use in your project.
@@ -62,9 +65,12 @@ Here we'll create a merge request pipeline for the project that will download th
 1. Copy the contents of the [`Diffblue-Cover.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Diffblue-Cover.gitlab-ci.yml)
    into your project's `.gitlab-ci.yml` file.
 
-   NOTE:
-   When using the Diffblue Cover pipeline template with your own project and existing pipeline file, add the Diffblue template content to your file and modify as needed.
+   {{< alert type="note" >}}
+
+When using the Diffblue Cover pipeline template with your own project and existing pipeline file, add the Diffblue template content to your file and modify as needed.
    For more information, see [Cover Pipeline for GitLab](https://docs.diffblue.com/features/cover-pipeline/cover-pipeline-for-gitlab) in the Diffblue documentation.
+
+   {{< /alert >}}
 
 1. Enter a commit message.
 1. Enter a new **Branch** name. For example, `add-diffblue-cover-pipeline`.

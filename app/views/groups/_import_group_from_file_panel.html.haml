@@ -2,24 +2,24 @@
 - group_path = root_url
 - group_path << parent.full_path + '/' if parent
 
-= gitlab_ui_form_for '', url: import_gitlab_group_path, namespace: 'import_group', class: 'group-form gl-show-field-errors', multipart: true do |f|
-  .gl-border-l-solid.gl-border-r-solid.gl-border-default.gl-border-1.gl-p-5
-    %h4
-      = _('Import group from file')
+= render ::Layouts::CrudComponent.new(_('Import group from file')) do |c|
+  - c.with_body do
     = render Pajamas::AlertComponent.new(variant: :warning,
       alert_options: { class: 'gl-mb-5' },
       dismissible: false) do |c|
       - c.with_body do
-        - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md') }
+        - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/_index.md') }
         - link_end = '</a>'.html_safe
         = s_('GroupsNew|This feature is deprecated and replaced by group migration by direct transfer. %{docs_link_start}Learn more%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: link_end }
-    = render 'shared/groups/group_name_and_path_fields', f: f
-    .form-group
-      = f.label :file, s_('GroupsNew|Upload file')
-      .gl-font-normal
-        - import_export_link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: help_page_path('user/project/settings/import_export.md', anchor: 'migrate-groups-by-uploading-an-export-file-deprecated') }
-        = s_('GroupsNew|To import a group, navigate to the group settings for the GitLab source instance, %{link_start}generate an export file%{link_end}, and upload it here.').html_safe % { link_start: import_export_link_start, link_end: '</a>'.html_safe }
-      .gl-mt-3
-        = render 'shared/file_picker_button', f: f, field: :file, help_text: nil
-  .gl-border-default.gl-border-solid.gl-border-1.gl-bg-gray-10.gl-p-5
-    = f.submit _('Import'), pajamas_button: true
+
+    = gitlab_ui_form_for '', url: import_gitlab_group_path, namespace: 'import_group', class: 'group-form gl-show-field-errors', multipart: true do |f|
+      = render 'shared/groups/group_name_and_path_fields', f: f
+      .form-group
+        = f.label :file, s_('GroupsNew|Upload file')
+        .gl-text-subtle
+          - import_export_link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: help_page_path('user/project/settings/import_export.md', anchor: 'migrate-groups-by-uploading-an-export-file-deprecated') }
+          = s_('GroupsNew|To import a group, navigate to the group settings for the GitLab source instance, %{link_start}generate an export file%{link_end}, and upload it here.').html_safe % { link_start: import_export_link_start, link_end: '</a>'.html_safe }
+        .gl-mt-3
+          = render 'shared/file_picker_button', f: f, field: :file, help_text: nil
+
+      = f.submit _('Import'), pajamas_button: true

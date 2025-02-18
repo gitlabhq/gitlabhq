@@ -9,8 +9,6 @@ import {
   GlLink,
   GlModal,
 } from '@gitlab/ui';
-import { toSafeInteger } from 'lodash';
-import { SEAT_CONTROL } from 'ee_else_ce/pages/admin/application_settings/general/constants';
 import csrf from '~/lib/utils/csrf';
 import { __, n__, s__, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -20,6 +18,7 @@ const DENYLIST_TYPE_RAW = 'raw';
 const DENYLIST_TYPE_FILE = 'file';
 
 export default {
+  name: 'SignUpRestrictionsApp',
   csrf,
   DENYLIST_TYPE_RAW,
   DENYLIST_TYPE_FILE,
@@ -33,9 +32,9 @@ export default {
     GlLink,
     SignupCheckbox,
     GlModal,
-    SeatControlsSection: () =>
+    SeatControlSection: () =>
       import(
-        'ee_component/pages/admin/application_settings/general/components/seat_controls_section.vue'
+        'ee_component/pages/admin/application_settings/general/components/seat_control_section.vue'
       ),
     PasswordComplexityCheckboxGroup: () =>
       import(
@@ -54,7 +53,6 @@ export default {
     'minimumPasswordLengthMax',
     'minimumPasswordLengthHelpLink',
     'domainAllowlistRaw',
-    'newUserSignupsCap',
     'domainDenylistEnabled',
     'denylistTypeRawSelected',
     'domainDenylistRaw',
@@ -63,11 +61,11 @@ export default {
     'emailRestrictions',
     'afterSignUpText',
     'pendingUserCount',
-    'seatControl',
   ],
   data() {
     return {
       showModal: false,
+      canUsersBeAccidentallyApproved: false,
       form: {
         signupEnabled: this.signupEnabled,
         requireAdminApproval: this.requireAdminApprovalAfterUserSignup,
@@ -77,7 +75,6 @@ export default {
         minimumPasswordLengthMax: this.minimumPasswordLengthMax,
         minimumPasswordLengthHelpLink: this.minimumPasswordLengthHelpLink,
         domainAllowlistRaw: this.domainAllowlistRaw,
-        userCap: this.newUserSignupsCap,
         domainDenylistEnabled: this.domainDenylistEnabled,
         denylistType: this.denylistTypeRawSelected
           ? this.$options.DENYLIST_TYPE_RAW
@@ -87,53 +84,22 @@ export default {
         supportedSyntaxLinkUrl: this.supportedSyntaxLinkUrl,
         emailRestrictions: this.emailRestrictions,
         afterSignUpText: this.afterSignUpText,
-        seatControl: this.seatControl,
         shouldProceedWithAutoApproval: false,
       },
     };
   },
   computed: {
-    isOldUserCapUnlimited() {
-      // The previous/initial value of User Cap is unlimited if it was empty
-      return this.newUserSignupsCap === '';
-    },
-    isNewUserCapUnlimited() {
-      // The current value of User Cap is unlimited if no value is provided in the field
-      return this.form.userCap === '';
-    },
-    hasUserCapChangedFromUnlimitedToLimited() {
-      return this.isOldUserCapUnlimited && !this.isNewUserCapUnlimited;
-    },
-    hasUserCapChangedFromLimitedToUnlimited() {
-      return !this.isOldUserCapUnlimited && this.isNewUserCapUnlimited;
-    },
-    hasUserCapBeenIncreased() {
-      if (this.hasUserCapChangedFromUnlimitedToLimited) return false;
-
-      const oldValueAsInteger = toSafeInteger(this.newUserSignupsCap);
-      const newValueAsInteger = toSafeInteger(this.form.userCap);
-
-      return this.hasUserCapChangedFromLimitedToUnlimited || newValueAsInteger > oldValueAsInteger;
-    },
-    canUsersBeAccidentallyApproved() {
+    shouldShowUserApprovalModal() {
       if (!this.hasPendingUsers) return false;
-      // This should move to EE context. See https://gitlab.com/gitlab-org/gitlab/-/issues/512284
-      if (this.isBlockOveragesEnabled) return false;
       if (this.hasSignupApprovalBeenToggledOff) return true;
 
-      return this.hasUserCapBeenIncreased;
+      return this.canUsersBeAccidentallyApproved;
     },
     hasPendingUsers() {
       return this.pendingUserCount > 0;
     },
-    isBlockOveragesEnabled() {
-      return this.seatControl === SEAT_CONTROL.BLOCK_OVERAGES;
-    },
     hasSignupApprovalBeenToggledOff() {
       return this.requireAdminApprovalAfterUserSignup && !this.form.requireAdminApproval;
-    },
-    shouldShowSeatControlSection() {
-      return this.seatControl !== '';
     },
     signupEnabledHelpText() {
       return sprintf(
@@ -197,7 +163,7 @@ export default {
   },
   methods: {
     submitButtonHandler() {
-      if (this.canUsersBeAccidentallyApproved) {
+      if (this.shouldShowUserApprovalModal) {
         this.showModal = true;
 
         return;
@@ -210,6 +176,9 @@ export default {
         ...this.form,
         [name]: value,
       };
+    },
+    handleCheckUsersAutoApproval(value) {
+      this.canUsersBeAccidentallyApproved = value;
     },
     async submitForm() {
       // the nextTick is to ensure the form is updated before we submit it
@@ -252,7 +221,6 @@ export default {
     domainAllowListDescription: s__(
       'ApplicationSettings|Only users with e-mail addresses that match these domain(s) can sign up. Wildcards allowed. Enter multiple entries on separate lines. Example: domain.com, *.domain.com',
     ),
-    userCapLabel: s__('ApplicationSettings|User cap'),
     domainDenyListGroupLabel: s__('ApplicationSettings|Domain denylist'),
     domainDenyListLabel: s__('ApplicationSettings|Enable domain denylist for sign-ups'),
     domainDenyListTypeFileLabel: s__('ApplicationSettings|Upload denylist file'),
@@ -341,7 +309,8 @@ export default {
         name="application_setting[auto_approve_pending_users]"
         :value="form.shouldProceedWithAutoApproval"
       />
-      <seat-controls-section v-if="shouldShowSeatControlSection" v-model="form" />
+
+      <seat-control-section @checkUsersAutoApproval="handleCheckUsersAutoApproval" />
 
       <gl-form-group :label="$options.i18n.minimumPasswordLengthLabel">
         <gl-form-input

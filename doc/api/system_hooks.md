@@ -2,13 +2,15 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: System hooks API
 ---
 
-# System hooks API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 All methods require administrator authorization.
 
@@ -107,7 +109,7 @@ POST /hooks
 | `token`                     | string  | no       | Secret token to validate received payloads; this isn't returned in the response |
 | `push_events`               | boolean | no       | When true, the hook fires on push events |
 | `tag_push_events`           | boolean | no       | When true, the hook fires on new tags being pushed |
-| `merge_requests_events`     | boolean | no       | Trigger hook on merge requests events |
+| `merge_requests_events`     | boolean | no       | Trigger hook on merge request events |
 | `repository_update_events`  | boolean | no       | Trigger hook on repository update events |
 | `enable_ssl_verification`   | boolean | no       | Do SSL verification when triggering the hook |
 | `push_events_branch_filter` | string  | no       | Trigger hook on push events for matching branches only |
@@ -154,7 +156,7 @@ PUT /hooks/:hook_id
 | `token`                     | string  | no       | Secret token to validate received payloads; this isn't returned in the response |
 | `push_events`               | boolean | no       | When true, the hook fires on push events |
 | `tag_push_events`           | boolean | no       | When true, the hook fires on new tags being pushed |
-| `merge_requests_events`     | boolean | no       | Trigger hook on merge requests events |
+| `merge_requests_events`     | boolean | no       | Trigger hook on merge request events |
 | `repository_update_events`  | boolean | no       | Trigger hook on repository update events |
 | `enable_ssl_verification`   | boolean | no       | Do SSL verification when triggering the hook |
 | `push_events_branch_filter` | string  | no       | Trigger hook on push events for matching branches only |
@@ -211,7 +213,11 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## Set a URL variable
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+
+{{< /history >}}
 
 ```plaintext
 PUT /hooks/:hook_id/url_variables/:key
@@ -229,7 +235,11 @@ On success, this endpoint returns the response code `204 No Content`.
 
 ## Delete a URL variable
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+
+{{< /history >}}
 
 ```plaintext
 DELETE /hooks/:hook_id/url_variables/:key

@@ -18,9 +18,6 @@ events:
 - name: incident_management_timeline_event_deleted
   unique: user.id
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

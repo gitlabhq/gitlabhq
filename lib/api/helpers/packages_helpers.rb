@@ -60,7 +60,7 @@ module API
 
         params = { has_length: has_length, use_final_store_path: use_final_store_path }
         params[:maximum_size] = maximum_size unless has_length
-        params[:final_store_path_root_id] = subject.id if use_final_store_path
+        params[:final_store_path_config] = { root_hash: subject.id } if use_final_store_path
         ::Packages::PackageFileUploader.workhorse_authorize(**params)
       end
 
@@ -86,6 +86,8 @@ module API
         project = find_project(params[:id])
 
         return forbidden! unless authorized_project_scope?(project)
+
+        project && authorize_job_token_policies!(project) && return
 
         return project if can?(current_user, :read_package, project&.packages_policy_subject)
         # guest users can have :read_project but not :read_package
@@ -142,6 +144,18 @@ module API
           supports_direct_download: supports_direct_download,
           content_disposition: content_disposition
         )
+      end
+
+      def protect_package!(package_name, package_type)
+        service_response =
+          ::Packages::Protection::CheckRuleExistenceService.new(
+            project: user_project,
+            current_user: current_user,
+            params: { package_name: package_name, package_type: package_type }
+          ).execute
+
+        bad_request!(service_response.message) if service_response.error?
+        forbidden!('Package protected.') if service_response[:protection_rule_exists?]
       end
 
       private

@@ -2,18 +2,24 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Using GitOps with a Kubernetes cluster
 ---
 
-# Using GitOps with a Kubernetes cluster
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/346567) from GitLab Premium to GitLab Free in 15.3.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/346585) to make the `id` attribute optional in GitLab 15.7.
-> - Specifying a branch, tag, or commit reference to fetch the Kubernetes manifest files [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4516) in GitLab 15.7.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/395364) in GitLab 16.1 to prioritize Flux for GitOps.
+{{< /details >}}
+
+{{< history >}}
+
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/346567) from GitLab Premium to GitLab Free in 15.3.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/346585) to make the `id` attribute optional in GitLab 15.7.
+- Specifying a branch, tag, or commit reference to fetch the Kubernetes manifest files [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4516) in GitLab 15.7.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/395364) in GitLab 16.1 to prioritize Flux for GitOps.
+
+{{< /history >}}
 
 GitLab integrates [Flux](https://fluxcd.io/flux/) for GitOps.
 To get started with Flux, see the [Flux for GitOps tutorial](gitops/flux_tutorial.md).
@@ -66,7 +72,7 @@ You should use both Flux and `agentk` for GitOps deployments. Flux keeps the clu
 
 ### OCI for source control
 
-You should use OCI images as a source controller for Flux, instead of a Git repository. The [GitLab container registry](../../packages/container_registry/index.md) supports OCI images.
+You should use OCI images as a source controller for Flux, instead of a Git repository. The [GitLab container registry](../../packages/container_registry/_index.md) supports OCI images.
 
 | OCI registry | Git repository |
 | ---          | ---              |
@@ -83,9 +89,13 @@ For additional repository structure recommendations, see the [Flux documentation
 
 ## Immediate Git repository reconciliation
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/392852) in GitLab 16.1 with a [flag](../../../administration/feature_flags.md) named `notify_kas_on_git_push`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126527) in GitLab 16.2.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410429) in GitLab 16.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/392852) in GitLab 16.1 with a [flag](../../../administration/feature_flags.md) named `notify_kas_on_git_push`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126527) in GitLab 16.2.
+- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410429) in GitLab 16.3.
+
+{{< /history >}}
 
 Usually, the Flux source controller reconciles Git repositories at configured intervals.
 This can cause delays between a `git push` and the reconciliation of the cluster state, and results in
@@ -107,10 +117,13 @@ but it doesn't guarantee that every `git push` event is received. You should sti
 [`GitRepository.spec.interval`](https://fluxcd.io/flux/components/source/gitrepositories/#interval)
 to an acceptable duration.
 
-NOTE:
+{{< alert type="note" >}}
+
 The agent only has access to the agent configuration project and all public projects.
 The agent is not able to immediately reconcile any private projects, except the agent configuration project.
 Allowing the agent to access private projects is proposed in [issue 389393](https://gitlab.com/gitlab-org/gitlab/-/issues/389393).
+
+{{< /alert >}}
 
 ### Custom webhook endpoints
 
@@ -139,11 +152,14 @@ You can use this if you run an agent outside a cluster
 and you haven't [configured an `Ingress`](https://fluxcd.io/flux/guides/webhook-receivers/#expose-the-webhook-receiver)
 for the Flux notification controller.
 
-WARNING:
+{{< alert type="warning" >}}
+
 You should configure only trusted service proxy URLs.
 When you provide a service proxy URL,
 the agent for Kubernetes sends typical Kubernetes API requests which include
 the credentials necessary to authenticate with the API service.
+
+{{< /alert >}}
 
 ## Token management
 
@@ -164,7 +180,7 @@ The token does not need write access.
 
 You should use project deploy tokens if `http` access is possible.
 If you require `git+ssh` access, you should use deploy keys.
-To compare deploy keys and deploy tokens, see [Deploy keys](../../project/deploy_keys/index.md).
+To compare deploy keys and deploy tokens, see [Deploy keys](../../project/deploy_keys/_index.md).
 
 Support for automating deploy token creation, rotation, and reporting is proposed in [issue 389393](https://gitlab.com/gitlab-org/gitlab/-/issues/389393).
 

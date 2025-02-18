@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Authn::Tokens::RunnerAuthenticationToken, feature_category: :system_access do
+RSpec.describe Authn::Tokens::RunnerAuthenticationToken, :aggregate_failures, feature_category: :system_access do
   let_it_be(:user) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
 
   let(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
 
@@ -15,11 +16,9 @@ RSpec.describe Authn::Tokens::RunnerAuthenticationToken, feature_category: :syst
 
     it_behaves_like 'finding the valid revocable'
 
-    describe '#revoke!' do
-      it 'does not support revocation yet' do
-        expect do
-          token.revoke!(user)
-        end.to raise_error(::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported token type')
+    describe '#revoke!', :enable_admin_mode do
+      it 'resets the runner token' do
+        expect { token.revoke!(admin) }.to change { runner.reload.token }
       end
     end
   end

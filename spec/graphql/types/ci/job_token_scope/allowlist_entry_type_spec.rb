@@ -14,6 +14,7 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeAllowlistEntry'], feature_cate
       job_token_policies
       added_by
       created_at
+      autopopulated
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

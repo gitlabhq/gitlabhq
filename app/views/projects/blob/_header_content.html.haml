@@ -3,12 +3,12 @@
     .js-table-contents
   = blob_icon blob.mode, blob.name
 
-  %strong.file-title-name.gl-break-all{ data: { testid: 'file-name-content' } }
+  %strong.file-title-name.gl-text-strong.gl-break-all{ data: { testid: 'file-name-content' } }
     = blob.name
 
   = copy_file_path_button(blob.path)
 
-  %small.mr-1
+  %small.gl-mr-1.gl-text-subtle
     - if blob.symlink?
       = _('Symbolic link') << ' ·'
     = number_to_human_size(blob.raw_size)

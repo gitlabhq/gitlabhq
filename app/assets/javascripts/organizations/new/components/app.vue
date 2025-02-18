@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     organizationsHelpPagePath() {
-      return helpPagePath('user/organization/index');
+      return helpPagePath('user/organization/_index');
     },
   },
   methods: {

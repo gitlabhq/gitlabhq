@@ -2,16 +2,18 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Accessibility testing
 ---
 
-# Accessibility testing
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If your application offers a web interface, you can use
-[GitLab CI/CD](../index.md) to determine the accessibility
+[GitLab CI/CD](../_index.md) to determine the accessibility
 impact of pending code changes.
 
 [Pa11y](https://pa11y.org/) is a free and open source tool for
@@ -36,7 +38,7 @@ You can run Pa11y with GitLab CI/CD using the
 
 To define the `a11y` job:
 
-1. [Include](../yaml/index.md#includetemplate) the
+1. [Include](../yaml/_index.md#includetemplate) the
    [`Accessibility.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml)
    from your GitLab installation.
 1. Add the following configuration to your `.gitlab-ci.yml` file.
@@ -62,8 +64,11 @@ The `a11y` job in your CI/CD pipeline generates these files:
 
 You can [view job artifacts in your browser](../jobs/job_artifacts.md#download-job-artifacts).
 
-NOTE:
+{{< alert type="note" >}}
+
 The job definition provided by the template does not support Kubernetes.
+
+{{< /alert >}}
 
 You cannot pass configurations into Pa11y via CI configuration.
 To change the configuration, edit a copy of the template in your CI file.

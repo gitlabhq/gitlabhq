@@ -2,17 +2,23 @@
 stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Project-level Secure Files API
 ---
 
-# Project-level Secure Files API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350748) in GitLab 15.7. Feature flag `ci_secure_files` removed.
+{{< /details >}}
 
-This feature is part of [Mobile DevOps](../ci/jobs/mobile_devops.md) developed by [GitLab Incubation Engineering](https://handbook.gitlab.com/handbook/engineering/development/incubation/).
+{{< history >}}
+
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350748) in GitLab 15.7. Feature flag `ci_secure_files` removed.
+
+{{< /history >}}
+
+This feature is part of [Mobile DevOps](../ci/mobile_devops/_index.md) developed by [GitLab Incubation Engineering](https://handbook.gitlab.com/handbook/engineering/development/incubation/).
 The feature is still in development, but you can:
 
 - [Request a feature](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=feature_request).
@@ -33,7 +39,7 @@ Supported attributes:
 
 | Attribute    | Type           | Required | Description |
 |--------------|----------------|----------|-------------|
-| `project_id` | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `project_id` | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -95,7 +101,7 @@ Supported attributes:
 | Attribute    | Type           | Required | Description |
 |--------------|----------------|----------|-------------|
 | `id`         | integer        | Yes      | The ID of a secure file. |
-| `project_id` | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `project_id` | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -131,7 +137,7 @@ Supported attributes:
 |-----------------|----------------|----------|-------------|
 | `file`          | file           | Yes      | The file being uploaded (5 MB limit). |
 | `name`          | string         | Yes      | The name of the file being uploaded. The filename must be unique in the project. |
-| `project_id`    | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `project_id`    | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -167,7 +173,7 @@ Supported attributes:
 | Attribute    | Type           | Required | Description |
 |--------------|----------------|----------|-------------|
 | `id`         | integer        | Yes      | The ID of a secure file. |
-| `project_id` | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `project_id` | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -188,7 +194,7 @@ Supported attributes:
 | Attribute    | Type           | Required | Description |
 |--------------|----------------|----------|-------------|
 | `id`         | integer        | Yes      | The ID of a secure file. |
-| `project_id` | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `project_id` | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 

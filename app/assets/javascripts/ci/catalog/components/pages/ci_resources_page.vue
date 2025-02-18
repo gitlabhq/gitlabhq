@@ -179,11 +179,9 @@ export default {
     <catalog-tabs
       :is-loading="isLoadingCounts"
       :resource-counts="catalogResourcesCount"
-      class="gl-mb-3"
       @setScope="handleSetScope"
     />
     <catalog-search
-      class="gl-py-2"
       :initial-search-term="searchTerm"
       @update-search-term="onUpdateSearchTerm"
       @update-sorting="onUpdateSorting"

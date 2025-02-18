@@ -1,15 +1,16 @@
 fragment AllowlistEntry on CiJobTokenScopeAllowlistEntry {
   defaultPermissions
   jobTokenPolicies
+  autopopulated
   target {
-    ... on Group {
+    ... on CiJobTokenAccessibleGroup {
       id
       name
       fullPath
       avatarUrl
       webUrl
     }
-    ... on Project {
+    ... on CiJobTokenAccessibleProject {
       id
       name
       fullPath

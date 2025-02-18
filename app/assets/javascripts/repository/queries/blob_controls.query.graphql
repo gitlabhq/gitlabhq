@@ -1,14 +1,45 @@
 query getBlobControls($projectPath: ID!, $filePath: String!, $ref: String!, $refType: RefType) {
   project(fullPath: $projectPath) {
+    __typename
     id
     repository {
+      __typename
+      empty
       blobs(paths: [$filePath], ref: $ref, refType: $refType) {
+        __typename
         nodes {
+          __typename
           id
+          name
           blamePath
           permalinkPath
           storedExternally
           externalStorage
+          environmentFormattedExternalUrl
+          environmentExternalUrlForRouteMap
+          path
+          rawPath
+          rawTextBlob
+          archived
+          replacePath
+          webPath
+          canCurrentUserPushToBranch
+          canModifyBlob
+          canModifyBlobWithWebIde
+          simpleViewer {
+            __typename
+            fileType
+            tooLarge
+            type
+            renderError
+          }
+          richViewer {
+            __typename
+            fileType
+            tooLarge
+            type
+            renderError
+          }
         }
       }
     }

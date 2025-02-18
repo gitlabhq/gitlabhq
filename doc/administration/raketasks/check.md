@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Integrity check Rake task
 ---
 
-# Integrity check Rake task
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab provides Rake tasks to check the integrity of various components.
 See also the [check GitLab configuration Rake task](maintenance.md#check-gitlab-configuration).
@@ -217,7 +219,7 @@ secrets file (`gitlab-secrets.json`).
 
 Automatic resolution is not yet implemented. If you have values that
 cannot be decrypted, you can follow steps to reset them, see our
-documentation on what to do [when the secrets file is lost](../../administration/backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost).
+documentation on what to do [when the secrets file is lost](../backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost).
 
 This can take a very long time, depending on the size of your
 database, as it checks all rows in all tables.
@@ -287,11 +289,18 @@ I, [2020-06-11T17:18:15.575711 #27148]  INFO -- : Done!
 
 ## Reset encrypted tokens when they can't be recovered
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131893) in GitLab 16.6.
+{{< history >}}
 
-WARNING:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131893) in GitLab 16.6.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 This operation is dangerous and can result in data-loss. Proceed with extreme caution.
 You must have knowledge about GitLab internals before you perform this operation.
+
+{{< /alert >}}
 
 In some cases, encrypted tokens can no longer be recovered and cause issues.
 Most often, runner registration tokens for groups and projects might be broken on very large instances.
@@ -433,7 +442,7 @@ To delete these references to missing local and/or remote artifacts (`job.log` f
 ### Delete references to missing LFS objects
 
 If `gitlab-rake gitlab:lfs:check VERBOSE=1` detects LFS objects that exist in the database
-but not on disk, [follow the procedure in the LFS documentation](../lfs/index.md#missing-lfs-objects)
+but not on disk, [follow the procedure in the LFS documentation](../lfs/_index.md#missing-lfs-objects)
 to remove the database entries.
 
 ### Update dangling object storage references

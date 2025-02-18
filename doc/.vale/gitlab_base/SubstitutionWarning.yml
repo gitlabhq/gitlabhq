@@ -8,6 +8,7 @@
 extends: substitution
 message: "Use '%s' instead of '%s' when possible."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
+vocab: false
 level: warning
 action:
   name: replace
@@ -21,6 +22,7 @@ swap:
   (?<!right-)click(?!-through): "select"
   cancelled: "canceled"
   cancelling: "canceling"
+  cherry pick: "cherry-pick"
   code base: "codebase"
   config: "configuration"
   confirmation box: "confirmation dialog"
@@ -54,7 +56,7 @@ swap:
   normal: "typical' or 'standard"
   OAuth2: "OAuth 2.0"
   omnibus gitlab: "Linux package"
-  'omnibus(?!\))': "Linux package"
+  'omnibus(?!\)| builder)': "Linux package"
   once a: "after a"
   once that: "after that"
   once the: "after the"
@@ -79,5 +81,6 @@ swap:
   top level group: "top-level group"
   utiliz(?:es?|ing): "use"
   VSCode: "VS Code"
+  WebIDE: "Web IDE"
   we recommend: "you should"
   within: "in"

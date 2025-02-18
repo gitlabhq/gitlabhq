@@ -52,15 +52,19 @@ export default {
       this.isCollapsed = !this.isCollapsed;
     },
     highlight(text) {
-      return this.searchTerm
-        ? String(escape(text)).replace(
-            new RegExp(this.searchTerm, 'i'),
-            (match) => `<strong>${match}</strong>`,
-          )
-        : escape(text);
+      if (!this.searchTerm) {
+        return escape(text);
+      }
+
+      const escapedText = escape(text);
+      const regex = new RegExp(`(${this.searchTerm})`, 'i');
+      return `${escapedText.replace(
+        regex,
+        (match) => `<span class="gl-bg-status-warning">${match}</span>`,
+      )}`;
     },
   },
-  safeHtmlConfig: { ALLOWED_TAGS: ['strong'] },
+  safeHtmlConfig: { ALLOWED_TAGS: ['span'] },
 };
 </script>
 <template>
@@ -68,7 +72,7 @@ export default {
     <local-storage-sync v-model="isCollapsed" :storage-key="`wiki:${page.path}:collapsed`" />
     <span
       ref="entry"
-      class="wiki-list gl-relative gl-flex gl-cursor-pointer gl-items-center gl-rounded-base gl-px-3"
+      class="wiki-list gl-relative gl-mx-2 gl-mb-px gl-flex gl-min-h-8 gl-cursor-pointer gl-items-center gl-rounded-base gl-px-3"
       data-testid="wiki-list"
       :class="{ active: page.path === currentPath }"
       @click="toggleCollapsed"

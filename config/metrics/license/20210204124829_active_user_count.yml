@@ -9,9 +9,6 @@ data_category: subscription
 time_frame: none
 instrumentation_class: ActiveUserCountMetric
 data_source: database
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

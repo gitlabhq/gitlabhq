@@ -1,5 +1,5 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -23,7 +23,7 @@ describe('Timeline toggle', () => {
     jest.spyOn(store, 'dispatch').mockImplementation();
     jest.spyOn(Tracking, 'event').mockImplementation();
 
-    wrapper = shallowMount(TimelineToggle, {
+    wrapper = mount(TimelineToggle, {
       store,
     });
   };
@@ -63,7 +63,7 @@ describe('Timeline toggle', () => {
       findGlButton().vm.$emit('click', mockEvent);
       await nextTick();
       expect(findGlButton().attributes('title')).toBe(timelineEnabledTooltip);
-      expect(findGlButton().attributes('selected')).toBe('true');
+      expect(findGlButton().props('selected')).toBe(true);
       expect(mockEvent.currentTarget.blur).toHaveBeenCalled();
     });
 

@@ -30,7 +30,8 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
       it 'creates a pipeline without builds', :aggregate_failures do
         expect(pipeline).not_to be_created_successfully
         expect(pipeline.builds).to be_empty
-        expect(pipeline.yaml_errors).to eq("jobs:test:tags config must be less than the limit of #{Gitlab::Ci::Config::Entry::Tags::TAGS_LIMIT} tags")
+        expect(pipeline.error_messages[0].content).to eq(
+          "jobs:test:tags config must be less than the limit of #{Gitlab::Ci::Config::Entry::Tags::TAGS_LIMIT} tags")
       end
     end
 

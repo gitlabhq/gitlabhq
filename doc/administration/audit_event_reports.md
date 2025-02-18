@@ -2,18 +2,20 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Audit events administration
 ---
 
-# Audit events administration
-
-In addition to [audit events](../user/compliance/audit_events.md), self-managed administrators can access additional
+In addition to [audit events](../user/compliance/audit_events.md), as an administrator, you can access additional
 features.
 
 ## Instance audit events
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can view audit events from user actions across an entire GitLab instance.
 To view instance audit events:
@@ -30,11 +32,18 @@ Instance audit events can also be accessed using the [instance audit events API]
 
 ## Exporting audit events
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - Entity type `Gitlab::Audit::InstanceScope` for instance audit events [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418185) in GitLab 16.2.
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- Entity type `Gitlab::Audit::InstanceScope` for instance audit events [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418185) in GitLab 16.2.
+
+{{< /history >}}
 
 You can export the current view (including filters) of your instance audit events as a
 CSV(comma-separated values) file. To export the instance audit events to CSV:
@@ -77,11 +86,14 @@ All items are sorted by `created_at` in ascending order.
 
 ## User impersonation
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-When a user is [impersonated](../administration/admin_area.md#user-impersonation), their actions are logged as audit events with the following additional details:
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+When a user is [impersonated](admin_area.md#user-impersonation), their actions are logged as audit events with the following additional details:
 
 - Audit events include information about the impersonating administrator.
 - Extra audit events are recorded for the start and end of the administrator's impersonation session.

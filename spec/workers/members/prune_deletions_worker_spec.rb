@@ -106,6 +106,24 @@ RSpec.describe Members::PruneDeletionsWorker, :saas, feature_category: :seat_cos
         perform_work
       end
     end
+
+    context 'when the scheduler does not have permission to remove the user' do
+      before do
+        group = create(:group)
+        user = create(:user)
+        other_user = create(:user)
+        group.add_owner(user)
+
+        create(:members_deletion_schedules, user: user, namespace: group, scheduled_by: other_user)
+      end
+
+      it 'deletes the schedule and does not remove the user' do
+        expect do
+          perform_work
+        end.to change { Members::DeletionSchedule.count }.from(1).to(0)
+          .and not_change { GroupMember.count }
+      end
+    end
   end
 
   describe '#max_running_jobs' do

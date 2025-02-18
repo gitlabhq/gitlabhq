@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use OpenID Connect as an authentication provider
 ---
 
-# Use OpenID Connect as an authentication provider
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can use GitLab as a client application with [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html)
 as an OmniAuth provider.
@@ -108,8 +110,11 @@ The OpenID Connect provider provides you with a client's details and secret for 
    }
    ```
 
-   NOTE:
-   For more information on using multiple identity providers with OIDC, see [issue 5992](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5992).
+   {{< alert type="note" >}}
+
+For more information on using multiple identity providers with OIDC, see [issue 5992](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5992).
+
+   {{< /alert >}}
 
    For self-compiled installations:
 
@@ -136,8 +141,11 @@ The OpenID Connect provider provides you with a client's details and secret for 
        }
    ```
 
-   NOTE:
-   For more information on each configuration option, refer to the [OmniAuth OpenID Connect usage documentation](https://github.com/omniauth/omniauth_openid_connect#usage) and [OpenID Connect Core 1.0 specification](https://openid.net/specs/openid-connect-core-1_0.html).
+   {{< alert type="note" >}}
+
+For more information on each configuration option, refer to the [OmniAuth OpenID Connect usage documentation](https://github.com/omniauth/omniauth_openid_connect#usage) and [OpenID Connect Core 1.0 specification](https://openid.net/specs/openid-connect-core-1_0.html).
+
+   {{< /alert >}}
 
 1. For the provider configuration, change the values for the provider to match your
    OpenID Connect client setup. Use the following as a guide:
@@ -243,6 +251,12 @@ you need the following information:
   [Microsoft Quickstart Register an Application](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app) documentation
   to obtain the tenant ID, client ID, and client secret for your app.
 
+{{< alert type="note" >}}
+
+All accounts provisioned by Azure must have an email address defined. If an email address is not defined, Azure assigns a randomly generated address. If you've configured [domain sign-up restrictions](../settings/sign_up_restrictions.md#allow-or-deny-sign-ups-using-specific-email-domains), this random address might prevent the account from being created.
+
+{{< /alert >}}
+
 Example configuration block for Linux package installations:
 
 ```ruby
@@ -339,9 +353,9 @@ To migrate to the Generic OpenID Connect configuration, you must update the conf
 
 For Linux package installations, update the configuration as follows:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Azure OAuth 2.0
+{{< tab title="Azure OAuth 2.0" >}}
 
 ```ruby
 gitlab_rails['omniauth_providers'] = [
@@ -368,7 +382,9 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-:::TabTitle Azure Active Directory v2
+{{< /tab >}}
+
+{{< tab title="Azure Active Directory v2" >}}
 
 ```ruby
 gitlab_rails['omniauth_providers'] = [
@@ -395,15 +411,17 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 For Helm installations:
 
 Add the [provider's configuration](https://docs.gitlab.com/charts/charts/globals.html#providers) in a YAML file (for example, `provider.yaml`):
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Azure OAuth 2.0
+{{< tab title="Azure OAuth 2.0" >}}
 
 ```ruby
 {
@@ -431,7 +449,9 @@ Add the [provider's configuration](https://docs.gitlab.com/charts/charts/globals
 }
 ```
 
-:::TabTitle Azure Active Directory v2
+{{< /tab >}}
+
+{{< tab title="Azure Active Directory v2" >}}
 
 ```ruby
 {
@@ -459,7 +479,9 @@ Add the [provider's configuration](https://docs.gitlab.com/charts/charts/globals
 }
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 As you migrate from `azure_oauth2` to `omniauth_openid_connect` as part of upgrading to GitLab 17.0 or above, the `sub` claim value set for your organization can vary. `azure_oauth2` uses Microsoft V1 endpoint while `azure_activedirectory_v2` and `omniauth_openid_connect` both use Microsoft V2 endpoint with a common `sub` value.
 
@@ -475,8 +497,11 @@ As you migrate from `azure_oauth2` to `omniauth_openid_connect` as part of upgra
   - Update `extern_uid` manually. To do this, use the [API or Rails console](../../integration/omniauth.md#change-apps-or-configuration) to update the `extern_uid` for each user.
     This method may be required if the instance has already been upgraded to 17.0 or later, and users have attempted to sign in.
 
-NOTE:
+{{< alert type="note" >}}
+
 `azure_oauth2` might have used Entra ID's `upn` claim as the email address, if the `email` claim was missing or blank when provisioning GitLab accounts.
+
+{{< /alert >}}
 
 ### Configure Microsoft Azure Active Directory B2C
 
@@ -670,9 +695,12 @@ gitlab_rails['omniauth_providers'] = [
 
 #### Configure Keycloak with a symmetric key algorithm
 
-WARNING:
+{{< alert type="warning" >}}
+
 The following instructions are included for completeness, but only use symmetric key
 encryption if absolutely necessary.
+
+{{< /alert >}}
 
 To use symmetric key encryption:
 
@@ -820,9 +848,6 @@ You should do this in either of the following scenarios:
 - [Migrating to the OpenID Connect protocol](#migrate-to-generic-openid-connect-configuration).
 - Offering different levels of authentication.
 
-NOTE:
-This is not compatible with [configuring users based on OIDC group membership](#configure-users-based-on-oidc-group-membership). For more information, see [issue 408248](https://gitlab.com/gitlab-org/gitlab/-/issues/408248).
-
 The following example configurations show how to offer different levels of authentication, one option with 2FA and one without 2FA.
 
 For Linux package installations:
@@ -960,11 +985,18 @@ For more information, see the [GitLab API user method documentation](https://pyt
 
 ## Configure users based on OIDC group membership
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209898) in GitLab 15.10.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209898) in GitLab 15.10.
+
+{{< /history >}}
 
 You can configure OIDC group membership to:
 
@@ -974,7 +1006,7 @@ You can configure OIDC group membership to:
 
 GitLab checks these groups on each sign in and updates user attributes as necessary.
 This feature **does not** allow you to automatically add users to GitLab
-[groups](../../user/group/index.md).
+[groups](../../user/group/_index.md).
 
 ### Required groups
 
@@ -986,9 +1018,9 @@ response to require users to be members of a certain group, configure GitLab to 
 
 If you do not set `required_groups` or leave the setting empty, any user authenticated by the IdP through OIDC can use GitLab.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -1022,7 +1054,9 @@ If you do not set `required_groups` or leave the setting empty, any user authent
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -1056,7 +1090,9 @@ If you do not set `required_groups` or leave the setting empty, any user authent
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### External groups
 
@@ -1069,9 +1105,9 @@ based on group membership, configure GitLab to identify:
   [external user](../external_users.md), using the
  `external_groups` setting.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -1105,7 +1141,9 @@ based on group membership, configure GitLab to identify:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -1139,13 +1177,18 @@ based on group membership, configure GitLab to identify:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Auditor groups
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Your IdP must pass group information to GitLab in the OIDC response. To use this
 response to assign users as auditors based on group membership, configure GitLab to identify:
@@ -1154,9 +1197,9 @@ response to assign users as auditors based on group membership, configure GitLab
 - Which group memberships grant the user auditor access, using the `auditor_groups`
   setting.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -1190,7 +1233,9 @@ response to assign users as auditors based on group membership, configure GitLab
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -1224,7 +1269,9 @@ response to assign users as auditors based on group membership, configure GitLab
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Administrator groups
 
@@ -1235,9 +1282,9 @@ response to assign users as administrator based on group membership, configure G
 - Which group memberships grant the user administrator access, using the
   `admin_groups` setting.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -1271,7 +1318,9 @@ response to assign users as administrator based on group membership, configure G
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -1305,7 +1354,59 @@ response to assign users as administrator based on group membership, configure G
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
+
+### Configure a custom duration for ID Tokens
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377654) in GitLab 17.8.
+
+{{< /history >}}
+
+By default, GitLab ID tokens expire after 120 seconds.
+
+To configure a custom duration for your ID tokens:
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['oidc_provider_openid_id_token_expire_in_seconds'] = 3600
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     oidc_provider:
+      openid_id_token_expire_in_seconds: 3600
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#self-compiled-installations)
+   for the changes to take effect.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Troubleshooting
 

@@ -931,6 +931,77 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#tag_pipeline?' do
+    subject { pipeline.tag_pipeline? }
+
+    context 'when pipeline is for a tag' do
+      let(:pipeline) { create(:ci_pipeline, tag: true) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when pipeline is not for a tag' do
+      let(:pipeline) { create(:ci_pipeline, tag: false) }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#type' do
+    subject { pipeline.type }
+
+    context 'when pipeline is for a branch' do
+      let(:pipeline) { create(:ci_pipeline, tag: false) }
+
+      it { is_expected.to eq('branch') }
+    end
+
+    context 'when pipeline is for a tag' do
+      let(:pipeline) { create(:ci_pipeline, tag: true) }
+
+      it { is_expected.to eq('tag') }
+    end
+
+    context 'when pipeline is merge request pipeline' do
+      let!(:pipeline) do
+        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, target_sha: target_sha)
+      end
+
+      let(:target_sha) { nil }
+      let(:merge_request) { create(:merge_request, :with_merge_request_pipeline) }
+
+      it { is_expected.to eq('merge_request') }
+
+      context 'when pipeline is detached merge request pipeline' do
+        let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
+
+        it { is_expected.to eq('merge_request') }
+      end
+    end
+
+    context 'when pipeline is merged results pipeline' do
+      let!(:pipeline) do
+        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, target_sha: target_sha)
+      end
+
+      let(:merge_request) { create(:merge_request) }
+      let(:target_sha) { merge_request.target_branch_sha }
+
+      it { is_expected.to eq('merged_result') }
+    end
+
+    context 'when pipeline is merge train pipeline', if: Gitlab.ee? do
+      let!(:pipeline) do
+        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, ref: ref, target_sha: 'xxx')
+      end
+
+      let(:merge_request) { create(:merge_request) }
+      let(:ref) { 'refs/merge-requests/1/train' }
+
+      it { is_expected.to eq('merge_train') }
+    end
+  end
+
   describe '#merge_request_ref?' do
     subject { pipeline.merge_request_ref? }
 
@@ -1839,18 +1910,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
               expect(AutoMergeProcessWorker).to receive(:perform_async).with({ 'pipeline_id' => pipeline.id })
 
               pipeline.public_send(action)
-            end
-
-            context 'with auto_merge_process_worker_pipeline disabled' do
-              before do
-                stub_feature_flags(auto_merge_process_worker_pipeline: false)
-              end
-
-              it 'performs AutoMergeProcessWorker by passing only the merge request' do
-                expect(AutoMergeProcessWorker).to receive(:perform_async).with(merge_request.id)
-
-                pipeline.succeed!
-              end
             end
           end
         end

@@ -7,6 +7,7 @@
 extends: existence
 message: "If possible, rewrite to remove 'button'."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#button
+vocab: false
 level: warning
 ignorecase: true
 scope: raw

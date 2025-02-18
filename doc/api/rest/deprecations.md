@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: REST API deprecations and removals
 ---
-
-# REST API deprecations and removals
 
 The following API changes will occur between REST API v4 and v5.
 No date is set for this upgrade.
@@ -75,7 +74,7 @@ Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/3
 The endpoint to get the configuration of approvals for a project returns
 empty arrays for `approvers` and `approval_groups`.
 These fields were deprecated in favor of the endpoint to
-[get project-level rules](../merge_request_approvals.md#get-project-level-rules)
+[get project approval rules](../merge_request_approvals.md#get-all-approval-rules-for-project)
 for a merge request. API users are encouraged to switch to this endpoint instead.
 
 These fields will be removed from the `get configuration` endpoint in v5 of the GitLab REST API.
@@ -117,14 +116,6 @@ Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/4
 In GitLab 17.0, the [Runners API](../runners.md) will return `""` in place of `ip_address` for runners.
 In v5 of the REST API, the field will be removed.
 
-## Runner will not return `version`, `revision`, `platform`, or `architecture`
-
-Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/457128).
-
-In GitLab 18.0, the [Runners API](../runners.md) will return `""` in place of `version`, `revision`, `platform`,
-and `architecture` for runners.
-In v5 of the REST API, the fields will be removed.
-
 ## `default_branch_protection` API field
 
 Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/408315).
@@ -133,7 +124,7 @@ The `default_branch_protection` field is deprecated in GitLab 17.0 for the follo
 
 - [New group API](../groups.md#create-a-group).
 - [Update group API](../groups.md#update-group-attributes).
-- [Application API](../settings.md#change-application-settings)
+- [Application Settings API](../settings.md#update-application-settings)
 
 You should use the `default_branch_protection_defaults` field instead, which provides more finer grained control
 over the default branch protections.

@@ -6,7 +6,7 @@ module API
       class ProjectPackages < ::API::Base
         before do
           if Feature.disabled?(:conan_package_revisions_support, Feature.current_request)
-            render_api_error!("'conan_package_revisions_support' feature flag is disabled", :not_found)
+            not_found!("'conan_package_revisions_support' feature flag is disabled")
           end
         end
 
@@ -35,32 +35,37 @@ module API
                 check_username_channel
               end
 
-              desc 'Download recipe files' do
-                detail 'This feature was introduced in GitLab 17.8'
-                success code: 200
-                failure [
-                  { code: 400, message: 'Bad Request' },
-                  { code: 401, message: 'Unauthorized' },
-                  { code: 403, message: 'Forbidden' },
-                  { code: 404, message: 'Not Found' }
-                ]
-                tags %w[conan_packages]
-                hidden true
-              end
-
-              params do
-                with(type: String) do
-                  requires :recipe_revision, regexp: Gitlab::Regex.conan_revision_regex_v2,
+              namespace 'revisions' do
+                params do
+                  requires :recipe_revision, type: String, regexp: Gitlab::Regex.conan_revision_regex_v2,
                     desc: 'Recipe revision', documentation: { example: 'df28fd816be3a119de5ce4d374436b25' }
-                  requires :file_name, type: String, desc: 'Package file name', values: CONAN_FILES,
-                    documentation: { example: 'conanfile.py' }
                 end
-              end
-
-              route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-
-              get 'revisions/:recipe_revision/files/:file_name', requirements: FILE_NAME_REQUIREMENTS do
-                render_api_error!('Not supported', :not_found)
+                namespace ':recipe_revision' do
+                  namespace 'files' do
+                    params do
+                      requires :file_name, type: String, desc: 'Package file name', values: CONAN_FILES,
+                        documentation: { example: 'conanfile.py' }
+                    end
+                    namespace ':file_name', requirements: FILE_NAME_REQUIREMENTS do
+                      desc 'Download recipe files' do
+                        detail 'This feature was introduced in GitLab 17.8'
+                        success code: 200
+                        failure [
+                          { code: 400, message: 'Bad Request' },
+                          { code: 401, message: 'Unauthorized' },
+                          { code: 403, message: 'Forbidden' },
+                          { code: 404, message: 'Not Found' }
+                        ]
+                        tags %w[conan_packages]
+                      end
+                      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+                      route_setting :authorization, job_token_policies: :read_packages
+                      get urgency: :low do
+                        download_package_file(:recipe_file)
+                      end
+                    end
+                  end
+                end
               end
             end
           end

@@ -13,6 +13,12 @@ module Types
           description: 'Packages of the Conan format. ' \
             'Available only when feature flag `packages_protected_packages_conan` is enabled.'
 
+        value 'MAVEN',
+          value: 'maven',
+          experiment: { milestone: '17.9' },
+          description: 'Packages of the Maven format. ' \
+            'Available only when feature flag `packages_protected_packages_maven` is enabled.'
+
         value 'NPM',
           value: 'npm',
           description: 'Packages of the npm format.'

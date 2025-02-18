@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillOnboardingStatusRegistrationObjective
+description: Moves data from user_details.registration_objective to the new registration_objective field in user_details.onboarding_status
+feature_category: onboarding
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176428
+milestone: '17.9'
+queued_migration_version: 20250117172734
+finalized_by:

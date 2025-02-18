@@ -17,7 +17,7 @@
     - [Heroku-24 stack upgrade notes](https://devcenter.heroku.com/articles/heroku-24-stack#upgrade-notes)
     - [Heroku stack packages](https://devcenter.heroku.com/articles/stack-packages)
 
-    These changes affect you if your pipelines use the [`auto-build-image`](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image) provided by [the Auto Build stage of Auto DevOps](https://docs.gitlab.com/ee/topics/autodevops/stages.html#auto-build).
+    These changes affect you if your pipelines use the [`auto-build-image`](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image) provided by [the Auto Build stage of Auto DevOps](https://docs.gitlab.com/topics/autodevops/stages/#auto-build).
   # When support for this feature ends, in XX.YY milestone format.
   end_of_support_milestone:
   # Array of tiers the feature is currently available to,

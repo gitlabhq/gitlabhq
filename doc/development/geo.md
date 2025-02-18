@@ -2,9 +2,8 @@
 stage: Systems
 group: Geo
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Geo (development)
 ---
-
-# Geo (development)
 
 Geo connects GitLab instances together. One GitLab instance is
 designated as a **primary** site and can be run with multiple
@@ -119,7 +118,7 @@ it's successful, we replace the main repository with the newly cloned one.
 
 ### Blob replication
 
-Blobs such as [uploads](uploads/index.md), LFS objects, and CI job artifacts, are replicated to the **secondary** site with the [Self-Service Framework](geo/framework.md). To track the state of syncing, each model has a corresponding registry table, for example `Upload` has `Geo::UploadRegistry` in the [PostgreSQL Geo Tracking Database](#tracking-database).
+Blobs such as [uploads](uploads/_index.md), LFS objects, and CI job artifacts, are replicated to the **secondary** site with the [Self-Service Framework](geo/framework.md). To track the state of syncing, each model has a corresponding registry table, for example `Upload` has `Geo::UploadRegistry` in the [PostgreSQL Geo Tracking Database](#tracking-database).
 
 #### Blob replication happy path workflows between services
 
@@ -334,9 +333,12 @@ Authorization: GL-Geo <access_key>:<JWT payload>
 The **primary** site uses the `access_key` field to look up the corresponding
 **secondary** site and decrypts the JWT payload.
 
-NOTE:
+{{< alert type="note" >}}
+
 JWT requires synchronized clocks between the machines involved, otherwise the
 **primary** site may reject the request.
+
+{{< /alert >}}
 
 ### File transfers
 
@@ -606,7 +608,7 @@ so we don't need to take any extra step for that.
 
 Geo depends on PostgreSQL replication of the main and CI databases, so if you add a new table or field, it should already work on secondary Geo sites.
 
-However, if you introduce a new kind of data which is stored outside of the main and CI PostgreSQL databases, then you need to ensure that this data is replicated and verified by Geo. This is necessary for customers to be able to rely on their secondary sites for [disaster recovery](../administration/geo/disaster_recovery/index.md).
+However, if you introduce a new kind of data which is stored outside of the main and CI PostgreSQL databases, then you need to ensure that this data is replicated and verified by Geo. This is necessary for customers to be able to rely on their secondary sites for [disaster recovery](../administration/geo/disaster_recovery/_index.md).
 
 The following subsections describe how to determine whether work is needed, and if so, how to proceed. If you have any questions, [contact the Geo team](https://handbook.gitlab.com/handbook/product/categories/#geo-group).
 
@@ -655,7 +657,7 @@ on, check out our [self-service framework](geo/framework.md).
 
 ### GET:Geo pipeline
 
-After triggering a successful [e2e:test-on-omnibus-ee](testing_guide/end_to_end/index.md#using-the-test-on-omnibus-job) pipeline, you can manually trigger a job named `GET:Geo`:
+After triggering a successful [e2e:test-on-omnibus-ee](testing_guide/end_to_end/_index.md#using-the-test-on-omnibus-job) pipeline, you can manually trigger a job named `GET:Geo`:
 
 1. In the [GitLab project](https://gitlab.com/gitlab-org/gitlab), select the **Pipelines** tab of a merge request.
 1. Select the `Stage: qa` stage on the latest pipeline to expand and list all the related jobs.
@@ -678,7 +680,7 @@ see the [QA documentation](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa
 
 The pipeline involves the interaction of multiple different projects:
 
-- [GitLab](https://gitlab.com/gitlab-org/gitlab) - The [`e2e:test-on-omnibus-ee` job](testing_guide/end_to_end/index.md#using-the-test-on-omnibus-job) is launched from merge requests in this project.
+- [GitLab](https://gitlab.com/gitlab-org/gitlab) - The [`e2e:test-on-omnibus-ee` job](testing_guide/end_to_end/_index.md#using-the-test-on-omnibus-job) is launched from merge requests in this project.
 - [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab) - Builds relevant artifacts containing the changes from the triggering merge request pipeline.
 - [GET-Configs/Geo](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit-configs/Geo) - Coordinates the lifecycle of a short-lived Geo installation that can be evaluated.
 - [GET](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) - Contains the necessary logic for creating and destroying Geo installations. Used by `GET-Configs/Geo`.

@@ -288,19 +288,28 @@ module Gitlab
         end
 
         def query_and_release_fast_timeout(sql)
-          conn = pool.checkout
-
           # If we "set local" the timeout in a transaction that was already open we would taint the outer
           # transaction with that timeout.
-          # So we use a fresh connection from the pool here to make sure this is a new transaction.
-          conn.transaction do
-            conn.exec_query("set local statement_timeout to '100ms';")
-            conn.select_all(sql).first || {}
+          # However, we don't ever run transactions on replicas, and we only do these health checks on replicas.
+          # Double-check that we're not in a transaction, but this path should never happen.
+          if connection.transaction_open?
+            Gitlab::Database::LoadBalancing::Logger.warn(
+              event: :health_check_in_transaction,
+              message: "Attempt to run a health check query inside of a transaction"
+            )
+            return query_and_release_old(sql)
           end
-        rescue StandardError
-          {}
-        ensure
-          pool.checkin(conn) if conn # conn will be nil if checkout threw an error
+
+          begin
+            connection.transaction do
+              connection.exec_query("SET LOCAL statement_timeout TO '100ms';")
+              connection.select_all(sql).first || {}
+            end
+          rescue StandardError
+            {}
+          ensure
+            release_connection
+          end
         end
 
         private

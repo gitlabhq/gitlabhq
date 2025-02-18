@@ -48,19 +48,20 @@ RSpec.shared_examples(
   end
 end
 
-# Shared examples for testing migration that adds widgets to a work item type
-#
-# It expects that the following constants are available in the migration
-# - `WORK_ITEM_TYPE_ENUM_VALUE`: Int, enum value for the work item type
-# - `WIDGET`: Hash, widget definitions (name:, widget_type:)
-# - (Old) `WIDGET_ENUM_VALUE`: Int, enum value for the widget type
-# - (Old) `WIDGET_NAME`: String, name of the widget
-#
-# You can override `target_type_enum_value` to explicitly define the work item type enum value
-RSpec.shared_examples 'migration that adds widgets to a work item type' do
+# Setup context for shared examples
+# - migration that adds widgets to a work item type
+# - migration that removes widgets from work item types
+RSpec.shared_context 'with work item widget migration setup' do
   let(:work_item_types) { table(:work_item_types) }
   let(:work_item_widget_definitions) { table(:work_item_widget_definitions) }
-  let(:target_type_enum_value) { described_class::WORK_ITEM_TYPE_ENUM_VALUE }
+  let(:target_type_enum_values) do
+    if defined?(described_class::WORK_ITEM_TYPE_ENUM_VALUES)
+      Array(described_class::WORK_ITEM_TYPE_ENUM_VALUES)
+    else
+      Array(described_class::WORK_ITEM_TYPE_ENUM_VALUE)
+    end
+  end
+
   let(:widgets) do
     if defined?(described_class::WIDGETS)
       described_class::WIDGETS
@@ -73,16 +74,76 @@ RSpec.shared_examples 'migration that adds widgets to a work item type' do
       ]
     end
   end
+end
+
+# Shared examples for testing migration that adds widgets to work item types
+#
+# It expects that the following constants are available in the migration
+# - `WORK_ITEM_TYPE_ENUM_VALUES`: Array, enum values for the work item types
+# - `WIDGETS`: Array of Hash, widget definitions (name:, widget_type:)
+# - (Old) `WORK_ITEM_TYPE_ENUM_VALUE`: Int, enum value for the work item type
+# - (Old) `WIDGET_ENUM_VALUE`: Int, enum value for the widget type
+# - (Old) `WIDGET_NAME`: String, name of the widget
+#
+# You can override `target_type_enum_values` to explicitly define the work item type enum value
+RSpec.shared_examples 'migration that adds widgets to a work item type' do
+  include_context 'with work item widget migration setup'
 
   describe '#up', :migration_with_transaction do
-    it "adds widgets to work item type", :aggregate_failures do
-      expect do
-        migrate!
-      end.to change { work_item_widget_definitions.count }.by(widgets.size)
+    it_behaves_like 'adds widgets to work item types'
+  end
 
-      work_item_type = work_item_types.find_by(base_type: target_type_enum_value)
-      created_widgets = work_item_widget_definitions.last(widgets.size)
+  describe '#down', :migration_with_transaction do
+    it_behaves_like 'removes widgets from work item types'
+  end
+end
 
+# Shared examples for testing migration that removes widgets from a work item types
+#
+# It expects that the following constants are available in the migration
+# - `WORK_ITEM_TYPE_ENUM_VALUES`: Array, enum values for the work item types
+# - `WIDGETS`: Array of Hash, widget definitions (name:, widget_type:)
+# - (Old) `WORK_ITEM_TYPE_ENUM_VALUE`: Int, enum value for the work item type
+# - (Old) `WIDGET_ENUM_VALUE`: Int, enum value for the widget type
+# - (Old) `WIDGET_NAME`: String, name of the widget
+#
+# You can override `target_type_enum_values` to explicitly define the work item type enum value
+RSpec.shared_examples 'migration that removes widgets from work item types' do
+  include_context 'with work item widget migration setup'
+
+  describe '#up', :migration_with_transaction do
+    it_behaves_like 'removes widgets from work item types' do
+      let(:asserted_migration_method_sym) { :migrate! }
+    end
+  end
+
+  describe '#down', :migration_with_transaction do
+    it_behaves_like 'adds widgets to work item types' do
+      let(:asserted_migration_method_sym) { :schema_migrate_down! }
+    end
+  end
+end
+
+RSpec.shared_examples 'adds widgets to work item types' do
+  let(:asserted_migration_method_sym) { :migrate! }
+
+  before do
+    # Ensure we run up migration, so we can roll back
+    migrate! if asserted_migration_method_sym == :schema_migrate_down!
+  end
+
+  it "adds widgets to work item types", :aggregate_failures do
+    expect do
+      send(asserted_migration_method_sym)
+    end.to change { work_item_widget_definitions.count }.by(widgets.size * target_type_enum_values.size)
+    work_item_types_with_widgets = target_type_enum_values.map do |enum_value|
+      work_item_types.find_by(base_type: enum_value)
+    end
+
+    created_widgets = work_item_widget_definitions.where(
+      work_item_type_id: work_item_types_with_widgets.map(&:id)
+    )
+    work_item_types_with_widgets.each do |work_item_type|
       widgets.each do |widget|
         expected_attributes = {
           work_item_type_id: work_item_type.id,
@@ -97,23 +158,30 @@ RSpec.shared_examples 'migration that adds widgets to a work item type' do
         )
       end
     end
-
-    context 'when type does not exist' do
-      it 'skips creating the new widget definitions' do
-        work_item_types.where(base_type: target_type_enum_value).delete_all
-
-        expect do
-          migrate!
-        end.to not_change(work_item_widget_definitions, :count)
-      end
-    end
   end
 
-  describe '#down', :migration_with_transaction do
-    it "removes widgets from work item type" do
-      migrate!
+  context 'when types do not exist' do
+    it 'skips creating the new widget definitions' do
+      work_item_types.where(base_type: target_type_enum_values).delete_all
 
-      expect { schema_migrate_down! }.to change { work_item_widget_definitions.count }.by(-widgets.size)
+      expect do
+        migrate!
+      end.to not_change(work_item_widget_definitions, :count)
     end
+  end
+end
+
+RSpec.shared_examples 'removes widgets from work item types' do
+  let(:asserted_migration_method_sym) { :schema_migrate_down! }
+
+  before do
+    # Ensure we run up migration, so we can roll back
+    migrate! if asserted_migration_method_sym == :schema_migrate_down!
+  end
+
+  it "removes widgets from work item type" do
+    expect { send(asserted_migration_method_sym) }.to change { work_item_widget_definitions.count }.by(
+      -(widgets.size * target_type_enum_values.size)
+    )
   end
 end

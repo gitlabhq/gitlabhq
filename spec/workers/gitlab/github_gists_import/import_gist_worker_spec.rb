@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :importers do
   subject { described_class.new }
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:organization) { create(:organization) }
+  let_it_be(:user) { create(:user, organizations: [organization]) }
+
   let(:token) { 'token' }
   let(:gist_hash) do
     {

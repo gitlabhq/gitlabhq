@@ -236,7 +236,7 @@ export default {
       }
     },
   },
-  containerRegistryHelpUrl: helpPagePath('user/packages/container_registry/index'),
+  containerRegistryHelpUrl: helpPagePath('user/packages/container_registry/_index'),
   dockerConnectionErrorHelpUrl: helpPagePath(
     'user/packages/container_registry/troubleshoot_container_registry',
     {

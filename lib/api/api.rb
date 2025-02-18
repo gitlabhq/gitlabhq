@@ -235,6 +235,7 @@ module API
         mount ::API::Ci::PipelineSchedules
         mount ::API::Ci::Triggers
         mount ::API::Ci::Variables
+        mount ::API::ClusterDiscovery
         mount ::API::Clusters::AgentTokens
         mount ::API::Clusters::Agents
         mount ::API::Commits
@@ -332,6 +333,7 @@ module API
         mount ::API::Release::Links
         mount ::API::RemoteMirrors
         mount ::API::Repositories
+        mount ::API::ResourceAccessTokens::SelfRotation
         mount ::API::ResourceAccessTokens
         mount ::API::ResourceMilestoneEvents
         mount ::API::RpmProjectPackages
@@ -359,7 +361,7 @@ module API
         mount ::API::UserRunners
         mount ::API::VirtualRegistries::Packages::Maven::Registries
         mount ::API::VirtualRegistries::Packages::Maven::Upstreams
-        mount ::API::VirtualRegistries::Packages::Maven::CachedResponses
+        mount ::API::VirtualRegistries::Packages::Maven::Cache::Entries
         mount ::API::VirtualRegistries::Packages::Maven::Endpoints
         mount ::API::WebCommits
         mount ::API::Wikis

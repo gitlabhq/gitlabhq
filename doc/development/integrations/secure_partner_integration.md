@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Static Analysis
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Secure Partner Integration - Onboarding Process
 ---
-
-# Secure Partner Integration - Onboarding Process
 
 If you want to integrate your product with the [Secure Stage](https://about.gitlab.com/direction/secure/),
 this page describes the developer workflow GitLab intends for
@@ -43,14 +42,14 @@ best place to integrate your own product and its results into GitLab.
   implications for app security, corporate policy, or compliance. When complete,
   the job reports back on its status and creates a
   [job artifact](../../ci/jobs/job_artifacts.md) as a result.
-- The [Merge Request Security Widget](../../ci/testing/index.md#security-reports)
+- The [Merge Request Security Widget](../../ci/testing/_index.md#security-reports)
   displays the results of the pipeline's security checks and the developer can
   review them. The developer can review both a summary and a detailed version
   of the results.
-- If certain policies (such as [merge request approvals](../../user/project/merge_requests/approvals/index.md))
+- If certain policies (such as [merge request approvals](../../user/project/merge_requests/approvals/_index.md))
   are in place for a project, developers must resolve specific findings or get
   an approval from a specific list of people.
-- The [security dashboard](../../user/application_security/security_dashboard/index.md)
+- The [security dashboard](../../user/application_security/security_dashboard/_index.md)
   also shows results which can developers can use to quickly see all the
   vulnerabilities that need to be addressed in the code.
 - When the developer reads the details about a vulnerability, they are
@@ -77,31 +76,31 @@ and complete an integration with the Secure stage.
 1. Get a test account to begin developing your integration. You can
    request a [GitLab.com Subscription Sandbox](https://about.gitlab.com/partners/technology-partners/integrate/#gitlabcom-subscription-sandbox-request)
    or an [EE Developer License](https://about.gitlab.com/partners/technology-partners/integrate/#requesting-ultimate-dev-license-for-rd).
-1. Provide a [pipeline job](../../development/pipelines/index.md)
+1. Provide a [pipeline job](../pipelines/_index.md)
    template that users could integrate into their own GitLab pipelines.
 1. Create a report artifact with your pipeline jobs.
 1. Ensure your pipeline jobs create a report artifact that GitLab can process
    to successfully display your own product's results with the rest of GitLab.
    - See detailed [technical directions](secure.md) for this step.
-   - Read more about [job report artifacts](../../ci/yaml/index.md#artifactsreports).
+   - Read more about [job report artifacts](../../ci/yaml/_index.md#artifactsreports).
    - Read about [job artifacts](../../ci/jobs/job_artifacts.md).
    - Your report artifact must be in one of our supported formats.
      For more information, see the [documentation on reports](secure.md#report).
-     - Documentation for [SAST output](../../user/application_security/sast/index.md#download-a-sast-report).
-     - Documentation for [Dependency Scanning reports](../../user/application_security/dependency_scanning/index.md#output).
-     - Documentation for [Container Scanning reports](../../user/application_security/container_scanning/index.md#reports-json-format).
+     - Documentation for [SAST output](../../user/application_security/sast/_index.md#download-a-sast-report).
+     - Documentation for [Dependency Scanning reports](../../user/application_security/dependency_scanning/_index.md#output).
+     - Documentation for [Container Scanning reports](../../user/application_security/container_scanning/_index.md#reports-json-format).
      - See this [example secure job definition that also defines the artifact created](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.gitlab-ci.yml).
      - If you need a new kind of scan or report, [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new#)
        and add the label `devops::secure`.
    - Once the job is completed, the data can be seen:
-      - In the [Merge Request Security Report](../../ci/testing/index.md#security-reports) ([MR Security Report data flow](https://gitlab.com/snippets/1910005#merge-request-view)).
+      - In the [Merge Request Security Report](../../ci/testing/_index.md#security-reports) ([MR Security Report data flow](https://gitlab.com/snippets/1910005#merge-request-view)).
       - While [browsing a Job Artifact](../../ci/jobs/job_artifacts.md).
-      - In the [Security Dashboard](../../user/application_security/security_dashboard/index.md) ([Dashboard data flow](https://gitlab.com/snippets/1910005#project-and-group-dashboards)).
+      - In the [Security Dashboard](../../user/application_security/security_dashboard/_index.md) ([Dashboard data flow](https://gitlab.com/snippets/1910005#project-and-group-dashboards)).
 1. Optional: Provide a way to interact with results as Vulnerabilities:
    - Users can interact with the findings from your artifact within their workflow. They can dismiss the findings or accept them and create a backlog issue.
    - To automatically create issues without user interaction, use the [issue API](../../api/issues.md).
 1. Optional: Provide auto-remediation steps:
-   - If you specified `remediations` in your artifact, it is proposed through our [remediation](../../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability)
+   - If you specified `remediations` in your artifact, it is proposed through our [remediation](../../user/application_security/vulnerabilities/_index.md#resolve-a-vulnerability)
      interface.
 1. Demo the integration to GitLab:
    - After you have tested and are ready to demo your integration,

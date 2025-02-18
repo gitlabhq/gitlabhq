@@ -3,7 +3,7 @@ require 'spec_helper'
 
 RSpec.describe Packages::Rubygems::DependencyResolverService, feature_category: :package_registry do
   let_it_be(:project) { create(:project, :private) }
-  let_it_be(:package) { create(:package, project: project) }
+  let_it_be(:package) { create(:rubygems_package, project: project) }
   let_it_be(:user) { create(:user) }
 
   let(:gem_name) { package.name }
@@ -71,7 +71,7 @@ RSpec.describe Packages::Rubygems::DependencyResolverService, feature_category: 
         let(:dependency_link) { create(:packages_dependency_link, :rubygems, package: package) }
         let(:dependency_link2) { create(:packages_dependency_link, :rubygems, package: package) }
         let(:dependency_link3) { create(:packages_dependency_link, :rubygems, package: package) }
-        let(:package2) { create(:package, project: project, name: package.name, version: '9.9.9') }
+        let(:package2) { create(:rubygems_package, project: project, name: package.name, version: '9.9.9') }
         let(:dependency_link4) { create(:packages_dependency_link, :rubygems, package: package2) }
 
         it 'returns a set of dependencies' do

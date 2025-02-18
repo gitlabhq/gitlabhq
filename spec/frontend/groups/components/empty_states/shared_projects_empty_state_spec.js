@@ -20,8 +20,9 @@ describe('SharedProjectsEmptyState', () => {
     createComponent();
 
     expect(wrapper.findComponent(GlEmptyState).props()).toMatchObject({
-      title: SharedProjectsEmptyState.i18n.title,
+      title: 'This group has not been invited to any other projects.',
       svgPath: defaultProvide.emptyProjectsIllustration,
     });
+    expect(wrapper.text()).toContain('Projects this group has been invited to will appear here.');
   });
 });

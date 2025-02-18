@@ -15,6 +15,19 @@ RSpec.describe Ci::JobToken::GroupScopeLink, feature_category: :continuous_integ
     let!(:model) { create(:ci_job_token_group_scope_link, added_by: parent) }
   end
 
+  it_behaves_like 'a BulkInsertSafe model', described_class do
+    let(:current_time) { Time.zone.now }
+
+    let(:valid_items_for_bulk_insertion) do
+      build_list(:ci_job_token_group_scope_link, 10, source_project_id: project.id,
+        created_at: current_time) do |project_scope_link|
+        project_scope_link.target_group = create(:group)
+      end
+    end
+
+    let(:invalid_items_for_bulk_insertion) { [] } # class does not have any validations defined
+  end
+
   describe 'unique index' do
     let!(:link) { create(:ci_job_token_group_scope_link) }
 

@@ -2,17 +2,23 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Merge trains
 ---
 
-# Merge trains
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), the **Start merge train** and **Start merge train when pipeline succeeds** buttons became **Set to auto-merge**. **Remove from merge train** became **Cancel auto-merge**.
-> - Support for [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge) and [semi-linear](../../user/project/merge_requests/methods/index.md#merge-commit-with-semi-linear-history) merge methods [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282442) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `fast_forward_merge_trains_support`. Enabled by default.
-> - [Feature flag `fast_forward_merge_trains_support` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148964#note_1855981445) in GitLab 16.11.
+{{< /details >}}
+
+{{< history >}}
+
+- [In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), the **Start merge train** and **Start merge train when pipeline succeeds** buttons became **Set to auto-merge**. **Remove from merge train** became **Cancel auto-merge**.
+- Support for [fast-forward](../../user/project/merge_requests/methods/_index.md#fast-forward-merge) and [semi-linear](../../user/project/merge_requests/methods/_index.md#merge-commit-with-semi-linear-history) merge methods [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282442) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `fast_forward_merge_trains_support`. Enabled by default.
+- [Feature flag `fast_forward_merge_trains_support` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148964#note_1855981445) in GitLab 16.11.
+
+{{< /history >}}
 
 In projects with frequent merges to the default branch, changes in different merge requests
 might conflict with each other. Use merge trains to put merge requests in a queue.
@@ -89,12 +95,16 @@ are canceled.
 
 ## Enable merge trains
 
-> - `disable_merge_trains` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/282477) in GitLab 16.5.
+{{< history >}}
+
+- `disable_merge_trains` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/282477) in GitLab 16.5.
+
+{{< /history >}}
 
 Prerequisites:
 
 - You must have the Maintainer role.
-- Your repository must be a GitLab repository, not an [external repository](../ci_cd_for_external_repos/index.md).
+- Your repository must be a GitLab repository, not an [external repository](../ci_cd_for_external_repos/_index.md).
 - Your pipeline must be [configured to use merge request pipelines](merge_request_pipelines.md#prerequisites).
   Otherwise your merge requests may become stuck in an unresolved state or your pipelines
   might be dropped.
@@ -131,7 +141,11 @@ Other merge requests can now be added to the train.
 
 ## View a merge train
 
-> - Merge train visualization [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13705) in GitLab 17.3.
+{{< history >}}
+
+- Merge train visualization [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13705) in GitLab 17.3.
+
+{{< /history >}}
 
 You can view the merge train to gain better insight into the order and status of merge requests in the queue.
 The merge train details page shows active merge requests in the queue and merged merge requests that were part of the train.
@@ -148,14 +162,18 @@ You also access this view by selecting **View merge train details** from:
 - The pipeline widget and system notes on a merge request added to a merge train.
 - The pipeline details page for a merge train pipeline.
 
-You can also remove (**{close}**) a merge request from the merge train details view.
+You can also remove ({{< icon name="close" >}}) a merge request from the merge train details view.
 
 ## Add a merge request to a merge train
 
-> - Auto-merge for merge trains [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `merge_when_checks_pass_merge_train`. Disabled by default.
-> - Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) on GitLab.com in GitLab 17.2.
-> - Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) by default in GitLab 17.4.
-> - Auto-merge for merge trains [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174357) in GitLab 17.7. Feature flag `merge_when_checks_pass_merge_train` removed.
+{{< history >}}
+
+- Auto-merge for merge trains [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `merge_when_checks_pass_merge_train`. Disabled by default.
+- Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) on GitLab.com in GitLab 17.2.
+- Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) by default in GitLab 17.4.
+- Auto-merge for merge trains [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174357) in GitLab 17.7. Feature flag `merge_when_checks_pass_merge_train` removed.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -188,7 +206,7 @@ You can add the merge request to a merge train again later.
 To remove a merge request from a merge train:
 
 - From a merge request, select **Cancel auto-merge**.
-- From the [merge train details](#view-a-merge-train), next to the merge request, select **{close}**.
+- From the [merge train details](#view-a-merge-train), next to the merge request, select {{< icon name="close" >}}.
 
 ## Skip the merge train and merge immediately
 
@@ -203,26 +221,42 @@ When you merge a merge request immediately:
   with a new merge train pipeline for each. These new merge train pipelines now contain
   the commits added by the merge request that was merged immediately.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Merging immediately can use a lot of CI/CD resources. Use this option
 only in critical situations.
 
-NOTE:
-The **merge immediately** option may not be available if your project uses the [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge)
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
+The **merge immediately** option may not be available if your project uses the [fast-forward](../../user/project/merge_requests/methods/_index.md#fast-forward-merge)
 merge method and the source branch is behind the target branch. See [issue 434070](https://gitlab.com/gitlab-org/gitlab/-/issues/434070) for more details.
+
+{{< /alert >}}
 
 ### Allow merge trains to be skipped to merge immediately without restarting merge train pipelines
 
-DETAILS:
-**Status:** Experiment
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414505) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `merge_trains_skip_train`. Disabled by default.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/422111) as an [experiment feature](../../policy/development_stages_support.md) in GitLab 16.10.
+- Status: Experiment
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414505) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `merge_trains_skip_train`. Disabled by default.
+- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/422111) as an [experiment feature](../../policy/development_stages_support.md) in GitLab 16.10.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is available. To hide the feature,
 an administrator can [disable the feature flag](../../administration/feature_flags.md)
 named `merge_trains_skip_train`. On GitLab.com and GitLab Dedicated, this feature is available.
+
+{{< /alert >}}
 
 You can allow merge requests to be merged without completely restarting a running merge train.
 Use this feature to quickly merge changes that can safely skip the pipeline, for example
@@ -232,12 +266,15 @@ You cannot skip merge trains for fast-forward or semi-linear merge methods. For 
 
 Skipping merge trains is an experimental feature. It may change or be removed completely in future releases.
 
-WARNING:
+{{< alert type="warning" >}}
+
 You can use this feature to quickly merge security or bug fixes, but the changes
 in the merge request that skipped the train are not verified against
 any of the other merge requests in the train. If these other merge train pipelines
 complete successfully and merge, there is a risk that the combined changes are incompatible.
 The target branch could then require additional work to resolve the new failures.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -268,7 +305,7 @@ the merge train drops your merge request automatically. For example, this could 
 
 - Changing the merge request to a [draft](../../user/project/merge_requests/drafts.md).
 - A merge conflict.
-- A new conversation thread that is unresolved, when [all threads must be resolved](../../user/project/merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved)
+- A new conversation thread that is unresolved, when [all threads must be resolved](../../user/project/merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved)
   is enabled.
 
 You can find reason the merge request was dropped from the merge train in the system
@@ -292,7 +329,7 @@ You can:
 
 - [Add the merge request to the train](#add-a-merge-request-to-a-merge-train) again,
   which triggers a new pipeline.
-- Add the [`retry`](../yaml/index.md#retry) keyword to the job if it fails intermittently.
+- Add the [`retry`](../yaml/_index.md#retry) keyword to the job if it fails intermittently.
   If it succeeds after a retry, the merge request is not removed from the merge train.
 
 ### Cannot add a merge request to the merge train

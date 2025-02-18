@@ -1365,7 +1365,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
 
       it "returns an error" do
         expect(subject.errors).to contain_exactly(
-          "'rspec' job needs 'build' job, but 'build' is not in any previous stage")
+          "'rspec' job needs 'build' job, but 'build' does not exist in the pipeline. " \
+            'This might be because of the only, except, or rules keywords. ' \
+            'To need a job that sometimes does not exist in the pipeline, use needs:optional.'
+        )
       end
 
       context 'when the needed job is optional' do

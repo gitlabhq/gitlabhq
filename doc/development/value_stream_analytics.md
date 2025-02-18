@@ -2,11 +2,10 @@
 stage: Plan
 group: Optimize
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Value stream analytics development guidelines
 ---
 
-# Value stream analytics development guidelines
-
-For information on how to configure value stream analytics (VSA) in GitLab, see our [analytics documentation](../user/group/value_stream_analytics/index.md).
+For information on how to configure value stream analytics (VSA) in GitLab, see our [analytics documentation](../user/group/value_stream_analytics/_index.md).
 
 ## How does Value Stream Analytics work?
 
@@ -290,12 +289,12 @@ considered legacy, which will be phased out at some point.
 
 ## Frontend
 
-[Project VSA](../user/group/value_stream_analytics/index.md) is available for all users and:
+[Project VSA](../user/group/value_stream_analytics/_index.md) is available for all users and:
 
 - Includes a mixture of key and DORA metrics based on the tier.
 - Uses the set of [default stages](#default-stages).
 
-[Group VSA](../user/group/value_stream_analytics/index.md) is only available for licensed users and extends project VSA to include:
+[Group VSA](../user/group/value_stream_analytics/_index.md) is only available for licensed users and extends project VSA to include:
 
 - An [overview stage](https://gitlab.com/gitlab-org/gitlab/-/issues/321438).
 - The ability to create custom value streams.
@@ -354,4 +353,4 @@ Analytics::CycleAnalytics::ReaggregationWorker.new.perform
 
 #### Value stream analytics
 
-For instructions on how to seed data for value stream analytics, see [development seed files](../development/development_seed_files.md).
+For instructions on how to seed data for value stream analytics, see [development seed files](development_seed_files.md).

@@ -13,14 +13,11 @@ describe('Merge request dashboard merge request component', () => {
 
   const findBrokenBadge = () => wrapper.findByTestId('mr-broken-badge');
 
-  function createComponent(mergeRequest = {}, newListsEnabled = false) {
+  function createComponent(mergeRequest = {}) {
     const mockApollo = createMockApollo();
 
     wrapper = shallowMountExtended(MergeRequest, {
       apolloProvider: mockApollo,
-      provide: {
-        newListsEnabled,
-      },
       propsData: {
         listId: 'returned_to_you',
         mergeRequest: {
@@ -108,28 +105,20 @@ describe('Merge request dashboard merge request component', () => {
     });
   });
 
-  describe('when newListsEnabled is true', () => {
-    it('renders template', () => {
-      createComponent({}, true);
+  it('renders status badge component', () => {
+    createComponent({});
 
-      expect(wrapper.element).toMatchSnapshot();
-    });
+    expect(wrapper.findComponent(StatusBadge).exists()).toBe(true);
+  });
 
-    it('renders status badge component', () => {
-      createComponent({}, true);
+  it.each`
+    state       | exists   | test
+    ${'opened'} | ${true}  | ${'renders'}
+    ${'closed'} | ${false} | ${'does not render'}
+    ${'merged'} | ${false} | ${'does not render'}
+  `('$test broken badge when state is $state', ({ state, exists }) => {
+    createComponent({ state });
 
-      expect(wrapper.findComponent(StatusBadge).exists()).toBe(true);
-    });
-
-    it.each`
-      state       | exists   | test
-      ${'opened'} | ${true}  | ${'renders'}
-      ${'closed'} | ${false} | ${'does not render'}
-      ${'merged'} | ${false} | ${'does not render'}
-    `('$test broken badge when state is $state', ({ state, exists }) => {
-      createComponent({ state }, true);
-
-      expect(findBrokenBadge().exists()).toBe(exists);
-    });
+    expect(findBrokenBadge().exists()).toBe(exists);
   });
 });

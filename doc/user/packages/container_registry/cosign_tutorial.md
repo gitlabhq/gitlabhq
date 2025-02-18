@@ -2,9 +2,8 @@
 stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Annotate container images with build provenance data'
 ---
-
-# Tutorial: Annotate container images with build provenance data
 
 Annotations provide valuable metadata about the build process. This information is used for auditing and traceability. In a security incident, having detailed provenance data can significantly speed up the investigation and remediation process.
 

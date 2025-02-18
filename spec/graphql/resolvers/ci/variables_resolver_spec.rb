@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Ci::VariablesResolver, feature_category: :secrets_management do
+RSpec.describe Resolvers::Ci::VariablesResolver, feature_category: :ci_variables do
   include GraphqlHelpers
 
   describe '#resolve' do

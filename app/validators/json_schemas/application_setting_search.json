@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Application Settings for search",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "global_search_issues_enabled": {
+      "type": "boolean",
+      "description": "Enable global search for issues"
+    },
+    "global_search_merge_requests_enabled": {
+      "type": "boolean",
+      "description": "Enable global search for merge requests"
+    },
+    "global_search_snippet_titles_enabled": {
+      "type": "boolean",
+      "description": "Enable global search for snippets"
+    },
+    "global_search_users_enabled": {
+      "type": "boolean",
+      "description": "Enable global search for users"
+    }
+  }
+}

@@ -89,27 +89,41 @@ module QA
       #
       # @param [<Hash>] resource
       # @param [Boolean] wait until the end of the script to verify deletion
+      # @param [Integer] max retries for unlinking security policy projects
       # @param [Hash] API call options
       # @return [Array<String, Hash>] results
-      def delete_resource(resource, delayed_verification = false, **options)
-        # If delayed deletion is not enabled, resource will be permanently deleted
-        response = delete(resource_request(resource, **options))
+      def delete_resource(resource, delayed_verification = false, max_retries = 6, **options)
+        retry_count = 0
 
-        if success?(response&.code) || response.include?("already marked for deletion")
-          return resource if delayed_verification
+        while retry_count <= max_retries
+          # If delayed deletion is not enabled, resource will be permanently deleted
+          response = delete(resource_request(resource, **options))
 
-          wait_for_resource_deletion(resource)
+          case
+          when success?(response&.code) || response.include?("already marked for deletion")
+            return resource if delayed_verification
 
-          return log_permanent_deletion(resource) if permanently_deleted?(resource)
+            wait_for_resource_deletion(resource)
 
-          return log_failure(resource, response) unless mark_for_deletion_possible?(resource)
+            return log_permanent_deletion(resource) if permanently_deleted?(resource)
 
-          @permanently_delete ? delete_permanently(resource) : log_marked_for_deletion(resource)
-        elsif response&.code == HTTP_STATUS_NOT_FOUND
-          log_permanent_deletion(resource)
-        else
-          log_failure(resource, response)
+            return log_failure(resource, response) unless mark_for_deletion_possible?(resource)
+
+            return @permanently_delete ? delete_permanently(resource) : log_marked_for_deletion(resource)
+          when response&.code == HTTP_STATUS_NOT_FOUND
+            return log_permanent_deletion(resource)
+          when response&.code == HTTP_STATUS_BAD_REQUEST && response&.include?("security policy project")
+            if retry_count < max_retries
+              find_and_unassign_security_policy_project(resource)
+              retry_count += 1
+              next
+            end
+          end
+
+          return log_failure(resource, response)
         end
+
+        log_failure(resource, response)
       end
 
       def fetch_qa_user_id(qa_username)
@@ -349,6 +363,45 @@ module QA
             deleted || (success?(response&.code) && marked_for_deletion?(parse_body(response)))
           end
         end
+      end
+
+      # Finds and unassigns a security policy project from a resource
+      # Note: full_path is used for REST API resources and fullPath is used for GraphQL resources
+      # We can only unassign a security policy project through GraphQL and not the REST API.
+      #
+      # @param resource [Hash] Resource to remove security policy project from
+      # @return [void]
+      def find_and_unassign_security_policy_project(resource)
+        if has_security_policy_project?(resource)
+          unassign_security_policy_project(resource[:full_path])
+        elsif projects_with_security_policy_projects(resource).present?
+          projects_with_security_policy_projects(resource).each do |project|
+            unassign_security_policy_project(project[:fullPath])
+          end
+        elsif subgroups_with_security_policy_projects(resource).present?
+          subgroups_with_security_policy_projects(resource).each do |subgroup|
+            unassign_security_policy_project(subgroup[:fullPath])
+          end
+        end
+      end
+
+      def unassign_security_policy_project(path)
+        logger.info("Unassigning security policy project for #{path}")
+
+        mutation = <<~GQL
+          mutation {
+            securityPolicyProjectUnassign(input: { fullPath: "#{path}" }) {
+              errors
+            }
+          }
+        GQL
+
+        graphql_request(mutation)
+      end
+
+      def graphql_request(query)
+        response = post(Runtime::API::Request.new(@api_client, '/graphql').url, { query: query })
+        parse_body(response)
       end
     end
   end

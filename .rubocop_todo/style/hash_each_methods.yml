@@ -56,7 +56,6 @@ Style/HashEachMethods:
     - 'ee/spec/factories/vulnerabilities.rb'
     - 'ee/spec/factories/vulnerabilities/findings.rb'
     - 'ee/spec/helpers/application_helper_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/elastic/helper_spec.rb'
     - 'ee/spec/lib/gitlab/database/desired_sharding_key_spec.rb'
     - 'ee/spec/lib/gitlab/geo_spec.rb'
     - 'ee/spec/lib/gitlab/insights/project_insights_config_spec.rb'

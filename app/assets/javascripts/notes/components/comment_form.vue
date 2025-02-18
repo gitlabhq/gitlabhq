@@ -429,11 +429,11 @@ export default {
               :user-id="getUserData.id"
               @save="handleSave({ ...saveNoteParams, shouldMeasureTemperature: false })"
             />
-            <div class="note-form-actions gl-font-size-0">
+            <div class="note-form-actions gl-flex gl-flex-wrap gl-gap-3">
               <gl-form-checkbox
                 v-if="canSetInternalNote"
                 v-model="noteIsInternal"
-                class="gl-mb-2 gl-basis-full"
+                class="gl-basis-full"
                 data-testid="internal-note-checkbox"
               >
                 {{ $options.i18n.internal }}
@@ -448,7 +448,6 @@ export default {
                   data-testid="add-to-review-button"
                   category="primary"
                   variant="confirm"
-                  class="gl-mr-3"
                   @click="handleSaveDraft()"
                 >
                   {{ $options.i18n.addToReview }}
@@ -457,7 +456,6 @@ export default {
                   :disabled="disableSubmitButton"
                   data-testid="add-comment-now-button"
                   category="secondary"
-                  class="gl-mr-3"
                   @click.prevent="handleSave()"
                   >{{ $options.i18n.addCommentNow }}</gl-button
                 >
@@ -465,13 +463,13 @@ export default {
               <template v-else>
                 <comment-type-dropdown
                   v-model="noteType"
-                  class="gl-mr-3"
                   data-testid="comment-button"
                   :disabled="disableSubmitButton"
                   :tracking-label="trackingLabel"
                   :is-internal-note="noteIsInternal"
                   :noteable-display-name="noteableDisplayName"
                   :discussions-require-resolution="discussionsRequireResolution"
+                  class="!gl-mb-0"
                   @click="handleSave"
                 />
                 <template v-if="isMergeRequest">
@@ -480,7 +478,6 @@ export default {
                     data-testid="start-review-button"
                     category="secondary"
                     variant="confirm"
-                    class="gl-mr-3"
                     @click="handleSaveDraft()"
                   >
                     {{ $options.i18n.startReview }}

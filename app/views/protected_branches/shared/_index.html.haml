@@ -16,7 +16,7 @@
       dismissible: false) do |c|
       - c.with_body do
         =  s_("ProtectedBranch|Giving merge rights to a protected branch also gives elevated permissions for certain CI/CD features.")
-        = link_to s_("ProtectedBranch|What are the security implications?"), help_page_path('ci/pipelines/index.md', anchor: 'pipeline-security-on-protected-branches'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to s_("ProtectedBranch|What are the security implications?"), help_page_path('ci/pipelines/_index.md', anchor: 'pipeline-security-on-protected-branches'), target: '_blank', rel: 'noopener noreferrer'
 
     = render ::Layouts::CrudComponent.new(s_("ProtectedBranch|Protected branches"),
       icon: 'branch',

@@ -12,7 +12,7 @@
         help_text: _("GitLab informs you if a new version is available. %{link_start}What information does GitLab Inc. collect?%{link_end}").html_safe % { link_start: help_link_start, link_end: link_end }
     .form-group
       - can_be_configured = @application_setting.usage_ping_can_be_configured?
-      - service_ping_link_start = link_start % { url: help_page_path('development/internal_analytics/service_ping/index.md') }
+      - service_ping_link_start = link_start % { url: help_page_path('development/internal_analytics/service_ping/_index.md') }
       - deactivating_service_ping_link_start = link_start % { url: help_page_path('administration/settings/usage_statistics.md', anchor: 'through-the-configuration-file') }
       - usage_ping_help_text = s_('AdminSettings|To help improve GitLab and its user experience, GitLab periodically collects usage information. %{link_start}What information is shared with GitLab Inc.?%{link_end}').html_safe % { link_start: service_ping_link_start, link_end: link_end }
       - disabled_help_text = s_('AdminSettings|Service ping is disabled in your configuration file, and cannot be enabled through this form. For more information, see the documentation on %{link_start}deactivating service ping%{link_end}.').html_safe % { link_start: deactivating_service_ping_link_start, link_end: link_end }

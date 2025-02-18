@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Packages and images from the Linux package
 ---
 
-# Packages and images from the Linux package
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Below you can find some basic information on why GitLab provides packages and
 a Docker image that come with bundled dependencies.
@@ -30,7 +32,7 @@ application is more complex and has multiple components. If these components are
 not present or are incorrectly configured, GitLab does not work or it works
 unpredictably.
 
-The [GitLab Architecture Overview](../../development/architecture.md#gitlab-architecture-overview) shows some of these components and how they
+The [GitLab Architecture Overview](../../development/architecture.md) shows some of these components and how they
 interact. Each of these components needs to be configured and kept up to date.
 
 Most of the components also have external dependencies. For example, the Rails
@@ -104,7 +106,7 @@ might be a better fit when the application has a number of moving parts.
 
 ## Docker image with multiple services
 
-[GitLab Docker image](../../install/docker/index.md) is based on the Linux package.
+[GitLab Docker image](../../install/docker/_index.md) is based on the Linux package.
 
 Considering that container spawned from this image contains multiple processes,
 these types of containers are also referred to as 'fat containers'.

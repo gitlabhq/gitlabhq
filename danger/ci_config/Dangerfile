@@ -9,7 +9,7 @@ def get_ci_config_files(files)
 end
 
 schema_path = 'app/assets/javascripts/editor/schema/ci.json'
-schema_docs_path = 'https://docs.gitlab.com/ee/development/cicd/schema.html#write-specs'
+schema_docs_path = 'https://docs.gitlab.com/development/cicd/schema/#write-specs'
 has_schema_update = all_changed_files.include?(schema_path)
 return if has_schema_update
 

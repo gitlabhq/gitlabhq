@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Review abuse reports
 ---
 
-# Review abuse reports
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 View and resolve abuse reports from GitLab users.
 
@@ -25,7 +27,7 @@ To receive notifications of new abuse reports by email:
 1. Provide an email address and select **Save changes**.
 
 The notification email address can also be set and retrieved
-[using the API](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+[using the API](../api/settings.md#available-settings).
 
 ## Reporting abuse
 
@@ -34,7 +36,11 @@ To find out more about reporting abuse, see
 
 ## Resolving abuse reports
 
-> - **Trust user** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131102) in GitLab 16.4.
+{{< history >}}
+
+- **Trust user** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131102) in GitLab 16.4.
+
+{{< /history >}}
 
 To access abuse reports:
 

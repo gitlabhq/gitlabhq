@@ -75,8 +75,8 @@
     - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
     - 'internal_events_cli_used' # Filters to this event
     - "\n" # Select: config/events/internal_events_cli_used.yml
-    - "\e[A" # Arrow up to: Total count of events
-    - "\n" # Select: Total count of events
+    - "\e[A" # Arrow up to: Monthly/Weekly/Total count of events
+    - "\n" # Select: Monthly/Weekly/Total count of events
     - "when an event was defined using the CLI\n" # Input description
     - "1\n" # Select: Copy & continue
     - "y\n" # Create file
@@ -102,8 +102,8 @@
     - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
     - 'internal_events_cli_used' # Filters to this event
     - "\n" # Select: config/events/internal_events_cli_used.yml
-    - "\e[A" # Arrow up to: Total count of events
-    - "\n" # Select: Total count of events
+    - "\e[A" # Arrow up to: Monthly/Weekly/Total count of events
+    - "\n" # Select: Monthly/Weekly/Total count of events
     - "when an event was defined using the CLI\n" # Input description
     - "2\n" # Enum-select: Modify attributes
     - "\n" # Accept group from event definition
@@ -122,16 +122,15 @@
     files:
     - path: config/events/internal_events_cli_used.yml
       content: spec/fixtures/scripts/internal_events/events/event_with_identifiers.yml
-    - path: config/metrics/counts_28d/count_internal_events_cli_used_monthly.yml
+    - path: config/metrics/counts_28d/count_distinct_user_id_from_internal_events_cli_used_monthly.yml
       content: spec/fixtures/scripts/internal_events/metrics/ee_total_28d_single_event.yml
     keystrokes:
     - "2\n" # Enum-select: New Metric -- calculate how often one or more existing events occur over time
     - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
     - 'internal_events_cli_used' # Filters to this event
     - "\n" # Select: config/events/internal_events_cli_used.yml
-    - "\e[A\e[A" # Arrow up to: Monthly/Weekly count of events
-    - "\n" # Select: Monthly/Weekly count of events
-    - "when an event was defined using the CLI\n" # Input description
+    - "\n" # Select: Monthly/Weekly count of unique users
+    - "who defined an event using the CLI\n" # Input description
     - "2\n" # Enum-select: Modify attributes
     - "\n" # Accept group from event definition
     - "\n" # Accept product categories from event definition
@@ -141,7 +140,7 @@
     - "5\n" # Exit
   outputs:
     files:
-    - path: ee/config/metrics/counts_7d/count_total_internal_events_cli_used_weekly.yml
+    - path: ee/config/metrics/counts_7d/count_distinct_user_id_from_internal_events_cli_used_weekly.yml
       content: spec/fixtures/scripts/internal_events/metrics/ee_total_7d_single_event.yml
 
 - description: Create a metric after helping the user figure out next steps
@@ -158,8 +157,8 @@
     - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
     - 'internal_events_cli_used' # Filters to this event
     - "\n" # Select: config/events/internal_events_cli_used.yml
-    - "\e[A" # Arrow up to: Total count of events
-    - "\n" # Select: Total count of events
+    - "\e[A" # Arrow up to: Monthly/Weekly/Total count of events
+    - "\n" # Select: Monthly/Weekly/Total count of events
     - "when an event was defined using the CLI\n" # Input description
     - "1\n" # Select: Copy & continue
     - "y\n" # Create file
@@ -184,8 +183,8 @@
     - "1\n" # Enum-select: Copy & continue
     - "y\n" # Create file
     - "2\n" # Create another metric with the same events
-    - "\e[A" # Arrow up to: Total count of events
-    - "\n" # Select: Total count of events
+    - "\e[A" # Arrow up to: Monthly/Weekly/Total count of events
+    - "\n" # Select: Monthly/Weekly/Total count of events
     - "when an event was defined using the CLI\n" # Input description
     - "1\n" # Select: Copy & continue
     - "y\n" # Create file
@@ -215,8 +214,8 @@
     - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
     - 'internal_events_cli_used' # Filters to this event
     - "\n" # Select: config/events/internal_events_cli_used.yml
-    - "\e[A" # Arrow up to: Total count of events
-    - "\n" # Select: Total count of events
+    - "\e[A" # Arrow up to: Monthly/Weekly/Total count of events
+    - "\n" # Select: Monthly/Weekly/Total count of events
     - "when an event was defined using the CLI\n" # Input description
     - "1\n" # Select: Copy & continue
     - "y\n" # Create file
@@ -243,8 +242,8 @@
     - "1\n" # Enum-select: Copy & continue
     - "y\n" # Create file
     - "2\n" # Create another metric
-    - "\e[A" # Arrow up to: Total count of events
-    - "\n" # Select: Total count of events
+    - "\e[A" # Arrow up to: Monthly/Weekly/Total count of events
+    - "\n" # Select: Monthly/Weekly/Total count of events
     - "when an event was defined using the CLI\n" # Input description
     - "1\n" # Select: Copy & continue
     - "y\n" # Create file
@@ -281,8 +280,8 @@
     - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
     - 'internal_events_cli_used' # Filters to this event
     - "\n" # Select: config/events/internal_events_cli_used.yml
-    - "\e[A" # Arrow up to: Total count of events
-    - "\n" # Select: Total count of events
+    - "\e[A" # Arrow up to: Monthly/Weekly/Total count of events
+    - "\n" # Select: Monthly/Weekly/Total count of events
     - "when an event was defined using the CLI\n" # Input description
     - "1\n" # Select: Copy & continue
     - "y\n" # Overwrite file
@@ -304,8 +303,8 @@
     - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
     - 'internal_events_cli_used' # Filters to this event
     - "\n" # Select: config/events/internal_events_cli_used.yml
-    - "\e[A" # Arrow up to: Total count of events
-    - "\n" # Select: Total count of events
+    - "\e[A" # Arrow up to: Monthly/Weekly/Total count of events
+    - "\n" # Select: Monthly/Weekly/Total count of events
     - "when an event was defined using the CLI\n" # Input description
     - "1\n" # Select: Copy & continue
     - "n\n" # Don't overwrite file
@@ -407,7 +406,7 @@
     - "\e[B " # Multi-select: Arrow down and select internal_events_cli_opened
     - "\e[B " # Multi-select: Arrow down and select internal_events_cli_used
     - "\n" # Submit selections
-    - "\e[A\n" # Multi-select: Arrow up and select Total count of events where label/property/value is...
+    - "\e[A\n" # Multi-select: Arrow up and select Monthly/Weekly/Total count of events where label/property/value is...
     - "\n" # Select Yes: include internal_events_cli_closed in the metric anyways (no additional properties)
     - "n\n" # Select No: remove internal_events_cli_opened from the metric (no additional properties)
     - "failure\n" # Input value for "label" filter
@@ -443,7 +442,7 @@
     - "\u007F\u007F\u007F\u007F\u007F\u007F\u007F\u007F\u007F\u007F\u007F" # Clear filter
     - "random_name " # Filter list to the last event & select
     - "\n" # Submit selections
-    - "\e[A\e[A\n" # Arrow up & Select: Total count of events (no filters)
+    - "\e[A\e[A\n" # Arrow up & Select: Monthly/Weekly/Total count of events (no filters)
     - "CLI interations\n" # Input description
     - "cli_interactions\n" # Input new metric name
     - "1\n" # Enum-select: Copy & continue
@@ -486,7 +485,7 @@
     - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
     - "internal_events_cli_closed" # Filters to this event
     - "\n" # Select: config/events/internal_events_cli_closed.yml
-    - "\e[A\n" # Arrow up to & select: Total count of internal_events_cli_closed
+    - "\e[A\n" # Arrow up to & select: Monthly/Weekly/Total count of internal_events_cli_closed
     - "when the CLI is gracefully closed\n" # Input description
     - "1\n" # Enum-select: Copy & continue
     - "\e[A \n" # Arrow up to & select: N/A (this definition does not correspond to any product categories)
@@ -507,7 +506,7 @@
     - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
     - "internal_events_cli_closed" # Filters to this event
     - "\n" # Select: config/events/internal_events_cli_closed.yml
-    - "\e[A\n" # Arrow up to & select: Total count of internal_events_cli_closed
+    - "\e[A\n" # Arrow up to & select: Monthly/Weekly/Total count of internal_events_cli_closed
     - "when the CLI is gracefully closed\n" # Input description
     - "2\n" # Enum-select: Modify attributes
     - "package_registry\n" # Override group from event definition

@@ -3,6 +3,7 @@
 module Ci
   class DestroyOldPipelinesWorker
     include ApplicationWorker
+    include CronjobChildWorker
     include LimitedCapacity::Worker
 
     data_consistency :sticky
@@ -20,6 +21,9 @@ module Ci
           pipelines = Ci::Pipeline.for_project(project.id).created_before(timestamp).limit(LIMIT).to_a
 
           Ci::DestroyPipelineService.new(project, nil).unsafe_execute(pipelines)
+
+          log_extra_metadata_on_done(:removed_count, pipelines.size)
+          log_extra_metadata_on_done(:project, project.full_path)
         end
       end
     end

@@ -1,4 +1,8 @@
 {
+  "AccessLevelInterface": [
+    "ContainerProtectionAccessLevel",
+    "ContainerProtectionTagRule"
+  ],
   "AlertManagementIntegration": [
     "AlertManagementHttpIntegration",
     "AlertManagementPrometheusIntegration"
@@ -24,8 +28,8 @@
     "Note"
   ],
   "CiJobTokenScopeTarget": [
-    "Group",
-    "Project"
+    "CiJobTokenAccessibleGroup",
+    "CiJobTokenAccessibleProject"
   ],
   "CiRunnerCloudProvisioning": [
     "CiRunnerGkeProvisioning",
@@ -199,9 +203,12 @@
     "Milestone"
   ],
   "Todoable": [
+    "AddOnUser",
     "AlertManagementAlert",
+    "AutocompletedUser",
     "BoardEpic",
     "Commit",
+    "CurrentUser",
     "Design",
     "Epic",
     "EpicIssue",
@@ -209,9 +216,15 @@
     "Issue",
     "Key",
     "MergeRequest",
+    "MergeRequestAssignee",
+    "MergeRequestAuthor",
+    "MergeRequestParticipant",
+    "MergeRequestReviewer",
     "Namespace",
     "Project",
+    "UserCore",
     "Vulnerability",
+    "WikiPage",
     "WorkItem"
   ],
   "User": [
@@ -251,17 +264,24 @@
     "VulnerabilityLocationSast",
     "VulnerabilityLocationSecretDetection"
   ],
+  "WorkItemCustomFieldValue": [
+    "WorkItemNumberFieldValue",
+    "WorkItemSelectFieldValue",
+    "WorkItemTextFieldValue"
+  ],
   "WorkItemWidget": [
     "WorkItemWidgetAssignees",
     "WorkItemWidgetAwardEmoji",
     "WorkItemWidgetColor",
     "WorkItemWidgetCrmContacts",
     "WorkItemWidgetCurrentUserTodos",
+    "WorkItemWidgetCustomFields",
     "WorkItemWidgetCustomStatus",
     "WorkItemWidgetDescription",
     "WorkItemWidgetDesigns",
     "WorkItemWidgetDevelopment",
     "WorkItemWidgetEmailParticipants",
+    "WorkItemWidgetErrorTracking",
     "WorkItemWidgetHealthStatus",
     "WorkItemWidgetHierarchy",
     "WorkItemWidgetIteration",

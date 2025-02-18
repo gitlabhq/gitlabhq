@@ -8,6 +8,8 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
 
   let(:kas_enabled) { false }
 
+  let_it_be(:user) { create(:admin) }
+
   before do
     counts = Admin::DashboardController::COUNTED_ITEMS.index_with { 100 }
 
@@ -19,6 +21,7 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
     allow(Gitlab::Kas).to receive(:enabled?).and_return(kas_enabled)
     allow(view).to receive(:admin?).and_return(true)
     allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
+    allow(view).to receive(:current_user).and_return(user)
   end
 
   it "shows version of GitLab Workhorse" do

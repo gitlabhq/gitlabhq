@@ -4,10 +4,9 @@
   = render 'waiting'
 - else
   = render 'header'
-  - if Feature.enabled?('new_pages_ui', @project)
-    #js-pages{ data: { full_path: @project.full_path } }
-    %h2.gl-heading-2
-      = s_('Settings')
+  #js-pages{ data: { full_path: @project.full_path } }
+  %h2.gl-heading-2
+    = s_('Settings')
   = render 'pages_settings'
   = render 'ssl_limitations_warning' if pages_subdomain(@project).include?(".")
   = render 'access'

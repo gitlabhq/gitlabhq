@@ -2,10 +2,9 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Use Code Owners to define experts for your code base, and set review requirements based on file type or location."
+description: Use Code Owners to define experts for your code base, and set review requirements based on file type or location.
+title: Advanced `CODEOWNERS` configuration
 ---
-
-# Advanced `CODEOWNERS` configuration
 
 This page describes advanced configuration options for Code Owners in GitLab.
 
@@ -110,17 +109,24 @@ The Code Owner for `terms.md` would be `@legal-team`.
 
 ## Require multiple approvals from Code Owners
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335451) in GitLab 15.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335451) in GitLab 15.9.
+
+{{< /history >}}
 
 You can require multiple approvals for the Code Owners sections in the Approvals area in merge requests.
 Append the section name with a number `n` in brackets, for example, `[2]` or `[3]`.
 This requires `n` approvals from the Code Owners in this section.
 Valid entries for `n` are integers `≥ 1`. `[1]` is optional because it is the default. Invalid values for `n` are treated as `1`.
 
-WARNING:
+{{< alert type="warning" >}}
+
 [Issue 384881](https://gitlab.com/gitlab-org/gitlab/-/issues/385881) proposes changes
 to the behavior of this setting. Do not intentionally set invalid values. They may
 become valid in the future and cause unexpected behavior.
+
+{{< /alert >}}
 
 To require multiple approvals from Code Owners:
 
@@ -174,11 +180,14 @@ Inviting **Subgroup Y** to a parent group of **Project A**
 [is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/288851). To set **Subgroup Y** as
 Code Owners, [invite this group directly to the project](#invite-subgroups-to-projects-in-parent-groups) itself.
 
-NOTE:
+{{< alert type="note" >}}
+
 For approval to be required, groups as Code Owners must have a direct membership
 (not inherited membership) in the project. Approval can only be optional for groups
 that inherit membership. Members in the Code Owners group also must be direct members,
 and not inherit membership from any parent groups.
+
+{{< /alert >}}
 
 ### Invite subgroups to projects in parent groups
 
@@ -203,7 +212,11 @@ of the merge request becomes optional.
 
 ## Error handling
 
-> - Error validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216066) in GitLab 16.3.
+{{< history >}}
+
+- Error validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216066) in GitLab 16.3.
+
+{{< /history >}}
 
 ### Entries with spaces
 
@@ -281,9 +294,12 @@ If an entry includes no owners, or zero [accessible owners](#inaccessible-or-inc
 exist, the entry is invalid. Because this rule can never be satisfied, GitLab
 auto-approves it in merge requests.
 
-NOTE:
+{{< alert type="note" >}}
+
 When a protected branch has `Require code owner approval` enabled, rules with
 zero owners are still honored.
+
+{{< /alert >}}
 
 ### Minimum approvals
 

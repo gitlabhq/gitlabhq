@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use SSH keys to communicate with GitLab
 ---
 
-# Use SSH keys to communicate with GitLab
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Git is a distributed version control system, which means you can work locally,
 then share or *push* your changes to a server. In this case, the server you push to is GitLab.
@@ -73,7 +75,11 @@ must have [OpenSSH 8.2](https://www.openssh.com/releasenotes.html#8.2) or later 
 
 ### RSA SSH keys
 
-> - Maximum RSA key length [changed](https://gitlab.com/groups/gitlab-org/-/epics/11186) in GitLab 16.3.
+{{< history >}}
+
+- Maximum RSA key length [changed](https://gitlab.com/groups/gitlab-org/-/epics/11186) in GitLab 16.3.
+
+{{< /history >}}
 
 Available documentation suggests ED25519 is more secure than RSA.
 
@@ -132,7 +138,7 @@ If you do not have an existing SSH key pair, generate a new one:
    Enter file in which to save the key (/home/user/.ssh/id_ed25519):
    ```
 
-1. Accept the suggested filename and directory, unless you are generating a [deploy key](project/deploy_keys/index.md)
+1. Accept the suggested filename and directory, unless you are generating a [deploy key](project/deploy_keys/_index.md)
    or want to save in a specific directory where you store other keys.
 
    You can also dedicate the SSH key pair to a [specific host](#configure-ssh-to-point-to-a-different-directory).
@@ -298,8 +304,12 @@ For more information about using 1Password with SSH keys, see the [1Password doc
 
 ## Add an SSH key to your GitLab account
 
-> - Suggested default expiration date for keys [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271239) in GitLab 15.4.
-> - Usage types for SSH keys [added](https://gitlab.com/gitlab-org/gitlab/-/issues/383046) in GitLab 15.7.
+{{< history >}}
+
+- Suggested default expiration date for keys [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271239) in GitLab 15.4.
+- Usage types for SSH keys [added](https://gitlab.com/gitlab-org/gitlab/-/issues/383046) in GitLab 15.7.
+
+{{< /history >}}
 
 To use SSH with GitLab, copy your public key to your GitLab account:
 
@@ -353,7 +363,7 @@ The following commands use the example hostname `gitlab.example.com`. Replace th
 By default, GitLab uses `git` username to authenticate. It can be different if it was [changed by the administrator](https://docs.gitlab.com/omnibus/settings/configuration.html#change-the-name-of-the-git-user-or-group).
 
 1. To ensure you're connecting to the correct server, check the server's SSH host keys fingerprint. For:
-   - GitLab.com, see the [SSH host keys fingerprints](gitlab_com/index.md#ssh-host-keys-fingerprints) documentation.
+   - GitLab.com, see the [SSH host keys fingerprints](gitlab_com/_index.md#ssh-host-keys-fingerprints) documentation.
    - GitLab.com or another GitLab instance, see `gitlab.example.com/help/instance_configuration#ssh-host-keys-fingerprints` where `gitlab.example.com` is `gitlab.com` (for
      GitLab.com) or the address of the GitLab instance.
 1. Open a terminal and run this command, replacing `gitlab.example.com` with your
@@ -418,11 +428,15 @@ Your existing SSH keys are listed at the bottom of the page. The information inc
 
 You can revoke or delete your SSH key to permanently remove it from your account.
 
-Removing your SSH key has additional implications if you sign your commits with the key. For more information, see [Signed commits with removed SSH keys](../user/project/repository/signed_commits/ssh.md#signed-commits-with-removed-ssh-keys).
+Removing your SSH key has additional implications if you sign your commits with the key. For more information, see [Signed commits with removed SSH keys](project/repository/signed_commits/ssh.md#signed-commits-with-removed-ssh-keys).
 
 ### Revoke an SSH key
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108344) in GitLab 15.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108344) in GitLab 15.9.
+
+{{< /history >}}
 
 If your SSH key becomes compromised, revoke the key.
 
@@ -445,7 +459,7 @@ To delete an SSH key:
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
-1. Next to the key you want to delete, select **Remove** (**{remove}**).
+1. Next to the key you want to delete, select **Remove** ({{< icon name="remove" >}}).
 1. Select **Delete**.
 
 ## Use different accounts on a single GitLab instance
@@ -489,9 +503,12 @@ To update a previously-cloned repository that is aliased as `origin`:
 git remote set-url origin git@<user_1.gitlab.com>:gitlab-org/gitlab.git
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Private and public keys contain sensitive data. Ensure the permissions
 on the files make them readable to you but not accessible to others.
+
+{{< /alert >}}
 
 ## Configure two-factor authentication (2FA)
 
@@ -501,7 +518,7 @@ You can set up two-factor authentication (2FA) for
 
 ## Use EGit on Eclipse
 
-If you are using [EGit](https://eclipse.dev/egit/), you can [add your SSH key to Eclipse](https://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration).
+If you are using [EGit](https://projects.eclipse.org/projects/technology.egit), you can [add your SSH key to Eclipse](https://wiki.eclipse.org/EGit/User_Guide/#Eclipse_SSH_Configuration).
 
 ## Use SSH on Microsoft Windows
 
@@ -518,7 +535,7 @@ as both have a different home directory:
 
 You can either copy over the `.ssh/` directory to use the same key, or generate a key in each environment.
 
-If you're running Windows 11 and using [OpenSSH for Windows](https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_overview), ensure the `HOME`
+If you're running Windows 11 and using [OpenSSH for Windows](https://learn.microsoft.com/en-us/windows-server/administration/OpenSSH/openssh-overview), ensure the `HOME`
 environment variable is set correctly. Otherwise, your private SSH key might not be found.
 
 Alternative tools include:

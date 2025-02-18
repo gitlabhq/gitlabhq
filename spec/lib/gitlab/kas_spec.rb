@@ -276,4 +276,36 @@ RSpec.describe Gitlab::Kas, feature_category: :deployment_management do
       end
     end
   end
+
+  describe '.client_timeout_seconds' do
+    context 'when client_timeout_seconds is configured' do
+      before do
+        allow(Gitlab.config).to receive(:gitlab_kas).and_return({ 'client_timeout_seconds' => 15 })
+      end
+
+      it 'returns the configured timeout' do
+        expect(described_class.client_timeout_seconds).to eq(15)
+      end
+    end
+
+    context 'when client_timeout_seconds is not configured' do
+      before do
+        allow(Gitlab.config).to receive(:gitlab_kas).and_return({ 'client_timeout_seconds' => nil })
+      end
+
+      it 'returns the default timeout' do
+        expect(described_class.client_timeout_seconds).to eq(5) # Default timeout
+      end
+    end
+
+    context 'when the configuration is missing' do
+      before do
+        allow(Gitlab.config).to receive(:gitlab_kas).and_return(nil)
+      end
+
+      it 'returns the default timeout' do
+        expect(described_class.client_timeout_seconds).to eq(5) # Default timeout
+      end
+    end
+  end
 end

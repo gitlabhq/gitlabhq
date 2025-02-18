@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::SetLegacyOpenSourceLicenseAvailableForNonPublicProjects,
   :migration,
-  schema: 20230721095222 do
+  schema: 20231220225325 do
   let(:organizations_table) { table(:organizations) }
   let(:namespaces_table) { table(:namespaces) }
   let(:projects_table) { table(:projects) }

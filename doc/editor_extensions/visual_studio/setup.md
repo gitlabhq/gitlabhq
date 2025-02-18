@@ -2,18 +2,22 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Connect and use GitLab Duo in Visual Studio."
+description: Connect and use GitLab Duo in Visual Studio.
+title: Install and set up the GitLab extension for Visual Studio
 ---
 
-# Install and set up the GitLab extension for Visual Studio
+To get the extension, use any of these methods:
 
-Download the extension from the
-[Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio)
-and install it.
+- Inside Visual Studio, go to **Extensions > Manage extensions... > Browse**, and search for `GitLab`.
+- From the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio).
+- From GitLab, either from the
+  [list of releases](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/releases), or by 
+  [downloading the latest version](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/releases/permalink/latest/downloads/GitLab.Extension.vsix)
+  directly.
 
 The extension requires:
 
-- Visual Studio 2022, either AMD64 or Arm64.
+- Visual Studio 2022 version 17.6 or later, either AMD64 or Arm64.
 - The [IntelliCode](https://visualstudio.microsoft.com/services/intellicode/) component for Visual Studio.
 - GitLab version 16.1 and later.
   - GitLab Duo Code Suggestions requires GitLab version 16.8 or later.

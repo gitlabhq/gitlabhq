@@ -2,12 +2,14 @@
 stage: Monitor
 group: Analytics Instrumentation
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Event definition guide
 ---
 
-# Event definition guide
+{{< alert type="note" >}}
 
-NOTE:
 The event dictionary is a work in progress, and this process is subject to change.
+
+{{< /alert >}}
 
 This guide describes the event dictionary and how it's implemented.
 

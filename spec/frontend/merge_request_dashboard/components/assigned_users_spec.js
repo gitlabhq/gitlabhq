@@ -2,7 +2,6 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import AssignedUsers from '~/merge_request_dashboard/components/assigned_users.vue';
 
 let wrapper;
-let glTooltipDirectiveMock;
 
 const createMockUsers = () => [
   {
@@ -22,20 +21,8 @@ const createMockUsers = () => [
   },
 ];
 
-function createComponent({
-  users = createMockUsers(),
-  type = 'ASSIGNEES',
-  newListsEnabled = false,
-} = {}) {
-  glTooltipDirectiveMock = jest.fn();
-
+function createComponent({ users = createMockUsers(), type = 'ASSIGNEES' } = {}) {
   wrapper = mountExtended(AssignedUsers, {
-    directives: {
-      GlTooltip: glTooltipDirectiveMock,
-    },
-    provide: {
-      newListsEnabled,
-    },
     propsData: {
       type,
       users,
@@ -46,7 +33,6 @@ function createComponent({
 describe('Merge request dashboard assigned users component', () => {
   const findAllUsers = () => wrapper.findAllByTestId('assigned-user');
   const findReviewStateIcon = () => wrapper.findByTestId('review-state-icon');
-  const findCurrentUserIcon = () => wrapper.findByTestId('current-user');
 
   beforeEach(() => {
     window.gon = { current_user_id: 1 };
@@ -64,32 +50,10 @@ describe('Merge request dashboard assigned users component', () => {
   });
 
   describe('current user avatar', () => {
-    it('renders icon for current user', () => {
-      createComponent();
-
-      expect(findCurrentUserIcon().exists()).toBe(true);
-    });
-
-    it('adds this is you text to tooltip', () => {
-      createComponent();
-
-      expect(glTooltipDirectiveMock.mock.calls[1][1].value).toBe(
-        '<strong>This is you.</strong><br />Assigned to Admin',
-      );
-    });
-
     it('renders current user last', () => {
       createComponent();
 
-      expect(findAllUsers().at(1).find('[data-testid="current-user"]').exists()).toBe(true);
-    });
-
-    describe('when newListsEnabled is true', () => {
-      it('renders icon for current user', () => {
-        createComponent({ newListsEnabled: true });
-
-        expect(findCurrentUserIcon().exists()).toBe(false);
-      });
+      expect(findAllUsers().at(1).attributes('data-user-id')).toBe('1');
     });
   });
 
@@ -99,31 +63,6 @@ describe('Merge request dashboard assigned users component', () => {
 
       expect(findReviewStateIcon().exists()).toBe(true);
       expect(findReviewStateIcon().html()).toMatchSnapshot();
-    });
-
-    it.each`
-      state                  | title
-      ${'REQUESTED_CHANGES'} | ${'Admin requested changes'}
-      ${'APPROVED'}          | ${'Approved by Admin'}
-      ${'REVIEWED'}          | ${'Admin left feedback'}
-      ${'UNREVIEWED'}        | ${'Review requested from Admin'}
-    `('sets title as $title for review state $state', ({ state, title }) => {
-      createComponent({
-        type: 'REVIEWER',
-        users: [
-          {
-            id: 'gid://gitlab/user/2',
-            webUrl: '/root',
-            name: 'Admin',
-            avatarUrl: '/root',
-            mergeRequestInteraction: {
-              reviewState: state,
-            },
-          },
-        ],
-      });
-
-      expect(glTooltipDirectiveMock.mock.calls[0][1].value).toBe(title);
     });
   });
 });

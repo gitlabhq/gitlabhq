@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::OrganizationPolicy, feature_category: :cell do
-  let_it_be_with_refind(:private_organization) { create(:organization) }
+  let_it_be_with_refind(:private_organization) { create(:organization, :private) }
   let_it_be_with_refind(:organization) { private_organization }
   let_it_be(:public_organization) { create(:organization, :public) }
   let_it_be(:current_user) { create :user }

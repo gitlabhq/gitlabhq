@@ -111,6 +111,15 @@ module AuthHelper
     providers.map(&:name).map(&:to_sym)
   end
 
+  def oidc_providers
+    providers = Gitlab.config.omniauth.providers.select do |provider|
+      provider.name == 'openid_connect' || provider.dig('args',
+        'strategy_class') == 'OmniAuth::Strategies::OpenIDConnect'
+    end
+
+    providers.map(&:name).map(&:to_sym)
+  end
+
   def any_form_based_providers_enabled?
     form_based_providers.any? { |provider| form_enabled_for_sign_in?(provider) }
   end

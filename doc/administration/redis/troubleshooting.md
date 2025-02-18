@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting Redis
 ---
 
-# Troubleshooting Redis
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 There are a lot of moving parts that must be taken care carefully
 in order for the HA setup to work as expected.
@@ -137,9 +139,12 @@ To make sure your configuration is correct:
     redis-cli -h localhost -p 6379 DEBUG sleep 20
    ```
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    This action affects services, and takes the instance down for up to 20 seconds. If successful,
    it should recover after that.
+
+   {{< /alert >}}
 
 1. Then back in the Rails console from the first step, run:
 

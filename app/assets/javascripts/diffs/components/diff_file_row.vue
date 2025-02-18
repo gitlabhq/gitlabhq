@@ -41,7 +41,7 @@ export default {
       return !this.hideFileStats && this.file.type === 'blob';
     },
     fileClasses() {
-      return this.file.type === 'blob' && !this.viewedFiles[this.file.fileHash]
+      return this.file.type === 'blob' && !this.viewedFiles[this.file.id]
         ? 'gl-font-bold'
         : 'gl-text-subtle';
     },

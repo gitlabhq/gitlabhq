@@ -10,9 +10,6 @@ data_source: system
 instrumentation_class: GitlabSettingsMetric
 options:
   setting_method: gravatar_enabled?
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

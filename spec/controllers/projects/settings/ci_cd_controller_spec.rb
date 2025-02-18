@@ -112,6 +112,30 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
           expect { show }.not_to exceed_query_limit(control)
         end
       end
+
+      context 'when user is authorized to access this action' do
+        before do
+          project.add_maintainer(user)
+        end
+
+        it 'returns a success header' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when the user is not authorized to access this action' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'returns not found' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
 
     describe '#reset_cache' do
@@ -405,6 +429,30 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
               end
             end
           end
+        end
+      end
+
+      context 'when user is authorized to access this action' do
+        before do
+          project.add_maintainer(user)
+        end
+
+        it 'returns a success header' do
+          subject
+
+          expect(response).to redirect_to(project_settings_ci_cd_path(project))
+        end
+      end
+
+      context 'when the user is not authorized to access this action' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'returns not found' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end

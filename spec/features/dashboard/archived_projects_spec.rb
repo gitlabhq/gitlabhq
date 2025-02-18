@@ -14,34 +14,70 @@ RSpec.describe 'Dashboard Archived Project', feature_category: :groups_and_proje
     archived_project_2.add_maintainer(user)
   end
 
-  before do
-    sign_in(user)
+  context 'when feature flag your_work_projects_vue is enabled', :js do
+    before do
+      sign_in(user)
 
-    visit dashboard_projects_path
+      visit member_dashboard_projects_path
+      wait_for_requests
+    end
+
+    it 'renders non archived projects' do
+      expect(page).to have_link(project.name)
+      expect(page).not_to have_link(archived_project.name)
+    end
+
+    it 'renders only archived projects' do
+      click_link 'Inactive'
+
+      expect(page).to have_content(archived_project.name)
+      expect(page).not_to have_content(project.name)
+    end
+
+    it 'searches archived projects', :js do
+      click_link 'Inactive'
+
+      expect(page).to have_link(archived_project.name)
+      expect(page).to have_link(archived_project_2.name)
+
+      search(archived_project.name)
+
+      expect(page).not_to have_link(archived_project_2.name)
+      expect(page).to have_link(archived_project.name)
+    end
   end
 
-  it 'renders non archived projects' do
-    expect(page).to have_link(project.name)
-    expect(page).not_to have_link(archived_project.name)
-  end
+  context 'when feature flag your_work_projects_vue is disabled' do
+    before do
+      stub_feature_flags(your_work_projects_vue: false)
+      sign_in(user)
 
-  it 'renders only archived projects' do
-    click_link 'Inactive'
+      visit dashboard_projects_path
+    end
 
-    expect(page).to have_content(archived_project.name)
-    expect(page).not_to have_content(project.name)
-  end
+    it 'renders non archived projects' do
+      expect(page).to have_link(project.name)
+      expect(page).not_to have_link(archived_project.name)
+    end
 
-  it 'searches archived projects', :js do
-    click_link 'Inactive'
+    it 'renders only archived projects' do
+      click_link 'Inactive'
 
-    expect(page).to have_link(archived_project.name)
-    expect(page).to have_link(archived_project_2.name)
+      expect(page).to have_content(archived_project.name)
+      expect(page).not_to have_content(project.name)
+    end
 
-    search(archived_project.name)
+    it 'searches archived projects', :js do
+      click_link 'Inactive'
 
-    expect(page).not_to have_link(archived_project_2.name)
-    expect(page).to have_link(archived_project.name)
+      expect(page).to have_link(archived_project.name)
+      expect(page).to have_link(archived_project_2.name)
+
+      search(archived_project.name)
+
+      expect(page).not_to have_link(archived_project_2.name)
+      expect(page).to have_link(archived_project.name)
+    end
   end
 
   def search(term)

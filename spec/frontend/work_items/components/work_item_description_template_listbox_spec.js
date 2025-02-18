@@ -10,10 +10,36 @@ import descriptionTemplatesListQuery from '~/work_items/graphql/work_item_descri
 Vue.use(VueApollo);
 
 const mockTemplatesList = [
-  { name: 'template 1', __typename: 'WorkItemDescriptionTemplate' },
-  { name: 'template 2', __typename: 'WorkItemDescriptionTemplate' },
-  { name: 'template 3', __typename: 'WorkItemDescriptionTemplate' },
-  { name: 'template 4', __typename: 'WorkItemDescriptionTemplate' },
+  {
+    name: 'template 1',
+    __typename: 'WorkItemDescriptionTemplate',
+    category: 'GROUP A',
+    projectId: 1,
+  },
+  {
+    name: 'template 2',
+    __typename: 'WorkItemDescriptionTemplate',
+    category: 'GROUP A',
+    projectId: 2,
+  },
+  {
+    name: 'template 3',
+    __typename: 'WorkItemDescriptionTemplate',
+    category: 'GROUP B',
+    projectId: 3,
+  },
+  {
+    name: 'Bug',
+    __typename: 'WorkItemDescriptionTemplate',
+    category: 'GROUP C',
+    projectId: 4,
+  },
+  {
+    name: 'template 1',
+    __typename: 'WorkItemDescriptionTemplate',
+    category: 'GROUP C',
+    projectId: 1,
+  },
 ];
 
 const mockDescriptionTemplatesResult = {
@@ -104,7 +130,7 @@ describe('WorkItemDescriptionTemplateListbox', () => {
       describe('when there is already a template selected', () => {
         beforeEach(async () => {
           createComponent({
-            template: mockTemplatesList[0].name,
+            template: mockTemplatesList[0],
           });
           await waitForPromises();
         });
@@ -129,9 +155,16 @@ describe('WorkItemDescriptionTemplateListbox', () => {
           }
         });
 
-        it('allows searching to narrow down results', async () => {
-          // only matches 'template 4'
-          findListbox().vm.$emit('search', '4');
+        it('displays group names for the templates', () => {
+          const text = findListbox().text();
+          expect(text).toContain('GROUP A');
+          expect(text).toContain('GROUP B');
+          expect(text).toContain('GROUP C');
+        });
+
+        it('allows case insensitive searching to narrow down results', async () => {
+          // only matches 'Bug'
+          findListbox().vm.$emit('search', 'bug');
           await nextTick();
           expect(findListbox().props('items')).toHaveLength(1);
         });
@@ -162,15 +195,17 @@ describe('WorkItemDescriptionTemplateListbox', () => {
       });
 
       describe('when a template is selected from the list', () => {
+        const { name, category, projectId } = mockTemplatesList[0];
+
         beforeEach(async () => {
           createComponent();
           await waitForPromises();
           findListbox().vm.$emit('shown');
-          findListbox().vm.$emit('select', mockTemplatesList[0]);
+          findListbox().vm.$emit('select', JSON.stringify({ name, category, projectId }));
         });
 
         it('emits the selected template', () => {
-          expect(wrapper.emitted('selectTemplate')).toEqual([[mockTemplatesList[0]]]);
+          expect(wrapper.emitted('selectTemplate')).toEqual([[{ name, category, projectId }]]);
         });
       });
     });

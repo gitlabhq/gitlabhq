@@ -2,18 +2,23 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Configure a new **secondary** site
 ---
 
-# Configure a new **secondary** site
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-NOTE:
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 This is the final step in setting up a **secondary** Geo site. Stages of the
 setup process must be completed in the documented order.
-If not, [complete all prior stages](../setup/index.md#using-linux-package-installations) before proceeding.
+If not, [complete all prior stages](../setup/_index.md#using-linux-package-installations) before proceeding.
+
+{{< /alert >}}
 
 The basic steps of configuring a **secondary** site are to:
 
@@ -30,10 +35,13 @@ Prerequisites for **both primary and secondary sites**:
 - [Set up the database replication](../setup/database.md)
 - [Configure fast lookup of authorized SSH keys](../../operations/fast_ssh_key_lookup.md)
 
-NOTE:
+{{< alert type="note" >}}
+
 **Do not** set up any custom authentication for the **secondary** site. This is handled by the **primary** site.
 Any change that requires access to the **Admin area** needs to be done in the
 **primary** site because the **secondary** site is a read-only replica.
+
+{{< /alert >}}
 
 ## Step 1. Manually replicate secret GitLab values
 
@@ -91,7 +99,7 @@ they must be manually replicated to **all nodes of the secondary site**.
 GitLab integrates with the system-installed SSH daemon, designating a user
 (typically named `git`) through which all access requests are handled.
 
-In a [Disaster Recovery](../disaster_recovery/index.md) situation, GitLab system
+In a [Disaster Recovery](../disaster_recovery/_index.md) situation, GitLab system
 administrators promote a **secondary** site to the **primary** site. DNS records for the
 **primary** domain should also be updated to point to the new **primary** site
 (previously a **secondary** site). Doing so avoids the need to update Git remotes and API URLs.
@@ -171,8 +179,11 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    for file in <ssh_host_key_path>/ssh_host_*_key.pub; do ssh-keygen -lf $file; done
    ```
 
-   NOTE:
-   The output for private keys and public keys command should generate the same fingerprint.
+   {{< alert type="note" >}}
+
+The output for private keys and public keys command should generate the same fingerprint.
+
+   {{< /alert >}}
 
 1. Restart either `sshd` for OpenSSH or the `gitlab-sshd` service on **each Rails node on your secondary** site:
 
@@ -249,7 +260,7 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    gitlab-rake gitlab:geo:check
    ```
 
-   If any of the checks fail, check the [troubleshooting documentation](troubleshooting/index.md).
+   If any of the checks fail, check the [troubleshooting documentation](troubleshooting/_index.md).
 
 1. SSH into a **Rails or Sidekiq server on your primary** site and login as root to verify the
    **secondary** site is reachable or there are any common issues with your Geo setup:
@@ -258,7 +269,7 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    gitlab-rake gitlab:geo:check
    ```
 
-   If any of the checks fail, check the [troubleshooting documentation](troubleshooting/index.md).
+   If any of the checks fail, check the [troubleshooting documentation](troubleshooting/_index.md).
 
 After the **secondary** site is added to the Geo administration page and restarted,
 the site automatically starts replicating missing data from the **primary** site
@@ -278,12 +289,12 @@ You can safely skip this step if:
 
 ### Custom or self-signed certificate for inbound connections
 
-If your GitLab Geo **primary** site uses a custom or [self-signed certificate to secure inbound HTTPS connections](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates), this can be either a single-domain or multi-domain certificate.
+If your GitLab Geo **primary** site uses a custom or [self-signed certificate to secure inbound HTTPS connections](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates), this can be either a single-domain or multi-domain certificate.
 
 Install the correct certificate based on your certificate type:
 
 - **Multi-domain certificate** that includes both primary and secondary site domains: Install the certificate at `/etc/gitlab/ssl` on all **Rails, Sidekiq, and Gitaly** nodes in the **secondary** site.
-- **Single-domain certificate** where the certificates are specific to each Geo site domain: Generate a valid certificate for your **secondary** site's domain and install it at `/etc/gitlab/ssl` following [these instructions](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates) on all **Rails, Sidekiq, and Gitaly** nodes in the **secondary** site.
+- **Single-domain certificate** where the certificates are specific to each Geo site domain: Generate a valid certificate for your **secondary** site's domain and install it at `/etc/gitlab/ssl` following [these instructions](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates) on all **Rails, Sidekiq, and Gitaly** nodes in the **secondary** site.
 
 ### Connecting to external services that use custom certificates
 
@@ -358,14 +369,14 @@ site's **Geo Sites** dashboard in your browser.
 ![Geo dashboard of secondary site](img/geo_dashboard_v14_0.png)
 
 If your installation isn't working properly, check the
-[troubleshooting document](troubleshooting/index.md).
+[troubleshooting document](troubleshooting/_index.md).
 
 The two most obvious issues that can become apparent in the dashboard are:
 
 1. Database replication not working well.
 1. Instance to instance notification not working. In that case, it can be
    something of the following:
-   - You are using a custom certificate or custom CA (see the [troubleshooting document](troubleshooting/index.md)).
+   - You are using a custom certificate or custom CA (see the [troubleshooting document](troubleshooting/_index.md)).
    - The instance is firewalled (check your firewall rules).
 
 Disabling a **secondary** site stops the synchronization process.
@@ -385,4 +396,4 @@ Currently, this is what is synced:
 
 ## Troubleshooting
 
-See the [troubleshooting document](troubleshooting/index.md).
+See the [troubleshooting document](troubleshooting/_index.md).

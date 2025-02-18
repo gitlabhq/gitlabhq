@@ -6,9 +6,6 @@ identifiers:
 product_group: import_and_integrate
 milestone: "14.0"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62645
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

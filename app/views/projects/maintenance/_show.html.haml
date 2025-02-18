@@ -13,7 +13,7 @@
         - link_end = '</a>'.html_safe
         = s_('ProjectMaintenance|To ensure that a full backup is available in case changes need to be restored, you should make an %{docs_link_start}export of the project%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: link_end }
 
-    - if current_user.can?(:owner_access, @project) && Feature.enabled?(:rewrite_history_ui, @project)
+    - if current_user.can?(:owner_access, @project)
       = render "projects/maintenance/remove_blobs"
       = render "projects/maintenance/redact_text"
 

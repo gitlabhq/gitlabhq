@@ -10,7 +10,7 @@
   stage: deploy
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/437986
   body: |  # (required) Don't change this line.
-    The `version` field in the [feature flag REST API](https://docs.gitlab.com/ee/api/feature_flags.html)
+    The `version` field in the [feature flag REST API](https://docs.gitlab.com/api/feature_flags/)
     is deprecated and will be removed in GitLab 17.0.
 
     After the `version` field is removed, there won't be a way to create legacy feature flags.

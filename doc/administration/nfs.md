@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Using NFS with GitLab
 ---
 
-# Using NFS with GitLab
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 NFS can be used as an alternative for object storage but this isn't typically
 recommended for performance reasons.
@@ -100,7 +102,8 @@ To disable NFS server delegation, do the following:
 
 1. Restart the NFS server process. For example, on CentOS run `service nfs restart`.
 
-NOTE:
+{{< alert type="note" >}}
+
 The kernel bug may be fixed in
 [more recent kernels with this commit](https://github.com/torvalds/linux/commit/95da1b3a5aded124dd1bda1e3cdb876184813140).
 Red Hat Enterprise 7 [shipped a kernel update](https://access.redhat.com/errata/RHSA-2019:2029)
@@ -108,6 +111,8 @@ on August 6, 2019 that may also have resolved this problem.
 You may not need to disable NFS server delegation if you know you are using a version of
 the Linux kernel that has been fixed. That said, GitLab still encourages instance
 administrators to keep NFS server delegation disabled.
+
+{{< /alert >}}
 
 ## NFS client
 
@@ -247,7 +252,7 @@ NFS mount point is `/gitlab-nfs`. Then, add the following bind mounts in
 
 Using bind mounts requires you to manually make sure the data directories
 are empty before attempting a restore. Read more about the
-[restore prerequisites](../administration/backup_restore/index.md).
+[restore prerequisites](backup_restore/_index.md).
 
 ### Multiple NFS mounts
 
@@ -268,7 +273,7 @@ provides configuration for [UDP log shipping](https://docs.gitlab.com/omnibus/se
 
 Having multiple NFS mounts requires you to manually make sure the data directories
 are empty before attempting a restore. Read more about the
-[restore prerequisites](../administration/backup_restore/index.md).
+[restore prerequisites](backup_restore/_index.md).
 
 ## Testing NFS
 

@@ -29,7 +29,7 @@ module Keeps
         next unless before_cuttoff_milestone?(migration['milestone'])
 
         job_name = migration['migration_job_name']
-        next if migration_finalized?(job_name)
+        next if migration_finalized?(migration, job_name)
 
         migration_record = fetch_migration_status(job_name)
         next unless migration_record
@@ -41,10 +41,10 @@ module Keeps
 
         queue_method_node = find_queue_method_node(last_migration_file)
 
-        migration_name = truncate_migration_name("Finalize#{migration['migration_job_name']}")
+        migration_name = truncate_migration_name("FinalizeHK#{job_name}")
         PostDeploymentMigration::PostDeploymentMigrationGenerator
           .source_root('generator_templates/post_deployment_migration/post_deployment_migration/')
-        generator = ::PostDeploymentMigration::PostDeploymentMigrationGenerator.new([migration_name], { skip: true })
+        generator = ::PostDeploymentMigration::PostDeploymentMigrationGenerator.new([migration_name])
         migration_file = generator.invoke_all.first
         change.changed_files = [migration_file]
 
@@ -199,7 +199,9 @@ module Keeps
       @postgres_ai ||= Keeps::Helpers::PostgresAi.new
     end
 
-    def migration_finalized?(job_name)
+    def migration_finalized?(migration, job_name)
+      return true if migration['finalized_by'].present?
+
       result = `git grep --name-only "#{job_name}"`.chomp
       result.each_line.select do |file|
         File.read(file.chomp).include?('ensure_batched_background_migration_is_finished')

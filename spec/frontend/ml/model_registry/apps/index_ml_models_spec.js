@@ -10,7 +10,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import getModelsQuery from '~/ml/model_registry/graphql/queries/get_models.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import DeleteModelDisclosureDropdownItem from '~/ml/model_registry/components/delete_model_disclosure_dropdown_item.vue';
 import { modelsQuery, modelWithOneVersion, modelWithoutVersion } from '../graphql_mock_data';
 
@@ -18,19 +17,13 @@ Vue.use(VueApollo);
 
 const defaultProps = {
   projectPath: 'path/to/project',
-  canWriteModelRegistry: false,
+  canWriteModelRegistry: true,
   maxAllowedFileSize: 99999,
   markdownPreviewPath: '/markdown-preview',
   createModelPath: 'path/to/project/-/ml/models/new,',
 };
 
-const skipReason = new SkipReason({
-  name: 'ml/model_registry/apps/index_ml_models',
-  reason: 'OOM on the worker',
-  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/458412',
-});
-
-describeSkipVue3(skipReason, () => {
+describe('ml/model_registry/apps/index_ml_models', () => {
   let wrapper;
   let apolloProvider;
 
@@ -94,7 +87,12 @@ describeSkipVue3(skipReason, () => {
   describe('create button', () => {
     describe('when user has no permission to write model registry', () => {
       it('does not display create button', async () => {
-        await createWrapper({ resolver: emptyQueryResolver() });
+        await createWrapper({
+          props: {
+            canWriteModelRegistry: false,
+          },
+          resolver: emptyQueryResolver(),
+        });
 
         expect(findModelCreate().exists()).toBe(false);
       });

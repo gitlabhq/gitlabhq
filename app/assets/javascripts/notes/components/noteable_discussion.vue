@@ -77,11 +77,6 @@ export default {
       required: false,
       default: false,
     },
-    shouldScrollToNote: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
   },
   data() {
     return {
@@ -348,7 +343,6 @@ export default {
               :line="line"
               :should-group-replies="shouldGroupReplies"
               :is-overview-tab="isOverviewTab"
-              :should-scroll-to-note="shouldScrollToNote"
               @startReplying="showReplyForm"
             >
               <template #avatar-badge>

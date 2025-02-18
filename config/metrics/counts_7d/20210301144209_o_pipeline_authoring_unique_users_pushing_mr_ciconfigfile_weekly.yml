@@ -15,9 +15,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -1,11 +1,10 @@
 ---
 stage: Fulfillment
 group: Subscription Management
-description: Options for accessing GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Options for accessing GitLab.
+title: GitLab plans
 ---
-
-# GitLab plans
 
 To choose the right GitLab subscription, select an offering and a tier.
 
@@ -16,18 +15,21 @@ Choose which GitLab offering suits your needs:
 - GitLab.com: The GitLab software-as-a-service offering.
   You don't need to install anything to use GitLab.com, you only need to
   [sign up](https://gitlab.com/users/sign_up) and start using GitLab straight away.
-- [GitLab Dedicated](gitlab_dedicated/index.md): A single-tenant SaaS service for highly regulated and large enterprises.
-- GitLab self-managed: Install, administer, and maintain your own GitLab instance.
+- [GitLab Dedicated](gitlab_dedicated/_index.md): A single-tenant SaaS service for highly regulated and large enterprises.
+- GitLab Self-Managed: Install, administer, and maintain your own GitLab instance.
 
-On a GitLab self-managed instance, a GitLab subscription provides the same set of
+On GitLab Self-Managed, a GitLab subscription provides the same set of
 features for all users.
 
 On GitLab.com, you can apply a subscription to a top-level group
 namespace. You cannot apply a subscription to a personal namespace.
 
-NOTE:
-Subscriptions cannot be transferred between GitLab.com and GitLab self-managed.
+{{< alert type="note" >}}
+
+Subscriptions cannot be transferred between GitLab.com and GitLab Self-Managed.
 A new subscription must be purchased and applied as needed.
+
+{{< /alert >}}
 
 ## Choose a subscription tier
 
@@ -46,10 +48,10 @@ You can purchase the following add-ons:
 
 - [GitLab Duo](subscription-add-ons.md): Get access to AI-powered features like Code Suggestions, GitLab
 Duo Chat, and more.
-- [Enterprise Agile Planning](gitlab_com/index.md#enterprise-agile-planning): Increase collaboration between
+- [Enterprise Agile Planning](gitlab_com/_index.md#enterprise-agile-planning): Increase collaboration between
 technical and non-technical teams on a single platform. Non-engineering team members can participate in planning,
 measure impact with Value Stream Analytics, and gain visibility into software development velocity.
-- [Storage](gitlab_com/index.md#purchase-more-storage): Buy more storage when you exceed your
+- [Storage](gitlab_com/_index.md#purchase-more-storage): Buy more storage when you exceed your
 free 10 GiB storage quota.
 - [Compute minutes](gitlab_com/compute_minutes.md): Buy additional compute minutes when your
 plan exceeds its allocated amount and you need to continue running automated

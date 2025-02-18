@@ -16,9 +16,6 @@ events:
   filter:
     label: code_quality
     property: warning
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

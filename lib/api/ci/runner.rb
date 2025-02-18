@@ -128,8 +128,6 @@ module API
           status 200
 
           present current_runner, with: Entities::Ci::RunnerRegistrationDetails
-        rescue ::API::Ci::Helpers::Runner::UnknownRunnerOwnerError
-          unprocessable_entity!('Runner is orphaned')
         end
 
         desc 'Reset runner authentication token with current token' do
@@ -142,7 +140,8 @@ module API
         post '/reset_authentication_token', urgency: :low, feature_category: :runner do
           authenticate_runner!
 
-          current_runner.reset_token!
+          ::Ci::Runners::ResetAuthenticationTokenService.new(runner: current_runner, source: :runner_api).execute!
+
           present current_runner.token_with_expiration, with: Entities::Ci::ResetTokenResult
         end
       end
@@ -228,8 +227,6 @@ module API
             Gitlab::Metrics.add_event(:build_invalid)
             conflict!
           end
-        rescue ::API::Ci::Helpers::Runner::UnknownRunnerOwnerError
-          unprocessable_entity!('Runner is orphaned')
         end
 
         desc 'Update a job' do
@@ -395,8 +392,10 @@ module API
           optional :direct_download, default: false, type: Boolean, desc: 'Perform direct download from remote storage instead of proxying artifacts'
         end
         route_setting :authentication, job_token_allowed: true
+        route_setting :authorization, job_token_policies: :read_jobs
         get '/:id/artifacts', feature_category: :job_artifacts do
           authenticate_job_via_dependent_job!
+          authorize_job_token_policies!(current_job.project)
 
           audit_download(current_job, current_job.artifacts_file&.filename) if current_job.artifacts_file
           present_artifacts_file!(current_job.artifacts_file, supports_direct_download: params[:direct_download])

@@ -170,7 +170,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
 
           expect do
             subject.execute
-          end.to raise_error(Repositories::ReplicateService::Error, /Failed to verify project repository checksum/)
+          end.to raise_error(::Repositories::ReplicateService::Error, /Failed to verify project repository checksum/)
 
           expect(project).not_to be_repository_read_only
           expect(project.repository_storage).to eq(storage_source)
@@ -361,7 +361,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
 
               expect do
                 subject.execute
-              end.to raise_error(Repositories::ReplicateService::Error, /Failed to verify object_pool repository/)
+              end.to raise_error(::Repositories::ReplicateService::Error, /Failed to verify object_pool repository/)
 
               project.reload
 

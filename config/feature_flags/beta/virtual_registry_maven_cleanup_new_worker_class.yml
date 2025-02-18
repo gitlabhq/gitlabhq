@@ -1,0 +1,9 @@
+---
+name: virtual_registry_maven_cleanup_new_worker_class
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/512436
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177996
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/513796
+milestone: '17.9'
+group: group::package registry
+type: beta
+default_enabled: false

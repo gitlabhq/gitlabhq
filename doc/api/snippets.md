@@ -2,13 +2,15 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Snippets API
 ---
 
-# Snippets API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Snippets API operates on [snippets](../user/snippets.md). Related APIs exist for
 [project snippets](project_snippets.md) and
@@ -211,8 +213,11 @@ Hello World snippet
 
 Create a new snippet.
 
-NOTE:
+{{< alert type="note" >}}
+
 The user must have permission to create new snippets.
+
+{{< /alert >}}
 
 ```plaintext
 POST /snippets
@@ -296,8 +301,11 @@ Example response:
 
 Update an existing snippet.
 
-NOTE:
+{{< alert type="note" >}}
+
 The user must have permission to change an existing snippet.
+
+{{< /alert >}}
 
 ```plaintext
 PUT /snippets/:id
@@ -478,7 +486,11 @@ Example response:
 
 ## List all snippets
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419640) in GitLab 16.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419640) in GitLab 16.3.
+
+{{< /history >}}
 
 List all snippets the current user has access to.
 Users with the Administrator or Auditor access levels can see all snippets
@@ -586,8 +598,11 @@ Example response:
 
 ## Get user agent details
 
-NOTE:
+{{< alert type="note" >}}
+
 Available only for administrators.
+
+{{< /alert >}}
 
 ```plaintext
 GET /snippets/:id/user_agent_detail

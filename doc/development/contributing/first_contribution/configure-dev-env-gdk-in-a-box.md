@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Configure GDK-in-a-box
 ---
-
-# Configure GDK-in-a-box
 
 If you want to contribute to the GitLab codebase and want a development environment in which to test
 your changes, you can use
@@ -16,7 +15,7 @@ sample projects, and administrator access with which you can test functionality.
 
 It requires 30 GB of disk space.
 
-![GDK](../img/gdk_home_v15_11.png)
+![Home page of GitLab running in local development environment on port 3000](../img/gdk_home_v15_11.png)
 
 If you prefer to use GDK locally without a VM, use the steps in [Install the GDK development environment](configure-dev-env-gdk.md)
 
@@ -38,8 +37,11 @@ If you prefer to use GDK locally without a VM, use the steps in [Install the GDK
 
 [View a demo video of this step](https://go.gitlab.com/b54mHb).
 
-NOTE:
+{{< alert type="note" >}}
+
 You might need to modify the system configuration (CPU cores and RAM) before starting the virtual machine.
+
+{{< /alert >}}
 
 1. Start the VM (you can minimize UTM or VirtualBox).
 1. In VS Code, select **Terminal > New terminal**, then run a `curl` command to add an SSH key to your local `~/.ssh/config`:
@@ -80,7 +82,7 @@ You might need to modify the system configuration (CPU cores and RAM) before sta
 
 ## Shut down GDK
 
-You can select the power icon (**{power}**) to shut down
+You can select the power icon ({{< icon name="power" >}}) to shut down
 the virtual machine, or enter the `shutdown` command in the terminal.
 Use the password `debian`:
 

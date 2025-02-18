@@ -89,16 +89,16 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     end
   end
 
-  describe 'with HTML-encoded entities' do
+  describe 'with non-ASCII characters' do
     before do
-      described_class.test_email('test@test.com', 'Subject', 'Some body with &mdash;').deliver
+      described_class.test_email('test@test.com', 'Subject', 'Some body with 中文 &mdash;').deliver
     end
 
     subject { ActionMailer::Base.deliveries.last }
 
-    it 'retains 7bit encoding' do
-      expect(subject.body.ascii_only?).to eq(true)
-      expect(subject.body.encoding).to eq('7bit')
+    it 'removes HTML encoding and uses UTF-8 charset' do
+      expect(subject.charset).to eq('UTF-8')
+      expect(subject.body).to include('中文 —')
     end
   end
 
@@ -663,31 +663,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         is_expected.to have_body_text project.web_url
         is_expected.to have_body_text project_member.invite_email
         is_expected.to have_body_text invited_user.name
-      end
-    end
-
-    describe 'project invitation declined' do
-      let(:recipient) { create(:user, maintainer_of: project) }
-      let(:project_member) do
-        invitee = invite_to_project(project, inviter: recipient)
-        invitee.decline_invite!
-        invitee
-      end
-
-      subject { described_class.member_invite_declined_email('Project', project.id, project_member.invite_email, recipient.id) }
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'an email sent to a user'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-
-      it 'contains all the useful information' do
-        is_expected.to have_subject 'Invitation declined'
-        is_expected.to have_body_text project.full_name
-        is_expected.to have_body_text project.web_url
-        is_expected.to have_body_text project_member.invite_email
       end
     end
 
@@ -1710,30 +1685,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         is_expected.to have_body_text group.web_url
         is_expected.to have_body_text group_member.invite_email
         is_expected.to have_body_text invited_user.name
-      end
-    end
-
-    describe 'group invitation declined' do
-      let(:owner) { create(:user, owner_of: group) }
-      let(:group_member) do
-        invitee = invite_to_group(group, inviter: owner)
-        invitee.decline_invite!
-        invitee
-      end
-
-      subject { described_class.member_invite_declined_email('group', group.id, group_member.invite_email, owner.id) }
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-
-      it 'contains all the useful information' do
-        is_expected.to have_subject 'Invitation declined'
-        is_expected.to have_body_text group.name
-        is_expected.to have_body_text group.web_url
-        is_expected.to have_body_text group_member.invite_email
       end
     end
 

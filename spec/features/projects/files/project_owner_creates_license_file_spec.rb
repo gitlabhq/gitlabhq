@@ -7,6 +7,7 @@ RSpec.describe 'Projects > Files > Project owner creates a license file', :js, f
   let_it_be(:project) { create(:project, :repository, namespace: project_maintainer.namespace) }
 
   before do
+    stub_feature_flags(blob_overflow_menu: false)
     project.repository.delete_file(project_maintainer, 'LICENSE',
       message: 'Remove LICENSE', branch_name: 'master')
     sign_in(project_maintainer)

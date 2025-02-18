@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Migrating from Jenkins
 ---
 
-# Migrating from Jenkins
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If you're migrating from Jenkins to GitLab CI/CD, you are able to create CI/CD
 pipelines that replicate and enhance your Jenkins workflows.
@@ -26,7 +28,10 @@ Additionally, there are some important differences between the two:
 - GitLab CI/CD pipelines are all configured in a YAML format configuration file.
   Jenkins uses either a Groovy format configuration file (declarative pipelines)
   or Jenkins DSL (scripted pipelines).
-- GitLab can run either on SaaS (cloud) or self-managed deployments. Jenkins deployments must be self-managed.
+- GitLab offers [GitLab.com](../../subscriptions/gitlab_com/_index.md), a multi-tenant SaaS service,
+  and [GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md), a fully isolated
+  single-tenant SaaS service. You can also run your own [GitLab Self-Managed](../../subscriptions/self_managed/_index.md)
+  instance. Jenkins deployments must be self-hosted.
 - GitLab provides source code management (SCM) out of the box. Jenkins requires a separate
   SCM solution to store code.
 - GitLab provides a built-in container registry. Jenkins requires a separate solution
@@ -104,7 +109,7 @@ from Jenkins to GitLab CI/CD.
 
 [Jenkins pipelines](https://www.jenkins.io/doc/book/pipeline/) generate automated CI/CD jobs
 that are triggered when certain event take place, such as a new commit being pushed.
-A Jenkins pipeline is defined in a `Jenkinsfile`. The GitLab equivalent is the [`.gitlab-ci.yml` configuration file](../../ci/yaml/index.md).
+A Jenkins pipeline is defined in a `Jenkinsfile`. The GitLab equivalent is the [`.gitlab-ci.yml` configuration file](../yaml/_index.md).
 
 Jenkins does not provide a place to store source code, so the `Jenkinsfile` must be stored
 in a separate source control repository.
@@ -313,8 +318,8 @@ deploy-job:
 
 #### Container Images
 
-In GitLab you can [run your CI/CD jobs in separate, isolated Docker containers](../../ci/docker/using_docker_images.md)
-using the [image](../../ci/yaml/index.md#image) keyword.
+In GitLab you can [run your CI/CD jobs in separate, isolated Docker containers](../docker/using_docker_images.md)
+using the [image](../yaml/_index.md#image) keyword.
 
 For example, in a `Jenkinsfile`:
 
@@ -342,7 +347,7 @@ version-job:
 
 #### Variables
 
-In GitLab, use the `variables` keyword to define [CI/CD variables](../variables/index.md).
+In GitLab, use the `variables` keyword to define [CI/CD variables](../variables/_index.md).
 Use variables to reuse configuration data, have more dynamic configuration, or store important values.
 Variables can be defined either globally or per job.
 
@@ -404,9 +409,9 @@ spanish:
     - echo "$GREETING $NAME"
 ```
 
-Variables can also be [set in the GitLab UI, in the CI/CD settings](../variables/index.md#define-a-cicd-variable-in-the-ui).
-In some cases, you can use [protected](../variables/index.md#protect-a-cicd-variable)
-and [masked](../variables/index.md#mask-a-cicd-variable) variables for secret values.
+Variables can also be [set in the GitLab UI, in the CI/CD settings](../variables/_index.md#define-a-cicd-variable-in-the-ui).
+In some cases, you can use [protected](../variables/_index.md#protect-a-cicd-variable)
+and [masked](../variables/_index.md#mask-a-cicd-variable) variables for secret values.
 These variables can be accessed in pipeline jobs the same as variables defined in the
 configuration file.
 
@@ -475,11 +480,11 @@ deploy_staging:
 #### Runners
 
 Like Jenkins agents, GitLab runners are the hosts that run jobs. If you are using GitLab.com,
-you can use the [instance runner fleet](../runners/index.md) to run jobs without provisioning
+you can use the [instance runner fleet](../runners/_index.md) to run jobs without provisioning
 your own runners.
 
 To convert a Jenkins agent for use with GitLab CI/CD, uninstall the agent and then
-[install and register a runner](../runners/index.md). Runners do not require much overhead,
+[install and register a runner](../runners/_index.md). Runners do not require much overhead,
 so you might be able to use similar provisioning as the Jenkins agents you were using.
 
 Some key details about runners:
@@ -538,8 +543,8 @@ windows_job:
 
 #### Artifacts
 
-In GitLab, any job can use the [`artifacts`](../../ci/yaml/index.md#artifacts) keyword to define a set of artifacts to
-be stored when a job completes. [Artifacts](../../ci/jobs/job_artifacts.md) are files that can be used in later jobs,
+In GitLab, any job can use the [`artifacts`](../yaml/_index.md#artifacts) keyword to define a set of artifacts to
+be stored when a job completes. [Artifacts](../jobs/job_artifacts.md) are files that can be used in later jobs,
 for example for testing or deployment.
 
 For example, in a `Jenkinsfile`:
@@ -594,7 +599,7 @@ use_cat:
 
 #### Caching
 
-A [cache](../../ci/caching/index.md) is created when a job downloads one or more files and
+A [cache](../caching/_index.md) is created when a job downloads one or more files and
 saves them for faster access in the future. Subsequent jobs that use the same cache don't have to download the files again,
 so they execute more quickly. The cache is stored on the runner and uploaded to S3 if
 [distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching).
@@ -619,20 +624,20 @@ in GitLab with keywords and features that offer similar functionality. For examp
 
 | Jenkins plugin                                                                    | GitLab feature |
 |-----------------------------------------------------------------------------------|----------------|
-| [Build Timeout](https://plugins.jenkins.io/build-timeout/)                        | [`timeout` keyword](../yaml/index.md#timeout) |
-| [Cobertura](https://plugins.jenkins.io/cobertura/)                                | [Coverage report artifacts](../yaml/artifacts_reports.md#artifactsreportscoverage_report) and [Code coverage](../testing/code_coverage.md) |
-| [Code coverage API](https://plugins.jenkins.io/code-coverage-api/)                | [Code coverage](../testing/code_coverage.md) and [Test coverage visualization](../testing/test_coverage_visualization/index.md) |
+| [Build Timeout](https://plugins.jenkins.io/build-timeout/)                        | [`timeout` keyword](../yaml/_index.md#timeout) |
+| [Cobertura](https://plugins.jenkins.io/cobertura/)                                | [Coverage report artifacts](../yaml/artifacts_reports.md#artifactsreportscoverage_report) and [Code coverage](../testing/code_coverage/_index.md) |
+| [Code coverage API](https://plugins.jenkins.io/code-coverage-api/)                | [Code coverage](../testing/code_coverage/_index.md) and [Coverage visualization](../testing/code_coverage/_index.md#coverage-visualization) |
 | [Embeddable Build Status](https://plugins.jenkins.io/embeddable-build-status/)    | [Pipeline status badges](../../user/project/badges.md#pipeline-status-badges) |
 | [JUnit](https://plugins.jenkins.io/junit/)                                        | [JUnit test report artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit) and [Unit test reports](../testing/unit_test_reports.md) |
 | [Mailer](https://plugins.jenkins.io/mailer/)                                      | [Notification emails](../../user/profile/notifications.md) |
-| [Parameterized Trigger Plugin](https://plugins.jenkins.io/parameterized-trigger/) | [`trigger` keyword](../yaml/index.md#trigger) and [downstream pipelines](../pipelines/downstream_pipelines.md) |
+| [Parameterized Trigger Plugin](https://plugins.jenkins.io/parameterized-trigger/) | [`trigger` keyword](../yaml/_index.md#trigger) and [downstream pipelines](../pipelines/downstream_pipelines.md) |
 | [Role-based Authorization Strategy](https://plugins.jenkins.io/role-strategy/)    | GitLab [permissions and roles](../../user/permissions.md) |
-| [Timestamper](https://plugins.jenkins.io/timestamper/)                            | [Job](../jobs/index.md) logs are time stamped by default |
+| [Timestamper](https://plugins.jenkins.io/timestamper/)                            | [Job](../jobs/_index.md) logs are time stamped by default |
 
 ### Security Scanning features
 
 You might have used plugins for things like code quality, security, or static application scanning in Jenkins.
-GitLab provides [security scanners](../../user/application_security/index.md) out-of-the-box to detect
+GitLab provides [security scanners](../../user/application_security/_index.md) out-of-the-box to detect
 vulnerabilities in all parts of the SDLC. You can add these plugins in GitLab using templates, for example to add
 SAST scanning to your pipeline, add the following to your `.gitlab-ci.yml`:
 
@@ -642,7 +647,7 @@ include:
 ```
 
 You can customize the behavior of security scanners by using CI/CD variables, for example
-with the [SAST scanners](../../user/application_security/sast/index.md#available-cicd-variables).
+with the [SAST scanners](../../user/application_security/sast/_index.md#available-cicd-variables).
 
 ### Secrets Management
 
@@ -658,23 +663,24 @@ For secrets management in GitLab, you can use one of the supported integrations
 for an external service. These services securely store secrets outside of your GitLab project,
 though you must have a subscription for the service:
 
-- [HashiCorp Vault](../secrets/id_token_authentication.md#automatic-id-token-authentication-with-hashicorp-vault)
-- [Azure Key Vault](../secrets/azure_key_vault.md).
+- [HashiCorp Vault](../secrets/hashicorp_vault.md)
+- [Azure Key Vault](../secrets/azure_key_vault.md)
+- [Google Cloud Secret Manager](../secrets/gcp_secret_manager.md)
 
 GitLab also supports [OIDC authentication](../secrets/id_token_authentication.md)
 for other third party services that support OIDC.
 
 Additionally, you can make credentials available to jobs by storing them in CI/CD variables, though secrets
 stored in plain text are susceptible to accidental exposure, [the same as in Jenkins](https://www.jenkins.io/doc/developer/security/secrets/#storing-secrets).
-You should always store sensitive information in [masked](../variables/index.md#mask-a-cicd-variable)
-and [protected](../variables/index.md#protect-a-cicd-variable) variables, which mitigates
+You should always store sensitive information in [masked](../variables/_index.md#mask-a-cicd-variable)
+and [protected](../variables/_index.md#protect-a-cicd-variable) variables, which mitigates
 some of the risk.
 
 Also, never store secrets as variables in your `.gitlab-ci.yml` file, which is public to all
 users with access to the project. Storing sensitive information in variables should
-only be done in [the project, group, or instance settings](../variables/index.md#define-a-cicd-variable-in-the-ui).
+only be done in [the project, group, or instance settings](../variables/_index.md#define-a-cicd-variable-in-the-ui).
 
-Review the [security guidelines](../variables/index.md#cicd-variable-security) to improve
+Review the [security guidelines](../variables/_index.md#cicd-variable-security) to improve
 the safety of your CI/CD variables.
 
 ## Planning and Performing a Migration
@@ -701,23 +707,23 @@ Before starting a migration you should create a [migration plan](plan_a_migratio
 Before doing any migration work, you should first:
 
 1. Get familiar with GitLab.
-   - Read about the [key GitLab CI/CD features](../../ci/index.md).
-   - Follow tutorials to create [your first GitLab pipeline](../quick_start/index.md) and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploys a static site.
-   - Review the [CI/CD YAML syntax reference](../yaml/index.md).
+   - Read about the [key GitLab CI/CD features](../_index.md).
+   - Follow tutorials to create [your first GitLab pipeline](../quick_start/_index.md) and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploys a static site.
+   - Review the [CI/CD YAML syntax reference](../yaml/_index.md).
 1. Set up and configure GitLab.
 1. Test your GitLab instance.
-   - Ensure [runners](../runners/index.md) are available, either by using shared GitLab.com runners or installing new runners.
+   - Ensure [runners](../runners/_index.md) are available, either by using shared GitLab.com runners or installing new runners.
 
 ### Migration Steps
 
 1. Migrate projects from your SCM solution to GitLab.
-   - (Recommended) You can use the available [importers](../../user/project/import/index.md)
+   - (Recommended) You can use the available [importers](../../user/project/import/_index.md)
      to automate mass imports from external SCM providers.
    - You can [import repositories by URL](../../user/project/import/repo_by_url.md).
 1. Create a `.gitlab-ci.yml` file in each project.
 1. Migrate Jenkins configuration to GitLab CI/CD jobs and configure them to show results directly in merge requests.
-1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/index.md),
-   [environments](../environments/index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
+1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/_index.md),
+   [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md).
 1. Check if any CI/CD configuration can be reused across different projects, then create
    and share CI/CD templates.
 1. Check the [pipeline efficiency documentation](../pipelines/pipeline_efficiency.md)
@@ -728,8 +734,11 @@ Before doing any migration work, you should first:
 - You can use the [JenkinsFile Wrapper](https://gitlab.com/gitlab-org/jfr-container-builder/)
   to run a complete Jenkins instance inside of a GitLab CI/CD job, including plugins. Use this tool to help ease the transition to GitLab CI/CD, by delaying the migration of less urgent pipelines.
 
-  NOTE:
-  The JenkinsFile Wrapper is not packaged with GitLab and falls outside of the scope of support.
+  {{< alert type="note" >}}
+
+The JenkinsFile Wrapper is not packaged with GitLab and falls outside of the scope of support.
   For more information, see the [Statement of Support](https://about.gitlab.com/support/statement-of-support/).
+
+  {{< /alert >}}
 
 If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/) can be a great resource.

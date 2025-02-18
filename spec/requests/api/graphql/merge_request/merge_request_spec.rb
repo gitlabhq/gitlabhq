@@ -93,7 +93,7 @@ RSpec.describe 'Query.merge_request(id)', feature_category: :code_review_workflo
 
         post_graphql(query, current_user: current_user)
 
-        expect(graphql_errors).not_to be nil
+        expect(graphql_errors).not_to be_nil
         expect(graphql_errors.first['message']).to eq("\"#{gid}\" does not represent an instance of MergeRequest")
       end
     end

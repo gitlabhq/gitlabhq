@@ -2,13 +2,15 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting Geo failover
 ---
 
-# Troubleshooting Geo failover
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 ## Fixing errors during a failover or when promoting a secondary to a primary site
 
@@ -17,7 +19,7 @@ when promoting a secondary to a primary site with strategies to resolve them.
 
 ### Message: `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
 
-When [promoting a **secondary** site](../disaster_recovery/index.md#step-3-promoting-a-secondary-site),
+When [promoting a **secondary** site](_index.md#step-3-promoting-a-secondary-site),
 you might encounter the following error message:
 
 ```plaintext
@@ -46,7 +48,7 @@ or `gitlab-ctl promote-to-primary-node`, enter a Rails console and run:
 
 ### Message: ``NoMethodError: undefined method `secondary?' for nil:NilClass``
 
-When [promoting a **secondary** site](../disaster_recovery/index.md#step-3-promoting-a-secondary-site),
+When [promoting a **secondary** site](_index.md#step-3-promoting-a-secondary-site),
 you might encounter the following error message:
 
 ```plaintext

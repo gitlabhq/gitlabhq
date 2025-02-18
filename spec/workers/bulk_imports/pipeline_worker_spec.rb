@@ -349,6 +349,31 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
       end
     end
 
+    context 'when entity is timeout' do
+      it 'marks tracker as timeout and logs the timeout' do
+        entity.update!(status: 3)
+
+        pipeline_tracker = create(
+          :bulk_import_tracker,
+          entity: entity,
+          pipeline_name: 'FakePipeline',
+          status_event: 'enqueue'
+        )
+
+        expect_next_instance_of(BulkImports::Logger) do |logger|
+          allow(logger).to receive(:info)
+
+          expect(logger)
+            .to receive(:info)
+            .with(hash_including(message: 'Timeout pipeline due to timeout entity'))
+        end
+
+        worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+        expect(pipeline_tracker.reload.status_name).to eq(:timeout)
+      end
+    end
+
     context 'when retry pipeline error is raised' do
       let(:pipeline_tracker) do
         create(

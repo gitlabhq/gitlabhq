@@ -1,11 +1,10 @@
 ---
 stage: none
 group: unassigned
-info: "See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
-description: "GitLab development guidelines - testing best practices."
+info: 'See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines'
+description: GitLab development guidelines - testing best practices.
+title: Testing best practices
 ---
-
-# Testing best practices
 
 ## Test Design
 
@@ -109,7 +108,11 @@ SILENCE_DEPRECATIONS=1 bin/rspec spec/models/project_spec.rb
 
 ### Test order
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93137) in GitLab 15.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93137) in GitLab 15.4.
+
+{{< /history >}}
 
 All new spec files are run in [random order](https://gitlab.com/gitlab-org/gitlab/-/issues/337399)
 to surface flaky tests that are dependent on test order.
@@ -138,7 +141,7 @@ If the specs fail the check they must be fixed before than can run in random ord
 
 ### Test slowness
 
-GitLab has a massive test suite that, without [parallelization](../pipelines/index.md#test-suite-parallelization), can take hours
+GitLab has a massive test suite that, without [parallelization](../pipelines/_index.md#test-suite-parallelization), can take hours
 to run. It's important that we make an effort to write tests that are accurate
 and effective _as well as_ fast.
 
@@ -384,13 +387,19 @@ Instead, you can use `stub_method` to stub the method:
   end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 `stub_method` does not work when used in conjunction with `let_it_be_with_refind`. This is because `stub_method` will stub a method on an instance and `let_it_be_with_refind` will create a new instance of the object for each run.
+
+{{< /alert >}}
 
 `stub_method` does not support method existence and method arity checks.
 
-WARNING:
+{{< alert type="warning" >}}
+
 `stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Consider using [RSpec mocks](https://rspec.info/features/3-12/rspec-mocks/) if available.
+
+{{< /alert >}}
 
 #### Stubbing member access level
 
@@ -409,9 +418,12 @@ it 'allows admin_project ability' do
 end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Refrain from using this stub helper if the test code relies on persisting
 `project_authorizations` or `Member` records. Use `Project#add_member` or `Group#add_member` instead.
+
+{{< /alert >}}
 
 #### Additional profiling metrics
 
@@ -537,7 +549,7 @@ To find people that could help, search for `backend testing performance` on the 
 
 ### Feature category metadata
 
-You must [set feature category metadata for each RSpec example](../feature_categorization/index.md#rspec-examples).
+You must [set feature category metadata for each RSpec example](../feature_categorization/_index.md#rspec-examples).
 
 ### Tests depending on EE license
 
@@ -569,9 +581,12 @@ Use the coverage reports to ensure your tests cover 100% of your code.
 
 ### System / Feature tests
 
-NOTE:
+{{< alert type="note" >}}
+
 Before writing a new system test,
 [consider this guide around their use](testing_levels.md#white-box-tests-at-the-system-level-formerly-known-as-system--feature-tests)
+
+{{< /alert >}}
 
 - Feature specs should be named `ROLE_ACTION_spec.rb`, such as
   `user_changes_password_spec.rb`.
@@ -874,10 +889,13 @@ you can follow.
 
 Use `rubocop_spec_helper` for RuboCop related specs.
 
-WARNING:
+{{< alert type="warning" >}}
+
 To verify that code and its specs are well-isolated from Rails, run the spec
 individually via `bin/rspec`. Don't use `bin/spring rspec` as it loads
 `spec_helper` automatically.
+
+{{< /alert >}}
 
 #### Maintaining fast_spec_helper specs
 
@@ -913,9 +931,12 @@ so we need to set some guidelines for their use going forward:
 
 ### Common test setup
 
-NOTE:
+{{< alert type="note" >}}
+
 `let_it_be` and `before_all` do not work with DatabaseCleaner's deletion strategy. This includes migration specs, Rake task specs, and specs that have the `:delete` RSpec metadata tag.
 For more information, see [issue 420379](https://gitlab.com/gitlab-org/gitlab/-/issues/420379).
+
+{{< /alert >}}
 
 In some cases, there is no need to recreate the same object for tests
 again for each example. For example, a project and a guest of that project
@@ -968,6 +989,32 @@ The reason is that `let_it_be` happens in a `before(:all)` block, and RSpec does
 allow stubs in `before(:all)`.
 See this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/340487) for more details.
 To resolve, use `let`, or change the factory to not use stubs.
+
+### `let_it_be` must not depend on a before block
+
+When using `let_it_be` in the middle of a spec, make sure that it does not depend on a `before` block, since the `let_it_be` will be executed first during `before(:all)`.
+
+In [this example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179302#note_2323774955), `create(:bar)` ran a callback which depended on the stub:
+
+```ruby
+let_it_be(:node) { create(:geo_node, :secondary) }
+
+before do
+  stub_current_geo_node(node)
+end
+
+context 'foo' do
+  let_it_be(:bar) { create(:bar) }
+
+  ...
+end
+```
+
+The stub isn't set when `create(:bar)` executes, so the tests are flaky.
+
+In this example, `before` cannot be replaced with `before_all` because you cannot use doubles or partial doubles from RSpec-mocks outside of the per-test lifecycle.
+
+Therefore, the solution is to use `let` or `let!` instead of `let_it_be(:bar)`.
 
 ### Time-sensitive tests
 
@@ -1045,7 +1092,7 @@ and as the docs state, may include fractional seconds.
 
 When Rails models are saved to the database,
 any timestamps they have are stored using a type in PostgreSQL called `timestamp without time zone`,
-which has microsecond resolution—i.e., six digits after the decimal.
+which has microsecond resolution—that is six digits after the decimal.
 So if `1577987974.6472975` is sent to PostgreSQL,
 it truncates the last digit of the fractional part and instead saves `1577987974.647297`.
 
@@ -1090,7 +1137,7 @@ where it was discussed.
 
 ### Feature flags in tests
 
-This section was moved to [developing with feature flags](../feature_flags/index.md).
+This section was moved to [developing with feature flags](../feature_flags/_index.md).
 
 ### Pristine test environments
 
@@ -1317,10 +1364,13 @@ Most tests for Elasticsearch logic relate to:
 
 There are some exceptions, such as checking for structural changes rather than individual records in an index.
 
-NOTE:
+{{< alert type="note" >}}
+
 Elasticsearch indexing uses [`Gitlab::Redis::SharedState`](../redis.md#gitlabrediscachesharedstatequeues).
 Therefore, the Elasticsearch traits dynamically use the `:clean_gitlab_redis_shared_state` trait.
 You do not need to add `:clean_gitlab_redis_shared_state` manually.
+
+{{< /alert >}}
 
 Specs using Elasticsearch require that you:
 
@@ -1353,10 +1403,13 @@ This section describes how to test with events that have yet to convert to
 
 ##### Backend
 
-WARNING:
+{{< alert type="warning" >}}
+
 Snowplow performs **runtime type checks** by using the [contracts gem](https://rubygems.org/gems/contracts).
 Because Snowplow is **by default disabled in tests and development**, it can be hard to
 **catch exceptions** when mocking `Gitlab::Tracking`.
+
+{{< /alert >}}
 
 To catch runtime errors due to type checks you can use `expect_snowplow_event`, which checks for
 calls to `Gitlab::Tracking#event`.
@@ -1508,10 +1561,13 @@ That indicates that you need to include the line `using RSpec::Parameterized::Ta
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-WARNING:
+{{< alert type="warning" >}}
+
 Only use simple values as input in the `where` block. Using procs, stateful
 objects, FactoryBot-created objects, and similar items can lead to
 [unexpected results](https://github.com/tomykaira/rspec-parameterized/issues/8).
+
+{{< /alert >}}
 
 <!-- vale gitlab_base.Spelling = YES -->
 
@@ -1754,7 +1810,7 @@ end
 In critical cases where an error on a constant could have a catastrophic impact,
 testing the constant values might be useful as an added safeguard. For example,
 if it could bring down the entire GitLab service, cause a customer to be billed more than they should be,
-or [cause the universe to implode](../contributing/verify/index.md#do-not-cause-our-universe-to-implode).
+or [cause the universe to implode](../contributing/verify/_index.md#do-not-cause-our-universe-to-implode).
 
 ### Factories
 
@@ -1921,4 +1977,4 @@ GITLAB_TESTING_LOG_LEVEL=debug
 
 ---
 
-[Return to Testing documentation](index.md)
+[Return to Testing documentation](_index.md)

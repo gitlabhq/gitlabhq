@@ -62,6 +62,7 @@ describe('MlExperimentsShow', () => {
     emptyStateSvgPath = 'path',
     mountFn = shallowMountExtended,
     mlflowTrackingUrl = 'mlflow/tracking/url',
+    canWriteModelExperiments = true,
   } = {}) => {
     wrapper = mountFn(MlExperimentsShow, {
       propsData: {
@@ -72,6 +73,7 @@ describe('MlExperimentsShow', () => {
         pageInfo,
         emptyStateSvgPath,
         mlflowTrackingUrl,
+        canWriteModelExperiments,
       },
       stubs: { GlTabs, GlBadge, CandidateList, GlSprintf, TimeAgoTooltip },
     });
@@ -126,6 +128,16 @@ describe('MlExperimentsShow', () => {
 
     it('passes the right props', () => {
       expect(findDeleteButton().props('deletePath')).toBe(MOCK_EXPERIMENT.path);
+    });
+  });
+
+  describe('Delete with no permission', () => {
+    beforeEach(() => {
+      createWrapper({ canWriteModelExperiments: false });
+    });
+
+    it('does not show delete button', () => {
+      expect(findDeleteButton().exists()).toBe(false);
     });
   });
 

@@ -11,19 +11,19 @@ module Projects
       def to_h
         {
           auto_devops_enabled: auto_devops_source?,
-          auto_devops_help_page_path: help_page_path('topics/autodevops/index.md'),
+          auto_devops_help_page_path: help_page_path('topics/autodevops/_index.md'),
           auto_devops_path: auto_devops_settings_path(project),
           can_enable_auto_devops: can_enable_auto_devops?,
           features: features,
-          help_page_path: help_page_path('user/application_security/index.md'),
+          help_page_path: help_page_path('user/application_security/_index.md'),
           latest_pipeline_path: latest_pipeline_path,
           gitlab_ci_present: project.has_ci_config_file?,
           gitlab_ci_history_path: gitlab_ci_history_path,
           security_training_enabled: project.security_training_available?,
           container_scanning_for_registry_enabled: container_scanning_for_registry_enabled,
-          pre_receive_secret_detection_available:
-            Gitlab::CurrentSettings.current_application_settings.pre_receive_secret_detection_enabled,
-          pre_receive_secret_detection_enabled: pre_receive_secret_detection_enabled,
+          secret_push_protection_available:
+            Gitlab::CurrentSettings.current_application_settings.secret_push_protection_available,
+          secret_push_protection_enabled: secret_push_protection_enabled,
           user_is_project_admin: user_is_project_admin?,
           secret_detection_configuration_path: secret_detection_configuration_path
         }
@@ -45,7 +45,7 @@ module Projects
       end
 
       def user_is_project_admin?
-        can?(current_user, :admin_project, self)
+        can?(current_user, :admin_security_testing, self)
       end
 
       def gitlab_ci_history_path
@@ -65,16 +65,16 @@ module Projects
         scans << scan(:dast_profiles, configured: true)
 
         # Add pre-receive before secret detection
-        if project.licensed_feature_available?(:pre_receive_secret_detection)
+        if project.licensed_feature_available?(:secret_push_protection)
           secret_detection_index = scans.index { |scan| scan[:type] == :secret_detection } || -1
-          scans.insert(secret_detection_index, scan(:pre_receive_secret_detection, configured: true))
+          scans.insert(secret_detection_index, scan(:secret_push_protection, configured: true))
         end
 
         scans
       end
 
       def latest_pipeline_path
-        return help_page_path('ci/pipelines/index.md') unless latest_default_branch_pipeline
+        return help_page_path('ci/pipelines/_index.md') unless latest_default_branch_pipeline
 
         project_pipeline_path(self, latest_default_branch_pipeline)
       end
@@ -103,7 +103,7 @@ module Projects
       end
 
       def container_scanning_for_registry_enabled; end
-      def pre_receive_secret_detection_enabled; end
+      def secret_push_protection_enabled; end
       def secret_detection_configuration_path; end
     end
   end

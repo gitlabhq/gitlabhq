@@ -2,17 +2,23 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Sign commits in your GitLab repository with SSH keys."
+description: Sign commits in your GitLab repository with SSH keys.
+title: Sign commits with SSH keys
 ---
 
-# Sign commits with SSH keys
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343879) in GitLab 15.7 [with a flag](../../../../administration/feature_flags.md) named `ssh_commit_signatures`. Enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/384202) in GitLab 15.8. Feature flag `ssh_commit_signatures` removed.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343879) in GitLab 15.7 [with a flag](../../../../administration/feature_flags.md) named `ssh_commit_signatures`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/384202) in GitLab 15.8. Feature flag `ssh_commit_signatures` removed.
+
+{{< /history >}}
 
 When you sign commits with SSH keys, GitLab uses the SSH public keys associated
 with your GitLab account to cryptographically verify the commit signature.
@@ -37,8 +43,11 @@ Prerequisites:
 - Git 2.34.0 or newer.
 - OpenSSH 8.1 or newer.
 
-  NOTE:
-  OpenSSH 8.7 has broken signing functionality. If you are on OpenSSH 8.7, upgrade to OpenSSH 8.8.
+  {{< alert type="note" >}}
+
+OpenSSH 8.7 has broken signing functionality. If you are on OpenSSH 8.7, upgrade to OpenSSH 8.8.
+
+  {{< /alert >}}
 
 - A SSH key with the usage type of either **Authentication & Signing** or **Signing**.
   The SSH key must be one of these types:
@@ -92,7 +101,7 @@ To sign a commit:
 ## Verify commits
 
 You can verify all types of signed commits
-[in the GitLab UI](../signed_commits/index.md#verify-commits). Commits signed
+[in the GitLab UI](../signed_commits/_index.md#verify-commits). Commits signed
 with an SSH key can also be verified locally.
 
 ### Verify commits locally

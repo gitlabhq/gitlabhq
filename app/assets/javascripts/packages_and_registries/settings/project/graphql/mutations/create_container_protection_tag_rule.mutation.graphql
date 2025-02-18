@@ -1,0 +1,11 @@
+mutation createContainerProtectionTagRule($input: createContainerProtectionTagRuleInput!) {
+  createContainerProtectionTagRule(input: $input) {
+    containerProtectionTagRule {
+      id
+      tagNamePattern
+      minimumAccessLevelForPush
+      minimumAccessLevelForDelete
+    }
+    errors
+  }
+}

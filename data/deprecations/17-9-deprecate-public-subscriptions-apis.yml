@@ -1,0 +1,34 @@
+- title: "Subscription related API endpoints in the public API are deprecated"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.9"
+  breaking_change: true
+  window: 1
+  reporter: jhyson
+  stage: fulfillment
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/515371#note_2319368251
+  impact: low # Use the impact calculator https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
+  scope: instance
+  resolution_role: Admin
+  manual_task: true
+  body: |  # (required) Don't change this line.
+    The following endpoints in the public REST API will be removed:
+
+    - `POST /api/v4/namespaces/:namespace_id/minutes`
+    - `GET /api/v4/namespaces/:namespace_id/subscription_add_on_purchase/:id`
+    - `POST /api/v4/namespaces/:id/gitlab_subscription`
+    - `PUT /api/v4/namespaces/:id/gitlab_subscription`
+    - `PUT /api/v4/user/:id/credit_card_validation`
+    - `PUT /api/v4/namespaces/:namespace_id/subscription_add_on_purchase/:id`
+    - `POST /api/v4/namespaces/:namespace_id/subscription_add_on_purchase/:id`
+    - `PATCH /api/v4/namespaces/:previous_namespace_id/minutes/move/:target_namespace_id`
+    - `DELETE /api/v4/internal/upcoming_reconciliations`
+    - `PUT /api/v4/internal/upcoming_reconciliations`
+    - `PUT /api/v4/namespaces/:id`
+
+    These endpoints were being used by the Subscription Portal to manage subscription information on GitLab.com. Their
+    usage has been replaced by internal endpoints with JWT authentication to support the upcoming Cells architecture.
+    The endpoints in the public API are being removed so that they are not accidentally used again, and to reduce
+    the maintenance burden as they start to drift in functionality.
+
+    You shouldn't experience any impact as a result of this change, as these are endpoints that were used internally.
+  documentation_url: https://docs.gitlab.com/ee/development/internal_api/gitlab_subscriptions.html

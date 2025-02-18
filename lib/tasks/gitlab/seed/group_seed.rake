@@ -11,21 +11,22 @@
 #
 # @param subgroups_depth - number of subgroup levels
 # @param username - user creating subgroups (i.e. GitLab admin)
+# @param organization_path - organization where the groups will be created
 #
 # @example
-#   bundle exec rake "gitlab:seed:group_seed[5, root]"
+#   bundle exec rake "gitlab:seed:group_seed[5, root, default]"
 #
 namespace :gitlab do
   namespace :seed do
     desc 'Seed groups with sub-groups/projects/epics/milestones for Group Import testing'
-    task :group_seed, [:subgroups_depth, :username] => :gitlab_environment do |_t, args|
+    task :group_seed, [:subgroups_depth, :username, :organization_path] => :gitlab_environment do |_t, args|
       require 'sidekiq/testing'
       require_relative '../../../gitlab/faker/internet'
 
       GroupSeeder.new(
         subgroups_depth: args.subgroups_depth,
         username: args.username,
-        organization: Organizations::Organization.default_organization
+        organization_path: args.organization_path
       ).seed
     end
   end
@@ -36,17 +37,19 @@ class GroupSeeder
 
   attr_reader :all_group_ids
 
-  def initialize(subgroups_depth:, username:, organization:)
+  def initialize(subgroups_depth:, username:, organization_path:)
     @subgroups_depth = subgroups_depth.to_i
     @user = User.find_by_username(username)
     @group_names = Set.new
     @resource_count = 2
     @all_groups = {}
     @all_group_ids = []
-    @organization = organization
+    @organization = Organizations::Organization.find_by_path(organization_path)
   end
 
   def seed
+    raise 'User must belong to the organization' unless @organization.user?(@user)
+
     create_groups
 
     puts 'Done!'

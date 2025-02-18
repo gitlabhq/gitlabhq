@@ -2,16 +2,15 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Redis development guidelines
 ---
-
-# Redis development guidelines
 
 ## Redis instances
 
 GitLab uses [Redis](https://redis.io) for the following distinct purposes:
 
 - Caching (mostly via `Rails.cache`).
-- As a job processing queue with [Sidekiq](sidekiq/index.md).
+- As a job processing queue with [Sidekiq](sidekiq/_index.md).
 - To manage the shared application state.
 - To store CI trace chunks.
 - As a Pub/Sub queue backend for ActionCable.
@@ -123,9 +122,12 @@ requests that read the most data from the cache, we can just sort by
 
 ### The slow log
 
-NOTE:
+{{< alert type="note" >}}
+
 There is a [video showing how to see the slow log](https://youtu.be/BBI68QuYRH8) (GitLab internal)
 on GitLab.com
+
+{{< /alert >}}
 
 <!-- vale gitlab_base.Substitutions = NO -->
 
@@ -154,7 +156,11 @@ is run manually on an as-needed basis.
 
 ## N+1 calls problem
 
-> - Introduced in [`spec/support/helpers/redis_commands/recorder.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/helpers/redis_commands/recorder.rb) via [`f696f670`](https://gitlab.com/gitlab-org/gitlab/-/commit/f696f670005435472354a3dc0c01aa271aef9e32)
+{{< history >}}
+
+- Introduced in [`spec/support/helpers/redis_commands/recorder.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/helpers/redis_commands/recorder.rb) via [`f696f670`](https://gitlab.com/gitlab-org/gitlab/-/commit/f696f670005435472354a3dc0c01aa271aef9e32)
+
+{{< /history >}}
 
 `RedisCommands::Recorder` is a tool for detecting Redis N+1 calls problem from tests.
 

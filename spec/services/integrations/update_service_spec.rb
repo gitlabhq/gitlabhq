@@ -18,11 +18,21 @@ RSpec.describe Integrations::UpdateService, feature_category: :integrations do
   end
 
   shared_examples 'success request' do
+    before do
+      allow(PropagateIntegrationWorker).to receive(:perform_async)
+    end
+
     it 'returns a success response' do
       result
 
       expect(result).to be_success
       expect(result.payload).to eq(integration)
+
+      if integration.project_level?
+        expect(PropagateIntegrationWorker).not_to have_received(:perform_async)
+      else
+        expect(PropagateIntegrationWorker).to have_received(:perform_async).with(integration.id)
+      end
     end
   end
 

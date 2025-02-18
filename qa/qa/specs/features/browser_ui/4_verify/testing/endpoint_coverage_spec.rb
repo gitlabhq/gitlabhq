@@ -54,13 +54,8 @@ module QA
           push.commit_message = 'Commit .gitlab-ci.yml'
         end
 
-        # observe pipeline creation
-        project.visit!
-        Flow::Pipeline.visit_latest_pipeline
-
-        Page::Project::Pipeline::Show.perform do |show|
-          show.click_job('test')
-        end
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        project.visit_job('test')
 
         Page::Project::Job::Show.perform do |show|
           # user views job succeeding

@@ -6,16 +6,20 @@ import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { keysFor, START_SEARCH_PROJECT_FILE } from '~/behaviors/shortcuts/keybindings';
 import { sanitize } from '~/lib/dompurify';
 import { InternalEvents } from '~/tracking';
-import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
+import { FIND_FILE_BUTTON_CLICK, REF_SELECTOR_CLICK } from '~/tracking/constants';
 import { visitUrl, joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
 import BlobControls from '~/repository/components/header_area/blob_controls.vue';
+import RepositoryOverflowMenu from '~/repository/components/header_area/repository_overflow_menu.vue';
 import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
+import CompactCodeDropdown from '~/repository/components/code_dropdown/compact_code_dropdown.vue';
 import SourceCodeDownloadDropdown from '~/vue_shared/components/download_dropdown/download_dropdown.vue';
 import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
+import AddToTree from '~/repository/components/header_area/add_to_tree.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 
 export default {
@@ -29,10 +33,13 @@ export default {
     FileIcon,
     RefSelector,
     Breadcrumbs,
+    RepositoryOverflowMenu,
     BlobControls,
     CodeDropdown,
+    CompactCodeDropdown,
     SourceCodeDownloadDropdown,
     CloneCodeDropdown,
+    AddToTree,
     WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
     LockDirectoryButton: () =>
       import('ee_component/repository/components/lock_directory_button.vue'),
@@ -40,6 +47,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: [
     'canCollaborate',
     'canEditTree',
@@ -78,6 +86,7 @@ export default {
     'kerberosUrl',
     'downloadLinks',
     'downloadArtifacts',
+    'isBinary',
   ],
   props: {
     projectPath: {
@@ -159,9 +168,13 @@ export default {
     findFileShortcutKey() {
       return keysFor(START_SEARCH_PROJECT_FILE)[0];
     },
+    showCompactCodeDropdown() {
+      return this.glFeatures.directoryCodeDropdownUpdates;
+    },
   },
   methods: {
     onInput(selectedRef) {
+      InternalEvents.trackEvent(REF_SELECTOR_CLICK);
       visitUrl(generateRefDestinationPath(this.projectRootPath, this.originalBranch, selectedRef));
     },
     handleFindFile() {
@@ -228,15 +241,27 @@ export default {
 
       <!-- Tree controls -->
       <div v-if="isTreeView" class="tree-controls gl-mb-3 gl-flex gl-flex-wrap gl-gap-3 sm:gl-mb-0">
+        <add-to-tree
+          v-if="!isReadmeView && showCompactCodeDropdown"
+          class="gl-hidden sm:gl-block"
+          :current-path="currentPath"
+          :can-collaborate="canCollaborate"
+          :can-edit-tree="canEditTree"
+          :can-push-code="canPushCode"
+          :can-push-to-branch="canPushToBranch"
+          :original-branch="originalBranch"
+          :selected-branch="selectedBranch"
+          :new-branch-path="newBranchPath"
+          :new-tag-path="newTagPath"
+          :new-blob-path="newBlobPath"
+          :fork-new-blob-path="forkNewBlobPath"
+          :fork-new-directory-path="forkNewDirectoryPath"
+          :fork-upload-blob-path="forkUploadBlobPath"
+          :upload-path="uploadPath"
+          :new-dir-path="newDirPath"
+        />
         <!-- EE: = render_if_exists 'projects/tree/lock_link' -->
         <lock-directory-button v-if="!isRoot" :project-path="projectPath" :path="currentPath" />
-        <gl-button
-          v-if="comparePath"
-          data-testid="tree-compare-control"
-          :href="comparePath"
-          class="shortcuts-compare"
-          >{{ $options.i18n.compare }}</gl-button
-        >
         <gl-button
           v-gl-tooltip.html="findFileTooltip"
           :aria-keyshortcuts="findFileShortcutKey"
@@ -266,37 +291,76 @@ export default {
           :gitpod-url="gitpodUrl"
           :user-preferences-gitpod-path="userPreferencesGitpodPath"
           :user-profile-enable-gitpod-path="userProfileEnableGitpodPath"
+          :git-ref="currentRef"
           disable-fork-modal
           v-on="$listeners"
         />
         <!-- code + mobile panel -->
         <div v-if="!isReadmeView" class="project-code-holder gl-w-full sm:gl-w-auto">
-          <code-dropdown
-            class="git-clone-holder js-git-clone-holder gl-hidden sm:gl-inline-block"
-            :ssh-url="sshUrl"
-            :http-url="httpUrl"
-            :kerberos-url="kerberosUrl"
-            :xcode-url="xcodeUrl"
-            :current-path="currentPath"
-            :directory-download-links="downloadLinks"
-          />
-          <div class="gl-flex gl-items-stretch gl-gap-3 sm:gl-hidden">
-            <source-code-download-dropdown
-              :download-links="downloadLinks"
-              :download-artifacts="downloadArtifacts"
+          <div v-if="showCompactCodeDropdown" class="gl-flex gl-justify-end gl-gap-3">
+            <add-to-tree
+              v-if="!isReadmeView"
+              class="sm:gl-hidden"
+              :current-path="currentPath"
+              :can-collaborate="canCollaborate"
+              :can-edit-tree="canEditTree"
+              :can-push-code="canPushCode"
+              :can-push-to-branch="canPushToBranch"
+              :original-branch="originalBranch"
+              :selected-branch="selectedBranch"
+              :new-branch-path="newBranchPath"
+              :new-tag-path="newTagPath"
+              :new-blob-path="newBlobPath"
+              :fork-new-blob-path="forkNewBlobPath"
+              :fork-new-directory-path="forkNewDirectoryPath"
+              :fork-upload-blob-path="forkUploadBlobPath"
+              :upload-path="uploadPath"
+              :new-dir-path="newDirPath"
             />
-            <clone-code-dropdown
-              class="git-clone-holder js-git-clone-holder !gl-w-full"
+            <compact-code-dropdown
+              class="gl-ml-auto"
               :ssh-url="sshUrl"
               :http-url="httpUrl"
               :kerberos-url="kerberosUrl"
+              :xcode-url="xcodeUrl"
+              :current-path="currentPath"
+              :directory-download-links="downloadLinks"
             />
+            <repository-overflow-menu v-if="comparePath" />
           </div>
+          <template v-else>
+            <code-dropdown
+              class="git-clone-holder js-git-clone-holder gl-hidden sm:gl-inline-block"
+              :ssh-url="sshUrl"
+              :http-url="httpUrl"
+              :kerberos-url="kerberosUrl"
+              :xcode-url="xcodeUrl"
+              :current-path="currentPath"
+              :directory-download-links="downloadLinks"
+            />
+            <div class="gl-flex gl-items-stretch gl-gap-3 sm:gl-hidden">
+              <source-code-download-dropdown
+                :download-links="downloadLinks"
+                :download-artifacts="downloadArtifacts"
+              />
+              <clone-code-dropdown
+                class="mobile-git-clone js-git-clone-holder !gl-w-full"
+                :ssh-url="sshUrl"
+                :http-url="httpUrl"
+                :kerberos-url="kerberosUrl"
+              />
+              <repository-overflow-menu v-if="comparePath" />
+            </div>
+          </template>
         </div>
+        <repository-overflow-menu
+          v-if="comparePath && !showCompactCodeDropdown"
+          class="gl-hidden sm:gl-inline-flex"
+        />
       </div>
 
       <!-- Blob controls -->
-      <blob-controls :project-path="projectPath" :ref-type="getRefType" />
+      <blob-controls :project-path="projectPath" :ref-type="getRefType" :is-binary="isBinary" />
     </div>
   </section>
 </template>

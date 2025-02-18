@@ -2,19 +2,24 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: How to restart GitLab
 ---
 
-# How to restart GitLab
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Depending on how you installed GitLab, there are different methods to restart
 its services.
 
-NOTE:
+{{< alert type="note" >}}
+
 A short downtime is expected for all methods.
+
+{{< /alert >}}
 
 ## Linux package installations
 
@@ -132,7 +137,7 @@ The release name can be obtained from the output of the `helm list` command.
 
 ## Docker installation
 
-If you change the configuration on your [Docker installation](../install/docker/index.md), for that change to take effect you must restart:
+If you change the configuration on your [Docker installation](../install/docker/_index.md), for that change to take effect you must restart:
 
 - The main `gitlab` container.
 - Any separate component containers.

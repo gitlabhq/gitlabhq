@@ -2,16 +2,22 @@
 stage: Application Security Testing
 group: Secret Detection
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Secret detection exclusions
 ---
 
-# Secret detection exclusions
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14878) as an [experiment](../../../policy/development_stages_support.md) in GitLab 17.5 [with a flag](../../feature_flags.md) named `secret_detection_project_level_exclusions`. Enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/499059) in GitLab 17.7. Feature flag `secret_detection_project_level_exclusions` removed.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14878) as an [experiment](../../../policy/development_stages_support.md) in GitLab 17.5 [with a flag](../../feature_flags.md) named `secret_detection_project_level_exclusions`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/499059) in GitLab 17.7. Feature flag `secret_detection_project_level_exclusions` removed.
+
+{{< /history >}}
 
 Secret detection may detect something that's not actually a secret. For example, if you use
 a fake value as a placeholder in your code, it might be detected and possibly blocked.
@@ -29,7 +35,7 @@ You can define multiple exclusions for a project.
 The following restrictions apply:
 
 - Exclusions can only be defined for each project.
-- Exclusions apply only to [secret push protection](secret_push_protection/index.md).
+- Exclusions apply only to [secret push protection](secret_push_protection/_index.md).
 - The maximum number of path-based exclusions per project is 10.
 - The maximum depth for path-based exclusions is 20.
 
@@ -56,6 +62,6 @@ To define an exclusion:
 1. Select **Secure > Security configuration**.
 1. Scroll down to **Secret push protection**.
 1. Turn on the **Secret push protection** toggle.
-1. Select **Configure Secret Detection** (**{settings}**).
+1. Select **Configure Secret Detection** ({{< icon name="settings" >}}).
 1. Select **Add exclusion** to open the exclusion form.
 1. Enter the details of the exclusion, then select **Add exclusion**.

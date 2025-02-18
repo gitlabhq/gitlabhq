@@ -2,13 +2,15 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting application security
 ---
 
-# Troubleshooting application security
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When working with application security features, you might encounter the following issues.
 
@@ -27,10 +29,13 @@ From highest to lowest severity, the logging levels are:
 
 ### Debug-level logging
 
-WARNING:
+{{< alert type="warning" >}}
+
 Debug logging can be a serious security risk. The output may contain the content of
 environment variables and other secrets available to the job. The output is uploaded
 to the GitLab server and is visible in job logs.
+
+{{< /alert >}}
 
 To enable debug-level logging, add the following to your `.gitlab-ci.yml` file:
 
@@ -83,20 +88,23 @@ Select **new pipeline** to run a new pipeline.
 
 ## Getting warning messages `… report.json: no matching files`
 
-WARNING:
+{{< alert type="warning" >}}
+
 Debug logging can be a serious security risk. The output may contain the content of
 environment variables and other secrets available to the job. The output is uploaded
 to the GitLab server and visible in job logs.
 
+{{< /alert >}}
+
 This message is often followed by the [error `No files to upload`](../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload),
 and preceded by other errors or warnings that indicate why the JSON report wasn't generated. Check
 the entire job log for such messages. If you don't find these messages, retry the failed job after
-setting `SECURE_LOG_LEVEL: "debug"` as a [custom CI/CD variable](../../ci/variables/index.md#for-a-project).
+setting `SECURE_LOG_LEVEL: "debug"` as a [custom CI/CD variable](../../ci/variables/_index.md#for-a-project).
 This provides extra information to investigate further.
 
 ## Getting error message `sast job: config key may not be used with 'rules': only/except`
 
-When [including](../../ci/yaml/index.md#includetemplate) a `.gitlab-ci.yml` template
+When [including](../../ci/yaml/_index.md#includetemplate) a `.gitlab-ci.yml` template
 like [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml),
 the following error may occur, depending on your GitLab CI/CD configuration:
 
@@ -106,20 +114,20 @@ Unable to create pipeline
     jobs:sast config key may not be used with `rules`: only/except
 ```
 
-This error appears when the included job's `rules` configuration has been [overridden](sast/index.md#overriding-sast-jobs)
-with [the deprecated `only` or `except` syntax.](../../ci/yaml/index.md#only--except)
+This error appears when the included job's `rules` configuration has been [overridden](sast/_index.md#overriding-sast-jobs)
+with [the deprecated `only` or `except` syntax.](../../ci/yaml/_index.md#only--except)
 To fix this issue, you must either:
 
 - [Transition your `only/except` syntax to `rules`](#transitioning-your-onlyexcept-syntax-to-rules).
 - (Temporarily) [Pin your templates to the deprecated versions](#pin-your-templates-to-the-deprecated-versions)
 
-For more information, see [Overriding SAST jobs](sast/index.md#overriding-sast-jobs).
+For more information, see [Overriding SAST jobs](sast/_index.md#overriding-sast-jobs).
 
 ### Transitioning your `only/except` syntax to `rules`
 
 When overriding the template to control job execution, previous instances of
-[`only` or `except`](../../ci/yaml/index.md#only--except) are no longer compatible
-and must be transitioned to [the `rules` syntax](../../ci/yaml/index.md#rules).
+[`only` or `except`](../../ci/yaml/_index.md#only--except) are no longer compatible
+and must be transitioned to [the `rules` syntax](../../ci/yaml/_index.md#rules).
 
 If your override is aimed at limiting jobs to only run on `main`, the previous syntax
 would look similar to:
@@ -175,11 +183,11 @@ spotbugs-sast:
     - if: $CI_COMMIT_TAG == null
 ```
 
-For more information, see [`rules`](../../ci/yaml/index.md#rules).
+For more information, see [`rules`](../../ci/yaml/_index.md#rules).
 
 ### Pin your templates to the deprecated versions
 
-To ensure the latest support, we **strongly** recommend that you migrate to [`rules`](../../ci/yaml/index.md#rules).
+To ensure the latest support, we **strongly** recommend that you migrate to [`rules`](../../ci/yaml/_index.md#rules).
 
 If you're unable to immediately update your CI configuration, there are several workarounds that
 involve pinning to the previous template versions, for example:
@@ -190,7 +198,7 @@ involve pinning to the previous template versions, for example:
   ```
 
 Additionally, we provide a dedicated project containing the versioned legacy templates.
-This can be used for offline setups or for anyone wishing to use [Auto DevOps](../../topics/autodevops/index.md).
+This can be used for offline setups or for anyone wishing to use [Auto DevOps](../../topics/autodevops/_index.md).
 
 Instructions are available in the [legacy template project](https://gitlab.com/gitlab-org/auto-devops-v12-10).
 
@@ -200,7 +208,7 @@ In these circumstances, that the job succeeds is the default behavior. The job's
 success or failure of the analyzer itself. Analyzer results are displayed in the
 [job logs](../../ci/jobs/job_logs.md#expand-and-collapse-job-log-sections),
 [merge request widget](detect/security_scan_results.md#merge-request), or
-[security dashboard](security_dashboard/index.md).
+[security dashboard](security_dashboard/_index.md).
 
 ## Error: job `is used for configuration only, and its script should not be executed`
 
@@ -220,7 +228,7 @@ You can upvote the issue to help with prioritization, and
 
 If the pipeline has manual steps with a job that has the `allow_failure: false` option, and this job is not finished,
 GitLab can't populate listed pages with the data from security reports.
-In this case, [the Vulnerability Report](vulnerability_report/index.md) and [the Dependency List](dependency_list/index.md)
+In this case, [the Vulnerability Report](vulnerability_report/_index.md) and [the Dependency List](dependency_list/_index.md)
 pages are empty.
 These security pages can be populated by running the jobs from the manual step of the pipeline.
 

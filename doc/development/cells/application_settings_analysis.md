@@ -2,17 +2,17 @@
 stage: Tenant Scale
 group: Cells Infrastructure
 info: Analysis of Application Settings for Cells 1.0.
+title: Application Settings analysis
 ---
-# Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 511
-- Number of encrypted attributes: 45 (9.0%)
+- Number of attributes: 513
+- Number of encrypted attributes: 41 (8.0%)
 - Number of attributes documented: 312 (61.0%)
-- Number of attributes on GitLab.com different from the defaults: 222 (44.0%)
-- Number of attributes with `clusterwide` set: 511 (100.0%)
-- Number of attributes with `clusterwide: true` set: 124 (24.0%)
+- Number of attributes on GitLab.com different from the defaults: 233 (45.0%)
+- Number of attributes with `clusterwide` set: 513 (100.0%)
+- Number of attributes with `clusterwide: true` set: 127 (25.0%)
 
 ## Individual columns
 
@@ -33,8 +33,8 @@ info: Analysis of Application Settings for Cells 1.0.
 | `allow_possible_spam` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `allow_project_creation_for_guest_and_below` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `allow_runner_registration_token` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
-| `allow_top_level_group_owners_to_create_service_accounts` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
-| `anthropic_api_key` | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
+| `allow_top_level_group_owners_to_create_service_accounts` | `false` | `boolean` | `` | `true` | `false` | `true` | `false`| `false` |
+| `anti_abuse_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `archive_builds_in_seconds` | `false` | `integer` | `` | `false` | `null` | `false` | `false`| `false` |
 | `arkose_labs_client_secret` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
 | `arkose_labs_client_xid` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
@@ -53,13 +53,13 @@ info: Analysis of Application Settings for Cells 1.0.
 | `auto_devops_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `true` | `true`| `true` |
 | `automatic_purchased_storage_allocation` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
 | `bulk_import_concurrent_pipeline_batch_limit` | `false` | `smallint` | `integer` | `true` | `25` | `false` | `false`| `true` |
-| `bulk_import_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
+| `bulk_import_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
 | `bulk_import_max_download_file_size` | `false` | `bigint` | `integer` | `true` | `5120` | `false` | `false`| `true` |
 | `cached_markdown_version` | `false` | `integer` | `` | `false` | `null` | `false` | `false`| `false` |
 | `can_create_group` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `can_create_organization` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `check_namespace_plan` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
-| `ci_job_token_signing_key` | `true` | `bytea` | `` | `false` | `null` | `false` | `true`| `false` |
+| `ci_job_token_signing_key` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
 | `ci_jwt_signing_key` | `true` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
 | `ci_max_includes` | `false` | `integer` | `integer` | `true` | `150` | `false` | `false`| `true` |
 | `ci_max_total_yaml_size_bytes` | `false` | `integer` | `integer` | `true` | `314572800` | `false` | `false`| `true` |
@@ -81,9 +81,9 @@ info: Analysis of Application Settings for Cells 1.0.
 | `container_registry_token_expire_delay` | `false` | `integer` | `integer` | `false` | `5` | `true` | `false`| `true` |
 | `container_registry_vendor` | `false` | `text` | `` | `true` | `''::text` | `true` | `true`| `false` |
 | `container_registry_version` | `false` | `text` | `` | `true` | `''::text` | `true` | `true`| `false` |
-| `content_validation_api_key` (`JIHU`) | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
-| `content_validation_endpoint_enabled` (`JIHU`) | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
-| `content_validation_endpoint_url` (`JIHU`) | `false` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
+| `content_validation_api_key` [JIHU] | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
+| `content_validation_endpoint_enabled` [JIHU] | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `content_validation_endpoint_url` [JIHU] | `false` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
 | `created_at` | `false` | `timestamp` | `` | `false` | `null` | `true` | `false`| `false` |
 | `cube_api_base_url` | `false` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
 | `cube_api_key` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
@@ -123,12 +123,12 @@ info: Analysis of Application Settings for Cells 1.0.
 | `diff_max_files` | `false` | `integer` | `integer` | `true` | `1000` | `true` | `true`| `true` |
 | `diff_max_lines` | `false` | `integer` | `integer` | `true` | `50000` | `true` | `true`| `true` |
 | `diff_max_patch_bytes` | `false` | `integer` | `integer` | `true` | `204800` | `false` | `true`| `true` |
-| `dingtalk_app_key` (`JIHU`) | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
-| `dingtalk_app_secret` (`JIHU`) | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
-| `dingtalk_corpid` (`JIHU`) | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
-| `dingtalk_integration_enabled` (`JIHU`) | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `dingtalk_app_key` [JIHU] | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
+| `dingtalk_app_secret` [JIHU] | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
+| `dingtalk_corpid` [JIHU] | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
+| `dingtalk_integration_enabled` [JIHU] | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `disable_admin_oauth_scopes` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
-| `disable_download_button` (`JIHU`) | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `disable_download_button` [JIHU] | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `disable_feed_token` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `disable_overriding_approvers_per_merge_request` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `disable_personal_access_tokens` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
@@ -148,7 +148,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `eks_account_id` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `eks_integration_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
 | `eks_secret_access_key` | `true` | `text` | `string` | `false` | `null` | `true` | `true`| `true` |
-| `elasticsearch` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `false`| `false` |
+| `elasticsearch` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `elasticsearch_analyzers_kuromoji_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
 | `elasticsearch_analyzers_kuromoji_search` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
 | `elasticsearch_analyzers_smartcn_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
@@ -168,7 +168,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `elasticsearch_password` | `true` | `bytea` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `elasticsearch_pause_indexing` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `elasticsearch_requeue_workers` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
-| `elasticsearch_retry_on_failure` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
+| `elasticsearch_retry_on_failure` | `false` | `integer` | `integer` | `true` | `0` | `true` | `false`| `true` |
 | `elasticsearch_search` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
 | `elasticsearch_url` | `false` | `character` | `string` | `false` | `'http://localhost:9200'::character` | `true` | `false`| `true` |
 | `elasticsearch_username` | `false` | `text` | `string` | `false` | `null` | `true` | `false`| `true` |
@@ -198,9 +198,9 @@ info: Analysis of Application Settings for Cells 1.0.
 | `external_pipeline_validation_service_token` | `true` | `text` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `external_pipeline_validation_service_url` | `false` | `text` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `failed_login_attempts_unlock_period_in_minutes` | `false` | `integer` | `integer` | `false` | `null` | `false` | `false`| `true` |
-| `feishu_app_key` (`JIHU`) | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
-| `feishu_app_secret` (`JIHU`) | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
-| `feishu_integration_enabled` (`JIHU`) | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `feishu_app_key` [JIHU] | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
+| `feishu_app_secret` [JIHU] | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
+| `feishu_integration_enabled` [JIHU] | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `file_template_project_id` | `false` | `bigint` | `integer` | `false` | `null` | `false` | `false`| `true` |
 | `first_day_of_week` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
 | `floc_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
@@ -322,9 +322,9 @@ info: Analysis of Application Settings for Cells 1.0.
 | `notes_create_limit_allowlist` | `false` | `text[]` | `` | `true` | `'{}'::text[]` | `true` | `true`| `false` |
 | `notify_on_unknown_sign_in` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `npm_package_requests_forwarding` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
-| `oauth_provider` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
+| `oauth_provider` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `observability_backend_ssl_verification_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
-| `openai_api_key` | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
+| `observability_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `outbound_local_requests_whitelist` | `false` | `character` | `array of strings` | `true` | `'{}'::character` | `true` | `true`| `true` |
 | `package_metadata_purl_types` | `false` | `smallint[]` | `array of integers` | `false` | `'{1` | `false` | `false`| `true` |
 | `package_registry` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
@@ -335,21 +335,21 @@ info: Analysis of Application Settings for Cells 1.0.
 | `pages_domain_verification_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `password_authentication_enabled_for_git` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `password_authentication_enabled_for_web` | `false` | `boolean` | `boolean` | `false` | `null` | `true` | `false`| `true` |
-| `password_expiration_enabled` (`JIHU`) | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
-| `password_expires_in_days` (`JIHU`) | `false` | `integer` | `` | `true` | `90` | `false` | `false`| `false` |
-| `password_expires_notice_before_days` (`JIHU`) | `false` | `integer` | `` | `true` | `7` | `false` | `false`| `false` |
+| `password_expiration_enabled` [JIHU] | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `password_expires_in_days` [JIHU] | `false` | `integer` | `` | `true` | `90` | `false` | `false`| `false` |
+| `password_expires_notice_before_days` [JIHU] | `false` | `integer` | `` | `true` | `7` | `false` | `false`| `false` |
 | `password_lowercase_required` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `password_number_required` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `password_symbol_required` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `password_uppercase_required` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `performance_bar_allowed_group_id` | `false` | `bigint` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `personal_access_token_prefix` | `false` | `text` | `string` | `false` | `'glpat-'::text` | `false` | `false`| `true` |
-| `phone_verification_code_enabled` (`JIHU`) | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `phone_verification_code_enabled` [JIHU] | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `pipeline_limit_per_project_user_sha` | `false` | `integer` | `integer` | `true` | `0` | `true` | `false`| `true` |
 | `plantuml_enabled` | `false` | `boolean` | `boolean` | `false` | `null` | `true` | `true`| `true` |
 | `plantuml_url` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `polling_interval_multiplier` | `false` | `numeric` | `float` | `true` | `1.0` | `false` | `false`| `true` |
-| `pre_receive_secret_detection_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
+| `pre_receive_secret_detection_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
 | `prevent_merge_requests_author_approval` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `prevent_merge_requests_committers_approval` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `product_analytics_configurator_connection_string` | `true` | `bytea` | `` | `false` | `null` | `true` | `false`| `false` |
@@ -392,11 +392,12 @@ info: Analysis of Application Settings for Cells 1.0.
 | `require_personal_access_token_expiry` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `require_two_factor_authentication` | `false` | `boolean` | `boolean` | `false` | `false` | `false` | `false`| `true` |
 | `required_instance_ci_template` | `false` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
-| `resource_usage_limits` | `false` | `jsonb` | `hash` | `true` | `'{}'::jsonb` | `true` | `false`| `true` |
+| `resource_usage_limits` | `false` | `jsonb` | `hash` | `true` | `'{}'::jsonb` | `false` | `false`| `true` |
 | `restricted_visibility_levels` | `false` | `text` | `array of strings` | `false` | `null` | `true` | `false`| `true` |
 | `rsa_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
 | `runner_token_expiration_interval` | `false` | `integer` | `integer` | `false` | `null` | `false` | `false`| `true` |
 | `runners_registration_token` | `true` | `character` | `` | `false` | `null` | `true` | `false`| `false` |
+| `search` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `search_max_docs_denominator` | `false` | `integer` | `` | `true` | `5000000` | `false` | `false`| `false` |
 | `search_max_shard_size_gb` | `false` | `integer` | `` | `true` | `50` | `false` | `false`| `false` |
 | `search_min_docs_before_rollover` | `false` | `integer` | `` | `true` | `100000` | `false` | `false`| `false` |
@@ -404,15 +405,16 @@ info: Analysis of Application Settings for Cells 1.0.
 | `search_rate_limit_allowlist` | `false` | `text[]` | `` | `true` | `'{}'::text[]` | `true` | `false`| `false` |
 | `search_rate_limit_unauthenticated` | `false` | `integer` | `integer` | `true` | `100` | `false` | `false`| `true` |
 | `secret_detection_revocation_token_types_url` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
-| `secret_detection_service_auth_token` | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
-| `secret_detection_service_url` | `false` | `text` | `` | `true` | `''::text` | `false` | `false`| `false` |
+| `secret_detection_service_auth_token` | `true` | `bytea` | `` | `false` | `null` | `true` | `false`| `false` |
+| `secret_detection_service_url` | `false` | `text` | `` | `true` | `''::text` | `true` | `false`| `false` |
 | `secret_detection_token_revocation_enabled` | `false` | `boolean` | `` | `true` | `false` | `true` | `false`| `false` |
 | `secret_detection_token_revocation_token` | `true` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `secret_detection_token_revocation_url` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
+| `secret_push_protection_available` | `false` | `boolean` | `boolean` | `false` | `false` | `true` | `true`| `true` |
 | `security_approval_policies_limit` | `false` | `integer` | `integer` | `true` | `5` | `false` | `false`| `true` |
 | `security_policies` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `security_policy_global_group_approvers_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `true` | `false`| `true` |
-| `security_policy_scheduled_scans_max_concurrency` | `false` | `integer` | `` | `true` | `10000` | `true` | `false`| `false` |
+| `security_policy_scheduled_scans_max_concurrency` | `false` | `integer` | `` | `true` | `10000` | `false` | `false`| `false` |
 | `security_txt_content` | `false` | `text` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `sentry_clientside_dsn` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `sentry_clientside_traces_sample_rate` | `false` | `double` | `` | `true` | `0.0` | `true` | `false`| `false` |
@@ -429,7 +431,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `sidekiq_job_limiter_compression_threshold_bytes` | `false` | `integer` | `integer` | `true` | `100000` | `false` | `false`| `true` |
 | `sidekiq_job_limiter_limit_bytes` | `false` | `integer` | `integer` | `true` | `0` | `true` | `false`| `true` |
 | `sidekiq_job_limiter_mode` | `false` | `smallint` | `string` | `true` | `1` | `false` | `false`| `true` |
-| `sign_in_restrictions` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
+| `sign_in_restrictions` | `false` | `jsonb` | `hash` | `true` | `'{}'::jsonb` | `false` | `false`| `true` |
 | `signup_enabled` | `false` | `boolean` | `boolean` | `false` | `null` | `true` | `false`| `true` |
 | `silent_mode_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `slack_app_enabled` | `false` | `boolean` | `boolean` | `false` | `false` | `true` | `false`| `true` |
@@ -456,7 +458,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `telesign_api_key` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
 | `telesign_customer_xid` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
 | `terminal_max_session_time` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
-| `throttle_authenticated_api_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
+| `throttle_authenticated_api_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
 | `throttle_authenticated_api_period_in_seconds` | `false` | `integer` | `integer` | `true` | `3600` | `true` | `false`| `true` |
 | `throttle_authenticated_api_requests_per_period` | `false` | `integer` | `integer` | `true` | `7200` | `true` | `false`| `true` |
 | `throttle_authenticated_deprecated_api_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
@@ -471,7 +473,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `throttle_authenticated_packages_api_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `throttle_authenticated_packages_api_period_in_seconds` | `false` | `integer` | `integer` | `true` | `15` | `false` | `false`| `true` |
 | `throttle_authenticated_packages_api_requests_per_period` | `false` | `integer` | `integer` | `true` | `1000` | `false` | `false`| `true` |
-| `throttle_authenticated_web_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
+| `throttle_authenticated_web_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
 | `throttle_authenticated_web_period_in_seconds` | `false` | `integer` | `integer` | `true` | `3600` | `true` | `false`| `true` |
 | `throttle_authenticated_web_requests_per_period` | `false` | `integer` | `integer` | `true` | `7200` | `true` | `false`| `true` |
 | `throttle_incident_management_notification_enabled` | `false` | `boolean` | `` | `true` | `false` | `true` | `false`| `false` |
@@ -496,8 +498,8 @@ info: Analysis of Application Settings for Cells 1.0.
 | `throttle_unauthenticated_period_in_seconds` | `false` | `integer` | `integer` | `true` | `3600` | `true` | `false`| `true` |
 | `throttle_unauthenticated_requests_per_period` | `false` | `integer` | `integer` | `true` | `3600` | `true` | `false`| `true` |
 | `time_tracking_limit_to_hours` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
-| `transactional_emails` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `false`| `false` |
-| `two_factor_grace_period` | `false` | `integer` | `integer` | `false` | `48` | `false` | `false`| `true` |
+| `transactional_emails` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
+| `two_factor_grace_period` | `false` | `integer` | `integer` | `false` | `48` | `true` | `false`| `true` |
 | `unconfirmed_users_delete_after_days` | `false` | `integer` | `integer` | `true` | `7` | `true` | `true`| `true` |
 | `unique_ips_limit_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `unique_ips_limit_per_user` | `false` | `integer` | `integer` | `false` | `null` | `true` | `false`| `true` |
@@ -521,10 +523,9 @@ info: Analysis of Application Settings for Cells 1.0.
 | `uuid` | `false` | `character` | `` | `false` | `null` | `true` | `true`| `false` |
 | `valid_runner_registrars` | `false` | `character` | `array of strings` | `false` | `'{project` | `false` | `false`| `true` |
 | `version_check_enabled` | `false` | `boolean` | `boolean` | `false` | `true` | `false` | `false`| `true` |
-| `vertex_ai_access_token` | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
-| `vertex_ai_credentials` | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
 | `vertex_ai_host` | `false` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
 | `vertex_ai_project` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
+| `vscode_extension_marketplace` | `false` | `jsonb` | `hash` | `true` | `'{}'::jsonb` | `false` | `false`| `true` |
 | `web_ide_oauth_application_id` | `false` | `bigint` | `` | `false` | `null` | `true` | `false`| `false` |
 | `whats_new_variant` | `false` | `smallint` | `string` | `false` | `0` | `false` | `false`| `true` |
 | `wiki_asciidoc_allow_uri_includes` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |

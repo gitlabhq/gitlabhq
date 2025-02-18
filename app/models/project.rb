@@ -33,7 +33,7 @@ class Project < ApplicationRecord
   include FeatureGate
   include OptionallySearch
   include FromUnion
-  include Repositories::CanHousekeepRepository
+  include ::Repositories::CanHousekeepRepository
   include EachBatch
   include GitlabRoutingHelper
   include BulkMemberAccessLoad
@@ -455,7 +455,7 @@ class Project < ApplicationRecord
   has_many :runner_projects, class_name: 'Ci::RunnerProject', inverse_of: :project
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
-  has_many :triggers, class_name: 'Ci::Trigger'
+  has_many :triggers, ->(project) { Feature.enabled?(:trigger_token_expiration, project) ? not_expired : self }, class_name: 'Ci::Trigger'
   has_many :secure_files, class_name: 'Ci::SecureFile', dependent: :restrict_with_error
   has_many :environments
   has_many :environments_for_dashboard, -> { from(with_rank.unfoldered.available, :environments).where('rank <= 3') }, class_name: 'Environment'
@@ -580,6 +580,7 @@ class Project < ApplicationRecord
     delegate :mr_default_target_self, :mr_default_target_self=
     delegate :previous_default_branch, :previous_default_branch=
     delegate :squash_option, :squash_option=
+    delegate :extended_prat_expiry_webhooks_execute, :extended_prat_expiry_webhooks_execute=
 
     with_options allow_nil: true do
       delegate :merge_commit_template, :merge_commit_template=
@@ -1235,6 +1236,10 @@ class Project < ApplicationRecord
     !!project_setting&.warn_about_potentially_unwanted_characters?
   end
 
+  def extended_prat_expiry_webhooks_execute?
+    !!project_setting&.extended_prat_expiry_webhooks_execute?
+  end
+
   def no_import?
     !!import_state&.no_import?
   end
@@ -1623,7 +1628,9 @@ class Project < ApplicationRecord
   # - Relation import
   # - Direct Transfer
   def any_import_in_progress?
-    relation_import_trackers.last&.started? ||
+    last_relation_import_tracker = relation_import_trackers.last
+
+    (last_relation_import_tracker&.started? && !last_relation_import_tracker.stale?) ||
       import_started? ||
       BulkImports::Entity.with_status(:started).where(project_id: id).any?
   end
@@ -1978,7 +1985,19 @@ class Project < ApplicationRecord
 
   def triggered_hooks(hooks_scope, data)
     triggered = ::Projects::TriggeredHooks.new(hooks_scope, data)
-    triggered.add_hooks(hooks)
+
+    # By default the webhook resource_access_token_hooks will execute for
+    # seven_days interval but we have a setting to allow webhook execution
+    # for thirty_days and sixty_days interval too.
+    if hooks_scope == :resource_access_token_hooks &&
+        ::Feature.enabled?(:extended_expiry_webhook_execution_setting, self.namespace) &&
+        data[:interval] != :seven_days &&
+        !self.extended_prat_expiry_webhooks_execute?
+
+      triggered
+    else
+      triggered.add_hooks(hooks)
+    end
   end
 
   def execute_integrations(data, hooks_scope = :push_hooks, skip_ci: false)
@@ -2604,7 +2623,6 @@ class Project < ApplicationRecord
       break unless pages_enabled?
 
       variables.append(key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host)
-      variables.append(key: 'CI_PAGES_URL', value: pages_url) if Feature.disabled?(:fix_pages_ci_variables, self)
     end
   end
 
@@ -3052,51 +3070,6 @@ class Project < ApplicationRecord
     jira_imports.last
   end
 
-  def service_desk_enabled
-    Gitlab::ServiceDesk.enabled?(project: self)
-  end
-
-  alias_method :service_desk_enabled?, :service_desk_enabled
-
-  def service_desk_address
-    service_desk_custom_address || service_desk_system_address
-  end
-
-  def service_desk_system_address
-    service_desk_alias_address || service_desk_incoming_address
-  end
-
-  def service_desk_incoming_address
-    return unless service_desk_enabled?
-
-    config = Gitlab.config.incoming_email
-    wildcard = Gitlab::Email::Common::WILDCARD_PLACEHOLDER
-
-    config.address&.gsub(wildcard, default_service_desk_subaddress_part)
-  end
-
-  def service_desk_alias_address
-    return unless Gitlab::Email::ServiceDeskEmail.enabled?
-
-    key = service_desk_setting&.project_key || default_service_desk_suffix
-
-    Gitlab::Email::ServiceDeskEmail.address_for_key("#{full_path_slug}-#{key}")
-  end
-
-  def service_desk_custom_address
-    return unless service_desk_setting&.custom_email_enabled?
-
-    service_desk_setting.custom_email
-  end
-
-  def default_service_desk_subaddress_part
-    "#{full_path_slug}-#{default_service_desk_suffix}"
-  end
-
-  def default_service_desk_suffix
-    "#{id}-issue-"
-  end
-
   def root_namespace
     if namespace.has_parent?
       namespace.root_ancestor
@@ -3319,8 +3292,8 @@ class Project < ApplicationRecord
     group&.glql_integration_feature_flag_enabled? || Feature.enabled?(:glql_integration, self)
   end
 
-  def wiki_comments_feature_flag_enabled?
-    group&.wiki_comments_feature_flag_enabled? || Feature.enabled?(:wiki_comments, self, type: :wip)
+  def continue_indented_text_feature_flag_enabled?
+    group&.continue_indented_text_feature_flag_enabled? || Feature.enabled?(:continue_indented_text, self, type: :wip)
   end
 
   def enqueue_record_project_target_platforms
@@ -3453,7 +3426,11 @@ class Project < ApplicationRecord
   end
 
   def pages_url(options = nil)
-    Gitlab::Pages::UrlBuilder.new(self, options).pages_url
+    pages_url_builder(options).pages_url
+  end
+
+  def pages_hostname(options = nil)
+    pages_url_builder(options).hostname
   end
 
   def uploads_sharding_key
@@ -3461,6 +3438,12 @@ class Project < ApplicationRecord
   end
 
   private
+
+  def pages_url_builder(options = nil)
+    strong_memoize_with(:pages_url_builder, options) do
+      Gitlab::Pages::UrlBuilder.new(self, options)
+    end
+  end
 
   def with_redis(&block)
     Gitlab::Redis::Cache.with(&block)

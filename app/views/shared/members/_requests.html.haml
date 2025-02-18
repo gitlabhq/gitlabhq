@@ -10,7 +10,8 @@
     = _('Users requesting access to')
     %strong= membership_source.name
     = gl_badge_tag requesters.size
-    = render 'shared/members/manage_access_button', path: membership_source.is_a?(Project) ? project_project_members_path(@project, tab: 'access_requests') : group_group_members_path(@group, tab: 'access_requests')
+    - if current_user.can?(:admin_member_access_request, membership_source)
+      = render 'shared/members/manage_access_button', path: membership_source.is_a?(Project) ? project_project_members_path(@project, tab: 'access_requests') : group_group_members_path(@group, tab: 'access_requests')
   - c.with_body do
     %ul.content-list.members-list
       = render partial: 'shared/members/member',

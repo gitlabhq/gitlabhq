@@ -80,9 +80,6 @@ export default {
         },
       );
     },
-    iconClasses() {
-      return `${this.iconClass} ic-${this.iconName}`;
-    },
     workItemId() {
       return convertToGraphQLId(TYPENAME_WORK_ITEM, this.idKey);
     },
@@ -139,10 +136,11 @@ export default {
           v-if="hasState"
           :id="`iconElementXL-${itemId}`"
           ref="iconElementXL"
-          :class="iconClasses"
+          class="issue-token-state-icon"
           :name="iconName"
           :title="stateTitle"
           :aria-label="state"
+          :variant="iconVariant"
         />
         <gl-tooltip :target="`iconElementXL-${itemId}`">
           <span v-safe-html="stateTitle"></span>
@@ -152,8 +150,8 @@ export default {
           v-gl-tooltip
           name="eye-slash"
           :title="__('Confidential')"
-          class="confidential-icon"
           :aria-label="__('Confidential')"
+          variant="warning"
         />
         <gl-link :href="computedPath" class="sortable-link" @click="handleTitleClick">
           {{ title }}
@@ -196,7 +194,7 @@ export default {
 
             <!-- Flex order for slots is defined in the parent component: e.g. related_issues_block.vue -->
             <span v-if="weight > 0" class="order-md-1">
-              <issue-weight :weight="weight" class="item-weight gl-flex gl-items-center" />
+              <issue-weight :weight="weight" class="item-weight gl-items-center" />
             </span>
 
             <span v-if="dueDate" class="order-md-1">

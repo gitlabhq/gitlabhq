@@ -2,15 +2,21 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: AWS CodePipeline
 ---
 
-# AWS CodePipeline
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
 
-> - [Introduced](https://gitlab.com/gitlab-com/alliances/aws/wip/aws-cs-collab/aws-gitlab-collaboration/-/issues/25) in GitLab 16.5.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-com/alliances/aws/wip/aws-cs-collab/aws-gitlab-collaboration/-/issues/25) in GitLab 16.5.
+
+{{< /history >}}
 
 You can use your GitLab project to build, test, and deploy code changes using [AWS CodePipeline](https://aws.amazon.com/codepipeline/). To do so, you use:
 
@@ -63,7 +69,7 @@ Now you've connected AWS CodeSuite to GitLab.com, you can create or edit a pipel
    You can also pick an option from the dialog, or type a new path manually.
    For more information about the:
    - Path and namespace, see the `path_with_namespace` field in the [projects API](../../../api/projects.md#get-a-single-project).
-   - Namespace in GitLab, see [namespaces](../../namespace/index.md).
+   - Namespace in GitLab, see [namespaces](../../namespace/_index.md).
 
 1. In **Branch name**, select the branch where you want your pipeline to detect source changes.
    If the branch name does not populate automatically, this might be because of one of the following:

@@ -39,13 +39,22 @@ export default {
     },
   },
   i18n: {
-    title: s__('Environments|Stop environment'),
+    stopTitle: s__('Environments|Stop environment'),
+    stoppingTitle: s__('Environments|Stopping environment'),
   },
   data() {
     return {
       isLoading: false,
       isEnvironmentStopping: false,
     };
+  },
+  computed: {
+    isLoadingState() {
+      return this.environment.state === 'stopping' || this.isEnvironmentStopping || this.isLoading;
+    },
+    title() {
+      return this.isLoadingState ? this.$options.i18n.stoppingTitle : this.$options.i18n.stopTitle;
+    },
   },
   mounted() {
     eventHub.$on('stopEnvironment', this.onStopEnvironment);
@@ -75,16 +84,23 @@ export default {
 };
 </script>
 <template>
-  <gl-button
+  <div
     v-gl-tooltip="{ id: $options.stopEnvironmentTooltipId }"
-    v-gl-modal-directive="'stop-environment-modal'"
-    :loading="isLoading || isEnvironmentStopping"
-    :title="$options.i18n.title"
-    :aria-label="$options.i18n.title"
-    size="small"
-    icon="stop"
-    category="secondary"
-    variant="danger"
-    @click="onClick"
-  />
+    :title="title"
+    :tabindex="isLoadingState ? 0 : null"
+    class="gl-relative -gl-ml-[1px]"
+  >
+    <gl-button
+      v-gl-modal-directive="'stop-environment-modal'"
+      :loading="isLoadingState"
+      :aria-label="title"
+      :class="{ 'gl-pointer-events-none': isLoadingState }"
+      class="!gl-rounded-none"
+      size="small"
+      icon="stop"
+      category="secondary"
+      variant="danger"
+      @click="onClick"
+    />
+  </div>
 </template>

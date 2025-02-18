@@ -39,6 +39,15 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it_behaves_like 'project name regex'
   end
 
+  describe '.oci_repository_path_regex' do
+    subject { described_class.oci_repository_path_regex }
+
+    it { is_expected.to match("my_project") }
+    it { is_expected.not_to match('_myproject') }
+    it { is_expected.not_to match('myproject_') }
+    it { is_expected.not_to match('_myproject_') }
+  end
+
   describe '.group_name_regex' do
     subject { described_class.group_name_regex }
 

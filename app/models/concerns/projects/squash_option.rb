@@ -10,10 +10,10 @@ module Projects
 
     def human_squash_option
       case squash_option
-      when 'never' then 'Do not allow'
-      when 'always' then 'Require'
-      when 'default_on' then 'Encourage'
-      when 'default_off' then 'Allow'
+      when 'never' then s_('SquashSettings|Do not allow')
+      when 'always' then s_('SquashSettings|Require')
+      when 'default_on' then s_('SquashSettings|Encourage')
+      when 'default_off' then s_('SquashSettings|Allow')
       end
     end
 
@@ -23,6 +23,10 @@ module Projects
 
     def squash_readonly?
       %w[always never].include?(squash_option)
+    end
+
+    def branch_rule
+      raise NotImplementedError
     end
   end
 end

@@ -2,16 +2,18 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Create a push mirror to passively receive changes from an upstream repository."
+description: Create a push mirror to passively receive changes from an upstream repository.
+title: Push mirroring
 ---
 
-# Push mirroring
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-A _push mirror_ is a downstream repository that [mirrors](index.md) the commits made
+{{< /details >}}
+
+A _push mirror_ is a downstream repository that [mirrors](_index.md) the commits made
 to the upstream repository. Push mirrors passively receive copies of the commits made to the
 upstream repository. To prevent the mirror from diverging from the upstream
 repository, don't push commits directly to the downstream mirror. Push commits to
@@ -21,19 +23,16 @@ While [pull mirroring](pull.md) periodically retrieves updates from the upstream
 push mirrors only receive changes when:
 
 - Commits are pushed to the upstream GitLab repository.
-- An administrator [force-updates the mirror](index.md#force-an-update).
+- An administrator [force-updates the mirror](_index.md#force-an-update).
 
-When you push a change to the upstream repository, the push mirror receives it:
-
-- Within five minutes.
-- Within one minute, if you enabled **Only mirror protected branches**.
+When you push a change to the upstream repository, the push mirror receives it in five minutes, or one minute if the setting **Only mirror protected branches** is on.
 
 When a branch is merged into the default branch and deleted in the source project,
 it is deleted from the remote mirror on the next push. Branches with unmerged
 changes are kept. If a branch diverges, the **Mirroring repositories** section
 displays an error.
 
-[GitLab Silent Mode](../../../../administration/silent_mode/index.md) disables pushing to,
+[GitLab Silent Mode](../../../../administration/silent_mode/_index.md) disables pushing to,
 and pulling from, remote mirrors.
 
 ## Configure push mirroring
@@ -46,7 +45,7 @@ To set up push mirroring for an existing project:
 1. Enter a repository URL.
 1. In the **Mirror direction** dropdown list, select **Push**.
 1. Select an **Authentication method**. For more information, see
-   [Authentication methods for mirrors](index.md#authentication-methods-for-mirrors).
+   [Authentication methods for mirrors](_index.md#authentication-methods-for-mirrors).
 1. Select **Only mirror protected branches**, if necessary.
 1. Select **Keep divergent refs**, if desired.
 1. To save the configuration, select **Mirror repository**.
@@ -105,7 +104,7 @@ The mirrored repository is listed. For example:
 https://*****:*****@github.com/<your_github_group>/<your_github_project>.git
 ```
 
-The repository pushes shortly thereafter. To force a push, select **Update now** (**{retry}**).
+The repository pushes shortly thereafter. To force a push, select **Update now** ({{< icon name="retry" >}}).
 
 ## Set up a push mirror from GitLab to AWS CodeCommit
 
@@ -120,8 +119,11 @@ these tools to create a deployment:
 - GitLab CI/CD pipelines.
 - The AWS CLI in the final job in `.gitlab-ci.yml` to deploy to CodeDeploy.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab-to-AWS-CodeCommit push mirroring cannot use SSH authentication until [GitLab issue 34014](https://gitlab.com/gitlab-org/gitlab/-/issues/34014) is resolved.
+
+{{< /alert >}}
 
 To set up a mirror from GitLab to AWS CodeCommit:
 
@@ -156,9 +158,12 @@ To set up a mirror from GitLab to AWS CodeCommit:
 1. Select the **Security credentials** tab.
 1. Under **HTTPS Git credentials for AWS CodeCommit**, select **Generate credentials**.
 
-   NOTE:
-   This Git user ID and password is specific to communicating with CodeCommit. Do
+   {{< alert type="note" >}}
+
+This Git user ID and password is specific to communicating with CodeCommit. Do
    not confuse it with the IAM user ID or AWS keys of this user.
+
+   {{< /alert >}}
 
 1. Copy or download the special Git HTTPS user ID and password.
 1. In the AWS CodeCommit console, create a new repository to mirror from your GitLab repository.

@@ -40,7 +40,7 @@ describe('~/analytics/devops_reports/components/service_ping_disabled.vue', () =
     it('renders docs link', () => {
       expect(findDocsLink().exists()).toBe(true);
       expect(findDocsLink().attributes('href')).toBe(
-        '/help/development/internal_analytics/service_ping/index',
+        '/help/development/internal_analytics/service_ping/_index',
       );
     });
   });

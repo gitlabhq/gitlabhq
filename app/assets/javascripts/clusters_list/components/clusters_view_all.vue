@@ -84,6 +84,9 @@ export default {
     onKasDisabled($event) {
       this.$emit('kasDisabled', $event);
     },
+    onRegisterAgent($event) {
+      this.$emit('registerAgent', $event);
+    },
     changeTab($event, tab) {
       $event.preventDefault();
       this.$emit('changeTab', tab);
@@ -140,6 +143,7 @@ export default {
           :is-child-component="true"
           @onAgentsLoad="onAgentsLoad"
           @kasDisabled="onKasDisabled"
+          @registerAgent="onRegisterAgent"
         />
 
         <template #footer>

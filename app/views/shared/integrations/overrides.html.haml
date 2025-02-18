@@ -2,8 +2,7 @@
 - breadcrumb_title @integration.title
 - page_title @integration.title, _('Integrations')
 
-%h1.page-title.gl-text-size-h-display
-  = @integration.title
+= render ::Layouts::PageHeadingComponent.new(@integration.title)
 
 - if @integration.title == 'Beyond Identity'
   .js-vue-beyond-identity-exclusions{ data: integration_overrides_data(@integration) }

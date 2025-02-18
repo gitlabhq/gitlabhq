@@ -1,7 +1,7 @@
 <script>
 import {
+  TIMESTAMP_TYPES,
   TIMESTAMP_TYPE_CREATED_AT,
-  TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
 import ProjectsListItem from './projects_list_item.vue';
 
@@ -50,7 +50,7 @@ export default {
       required: false,
       default: TIMESTAMP_TYPE_CREATED_AT,
       validator(value) {
-        return [TIMESTAMP_TYPE_CREATED_AT, TIMESTAMP_TYPE_UPDATED_AT].includes(value);
+        return TIMESTAMP_TYPES.includes(value);
       },
     },
   },

@@ -16,9 +16,6 @@ options:
   events:
     - github_import_project_partially_completed
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

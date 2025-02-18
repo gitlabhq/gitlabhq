@@ -2,18 +2,22 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Pausing and resuming replication
 ---
 
+{{< details >}}
 
-# Pausing and resuming replication
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< /details >}}
 
-WARNING:
+{{< alert type="warning" >}}
+
 Pausing and resuming of replication is only supported for Geo installations using a
 Linux package-managed database. External databases are not supported.
+
+{{< /alert >}}
 
 In some circumstances, like during [upgrades](upgrading_the_geo_sites.md) or a
 [planned failover](../disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.

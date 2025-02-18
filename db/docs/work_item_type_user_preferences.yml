@@ -1,0 +1,12 @@
+---
+table_name: work_item_type_user_preferences
+classes:
+  - WorkItems::Types::UserPreference
+feature_categories:
+  - team_planning
+description: User preferences per work item type and namespace
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176869
+milestone: '17.8'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

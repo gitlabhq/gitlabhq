@@ -133,7 +133,7 @@ export default {
         <gl-badge v-if="latest" variant="info">{{ $options.i18n.latestBadge }}</gl-badge>
       </div>
       <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-x-3">
-        <commit v-if="commit" :commit="commit" />
+        <commit v-if="commit" :commit="commit" class="gl-max-w-5/8" />
         <div
           v-if="shortSha"
           data-testid="deployment-commit-sha"

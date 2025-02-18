@@ -115,7 +115,7 @@ RSpec.describe Tooling::Mappings::GraphqlBaseTypeMappings, feature_category: :to
       let(:changed_files_content) { '' }
 
       it 'returns an empty array' do
-        expect(subject).to match_array([])
+        expect(subject).to be_empty
       end
     end
 
@@ -140,7 +140,7 @@ RSpec.describe Tooling::Mappings::GraphqlBaseTypeMappings, feature_category: :to
       let(:changed_files_content) { "#{foss_folder}/deleted.rb" }
 
       it 'returns an empty array' do
-        expect(subject).to match_array([])
+        expect(subject).to be_empty
       end
     end
   end

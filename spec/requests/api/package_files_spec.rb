@@ -23,6 +23,10 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
       project.add_developer(user)
     end
 
+    it_behaves_like 'enforcing job token policies', :read_packages do
+      let(:request) { get api(url), params: { job_token: target_job.token } }
+    end
+
     context 'without the need for a license' do
       context 'project is public' do
         it 'returns 200' do
@@ -145,6 +149,14 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
 
         expect(response).to have_gitlab_http_status(status)
       end
+    end
+
+    it_behaves_like 'enforcing job token policies', :admin_packages do
+      before do
+        source_project.add_maintainer(user)
+      end
+
+      let(:request) { delete api(url), params: { job_token: target_job.token } }
     end
 
     context 'project is public' do

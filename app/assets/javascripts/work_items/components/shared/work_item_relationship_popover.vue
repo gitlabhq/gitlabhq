@@ -1,7 +1,7 @@
 <script>
 import { GlPopover, GlLoadingIcon, GlTooltipDirective, GlLink } from '@gitlab/ui';
 import { n__ } from '~/locale';
-import { WORK_ITEM_TYPE_VALUE_ISSUE } from '~/work_items/constants';
+import { WORK_ITEM_TYPE_VALUE_ISSUE, STATE_CLOSED } from '~/work_items/constants';
 import WorkItemRelationshipPopoverMetadata from 'ee_else_ce/work_items/components/shared/work_item_relationship_popover_metadata.vue';
 import WorkItemTypeIcon from '../work_item_type_icon.vue';
 
@@ -63,7 +63,12 @@ export default {
       return n__('WorkItem|+%d more item', 'WorkItem|+%d more items', this.displayedIssuablesCount);
     },
     linkedItemsToDisplay() {
-      return this.linkedWorkItems.slice(0, defaultDisplayLimit);
+      // Filtering closed child linked items and cutting to deafult display amount
+      return this.linkedWorkItems
+        .filter((item) => {
+          return item.workItemState !== STATE_CLOSED;
+        })
+        .slice(0, defaultDisplayLimit);
     },
     moreItemsLink() {
       return `${this.workItemWebUrl}#${this.workItemType === WORK_ITEM_TYPE_VALUE_ISSUE ? 'related-issues' : 'linkeditems'}`;

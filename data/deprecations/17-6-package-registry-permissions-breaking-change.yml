@@ -11,7 +11,7 @@
   manual_task: true
   window: "3"
   body: |
-    Starting in 18.0, Guest users on GitLab.com will be able to pull packages from private projects. This is the same ability that Guest users already have on self-managed GitLab.
+    Starting in 18.0, Guest users on GitLab.com will be able to pull packages from private projects. This is the same ability that Guest users already have on GitLab Self-Managed.
 
     This change streamlines package sharing capabilities within organizations and simplifies access management for package consumers by providing consistent behavior across all GitLab deployments.
 

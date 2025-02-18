@@ -68,7 +68,6 @@ Rails/EnumSyntax:
     - 'app/models/environment.rb'
     - 'app/models/error_tracking/error.rb'
     - 'app/models/event.rb'
-    - 'app/models/hooks/web_hook.rb'
     - 'app/models/integrations/jira.rb'
     - 'app/models/integrations/jira_tracker_data.rb'
     - 'app/models/internal_id.rb'

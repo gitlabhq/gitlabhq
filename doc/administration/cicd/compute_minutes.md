@@ -1,17 +1,23 @@
 ---
 stage: Verify
 group: Pipeline Execution
-description: Calculations, quotas, purchase information.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Calculations, quotas, purchase information.
+title: Compute minutes administration
 ---
 
-# Compute minutes administration
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
-> - [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "compute minutes" in GitLab 16.1.
+{{< /details >}}
+
+{{< history >}}
+
+- [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "compute minutes" in GitLab 16.1.
+
+{{< /history >}}
 
 Administrators can limit the amount of time that projects can use to run jobs on
 [instance runners](../../ci/runners/runners_scope.md#instance-runners) each month. This limit
@@ -27,13 +33,13 @@ On GitLab Self-Managed:
   - `0` for public projects, so they do not consume compute minutes.
   - `1` for internal and private projects.
 
-[Trigger jobs](../../ci/yaml/index.md#trigger) do not execute on runners, so they do not
-consume compute minutes, even when using [`strategy:depend`](../../ci/yaml/index.md#triggerstrategy)
+[Trigger jobs](../../ci/yaml/_index.md#trigger) do not execute on runners, so they do not
+consume compute minutes, even when using [`strategy:depend`](../../ci/yaml/_index.md#triggerstrategy)
 to wait for the [downstream pipeline](../../ci/pipelines/downstream_pipelines.md) status.
 The triggered downstream pipeline consumes compute minutes the same as other pipelines.
 
 GitLab.com administrators can add a namespace to the [reduced cost factor](../../ci/pipelines/compute_minutes.md#reduce-compute-quota-usage)
-with the `ci_minimal_cost_factor_for_gitlab_namespaces` [feature flag](../../administration/feature_flags.md).
+with the `ci_minimal_cost_factor_for_gitlab_namespaces` [feature flag](../feature_flags.md).
 
 ## Set the compute quota for all namespaces
 

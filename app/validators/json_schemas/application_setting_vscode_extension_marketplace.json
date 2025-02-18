@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Application level VSCode extension marketplace settings for Web IDE and Workspaces",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Should the VSCode Extension Marketplace be enabled for Web IDE and Workspaces"
+    },
+    "preset": {
+      "enum": [
+        "custom",
+        "open_vsx"
+      ],
+      "default": "open_vsx",
+      "description": "The preset of URL's to use for the VSCode Extension Marketplace"
+    },
+    "custom_values": {
+      "type": "object",
+      "properties": {
+        "service_url": {
+          "type": "string"
+        },
+        "item_url": {
+          "type": "string"
+        },
+        "resource_url_template": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "service_url",
+        "item_url",
+        "resource_url_template"
+      ]
+    }
+  },
+  "required": [],
+  "if": {
+    "properties": {
+      "preset": {
+        "const": "custom"
+      }
+    },
+    "required": [
+      "preset"
+    ]
+  },
+  "then": {
+    "required": [
+      "custom_values"
+    ]
+  }
+}

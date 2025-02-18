@@ -2,18 +2,23 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Multiple clusters per project with cluster certificates (deprecated)
 ---
 
-# Multiple clusters per project with cluster certificates (deprecated)
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
 
-WARNING:
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 Using multiple Kubernetes clusters for a single project **with cluster
 certificates** was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-To connect clusters to GitLab, use the [GitLab agent](../../../user/clusters/agent/index.md).
+To connect clusters to GitLab, use the [GitLab agent](../../clusters/agent/_index.md).
+
+{{< /alert >}}
 
 You can associate more than one Kubernetes cluster to your
 project. That way you can have different clusters for different environments,
@@ -25,8 +30,8 @@ differentiates the new cluster from the rest.
 ## Setting the environment scope
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
-them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments/index.md) similar to how the
-[environment-specific CI/CD variables](../../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) work.
+them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments/_index.md) similar to how the
+[environment-specific CI/CD variables](../../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable) work.
 
 The default environment scope is `*`, which means all jobs, regardless of their
 environment, use that cluster. Each scope can be used only by a single cluster

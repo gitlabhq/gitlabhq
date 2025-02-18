@@ -24,39 +24,62 @@ RSpec.describe MergeRequests::Mergeability::CheckLfsFileLocksService, feature_ca
 
     context 'when lfs is enabled' do
       let(:only_allow_merge_if_pipeline_succeeds) { true }
-      let(:changed_path) { instance_double('Gitlab::Git::ChangedPath', path: 'README.md') }
+      let(:changed_paths) do
+        [
+          instance_double('Gitlab::Git::ChangedPath', path: 'README.md'),
+          instance_double('Gitlab::Git::ChangedPath', path: 'conflict.rb'),
+          instance_double('Gitlab::Git::ChangedPath', path: 'README.md')
+        ]
+      end
 
       before do
-        allow(merge_request).to receive(:changed_paths).and_return([changed_path])
+        allow(merge_request).to receive(:changed_paths).and_return(changed_paths)
+        allow(project.lfs_file_locks).to receive(:exists?).and_call_original
+        allow(project.lfs_file_locks).to receive(:for_paths).and_call_original
       end
 
       context 'when there are no lfs files locks for this project' do
         it 'returns a check result with status success' do
           expect(execute.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
         end
+
+        it 'returns early before querying for matching file locks' do
+          execute
+          expect(project.lfs_file_locks).to have_received(:exists?)
+          expect(project.lfs_file_locks).not_to have_received(:for_paths)
+        end
       end
 
       context 'when there are lfs files locked by the merge request author' do
-        let(:user) { create(:user) }
-
         before do
-          allow(merge_request).to receive(:author_id).and_return(user.id)
-          create(:lfs_file_lock, project: project, path: changed_path.path, user: user)
+          create(:lfs_file_lock, project: project, path: changed_paths.first.path, user: merge_request.author)
         end
 
         it 'returns a check result with status success' do
           expect(execute.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+        end
+
+        it 'deduplicates the changed paths' do
+          execute
+          expect(project.lfs_file_locks).to have_received(:exists?)
+          expect(project.lfs_file_locks).to have_received(:for_paths).with(changed_paths.map(&:path).uniq)
         end
       end
 
       context 'when there are lfs files locked by another user' do
         before do
           allow(merge_request).to receive(:author_id).and_return(0)
-          create(:lfs_file_lock, project: project, path: changed_path.path)
+          create(:lfs_file_lock, project: project, path: changed_paths.second.path)
         end
 
         it 'returns a check result with status failure' do
           expect(execute.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+        end
+
+        it 'deduplicates the changed paths' do
+          execute
+          expect(project.lfs_file_locks).to have_received(:exists?)
+          expect(project.lfs_file_locks).to have_received(:for_paths).with(changed_paths.map(&:path).uniq)
         end
       end
     end

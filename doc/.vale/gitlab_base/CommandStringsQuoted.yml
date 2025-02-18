@@ -7,6 +7,7 @@
 extends: existence
 message: "For the command example, use double quotes around the URL: %s"
 link: https://docs.gitlab.com/ee/development/documentation/restful_api_styleguide.html#curl-commands
+vocab: false
 level: error
 scope: raw
 nonword: true

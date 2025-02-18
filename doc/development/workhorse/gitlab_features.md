@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Features that rely on Workhorse
 ---
-
-# Features that rely on Workhorse
 
 Workhorse itself is not a feature, but there are several features in
 GitLab that would not work efficiently without Workhorse.

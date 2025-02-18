@@ -2,6 +2,8 @@
 
 module Packages
   class CreatePackageService < BaseService
+    ERROR_RESPONSE_PACKAGE_PROTECTED = ServiceResponse.error(message: 'Package protected.', reason: :package_protected)
+
     protected
 
     def find_or_create_package!(package_type, name: params[:name], version: params[:version])

@@ -10,6 +10,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     let(:user) { create(:user) }
 
     before do
+      stub_feature_flags(new_project_creation_form: false)
       sign_in user
       visit new_project_path
     end
@@ -81,6 +82,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     let(:user)    { create(:user) }
 
     before do
+      stub_feature_flags(new_project_creation_form: false)
       sign_in user
       visit new_project_path
     end
@@ -180,6 +182,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     let(:path)    { project_path(project) }
 
     before do
+      stub_feature_flags(directory_code_dropdown_updates: false)
       sign_in(project.first_owner)
       visit path
     end

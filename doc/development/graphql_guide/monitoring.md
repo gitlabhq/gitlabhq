@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Reading GraphQL logs
 ---
-
-# Reading GraphQL logs
 
 We use Kibana to filter GraphQL query logs. Sign in to [Kibana](https://log.gprd.gitlab.net/)
 with a `@gitlab.com` email address.
@@ -56,7 +55,7 @@ Filter logs by queries that used a particular field:
    1. Filter: `json.query_analysis.used_fields`
    1. Operator: `is`
    1. Value: `Type.myField`, where `Type.myField` is the type name and field name as it
-      appears in [our GraphQL API resources documentation](../../api/graphql/reference/index.md).
+      appears in [our GraphQL API resources documentation](../../api/graphql/reference/_index.md).
 1. Select **Refresh**.
 
 #### Queries that used a deprecated field

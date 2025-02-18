@@ -13,8 +13,6 @@ RSpec.describe Packages::TerraformModule::Metadatum, type: :model, feature_categ
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:fields) }
 
-    it { expect(described_class).to validate_jsonb_schema(['terraform_module_metadata']) }
-
     describe '#metadata' do
       let_it_be(:metadata_fields) do
         {
@@ -55,7 +53,7 @@ RSpec.describe Packages::TerraformModule::Metadatum, type: :model, feature_categ
       end
 
       context 'with a different package type' do
-        let(:package) { build(:package) }
+        let(:package) { build(:generic_package) }
 
         it 'raises the error' do
           expect do

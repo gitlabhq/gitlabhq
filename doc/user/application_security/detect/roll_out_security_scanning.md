@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Roll out security scanning
 ---
-
-# Roll out security scanning
 
 You can roll out security scanning to individual projects, subgroups, and groups. You should start
 with individual projects, then increase the scope in increments. An incremental roll out allows you
@@ -29,7 +28,7 @@ For instructions on how to enable individual security scanners, see their docume
 ## Enable security scanning by using Auto DevOps
 
 To enable the following security scanning tools, with default settings, enable
-[Auto DevOps](../../../topics/autodevops/index.md):
+[Auto DevOps](../../../topics/autodevops/_index.md):
 
 - [Auto SAST](../../../topics/autodevops/stages.md#auto-sast)
 - [Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection)
@@ -45,10 +44,13 @@ The behavior of each security scanner can be customized by using the
 [predefined CD/CD variables](../../../ci/variables/predefined_variables.md) and each scanner's own
 CI/CD variables. See each scanner's documentation for details of the CI/CD variables available.
 
-WARNING:
+{{< alert type="warning" >}}
+
 All customization of security scanning tools should be tested in a merge request before merging
 these changes to the default branch. Failure to do so can give unexpected results, including a large
 number of false positives.
+
+{{< /alert >}}
 
 ### Template editions
 
@@ -62,9 +64,12 @@ Most of the GitLab application security tools have two template editions:
   include breaking changes that are planned for the next major release. This template allows you to
   try new features and updates before they become part of the stable release.
 
-NOTE:
+{{< alert type="note" >}}
+
 Mixing different security template editions can cause both merge request and branch pipelines to
 run. You should use **either** the stable or latest edition templates in a project.
+
+{{< /alert >}}
 
 ### Override the default registry base address
 
@@ -72,10 +77,10 @@ By default, GitLab security scanners use `registry.gitlab.com/security-products`
 base address for Docker images. You can override this for most scanners by setting the CI/CD variable
 `SECURE_ANALYZERS_PREFIX` to another location. This affects all scanners at once.
 
-The [Container Scanning](../container_scanning/index.md) analyzer is an exception, and it
+The [Container Scanning](../container_scanning/_index.md) analyzer is an exception, and it
 does not use the `SECURE_ANALYZERS_PREFIX` variable. To override its Docker image, see
 the instructions for
-[Running container scanning in an offline environment](../container_scanning/index.md#running-container-scanning-in-an-offline-environment).
+[Running container scanning in an offline environment](../container_scanning/_index.md#running-container-scanning-in-an-offline-environment).
 
 ### Use security scanning tools with merge request pipelines
 
@@ -172,10 +177,10 @@ To fix this issue, you can either:
 
 For more information about overriding security jobs, see:
 
-- [Overriding SAST jobs](../sast/index.md#overriding-sast-jobs).
-- [Overriding Dependency Scanning jobs](../dependency_scanning/index.md#overriding-dependency-scanning-jobs).
-- [Overriding Container Scanning jobs](../container_scanning/index.md#overriding-the-container-scanning-template).
-- [Overriding Secret Detection jobs](../secret_detection/pipeline/index.md#configuration).
-- [Overriding DAST jobs](../dast/browser/index.md).
+- [Overriding SAST jobs](../sast/_index.md#overriding-sast-jobs).
+- [Overriding Dependency Scanning jobs](../dependency_scanning/_index.md#overriding-dependency-scanning-jobs).
+- [Overriding Container Scanning jobs](../container_scanning/_index.md#overriding-the-container-scanning-template).
+- [Overriding Secret Detection jobs](../secret_detection/pipeline/_index.md#configuration).
+- [Overriding DAST jobs](../dast/browser/_index.md).
 
 All the security scanning tools define their stage, so this error can occur with all of them.

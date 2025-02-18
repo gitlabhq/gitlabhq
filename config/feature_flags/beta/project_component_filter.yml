@@ -1,0 +1,9 @@
+---
+name: project_component_filter
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/513318
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178208
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/513320
+milestone: '17.9'
+group: group::security insights
+type: beta
+default_enabled: true

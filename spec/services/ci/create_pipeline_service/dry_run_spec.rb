@@ -43,7 +43,7 @@ RSpec.describe Ci::CreatePipelineService,
 
       it 'returns a valid pipeline' do
         expect(subject.error_messages).to be_empty
-        expect(subject.yaml_errors).to be_nil
+        expect(subject.error_messages).to be_empty
         expect(subject.errors).to be_empty
       end
     end
@@ -65,7 +65,6 @@ RSpec.describe Ci::CreatePipelineService,
 
           expect(subject.error_messages.map(&:content)).to eq([error_message])
           expect(subject.errors).not_to be_empty
-          expect(subject.yaml_errors).to eq(error_message)
         end
       end
 
@@ -110,9 +109,9 @@ RSpec.describe Ci::CreatePipelineService,
         it_behaves_like 'returns a non persisted pipeline'
 
         it 'returns a pipeline with errors', :aggregate_failures do
-          error_message = "'test' job needs 'build' job, but 'build' is not in any previous stage"
+          error_message = "'test' job needs 'build' job, but 'build' does not exist in the pipeline"
 
-          expect(subject.error_messages.map(&:content)).to eq([error_message])
+          expect(subject.error_messages.map(&:content).first).to include(error_message)
           expect(subject.errors).not_to be_empty
         end
       end

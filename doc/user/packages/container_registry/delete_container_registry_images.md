@@ -2,13 +2,15 @@
 stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Delete container images from the container registry
 ---
 
-# Delete container images from the container registry
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can delete container images from your container registry.
 
@@ -19,9 +21,12 @@ for deleting container images from specific projects.
 To delete specific container images from a project or group, you can use [the GitLab UI](#use-the-gitlab-ui)
 or [GitLab API](#use-the-gitlab-api).
 
-WARNING:
+{{< alert type="warning" >}}
+
 Deleting container images is a destructive action and can't be undone. To restore
 a deleted container image, you must rebuild and re-upload it.
+
+{{< /alert >}}
 
 ## Garbage collection
 
@@ -51,9 +56,9 @@ To delete container images using the GitLab UI:
    by either:
 
    - Deleting the entire repository, and all the tags it contains, by selecting
-     the red **{remove}** **Trash** icon.
+     the red {{< icon name="remove" >}} **Trash** icon.
    - Navigating to the repository, and deleting tags individually or in bulk
-     by selecting the red **{remove}** **Trash** icon next to the tag you want
+     by selecting the red {{< icon name="remove" >}} **Trash** icon next to the tag you want
      to delete.
 
 1. On the dialog, select **Remove tag**.
@@ -72,10 +77,13 @@ information, see the following endpoints:
 
 ## Use GitLab CI/CD
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab CI/CD doesn't provide a built-in way to remove your container images. This example uses a
 third-party tool called [`regctl`](https://github.com/regclient/regclient) that talks to the GitLab Registry API.
 For assistance with this third-party tool, see [the issue queue for regclient](https://github.com/regclient/regclient/issues).
+
+{{< /alert >}}
 
 The following example defines two stages: `build`, and `clean`. The `build_image` job builds a container
 image for the branch, and the `delete_image` job deletes it. The `reg` executable is downloaded and used to
@@ -122,9 +130,12 @@ delete_image:
     - regctl tag rm $IMAGE
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 You can download the latest `regctl` release from [the releases page](https://github.com/regclient/regclient/releasess), then update
 the code example by changing the `REGCTL_VERSION` variable defined in the `delete_image` job.
+
+{{< /alert >}}
 
 ## Use a cleanup policy
 

@@ -2,13 +2,15 @@
 stage: Verify
 group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Long polling
 ---
 
-# Long polling
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 By default, a GitLab Runner polls a GitLab instance for new CI/CD
 jobs periodically. The actual polling interval [depends on the `check_interval` and number of runners configured in the runner configuration file](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#how-check_interval-works).
@@ -32,9 +34,9 @@ poll until a new job is ready.
 To do this, enable long polling by configuring the GitLab Workhorse long
 polling duration (`apiCiLongPollingDuration`):
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -48,7 +50,9 @@ polling duration (`apiCiLongPollingDuration`):
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 Enable long polling with the `gitlab.webservice.workhorse.extraArgs` setting.
 
@@ -73,7 +77,9 @@ Enable long polling with the `gitlab.webservice.workhorse.extraArgs` setting.
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -95,7 +101,9 @@ Enable long polling with the `gitlab.webservice.workhorse.extraArgs` setting.
    docker compose up -d
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Metrics
 

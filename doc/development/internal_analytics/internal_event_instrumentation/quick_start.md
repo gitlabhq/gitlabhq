@@ -2,9 +2,8 @@
 stage: Monitor
 group: Analytics Instrumentation
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Quick start for Internal Event Tracking
 ---
-
-# Quick start for Internal Event Tracking
 
 In an effort to provide a more efficient, scalable, and unified tracking API, GitLab is deprecating existing RedisHLL and Snowplow tracking. Instead, we're implementing a new `track_event` (Backend) and `trackEvent`(Frontend) method.
 With this approach, we can update both RedisHLL counters and send Snowplow events without worrying about the underlying implementation.
@@ -197,6 +196,7 @@ you can use the `internal_event_tracking` shared example.
 ```ruby
 it_behaves_like 'internal event tracking' do
   let(:event) { 'update_issue_severity' }
+  let(:category) { described_class.name }
   let(:project) { issue.project }
   let(:user) { issue.author }
   let(:additional_properties) { { label: issue.issueable_severity } }
@@ -239,7 +239,7 @@ Prefer using `additional_properties` instead.
 #### Composable matchers
 
 When a singe action triggers an event multiple times, triggers multiple different events, or increments some metrics but not others for the event,
-you can use the `trigger_internal_events` and `increment_usage_metrics` matchers.
+you can use the `trigger_internal_events` and `increment_usage_metrics` matchers on a block argument.
 
 ```ruby
  expect { subject }
@@ -293,11 +293,11 @@ Or you can use the `not_to` syntax:
 expect { subject }.not_to trigger_internal_events('mr_created', 'member_role_created')
 ```
 
+The `trigger_internal_events` matcher can also be used for testing [Haml with data attributes](#haml-with-data-attributes).
+
 ### Frontend tracking
 
 Any frontend tracking call automatically passes the values `user.id`, `namespace.id`, and `project.id` from the current context of the page.
-
-If you need to pass any further properties, such as `extra`, `context`, `label`, `property`, and `value`, you can use the [deprecated snowplow implementation](https://archives.docs.gitlab.com/16.4/ee/development/internal_analytics/snowplow/implementation.html). In this case, let us know about your specific use-case in our [feedback issue for Internal Events](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/internal/-/issues/690).
 
 #### Vue components
 
@@ -387,9 +387,12 @@ Sometimes we want to send internal events when the component is rendered or load
 
 You can include additional properties with events to save additional data. When included you must define each additional property in the `additional_properties` field. It is possible to send the three built-in additional properties with keys `label` (string), `property` (string) and `value`(numeric) and [custom additional properties](quick_start.md#additional-properties) if the built-in properties are not sufficient.
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not pass the page URL or page path as an additional property because we already track the pseudonymized page URL for each event.
 Getting the URL from `window.location` does not pseudonymize project and namespace information [as documented](https://metrics.gitlab.com/identifiers).
+
+{{< /alert >}}
 
 For Vue Mixin:
 
@@ -579,40 +582,65 @@ describe('DeleteApplication', () => {
 
 #### Haml with data attributes
 
-If you are using the data attributes to register tracking at the Haml layer,
-you can use the `have_internal_tracking` matcher method to assert if expected data attributes are assigned.
+If you are using [data attributes](#data-event-attribute) to track internal events at the Haml layer,
+you can use the [`trigger_internal_events` matcher](#composable-matchers) to assert that the expected properties are present.
 
-For example, if we need to test the below Haml,
+For example, if you need to test the below Haml,
 
 ```haml
-%div{ data: { testid: '_testid_', event_tracking: 'render', event_label: '_tracking_label_' } }
+%div{ data: { testid: '_testid_', event_tracking: 'some_event', event_label: 'some_label' } }
 ```
+
+You can call assertions on any rendered HTML compatible with the `have_css` matcher.
+Use the `:on_click` and `:on_load` chain methods to indicate when you expect the event to trigger.
 
 Below would be the test case for above haml.
 
-- [RSpec view specs](https://rspec.info/features/6-0/rspec-rails/view-specs/view-spec/)
+- rendered HTML is a `String` ([RSpec views](https://rspec.info/features/6-0/rspec-rails/view-specs/view-spec/))
 
 ```ruby
   it 'assigns the tracking items' do
     render
 
-    expect(rendered).to have_internal_tracking(event: 'render', label: '_tracking_label_', testid: '_testid_')
+    expect(rendered).to trigger_internal_events('some_event').on_click
+      .with(additional_properties: { label: 'some_label' })
   end
 ```
 
-- [ViewComponent](https://viewcomponent.org/) specs
+- rendered HTML is a `Capybara::Node::Simple` ([ViewComponent](https://viewcomponent.org/))
 
 ```ruby
   it 'assigns the tracking items' do
     render_inline(component)
 
-    expect(page).to have_internal_tracking(event: 'render', label: '_tracking_label_', testid: '_testid_')
+    expect(page.find_by_testid('_testid_'))
+      .to trigger_internal_events('some_event').on_click
+      .with(additional_properties: { label: 'some_label' })
   end
 ```
 
-`event` is required for the matcher and `label`/`testid` are optional.
-It is recommended to use `testid` when possible for exactness.
-When you want to ensure that tracking isn't assigned, you can use `not_to` with the above matchers.
+- rendered HTML is a `Nokogiri::HTML4::DocumentFragment` ([ViewComponent](https://viewcomponent.org/))
+
+```ruby
+  it 'assigns the tracking items' do
+    expect(render_inline(component))
+      .to trigger_internal_events('some_event').on_click
+      .with(additional_properties: { label: 'some_label' })
+  end
+```
+
+Or you can use the `not_to` syntax:
+
+```ruby
+  it 'assigns the tracking items' do
+    render_inline(component)
+
+    expect(page).not_to trigger_internal_events
+  end
+```
+
+When negated, the matcher accepts no additional chain methods or arguments.
+This asserts that no tracking attributes are in use.
 
 ### Using Internal Events API
 

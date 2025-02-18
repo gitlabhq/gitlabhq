@@ -2,18 +2,23 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Instance clusters API (certificate-based) (deprecated)
 ---
 
-# Instance clusters API (certificate-based) (deprecated)
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-WARNING:
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
-With [instance-level Kubernetes clusters](../user/instance/clusters/index.md),
+{{< /alert >}}
+
+With [instance-level Kubernetes clusters](../user/instance/clusters/_index.md),
 you can connect a Kubernetes cluster to the GitLab instance and use the same cluster across all of
 the projects within your instance.
 
@@ -242,10 +247,13 @@ Parameters:
 | `platform_kubernetes_attributes[ca_cert]`   | string  | no       | TLS certificate. Required if API is using a self-signed TLS certificate.                   |
 | `platform_kubernetes_attributes[namespace]` | string  | no       | The unique namespace related to the project                                                |
 
-NOTE:
+{{< alert type="note" >}}
+
 `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
 through the [Add existing Kubernetes cluster](../user/project/clusters/add_existing_cluster.md) option or
 through the [Add existing instance cluster](#add-existing-instance-cluster) endpoint.
+
+{{< /alert >}}
 
 Example request:
 

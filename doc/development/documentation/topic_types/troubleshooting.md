@@ -2,9 +2,8 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Troubleshooting topic type
 ---
-
-# Troubleshooting topic type
 
 Troubleshooting topics should be the final topics on a page.
 
@@ -22,7 +21,7 @@ This kind of content can be helpful to others, and the benefits outweigh the ris
 If you think you have an exception to this rule, contact the Technical Writing team.
 
 GitLab Support maintains their own
-[troubleshooting content](../../../administration/troubleshooting/index.md).
+[troubleshooting content](../../../administration/troubleshooting/_index.md).
 
 ## Format
 
@@ -94,13 +93,16 @@ If the troubleshooting suggestion includes a function that changes data on the G
 add the following warning:
 
 ```markdown
-WARNING:
+{{</* alert type="warning" */>}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{</* /alert */>}}
 ```
 
 ## Troubleshooting page type
 
-When there are five Troubleshooting topics or more on a page, create a separate Troubleshooting page type.
+When there are five troubleshooting topics or more on a page, create a separate Troubleshooting page.
 
 Follow these conventions:
 

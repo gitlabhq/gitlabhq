@@ -1,0 +1,13 @@
+---
+table_name: clusters_managed_resources
+classes:
+- Clusters::Agents::ManagedResource
+feature_categories:
+- deployment_management
+description: A managed resource for the GitLab managed Kubernetes resources
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178118
+milestone: '17.9'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+table_size: small

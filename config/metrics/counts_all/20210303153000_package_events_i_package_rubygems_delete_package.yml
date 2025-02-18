@@ -15,9 +15,6 @@ events:
   - name: delete_package_from_registry
     filter:
       label: rubygems
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

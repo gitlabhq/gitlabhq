@@ -1,3 +1,19 @@
+:root {
+  --user-contribution-graph-cell-level-0: var(--gl-color-neutral-50);
+  --user-contribution-graph-cell-level-1: var(--gl-color-data-blue-100);
+  --user-contribution-graph-cell-level-2: var(--gl-color-data-blue-400);
+  --user-contribution-graph-cell-level-3: var(--gl-color-data-blue-600);
+  --user-contribution-graph-cell-level-4: var(--gl-color-data-blue-900);
+}
+
+:root.gl-dark {
+  --user-contribution-graph-cell-level-0: var(--gl-color-neutral-900);
+  --user-contribution-graph-cell-level-1: var(--gl-color-data-blue-900);
+  --user-contribution-graph-cell-level-2: var(--gl-color-data-blue-600);
+  --user-contribution-graph-cell-level-3: var(--gl-color-data-blue-400);
+  --user-contribution-graph-cell-level-4: var(--gl-color-data-blue-100);
+}
+
 .user-contrib-cell {
   &:hover,
   &:focus,
@@ -12,13 +28,23 @@
     stroke-width: 2px;
   }
 
-  // `app/assets/javascripts/pages/users/activity_calendar.js` sets this attribute
-  @for $i from 1 through length($calendar-activity-colors) {
-    $color: nth($calendar-activity-colors, $i);
-    $level: $i - 1;
+  &[data-level="0"] {
+    fill: var(--user-contribution-graph-cell-level-0);
+  }
 
-    &[data-level='#{$level}'] {
-      fill: $color;
-    }
+  &[data-level="1"] {
+    fill: var(--user-contribution-graph-cell-level-1);
+  }
+
+  &[data-level="2"] {
+    fill: var(--user-contribution-graph-cell-level-2);
+  }
+
+  &[data-level="3"] {
+    fill: var(--user-contribution-graph-cell-level-3);
+  }
+
+  &[data-level="4"] {
+    fill: var(--user-contribution-graph-cell-level-4);
   }
 }

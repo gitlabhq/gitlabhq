@@ -19,15 +19,9 @@ module ResourceAccessTokens
 
       access_token.revoke!
 
-      success_message = "Access token #{access_token.name} has been revoked"
-      unless Feature.enabled?(:retain_resource_access_token_user_after_revoke, resource.root_ancestor)
-        destroy_bot_user
-        success_message += " and the bot user has been scheduled for deletion"
-      end
-
       log_event
 
-      success("#{success_message}.")
+      success("Access token #{access_token.name} has been revoked.")
     rescue StandardError => error
       log_error("Failed to revoke access token for #{bot_user.name}: #{error.message}")
       error(error.message)
@@ -36,10 +30,6 @@ module ResourceAccessTokens
     private
 
     attr_reader :current_user, :access_token, :bot_user, :resource
-
-    def destroy_bot_user
-      DeleteUserWorker.perform_async(current_user.id, bot_user.id, skip_authorization: true, reason_for_deletion: "Access token revoked")
-    end
 
     def can_destroy_token?
       %w[project group].include?(resource.class.name.downcase) && can?(current_user, :destroy_resource_access_tokens, resource)

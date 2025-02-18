@@ -25,7 +25,7 @@ pre-push:
     markdownlint:
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      exclude: 'doc/api/graphql/reference/index.md'
+      exclude: 'doc/api/graphql/reference/_index.md'
       glob: 'doc/*.md'
       run: yarn markdownlint {files}
     yamllint:
@@ -58,10 +58,10 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{,ee/}app/graphql/**/*.rb'
       run: bundle exec rake gitlab:graphql:check_docs
-    vale: # Requires Vale: https://docs.gitlab.com/ee/development/documentation/testing/vale.html
+    vale: # Requires Vale: https://docs.gitlab.com/development/documentation/testing/vale/
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      exclude: 'doc/api/graphql/reference/index.md'
+      exclude: 'doc/api/graphql/reference/_index.md'
       glob: 'doc/*.md'
       run: 'if [ $VALE_WARNINGS ]; then minWarnings=warning; else minWarnings=error; fi; if command -v vale > /dev/null 2>&1; then if ! vale --config .vale.ini --minAlertLevel $minWarnings {files}; then echo "ERROR: Fix any linting errors and make sure you are using the latest version of Vale."; exit 1; fi; else echo "ERROR: Vale not found. For more information, see https://vale.sh/docs/vale-cli/installation/."; exit 1; fi'
     gettext:
@@ -70,7 +70,7 @@ pre-push:
       glob: '*.{haml,rb,js,vue}'
       run: tooling/bin/gettext_extractor /dev/stdout --silent | diff - locale/gitlab.pot
       fail_text: PO files need to be updated. Try running tooling/bin/gettext_extractor locale/gitlab.pot
-    docs-metadata: # See https://docs.gitlab.com/ee/development/documentation/metadata.html
+    docs-metadata: # See https://docs.gitlab.com/development/documentation/metadata/
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'doc/*.md'
@@ -122,6 +122,11 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{ee/config/custom_abilities/*yml,doc/user/custom_roles/abilities.md,tooling/custom_roles/docs/templates/custom_abilities.md.erb}'
       run: bundle exec rake gitlab:custom_roles:check_docs
+    verify_job_token_policies:
+      tags: backend
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      glob: '{{,ee/}lib/api/*.rb,app/validators/json_schemas/ci_job_token_policies.json,doc/ci/jobs/granular_permissions.md,tooling/ci/job_tokens/docs/templates/granular_permissions.md.erb}'
+      run: bundle exec rake ci:job_tokens:check_policies
     rubocop:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -131,7 +136,7 @@ pre-push:
     verify-tff-mapping:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: 'tests.yml'
+      glob: '{tests.yml,*.rb,scripts/verify-tff-mapping}'
       run: scripts/verify-tff-mapping
     secrets-detection:
       tags: secrets
@@ -162,7 +167,7 @@ pre-commit:
     secrets-detection:
       tags: secrets
       run: .lefthook/gitleaks.sh pre-commit
-    docs-metadata: # See https://docs.gitlab.com/ee/development/documentation/metadata.html
+    docs-metadata: # See https://docs.gitlab.com/development/documentation/metadata/
       tags: documentation style
       files: git diff --name-only --diff-filter=d --staged
       glob: 'doc/*.md'
@@ -180,7 +185,7 @@ pre-commit:
     markdownlint:
       tags: documentation style
       files: git diff --name-only --diff-filter=d --staged
-      exclude: 'doc/api/graphql/reference/index.md'
+      exclude: 'doc/api/graphql/reference/_index.md'
       glob: 'doc/*.md'
       run: yarn markdownlint {files}
     mermaidlint:
@@ -188,10 +193,10 @@ pre-commit:
       files: git diff --name-only --diff-filter=d --staged
       glob: '{app,lib,ee,spec,doc,scripts}/**/*.md'
       run: scripts/lint/check_mermaid.mjs {files}
-    vale: # Requires Vale: https://docs.gitlab.com/ee/development/documentation/testing/vale.html
+    vale: # Requires Vale: https://docs.gitlab.com/development/documentation/testing/vale/
       tags: documentation style
       files: git diff --name-only --diff-filter=d --staged
-      exclude: 'doc/api/graphql/reference/index.md'
+      exclude: 'doc/api/graphql/reference/_index.md'
       glob: 'doc/*.md'
       run: 'if [ $VALE_WARNINGS ]; then minWarnings=warning; else minWarnings=error; fi; if command -v vale > /dev/null 2>&1; then if ! vale --config .vale.ini --minAlertLevel $minWarnings {files}; then echo "ERROR: Fix any linting errors and make sure you are using the latest version of Vale."; exit 1; fi; else echo "ERROR: Vale not found. For more information, see https://vale.sh/docs/vale-cli/installation/."; exit 1; fi'
 

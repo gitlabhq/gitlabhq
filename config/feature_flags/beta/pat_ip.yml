@@ -1,0 +1,9 @@
+---
+name: pat_ip
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/428577
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161076
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/428577
+milestone: '17.8'
+group: group::authentication
+type: beta
+default_enabled: true

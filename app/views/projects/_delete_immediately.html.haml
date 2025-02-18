@@ -1,3 +1,5 @@
+- button_text = local_assigns.fetch(:button_text, nil)
+
 %p
   = delete_immediately_message(@project)
-#js-project-delete-button{ data: project_delete_immediately_button_data(@project) }
+#js-project-delete-button{ data: project_delete_immediately_button_data(@project, button_text) }

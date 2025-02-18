@@ -2,17 +2,19 @@
 stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Pages domains API
 ---
 
-# Pages domains API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
 
-Endpoints for connecting custom domains and TLS certificates in [GitLab Pages](../user/project/pages/index.md).
+{{< /details >}}
 
-The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/index.md) and [using](../user/project/pages/index.md) the feature.
+Endpoints for connecting custom domains and TLS certificates in [GitLab Pages](../user/project/pages/_index.md).
+
+The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/_index.md) and [using](../user/project/pages/_index.md) the feature.
 
 ## List all Pages domains
 
@@ -80,7 +82,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
@@ -146,7 +148,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `domain`  | string         | yes      | The custom domain indicated by the user  |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
@@ -203,7 +205,7 @@ Supported attributes:
 
 | Attribute          | Type           | Required | Description                              |
 | -------------------| -------------- | -------- | ---------------------------------------- |
-| `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `domain`           | string         | yes      | The custom domain indicated by the user  |
 | `auto_ssl_enabled` | boolean        | no       | Enables [automatic generation](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md) of SSL certificates issued by Let's Encrypt for custom domains. |
 | `certificate`      | file/string    | no       | The certificate in PEM format with intermediates following in most specific to least specific order.|
@@ -279,7 +281,7 @@ Supported attributes:
 
 | Attribute          | Type           | Required | Description                              |
 | ------------------ | -------------- | -------- | ---------------------------------------- |
-| `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `domain`           | string         | yes      | The custom domain indicated by the user  |
 | `auto_ssl_enabled` | boolean        | no       | Enables [automatic generation](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md) of SSL certificates issued by Let's Encrypt for custom domains. |
 | `certificate`      | file/string    | no       | The certificate in PEM format with intermediates following in most specific to least specific order.|
@@ -372,7 +374,11 @@ Example response:
 
 ## Verify Pages domain
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21261) in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21261) in GitLab 17.7.
+
+{{< /history >}}
 
 Verifies an existing project Pages domain.
 The user must have permissions to update Pages domains.
@@ -437,7 +443,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `domain`  | string         | yes      | The custom domain indicated by the user  |
 
 If successful, a `204 No Content` HTTP response with an empty body is expected.

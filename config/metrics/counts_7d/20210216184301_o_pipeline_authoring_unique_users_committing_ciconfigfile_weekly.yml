@@ -14,9 +14,6 @@ events:
     unique: user.id
 performance_indicator_type:
 - customer_health_score
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

@@ -1,6 +1,6 @@
 ---
-key_path: counts.count_total_internal_events_cli_used_weekly
-description: Weekly count of when an event was defined using the CLI
+key_path: redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_weekly
+description: Weekly count of unique users who defined an event using the CLI
 product_group: analytics_instrumentation
 product_categories:
 - service_ping
@@ -17,3 +17,4 @@ tiers:
 - ultimate
 events:
 - name: internal_events_cli_used
+  unique: user.id

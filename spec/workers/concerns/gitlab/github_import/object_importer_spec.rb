@@ -128,7 +128,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
           }
         )
 
-      worker.import(project, client, { 'number' => 11, 'github_id' => 2 } )
+      worker.import(project, client, { 'number' => 11, 'github_id' => 2 })
     end
 
     it 'logs error when the import fails' do

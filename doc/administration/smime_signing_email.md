@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Signing outgoing email with S/MIME
 ---
 
-# Signing outgoing email with S/MIME
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Notification emails sent by GitLab can be signed with S/MIME for improved
 security.
@@ -30,9 +32,12 @@ files must be provided:
 Optionally, you can also provide a bundle of CA certs (PEM-encoded) to be
 included on each signature. This is typically an intermediate CA.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Be mindful of the access levels for your private keys and visibility to
 third parties.
+
+{{< /alert >}}
 
 For Linux package installations:
 
@@ -59,10 +64,10 @@ For self-compiled installations:
      # Uncomment and set to true if you need to enable email S/MIME signing (default: false)
      enabled: true
      # S/MIME private key file in PEM format, unencrypted
-     # Default is '.gitlab_smime_key' relative to Rails.root (i.e. root of the GitLab app).
+     # Default is '.gitlab_smime_key' relative to Rails.root (the root of the GitLab app).
      key_file: /etc/pki/smime/private/gitlab.key
      # S/MIME public certificate key in PEM format, will be attached to signed messages
-     # Default is '.gitlab_smime_cert' relative to Rails.root (i.e. root of the GitLab app).
+     # Default is '.gitlab_smime_cert' relative to Rails.root (the root of the GitLab app).
      cert_file: /etc/pki/smime/certs/gitlab.crt
      # S/MIME extra CA public certificates in PEM format, will be attached to signed messages
      # Optional

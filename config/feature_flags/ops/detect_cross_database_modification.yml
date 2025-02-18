@@ -3,5 +3,5 @@ name: detect_cross_database_modification
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73316
 milestone: '14.5'
 type: ops
-group: group::tenant scale
+group: group::cells infrastructure
 default_enabled: false

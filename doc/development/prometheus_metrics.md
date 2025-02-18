@@ -2,9 +2,8 @@
 stage: Monitor
 group: Platform Insights
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GitLab Prometheus metrics development guidelines
 ---
-
-# GitLab Prometheus metrics development guidelines
 
 GitLab provides [Prometheus metrics](../administration/monitoring/prometheus/gitlab_metrics.md)
 to monitor itself.

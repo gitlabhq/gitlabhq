@@ -39,6 +39,10 @@ query getContainerRepositoryTags(
         userPermissions {
           destroyContainerRepositoryTag
         }
+        protection {
+          minimumAccessLevelForPush
+          minimumAccessLevelForDelete
+        }
         referrers {
           artifactType
           digest

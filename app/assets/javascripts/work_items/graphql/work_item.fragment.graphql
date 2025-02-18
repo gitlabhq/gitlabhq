@@ -21,6 +21,7 @@ fragment WorkItem on WorkItem {
     id
     fullPath
     name
+    fullName
   }
   author {
     ...Author
@@ -38,6 +39,7 @@ fragment WorkItem on WorkItem {
     createNote
     adminWorkItemLink
     markNoteAsInternal
+    reportSpam
   }
   widgets {
     ...WorkItemWidgets

@@ -552,14 +552,15 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
     let(:has_length) { true }
     let(:maximum_size) { nil }
     let(:use_final_store_path) { false }
-    let(:final_store_path_root_id) { nil }
+    let(:final_store_path_root_hash) { nil }
+    let(:final_store_path_config) { { root_hash: final_store_path_root_hash } }
 
     subject do
       uploader_class.workhorse_authorize(
         has_length: has_length,
         maximum_size: maximum_size,
         use_final_store_path: use_final_store_path,
-        final_store_path_root_id: final_store_path_root_id
+        final_store_path_config: final_store_path_config
       )
     end
 
@@ -644,24 +645,24 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
     shared_examples 'handling object storage final upload path' do |multipart|
       context 'when use_final_store_path is true' do
         let(:use_final_store_path) { true }
-        let(:final_store_path_root_id) { 12345 }
+        let(:final_store_path_root_hash) { 12345 }
         let(:final_store_path) { File.join('@final', 'myprefix', 'abc', '123', 'somefilename') }
         let(:escaped_path) { escape_path(final_store_path) }
 
-        context 'and final_store_path_root_id was not given' do
-          let(:final_store_path_root_id) { nil }
+        context 'and final_store_path_root_hash was not given' do
+          let(:final_store_path_root_hash) { nil }
 
           it 'raises an error' do
             expect { subject }.to raise_error(ObjectStorage::MissingFinalStorePathRootId)
           end
         end
 
-        context 'and final_store_path_root_id was given' do
+        context 'and final_store_path_root_hash was given' do
           before do
             stub_object_storage_multipart_init_with_final_store_path("#{storage_url}#{final_store_path}") if multipart
 
             allow(uploader_class).to receive(:generate_final_store_path)
-              .with(root_id: final_store_path_root_id)
+              .with(root_hash: final_store_path_root_hash)
               .and_return(final_store_path)
           end
 
@@ -718,6 +719,35 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
                 ObjectStorage::PendingDirectUpload.exists?(uploader_class.storage_location_identifier, final_store_path)
               ).to eq(true)
             end
+          end
+        end
+
+        context 'and override_path was given' do
+          let(:override_path) { 'test_override_path' }
+          let(:final_store_path_config) { { override_path: override_path } }
+
+          before do
+            stub_object_storage_multipart_init_with_final_store_path("#{storage_url}#{override_path}") if multipart
+          end
+
+          it 'uses the override instead of generating a path' do
+            expect(uploader_class).not_to receive(:generate_final_store_path)
+
+            expect(subject[:RemoteObject][:ID]).to eq(override_path)
+            expect(subject[:RemoteObject][:GetURL]).to include(override_path)
+            expect(subject[:RemoteObject][:StoreURL]).to include(override_path)
+
+            if multipart
+              expect(subject[:RemoteObject][:MultipartUpload][:PartURLs]).to all(include(override_path))
+              expect(subject[:RemoteObject][:MultipartUpload][:CompleteURL]).to include(override_path)
+              expect(subject[:RemoteObject][:MultipartUpload][:AbortURL]).to include(override_path)
+            end
+
+            expect(subject[:RemoteObject][:SkipDelete]).to eq(true)
+
+            expect(
+              ObjectStorage::PendingDirectUpload.exists?(uploader_class.storage_location_identifier, override_path)
+            ).to eq(true)
           end
         end
       end
@@ -1334,10 +1364,10 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
   end
 
   describe '.generate_final_store_path' do
-    let(:root_id) { 12345 }
-    let(:expected_root_hashed_path) { Gitlab::HashedPath.new(root_hash: root_id) }
+    let(:root_hash) { 12345 }
+    let(:expected_root_hashed_path) { Gitlab::HashedPath.new(root_hash: root_hash) }
 
-    subject(:final_path) { uploader_class.generate_final_store_path(root_id: root_id) }
+    subject(:final_path) { uploader_class.generate_final_store_path(root_hash: root_hash) }
 
     before do
       allow(Digest::SHA2).to receive(:hexdigest).and_return('somehash1234')

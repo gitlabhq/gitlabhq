@@ -2,20 +2,26 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group Markdown uploads API
 ---
 
-# Group Markdown uploads API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Markdown uploads are [files uploaded to a group](../security/user_file_uploads.md)
 that can be referenced in Markdown text in an epic or a wiki page.
 
 ## List uploads
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+
+{{< /history >}}
 
 Get all uploads of the group sorted by `created_at` in descending order.
 
@@ -27,7 +33,7 @@ GET /groups/:id/uploads
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -62,7 +68,11 @@ Example response:
 
 ## Download an uploaded file by ID
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+
+{{< /history >}}
 
 You must have at least the Maintainer role to use this endpoint.
 
@@ -74,7 +84,7 @@ Supported attributes:
 
 | Attribute   | Type              | Required | Description |
 |-------------|-------------------|----------|-------------|
-| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `upload_id` | integer           | Yes      | The ID of the upload. |
 
 Example request:
@@ -87,7 +97,11 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the upl
 
 ## Download an uploaded file by secret and filename
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164441) in GitLab 17.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164441) in GitLab 17.4.
+
+{{< /history >}}
 
 You must have at least the Guest role to use this endpoint.
 
@@ -99,7 +113,7 @@ Supported attributes:
 
 | Attribute   | Type              | Required | Description |
 |-------------|-------------------|----------|-------------|
-| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `secret`    | string            | Yes      | The 32-character secret of the upload. |
 | `filename`  | string            | Yes      | The filename of the upload. |
 
@@ -113,7 +127,11 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the upl
 
 ## Delete an uploaded file by ID
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+
+{{< /history >}}
 
 You must have at least the Maintainer role to use this endpoint.
 
@@ -125,7 +143,7 @@ Supported attributes:
 
 | Attribute   | Type              | Required | Description |
 |-------------|-------------------|----------|-------------|
-| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `upload_id` | integer           | Yes      | The ID of the upload. |
 
 Example request:
@@ -138,7 +156,11 @@ If successful, returns [`204`](rest/troubleshooting.md#status-codes) status code
 
 ## Delete an uploaded file by secret and filename
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164441) in GitLab 17.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164441) in GitLab 17.4.
+
+{{< /history >}}
 
 You must have at least the Maintainer role to use this endpoint.
 
@@ -150,7 +172,7 @@ Supported attributes:
 
 | Attribute   | Type              | Required | Description |
 |-------------|-------------------|----------|-------------|
-| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `secret`    | string            | Yes      | The 32-character secret of the upload. |
 | `filename`  | string            | Yes      | The filename of the upload. |
 

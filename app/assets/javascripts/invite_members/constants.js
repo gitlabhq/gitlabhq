@@ -84,10 +84,10 @@ export const QUEUED_MESSAGE_SUCCESSFUL = s__(
 );
 export const INVALID_FEEDBACK_MESSAGE_DEFAULT = s__('InviteMembersModal|Something went wrong');
 export const READ_MORE_TEXT = s__(
-  `InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions. You can change this later. Invited members are limited to this role or their current group role, whichever is lower.`,
+  `InviteMembersModal|Invited members are limited to this role or their current group role, whichever is higher. Learn more about %{linkStart}roles%{linkEnd}.`,
 );
 export const READ_MORE_ACCESS_EXPIRATION_TEXT = s__(
-  `InviteMembersModal|%{linkStart}Read more%{linkEnd} about access expiration`,
+  `InviteMembersModal|From this date onward, the user can no longer access the group or project. Learn more about %{linkStart}access%{linkEnd}.`,
 );
 export const INVITE_BUTTON_TEXT = s__('InviteMembersModal|Invite');
 export const INVITE_BUTTON_TEXT_DISABLED = s__('InviteMembersModal|Manage members');

@@ -12,7 +12,7 @@ export default {
   computed: {
     ...mapState(['pipelinesEmptyStateSvgPath']),
     ciHelpPagePath() {
-      return helpPagePath('ci/quick_start/index.md');
+      return helpPagePath('ci/quick_start/_index.md');
     },
   },
   i18n: {

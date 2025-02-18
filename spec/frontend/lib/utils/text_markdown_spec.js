@@ -8,6 +8,7 @@ import {
   updateTextForToolbarBtn,
   resolveSelectedImage,
   repeatCodeBackticks,
+  handlePasteModifications,
 } from '~/lib/utils/text_markdown';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import '~/lib/utils/jquery_at_who';
@@ -227,11 +228,21 @@ describe('init markdown', () => {
       describe('Continuing markdown lists', () => {
         let enterEvent;
 
+        beforeAll(() => {
+          const $textArea = $(textArea);
+          $textArea.on('keydown', keypressNoteText);
+          $textArea.on('compositionstart', compositionStartNoteText);
+          $textArea.on('compositionend', compositionEndNoteText);
+        });
+
+        afterAll(() => {
+          const $textArea = $(textArea);
+          $textArea.off('keydown', keypressNoteText);
+          $textArea.off('compositionstart', compositionStartNoteText);
+          $textArea.off('compositionend', compositionEndNoteText);
+        });
         beforeEach(() => {
           enterEvent = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true });
-          textArea.addEventListener('keydown', keypressNoteText);
-          textArea.addEventListener('compositionstart', compositionStartNoteText);
-          textArea.addEventListener('compositionend', compositionEndNoteText);
           gon.markdown_automatic_lists = true;
         });
 
@@ -240,6 +251,9 @@ describe('init markdown', () => {
           ${'- item'}                    | ${'- item\n- '}
           ${'* item'}                    | ${'* item\n* '}
           ${'+ item'}                    | ${'+ item\n+ '}
+          ${'  - item'}                  | ${'  - item\n  - '}
+          ${'  * item'}                  | ${'  * item\n  * '}
+          ${'  + item'}                  | ${'  + item\n  + '}
           ${'- [ ] item'}                | ${'- [ ] item\n- [ ] '}
           ${'- [x] item'}                | ${'- [x] item\n- [ ] '}
           ${'- [X] item'}                | ${'- [X] item\n- [ ] '}
@@ -320,8 +334,8 @@ describe('init markdown', () => {
 
         it.each`
           text                                                       | add_at | expected
-          ${'1. one\n2. two\n3. three'}                              | ${13}  | ${'1. one\n2. two\n2. \n3. three'}
-          ${'108. item\n     5. second\n     6. six\n     7. seven'} | ${36}  | ${'108. item\n     5. second\n     6. six\n     6. \n     7. seven'}
+          ${'1. one\n2. two\n3. three'}                              | ${13}  | ${'1. one\n2. two\n3. \n4. three'}
+          ${'108. item\n     5. second\n     6. six\n     7. seven'} | ${36}  | ${'108. item\n     5. second\n     6. six\n     7. \n     8. seven'}
         `(
           'adds correct numbered continuation characters when in middle of list',
           ({ text, add_at, expected }) => {
@@ -331,6 +345,26 @@ describe('init markdown', () => {
             textArea.dispatchEvent(enterEvent);
 
             expect(textArea.value).toEqual(expected);
+          },
+        );
+
+        // As the enter does not actually get propagated the line does not get deleted in the test.
+        // Check that the selection start and end is on the part which gets removed when the Enter gets propagated.
+        it.each`
+          text                                                            | addAt | expectedSelectionStart | expected
+          ${'1. one\n2. \n3. one\n4. two'}                                | ${10} | ${7}                   | ${'1. one\n2. \n1. one\n2. two'}
+          ${'108. item\n     1. one\n     2. \n     3. one\n     4. two'} | ${30} | ${22}                  | ${'108. item\n     1. one\n     2. \n     1. one\n     2. two'}
+        `(
+          'updates correct numbered continuation characters when breaking up existing list',
+          ({ text, addAt, expectedSelectionStart, expected }) => {
+            textArea.value = text;
+            textArea.setSelectionRange(addAt, addAt);
+
+            textArea.dispatchEvent(enterEvent);
+
+            expect(textArea.value).toEqual(expected);
+            expect(textArea.selectionStart).toEqual(expectedSelectionStart);
+            expect(textArea.selectionEnd).toEqual(addAt);
           },
         );
 
@@ -394,6 +428,69 @@ describe('init markdown', () => {
           textArea.dispatchEvent(enterEvent);
 
           expect(textArea.value).toEqual(text);
+        });
+      });
+
+      describe('Continuing indented text', () => {
+        let enterEvent;
+
+        beforeAll(() => {
+          const $textArea = $(textArea);
+          $textArea.on('keydown', keypressNoteText);
+          $textArea.on('compositionstart', compositionStartNoteText);
+          $textArea.on('compositionend', compositionEndNoteText);
+        });
+        afterAll(() => {
+          const $textArea = $(textArea);
+          $textArea.off('keydown', keypressNoteText);
+          $textArea.off('compositionstart', compositionStartNoteText);
+          $textArea.off('compositionend', compositionEndNoteText);
+        });
+
+        beforeEach(() => {
+          enterEvent = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true });
+          gon.features = {
+            continueIndentedText: true,
+          };
+        });
+
+        it.each`
+          text          | markdownAutomaticLists | expected
+          ${'  nice'}   | ${true}                | ${'  nice\n  '}
+          ${'  a'}      | ${true}                | ${'  a\n  '}
+          ${'  - item'} | ${true}                | ${'  - item\n  - '}
+          ${'  - item'} | ${false}               | ${'  - item\n  '}
+        `(
+          'adds correct indentation characters with markdown_automatic_lists preference: $markdownAutomaticLists',
+          ({ text, markdownAutomaticLists, expected }) => {
+            gon.markdown_automatic_lists = markdownAutomaticLists;
+            textArea.value = text;
+            textArea.setSelectionRange(text.length, text.length);
+
+            textArea.dispatchEvent(enterEvent);
+
+            expect(textArea.value).toEqual(expected);
+            expect(textArea.selectionStart).toBe(expected.length);
+          },
+        );
+
+        it('does not duplicate a line item for IME characters', () => {
+          const text = ' 日本語';
+          const expected = ' 日本語\n ';
+
+          textArea.dispatchEvent(new CompositionEvent('compositionstart'));
+          textArea.value = text;
+
+          // Press enter to end composition
+          textArea.dispatchEvent(enterEvent);
+          textArea.dispatchEvent(new CompositionEvent('compositionend'));
+          textArea.setSelectionRange(text.length, text.length);
+
+          // Press enter to make new line
+          textArea.dispatchEvent(enterEvent);
+
+          expect(textArea.value).toEqual(expected);
+          expect(textArea.selectionStart).toBe(expected.length);
         });
       });
     });
@@ -541,6 +638,29 @@ describe('init markdown', () => {
         expect(textArea.selectionStart).toBe(selectedIndex + selected.length + 2 * tag.length);
       });
 
+      describe('removes tag for the selected value', () => {
+        it.each([{ tag: '**' }, { tag: '_' }, { tag: '~~' }, { tag: '`' }])(
+          'removes $tag',
+          ({ tag }) => {
+            const initialValue = `${tag}${text}${tag}`;
+            textArea.value = initialValue;
+            textArea.setSelectionRange(0, initialValue.length);
+
+            insertMarkdownText({
+              textArea,
+              text: textArea.value,
+              tag,
+              blockTag: null,
+              selected: initialValue,
+              wrap: true,
+            });
+
+            expect(textArea.value).toEqual(text);
+            expect(textArea.selectionStart).toBe(text.length);
+          },
+        );
+      });
+
       it('replaces the placeholder in the tag', () => {
         insertMarkdownText({
           textArea,
@@ -555,6 +675,10 @@ describe('init markdown', () => {
       });
 
       describe('surrounds selected text with matching character', () => {
+        beforeAll(() => {
+          const $textArea = $(textArea);
+          $textArea.on('keydown', keypressNoteText);
+        });
         it.each`
           key    | expected
           ${'['} | ${`[${selected}]`}
@@ -570,7 +694,6 @@ describe('init markdown', () => {
           const event = new KeyboardEvent('keydown', { key });
           gon.markdown_surround_selection = true;
 
-          textArea.addEventListener('keydown', keypressNoteText);
           textArea.dispatchEvent(event);
 
           expect(textArea.value).toEqual(text.replace(selected, expected));
@@ -583,7 +706,6 @@ describe('init markdown', () => {
           const event = new KeyboardEvent('keydown', { key: '[' });
           gon.markdown_surround_selection = false;
 
-          textArea.addEventListener('keydown', keypressNoteText);
           textArea.dispatchEvent(event);
 
           expect(textArea.value).toEqual(text);
@@ -592,7 +714,6 @@ describe('init markdown', () => {
         it('does nothing if meta is set', () => {
           const event = new KeyboardEvent('keydown', { key: '[', metaKey: true });
 
-          textArea.addEventListener('keydown', keypressNoteText);
           textArea.dispatchEvent(event);
 
           expect(textArea.value).toEqual(text);
@@ -735,6 +856,117 @@ describe('init markdown', () => {
           });
 
           expect(textArea.value).toEqual(`before \n${selected}\nafter `);
+        });
+      });
+      describe('and clipboard being pasted', () => {
+        beforeEach(() => {
+          textArea.addEventListener('paste', handlePasteModifications);
+        });
+        afterEach(() => {
+          textArea.removeEventListener('paste', handlePasteModifications);
+        });
+        const synthesizePasteEvent = (textBeingPasted) => {
+          // From __helpers__/dom_shims at time of writing
+          const dt = new DataTransfer();
+          dt.setData('text/plain', textBeingPasted);
+          const ce = new ClipboardEvent('paste', {
+            clipboardData: dt,
+          });
+          jest.spyOn(ce, 'preventDefault');
+          return ce;
+        };
+
+        const parseTextSpec = (t) => {
+          // quick and dirty, because I control the input.
+          // toss all underscores, and use the (translated) indices
+          // of the first two as the selectionBounds
+          const selectionStart = t.indexOf('_');
+          return {
+            text: t.replaceAll('_', ''),
+            selectionStart,
+            selectionEnd: selectionStart + t.substring(selectionStart + 1).indexOf('_'),
+          };
+        };
+        /*
+         * Fragility Note: These tests are validating the current incomplete simulation
+         * of the system paste event. Through a combination of jest, jsdom, and our local
+         * dom_shims helpers, the current behavior when dispatching a paste event is:
+         * 1. The textArea is expected to receive an event with a proper target and
+         *    a clipboard event defined in our dom_shims.
+         * 2. This allows the function being tested to call insertText, and have it update
+         *    the value of the textArea as expected.
+         * 3. HOWEVER: If our handler does NOT call e.preventDefault, in the live site
+         *    we expect the system paste handler to still update the textArea widget.
+         *    For these tests, that does not happen, and the effective behavior
+         *    of the default paste behavior is a noop.
+         * If that situation changes, and the test harness is fixed such that the system
+         * default paste behavior is properly simulated, these test cases will have to be
+         * updated.
+         * I've tried to be nice to our future selves by including that expected future
+         * behavior in the test cases. If the system paste is properly simulated:
+         * 1. Update this test to validate that `afterSystemPaste` is now the expected
+         *    value regardless of preventDefault
+         * 2. Either remove beforeSystemPaste from this function and the examples below,
+         *    or leave it as canary to flag breakage of the system paste simulation.
+         */
+        const pasteMatchesExpectation = ({
+          textSpec,
+          pastedValue,
+          beforeSystemPaste,
+          preventDefault,
+          afterSystemPaste,
+        }) => {
+          const pasteEvent = synthesizePasteEvent(pastedValue);
+          const { text: thisText, selectionStart, selectionEnd } = parseTextSpec(textSpec);
+          textArea.value = thisText;
+          textArea.setSelectionRange(selectionStart, selectionEnd);
+          textArea.dispatchEvent(pasteEvent);
+          if (!preventDefault) {
+            // If this test fails, read block comment above. It may be time to
+            // clean up these tests
+            expect(textArea.value).not.toBe(afterSystemPaste);
+          }
+          expect(textArea.value).toBe(beforeSystemPaste);
+          expect(jest.mocked(pasteEvent.preventDefault).mock.calls).toHaveLength(
+            preventDefault ? 1 : 0,
+          );
+        };
+        describe('contains a URL', () => {
+          const url = 'http://example.com';
+
+          describe('markdown_paste_url flag enabled', () => {
+            beforeEach(() => {
+              gon.features = { ...gon.features, markdownPasteUrl: true };
+            });
+            it.each`
+              textSpec              | pastedValue | beforeSystemPaste             | preventDefault | afterSystemPaste
+              ${'_link_'}           | ${`${url}`} | ${`[link](${url})`}           | ${true}        | ${`[link](${url})`}
+              ${'[_text_](url)'}    | ${`${url}`} | ${'[text](url)'}              | ${false}       | ${`[${url}](url)`}
+              ${'[text](_url_)'}    | ${`${url}`} | ${'[text](url)'}              | ${false}       | ${`[text](${url})`}
+              ${'[s_ubtext_](url)'} | ${`${url}`} | ${`[s[ubtext](${url})](url)`} | ${true}        | ${`[s[ubtext](${url})](url)`}
+            `('uses selected text as markdown link text', pasteMatchesExpectation);
+          });
+          describe('markdown_paste_url flag disabled', () => {
+            beforeEach(() => {
+              gon.features = { ...gon.features, markdownPasteUrl: false };
+            });
+            it.each`
+              textSpec              | pastedValue | beforeSystemPaste   | preventDefault | afterSystemPaste
+              ${'_link_'}           | ${`${url}`} | ${'link'}           | ${false}       | ${`${url}`}
+              ${'[_text_](url)'}    | ${`${url}`} | ${'[text](url)'}    | ${false}       | ${`[${url}](url)`}
+              ${'[text](_url_)'}    | ${`${url}`} | ${'[text](url)'}    | ${false}       | ${`[text](${url})`}
+              ${'[s_ubtext_](url)'} | ${`${url}`} | ${'[subtext](url)'} | ${false}       | ${`[s${url}](url)`}
+            `('handlePaste inserts nothing, and does not prevent default', pasteMatchesExpectation);
+          });
+        });
+        describe('does not contain a URL', () => {
+          it.each`
+            textSpec              | pastedValue    | beforeSystemPaste   | preventDefault | afterSystemPaste
+            ${'_link_'}           | ${'just text'} | ${'link'}           | ${false}       | ${'just text'}
+            ${'[_text_](url)'}    | ${'just text'} | ${'[text](url)'}    | ${false}       | ${'[just text](url)'}
+            ${'[text](_url_)'}    | ${'just text'} | ${'[text](url)'}    | ${false}       | ${'[text](just text)'}
+            ${'[s_ubtext_](url)'} | ${'just text'} | ${'[subtext](url)'} | ${false}       | ${'[sjust text](url)'}
+          `('handlePaste inserts nothing, and does not prevent default', pasteMatchesExpectation);
         });
       });
     });

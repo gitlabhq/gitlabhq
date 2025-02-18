@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: REST API spam protection and CAPTCHA support
 ---
-
-# REST API spam protection and CAPTCHA support
 
 If the model can be modified via the REST API, you must also add support to all of the
 relevant API endpoints which may modify spammable or spam-related attributes. This
@@ -34,12 +33,15 @@ The main steps are:
         For more details on these fields, refer to the section in the REST API documentation on
         [Resolve requests detected as spam](../../api/rest/troubleshooting.md#requests-detected-as-spam).
 
-   NOTE:
-   If you use the standard ApolloLink or Axios interceptor CAPTCHA support described
+   {{< alert type="note" >}}
+
+If you use the standard ApolloLink or Axios interceptor CAPTCHA support described
    above, you can ignore the field details, because they are handled
    automatically. They become relevant if you attempt to use the GraphQL API directly to
    process a failed check for potential spam, and resubmit the request with a solved
    CAPTCHA response.
+
+   {{< /alert >}}
 
 Here is an example for the `post` and `put` actions on the `snippets` resource:
 

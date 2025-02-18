@@ -1,11 +1,12 @@
 ---
-redirect_to: 'index.md'
-remove_date: '2025-02-03'
+redirect_to: _index.md
+remove_date: "2025-02-03"
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
-This document was moved to [another location](index.md).
+This document was moved to [another location](_index.md).
 
 <!-- This redirect file can be deleted after the global navigation is updated -->
 <!-- This redirect file can be deleted after <2025-02-03>. -->

@@ -2,13 +2,15 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Reserved project and group names
 ---
 
-# Reserved project and group names
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To not conflict with existing routes used by GitLab, some words cannot be used as project or group names.
 These words are listed in the
@@ -25,9 +27,8 @@ where:
   - Usernames and group names can contain only letters (`a-zA-Z`), digits (`0-9`), emoji, underscores (`_`), dots (`.`), parentheses (`()`), dashes (`-`), or spaces.
   - Project names can contain only letters (`a-zA-Z`), digits (`0-9`), emoji, underscores (`_`), dots (`.`), pluses (`+`), dashes (`-`), or spaces.
 - Usernames and project or group slugs:
-  - Must start with a letter (`a-zA-Z`) or digit (`0-9`).
+  - Must start and end with a letter (`a-zA-Z`) or digit (`0-9`).
   - Must not contain consecutive special characters.
-  - Cannot start or end with a special character.
   - Cannot end in `.git` or `.atom`.
   - Can contain only letters (`a-zA-Z`), digits (`0-9`), underscores (`_`), dots (`.`), or dashes (`-`).
 

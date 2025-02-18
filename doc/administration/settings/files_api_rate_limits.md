@@ -2,14 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Configure rate limits for the repository files API on GitLab Self-Managed."
+description: Configure rate limits for the repository files API on GitLab Self-Managed.
+title: Rate limits on Repository files API
 ---
 
-# Rate limits on Repository files API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The [Repository files API](../../api/repository_files.md) enables you to
 fetch, create, update, and delete files in your repository. To improve the security

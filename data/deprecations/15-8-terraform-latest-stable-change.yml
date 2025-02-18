@@ -14,5 +14,5 @@
     For example, if your Terraform jobs are triggered as a downstream pipeline, the rules won't trigger your jobs
     in GitLab 16.0.
 
-    To accommodate the changes, you might need to adjust the [`rules`](https://docs.gitlab.com/ee/ci/yaml/#rules) in your
+    To accommodate the changes, you might need to adjust the [`rules`](https://docs.gitlab.com/ci/yaml/#rules) in your
     `.gitlab-ci.yml` file.

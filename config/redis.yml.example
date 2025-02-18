@@ -6,6 +6,9 @@ development:
   cache:
     cluster:
       - redis://localhost:7001
+  cluster_sessions:
+    cluster:
+      - redis://localhost:7001
   cluster_shared_state:
     cluster:
       - redis://localhost:7001
@@ -18,6 +21,8 @@ development:
   queues_metadata:
     cluster:
       - redis://localhost:7001
+  sessions:
+    url: redis://localhost:6379
   shared_state:
     cluster:
       - redis://localhost:7001
@@ -31,6 +36,9 @@ test:
   cache:
     cluster:
       - redis://localhost:7001
+  cluster_sessions:
+    cluster:
+      - redis://localhost:7001
   cluster_shared_state:
     cluster:
       - redis://localhost:7001
@@ -46,6 +54,12 @@ test:
   shared_state:
     cluster:
       - redis://localhost:7001
+  # Temporarily set sessions to use single Redis instance
+  # until we finish migration to cluster_sessions. https://gitlab.com/groups/gitlab-com/gl-infra/data-access/durability/-/epics/9
+  # This helps specs to pass as-is, otherwise MultiStore writes
+  # to the same store in specs.
+  sessions:
+    url: redis://localhost:6379
   # pubsub and workhorse are not redis-cluster compatible
   # even though they fall-back to shared_state
   workhorse:

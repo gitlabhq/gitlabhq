@@ -1,0 +1,10 @@
+---
+view_name: project_design_management_routes_view
+classes: []
+feature_categories:
+  - backup_restore
+description: Project design repository references and its related routes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179449
+milestone: '17.9'
+gitlab_schema: gitlab_main
+table_size: small

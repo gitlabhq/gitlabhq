@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Preloaders::ProjectRootAncestorPreloader, feature_category: :system_access do
+RSpec.describe Preloaders::ProjectRootAncestorPreloader, feature_category: :groups_and_projects do
   let_it_be(:root_parent1) { create(:group, :private, name: 'root-1', path: 'root-1') }
   let_it_be(:root_parent2) { create(:group, name: 'root-2', path: 'root-2') }
   let_it_be(:guest_project) { create(:project, name: 'public guest', path: 'public-guest') }

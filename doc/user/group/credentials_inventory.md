@@ -2,24 +2,30 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Credentials inventory for GitLab.com
 ---
 
-# Credentials inventory for GitLab.com
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com
+- Tier: Ultimate
+- Offering: GitLab.com
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/297441) on GitLab.com in GitLab 17.5.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/297441) on GitLab.com in GitLab 17.5.
+
+{{< /history >}}
 
 As a GitLab.com top-level group owner, you are responsible for the overall security of your groups and projects.
 To assist, GitLab provides an inventory of all the credentials that can be used to access your groups and projects.
 
-This page describes how to manage the credentials inventory for GitLab.com. To manage credentials on GitLab self-managed, see [Credentials inventory for GitLab self-managed](../../administration/credentials_inventory.md).
+This page describes how to manage the credentials inventory for GitLab.com. To manage credentials on GitLab Self-Managed, see [Credentials inventory for GitLab Self-Managed](../../administration/credentials_inventory.md).
 
 In the credentials inventory, you can view:
 
-- For [enterprise users](../enterprise_user/index.md):
+- For [enterprise users](../enterprise_user/_index.md):
   - Personal access tokens (PATs).
   - SSH keys.
 

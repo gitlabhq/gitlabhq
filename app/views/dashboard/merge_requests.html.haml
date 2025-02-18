@@ -4,7 +4,6 @@
   @breadcrumb_link = merge_requests_dashboard_path(assignee_username: current_user.username)
   add_page_specific_style 'page_bundles/issuable_list'
 
-- new_lists_enabled = ::Feature.enabled?(:merge_request_dashboard_new_lists, current_user, type: :wip)
 = render_dashboard_ultimate_trial(current_user)
 = render_if_exists 'shared/dashboard/saml_reauth_notice',
   groups_requiring_saml_reauth: user_groups_requiring_reauth
@@ -27,20 +26,17 @@
       = render 'shared/new_project_item_vue_select'
 
 - if merge_request_dashboard_enabled?(current_user) && !current_page?(merge_requests_search_dashboard_path)
-  #js-merge-request-dashboard{ data: { base_path: merge_requests_dashboard_path, new_lists_enabled: new_lists_enabled.to_s, merge_requests_search_dashboard_path: merge_requests_search_dashboard_path(assignee_username: current_user.username), initial_data: merge_request_dashboard_data.to_json } }
+  #js-merge-request-dashboard{ data: { base_path: merge_requests_dashboard_path, merge_requests_search_dashboard_path: merge_requests_search_dashboard_path(assignee_username: current_user.username), initial_data: merge_request_dashboard_data.to_json } }
     = gl_loading_icon(size: 'lg')
 
 - if !merge_request_dashboard_enabled?(current_user) || current_page?(merge_requests_search_dashboard_path)
   - if merge_request_dashboard_enabled?(current_user)
     = gl_tabs_nav do
-      = gl_tab_link_to new_lists_enabled ? _('Active') : _('Needs attention'), merge_requests_dashboard_path
-      - if new_lists_enabled
-        = gl_tab_link_to _('Merged'), merge_requests_merged_dashboard_path
-      - else
-        = gl_tab_link_to _('Following'), merge_requests_following_dashboard_path
+      = gl_tab_link_to _('Active'), merge_requests_dashboard_path
+      = gl_tab_link_to _('Merged'), merge_requests_merged_dashboard_path
       = gl_tab_link_to _('Search'), merge_requests_search_dashboard_path, item_active: true
 
-  %div{ class: "#{'gl-bg-gray-10' if merge_request_dashboard_enabled?(current_user)}" }
+  %div{ class: "#{'gl-bg-subtle' if merge_request_dashboard_enabled?(current_user)}" }
     - unless merge_request_dashboard_enabled?(current_user)
       .top-area
         = render 'shared/issuable/nav', type: :merge_requests, display_count: !(@no_filters_set || @search_timeout_occurred)

@@ -32,7 +32,7 @@ describe('~/ide/components/pipelines/empty_state.vue', () => {
         title: EmptyState.i18n.title,
         description: EmptyState.i18n.description,
         primaryButtonText: EmptyState.i18n.primaryButtonText,
-        primaryButtonLink: '/help/ci/quick_start/index.md',
+        primaryButtonLink: '/help/ci/quick_start/_index.md',
         svgPath: TEST_PIPELINES_EMPTY_STATE_SVG_PATH,
       });
     });

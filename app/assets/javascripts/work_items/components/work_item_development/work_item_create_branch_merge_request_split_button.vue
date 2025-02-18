@@ -87,11 +87,6 @@ export default {
 
       return { items, name: __('Branch') };
     },
-    createMergeRequestButtonText() {
-      return this.isConfidentialWorkItem
-        ? __('Create confidential merge request')
-        : this.$options.i18n.createMergeRequest;
-    },
   },
   methods: {
     openModal(createBranch = true, createMergeRequest = false) {
@@ -111,7 +106,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="showCreateOptions" class="gl-mt-4">
+  <div v-if="showCreateOptions">
     <gl-button-group>
       <gl-button
         :loading="checkingBranchAvailibility"
@@ -121,9 +116,14 @@ export default {
         size="medium"
         @click="openModal(false, true)"
       >
-        {{ createMergeRequestButtonText }}
+        {{ $options.i18n.createMergeRequest }}
       </gl-button>
-      <gl-disclosure-dropdown placement="bottom-end" data-testid="create-options-dropdown">
+      <gl-disclosure-dropdown
+        :toggle-text="__('More options')"
+        text-sr-only
+        placement="bottom-end"
+        data-testid="create-options-dropdown"
+      >
         <gl-disclosure-dropdown-group :group="mergeRequestGroup" />
 
         <gl-disclosure-dropdown-group bordered :group="branchGroup" />

@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Offset pagination optimization
 ---
-
-# Offset pagination optimization
 
 In many REST APIs endpoints, we use [offset-based pagination](pagination_guidelines.md#offset-pagination) which uses the `page` URL parameter to paginate through the results. Offset pagination [scales linearly](pagination_guidelines.md#offset-on-a-large-dataset), the higher the page number, the slower the database query gets. This means that for large page numbers, the database query can time out. This usually happens when third-party integrations and scripts interact with the system as users are unlikely to deliberately visit a high page number.
 

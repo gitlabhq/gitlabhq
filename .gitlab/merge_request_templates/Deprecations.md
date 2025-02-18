@@ -27,7 +27,7 @@ Deprecation announcements can and should be created and merged into Docs at any 
 
 Please review:
 
-- The definitions of ["Deprecation"](https://docs.gitlab.com/ee/update/terminology.html#deprecation), ["End of Support"](https://docs.gitlab.com/ee/update/terminology.html#end-of-support), and ["Removal"](https://docs.gitlab.com/ee/update/terminology.html#removal).
+- The definitions of ["Deprecation"](https://docs.gitlab.com/update/terminology/#deprecation), ["End of Support"](https://docs.gitlab.com/update/terminology/#end-of-support), and ["Removal"](https://docs.gitlab.com/update/terminology/#removal).
 - The [guidelines for deprecations](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
 - The process for [creating a deprecation announcement](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#creating-the-announcement).
 
@@ -36,9 +36,9 @@ They are frequently updated, and everyone should make sure they are aware of the
 ## EM/PM release post item checklist
 
 - [ ] Set yourself as the Assignee, meaning you are the DRI.
-- [ ] For [breaking changes](https://docs.gitlab.com/ee/update/terminology.html#breaking-change):
+- [ ] For [breaking changes](https://docs.gitlab.com/update/terminology/#breaking-change):
   - [ ] Add the ~"breaking change"  label to the MR.
-  - [ ] If the breaking change affects GitLab.com, add `window` with a value of `1`, `2`, or `3`. The value represents the planned [release window](https://docs.gitlab.com/ee/update/breaking_windows.html) for GitLab.com, typically in the three weeks before the major release date. You should intentionally plan this window ahead of time. If you're not sure, ask `@swiskow`.
+  - [ ] If the breaking change affects GitLab.com, add `window` with a value of `1`, `2`, or `3`. The value represents the planned [release window](https://docs.gitlab.com/update/breaking_windows/) for GitLab.com, typically in the three weeks before the major release date. You should intentionally plan this window ahead of time. If you're not sure, ask `@swiskow`.
 - [ ] Confirm this MR is labeled ~"release post item::deprecation"
 - [ ] Follow the process to [create a deprecation YAML file](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#creating-the-announcement).
 - [ ] Add reviewers by the 10th.
@@ -51,7 +51,7 @@ They are frequently updated, and everyone should make sure they are aware of the
 
 When the content is ready for review, it must be reviewed by a Technical Writer and Engineering Manager, but can also be reviewed by
 Product Marketing, Product Design, and the Product Leaders for this area. Please use the
-[reviewers](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-reviewers-feature)
+[reviewers](https://docs.gitlab.com/development/code_review/#dogfooding-the-reviewers-feature)
 feature for all reviews. Reviewers will then approve the MR and remove themselves from Reviewers when their review is complete.
 
 - [ ] (Recommended) PMM
@@ -84,8 +84,7 @@ yourself as a reviewer if it's not ready for merge yet.
   - All links must be full URLs, as the deprecation YAML files are used in two different projects. Do not use relative links. The generated doc is an exception to the relative link rule and currently uses absolute links only.
   - Make sure all links and anchors are correct. Do not link to the H1 (top) anchor on a docs page.
 - [ ] Code. Make sure any included code is wrapped in code blocks.
-- [ ] Capitalization. Make sure to capitalize feature names. Stay consistent with the Documentation Style Guidance on [Capitalization](https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#capitalization).
-- [ ] Blank spaces. Remove unnecessary spaces (end of line spaces, double spaces, extra blank lines, and lines with only spaces).
+- [ ] Capitalization. Make sure to capitalize feature names. Stay consistent with the Documentation Style Guidance on [Capitalization](https://docs.gitlab.com/ee/development/documentation/styleguide/#capitalization).
 
 </details>
 
@@ -93,14 +92,22 @@ When the PM indicates it is ready for merge and all issues have been addressed, 
 
 #### Technical writer merge process
 
-The [deprecations doc's `.md` file](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/update/deprecations.md)
-must be updated before this MR is merged:
+Remove unnecessary spaces and text, and update the [deprecations doc's `.md` file](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/update/deprecations.md):
 
 1. Check out the MR's branch (in the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) project).
-1. From the command line (in the branch), run `bin/rake gitlab:docs:compile_deprecations`.
-   If you want to double check that it worked, you can run `bin/rake gitlab:docs:check_deprecations`
-   to verify that the doc is up to date.
-1. Commit the updated file and push the changes.
+1. Remove unnecessary spaces (end of line spaces, double spaces, extra blank lines, lines with only spaces).
+1. Remove unnecessary text (template and commented out text).
+1. Update the `deprecations.md` file:
+
+   1. From the command line (in the branch), run `bin/rake gitlab:docs:compile_deprecations`.
+   1. To double check that it worked, you can run `bin/rake gitlab:docs:check_deprecations`
+      to verify that the doc is up to date.
+
+1. Update the `breaking_windows.md` file:
+
+   1. From the command line (in the branch), run `bin/rake gitlab:docs:compile_windows`.
+
+1. Commit the updated files and push the changes.
 1. Set the merge request to auto-merge, or if the pipeline is already complete, merge.
 
 If you have trouble running the Rake task, check the [troubleshooting steps](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecation-rake-task-troubleshooting).

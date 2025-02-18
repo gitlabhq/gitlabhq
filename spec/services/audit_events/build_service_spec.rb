@@ -132,12 +132,6 @@ RSpec.describe AuditEvents::BuildService, feature_category: :audit_events do
         it { expect { service }.to raise_error(described_class::MissingAttributeError, "author") }
       end
 
-      context 'when scope is missing' do
-        let(:scope) { nil }
-
-        it { expect { service }.to raise_error(described_class::MissingAttributeError, "scope") }
-      end
-
       context 'when target is missing' do
         let(:target) { nil }
 
@@ -148,6 +142,47 @@ RSpec.describe AuditEvents::BuildService, feature_category: :audit_events do
         let(:message) { nil }
 
         it { expect { service }.to raise_error(described_class::MissingAttributeError, "message") }
+      end
+    end
+
+    context 'when scope is valid' do
+      where(:scope_type) do
+        [
+          [:group],
+          [:project],
+          [:user]
+        ]
+      end
+      with_them do
+        let(:scope) do
+          case scope_type
+          when :group then create(:group)
+          when :project then create(:project)
+          when :user then create(:user)
+          end
+        end
+
+        it 'does not raise error' do
+          expect { service.execute }.not_to raise_error
+        end
+      end
+    end
+
+    context 'when scope is invalid' do
+      context 'when user namespace is passed as scope' do
+        let(:scope) { create(:user_namespace) }
+
+        it 'raises error' do
+          expect { service.execute }.to raise_error(ArgumentError, "Invalid scope class: Namespaces::UserNamespace")
+        end
+      end
+
+      context 'when scope is nil' do
+        let(:scope) { nil }
+
+        it 'raises error' do
+          expect { service.execute }.to raise_error(ArgumentError, "Invalid scope class: NilClass")
+        end
       end
     end
   end

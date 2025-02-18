@@ -22,10 +22,13 @@ module Authn
         ::API::Entities::Application
       end
 
-      def revoke!(_current_user)
+      def revoke!(current_user)
         raise ::Authn::AgnosticTokenIdentifier::NotFoundError, 'Not Found' if revocable.blank?
 
-        raise ::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Revocation not supported for this token type'
+        Authz::Applications::ResetSecretService.new(
+          application: revocable,
+          current_user: current_user
+        ).execute
       end
     end
   end

@@ -2,28 +2,36 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Helm API
 ---
 
-# Helm API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This is the API documentation for [Helm](../../user/packages/helm_repository/index.md).
+{{< /details >}}
 
-WARNING:
+This is the API documentation for [Helm](../../user/packages/helm_repository/_index.md).
+
+{{< alert type="warning" >}}
+
 This API is used by the Helm-related package clients such as [Helm](https://helm.sh/)
 and [`helm-push`](https://github.com/chartmuseum/helm-push/#readme),
 and is generally not meant for manual consumption.
 
-For instructions on how to upload and install Helm packages from the GitLab
-Package Registry, see the [Helm registry documentation](../../user/packages/helm_repository/index.md).
+{{< /alert >}}
 
-NOTE:
+For instructions on how to upload and install Helm packages from the GitLab
+Package Registry, see the [Helm registry documentation](../../user/packages/helm_repository/_index.md).
+
+{{< alert type="note" >}}
+
 These endpoints do not adhere to the standard API authentication methods.
-See the [Helm registry documentation](../../user/packages/helm_repository/index.md)
+See the [Helm registry documentation](../../user/packages/helm_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
+
+{{< /alert >}}
 
 ## Download a chart index
 

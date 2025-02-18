@@ -1,15 +1,17 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Build, automate, and customize changelogs in your GitLab project."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Build, automate, and customize changelogs in your GitLab project.
+title: Changelogs
 ---
 
-# Changelogs
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Changelogs are generated based on commit titles and Git trailers. To be included
 in a changelog, a commit must contain a specific Git trailer. Changelogs are generated
@@ -72,11 +74,15 @@ in the API documentation.
 
 ### From the GitLab CLI
 
-> - [Introduced](https://gitlab.com/gitlab-org/cli/-/merge_requests/1222) in `glab` version 1.30.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/cli/-/merge_requests/1222) in `glab` version 1.30.0.
+
+{{< /history >}}
 
 Prerequisites:
 
-- You have installed and configured the [GitLab CLI](../../editor_extensions/gitlab_cli/index.md),
+- You have installed and configured the [GitLab CLI](../../editor_extensions/gitlab_cli/_index.md),
   version 1.30.0 or later.
 - Your repository's tag naming schema matches
   [the expected tag naming format](#customize-the-tag-format-when-extracting-versions).
@@ -137,7 +143,11 @@ The file supports these variables:
 
 ### Custom templates
 
-> - Default template [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806) from using `commit.reference` and `merge_request.reference` to `commit.web_url` and `merge_request.web_url` in GitLab 17.1.
+{{< history >}}
+
+- Default template [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806) from using `commit.reference` and `merge_request.reference` to `commit.web_url` and `merge_request.web_url` in GitLab 17.1.
+
+{{< /history >}}
 
 Category sections are generated using a template. The default template:
 
@@ -253,7 +263,11 @@ When specifying the template you should use `template: |` and not
 
 ### Template data
 
-> - `commit.web_url` and `merge_request.web_url` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806) in GitLab 17.1.
+{{< history >}}
+
+- `commit.web_url` and `merge_request.web_url` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806) in GitLab 17.1.
+
+{{< /history >}}
 
 At the top level, the following variable is available:
 

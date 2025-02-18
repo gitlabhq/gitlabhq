@@ -2,15 +2,21 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Issue weight
 ---
 
-# Issue weight
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - Moved to GitLab Premium in 13.9.
+{{< /details >}}
+
+{{< history >}}
+
+- Moved to GitLab Premium in 13.9.
+
+{{< /history >}}
 
 When you have a lot of issues, it can be hard to get an overview.
 With weighted issues, you can get a better idea of how much time,
@@ -22,13 +28,17 @@ to see which issues need to be prioritized.
 You can view the issue weight on:
 
 - The right sidebar of each issue.
-- The issues page, next to a weight icon (**{weight}**).
-- [Issue boards](../issue_board.md), next to a weight icon (**{weight}**).
-- The [milestone](../milestones/index.md) page, as a total sum of issue weights.
+- The issues page, next to a weight icon ({{< icon name="weight" >}}).
+- [Issue boards](../issue_board.md), next to a weight icon ({{< icon name="weight" >}}).
+- The [milestone](../milestones/_index.md) page, as a total sum of issue weights.
 
 ## Set the issue weight
 
-> - Minimum role to set issue weight [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to set issue weight [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -66,7 +76,11 @@ To set the issue weight when you [edit an issue from an issue board](../issue_bo
 
 ## Remove issue weight
 
-> - Minimum role to remove issue weight [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to remove issue weight [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 

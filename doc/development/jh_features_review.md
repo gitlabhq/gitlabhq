@@ -1,10 +1,9 @@
 ---
 stage: none
 group: unassigned
-info: https://jihulab.com/gitlab-cn/gitlab
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Guidelines for reviewing JiHu (JH) Edition related merge requests
 ---
-
-# Guidelines for reviewing JiHu (JH) Edition related merge requests
 
 We have two kinds of changes related to JH:
 
@@ -25,7 +24,7 @@ We have two kinds of changes related to JH:
     [JiHu guidelines for database changes](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-database-change-process/)
     for details.
 
-If needed, review the corresponding JH merge request located at [JH repository](https://jihulab.com/gitlab-cn/gitlab).
+If needed, review the corresponding JH merge request located in the [JH repository](https://jihulab.com/gitlab-cn/gitlab).
 
 ## When to merge files to the GitLab Inc. repository
 
@@ -39,10 +38,10 @@ the reference from being misidentified as a missing partial and subsequently del
 
 Read the following process guides:
 
-- [Contribution review process](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-contribution-process/)
-- [Database change process](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-database-change-process/)
-- [Security review process](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-security-review-process/)
-- [Merge request process](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-contribution-process/#merge-request-review-process)
+- [Contribution review process](https://handbook.gitlab.com/handbook/ceo/office-of-the-ceo/jihu-support/jihu-contribution-process/)
+- [Database change process](https://handbook.gitlab.com/handbook/ceo/office-of-the-ceo/jihu-support/jihu-database-change-process/)
+- [Security review process](https://handbook.gitlab.com/handbook/ceo/office-of-the-ceo/jihu-support/jihu-security-review-process/)
+- [Merge request process](https://handbook.gitlab.com/handbook/ceo/office-of-the-ceo/jihu-support/jihu-contribution-process/#merge-request-review-process)
 
 ## Act as EE when `jh/` does not exist or when `EE_ONLY=1`
 
@@ -99,13 +98,16 @@ the relevant EE and JH modules by the name of the receiver module.
 If reviewing the corresponding JH file is needed, it should be found at
 [JH repository](https://jihulab.com/gitlab-cn/gitlab).
 
-NOTE:
+{{< alert type="note" >}}
+
 In some cases, JH does need to override something we don't need, and in that
 case it is ok to also add `prepend_mod` for the modules. When we do this,
 also add a comment mentioning it, and a link to the JH module using it.
 This way we know where it's used and when we might not need it anymore,
 and we do not remove them only because we're not using it, accidentally
 breaking JH. An example of this:
+
+{{< /alert >}}
 
 ```ruby
 # Added for JiHu

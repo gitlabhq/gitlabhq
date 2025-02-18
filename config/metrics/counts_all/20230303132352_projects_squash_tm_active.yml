@@ -12,9 +12,6 @@ time_frame: all
 data_source: database
 data_category: optional
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

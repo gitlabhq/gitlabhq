@@ -2,22 +2,24 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "System notes track the history of changes made to an object, like a merge request or issue, in your GitLab project."
+description: System notes track the history of changes made to an object, like a merge request or issue, in your GitLab project.
+title: System notes
 ---
 
-# System notes
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 System notes are short descriptions that help you understand the history of events
 that occur during the lifecycle of a GitLab object, such as:
 
 - [Alerts](../../operations/incident_management/alerts.md).
 - [Designs](issues/design_management.md).
-- [Issues](issues/index.md).
-- [Merge requests](merge_requests/index.md).
+- [Issues](issues/_index.md).
+- [Merge requests](merge_requests/_index.md).
 - [Objectives and key results](../okrs.md) (OKRs).
 - [Tasks](../tasks.md).
 

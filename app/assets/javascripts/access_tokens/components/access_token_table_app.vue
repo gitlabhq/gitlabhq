@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlLink, GlPagination, GlTable, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlLink, GlModal, GlPagination, GlTable, GlTooltipDirective } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import axios from '~/lib/utils/axios_utils';
 import {
@@ -13,7 +13,8 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import UserDate from '~/vue_shared/components/user_date.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { EVENT_SUCCESS, FIELDS, INITIAL_PAGE, PAGE_SIZE } from './constants';
+import { createAlert, VARIANT_DANGER } from '~/alert';
+import { EVENT_SUCCESS, FIELDS, FORM_SELECTOR, INITIAL_PAGE, PAGE_SIZE } from './constants';
 
 /**
  * This component supports two different types of pagination:
@@ -23,12 +24,14 @@ import { EVENT_SUCCESS, FIELDS, INITIAL_PAGE, PAGE_SIZE } from './constants';
 
 export default {
   EVENT_SUCCESS,
+  FORM_SELECTOR,
   PAGE_SIZE,
   name: 'AccessTokenTableApp',
   components: {
     DomElementListener,
     GlButton,
     GlLink,
+    GlModal,
     GlPagination,
     GlTable,
     TimeAgoTooltip,
@@ -40,23 +43,30 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   lastUsedHelpLink: helpPagePath('/user/profile/personal_access_tokens.md', {
-    anchor: 'view-the-time-at-and-ips-where-a-token-was-last-used',
+    anchor: 'view-token-usage-information',
   }),
   i18n: {
+    button: {
+      revoke: s__('AccessTokens|Revoke'),
+      rotate: s__('AccessTokens|Rotate'),
+    },
     emptyDateField: __('Never'),
     expired: __('Expired'),
-    modalMessage: {
-      revoke: s__(
-        'AccessTokens|Are you sure you want to revoke the %{accessTokenType} "%{tokenName}"? This action cannot be undone. Any tools that rely on this access token will stop working.',
-      ),
-      rotate: s__(
-        'AccessTokens|Are you sure you want to rotate the %{accessTokenType} "%{tokenName}"? This action cannot be undone. Any tools that rely on this access token will stop working.',
-      ),
-    },
-    revokeButton: s__('AccessTokens|Revoke'),
-    rotateButton: s__('AccessTokens|Rotate'),
-
+    lastTimeUsed: s__('AccessTokens|The last time a token was used'),
     tokenValidity: __('Token valid until revoked'),
+    modal: {
+      message: {
+        revoke: s__(
+          'AccessTokens|Are you sure you want to revoke the %{accessTokenType} "%{tokenName}"? This action cannot be undone. Any tools that rely on this access token will stop working.',
+        ),
+        rotate: s__(
+          'AccessTokens|Are you sure you want to rotate the %{accessTokenType} "%{tokenName}"? This action cannot be undone. Any tools that rely on this access token will stop working.',
+        ),
+      },
+      actionCancel: {
+        text: __('Cancel'),
+      },
+    },
   },
   inject: [
     'accessTokenType',
@@ -70,22 +80,34 @@ export default {
     const activeAccessTokens = this.convert(this.initialActiveAccessTokens);
 
     return {
+      accessTokenName: '',
+      accessTokenPath: '',
       activeAccessTokens,
+      alert: null,
       busy: false,
       currentPage: INITIAL_PAGE, // This is the page use in the GlTable. It stays 1 if the backend pagination is on.
+      modalVisible: false,
       page: INITIAL_PAGE, // This is the page use in the GlPagination component
       perPage: PAGE_SIZE,
       totalItems: activeAccessTokens.length,
     };
   },
   computed: {
+    actionPrimary() {
+      return {
+        text: this.$options.i18n.button.rotate,
+        attributes: {
+          variant: 'danger',
+        },
+      };
+    },
     filteredFields() {
       const ignoredFields = [];
 
-      // Show 'action' column only when there are no active tokens or when some of them have a revokePath
+      // Show 'action' column only when there are no active tokens or when some of them have a revokePath or rotatePath
       const showAction =
         this.activeAccessTokens.length === 0 ||
-        this.activeAccessTokens.some((token) => token.revokePath);
+        this.activeAccessTokens.some((token) => token.revokePath || token.rotatePath);
 
       if (!showAction) {
         ignoredFields.push('action');
@@ -150,8 +172,45 @@ export default {
     replaceHistory(page) {
       window.history.replaceState(null, '', `?page=${page}`);
     },
+    toggleModal(name, path) {
+      this.modalVisible = !this.modalVisible;
+      this.accessTokenName = name;
+      this.accessTokenPath = path;
+    },
+    // Received when new token is created in new_access_token_app.vue
     onSuccess(event) {
       const [{ active_access_tokens: activeAccessTokens, total: totalItems }] = event.detail;
+      this.updateAccessTokens(activeAccessTokens, totalItems);
+    },
+    async handleAccessTokenRotation() {
+      try {
+        this.alert?.dismiss();
+
+        const { data } = await axios.put(this.accessTokenPath);
+        const { active_access_tokens: activeAccessTokens, total: totalItems } = data;
+
+        this.updateAccessTokens(activeAccessTokens, totalItems);
+
+        // Trigger an event on new_access_token_app.vue to display the new token (on rotate)
+        const newAccessTokenForm = document.querySelector(FORM_SELECTOR);
+        if (newAccessTokenForm) {
+          const event = new CustomEvent(EVENT_SUCCESS, {
+            detail: [data],
+          });
+          newAccessTokenForm.dispatchEvent(event);
+        }
+      } catch (error) {
+        if (error.response?.data?.message) {
+          this.alert = createAlert({
+            message: error.response.data.message,
+            variant: VARIANT_DANGER,
+          });
+        }
+      } finally {
+        this.modalVisible = false;
+      }
+    },
+    updateAccessTokens(activeAccessTokens, totalItems) {
       this.activeAccessTokens = this.convert(activeAccessTokens);
       this.totalItems = totalItems;
       this.currentPage = INITIAL_PAGE;
@@ -162,7 +221,7 @@ export default {
       }
     },
     modalMessage(tokenName, action) {
-      return sprintf(this.$options.i18n.modalMessage[action], {
+      return sprintf(this.$options.i18n.modal.message[action], {
         accessTokenType: this.accessTokenType,
         tokenName,
       });
@@ -194,7 +253,7 @@ export default {
 </script>
 
 <template>
-  <dom-element-listener selector=".js-token-card" @[$options.EVENT_SUCCESS]="onSuccess">
+  <dom-element-listener :selector="$options.FORM_SELECTOR" @[$options.EVENT_SUCCESS]="onSuccess">
     <div>
       <div>
         <gl-table
@@ -209,6 +268,9 @@ export default {
           stacked="sm"
           :busy="busy"
         >
+          <template #cell(name)="{ item: { name } }">
+            <span class="gl-font-normal">{{ name }}</span>
+          </template>
           <template #cell(createdAt)="{ item: { createdAt } }">
             <user-date :date="createdAt" />
           </template>
@@ -217,7 +279,7 @@ export default {
             <span>{{ label }}</span>
             <gl-link :href="$options.lastUsedHelpLink"
               ><help-icon class="gl-ml-2" /><span class="gl-sr-only">{{
-                s__('AccessTokens|The last time a token was used')
+                $options.i18n.lastTimeUsed
               }}</span></gl-link
             >
           </template>
@@ -252,8 +314,8 @@ export default {
             <gl-button
               v-if="revokePath"
               category="tertiary"
-              :title="$options.i18n.revokeButton"
-              :aria-label="$options.i18n.revokeButton"
+              :title="$options.i18n.button.revoke"
+              :aria-label="$options.i18n.button.revoke"
               :data-confirm="modalMessage(name, 'revoke')"
               data-confirm-btn-variant="danger"
               data-testid="revoke-button"
@@ -265,19 +327,26 @@ export default {
             <gl-button
               v-if="rotatePath"
               category="tertiary"
-              :title="$options.i18n.rotateButton"
-              :aria-label="$options.i18n.rotateButton"
-              :data-confirm="modalMessage(name, 'rotate')"
-              data-confirm-btn-variant="danger"
+              :title="$options.i18n.button.rotate"
+              :aria-label="$options.i18n.button.rotate"
               data-testid="rotate-button"
-              data-method="put"
-              data-remote
-              :href="rotatePath"
               icon="retry"
               class="has-tooltip"
+              @click="toggleModal(name, rotatePath)"
             />
           </template>
         </gl-table>
+        <gl-modal
+          v-model="modalVisible"
+          :action-cancel="$options.i18n.modal.actionCancel"
+          :action-primary="actionPrimary"
+          modal-id="token-action-modal"
+          size="sm"
+          hide-header
+          @primary="handleAccessTokenRotation"
+        >
+          {{ modalMessage(accessTokenName, 'rotate') }}
+        </gl-modal>
       </div>
       <gl-pagination
         v-if="showPagination"

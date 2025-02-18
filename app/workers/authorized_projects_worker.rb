@@ -23,10 +23,6 @@ class AuthorizedProjectsWorker
 
     refresh_service = Users::RefreshAuthorizedProjectsService.new(user, source: self.class.name)
 
-    if Feature.enabled?(:drop_lease_usage_authorized_projects_worker, Feature.current_request)
-      refresh_service.execute_without_lease
-    else
-      refresh_service.execute
-    end
+    refresh_service.execute_without_lease
   end
 end

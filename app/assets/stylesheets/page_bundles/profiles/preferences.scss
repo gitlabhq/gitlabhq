@@ -42,7 +42,7 @@
 
     &.ui-gray {
       background-color: $gray-900;
-      border: solid 1px $border-color;
+      @apply gl-border;
     }
 
     &.ui-neutral {
@@ -51,7 +51,7 @@
       // stylelint-disable-next-line gitlab/no-gl-class
       .gl-dark & {
         background-color: $gray-950;
-        border: solid 1px $border-color;
+        @apply gl-border;
       }
     }
   }

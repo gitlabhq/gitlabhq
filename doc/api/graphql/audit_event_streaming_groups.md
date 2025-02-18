@@ -2,21 +2,27 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Audit event streaming GraphQL API for top-level groups
 ---
 
-# Audit event streaming GraphQL API for top-level groups
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - Custom HTTP headers API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361216) in GitLab 15.1 [with a flag](../feature_flags.md) named `streaming_audit_event_headers`. Disabled by default.
-> - Custom HTTP headers API [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/362941) in GitLab 15.2.
-> - Custom HTTP headers API [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366524) in GitLab 15.3. [Feature flag `streaming_audit_event_headers`](https://gitlab.com/gitlab-org/gitlab/-/issues/362941) removed.
-> - User-specified verification token API support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360813) in GitLab 15.4.
-> - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
-> - User-specified destination name API support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413894) in GitLab 16.2.
-> - API [feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/417708) removed in GitLab 16.4.
+{{< /details >}}
+
+{{< history >}}
+
+- Custom HTTP headers API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361216) in GitLab 15.1 [with a flag](../feature_flags.md) named `streaming_audit_event_headers`. Disabled by default.
+- Custom HTTP headers API [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/362941) in GitLab 15.2.
+- Custom HTTP headers API [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366524) in GitLab 15.3. [Feature flag `streaming_audit_event_headers`](https://gitlab.com/gitlab-org/gitlab/-/issues/362941) removed.
+- User-specified verification token API support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360813) in GitLab 15.4.
+- [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
+- User-specified destination name API support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413894) in GitLab 16.2.
+- API [feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/417708) removed in GitLab 16.4.
+
+{{< /history >}}
 
 Manage audit event streaming destinations for top-level groups by using a GraphQL API.
 
@@ -28,8 +34,11 @@ Manage HTTP streaming destinations for top-level groups.
 
 Add a new streaming destination to top-level groups.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Streaming destinations receive **all** audit event data, which could include sensitive information. Make sure you trust the streaming destination.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -282,12 +291,16 @@ The header is deleted if the returned `errors` object is empty.
 
 ### Event type filters
 
-> - Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7.
+{{< history >}}
+
+- Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7.
+
+{{< /history >}}
 
 When this feature is enabled for a group, you can use an API to permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
 
-A streaming destination that has an event type filter set has a **filtered** (**{filter}**) label.
+A streaming destination that has an event type filter set has a **filtered** ({{< icon name="filter" >}}) label.
 
 #### Use the API to add an event type filter
 
@@ -339,12 +352,16 @@ Event type filters are removed if:
 
 ### Namespace filters
 
-> - Namespace filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 16.7.
+{{< history >}}
+
+- Namespace filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 16.7.
+
+{{< /history >}}
 
 When you apply a namespace filter to a group, users can filter streamed audit events per destination for a specific subgroup or project of the group. Otherwise, the
 destination receives all audit events.
 
-A streaming destination that has a namespace filter set has a **filtered** (**{filter}**) label.
+A streaming destination that has a namespace filter set has a **filtered** ({{< icon name="filter" >}}) label.
 
 #### Use the API to add a namespace filter
 
@@ -426,7 +443,11 @@ Namespace filter is removed if:
 
 ## Google Cloud Logging destinations
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) in GitLab 16.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) in GitLab 16.1.
+
+{{< /history >}}
 
 Manage Google Cloud Logging destinations for top-level groups.
 

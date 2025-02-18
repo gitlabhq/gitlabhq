@@ -27,18 +27,18 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
         user = { id: 4, login: 'kittens' }
         note = { author: user }
 
-        expect(finder).to receive(:user_id_for).with(user).and_return(42)
+        expect(finder).to receive(:user_id_for).with(user, ghost: true).and_return(42)
 
         expect(finder.author_id_for(note)).to eq([42, true])
       end
 
-      it 'returns the ID of the project creator if no user ID could be found' do
+      it 'returns the ID of the ghost id if no user ID could be found' do
         user = { id: 4, login: 'kittens' }
         note = { author: user }
 
-        expect(finder).to receive(:user_id_for).with(user).and_return(nil)
+        expect(finder).to receive(:user_id_for).with(user, ghost: true).and_return(Users::Internal.ghost.id)
 
-        expect(finder.author_id_for(note)).to eq([project.creator_id, false])
+        expect(finder.author_id_for(note)).to eq([Users::Internal.ghost.id, true])
       end
 
       it 'returns the ID of the ghost user when the object has no user' do
@@ -57,7 +57,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
 
       shared_examples 'user ID finder' do |author_key|
         it 'returns the user ID for an object' do
-          expect(finder).to receive(:user_id_for).with(user).and_return(42)
+          expect(finder).to receive(:user_id_for).with(user, ghost: true).and_return(42)
 
           expect(finder.author_id_for(issue_event, author_key: author_key)).to eq([42, true])
         end
@@ -69,18 +69,6 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
         it_behaves_like 'user ID finder', :actor
       end
 
-      context 'when the author_key parameter is :assignee' do
-        let(:issue_event) { { assignee: user } }
-
-        it_behaves_like 'user ID finder', :assignee
-      end
-
-      context 'when the author_key parameter is :requested_reviewer' do
-        let(:issue_event) { { requested_reviewer: user } }
-
-        it_behaves_like 'user ID finder', :requested_reviewer
-      end
-
       context 'when the author_key parameter is :review_requester' do
         let(:issue_event) { { review_requester: user } }
 
@@ -89,24 +77,31 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
     end
   end
 
-  describe '#assignee_id_for' do
-    it 'returns the user ID for the assignee of an issuable' do
-      user = { id: 4, login: 'kittens' }
-      issue = { assignee: user }
-
-      expect(finder).to receive(:user_id_for).with(user).and_return(42)
-      expect(finder.assignee_id_for(issue)).to eq(42)
-    end
-
-    it 'returns nil if the issuable does not have an assignee' do
-      issue = { assignee: nil }
-
-      expect(finder).not_to receive(:user_id_for)
-      expect(finder.assignee_id_for(issue)).to be_nil
-    end
-  end
-
   describe '#user_id_for' do
+    context 'when passed `nil`' do
+      it 'returns the ghost user id' do
+        expect(finder.user_id_for(nil)).to eq(Users::Internal.ghost.id)
+      end
+
+      context 'when `ghost:` is false' do
+        it 'returns nil' do
+          expect(finder.user_id_for(nil, ghost: false)).to be_nil
+        end
+      end
+    end
+
+    context 'when user is GitHub ghost user' do
+      it 'returns the ghost user id' do
+        expect(finder.user_id_for({ login: 'ghost' })).to eq(Users::Internal.ghost.id)
+      end
+
+      context 'when `ghost:` is false' do
+        it 'returns nil' do
+          expect(finder.user_id_for({ login: 'ghost' }, ghost: false)).to be_nil
+        end
+      end
+    end
+
     context 'when user mapping is disabled' do
       let(:user_mapping_enabled) { false }
 
@@ -140,10 +135,6 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
 
         expect { finder.user_id_for(user) }.to change { Import::SourceUser.count }.by(1)
         expect(finder.user_id_for(user)).not_to eq(source_user.mapped_user_id)
-      end
-
-      it 'does not fail with empty input' do
-        expect(finder.user_id_for(nil)).to eq(nil)
       end
     end
   end

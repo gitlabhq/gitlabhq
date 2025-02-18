@@ -25,6 +25,7 @@ import {
   updateCacheAfterDeletingNote,
 } from '~/work_items/graphql/cache_utils';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { collapseSystemNotes } from '~/work_items/notes/collapse_utils';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
@@ -104,6 +105,16 @@ export default {
       default: null,
       required: false,
     },
+    newCommentTemplatePaths: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    smallHeaderStyle: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
   data() {
     return {
@@ -162,6 +173,7 @@ export default {
         sortOrder: this.sortOrder,
         isNewDiscussion: true,
         markdownPreviewPath: this.markdownPreviewPath,
+        newCommentTemplatePaths: this.newCommentTemplatePaths,
         autocompleteDataSources: this.autocompleteDataSources,
         isDiscussionLocked: this.isDiscussionLocked,
         isWorkItemConfidential: this.isWorkItemConfidential,
@@ -234,6 +246,11 @@ export default {
       return Boolean(n);
     },
   },
+  mounted() {
+    if (this.targetNoteHash) {
+      this.cleanup = scrollToTargetOnResize();
+    }
+  },
   apollo: {
     previewNote: {
       skip() {
@@ -256,6 +273,8 @@ export default {
         // make sure skeleton notes are placed below the preview note
         if (result?.data?.note && this.$apollo.queries.workItemNotes?.loading) {
           this.isLoadingMore = true;
+        } else {
+          this.cleanup?.();
         }
       },
       error(error) {
@@ -293,8 +312,8 @@ export default {
       subscribeToMore: [
         {
           document: workItemNoteCreatedSubscription,
-          updateQuery(previousResult, { subscriptionData }) {
-            return updateCacheAfterCreatingNote(previousResult, subscriptionData);
+          updateQuery(previousResult, { subscriptionData: { data } }) {
+            return updateCacheAfterCreatingNote(previousResult, data?.workItemNoteCreated);
           },
           variables() {
             return {
@@ -429,6 +448,7 @@ export default {
       :work-item-type="workItemType"
       :discussion-filter="discussionFilter"
       :use-h2="useH2"
+      :small-header-style="smallHeaderStyle"
       @changeSort="changeNotesSortOrder"
       @changeFilter="filterDiscussions"
     />
@@ -463,6 +483,7 @@ export default {
               :is-modal="isModal"
               :autocomplete-data-sources="autocompleteDataSources"
               :markdown-preview-path="markdownPreviewPath"
+              :new-comment-template-paths="newCommentTemplatePaths"
               :assignees="assignees"
               :can-set-work-item-metadata="canSetWorkItemMetadata"
               :is-discussion-locked="isDiscussionLocked"

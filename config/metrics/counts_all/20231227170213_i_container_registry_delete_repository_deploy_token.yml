@@ -1,0 +1,22 @@
+---
+key_path: redis_hll_counters.user_container_registry.i_container_registry_delete_repository_deploy_token
+description: A count of deploy tokens that have deleted a repository from the registry
+product_group: container_registry
+value_type: number
+status: active
+milestone: "16.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131966
+time_frame:
+- 28d
+- 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+  - i_container_registry_delete_repository_deploy_token
+performance_indicator_type: []
+tiers:
+- free
+- premium
+- ultimate

@@ -15,7 +15,8 @@ RSpec.describe Gitlab::BackgroundMigration::RerunEpicDatesToWorkItemDatesSources
       table(:milestones).create!(
         title: 'Milestone',
         start_date: DateTime.parse('2024-01-01'),
-        due_date: DateTime.parse('2024-01-31')
+        due_date: DateTime.parse('2024-01-31'),
+        group_id: namespace.id
       )
     end
 

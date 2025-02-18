@@ -139,6 +139,7 @@ cng-registry:
     - .with-coverband-arg
   variables:
     QA_SCENARIO: Test::Integration::Registry
+    QA_RUN_IN_PARALLEL: "false"
 
 # == minimal supported redis version ==
 cng-qa-min-redis-version:

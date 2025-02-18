@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Variable, feature_category: :pipeline_composition do
+RSpec.describe Gitlab::Ci::Config::Entry::Variable, feature_category: :ci_variables do
   let(:config) { {} }
   let(:metadata) { {} }
 

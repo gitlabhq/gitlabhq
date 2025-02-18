@@ -4,10 +4,11 @@ import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import VueDraggable from 'vuedraggable';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { TYPENAME_DESIGN_VERSION } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { findDesignWidget } from '~/work_items/utils';
+import { findDesignWidget, canRouterNav } from '~/work_items/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import {
@@ -42,6 +43,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['fullPath'],
   props: {
     workItemId: {
@@ -68,6 +70,23 @@ export default {
       type: String,
       required: false,
       default: ALERT_VARIANTS.danger,
+    },
+    canReorderDesign: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    workItemFullPath: {
+      type: String,
+      required: true,
+    },
+    workItemWebUrl: {
+      type: String,
+      required: true,
+    },
+    isGroup: {
+      type: Boolean,
+      required: true,
     },
   },
   apollo: {
@@ -155,6 +174,7 @@ export default {
       return (
         !this.$options.isLoggedIn ||
         !this.isLatestVersion ||
+        !this.canReorderDesign ||
         this.isReorderingInProgress ||
         this.isMobile
       );
@@ -183,6 +203,21 @@ export default {
       return this.hasSelectedDesigns
         ? s__('DesignManagement|Deselect all')
         : s__('DesignManagement|Select all');
+    },
+    issueAsWorkItem() {
+      return Boolean(
+        !this.isGroup &&
+          this.glFeatures.workItemsViewPreference &&
+          gon.current_user_use_work_items_view,
+      );
+    },
+    canUseRouter() {
+      return canRouterNav({
+        fullPath: this.fullPath,
+        webUrl: this.workItemWebUrl,
+        isGroup: this.isGroup,
+        issueAsWorkItem: this.issueAsWorkItem,
+      });
     },
   },
   methods: {
@@ -225,7 +260,7 @@ export default {
           mutation: archiveDesignMutation,
           variables: {
             filenames: this.selectedDesigns,
-            projectPath: this.fullPath,
+            projectPath: this.workItemFullPath,
             iid: this.workItemIid,
           },
           update: this.afterArchiveDesign,
@@ -332,6 +367,10 @@ export default {
   dragOptions: {
     animation: 200,
     ghostClass: 'gl-invisible',
+    forceFallback: true,
+    tag: 'ol',
+    filter: '.no-drag',
+    draggable: '.js-design-tile',
   },
   i18n: {
     designLoadingError: s__(
@@ -441,10 +480,6 @@ export default {
             :value="designs"
             :disabled="isDraggingDisabled"
             v-bind="$options.dragOptions"
-            :force-fallback="true"
-            tag="ol"
-            draggable=".js-design-tile"
-            filter=".no-drag"
             class="list-unstyled row -gl-my-1 gl-flex gl-gap-y-5"
             :class="{ 'gl-px-3 gl-py-2': hasDesigns, 'gl-hidden': !hasDesigns }"
             @end="onDragEnd"
@@ -465,6 +500,8 @@ export default {
                 :is-uploading="false"
                 :is-dragging="isDraggingDesign"
                 :work-item-iid="workItemIid"
+                :work-item-web-url="workItemWebUrl"
+                :use-router="canUseRouter"
                 data-testid="design-item"
                 @pointerup="onPointerUp"
               />

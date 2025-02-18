@@ -5,8 +5,9 @@ module Clusters
     module Authorizations
       module CiAccess
         class Finder
-          def initialize(project)
+          def initialize(project, agent: nil)
             @project = project
+            @agent = agent
           end
 
           def execute
@@ -17,10 +18,12 @@ module Clusters
 
           private
 
-          attr_reader :project
+          attr_reader :project, :agent
 
           def implicit_authorizations
-            project.cluster_agents.map do |agent|
+            agents = agent&.project_id == project.id ? [agent] : project.cluster_agents
+
+            agents.map do |agent|
               Clusters::Agents::Authorizations::CiAccess::ImplicitAuthorization.new(agent: agent)
             end
           end
@@ -29,13 +32,15 @@ module Clusters
           def project_authorizations
             namespace_ids = project.group ? all_namespace_ids : project.namespace_id
 
-            Clusters::Agents::Authorizations::CiAccess::ProjectAuthorization
+            query = Clusters::Agents::Authorizations::CiAccess::ProjectAuthorization
               .where(project_id: project.id)
               .joins(agent: :project)
               .preload(agent: :project)
               .where(cluster_agents: { projects: { namespace_id: namespace_ids } })
               .with_available_ci_access_fields(project)
-              .to_a
+
+            query = query.where(agent_id: agent.id) if agent
+            query.to_a
           end
 
           def group_authorizations
@@ -52,7 +57,7 @@ module Clusters
               authorizations[:group_id].eq(ordered_ancestors_cte.table[:id])
             ).join_sources
 
-            Clusters::Agents::Authorizations::CiAccess::GroupAuthorization
+            query = Clusters::Agents::Authorizations::CiAccess::GroupAuthorization
               .with(ordered_ancestors_cte.to_arel)
               .joins(cte_join_sources)
               .joins(agent: :project)
@@ -66,7 +71,9 @@ module Clusters
               )
               .select('DISTINCT ON (agent_id) agent_group_authorizations.*')
               .preload(agent: :project)
-              .to_a
+
+            query = query.where(agent_id: agent.id) if agent
+            query.to_a
           end
           # rubocop: enable CodeReuse/ActiveRecord
 

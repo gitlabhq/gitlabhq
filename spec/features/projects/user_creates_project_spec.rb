@@ -8,6 +8,7 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(new_project_creation_form: false)
     sign_in(user)
     create(:personal_key, user: user)
   end

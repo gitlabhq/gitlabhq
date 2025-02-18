@@ -2,13 +2,15 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting GitLab for Jira Cloud app administration
 ---
 
-# Troubleshooting GitLab for Jira Cloud app administration
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 When administering the GitLab for Jira Cloud app, you might encounter the following issues.
 
@@ -45,7 +47,7 @@ To resolve this issue, disable the **Jira Connect Proxy URL** setting.
 
 - In GitLab 15.7:
 
-  1. Open a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+  1. Open a [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
   1. Execute `ApplicationSetting.current_without_cache.update(jira_connect_proxy_url: nil)`.
 
 - In GitLab 15.8 and later:
@@ -109,7 +111,7 @@ Depending on how you installed the app, you might want to check the following:
   Provide your GitLab instance URL and Jira URL. GitLab Support can try to run the following scripts to resolve the issue:
 
   ```ruby
-  # Check if GitLab.com can connect to the self-managed instance
+  # Check if GitLab.com can connect to the GitLab Self-Managed instance
   checker = Gitlab::TcpChecker.new("gitlab.example.com", 443)
 
   # Returns `true` if successful
@@ -120,21 +122,21 @@ Depending on how you installed the app, you might want to check the following:
   ```
 
   ```ruby
-  # Locate the installation record for the self-managed instance
+  # Locate the installation record for the GitLab Self-Managed instance
   installation = JiraConnectInstallation.find_by_instance_url("https://gitlab.example.com")
 
-  # Try to send the token again from GitLab.com to the self-managed instance
+  # Try to send the token again from GitLab.com to the GitLab Self-Managed instance
   ProxyLifecycleEventService.execute(installation, :installed, installation.instance_url)
   ```
 
 - If you [installed the app manually](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually):
   - Ask [Jira Cloud Support](https://support.atlassian.com/jira-software-cloud/) to verify that Jira can connect to your
-    GitLab Self-Managed instance.
+    instance.
   - [Reinstall the app](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually). This method might remove all [synced data](../../integration/jira/connect-app.md#gitlab-data-synced-to-jira) from the [Jira development panel](../../integration/jira/development_panel.md).
 
 ## Error: `Failed to update the GitLab instance`
 
-When you set up the GitLab for Jira Cloud app, you might get a `Failed to update the GitLab instance` error after you enter your self-managed instance URL.
+When you set up the GitLab for Jira Cloud app, you might get a `Failed to update the GitLab instance` error after you enter your GitLab Self-Managed instance URL.
 
 To resolve this issue, ensure all prerequisites for your installation method have been met:
 
@@ -147,7 +149,7 @@ If you're using GitLab 15.8 and earlier and have previously enabled both the `ji
 and the `jira_connect_oauth` feature flags, you must disable the `jira_connect_oauth_self_managed` flag
 due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388943). To check for these flags:
 
-1. Open a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Open a [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
 1. Execute the following code:
 
    ```ruby
@@ -163,7 +165,7 @@ due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388943). To
 ### Error: `Invalid audience`
 
 If you're using a [reverse proxy](jira_cloud_app.md#using-a-reverse-proxy),
-[`exceptions_json.log`](../../administration/logs/index.md#exceptions_jsonlog) might contain a message like:
+[`exceptions_json.log`](../logs/_index.md#exceptions_jsonlog) might contain a message like:
 
 ```plaintext
 Invalid audience. Expected https://proxy.example.com/-/jira_connect, received https://gitlab.example.com/-/jira_connect
@@ -188,7 +190,7 @@ You can check the response body for the error.
 If you cannot resolve the issue and you're a GitLab customer, contact [GitLab Support](https://about.gitlab.com/support/) for assistance.
 Provide GitLab Support with:
 
-- Your self-managed instance URL.
+- Your GitLab Self-Managed instance URL.
 - Your GitLab.com username.
 - Optional. The `X-Request-Id` response header for the failed `GET`
   request to `https://gitlab.com/-/jira_connect/installations`.
@@ -199,8 +201,11 @@ GitLab Support can then investigate the issue in the GitLab.com server logs.
 
 #### GitLab Support
 
-NOTE:
+{{< alert type="note" >}}
+
 These steps can only be completed by GitLab Support.
+
+{{< /alert >}}
 
 Each `GET` request made to the Jira Connect Proxy URL `https://gitlab.com/-/jira_connect/installations` generates two log entries.
 
@@ -230,17 +235,17 @@ For the second log, you might have one of the following scenarios:
 - Scenario 1:
   - `json.message`, `json.jira_status_code`, and `json.jira_body` are present.
   - `json.message` is `Proxy lifecycle event received error response` or similar.
-  - `json.jira_status_code` and `json.jira_body` might contain the response received from the self-managed instance or a proxy in front of the instance.
+  - `json.jira_status_code` and `json.jira_body` might contain the response received from the GitLab Self-Managed instance or a proxy in front of the instance.
   - If `json.jira_status_code` is `401 Unauthorized` and `json.jira_body` is `(empty)`:
     - [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) might not be set to `https://gitlab.com`.
-    - The self-managed instance might be blocking outgoing connections. Ensure that your
-      self-managed instance can connect to both `connect-install-keys.atlassian.com`
+    - The GitLab Self-Managed instance might be blocking outgoing connections. Ensure that your
+      GitLab Self-Managed instance can connect to both `connect-install-keys.atlassian.com`
       and `gitlab.com`.
-    - The self-managed instance is unable to decrypt the JWT token from Jira. [From GitLab 16.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147234),
-      the [`exceptions_json.log`](../logs/index.md#exceptions_jsonlog) contains more information about the error.
-    - If a [reverse proxy](jira_cloud_app.md#using-a-reverse-proxy) is in front of your self-managed instance,
-      the `Host` header sent to the self-managed instance might not match the reverse proxy FQDN.
-      Check the [Workhorse logs](../logs/index.md#workhorse-logs) on the self-managed instance:
+    - The GitLab Self-Managed instance is unable to decrypt the JWT token from Jira. [From GitLab 16.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147234),
+      the [`exceptions_json.log`](../logs/_index.md#exceptions_jsonlog) contains more information about the error.
+    - If a [reverse proxy](jira_cloud_app.md#using-a-reverse-proxy) is in front of your GitLab Self-Managed instance,
+      the `Host` header sent to the GitLab Self-Managed instance might not match the reverse proxy FQDN.
+      Check the [Workhorse logs](../logs/_index.md#workhorse-logs) on the GitLab Self-Managed instance:
 
       ```shell
       grep /-/jira_connect/events/installed /var/log/gitlab/gitlab-workhorse/current
@@ -259,7 +264,7 @@ For the second log, you might have one of the following scenarios:
 
 - Scenario 2:
   - `json.exception.class` and `json.exception.message` are present.
-  - `json.exception.class` and `json.exception.message` contain whether an issue occurred while contacting the self-managed instance.
+  - `json.exception.class` and `json.exception.message` contain whether an issue occurred while contacting the GitLab Self-Managed instance.
 
 ## Error: `Failed to link group`
 
@@ -294,7 +299,7 @@ This error can be returned for multiple reasons.
 ## Error: `Failed to load Jira Connect Application ID`
 
 When you sign in to the GitLab for Jira Cloud app after you point the app
-to your self-managed instance, you might get the following error:
+to your GitLab Self-Managed instance, you might get the following error:
 
 ```plaintext
 Failed to load Jira Connect Application ID. Please try again.
@@ -320,7 +325,7 @@ To resolve this issue:
 ## Error: `Missing required parameter: client_id`
 
 When you sign in to the GitLab for Jira Cloud app after you point the app
-to your self-managed instance, you might get the following error:
+to your GitLab Self-Managed instance, you might get the following error:
 
 ```plaintext
 Missing required parameter: client_id
@@ -334,7 +339,7 @@ To resolve this issue, ensure all prerequisites for your installation method hav
 ## Error: `Failed to sign in to GitLab`
 
 When you sign in to the GitLab for Jira Cloud app after you point the app
-to your self-managed instance, you might get the following error:
+to your GitLab Self-Managed instance, you might get the following error:
 
 ```plaintext
 Failed to sign in to GitLab

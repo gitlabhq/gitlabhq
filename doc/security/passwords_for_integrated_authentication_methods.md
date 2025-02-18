@@ -2,15 +2,17 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Generated passwords for users created through integrated authentication
 ---
 
-# Generated passwords for users created through integrated authentication
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-GitLab allows users to set up accounts through integration with external [authentication and authorization providers](../administration/auth/index.md).
+{{< /details >}}
+
+GitLab allows users to set up accounts through integration with external [authentication and authorization providers](../administration/auth/_index.md).
 
 These authentication methods do not require the user to explicitly create a password for their accounts.
 However, to maintain data consistency, GitLab requires passwords for all user accounts.

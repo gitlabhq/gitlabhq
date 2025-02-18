@@ -360,25 +360,32 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
       end
     end
 
-    context 'when it is a manifest delete event' do
-      let(:raw_event) { { 'action' => 'delete', 'target' => { 'digest' => 'x' }, 'actor' => {} } }
-
-      it 'calls the ContainerRegistryEventCounter' do
-        expect(::Gitlab::UsageDataCounters::ContainerRegistryEventCounter)
-          .to receive(:count).with('i_container_registry_delete_manifest')
-
-        subject
+    describe 'internal event tracking' do
+      let(:event) { 'delete_manifest_from_container_registry' }
+      let(:category) { 'ContainerRegistry::Event' }
+      let(:raw_event) do
+        {
+          'action' => action,
+          'target' => { 'digest' => 'x', 'repository' => 'group/test/container' },
+          'actor' => {}
+        }
       end
-    end
 
-    context 'when it is not a manifest delete event' do
-      let(:raw_event) { { 'action' => 'push', 'target' => { 'digest' => 'x' }, 'actor' => {} } }
+      before do
+        # stub other Snowplow events that are getting triggered by this class
+        allow(::Gitlab::Tracking).to receive(:event).with(described_class::EVENT_TRACKING_CATEGORY, anything)
+      end
 
-      it 'does not call the ContainerRegistryEventCounter' do
-        expect(::Gitlab::UsageDataCounters::ContainerRegistryEventCounter)
-          .not_to receive(:count).with('i_container_registry_delete_manifest')
+      context 'when it is a manifest delete event' do
+        let(:action) { 'delete' }
 
-        subject
+        it_behaves_like 'internal event tracking'
+      end
+
+      context 'when it is not a manifest delete event' do
+        let(:action) { 'push' }
+
+        it_behaves_like 'internal event not tracked'
       end
     end
   end

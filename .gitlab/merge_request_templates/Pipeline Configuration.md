@@ -15,13 +15,13 @@
 
 Consider the effect of the changes in this merge request on the following:
 
-- [ ] Different [pipeline types](https://docs.gitlab.com/ee/development/pipelines/index.html#pipelines-types-for-merge-requests)
+- [ ] Different [pipeline types](https://docs.gitlab.com/ee/development/pipelines/#pipelines-types-for-merge-requests)
 - Non-canonical projects:
   - [ ] `gitlab-foss`
   - [ ] `security`
   - [ ] `dev`
   - [ ] personal forks
-- [ ] [Pipeline performance](https://docs.gitlab.com/ee/ci/pipelines/pipeline_efficiency.html)
+- [ ] [Pipeline performance](https://docs.gitlab.com/ci/pipelines/pipeline_efficiency/)
 
 **If new jobs are added:**
 

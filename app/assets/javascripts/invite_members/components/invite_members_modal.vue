@@ -152,8 +152,8 @@ export default {
     },
     accessExpirationHelpLink() {
       return this.isProject
-        ? helpPagePath('user/project/members/index', { anchor: 'add-users-to-a-project' })
-        : helpPagePath('user/group/index', { anchor: 'add-users-to-a-group' });
+        ? helpPagePath('user/project/members/_index', { anchor: 'add-users-to-a-project' })
+        : helpPagePath('user/group/_index', { anchor: 'add-users-to-a-group' });
     },
     isEmptyInvites() {
       return Boolean(this.newUsersToInvite.length);

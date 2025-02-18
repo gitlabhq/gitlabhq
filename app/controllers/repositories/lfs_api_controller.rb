@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Repositories
-  class LfsApiController < Repositories::GitHttpClientController
+  class LfsApiController < ::Repositories::GitHttpClientController
     include LfsRequest
     include Gitlab::Utils::StrongMemoize
 
@@ -133,7 +133,7 @@ module Repositories
 
     # Overridden in EE
     def upload_http_url_to_repo
-      project.http_url_to_repo
+      Gitlab::RepositoryUrlBuilder.build(repository.full_path, protocol: :http)
     end
 
     def upload_headers
@@ -196,7 +196,7 @@ module Repositories
 
       return unless lfs_object
 
-      LfsObjectsProject.link_to_project!(lfs_object, project)
+      LfsObjectsProject.link_to_project!(lfs_object, project, repo_type.name)
 
       Gitlab::AppJsonLogger.info(
         message: "LFS object auto-linked to forked project",
@@ -211,4 +211,4 @@ module Repositories
   end
 end
 
-Repositories::LfsApiController.prepend_mod_with('Repositories::LfsApiController')
+::Repositories::LfsApiController.prepend_mod_with('Repositories::LfsApiController')

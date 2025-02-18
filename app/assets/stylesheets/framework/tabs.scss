@@ -1,13 +1,13 @@
 .gitlab-tabs {
   background: $gray-10;
-  border: 1px solid $border-color;
+  @apply gl-border;
   flex-wrap: nowrap;
 
   li {
     width: 50%;
 
     &:not(:last-child) {
-      border-right: 1px solid $border-color;
+      @apply gl-border-r;
     }
 
     &.active {
@@ -22,7 +22,7 @@
 }
 
 .gitlab-tab-content {
-  border: 1px solid $border-color;
+  @apply gl-border;
   border-top: 0;
   margin-bottom: $gl-padding;
 

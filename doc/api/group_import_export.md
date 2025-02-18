@@ -2,13 +2,15 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group import and export API
 ---
 
-# Group import and export API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use the group import and export API to export a group structure and import it to a new location.
 When you use the group import and export API with the [project import and export API](project_import_export.md), you can preserve connections with
@@ -94,14 +96,14 @@ returns either:
 
 ## Import a file
 
-The maximum import file size can be set by the Administrator on self-managed instances (default is `0` (unlimited)).
+The maximum import file size can be set by the Administrator on GitLab Self-Managed (default is `0` (unlimited)).
 As an administrator, you can modify the maximum import file size either:
 
 - In the [**Admin** area](../administration/settings/import_and_export_settings.md).
-- By using the `max_import_size` option in the [Application settings API](settings.md#change-application-settings).
+- By using the `max_import_size` option in the [Application settings API](settings.md#update-application-settings).
 
 For information on the maximum import file size on GitLab.com, see
-[Account and limit settings](../user/gitlab_com/index.md#account-and-limit-settings).
+[Account and limit settings](../user/gitlab_com/_index.md#account-and-limit-settings).
 
 ```plaintext
 POST /groups/import

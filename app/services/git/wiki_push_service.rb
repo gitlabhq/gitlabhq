@@ -77,10 +77,10 @@ module Git
     end
 
     def perform_housekeeping
-      housekeeping = Repositories::HousekeepingService.new(wiki)
+      housekeeping = ::Repositories::HousekeepingService.new(wiki)
       housekeeping.increment!
       housekeeping.execute if housekeeping.needed?
-    rescue Repositories::HousekeepingService::LeaseTaken
+    rescue ::Repositories::HousekeepingService::LeaseTaken
       # no-op
     end
   end

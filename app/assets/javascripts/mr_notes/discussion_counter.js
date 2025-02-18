@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import store from '~/mr_notes/stores';
+import { pinia } from '~/pinia/instance';
 
 export function initDiscussionCounter() {
   const el = document.getElementById('js-vue-discussion-counter');
@@ -15,6 +16,7 @@ export function initDiscussionCounter() {
       components: {
         DiscussionCounter,
       },
+      pinia,
       store,
       render(createElement) {
         return createElement('discussion-counter', {

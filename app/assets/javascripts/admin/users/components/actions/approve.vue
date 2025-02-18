@@ -20,6 +20,9 @@ export default {
   components: {
     GlDisclosureDropdownItem,
   },
+  inject: {
+    isAtSeatsLimit: { default: false },
+  },
   props: {
     username: {
       type: String,
@@ -32,10 +35,15 @@ export default {
   },
   methods: {
     onClick() {
-      eventHub.$emit(EVENT_OPEN_CONFIRM_MODAL, {
+      const modalProps = {
         path: this.path,
         method: 'put',
         modalAttributes: {
+          errorAlertMessage: this.isAtSeatsLimit
+            ? s__(
+                'AdminUsers|There are no more seats left in your subscription. New users cannot be approved for this instance.',
+              )
+            : null,
           title: sprintf(s__('AdminUsers|Approve user %{username}?'), {
             username: this.username,
           }),
@@ -44,11 +52,17 @@ export default {
           },
           actionPrimary: {
             text: I18N_USER_ACTIONS.approve,
-            attributes: { variant: 'confirm', 'data-testid': 'approve-user-confirm-button' },
+            attributes: {
+              variant: 'confirm',
+              disabled: this.isAtSeatsLimit,
+              'data-testid': 'approve-user-confirm-button',
+            },
           },
           messageHtml,
         },
-      });
+      };
+
+      eventHub.$emit(EVENT_OPEN_CONFIRM_MODAL, modalProps);
     },
   },
 };

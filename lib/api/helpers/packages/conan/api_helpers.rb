@@ -29,7 +29,7 @@ module API
               package,
               current_user,
               project,
-              conan_package_reference: params[:conan_package_reference],
+              conan_package_reference: declared(params)[:conan_package_reference],
               id: params[:id]
             )
 
@@ -68,7 +68,7 @@ module API
 
           def build_package_file_upload_url(file_name)
             options = url_options(file_name).merge(
-              conan_package_reference: params[:conan_package_reference],
+              conan_package_reference: declared(params)[:conan_package_reference],
               package_revision: ::Packages::Conan::FileMetadatum::DEFAULT_REVISION
             )
 
@@ -162,12 +162,15 @@ module API
           def download_package_file(file_type)
             authorize_read_package!(project)
 
+            not_found!('Package') unless package
+
             package_file = ::Packages::Conan::PackageFileFinder
               .new(
                 package,
                 params[:file_name].to_s,
                 conan_file_type: file_type,
-                conan_package_reference: params[:conan_package_reference]
+                conan_package_reference: declared(params)[:conan_package_reference],
+                recipe_revision: params[:recipe_revision]
               ).execute!
 
             track_package_event('pull_package', :conan, category: 'API::ConanPackages', project: project, namespace: project.namespace) if params[:file_name] == ::Packages::Conan::FileMetadatum::PACKAGE_BINARY
@@ -326,6 +329,10 @@ module API
 
           def package_scope
             params[:id].present? ? :project : :instance
+          end
+
+          def search_project
+            project
           end
         end
       end

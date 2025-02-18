@@ -4,6 +4,7 @@
  */
 import { GlBadge, GlPopover, GlTooltipDirective } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
+import { joinPaths } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
 import { truncate } from '~/lib/utils/text_utility';
 
@@ -25,6 +26,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
+    showLabel: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     topics: {
       type: Array,
       required: true,
@@ -50,14 +56,16 @@ export default {
   },
   methods: {
     topicPath(topic) {
-      return `/explore/projects/topics/${encodeURIComponent(topic)}`;
+      const explorePath = `/explore/projects/topics/${encodeURIComponent(topic)}`;
+
+      return joinPaths(gon.relative_url_root || '', explorePath);
     },
     topicTitle(topic) {
       return truncate(topic, MAX_TOPIC_TITLE_LENGTH);
     },
     topicTooltipTitle(topic) {
-      // Matches conditional in app/assets/javascripts/lib/utils/text_utility.js#L88
-      if (topic.length - 1 > MAX_TOPIC_TITLE_LENGTH) {
+      const wasTruncated = topic !== this.topicTitle(topic);
+      if (wasTruncated) {
         return topic;
       }
 
@@ -70,9 +78,9 @@ export default {
 <template>
   <div
     v-if="topics.length"
-    class="gl-inline-flex gl-flex-wrap gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"
+    class="gl-inline-flex gl-flex-wrap gl-items-center gl-gap-3 gl-text-sm gl-text-subtle"
   >
-    <span>{{ $options.i18n.topics }}:</span>
+    <span v-if="showLabel">{{ $options.i18n.topics }}:</span>
     <div v-for="topic in visibleTopics" :key="topic">
       <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
         {{ topicTitle(topic) }}

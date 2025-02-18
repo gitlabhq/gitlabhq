@@ -2,9 +2,14 @@
 stage: Foundations
 group: Import and Integrate
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Import/Export development documentation
 ---
 
-# Import/Export development documentation
+{{< alert type="note" >}}
+
+To mitigate the risk of introducing bugs and performance issues, newly added relations should be put behind a feature flag.
+
+{{< /alert >}}
 
 General development guidelines and tips for the [Import/Export feature](../user/project/settings/import_export.md).
 

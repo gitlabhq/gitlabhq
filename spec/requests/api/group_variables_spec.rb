@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::GroupVariables, feature_category: :secrets_management do
+RSpec.describe API::GroupVariables, feature_category: :ci_variables do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
 

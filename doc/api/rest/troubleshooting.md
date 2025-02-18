@@ -1,15 +1,17 @@
 ---
 stage: Foundations
 group: Import and Integrate
-description: Programmatic interaction with GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Programmatic interaction with GitLab.
+title: REST API troubleshooting
 ---
 
-# REST API troubleshooting
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When working with the REST API, you might encounter an issue.
 
@@ -169,7 +171,7 @@ REST API requests can be detected as spam. If a request is detected as spam and:
 ## Error: `404 Not Found` when using a reverse proxy
 
 If your GitLab instance uses a reverse proxy, you might see `404 Not Found` errors when
-using a GitLab [editor extension](../../editor_extensions/index.md), the GitLab CLI, or
+using a GitLab [editor extension](../../editor_extensions/_index.md), the GitLab CLI, or
 API calls with URL-encoded parameters.
 
 This problem occurs when your reverse proxy decodes characters like `/`, `?`, and `@`
@@ -182,9 +184,9 @@ To resolve this problem, edit the configuration for your reverse proxy:
 
 For example:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Apache configuration
+{{< tab title="Apache configuration" >}}
 
 ```plaintext
 <VirtualHost *:443>
@@ -208,7 +210,9 @@ For example:
 </VirtualHost>
 ```
 
-:::TabTitle NGINX configuration
+{{< /tab >}}
+
+{{< tab title="NGINX configuration" >}}
 
 ```plaintext
 server {
@@ -226,6 +230,8 @@ server {
 }
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 For more information, see [issue 18775](https://gitlab.com/gitlab-org/gitlab/-/issues/18775).

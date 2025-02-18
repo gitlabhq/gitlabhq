@@ -1,7 +1,10 @@
 ---
-redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_context_management/decisions/001_policy_on_the_client/'
-remove_date: '2025-07-08'
+redirect_to: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_context_management/decisions/001_policy_on_the_client/
+remove_date: "2025-07-08"
 ---
+
+<!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_context_management/decisions/001_policy_on_the_client/).
 

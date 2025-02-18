@@ -890,7 +890,7 @@ RSpec.shared_examples 'resend web-hook event endpoint' do
       post api("#{hook_uri}/events/#{log.id}/resend", user, admin_mode: user.admin?), params: {}
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
-      expect(json_response['message']).to eq('The hook URL has changed, and this log entry cannot be retried')
+      expect(json_response['message']).to eq('The hook URL has changed. This log entry cannot be retried.')
     end
   end
 end

@@ -15,6 +15,11 @@ fragment ClusterAgentFragment on ClusterAgent {
       metadata {
         version
       }
+      warnings {
+        version {
+          message
+        }
+      }
     }
   }
   tokens {

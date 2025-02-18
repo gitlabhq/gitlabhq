@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Working with email in development
 ---
-
-# Working with email in development
 
 ## Ensuring compatibility with mailer Sidekiq jobs
 
@@ -15,7 +14,7 @@ both backward and forward compatibility. Adhere to the Sidekiq steps for
 
 The same applies to a new mailer method, or a new mailer. If you introduce either,
 follow the steps for [adding new workers](sidekiq/compatibility_across_updates.md#adding-new-workers).
-This includes wrapping the new method with a [feature flag](feature_flags/index.md)
+This includes wrapping the new method with a [feature flag](feature_flags/_index.md)
 so the new mailer can be disabled if a problem arises after deployment.
 
 In the following example from [`NotificationService`](https://gitlab.com/gitlab-org/gitlab/-/blob/33ccb22e4fc271dbaac94b003a7a1a2915a13441/app/services/notification_service.rb#L74)
@@ -160,4 +159,4 @@ To update MailRoom:
 
 ---
 
-[Return to Development documentation](index.md)
+[Return to Development documentation](_index.md)

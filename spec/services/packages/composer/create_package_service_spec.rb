@@ -109,7 +109,7 @@ RSpec.describe Packages::Composer::CreatePackageService, feature_category: :pack
 
       context 'same name but of different type' do
         let(:other_project) { create(:project) }
-        let!(:other_package) { create(:package, name: package_name, version: 'dev-master', project: other_project) }
+        let!(:other_package) { create(:generic_package, name: package_name, version: 'dev-master', project: other_project) }
 
         it 'creates the package' do
           expect { subject }

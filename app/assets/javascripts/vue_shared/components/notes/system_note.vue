@@ -37,6 +37,7 @@ const ICON_COLORS = {
   'issue-close': 'system-note-icon-info',
   issues: 'system-note-icon-success',
   error: 'system-note-icon-danger',
+  'review-warning': 'system-note-icon-warning',
 };
 
 export default {
@@ -105,7 +106,7 @@ export default {
       return this.getNoteableData.noteableType === 'MergeRequest';
     },
     iconBgClass() {
-      return ICON_COLORS[this.note.system_note_icon_name] || 'gl-bg-gray-50 gl-text-subtle';
+      return ICON_COLORS[this.note.system_note_icon_name] || 'gl-bg-strong gl-text-subtle';
     },
     systemNoteIconName() {
       let icon = this.note.system_note_icon_name;

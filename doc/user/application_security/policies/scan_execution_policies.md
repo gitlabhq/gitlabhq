@@ -2,20 +2,26 @@
 stage: Security Risk Management
 group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Scan execution policies
 ---
 
-# Scan execution policies
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - Group-level security policies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4425) in GitLab 15.2.
-> - Group-level security policies [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/356258) in GitLab 15.4.
-> - Operational container scanning [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3410) in GitLab 15.5
-> - Support for custom CI variables in the Scan Execution Policies editor [introduced](https://gitlab.com/groups/gitlab-org/-/epics/9566) in GitLab 16.2.
-> - Enforcement of scan execution policies on projects with an existing GitLab CI/CD configuration [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6880) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `scan_execution_policy_pipelines`. Feature flag `scan_execution_policy_pipelines` removed in GitLab 16.5.
-> - Overriding predefined variables in scan execution policies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440855) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `allow_restricted_variables_at_policy_level`. Enabled by default. Feature flag `allow_restricted_variables_at_policy_level` removed in GitLab 17.5.
+{{< /details >}}
+
+{{< history >}}
+
+- Group-level security policies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4425) in GitLab 15.2.
+- Group-level security policies [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/356258) in GitLab 15.4.
+- Operational container scanning [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3410) in GitLab 15.5
+- Support for custom CI variables in the Scan Execution Policies editor [introduced](https://gitlab.com/groups/gitlab-org/-/epics/9566) in GitLab 16.2.
+- Enforcement of scan execution policies on projects with an existing GitLab CI/CD configuration [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6880) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `scan_execution_policy_pipelines`. Feature flag `scan_execution_policy_pipelines` removed in GitLab 16.5.
+- Overriding predefined variables in scan execution policies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440855) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `allow_restricted_variables_at_policy_level`. Enabled by default. Feature flag `allow_restricted_variables_at_policy_level` removed in GitLab 17.5.
+
+{{< /history >}}
 
 Use scan execution policies to enforce GitLab security scans based on the default or latest [security CI templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Jobs), either as part of the pipeline or on a
 specified schedule.
@@ -77,12 +83,15 @@ before the policy changes take effect.
 
 ![Scan Execution Policy Editor Rule Mode](img/scan_execution_policy_rule_mode_v17_5.png)
 
-NOTE:
+{{< alert type="note" >}}
+
 Selection of site and scanner profiles using the rule mode editor for DAST execution policies differs based on
 whether the policy is being created at the project or group level. For project-level policies the rule mode editor
 presents a list of profiles to choose from that are already defined in the project. For group-level policies
 you are required to type in the names of the profiles to use, and to prevent pipeline errors, profiles with
 matching names must exist in all of the group's projects.
+
+{{< /alert >}}
 
 ## Scan execution policies schema
 
@@ -101,11 +110,18 @@ the following sections and tables provide an alternative.
 
 ## Scan execution policy schema
 
-> - Limit of actions per policy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/472213) in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `scan_execution_policy_action_limit` (for projects) and `scan_execution_policy_action_limit_group` (for groups). Disabled by default.
+{{< history >}}
 
-FLAG:
+- Limit of actions per policy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/472213) in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `scan_execution_policy_action_limit` (for projects) and `scan_execution_policy_action_limit_group` (for groups). Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of the actions per policy limit is controlled by a feature flag.
 For more information, see the history.
+
+{{< /alert >}}
 
 | Field          | Type                                         | Required | Description |
 |----------------|----------------------------------------------|----------|-------------|
@@ -114,12 +130,36 @@ For more information, see the history.
 | `enabled`      | `boolean`                                    | true     | Flag to enable (`true`) or disable (`false`) the policy. |
 | `rules`        | `array` of rules                             | true     | List of rules that the policy applies. |
 | `actions`      | `array` of actions                           | true     | List of actions that the policy enforces. Limited to a maximum of 10 in GitLab 18.0 and later. |
-| `policy_scope` | `object` of [`policy_scope`](index.md#scope) | false    | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
+| `policy_scope` | `object` of [`policy_scope`](_index.md#scope) | false    | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
+| `skip_ci` | `object` of [`skip_ci`](#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. |
+
+### `skip_ci` type
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/482952) in GitLab 17.9.
+
+{{< /history >}}
+
+Scan execution policies offer control over who can use the `[skip ci]` directive. You can specify certain users or service accounts that are allowed to use `[skip ci]` while still ensuring critical security and compliance checks are performed.
+
+Use the `skip_ci` keyword to specify whether users are allowed to apply the `skip_ci` directive to skip the pipelines.
+When the keyword is not specified, the `skip_ci` directive is ignored, preventing all users
+from bypassing the pipeline execution policies.
+
+| Field                   | Type     | Possible values          | Description |
+|-------------------------|----------|--------------------------|-------------|
+| `allowed` | `boolean`   | `true`, `false` | Flag to allow (`true`) or prevent (`false`) the use of the `skip-ci` directive for pipelines with enforced pipeline execution policies. |
+| `allowlist`             | `object` | `users` | Specify users who are always allowed to use `skip-ci` directive, regardless of the `allowed` flag. Use `users:` followed by an array of objects with `id` keys representing user IDs. |
 
 ## `pipeline` rule type
 
-> - The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Generally available in GitLab 16.2. Feature flag removed.
-> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Generally available in GitLab 16.5. Feature flag removed.
+{{< history >}}
+
+- The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Generally available in GitLab 16.2. Feature flag removed.
+- The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Generally available in GitLab 16.5. Feature flag removed.
+
+{{< /history >}}
 
 This rule enforces the defined actions whenever the pipeline runs for a selected branch.
 
@@ -134,16 +174,24 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 
 ## `schedule` rule type
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) the `branch_type` field in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Generally available in GitLab 16.2. Feature flag removed.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) the `branch_exceptions` field in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Generally available in GitLab 16.5. Feature flag removed.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147691) a new `scan_execution_pipeline_worker` worker to scheduled scans to create pipelines in GitLab 16.11 [with a flag](../../../administration/feature_flags.md).
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152855) a new application setting `security_policy_scheduled_scans_max_concurrency` in GitLab 17.1. The concurrency limit applies when both the `scan_execution_pipeline_worker` and `scan_execution_pipeline_concurrency_control` are enabled.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158636) a concurrency limit for scan execution scheduled jobs in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named  `scan_execution_pipeline_concurrency_control`.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) the `scan_execution_pipeline_worker` feature flag on GitLab.com in GitLab 17.5.
-> - [Feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) `scan_execution_pipeline_worker` removed in GitLab 17.6.
+{{< history >}}
 
-WARNING:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) the `branch_type` field in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Generally available in GitLab 16.2. Feature flag removed.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) the `branch_exceptions` field in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Generally available in GitLab 16.5. Feature flag removed.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147691) a new `scan_execution_pipeline_worker` worker to scheduled scans to create pipelines in GitLab 16.11 [with a flag](../../../administration/feature_flags.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152855) a new application setting `security_policy_scheduled_scans_max_concurrency` in GitLab 17.1. The concurrency limit applies when both the `scan_execution_pipeline_worker` and `scan_execution_pipeline_concurrency_control` are enabled.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158636) a concurrency limit for scan execution scheduled jobs in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named  `scan_execution_pipeline_concurrency_control`.
+- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) the `scan_execution_pipeline_worker` feature flag on GitLab.com in GitLab 17.5.
+- [Feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) `scan_execution_pipeline_worker` removed in GitLab 17.6.
+- [Feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/463802) `scan_execution_pipeline_concurrency_control` removed in GitLab 17.9.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 In GitLab 16.1 and earlier, you should **not** use [direct transfer](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer) with scheduled scan execution policies. If using direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
+
+{{< /alert >}}
 
 Use the `schedule` rule type to run security scanners on a schedule.
 
@@ -165,14 +213,14 @@ A scheduled pipeline:
 | `cadence`  | `string` | true | Cron expression with limited options. For example, `0 0 * * *` creates a schedule to run every day at midnight (12:00 AM). | A whitespace-separated string containing five fields that represents the scheduled time. |
 | `timezone` | `string` | false | Time zone identifier (for example, `America/New_York`) | Time zone to apply to the cadence. Value must be an IANA Time Zone Database identifier. |
 | `time_window` | `object` | false |  | Distribution and duration settings for scheduled security scans. |
-| `agents` <sup>1</sup>   | `object` | true if either `branch_type` or `branches` fields do not exists  |  | The name of the [GitLab agents](../../clusters/agent/index.md) where [Operational Container Scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |
+| `agents` <sup>1</sup>   | `object` | true if either `branch_type` or `branches` fields do not exists  |  | The name of the [GitLab agents](../../clusters/agent/_index.md) where [Operational Container Scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |
 
 1. You must specify only one of `branches`, `branch_type`, or `agents`.
 
 ### Cadence
 
 Use the `cadence` field to schedule when you want the policy's actions to run. The `cadence` field
-uses [cron syntax](../../../topics/cron/index.md), but with some restrictions:
+uses [cron syntax](../../../topics/cron/_index.md), but with some restrictions:
 
 - Only the following types of cron syntax are supported:
   - A daily cadence of once per hour around specified time, for example: `0 18 * * *`
@@ -232,7 +280,7 @@ Use this schema to define `agents` objects in the [`schedule` rule type](#schedu
 
 The keys for a schedule rule are:
 
-- `cadence` (required): a [Cron expression](../../../topics/cron/index.md) for when the scans are
+- `cadence` (required): a [Cron expression](../../../topics/cron/_index.md) for when the scans are
   run.
 - `agents:<agent-name>` (required): The name of the agent to use for scanning.
 - `agents:<agent-name>:namespaces` (optional): The Kubernetes namespaces to scan. If omitted, all namespaces are scanned.
@@ -276,8 +324,11 @@ To optimize performance for projects at scale:
 - You can configure the policy to run the schedules on runners with a specified `tag`. Consider setting up a dedicated runner in each project to handle schedules enforced from a policy to reduce impact to other runners.
 - Test your implementation in a staging or lower environment before deploying to production. Monitor performance and adjust your rollout plan based on results.
 
-NOTE:
+{{< alert type="note" >}}
+
 Additional improvements for managing high-volume scheduled pipelines are planned in [Epic 13977](https://gitlab.com/groups/gitlab-org/-/epics/13997).
+
+{{< /alert >}}
 
 ### Concurrency control
 
@@ -290,11 +341,15 @@ The concurrency control distributes the scheduled pipelines according to the [`t
 
 ## `scan` action type
 
-> - Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_variables_precedence`. Enabled by default. [Feature flag removed in GitLab 16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/435727).
-> - Selection of security templates for given action (for projects) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415427) in GitLab 17.1 [with feature flag](../../../administration/feature_flags.md) named `scan_execution_policies_with_latest_templates`. Disabled by default.
-> - Selection of security templates for given action (for groups) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468981) in GitLab 17.2 [with feature flag](../../../administration/feature_flags.md) named `scan_execution_policies_with_latest_templates_group`. Disabled by default.
-> - Selection of security templates for given action (for projects and groups) was enabled on self-managed, and GitLab Dedicated ([1](https://gitlab.com/gitlab-org/gitlab/-/issues/461474), [2](https://gitlab.com/gitlab-org/gitlab/-/issues/468981)) in GitLab 17.2.
-> - Selection of security templates for given action (for projects and groups) was generally available in GitLab 17.3. Feature flags `scan_execution_policies_with_latest_templates` and `scan_execution_policies_with_latest_templates_group` removed.
+{{< history >}}
+
+- Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_variables_precedence`. Enabled by default. [Feature flag removed in GitLab 16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/435727).
+- Selection of security templates for given action (for projects) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415427) in GitLab 17.1 [with feature flag](../../../administration/feature_flags.md) named `scan_execution_policies_with_latest_templates`. Disabled by default.
+- Selection of security templates for given action (for groups) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468981) in GitLab 17.2 [with feature flag](../../../administration/feature_flags.md) named `scan_execution_policies_with_latest_templates_group`. Disabled by default.
+- Selection of security templates for given action (for projects and groups) was enabled on GitLab Self-Managed, and GitLab Dedicated ([1](https://gitlab.com/gitlab-org/gitlab/-/issues/461474), [2](https://gitlab.com/gitlab-org/gitlab/-/issues/468981)) in GitLab 17.2.
+- Selection of security templates for given action (for projects and groups) was generally available in GitLab 17.3. Feature flags `scan_execution_policies_with_latest_templates` and `scan_execution_policies_with_latest_templates_group` removed.
+
+{{< /history >}}
 
 This action executes the selected `scan` with additional parameters when conditions for at least one
 rule in the defined policy are met.
@@ -309,8 +364,11 @@ rule in the defined policy are met.
 | `template` | `string` | `default`, `latest` | CI/CD template version to be enforced. The [`latest`](../../../development/cicd/templates.md#latest-version) version may introduce breaking changes. See the `stable` and `latest` [security templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Jobs). |
 | `scan_settings` | `object` | | A set of scan settings, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the setting name, with its `value` provided as a boolean or string. This parameter supports the settings defined in [scan settings](#scan-settings). |
 
-NOTE:
-If you have Merge Request Pipelines enabled for your project, you must select `template: latest` in your policy for each enforced scan. Using the latest template is crucial for compatibility with Merge Request Pipelines and allows you to take full advantage of GitLab security features. For more information on using security scanning tools with Merge Request Pipelines, please refer to our [security scanning documentation](../../application_security/detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
+{{< alert type="note" >}}
+
+If you have Merge Request Pipelines enabled for your project, you must select `template: latest` in your policy for each enforced scan. Using the latest template is crucial for compatibility with Merge Request Pipelines and allows you to take full advantage of GitLab security features. For more information on using security scanning tools with Merge Request Pipelines, please refer to our [security scanning documentation](../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
+
+{{< /alert >}}
 
 ### Scanner behavior
 
@@ -318,21 +376,21 @@ Some scanners behave differently in a `scan` action than they do in a regular CI
 scan.
 
 - Static Application Security Testing (SAST): Runs only if the repository contains
-  [files supported by SAST)](../sast/index.md#supported-languages-and-frameworks).
+  [files supported by SAST)](../sast/_index.md#supported-languages-and-frameworks).
 - Secret detection:
   - Only rules with the default ruleset are supported.
-    [Custom rulesets](../secret_detection/pipeline/index.md#customize-analyzer-rulesets) are not
+    [Custom rulesets](../secret_detection/pipeline/_index.md#customize-analyzer-rulesets) are not
     supported. Instead, you can configure a
-    [remote configuration file](../secret_detection/pipeline/index.md#with-a-remote-ruleset) and set
+    [remote configuration file](../secret_detection/pipeline/_index.md#with-a-remote-ruleset) and set
     the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable.
   - For `scheduled` scan execution policies, secret detection by default runs first in `historic`
     mode (`SECRET_DETECTION_HISTORIC_SCAN` = `true`). All subsequent scheduled scans run in default
     mode with `SECRET_DETECTION_LOG_OPTIONS` set to the commit range between last run and current
     SHA. You can override this behavior by specifying CI/CD variables in the scan
     execution policy. For more information, see
-    [Full history pipeline secret detection](../secret_detection/pipeline/index.md#full-history-pipeline-secret-detection).
+    [Full history pipeline secret detection](../secret_detection/pipeline/_index.md#full-history-pipeline-secret-detection).
   - For `triggered` scan execution policies, secret detection works just like regular scan
-    [configured manually in the `.gitlab-ci.yml`](../secret_detection/pipeline/index.md#edit-the-gitlab-ciyml-file-manually).
+    [configured manually in the `.gitlab-ci.yml`](../secret_detection/pipeline/_index.md#edit-the-gitlab-ciyml-file-manually).
 - Container scanning: A scan that is configured for the `pipeline` rule type ignores the agent
   defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.
   An agent with a name provided in the `agents` object must be created and configured for the
@@ -363,7 +421,7 @@ The following settings are supported by the `scan_settings` parameter:
 
 ## CI/CD variables
 
-Variables defined in a scan execution policy follow the standard [CI/CD variable precedence](../../../ci/variables/index.md#cicd-variable-precedence).
+Variables defined in a scan execution policy follow the standard [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence).
 
 Preconfigured values are used for the following CI/CD variables in any project on which a scan
 execution policy is enforced. Their values can be overridden, but **only** if they are declared in
@@ -390,12 +448,12 @@ In GitLab 16.9 and earlier:
 
 To customize policy enforcement, you can define a policy's scope to either include, or exclude,
 specified projects, groups, or compliance framework labels. For more details, see
-[Scope](index.md#scope).
+[Scope](_index.md#scope).
 
 ## Example security policy project
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](index.md#security-policy-project):
+[security policy project](_index.md#security-policy-project):
 
 ```yaml
 ---

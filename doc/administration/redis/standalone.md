@@ -2,20 +2,22 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Standalone Redis using the Linux package
 ---
 
-# Standalone Redis using the Linux package
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The Linux package can be used to configure a standalone Redis server.
 In this configuration, Redis is not scaled, and represents a single
 point of failure. However, in a scaled environment the objective is to allow
 the environment to handle more users or to increase throughput. Redis itself
 is generally stable and can handle many requests, so it is an acceptable
-trade off to have only a single instance. See the [reference architectures](../reference_architectures/index.md)
+trade off to have only a single instance. See the [reference architectures](../reference_architectures/_index.md)
 page for an overview of GitLab scaling options.
 
 ## Set up the standalone Redis instance

@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Migration to Vue 3
 ---
-
-# Migration to Vue 3
 
 The migration from Vue 2 to 3 is tracked in epic [&6252](https://gitlab.com/groups/gitlab-org/-/epics/6252).
 
@@ -190,8 +189,11 @@ Uncaught TypeError: Cannot read properties of undefined (reading 'loading')
 
 VueApollo v3 (used for Vue.js 2) fails to initialize in Vue.js `compat`
 
-NOTE:
+{{< alert type="note" >}}
+
 While stubbing `Vue.version` will solve VueApollo-related issues in the demo project, it will still lose reactivity on specific scenarios, so an upgrade is still needed
+
+{{< /alert >}}
 
 #### Step 1. Perform upgrade according to library docs
 
@@ -255,8 +257,11 @@ In order to backport this behavior, we need the following knowledge:
 - We can access extra options provided to Vue instance via `$options`, so extra `apolloProvider` will be visible as `this.$options.apolloProvider`
 - We can access the current `app` (in Vue.js 3 meaning) on the Vue instance via `this.$.appContext.app`
 
-NOTE:
+{{< alert type="note" >}}
+
 We're relying on non-public Vue.js 3 API in this case. However, since `@vue/compat` builds are expected to be available only for 3.2.x branch, we have reduced risks that this API will be changed
+
+{{< /alert >}}
 
 With this knowledge, we can move the initialization of our tooling as early as possible in Vue2 - in the `beforeCreate()` lifecycle hook:
 

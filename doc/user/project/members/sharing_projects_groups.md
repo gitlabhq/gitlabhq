@@ -2,17 +2,23 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Sharing projects and groups
 ---
 
-# Sharing projects and groups
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
-> - Feature flag `webui_members_inherited_users` was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
-> - Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+{{< /details >}}
+
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+- Feature flag `webui_members_inherited_users` was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
+- Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+
+{{< /history >}}
 
 You can share by invitation:
 
@@ -22,7 +28,7 @@ You can share by invitation:
 ## Sharing projects
 
 When you want a group to have access to your project,
-you can invite the [group](../../group/index.md) to the project.
+you can invite the [group](../../group/_index.md) to the project.
 The group's direct and inherited members get access to the project, which becomes a **shared project**.
 
 In this case, inherited members are members that are inherited from parent groups into the groups that are invited.
@@ -33,10 +39,10 @@ The following table provides an overview of the group members that get access to
 
 | Group member source                                                 | Access to shared project |
 |---------------------------------------------------------------------|--------------------------|
-| Direct member of the group that is shared                           | **{check-circle}** Yes   |
-| Inherited member of the group that is shared                        | **{check-circle}** Yes   |
-| Direct member of a subgroup, but not of the group that is shared    | **{dotted-circle}** No   |
-| Inherited member of a subgroup, but not of the group that is shared | **{dotted-circle}** No   |
+| Direct member of the group that is shared                           | {{< icon name="check-circle" >}} Yes   |
+| Inherited member of the group that is shared                        | {{< icon name="check-circle" >}} Yes   |
+| Direct member of a subgroup, but not of the group that is shared    | {{< icon name="dotted-circle" >}} No   |
+| Inherited member of a subgroup, but not of the group that is shared | {{< icon name="dotted-circle" >}} No   |
 
 The [visibility level](../../public_access.md) of the group you're inviting must be at least as restrictive as that of the project.
 For example, you can invite:
@@ -49,7 +55,7 @@ For example, you can invite:
 - A **public** group to a **public** project.
 
 If the project's top-level group does not allow the project to be shared outside the hierarchy,
-the invited group or subgroup must be in the project's [namespace](../../namespace/index.md).
+the invited group or subgroup must be in the project's [namespace](../../namespace/_index.md).
 
 ### Member access and roles
 
@@ -84,10 +90,13 @@ unless one of the following applies:
 - The current user is a member of the invited group.
 - The current user is an Owner of the current group or the Maintainer/Owner of the current project.
 
-NOTE:
+{{< alert type="note" >}}
+
 The invited group's name and membership source are masked from members who do not have access to the invited group.
 However, even if project Maintainers and Owners cannot access the private invited group, they can see the source of private invited group members.
 This behavior is intended to help project Maintainers and Owners to better manage the memberships of the projects they own.
+
+{{< /alert >}}
 
 ### Examples
 
@@ -104,9 +113,13 @@ For a project that was created by `Group 1`:
 
 ### Invite a group to a project
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
-> - Feature flag `webui_members_inherited_users` [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
-> - Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051), and feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/364078) in GitLab 17.4.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+- Feature flag `webui_members_inherited_users` [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
+- Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051), and feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/364078) in GitLab 17.4.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -136,7 +149,7 @@ Private groups are:
 The **Members** tab shows:
 
 - Members who were directly added to the project.
-- Inherited members of the group [namespace](../../namespace/index.md) that the project was added to.
+- Inherited members of the group [namespace](../../namespace/_index.md) that the project was added to.
 
 The members of the invited group are not displayed on the **Members** tab unless the `webui_members_inherited_users` feature flag is enabled.
 
@@ -169,11 +182,11 @@ When `group-01` is invited to `project-01` with `Owner` permissions, users have 
 - User D, Maintainer
 - User E, Reporter
 
-### View a group's shared projects
+### View shared projects
 
-In a group, a shared project is a project to which the group members gained access through the [**Invite a group**](#invite-a-group-to-a-project) action.
+A shared project is a project that has invited your group members to access its resources through the [**Invite a group**](#invite-a-group-to-a-project) action.
 
-To view a group's shared projects:
+To view projects that have shared access with your group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. On the group page, select the **Shared projects** tab.
@@ -200,13 +213,16 @@ When this setting is enabled:
 - It applies to all subgroups, unless overridden by a group Owner.
 - Groups already added to a project lose access to it.
 
-NOTE:
+{{< alert type="note" >}}
+
 After you [specify a user cap for the group](../../group/manage.md#specify-a-user-cap-for-a-group), you cannot disable this setting.
+
+{{< /alert >}}
 
 ## Sharing groups
 
 When you want a group to have access to your group,
-you can invite another [group](../../group/index.md) to the group.
+you can invite another [group](../../group/_index.md) to the group.
 The invited group's direct members get access to the group.
 
 After you invite a group to your group:
@@ -227,10 +243,13 @@ unless one of the following applies:
 - The current user is a member of the invited group.
 - The current user is an Owner of the current group or the Maintainer/Owner of the current project.
 
-NOTE:
+{{< alert type="note" >}}
+
 The invited group's name and membership source are masked from members who do not have access to the invited group.
 However, even if group Owners cannot access the private invited group, they can see the source of private invited group members.
 This behavior is intended to help group Owners to better manage the memberships of the groups they own.
+
+{{< /alert >}}
 
 ### Examples
 
@@ -242,7 +261,11 @@ This behavior is intended to help group Owners to better manage the memberships 
 
 ### Invite a group to a group
 
-> - Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051) in GitLab 17.4.
+{{< history >}}
+
+- Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051) in GitLab 17.4.
+
+{{< /history >}}
 
 Similar to how you invite a group to a project, you can invite a group to another group.
 
@@ -268,12 +291,24 @@ To remove an invited group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
 1. Select the **Groups** tab.
-1. To the right of the group you want to remove, select **Remove group** (**{remove}**).
+1. To the right of the group you want to remove, select **Remove group** ({{< icon name="remove" >}}).
 
 When you remove the invited group from your group:
 
 - All direct members of the invited group no longer have access to your group.
 - Members of the invited group no longer count towards the billable members of your group.
+
+### View shared groups
+
+A shared group is a group that has invited your group members to access its resources through the [**Invite a group**](#invite-a-group-to-a-group) action.
+
+To view groups that have shared access with your group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. On the group page, select the **Shared groups** tab.
+
+A list of shared groups is displayed.
+You can also use the REST API to [list a group's shared groups](../../../api/groups.md#list-shared-groups).
 
 ### Prevent inviting groups outside the group hierarchy
 

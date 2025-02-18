@@ -27,7 +27,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   lastUsedHelpLink: helpPagePath('/user/profile/personal_access_tokens.md', {
-    anchor: 'view-the-time-at-and-ips-where-a-token-was-last-used',
+    anchor: 'view-token-usage-information',
   }),
   i18n: {
     emptyField: __('Never'),

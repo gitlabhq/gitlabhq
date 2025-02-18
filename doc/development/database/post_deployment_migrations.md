@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Post Deployment Migrations
 ---
-
-# Post Deployment Migrations
 
 Post deployment migrations are regular Rails migrations that can optionally be
 executed after a deployment. By default these migrations are executed alongside

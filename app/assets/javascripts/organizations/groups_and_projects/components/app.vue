@@ -123,14 +123,14 @@ export default {
     },
   },
   methods: {
-    pushQuery(query) {
+    async pushQuery(query) {
       const currentQuery = this.$route.query;
 
       if (isEqual(currentQuery, query)) {
         return;
       }
 
-      this.$router.push({ query });
+      await this.$router.push({ query });
     },
     onDisplayListboxSelect(display) {
       this.pushQuery({ display });
@@ -138,16 +138,16 @@ export default {
         organizationGroupsProjectsDisplay: display.toUpperCase(),
       });
     },
-    onSortByChange(sortName) {
+    async onSortByChange(sortName) {
       if (this.$route.query.sort_name === sortName) {
         return;
       }
 
-      this.pushQuery({ ...this.routeQueryWithoutPagination, sort_name: sortName });
+      await this.pushQuery({ ...this.routeQueryWithoutPagination, sort_name: sortName });
       this.userPreferencesUpdateSort();
     },
-    onSortDirectionChange(isAscending) {
-      this.pushQuery({
+    async onSortDirectionChange(isAscending) {
+      await this.pushQuery({
         ...this.routeQueryWithoutPagination,
         sort_direction: isAscending ? SORT_DIRECTION_ASC : SORT_DIRECTION_DESC,
       });

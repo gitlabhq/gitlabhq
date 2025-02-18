@@ -8,6 +8,6 @@ default: "'{}'::jsonb"
 description: Definition for resource usage limits enforced in Sidekiq workers. This
   setting is available for GitLab.com only.
 encrypted: false
-gitlab_com_different_than_default: true
+gitlab_com_different_than_default: false
 jihu: false
 not_null: true

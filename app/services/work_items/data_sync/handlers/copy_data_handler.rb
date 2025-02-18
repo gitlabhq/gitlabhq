@@ -20,8 +20,6 @@ module WorkItems
             created_at: work_item.created_at,
             updated_at: work_item.updated_at,
             updated_by: work_item.updated_by,
-            last_edited_at: work_item.last_edited_at,
-            last_edited_by: work_item.last_edited_by,
             closed_at: work_item.closed_at,
             closed_by: work_item.closed_by,
             duplicated_to_id: work_item.duplicated_to_id,
@@ -69,7 +67,9 @@ module WorkItems
         end
 
         def service_desk_reply_to
-          target_namespace.service_desk_alias_address
+          return unless target_namespace.respond_to?(:project) # only for ProjectNamespace
+
+          ::ServiceDesk::Emails.new(target_namespace.project).alias_address
         end
       end
     end

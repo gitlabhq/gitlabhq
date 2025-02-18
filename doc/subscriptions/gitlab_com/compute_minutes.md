@@ -2,16 +2,18 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Purchase additional compute minutes
 ---
 
-# Purchase additional compute minutes
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 [Compute minutes](../../ci/pipelines/compute_minutes.md) is the resource consumed
-when running [CI/CD pipelines](../../ci/index.md) on GitLab instance runners. You can find
+when running [CI/CD pipelines](../../ci/_index.md) on GitLab instance runners. You can find
 pricing for additional compute minutes on the [GitLab Pricing page](https://about.gitlab.com/pricing/#compute-minutes).
 
 Additional compute minutes:

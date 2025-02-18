@@ -18,25 +18,19 @@ module QA
           /Dockerfile\.assets/
         )
 
-        def initialize(mr_diff, mr_labels)
+        def initialize(mr_diff)
           @mr_diff = mr_diff
-          @mr_labels = mr_labels
         end
 
         # Specific specs to run
         #
-        # @return [String]
-        def qa_tests
-          return if mr_diff.empty? || dependency_changes
-          return if only_spec_changes? && mr_diff.all? { |change| change[:deleted_file] }
-          # re-enable with gitlab-org/quality/analytics/team#18
-          # return selective_tests_from_code_paths_mapping if coverage_based_mapping?
-          return unless only_spec_changes?
+        # @return [Array]
+        def qa_tests(from_code_path_mapping: false)
+          return [] if mr_diff.empty? || dependency_changes
+          return changed_specs if only_spec_changes?
+          return selective_tests_from_code_paths_mapping if from_code_path_mapping
 
-          mr_diff
-            .reject { |change| change[:deleted_file] }
-            .map { |change| change[:path].delete_prefix("qa/") } # make paths relative to qa directory
-            .join(" ")
+          []
         end
 
         # Qa framework changes
@@ -52,10 +46,9 @@ module QA
             .any?
         end
 
-        def targeting_stable_branch?
-          /^[\d-]+-stable(-ee|-jh)?$/.match?(ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'])
-        end
-
+        # Only quarantine changes
+        #
+        # @return [Boolean]
         def quarantine_changes?
           return false if mr_diff.empty?
           return false if mr_diff.any? { |change| change[:new_file] || change[:deleted_file] }
@@ -81,22 +74,27 @@ module QA
           false
         end
 
+        # All changes are spec removals
+        #
+        # @return [Boolean]
+        def only_spec_removal?
+          return false if mr_diff.empty?
+
+          only_spec_changes? && mr_diff.all? { |change| change[:deleted_file] }
+        end
+
         private
 
         # @return [Array]
         attr_reader :mr_diff
 
-        # @return [Array]
-        attr_reader :mr_labels
-
-        # @return [Array]
-        attr_reader :selected_e2e_tests
-
-        # Use coverage based test mapping
+        # Changed spec files
         #
-        # @return [Boolean]
-        def coverage_based_mapping?
-          QA::Runtime::Env.selective_execution_improved_enabled? && non_qa_changes? && !targeting_stable_branch?
+        # @return [Array, nil]
+        def changed_specs
+          mr_diff
+            .reject { |change| change[:deleted_file] }
+            .map { |change| change[:path].delete_prefix("qa/") } # make paths relative to qa directory
         end
 
         # Are the changed files only qa specs?
@@ -131,17 +129,22 @@ module QA
         #
         # @return [Array]
         def selective_tests_from_code_paths_mapping
-          clean_map = code_paths_map&.each_with_object({}) do |(test_filename, code_mappings), hsh|
-            name = test_filename.gsub("./", "").split(":").first
-            hsh[name] = hsh.key?(name) ? (code_mappings + hsh[name]).uniq : code_mappings
+          logger.info("Fetching tests to execute based on code paths mapping")
+
+          unless code_paths_map
+            logger.warn("Failed to obtain code mappings for test selection!")
+            return []
           end
 
-          tests = clean_map
-            &.select { |_test, mappings| changed_files.any? { |file| mappings.include?("./#{file}") } }
-            &.keys
+          clean_map = code_paths_map.each_with_object(Hash.new { |h, k| h[k] = [] }) do |(example_id, mappings), hsh|
+            name = example_id.gsub("./", "").split(":").first
 
-          logger.info("Selected tests from mapping: '#{tests}'")
-          tests&.join(" ")
+            hsh[name] = (hsh[name] + mappings).uniq
+          end
+
+          clean_map
+            .select { |_test, mappings| changed_files.any? { |file| mappings.include?("./#{file}") } }
+            .keys
         end
 
         # Get the mapping hash from GCP storage

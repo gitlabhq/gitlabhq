@@ -10,8 +10,8 @@ module Gitlab
       def perform
         each_sub_batch do |sub_batch|
           connection.execute <<-SQL
-            INSERT INTO group_scim_identities (temp_source_id, group_id, user_id, extern_uid, created_at, updated_at)
-            #{sub_batch.select(:id, :group_id, :user_id, :extern_uid, :created_at, :updated_at).to_sql}
+            INSERT INTO group_scim_identities (temp_source_id, group_id, user_id, extern_uid, active, created_at, updated_at)
+            #{sub_batch.select(:id, :group_id, :user_id, :extern_uid, :active, :created_at, :updated_at).to_sql}
             ON CONFLICT DO NOTHING
           SQL
         end

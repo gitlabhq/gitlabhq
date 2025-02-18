@@ -17,7 +17,6 @@ itself: # project
     - last_repository_updated_at
     - marked_for_deletion_at
     - marked_for_deletion_by_user_id
-    - max_artifacts_size
     - max_pages_size
     - merge_requests_author_approval
     - merge_requests_disable_committers_approval
@@ -194,6 +193,7 @@ project_setting:
     - observability_alerts_enabled
     - spp_repository_pipeline_access
     - max_number_of_vulnerabilities
+    - extended_prat_expiry_webhooks_execute
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

@@ -5,7 +5,7 @@
 
 # Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/api_discovery/
 #
-# Configure API Discovery with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
+# Configure API Discovery with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/).
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/api_discovery/#available-cicd-variables
 
 variables:

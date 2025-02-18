@@ -2,13 +2,15 @@
 stage: Security Risk Management
 group: Security Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: CVE ID request
 ---
 
-# CVE ID request
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 For any public project, you can request a CVE identifier (ID).
 
@@ -17,7 +19,7 @@ vulnerability. GitLab is a [CVE Numbering Authority](https://about.gitlab.com/se
 ([CNA](https://cve.mitre.org/cve/cna.html)).
 
 Assigning a CVE ID to a vulnerability in your project helps your users stay secure and informed. For
-example, [dependency scanning tools](../application_security/dependency_scanning/index.md) can
+example, [dependency scanning tools](dependency_scanning/_index.md) can
 detect when vulnerable versions of your project are used as a dependency.
 
 A common vulnerability workflow is:

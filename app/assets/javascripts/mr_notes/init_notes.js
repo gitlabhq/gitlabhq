@@ -7,6 +7,7 @@ import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import store from '~/mr_notes/stores';
+import { pinia } from '~/pinia/instance';
 import notesEventHub from '~/notes/event_hub';
 import discussionNavigator from '../notes/components/discussion_navigator.vue';
 import NotesApp from '../notes/components/notes_app.vue';
@@ -38,6 +39,7 @@ export default () => {
     components: {
       NotesApp,
     },
+    pinia,
     store,
     apolloProvider,
     provide: {

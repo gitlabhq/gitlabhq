@@ -119,6 +119,12 @@ RSpec.describe MergeRequests::HandleAssigneesChangeService, feature_category: :c
       execute
     end
 
+    it 'triggers GraphQL subscription userMergeRequestUpdated' do
+      expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(assignee, merge_request)
+
+      execute
+    end
+
     context 'when execute_hooks option is set to true' do
       let(:options) { { 'execute_hooks' => true } }
 

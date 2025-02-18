@@ -8,14 +8,6 @@ description: Remote Development Workspace variables
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129688
 milestone: '16.4'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: workspace_id
-        table: workspaces
-        sharding_key: project_id
-        belongs_to: workspace
-desired_sharding_key_migration_job_name: BackfillWorkspaceVariablesProjectId
 table_size: small
+sharding_key:
+  project_id: projects

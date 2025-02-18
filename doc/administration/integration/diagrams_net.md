@@ -1,18 +1,24 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Configure a Diagrams.net integration for GitLab Self-Managed."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Configure a Diagrams.net integration for GitLab Self-Managed.
+title: Diagrams.net
 ---
 
-# Diagrams.net
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86206) in GitLab 15.10.
-> - Offline environment support [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116281) in GitLab 16.1.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86206) in GitLab 15.10.
+- Offline environment support [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116281) in GitLab 16.1.
+
+{{< /history >}}
 
 With the [diagrams.net](https://www.drawio.com/) integration, you can create and embed SVG diagrams in wikis.
 The diagram editor is available in both the plain text editor and the rich text editor.
@@ -20,9 +26,9 @@ The diagram editor is available in both the plain text editor and the rich text 
 On GitLab.com, this integration is enabled for all SaaS users and does not require any additional configuration.
 
 On GitLab Self-Managed, you can choose to integrate with the free [diagrams.net](https://www.drawio.com/)
-website, or use a self-managed diagrams.net site in offline environments.
+website, or host your own diagrams.net site in offline environments.
 
-To set up the integration on a self-managed instance, you must:
+To set up the integration, you must:
 
 1. Choose to integrate with the free diagrams.net website or
    [configure your diagrams.net server](#configure-your-diagramsnet-server).
@@ -56,5 +62,5 @@ For more information, see [Run your own diagrams.net server with Docker](https:/
 1. Select the **Enable Diagrams.net** checkbox.
 1. Enter the Diagrams.net URL. To connect to:
    - The free public instance: enter `https://embed.diagrams.net`.
-   - A self-managed diagrams.net instance: enter the URL you [configured earlier](#configure-your-diagramsnet-server).
+   - A locally hosted diagrams.net instance: enter the URL you [configured earlier](#configure-your-diagramsnet-server).
 1. Select **Save changes**.

@@ -2,15 +2,17 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: User follow and unfollow API
 ---
 
-# User follow and unfollow API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Use this API to perform follower actions for user accounts. For more information, see [Follow users](../user/profile/index.md#follow-users).
+{{< /details >}}
+
+Use this API to perform follower actions for user accounts. For more information, see [Follow users](../user/profile/_index.md#follow-users).
 
 ## Follow a user
 

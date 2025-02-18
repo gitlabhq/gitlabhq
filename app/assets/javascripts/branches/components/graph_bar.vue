@@ -58,12 +58,12 @@ export default {
 <template>
   <div
     :class="{ full: isFullWidth }"
-    class="position-relative float-left pt-1 graph-side gl-h-full"
+    class="graph-side gl-relative gl-float-left gl-h-full gl-pt-2"
   >
     <div
       :style="style"
       :class="[roundedClass, positionSideClass]"
-      class="position-absolute bar js-graph-bar"
+      class="bar js-graph-bar gl-absolute"
     ></div>
     <span :class="textAlignmentClass" class="count js-graph-count gl-block gl-px-1 gl-pt-1">
       {{ label }}

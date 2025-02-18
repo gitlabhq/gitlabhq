@@ -16,6 +16,10 @@ function latest_stable_tag() {
   git -c versionsort.prereleaseSuffix=rc tag --sort=-v:refname | awk '!/rc/' | head -1
 }
 
+function version_file_content() {
+    cat "${CI_PROJECT_DIR}/VERSION" 2>/dev/null || echo ""
+}
+
 if [[ "${CI_PROJECT_NAME}" == "gitlabhq" || "${CI_PROJECT_NAME}" == "gitlab-foss" || "${FOSS_ONLY}" == "1" ]]; then
   QA_IMAGE_NAME="gitlab-ce-qa"
   QA_BUILD_TARGET="foss"
@@ -28,24 +32,39 @@ else
   QA_BUILD_TARGET="ee"
 fi
 
+BASE_IMAGE_PATH="${CI_REGISTRY}/${CI_PROJECT_PATH}/${QA_IMAGE_NAME}"
+
 # Tag with commit SHA by default
-QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/${QA_IMAGE_NAME}:${CI_COMMIT_SHA}"
+QA_IMAGE="${BASE_IMAGE_PATH}:${CI_COMMIT_SHA}"
 
 # For branches, tag with slugified branch name. For tags, use the tag directly
 # with v prefix removed
 IMAGE_TAG=${CI_COMMIT_TAG#v}
 IMAGE_TAG=${IMAGE_TAG:-$CI_COMMIT_REF_SLUG}
 
-QA_IMAGE_BRANCH="${CI_REGISTRY}/${CI_PROJECT_PATH}/${QA_IMAGE_NAME}:${IMAGE_TAG}"
-QA_IMAGE_MASTER="${CI_REGISTRY}/${CI_PROJECT_PATH}/${QA_IMAGE_NAME}:master"
+QA_IMAGE_BRANCH="${BASE_IMAGE_PATH}:${IMAGE_TAG}"
+QA_IMAGE_MASTER="${BASE_IMAGE_PATH}:master"
 
 DESTINATIONS="--tag ${QA_IMAGE} --tag ${QA_IMAGE_BRANCH}"
 
 # Auto-deploy tag format uses first 12 letters of commit SHA. Tag with that
 # reference also for EE images.
 if [ "${QA_IMAGE_NAME}" == "gitlab-ee-qa" ]; then
-  QA_IMAGE_FOR_AUTO_DEPLOY="${CI_REGISTRY}/${CI_PROJECT_PATH}/${QA_IMAGE_NAME}:${CI_COMMIT_SHA:0:11}"
+  QA_IMAGE_FOR_AUTO_DEPLOY="${BASE_IMAGE_PATH}:${CI_COMMIT_SHA:0:11}"
   DESTINATIONS="${DESTINATIONS} --tag $QA_IMAGE_FOR_AUTO_DEPLOY"
+fi
+
+# Build QA image for Internal release
+# - If QA_IMAGE_NAME is "gitlab-ee-qa" and CI_REGISTRY is "dev.gitlab.org:5005"
+# - If the content of VERSION file includes the string "internal"
+# - If CI_COMMIT_TITLE is "Update VERSION files"
+# Then set DESTINATIONS to the content of VERSION file
+if [[ "${QA_IMAGE_NAME}" == "gitlab-ee-qa" ]] && \
+   [[ "${CI_REGISTRY}" == "dev.gitlab.org:5005" ]] && \
+   [[ "$(version_file_content)" == *"internal"* ]] && \
+   [[ "${CI_COMMIT_TITLE}" == "Update VERSION files" ]]; then
+   QA_IMAGE_FOR_INTERNAL_RELEASE="${BASE_IMAGE_PATH}:$(version_file_content)"
+   DESTINATIONS="${DESTINATIONS} --tag ${QA_IMAGE_FOR_INTERNAL_RELEASE}"
 fi
 
 # On tag pipelines in Canonical projects (gitlab and gitlab-foss), release to

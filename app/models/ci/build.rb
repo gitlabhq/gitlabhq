@@ -96,16 +96,15 @@ module Ci
 
     has_many :pages_deployments, foreign_key: :ci_build_id, inverse_of: :ci_build
 
-    has_many :tag_links,
-      ->(build) { in_partition(build) },
+    has_many :taggings, ->(build) { in_partition(build) },
       class_name: 'Ci::BuildTag',
       foreign_key: :build_id,
       partition_foreign_key: :partition_id,
       inverse_of: :build
 
-    has_many :simple_tags,
+    has_many :tags,
       class_name: 'Ci::Tag',
-      through: :tag_links,
+      through: :taggings,
       source: :tag
 
     Ci::JobArtifact.file_types.each_key do |key|
@@ -425,16 +424,8 @@ module Ci
       in_merge_request(merge_request_id).pluck(:id)
     end
 
-    def self.arel_tag_names_array
+    def self.taggings_join_model
       ::Ci::BuildTag
-        .joins(:tag)
-        .where(::Ci::BuildTag.arel_table[:build_id].eq(arel_table[:id]))
-        .where(::Ci::BuildTag.arel_table[:partition_id].eq(arel_table[:partition_id]))
-        .select('COALESCE(array_agg(tags.name ORDER BY name), ARRAY[]::text[])')
-    end
-
-    def tags_ids_relation
-      simple_tags
     end
 
     # A Ci::Bridge may transition to `canceling` as a result of strategy: :depend
@@ -480,18 +471,18 @@ module Ci
 
     def pages_generator?
       return false unless Gitlab.config.pages.enabled
+      return false unless options.present?
       return true if options[:pages].is_a?(Hash) || options[:pages] == true
 
       options[:pages] != false && name == 'pages' # Legacy behaviour
     end
 
-    # Overriden on EE
-    # rubocop:disable Gitlab/NoCodeCoverageComment -- Fully tested in EE and tested in Foss through feature specs in spec/models/ci/build_spec.rb
-    # :nocov:
     def pages
-      {}
+      return {} unless pages_generator? && publish_path_available?
+
+      { publish: expanded_publish_path }
     end
-    # rubocop:enable Gitlab/NoCodeCoverageComment
+    strong_memoize_attr :pages
 
     def runnable?
       true
@@ -572,13 +563,8 @@ module Ci
     def variables
       strong_memoize(:variables) do
         Gitlab::Ci::Variables::Collection.new
-          .concat(persisted_variables)
-          .concat(dependency_proxy_variables)
-          .concat(job_jwt_variables)
-          .concat(scoped_variables)
+          .concat(base_variables)
           .concat(pages_variables)
-          .concat(job_variables)
-          .concat(persisted_environment_variables)
       end
     end
 
@@ -660,15 +646,22 @@ module Ci
 
     def pages_variables
       ::Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        next variables unless pages_generator? && Feature.enabled?(:fix_pages_ci_variables, project)
-
-        pages_url_builder = ::Gitlab::Pages::UrlBuilder.new(project, pages)
-
         variables
-          .append(key: 'CI_PAGES_HOSTNAME', value: pages_url_builder.hostname)
-          .append(key: 'CI_PAGES_URL', value: pages_url_builder.pages_url)
+          .append(key: 'CI_PAGES_HOSTNAME', value: project.pages_hostname)
+          .append(key: 'CI_PAGES_URL', value: project.pages_url(pages))
       end
     end
+
+    def base_variables
+      ::Gitlab::Ci::Variables::Collection.new
+        .concat(persisted_variables)
+        .concat(dependency_proxy_variables)
+        .concat(job_jwt_variables)
+        .concat(scoped_variables)
+        .concat(job_variables)
+        .concat(persisted_environment_variables)
+    end
+    strong_memoize_attr :base_variables
 
     def features
       {
@@ -785,14 +778,6 @@ module Ci
       update!(token_encrypted: nil)
     end
 
-    def tag_list
-      if tags.loaded?
-        tags.map(&:name)
-      else
-        super
-      end
-    end
-
     def has_tags?
       tag_list.any?
     end
@@ -817,10 +802,9 @@ module Ci
       return unless project
       return if user&.blocked?
 
-      ActiveRecord::Associations::Preloader.new(records: [self], associations: { runner: :tags }).call
+      return unless project.has_active_hooks?(:job_hooks) || project.has_active_integrations?(:job_hooks)
 
-      project.execute_hooks(build_data.dup, :job_hooks) if project.has_active_hooks?(:job_hooks)
-      project.execute_integrations(build_data.dup, :job_hooks) if project.has_active_integrations?(:job_hooks)
+      Ci::ExecuteBuildHooksWorker.perform_async(project.id, build_data)
     end
 
     def browsable_artifacts?
@@ -999,6 +983,21 @@ module Ci
 
     def supports_artifacts_exclude?
       options&.dig(:artifacts, :exclude)&.any?
+    end
+
+    def publish_path
+      return unless options.present?
+      return options[:publish] unless options[:pages].is_a?(Hash)
+
+      options.dig(:pages, :publish) || options[:publish]
+    end
+
+    def publish_path_available?
+      publish_path.present?
+    end
+
+    def expanded_publish_path
+      ExpandVariables.expand(publish_path.to_s, -> { base_variables.sort_and_expand_all })
     end
 
     def multi_build_steps?
@@ -1259,7 +1258,10 @@ module Ci
     end
 
     def build_data
-      strong_memoize(:build_data) { Gitlab::DataBuilder::Build.build(self) }
+      strong_memoize(:build_data) do
+        ActiveRecord::Associations::Preloader.new(records: [self], associations: { runner: :tags }).call
+        Gitlab::DataBuilder::Build.build(self)
+      end
     end
 
     def job_artifacts_for_types(report_types)
@@ -1360,30 +1362,6 @@ module Ci
 
     def prefix_and_partition_for_token
       TOKEN_PREFIX + partition_id_prefix_in_16_bit_encode
-    end
-
-    override :save_tags
-    def save_tags
-      super do |new_tags, old_tags|
-        if old_tags.present?
-          tag_links
-            .where(tag_id: old_tags)
-            .delete_all
-        end
-
-        ci_builds_tags = new_tags.map do |tag|
-          Ci::BuildTag.new(
-            build_id: id, partition_id: partition_id,
-            tag_id: tag.id, project_id: project_id)
-        end
-
-        ::Ci::BuildTag.bulk_insert!(
-          ci_builds_tags,
-          validate: false,
-          unique_by: [:tag_id, :build_id, :partition_id],
-          returns: :id
-        )
-      end
     end
   end
 end

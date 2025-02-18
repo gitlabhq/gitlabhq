@@ -52,7 +52,7 @@ RSpec.shared_examples WebHooks::HookLogActions do
       post retry_path, headers: { 'REFERER' => show_path }
 
       expect(response).to redirect_to(show_path)
-      expect(flash[:warning]).to eq(_('The hook URL has changed, and this log entry cannot be retried'))
+      expect(flash[:warning]).to eq(_('The hook URL has changed. This log entry cannot be retried.'))
     end
   end
 end

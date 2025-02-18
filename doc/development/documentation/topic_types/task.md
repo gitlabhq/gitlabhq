@@ -2,9 +2,8 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Task topic type
 ---
-
-# Task topic type
 
 A task gives instructions for how to complete a procedure.
 
@@ -13,7 +12,8 @@ A task gives instructions for how to complete a procedure.
 Tasks should be in this format:
 
 ```markdown
-# Title (starts with an active verb, like "Create a widget" or "Delete a widget")
+title: Title (starts with an active verb, like "Create a widget" or "Delete a widget")
+---
 
 Do this task when you want to...
 
@@ -35,7 +35,8 @@ Task result (optional). Next steps (optional).
 Here is an example.
 
 ```markdown
-# Create an issue
+title: Create an issue
+---
 
 Create an issue when you want to track bugs or future work.
 
@@ -71,7 +72,8 @@ for lists.
 For example:
 
 ```markdown
-# Create a merge request
+title: Create a merge request
+---
 
 To create a merge request:
 
@@ -95,7 +97,8 @@ When this situation occurs:
 Here is an example.
 
 ```markdown
-# Change the default branch name
+title: Change the default branch name
+---
 
 You can change the default branch name for the instance or group.
 If the name is set for the instance, you can override it for a group.
@@ -159,4 +162,4 @@ how to write the phrase for each role.
 
 ## Related topics
 
-- [How to write task steps](../styleguide/index.md#navigation)
+- [How to write task steps](../styleguide/_index.md#navigation)

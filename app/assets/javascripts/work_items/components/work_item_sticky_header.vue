@@ -4,7 +4,7 @@ import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { isNotesWidget } from '../utils';
+import { findNotesWidget } from '../utils';
 import WorkItemActions from './work_item_actions.vue';
 import TodosToggle from './shared/todos_toggle.vue';
 import WorkItemStateBadge from './work_item_state_badge.vue';
@@ -85,16 +85,32 @@ export default {
       required: false,
       default: () => [],
     },
+    namespaceFullName: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    hasChildren: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     canUpdate() {
       return this.workItem.userPermissions?.updateWorkItem;
     },
+    canUpdateMetadata() {
+      return this.workItem.userPermissions?.setWorkItemMetadata;
+    },
     canDelete() {
       return this.workItem.userPermissions?.deleteWorkItem;
     },
+    canReportSpam() {
+      return this.workItem.userPermissions?.reportSpam;
+    },
     isDiscussionLocked() {
-      return this.workItem.widgets?.find(isNotesWidget)?.discussionLocked;
+      return findNotesWidget(this.workItem)?.discussionLocked;
     },
     workItemType() {
       return this.workItem.workItemType?.name;
@@ -183,19 +199,24 @@ export default {
             :work-item-type="workItemType"
             :work-item-type-id="workItemTypeId"
             :can-delete="canDelete"
+            :can-report-spam="canReportSpam"
             :can-update="canUpdate"
+            :can-update-metadata="canUpdateMetadata"
             :is-confidential="workItem.confidential"
             :is-discussion-locked="isDiscussionLocked"
             :is-parent-confidential="parentWorkItemConfidentiality"
             :work-item-reference="workItem.reference"
             :work-item-create-note-email="workItem.createNoteEmail"
             :work-item-state="workItem.state"
+            :work-item-web-url="workItem.webUrl"
             :is-modal="isModal"
             :work-item-author-id="workItemAuthorId"
             :is-group="isGroup"
             :widgets="widgets"
             :allowed-child-types="allowedChildTypes"
             :parent-id="parentId"
+            :namespace-full-name="namespaceFullName"
+            :has-children="hasChildren"
             @deleteWorkItem="$emit('deleteWorkItem')"
             @toggleWorkItemConfidentiality="
               $emit('toggleWorkItemConfidentiality', !workItem.confidential)

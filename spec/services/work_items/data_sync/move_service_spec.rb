@@ -23,19 +23,19 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
 
   context 'when user does not have permissions' do
     context 'when user cannot read original work item' do
-      let(:current_user) { target_project_member }
+      let_it_be(:current_user) { target_project_member }
 
       it_behaves_like 'fails to transfer work item', 'Cannot move work item due to insufficient permissions'
     end
 
     context 'when user cannot create work items in target namespace' do
-      let(:current_user) { source_project_member }
+      let_it_be(:current_user) { source_project_member }
 
       it_behaves_like 'fails to transfer work item', 'Cannot move work item due to insufficient permissions'
     end
 
     context 'when work item is already moved once' do
-      let(:current_user) { projects_member }
+      let_it_be(:current_user) { projects_member }
 
       before do
         original_work_item.update!(moved_to: create(:issue))
@@ -46,7 +46,7 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
   end
 
   context 'when user has permission to move work item' do
-    let(:current_user) { projects_member }
+    let_it_be(:current_user) { projects_member }
 
     context 'when moving a project level work item to same project' do
       let(:target_namespace) { project }
@@ -99,9 +99,13 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
 
     context 'when moving work item with success', :freeze_time do
       let(:expected_original_work_item_state) { Issue.available_states[:closed] }
+      let(:service_desk_alias_address) do
+        target_namespace.respond_to?(:project) &&
+          ::ServiceDesk::Emails.new(target_namespace.project).alias_address
+      end
+
       let!(:original_work_item_attrs) do
         {
-          iid: original_work_item.iid,
           project: target_namespace.try(:project),
           namespace: target_namespace,
           work_item_type: original_work_item.work_item_type,
@@ -126,7 +130,7 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
           external_key: original_work_item.external_key,
           upvotes_count: original_work_item.upvotes_count,
           blocking_issues_count: original_work_item.blocking_issues_count,
-          service_desk_reply_to: target_namespace.service_desk_alias_address
+          service_desk_reply_to: service_desk_alias_address
         }
       end
 

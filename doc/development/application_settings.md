@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Application settings development
 ---
-
-# Application settings development
 
 This document provides a development guide for contributors to add application
 settings to GitLab.
@@ -23,7 +22,7 @@ To add a new setting, you have to:
 
 - Check if there is an existing JSONB column that you can use to store the new setting.
 - If there is an existing JSON column then:
-  - Add new setting to the JSONB column like [`rate_limits`](https://gitlab.com/gitlab-org/gitlab/-/blob/63b37287ae028842fcdcf56d311e6bb0c7e09e79/app/models/application_setting.rb#L603)
+  - Add a new setting to the JSONB column like [`rate_limits`](https://gitlab.com/gitlab-org/gitlab/-/blob/63b37287ae028842fcdcf56d311e6bb0c7e09e79/app/models/application_setting.rb#L603)
     in the `ApplicationSetting` model.
   - Update the JSON schema validator for the column like [`rate_limits` validator](https://gitlab.com/gitlab-org/gitlab/-/blob/63b37287ae028842fcdcf56d311e6bb0c7e09e79/app/validators/json_schemas/application_setting_rate_limits.json).
 - If there isn't an existing JSON column which you can use then:
@@ -31,7 +30,7 @@ To add a new setting, you have to:
   - Add a constraint to ensure the column always stores a hash, see this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141765/diffs) for reference.
   - Create follow-up issues to move existing related columns to this newly created JSONB column. Follow the process to [migrate a database columns to a JSONB column](#migrate-a-database-column-to-a-jsonb-column).
 - Add the new setting to the [list of visible attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/6f33ad46ffeac454c6c9ce92d6ba328a72f062fd/app/helpers/application_settings_helper.rb#L215).
-- Add the new setting to it to [`ApplicationSettingImplementation#defaults`](https://gitlab.com/gitlab-org/gitlab/-/blob/6f33ad46ffeac454c6c9ce92d6ba328a72f062fd/app/models/application_setting_implementation.rb#L36), if the setting has a default value.
+- Add the new setting to the [`ApplicationSettingImplementation#defaults`](https://gitlab.com/gitlab-org/gitlab/-/blob/6f33ad46ffeac454c6c9ce92d6ba328a72f062fd/app/models/application_setting_implementation.rb#L36), if the setting has a default value.
 - Add a [test for the default value](https://gitlab.com/gitlab-org/gitlab/-/blob/6f33ad46ffeac454c6c9ce92d6ba328a72f062fd/spec/models/application_setting_spec.rb#L20), if the setting has a default value.
 - Add a validation for the new field to the [`ApplicationSetting` model](https://gitlab.com/gitlab-org/gitlab/-/blob/6f33ad46ffeac454c6c9ce92d6ba328a72f062fd/app/models/application_setting.rb).
 - Add a [model test](https://gitlab.com/gitlab-org/gitlab/-/blob/6f33ad46ffeac454c6c9ce92d6ba328a72f062fd/spec/models/application_setting_spec.rb) for the validation and default value
@@ -39,7 +38,7 @@ To add a new setting, you have to:
 - Update the [API documentation](https://gitlab.com/gitlab-org/gitlab/-/blob/6f33ad46ffeac454c6c9ce92d6ba328a72f062fd/doc/api/settings.md). Application settings are automatically made available on the REST API.
 - Run the `scripts/cells/application-settings-analysis.rb` script to generate a definition YAML file at `config/application_setting_columns/*.yml` and update the documentation file at
   [`cells/application_settings_analysis`](cells/application_settings_analysis.md), based on `db/structure.sql` and the API documentation. After the definition file is created, ensure you set the
-  `clusterwide` key to `true` or `false` in it. Setting `clusterwide: true` means that the attribute value are copied from the leader cell to other cells
+  `clusterwide` key to `true` or `false` in it. Setting `clusterwide: true` means that the attribute values are copied from the leader cell to other cells
   [in the context of Cells architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/impacted_features/admin-area/). In most cases, `clusterwide: false` is preferable.
 
 ### Database migration example
@@ -88,5 +87,5 @@ This a required multi-milestone process that involves:
 1. Ignoring the column.
 1. Dropping the column.
 1. Removing the ignore rule.
- 
+
 Dropping the original column before ignoring it in the model can cause problems with zero-downtime migrations.

@@ -248,17 +248,17 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
         let_it_be(:expiring_token) { create(:personal_access_token, user: project_bot, expires_at: 5.days.from_now) }
 
         it 'executes access token webhook' do
-          hook_data = {}
+          hook_data = { interval: :seven_days }
           project_hook = create(:project_hook, project: project, resource_access_token_events: true)
 
-          expect(Gitlab::DataBuilder::ResourceAccessToken).to receive(:build).and_return(hook_data)
+          expect(Gitlab::DataBuilder::ResourceAccessTokenPayload).to receive(:build).and_return(hook_data)
           expect(fake_wh_service).to receive(:async_execute).once
 
           expect(WebHookService)
             .to receive(:new)
             .with(
               project_hook,
-              {},
+              { interval: :seven_days },
               'resource_access_token_hooks',
               idempotency_key: anything
             ) { fake_wh_service }
@@ -266,48 +266,27 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
           worker.perform
         end
 
-        it 'logs if extra results are returned when loading bot users' do
-          allow(User).to receive(:id_in).and_call_original
-          allow(User).to receive(:id_in).with(an_array_matching([project_bot.id])).and_return(
-            # rubocop: disable RSpec/VerifiedDoubles -- AR scopes have dynamic instance methods
-            double(
-              'ActiveRecord scope',
-              with_personal_access_tokens_and_resources: [project_bot, project_bot]
-            )
-            # rubocop: enable RSpec/VerifiedDoubles
-          )
-          allow(worker).to receive(:extended_log).and_call_original
-          expect(worker).to receive(:extended_log).with(
-            "Bot users mismatch for seven_days",
-            bot_user_ids: an_array_matching([project_bot.id]),
-            returned_bot_ids: an_array_matching([project_bot.id, project_bot.id])
-          )
+        context 'when feature flag extended_expiry_webhook_execution_setting is disabled' do
+          before do
+            stub_feature_flags(extended_expiry_webhook_execution_setting: false)
+          end
 
-          worker.perform
-        end
+          it "does not call execute_web_hooks for interval 30 days" do
+            expiring_token.update!(expires_at: 30.days.from_now)
+            project_hook = create(:project_hook, project: project, resource_access_token_events: true)
 
-        it 'logs if duplicate bot users are brought up within the same run' do
-          erroneous_token = build_stubbed(
-            :personal_access_token,
-            user: project_bot,
-            expires_at: 5.days.from_now
-          )
+            expect(Gitlab::DataBuilder::ResourceAccessTokenPayload).not_to receive(:build)
+            expect(WebHookService)
+            .not_to receive(:new)
+            .with(
+              project_hook,
+              {},
+              'resource_access_token_hooks',
+              idempotency_key: anything
+            ) { fake_wh_service }
 
-          allow(worker).to receive(:fetch_bot_tokens).and_call_original
-          allow(worker).to receive(:fetch_bot_tokens).with(
-            :seven_days,
-            expiring_token.expires_at,
-            []
-          ).and_return([erroneous_token], [])
-
-          allow(worker).to receive(:extended_log).and_call_original
-          expect(worker).to receive(:extended_log).with(
-            "Attempted duplicate delivery for seven_days to bot user #{project_bot.id}",
-            bot_user_notified_ids: an_array_matching([project_bot.id]),
-            project_bot_id: project_bot.id
-          )
-
-          worker.perform
+            worker.perform
+          end
         end
 
         context 'with multiple batches of tokens' do
@@ -322,20 +301,6 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
           it 'uses last token in batch as min_expiry_date' do
             allow(PersonalAccessToken).to receive(:scope_for_notification_interval).and_call_original
             expect(PersonalAccessToken).to receive(:scope_for_notification_interval).with(:seven_days, min_expires_at: expiring_tokens.first.expires_at).and_call_original
-
-            perform
-          end
-
-          it 'logs each batch of token ids' do
-            allow(worker).to receive(:extended_log).and_call_original
-
-            expect(worker).to receive(:extended_log).with(
-              "Checking seven_days resource access token expiration email for tokens",
-              a_hash_including(
-                token_ids: instance_of(Array),
-                bot_user_ids: instance_of(Array)
-              )
-            ).at_least(:twice)
 
             perform
           end

@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Apps for a testing environment
 ---
 
-# Apps for a testing environment
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This is the GitLab Support Team's collection of information regarding testing environments,
 for use while troubleshooting. It is listed here for transparency, and it may be useful
@@ -16,9 +18,12 @@ for users with experience with these tools. If you are currently having an issue
 GitLab, you may want to check your [support options](https://about.gitlab.com/support/)
 first, before attempting to use this information.
 
-NOTE:
+{{< alert type="note" >}}
+
 This page was initially written for Support Engineers, so some of the links
 are only available internally at GitLab.
+
+{{< /alert >}}
 
 ## Docker
 
@@ -29,7 +34,7 @@ but contributions are welcome.
 
 ### GitLab
 
-See [our official Docker installation method](../../install/docker/index.md)
+See [our official Docker installation method](../../install/docker/_index.md)
 for how to run GitLab on Docker.
 
 ### SAML

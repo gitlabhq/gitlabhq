@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Install the GDK development environment
 ---
-
-# Install the GDK development environment
 
 If you want to contribute to the GitLab codebase and want a development environment in which to test
 your changes, you can use [the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit),
@@ -13,7 +12,7 @@ a local version of GitLab that's yours to play with.
 The GDK is a local development environment that includes an installation of GitLab Self-Managed,
 sample projects, and administrator access with which you can test functionality.
 
-![GDK](../img/gdk_home_v15_11.png)
+![Home page of GitLab running in local development environment on port 3000](../img/gdk_home_v15_11.png)
 
 If you prefer to use GDK in a local virtual machine, use the steps in [Configure GDK-in-a-box](configure-dev-env-gdk-in-a-box.md)
 
@@ -32,13 +31,13 @@ also set aside some time for troubleshooting.
 It might seem like a lot of work, but after you have the GDK running,
 you'll be able to make any changes.
 
-![GitLab in GDK](../img/gdk_home_v15_11.png)
+![Home page of GitLab running in local development environment on port 3000](../img/gdk_home_v15_11.png)
 
 To install the GDK:
 
 1. Ensure you're on
    [one of the supported platforms](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/main/#supported-platforms).
-1. Confirm that [Git](../../../topics/git/how_to_install_git/index.md) is installed,
+1. Confirm that [Git](../../../topics/git/how_to_install_git/_index.md) is installed,
    and that you have a source code editor.
 1. Choose the directory where you want to install the GDK.
    The installation script installs the application to a new subdirectory called `gitlab-development-kit`.
@@ -60,8 +59,11 @@ To install the GDK:
 
    This script clones the GitLab Development Kit (GDK) repository into a new subdirectory, and sets up necessary dependencies using the `asdf` version manager (including Ruby, Node.js, PostgreSQL, Redis, and more).
 
-   NOTE:
-   If you're using another version manager for those dependencies, refer to the [troubleshooting section](#error-no-version-is-set-for-command) to avoid conflicts.
+   {{< alert type="note" >}}
+
+If you're using another version manager for those dependencies, refer to the [troubleshooting section](#error-no-version-is-set-for-command) to avoid conflicts.
+
+   {{< /alert >}}
 
 1. For the message `Where would you like to install the GDK? [./gitlab-development-kit]`,
    press <kbd>Enter</kbd> to accept the default location.
@@ -138,10 +140,13 @@ For more advanced troubleshooting, continue to the [Troubleshoot GDK](#troublesh
 
 ## Troubleshoot GDK
 
-NOTE:
+{{< alert type="note" >}}
+
 For more advanced troubleshooting, see
 the [troubleshooting documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/main/doc/troubleshooting)
 and the [#contribute channel on Discord](https://discord.com/channels/778180511088640070/997442331202564176).
+
+{{< /alert >}}
 
 If you encounter issues, go to the `gitlab-development-kit/gitlab`
 directory and run `gdk doctor`.

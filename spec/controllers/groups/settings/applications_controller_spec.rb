@@ -35,6 +35,12 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
 
         render_views
 
+        it 'returns the total number of group applications' do
+          get :index, params: { group_id: group }
+
+          expect(assigns(:applications_total_count)).to eq(22)
+        end
+
         it 'returns the maximum paginated limit per page', :aggregate_failures do
           get :index, params: { group_id: group }
 

@@ -9,14 +9,6 @@ description: Stores daily snapshots of DORA4 metrics per environment.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55473
 milestone: '13.10'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: environment_id
-        table: environments
-        sharding_key: project_id
-        belongs_to: environment
-desired_sharding_key_migration_job_name: BackfillDoraDailyMetricsProjectId
 table_size: small
+sharding_key:
+  project_id: projects

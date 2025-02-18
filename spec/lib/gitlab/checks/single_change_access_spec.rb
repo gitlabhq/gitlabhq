@@ -61,6 +61,23 @@ RSpec.describe Gitlab::Checks::SingleChangeAccess, feature_category: :source_cod
       end
     end
 
+    describe '#gitaly_context' do
+      let(:access) do
+        described_class.new(
+          changes,
+          project: project,
+          user_access: user_access,
+          protocol: protocol,
+          logger: logger,
+          gitaly_context: gitaly_context
+        )
+      end
+
+      let(:gitaly_context) { { 'key' => 'value' } }
+
+      it { expect(access.gitaly_context).to eq(gitaly_context) }
+    end
+
     describe '#commits' do
       let(:expected_commits) { [Gitlab::Git::Commit.new(project.repository, { id: "1234" })] }
 

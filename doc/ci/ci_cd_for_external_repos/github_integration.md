@@ -2,25 +2,30 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Using GitLab CI/CD with a GitHub repository
 ---
 
-# Using GitLab CI/CD with a GitHub repository
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab CI/CD can be used with **GitHub.com** and **GitHub Enterprise** by
-creating a [CI/CD project](index.md) to connect your GitHub repository to
+creating a [CI/CD project](_index.md) to connect your GitHub repository to
 GitLab.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch a video on [Using GitLab CI/CD pipelines with GitHub repositories](https://www.youtube.com/watch?v=qgl3F2j-1cI).
 
-NOTE:
+{{< alert type="note" >}}
+
 Because of [GitHub limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/9147),
 [GitHub OAuth](../../integration/github.md#enable-github-oauth-in-gitlab)
 cannot be used to authenticate with GitHub as an external CI/CD repository.
+
+{{< /alert >}}
 
 ## Connect with personal access token
 
@@ -37,13 +42,13 @@ repositories:
       `repo` and `admin:repo_hook` so that GitLab can access your project,
       update commit statuses, and create a web hook to notify GitLab of new commits.
 1. In GitLab, create a project:
-   1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+   1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
    1. Select **Run CI/CD for external repository**.
    1. Select **GitHub**.
    1. For **Personal access token**, paste the token.
    1. Select **List Repositories**.
    1. Select **Connect** to select the repository.
-1. In GitHub, add a `.gitlab-ci.yml` to [configure GitLab CI/CD](../quick_start/index.md).
+1. In GitHub, add a `.gitlab-ci.yml` to [configure GitLab CI/CD](../quick_start/_index.md).
 
 GitLab:
 
@@ -64,7 +69,7 @@ To manually enable GitLab CI/CD for your repository:
    1. Enter a **Token description** and update the scope to allow
       `repo` so that GitLab can access your project and update commit statuses.
 1. In GitLab, create a project:
-   1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+   1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
    1. Select **Run CI/CD for external repository** and **Repository by URL**.
    1. In the **Git repository URL** field, enter the HTTPS URL for your GitHub repository.
       If your project is private, use the personal access token you just created for authentication.
@@ -87,6 +92,6 @@ To manually enable GitLab CI/CD for your repository:
    https://gitlab.com/api/v4/projects/<NAMESPACE>%2F<PROJECT>/mirror/pull?private_token=<PERSONAL_ACCESS_TOKEN>
    ```
 
-   Select the **Let me select individual events** option, then check the **Pull requests** and **Pushes** checkboxes. These settings are needed for [pipelines for external pull requests](index.md#pipelines-for-external-pull-requests).
+   Select the **Let me select individual events** option, then check the **Pull requests** and **Pushes** checkboxes. These settings are needed for [pipelines for external pull requests](_index.md#pipelines-for-external-pull-requests).
 
 1. In GitHub, add a `.gitlab-ci.yml` to configure GitLab CI/CD.

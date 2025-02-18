@@ -2,13 +2,15 @@
 stage: Verify
 group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Using PostgreSQL
 ---
 
-# Using PostgreSQL
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 As many applications depend on PostgreSQL as their database, you
 eventually need it in order for your tests to run. Below you are guided how to
@@ -16,7 +18,7 @@ do this with the Docker and Shell executors of GitLab Runner.
 
 ## Use PostgreSQL with the Docker executor
 
-To pass variables set in the GitLab UI to service containers, you must [define the variables](../variables/index.md#define-a-cicd-variable-in-the-ui).
+To pass variables set in the GitLab UI to service containers, you must [define the variables](../variables/_index.md#define-a-cicd-variable-in-the-ui).
 You must define your variables as either Group or Project, then call the variables in your job as shown in the following workaround.
 
 In Postgres 15.4 and later, Postgres does not substitute a schema or owner name into an extension script if the name contains a quote, backslash, or dollar sign.
@@ -27,9 +29,9 @@ If the CI variables are not configured, the value uses the environment variable 
 Fatal: invalid character in extension
 ```
 
-The workaround is to set your variables in [GitLab CI/CD variables](../variables/index.md) or set variables in string form:
+The workaround is to set your variables in [GitLab CI/CD variables](../variables/_index.md) or set variables in string form:
 
-1. [Set Postgres variables in GitLab](../variables/index.md#for-a-project). Variables set in the GitLab UI are not passed down to the service containers.
+1. [Set Postgres variables in GitLab](../variables/_index.md#for-a-project). Variables set in the GitLab UI are not passed down to the service containers.
 
 1. In the `.gitlab-ci.yml` file, specify a Postgres image:
 
@@ -49,7 +51,7 @@ The workaround is to set your variables in [GitLab CI/CD variables](../variables
      POSTGRES_HOST_AUTH_METHOD: trust
    ```
 
-   For more information about using `postgres` for the `Host`, see [How services are linked to the job](../services/index.md#how-services-are-linked-to-the-job).
+   For more information about using `postgres` for the `Host`, see [How services are linked to the job](../services/_index.md#how-services-are-linked-to-the-job).
 
 1. Configure your application to use the database, for example:
 
@@ -96,9 +98,12 @@ sudo -u postgres psql -d template1
 Then create a user (in our case `runner`) which is used by your
 application. Change `$password` in the command below to a real strong password.
 
-NOTE:
+{{< alert type="note" >}}
+
 Be sure to not enter `template1=#` in the following commands, as that's part of
 the PostgreSQL prompt.
+
+{{< /alert >}}
 
 ```shell
 template1=# CREATE USER runner WITH PASSWORD '$password' CREATEDB;
@@ -144,7 +149,7 @@ Database: nice_marmot
 
 We have set up an [Example PostgreSQL Project](https://gitlab.com/gitlab-examples/postgres) for your
 convenience that runs on [GitLab.com](https://gitlab.com) using our publicly
-available [instance runners](../runners/index.md).
+available [instance runners](../runners/_index.md).
 
 Want to hack on it? Fork it, commit, and push your changes. Within a few
 moments the changes are picked by a public runner and the job begins.

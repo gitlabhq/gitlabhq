@@ -1,0 +1,18 @@
+- title: '`ciMinutesUsed` GraphQL field renamed to `ciDuration`'
+  removal_milestone: '18.0'
+  announcement_milestone: '17.5'
+  breaking_change: true
+  reporter: pedropombeiro
+  stage: verify
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497364
+  impact: medium
+  scope: instance
+  resolution_role: Admin
+  manual_task: true
+  window: "2"
+  body: |
+    The `ciDuration` field of the `CiRunnerUsage` and `CiRunnerUsageByProject` types replaces the former `ciMinutesUsed` field.
+    Update all references to `ciMinutesUsed` from these types to `ciDuration`.
+
+  tiers: Ultimate
+  documentation_url: https://docs.gitlab.com/ee/api/graphql/reference/#cirunnerusage

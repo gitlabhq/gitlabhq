@@ -32,7 +32,7 @@ module ShardingKeySpecHelpers
     AND (
       pg_get_constraintdef(pg_constraint.oid) ILIKE '%#{column_name} IS NOT NULL%'
       OR
-      pg_get_constraintdef(pg_constraint.oid) ILIKE '%num_nonnulls%#{column_name}%> 0%'
+      pg_get_constraintdef(pg_constraint.oid)  ~ '.*num_nonnulls.*#{column_name}.*(= 1|> 0).*'
     )
     SQL
 
@@ -44,8 +44,14 @@ module ShardingKeySpecHelpers
   def has_multi_column_null_check_constraint?(table_name, column_names)
     # This regex searches for constraints that ensure at least one of a set of columns is NOT NULL.
     # It assumes the constraint was created using the #add_multi_column_not_null_constraint helper, which also
-    # sorts the list of columns.
-    regex = "\\ACHECK \\(\\(num_nonnulls\\(#{column_names.sort.join(', ')}\\) (> [0-9]{1,}|>?= [1-9]{1,})\\)\\)\\Z"
+    # sorts the list of columns. The constraint for `events` does not follow this convention hence the exception.
+    regex = {
+      events: '\\ACHECK \\(\\(\\(group_id IS NOT NULL\\) OR \\(project_id IS NOT NULL\\) ' \
+        'OR \\(personal_namespace_id IS NOT NULL\\)\\)\\)\\Z'
+    }.fetch(
+      table_name.to_sym,
+      "\\ACHECK \\(\\(num_nonnulls\\(#{column_names.sort.join(', ')}\\) (> [0-9]{1,}|>?= [1-9]{1,})\\)\\)\\Z"
+    )
 
     sql = <<~SQL
     SELECT 1

@@ -57,6 +57,26 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
           expect(json_response.first['user_id']).to eq(token.user.id)
           expect(json_response.last['id']).to eq(token_impersonated.id)
         end
+
+        context 'validations for user_id parameter' do
+          let_it_be(:user) { create(:user) }
+          let_it_be(:admin_token) { create(:personal_access_token, :admin_mode, user: current_user) }
+          let_it_be(:user_token) { create(:personal_access_token, user: user) }
+
+          it 'returns 404 if user_id is provided but does not exist' do
+            get api(path, current_user, admin_mode: true), params: { user_id: non_existing_record_id }
+
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(json_response['message']).to eq("404 Not Found")
+          end
+
+          it 'returns 404 if user_id is explicitly blank' do
+            get api(path, current_user, admin_mode: true), params: { user_id: '' }
+
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(json_response['message']).to eq("404 Not Found")
+          end
+        end
       end
 
       context 'filter with revoked parameter' do

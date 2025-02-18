@@ -1,0 +1,9 @@
+---
+name: fe_search_build_by_name
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/387547
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177192
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/512149
+milestone: '17.8'
+group: group::pipeline execution
+type: beta
+default_enabled: false

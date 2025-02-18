@@ -1,14 +1,16 @@
 ---
 stage: Foundations
 group: Import and Integrate
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting file export project migrations
 ---
 
-# Troubleshooting file export project migrations
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If you have problems with [migrating projects by using file exports](import_export.md), see the possible solutions below.
 
@@ -43,7 +45,7 @@ Review [issue 276930](https://gitlab.com/gitlab-org/gitlab/-/issues/276930), and
 
 If users aren't imported with imported projects, see the [preserving user contributions](import_export.md#preserving-user-contributions) requirements.
 
-A common reason for missing users is that the [public email setting](../../profile/index.md#set-your-public-email) isn't configured for users.
+A common reason for missing users is that the [public email setting](../../profile/_index.md#set-your-public-email) isn't configured for users.
 To resolve this issue, ask users to configure this setting using the GitLab UI.
 
 If there are too many users for manual configuration to be feasible,
@@ -121,8 +123,11 @@ reduce the repository size for another import attempt:
 
 ### Workaround option 2
 
-NOTE:
+{{< alert type="note" >}}
+
 This workaround does not account for LFS objects.
+
+{{< /alert >}}
 
 Rather than attempting to push all changes at once, this workaround:
 
@@ -181,7 +186,7 @@ it is terminated during execution.
 
 GitLab.com users should [contact Support](https://about.gitlab.com/support/#contact-support) to resolve this issue.
 
-Self-managed users can use the Rails console to bypass the Sidekiq process and
+GitLab Self-Managed administrators can use the Rails console to bypass the Sidekiq process and
 manually trigger the project export:
 
 ```ruby

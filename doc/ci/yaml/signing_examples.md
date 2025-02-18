@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use Sigstore for keyless signing and verification
 ---
 
-# Use Sigstore for keyless signing and verification
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 The [Sigstore](https://www.sigstore.dev/) project provides a CLI called
 [Cosign](https://docs.sigstore.dev/quickstart/quickstart-cosign/) which can be used for keyless signing of container images built
@@ -156,7 +158,7 @@ You can use Sigstore and npm, together with GitLab CI/CD, to digitally sign buil
 CLI provenance generation allows users to trust and verify that the package they are downloading and using is from you and the
 build system that built it.
 
-For more information on how to publish npm packages, see [GitLab npm package registry](../../user/packages/npm_registry/index.md).
+For more information on how to publish npm packages, see [GitLab npm package registry](../../user/packages/npm_registry/_index.md).
 
 ### Sigstore
 

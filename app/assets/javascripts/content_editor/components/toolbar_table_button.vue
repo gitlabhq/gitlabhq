@@ -17,7 +17,6 @@ export default {
     GlDisclosureDropdown,
     GlTooltip,
   },
-  inject: ['tiptapEditor'],
   data() {
     return {
       toggleId: uniqueId('dropdown-toggle-btn-'),
@@ -44,19 +43,9 @@ export default {
       this.maxCols = MIN_COLS;
     },
     insertTable() {
-      this.tiptapEditor
-        .chain()
-        .focus()
-        .insertTable({
-          rows: this.rows,
-          cols: this.cols,
-          withHeaderRow: true,
-        })
-        .run();
-
+      this.$emit('insert-table', { rows: this.rows, cols: this.cols });
       this.resetState();
       this.$refs.dropdown.close();
-
       this.$emit('execute', { contentType: 'table' });
     },
     getButtonLabel(rows, cols) {

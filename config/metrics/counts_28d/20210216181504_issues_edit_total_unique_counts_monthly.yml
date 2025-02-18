@@ -75,9 +75,6 @@ events:
   unique: user.id
 - name: g_project_management_issue_cloned
   unique: user.id
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

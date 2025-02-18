@@ -33,6 +33,10 @@ module API
         tags %w[container_registry_event]
       end
 
+      rescue_from ContainerRegistry::Path::InvalidRegistryPathError do
+        render_api_error!('Invalid repository path', 400)
+      end
+
       # This endpoint is used by Docker Registry to push a set of event
       # that took place recently.
       post 'events' do

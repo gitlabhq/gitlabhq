@@ -11,9 +11,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - git_write_action
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

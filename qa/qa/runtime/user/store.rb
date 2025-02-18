@@ -156,6 +156,8 @@ module QA
           #
           # @return [Boolean]
           def create_unique_test_user?
+            return false unless Env.create_unique_test_users?
+
             !Env.running_on_live_env? && !Env.personal_access_tokens_disabled? && admin_api_client
           end
 

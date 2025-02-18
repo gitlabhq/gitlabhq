@@ -10,7 +10,7 @@ module Tooling
       REPLACEMENT = nil
 
       SUGGESTION = <<~MARKDOWN
-        Please review RuboCop documentation related to [Enabling a new cop](https://docs.gitlab.com/ee/development/rubocop_development_guide.html#enabling-a-new-cop) and ensure you have followed all of the steps before resolving this comment.
+        Please review RuboCop documentation related to [Enabling a new cop](https://docs.gitlab.com/development/rubocop_development_guide/#enabling-a-new-cop) and ensure you have followed all of the steps before resolving this comment.
 
         ----
 

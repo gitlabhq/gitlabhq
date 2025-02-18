@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: How to set up Consul
 ---
 
-# How to set up Consul
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 A Consul cluster consists of both
 [server and client agents](https://developer.hashicorp.com/consul/docs/agent).
@@ -22,7 +24,7 @@ a service networking solution that you can manage by using `/etc/gitlab/gitlab.r
 
 Before configuring Consul:
 
-1. Review the [reference architecture](reference_architectures/index.md#available-reference-architectures)
+1. Review the [reference architecture](reference_architectures/_index.md#available-reference-architectures)
    documentation to determine the number of Consul server nodes you should have.
 1. If necessary, ensure the [appropriate ports are open](package_information/defaults.md#ports) in your firewall.
 
@@ -127,9 +129,9 @@ Below are some examples of TLS encryption.
 
 In the following example, the server uses TLS for incoming connections (without client TLS authentication).
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Consul server node
+{{< tab title="Consul server node" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -152,7 +154,9 @@ In the following example, the server uses TLS for incoming connections (without 
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Consul client node
+{{< /tab >}}
+
+{{< tab title="Consul client node" >}}
 
 The following can be configured on a Patroni node for example.
 
@@ -174,15 +178,17 @@ The following can be configured on a Patroni node for example.
 Patroni talks to the local Consul agent which does not use TLS for incoming
 connections. Hence the HTTP URL for `patroni['consul']['url']`.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 #### Default TLS support
 
 In the following example, the server uses mutual TLS authentication.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Consul server node
+{{< tab title="Consul server node" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -204,7 +210,9 @@ In the following example, the server uses mutual TLS authentication.
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Consul client node
+{{< /tab >}}
+
+{{< tab title="Consul client node" >}}
 
 The following can be configured on a Patroni node for example.
 
@@ -229,7 +237,9 @@ Patroni talks to the local Consul agent which does not use TLS for incoming
 connections, even though it uses TLS authentication to Consul server nodes.
 Hence the HTTP URL for `patroni['consul']['url']`.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 #### Full TLS support
 
@@ -238,9 +248,9 @@ In the following example, both client and server use mutual TLS authentication.
 The Consul server, client, and Patroni client certificates must be issued by the
 same CA for mutual TLS authentication to work.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Consul server node
+{{< tab title="Consul server node" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -262,7 +272,9 @@ same CA for mutual TLS authentication to work.
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Consul client node
+{{< /tab >}}
+
+{{< tab title="Consul client node" >}}
 
 The following can be configured on a Patroni node for example.
 
@@ -290,7 +302,9 @@ The following can be configured on a Patroni node for example.
    sudo gitlab-ctl reconfigure
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Gossip encryption
 

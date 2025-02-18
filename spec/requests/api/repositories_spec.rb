@@ -295,8 +295,27 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     let(:project_id) { CGI.escape(project.full_path) }
     let(:route) { "/projects/#{project_id}/repository/archive" }
 
+    let(:storage_path) { Gitlab.config.gitlab.repository_downloads_path }
+    let(:format) { 'tar.gz' }
+    let(:path) { nil }
+    let(:metadata) { project.repository.archive_metadata(nil, storage_path, format, append_sha: nil, path: path) }
+
     before do
       allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
+    end
+
+    def expected_archive_request(repository, metadata, path, include_lfs_blobs, exclude_paths = [])
+      Base64.encode64(
+        Gitaly::GetArchiveRequest.new(
+          repository: repository.gitaly_repository,
+          commit_id: metadata['CommitId'],
+          prefix: metadata['ArchivePrefix'],
+          format: Gitaly::GetArchiveRequest::Format::TAR_GZ,
+          path: path,
+          include_lfs_blobs: include_lfs_blobs,
+          exclude: exclude_paths
+        ).to_proto
+      )
     end
 
     shared_examples_for 'repository archive' do
@@ -309,6 +328,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
         expect(type).to eq('git-archive')
         expect(params['ArchivePath']).to match(/#{project.path}-[^.]+\.tar.gz/)
+        expect(params['GetArchiveRequest']).to eq(expected_archive_request(project.repository, metadata, path, true))
         expect(response.parsed_body).to be_empty
       end
 
@@ -338,6 +358,34 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         it_behaves_like '404 response' do
           let(:request) { get api("#{route}?sha=xxx", current_user) }
           let(:message) { '404 File Not Found' }
+        end
+      end
+
+      context 'when include_lfs_blobs is false' do
+        it 'returns the correct GetArchiveRequest' do
+          get api("#{route}?include_lfs_blobs=false", current_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+
+          type, params = workhorse_send_data
+
+          expect(type).to eq('git-archive')
+          expect(params['ArchivePath']).to match(/#{project.path}-[^.]+\.tar.gz/)
+          expect(params['GetArchiveRequest']).to eq(expected_archive_request(project.repository, metadata, path, false))
+        end
+      end
+
+      context 'with exclude_paths present in params' do
+        it 'returns the correct GetArchiveRequest' do
+          get api("#{route}?exclude_paths=lib,test", current_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+
+          type, params = workhorse_send_data
+
+          expect(type).to eq('git-archive')
+          expect(params['ArchivePath']).to match(/#{project.path}-[^.]+\.tar.gz/)
+          expect(params['GetArchiveRequest']).to eq(expected_archive_request(project.repository, metadata, path, true, %w[lib test]))
         end
       end
 
@@ -807,11 +855,23 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
   end
 
   describe 'GET /projects/:id/repository/changelog' do
+    it_behaves_like 'enforcing job token policies', :read_releases do
+      before do
+        allow(Repositories::ChangelogService).to receive(:new)
+          .and_return(instance_spy(Repositories::ChangelogService))
+      end
+
+      let(:request) do
+        get api("/projects/#{source_project.id}/repository/changelog"),
+          params: { version: '1.0.0', job_token: target_job.token }
+      end
+    end
+
     it 'generates the changelog for a version' do
-      spy = instance_spy(Repositories::ChangelogService)
+      spy = instance_spy(::Repositories::ChangelogService)
       release_notes = 'Release notes'
 
-      allow(Repositories::ChangelogService)
+      allow(::Repositories::ChangelogService)
         .to receive(:new)
         .with(
           project,
@@ -842,10 +902,10 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     end
 
     it 'returns generated changelog when using JOB-TOKEN auth' do
-      spy = instance_spy(Repositories::ChangelogService)
+      spy = instance_spy(::Repositories::ChangelogService)
       release_notes = 'Release notes'
 
-      allow(Repositories::ChangelogService)
+      allow(::Repositories::ChangelogService)
         .to receive(:new)
         .with(
           project,
@@ -877,9 +937,9 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     end
 
     it 'supports leaving out the from and to attribute' do
-      spy = instance_spy(Repositories::ChangelogService)
+      spy = instance_spy(::Repositories::ChangelogService)
 
-      allow(Repositories::ChangelogService)
+      allow(::Repositories::ChangelogService)
         .to receive(:new)
         .with(
           project,
@@ -906,9 +966,9 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     end
 
     it 'supports specified config file path' do
-      spy = instance_spy(Repositories::ChangelogService)
+      spy = instance_spy(::Repositories::ChangelogService)
 
-      expect(Repositories::ChangelogService)
+      expect(::Repositories::ChangelogService)
         .to receive(:new)
         .with(
           project,
@@ -962,9 +1022,9 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
   describe 'POST /projects/:id/repository/changelog' do
     it 'generates the changelog for a version' do
-      spy = instance_spy(Repositories::ChangelogService)
+      spy = instance_spy(::Repositories::ChangelogService)
 
-      allow(Repositories::ChangelogService)
+      allow(::Repositories::ChangelogService)
         .to receive(:new)
         .with(
           project,
@@ -1000,9 +1060,9 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     end
 
     it 'supports leaving out the from and to attribute' do
-      spy = instance_spy(Repositories::ChangelogService)
+      spy = instance_spy(::Repositories::ChangelogService)
 
-      allow(Repositories::ChangelogService)
+      allow(::Repositories::ChangelogService)
         .to receive(:new)
         .with(
           project,
@@ -1034,9 +1094,9 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     end
 
     it 'produces an error when generating the changelog fails' do
-      spy = instance_spy(Repositories::ChangelogService)
+      spy = instance_spy(::Repositories::ChangelogService)
 
-      allow(Repositories::ChangelogService)
+      allow(::Repositories::ChangelogService)
         .to receive(:new)
         .with(
           project,
@@ -1075,9 +1135,9 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     end
 
     it "support specified config file path" do
-      spy = instance_spy(Repositories::ChangelogService)
+      spy = instance_spy(::Repositories::ChangelogService)
 
-      expect(Repositories::ChangelogService)
+      expect(::Repositories::ChangelogService)
         .to receive(:new)
         .with(
           project,

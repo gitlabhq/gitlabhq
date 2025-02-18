@@ -288,8 +288,8 @@ EOT
       end
 
       context 'when replace_invalid_utf8_chars is false' do
-        let(:not_replaced_diff) { described_class.new(@raw_diff_hash.merge({ diff: bad_string, replace_invalid_utf8_chars: false }) ) }
-        let(:not_replaced_diff_two) { described_class.new(@raw_diff_hash.merge({ diff: bad_string_two, replace_invalid_utf8_chars: false }) ) }
+        let(:not_replaced_diff) { described_class.new(@raw_diff_hash.merge({ diff: bad_string, replace_invalid_utf8_chars: false })) }
+        let(:not_replaced_diff_two) { described_class.new(@raw_diff_hash.merge({ diff: bad_string_two, replace_invalid_utf8_chars: false })) }
 
         it 'will not try to convert invalid characters' do
           expect(Gitlab::EncodingHelper).not_to receive(:encode_utf8_with_replacement_character?)

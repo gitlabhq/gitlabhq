@@ -162,10 +162,18 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def build_qr_code
     uri = current_user.otp_provisioning_uri(account_string, issuer: issuer_host)
-    RQRCode::QRCode.new(uri, level: :m).as_svg(
+    svg = RQRCode::QRCode.new(uri, level: :m).as_svg(
       shape_rendering: "crispEdges",
       module_size: 3
     )
+
+    doc = Nokogiri::XML(svg)
+    svg_node = doc.at('svg')
+    title = Nokogiri::XML::Node.new('title', doc)
+    title.content = _('Generated QR Code')
+    svg_node.children.before(title)
+
+    doc.to_xml
   end
 
   def account_string

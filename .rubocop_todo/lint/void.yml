@@ -1,0 +1,5 @@
+---
+# Cop supports --autocorrect.
+Lint/Void:
+  Exclude:
+    - 'config/initializers/database_config.rb'

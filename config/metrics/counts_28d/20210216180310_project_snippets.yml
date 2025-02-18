@@ -8,9 +8,6 @@ status: active
 time_frame: 28d
 instrumentation_class: CountProjectSnippetsMetric
 data_source: database
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

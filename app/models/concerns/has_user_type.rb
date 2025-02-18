@@ -21,7 +21,8 @@ module HasUserType
     llm_bot: 14,
     placeholder: 15,
     duo_code_review_bot: 16,
-    import_user: 17
+    import_user: 17,
+    ci_pipeline_bot: 18
   }.with_indifferent_access.freeze
 
   BOT_USER_TYPES = %w[
@@ -38,11 +39,13 @@ module HasUserType
     service_account
     llm_bot
     duo_code_review_bot
+    ci_pipeline_bot
   ].freeze
 
   # `service_account` allows instance/namespaces to configure a user for external integrations/automations
   # `service_user` is an internal, `gitlab-com`-specific user type for integrations like suggested reviewers
-  NON_INTERNAL_USER_TYPES = %w[human project_bot service_user service_account duo_code_review_bot].freeze
+  # Changes to these types might have billing implications, https://docs.gitlab.com/ee/subscriptions/gitlab_com/#billable-users
+  NON_INTERNAL_USER_TYPES = %w[human project_bot service_user service_account].freeze
   INTERNAL_USER_TYPES = (USER_TYPES.keys - NON_INTERNAL_USER_TYPES).freeze
 
   included do
@@ -51,6 +54,7 @@ module HasUserType
     scope :bots, -> { where(user_type: BOT_USER_TYPES) }
     scope :without_bots, -> { where(user_type: USER_TYPES.keys - BOT_USER_TYPES) }
     scope :non_internal, -> { where(user_type: NON_INTERNAL_USER_TYPES) }
+    scope :with_duo_code_review_bot, -> { where(user_type: NON_INTERNAL_USER_TYPES + ['duo_code_review_bot']) }
     scope :without_ghosts, -> { where(user_type: USER_TYPES.keys - ['ghost']) }
     scope :without_project_bot, -> { where(user_type: USER_TYPES.keys - ['project_bot']) }
     scope :without_humans, -> { where(user_type: USER_TYPES.keys - ['human']) }

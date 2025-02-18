@@ -2,24 +2,26 @@
 stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting Dependency Scanning
 ---
 
-# Troubleshooting Dependency Scanning
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When working with dependency scanning, you might encounter the following issues.
 
 ## Debug-level logging
 
 Debug-level logging can help when troubleshooting. For details, see
-[debug-level logging](../../application_security/troubleshooting_application_security.md#debug-level-logging).
+[debug-level logging](../troubleshooting_application_security.md#debug-level-logging).
 
 ### Working around missing support for certain languages or package managers
 
-As noted in the ["Supported languages" section](index.md#supported-languages-and-package-managers)
+As noted in the ["Supported languages" section](_index.md#supported-languages-and-package-managers)
 some dependency definition files are not yet supported.
 However, Dependency Scanning can be achieved if
 the language, a package manager, or a third-party tool
@@ -31,7 +33,7 @@ Generally, the approach is the following:
 1. Define a dedicated converter job in your `.gitlab-ci.yml` file.
    Use a suitable Docker image, script, or both to facilitate the conversion.
 1. Let that job upload the converted, supported file as an artifact.
-1. Add [`dependencies: [<your-converter-job>]`](../../../ci/yaml/index.md#dependencies)
+1. Add [`dependencies: [<your-converter-job>]`](../../../ci/yaml/_index.md#dependencies)
    to your `dependency_scanning` job to make use of the converted definitions files.
 
 For example, Poetry projects that _only_ have a `pyproject.toml`
@@ -60,7 +62,7 @@ affected. Read more in
 
 ### Getting warning message `gl-dependency-scanning-report.json: no matching files`
 
-For information on this, see the [general Application Security troubleshooting section](../../../user/application_security/troubleshooting_application_security.md#getting-warning-messages--reportjson-no-matching-files).
+For information on this, see the [general Application Security troubleshooting section](../troubleshooting_application_security.md#getting-warning-messages--reportjson-no-matching-files).
 
 ## `Error response from daemon: error processing tar file: docker-tar: relocation error`
 
@@ -72,14 +74,14 @@ affected. Read more in
 ## Dependency scanning jobs are running unexpectedly
 
 The [dependency scanning CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml)
-uses the [`rules:exists`](../../../ci/yaml/index.md#rulesexists)
+uses the [`rules:exists`](../../../ci/yaml/_index.md#rulesexists)
 syntax. This directive is limited to 10000 checks and always returns `true` after reaching this
 number. Because of this, and depending on the number of files in your repository, a dependency
-scanning job might be triggered even if the scanner doesn't support your project. For more details about this limitation, see [the `rules:exists` documentation](../../../ci/yaml/index.md#rulesexists).
+scanning job might be triggered even if the scanner doesn't support your project. For more details about this limitation, see [the `rules:exists` documentation](../../../ci/yaml/_index.md#rulesexists).
 
 ## Error: `dependency_scanning is used for configuration only, and its script should not be executed`
 
-For information, see the [GitLab Secure troubleshooting section](../../application_security/troubleshooting_application_security.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
+For information, see the [GitLab Secure troubleshooting section](../troubleshooting_application_security.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
 
 ## Import multiple certificates for Java-based projects
 
@@ -273,7 +275,7 @@ To resolve this issue, don't use the `-e/--editable` flag when you run dependenc
 
 ## Handling out of memory errors with SBT
 
-If you encounter out of memory errors with SBT while using dependency scanning on a Scala project, you can address this by setting the [`SBT_CLI_OPTS`](index.md#analyzer-specific-settings) environment variable. An example configuration is:
+If you encounter out of memory errors with SBT while using dependency scanning on a Scala project, you can address this by setting the [`SBT_CLI_OPTS`](_index.md#analyzer-specific-settings) environment variable. An example configuration is:
 
 ```yaml
 variables:
@@ -331,8 +333,12 @@ Make the file executable by running `chmod +ux gradlew` locally and pushing it t
 
 ## Dependency Scanning scanner is no longer `Gemnasium`
 
-Historically, the scanner used by Dependency Scanning is `Gemnasium` and this is what user can see on the [vulnerability page](../vulnerabilities/index.md).
+Historically, the scanner used by Dependency Scanning is `Gemnasium` and this is what user can see on the [vulnerability page](../vulnerabilities/_index.md).
 
-With the rollout of [Dependency Scanning by using SBOM](dependency_scanning_sbom/index.md), we are replacing the `Gemnasium` scanner with the built-in `GitLab SBoM Vulnerability Scanner`. This new scanner is no longer executed in a CI/CD job but rather within the GitLab platform. While the two scanners are expected to provide the same results, because the SBOM scan happens after the existing Dependency Scanning CI/CD job, existing vulnerabilities have their scanner value updated with the new `GitLab SBoM Vulnerability Scanner`.
+With the rollout of [Dependency Scanning by using SBOM](dependency_scanning_sbom/_index.md), we are replacing the `Gemnasium` scanner with the built-in `GitLab SBoM Vulnerability Scanner`. This new scanner is no longer executed in a CI/CD job but rather within the GitLab platform. While the two scanners are expected to provide the same results, because the SBOM scan happens after the existing Dependency Scanning CI/CD job, existing vulnerabilities have their scanner value updated with the new `GitLab SBoM Vulnerability Scanner`.
 
 As we move forward with the rollout and ultimately replace the existing Gemnasium analyzer, the `GitLab SBoM Vulnerability Scanner` will be the only expected value for GitLab built-in Dependency Scanning feature.
+
+## Dependency List for project not being updated based on latest SBOM
+
+When a pipeline has a failing job that would generate an SBOM, the `DeleteNotPresentOccurrencesService` does not execute, which prevents the dependency list from being changed or updated. This can occur even if there are other successful jobs that upload an SBOM, and the pipeline overall is successful. This is designed to prevent accidentally removing dependencies from the dependency list when related security scanning jobs fail. If the project dependency list is not updating as expected, check for any SBOM-related jobs that may have failed in the pipeline, and fix them or remove them.

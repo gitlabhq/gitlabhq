@@ -7,7 +7,7 @@ module Groups
 
     skip_cross_project_access_check :show, :update
 
-    feature_category :secrets_management
+    feature_category :ci_variables
 
     urgency :low, [:show]
 

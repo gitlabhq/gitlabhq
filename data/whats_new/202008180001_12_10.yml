@@ -8,7 +8,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/requirements/index.html
+  documentation_link: https://docs.gitlab.com/ee/user/project/requirements/
   image_url: https://docs.gitlab.com/ee/user/project/requirements/img/requirements_list_v13_5.png
   published_at: 2020-04-22
   release: 12.10
@@ -21,7 +21,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/index.html
+  documentation_link: https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/
   image_url: https://about.gitlab.com/images/12_10/jwt-vault-1.png
   published_at: 2020-04-22
   release: 12.10
@@ -36,7 +36,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/issues/index.html#health-status
+  documentation_link: https://docs.gitlab.com/ee/user/project/issues/#health-status
   image_url: https://about.gitlab.com/images/12_10/epic-health-status.png
   published_at: 2020-04-22
   release: 12.10

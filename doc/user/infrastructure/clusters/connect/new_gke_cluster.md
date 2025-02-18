@@ -2,21 +2,23 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Create a Google GKE cluster
 ---
 
-# Create a Google GKE cluster
-
 Learn how to create a new cluster on Google Kubernetes Engine (GKE) through
-[Infrastructure as Code (IaC)](../../index.md). This process uses the Google
+[Infrastructure as Code (IaC)](../../_index.md). This process uses the Google
 and Kubernetes Terraform providers create GKE clusters. You connect the clusters to GitLab
 by using the GitLab agent for Kubernetes.
 
-NOTE:
+{{< alert type="note" >}}
+
 Every new Google Cloud Platform (GCP) account receives [$300 in credit](https://console.cloud.google.com/freetrial),
 and in partnership with Google, GitLab is able to offer an additional $200 for new
 GCP accounts to get started with the GitLab integration with Google Kubernetes Engine.
 [Follow this link](https://cloud.google.com/partners?pcn_code=0014M00001h35gDQAQ&hl=en#contact-form)
 and apply for credit.
+
+{{< /alert >}}
 
 **Before you begin:**
 
@@ -79,21 +81,25 @@ To set up your project to communicate to GCP and the GitLab API:
 1. Download the JSON file with the service account key you created in the previous step.
 1. On your computer, encode the JSON file to `base64` (replace `/path/to/sa-key.json` to the path to your key):
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle MacOS
+   {{< tab title="MacOS" >}}
 
    ```shell
    base64 -i /path/to/sa-key.json | tr -d \\n
    ```
 
-   :::TabTitle Linux
+   {{< /tab >}}
+
+   {{< tab title="Linux" >}}
 
    ```shell
    base64 /path/to/sa-key.json | tr -d \\n
    ```
 
-   ::EndTabs
+      {{< /tab >}}
+
+   {{< /tabs >}}
 
 1. Use the output of this command as the `BASE64_GOOGLE_CREDENTIALS` environment variable in the next step.
 
@@ -134,7 +140,7 @@ After configuring your project, manually trigger the provisioning of your cluste
 
 1. On the left sidebar, select **Build > Pipelines**.
 1. Select **New pipeline**.
-1. Next to **Play** (**{play}**), select the dropdown list icon (**{chevron-lg-down}**).
+1. Next to **Play** ({{< icon name="play" >}}), select the dropdown list icon ({{< icon name="chevron-lg-down" >}}).
 1. Select **Deploy** to manually trigger the deployment job.
 
 When the pipeline finishes successfully, you can see your new cluster:
@@ -149,7 +155,7 @@ After you provision the cluster, it is connected to GitLab and is ready for depl
 1. On the left sidebar, select **Operate > Kubernetes clusters**.
 1. In the list, view the **Connection status** column.
 
-For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../index.md).
+For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../_index.md).
 
 ## Remove the cluster
 
@@ -175,4 +181,4 @@ To remove all resources:
    ```
 
 1. On the left sidebar, select **Build > Pipelines** and select the most recent pipeline.
-1. For the `destroy` job, select **Play** (**{play}**).
+1. For the `destroy` job, select **Play** ({{< icon name="play" >}}).

@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Set up Postfix for incoming email
 ---
 
-# Set up Postfix for incoming email
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This document takes you through the steps of setting up a basic Postfix mail
 server with IMAP authentication on Ubuntu, to be used with [incoming email](incoming_email.md).
@@ -95,8 +97,11 @@ The instructions make the assumption that you are using the email address `incom
    quit
    ```
 
-   NOTE:
-   The `.` is a literal period on its own line.
+   {{< alert type="note" >}}
+
+The `.` is a literal period on its own line.
+
+   {{< /alert >}}
 
    If you receive an error after entering `rcpt to: incoming@localhost`
    then your Postfix `my_network` configuration is not correct. The error will
@@ -276,8 +281,11 @@ Courier, which we install later to add IMAP authentication, requires mailboxes t
       quit
       ```
 
-      NOTE:
+      {{< alert type="note" >}}
+
       The `.` is a literal period on its own line.
+
+      {{< /alert >}}
 
    1. Check if the `incoming` user received the email:
 

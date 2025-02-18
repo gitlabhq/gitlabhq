@@ -2,13 +2,15 @@
 stage: Fulfillment
 group: Provision
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Activate GitLab Enterprise Edition (EE)
 ---
 
-# Activate GitLab Enterprise Edition (EE)
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 When you install a new GitLab instance without a license, only Free features
 are enabled. To enable more features in GitLab Enterprise Edition (EE), activate
@@ -27,7 +29,7 @@ To activate your instance with an activation code:
 1. Copy the activation code, a 24-character alphanumeric string, from either:
    - Your subscription confirmation email.
    - The [Customers Portal](https://customers.gitlab.com/customers/sign_in), on the **Manage Purchases** page.
-1. Sign in to your GitLab self-managed instance.
+1. Sign in to your instance.
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Subscription**.
 1. Paste the activation code in **Activation code**.
@@ -38,7 +40,7 @@ The subscription is activated.
 
 ### Using one activation code for multiple instances
 
-You can use a single activation code or license key for multiple self-managed instances if the users are:
+You can use a single activation code or license key for multiple GitLab Self-Managed instances if the users are:
 
 - Identical to your licensed production instance.
 - A subset of your licensed production instance.
@@ -70,24 +72,24 @@ To activate your instance for an offline environment:
 If you have questions or need assistance activating your instance,
 [contact GitLab Support](https://about.gitlab.com/support/#contact-support).
 
-When [the license expires](../administration/license_file.md#what-happens-when-your-license-expires),
+When [the license expires](license_file.md#what-happens-when-your-license-expires),
 some functionality is locked.
 
 ## Verify your GitLab edition
 
 To verify the edition, sign in to GitLab and select
-**Help** (**{question-o}**) > **Help**. The GitLab edition and version are listed
+**Help** ({{< icon name="question-o" >}}) > **Help**. The GitLab edition and version are listed
 at the top of the page.
 
 If you are running GitLab Community Edition (CE), you can upgrade your installation to GitLab
-EE. For more details, see [Upgrading between editions](../update/index.md#upgrading-between-editions).
+EE. For more details, see [Upgrading between editions](../update/_index.md#upgrading-between-editions).
 
 If you have questions or need assistance,
 [contact GitLab Support](https://about.gitlab.com/support/#contact-support).
 
 ## Troubleshooting
 
-When activating your paid subscription features on self-managed instances, you might encounter the following issues.
+When activating your paid subscription features on GitLab Self-Managed instances, you might encounter the following issues.
 
 ### Error: `An error occurred while adding your subscription`
 
@@ -107,7 +109,7 @@ To find more details about the error, you can use your browser's developer tools
 
 To resolve the issue:
 
-- If the GraphQL response includes `only get, head, options, and trace methods are allowed in silent mode`, disable [silent mode](../administration/silent_mode/index.md#disable-silent-mode) for your instance.
+- If the GraphQL response includes `only get, head, options, and trace methods are allowed in silent mode`, disable [silent mode](silent_mode/_index.md#disable-silent-mode) for your instance.
 
 If you are unable to determine the issue, contact [GitLab Support](https://about.gitlab.com/support/portal/) and provide the GraphQL response in your description of the issue.
 

@@ -1,4 +1,5 @@
-- show_icon = (!@loading || content)
+- show_icon = !@loading || content
+- tag = @label ? 'span' : 'button'
 = content_for :pajamas_button_content, flush: true do
   - if @loading
     = gl_loading_icon(inline: true, css_class: 'gl-button-icon gl-button-loading-indicator')
@@ -18,5 +19,5 @@
   = link_to @href, { **@button_options, **base_attributes, class: button_class, target: @target, method: @method } do
     = content_for :pajamas_button_content
 - else
-  = content_tag 'button', { **@button_options, **base_attributes, class: button_class } do
+  = content_tag tag, { **@button_options, **base_attributes, class: button_class } do
     = content_for :pajamas_button_content

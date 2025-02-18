@@ -3,6 +3,9 @@
 import { mapGetters, mapActions } from 'vuex';
 import { v4 as uuidv4 } from 'uuid';
 import { InternalEvents } from '~/tracking';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_NOTE } from '~/graphql_shared/constants';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { getDraft, getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
@@ -10,7 +13,6 @@ import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import { getLocationHash } from '~/lib/utils/url_utility';
-import NotePreview from '~/notes/components/note_preview.vue';
 import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SkeletonLoadingContainer from '~/vue_shared/components/notes/skeleton_note.vue';
@@ -20,6 +22,7 @@ import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybin
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
+import noteQuery from '../graphql/note.query.graphql';
 import CommentForm from './comment_form.vue';
 import DiscussionFilterNote from './discussion_filter_note.vue';
 import NoteableDiscussion from './noteable_discussion.vue';
@@ -31,7 +34,6 @@ import NotesActivityHeader from './notes_activity_header.vue';
 export default {
   name: 'NotesApp',
   components: {
-    NotePreview,
     NotesActivityHeader,
     NoteableNote,
     NoteableDiscussion,
@@ -88,7 +90,58 @@ export default {
       renderSkeleton: !this.shouldShow,
       aiLoading: null,
       isInitialEventTriggered: false,
+      previewNote: null,
     };
+  },
+  apollo: {
+    previewNote: {
+      skip() {
+        const notCommentId = Boolean(this.previewNoteId?.match(/([a-f0-9]{40})/));
+        return !this.previewNoteId || notCommentId;
+      },
+      query: noteQuery,
+      variables() {
+        return {
+          id: convertToGraphQLId(TYPENAME_NOTE, this.previewNoteId),
+        };
+      },
+      update(data) {
+        if (!data?.note?.discussion) return null;
+        return {
+          id: `${getIdFromGraphQLId(data.note.discussion.id)}`,
+          expanded: true,
+          notes: data.note.discussion.notes.nodes.map((note) => ({
+            ...note,
+            id: `${getIdFromGraphQLId(note.id)}`,
+            author: {
+              ...note.author,
+              id: getIdFromGraphQLId(note.author.id),
+            },
+            award_emoji: note.award_emoji.nodes.map((emoji) => ({
+              ...emoji,
+              id: getIdFromGraphQLId(emoji.id),
+              user: {
+                ...emoji.user,
+                id: getIdFromGraphQLId(emoji.user.id),
+              },
+            })),
+            current_user: {
+              can_award_emoji: note.userPermissions.awardEmoji,
+              can_edit: note.userPermissions.adminNote,
+              can_resolve_discussions: note.userPermissions.resolveNote,
+            },
+            last_edited_by: {
+              ...note.last_edited_by,
+              id: getIdFromGraphQLId(note.last_edited_by?.id),
+            },
+            toggle_award_path: '',
+          })),
+        };
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
   },
   computed: {
     ...mapGetters([
@@ -126,17 +179,12 @@ export default {
         });
 
         if (
-          this.previewNoteId &&
+          this.previewNote &&
           !this.discussions.find((d) => d.notes[0].id === this.previewNoteId)
         ) {
-          const previewNote = {
-            id: this.previewNoteId,
-            isPreviewNote: true,
-          };
-          skeletonNotes.splice(prerenderedNotesCount / 2, 0, previewNote);
+          skeletonNotes.splice(prerenderedNotesCount / 2, 0, this.previewNote);
         }
       }
-
       if (this.sortDirDesc) {
         return skeletonNotes.concat(this.discussions);
       }
@@ -175,6 +223,7 @@ export default {
         if (!isReady) return;
         this.$nextTick(() => {
           window.mrTabs?.eventHub.$emit('NotesAppReady');
+          this.cleanup?.();
         });
       },
       immediate: true,
@@ -195,7 +244,7 @@ export default {
     window.addEventListener('hashchange', this.handleHashChanged);
 
     if (this.targetNoteHash && this.targetNoteHash.startsWith('note_')) {
-      scrollToTargetOnResize();
+      this.cleanup = scrollToTargetOnResize();
     }
 
     eventHub.$on('notesApp.updateIssuableConfidentiality', this.setConfidentiality);
@@ -337,13 +386,6 @@ export default {
               :key="discussion.id"
               class="note-skeleton"
             />
-            <timeline-entry-item
-              v-else-if="discussion.isPreviewNote"
-              :key="discussion.id"
-              class="target note note-wrapper note-comment"
-            >
-              <note-preview :note-id="previewNoteId" />
-            </timeline-entry-item>
             <timeline-entry-item v-else-if="discussion.isDraft" :key="discussion.id">
               <draft-note :draft="discussion" />
             </timeline-entry-item>

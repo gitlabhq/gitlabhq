@@ -28,8 +28,7 @@ module QA
         runner.unregister!
 
         Page::Group::Runners::Index.perform do |group_runners|
-          group_runners.refresh
-          expect { group_runners.has_no_runner?(runner) }.to eventually_be(true).within(sleep_interval: 2)
+          expect(group_runners.has_no_runner?(runner)).to be(true)
         end
       end
     end

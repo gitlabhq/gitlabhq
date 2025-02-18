@@ -113,10 +113,34 @@ RSpec::Matchers.define :have_graphql_arguments do |*expected|
   end
 
   failure_message do |field|
-    names = expected_names(field).inspect
-    args = field.arguments.keys.inspect
+    expected_values = expected_names(field).sort
+    actual_values = field.arguments.keys.sort
 
-    "expected #{field.name} to have the following arguments: #{names}, but it has #{args}."
+    extra_values = actual_values - expected_values
+    missing_values = expected_values - actual_values
+
+    message = <<~MESSAGE
+    expected #{field.name} to have the following arguments:
+    #{expected_values.inspect}
+    but it has
+    #{actual_values.inspect}
+    MESSAGE
+
+    if extra_values.present?
+      message += <<~MESSAGE
+      \n Extra values:
+      #{extra_values.inspect}
+      MESSAGE
+    end
+
+    if missing_values.present?
+      message += <<~MESSAGE
+      \n Missing values:
+      #{missing_values.inspect}
+      MESSAGE
+    end
+
+    message
   end
 end
 

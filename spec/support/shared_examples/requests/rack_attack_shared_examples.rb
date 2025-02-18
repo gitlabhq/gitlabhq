@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # Requires let variables:
 # * throttle_setting_prefix: "throttle_authenticated_api", "throttle_authenticated_web", "throttle_protected_paths", "throttle_authenticated_packages_api", "throttle_authenticated_git_lfs", "throttle_authenticated_files_api", "throttle_authenticated_deprecated_api"

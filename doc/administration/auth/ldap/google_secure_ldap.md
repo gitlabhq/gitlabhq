@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Google Secure LDAP
 ---
 
-# Google Secure LDAP
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 [Google Cloud Identity](https://cloud.google.com/identity/) provides a Secure
 LDAP service that can be configured with GitLab for authentication and group sync.
@@ -37,9 +39,12 @@ Secure LDAP is only available on specific Google Workspace editions. For more in
    `Entire domain (GitLab)` or `Selected organizational units` for both **Verify user
    credentials** and **Read user information**. Select **Add LDAP Client**.
 
-   NOTE:
-   If you plan to use GitLab [LDAP Group Sync](ldap_synchronization.md#group-sync)
+   {{< alert type="note" >}}
+
+If you plan to use GitLab [LDAP Group Sync](ldap_synchronization.md#group-sync)
    , turn on `Read group information`.
+
+   {{< /alert >}}
 
    ![Google Workspace window with access permissions for adding LDAP client.](img/google_secure_ldap_add_step_2_v11_9.png)
 
@@ -216,7 +221,7 @@ For self-compiled installations:
 ## Using encrypted credentials
 
 You can optionally store the `bind_dn` and `password` in a separate encrypted configuration file using the
-[same steps as the regular LDAP integration](index.md#use-encrypted-credentials).
+[same steps as the regular LDAP integration](_index.md#use-encrypted-credentials).
 
 <!-- ## Troubleshooting
 

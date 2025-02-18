@@ -13,6 +13,11 @@ RSpec.describe ProtectedBranches::DestroyService, feature_category: :compliance_
         expect(protected_branch).to be_destroyed
       end
 
+      it 'publishes ProtectedBranchDestroyedEvent event' do
+        expect { service.execute(protected_branch) }.to publish_event(Repositories::ProtectedBranchDestroyedEvent)
+          .with(parent_id: entity.id, parent_type: entity.is_a?(Project) ? 'project' : 'group')
+      end
+
       it 'refreshes the cache' do
         expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
           expect(cache_service).to receive(:refresh)

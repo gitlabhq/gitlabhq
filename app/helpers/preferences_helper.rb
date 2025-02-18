@@ -9,10 +9,19 @@ module PreferencesHelper
     ]
   end
 
+  def dashboard_value
+    return current_user.dashboard if Feature.enabled?(:your_work_projects_vue, current_user)
+
+    return 'projects' if current_user.dashboard == 'member_projects'
+
+    current_user.dashboard
+  end
+
   # Returns an Array usable by a select field for more user-friendly option text
   def dashboard_choices
     dashboards = User.dashboards.keys
 
+    dashboards -= ['member_projects'] unless Feature.enabled?(:your_work_projects_vue, current_user)
     validate_dashboard_choices!(dashboards)
     dashboards -= excluded_dashboard_choices
 
@@ -36,6 +45,7 @@ module PreferencesHelper
     {
       projects: projects,
       stars: _("Starred Projects"),
+      member_projects: (_("Member Projects") if Feature.enabled?(:your_work_projects_vue, current_user)),
       your_activity: _("Your Activity"),
       project_activity: _("Your Projects' Activity"),
       starred_project_activity: _("Starred Projects' Activity"),
@@ -45,7 +55,7 @@ module PreferencesHelper
       issues: _("Assigned issues"),
       merge_requests: _("Assigned merge requests"),
       operations: _("Operations Dashboard")
-    }.with_indifferent_access.freeze
+    }.compact.with_indifferent_access.freeze
   end
 
   def project_view_choices
@@ -145,7 +155,7 @@ module PreferencesHelper
         }
       end
 
-      if Gitlab::Sourcegraph.feature_available? && Gitlab::CurrentSettings.sourcegraph_enabled
+      if Gitlab::CurrentSettings.sourcegraph_enabled
         views << {
           name: 'sourcegraph',
           message: sourcegraph_url_message,
@@ -164,7 +174,7 @@ module PreferencesHelper
   private
 
   def extensions_marketplace_view
-    return unless WebIde::ExtensionsMarketplace.feature_enabled?(user: current_user)
+    return unless WebIde::ExtensionMarketplace.feature_enabled?(user: current_user)
 
     build_extensions_marketplace_view(
       title: s_("Preferences|Web IDE"),
@@ -174,13 +184,13 @@ module PreferencesHelper
   end
 
   def build_extensions_marketplace_view(title:, message:)
-    extensions_marketplace_home = "%{linkStart}#{::WebIde::ExtensionsMarketplace.marketplace_home_url}%{linkEnd}"
+    extensions_marketplace_home = "%{linkStart}#{::WebIde::ExtensionMarketplace.marketplace_home_url}%{linkEnd}"
     {
       name: 'extensions_marketplace',
       message: format(message, extensions_marketplace_home: extensions_marketplace_home),
       title: title,
-      message_url: WebIde::ExtensionsMarketplace.marketplace_home_url,
-      help_link: WebIde::ExtensionsMarketplace.help_preferences_url
+      message_url: WebIde::ExtensionMarketplace.marketplace_home_url,
+      help_link: WebIde::ExtensionMarketplace.help_preferences_url
     }
   end
 

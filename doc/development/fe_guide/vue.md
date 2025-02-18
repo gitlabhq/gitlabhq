@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Vue
 ---
-
-# Vue
 
 To get started with Vue, read through [their documentation](https://v2.vuejs.org/v2/guide/index.html).
 
@@ -21,6 +20,12 @@ What is described in the following sections can be found in these examples:
 Sometimes, HAML page is enough to satisfy requirements. This statement is correct primarily for the static pages or pages that have very little logic. How do we know it's worth adding a Vue application to the page? The answer is "when we need to maintain application state and synchronize the rendered page with it".
 
 To better explain this, let's imagine the page that has one toggle, and toggling it sends an API request. This case does not involve any state we want to maintain, we send the request and switch the toggle. However, if we add one more toggle that should always be the opposite to the first one, we need a _state_: one toggle should be "aware" about the state of another one. When written in plain JavaScript, this logic usually involves listening to DOM event and reacting with modifying DOM. Cases like this are much easier to handle with Vue.js so we should create a Vue application here.
+
+## How to add a Vue application to a page
+
+1. Create a new folder in `app/assets/javascripts` for your Vue application.
+1. Add [page-specific JavaScript](performance.md#page-specific-javascript) to load your application.
+1. You can use the [`initSimpleApp helper](#the-initsimpleapp-helper) to simplify [passing data from HAML to JS](#providing-data-from-haml-to-javascript).
 
 ### What are some flags signaling that you might need Vue application?
 
@@ -150,7 +155,7 @@ export default {
 import MyComponent from './my_component.vue'
 import { initSimpleApp } from '~/helpers/init_simple_app_helper'
 
-initSimpleApp('#js-my-element', MyComponent)
+initSimpleApp('#js-my-element', MyComponent, { name: 'MyAppRoot' })
 ```
 
 ##### `provide` and `inject`
@@ -243,9 +248,12 @@ return new Vue({
 });
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 When adding an `id` attribute to mount a Vue application, make sure this `id` is unique
 across the codebase.
+
+{{< /alert >}}
 
 For more information on why we explicitly declare the data being passed into the Vue app,
 refer to our [Vue style guide](style/vue.md#basic-rules).
@@ -255,7 +263,7 @@ refer to our [Vue style guide](style/vue.md#basic-rules).
 When composing a form with Rails, the `name`, `id`, and `value` attributes of form inputs are generated
 to match the backend. It can be helpful to have access to these generated attributes when converting
 a Rails form to Vue, or when [integrating components](https://gitlab.com/gitlab-org/gitlab/-/blob/8956ad767d522f37a96e03840595c767de030968/app/assets/javascripts/access_tokens/index.js#L15) (such as a date picker or project selector) into it.
-The [`parseRailsFormFields`](https://gitlab.com/gitlab-org/gitlab/-/blob/fe88797f682c7ff0b13f2c2223a3ff45ada751c1/app/assets/javascripts/lib/utils/forms.js#L107) utility can be used to parse the generated form input attributes so they can be passed to the Vue application.
+The [`parseRailsFormFields`](https://gitlab.com/gitlab-org/gitlab/-/blob/fe88797f682c7ff0b13f2c2223a3ff45ada751c1/app/assets/javascripts/lib/utils/forms.js#L107) utility function can be used to parse the generated form input attributes so they can be passed to the Vue application.
 This enables us to integrate Vue components without changing how the form submits.
 
 ```haml
@@ -379,7 +387,7 @@ export default {
 
 #### Accessing feature flags
 
-After pushing a feature flag to the [frontend](../feature_flags/index.md#frontend),
+After pushing a feature flag to the [frontend](../feature_flags/_index.md#frontend),
 use the [`provide` and `inject`](https://v2.vuejs.org/v2/api/#provide-inject)
 mechanisms in Vue to make feature flags available to any descendant components
 in a Vue application. The `glFeatures` object is already provided in
@@ -425,7 +433,7 @@ This approach has a few benefits:
 
 #### Redirecting to page and displaying alerts
 
-If you need to redirect to another page and display alerts, you can use the [`visitUrlWithAlerts`](https://gitlab.com/gitlab-org/gitlab/-/blob/7063dce68b8231442567707024b2f29e48ce2f64/app/assets/javascripts/lib/utils/url_utility.js#L731) util.
+If you need to redirect to another page and display alerts, you can use the [`visitUrlWithAlerts`](https://gitlab.com/gitlab-org/gitlab/-/blob/7063dce68b8231442567707024b2f29e48ce2f64/app/assets/javascripts/lib/utils/url_utility.js#L731) utility function.
 This can be useful when you're redirecting to a newly created resource and showing a success alert.
 
 By default the alerts will be cleared when the page is reloaded. If you need an alert to be persisted on a page you can set the
@@ -444,7 +452,9 @@ visitUrlWithAlerts('/dashboard/groups', [
 ])
 ```
 
-If you need to manually remove a persisted alert, you can use the [`removeGlobalAlertById`](https://gitlab.com/gitlab-org/gitlab/-/blob/7063dce68b8231442567707024b2f29e48ce2f64/app/assets/javascripts/lib/utils/global_alerts.js#L31) util.
+If you need to manually remove a persisted alert, you can use the [`removeGlobalAlertById`](https://gitlab.com/gitlab-org/gitlab/-/blob/7063dce68b8231442567707024b2f29e48ce2f64/app/assets/javascripts/lib/utils/global_alerts.js#L31) utility function.
+
+If you need to programmatically dismiss an alert, you can use the [`dismissGlobalAlertById`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/utils/global_alerts.js#L43) utility function.
 
 ### A folder for Components
 
@@ -573,7 +583,7 @@ Based on the Vue guidance:
 - **Do** encapsulate complex state management with cohesive decoupled components or [a state manager](state_management.md).
 - **Do** maintain existing implementations using such approaches.
 - **Do** Migrate components to a pure object model when there are substantial changes to it.
-- **Do** add business logic to helpers or utilities, so you can test them separately from your component.
+- **Do** move business logic to separate files, so you can test them separately from your component.
 
 #### Why
 
@@ -921,7 +931,11 @@ You should only apply to be a Vue.js expert when your own merge requests and you
 
 ## Vue 2 -> Vue 3 Migration
 
-> - This section is added temporarily to support the efforts to migrate the codebase from Vue 2.x to Vue 3.x
+{{< history >}}
+
+- This section is added temporarily to support the efforts to migrate the codebase from Vue 2.x to Vue 3.x
+
+{{< /history >}}
 
 We recommend to minimize adding certain features to the codebase to prevent increasing
 the tech debt for the eventual migration:

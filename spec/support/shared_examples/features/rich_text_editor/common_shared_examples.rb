@@ -126,7 +126,8 @@ RSpec.shared_examples 'rich text editor - common' do
 
   describe 'block content is added to a table' do
     it 'converts a markdown table to HTML and shows a warning for it' do
-      click_on 'Add a table'
+      click_on 'Insert table'
+      click_on 'Insert a 2×2 table'
 
       switch_to_content_editor
       type_in_content_editor '* list item'

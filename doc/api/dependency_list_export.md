@@ -2,20 +2,26 @@
 stage: Security Risk Management
 group: Security Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Dependency list export API
 ---
 
-# Dependency list export API
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Every call to this endpoint requires authentication.
 
 ## Create a pipeline-level dependency list export
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333463) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `merge_sbom_api`. Enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/425312) in GitLab 16.7. Feature flag `merge_sbom_api` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333463) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `merge_sbom_api`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/425312) in GitLab 16.7. Feature flag `merge_sbom_api` removed.
+
+{{< /history >}}
 
 Create a new CycloneDX JSON export for all the project dependencies detected in a pipeline.
 
@@ -32,6 +38,7 @@ POST /pipelines/:id/dependency_list_exports
 | ------------------- | ----------------- | ---------- | -----------------------------------------------------------------------------------------------------------------------------|
 | `id`                | integer           | yes        | The ID of the pipeline which the authenticated user has access to. |
 | `export_type`       | string            | yes        | This must be set to `sbom`. |
+| `send_email`        | boolean           | no         | When set to `true`, sends an email notification to the user who requested the export when the export completes. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <private_token>" "https://gitlab.example.com/api/v4/pipelines/1/dependency_list_exports" --data "export_type=sbom"
@@ -45,6 +52,8 @@ Example response:
 {
   "id": 2,
   "has_finished": false,
+  "export_type": "sbom",
+  "send_email": false,
   "self": "http://gitlab.example.com/api/v4/dependency_list_exports/2",
   "download": "http://gitlab.example.com/api/v4/dependency_list_exports/2/download"
 }

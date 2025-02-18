@@ -2,13 +2,15 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Disabling Geo
 ---
 
-# Disabling Geo
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 If you want to revert to a regular Linux package installation setup after a test, or you have encountered a Disaster Recovery
 situation and you want to disable Geo momentarily, you can use these instructions to disable your
@@ -31,7 +33,7 @@ To disable Geo, you need to first remove all your secondary Geo sites, which mea
 anymore on these sites. You can follow our documentation to [remove your secondary Geo sites](remove_geo_site.md).
 
 If the current site that you want to keep using is a secondary site, you need to first promote it to primary.
-You can use our steps on [how to promote a secondary site](../disaster_recovery/index.md#step-3-promoting-a-secondary-site)
+You can use our steps on [how to promote a secondary site](../disaster_recovery/_index.md#step-3-promoting-a-secondary-site)
 to do that.
 
 ## Remove the primary site from the UI

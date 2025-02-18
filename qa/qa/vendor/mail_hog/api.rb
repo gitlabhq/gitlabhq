@@ -39,6 +39,10 @@ module QA
         def subject
           data.dig('Content', 'Headers', 'Subject', 0)
         end
+
+        def body
+          data.dig('Content', 'Body')
+        end
       end
 
       class API

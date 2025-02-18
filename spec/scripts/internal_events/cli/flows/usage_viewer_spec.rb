@@ -53,6 +53,7 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
 
       it_behaves_like 'internal event tracking' do
         let(:event) { 'internal_events_cli_used' }
+        let(:category) { described_class.name }
         let(:project) { create(:project) }
         let(:user) { create(:user) }
       end
@@ -156,6 +157,7 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
 
       it_behaves_like 'internal event tracking' do
         let(:event) { 'internal_events_cli_used' }
+        let(:category) { described_class.name }
         let(:project) { create(:project) }
         let(:user) { create(:user) }
       end
@@ -257,6 +259,7 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
 
       it_behaves_like 'internal event tracking' do
         let(:event) { 'internal_events_cli_opened' }
+        let(:category) { described_class.name }
       end
 
       --------------------------------------------------
@@ -557,6 +560,7 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
 
       it_behaves_like 'internal event tracking' do
         let(:event) { 'internal_events_cli_used' }
+        let(:category) { described_class.name }
         let(:project) { create(:project) }
         let(:user) { create(:user) }
         let(:additional_properties) do

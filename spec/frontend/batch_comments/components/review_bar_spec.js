@@ -1,8 +1,13 @@
 import { nextTick } from 'vue';
+import { createTestingPinia } from '@pinia/testing';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ReviewBar from '~/batch_comments/components/review_bar.vue';
 import { REVIEW_BAR_VISIBLE_CLASS_NAME } from '~/batch_comments/constants';
 import toast from '~/vue_shared/plugins/global_toast';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useBatchComments } from '~/batch_comments/store';
 import createStore from '../create_batch_comments_store';
 
 jest.mock('~/vue_shared/plugins/global_toast');
@@ -24,6 +29,9 @@ describe('Batch comments review bar component', () => {
   };
 
   beforeEach(() => {
+    createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
     document.body.className = '';
   });
 
@@ -59,11 +67,9 @@ describe('Batch comments review bar component', () => {
     it('calls discardReviews when primary action on modal is triggered', () => {
       createComponent();
 
-      const dispatchSpy = jest.spyOn(store, 'dispatch').mockImplementation();
-
       findDiscardReviewModal().vm.$emit('primary');
 
-      expect(dispatchSpy).toHaveBeenCalledWith('batchComments/discardDrafts', undefined);
+      expect(useBatchComments().discardDrafts).toHaveBeenCalled();
     });
 
     it('creates a toast message when finished', async () => {

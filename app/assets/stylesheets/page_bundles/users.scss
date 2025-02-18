@@ -2,7 +2,7 @@
 
 .user-search-btn {
   top: 1px;
-  color: $gray-200;
+  @apply gl-text-disabled;
   background: transparent;
   border: 0;
   outline: 0;

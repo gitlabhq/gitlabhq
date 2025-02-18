@@ -57,7 +57,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       end
 
       it 'must not be a placeholder email' do
-        member.invite_email = "gitlab_migration_5c34ae6b9_1@#{Settings.gitlab.host}"
+        member.invite_email = 'gitlab_migration_placeholder_user@noreply.localhost'
 
         expect(member).not_to be_valid
       end
@@ -1257,10 +1257,12 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       expect(member).to be_destroyed
     end
 
-    it 'calls #after_decline_invite' do
-      expect(member).to receive(:after_decline_invite)
+    it 'enqueues an invite declined email' do
+      allow(Members::InviteDeclinedMailer).to receive(:email).with(member: member).and_call_original
 
-      member.decline_invite!
+      expect do
+        member.decline_invite!
+      end.to have_enqueued_mail(Members::InviteDeclinedMailer, :email)
     end
   end
 

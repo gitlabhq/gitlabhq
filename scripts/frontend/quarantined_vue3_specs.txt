@@ -3,7 +3,6 @@
 ee/spec/frontend/access_tokens/components/expires_at_field_spec.js
 ee/spec/frontend/admin/application_settings/general/components/license_dropzone_spec.js
 ee/spec/frontend/admin/signup_restrictions/components/signup_form_spec.js
-ee/spec/frontend/admin/subscriptions/show/components/subscription_activation_form_spec.js
 ee/spec/frontend/admin/subscriptions/show/components/subscription_breakdown_spec.js
 ee/spec/frontend/ai/settings/components/duo_experiment_beta_features_form_spec.js
 ee/spec/frontend/analytics/analytics_dashboards/components/analytics_dashboard_panel_spec.js
@@ -19,8 +18,6 @@ ee/spec/frontend/analytics/group_ci_cd_analytics/components/release_stats_card_s
 ee/spec/frontend/analytics/merge_request_analytics/components/filter_bar_spec.js
 ee/spec/frontend/analytics/merge_request_analytics/components/throughput_chart_spec.js
 ee/spec/frontend/analytics/merge_request_analytics/components/throughput_table_spec.js
-ee/spec/frontend/approvals/components/approval_rules_app_spec.js
-ee/spec/frontend/approvals/components/security_configuration/unconfigured_security_rule_spec.js
 ee/spec/frontend/approvals/components/security_configuration/unconfigured_security_rules_spec.js
 ee/spec/frontend/approvals/mr_edit/mr_rules_spec.js
 ee/spec/frontend/approvals/project_settings/project_rules_spec.js
@@ -42,10 +39,8 @@ ee/spec/frontend/dependencies/components/app_spec.js
 ee/spec/frontend/dependencies/components/dependency_location_spec.js
 ee/spec/frontend/dependencies/components/dependency_path_viewer_spec.js
 ee/spec/frontend/dependencies/components/filtered_search/tokens/component_token_spec.js
-ee/spec/frontend/diffs/components/shared/findings_drawer_spec.js
 ee/spec/frontend/geo_sites/components/details/secondary_site/geo_site_replication_details_responsive_spec.js
 ee/spec/frontend/geo_sites/index_spec.js
-ee/spec/frontend/groups/components/invite_members_spec.js
 ee/spec/frontend/groups/settings/components/comma_separated_list_token_selector_spec.js
 ee/spec/frontend/integrations/edit/components/jira_issue_creation_vulnerabilities_spec.js
 ee/spec/frontend/issues_analytics/components/issues_analytics_table_spec.js
@@ -81,7 +76,6 @@ ee/spec/frontend/roles_and_permissions/components/create_member_role_spec.js
 ee/spec/frontend/roles_and_permissions/components/role_selector_spec.js
 ee/spec/frontend/security_configuration/components/app_spec.js
 ee/spec/frontend/security_configuration/components/dynamic_fields_spec.js
-ee/spec/frontend/security_configuration/components/expandable_section_spec.js
 ee/spec/frontend/security_configuration/dast_profiles/components/dast_profiles_list_spec.js
 ee/spec/frontend/security_configuration/dast_profiles/dast_profile_selector/scanner_profile_selector_spec.js
 ee/spec/frontend/security_configuration/dast_profiles/dast_profile_selector/site_profile_selector_spec.js
@@ -90,13 +84,11 @@ ee/spec/frontend/security_dashboard/components/shared/vulnerability_details_grap
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_list_graphql_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_report_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_report_tabs_spec.js
-ee/spec/frontend/sidebar/components/cve_id_request/cve_id_request_spec.js
 ee/spec/frontend/sidebar/components/sidebar_dropdown_widget_spec.js
 ee/spec/frontend/status_checks/components/modal_create_spec.js
 ee/spec/frontend/status_checks/mount_spec.js
 ee/spec/frontend/tracing/details/tracing_details_spec.js
 ee/spec/frontend/tracing/details/tracing_header_spec.js
-ee/spec/frontend/tracing/details/tracing_span_chart_spec.js
 ee/spec/frontend/usage_quotas/code_suggestions/components/add_on_eligible_user_list_spec.js
 ee/spec/frontend/usage_quotas/transfer/components/usage_by_month_spec.js
 ee/spec/frontend/users/identity_verification/components/international_phone_input_spec.js
@@ -104,6 +96,7 @@ ee/spec/frontend/users/identity_verification/components/verify_phone_verificatio
 ee/spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_container_spec.js
 ee/spec/frontend/vue_shared/components/groups_list/groups_list_item_spec.js
 ee/spec/frontend/vue_shared/components/projects_list/projects_list_item_spec.js
+ee/spec/frontend/vulnerabilities/generic_report/report_item_graphql_spec.js
 ee/spec/frontend/vulnerabilities/related_issues_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/access_tokens/index_spec.js
@@ -133,10 +126,8 @@ spec/frontend/ci/pipeline_editor/components/job_assistant_drawer/accordion_items
 spec/frontend/ci/pipeline_editor/components/lint/ci_lint_warnings_spec.js
 spec/frontend/ci/pipeline_editor/components/pipeline_editor_tabs_spec.js
 spec/frontend/ci/pipeline_editor/pipeline_editor_app_spec.js
-spec/frontend/ci/pipelines_page/components/pipelines_artifacts_spec.js
 spec/frontend/ci/runner/components/registration/runner_instructions/runner_instructions_modal_spec.js
 spec/frontend/ci/runner/components/runner_filtered_search_bar_spec.js
-spec/frontend/ci/runner/components/runner_form_fields_spec.js
 spec/frontend/ci_settings_pipeline_triggers/components/edit_trigger_modal_spec.js
 spec/frontend/clusters/agents/components/activity_history_item_spec.js
 spec/frontend/clusters/agents/components/revoke_token_button_spec.js
@@ -206,10 +197,7 @@ spec/frontend/ml/model_registry/components/model_version_create_spec.js
 spec/frontend/notebook/cells/markdown_spec.js
 spec/frontend/notebook/cells/output/html_spec.js
 spec/frontend/notes/components/discussion_notes_spec.js
-spec/frontend/notes/components/note_preview_spec.js
 spec/frontend/notes/components/notes_app_spec.js
-spec/frontend/notes/components/timeline_toggle_spec.js
-spec/frontend/organizations/groups_and_projects/components/app_spec.js
 spec/frontend/organizations/shared/components/new_edit_form_spec.js
 spec/frontend/packages_and_registries/container_registry/explorer/components/list_page/image_list_row_spec.js
 spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
@@ -221,10 +209,6 @@ spec/frontend/packages_and_registries/package_registry/pages/details_spec.js
 spec/frontend/packages_and_registries/settings/group/components/forwarding_settings_spec.js
 spec/frontend/packages_and_registries/settings/project/settings/components/cleanup_image_tags_spec.js
 spec/frontend/packages_and_registries/settings/project/settings/components/container_expiration_policy_spec.js
-spec/frontend/packages_and_registries/settings/project/settings/components/container_protection_repository_rule_form_spec.js
-spec/frontend/packages_and_registries/settings/project/settings/components/container_protection_repository_rules_spec.js
-spec/frontend/packages_and_registries/settings/project/settings/components/packages_protection_rule_form_spec.js
-spec/frontend/packages_and_registries/settings/project/settings/components/packages_protection_rules_spec.js
 spec/frontend/pages/projects/forks/new/components/fork_form_spec.js
 spec/frontend/pages/projects/forks/new/components/project_namespace_spec.js
 spec/frontend/pages/projects/pipeline_schedules/shared/components/interval_pattern_input_spec.js
@@ -243,18 +227,13 @@ spec/frontend/projects/settings/topics/components/topics_token_selector_spec.js
 spec/frontend/projects/settings_service_desk/components/custom_email_form_spec.js
 spec/frontend/projects/settings_service_desk/components/service_desk_root_spec.js
 spec/frontend/projects/settings_service_desk/components/service_desk_setting_spec.js
-spec/frontend/projects/your_work/components/app_spec.js
 spec/frontend/ref/init_ambiguous_ref_modal_spec.js
 spec/frontend/releases/components/app_edit_new_spec.js
 spec/frontend/releases/components/asset_links_form_spec.js
-spec/frontend/releases/components/tag_field_exsting_spec.js
 spec/frontend/repository/components/header_area/blob_controls_spec.js
 spec/frontend/repository/components/table/index_spec.js
 spec/frontend/repository/components/table/row_spec.js
-spec/frontend/repository/router_spec.js
-spec/frontend/search/results/components/status_bar_spec.js
 spec/frontend/search/sidebar/components/checkbox_filter_spec.js
-spec/frontend/search/sidebar/components/label_dropdown_items_spec.js
 spec/frontend/search/topbar/components/app_spec.js
 spec/frontend/sessions/new/components/email_verification_spec.js
 spec/frontend/set_status_modal/set_status_modal_wrapper_spec.js
@@ -265,7 +244,6 @@ spec/frontend/sidebar/components/confidential/sidebar_confidentiality_widget_spe
 spec/frontend/sidebar/components/incidents/escalation_status_spec.js
 spec/frontend/sidebar/components/labels/labels_select_vue/dropdown_contents_labels_view_spec.js
 spec/frontend/sidebar/components/labels/labels_select_vue/labels_select_root_spec.js
-spec/frontend/sidebar/components/lock/issuable_lock_form_spec.js
 spec/frontend/sidebar/components/milestone/milestone_dropdown_spec.js
 spec/frontend/sidebar/components/subscriptions/subscriptions_dropdown_spec.js
 spec/frontend/sidebar/components/todo_toggle/sidebar_todo_widget_spec.js
@@ -293,8 +271,6 @@ spec/frontend/vue_shared/components/filtered_search_bar/filtered_search_bar_root
 spec/frontend/vue_shared/components/filtered_search_bar/tokens/date_token_spec.js
 spec/frontend/vue_shared/components/markdown/header_spec.js
 spec/frontend/vue_shared/components/markdown/markdown_editor_spec.js
-spec/frontend/vue_shared/components/markdown/suggestion_diff_row_spec.js
-spec/frontend/vue_shared/components/markdown_drawer/markdown_drawer_spec.js
 spec/frontend/vue_shared/components/metric_images/metric_image_details_modal_spec.js
 spec/frontend/vue_shared/components/page_heading_spec.js
 spec/frontend/vue_shared/components/pagination_bar/pagination_bar_spec.js

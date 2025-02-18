@@ -2,13 +2,15 @@
 stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting GitLab Pages administration
 ---
 
-# Troubleshooting GitLab Pages administration
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This page contains a list of issues you might encounter when administering GitLab Pages.
 
@@ -273,7 +275,7 @@ If you see the following error:
 ERRO[0010] Failed to connect to the internal GitLab API after 0.50s  error="failed to connect to internal Pages API: HTTP status: 401"
 ```
 
-If you are [Running GitLab Pages on a separate server](index.md#running-gitlab-pages-on-a-separate-server)
+If you are [Running GitLab Pages on a separate server](_index.md#running-gitlab-pages-on-a-separate-server)
 you must copy the `/etc/gitlab/gitlab-secrets.json` file
 from the **GitLab server** to the **Pages server**.
 
@@ -296,7 +298,7 @@ WARN[0010] Pages cannot communicate with an instance of the GitLab API. Please s
 ```
 
 This can happen if your `gitlab-secrets.json` file is out of date between GitLab Rails and GitLab
-Pages. Follow steps 8-10 of [Running GitLab Pages on a separate server](index.md#running-gitlab-pages-on-a-separate-server),
+Pages. Follow steps 8-10 of [Running GitLab Pages on a separate server](_index.md#running-gitlab-pages-on-a-separate-server),
 in all of your GitLab Pages instances.
 
 ## Intermittent 502 errors when using an AWS Network Load Balancer and GitLab Pages
@@ -330,16 +332,16 @@ This problem comes from the permissions of the GitLab Pages OAuth application. T
 1. Under **Scopes**, ensure that the `api` scope is selected.
 1. Save your changes.
 
-When running a [separate Pages server](index.md#running-gitlab-pages-on-a-separate-server),
+When running a [separate Pages server](_index.md#running-gitlab-pages-on-a-separate-server),
 this setting needs to be configured on the main GitLab server.
 
 ## Workaround in case no wildcard DNS entry can be set
 
-If the wildcard DNS [prerequisite](index.md#prerequisites) can't be met, you can still use GitLab Pages in a limited fashion:
+If the wildcard DNS [prerequisite](_index.md#prerequisites) can't be met, you can still use GitLab Pages in a limited fashion:
 
 1. [Move](../../user/project/settings/migrate_projects.md#transfer-a-project-to-another-namespace)
    all projects you need to use Pages with into a single group namespace, for example `pages`.
-1. Configure a [DNS entry](index.md#dns-configuration) without the `*.`-wildcard, for example `pages.example.io`.
+1. Configure a [DNS entry](_index.md#dns-configuration) without the `*.`-wildcard, for example `pages.example.io`.
 1. Configure `pages_external_url http://example.io/` in your `gitlab.rb` file.
    Omit the group namespace here, because it automatically is prepended by GitLab.
 
@@ -407,7 +409,7 @@ the shared pages directory is mounted on a different path on the main GitLab ser
 GitLab Pages server.
 
 In that case, it's highly recommended you to configure
-[object storage and migrate any existing pages data to it](index.md#object-storage-settings).
+[object storage and migrate any existing pages data to it](_index.md#object-storage-settings).
 
 Alternatively, you can mount the GitLab Pages shared directory to the same path on
 both servers.
@@ -424,7 +426,7 @@ To fix that:
 
 1. Check your `gitlab.rb` file. If you have `gitlab_rails['pages_object_store_enabled']` enabled, but no bucket details have been configured, either:
 
-   - Configure object storage for your Pages deployments, following the [S3-compatible connection settings](index.md#s3-compatible-connection-settings) guide.
+   - Configure object storage for your Pages deployments, following the [S3-compatible connection settings](_index.md#s3-compatible-connection-settings) guide.
    - Store your deployments locally, by commenting out that line.
 
 1. Save the changes you made to your `gitlab.rb` file, then [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).

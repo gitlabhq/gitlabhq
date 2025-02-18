@@ -2,30 +2,38 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Uploads administration
 ---
 
-# Uploads administration
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Uploads represent all user data that may be sent to GitLab as a single file. For example, avatars and note attachments are uploads. Uploads are integral to GitLab functionality and therefore cannot be disabled.
 
-NOTE:
+{{< alert type="note" >}}
+
 Attachments added to comments or descriptions are deleted **only** when the parent project or group
 is deleted. Attachments remain in file storage even when the comment or resource (like issue, merge
 request, epic) where they were uploaded is deleted.
+
+{{< /alert >}}
 
 ## Using local storage
 
 This is the default configuration. To change the location where the uploads are
 stored locally, use the steps in this section based on your installation method:
 
-NOTE:
-For historical reasons, uploads for the whole instance (for example the [favicon](../administration/appearance.md#customize-the-favicon)) are stored in a base directory,
+{{< alert type="note" >}}
+
+For historical reasons, uploads for the whole instance (for example the [favicon](appearance.md#customize-the-favicon)) are stored in a base directory,
 which by default is `uploads/-/system`. Changing the base
 directory on an existing GitLab installation is strongly discouraged.
+
+{{< /alert >}}
 
 For Linux package installations:
 
@@ -60,9 +68,12 @@ _The uploads are stored by default in
 
 ## Using object storage
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 If you don't want to use the local disk where GitLab is installed to store the
 uploads, you can use an object storage provider like AWS S3 instead.

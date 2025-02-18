@@ -63,6 +63,7 @@ RSpec.describe 'Database schema',
       abuse_reports: %w[reporter_id user_id],
       abuse_report_notes: %w[discussion_id],
       ai_code_suggestion_events: %w[user_id],
+      ai_duo_chat_events: %w[user_id],
       application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id
         eks_access_key_id],
       approvals: %w[user_id project_id],
@@ -100,6 +101,7 @@ RSpec.describe 'Database schema',
       ci_builds_runner_session: %w[project_id],
       ci_daily_build_group_report_results: %w[partition_id],
       ci_deleted_objects: %w[project_id],
+      ci_gitlab_hosted_runner_monthly_usages: %w[root_namespace_id project_id runner_id],
       ci_job_artifacts: %w[partition_id project_id job_id],
       ci_namespace_monthly_usages: %w[namespace_id],
       ci_pipeline_artifacts: %w[partition_id],
@@ -140,6 +142,7 @@ RSpec.describe 'Database schema',
       dast_site_profiles_builds: %w[project_id],
       dast_scanner_profiles_builds: %w[project_id],
       dast_profiles_pipelines: %w[project_id],
+      dast_pre_scan_verification_steps: %w[project_id],
       dependency_list_export_parts: %w[start_id end_id],
       dep_ci_build_trace_sections: %w[build_id],
       deploy_keys_projects: %w[deploy_key_id],
@@ -164,15 +167,13 @@ RSpec.describe 'Database schema',
       ldap_group_links: %w[group_id],
       members: %w[source_id created_by_id],
       merge_requests: %w[last_edited_by_id state_id],
+      merge_request_cleanup_schedules: %w[project_id],
       merge_requests_compliance_violations: %w[target_project_id],
       merge_request_diffs: %w[project_id],
       merge_request_diff_commits: %w[commit_author_id committer_id],
       # merge_request_diff_commits_b5377a7a34 is the temporary table for the merge_request_diff_commits partitioning
       # backfill. It will get foreign keys after the partitioning is finished.
       merge_request_diff_commits_b5377a7a34: %w[merge_request_diff_id commit_author_id committer_id project_id],
-      # merge_request_diff_files_99208b8fac is the temporary table for the merge_request_diff_commits partitioning
-      # backfill. It will get foreign keys after the partitioning is finished.
-      merge_request_diff_files_99208b8fac: %w[merge_request_diff_id project_id],
       merge_request_user_mentions: %w[project_id],
       namespaces: %w[owner_id parent_id],
       namespace_descendants: %w[namespace_id],
@@ -255,7 +256,8 @@ RSpec.describe 'Database schema',
       group_scim_auth_access_tokens: %w[temp_source_id], # temporary column that is not a foreign key
       system_access_group_microsoft_graph_access_tokens: %w[temp_source_id], # temporary column that is not a foreign key
       system_access_group_microsoft_applications: %w[temp_source_id], # temporary column that is not a foreign key
-      subscription_user_add_on_assignment_versions: %w[item_id user_id purchase_id] # Managed by paper_trail gem, no need for FK on the historical data
+      subscription_user_add_on_assignment_versions: %w[item_id user_id purchase_id], # Managed by paper_trail gem, no need for FK on the historical data
+      virtual_registries_packages_maven_cache_entries: %w[group_id] # We can't use a foreign key due to object storage references
     }.with_indifferent_access.freeze
   end
 
@@ -269,9 +271,9 @@ RSpec.describe 'Database schema',
       deployments: 18,
       epics: 19,
       events: 16,
-      group_type_ci_runners_e59bb2812d: 16,
-      instance_type_ci_runners_e59bb2812d: 16,
-      issues: 41,
+      group_type_ci_runners_e59bb2812d: 17,
+      instance_type_ci_runners_e59bb2812d: 17,
+      issues: 39,
       members: 21,
       merge_requests: 33,
       namespaces: 26,
@@ -279,7 +281,7 @@ RSpec.describe 'Database schema',
       p_ci_pipelines: 24,
       packages_package_files: 16,
       packages_packages: 27,
-      project_type_ci_runners_e59bb2812d: 16,
+      project_type_ci_runners_e59bb2812d: 17,
       projects: 55,
       sbom_occurrences: 25,
       users: 32,
@@ -319,7 +321,14 @@ RSpec.describe 'Database schema',
                 # the only condition is for the presence of the foreign key itself
                 columns if index.where.nil? || index.where == "(#{columns.first} IS NOT NULL)"
               end
-              foreign_keys_columns = all_foreign_keys.map(&:column)
+
+              foreign_keys_columns = all_foreign_keys.filter_map do |fk|
+                conditions = fk.options[:conditions]
+                next fk.column unless conditions&.any?
+
+                [fk.column, *conditions.map { |c| c[:column] }]
+              end
+
               required_indexed_columns = to_columns(foreign_keys_columns - ignored_index_columns(table))
 
               # Add the composite primary key to the list of indexed columns because
@@ -420,7 +429,8 @@ RSpec.describe 'Database schema',
         'ProjectAutoDevops' => %w[deploy_strategy],
         'ResourceLabelEvent' => %w[action],
         'User' => %w[layout dashboard project_view],
-        'Users::Callout' => %w[feature_name]
+        'Users::Callout' => %w[feature_name],
+        'Vulnerability' => %w[confidence] # this enum is in the process of being deprecated
       }.freeze
     end
 
@@ -443,38 +453,68 @@ RSpec.describe 'Database schema',
     let(:ignored_jsonb_columns_map) do
       {
         "Ai::Conversation::Message" => %w[extras error_details],
-        "ApplicationSetting" => %w[repository_storages_weighted],
+        "Ai::DuoWorkflows::Checkpoint" => %w[checkpoint metadata], # https://gitlab.com/gitlab-org/gitlab/-/issues/468632
+        "ApplicationSetting" => %w[repository_storages_weighted oauth_provider rate_limits_unauthenticated_git_http],
         "AlertManagement::Alert" => %w[payload],
-        "Ci::BuildMetadata" => %w[config_options config_variables],
+        "AlertManagement::HttpIntegration" => %w[payload_example],
+        "Ci::BuildMetadata" => %w[config_options config_variables runtime_runner_features],
         "Ci::Runner" => %w[config],
         "ExperimentSubject" => %w[context],
         "ExperimentUser" => %w[context],
         "Geo::Event" => %w[payload],
         "GeoNodeStatus" => %w[status],
+        "GitlabSubscriptions::UserAddOnAssignmentVersion" => %w[object], # Managed by paper_trail gem
         "Operations::FeatureFlagScope" => %w[strategies],
         "Operations::FeatureFlags::Strategy" => %w[parameters],
         "Organizations::OrganizationSetting" => %w[settings], # Custom validations
         "Packages::Composer::Metadatum" => %w[composer_json],
         "RawUsageData" => %w[payload], # Usage data payload changes often, we cannot use one schema
+        "Sbom::Occurrence" => %w[ancestors],
+        "Security::ApprovalPolicyRule" => %w[content],
+        "Security::Policy" => %w[metadata],
         "ServicePing::NonSqlServicePing" => %w[payload], # Usage data payload changes often, we cannot use one schema
+        "ServicePing::QueriesServicePing" => %w[payload], # Usage data payload changes often, we cannot use one schema
+        "Security::ScanExecutionPolicyRule" => %w[content],
+        "Security::VulnerabilityManagementPolicyRule" => %w[content],
         "Releases::Evidence" => %w[summary],
-        "Vulnerabilities::Finding::Evidence" => %w[data], # Validation work in progress
-        "Ai::DuoWorkflows::Checkpoint" => %w[checkpoint metadata], # https://gitlab.com/gitlab-org/gitlab/-/issues/468632
         "RemoteDevelopment::WorkspacesAgentConfigVersion" => %w[object object_changes], # Managed by paper_trail gem
-        "GitlabSubscriptions::UserAddOnAssignmentVersion" => %w[object] # Managed by paper_trail gem
+        "RemoteDevelopment::WorkspacesAgentConfig" => %w[annotations labels],
+        "RemoteDevelopment::RemoteDevelopmentAgentConfig" => %w[annotations image_pull_secrets labels],
+        "Vulnerabilities::Finding" => %w[location],
+        "Vulnerabilities::Finding::Evidence" => %w[data] # Validation work in progress
       }.freeze
     end
 
-    it 'uses json schema validator', :eager_load, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/500903' do
-      columns_name_with_jsonb.each do |hash|
-        next if models_by_table_name[hash["table_name"]].nil?
+    def failure_message(model, column)
+      <<~FAILURE_MESSAGE
+              Expected #{model.name} to validate the schema of #{column}.
 
-        models_by_table_name[hash["table_name"]].each do |model|
+              Use JsonSchemaValidator in your model when using a jsonb column.
+              See doc/development/migration_style_guide.html#storing-json-in-database for more information.
+
+              To fix this, please add `validates :#{column}, json_schema: { filename: "filename" }` in your model file, for example:
+
+              class #{model.name}
+                validates :#{column}, json_schema: { filename: "filename" }
+              end
+      FAILURE_MESSAGE
+    end
+
+    it 'uses json schema validator', :eager_load, :aggregate_failures, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/500903' do
+      columns_name_with_jsonb.each do |jsonb_column|
+        column_name = jsonb_column["column_name"]
+        models = models_by_table_name[jsonb_column["table_name"]] || []
+
+        models.each do |model|
           # Skip migration models
           next if model.name.include?('Gitlab::BackgroundMigration')
+          next if ignored_jsonb_columns(model.name).include?(column_name)
 
-          jsonb_columns = [hash["column_name"]] - ignored_jsonb_columns(model.name)
-          expect(model).to validate_jsonb_schema(jsonb_columns)
+          has_validator = model.validators.any? do |v|
+            v.is_a?(JsonSchemaValidator) && v.attributes.include?(column_name.to_sym)
+          end
+
+          expect(has_validator).to be(true), failure_message(model, column_name)
         end
       end
     end

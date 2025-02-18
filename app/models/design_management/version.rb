@@ -6,6 +6,7 @@ module DesignManagement
     include ShaAttribute
     include AfterCommitQueue
     include Gitlab::Utils::StrongMemoize
+    include EachBatch
     extend Gitlab::ExclusiveLeaseHelpers
 
     NotSameIssue = Class.new(StandardError)

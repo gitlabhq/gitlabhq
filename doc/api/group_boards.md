@@ -2,13 +2,15 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group issue boards API
 ---
 
-# Group issue boards API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Every API call to [group issue boards](../user/project/issue_board.md#group-issue-boards) must be authenticated.
 
@@ -25,7 +27,7 @@ GET /groups/:id/boards
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards"
@@ -142,7 +144,7 @@ GET /groups/:id/boards/:board_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 
 ```shell
@@ -248,9 +250,12 @@ Example response:
 
 ## Create a group issue board
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Creates a group issue board.
 
@@ -260,7 +265,7 @@ POST /groups/:id/boards
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `name` | string | yes | The name of the new board. |
 
 ```shell
@@ -297,7 +302,7 @@ PUT /groups/:id/boards/:board_id
 
 | Attribute                    | Type           | Required | Description |
 | ---------------------------- | -------------- | -------- | ----------- |
-| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id`                   | integer        | yes      | The ID of a board. |
 | `name`                       | string         | no       | The new name of the board. |
 | `hide_backlog_list`          | boolean        | no       | Hide the Open list. |
@@ -357,9 +362,12 @@ Example response:
 
 ## Delete a group issue board
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Deletes a group issue board.
 
@@ -369,7 +377,7 @@ DELETE /groups/:id/boards/:board_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 
 ```shell
@@ -387,7 +395,7 @@ GET /groups/:id/boards/:board_id/lists
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 
 ```shell
@@ -438,7 +446,7 @@ GET /groups/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 | `list_id` | integer | yes | The ID of a board's list. |
 
@@ -470,7 +478,7 @@ POST /groups/:id/boards/:board_id/lists
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 | `label_id` | integer | yes | The ID of a label. |
 
@@ -511,7 +519,7 @@ PUT /groups/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`            | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`            | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 | `list_id` | integer | yes | The ID of a board's list. |
 | `position` | integer | yes | The position of the list. |
@@ -544,7 +552,7 @@ DELETE /groups/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 | `list_id` | integer | yes | The ID of a board's list. |
 

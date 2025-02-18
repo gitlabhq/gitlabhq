@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group and project members API
 ---
 
-# Group and project members API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use this API to interact with group and project members.
 
@@ -29,8 +31,8 @@ in the `Gitlab::Access` module as `access_level`.
 
 ## Known issues
 
-- The `group_saml_identity` attribute is only visible to group owners for [SSO-enabled groups](../user/group/saml_sso/index.md).
-- The `email` attribute is only visible to group owners for [enterprise users](../user/enterprise_user/index.md)
+- The `group_saml_identity` attribute is only visible to group owners for [SSO-enabled groups](../user/group/saml_sso/_index.md).
+- The `email` attribute is only visible to group owners for [enterprise users](../user/enterprise_user/_index.md)
   of the group when an API request is sent to the group itself, or that group's subgroups or projects.
 
 ## List all members of a group or project
@@ -47,7 +49,7 @@ GET /projects/:id/members
 
 | Attribute        | Type              | Required | Description |
 |------------------|-------------------|----------|-------------|
-| `id`             | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-paths). |
+| `id`             | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths). |
 | `query`          | string            | no       | Filters results based on a given name, email, or username. Use partial values to widen the scope of the query. |
 | `user_ids`       | array of integers | no       | Filter the results on the given user IDs. |
 | `skip_users`     | array of integers | no       | Filter skipped users out of the results. |
@@ -114,9 +116,13 @@ Example response:
 
 ## List all members of a group or project including inherited and invited members
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to return members of the invited private group if the current user is a member of the shared group or project in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
-> - Feature flag `webui_members_inherited_users` was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
-> - Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to return members of the invited private group if the current user is a member of the shared group or project in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+- Feature flag `webui_members_inherited_users` was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
+- Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+
+{{< /history >}}
 
 Gets a list of group or project members viewable by the authenticated user, including inherited members, invited users, and permissions through ancestor groups.
 
@@ -130,10 +136,13 @@ Members from an invited group are returned if either:
 - The requester is also a member of the invited group.
 - The requester is a member of the shared group or project.
 
-NOTE:
+{{< alert type="note" >}}
+
 The invited group members have shared membership in the shared group or project.
 This means that if the requester is a member of a shared group or project, but not a member of an invited private group,
 then using this endpoint the requester can get all the shared group or project members, including the invited private group members.
+
+{{< /alert >}}
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 
@@ -144,7 +153,7 @@ GET /projects/:id/members/all
 
 | Attribute        | Type              | Required | Description |
 |------------------|-------------------|----------|-------------|
-| `id`             | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-paths). |
+| `id`             | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths). |
 | `query`          | string            | no       | Filters results based on a given name, email, or username. Use partial values to widen the scope of the query. |
 | `user_ids`       | array of integers | no       | Filter the results on the given user IDs. |
 | `show_seat_info` | boolean           | no       | Show seat information for users. |
@@ -240,7 +249,7 @@ GET /projects/:id/members/:user_id
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths). |
 | `user_id` | integer           | yes      | The user ID of the member. |
 
 ```shell
@@ -278,17 +287,24 @@ Example response:
 
 ## Get a member of a group or project, including inherited and invited members
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17744) in GitLab 12.4.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to return members of the invited private group if the current user is a member of the shared group or project in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
-> - Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17744) in GitLab 12.4.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to return members of the invited private group if the current user is a member of the shared group or project in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
+- Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+
+{{< /history >}}
 
 Gets a member of a group or project, including members inherited or invited through ancestor groups. See the corresponding [endpoint to list all inherited members](#list-all-members-of-a-group-or-project-including-inherited-and-invited-members) for details.
 
-NOTE:
+{{< alert type="note" >}}
+
 The invited group members have shared membership in the shared group or project.
 This means that if the requester is a member of a shared group or project, but not a member of an invited private group,
 then using this endpoint the requester can get all the shared group or project members, including the invited private group members.
+
+{{< /alert >}}
 
 ```plaintext
 GET /groups/:id/members/all/:user_id
@@ -297,7 +313,7 @@ GET /projects/:id/members/all/:user_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer or string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths). |
 | `user_id` | integer | yes   | The user ID of the member. |
 
 ```shell
@@ -342,7 +358,7 @@ Prerequisites:
 - You must have the Owner role to access the API endpoint for billing permissions, as shown in [billing permissions](../user/free_user_limit.md).
 - This API endpoint works on top-level groups only. It does not work on subgroups.
 
-This function takes [pagination](rest/index.md#pagination) parameters `page` and `per_page` to restrict the list of users.
+This function takes [pagination](rest/_index.md#pagination) parameters `page` and `per_page` to restrict the list of users.
 
 Use the `search` parameter to search for billable group members by name, and `sort` to sort the results.
 
@@ -352,7 +368,7 @@ GET /groups/:id/billable_members
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `search`  | string            | no       | A query string to search for group members by name, username, or public email. |
 | `sort`    | string            | no       | A query string containing parameters that specify the sort attribute and order. See supported values below. |
 
@@ -438,7 +454,7 @@ are included. For instance, if the requested group is `Top-Level Group`, and the
 of both `Top-Level Group / Subgroup One` and `Other Group / Subgroup Two`, then only `Top-Level Group / Subgroup One`
 is returned, because `Other Group / Subgroup Two` is not in the `Top-Level Group` hierarchy.
 
-This API endpoint takes [pagination](rest/index.md#pagination) parameters `page` and `per_page` to restrict
+This API endpoint takes [pagination](rest/_index.md#pagination) parameters `page` and `per_page` to restrict
 the list of memberships.
 
 ```plaintext
@@ -447,7 +463,7 @@ GET /groups/:id/billable_members/:user_id/memberships
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `user_id` | integer           | yes      | The user ID of the billable member. |
 
 ```shell
@@ -488,10 +504,17 @@ Example response:
 
 ## List indirect memberships for a billable member of a group
 
-DETAILS:
-**Status:** Experiment
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386583) in GitLab 16.11.
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386583) in GitLab 16.11.
+
+{{< /history >}}
 
 Gets a list of indirect memberships for a billable member of a group.
 
@@ -505,7 +528,7 @@ For instance, if the requested group is `Top-Level Group`, and the requested use
 
 The response lists only indirect memberships. Direct memberships are not included.
 
-This API endpoint takes [pagination](rest/index.md#pagination) parameters `page` and `per_page` to restrict the list of memberships.
+This API endpoint takes [pagination](rest/_index.md#pagination) parameters `page` and `per_page` to restrict the list of memberships.
 
 ```plaintext
 GET /groups/:id/billable_members/:user_id/indirect
@@ -513,7 +536,7 @@ GET /groups/:id/billable_members/:user_id/indirect
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `user_id` | integer           | yes      | The user ID of the billable member. |
 
 ```shell
@@ -542,11 +565,24 @@ Example response:
 
 ## Remove a billable member from a group
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217851) in GitLab 13.10.
+
+{{< /history >}}
+
 Removes a billable member from a group and its subgroups and projects.
 
 The user does not need to be a group member to qualify for removal.
 For example, if the user was added directly to a project in the group, you can
 still use this API to remove them.
+
+{{< alert type="note" >}}
+
+Member removal is handled asynchronously, so the changes complete within a few minutes.
+Asynchronous removal is being rolled out, and may not become available to all groups at the same time.
+
+{{< /alert >}}
 
 ```plaintext
 DELETE /groups/:id/billable_members/:user_id
@@ -554,7 +590,7 @@ DELETE /groups/:id/billable_members/:user_id
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `user_id` | integer           | yes      | The user ID of the member. |
 
 ```shell
@@ -564,7 +600,11 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Change membership state of a user in a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86705) in GitLab 15.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86705) in GitLab 15.0.
+
+{{< /history >}}
 
 Changes the membership state of a user in a group.
 
@@ -578,7 +618,7 @@ PUT /groups/:id/members/:user_id/state
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `user_id` | integer           | yes      | The user ID of the member. |
 | `state`   | string            | yes      | The new state for the user. State is either `awaiting` or `active`. |
 
@@ -606,7 +646,7 @@ POST /projects/:id/members
 
 | Attribute        | Type              | Required                           | Description |
 |------------------|-------------------|------------------------------------|-------------|
-| `id`             | integer or string | yes                                | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-paths). |
+| `id`             | integer or string | yes                                | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths). |
 | `user_id`        | integer or string | yes, if `username` is not provided | The user ID of the new member or multiple IDs separated by commas. |
 | `username`       | string            | yes, if `user_id` is not provided  | The username of the new member or multiple usernames separated by commas. |
 | `access_level`   | integer           | yes                                | [A valid access level](access_requests.md#valid-access-levels). |
@@ -647,8 +687,11 @@ Example response:
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 If [administrator approval for role promotions](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
+
+{{< /alert >}}
 
 To enable **Manage Non-Billable Promotions**,
 you must first enable the `enable_member_promotion_management` application setting.
@@ -700,7 +743,7 @@ PUT /projects/:id/members/:user_id
 
 | Attribute        | Type              | Required | Description |
 |------------------|-------------------|----------|-------------|
-| `id`             | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-paths). |
+| `id`             | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths). |
 | `user_id`        | integer           | yes      | The user ID of the member. |
 | `access_level`   | integer           | yes      | A [valid access level](access_requests.md#valid-access-levels). |
 | `expires_at`     | string            | no       | A date string in the format `YEAR-MONTH-DAY`. |
@@ -739,8 +782,11 @@ Example response:
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 If [administrator approval for role promotions](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
+
+{{< /alert >}}
 
 To enable **Manage non-billable promotions**,
 you must first enable the `enable_member_promotion_management` application setting.
@@ -766,7 +812,7 @@ POST /groups/:id/members/:user_id/override
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `user_id` | integer           | yes      | The user ID of the member. |
 
 ```shell
@@ -811,7 +857,7 @@ DELETE /groups/:id/members/:user_id/override
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `user_id` | integer           | yes      | The user ID of the member. |
 
 ```shell
@@ -861,7 +907,7 @@ DELETE /projects/:id/members/:user_id
 
 | Attribute            | Type              | Required | Description |
 |----------------------|-------------------|----------|-------------|
-| `id`                 | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-paths). |
+| `id`                 | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths). |
 | `user_id`            | integer           | yes      | The user ID of the member. |
 | `skip_subresources`  | boolean           | false    | Whether the deletion of direct memberships of the removed member in subgroups and projects should be skipped. Default is `false`. |
 | `unassign_issuables` | boolean           | false    | Whether the removed member should be unassigned from any issues or merge requests inside a given group or project. Default is `false`. |
@@ -885,7 +931,7 @@ PUT /groups/:id/members/:member_id/approve
 
 | Attribute   | Type              | Required | Description |
 |-------------|-------------------|----------|-------------|
-| `id`        | integer or string | yes      | The ID or [URL-encoded path of the top-level group](rest/index.md#namespaced-paths). |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path of the top-level group](rest/_index.md#namespaced-paths). |
 | `member_id` | integer           | yes      | The ID of the member. |
 
 Example request:
@@ -905,7 +951,7 @@ POST /groups/:id/members/approve_all
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the top-level group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the top-level group](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -928,7 +974,7 @@ This request returns all matching group and project members from all groups and 
 
 When the member is an invited user that has not signed up for a GitLab account yet, the invited email address is returned.
 
-This API endpoint takes [pagination](rest/index.md#pagination) parameters `page` and `per_page` to restrict the list of members.
+This API endpoint takes [pagination](rest/_index.md#pagination) parameters `page` and `per_page` to restrict the list of members.
 
 ```plaintext
 GET /groups/:id/pending_members
@@ -936,7 +982,7 @@ GET /groups/:id/pending_members
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

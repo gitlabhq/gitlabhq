@@ -94,7 +94,7 @@ describe('Pipeline label component', () => {
     expect(trimText(findAutoDevopsTag().text())).toBe('Auto DevOps');
 
     expect(findAutoDevopsTagLink().attributes()).toMatchObject({
-      href: '/help/topics/autodevops/index.md',
+      href: '/help/topics/autodevops/_index.md',
       target: '_blank',
     });
   });

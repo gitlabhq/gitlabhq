@@ -8,14 +8,14 @@ module Types
         class TimelogType < BaseObject
           graphql_name 'WorkItemTimelog'
 
-          connection_type_class Types::TimeTracking::TimelogConnectionType
-          expose_permissions Types::PermissionTypes::Timelog
+          connection_type_class ::Types::TimeTracking::TimelogConnectionType
+          expose_permissions ::Types::PermissionTypes::Timelog
 
           field :id, GraphQL::Types::ID,
             null: false,
             description: 'Internal ID of the timelog.'
 
-          field :spent_at, Types::TimeType,
+          field :spent_at, ::Types::TimeType,
             null: true,
             description: 'Timestamp of when the time tracked was spent at.'
 
@@ -23,11 +23,11 @@ module Types
             null: false,
             description: 'Time spent displayed in seconds.'
 
-          field :user, Types::UserType,
+          field :user, ::Types::UserType,
             null: false,
             description: 'User that logged the time.'
 
-          field :note, Types::Notes::NoteType,
+          field :note, ::Types::Notes::NoteType,
             null: true,
             description: 'Note where the quick action was executed to add the logged time.'
 

@@ -1,11 +1,10 @@
 ---
 stage: AI-Powered
 group: AI Framework
-description: Set up your self-hosted model GitLab AI gateway
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Set up your self-hosted model GitLab AI gateway
+title: Install the GitLab AI gateway
 ---
-
-# Install the GitLab AI gateway
 
 The [AI gateway](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/) is a standalone service that gives access to AI-powered GitLab Duo features.
 
@@ -25,27 +24,34 @@ The Docker image for the AI gateway is around 340 MB (compressed) for the `linux
 
 Find the GitLab official Docker image at:
 
-- [AI Gateway Docker image on Container Registry](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/).
-- [AI Gateway Docker image on DockerHub](https://hub.docker.com/repository/docker/gitlab/model-gateway/tags).
+- AI Gateway Docker image on Container Registry:
+  - [Stable](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/3809284)
+  - [Nightly](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/8086262)
+- AI Gateway Docker image on DockerHub:
+  - [Stable](https://hub.docker.com/r/gitlab/model-gateway/tags)
+  - [Nightly](https://hub.docker.com/r/gitlab/model-gateway-self-hosted/tags)
 - [Release process for self-hosted AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/release.md).
 
-Use the image tag that corresponds to your GitLab version. For example, if your GitLab version is `v17.6.0`, use the `self-hosted-17.6.0-ee` tag. It is critical to ensure that the image version matches your GitLab version to avoid compatibility issues.
+Use the image tag that corresponds to your GitLab version. For example, if your GitLab version is `v17.9.0`, use the `self-hosted-17.9.0-ee` tag. It is critical to ensure that the image version matches your GitLab version to avoid compatibility issues. Nightly builds are available to have access to newer features, but backwards compatibility is not guaranteed.
 
-NOTE:
+{{< alert type="note" >}}
+
 Using the `:latest` tag is **not recommended** as it can cause incompatibility if your GitLab version lags behind or jumps ahead of the AI Gateway release. Always use an explicit version tag.
+
+{{< /alert >}}
 
 ### Start a Container from the Image
 
-1. For Docker images with version `self-hosted-17.6.0-ee` and later, run the following command, replacing `<your_gitlab_instance>` and `<your_gitlab_domain>` with your GitLab instance's URL and domain:
+1. Run the following command, replacing `<your_gitlab_instance>` and `<your_gitlab_domain>` with your GitLab instance's URL and domain:
 
    ```shell
-   docker run -p 5052:5052 \
+   docker run -d -p 5052:5052 \
     -e AIGW_GITLAB_URL=<your_gitlab_instance> \
     -e AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/ \
-    registry.gitlab.com/gitlab-org/ai-gateway/self-hosted-17.6.0-ee:latest
+    registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:<ai-gateway-tag> \
     ```
 
-   Replace `self-hosted-17.6.0-ee` with the version that matches your GitLab instance. For example, if your GitLab version is `v17.8.0`, use `self-hosted-17.8.0-ee`.
+   Replace `<ai-gateway-tag>` with the version that matches your GitLab instance. For example, if your GitLab version is `v17.9.0`, use `self-hosted-v17.9.0-ee`.
    From the container host, accessing `http://localhost:5052/docs` should open the AI gateway API documentation.
 
 1. Ensure that port `5052` is forwarded to the container from the host and is included in the `AI_GATEWAY_URL` environment variable.
@@ -59,16 +65,6 @@ To fix this, set the appropriate certificate bundle path in the Docker container
 
 Replace `/path/to/ca-bundle.pem` with the actual path to your certificate bundle.
 
-### Additional Configuration
-
-If you encounter authentication issues during health checks, bypass the authentication temporarily by setting the following environment variable:
-
-```shell
--e AIGW_AUTH__BYPASS_EXTERNAL=true
-```
-
-This can be helpful for troubleshooting, but you should disable this after fixing the issues.
-
 ## Install using the AI gateway Helm chart
 
 Prerequisites:
@@ -79,7 +75,7 @@ Prerequisites:
   - Working installation of `kubectl`.
   - Working installation of Helm, version v3.11.0 or later.
 
-For more information, see [Test the GitLab chart on GKE or EKS](https://docs.gitlab.com/charts/quickstart/index.html).
+For more information, see [Test the GitLab chart on GKE or EKS](https://docs.gitlab.com/charts/quickstart/).
 
 ### Add the AI gateway Helm repository
 
@@ -254,7 +250,7 @@ resources:
 - Dedicate nodes or instances exclusively to the AI Gateway to prevent resource competition with other services.
 
 ## Scaling Strategies
-  
+
 - Use Kubernetes HPA to scale pods based on real-time metrics like:
   - Average CPU utilization exceeding 50%.
   - Request latency consistently above 500ms.
@@ -267,3 +263,21 @@ resources:
 | Small            | 2 vCPUs, 8 GB RAM | Single instance        | 40                              | Fixed deployment; no autoscaling.           |
 | Medium           | AWS t3.2xlarge    | Single instance     | 160                             | HPA based on CPU or latency thresholds.     |
 | Large            | Multiple t3.2xlarge | Clustered instances   | 160 per instance               | HPA + node autoscaling for high demand.     |
+
+## Support multiple GitLab instances
+
+You can deploy a single AI gateway to support multiple GitLab instances, or deploy separate AI gateways per instance or geographic region. To help decide which is appropriate, consider:
+
+- Expected traffic of approximately seven requests per second per 1,000 billable users.
+- Resource requirements based on total concurrent requests across all instances.
+- Best practice authentication configuration for each GitLab instance.
+
+## Co-locate your AI gateway and instance
+
+The AI gateway is available in multiple regions globally to ensure optimal performance for users regardless of location, through: 
+
+- Improved response times for Duo features.
+- Reduced latency for geographically distributed users.
+- Data sovereignty requirements compliance.
+
+You should locate your AI gateway in the same geographic region as your GitLab instance to help provide a frictionless developer experience, particularly for latency-sensitive features like Code Suggestions.

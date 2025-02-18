@@ -2,9 +2,8 @@
 stage: DevSecOps
 group: Technical writing
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Get started securing your application
 ---
-
-# Get started securing your application
 
 Identify and remediate vulnerabilities in your application's source code.
 Integrate security testing into the software development lifecycle
@@ -33,13 +32,13 @@ This process is part of a larger workflow:
 Secret Detection scans your repository to help prevent your secrets from being exposed.
 It works with all programming languages.
 
-Dependency Scanning analyzes your application's dependencies for known vulnerabilities. All
-dependencies are scanned, including transitive dependencies, also known as nested dependencies.
+Dependency Scanning analyzes your application's dependencies for known vulnerabilities.
+It works with certain languages and package managers.
 
 For more information, see:
 
-- [Secret Detection](secret_detection/index.md)
-- [Dependency Scanning](dependency_scanning/index.md)
+- [Secret Detection](secret_detection/_index.md)
+- [Dependency Scanning](dependency_scanning/_index.md)
 
 ## Step 2: Choose a project to test
 
@@ -71,10 +70,10 @@ even if the vulnerability already exists on the default branch.
 
 For more information, see:
 
-- [Enable Secret Detection](secret_detection/pipeline/index.md#enable-the-analyzer)
-- [Secret Detection settings](secret_detection/pipeline/index.md#configuration)
-- [Enable Dependency Scanning](dependency_scanning/index.md#configuration)
-- [Dependency Scanning settings](dependency_scanning/index.md#available-cicd-variables)
+- [Enable Secret Detection](secret_detection/pipeline/_index.md#enable-the-analyzer)
+- [Secret Detection settings](secret_detection/pipeline/_index.md#configuration)
+- [Enable Dependency Scanning](dependency_scanning/_index.md#configuration)
+- [Dependency Scanning settings](dependency_scanning/_index.md#available-cicd-variables)
 
 ## Step 4: Review scan results
 
@@ -90,9 +89,9 @@ and preventing the introduction of new ones.
 
 For more information, see:
 
-- [View the vulnerability report](vulnerability_report/index.md)
+- [View the vulnerability report](vulnerability_report/_index.md)
 - [View security findings in merge requests](detect/security_scan_results.md#merge-request)
-- [View the Security Dashboard](security_dashboard/index.md)
+- [View the Security Dashboard](security_dashboard/_index.md)
 - [Labels](../project/labels.md)
 - [Issue boards](../project/issue_board.md)
 
@@ -108,8 +107,8 @@ low development activity and where pipeline scans are infrequent.
 For more information, see:
 
 - [Scan execution policy](policies/scan_execution_policies.md)
-- [Container scans](container_scanning/index.md)
-- [Operational container scanning](../../user/clusters/agent/vulnerabilities.md)
+- [Container scans](container_scanning/_index.md)
+- [Operational container scanning](../clusters/agent/vulnerabilities.md)
 
 ## Step 6: Limit new vulnerabilities
 
@@ -127,7 +126,7 @@ After you've gotten familiar with how scanning works, you can then choose to:
 For more information, see:
 
 - [Scan Execution Policies](policies/scan_execution_policies.md)
-- [Merge request approval policy](policies/index.md)
+- [Merge request approval policy](policies/_index.md)
 
 ## Step 7: Continue scanning for new vulnerabilities
 
@@ -143,8 +142,8 @@ Over time, you want to ensure new vulnerabilities are not introduced.
 
 For more information, see:
 
-- [SAST](sast/index.md)
-- [DAST](dast/index.md)
-- [Fuzz testing](coverage_fuzzing/index.md)
-- [Web API fuzzing](api_fuzzing/index.md)
+- [SAST](sast/_index.md)
+- [DAST](dast/_index.md)
+- [Fuzz testing](coverage_fuzzing/_index.md)
+- [Web API fuzzing](api_fuzzing/_index.md)
 - [Review apps](../../development/testing_guide/review_apps.md)

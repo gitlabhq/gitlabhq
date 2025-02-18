@@ -2,23 +2,28 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Parsing GitLab logs with `jq`
 ---
 
-# Parsing GitLab logs with `jq`
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 We recommend using log aggregation and search tools like Kibana and Splunk whenever possible,
 but if they are not available you can still quickly parse
-[GitLab logs](../logs/index.md) in JSON format
+[GitLab logs](../logs/_index.md) in JSON format
 using [`jq`](https://stedolan.github.io/jq/).
 
-NOTE:
+{{< alert type="note" >}}
+
 Specifically for summarizing error events and basic usage statistics,
 the GitLab Support Team provides the specialised
 [`fast-stats` tool](https://gitlab.com/gitlab-com/support/toolbox/fast-stats/#when-to-use-it).
+
+{{< /alert >}}
 
 ## What is JQ?
 
@@ -29,7 +34,7 @@ include use cases targeted for parsing GitLab log files.
 
 The examples listed below address their respective log files by
 their relative Linux package installation paths and default filenames.
-Find the respective full paths in the [GitLab logs sections](../logs/index.md#production_jsonlog).
+Find the respective full paths in the [GitLab logs sections](../logs/_index.md#production_jsonlog).
 
 ### Compressed logs
 
@@ -193,18 +198,18 @@ This example shows a custom tool or script causing an unexpectedly high number o
 User agents in this situation can be specialized [third-party clients](../../api/rest/third_party_clients.md),
 or general tools like `curl`.
 
-You can also [use `fast-stats top`](#parsing-gitlab-logs-with-jq) to extract performance statistics for those users or bots.
+You can also use `fast-stats top` (see top of page) to extract performance statistics for those users or bots.
 
 ### Parsing `gitlab-rails/importer.log`
 
-To troubleshoot [project imports](../../administration/raketasks/project_import_export.md) or
-[migrations](../../user/project/import/index.md), run this command:
+To troubleshoot [project imports](../raketasks/project_import_export.md) or
+[migrations](../../user/project/import/_index.md), run this command:
 
 ```shell
 jq 'select(.project_path == "<namespace>/<project>").error_messages' importer.log
 ```
 
-For common issues, see [troubleshooting](../../administration/raketasks/import_export_rake_tasks_troubleshooting.md).
+For common issues, see [troubleshooting](../raketasks/import_export_rake_tasks_troubleshooting.md).
 
 ### Parsing `gitlab-workhorse/current`
 
@@ -235,7 +240,7 @@ the following command helps to focus on the most common errors.
 jq --raw-output 'select(.severity == "ERROR") | [.project_path, .class, .message, .error] | @tsv' geo.log | sort | uniq -c | sort | tail
 ```
 
-Refer to our [Geo troubleshooting page](../geo/replication/troubleshooting/index.md)
+Refer to our [Geo troubleshooting page](../geo/replication/troubleshooting/_index.md)
 for advice about specific error messages.
 
 ### Parsing `gitaly/current`

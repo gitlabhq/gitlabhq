@@ -1,0 +1,21 @@
+- title: "Legacy Web IDE is deprecated"
+  announcement_milestone: "17.9"
+  removal_milestone: "18.0"
+  breaking_change: true
+  reporter: ealcantara
+  stage: create
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/513938
+  impact: low
+  scope: instance
+  resolution_role: [Admin]
+  manual_task: true
+  tiers: [Free, Premium, Ultimate]
+  body: |  # (required) Don't change this line.
+    The legacy Vue-based GitLab Web IDE implementation will be removed from GitLab.
+    This change follows our successful transition to the GitLab VSCode Fork-based Web IDE,
+    which has been the default Web IDE experience since GitLab 15.11.
+
+    This removal affects users who are still accessing the legacy Web IDE implementation.
+
+    To prepare for this removal, enable the `vscode_web_ide` feature flag on your GitLab instance
+    if it was previously disabled in the GitLab instance.

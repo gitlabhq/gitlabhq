@@ -46,6 +46,8 @@ module Gitlab
             end
 
             def allowed_to_write_ref?
+              return allowed_to_write_ref_new? if Feature.enabled?(:allow_merge_request_pipelines_from_fork, project)
+
               access = Gitlab::UserAccess.new(current_user, container: project)
 
               if @command.branch_exists?
@@ -54,6 +56,27 @@ module Gitlab
                 access.can_create_tag?(@command.ref)
               elsif @command.merge_request_ref_exists?
                 access.can_update_branch?(@command.merge_request.source_branch)
+              else
+                true # Allow it for now and we'll reject when we check ref existence
+              end
+            end
+
+            def allowed_to_write_ref_new?
+              access = Gitlab::UserAccess.new(current_user, container: project)
+
+              # This scenarios is when we have a MR from fork but the user has permissions to run
+              # a pipeline on the target project. In this case the pipeline is created using the MR ref.
+              # We skip the check because MR refs are created internally and there is no ref protection rules
+              # applicable to them.
+              # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/378945
+              if @command.merge_request_ref_exists? && @command.merge_request.for_fork?
+                true
+              elsif @command.merge_request_ref_exists? && @command.merge_request.for_same_project?
+                access.can_update_branch?(@command.merge_request.source_branch)
+              elsif @command.branch_exists?
+                access.can_update_branch?(@command.ref)
+              elsif @command.tag_exists?
+                access.can_create_tag?(@command.ref)
               else
                 true # Allow it for now and we'll reject when we check ref existence
               end

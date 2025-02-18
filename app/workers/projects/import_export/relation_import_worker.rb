@@ -4,6 +4,7 @@ module Projects
   module ImportExport
     class RelationImportWorker
       include ApplicationWorker
+      include Sidekiq::InterruptionsExhausted
 
       sidekiq_options retry: 6
 
@@ -16,12 +17,26 @@ module Projects
 
       attr_reader :tracker, :project, :current_user
 
+      sidekiq_retries_exhausted do |job, exception|
+        new.perform_failure(job['args'].first, exception)
+      end
+
+      sidekiq_interruptions_exhausted do |job|
+        new.perform_failure(job['args'].first,
+          ::Import::Exceptions::SidekiqExhaustedInterruptionsError.new
+        )
+      end
+
       def perform(tracker_id, user_id)
         @current_user = User.find(user_id)
         @tracker = ::Projects::ImportExport::RelationImportTracker.find(tracker_id)
         @project = tracker.project
 
-        return unless tracker.can_start?
+        unless tracker.can_start?
+          ::Import::Framework::Logger.info(message: 'Cannot start tracker', tracker_id: tracker.id,
+            tracker_status: tracker.status_name)
+          return
+        end
 
         tracker.start!
 
@@ -31,18 +46,19 @@ module Projects
 
         tracker.finish!
       rescue StandardError => error
-        failure_service = Gitlab::ImportExport::ImportFailureService.new(project)
-        failure_service.log_import_failure(
-          source: 'RelationImportWorker#perform',
-          exception: error,
-          relation_key: tracker.relation
-        )
-
-        tracker.fail_op!
+        log_failure(error)
 
         raise
       ensure
         remove_extracted_import
+      end
+
+      def perform_failure(tracker_id, exception)
+        @tracker = ::Projects::ImportExport::RelationImportTracker.find(tracker_id)
+        @project = tracker.project
+
+        log_failure(exception)
+        tracker.fail_op!
       end
 
       private
@@ -103,6 +119,15 @@ module Projects
 
       def perform_post_import_tasks
         project.reset_counters_and_iids
+      end
+
+      def log_failure(exception)
+        failure_service = Gitlab::ImportExport::ImportFailureService.new(project)
+        failure_service.log_import_failure(
+          source: 'RelationImportWorker#perform',
+          exception: exception,
+          relation_key: tracker.relation
+        )
       end
     end
   end

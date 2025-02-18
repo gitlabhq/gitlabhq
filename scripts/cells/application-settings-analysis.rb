@@ -4,6 +4,8 @@
 require 'fileutils'
 require 'yaml'
 
+require_relative '../../lib/gitlab'
+
 class ApplicationSettingsAnalysis
   CODEBASE_FIELDS = %i[
     column
@@ -29,7 +31,7 @@ class ApplicationSettingsAnalysis
     # $ as_defaults = ApplicationSetting.defaults
     # $ new_as = ApplicationSetting.new
     # $ diff_than_def = as.attributes.to_h.select { |k, v| (as_defaults[k] || new_as[k]) != v }; nil
-    # $ diff_than_def_valid_columns = diff_than_default.keys.reject { |k| k.match?(%r{^(encrypted_\w+_iv|\w+_html)$}) }
+    # $ diff_than_def_valid_columns = diff_than_def.keys.reject { |k| k.match?(%r{^(encrypted_\w+_iv|\w+_html)$}) }
     # $ diff_than_def_valid_columns.sort.each { |d| puts d }; nil
     # ```
     #
@@ -38,6 +40,7 @@ class ApplicationSettingsAnalysis
       abuse_notification_email
       after_sign_out_path
       after_sign_up_text
+      allow_top_level_group_owners_to_create_service_accounts
       arkose_labs_namespace
       asset_proxy_enabled
       asset_proxy_url
@@ -46,11 +49,13 @@ class ApplicationSettingsAnalysis
       auto_devops_domain
       auto_devops_enabled
       automatic_purchased_storage_allocation
+      bulk_import_enabled
       check_namespace_plan
       clickhouse
       cluster_agents
       code_creation
       commit_email_hostname
+      concurrent_relation_batch_export_limit
       container_expiration_policies_enable_historic_entries
       container_registry_data_repair_detail_worker_max_concurrency
       container_registry_db_enabled
@@ -85,6 +90,7 @@ class ApplicationSettingsAnalysis
       eks_access_key_id
       eks_account_id
       eks_integration_enabled
+      elasticsearch
       elasticsearch_aws_access_key
       elasticsearch_client_request_timeout
       elasticsearch_indexed_field_length_limit
@@ -92,6 +98,7 @@ class ApplicationSettingsAnalysis
       elasticsearch_limit_indexing
       elasticsearch_max_code_indexing_concurrency
       elasticsearch_requeue_workers
+      elasticsearch_retry_on_failure
       elasticsearch_search
       elasticsearch_url
       elasticsearch_username
@@ -108,6 +115,7 @@ class ApplicationSettingsAnalysis
       encrypted_arkose_labs_private_api_key
       encrypted_arkose_labs_public_api_key
       encrypted_asset_proxy_secret_key
+      encrypted_ci_job_token_signing_key
       encrypted_ci_jwt_signing_key
       encrypted_cube_api_key
       encrypted_customers_dot_jwt_signing_key
@@ -121,6 +129,7 @@ class ApplicationSettingsAnalysis
       encrypted_product_analytics_configurator_connection_string
       encrypted_recaptcha_private_key
       encrypted_recaptcha_site_key
+      encrypted_secret_detection_service_auth_token
       encrypted_secret_detection_token_revocation_token
       encrypted_slack_app_secret
       encrypted_slack_app_signing_secret
@@ -174,6 +183,8 @@ class ApplicationSettingsAnalysis
       namespace_storage_forks_cost_factor
       notes_create_limit
       notes_create_limit_allowlist
+      oauth_provider
+      observability_settings
       outbound_local_requests_whitelist
       package_registry
       pages
@@ -182,7 +193,7 @@ class ApplicationSettingsAnalysis
       pipeline_limit_per_project_user_sha
       plantuml_enabled
       plantuml_url
-      pre_receive_secret_detection_enabled
+      secret_push_protection_available
       product_analytics_data_collector_host
       product_analytics_enabled
       productivity_analytics_start_date
@@ -198,18 +209,17 @@ class ApplicationSettingsAnalysis
       repository_storages_weighted
       require_admin_approval_after_user_signup
       require_admin_two_factor_authentication
-      resource_usage_limits
       restricted_visibility_levels
-      runners_registration_token
       runners_registration_token_encrypted
+      search
       search_rate_limit
       search_rate_limit_allowlist
       secret_detection_revocation_token_types_url
+      secret_detection_service_url
       secret_detection_token_revocation_enabled
       secret_detection_token_revocation_url
       security_policies
       security_policy_global_group_approvers_enabled
-      security_policy_scheduled_scans_max_concurrency
       security_txt_content
       sentry_clientside_dsn
       sentry_clientside_traces_sample_rate
@@ -220,7 +230,6 @@ class ApplicationSettingsAnalysis
       shared_runners_minutes
       shared_runners_text
       sidekiq_job_limiter_limit_bytes
-      sign_in_restrictions
       signup_enabled
       silent_admin_exports_enabled
       slack_app_enabled
@@ -235,9 +244,11 @@ class ApplicationSettingsAnalysis
       spam_check_endpoint_url
       static_objects_external_storage_auth_token_encrypted
       static_objects_external_storage_url
+      throttle_authenticated_api_enabled
       throttle_authenticated_api_period_in_seconds
       throttle_authenticated_api_requests_per_period
       throttle_authenticated_deprecated_api_period_in_seconds
+      throttle_authenticated_web_enabled
       throttle_authenticated_web_period_in_seconds
       throttle_authenticated_web_requests_per_period
       throttle_incident_management_notification_enabled
@@ -253,6 +264,8 @@ class ApplicationSettingsAnalysis
       throttle_unauthenticated_period_in_seconds
       throttle_unauthenticated_requests_per_period
       time_tracking_limit_to_hours
+      transactional_emails
+      two_factor_grace_period
       unconfirmed_users_delete_after_days
       unique_ips_limit_per_user
       unique_ips_limit_time_window
@@ -271,10 +284,15 @@ class ApplicationSettingsAnalysis
     ].freeze
     # rubocop:enable Naming/InclusiveLanguage
 
+    AS_MODEL = File.read('app/models/application_setting.rb') +
+      (File.read('ee/app/models/ee/application_setting.rb') if Gitlab.ee?).to_s
+
     def initialize(hash)
-      super(hash)
-      self[:encrypted] = column.start_with?('encrypted_') || column.end_with?('_encrypted')
-      self[:attr] = column.delete_prefix('encrypted_').delete_suffix('_encrypted')
+      super
+
+      self[:encrypted] = encrypted_column?
+      self[:clusterwide] = true
+      self[:attr] = infer_attribute_name
       self[:gitlab_com_different_than_default] = GITLAB_COM_DIFFERENT_THAN_DEFAULT.include?(column)
       populate_fields_from_definition!
     end
@@ -300,6 +318,14 @@ class ApplicationSettingsAnalysis
 
     def definition
       @definition ||= definition_file_exist? ? YAML.safe_load_file(definition_file_path) : {}
+    end
+
+    def encrypted_column?
+      column.start_with?('encrypted_') || column.end_with?('_encrypted') || AS_MODEL.match?("encrypts :#{column}")
+    end
+
+    def infer_attribute_name
+      column.delete_prefix('encrypted_').delete_suffix('_encrypted')
     end
   end
 
@@ -340,18 +366,14 @@ class ApplicationSettingsAnalysis
       encrypted_\w+_iv # ignore encryption-related extra columns
       |
       \w+_html # ignore Markdown-caching extra columns
-      |
-      # this is a legacy column, but we want to reference the
-      # runners_registration_token_encrypted column instead
-      runners_registration_token
     )$
   }x
   DEFAULT_REGEX = /DEFAULT (?<default>[^\s,]+)/
 
   DOC_API_SETTINGS_FILE_PATH = File.expand_path('../../doc/api/settings.md', __dir__)
   DOC_API_SETTINGS_TABLE_REGEX = Regexp.new(
-    "## List of settings that can be accessed via API calls(?:.*?)(?:--\|\n)+?(?<rows>.+)" \
-      "### Configure inactive project deletion", Regexp::MULTILINE
+    "## Available settings(?:.*?)(?:--\|\n)+?(?<rows>.+)" \
+      "### Inactive project settings", Regexp::MULTILINE
   )
 
   DOC_PAGE_HEADERS = [

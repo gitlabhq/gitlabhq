@@ -15,15 +15,18 @@
 - last_pipeline = last_pipeline_from_status_cache(project) if show_pipeline_status_icon
 - css_controls_class = "with-pipeline-status" if show_pipeline_status_icon && last_pipeline.present?
 - css_metadata_classes = "gl-flex gl-items-center !gl-text-inherit icon-wrapper has-tooltip"
+- project_avatar_link_label = _("View %{project} project") % { project: project.name }
 
 %li.project-row
   - if avatar
     .project-cell.gl-w-11
       = link_to project_path(project), class: dom_class(project) do
+        %span.gl-sr-only
+          = project_avatar_link_label
         - if project.creator && use_creator_avatar
-          = render Pajamas::AvatarComponent.new(project.creator, size: 48, alt: '')
+          = render Pajamas::AvatarComponent.new(project.creator, size: 48, alt: '', avatar_options: { aria: { hidden: "true" } })
         - else
-          = render Pajamas::AvatarComponent.new(project, size: 48, alt: '')
+          = render Pajamas::AvatarComponent.new(project, size: 48, alt: '', avatar_options: { aria: { hidden: "true" } })
 
   .project-cell{ class: css_class }
     .project-details.gl-pr-9.gl-sm-pr-0.gl-w-full.gl-flex.gl-flex-col{ data: { testid: 'project-content', qa_project_name: project.name } }

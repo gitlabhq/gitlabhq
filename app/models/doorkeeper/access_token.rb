@@ -10,7 +10,5 @@ module Doorkeeper # rubocop:disable Gitlab/BoundedContexts -- Override from a ge
     columns_changing_default :organization_id
 
     belongs_to :organization, class_name: 'Organizations::Organization', optional: false
-
-    attribute :organization_id, default: -> { Organizations::Organization::DEFAULT_ORGANIZATION_ID }
   end
 end

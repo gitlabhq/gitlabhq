@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Email::ServiceDesk::CustomEmail, feature_category: :servi
   let(:custom_email) { 'support@example.com' }
   let(:custom_email_with_verification_subaddress) { 'support+verify@example.com' }
   let(:email_with_reply_key) { 'support+b7721fc7e8419911a8bea145236a0519@example.com' }
-  let(:project_mail_key) { project.default_service_desk_subaddress_part }
+  let(:project_mail_key) { ::ServiceDesk::Emails.new(project).default_subaddress_part }
 
   before do
     stub_incoming_email_setting(enabled: true, address: "incoming+%{key}@example.com")
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::Email::ServiceDesk::CustomEmail, feature_category: :servi
     it { is_expected.to be nil }
 
     context 'with service desk incoming email' do
-      let(:email) { project.service_desk_incoming_address }
+      let(:email) { ::ServiceDesk::Emails.new(project).send(:incoming_address) }
 
       it { is_expected.to be nil }
     end

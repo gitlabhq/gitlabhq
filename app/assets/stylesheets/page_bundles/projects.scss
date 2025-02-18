@@ -91,7 +91,7 @@
 }
 
 .vs-internal {
-  color: var(--orange-500, $orange-500);
+  @apply gl-text-warning;
 }
 
 .vs-private {
@@ -103,7 +103,7 @@
 }
 
 .lfs-disabled {
-  color: var(--orange-500, $orange-500);
+  @apply gl-text-warning;
 }
 
 .breadcrumb.repo-breadcrumb {

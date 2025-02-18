@@ -2,16 +2,22 @@
 stage: Create
 group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Troubleshooting tips for common problems in Code Suggestions."
+description: Troubleshooting tips for common problems in Code Suggestions.
+title: Troubleshooting Code Suggestions
 ---
 
-# Troubleshooting Code Suggestions
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+{{< /details >}}
+
+{{< history >}}
+
+- Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+
+{{< /history >}}
 
 When working with GitLab Duo Code Suggestions, you might encounter the following issues.
 
@@ -47,7 +53,7 @@ Token validation failed in Language Server:
 ```
 
 If GitLab has access to the [cloud server](../../../ai_features.md), try
-[manually synchronizing your license](../../../../subscriptions/self_managed/index.md#manually-synchronize-subscription-data).
+[manually synchronizing your license](../../../../subscriptions/self_managed/_index.md#manually-synchronize-subscription-data).
 
 ## Authentication troubleshooting
 
@@ -67,10 +73,10 @@ For non-Code Suggestions troubleshooting for VS Code, see [Troubleshooting the G
 
 ### Suggestions not displayed in VS Code or GitLab Web IDE
 
-If you are a self-managed user, ensure that Code Suggestions for the [GitLab Web IDE](../../../project/web_ide/index.md) is enabled. The same settings apply to VS Code as local IDE.
+If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab Web IDE](../../web_ide/_index.md) is enabled. The same settings apply to VS Code as local IDE.
 
 1. On the left sidebar, select **Extensions > GitLab Workflow**.
-1. Select **Settings** (**{settings}**), and then select **Extension Settings**.
+1. Select **Settings** ({{< icon name="settings" >}}), and then select **Extension Settings**.
 1. In **GitLab > Duo Code Suggestions**, select the **GitLab Duo Code Suggestions**
    checkbox.
 
@@ -108,7 +114,11 @@ as taking longer to resolve. To disable streaming:
 
 ### Error: Direct connection fails
 
-> - Direct connection [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13252) in GitLab 17.2.
+{{< history >}}
+
+- Direct connection [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13252) in GitLab 17.2.
+
+{{< /history >}}
 
 To reduce latency, the Workflow extension tries to send suggestion completion requests directly to GitLab Cloud Connector,
 bypassing the GitLab instance. This network connection does not use the proxy and certificate settings of the VS Code extension.
@@ -206,7 +216,7 @@ To fix this problem, install the **IntelliCode** component:
 
 1. Ensure you have properly [set up the extension](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension#setup).
 1. From the **Tools > Options** menu, find the **GitLab** option. Ensure **Log Level** is set to **Debug**.
-1. Open the extension log in **View > Output** and change the dropdown list to **GitLab Extension** as the log filter.
+1. In **View > Output**, open the extension log. Change the dropdown list to **GitLab Extension** as the log filter.
 1. Verify that the debug log contains similar output:
 
 ```shell

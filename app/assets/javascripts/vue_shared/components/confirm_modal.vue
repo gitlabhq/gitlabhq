@@ -1,5 +1,5 @@
 <script>
-import { GlModal } from '@gitlab/ui';
+import { GlModal, GlAlert } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import csrf from '~/lib/utils/csrf';
@@ -8,6 +8,7 @@ import DomElementListener from './dom_element_listener.vue';
 
 export default {
   components: {
+    GlAlert,
     GlModal,
     DomElementListener,
   },
@@ -96,6 +97,13 @@ export default {
       -->
         <input type="hidden" name="_method" :value="method" />
         <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
+        <gl-alert
+          v-if="modalAttributes.errorAlertMessage"
+          class="gl-mb-3"
+          variant="danger"
+          :dismissible="false"
+          >{{ modalAttributes.errorAlertMessage }}</gl-alert
+        >
         <div v-if="modalAttributes.messageHtml" v-safe-html="modalAttributes.messageHtml"></div>
         <div v-else>{{ modalAttributes.message }}</div>
       </form>

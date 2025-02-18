@@ -2,29 +2,35 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Pipelines API
 ---
 
-# Pipelines API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## Pipelines pagination
 
 By default, `GET` requests return 20 results at a time because the API results
 are paginated.
 
-Read more on [pagination](rest/index.md#pagination).
+Read more on [pagination](rest/_index.md#pagination).
 
 ## List project pipelines
 
-> - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
-> - `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
-> - `name` in request [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_search`. Disabled by default.
-> - `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
-> - `name` in request [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385864) in GitLab 16.9. Feature flag `pipeline_name_search` removed.
-> - Support for returning child pipelines with `source` set to `parent_pipeline` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39503) in GitLab 17.0.
+{{< history >}}
+
+- `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+- `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
+- `name` in request [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_search`. Disabled by default.
+- `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
+- `name` in request [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385864) in GitLab 16.9. Feature flag `pipeline_name_search` removed.
+- Support for returning child pipelines with `source` set to `parent_pipeline` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39503) in GitLab 17.0.
+
+{{< /history >}}
 
 List pipelines in a project.
 
@@ -37,7 +43,7 @@ GET /projects/:id/pipelines
 
 | Attribute        | Type           | Required | Description |
 |------------------|----------------|----------|-------------|
-| `id`             | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`             | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `name`           | string         | No       | Return pipelines with the specified name. |
 | `order_by`       | string         | No       | Order pipelines by `id`, `status`, `ref`, `updated_at` or `user_id` (default: `id`) |
 | `ref`            | string         | No       | The ref of pipelines |
@@ -90,9 +96,13 @@ Example of response
 
 ## Get a single pipeline
 
-> - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
-> - `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
-> - `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
+{{< history >}}
+
+- `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+- `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
+- `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
+
+{{< /history >}}
 
 Get one pipeline from a project.
 
@@ -104,7 +114,7 @@ GET /projects/:id/pipelines/:pipeline_id
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
@@ -159,8 +169,12 @@ Example of response
 
 ### Get the latest pipeline
 
-> - `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
-> - `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
+{{< history >}}
+
+- `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
+- `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
+
+{{< /history >}}
 
 Get the latest pipeline for the most recent commit on a specific ref in a project. If no pipeline exists for the commit, a `403` status code is returned.
 
@@ -233,7 +247,7 @@ GET /projects/:id/pipelines/:pipeline_id/variables
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
@@ -258,8 +272,11 @@ Example of response
 
 ### Get a pipeline's test report
 
-NOTE:
+{{< alert type="note" >}}
+
 This API route is part of the [Unit test report](../ci/testing/unit_test_reports.md) feature.
+
+{{< /alert >}}
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/test_report
@@ -267,7 +284,7 @@ GET /projects/:id/pipelines/:pipeline_id/test_report
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 Sample request:
@@ -312,8 +329,11 @@ Sample response:
 
 ### Get a pipeline's test report summary
 
-NOTE:
+{{< alert type="note" >}}
+
 This API route is part of the [Unit test report](../ci/testing/unit_test_reports.md) feature.
+
+{{< /alert >}}
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/test_report_summary
@@ -321,7 +341,7 @@ GET /projects/:id/pipelines/:pipeline_id/test_report_summary
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 Sample request:
@@ -363,7 +383,11 @@ Sample response:
 
 ## Create a new pipeline
 
-> - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+{{< history >}}
+
+- `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+
+{{< /history >}}
 
 ```plaintext
 POST /projects/:id/pipeline
@@ -371,9 +395,9 @@ POST /projects/:id/pipeline
 
 | Attribute   | Type           | Required | Description |
 |-------------|----------------|----------|-------------|
-| `id`        | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`        | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `ref`       | string         | Yes      | The branch or tag to run the pipeline on. For merge request pipelines use the [merge requests endpoint](merge_requests.md#create-merge-request-pipeline). |
-| `variables` | array          | No       | An [array of hashes](rest/index.md#array-of-hashes) containing the variables available in the pipeline, matching the structure `[{ 'key': 'UPLOAD_TO_S3', 'variable_type': 'file', 'value': 'true' }, {'key': 'TEST', 'value': 'test variable'}]`. If `variable_type` is excluded, it defaults to `env_var`. |
+| `variables` | array          | No       | An [array of hashes](rest/_index.md#array-of-hashes) containing the variables available in the pipeline, matching the structure `[{ 'key': 'UPLOAD_TO_S3', 'variable_type': 'file', 'value': 'true' }, {'key': 'TEST', 'value': 'test variable'}]`. If `variable_type` is excluded, it defaults to `env_var`. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main"
@@ -414,7 +438,11 @@ Example of response
 
 ## Retry jobs in a pipeline
 
-> - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+{{< history >}}
+
+- `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+
+{{< /history >}}
 
 Retry failed or canceled jobs in a pipeline. If there are no failed or canceled jobs in the pipeline, calling this endpoint has no effect.
 
@@ -424,7 +452,7 @@ POST /projects/:id/pipelines/:pipeline_id/retry
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
@@ -470,13 +498,16 @@ Response:
 POST /projects/:id/pipelines/:pipeline_id/cancel
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 This endpoint returns a success response `200` regardless of the pipeline's state.
 For more information, see [issue 414963](https://gitlab.com/gitlab-org/gitlab/-/issues/414963).
 
+{{< /alert >}}
+
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
@@ -533,7 +564,7 @@ DELETE /projects/:id/pipelines/:pipeline_id
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
@@ -550,7 +581,7 @@ PUT /projects/:id/pipelines/:pipeline_id/metadata
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `name`        | string         | Yes      | The new name of the pipeline |
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 

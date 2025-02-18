@@ -37,6 +37,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it { is_expected.to have_many(:reviewed_by_users).through(:reviews).source(:author) }
     it { is_expected.to have_one(:cleanup_schedule).inverse_of(:merge_request) }
     it { is_expected.to have_one(:merge_schedule).class_name('MergeRequests::MergeSchedule').inverse_of(:merge_request) }
+    it { is_expected.to have_one(:approval_metrics).class_name('MergeRequest::ApprovalMetrics').inverse_of(:merge_request) }
     it { is_expected.to have_many(:created_environments).class_name('Environment').inverse_of(:merge_request) }
     it { is_expected.to have_many(:assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent').inverse_of(:merge_request) }
 
@@ -243,6 +244,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
+    describe '.no_review_states' do
+      let(:states) { [MergeRequestReviewer.states[:requested_changes]] }
+
+      subject(:merge_requests) { described_class.no_review_states(states) }
+
+      it { expect(merge_requests).to contain_exactly(merge_request2) }
+    end
+
     describe '.assignee_or_reviewer' do
       let_it_be(:merge_request5) do
         create(:merge_request, :prepared, :unique_branches, assignees: [user1], reviewers: [user2], created_at:
@@ -355,6 +364,15 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       end
     end
+  end
+
+  describe '#squash_option' do
+    let(:merge_request) { build(:merge_request, project: project) }
+    let(:project_setting) { project.project_setting }
+
+    subject { merge_request.squash_option }
+
+    it { is_expected.to eq(project_setting) }
   end
 
   describe '#squash?' do
@@ -4188,30 +4206,40 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '#has_ci_enabled?' do
-    subject { build(:merge_request, source_project: project) }
-
-    let(:project) { build(:project, :auto_devops, only_allow_merge_if_pipeline_succeeds: false) }
+  describe '#has_ci_enabled?', :clean_gitlab_redis_shared_state do
+    let_it_be(:mr) { create(:merge_request, source_project: project) }
+    let_it_be(:project) { create(:project, :auto_devops, only_allow_merge_if_pipeline_succeeds: false) }
     let(:mr_ci) { true }
-    let(:project_ci) { true }
 
     before do
-      allow(subject).to receive(:has_ci?).and_return(mr_ci)
-      allow(project).to receive(:has_ci?).and_return(project_ci)
+      allow(mr).to receive(:has_ci?).and_return(mr_ci)
     end
 
     context 'when MR has_ci? is true' do
-      context 'when project has_ci? is true' do
+      context 'when pipeline has a creation request' do
+        before do
+          Ci::PipelineCreation::Requests.start_for_merge_request(mr)
+        end
+
         it 'returns true' do
-          expect(subject.has_ci_enabled?).to eq(true)
+          expect(mr.has_ci_enabled?).to eq(true)
         end
       end
 
-      context 'when project has_ci? is false' do
-        let(:project_ci) { false }
+      context 'when pipeline has no creation request' do
+        it 'returns true' do
+          expect(mr.has_ci_enabled?).to eq(true)
+        end
+      end
 
-        it 'returns false' do
-          expect(subject.has_ci_enabled?).to eq(true)
+      context 'when change_ci_enabled_hurestic is disabled and project does not have ci' do
+        before do
+          stub_feature_flags(change_ci_enabled_hurestic: false)
+          allow(mr.project).to receive(:has_ci?).and_return(false)
+        end
+
+        it 'returns true' do
+          expect(mr.has_ci_enabled?).to eq(true)
         end
       end
     end
@@ -4219,18 +4247,73 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'when MR has_ci? is false' do
       let(:mr_ci) { false }
 
-      context 'when project has_ci? is true' do
+      context 'when pipeline has a creation request' do
+        before do
+          Ci::PipelineCreation::Requests.start_for_merge_request(mr)
+        end
+
         it 'returns true' do
-          expect(subject.has_ci_enabled?).to eq(true)
+          expect(mr.has_ci_enabled?).to eq(true)
         end
       end
 
-      context 'when project has_ci? is false' do
-        let(:project_ci) { false }
-
+      context 'when pipeline has no creation request' do
         it 'returns false' do
-          expect(subject.has_ci_enabled?).to eq(false)
+          expect(mr.has_ci_enabled?).to eq(false)
         end
+      end
+
+      context 'when change_ci_enabled_hurestic is disabled' do
+        before do
+          stub_feature_flags(change_ci_enabled_hurestic: false)
+        end
+
+        context 'when the project has ci enabled' do
+          before do
+            allow(mr.project).to receive(:has_ci?).and_return(true)
+          end
+
+          it 'returns true' do
+            expect(mr.has_ci_enabled?).to eq(true)
+          end
+        end
+
+        context 'when the project does not have ci enabled' do
+          before do
+            allow(mr.project).to receive(:has_ci?).and_return(false)
+          end
+
+          it 'returns false' do
+            expect(mr.has_ci_enabled?).to eq(false)
+          end
+        end
+      end
+    end
+  end
+
+  describe '#pipeline_creating?' do
+    let(:pipeline_creating) { subject.pipeline_creating? }
+
+    before do
+      allow(Ci::PipelineCreation::Requests)
+        .to receive(:pipeline_creating_for_merge_request?)
+        .with(subject)
+        .and_return(creating)
+    end
+
+    context 'when pipeline creating request is true' do
+      let(:creating) { true }
+
+      it 'is true' do
+        expect(pipeline_creating).to eq true
+      end
+    end
+
+    context 'when pipeline creating request is false' do
+      let(:creating) { false }
+
+      it 'is false' do
+        expect(pipeline_creating).to eq false
       end
     end
   end
@@ -6457,7 +6540,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe '#missing_required_squash?' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:squash, :project_requires_squash, :expected) do
+    where(:squash, :require_squash, :expected) do
       false | true  | true
       false | false | false
       true  | true  | false
@@ -6465,15 +6548,12 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     with_them do
-      let(:merge_request) { build_stubbed(:merge_request, squash: squash) }
+      let(:merge_request) { build_stubbed(:merge_request, squash: squash, project: project) }
 
       subject { merge_request.missing_required_squash? }
 
       before do
-        allow(merge_request.target_project).to(
-          receive(:squash_always?)
-            .and_return(project_requires_squash)
-        )
+        allow(project.project_setting).to receive(:squash_always?).and_return(require_squash)
       end
 
       it { is_expected.to eq(expected) }
@@ -6971,6 +7051,29 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     it 'returns limited diffs' do
       expect(subject.count).to eq(limit)
+    end
+  end
+
+  describe '#squash_on_merge?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    where(:squash_always, :squash_never, :squash, :expected) do
+      true  | false | false | true
+      true  | false | true  | true
+      false | true  | false | false
+      false | true  | true  | false
+      false | false | true  | true
+      false | false | false | false
+    end
+
+    with_them do
+      subject { merge_request.squash_on_merge? }
+
+      before do
+        allow(merge_request).to receive_messages(squash_always?: squash_always, squash_never?: squash_never, squash?: squash)
+      end
+
+      it { is_expected.to eq(expected) }
     end
   end
 end

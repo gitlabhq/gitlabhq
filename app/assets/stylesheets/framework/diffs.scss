@@ -122,17 +122,17 @@ $diff-file-header: 41px;
       img {
         border: 1px solid $white;
         background-image: linear-gradient(45deg,
-        $border-color 25%,
+        var(--gl-border-color-default) 25%,
         transparent 25%,
         transparent 75%,
-        $border-color 75%,
-        $border-color 100%),
+        var(--gl-border-color-default) 75%,
+        var(--gl-border-color-default) 100%),
           linear-gradient(45deg,
-        $border-color 25%,
+        var(--gl-border-color-default) 25%,
         transparent 25%,
         transparent 75%,
-        $border-color 75%,
-        $border-color 100%);
+        var(--gl-border-color-default) 75%,
+        var(--gl-border-color-default) 100%);
         background-size: 10px 10px;
         background-position: 0 0, 5px 5px;
         max-width: 100%;
@@ -150,7 +150,7 @@ $diff-file-header: 41px;
     .image-info {
       font-size: 12px;
       margin: 5px 0 0;
-      color: $diff-image-info-color;
+      @apply gl-text-subtle;
     }
 
     .view.swipe {
@@ -318,8 +318,7 @@ $diff-file-header: 41px;
     }
 
     li {
-      color: $diff-view-modes-color;
-      border-left: 1px solid $diff-view-modes-border;
+      @apply gl-text-subtle gl-border-l;
       padding: 0 12px 0 16px;
       cursor: pointer;
 

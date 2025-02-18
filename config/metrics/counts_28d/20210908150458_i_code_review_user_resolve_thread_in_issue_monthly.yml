@@ -16,9 +16,6 @@ options:
   events:
     - i_code_review_user_resolve_thread_in_issue
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

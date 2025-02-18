@@ -3,23 +3,44 @@
 require 'spec_helper'
 
 RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_registry do
-  include_context 'conan api setup'
+  include_context 'with conan api setup'
+
+  let_it_be_with_reload(:package) { create(:conan_package, project: project) }
+  let(:project_id) { project.id }
+
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/users/check_credentials' do
+    let(:url) { "/projects/#{project.id}/packages/conan/v2/users/check_credentials" }
+
+    it_behaves_like 'conan check_credentials endpoint'
+  end
+
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/search' do
+    let(:url) { "/projects/#{project.id}/packages/conan/v2/conans/search" }
+
+    it_behaves_like 'conan search endpoint'
+
+    it_behaves_like 'conan FIPS mode' do
+      let(:params) { { q: package.conan_recipe } }
+
+      subject { get api(url), params: params }
+    end
+
+    it_behaves_like 'conan search endpoint with access to package registry for everyone'
+  end
 
   describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
     ':package_channel/revisions/:recipe_revision/files/:file_name' do
-    include_context 'conan file download endpoints'
+    include_context 'for conan file download endpoints'
 
-    let(:project_id) { project.id }
-    let(:recipe_revision) { OpenSSL::Digest.hexdigest('MD5', 'valid_recipe_revision') }
     let(:file_name) { recipe_file.file_name }
+    let(:recipe_revision) { recipe_file_metadata.recipe_revision_value }
     let(:url_suffix) { "#{recipe_path}/revisions/#{recipe_revision}/files/#{file_name}" }
     let(:url) { "/projects/#{project_id}/packages/conan/v2/conans/#{url_suffix}" }
 
-    subject(:get_request) { get api(url), headers: headers }
+    subject(:request) { get api(url), headers: headers }
 
-    # TODO: Endpoint is not implemented yet. See https://gitlab.com/gitlab-org/gitlab/-/issues/333033#note_2060136937.
-    it_behaves_like 'returning response status with message', status: :not_found, message: 'Not supported'
-
+    it_behaves_like 'recipe file download endpoint'
+    it_behaves_like 'accept get request on private project with access to package registry for everyone'
     it_behaves_like 'project not found by project id'
 
     context 'when feature flag is disabled' do
@@ -28,7 +49,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       end
 
       it_behaves_like 'returning response status with message', status: :not_found,
-        message: "'conan_package_revisions_support' feature flag is disabled"
+        message: "404 'conan_package_revisions_support' feature flag is disabled Not Found"
     end
 
     context 'when packages feature disabled' do
@@ -36,10 +57,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
         stub_packages_setting(enabled: false)
       end
 
-      it_behaves_like 'returning response status', :not_found
-    end
-
-    context 'in FIPS mode', :fips_mode do
       it_behaves_like 'returning response status', :not_found
     end
 

@@ -995,6 +995,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         containerRegistryEnabled: !!project.container_registry_enabled,
         lfsEnabled: !!project.lfs_enabled,
         emailsEnabled: project.emails_enabled?,
+        extendedPratExpiryWebhooksExecute: project.extended_prat_expiry_webhooks_execute?,
         showDefaultAwardEmojis: project.show_default_award_emojis?,
         securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
         containerRegistryAccessLevel: project.project_feature.container_registry_access_level,
@@ -1821,12 +1822,12 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       end
 
       it 'returns visibility level content_tag' do
-        expected_result = "<span class=\"has-tooltip\" data-container=\"body\" data-placement=\"top\" title=\"#{description}\">#{icon}</span>"
+        expected_result = "<button class=\"has-tooltip gl-border-0 gl-bg-transparent gl-p-0 gl-leading-0 gl-text-inherit\" data-container=\"body\" data-placement=\"top\" title=\"#{description}\" type=\"button\" aria-label=\"#{description}\">#{icon}</button>"
         expect(helper.visibility_level_content(project)).to eq(expected_result)
       end
 
       it 'returns visibility level content_tag with extra CSS classes' do
-        expected_result = "<span class=\"has-tooltip extra-class\" data-container=\"body\" data-placement=\"top\" title=\"#{description}\">#{icon}</span>"
+        expected_result = "<button class=\"has-tooltip gl-border-0 gl-bg-transparent gl-p-0 gl-leading-0 gl-text-inherit extra-class\" data-container=\"body\" data-placement=\"top\" title=\"#{description}\" type=\"button\" aria-label=\"#{description}\">#{icon}</button>"
 
         expect(helper).to receive(:visibility_level_icon)
           .with(anything, options: { class: 'extra-icon-class' })
@@ -2008,10 +2009,11 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     with_them do
       let(:request) { instance_double(ActionDispatch::Request, path: helper.send(request_path)) }
+      let(:collection) { Project.where(id: authorized_projects) }
 
       before do
         allow(helper).to receive(:request).and_return(request)
-        allow(user).to receive(:authorized_projects).and_return(authorized_projects)
+        allow(user).to receive(:authorized_projects).and_return(collection)
       end
 
       it 'returns the correct boolean response' do
@@ -2024,23 +2026,38 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     subject { helper.delete_immediately_message(project) }
 
     it 'returns correct message' do
-      expect(subject).to eq "This action deletes <code>#{project.path_with_namespace}</code> and everything this project contains. <strong>There is no going back.</strong>"
+      expect(subject).to eq "This action will permanently delete this project, including all its resources."
     end
   end
 
   describe '#project_delete_immediately_button_data' do
-    subject { helper.project_delete_immediately_button_data(project) }
-
-    it 'returns expected hash' do
-      expect(subject).to match({
+    let(:base_button_data) do
+      {
         form_path: project_path(project, permanently_delete: true),
         confirm_phrase: project.path_with_namespace,
+        name_with_namespace: project.name_with_namespace,
         is_fork: 'false',
         issues_count: '0',
         merge_requests_count: '0',
         forks_count: '0',
         stars_count: '0'
-      })
+      }
+    end
+
+    describe 'with default button text' do
+      subject { helper.project_delete_immediately_button_data(project) }
+
+      it 'returns expected hash' do
+        expect(subject).to match(base_button_data.merge(button_text: 'Delete project'))
+      end
+    end
+
+    describe 'with custom button text' do
+      subject { helper.project_delete_immediately_button_data(project, 'Delete project immediately') }
+
+      it 'returns expected hash' do
+        expect(subject).to match(base_button_data.merge(button_text: 'Delete project immediately'))
+      end
     end
   end
 

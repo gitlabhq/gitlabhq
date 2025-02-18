@@ -59,6 +59,32 @@ RSpec.describe 'Getting starredProjects of the user', feature_category: :groups_
         a_graphql_entity_for(project_c)
       )
     end
+
+    context 'when all fields are requested' do
+      let(:user_fields) do
+        "starredProjects { nodes {#{all_graphql_fields_for('Project', max_depth: 1,
+          excluded: ['productAnalyticsState'])} } }"
+      end
+
+      it 'avoids N+1 queries', :use_sql_query_cache, :clean_gitlab_redis_cache do
+        post_graphql(query, current_user: current_user)
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          post_graphql(query, current_user: current_user)
+        end
+
+        project_d = create(:project, :public, name: 'ProjectD', path: 'Project-D', star_count: 30)
+        project_d.add_reporter(user)
+        user.toggle_star(project_d)
+
+        # There is an N+1 query related to custom roles - https://gitlab.com/gitlab-org/gitlab/-/issues/515675
+        # There is an N+1 query for duo_features_enabled cascading setting - https://gitlab.com/gitlab-org/gitlab/-/issues/442164
+        # There is an N+1 query related to pipelines - https://gitlab.com/gitlab-org/gitlab/-/issues/515677
+        expect do
+          post_graphql(query, current_user: current_user)
+        end.not_to exceed_all_query_limit(control).with_threshold(5)
+      end
+    end
   end
 
   context 'the current user is a member of a private project the user starred' do

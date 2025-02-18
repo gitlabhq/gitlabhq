@@ -2,17 +2,20 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Control GitLab Duo availability
 ---
 
-# Control GitLab Duo availability
+{{< history >}}
 
-> - [Settings to turn off AI features introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
-> - [Settings to turn off AI features added to the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/441489) in GitLab 16.11.
+- [Settings to turn off AI features introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
+- [Settings to turn off AI features added to the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/441489) in GitLab 16.11.
+
+{{< /history >}}
 
 GitLab Duo features that are generally available are automatically turned on for all users that have access.
 
 - You must have an [GitLab Duo Pro or Enterprise add-on subscription](../../subscriptions/subscription-add-ons.md).
-- For some generally available features, like [Code Suggestions](../project/repository/code_suggestions/index.md),
+- For some generally available features, like [Code Suggestions](../project/repository/code_suggestions/_index.md),
   [you must also assign seats](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)
   to the users you want to have access.
 
@@ -28,9 +31,9 @@ When GitLab Duo is turned off for a group, project, or instance:
 
 ### Turn off for a group
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle In 17.8 and later
+{{< tab title="In 17.8 and later" >}}
 
 In GitLab 17.8 and later, follow these instructions to turn off GitLab Duo
 for a group, including its subgroups and projects.
@@ -50,13 +53,18 @@ To turn off GitLab Duo for a group:
    - To turn off GitLab Duo for the group, and to prevent other groups or projects from turning it on, select **Always off**.
 1. Select **Save changes**.
 
-:::TabTitle In 17.7
+{{< /tab >}}
+
+{{< tab title="In 17.7" >}}
 
 In GitLab 17.7, follow these instructions to turn off GitLab Duo
 for a group, including its subgroups and projects.
 
-NOTE:
+{{< alert type="note" >}}
+
 In GitLab 17.7, you cannot turn off GitLab Duo for groups or subgroups on GitLab Self-Managed, or for subgroups on GitLab.com.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -72,7 +80,9 @@ To turn off GitLab Duo for a group:
    - To turn off GitLab Duo for the group, and to prevent projects from turning it on, select **Always off**.
 1. Select **Save changes**.
 
-:::TabTitle In 17.4 to 17.6
+{{< /tab >}}
+
+{{< tab title="In 17.4 to 17.6" >}}
 
 In GitLab 17.4 to 17.6, follow these instructions to turn off GitLab Duo
 for a group and its subgroups and projects.
@@ -91,7 +101,9 @@ To turn off GitLab Duo for a group:
    - To turn off GitLab Duo for the group, and to prevent other groups or projects from turning it on, select **Never on**.
 1. Select **Save changes**.
 
-:::TabTitle In 17.3 and earlier
+{{< /tab >}}
+
+{{< tab title="In 17.3 and earlier" >}}
 
 In GitLab 17.3 and earlier, follow these instructions to turn off GitLab Duo for a group
 and its subgroups and projects.
@@ -109,13 +121,15 @@ Prerequisites:
 
    ![Cascading setting](img/disable_duo_features_v17_1.png)
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Turn off for a project
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle In 17.4 and later
+{{< tab title="In 17.4 and later" >}}
 
 In GitLab 17.4 and later, follow these instructions to turn off GitLab Duo for a project.
 
@@ -131,27 +145,34 @@ To turn off GitLab Duo for a project:
 1. Under **GitLab Duo**, turn the toggle off.
 1. Select **Save changes**.
 
-:::TabTitle In 17.3 and earlier
+{{< /tab >}}
+
+{{< tab title="In 17.3 and earlier" >}}
 
 In GitLab 17.3 and earlier, follow these instructions to turn off GitLab Duo for a project.
 
 1. Use the GitLab GraphQL API
-   [`projectSettingsUpdate`](../../api/graphql/reference/index.md#mutationprojectsettingsupdate)
+   [`projectSettingsUpdate`](../../api/graphql/reference/_index.md#mutationprojectsettingsupdate)
    mutation.
 1. Set the
    [`duo_features_enabled`](../../api/graphql/getting_started.md#update-project-settings)
    setting to `false`. (The default is `true`.)
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Turn off for an instance
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-::Tabs
+- Offering: GitLab Self-Managed
 
-:::TabTitle In 17.7 and later
+{{< /details >}}
+
+{{< tabs >}}
+
+{{< tab title="In 17.7 and later" >}}
 
 In GitLab 17.7 and later, follow these instructions to turn off GitLab Duo for the instance.
 
@@ -169,7 +190,9 @@ To turn off GitLab Duo for an instance:
    - To turn off GitLab Duo for the instance, and to prevent groups or projects from ever turning it on, select **Always off**.
 1. Select **Save changes**.
 
-:::TabTitle In 17.4 to 17.6
+{{< /tab >}}
+
+{{< tab title="In 17.4 to 17.6" >}}
 
 In GitLab 17.4 to 17.6, follow these instructions to turn off GitLab Duo for the instance.
 
@@ -187,7 +210,9 @@ To turn off GitLab Duo for an instance:
    - To turn off GitLab Duo for the instance, and to prevent groups or projects from ever turning it on, select **Never on**.
 1. Select **Save changes**.
 
-:::TabTitle In 17.3 and earlier
+{{< /tab >}}
+
+{{< tab title="In 17.3 and earlier" >}}
 
 In GitLab 17.3 and earlier, follow these instructions to turn off GitLab Duo for an instance.
 
@@ -204,11 +229,16 @@ To turn off GitLab Duo for an instance:
 1. Optional. Select the **Enforce for all subgroups** checkbox to cascade
    the setting to all groups in the instance.
 
-::EndTabs
+{{< /tab >}}
 
-NOTE:
+{{< /tabs >}}
+
+{{< alert type="note" >}}
+
 An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/441532) to allow administrators
 to override the setting for specific groups or projects.
+
+{{< /alert >}}
 
 ## Turn on beta and experimental features
 
@@ -217,13 +247,16 @@ These features are subject to the [Testing Agreement](https://handbook.gitlab.co
 
 ### On GitLab.com
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
 
-::Tabs
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
 
-:::TabTitle In 17.4 and later
+{{< /details >}}
+
+{{< tabs >}}
+
+{{< tab title="In 17.4 and later" >}}
 
 In GitLab 17.4 and later, follow these instructions to
 turn on GitLab Duo experimental and beta features for your group on GitLab.com.
@@ -240,7 +273,9 @@ To turn on GitLab Duo experiment and beta features for a top-level group:
 1. Under **GitLab Duo preview features**, select **Use experiment and beta GitLab Duo features**.
 1. Select **Save changes**.
 
-:::TabTitle In 17.3 and earlier
+{{< /tab >}}
+
+{{< tab title="In 17.3 and earlier" >}}
 
 In GitLab 17.3 and earlier, follow these instructions to
 turn on GitLab Duo experimental and beta features for your group on GitLab.com.
@@ -251,19 +286,21 @@ turn on GitLab Duo experimental and beta features for your group on GitLab.com.
 1. Under **GitLab Duo experiment and beta features**, select the **Use experiment and beta GitLab Duo features** checkbox.
 1. Select **Save changes**.
 
-::EndTabs
+{{< /tab >}}
 
-This setting [cascades to all projects](../../user/project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)
+{{< /tabs >}}
+
+This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)
 that belong to the group.
 
 ### On self-managed
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle In 17.4 and later
+{{< tab title="In 17.4 and later" >}}
 
 In GitLab 17.4 and later, follow these instructions to turn on GitLab Duo
-experiment and beta features for your self-managed instance.
+experiment and beta features for your GitLab Self-Managed instance.
 
 Prerequisites:
 
@@ -277,10 +314,14 @@ To turn on GitLab Duo experiment and beta features for an instance:
 1. Under **GitLab Duo preview features**, select **Use experiment and beta GitLab Duo features**.
 1. Select **Save changes**.
 
-:::TabTitle In 17.3 and earlier
+{{< /tab >}}
+
+{{< tab title="In 17.3 and earlier" >}}
 
 To enable GitLab Duo beta and experimental features for GitLab versions
 where GitLab Duo Chat is not yet generally available, see the
 [GitLab Duo Chat documentation](../gitlab_duo_chat/turn_on_off.md#for-self-managed).
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}

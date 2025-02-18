@@ -15,8 +15,8 @@ This planning issue collects a list of changes that require an upgrade stop to X
 To help to determine whether %"X.Y" is a required stop,
 add your issue to the list below before `<deadline date>` (your local time).
 
-You can review the [Common scenarios that require stops](https://docs.gitlab.com/ee/development/database/required_stops.html) and
-[avoiding required stops](https://docs.gitlab.com/ee/development/avoiding_required_stops.html) to
+You can review the [Common scenarios that require stops](https://docs.gitlab.com/development/database/required_stops/) and
+[avoiding required stops](https://docs.gitlab.com/development/avoiding_required_stops/) to
 confirm. If you are still not sure after reviewing the documentation, leave a
 comment with the link to your issue or epic in this issue for others to review.
 
@@ -36,7 +36,7 @@ Slack message template:
 >>>
 The Distribution::Deploy group created an issue (link to this issue) to
 determine if X.Y needs to be [a required upgrade
-stop](https://docs.gitlab.com/ee/development/avoiding_required_stops.html#causes-of-required-stops). Please review your
+stop](https://docs.gitlab.com/development/avoiding_required_stops/#causes-of-required-stops). Please review your
 upcoming changes and share any may require upgrade stop on the issue (link to
 this issue), thank you.
 >>>
@@ -56,8 +56,8 @@ Slack message template:
 >>>
 An update on the next upgrade stop (link to this issue), x.y is a planned
 upgrade stop. It is a great opportunity to plan tasks as mentioned on
-[Adding required stops](https://docs.gitlab.com/ee/development/database/required_stops.html)
-and [Avoiding required stops](https://docs.gitlab.com/ee/development/avoiding_required_stops.html).
+[Adding required stops](https://docs.gitlab.com/development/database/required_stops/)
+and [Avoiding required stops](https://docs.gitlab.com/development/avoiding_required_stops/).
 >>>
 
 - [ ] Comment on this issue.

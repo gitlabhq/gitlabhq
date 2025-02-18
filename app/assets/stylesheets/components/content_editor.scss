@@ -191,6 +191,9 @@
   }
 
   .suggestion-added-input {
+    @apply gl-border-1;
+    @apply gl-border-section;
+
     > code {
       display: block;
       margin-left: 120px;
@@ -343,7 +346,7 @@
   border-radius: 3px;
   margin-left: 4px;
   margin-top: -2px;
-  border: 1px solid $t-gray-a-24;
+  @apply gl-border-1 gl-border-solid gl-border-alpha-dark-24;
   background-color: var(--gl-color-chip-color);
 }
 

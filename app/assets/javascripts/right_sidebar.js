@@ -6,7 +6,12 @@ import { hide, fixTitle } from '~/tooltips';
 import { __ } from './locale';
 
 const updateSidebarClasses = (layoutPage, rightSidebar, windowSize = window.innerWidth) => {
-  if (windowSize >= 992) {
+  let scrollBarWidth = 0;
+
+  if (window.innerWidth && document?.documentElement?.clientWidth) {
+    scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+  }
+  if (windowSize + scrollBarWidth >= 992) {
     layoutPage.classList.remove('right-sidebar-expanded', 'right-sidebar-collapsed');
     rightSidebar.classList.remove('right-sidebar-collapsed');
     rightSidebar.classList.add('right-sidebar-expanded');

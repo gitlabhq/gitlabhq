@@ -210,7 +210,7 @@ export default class MergeRequestTabs {
     this.pageLayout = document.querySelector('.layout-page');
     this.expandSidebar = document.querySelectorAll('.js-expand-sidebar, .js-sidebar-toggle');
     this.paddingTop = 16;
-    this.actionRegex = /\/(commits|diffs|pipelines|reports)(\.html)?\/?$/;
+    this.actionRegex = /\/(commits|diffs|pipelines|reports(\/(.*))?)(\.html)?\/?$/;
 
     this.scrollPositions = {};
 
@@ -443,7 +443,11 @@ export default class MergeRequestTabs {
     let newStatePathname = pathname.replace(this.actionRegex, '');
 
     // Append the new action if we're on a tab other than 'notes'
-    if (this.currentAction !== 'show' && this.currentAction !== 'new') {
+    if (
+      this.currentAction !== 'show' &&
+      this.currentAction !== 'new' &&
+      !/reports\/(.*)$/.test(pathname)
+    ) {
       newStatePathname += `/${this.currentAction}`;
     }
 
@@ -578,6 +582,7 @@ export default class MergeRequestTabs {
 
   expandViewContainer() {
     this.contentWrapper.classList.remove('container-limited');
+    this.contentWrapper.classList.remove('rd-page-container');
     this.contentWrapper.classList.add('diffs-container-limited');
   }
 

@@ -1,0 +1,23 @@
+---
+description: Tracks the number of CI runners created
+internal_events: true
+action: create_ci_runner
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: The runner type, which can be `project_type`, `group_type`, or `instance_type`
+  property:
+    description: Registration type, which can be `registration_token` or `authenticated_user`
+product_group: runner
+product_categories:
+- fleet_visibility
+- runner
+milestone: '17.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179876
+tiers:
+- free
+- premium
+- ultimate

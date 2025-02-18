@@ -4,9 +4,26 @@ import {
   WORK_ITEM_TYPE_ENUM_EPIC,
   STATE_OPEN,
   STATE_CLOSED,
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+  WORK_ITEM_TYPE_ENUM_OBJECTIVE,
+  WORK_ITEM_TYPE_ENUM_REQUIREMENTS,
+  WORK_ITEM_TYPE_ENUM_TASK,
+  WORK_ITEM_TYPE_ENUM_TEST_CASE,
+  WORK_ITEM_TYPE_ENUM_TICKET,
+  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_VALUE_INCIDENT,
+  WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_VALUE_KEY_RESULT,
+  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORK_ITEM_TYPE_VALUE_REQUIREMENTS,
+  WORK_ITEM_TYPE_VALUE_TASK,
+  WORK_ITEM_TYPE_VALUE_TEST_CASE,
+  WORK_ITEM_TYPE_VALUE_TICKET,
 } from '~/work_items/constants';
 import {
   autocompleteDataSources,
+  convertTypeEnumToName,
   markdownPreviewPath,
   newWorkItemPath,
   isReference,
@@ -18,6 +35,7 @@ import {
   makeDrawerItemFullPath,
   getItems,
   canRouterNav,
+  formatSelectOptionForCustomField,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
@@ -164,6 +182,23 @@ describe('newWorkItemPath', () => {
     expect(newWorkItemPath({ fullPath: 'project', query: '?foo=bar' })).toBe(
       '/foobar/project/-/work_items/new?foo=bar',
     );
+  });
+});
+
+describe('convertTypeEnumToName', () => {
+  it.each`
+    name                                 | enumValue
+    ${WORK_ITEM_TYPE_VALUE_EPIC}         | ${WORK_ITEM_TYPE_ENUM_EPIC}
+    ${WORK_ITEM_TYPE_VALUE_INCIDENT}     | ${WORK_ITEM_TYPE_ENUM_INCIDENT}
+    ${WORK_ITEM_TYPE_VALUE_ISSUE}        | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+    ${WORK_ITEM_TYPE_VALUE_KEY_RESULT}   | ${WORK_ITEM_TYPE_ENUM_KEY_RESULT}
+    ${WORK_ITEM_TYPE_VALUE_OBJECTIVE}    | ${WORK_ITEM_TYPE_ENUM_OBJECTIVE}
+    ${WORK_ITEM_TYPE_VALUE_REQUIREMENTS} | ${WORK_ITEM_TYPE_ENUM_REQUIREMENTS}
+    ${WORK_ITEM_TYPE_VALUE_TASK}         | ${WORK_ITEM_TYPE_ENUM_TASK}
+    ${WORK_ITEM_TYPE_VALUE_TEST_CASE}    | ${WORK_ITEM_TYPE_ENUM_TEST_CASE}
+    ${WORK_ITEM_TYPE_VALUE_TICKET}       | ${WORK_ITEM_TYPE_ENUM_TICKET}
+  `('returns %name when given the enum %enumValue', ({ name, enumValue }) => {
+    expect(convertTypeEnumToName(enumValue)).toBe(name);
   });
 });
 
@@ -351,4 +386,19 @@ describe('canRouterNav', () => {
       ).toBe(shouldRouterNav);
     },
   );
+});
+
+describe('formatSelectOptionForCustomField', () => {
+  it('returns object with text and value properties', () => {
+    const data = {
+      id: 1,
+      value: 'test',
+    };
+    const result = {
+      text: 'test',
+      value: 1,
+    };
+
+    expect(formatSelectOptionForCustomField(data)).toEqual(result);
+  });
 });

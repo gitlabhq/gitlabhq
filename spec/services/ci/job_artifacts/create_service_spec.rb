@@ -97,7 +97,7 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
 
           allow(JobArtifactUploader)
             .to receive(:generate_final_store_path)
-            .with(root_id: project.id)
+            .with(root_hash: project.id)
             .and_return(final_store_path)
         end
 

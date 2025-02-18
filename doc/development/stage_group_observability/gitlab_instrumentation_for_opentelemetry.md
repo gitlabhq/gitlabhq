@@ -2,16 +2,18 @@
 stage: Monitor
 group: Platform Insights
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GitLab instrumentation for OpenTelemetry
 ---
-
-# GitLab instrumentation for OpenTelemetry
 
 ## Enable OpenTelemetry tracing, metrics, and logs in GDK development
 
-NOTE:
+{{< alert type="note" >}}
+
 Currently the default GDK environment is not set up by default to properly
 collect and display OpenTelemetry data. Therefore, you should point the
 `OTEL_EXPORTER_*_ENDPOINT` ENV vars to a GitLab project:
+
+{{< /alert >}}
 
 1. Which has an Ultimate license, and where you have
 1. In which you have at least the Maintainer role
@@ -61,6 +63,6 @@ Once you have a project identified to use:
 
 ## Related design documents
 
-- [GitLab Observability in GitLab.com and GitLab Self-Managed instances](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_for_self_managed/)
+- [GitLab Observability in GitLab.com and GitLab Self-Managed](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_for_self_managed/)
 - [GitLab Observability - Metrics](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_metrics/)
 - [GitLab Observability - Logging](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_logging/)

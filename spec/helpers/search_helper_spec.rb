@@ -473,9 +473,9 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       end
     end
 
-    context 'when global_search_users_tab feature flag is disabled' do
+    context 'when global_search_users_enabled setting is disabled' do
       before do
-        stub_feature_flags(global_search_users_tab: false)
+        stub_application_setting(global_search_users_enabled: false)
       end
 
       it 'does not return results' do
@@ -524,9 +524,9 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       end
     end
 
-    context 'when global_search_users_tab feature flag is disabled' do
+    context 'when global_search_users_enabled setting is disabled' do
       before do
-        stub_feature_flags(global_search_users_tab: false)
+        stub_application_setting(global_search_users_enabled: false)
       end
 
       it 'does not return results' do
@@ -1201,7 +1201,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         allow(self).to receive(:current_user).and_return(build(:user))
         allow(search_service).to receive(:show_snippets?).and_return(true)
         allow_next_instance_of(Search::Navigation) do |search_nav|
-          allow(search_nav).to receive_messages(tab_enabled_for_project?: true, feature_flag_tab_enabled?: true)
+          allow(search_nav).to receive_messages(tab_enabled_for_project?: true)
         end
 
         @project = nil

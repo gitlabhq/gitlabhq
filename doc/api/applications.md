@@ -2,21 +2,26 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Applications API
 ---
 
-# Applications API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use this API to interact instance-wide OAuth applications for:
 
 - [Using GitLab as an authentication provider](../integration/oauth_provider.md).
 - [Allowing access to GitLab resources on a user's behalf](oauth2.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 You cannot use this API to manage group applications or individual user applications.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -90,8 +95,11 @@ Example response:
 ]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `secret` value is not exposed by this API.
+
+{{< /alert >}}
 
 ## Delete an application
 
@@ -117,7 +125,11 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## Renew an application secret
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422420) in GitLab 16.11.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422420) in GitLab 16.11.
+
+{{< /history >}}
 
 Renews an application secret. Returns `200` if the request succeeds.
 

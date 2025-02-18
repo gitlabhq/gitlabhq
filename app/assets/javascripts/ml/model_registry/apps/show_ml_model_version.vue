@@ -311,12 +311,7 @@ export default {
               @click="goTo($options.ROUTE_PERFORMANCE)"
             />
           </gl-tabs>
-          <router-view
-            :model-version="modelVersion"
-            can-write-model-registry
-            import-path
-            allow-artifact-import
-          />
+          <router-view :model-version="modelVersion" import-path allow-artifact-import />
         </load-or-error-or-show>
       </div>
 

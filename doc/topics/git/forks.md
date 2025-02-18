@@ -2,14 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Fork a Git repository when you want to contribute changes back to an upstream repository you don't have permission to contribute to directly."
+description: Fork a Git repository when you want to contribute changes back to an upstream repository you don't have permission to contribute to directly.
+title: Update a fork
 ---
 
-# Update a fork
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 A fork is a personal copy of the repository and all its branches, which you create
 in a namespace of your choice. You can use forks to propose changes to another project
@@ -23,7 +25,7 @@ You can also update a fork with the [GitLab UI](../../user/project/repository/fo
 
 Prerequisites:
 
-- You must [download and install the Git client](how_to_install_git/index.md) on your local machine.
+- You must [download and install the Git client](how_to_install_git/_index.md) on your local machine.
 - You must [create a fork](../../user/project/repository/forking_workflow.md#create-a-fork) of the
   repository you want to update.
 
@@ -58,8 +60,11 @@ To update your fork from the command line:
       git checkout main
       ```
 
-      NOTE:
+      {{< alert type="note" >}}
+
       If Git identifies unstaged changes, [commit or stash](commit.md) them before continuing.
+
+      {{< /alert >}}
 
    1. Fetch the changes from the upstream repository:
 
@@ -105,7 +110,7 @@ To change or add a commit to the contributor's merge request:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to **Code** > **Merge requests** and find the merge request.
 1. In the upper-right corner, select **Code**, then select **Check out branch**.
-1. On the dialog, select **Copy** (**{copy-to-clipboard}**).
+1. On the dialog, select **Copy** ({{< icon name="copy-to-clipboard" >}}).
 1. In your terminal, go to the cloned version of the repository, and paste the commands. For example:
 
    ```shell
@@ -142,4 +147,4 @@ To change or add a commit to the contributor's merge request:
   - [Create a fork](../../user/project/repository/forking_workflow.md#create-a-fork)
   - [Unlink a fork](../../user/project/repository/forking_workflow.md#unlink-a-fork)
 - [Collaborate on merge requests across forks](../../user/project/merge_requests/allow_collaboration.md)
-- [Merge requests](../../user/project/merge_requests/index.md)
+- [Merge requests](../../user/project/merge_requests/_index.md)

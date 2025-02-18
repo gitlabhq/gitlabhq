@@ -201,7 +201,7 @@ export default {
   <div class="gl-relative gl-min-h-6">
     <div
       v-if="isLoading"
-      class="gl-absolute gl-left-0 gl-top-0 gl-z-200 gl-h-full gl-w-full gl-bg-gray-10 gl-opacity-3"
+      class="gl-absolute gl-left-0 gl-top-0 gl-z-200 gl-h-full gl-w-full gl-bg-subtle gl-opacity-3"
     ></div>
     <gl-loading-icon v-if="isLoading" size="lg" class="gl-absolute gl-left-1/2 gl-top-1/2" />
     <div v-if="isDeploymentTableShown">

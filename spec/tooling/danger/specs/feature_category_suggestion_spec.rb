@@ -21,7 +21,7 @@ RSpec.describe Tooling::Danger::Specs::FeatureCategorySuggestion, feature_catego
     ```
 
     Consider adding `feature_category: <feature_category_name>` for this example if it is not set already.
-    See [testing best practices](https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#feature-category-metadata).
+    See [testing best practices](https://docs.gitlab.com/development/testing_guide/best_practices/#feature-category-metadata).
     SUGGESTION_MARKDOWN
   end
 

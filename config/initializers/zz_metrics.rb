@@ -29,16 +29,7 @@ if Gitlab::Metrics.enabled? && Gitlab::Runtime.application?
     config.middleware.use(Gitlab::Metrics::ElasticsearchRackMiddleware)
   end
 
-  if Gitlab::Runtime.puma?
-    Gitlab::Metrics::RequestsRackMiddleware.initialize_metrics
-    Gitlab::Metrics::Middleware::PathTraversalCheck.initialize_slis!
-    Gitlab::Metrics::GlobalSearchSlis.initialize_slis!
-  elsif Gitlab::Runtime.sidekiq?
-    Gitlab::Metrics::GlobalSearchIndexingSlis.initialize_slis! if Gitlab.ee?
-    Gitlab::Metrics::LooseForeignKeysSlis.initialize_slis!
-    Gitlab::Metrics::Llm.initialize_slis! if Gitlab.ee?
-    Gitlab::Metrics::Lfs.initialize_slis!
-  end
+  Gitlab::Metrics.initialize_slis!
 
   GC::Profiler.enable
 
@@ -61,4 +52,10 @@ if Gitlab::Metrics.enabled? && Gitlab::Runtime.application?
   Labkit::NetHttpPublisher.labkit_prepend!
   Labkit::ExconPublisher.labkit_prepend!
   Labkit::HTTPClientPublisher.labkit_prepend!
+
+  Rails.application.configure do
+    config.after_initialize do
+      Metrics::PatchedFilesWorker.perform_async
+    end
+  end
 end

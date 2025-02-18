@@ -77,7 +77,7 @@ describe('HelpCenter component', () => {
     },
     {
       text: HelpCenter.i18n.contribute,
-      href: helpPagePath('', { anchor: 'contribute-to-gitlab' }),
+      href: helpPagePath('_index.md', { anchor: 'contribute-to-gitlab' }),
       extraAttrs: trackingAttrs('contribute_to_gitlab'),
     },
     {
@@ -130,7 +130,7 @@ describe('HelpCenter component', () => {
         expect(findDropdownGroup(0).props('group').items).toEqual([
           {
             text: HelpCenter.i18n.version,
-            href: helpPagePath('update/index.md'),
+            href: helpPagePath('update/_index.md'),
             version: '16.0',
             extraAttrs: trackingAttrs('version_help_dropdown'),
           },

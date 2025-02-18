@@ -22,9 +22,13 @@ import {
   NEW_WORK_ITEM_IID,
   TRACKING_CATEGORY_SHOW,
   WIDGET_TYPE_DESCRIPTION,
+  ROUTES,
 } from '../constants';
 import WorkItemDescriptionRendered from './work_item_description_rendered.vue';
 import WorkItemDescriptionTemplateListbox from './work_item_description_template_listbox.vue';
+
+const paramName = 'description_template';
+const oldParamNameFromPreWorkItems = 'issuable_template';
 
 export default {
   components: {
@@ -90,6 +94,11 @@ export default {
       required: false,
       default: false,
     },
+    isCreateFlow: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
@@ -108,68 +117,11 @@ export default {
         id: 'work-item-description',
         name: 'work-item-description',
       },
-      selectedTemplate: '',
+      selectedTemplate: null,
       descriptionTemplate: null,
       appliedTemplate: '',
       showTemplateApplyWarning: false,
     };
-  },
-  apollo: {
-    workItem: {
-      query: workItemByIidQuery,
-      skip() {
-        return !this.workItemIid;
-      },
-      variables() {
-        return {
-          fullPath: this.workItemFullPath,
-          iid: this.workItemIid,
-        };
-      },
-      update(data) {
-        return data?.workspace?.workItem || {};
-      },
-      result() {
-        if (this.isEditing && !this.createFlow) {
-          this.checkForConflicts();
-        }
-        if (this.isEditing && this.createFlow) {
-          this.startEditing();
-        }
-      },
-      error() {
-        this.$emit('error', i18n.fetchError);
-      },
-    },
-    descriptionTemplate: {
-      query: workItemDescriptionTemplateQuery,
-      skip() {
-        return !this.selectedTemplate;
-      },
-      variables() {
-        return {
-          fullPath: this.fullPath,
-          name: this.selectedTemplate,
-        };
-      },
-      update(data) {
-        return data.namespace.workItemDescriptionTemplates.nodes[0] || {};
-      },
-      result() {
-        const isDirty = this.descriptionText !== this.workItemDescription?.description;
-        const isUnchangedTemplate = this.descriptionText === this.appliedTemplate;
-        const hasContent = this.descriptionText !== '';
-        if (!isUnchangedTemplate && (isDirty || hasContent)) {
-          this.showTemplateApplyWarning = true;
-        } else {
-          this.applyTemplate();
-        }
-      },
-      error(e) {
-        Sentry.captureException(e);
-        this.$emit('error', s__('WorkItem|Unable to find selected template.'));
-      },
-    },
   },
   computed: {
     createFlow() {
@@ -229,10 +181,9 @@ export default {
     markdownPreviewPath() {
       const {
         fullPath,
-        isGroup,
         workItem: { iid },
       } = this;
-      return markdownPreviewPath({ fullPath, iid, isGroup });
+      return markdownPreviewPath({ fullPath, iid, isGroup: this.isGroupWorkItem });
     },
     autocompleteDataSources() {
       const isNewWorkItemInGroup = this.isGroup && this.workItemIid === NEW_WORK_ITEM_IID;
@@ -255,15 +206,18 @@ export default {
       return (this.taskCompletionStatus || this.lastEditedAt) && !this.editMode;
     },
     canShowDescriptionTemplateSelector() {
-      return this.glFeatures.workItemsAlpha;
+      return this.glFeatures.workItemDescriptionTemplates;
     },
     descriptionTemplateContent() {
-      return this.descriptionTemplate?.content || '';
+      return this.descriptionTemplate || '';
     },
     canResetTemplate() {
       const hasAppliedTemplate = this.appliedTemplate !== '';
       const hasEditedTemplate = this.descriptionText !== this.appliedTemplate;
       return hasAppliedTemplate && hasEditedTemplate;
+    },
+    isNewWorkItemRoute() {
+      return this.$route?.name === ROUTES.new;
     },
   },
   watch: {
@@ -272,12 +226,85 @@ export default {
     },
     editMode(newValue) {
       this.isEditing = newValue;
-      this.selectedTemplate = '';
+      this.selectedTemplate = null;
       this.appliedTemplate = '';
       this.showTemplateApplyWarning = false;
       if (newValue) {
         this.startEditing();
       }
+    },
+  },
+  mounted() {
+    const DEFAULT_TEMPLATE_NAME = 'default';
+    if (this.isCreateFlow) {
+      const templateName = !this.isNewWorkItemRoute
+        ? DEFAULT_TEMPLATE_NAME
+        : this.$route.query[paramName] ||
+          this.$route.query[oldParamNameFromPreWorkItems] ||
+          DEFAULT_TEMPLATE_NAME;
+
+      this.selectedTemplate = {
+        name: templateName,
+        projectId: null,
+        category: null,
+      };
+    }
+  },
+  apollo: {
+    workItem: {
+      query: workItemByIidQuery,
+      skip() {
+        return !this.workItemIid;
+      },
+      variables() {
+        return {
+          fullPath: this.workItemFullPath,
+          iid: this.workItemIid,
+        };
+      },
+      update(data) {
+        return data?.workspace?.workItem || {};
+      },
+      result() {
+        if (this.isEditing && !this.createFlow) {
+          this.checkForConflicts();
+        }
+        if (this.isEditing && this.createFlow) {
+          this.startEditing();
+        }
+      },
+      error() {
+        this.$emit('error', i18n.fetchError);
+      },
+    },
+    descriptionTemplate: {
+      query: workItemDescriptionTemplateQuery,
+      skip() {
+        return !this.selectedTemplate?.projectId;
+      },
+      variables() {
+        return {
+          name: this.selectedTemplate.name,
+          projectId: this.selectedTemplate.projectId,
+        };
+      },
+      update(data) {
+        return data.workItemDescriptionTemplateContent.content;
+      },
+      result() {
+        const isDirty = this.descriptionText !== this.workItemDescription?.description;
+        const isUnchangedTemplate = this.descriptionText === this.appliedTemplate;
+        const hasContent = this.descriptionText !== '';
+        if (!isUnchangedTemplate && (isDirty || hasContent)) {
+          this.showTemplateApplyWarning = true;
+        } else {
+          this.applyTemplate();
+        }
+      },
+      error(e) {
+        Sentry.captureException(e);
+        this.$emit('error', s__('WorkItem|Unable to find selected template.'));
+      },
     },
   },
   methods: {
@@ -351,24 +378,42 @@ export default {
       this.$emit('updateDraft', this.descriptionText);
       this.updateWorkItem();
     },
-    handleSelectTemplate(templateName) {
-      this.selectedTemplate = templateName;
+    handleSelectTemplate(templateData) {
+      this.selectedTemplate = templateData;
+    },
+    resetQueryParams() {
+      if (!this.isNewWorkItemRoute) {
+        return;
+      }
+
+      const params = new URLSearchParams(this.$route.query);
+      params.delete(paramName);
+      params.delete(oldParamNameFromPreWorkItems);
+      if (this.selectedTemplate && this.isNewWorkItemRoute) {
+        params.set(paramName, this.selectedTemplate.name);
+      }
+
+      this.$router.replace({
+        query: Object.fromEntries(params),
+      });
     },
     applyTemplate() {
       this.appliedTemplate = this.descriptionTemplateContent;
       this.setDescriptionText(this.descriptionTemplateContent);
       this.onInput();
       this.showTemplateApplyWarning = false;
+      this.resetQueryParams();
     },
     cancelApplyTemplate() {
-      this.selectedTemplate = '';
+      this.selectedTemplate = null;
       this.descriptionTemplate = null;
       this.showTemplateApplyWarning = false;
+      this.resetQueryParams();
     },
     handleClearTemplate() {
       if (this.appliedTemplate) {
         this.setDescriptionText('');
-        this.selectedTemplate = '';
+        this.selectedTemplate = null;
         this.descriptionTemplate = null;
         this.appliedTemplate = '';
       }
@@ -389,8 +434,8 @@ export default {
       <gl-form-group
         :class="formGroupClass"
         :label="__('Description')"
-        :label-sr-only="!canShowDescriptionTemplateSelector"
         label-for="work-item-description"
+        :label-sr-only="!canShowDescriptionTemplateSelector"
       >
         <work-item-description-template-listbox
           v-if="canShowDescriptionTemplateSelector"
@@ -437,7 +482,7 @@ export default {
           enable-autocomplete
           supports-quick-actions
           :autofocus="autofocus"
-          :class="{ 'gl-mt-2': canShowDescriptionTemplateSelector }"
+          :class="{ 'gl-mt-3': canShowDescriptionTemplateSelector }"
           @input="setDescriptionText"
           @keydown.meta.enter="updateWorkItem"
           @keydown.ctrl.enter="updateWorkItem"

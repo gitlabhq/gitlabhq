@@ -194,7 +194,7 @@ export default {
       this.$emit('confirm', item);
     },
   },
-  placeholderUsersHelpPath: helpPagePath('user/project/import/index', {
+  placeholderUsersHelpPath: helpPagePath('user/project/import/_index', {
     anchor: 'placeholder-users',
   }),
 };
@@ -266,6 +266,7 @@ export default {
           v-if="statusBadge(item)"
           v-gl-tooltip="statusBadge(item).tooltip"
           :variant="statusBadge(item).variant"
+          data-testid="placeholder-status"
           tabindex="0"
           >{{ statusBadge(item).text }}</gl-badge
         >
@@ -279,6 +280,7 @@ export default {
             :src="reassignedUser(item).avatarUrl"
             :label="reassignedUser(item).name"
             :sub-label="`@${reassignedUser(item).username}`"
+            data-testid="placeholder-reassigned"
           />
         </template>
         <placeholder-actions v-else :key="item.id" :source-user="item" @confirm="onConfirm(item)" />

@@ -1,15 +1,17 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-description: Third-party authorization to GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Third-party authorization to GitLab.
+title: OAuth 2.0 identity provider API
 ---
 
-# OAuth 2.0 identity provider API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use this API to allow third-party services to access GitLab resources for a user
 with the [OAuth 2.0](https://oauth.net/2/) protocol.
@@ -19,7 +21,11 @@ This functionality is based on the [doorkeeper Ruby gem](https://github.com/door
 
 ## Cross-origin resource sharing
 
-> - CORS preflight request support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364680) in GitLab 15.1.
+{{< history >}}
+
+- CORS preflight request support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364680) in GitLab 15.1.
+
+{{< /history >}}
 
 Many `/oauth` endpoints support cross-origin resource sharing (CORS). From GitLab 15.1, the following endpoints also
 support [CORS preflight requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS):
@@ -171,17 +177,23 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
    }
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `redirect_uri` must match the `redirect_uri` used in the original
 authorization request.
+
+{{< /alert >}}
 
 You can now make requests to the API with the access token.
 
 ### Authorization code flow
 
-NOTE:
+{{< alert type="note" >}}
+
 Check the [RFC spec](https://www.rfc-editor.org/rfc/rfc6749#section-4.1) for a
 detailed flow description.
+
+{{< /alert >}}
 
 The authorization code flow is essentially the same as
 [authorization code flow with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce),
@@ -251,24 +263,31 @@ be used as a CSRF token.
    }
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `redirect_uri` must match the `redirect_uri` used in the original
 authorization request.
+
+{{< /alert >}}
 
 You can now make requests to the API with the access token returned.
 
 ### Device authorization grant flow
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332682) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `oauth2_device_grant_flow`.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/468479) by default in 17.3.
+{{< history >}}
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332682) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `oauth2_device_grant_flow`.
+- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/468479) by default in 17.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505557) in GitLab 17.9. Feature flag `oauth2_device_grant_flow` removed.
 
-NOTE:
+{{< /history >}}
+
+{{< alert type="note" >}}
+
 Check the [RFC spec](https://datatracker.ietf.org/doc/html/rfc8628#section-3.1) for a detailed
 description of the device authorization grant flow, from device authorization request to token response from the browser login.
+
+{{< /alert >}}
 
 The device authorization grant flow makes it possible to securely authenticate your GitLab identity from input constrained devices where browser interactions are not an option.
 
@@ -383,19 +402,26 @@ A sample application that implements the client side device flow can be found at
 
 ### Resource owner password credentials flow
 
-NOTE:
+{{< alert type="note" >}}
+
 Check the [RFC spec](https://www.rfc-editor.org/rfc/rfc6749#section-4.3) for a
 detailed flow description.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 The Resource Owner Password Credentials is disabled for users with
 [two-factor authentication](../user/profile/account/two_factor_authentication.md) turned on.
 These users can access the API using [personal access tokens](../user/profile/personal_access_tokens.md)
 instead.
+{{< /alert >}}
 
-NOTE:
+{{< alert type="note" >}}
+
 Ensure the [**Allow password authentication for Git over HTTP(S)**](../administration/settings/sign_in_restrictions.md#password-authentication-enabled)
 checkbox is selected for the GitLab instance to support the password credentials flow.
+{{< /alert >}}
 
 In this flow, a token is requested in exchange for the resource owner credentials
 (username and password).
@@ -407,11 +433,14 @@ The credentials should only be used when:
   privileged application.
 - Other authorization grant types are not available (such as an authorization code).
 
-WARNING:
+{{< alert type="warning" >}}
+
 Never store the user's credentials and only use this grant type when your client
 is deployed to a trusted environment, in 99% of cases
 [personal access tokens](../user/profile/personal_access_tokens.md) are a better
 choice.
+
+{{< /alert >}}
 
 Even though this grant type requires direct client access to the resource owner
 credentials, the resource owner credentials are used for a single request and
@@ -548,6 +577,6 @@ registries, as they:
 
 - Do not allow users to authenticate to:
   - The GitLab [container registry](../user/packages/container_registry/authenticate_with_container_registry.md).
-  - Packages listed in the GitLab [Package registry](../user/packages/package_registry/index.md).
+  - Packages listed in the GitLab [Package registry](../user/packages/package_registry/_index.md).
 - Allow users to get, list, and delete registries through
   the [container registry API](container_registry.md).

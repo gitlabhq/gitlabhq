@@ -1,20 +1,28 @@
 ---
-
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Multiple Databases
 ---
 
-# Multiple Databases
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6168) in GitLab 15.7.
+{{< /details >}}
 
-WARNING:
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6168) in GitLab 15.7.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 This feature is not ready for production use
+
+{{< /alert >}}
 
 By default, GitLab uses a single application database, referred to as the `main` database.
 
@@ -23,7 +31,7 @@ To scale GitLab, you can configure GitLab to use multiple application databases.
 Due to [known issues](#known-issues), configuring GitLab with multiple databases is in limited [beta](../../policy/development_stages_support.md#beta).
 
 After you have set up multiple databases, GitLab uses a second application database for
-[CI/CD features](../../ci/index.md), referred to as the `ci` database. We do not exclude hosting both databases on a single PostgreSQL instance.
+[CI/CD features](../../ci/_index.md), referred to as the `ci` database. We do not exclude hosting both databases on a single PostgreSQL instance.
 
 All tables have exactly the same structure in both the `main`, and `ci`
 databases. Some examples:
@@ -45,7 +53,11 @@ databases. Some examples:
 
 ## Migrate existing installations using a script
 
-> - A script for migrating existing Linux package installations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368729) in GitLab 16.8.
+{{< history >}}
+
+- A script for migrating existing Linux package installations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368729) in GitLab 16.8.
+
+{{< /history >}}
 
 ### Existing Linux package installations
 
@@ -134,8 +146,11 @@ sudo gitlab-rake gitlab:db:truncate_legacy_tables:ci
 To migrate existing data from the `main` database to the `ci` database, you can
 copy the database across.
 
-NOTE:
+{{< alert type="note" >}}
+
 If something unexpected happens during the migration, it is safe to start over.
+
+{{< /alert >}}
 
 ### Existing self-compiled installation
 
@@ -224,17 +239,20 @@ see [PostgreSQL replication and failover for Linux package installations](replic
 
 To configure GitLab to use multiple application databases, follow the instructions below for your installation type.
 
-WARNING:
+{{< alert type="warning" >}}
+
 You must stop GitLab before setting up multiple databases. This prevents
 split-brain situations, where `main` data is written to the `ci` database, and
 the other way around.
+
+{{< /alert >}}
 
 ### Self-compiled installations
 
 1. For existing installations,
    [migrate the data](#migrate-existing-installations-manual-procedure) first.
 
-1. [Back up GitLab](../../administration/backup_restore/index.md)
+1. [Back up GitLab](../backup_restore/_index.md)
    in case of unforeseen issues.
 
 1. Stop GitLab:
@@ -290,7 +308,7 @@ the other way around.
 1. For existing installations,
    [migrate the data](#migrate-existing-installations-manual-procedure) first.
 
-1. [Back up GitLab](../../administration/backup_restore/index.md)
+1. [Back up GitLab](../backup_restore/_index.md)
    in case of unforeseen issues.
 
 1. Stop GitLab:

@@ -104,14 +104,18 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
     context 'when importer_user_mapping is enabled' do
       before do
         allow(context).to receive(:importer_user_mapping_enabled?).and_return(true)
+
+        stub_const("#{described_class}::IGNORE_PLACEHOLDER_USER_CREATION", {})
       end
 
-      it 'creates for each user reference in relation hash an Import::SourceUser object if they do not exist' do
-        relation_hash = {
+      let(:relation_hash) do
+        {
           "author_id" => source_user_1.source_user_identifier,
           "updated_by_id" => nil,
+          "last_edited_by_id" => 107,
           "project_id" => 1,
           "title" => "Imported MR",
+          "approvals" => [{ "user_id" => 108 }],
           "notes" =>
           [
             {
@@ -143,18 +147,37 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
             "merged_by_id" => 105
           }
         }
+      end
 
-        relation_definition = {
+      let(:relation_definition) do
+        {
           "approvals" => {},
           "metrics" => {},
           "award_emoji" => {},
           "merge_request_assignees" => {},
           "notes" => { "author" => {}, "award_emoji" => {} }
         }
+      end
 
+      it 'creates for each user reference in relation hash an Import::SourceUser object if they do not exist' do
         expect { subject.deep_transform_relation!(relation_hash, 'test', relation_definition) { |a, _b| a } }
-          .to change { Import::SourceUser.count }.by(3).and change { User.count }.by(3)
-        expect(Import::SourceUser.pluck(:source_user_identifier)).to match_array(%w[101 102 103 104 105 106])
+          .to change { Import::SourceUser.count }.by(5).and change { User.count }.by(5)
+        expect(Import::SourceUser.pluck(:source_user_identifier)).to match_array(%w[101 102 103 104 105 106 107 108])
+      end
+
+      context 'when relation hash includes attributes that placeholder user creation should be ignored' do
+        before do
+          stub_const("#{described_class}::IGNORE_PLACEHOLDER_USER_CREATION", {
+            'test' => ['last_edited_by_id'],
+            'approvals' => ['user_id']
+          })
+        end
+
+        it 'does not create a source user for the ignored user references' do
+          subject.deep_transform_relation!(relation_hash, 'test', relation_definition) { |a, _b| a }
+
+          expect(Import::SourceUser.pluck(:source_user_identifier)).to match_array(%w[101 102 103 104 105 106])
+        end
       end
     end
 

@@ -48,7 +48,6 @@ RSpec/ScatteredLet:
     - 'ee/spec/services/ee/issue_links/create_service_spec.rb'
     - 'ee/spec/services/ee/issues/create_service_spec.rb'
     - 'ee/spec/services/ee/merge_requests/base_service_spec.rb'
-    - 'ee/spec/services/epic_issues/create_service_spec.rb'
     - 'ee/spec/services/epics/issue_promote_service_spec.rb'
     - 'ee/spec/services/geo/metrics_update_service_spec.rb'
     - 'ee/spec/services/group_saml/saml_provider/create_service_spec.rb'

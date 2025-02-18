@@ -7,6 +7,9 @@ feature_categories:
 description: Used to store and track the status of the migration of groups or projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42978
 milestone: '13.5'
-gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463854
+gitlab_schema: gitlab_main_cell
+sharding_key:
+   project_id: projects
+   namespace_id: namespaces
+   organization_id: organizations
 table_size: small

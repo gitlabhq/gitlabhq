@@ -16,6 +16,7 @@ import getContainerPotectionRepositoryRulesQuery from '~/packages_and_registries
 import ContainerProtectionRepositoryRuleForm from '~/packages_and_registries/settings/project/components/container_protection_repository_rule_form.vue';
 import deleteContainerProtectionRepositoryRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_repository_rule.mutation.graphql';
 import updateContainerRegistryProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_protection_repository_rule.mutation.graphql';
+import { MinimumAccessLevelOptions } from '~/packages_and_registries/settings/project/constants';
 import { s__, __ } from '~/locale';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
@@ -242,11 +243,7 @@ export default {
       tdClass: '!gl-align-middle gl-text-right',
     },
   ],
-  minimumAccessLevelOptions: [
-    { value: 'MAINTAINER', text: __('Maintainer') },
-    { value: 'OWNER', text: __('Owner') },
-    { value: 'ADMIN', text: __('Admin') },
-  ],
+  minimumAccessLevelOptions: MinimumAccessLevelOptions,
   modal: { id: 'delete-protection-rule-confirmation-modal' },
   modalActionPrimary: {
     text: s__('ContainerRegistry|Delete container protection rule'),

@@ -7,7 +7,7 @@ module WorkItems
     belongs_to :work_item_type, class_name: 'WorkItems::Type', inverse_of: :widget_definitions
 
     validates :name, presence: true
-    validates :name, uniqueness: { case_sensitive: false, scope: :work_item_type_id }
+    validates :name, custom_uniqueness: { unique_sql: 'TRIM(BOTH FROM lower(?))', scope: :work_item_type_id }
     validates :name, length: { maximum: 255 }
 
     validates :widget_options, if: :weight?,
@@ -43,7 +43,9 @@ module WorkItems
       crm_contacts: 24,
       email_participants: 25,
       custom_status: 26,
-      linked_resources: 27
+      linked_resources: 27,
+      custom_fields: 28, # EE-only
+      error_tracking: 29
     }
 
     attribute :widget_options, ::Gitlab::Database::Type::IndifferentJsonb.new

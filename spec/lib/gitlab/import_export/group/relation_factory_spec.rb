@@ -114,6 +114,29 @@ RSpec.describe Gitlab::ImportExport::Group::RelationFactory, feature_category: :
     end
   end
 
+  context 'when relation is event' do
+    let(:relation_sym) { :events }
+    let(:relation_hash) do
+      {
+        'author_id' => 1,
+        'action' => 'created',
+        'target_type' => 'Issue'
+      }
+    end
+
+    it 'builds an event' do
+      expect(created_object).to be_an(Event)
+    end
+
+    context 'when author ID maps to nil user' do
+      let(:members_mapper) { double('members_mapper', map: {}) }
+
+      it 'does not build an Event' do
+        expect(created_object).to be_nil
+      end
+    end
+  end
+
   def random_id
     rand(1000..10000)
   end

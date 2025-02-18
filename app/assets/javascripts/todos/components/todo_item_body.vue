@@ -171,7 +171,7 @@ export default {
 <template>
   <div class="gl-flex gl-items-start gl-px-2" data-testid="todo-item-container">
     <div class="gl-mr-3 gl-hidden sm:gl-inline-block">
-      <gl-avatar-link :href="author.webUrl">
+      <gl-avatar-link :href="author.webUrl" aria-hidden="true" tabindex="-1">
         <gl-avatar :size="24" :src="author.avatarUrl" role="none" />
       </gl-avatar-link>
     </div>

@@ -14,8 +14,8 @@ RSpec.describe JiraConnect::AppDataSerializer do
       app_data_json
     end
 
-    it 'includes a group path with already subscribed namespaces as skip_groups' do
-      expected_path = "/api/v4/groups?min_access_level=40&skip_groups%5B%5D=#{subscriptions.first.namespace_id}&skip_groups%5B%5D=#{subscriptions.last.namespace_id}"
+    it 'includes a group path with already subscribed namespaces as comma-separated skip_groups' do
+      expected_path = "/api/v4/groups?min_access_level=40&skip_groups=#{subscriptions.first.namespace_id}%2C#{subscriptions.last.namespace_id}"
 
       expect(app_data_json).to include(groups_path: expected_path)
     end

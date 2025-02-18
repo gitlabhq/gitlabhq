@@ -37,6 +37,7 @@ describe('UncollapsedReviewerList component', () => {
     const propsData = {
       users: [],
       rootPath: TEST_HOST,
+      canRerequest: true,
       ...props,
     };
 
@@ -242,6 +243,25 @@ describe('UncollapsedReviewerList component', () => {
 
         expect(wrapper.find('[data-testid="reviewer-state-icon"]').props('name')).toBe(icon);
         expect(wrapper.find('[data-testid="reviewer-state-icon"]').classes()).toEqual([iconClass]);
+      },
+    );
+  });
+
+  describe('re-requesting review', () => {
+    it.each`
+      description          | reviewState     | canRerequest | expectedButtonVisibility
+      ${'should show'}     | ${'UNAPPROVED'} | ${true}      | ${true}
+      ${'should not show'} | ${'UNAPPROVED'} | ${false}     | ${false}
+      ${'should show'}     | ${'UNREVIEWED'} | ${true}      | ${true}
+      ${'should not show'} | ${'UNREVIEWED'} | ${false}     | ${false}
+    `(
+      '$description re-request button for users with state:$reviewState when canRerequest:$canRerequest',
+      ({ reviewState, canRerequest, expectedButtonVisibility }) => {
+        createComponent({
+          users: [userDataMock({ reviewState })],
+          canRerequest,
+        });
+        expect(findAllRerequestButtons().exists()).toBe(expectedButtonVisibility);
       },
     );
   });

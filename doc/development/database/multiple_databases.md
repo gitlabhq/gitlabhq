@@ -2,9 +2,8 @@
 stage: Tenant Scale
 group: Cells Infrastructure
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Multiple Databases
 ---
-
-# Multiple Databases
 
 To allow GitLab to scale further we
 [decomposed the GitLab application database into multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
@@ -51,12 +50,12 @@ The usage of schema enforces the base class to be used:
 ### Choose either the `gitlab_main_cell` or `gitlab_main_clusterwide` schema
 
 This content has been moved to a
-[new location](../cells/index.md#choose-either-the-gitlab_main_cell-or-gitlab_main_clusterwide-schema)
+[new location](../cells/_index.md#choose-either-the-gitlab_main_cell-or-gitlab_main_clusterwide-schema)
 
 ### Defining a sharding key for all cell-local tables
 
 This content has been moved to a
-[new location](../cells/index.md#defining-a-sharding-key-for-all-cell-local-tables)
+[new location](../cells/_index.md#defining-a-sharding-key-for-all-cell-local-tables)
 
 ### The impact of `gitlab_schema`
 
@@ -105,10 +104,13 @@ Read [Migrations for Multiple Databases](migrations_for_multiple_databases.md).
 
 By default, GDK is configured to run with multiple databases.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Switching back-and-forth between single and multiple databases in
 the same development instance is discouraged. Any data in the `ci`
 database will not be accessible in single database mode. For single database, you should use a separate development instance.
+
+{{< /alert >}}
 
 To configure GDK to use a single database:
 
@@ -127,10 +129,13 @@ To configure GDK to use a single database:
 To switch back to using multiple databases, set `gitlab.rails.databases.ci.enabled` to `true` and run `gdk reconfigure`.
 
 <!--
-NOTE: The `validate_cross_joins!` method in `spec/support/database/prevent_cross_joins.rb` references
+{{< alert type="note" >}}
+
+The `validate_cross_joins!` method in `spec/support/database/prevent_cross_joins.rb` references
       the following heading in the code, so if you make a change to this heading, make sure to update
       the corresponding documentation URL used in `spec/support/database/prevent_cross_joins.rb`.
 -->
+{{< /alert >}}
 
 ### Removing joins between `ci` and non `ci` tables
 
@@ -537,8 +542,11 @@ class Group < Namespace
 end
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Overriding an association can have unintended consequences and may even lead to data loss, as we noticed in [issue 424307](https://gitlab.com/gitlab-org/gitlab/-/issues/424307). Do not override existing ActiveRecord associations to mark a cross-join as allowed, as in the example below.
+
+{{< /alert >}}
 
 ```ruby
 class Group < Namespace
@@ -730,7 +738,7 @@ Later, this foreign key can be converted to a loose foreign key, like we did in 
 In our testing CI pipelines, we test GitLab by default with multiple databases set up, using
 both `main` and `ci` databases. But in merge requests, for example when we modify some database-related code or
 add the label `~"pipeline:run-single-db"` to the MR, we additionally run our tests in
-[two other database modes](../pipelines/index.md#single-database-testing):
+[two other database modes](../pipelines/_index.md#single-database-testing):
 `single-db` and `single-db-ci-connection`.
 
 To handle situations where our tests need to run in specific database modes, we have some RSpec helpers
@@ -825,14 +833,20 @@ For this purpose, GitLab provides two Rake tasks, one for each database:
 - `gitlab:db:truncate_legacy_tables:main` will truncate the CI tables in Main database.
 - `gitlab:db:truncate_legacy_tables:ci` will truncate the Main tables in CI database.
 
-NOTE:
+{{< alert type="note" >}}
+
 These tasks can only be run when the tables in the database are
 [locked for writes](#locking-writes-on-the-tables-that-dont-belong-to-the-database-schemas).
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 The examples in this section use `DRY_RUN=true`. This ensures no data is actually
 truncated. GitLab highly recommends to have a backup available before you run any of
 these tasks without `DRY_RUN=true`.
+
+{{< /alert >}}
 
 These tasks have the option to see what they do without actually changing the
 data:

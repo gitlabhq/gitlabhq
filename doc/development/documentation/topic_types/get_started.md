@@ -2,9 +2,8 @@
 stage: none
 group: Style Guide
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Get started page type
 ---
-
-# Get started page type
 
 A **Get started** page introduces high-level concepts for a broad feature area.
 While a specific feature might be defined in the feature documentation,
@@ -26,7 +25,8 @@ A **Get started** page should point to tutorials, however, because tutorials are
 Get started pages should be in this format:
 
 ```markdown
-# Get started with abc
+title: Get started with abc
+---
 
 These features work together in this way. You can use them to achieve these goals.
 Include a paragraph that ties together the features without describing what

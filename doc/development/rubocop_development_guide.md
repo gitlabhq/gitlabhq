@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: RuboCop rule development guidelines
 ---
-
-# RuboCop rule development guidelines
 
 Our codebase style is defined and enforced by [RuboCop](https://github.com/rubocop-hq/rubocop).
 
@@ -28,7 +27,7 @@ discussions, nitpicking, or back-and-forth in reviews. The
 list of styles that commonly come up in reviews and are not enforced.
 
 Additionally, we have dedicated
-[test-specific style guides and best practices](testing_guide/index.md).
+[test-specific style guides and best practices](testing_guide/_index.md).
 
 ## Disabling rules inline
 
@@ -179,10 +178,13 @@ and run `bundle exec gitlab-housekeeper -k Keeps::GenerateRubocopTodos`.
 
 ## Reveal existing RuboCop exceptions
 
-To reveal existing RuboCop exceptions in the code that have been excluded via `.rubocop_todo.yml` and
+To reveal existing RuboCop exceptions in the code that have been excluded via
 `.rubocop_todo/**/*.yml`, set the environment variable `REVEAL_RUBOCOP_TODO` to `1`.
 
 This allows you to reveal existing RuboCop exceptions during your daily work cycle and fix them along the way.
 
-NOTE:
+{{< alert type="note" >}}
+
 Define `Include`s and permanent `Exclude`s in `.rubocop.yml` instead of `.rubocop_todo/**/*.yml`.
+
+{{< /alert >}}

@@ -36,10 +36,10 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
 
     shared_examples 'returning the workhorse send_dependency response' do
       it 'returns a workhorse send_url response' do
-        expect(::VirtualRegistries::CachedResponseUploader).to receive(:workhorse_authorize).with(
+        expect(::VirtualRegistries::Cache::EntryUploader).to receive(:workhorse_authorize).with(
           a_hash_including(
             use_final_store_path: true,
-            final_store_path_root_id: registry.id
+            final_store_path_config: { override_path: be_instance_of(String) }
           )
         ).and_call_original
 
@@ -93,9 +93,9 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
       let(:headers) { { 'Private-Token' => personal_access_token.token } }
 
       context 'with successful handle request service responses' do
-        let_it_be(:cached_response) do
+        let_it_be(:cache_entry) do
           create(
-            :virtual_registries_packages_maven_cached_response,
+            :virtual_registries_packages_maven_cache_entry,
             content_type: 'text/xml',
             upstream: upstream,
             group_id: upstream.group_id,
@@ -113,7 +113,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
             request
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(response.media_type).to eq(cached_response.content_type)
+            expect(response.media_type).to eq(cache_entry.content_type)
             # this is a direct download from the file system, workhorse is not involved
             expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to be_nil
           end
@@ -127,20 +127,20 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response.media_type).to eq('text/plain')
-            expect(response.body).to eq(cached_response.file_sha1)
+            expect(response.body).to eq(cache_entry.file_sha1)
           end
         end
       end
 
       context 'with service response errors' do
         where(:reason, :expected_status) do
-          :path_not_present                     | :bad_request
-          :unauthorized                         | :unauthorized
-          :no_upstreams                         | :bad_request
-          :file_not_found_on_upstreams          | :not_found
-          :digest_not_found_in_cached_responses | :not_found
-          :upstream_not_available               | :bad_request
-          :fips_unsupported_md5                 | :bad_request
+          :path_not_present                  | :bad_request
+          :unauthorized                      | :unauthorized
+          :no_upstreams                      | :bad_request
+          :file_not_found_on_upstreams       | :not_found
+          :digest_not_found_in_cache_entries | :not_found
+          :upstream_not_available            | :bad_request
+          :fips_unsupported_md5              | :bad_request
         end
 
         with_them do
@@ -182,6 +182,19 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
         it_behaves_like 'returning response status', :not_found
       end
 
+      context 'with a personal access token with only the read_virtual_registry scope' do
+        let(:personal_access_token) { create(:personal_access_token, user: user, scopes: ['read_virtual_registry']) }
+
+        let(:headers) { { 'Private-Token' => personal_access_token.token } }
+
+        before do
+          # read_virtual_registry is only available when the dependency proxy feature is enabled
+          stub_config(dependency_proxy: { enabled: true })
+        end
+
+        it_behaves_like 'returning the workhorse send_dependency response'
+      end
+
       it_behaves_like 'disabled virtual_registry_maven feature flag'
       it_behaves_like 'maven virtual registry disabled dependency proxy'
     end
@@ -202,9 +215,9 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
 
     let_it_be(:path) { 'com/test/package/1.2.3/package-1.2.3.pom' }
     let_it_be(:url) { "/virtual_registries/packages/maven/#{registry.id}/#{path}/upload" }
-    let_it_be(:processing_cached_response) do
+    let_it_be(:processing_cache_entries) do
       create(
-        :virtual_registries_packages_maven_cached_response,
+        :virtual_registries_packages_maven_cache_entry,
         :processing,
         upstream: upstream,
         group: upstream.group,
@@ -228,11 +241,11 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
 
     shared_examples 'returning successful response' do
       it 'accepts the upload', :freeze_time do
-        expect { request }.to change { upstream.cached_responses.count }.by(1)
+        expect { request }.to change { upstream.cache_entries.count }.by(1)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to eq('')
-        expect(upstream.default_cached_responses.search_by_relative_path(path).last).to have_attributes(
+        expect(upstream.default_cache_entries.search_by_relative_path(path).last).to have_attributes(
           relative_path: "/#{path}",
           upstream_etag: nil,
           upstream_checked_at: Time.zone.now,
@@ -274,7 +287,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
 
       context 'with a persistence error' do
         before do
-          allow(::VirtualRegistries::Packages::Maven::CachedResponse)
+          allow(::VirtualRegistries::Packages::Maven::Cache::Entry)
             .to receive(:create_or_update_by!).and_raise(ActiveRecord::RecordInvalid)
         end
 

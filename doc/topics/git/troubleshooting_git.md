@@ -1,11 +1,10 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Debugging tips for fixing problems in Git."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Debugging tips for fixing problems in Git.
+title: Troubleshooting Git
 ---
-
-# Troubleshooting Git
 
 Sometimes things don't work the way they should or as you might expect when
 you're using Git. Here are some tips on troubleshooting and resolving issues
@@ -132,8 +131,11 @@ instructions in the [SSH troubleshooting](../../user/ssh_troubleshooting.md#pass
 If you're a GitLab administrator with server access, you can also prevent
 session timeouts by configuring SSH `keep-alive` on the client or the server.
 
-NOTE:
+{{< alert type="note" >}}
+
 Configuring both the client and the server is unnecessary.
+
+{{< /alert >}}
 
 **To configure SSH on the client side**:
 
@@ -297,7 +299,7 @@ This problem is common in Git itself, due to its inability to handle large files
 - The existence of large files in the repository.
 
 If this error occurs when cloning a large repository, you can
-[decrease the cloning depth](../../user/project/repository/monorepos/index.md#shallow-cloning) to a value of `1`. For example:
+[decrease the cloning depth](../../user/project/repository/monorepos/_index.md#shallow-cloning) to a value of `1`. For example:
 
 This approach doesn't resolve the underlying cause, but you can successfully clone the repository.
 To decrease the cloning depth to `1`, run:
@@ -309,8 +311,8 @@ To decrease the cloning depth to `1`, run:
 
 ## Password expired error on Git fetch with SSH for LDAP user
 
-If `git fetch` returns this `HTTP 403 Forbidden` error on a self-managed instance of
-GitLab, the password expiration date (`users.password_expires_at`) for this user in the
+If `git fetch` returns this `HTTP 403 Forbidden` error on GitLab Self-Managed,
+the password expiration date (`users.password_expires_at`) for this user in the
 GitLab database is a date in the past:
 
 ```plaintext
@@ -358,7 +360,7 @@ could trigger an authentication error. To resolve this, specify a username strin
 ## `401` errors logged during successful `git clone`
 
 When cloning a repository with HTTP, the
-[`production_json.log`](../../administration/logs/index.md#production_jsonlog) file
+[`production_json.log`](../../administration/logs/_index.md#production_jsonlog) file
 may show an initial status of `401` (unauthorized), quickly followed by a `200`.
 
 ```json
@@ -418,7 +420,7 @@ your IP address has been blocked by the failed-authentication ban:
 fatal: unable to access 'https://gitlab.com/group/project.git/': The requested URL returned error: 403
 ```
 
-The `403` can be seen in the [`production_json.log`](../../administration/logs/index.md#production_jsonlog):
+The `403` can be seen in the [`production_json.log`](../../administration/logs/_index.md#production_jsonlog):
 
 ```json
 {
@@ -439,7 +441,7 @@ The `403` can be seen in the [`production_json.log`](../../administration/logs/i
 ```
 
 If your IP address has been blocked, a corresponding log entry exists in the
-[`auth_json.log`](../../administration/logs/index.md#auth_jsonlog):
+[`auth_json.log`](../../administration/logs/_index.md#auth_jsonlog):
 
 ```json
 {
@@ -454,5 +456,5 @@ If your IP address has been blocked, a corresponding log entry exists in the
 ```
 
 The failed authentication ban limits differ depending if you are using a
-[self-managed instance](../../security/rate_limits.md#failed-authentication-ban-for-git-and-container-registry)
-or [GitLab.com](../../user/gitlab_com/index.md#ip-blocks).
+[GitLab Self-Managed](../../security/rate_limits.md#failed-authentication-ban-for-git-and-container-registry)
+or [GitLab SaaS](../../user/gitlab_com/_index.md#ip-blocks).

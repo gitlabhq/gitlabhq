@@ -44,7 +44,7 @@ RSpec.describe 'Dashboard > User sorts todos', :js, feature_category: :notificat
 
     it 'updates sort order and direction' do
       # Default order is created_at DESC
-      results_list = page.find('ul[data-testid=todo-item-list-container]')
+      results_list = page.find('ol[data-testid="todo-item-list"]')
       expect(results_list.all('[data-testid=todo-title]')[0]).to have_content('merge_request_1')
       expect(results_list.all('[data-testid=todo-title]')[1]).to have_content('issue_1')
       expect(results_list.all('[data-testid=todo-title]')[2]).to have_content('issue_3')
@@ -53,7 +53,7 @@ RSpec.describe 'Dashboard > User sorts todos', :js, feature_category: :notificat
 
       # Switch order to created_at ASC
       click_on_sort_direction
-      results_list = page.find('ul[data-testid=todo-item-list-container]')
+      results_list = page.find('ol[data-testid="todo-item-list"]')
       expect(results_list.all('[data-testid=todo-title]')[0]).to have_content('issue_4')
       expect(results_list.all('[data-testid=todo-title]')[1]).to have_content('issue_2')
       expect(results_list.all('[data-testid=todo-title]')[2]).to have_content('issue_3')
@@ -62,7 +62,7 @@ RSpec.describe 'Dashboard > User sorts todos', :js, feature_category: :notificat
 
       # Change direction to 'Label priority' ASC
       click_on_sort_order 'Label priority'
-      results_list = page.find('ul[data-testid=todo-item-list-container]')
+      results_list = page.find('ol[data-testid="todo-item-list"]')
       expect(results_list.all('[data-testid=todo-title]')[0]).to have_content('issue_3')
       expect(results_list.all('[data-testid=todo-title]')[1]).to have_content('merge_request_1')
       expect(results_list.all('[data-testid=todo-title]')[2]).to have_content('issue_1')
@@ -72,7 +72,7 @@ RSpec.describe 'Dashboard > User sorts todos', :js, feature_category: :notificat
       # Change direction to updated_at DESC
       click_on_sort_order 'Updated'
       click_on_sort_direction
-      results_list = page.find('ul[data-testid=todo-item-list-container]')
+      results_list = page.find('ol[data-testid="todo-item-list"]')
       expect(results_list.all('[data-testid=todo-title]')[0]).to have_content('issue_3')
       expect(results_list.all('[data-testid=todo-title]')[1]).to have_content('merge_request_1')
       expect(results_list.all('[data-testid=todo-title]')[2]).to have_content('issue_1')
@@ -108,7 +108,7 @@ RSpec.describe 'Dashboard > User sorts todos', :js, feature_category: :notificat
     end
 
     it "doesn't mix issues and merge requests label priorities" do
-      results_list = page.find('ul[data-testid=todo-item-list-container]')
+      results_list = page.find('ol[data-testid="todo-item-list"]')
       expect(results_list.all('[data-testid=todo-title]')[0]).to have_content('issue_1')
       expect(results_list.all('[data-testid=todo-title]')[1]).to have_content('issue_2')
       expect(results_list.all('[data-testid=todo-title]')[2]).to have_content('merge_request_1')

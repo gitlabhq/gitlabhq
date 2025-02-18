@@ -1,4 +1,4 @@
-export const newCandidate = () => ({
+export const newCandidate = (withModel = true) => ({
   params: [
     { name: 'Algorithm', value: 'Decision Tree' },
     { name: 'MaxDepth', value: '3' },
@@ -46,9 +46,11 @@ export const newCandidate = () => ({
   },
   projectPath: 'some/project',
   canWriteModelRegistry: true,
+  canWriteModelExperiments: true,
   markdownPreviewPath: '/markdown-preview',
-  modelGid: 'gid://gitlab/Ml::Model/1',
-  latestVersion: '1.0.2',
+  modelGid: withModel ? 'gid://gitlab/Ml::Model/1' : undefined,
+  modelName: withModel ? 'CoolModel' : undefined,
+  latestVersion: withModel ? '1.0.2' : undefined,
 });
 
 const LATEST_VERSION = {

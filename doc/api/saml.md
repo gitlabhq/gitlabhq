@@ -2,15 +2,21 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: SAML API
 ---
 
-# SAML API
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
+
+{{< /history >}}
 
 Use this API to interact with SAML features.
 
@@ -28,7 +34,7 @@ Supported attributes:
 
 | Attribute         | Type    | Required | Description           |
 |:------------------|:--------|:---------|:----------------------|
-| `id`              | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`              | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
@@ -57,7 +63,11 @@ Example response:
 
 ### Get a single SAML identity
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123591) in GitLab 16.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123591) in GitLab 16.1.
+
+{{< /history >}}
 
 ```plaintext
 GET /groups/:id/saml/:uid
@@ -67,7 +77,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description               |
 | --------- | -------------- | -------- | ------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `uid`     | string         | yes      | External UID of the user. |
 
 Example request:
@@ -101,7 +111,7 @@ Supported attributes:
 
 | Attribute | Type   | Required | Description               |
 | --------- | ------ | -------- | ------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `uid`     | string | yes      | External UID of the user. |
 
 Example request:
@@ -114,7 +124,11 @@ curl --location --request PATCH "https://gitlab.com/api/v4/groups/33/saml/yrnZW4
 
 ### Delete a single SAML identity
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423592) in GitLab 16.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423592) in GitLab 16.5.
+
+{{< /history >}}
 
 ```plaintext
 DELETE /groups/:id/saml/:uid
@@ -124,7 +138,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description               |
 | --------- | ------- | -------- | ------------------------- |
-| `id`      | integer | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `uid`     | string  | yes      | External UID of the user. |
 
 Example request:
@@ -146,22 +160,26 @@ Example response:
 
 ### Get a single SAML identity
 
-Use the Users API to [get a single SAML identity](../api/users.md#as-an-administrator).
+Use the Users API to [get a single SAML identity](users.md#as-an-administrator).
 
 ### Update `extern_uid` field for a SAML identity
 
-Use the Users API to [update the `extern_uid` field of a user](../api/users.md#modify-a-user).
+Use the Users API to [update the `extern_uid` field of a user](users.md#modify-a-user).
 
 ### Delete a single SAML identity
 
-Use the Users API to [delete a single identity of a user](../api/users.md#delete-authentication-identity-from-a-user).
+Use the Users API to [delete a single identity of a user](users.md#delete-authentication-identity-from-a-user).
 
 ## SAML group links
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.0.
-> - `access_level` type [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95607) from `string` to `integer` in GitLab 15.3.3.
-> - `member_role_id` type [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/417201) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `custom_roles_for_saml_group_links`. Disabled by default.
-> - `member_role_id` type [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/417201) in GitLab 16.8. Feature flag `custom_roles_for_saml_group_links` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.0.
+- `access_level` type [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95607) from `string` to `integer` in GitLab 15.3.3.
+- `member_role_id` type [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/417201) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `custom_roles_for_saml_group_links`. Disabled by default.
+- `member_role_id` type [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/417201) in GitLab 16.8. Feature flag `custom_roles_for_saml_group_links` removed.
+
+{{< /history >}}
 
 List, get, add, and delete [SAML group links](../user/group/saml_sso/group_sync.md#configure-saml-group-links) by using
 the REST API.
@@ -178,7 +196,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 |:----------|:---------------|:---------|:------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following response attributes:
 
@@ -223,7 +241,7 @@ Supported attributes:
 
 | Attribute         | Type           | Required | Description |
 |:------------------|:---------------|:---------|:------------|
-| `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `saml_group_name` | string         | yes      | Name of the SAML group. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following response attributes:
@@ -262,7 +280,7 @@ Supported attributes:
 
 | Attribute         | Type              | Required | Description |
 |:------------------|:------------------|:---------|:------------|
-| `id`              | integer or string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`              | integer or string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `saml_group_name` | string            | yes      | Name of the SAML group. |
 | `access_level`    | integer           | yes      | [Role (`access_level`)](members.md#roles) for members of the SAML group. |
 | `member_role_id`  | integer           | no       | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
@@ -303,7 +321,7 @@ Supported attributes:
 
 | Attribute         | Type           | Required | Description |
 |:------------------|:---------------|:---------|:------------|
-| `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `saml_group_name` | string         | yes      | Name of the SAML group. |
 
 Example request:

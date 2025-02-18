@@ -738,6 +738,24 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
 
             expect(diff.diff).not_to eq('')
           end
+
+          context 'with binary files' do
+            let(:iterator) { [{ diff: "Binary files /dev/null and b/test.bin differ\n" }] }
+
+            before do
+              allow(described_class)
+                .to receive(:default_limits)
+                .and_return({ max_files: 0, max_lines: max_lines, safe_max_bytes: 1 })
+            end
+
+            it 'prunes binary diffs even in single file case' do
+              diff = nil
+              subject.each do |d|
+                diff = d
+              end
+              expect(diff.diff).to eq('')
+            end
+          end
         end
 
         context 'multi-file collections' do

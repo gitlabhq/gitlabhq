@@ -2,13 +2,15 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting direct transfer migrations
 ---
 
-# Troubleshooting direct transfer migrations
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In a [rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session),
 you can find the failure or error messages for the group import attempt using:
@@ -66,7 +68,7 @@ grep `BulkImports::RelationBatchExportWorker` sidekiq.log | grep "interrupted_co
 If Sidekiq restarts are causing the issue:
 
 - Configure a separate Sidekiq process for export jobs.
-  For more information, see [Sidekiq configuration](../../project/import/index.md#sidekiq-configuration).
+  For more information, see [Sidekiq configuration](../../project/import/_index.md#sidekiq-configuration).
   If the problem persists, reduce Sidekiq concurrency to limit the number of jobs processed simultaneously.
 - Increase Sidekiq memory limits:
   If your instance has available memory, [increase the maximum RSS limit](../../../administration/sidekiq/sidekiq_memory_killer.md#configuring-the-limits) for Sidekiq processes.

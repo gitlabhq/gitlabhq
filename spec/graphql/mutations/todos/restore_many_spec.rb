@@ -16,7 +16,7 @@ RSpec.describe Mutations::Todos::RestoreMany do
 
   let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
-  describe '#resolve' do
+  describe '#process_todos' do
     it 'restores a single todo' do
       result = restore_mutation([todo1])
 
@@ -75,7 +75,7 @@ RSpec.describe Mutations::Todos::RestoreMany do
     end
 
     it 'fails if too many todos are requested for update' do
-      expect { restore_mutation([todo1] * 51) }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+      expect { restore_mutation([todo1] * 101) }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
     end
   end
 

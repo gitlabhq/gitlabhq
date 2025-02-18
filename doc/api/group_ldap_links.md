@@ -2,13 +2,15 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: LDAP group links
 ---
 
-# LDAP group links
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 List, add, and delete [LDAP group links](../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
@@ -24,7 +26,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -65,7 +67,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `group_access` | integer   | yes      | [Role (`access_level`)](members.md#roles) for members of the LDAP group. |
 | `provider` | string        | yes      | LDAP provider ID for the LDAP group link. |
 | `cn`      | string         | yes/no   | The CN of an LDAP group. Provide either a `cn` or a `filter`, but not both. |
@@ -106,7 +108,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `provider` | string        | yes      | LDAP provider ID for the LDAP group link. |
 | `cn`      | string         | yes/no   | The CN of an LDAP group. Provide either a `cn` or a `filter`, but not both. |
 | `filter`  | string         | yes/no   | The LDAP filter for the group. Provide either a `cn` or a `filter`, but not both. |
@@ -136,7 +138,7 @@ DELETE /groups/:id/ldap_group_links/:cn
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `cn`      | string         | yes      | The CN of an LDAP group |
 
 Delete an LDAP group link for a specific LDAP provider:
@@ -147,6 +149,6 @@ DELETE /groups/:id/ldap_group_links/:provider/:cn
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `cn`      | string         | yes      | The CN of an LDAP group |
 | `provider` | string        | yes      | LDAP provider for the LDAP group link |

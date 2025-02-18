@@ -2,14 +2,16 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "How to create a merge request for a confidential issue without leaking information publicly."
+description: How to create a merge request for a confidential issue without leaking information publicly.
+title: Merge requests for confidential issues
 ---
 
-# Merge requests for confidential issues
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Merge requests in a public repository are also public, even when you create a
 merge request for a [confidential issue](../issues/confidential_issues.md).
@@ -35,14 +37,17 @@ Users with the Developer role for the upstream public repository inherit those u
 permissions in your downstream private fork without action by you. These users can
 immediately push code to branches in your private fork to help fix the confidential issue.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Your private fork might expose confidential information if you create it in a different
 namespace than the upstream repository. The two namespaces might not contain the same users.
+
+{{< /alert >}}
 
 Prerequisites:
 
 - You have the Owner or Maintainer role for the public repository, as you need one
-  of these roles to [create a subgroup](../../group/subgroups/index.md).
+  of these roles to [create a subgroup](../../group/subgroups/_index.md).
 - You have [forked](../repository/forking_workflow.md) the public repository.
 - Your fork has a **Visibility level** of _Private_.
 
@@ -78,5 +83,5 @@ Open a merge request
 
 - [Confidential issues](../issues/confidential_issues.md)
 - [Make an epic confidential](../../group/epics/manage_epics.md#make-an-epic-confidential)
-- [Add an internal note](../../discussions/index.md#add-an-internal-note)
+- [Add an internal note](../../discussions/_index.md#add-an-internal-note)
 - [Security practices for confidential merge requests](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md#security-releases-critical-non-critical-as-a-developer) at GitLab

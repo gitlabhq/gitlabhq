@@ -58,17 +58,11 @@ module PersonalAccessTokens
     def update_bot_membership(target_user, expires_at)
       return if target_user.human?
 
-      if resource && Feature.enabled?(:retain_resource_access_token_user_after_revoke, resource.root_ancestor)
-        # Tokens created before the feature flag is enabled will have an
-        # expiring membership. We must explicitly set it to nil to
-        # - stop the membership from expiring on its old expiry date
-        # - retain the membership when this token does eventually expire
-        #   or get revoked.
-        #
-        # Applies only to resource (group and project) access tokens
-        # not personal access tokens.
-        expires_at = nil
-      end
+      # Related to https://gitlab.com/gitlab-org/gitlab/-/issues/514328
+      # We must retain bot user membership after it became inactive
+      # because currently it is the only way to identify to which
+      # group/project access token belongs to.
+      expires_at = nil # rubocop:disable Lint/ShadowedArgument -- https://gitlab.com/gitlab-org/gitlab/-/issues/514328
 
       target_user.members.update(expires_at: expires_at)
     end
@@ -102,6 +96,7 @@ module PersonalAccessTokens
 
     def create_token_params
       { name: token.name,
+        description: token.description,
         previous_personal_access_token_id: token.id,
         impersonation: token.impersonation,
         scopes: token.scopes,

@@ -22,13 +22,10 @@ export default {
   directives: {
     GlTooltip,
   },
+  inject: ['canWriteModelRegistry'],
   props: {
     items: {
       type: Array,
-      required: true,
-    },
-    canWriteModelRegistry: {
-      type: Boolean,
       required: true,
     },
   },

@@ -106,34 +106,26 @@ describe('approvalBadge', () => {
 
   describe('with approvalsRequired', () => {
     it.each`
-      approvalsRequired | data
-      ${0}              | ${{ icon: 'check-circle-filled', text: 'Approved', variant: 'muted', iconOpticallyAligned: true }}
-      ${1}              | ${{ icon: 'hourglass', text: 'Waiting for approval', variant: 'muted' }}
-    `('returns $data when approvalsRequired $approvalsRequired', ({ approvalsRequired, data }) => {
-      expect(
-        approvalBadge({
-          mergeRequest: {
-            approvalsRequired,
-            reviewers: { nodes: [{ mergeRequestInteraction: { reviewState: 'APPROVED' } }] },
-          },
-        }),
-      ).toEqual(data);
-    });
-  });
-
-  describe('when using reviewers reviewState', () => {
-    it.each`
-      reviewState   | data
-      ${'REVIEWED'} | ${{ icon: 'hourglass', text: '1 approval required', variant: 'muted' }}
-    `('returns $data when reviewState $reviewState', ({ reviewState, data }) => {
-      expect(
-        approvalBadge({
-          mergeRequest: {
-            reviewers: { nodes: [{ mergeRequestInteraction: { reviewState } }] },
-          },
-        }),
-      ).toEqual(data);
-    });
+      approvalsRequired | approvalsLeft | reviewState   | data
+      ${0}              | ${0}          | ${'APPROVED'} | ${{ icon: 'check-circle-filled', text: 'Approved' }}
+      ${1}              | ${0}          | ${'APPROVED'} | ${{ icon: 'check-circle-filled', text: 'Approved' }}
+      ${0}              | ${1}          | ${'APPROVED'} | ${{ icon: 'hourglass', text: '1 approval required' }}
+      ${0}              | ${2}          | ${'APPROVED'} | ${{ icon: 'hourglass', text: '2 approvals required' }}
+      ${0}              | ${0}          | ${'REVIEWED'} | ${{ icon: 'hourglass', text: '1 approval required' }}
+    `(
+      'returns $data when approvalsRequired $approvalsRequired, reviewState is $reviewState, approvalsLeft is $approvalsLeft',
+      ({ approvalsRequired, approvalsLeft, reviewState, data }) => {
+        expect(
+          approvalBadge({
+            mergeRequest: {
+              approvalsRequired,
+              approvalsLeft,
+              reviewers: { nodes: [{ mergeRequestInteraction: { reviewState } }] },
+            },
+          }),
+        ).toEqual(expect.objectContaining(data));
+      },
+    );
   });
 
   describe('when using approved by current user', () => {

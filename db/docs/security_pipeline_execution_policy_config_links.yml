@@ -1,0 +1,13 @@
+---
+table_name: security_pipeline_execution_policy_config_links
+classes:
+- Security::PipelineExecutionPolicyConfigLink
+feature_categories:
+- security_policy_management
+description: Pipeline execution policy/CI config project join table.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176307
+milestone: '17.9'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+table_size: small

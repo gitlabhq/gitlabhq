@@ -2,15 +2,17 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: External issue trackers
 ---
 
-# External issue trackers
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-GitLab has its own [issue tracker](../user/project/issues/index.md),
+{{< /details >}}
+
+GitLab has its own [issue tracker](../user/project/issues/_index.md),
 but you can also configure an external issue tracker per GitLab project.
 You can then use:
 
@@ -49,7 +51,7 @@ You can configure any of the following external issue trackers:
 - [ClickUp](../user/project/integrations/clickup.md)
 - [Custom issue tracker](../user/project/integrations/custom_issue_tracker.md)
 - [Engineering Workflow Management (EWM)](../user/project/integrations/ewm.md)
-- [Jira](../integration/jira/index.md)
+- [Jira](jira/_index.md)
 - [Phorge](../user/project/integrations/phorge.md)
 - [Redmine](../user/project/integrations/redmine.md)
 - [YouTrack](../user/project/integrations/youtrack.md)

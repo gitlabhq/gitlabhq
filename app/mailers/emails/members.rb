@@ -47,20 +47,6 @@ module Emails
         subject: subject('Invitation accepted'))
     end
 
-    def member_invite_declined_email(member_source_type, source_id, invite_email, created_by_id)
-      return unless created_by_id
-
-      @member_source_type = member_source_type
-      @member_source = member_source_class.find(source_id)
-      @invite_email = invite_email
-
-      user = User.find(created_by_id)
-
-      email_with_layout(
-        to: user.notification_email_for(notification_group),
-        subject: subject('Invitation declined'))
-    end
-
     def member_expiration_date_updated_email(member_source_type, member_id)
       @member_source_type = member_source_type
       @member_id = member_id

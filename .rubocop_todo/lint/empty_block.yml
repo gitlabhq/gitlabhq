@@ -39,7 +39,6 @@ Lint/EmptyBlock:
     - 'lib/api/merge_requests.rb'
     - 'lib/gitlab/alert_management/payload/base.rb'
     - 'lib/gitlab/seeder.rb'
-    - 'qa/spec/scenario/test/instance/airgapped_spec.rb'
     - 'qa/spec/specs/helpers/context_selector_spec.rb'
     - 'qa/spec/specs/helpers/feature_flag_spec.rb'
     - 'qa/spec/specs/helpers/quarantine_spec.rb'

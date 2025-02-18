@@ -198,6 +198,8 @@ module ApplicationHelper
       class: css_classes.join(' '),
       title: l(time.to_time.in_time_zone, format: :timeago_tooltip),
       datetime: time.to_time.getutc.iso8601,
+      tabindex: '0',
+      aria: { label: l(time.to_time.in_time_zone, format: :timeago_tooltip) },
       data: {
         toggle: 'tooltip',
         placement: placement,

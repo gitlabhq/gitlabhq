@@ -32,7 +32,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import {
   createAgentResponse,
   createAgentErrorResponse,
-  getAgentResponse,
+  clusterAgentsResponse,
 } from 'ee_else_ce_jest/clusters_list/components/mock_data';
 import { createAgentTokenResponse, createAgentTokenErrorResponse } from '../mocks/apollo';
 import ModalStub from '../stubs';
@@ -105,7 +105,7 @@ describe('InstallAgentModal', () => {
       variables: {
         projectPath,
       },
-      data: getAgentResponse.data,
+      data: clusterAgentsResponse.data,
     });
   };
 
@@ -316,6 +316,29 @@ describe('InstallAgentModal', () => {
             createAgentTokenErrorResponse.data.clusterAgentTokenCreate.errors[0],
           );
         });
+      });
+    });
+
+    describe('calling showModalForAgent from outside of the component', () => {
+      let showModalSpy;
+
+      beforeEach(() => {
+        createWrapper();
+
+        showModalSpy = jest.spyOn(wrapper.vm.$refs.modal, 'show');
+        wrapper.vm.showModalForAgent('new-agent-name');
+      });
+
+      it('should open the modal', () => {
+        expect(showModalSpy).toHaveBeenCalled();
+      });
+
+      it('should update the input with the provided agent name', () => {
+        expect(findAgentInput().attributes('value')).toBe('new-agent-name');
+      });
+
+      it('should update the bootstrap command with the new agent name', () => {
+        expect(findCodeBlock().props('code')).toBe('glab cluster agent bootstrap new-agent-name');
       });
     });
   });

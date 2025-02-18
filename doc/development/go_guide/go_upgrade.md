@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Managing Go versions
 ---
-
-# Managing Go versions
 
 ## Overview
 
@@ -27,26 +26,10 @@ Testing matrices for all projects using Go must include the version shipped by D
 
 ## Supporting multiple Go versions
 
-Individual Go projects need to support multiple Go versions because:
+Individual Go projects might need to support multiple Go versions because:
 
-- When a new version of Go is released, we should start integrating it into the CI pipelines to verify compatibility with the new compiler.
-- We must support the versions of Go [shipped by Distribution](#testing-against-shipped-go-versions), which might be behind the latest minor release.
-- When Linux package builds or Cloud-Native GitLab (CNG) change a Go version, we still might need to support the old version for backports.
-
-These 3 requirements may easily be satisfied by keeping support for the [3 latest minor versions of Go](https://go.dev/dl/).
-
-It is ok to drop support for the oldest Go version and support only the 2 latest releases,
-if this is enough to support backports to the last 3 minor GitLab releases.
-
-For example, if we want to drop support for `go 1.11` in GitLab `12.10`, we need
-to verify which Go versions we are using in `12.9`, `12.8`, and `12.7`. We do not
-consider the active milestone, `12.10`, because a backport for `12.7` is required
-in case of a critical patch release.
-
-- If both [Omnibus GitLab and Cloud-Native GitLab (CNG)](#updating-go-version) were using Go `1.12` in GitLab `12.7` and later,
-  then we can safely drop support for `1.11`.
-- If Omnibus GitLab or Cloud-Native GitLab (CNG) were using `1.11` in GitLab `12.7`, then we still need to keep
-  support for Go `1.11` for easier backporting of security fixes.
+- When a new version of Go is released, we should start integrating it into the CI pipelines to verify forward compatibility.
+- To enable backports, we must support the versions of Go [shipped by Distribution](#testing-against-shipped-go-versions) in the latest 3 minor GitLab releases, excluding the active milestone.
 
 ## Updating Go version
 
@@ -60,6 +43,20 @@ Changing the version affects every project being compiled, so it's important to
 ensure that all projects have been updated to test against the new Go version
 before changing the package builders to use it. Despite [Go's compatibility promise](https://go.dev/doc/go1compat),
 changes between minor versions can expose bugs or cause problems in our projects.
+
+### Upgrade cadence
+
+GitLab adopts major Go versions within eight months of their release
+to ensure supported GitLab versions do not ship with an end-of-life
+version of Go.
+
+Minor upgrades are required if they patch security issues, fix bugs, or add
+features requested by development teams and are approved by Product Management.
+
+For more information, see:
+
+- [The Go release cycle](https://go.dev/wiki/Go-Release-Cycle).
+- [The Go release policy](https://go.dev/doc/devel/release#policy).
 
 ### Upgrade process
 
@@ -91,19 +88,24 @@ if you need help finding the correct person or labels:
    - The issue should be assigned by a member of the maintaining group.
    - The milestone should be assigned by a member of the maintaining group.
 
-   NOTE:
-   Some overlap exists between project dependencies. When creating an issue for a
+   {{< alert type="note" >}}
+
+Some overlap exists between project dependencies. When creating an issue for a
    dependency that is part of a larger product, note the relationship in the issue
    body. For example: Projects built in the context of Omnibus GitLab have their
    runtime Go version managed by Omnibus, but "support" and compatibility should
    be a concern of the individual project. Issues in the parent project's dependencies
    issue should be about adding support for the updated Go version.
 
-   NOTE:
-   The upgrade issues must include [upgrade validation items](#upgrade-validation)
+   {{< /alert >}}
+
+   {{< alert type="note" >}}
+
+The upgrade issues must include [upgrade validation items](#upgrade-validation)
    in their definition of done. Creating a second [performance testing issue](#upgrade-validation)
    titled `Validate operation and performance at scale with Go <VERSION_NUMBER>`
    is strongly recommended to help with scheduling tasks and managing workloads.
+   {{< /alert >}}
 
 1. Schedule an update with the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit/-/issues):
    - Title the issue `Support using Go version <VERSION_NUMBER>`.
@@ -113,9 +115,12 @@ if you need help finding the correct person or labels:
    - [Composition Analysis tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
    - [Container Security tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
 
-   NOTE:
-   Updates to these Security analyzers should not block upgrades to Charts or Omnibus since
+   {{< alert type="note" >}}
+
+Updates to these Security analyzers should not block upgrades to Charts or Omnibus since
    the analyzers are built independently as separate container images.
+
+   {{< /alert >}}
 
 1. Schedule builder updates with Distribution projects:
    - Dependency and GitLab Development Kit issues created in previous steps should be set as blockers.
@@ -138,37 +143,83 @@ if you need help finding the correct person or labels:
        Update `BUILDER_IMAGE_REVISION` in `.gitlab-ci.yml` to match tag from builder.
        ```
 
-   NOTE:
-   If the component is not automatically upgraded for [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues)
+   {{< alert type="note" >}}
+
+If the component is not automatically upgraded for [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues)
    and [Cloud Native GitLab](https://gitlab.com/gitlab-org/charts/gitlab/-/issues),
    issues should be opened in their respective trackers titled `Updated bundled version of COMPONENT_NAME`
    and set as blocked by the component's upgrade issue.
 
+   {{< /alert >}}
+
 #### Known dependencies using Go
 
-| Component Name                | Where to track work |
-|-------------------------------|---------------------|
-| [Alertmanager](https://github.com/prometheus/alertmanager) | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) |
-| Docker Distribution Pruner    | [Issue Tracker](https://gitlab.com/gitlab-org/docker-distribution-pruner) |
-| Gitaly                        | [Issue Tracker](https://gitlab.com/gitlab-org/gitaly/-/issues) |
-| GitLab CLI (`glab`).          | [Issue Tracker](https://gitlab.com/gitlab-org/cli/-/issues) |
-| GitLab Compose Kit            | [Issuer Tracker](https://gitlab.com/gitlab-org/gitlab-compose-kit/-/issues) |
-| GitLab container registry     | [Issue Tracker](https://gitlab.com/gitlab-org/container-registry) |
-| GitLab Elasticsearch Indexer  | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer/-/issues) |
-| GitLab Zoekt Indexer          | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-zoekt-indexer/-/issues) |
-| GitLab agent server for Kubernetes (KAS) | [Issue Tracker](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues) |
-| GitLab Pages                  | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-pages/-/issues) |
-| GitLab Quality Images         | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-build-images/-/issues) |
-| GitLab Shell                  | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-shell/-/issues) |
-| GitLab Workhorse              | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) |
-| GitLab Browser-based DAST     | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) |
-| GitLab Coverage Fuzzer        | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) |
-| LabKit                        | [Issue Tracker](https://gitlab.com/gitlab-org/labkit/-/issues) |
-| [Node Exporter](https://github.com/prometheus/node_exporter) | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) |
-| [PgBouncer Exporter](https://github.com/prometheus-community/pgbouncer_exporter) | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) |
-| [Postgres Exporter](https://github.com/prometheus-community/postgres_exporter) | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) |
-| [Prometheus](https://github.com/prometheus/prometheus) | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) |
-| [Redis Exporter](https://github.com/oliver006/redis_exporter) | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) |
+The directly responsible individual for a Go upgrade must ensure all
+necessary components get upgraded.
+
+##### Prerequisites
+
+These projects must be upgraded first and in the order they appear to allow
+projects listed in the next section to build with the newer Go version.
+
+| Component Name                                                                   | Where to track work                                                                                                |
+|----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| GitLab Runner                                                                    | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-runner)                                                       |
+| GitLab CI Images                                                                 | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-build-images/-/issues)                                        |
+| GitLab Development Kit (GDK)                                                     | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-development-kit)                                              |
+
+##### Required for release approval
+
+Major Go release versions require updates to each project listed below
+to allow the version to flow into their build jobs. Each project must build
+successfully before the actual build environments get updates.
+
+| Component Name                                                                   | Where to track work                                                                                                |
+|----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| [Alertmanager](https://github.com/prometheus/alertmanager)                       | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)                                                     |
+| Docker Distribution Pruner                                                       | [Issue Tracker](https://gitlab.com/gitlab-org/docker-distribution-pruner)                                          |
+| Gitaly                                                                           | [Issue Tracker](https://gitlab.com/gitlab-org/gitaly/-/issues)                                                     |
+| GitLab Compose Kit                                                               | [Issuer Tracker](https://gitlab.com/gitlab-org/gitlab-compose-kit/-/issues)                                        |
+| GitLab container registry                                                        | [Issue Tracker](https://gitlab.com/gitlab-org/container-registry)                                                  |
+| GitLab Elasticsearch Indexer                                                     | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer/-/issues)                               |
+| GitLab Zoekt Indexer                                                             | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-zoekt-indexer/-/issues)                                       |
+| GitLab agent server for Kubernetes (KAS)                                         | [Issue Tracker](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues)                           |
+| GitLab Pages                                                                     | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-pages/-/issues)                                               |
+| GitLab Shell                                                                     | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-shell/-/issues)                                               |
+| GitLab Workhorse                                                                 | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)                                                     |
+| LabKit                                                                           | [Issue Tracker](https://gitlab.com/gitlab-org/labkit/-/issues)                                                     |
+| Spamcheck                                                                        | [Issue Tracker](https://gitlab.com/gitlab-org/gl-security/security-engineering/security-automation/spam/spamcheck) |
+| GitLab Workspaces Proxy                                                          | [Issue Tracker](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy)                          |
+| Devfile Gem                                                                      | [Issue Tracker](https://gitlab.com/gitlab-org/ruby/gems/devfile-gem/-/tree/main/ext?ref_type=heads)                |
+| GitLab Operator                                                                  | [Issue Tracker](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator)                                        |
+| [Node Exporter](https://github.com/prometheus/node_exporter)                     | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)                                                     |
+| [PgBouncer Exporter](https://github.com/prometheus-community/pgbouncer_exporter) | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)                                                     |
+| [Postgres Exporter](https://github.com/prometheus-community/postgres_exporter)   | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)                                                     |
+| [Prometheus](https://github.com/prometheus/prometheus)                           | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)                                                     |
+| [Redis Exporter](https://github.com/oliver006/redis_exporter)                    | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)                                                     |
+
+##### Final updates for release
+
+After all components listed in the tables above build successfully, the directly
+responsible individual may then authorize updates to the build images used
+to ship GitLab packages and Cloud Native images to customers.
+
+| Component Name                                                                   | Where to track work                                                                                                |
+|----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| GitLab Omnibus Builder                                                           | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-omnibus-builder)                                             |
+| Cloud Native GitLab                                                              | [Issue Tracker](https://gitlab.com/gitlab-org/build/CNG)                                                           |
+
+##### Released independently
+
+Although these components must be updated, they do not block the Go/No-Go
+decision for a GitLab release. If they lag behind, the directly responsible
+individual should escalate them to Product and Engineering management.
+
+| Component Name                                                                   | Where to track work                                                                                                |
+|----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| GitLab Browser-based DAST                                                        | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)                                                     |
+| GitLab Coverage Fuzzer                                                           | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)                                                     |
+| GitLab CLI (`glab`).                                                             | [Issue Tracker](https://gitlab.com/gitlab-org/cli/-/issues)                                                        |
 
 #### Communication plan
 

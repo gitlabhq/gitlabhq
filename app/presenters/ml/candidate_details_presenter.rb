@@ -2,8 +2,6 @@
 
 module Ml
   class CandidateDetailsPresenter
-    include Rails.application.routes.url_helpers
-
     def initialize(candidate, current_user)
       @candidate = candidate
       @current_user = current_user
@@ -26,16 +24,17 @@ module Ml
             created_at: candidate.created_at,
             author_web_url: candidate.user&.namespace&.web_url,
             author_name: candidate.user&.name,
-            promote_path: promote_project_ml_candidate_path(candidate.project, candidate.iid),
-            can_promote: candidate.model_version_id.nil? && candidate.experiment.model_id.present?
+            promote_path: url_helpers.promote_project_ml_candidate_path(candidate.project, candidate.iid),
+            can_promote: can_promote
           },
           params: candidate.params,
           metrics: candidate.metrics,
           metadata: candidate.metadata,
           projectPath: candidate.project.full_path,
-          can_write_model_registry: current_user&.can?(:write_model_registry, candidate.project),
-          markdown_preview_path: project_preview_markdown_path(candidate.project),
+          can_write_model_experiments: current_user&.can?(:write_model_experiments, candidate.project),
+          markdown_preview_path: url_helpers.project_preview_markdown_path(candidate.project),
           model_gid: candidate.experiment.model&.to_global_id.to_s,
+          model_name: candidate.experiment.model&.name,
           latest_version: candidate.experiment.model&.latest_version&.version
         }
       }
@@ -51,12 +50,12 @@ module Ml
     attr_reader :candidate, :current_user
 
     def job_info
-      return unless candidate.from_ci? && current_user.can?(:read_build, candidate.ci_build)
+      return unless candidate.from_ci? && current_user&.can?(:read_build, candidate.ci_build)
 
       build = candidate.ci_build
 
       {
-        path: project_job_path(build.project, build),
+        path: url_helpers.project_job_path(build.project, build),
         name: build.name,
         **user_info(build.user) || {},
         **mr_info(build.pipeline.merge_request) || {}
@@ -68,7 +67,7 @@ module Ml
 
       {
         user: {
-          path: user_path(user),
+          path: url_helpers.user_path(user),
           username: user.username,
           name: user.name,
           avatar: user.avatar_url
@@ -81,7 +80,7 @@ module Ml
 
       {
         merge_request: {
-          path: project_merge_request_path(mr.project, mr),
+          path: url_helpers.project_merge_request_path(mr.project, mr),
           iid: mr.iid,
           title: mr.title
         }
@@ -93,15 +92,25 @@ module Ml
 
       return unless artifact.present?
 
-      project_package_path(candidate.project, artifact)
+      url_helpers.project_package_path(candidate.project, artifact)
     end
 
     def link_to_details
-      project_ml_candidate_path(candidate.project, candidate.iid)
+      url_helpers.project_ml_candidate_path(candidate.project, candidate.iid)
     end
 
     def link_to_experiment
-      project_ml_experiment_path(candidate.project, candidate.experiment.iid)
+      url_helpers.project_ml_experiment_path(candidate.project, candidate.experiment.iid)
+    end
+
+    def url_helpers
+      Gitlab::Routing.url_helpers
+    end
+
+    def can_promote
+      candidate.model_version_id.nil? &&
+        candidate.package&.ml_model? &&
+        current_user&.can?(:write_model_registry, candidate.project)
     end
   end
 end

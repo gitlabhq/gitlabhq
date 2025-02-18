@@ -10,21 +10,21 @@ module Types
         graphql_name 'WorkItemWidgetDevelopment'
         description 'Represents a development widget'
 
-        implements Types::WorkItems::WidgetInterface
+        implements ::Types::WorkItems::WidgetInterface
 
         field :closing_merge_requests,
-          Types::WorkItems::ClosingMergeRequestType.connection_type,
+          ::Types::WorkItems::ClosingMergeRequestType.connection_type,
           null: true,
           description: 'Merge requests that will close the work item when merged.'
         field :related_branches,
-          Types::WorkItems::RelatedBranchType.connection_type,
+          ::Types::WorkItems::RelatedBranchType.connection_type,
           calls_gitaly: true,
           description: 'Branches that have referred to the work item, but do not have an associated merge request.',
           null: true do
             extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
           end
         field :related_merge_requests, # rubocop:disable GraphQL/ExtractType -- no need to extract to related
-          Types::MergeRequestType.connection_type,
+          ::Types::MergeRequestType.connection_type,
           null: true,
           resolver: ::Resolvers::MergeRequests::WorkItemRelatedResolver,
           description: 'Merge requests where the work item has been mentioned. ' \

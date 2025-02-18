@@ -2,17 +2,23 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Import your project from GitHub to GitLab
 ---
 
-# Import your project from GitHub to GitLab
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10, you no longer need to add any users to the parent group in GitLab to successfully import the **Require a pull request before merging - Allow specified actors to bypass required pull requests** branch protection rule.
-> - An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461208) in GitLab 17.2.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10, you no longer need to add any users to the parent group in GitLab to successfully import the **Require a pull request before merging - Allow specified actors to bypass required pull requests** branch protection rule.
+- An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461208) in GitLab 17.2.
+
+{{< /history >}}
 
 You can import your GitHub projects from either GitHub.com or GitHub Enterprise. Importing projects does not
 migrate or import any types of groups or organizations from GitHub to GitLab.
@@ -49,7 +55,11 @@ by default on GitLab.com.
 
 ### Permissions and roles
 
-> - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+{{< history >}}
+
+- Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+
+{{< /history >}}
 
 To use the GitHub importer, you must have:
 
@@ -62,10 +72,14 @@ on the GitLab instance you import to.
 
 ### Accounts for user contribution mapping
 
-> - [Preparation requirement removed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) in GitLab 17.8.
+{{< history >}}
 
-Before using [the old method of user contribution mapping](#old-method-of-user-contribution-mapping) for imports to GitLab self-managed and GitLab
-Dedicated, you must take meet certain requirements. Imports to GitLab.com use [an improved method](../import/index.md#user-contribution-and-membership-mapping)
+- [Preparation requirement removed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) in GitLab 17.8.
+
+{{< /history >}}
+
+Before using [the old method of user contribution mapping](#old-method-of-user-contribution-mapping) for imports to GitLab Self-Managed and GitLab
+Dedicated, you must meet certain requirements. Imports to GitLab.com use an [improved method](../import/_index.md#user-contribution-and-membership-mapping)
 that doesn't require preparation.
 
 These requirements are:
@@ -113,7 +127,7 @@ If you are importing to GitLab.com or to a GitLab Self-Managed that has GitHub O
 This method has an advantage over using a [personal access token (PAT)](#use-a-github-personal-access-token)
 because the backend exchanges the access token with the appropriate permissions.
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Import project** and then **GitHub**.
 1. Select **Authorize with GitHub**.
 1. Proceed to [selecting which repositories to import](#select-which-repositories-to-import).
@@ -129,9 +143,9 @@ To import your GitHub repository using a GitHub personal access token:
    1. Go to <https://github.com/settings/tokens/new>.
    1. In the **Note** field, enter a token description.
    1. Select the `repo` scope.
-   1. Optional. To [import collaborators](#select-additional-items-to-import), or if your project has [Git LFS files](../../../topics/git/lfs/index.md), select the `read:org` scope.
+   1. Optional. To [import collaborators](#select-additional-items-to-import), or if your project has [Git LFS files](../../../topics/git/lfs/_index.md), select the `read:org` scope.
    1. Select **Generate token**.
-1. On the GitLab left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the GitLab left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Import project** and then **GitHub**.
 1. Select **Authorize with GitHub**.
 1. In the **Personal access token** field, paste the GitHub personal access token.
@@ -158,13 +172,17 @@ To import your GitHub repository using the GitLab REST API:
    1. Go to <https://github.com/settings/tokens/new>.
    1. In the **Note** field, enter a token description.
    1. Select the `repo` scope.
-   1. Optional. To [import collaborators](#select-additional-items-to-import), or if your project has [Git LFS files](../../../topics/git/lfs/index.md), select the `read:org` scope.
+   1. Optional. To [import collaborators](#select-additional-items-to-import), or if your project has [Git LFS files](../../../topics/git/lfs/_index.md), select the `read:org` scope.
    1. Select **Generate token**.
 1. Use the [GitLab REST API](../../../api/import.md#import-repository-from-github) to import your GitHub repository.
 
 ### Filter repositories list
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385113) in GitLab 16.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385113) in GitLab 16.0.
+
+{{< /history >}}
 
 After you authorize access to your GitHub repositories, GitLab redirects you to the importer page and
 your GitHub repositories are listed.
@@ -179,11 +197,15 @@ When the **Organization** tab is selected, you can further narrow down your sear
 
 ### Select additional items to import
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5.
-> - Importing collaborators as an additional item was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
-> - Feature flag `github_import_extended_events` was introduced in GitLab 16.8. Disabled by default. This flag improves the performance of imports but removes the **Import issue and pull request events** option.
-> - Feature flag `github_import_extended_events` was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.9.
-> - Improved import performance made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.11. Feature flag `github_import_extended_events` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5.
+- Importing collaborators as an additional item was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
+- Feature flag `github_import_extended_events` was introduced in GitLab 16.8. Disabled by default. This flag improves the performance of imports but removes the **Import issue and pull request events** option.
+- Feature flag `github_import_extended_events` was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.9.
+- Improved import performance made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.11. Feature flag `github_import_extended_events` removed.
+
+{{< /history >}}
 
 To make imports as fast as possible, the following items aren't imported from GitHub by default:
 
@@ -202,8 +224,12 @@ You can choose to import these items, but this could significantly increase impo
 
 ### Select which repositories to import
 
-> - Ability to cancel pending or active imports [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247325) in GitLab 15.7.
-> - Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
+{{< history >}}
+
+- Ability to cancel pending or active imports [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247325) in GitLab 15.7.
+- Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
+
+{{< /history >}}
 
 By default, the proposed repository namespaces match the names as they exist in GitHub, but based
 on your permissions, you can choose to edit these names before you proceed to import any of them.
@@ -228,7 +254,11 @@ Completed imports can be re-imported by selecting **Re-import** and specifying n
 
 ### Check status of imports
 
-> - Details of partially completed imports with a list of entities that failed to import [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386748) in GitLab 16.1.
+{{< history >}}
+
+- Details of partially completed imports with a list of entities that failed to import [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386748) in GitLab 16.1.
+
+{{< /history >}}
 
 After imports are completed, they can be in one of three states:
 
@@ -240,25 +270,33 @@ Expand **Details** to see a list of [repository entities](#imported-data) that f
 
 ## Username mentions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477553) in GitLab 17.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477553) in GitLab 17.5.
+
+{{< /history >}}
 
 GitLab adds backticks to username mentions in issues, merge requests, and notes.
 These backticks prevent linking to an incorrect user with the same username on the GitLab instance.
 
-## User contribution mapping
+## User contribution and membership mapping
 
-> - [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [User contribution and membership mapping](../import/index.md#user-contribution-and-membership-mapping) in 17.8.
+{{< history >}}
 
-The GitHub importer uses [an improved method](../import/index.md#user-contribution-and-membership-mapping)
-of mapping user contributions for:
+- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [user contribution and membership mapping](../import/_index.md#user-contribution-and-membership-mapping) in GitLab 17.8.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176675) in GitLab 17.8.
 
-- GitLab.com
-- GitLab self-managed 17.6 or later when the `importer_user_mapping` and `github_user_mapping` feature flags are enabled.
+{{< /history >}}
+
+The GitHub importer uses an [improved method](../import/_index.md#user-contribution-and-membership-mapping)
+of mapping user contributions for GitLab.com and GitLab Self-Managed.
 
 ### Old method of user contribution mapping
 
-You can use the old user contribution mapping method for imports to GitLab self-managed and GitLab Dedicated instances. For imports to GitLab.com, you must
-use [the improved method](../import/index.md#user-contribution-and-membership-mapping) instead.
+You can use the old user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances.
+To use this method, `importer_user_mapping` and `bulk_import_importer_user_mapping` must be disabled.
+For imports to GitLab.com, you must
+use the [improved method](../import/_index.md#user-contribution-and-membership-mapping) instead.
 
 Using the old method, when [user accounts are provisioned correctly](#accounts-for-user-contribution-mapping), users are mapped during the import.
 
@@ -273,20 +311,26 @@ If the requirements are not met, the importer can't map the particular user's co
 
 ## Mirror a repository and share pipeline status
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
 
-Depending on your GitLab tier, [repository mirroring](../repository/mirror/index.md) can be set up to keep
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+Depending on your GitLab tier, [repository mirroring](../repository/mirror/_index.md) can be set up to keep
 your imported repository in sync with its GitHub copy.
 
 Additionally, you can configure GitLab to send pipeline status updates back to GitHub with the
 [GitHub Project Integration](../integrations/github.md).
 
-If you import your project using [CI/CD for external repository](../../../ci/ci_cd_for_external_repos/index.md), then both
+If you import your project using [CI/CD for external repository](../../../ci/ci_cd_for_external_repos/_index.md), then both
 of the above are automatically configured.
 
-NOTE:
+{{< alert type="note" >}}
+
 Mirroring does not sync any new or updated pull requests from your GitHub project.
+
+{{< /alert >}}
 
 ## Improve the speed of imports on self-managed instances
 
@@ -358,7 +402,7 @@ The following items of a project are imported:
   be imported [as an additional item](#select-additional-items-to-import). The feature flag was removed.
 - Pull request review comments.
 - Regular issue and pull request comments.
-- [Git Large File Storage (LFS) Objects](../../../topics/git/lfs/index.md).
+- [Git Large File Storage (LFS) Objects](../../../topics/git/lfs/_index.md).
 - Pull request reviews.
 - Pull request assigned reviewers. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355137) in GitLab 15.6.
 - Pull request "merged by" information.
@@ -383,7 +427,7 @@ When they are imported, supported GitHub branch protection rules are mapped to e
 
 | GitHub rule                                                                                         | GitLab rule                                                                                                                                                                                                                                                          | Introduced in |
 |:----------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------|
-| **Require conversation resolution before merging** for the project's default branch                 | **All threads must be resolved** [project setting](../merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved)                                                                                                                                         | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) |
+| **Require conversation resolution before merging** for the project's default branch                 | **All threads must be resolved** [project setting](../merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved)                                                                                                                                         | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) |
 | **Require a pull request before merging**                                                           | **No one** option in the **Allowed to push and merge** list of [branch protection settings](../repository/branches/protected.md#add-protection-to-existing-branches)                                                                                                            | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) |
 | **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#prevent-unintended-consequences)                                                                                                                                                          | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
 | **Allow force pushes - Everyone**                                                                   | **Allowed to force push** [branch protection setting](../repository/branches/protected.md#allow-force-push-on-a-protected-branch)                                                                                                                                               | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) |
@@ -398,7 +442,11 @@ manually.
 
 ### Collaborators (members)
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10.
+
+{{< /history >}}
 
 These GitHub collaborator roles are mapped to these GitLab [member roles](../../permissions.md#roles):
 
@@ -482,9 +530,12 @@ git clone -c http.extraHeader="Authorization: basic <base64 encode YOUR-TOKEN>" 
 
 The following configuration is an example on how to configure Apache HTTP Server as a reverse proxy
 
-WARNING:
+{{< alert type="warning" >}}
+
 For simplicity, the snippet does not have configuration to encrypt the connection between the client and the proxy. However, for security reasons you should include that
 configuration. See [sample Apache TLS/SSL configuration](https://ssl-config.mozilla.org/#server=apache&version=2.4.41&config=intermediate&openssl=1.1.1k&guideline=5.6).
+
+{{< /alert >}}
 
 ```plaintext
 # Required modules

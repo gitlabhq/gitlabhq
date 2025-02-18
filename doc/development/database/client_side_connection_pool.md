@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Client-side connection-pool
 ---
-
-# Client-side connection-pool
 
 Ruby processes accessing the database through
 ActiveRecord, automatically calculate the connection-pool size for the

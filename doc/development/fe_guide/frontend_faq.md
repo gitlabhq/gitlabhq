@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Frontend FAQ
 ---
-
-# Frontend FAQ
 
 ## Rules of Frontend FAQ
 
@@ -190,7 +189,7 @@ To see what polyfills are being used:
 1. Select the [`compile-production-assets`](https://gitlab.com/gitlab-org/gitlab/-/jobs/641770154) job.
 1. In the right-hand sidebar, scroll to **Job Artifacts**, and select **Browse**.
 1. Select the **webpack-report** folder to open it, and select **index.html**.
-1. In the upper-left corner of the page, select the right arrow (**{chevron-lg-right}**)
+1. In the upper-left corner of the page, select the right arrow ({{< icon name="chevron-lg-right" >}})
    to display the explorer.
 1. In the **Search modules** field, enter `gitlab/node_modules/core-js` to see
    which polyfills are being loaded and where:
@@ -203,7 +202,7 @@ See [dark mode docs](dark_mode.md)
 
 ### 10. How to render GitLab-flavored Markdown?
 
-If you need to render [GitLab-flavored Markdown](../gitlab_flavored_markdown/index.md), then there are two things that you require:
+If you need to render [GitLab-flavored Markdown](../gitlab_flavored_markdown/_index.md), then there are two things that you require:
 
 - Pass the GLFM content with the `v-safe-html` directive to a `div` HTML element inside your Vue component
 - Add the `md` class to the root div, which will apply the appropriate CSS styling

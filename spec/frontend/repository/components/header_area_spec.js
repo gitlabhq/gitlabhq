@@ -4,9 +4,12 @@ import RefSelector from '~/ref/components/ref_selector.vue';
 import HeaderArea from '~/repository/components/header_area.vue';
 import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
 import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
+import CompactCodeDropdown from '~/repository/components/code_dropdown/compact_code_dropdown.vue';
 import SourceCodeDownloadDropdown from '~/vue_shared/components/download_dropdown/download_dropdown.vue';
+import AddToTree from '~/repository/components/header_area/add_to_tree.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
+import RepositoryOverflowMenu from '~/repository/components/header_area/repository_overflow_menu.vue';
 import BlobControls from '~/repository/components/header_area/blob_controls.vue';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
@@ -30,13 +33,15 @@ describe('HeaderArea', () => {
   const findBreadcrumbs = () => wrapper.findComponent(Breadcrumbs);
   const findRefSelector = () => wrapper.findComponent(RefSelector);
   const findFindFileButton = () => wrapper.findByTestId('tree-find-file-control');
-  const findCompareButton = () => wrapper.findByTestId('tree-compare-control');
   const findWebIdeButton = () => wrapper.findByTestId('js-tree-web-ide-link');
   const findCodeDropdown = () => wrapper.findComponent(CodeDropdown);
+  const findCompactCodeDropdown = () => wrapper.findComponent(CompactCodeDropdown);
   const findSourceCodeDownloadDropdown = () => wrapper.findComponent(SourceCodeDownloadDropdown);
   const findCloneCodeDropdown = () => wrapper.findComponent(CloneCodeDropdown);
+  const findAddToTreeDropdown = () => wrapper.findComponent(AddToTree);
   const findPageHeading = () => wrapper.findByTestId('repository-heading');
   const findFileIcon = () => wrapper.findComponent(FileIcon);
+  const findRepositoryOverflowMenu = () => wrapper.findComponent(RepositoryOverflowMenu);
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
@@ -122,43 +127,78 @@ describe('HeaderArea', () => {
       });
     });
 
-    describe('Compare button', () => {
-      it('does not render Compare button for root ref', () => {
-        expect(findCompareButton().exists()).not.toBe(true);
-      });
-
-      it('renders Compare button for non-root ref', () => {
-        wrapper = createComponent({}, 'treePathDecoded', { comparePath: 'test/project/compare' });
-        expect(findCompareButton().exists()).toBe(true);
-      });
-    });
-
     describe('Edit button', () => {
       it('renders WebIdeLink component', () => {
         expect(findWebIdeButton().exists()).toBe(true);
       });
     });
 
-    describe('CodeDropdown', () => {
-      it('renders CodeDropdown component with correct props for desktop layout', () => {
-        expect(findCodeDropdown().exists()).toBe(true);
-        expect(findCodeDropdown().props('sshUrl')).toBe(headerAppInjected.sshUrl);
-        expect(findCodeDropdown().props('httpUrl')).toBe(headerAppInjected.httpUrl);
+    describe('when `directory_code_dropdown_updates` flag is `false`', () => {
+      describe('CodeDropdown', () => {
+        it('renders CodeDropdown component with correct props for desktop layout', () => {
+          expect(findCodeDropdown().exists()).toBe(true);
+          expect(findCodeDropdown().props('sshUrl')).toBe(headerAppInjected.sshUrl);
+          expect(findCodeDropdown().props('httpUrl')).toBe(headerAppInjected.httpUrl);
+        });
+
+        describe('SourceCodeDownloadDropdown', () => {
+          it('renders SourceCodeDownloadDropdown and CloneCodeDropdown component with correct props for mobile layout', () => {
+            expect(findSourceCodeDownloadDropdown().exists()).toBe(true);
+            expect(findSourceCodeDownloadDropdown().props('downloadLinks')).toEqual(
+              headerAppInjected.downloadLinks,
+            );
+            expect(findSourceCodeDownloadDropdown().props('downloadArtifacts')).toEqual(
+              headerAppInjected.downloadArtifacts,
+            );
+            expect(findCloneCodeDropdown().exists()).toBe(true);
+            expect(findCloneCodeDropdown().props('sshUrl')).toBe(headerAppInjected.sshUrl);
+            expect(findCloneCodeDropdown().props('httpUrl')).toBe(headerAppInjected.httpUrl);
+          });
+        });
+
+        describe('Add to tree dropdown', () => {
+          it('does not render AddToTree component', () => {
+            expect(findAddToTreeDropdown().exists()).toBe(false);
+          });
+        });
+      });
+    });
+  });
+
+  describe('when rendered for tree view and directory_code_dropdown_updates flag is true', () => {
+    beforeEach(() => {
+      wrapper = createComponent({}, {}, { glFeatures: { directoryCodeDropdownUpdates: true } });
+    });
+
+    describe('Add to tree dropdown', () => {
+      it('renders AddToTree component', () => {
+        expect(findAddToTreeDropdown().exists()).toBe(true);
       });
     });
 
-    describe('SourceCodeDownloadDropdown', () => {
-      it('renders SourceCodeDownloadDropdown and CloneCodeDropdown component with correct props for mobile layout', () => {
-        expect(findSourceCodeDownloadDropdown().exists()).toBe(true);
-        expect(findSourceCodeDownloadDropdown().props('downloadLinks')).toEqual(
-          headerAppInjected.downloadLinks,
+    it('renders CompactCodeDropdown with correct props', () => {
+      expect(findCompactCodeDropdown().exists()).toBe(true);
+      expect(findCompactCodeDropdown().props()).toMatchObject({
+        sshUrl: headerAppInjected.sshUrl,
+        httpUrl: headerAppInjected.httpUrl,
+        kerberosUrl: headerAppInjected.kerberosUrl,
+        xcodeUrl: headerAppInjected.xcodeUrl,
+        currentPath: defaultMockRoute.params.path,
+        directoryDownloadLinks: headerAppInjected.downloadLinks,
+      });
+    });
+
+    describe('RepositoryOverflowMenu', () => {
+      it('does not render RepositoryOverflowMenu component on default ref', () => {
+        expect(findRepositoryOverflowMenu().exists()).toBe(false);
+      });
+
+      it('renders RepositoryOverflowMenu component with correct props when on ref different than default branch', () => {
+        wrapper = createComponent({}, 'treePathDecoded', { comparePath: 'test/project/compare' });
+        expect(findRepositoryOverflowMenu().exists()).toBe(true);
+        expect(findRepositoryOverflowMenu().props('comparePath')).toBe(
+          headerAppInjected.comparePath,
         );
-        expect(findSourceCodeDownloadDropdown().props('downloadArtifacts')).toEqual(
-          headerAppInjected.downloadArtifacts,
-        );
-        expect(findCloneCodeDropdown().exists()).toBe(true);
-        expect(findCloneCodeDropdown().props('sshUrl')).toBe(headerAppInjected.sshUrl);
-        expect(findCloneCodeDropdown().props('httpUrl')).toBe(headerAppInjected.httpUrl);
       });
     });
   });
@@ -175,6 +215,10 @@ describe('HeaderArea', () => {
     it('does not render CodeDropdown and SourceCodeDownloadDropdown', () => {
       expect(findCodeDropdown().exists()).toBe(false);
       expect(findSourceCodeDownloadDropdown().exists()).toBe(false);
+    });
+
+    it('does not render AddToTree component', () => {
+      expect(findAddToTreeDropdown().exists()).toBe(false);
     });
 
     it('displays correct file name and icon', () => {
@@ -198,6 +242,10 @@ describe('HeaderArea', () => {
     it('does not render RefSelector or Breadcrumbs', () => {
       expect(findRefSelector().exists()).toBe(false);
       expect(findBreadcrumbs().exists()).toBe(false);
+    });
+
+    it('does not render AddToTree component', () => {
+      expect(findAddToTreeDropdown().exists()).toBe(false);
     });
 
     it('does not render CodeDropdown and SourceCodeDownloadDropdown', () => {

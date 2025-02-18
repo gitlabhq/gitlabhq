@@ -5,7 +5,7 @@ module IdeHelper
   def ide_data(project:, fork_info:, params:)
     base_data = {
       'use-new-web-ide' => use_new_web_ide?.to_s,
-      'new-web-ide-help-page-path' => help_page_path('user/project/web_ide/index.md'),
+      'new-web-ide-help-page-path' => help_page_path('user/project/web_ide/_index.md'),
       'sign-in-path' => new_session_path(current_user),
       'sign-out-path' => destroy_user_session_path,
       'user-preferences-path' => profile_preferences_path
@@ -79,16 +79,18 @@ module IdeHelper
   end
 
   def new_ide_data(project:)
-    extensions_gallery_settings = WebIde::ExtensionsMarketplace.webide_extensions_gallery_settings(user: current_user)
+    extension_marketplace_settings = WebIde::ExtensionMarketplace.webide_extension_marketplace_settings(
+      user: current_user
+    )
     settings_context_hash = WebIde::SettingsSync.settings_context_hash(
-      extensions_gallery_settings: extensions_gallery_settings
+      extension_marketplace_settings: extension_marketplace_settings
     )
 
     {
       'project-path' => project&.path_with_namespace,
       'csp-nonce' => content_security_policy_nonce,
       'editor-font' => new_ide_fonts.to_json,
-      'extensions-gallery-settings' => extensions_gallery_settings.to_json,
+      'extension-marketplace-settings' => extension_marketplace_settings.to_json,
       'settings-context-hash' => settings_context_hash
     }.merge(new_ide_code_suggestions_data).merge(new_ide_oauth_data)
   end
@@ -100,16 +102,16 @@ module IdeHelper
       'committed-state-svg-path' => image_path('illustrations/rocket-launch-md.svg'),
       'pipelines-empty-state-svg-path': image_path('illustrations/empty-state/empty-pipeline-md.svg'),
       'switch-editor-svg-path': image_path('illustrations/rocket-launch-md.svg'),
-      'ci-help-page-path' => help_page_path('ci/quick_start/index.md'),
-      'web-ide-help-page-path' => help_page_path('user/project/web_ide/index.md'),
+      'ci-help-page-path' => help_page_path('ci/quick_start/_index.md'),
+      'web-ide-help-page-path' => help_page_path('user/project/web_ide/_index.md'),
       'render-whitespace-in-code': current_user.render_whitespace_in_code.to_s,
       'default-branch' => project && project.default_branch,
       'project' => convert_to_project_entity_json(project),
       'preview-markdown-path' => project && preview_markdown_path(project),
       'web-terminal-svg-path' => image_path('illustrations/empty-state/empty-cloud-md.svg'),
-      'web-terminal-help-path' => help_page_path('user/project/web_ide/index.md'),
-      'web-terminal-config-help-path' => help_page_path('user/project/web_ide/index.md'),
-      'web-terminal-runners-help-path' => help_page_path('user/project/web_ide/index.md')
+      'web-terminal-help-path' => help_page_path('user/project/web_ide/_index.md'),
+      'web-terminal-config-help-path' => help_page_path('user/project/web_ide/_index.md'),
+      'web-terminal-runners-help-path' => help_page_path('user/project/web_ide/_index.md')
     }
   end
 

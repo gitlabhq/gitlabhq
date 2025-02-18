@@ -2,16 +2,18 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Install Ingress with a cluster management project
 ---
 
-# Install Ingress with a cluster management project
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Assuming you already have a project created from a
-[management project template](../../../../../user/clusters/management_project_template.md), to install Ingress you should
+[management project template](../../../../clusters/management_project_template.md), to install Ingress you should
 uncomment this line from your `helmfile.yaml`:
 
 ```yaml

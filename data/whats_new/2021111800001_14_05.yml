@@ -11,7 +11,7 @@
   release: 14.5
 - name: Add personal README to profile
   description: |
-    You can now add a README section to your GitLab profile! This is a great way to tell others about, your interests, how you work, or anything else you want! To add a README section, create a new public project with the same name as your user account and add a new [README file](https://docs.gitlab.com/ee/user/project/repository/index.html#readme-and-index-files). The contents of that file are automatically shown on your GitLab profile.
+    You can now add a README section to your GitLab profile! This is a great way to tell others about, your interests, how you work, or anything else you want! To add a README section, create a new public project with the same name as your user account and add a new [README file](https://docs.gitlab.com/ee/user/project/repository/#readme-and-index-files). The contents of that file are automatically shown on your GitLab profile.
   stage: Foundations
   self-managed: true
   gitlab-com: true

@@ -397,7 +397,7 @@ describe('BoardForm', () => {
       createComponent({
         props: { canAdminBoard: true, currentPage: formType.delete },
       });
-      findModal().vm.$emit('primary');
+      findModal().vm.$emit('primary', { preventDefault: jest.fn() });
 
       await waitForPromises();
 
@@ -418,7 +418,7 @@ describe('BoardForm', () => {
         },
       });
 
-      findModal().vm.$emit('primary');
+      findModal().vm.$emit('primary', { preventDefault: jest.fn() });
 
       await waitForPromises();
 

@@ -72,6 +72,31 @@ module ApplicationSettingsHelper
     end
   end
 
+  def global_search_settings_checkboxes(form)
+    [
+      form.gitlab_ui_checkbox_component(
+        :global_search_issues_enabled,
+        _("Enable issues tab in global search results"),
+        checkbox_options: { checked: @application_setting.global_search_issues_enabled, multiple: false }
+      ),
+      form.gitlab_ui_checkbox_component(
+        :global_search_merge_requests_enabled,
+        _("Enable merge requests tab in global search results"),
+        checkbox_options: { checked: @application_setting.global_search_merge_requests_enabled, multiple: false }
+      ),
+      form.gitlab_ui_checkbox_component(
+        :global_search_snippet_titles_enabled,
+        _("Enable snippet tab in global search results"),
+        checkbox_options: { checked: @application_setting.global_search_snippet_titles_enabled, multiple: false }
+      ),
+      form.gitlab_ui_checkbox_component(
+        :global_search_users_enabled,
+        _("Enable users tab in global search results"),
+        checkbox_options: { checked: @application_setting.global_search_users_enabled, multiple: false }
+      )
+    ]
+  end
+
   def restricted_level_checkboxes(form)
     restricted_visibility_levels_help_text = {
       Gitlab::VisibilityLevel::PUBLIC => s_(
@@ -257,6 +282,7 @@ module ApplicationSettingsHelper
       :disable_admin_oauth_scopes,
       :disable_feed_token,
       :disable_password_authentication_for_users_with_sso_identities,
+      :root_moved_permanently_redirection,
       :disabled_oauth_sign_in_sources,
       :domain_denylist,
       :domain_denylist_enabled,
@@ -279,6 +305,7 @@ module ApplicationSettingsHelper
       :email_confirmation_setting,
       :enabled_git_access_protocol,
       :enforce_ci_inbound_job_token_scope_enabled,
+      :enforce_email_subaddress_restrictions,
       :enforce_terms,
       :error_tracking_enabled,
       :error_tracking_api_url,
@@ -371,6 +398,7 @@ module ApplicationSettingsHelper
       :session_expire_delay,
       :shared_runners_enabled,
       :shared_runners_text,
+      :sign_in_restrictions,
       :signup_enabled,
       :silent_mode_enabled,
       :slack_app_enabled,
@@ -544,7 +572,12 @@ module ApplicationSettingsHelper
       :require_personal_access_token_expiry,
       :observability_backend_ssl_verification_enabled,
       :show_migrate_from_jenkins_banner,
-      :ropc_without_client_credentials
+      :ropc_without_client_credentials,
+      :global_search_snippet_titles_enabled,
+      :global_search_users_enabled,
+      :global_search_issues_enabled,
+      :global_search_merge_requests_enabled,
+      :vscode_extension_marketplace
     ].tap do |settings|
       unless Gitlab.com?
         settings << :resource_usage_limits
@@ -637,9 +670,7 @@ module ApplicationSettingsHelper
       supported_syntax_link_url: 'https://github.com/google/re2/wiki/Syntax',
       email_restrictions: @application_setting.email_restrictions.to_s,
       after_sign_up_text: @application_setting[:after_sign_up_text].to_s,
-      pending_user_count: pending_user_count,
-      # This is going to be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/509583
-      seat_control: ''
+      pending_user_count: pending_user_count
     }
   end
 end

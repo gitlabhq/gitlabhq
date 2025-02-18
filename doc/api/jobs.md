@@ -2,25 +2,34 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Jobs API
 ---
 
-# Jobs API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## List project jobs
 
-> - Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362172) in GitLab 15.9.
+{{< history >}}
+
+- Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362172) in GitLab 15.9.
+
+{{< /history >}}
 
 Get a list of jobs in a project. Jobs are sorted in descending order of their IDs.
 
-By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination)
+By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination)
 
-NOTE:
-This endpoint supports both offset-based and [keyset-based](rest/index.md#keyset-based-pagination) pagination, but keyset-based
+{{< alert type="note" >}}
+
+This endpoint supports both offset-based and [keyset-based](rest/_index.md#keyset-based-pagination) pagination, but keyset-based
 pagination is strongly recommended when requesting consecutive pages of results.
+
+{{< /alert >}}
 
 ```plaintext
 GET /projects/:id/jobs
@@ -28,7 +37,7 @@ GET /projects/:id/jobs
 
 | Attribute | Type                           | Required | Description |
 |-----------|--------------------------------|----------|-------------|
-| `id`      | integer/string                 | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string                 | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `scope`   | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
 
 ```shell
@@ -201,7 +210,7 @@ Example of response
 
 Get a list of jobs for a pipeline.
 
-By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination)
+By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination)
 
 This endpoint:
 
@@ -215,7 +224,7 @@ GET /projects/:id/pipelines/:pipeline_id/jobs
 
 | Attribute         | Type                           | Required | Description |
 |-------------------|--------------------------------|----------|-------------|
-| `id`              | integer/string                 | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`              | integer/string                 | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `pipeline_id`     | integer                        | Yes      | ID of a pipeline. Can also be obtained in CI jobs via the [predefined CI variable](../ci/variables/predefined_variables.md) `CI_PIPELINE_ID`. |
 | `include_retried` | boolean                        | No       | Include retried jobs in the response. Defaults to `false`. |
 | `scope`           | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
@@ -395,7 +404,7 @@ GET /projects/:id/pipelines/:pipeline_id/bridges
 
 | Attribute     | Type                           | Required | Description |
 |---------------|--------------------------------|----------|-------------|
-| `id`          | integer/string                 | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`          | integer/string                 | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `pipeline_id` | integer                        | Yes      | ID of a pipeline. |
 | `scope`       | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
 
@@ -484,7 +493,7 @@ Retrieve the job that generated a job token.
 GET /job
 ```
 
-Examples (must run as part of the [`script`](../ci/yaml/index.md#script) section of a [CI/CD job](../ci/jobs/index.md)):
+Examples (must run as part of the [`script`](../ci/yaml/_index.md#script) section of a [CI/CD job](../ci/jobs/_index.md)):
 
 ```shell
 curl --header "Authorization: Bearer $CI_JOB_TOKEN" "${CI_API_V4_URL}/job"
@@ -559,7 +568,7 @@ Example of response
 ## Get GitLab agent by `CI_JOB_TOKEN`
 
 Retrieve the job that generated the `CI_JOB_TOKEN`, along with a list of allowed
-[agents](../user/clusters/agent/index.md).
+[agents](../user/clusters/agent/_index.md).
 
 ```plaintext
 GET /job/allowed_agents
@@ -637,7 +646,7 @@ GET /projects/:id/jobs/:job_id
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
 
 ```shell
@@ -720,7 +729,7 @@ GET /projects/:id/jobs/:job_id/trace
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
 
 ```shell
@@ -744,7 +753,7 @@ POST /projects/:id/jobs/:job_id/cancel
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
 
 ```shell
@@ -800,7 +809,7 @@ POST /projects/:id/jobs/:job_id/retry
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
 
 ```shell
@@ -846,8 +855,11 @@ Example of response
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Prior to GitLab 17.0, this endpoint does not support trigger jobs.
+
+{{< /alert >}}
 
 ## Erase a job
 
@@ -861,7 +873,7 @@ Parameters
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
 
 Example of request
@@ -910,9 +922,12 @@ Example of response
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 You can't delete archived jobs with the API, but you can
 [delete job artifacts and logs from jobs completed before a specific date](../administration/cicd/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts)
+
+{{< /alert >}}
 
 ## Run a job
 
@@ -924,7 +939,7 @@ POST /projects/:id/jobs/:job_id/play
 
 | Attribute                  | Type            | Required | Description |
 |----------------------------|-----------------|----------|-------------|
-| `id`                       | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                       | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`                   | integer         | Yes      | ID of a job. |
 | `job_variables_attributes` | array of hashes | No       | An array containing the custom variables available to the job. |
 

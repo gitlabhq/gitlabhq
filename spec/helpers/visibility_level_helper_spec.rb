@@ -157,6 +157,26 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
     end
   end
 
+  describe '#disallowed_visibility_level_by_organization?' do
+    let(:organization) { build_stubbed(:organization, organization_visibility_level) }
+    let(:group) { build(:group, :private, organization: organization) }
+
+    subject { helper.disallowed_visibility_level_by_organization?(group, visibility_level) }
+
+    where(:organization_visibility_level, :visibility_level, :expected) do
+      :public   | public_vis   | false
+      :public   | internal_vis | false
+      :public   | private_vis  | false
+      :private  | public_vis   | true
+      :private  | internal_vis | true
+      :private  | private_vis  | false
+    end
+
+    with_them do
+      it { is_expected.to eq expected }
+    end
+  end
+
   describe '#disallowed_visibility_level_by_parent?' do
     let(:parent_group) { build_stubbed(:group, parent_group_visibility_level) }
     let(:group) { build(:group, :private, parent: parent_group) }

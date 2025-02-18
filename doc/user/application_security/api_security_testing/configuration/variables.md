@@ -2,11 +2,14 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Available CI/CD variables and configuration files
 ---
 
-# Available CI/CD variables and configuration files
+{{< history >}}
 
-> - [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/450445) Changed template name from `DAST-API.gitlab-ci.yml` to `API-Security.gitlab-ci.yml` and variable prefixed from `DAST_API_` to `APISEC_` in GitLab 17.1.
+- [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/450445) Changed template name from `DAST-API.gitlab-ci.yml` to `API-Security.gitlab-ci.yml` and variable prefixed from `DAST_API_` to `APISEC_` in GitLab 17.1.
+
+{{< /history >}}
 
 ## Available CI/CD variables
 
@@ -27,7 +30,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 | [`APISEC_EXCLUDE_URLS`](customizing_analyzer_settings.md#exclude-urls)                      | Exclude API URL from testing. |
 | [`APISEC_EXCLUDE_PARAMETER_ENV`](customizing_analyzer_settings.md#exclude-parameters)       | JSON string containing excluded parameters. |
 | [`APISEC_EXCLUDE_PARAMETER_FILE`](customizing_analyzer_settings.md#exclude-parameters)      | Path to a JSON file containing excluded parameters. |
-| [`APISEC_REQUEST_HEADERS`](customizing_analyzer_settings.md#request-headers)                | A comma-separated (`,`) list of headers to include on each scan request. Consider using `APISEC_REQUEST_HEADERS_BASE64` when storing secret header values in a [masked variable](../../../../ci/variables/index.md#mask-a-cicd-variable), which has character set restrictions. |
+| [`APISEC_REQUEST_HEADERS`](customizing_analyzer_settings.md#request-headers)                | A comma-separated (`,`) list of headers to include on each scan request. Consider using `APISEC_REQUEST_HEADERS_BASE64` when storing secret header values in a [masked variable](../../../../ci/variables/_index.md#mask-a-cicd-variable), which has character set restrictions. |
 | [`APISEC_REQUEST_HEADERS_BASE64`](customizing_analyzer_settings.md#request-headers)         | A comma-separated (`,`) list of headers to include on each scan request, Base64-encoded. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378440) in GitLab 15.6. |
 | [`APISEC_OPENAPI`](enabling_the_analyzer.md#openapi-specification)                          | OpenAPI specification file or URL. |
 | [`APISEC_OPENAPI_RELAXED_VALIDATION`](enabling_the_analyzer.md#openapi-specification)       | Relax document validation. Default is disabled. |

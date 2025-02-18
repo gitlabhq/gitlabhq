@@ -1,16 +1,18 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Project statistics API
 ---
 
-# Project statistics API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Every API call to [project](../user/project/index.md) statistics must be authenticated.
+{{< /details >}}
+
+Every API call to [project](../user/project/_index.md) statistics must be authenticated.
 Retrieving these statistics requires read access to the repository.
 
 For use with a [personal access token](../user/profile/personal_access_tokens.md),
@@ -28,7 +30,7 @@ GET /projects/:id/statistics
 
 | Attribute  | Type   | Required | Description |
 | ---------- | ------ | -------- | ----------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 Example response:
 

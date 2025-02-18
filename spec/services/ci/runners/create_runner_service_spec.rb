@@ -132,6 +132,10 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
     end
 
     it { is_expected.to be_error }
+
+    it 'does not track runner creation' do
+      expect { execute }.not_to trigger_internal_events('create_ci_runner')
+    end
   end
 
   shared_examples 'it can return an error' do
@@ -174,6 +178,18 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
       context 'when admin mode is enabled', :enable_admin_mode do
         it_behaves_like 'it can create a runner'
         it_behaves_like 'it can return an error'
+
+        it 'tracks internal events', :clean_gitlab_redis_shared_state do
+          expect { execute }
+            .to trigger_internal_events('create_ci_runner')
+            .with(user: current_user, additional_properties: {
+              label: expected_type,
+              property: 'authenticated_user'
+            }).and increment_usage_metrics(
+              'redis_hll_counters.count_distinct_user_id_from_create_ci_runner_monthly',
+              'redis_hll_counters.count_distinct_user_id_from_create_ci_runner_weekly'
+            )
+        end
 
         it 'does not track runner creation with maintenance note' do
           expect { execute }.not_to trigger_internal_events('set_runner_maintenance_note')
@@ -229,6 +245,18 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
       let(:current_user) { group_owner }
 
       it_behaves_like 'it can create a runner'
+
+      it 'tracks internal events', :clean_gitlab_redis_shared_state do
+        expect { execute }
+          .to trigger_internal_events('create_ci_runner')
+          .with(namespace: group, user: current_user, additional_properties: {
+            label: expected_type,
+            property: 'authenticated_user'
+          }).and increment_usage_metrics(
+            'redis_hll_counters.count_distinct_namespace_id_from_create_ci_runner_monthly',
+            'redis_hll_counters.count_distinct_namespace_id_from_create_ci_runner_weekly'
+          )
+      end
 
       it 'populates sharding_key_id correctly' do
         expect(runner.sharding_key_id).to eq(group.id)
@@ -314,6 +342,18 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
         end
 
         it_behaves_like 'it can create a runner'
+
+        it 'tracks internal events', :clean_gitlab_redis_shared_state do
+          expect { execute }
+            .to trigger_internal_events('create_ci_runner')
+            .with(project: project, user: current_user, additional_properties: {
+              label: expected_type,
+              property: 'authenticated_user'
+            }).and increment_usage_metrics(
+              'redis_hll_counters.count_distinct_project_id_from_create_ci_runner_monthly',
+              'redis_hll_counters.count_distinct_project_id_from_create_ci_runner_weekly'
+            )
+        end
       end
     end
 

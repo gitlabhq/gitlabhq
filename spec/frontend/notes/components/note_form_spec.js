@@ -1,6 +1,7 @@
 import { GlLink, GlFormCheckbox } from '@gitlab/ui';
-import { nextTick } from 'vue';
-import batchComments from '~/batch_comments/stores/modules/batch_comments';
+import Vue, { nextTick } from 'vue';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import NoteForm from '~/notes/components/note_form.vue';
 import createStore from '~/notes/stores';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
@@ -11,12 +12,19 @@ import notesEventHub from '~/notes/event_hub';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useBatchComments } from '~/batch_comments/store';
 import { noteableDataMock, notesDataMock, discussionMock, note } from '../mock_data';
 
 jest.mock('~/lib/utils/autosave');
 
+Vue.use(PiniaVuePlugin);
+
 describe('issue_note_form component', () => {
   let store;
+  let pinia;
   let wrapper;
   let textarea;
   let props;
@@ -25,6 +33,7 @@ describe('issue_note_form component', () => {
   const createComponentWrapper = (propsData = {}, provide = {}, stubs = {}) => {
     wrapper = mountExtended(NoteForm, {
       store,
+      pinia,
       propsData: {
         ...props,
         ...propsData,
@@ -53,6 +62,11 @@ describe('issue_note_form component', () => {
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
 
   beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
+    useBatchComments().$patch({ isMergeRequest: true });
+
     store = createStore();
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
@@ -287,8 +301,6 @@ describe('issue_note_form component', () => {
 
   describe('with batch comments', () => {
     beforeEach(() => {
-      store.registerModule('batchComments', batchComments());
-
       createComponentWrapper({
         isDraft: true,
         noteId: '',
@@ -338,7 +350,7 @@ describe('issue_note_form component', () => {
       });
 
       it('sends the event to indicate that a draft has been added to the review', () => {
-        store.state.batchComments.drafts = [{ note: 'A' }];
+        useBatchComments().drafts = [{ note: 'A' }];
         createComponentWrapper({
           isDraft: true,
           noteId: '',

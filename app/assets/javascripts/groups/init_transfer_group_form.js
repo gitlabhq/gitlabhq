@@ -40,7 +40,7 @@ export default () => {
           )}">`,
           groupLinkEnd: '</a>',
           documentationLinkStart: `<a href="${helpPagePath(
-            'user/project/repository/index.html#repository-path-changes',
+            'user/project/repository/_index.html#repository-path-changes',
           )}">`,
           documentationLinkEnd: '</a>',
         },

@@ -62,6 +62,12 @@ RSpec.describe Gitlab::GithubImport::PushPlaceholderReferences, feature_category
 
       expect(::Import::PlaceholderReferences::PushService).not_to receive(:from_record)
     end
+
+    it 'does not push a reference if source identifier does not match an existing source user' do
+      importer.push_with_record(gitlab_note, :author_id, 'unmatched_idenfier', user_mapper)
+
+      expect(::Import::PlaceholderReferences::PushService).not_to receive(:from_record)
+    end
   end
 
   describe '#push_refs_with_ids' do
@@ -90,6 +96,12 @@ RSpec.describe Gitlab::GithubImport::PushPlaceholderReferences, feature_category
       importer.push_refs_with_ids([gitlab_note.id], Note, nil, user_mapper)
 
       expect(::Import::PlaceholderReferences::PushService).not_to receive(:new)
+    end
+
+    it 'does not push a reference if source identifier does not match an existing source user' do
+      importer.push_refs_with_ids([gitlab_note.id], Note, 'unmatched_idenfier', user_mapper)
+
+      expect(::Import::PlaceholderReferences::PushService).not_to receive(:from_record)
     end
   end
 
@@ -121,6 +133,12 @@ RSpec.describe Gitlab::GithubImport::PushPlaceholderReferences, feature_category
       importer.push_with_composite_key(gitlab_note, :user_id, composite_key, nil, user_mapper)
 
       expect(::Import::PlaceholderReferences::PushService).not_to receive(:new)
+    end
+
+    it 'does not push a reference if source identifier does not match an existing source user' do
+      importer.push_with_composite_key(gitlab_note, :user_id, composite_key, 'unmatched_idenfier', user_mapper)
+
+      expect(::Import::PlaceholderReferences::PushService).not_to receive(:from_record)
     end
   end
 end

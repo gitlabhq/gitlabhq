@@ -133,7 +133,7 @@ export default {
 
 <template>
   <dom-element-listener
-    selector=".js-token-card"
+    :selector="$options.FORM_SELECTOR"
     @[$options.EVENT_ERROR]="onError"
     @[$options.EVENT_SUCCESS]="onSuccess"
   >

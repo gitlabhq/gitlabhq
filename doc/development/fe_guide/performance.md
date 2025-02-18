@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Performance
 ---
-
-# Performance
 
 Performance is an essential part and one of the main areas of concern for any modern application.
 
@@ -203,8 +202,11 @@ All the marks and measures should be instantiated with the constants from
 `app/assets/javascripts/performance/constants.js`. When you're ready to add a new mark's or
 measurement's label, you can follow the pattern.
 
-NOTE:
+{{< alert type="note" >}}
+
 This pattern is a recommendation and not a hard rule.
+
+{{< /alert >}}
 
 ```javascript
 app-*-start // for a start 'mark'
@@ -344,10 +346,13 @@ Previously, GitLab encouraged the use of
 manually generated webpack bundles. However under this new system you should
 not ever need to manually add an entry point to the `webpack.config.js` file.
 
-NOTE:
+{{< alert type="note" >}}
+
 When unsure what controller and action corresponds to a page,
 inspect `document.body.dataset.page` in your
 browser's developer console from any page in GitLab.
+
+{{< /alert >}}
 
 TROUBLESHOOTING:
 If using Vite, keep in mind that support for it is new and you may encounter unexpected effects from time to

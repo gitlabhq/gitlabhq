@@ -10,10 +10,10 @@ module Types
         graphql_name 'WorkItemWidgetEmailParticipants'
         description 'Represents email participants widget'
 
-        implements Types::WorkItems::WidgetInterface
+        implements ::Types::WorkItems::WidgetInterface
 
         field :email_participants,
-          Types::WorkItems::EmailParticipantType.connection_type,
+          ::Types::WorkItems::EmailParticipantType.connection_type,
           null: true,
           description: 'Collection of email participants associated with the work item.',
           method: :issue_email_participants

@@ -21,11 +21,11 @@
     - `POST /groups/:id/runners/reset_registration_token`
 
     We plan to implement a new method to bind runners to a GitLab instance
-    as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html).
+    as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ci/runners/new_creation_workflow/).
     The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
     This new architecture introduces a new method for registering runners and will eliminate the legacy
-    [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
+    [runner registration token](https://docs.gitlab.com/security/tokens/#runner-registration-tokens-deprecated).
     From GitLab 18.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
   end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
-  documentation_url: https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner  # (optional) This is a link to the current documentation page
+  documentation_url: https://docs.gitlab.com/ee/api/runners.html#create-a-runner  # (optional) This is a link to the current documentation page

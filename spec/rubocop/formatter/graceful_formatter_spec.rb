@@ -7,7 +7,7 @@ require 'stringio'
 require_relative '../../../rubocop/formatter/graceful_formatter'
 require_relative '../../../rubocop/todo_dir'
 
-RSpec.describe RuboCop::Formatter::GracefulFormatter, :isolated_environment do
+RSpec.describe RuboCop::Formatter::GracefulFormatter, :isolated_environment, feature_category: :tooling do
   # Set by :isolated_environment
   let(:todo_dir) { RuboCop::TodoDir.new("#{Dir.pwd}/.rubocop_todo") }
   let(:stdout) { StringIO.new }
@@ -43,14 +43,11 @@ RSpec.describe RuboCop::Formatter::GracefulFormatter, :isolated_environment do
     let(:offense2) { fake_offense('Cop2') }
 
     before do
-      FileUtils.touch('.rubocop_todo.yml')
-
       File.write('.rubocop.yml', <<~YAML)
         inherit_from:
           <% Dir.glob('.rubocop_todo/**/*.yml').each do |rubocop_todo_yaml| %>
           - '<%= rubocop_todo_yaml %>'
           <% end %>
-          - '.rubocop_todo.yml'
 
         AllCops:
           NewCops: enable # Avoiding RuboCop warnings
@@ -80,7 +77,7 @@ RSpec.describe RuboCop::Formatter::GracefulFormatter, :isolated_environment do
           Details: grace period
         YAML
 
-        File.write('.rubocop_todo.yml', <<~YAML)
+        todo_dir.write('Cop2', <<~YAML)
         ---
         Cop2:
           Details: grace period

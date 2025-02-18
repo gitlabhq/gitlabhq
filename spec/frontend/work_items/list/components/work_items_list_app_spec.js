@@ -35,6 +35,7 @@ import {
   TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_SEARCH_WITHIN,
   TOKEN_TYPE_TYPE,
+  TOKEN_TYPE_STATE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
@@ -85,13 +86,15 @@ describeSkipVue3(skipReason, () => {
     queryHandler = defaultQueryHandler,
     sortPreferenceMutationResponse = mutationHandler,
     workItemsViewPreference = false,
+    workItemsToggleEnabled = true,
+    props = {},
   } = {}) => {
     window.gon = {
       ...window.gon,
       features: {
         workItemsViewPreference,
       },
-      current_user_use_work_items_view: true,
+      current_user_use_work_items_view: workItemsToggleEnabled,
     };
     wrapper = shallowMount(WorkItemsListApp, {
       router: createRouter({ fullPath: '/work_item' }),
@@ -111,6 +114,9 @@ describeSkipVue3(skipReason, () => {
         isSignedIn: true,
         workItemType: null,
         ...provide,
+      },
+      propsData: {
+        ...props,
       },
     });
   };
@@ -476,6 +482,7 @@ describeSkipVue3(skipReason, () => {
       describe('when issues_list_drawer feature is disabled', () => {
         it('is not rendered when feature is disabled', async () => {
           mountComponent({
+            workItemsToggleEnabled: false,
             provide: {
               glFeatures: {
                 issuesListDrawer: false,
@@ -570,6 +577,7 @@ describeSkipVue3(skipReason, () => {
       describe('when epics_list_drawer feature is disabled', () => {
         it('is not rendered when feature is disabled', async () => {
           mountComponent({
+            workItemsToggleEnabled: false,
             provide: {
               glFeatures: {
                 issuesListDrawer: true,
@@ -652,6 +660,23 @@ describeSkipVue3(skipReason, () => {
       it('calls `removeParams` to remove the `show` param', () => {
         expect(removeParams).toHaveBeenCalledWith([DETAIL_VIEW_QUERY_PARAM_NAME]);
       });
+    });
+  });
+
+  describe('when withTabs is false', () => {
+    beforeEach(async () => {
+      mountComponent({ props: { withTabs: false } });
+      await waitForPromises();
+    });
+    it('includes "State", in searchTokens', () => {
+      expect(
+        findIssuableList()
+          .props('searchTokens')
+          .map((token) => token.type),
+      ).toContain(TOKEN_TYPE_STATE);
+    });
+    it('passes empty array in the tabs props', () => {
+      expect(findIssuableList().props('tabs')).toEqual([]);
     });
   });
 });

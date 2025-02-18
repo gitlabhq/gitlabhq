@@ -66,6 +66,12 @@ module Gitlab
 
       private
 
+      def user(user_id)
+        return @user if defined? @user
+
+        @user ||= User.find(user_id)
+      end
+
       def importer_class
         ::Gitlab::GithubGistsImport::Importer::GistImporter
       end
@@ -83,13 +89,11 @@ module Gitlab
       end
 
       def track_gist_import(status, user_id)
-        user = User.find(user_id)
-
         Gitlab::Tracking.event(
           self.class.name,
           'create',
           label: 'github_gist_import',
-          user: user,
+          user: user(user_id),
           status: status
         )
       end
@@ -139,6 +143,7 @@ module Gitlab
           exception_message: exception_message.truncate(255),
           correlation_id_value: correlation_id || Labkit::Correlation::CorrelationId.current_or_new_id,
           user_id: user_id,
+          organization_id: user(user_id).organizations.first.id,
           external_identifiers: github_identifiers
         )
       end

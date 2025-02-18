@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'rspec-parameterized'
 
-RSpec.describe ExpandVariables, feature_category: :secrets_management do
+RSpec.describe ExpandVariables, feature_category: :ci_variables do
   shared_examples 'common variable expansion' do |expander|
     using RSpec::Parameterized::TableSyntax
 

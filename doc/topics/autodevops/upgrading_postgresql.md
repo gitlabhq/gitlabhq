@@ -2,13 +2,15 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Upgrading PostgreSQL for Auto DevOps
 ---
 
-# Upgrading PostgreSQL for Auto DevOps
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When `POSTGRES_ENABLED` is `true`, Auto DevOps provides an
 [in-cluster PostgreSQL database](customize.md#postgresql-database-support) for your application.
@@ -39,10 +41,13 @@ involves:
    any existing channel 1 database. For more information, see
    [Detected an existing PostgreSQL database](troubleshooting.md#detected-an-existing-postgresql-database).
 
-NOTE:
+{{< alert type="note" >}}
+
 If you have configured Auto DevOps to have staging,
 consider trying out the backup and restore steps on staging first, or
 trying this out on a review app.
+
+{{< /alert >}}
 
 ## Take your application offline
 
@@ -170,16 +175,22 @@ pvc-9085e3d3-5239-11ea-9c8d-42010a8e0096   8Gi        RWO            Retain     
 
 ## Install new PostgreSQL
 
-WARNING:
+{{< alert type="warning" >}}
+
 Using the newer version of PostgreSQL deletes
 the older 0.7.1 PostgreSQL. To prevent the underlying data from being
 deleted, you can choose to retain the [persistent volume](#retain-persistent-volumes).
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 You can also
-[scope](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) the
+[scope](../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable) the
 `AUTO_DEVOPS_POSTGRES_CHANNEL`, `AUTO_DEVOPS_POSTGRES_DELETE_V1` and
 `POSTGRES_VERSION` variables to specific environments, for example, `staging`.
+
+{{< /alert >}}
 
 1. Set `AUTO_DEVOPS_POSTGRES_CHANNEL` to `2`. This opts into using the
    newer 8.2.1-based PostgreSQL, and removes the older 0.7.1-based
@@ -191,7 +202,7 @@ You can also
    minimum PostgreSQL version supported by Auto DevOps. See also the list of
    [tags available](https://hub.docker.com/r/bitnami/postgresql/tags).
 1. Set `PRODUCTION_REPLICAS` to `0`. For other environments, use
-   `REPLICAS` with an [environment scope](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
+   `REPLICAS` with an [environment scope](../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable).
 1. If you have set the `DB_INITIALIZE` or `DB_MIGRATE` variables, either
    remove the variables, or rename the variables temporarily to
    `XDB_INITIALIZE` or the `XDB_MIGRATE` to effectively disable them.

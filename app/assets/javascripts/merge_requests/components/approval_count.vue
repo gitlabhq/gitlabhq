@@ -42,6 +42,7 @@ export default {
     :aria-label="tooltipTitle"
     icon="check-circle"
     variant="success"
+    icon-optically-aligned
     data-testid="mr-appovals"
   >
     {{ approvalCount }}

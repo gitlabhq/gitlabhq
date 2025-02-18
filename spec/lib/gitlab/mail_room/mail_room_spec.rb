@@ -163,7 +163,7 @@ RSpec.describe Gitlab::MailRoom, feature_category: :build do
       let(:custom_config) { { enabled: false } }
 
       it 'returns an empty array' do
-        expect(described_class.enabled_mailbox_types).to match_array([])
+        expect(described_class.enabled_mailbox_types).to be_empty
       end
     end
   end

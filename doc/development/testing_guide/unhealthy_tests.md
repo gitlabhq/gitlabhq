@@ -1,11 +1,10 @@
 ---
 stage: none
 group: unassigned
-info: "See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
-description: "GitLab development guidelines - Unhealthy tests."
+info: 'See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines'
+description: GitLab development guidelines - Unhealthy tests.
+title: Unhealthy tests
 ---
-
-# Unhealthy tests
 
 ## Flaky tests
 
@@ -53,6 +52,7 @@ it's reset to a pristine test after each test.
 - [Example 7](https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/3389#note_1534827164):
   A TCP socket used in a test was not closed before the next test, which also used
   the same port with another TCP socket.
+  [Example 8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179302#note_2324238692): A `let_it_be` depended on a stub defined in a `before` block. `let_it_be` executes during `before(:all)`, so the stub was not yet set. This exposed the tests to the actual method call, which happened to use a method cache.
 
 #### Dataset-specific
 
@@ -177,7 +177,7 @@ While tests can sometimes address these issues through improved synchronization,
 **Difficulty to reproduce:** Moderate. It can be reproduced, for example, in feature tests by attempting to reference an
 element on a page that is not yet rendered, or in unit tests by failing to wait for an asynchronous operation to complete.
 
-**Resolution:** In the end-to-end test suite, using [an eventually matcher](end_to_end/best_practices/index.md#use-eventually_-matchers-for-expectations-that-require-waiting).
+**Resolution:** In the end-to-end test suite, using [an eventually matcher](end_to_end/best_practices/_index.md#use-eventually_-matchers-for-expectations-that-require-waiting).
 
 **Examples:**
 
@@ -210,7 +210,7 @@ When we have a flaky test in `master`:
 
 ##### Fast quarantine
 
-Unless you really need to have a test disabled very fast (`< 10min`), consider [using the `~pipeline::expedited` label instead](../pipelines/index.md#the-pipelineexpedited-label).
+Unless you really need to have a test disabled very fast (`< 10min`), consider [using the `~pipeline::expedited` label instead](../pipelines/_index.md#the-pipelineexpedited-label).
 
 To quickly quarantine a test without having to open a merge request and wait for pipelines,
 you can follow [the fast quarantining process](https://gitlab.com/gitlab-org/quality/engineering-productivity/fast-quarantine/-/tree/main/#fast-quarantine-a-test).
@@ -221,7 +221,7 @@ you can follow [the fast quarantining process](https://gitlab.com/gitlab-org/qua
 
 Once a test is fast-quarantined, you can proceed with the long-term quarantining process. This can be done by opening a merge request.
 
-First, ensure the test file has a [`feature_category` metadata](../feature_categorization/index.md#rspec-examples), to ensure correct attribution of the test file.
+First, ensure the test file has a [`feature_category` metadata](../feature_categorization/_index.md#rspec-examples), to ensure correct attribution of the test file.
 
 Then, you can use the `quarantine: '<issue url>'` metadata with the URL of the
 ~"failure::flaky-test" issue you created previously.
@@ -504,4 +504,4 @@ The process around these issues is very lightweight. Feel free to close them or 
 
 ---
 
-[Return to Testing documentation](index.md)
+[Return to Testing documentation](_index.md)

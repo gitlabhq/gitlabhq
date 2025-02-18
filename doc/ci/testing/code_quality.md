@@ -2,13 +2,15 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Code Quality
 ---
 
-# Code Quality
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Code Quality helps code authors find and fix problems faster, and frees up time for code reviewers to focus their attention on more nuanced suggestions or comments.
 
@@ -21,12 +23,12 @@ as shown in the following table:
 
 | Feature                                                                                     | In Free                | In Premium             | In Ultimate            |
 |:--------------------------------------------------------------------------------------------|:-----------------------|:-----------------------|:-----------------------|
-| [Import Code Quality results from CI/CD jobs](#import-code-quality-results-from-a-cicd-job) | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| [Use CodeClimate-based scanning](#use-the-built-in-code-quality-cicd-template-deprecated)   | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| [See findings in a merge request widget](#merge-request-widget)                             | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| [See findings in a pipeline report](#pipeline-details-view)                                 | **{dotted-circle}** No | **{check-circle}** Yes | **{check-circle}** Yes |
-| [See findings in the merge request changes view](#merge-request-changes-view)               | **{dotted-circle}** No | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Analyze overall health in a project quality summary view](#project-quality-view)           | **{dotted-circle}** No | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Import Code Quality results from CI/CD jobs](#import-code-quality-results-from-a-cicd-job) | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| [Use CodeClimate-based scanning](#use-the-built-in-code-quality-cicd-template-deprecated)   | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| [See findings in a merge request widget](#merge-request-widget)                             | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| [See findings in a pipeline report](#pipeline-details-view)                                 | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| [See findings in the merge request changes view](#merge-request-changes-view)               | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Analyze overall health in a project quality summary view](#project-quality-view)           | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 
 ## Scan code for quality violations
 
@@ -60,9 +62,12 @@ Now, after the pipeline runs, the quality tool's results are [processed and disp
 
 ### Use the built-in Code Quality CI/CD template (deprecated)
 
-WARNING:
+{{< alert type="warning" >}}
+
 This feature was [deprecated](../../update/deprecations.md#codeclimate-based-code-quality-scanning-will-be-removed) in GitLab 17.3 and is planned for removal in 18.0.
 [Integrate the results from a supported tool directly](#import-code-quality-results-from-a-cicd-job) instead.
+
+{{< /alert >}}
 
 Code Quality also includes a built-in CI/CD template, `Code-Quality.gitlab-ci.yaml`.
 This template runs a scan based on the open source CodeClimate scanning engine.
@@ -82,16 +87,17 @@ The following integrations are available to replace the built-in plugins:
 
 | Plugin       | On by default                                | Replacement                                                                                                                                                                          |
 |--------------|----------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Duplication  | **{check-circle}** Yes                       | [Integrate PMD Copy/Paste Detector](#pmd-copypaste-detector).                                                                                                                        |
-| ESLint       | **{check-circle}** Yes                       | [Integrate ESLint](#eslint).                                                                                                                                                         |
-| gofmt        | **{dotted-circle}** No                       | [Integrate golangci-lint](#golangci-lint) and enable the [gofmt linter](https://golangci-lint.run/usage/linters#gofmt).                                                              |
-| golint       | **{dotted-circle}** No                       | [Integrate golangci-lint](#golangci-lint) and enable one of the included linters that replaces golint. golint is [deprecated and frozen](https://github.com/golang/go/issues/38968). |
-| govet        | **{dotted-circle}** No                       | [Integrate golangci-lint](#golangci-lint). golangci-lint [includes govet by default](https://golangci-lint.run/usage/linters#enabled-by-default).                                    |
-| markdownlint | **{dotted-circle}** No (community-supported) | [Integrate markdownlint-cli2](#markdownlint-cli2).                                                                                                                                   |
-| pep8         | **{dotted-circle}** No                       | Integrate an alternative Python linter like [Flake8](#flake8), [Pylint](#pylint), or [Ruff](#ruff).                                                                                  |
-| SonarPython  | **{dotted-circle}** No                       | Integrate an alternative Python linter like [Flake8](#flake8), [Pylint](#pylint), or [Ruff](#ruff).                                                                                  |
-| Stylelint    | **{dotted-circle}** No (community-supported) | [Integrate Stylelint](#stylelint).                                                                                                                                                   |
-| SwiftLint    | **{dotted-circle}** No                       | [Integrate SwiftLint](#swiftlint).                                                                                                                                                   |
+| Duplication  | {{< icon name="check-circle" >}} Yes                       | [Integrate PMD Copy/Paste Detector](#pmd-copypaste-detector).                                                                                                                        |
+| ESLint       | {{< icon name="check-circle" >}} Yes                       | [Integrate ESLint](#eslint).                                                                                                                                                         |
+| gofmt        | {{< icon name="dotted-circle" >}} No                       | [Integrate golangci-lint](#golangci-lint) and enable the [gofmt linter](https://golangci-lint.run/usage/linters#gofmt).                                                              |
+| golint       | {{< icon name="dotted-circle" >}} No                       | [Integrate golangci-lint](#golangci-lint) and enable one of the included linters that replaces golint. golint is [deprecated and frozen](https://github.com/golang/go/issues/38968). |
+| govet        | {{< icon name="dotted-circle" >}} No                       | [Integrate golangci-lint](#golangci-lint). golangci-lint [includes govet by default](https://golangci-lint.run/usage/linters#enabled-by-default).                                    |
+| markdownlint | {{< icon name="dotted-circle" >}} No (community-supported) | [Integrate markdownlint-cli2](#markdownlint-cli2).                                                                                                                                   |
+| pep8         | {{< icon name="dotted-circle" >}} No                       | Integrate an alternative Python linter like [Flake8](#flake8), [Pylint](#pylint), or [Ruff](#ruff).                                                                                  |
+| RuboCop      | {{< icon name="dotted-circle" >}} Yes                      | [Integrate RuboCop](#rubocop).                                                                               |
+| SonarPython  | {{< icon name="dotted-circle" >}} No                       | Integrate an alternative Python linter like [Flake8](#flake8), [Pylint](#pylint), or [Ruff](#ruff).                                                                                  |
+| Stylelint    | {{< icon name="dotted-circle" >}} No (community-supported) | [Integrate Stylelint](#stylelint).                                                                                                                                                   |
+| SwiftLint    | {{< icon name="dotted-circle" >}} No                       | [Integrate SwiftLint](#swiftlint).                                                                                                                                                   |
 
 ## View Code Quality results
 
@@ -114,9 +120,12 @@ full report available in the **Pipeline** details view.
 
 ### Merge request changes view
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Code Quality results display in the merge request **Changes** view. Lines containing Code Quality
 issues are marked by a symbol beside the gutter. Select the symbol to see the list of issues, then select an issue to see its details.
@@ -125,9 +134,12 @@ issues are marked by a symbol beside the gutter. Select the symbol to see the li
 
 ### Pipeline details view
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The full list of Code Quality violations generated by a pipeline is shown in the **Code Quality**
 tab of the pipeline's details page. The pipeline details view displays all Code Quality findings
@@ -137,12 +149,19 @@ that were found on the branch it was run on.
 
 ### Project quality view
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
-**Status:** Beta
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72724) in GitLab 14.5 [with a flag](../../administration/feature_flags.md) named `project_quality_summary_page`. This feature is in [beta](../../policy/development_stages_support.md). Disabled by default.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72724) in GitLab 14.5 [with a flag](../../administration/feature_flags.md) named `project_quality_summary_page`. This feature is in [beta](../../policy/development_stages_support.md). Disabled by default.
+
+{{< /history >}}
 
 The project quality view displays an overview of the code quality findings. The view can be found under **Analyze > CI/CD analytics**, and requires [`project_quality_summary_page`](../../user/feature_flags.md) feature flag to be enabled for this particular project.
 
@@ -200,7 +219,7 @@ Because the [report format](#code-quality-report-format) has only a few required
 If you already use a tool in your CI/CD pipeline, you should adapt the existing job to add a Code Quality report.
 Adapting the existing job prevents you from running a separate job that may confuse developers and make your pipelines take longer to run.
 
-If you don't already use a tool, you can write a CI/CD job from scratch or adopt the tool by using a component from [the CI/CD Catalog](../components/index.md#cicd-catalog).
+If you don't already use a tool, you can write a CI/CD job from scratch or adopt the tool by using a component from [the CI/CD Catalog](../components/_index.md#cicd-catalog).
 
 ### Code scanning tools
 
@@ -302,7 +321,19 @@ You can use or adapt the [PMD CI/CD component](https://gitlab.com/explore/catalo
 
 Using [SwiftLint](https://realm.github.io/SwiftLint/) requires additional configuration because its default output doesn't conform to the required format.
 
-You can use or adapt the [PMD CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+You can use or adapt the [Swiftlint CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+
+#### RuboCop
+
+Using [RuboCop](https://rubocop.org/) requires additional configuration because its default output doesn't conform to the required format.
+
+You can use or adapt the [RuboCop CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+
+#### Roslynator
+
+Using [Roslynator](https://josefpihrt.github.io/docs/roslynator/) requires additional configuration because its default output doesn't conform to the required format.
+
+You can use or adapt the [Roslynator CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
 
 ### Documentation scanning tools
 

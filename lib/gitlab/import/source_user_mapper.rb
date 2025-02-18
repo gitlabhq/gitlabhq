@@ -33,12 +33,21 @@ module Gitlab
       # @return [Import::SourceUser, nil] The found source user object, or `nil` if no match is found.
       def find_source_user(source_user_identifier)
         cache_from_request_store[source_user_identifier] ||= ::Import::SourceUser.uncached do
-          ::Import::SourceUser.find_source_user(
+          source_user = ::Import::SourceUser.find_source_user(
             source_user_identifier: source_user_identifier,
             namespace: namespace,
             source_hostname: source_hostname,
             import_type: import_type
           )
+
+          # If the record has no `#mapped_user_id`, the record would be unusuable for import.
+          # It can be in this state if the reassigned_to_user, or placeholder_user were deleted
+          # unexpectedly. We intentionally do not have a cascade delete association with
+          # users on this record as we do not want to have unmapped contributions be lost.
+          # In this situation we reset the record.
+          source_user = reset_source_user!(source_user) if reset_source_user?(source_user)
+
+          source_user
         end
       end
 
@@ -118,6 +127,45 @@ module Gitlab
 
       def placeholder_user_limit_exceeded?
         ::Import::PlaceholderUserLimit.new(namespace: namespace).exceeded?
+      end
+
+      def reset_source_user?(source_user)
+        source_user && source_user.mapped_user_id.nil?
+      end
+
+      def reset_source_user!(source_user)
+        in_lock(
+          lock_key(source_user.source_user_identifier), ttl: LOCK_TTL, sleep_sec: LOCK_SLEEP, retries: LOCK_RETRIES
+        ) do |retried|
+          if retried
+            source_user.reset
+            next source_user unless reset_source_user?(source_user)
+          end
+
+          ::Import::Framework::Logger.info(
+            message: 'Resetting source user state',
+            source_user_id: source_user.id,
+            source_user_status: source_user.status,
+            source_user_reassign_to_user_id: source_user.reassign_to_user_id,
+            source_user_placeholder_user_id: source_user.placeholder_user_id
+          )
+
+          source_user.status = 0
+          source_user.reassignment_token = nil
+          source_user.reassign_to_user = nil
+          source_user.placeholder_user ||= create_placeholder_user(source_user)
+
+          next source_user if source_user.save
+
+          ::Import::Framework::Logger.error(
+            message: 'Failed to save source user after resetting',
+            source_user_id: source_user.id,
+            source_user_validation_errors: source_user.errors.full_messages
+          )
+
+          source_user.destroy
+          nil
+        end
       end
 
       def lock_key(source_user_identifier)

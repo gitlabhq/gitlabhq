@@ -17,6 +17,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
       let(:email_opt_in) { true }
       let(:registration_type) { 'free' }
       let(:registration_objective) { 0 }
+      let(:setup_for_company) { true }
       let(:glm_source) { 'glm_source' }
       let(:glm_content) { 'glm_content' }
       let(:joining_project) { true }
@@ -27,11 +28,12 @@ RSpec.describe UserDetail, feature_category: :system_access do
           email_opt_in: email_opt_in,
           initial_registration_type: registration_type,
           registration_type: registration_type,
+          registration_objective: registration_objective,
           glm_source: glm_source,
           glm_content: glm_content,
           joining_project: joining_project,
-          role: role,
-          registration_objective: registration_objective
+          setup_for_company: setup_for_company,
+          role: role
         }
       end
 
@@ -172,6 +174,22 @@ RSpec.describe UserDetail, feature_category: :system_access do
 
         context "when 'joining_project' is invalid" do
           let(:joining_project) { 'true' }
+
+          it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
+        end
+      end
+
+      context 'for setup_for_company' do
+        let(:onboarding_status) do
+          {
+            setup_for_company: setup_for_company
+          }
+        end
+
+        it { is_expected.to allow_value(onboarding_status).for(:onboarding_status) }
+
+        context "when 'setup_for_company' is invalid" do
+          let(:setup_for_company) { 'true' }
 
           it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
         end

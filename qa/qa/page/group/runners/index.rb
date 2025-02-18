@@ -40,20 +40,36 @@ module QA
           end
 
           def has_active_runner?(runner)
-            within_element("runner-row-#{runner.id}") do
+            within_runner_row(runner) do
               has_content?(runner.name)
               has_element?('status-active-icon')
             end
           end
 
           def has_runner_with_expected_tags?(runner)
-            within_element("runner-row-#{runner.id}") do
+            within_runner_row(runner) do
               runner.tags.all? { |tag| has_content?(tag) }
             end
           end
 
           def has_no_runner?(runner)
-            has_no_element?("runner-row-#{runner.id}")
+            retry_until(reload: true, sleep_interval: 2, max_attempts: 6, message: "Retry for runner removal") do
+              has_no_element?("runner-row-#{runner.id}")
+            end
+          end
+
+          def go_to_runner_managers_page(runner)
+            within_runner_row(runner) do
+              within_element("td-summary") do
+                click_link(href: %r{/runners/#{runner.id}})
+              end
+            end
+          end
+
+          private
+
+          def within_runner_row(runner, &block)
+            within_element("runner-row-#{runner.id}", &block)
           end
         end
       end

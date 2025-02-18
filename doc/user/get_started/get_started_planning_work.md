@@ -1,10 +1,9 @@
 ---
 stage: Plan
 group: Project Management
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Get started planning work
 ---
-
-# Get started planning work
 
 GitLab has tools to help you plan, execute, and track your work.
 With planning, collaboration, documentation, time tracking, and reporting features,
@@ -27,8 +26,8 @@ to release every two weeks.
 
 For more information, see:
 
-- [Milestones](../project/milestones/index.md)
-- [Iterations](../group/iterations/index.md)
+- [Milestones](../project/milestones/_index.md)
+- [Iterations](../group/iterations/_index.md)
 
 ## Step 2: Plan and organize work
 
@@ -51,8 +50,8 @@ and evaluate the impact of your work on the broader organization's objectives.
 
 For more information, see:
 
-- [Epics](../group/epics/index.md)
-- [Issues](../project/issues/index.md)
+- [Epics](../group/epics/_index.md)
+- [Issues](../project/issues/_index.md)
 - [Tasks](../tasks.md)
 - [OKRs](../okrs.md)
 
@@ -84,7 +83,7 @@ When you mention someone, they receive a notification.
 For more information, see:
 
 - [Labels](../project/labels.md)
-- [Comments and threads](../discussions/index.md)
+- [Comments and threads](../discussions/_index.md)
 
 ## Step 5: Track progress
 
@@ -103,7 +102,7 @@ Use it to track your progress and adjust your efforts accordingly.
 
 For more information, see:
 
-- [Roadmaps](../group/roadmap/index.md)
+- [Roadmaps](../group/roadmap/_index.md)
 - [Time tracking](../project/time_tracking.md)
 - [Milestone burnup and burndown charts](../project/milestones/burndown_and_burnup_charts.md)
 
@@ -116,7 +115,7 @@ Group issues by priority, category, or other custom criteria.
 
 For more information, see:
 
-- [Analyze GitLab usage](../analytics/index.md)
+- [Analyze GitLab usage](../analytics/_index.md)
 
 ## Step 7: Create documentation and share knowledge
 
@@ -135,5 +134,5 @@ range of information, like project guidelines, technical specifications, and bes
 
 For more information, see:
 
-- [Requirements](../project/requirements/index.md)
-- [Wikis](../project/wiki/index.md)
+- [Requirements](../project/requirements/_index.md)
+- [Wikis](../project/wiki/_index.md)

@@ -16,9 +16,6 @@ events:
     unique: user.id
     filter:
       label: test_summary
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

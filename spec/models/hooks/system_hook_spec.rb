@@ -41,6 +41,19 @@ RSpec.describe SystemHook, feature_category: :webhooks do
     end
   end
 
+  describe 'associations' do
+    it { is_expected.to have_many(:web_hook_logs) }
+  end
+
+  describe '#destroy' do
+    it 'does not cascade to web_hook_logs' do
+      web_hook = create(:system_hook)
+      create_list(:web_hook_log, 3, web_hook: web_hook)
+
+      expect { web_hook.destroy! }.not_to change { web_hook.web_hook_logs.count }
+    end
+  end
+
   describe "execute", :sidekiq_might_not_need_inline do
     let_it_be(:system_hook) { create(:system_hook) }
     let_it_be(:user) { create(:user) }
@@ -227,5 +240,17 @@ RSpec.describe SystemHook, feature_category: :webhooks do
         related_class: 'SystemHook'
       )
     end
+  end
+
+  describe '#pluralized_name' do
+    subject { build(:no_sti_system_hook).pluralized_name }
+
+    it { is_expected.to eq('System hooks') }
+  end
+
+  describe '#help_path' do
+    subject { build(:no_sti_system_hook).help_path }
+
+    it { is_expected.to eq('administration/system_hooks') }
   end
 end

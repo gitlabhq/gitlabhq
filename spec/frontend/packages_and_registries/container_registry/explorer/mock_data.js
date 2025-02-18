@@ -200,6 +200,10 @@ export const tagsMock = [
     userPermissions: {
       destroyContainerRepositoryTag: true,
     },
+    protection: {
+      minimumAccessLevelForPush: null,
+      minimumAccessLevelForDelete: null,
+    },
     __typename: 'ContainerRepositoryTag',
   },
   {
@@ -216,6 +220,10 @@ export const tagsMock = [
     mediaType: null,
     userPermissions: {
       destroyContainerRepositoryTag: true,
+    },
+    protection: {
+      minimumAccessLevelForPush: null,
+      minimumAccessLevelForDelete: null,
     },
     __typename: 'ContainerRepositoryTag',
   },
@@ -234,6 +242,10 @@ export const tagsMock = [
     userPermissions: {
       destroyContainerRepositoryTag: true,
     },
+    protection: {
+      minimumAccessLevelForPush: null,
+      minimumAccessLevelForDelete: null,
+    },
     __typename: 'ContainerRepositoryTag',
   },
   {
@@ -250,6 +262,10 @@ export const tagsMock = [
     mediaType: 'application/vnd.docker.distribution.manifest.list.v2+json',
     userPermissions: {
       destroyContainerRepositoryTag: true,
+    },
+    protection: {
+      minimumAccessLevelForPush: null,
+      minimumAccessLevelForDelete: null,
     },
     __typename: 'ContainerRepositoryTag',
   },

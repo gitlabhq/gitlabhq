@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Gemfile development guidelines
 ---
-
-# Gemfile development guidelines
 
 When adding a new entry to `Gemfile`, or upgrading an existing dependency pay
 attention to the following rules.
@@ -50,6 +49,20 @@ This needs to be done for any new, or updated gems.
 
 1. Check and commit the changes for `Gemfile.checksum`.
 
+### Updating the `Gemfile.next.lock` File
+
+Whenever gems are updated, ensure that the `Gemfile.next.lock` file remains consistent.
+
+1. Sync the gem files
+   If you update `Gemfile.checksum`, you must sync the gem files by running:
+
+   ```shell
+   bundle exec rake bundler:gemfile:sync
+   ```
+
+1. Review and commit changes
+   After syncing, verify the updates and commit any changes to `Gemfile.next.checksum` and `Gemfile.next.lock`.
+
 ## No gems fetched from Git repositories
 
 We do not allow gems that are fetched from Git repositories. All gems have
@@ -68,7 +81,7 @@ This means that new dependencies should, at a minimum, meet the following criter
 - The project is tested using some form of test automation. The test suite must be passing
   using the Ruby version currently used by GitLab.
 - CI builds for all supported platforms must succeed using the new dependency. For more information, see
-  how to [build a package for testing](build_test_package.md#building-a-package-for-testing).
+  how to [build a package for testing](build_test_package.md).
 - If the project uses a C extension, consider requesting an additional review from a C or MRI
   domain expert. C extensions can greatly impact GitLab stability and performance.
 

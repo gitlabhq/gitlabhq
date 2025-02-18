@@ -21,18 +21,33 @@ module QA
     let(:cng_pipeline_file) { File.join(tmp_dir, "test-on-cng-pipeline.yml") }
     let(:generated_cng_yaml) { YAML.load_file(cng_pipeline_file) }
 
+    let(:skip_pipeline) { File.read(File.join(project_root, ".gitlab/ci/_skip.yml")) }
+    let(:noop_reason) { "no-op run, nothing will be executed!" }
+    let(:noop_pipeline) do
+      <<~YML
+        variables:
+          SKIP_MESSAGE: "#{noop_reason}"
+
+        #{skip_pipeline}
+      YML
+    end
+
     describe "#create_noop" do
-      let(:noop_pipeline) { "noop pipeline template" }
       let(:scenario_examples) { {} }
+      let(:noop_reason) { "no-op run, pipeline:skip-e2e label detected" }
 
       before do
-        allow(FileUtils).to receive(:cp)
+        allow(File).to receive(:write).with(/test-on-(gdk|cng|omnibus|omnibus-nightly)-pipeline.yml/, noop_pipeline)
       end
 
-      it "creates a noop pipeline" do
-        described_class.create_noop(logger: instance_double(Logger, info: nil, debug: nil), pipeline_path: tmp_dir)
+      it "creates a noop pipeline with skip message" do
+        described_class.create_noop(
+          logger: instance_double(Logger, info: nil, debug: nil),
+          pipeline_path: tmp_dir,
+          reason: noop_reason
+        )
 
-        expect(FileUtils).to have_received(:cp).with(File.join(project_root, ".gitlab/ci/_skip.yml"), cng_pipeline_file)
+        expect(File).to have_received(:write).with(cng_pipeline_file, noop_pipeline)
       end
     end
 
@@ -131,6 +146,16 @@ module QA
           expect(generated_cng_yaml).to include("some-other-job" => cng_pipeline_definition["some-other-job"])
         end
 
+        it "only creates specifically selected pipelines" do
+          pipeline_creator.create([:test_on_omnibus])
+
+          expect(File.exist?(cng_pipeline_file)).to be(false)
+        end
+
+        it "raises error on incorrect pipeline type in argument" do
+          expect { pipeline_creator.create([:test_on_dot_com]) }.to raise_error(ArgumentError)
+        end
+
         context "with specific test files" do
           let(:test_files) { ["some_spec.rb", "some_other_spec.rb"] }
 
@@ -143,27 +168,86 @@ module QA
           end
         end
 
-        context "with skipped job and existing rule" do
-          let(:scenario_examples) { { scenario_class => [{ id: example, status: "pending" }] } }
+        context "with skipped job" do
+          let(:second_scenario_class) do
+            Class.new(Scenario::Template) do
+              pipeline_mappings test_on_cng: ['cng-second-job']
+            end
+          end
 
-          let(:cng_pipeline_definition) do
+          let(:scenario_examples) do
             {
-              "cng-instance" => {
-                "stage" => "test",
-                "rules" => [{ "if" => "condition" }, { "when" => "always" }],
-                "script" => "echo 'test'"
-              }
+              scenario_class => [{ id: example, status: "pending" }],
+              second_scenario_class => [{ id: example, status: "passed" }]
             }
           end
 
-          it "replaces existing rule with rule: never" do
+          context "with existing rule" do
+            let(:cng_pipeline_definition) do
+              {
+                "cng-instance" => {
+                  "stage" => "test",
+                  "rules" => [{ "if" => "condition" }, { "when" => "always" }],
+                  "script" => "echo 'test'"
+                },
+                "cng-second-job" => {
+                  "stage" => "test",
+                  "script" => "echo 'test'"
+                }
+              }
+            end
+
+            it "replaces existing rule with rule: never" do
+              pipeline_creator.create
+
+              expect(generated_cng_yaml).to include(cng_pipeline_definition.deep_merge({
+                "cng-instance" => {
+                  "rules" => [{ "when" => "never" }]
+                },
+                "cng-second-job" => {
+                  "parallel" => 1
+                }
+              }))
+            end
+          end
+
+          context "without existing rule" do
+            let(:cng_pipeline_definition) do
+              {
+                "cng-instance" => {
+                  "stage" => "test",
+                  "script" => "echo 'test'"
+                },
+                "cng-second-job" => {
+                  "stage" => "test",
+                  "script" => "echo 'test'"
+                }
+              }
+            end
+
+            it "adds rule: never" do
+              pipeline_creator.create
+
+              expect(generated_cng_yaml).to include(cng_pipeline_definition.deep_merge({
+                "cng-instance" => {
+                  "rules" => [{ "when" => "never" }]
+                },
+                "cng-second-job" => {
+                  "parallel" => 1
+                }
+              }))
+            end
+          end
+        end
+
+        context "with all jobs having 0 runtime" do
+          let(:noop_reason) { "no-op run, pipeline has no executable tests" }
+          let(:scenario_examples) { { scenario_class => [{ id: example, status: "pending" }] } }
+
+          it "create noop pipeline" do
             pipeline_creator.create
 
-            expect(generated_cng_yaml).to include(cng_pipeline_definition.deep_merge({
-              "cng-instance" => {
-                "rules" => [{ "when" => "never" }]
-              }
-            }))
+            expect(generated_cng_yaml).to eq(YAML.safe_load(noop_pipeline))
           end
         end
 
@@ -280,20 +364,6 @@ module QA
             expect(generated_cng_yaml).to include(cng_pipeline_definition.deep_merge({
               "cng-instance" => {
                 "parallel" => 1
-              }
-            }))
-          end
-        end
-
-        context "with no executable examples" do
-          let(:status) { "pending" }
-
-          it "skips the job" do
-            pipeline_creator.create
-
-            expect(generated_cng_yaml).to include(cng_pipeline_definition.deep_merge({
-              "cng-instance" => {
-                "rules" => [{ "when" => "never" }]
               }
             }))
           end

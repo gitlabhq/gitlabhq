@@ -2,19 +2,21 @@
 stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Create a GitLab Pages website from scratch'
 ---
 
-# Tutorial: Create a GitLab Pages website from scratch
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This tutorial shows you how to create a Pages site from scratch using
 the [Jekyll](https://jekyllrb.com/) Static Site Generator (SSG). You start with
 a blank project and create your own CI/CD configuration file, which gives
 instructions to a [runner](https://docs.gitlab.com/runner/). When your CI/CD
-[pipeline](../../../../ci/pipelines/index.md) runs, the Pages site is created.
+[pipeline](../../../../ci/pipelines/_index.md) runs, the Pages site is created.
 
 This example uses Jekyll, but other SSGs follow similar steps.
 You do not need to be familiar with Jekyll or SSGs
@@ -31,7 +33,7 @@ To create a GitLab Pages website:
 
 ## Prerequisites
 
-You must have a [blank project](../../index.md#create-a-blank-project) in GitLab.
+You must have a [blank project](../../_index.md#create-a-blank-project) in GitLab.
 
 ## Create the project files
 
@@ -126,7 +128,7 @@ deploy-pages:
   pages: true  # specifies that this is a Pages job
 ```
 
-The example in this page uses [user-defined job names](../index.md#user-defined-job-names).
+The example in this page uses [user-defined job names](../_index.md#user-defined-job-names).
 
 ## Specify the `public` directory for output
 
@@ -197,7 +199,7 @@ GitLab Pages daemon. GitLab runs it in the background and doesn't use a runner.
 ## Other options for your CI/CD file
 
 If you want to do more advanced tasks, you can update your `.gitlab-ci.yml` file
-with [other CI/CD YAML keywords](../../../../ci/yaml/index.md). You can validate
+with [other CI/CD YAML keywords](../../../../ci/yaml/_index.md). You can validate
 your `.gitlab-ci.yml` file with the [CI Lint](../../../../ci/yaml/lint.md) tool that's included with GitLab.
 
 The following topics show other examples of other options you can add to your CI/CD file.
@@ -445,7 +447,7 @@ Now GitLab CI/CD not only builds the website, but also:
 To view the HTML and other assets that were created for the site,
 [download the job artifacts](../../../../ci/jobs/job_artifacts.md#download-job-artifacts).
 
-The example in this page uses [user-defined job names](../index.md#user-defined-job-names).
+The example in this page uses [user-defined job names](../_index.md#user-defined-job-names).
 
 ## Related topics
 

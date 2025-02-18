@@ -2,16 +2,18 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Resource state events API
 ---
 
-# Resource state events API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Resource state events keep track of what happens to GitLab [issues](../user/project/issues/index.md)
-[merge requests](../user/project/merge_requests/index.md) and [epics starting with GitLab 15.4](../user/group/epics/index.md)
+{{< /details >}}
+
+Resource state events keep track of what happens to GitLab [issues](../user/project/issues/_index.md)
+[merge requests](../user/project/merge_requests/_index.md) and [epics starting with GitLab 15.4](../user/group/epics/_index.md)
 
 Use them to track which state was set, who did it, and when it happened.
 
@@ -30,7 +32,7 @@ GET /projects/:id/issues/:issue_iid/resource_state_events
 
 | Attribute   | Type           | Required | Description                                                                     |
 | ----------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `issue_iid` | integer        | yes      | The IID of an issue                                                             |
 
 Example request:
@@ -88,7 +90,7 @@ Parameters:
 
 | Attribute                     | Type           | Required | Description                                                                     |
 | ----------------------------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the project |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project |
 | `issue_iid`                   | integer        | yes      | The IID of an issue                                                             |
 | `resource_state_event_id`     | integer        | yes      | The ID of a state event                                                     |
 
@@ -130,7 +132,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/resource_state_events
 
 | Attribute           | Type           | Required | Description                                                                     |
 | ------------------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the project |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request                                                      |
 
 Example request:
@@ -188,7 +190,7 @@ Parameters:
 
 | Attribute                     | Type           | Required | Description                                                                     |
 | ----------------------------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `merge_request_iid`           | integer        | yes      | The IID of a merge request                                                      |
 | `resource_state_event_id`     | integer        | yes      | The ID of a state event                                                     |
 
@@ -220,14 +222,21 @@ Example response:
 
 ## Epics
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97554) in GitLab 15.4.
+{{< history >}}
 
-WARNING:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97554) in GitLab 15.4.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
 and is planned for removal in v5 of the API.
 In GitLab 17.4 or later, if your administrator [enabled the new look for epics](../user/group/epics/epic_work_items.md), use the
-[Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead. For more information, see the [guide how to migrate your existing APIs](../api/graphql/epic_work_items_api_migration_guide.md).
+[Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead. For more information, see the [guide how to migrate your existing APIs](graphql/epic_work_items_api_migration_guide.md).
 This change is a breaking change.
+
+{{< /alert >}}
 
 ### List group epic state events
 
@@ -239,7 +248,7 @@ GET /groups/:id/epics/:epic_id/resource_state_events
 
 | Attribute   | Type           | Required | Description                                                                    |
 |-------------| -------------- | -------- |--------------------------------------------------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths).   |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).   |
 | `epic_id`   | integer        | yes      | The ID of an epic.                                                              |
 
 Example request:
@@ -297,7 +306,7 @@ Parameters:
 
 | Attribute                 | Type           | Required | Description                                                                   |
 |---------------------------| -------------- | -------- |-------------------------------------------------------------------------------|
-| `id`                      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths).  |
+| `id`                      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).  |
 | `epic_id`                 | integer        | yes      | The ID of an epic.                                                           |
 | `resource_state_event_id` | integer        | yes      | The ID of a state event.                                                       |
 

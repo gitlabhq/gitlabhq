@@ -1,10 +1,12 @@
 <script>
+import { mapActions } from 'pinia';
 // eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters as mapVuexGetters } from 'vuex';
 import { GlButton, GlTooltipDirective as GlTooltip, GlModal } from '@gitlab/ui';
 import { __ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 import { SET_REVIEW_BAR_RENDERED } from '~/batch_comments/stores/modules/batch_comments/mutation_types';
+import { useBatchComments } from '~/batch_comments/store';
 import { REVIEW_BAR_VISIBLE_CLASS_NAME } from '../constants';
 import PreviewDropdown from './preview_dropdown.vue';
 import SubmitDropdown from './submit_dropdown.vue';
@@ -26,7 +28,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isNotesFetched']),
+    ...mapVuexGetters(['isNotesFetched']),
   },
   watch: {
     isNotesFetched() {
@@ -37,13 +39,13 @@ export default {
   },
   mounted() {
     document.body.classList.add(REVIEW_BAR_VISIBLE_CLASS_NAME);
-    this.$store.commit(`batchComments/${SET_REVIEW_BAR_RENDERED}`);
+    useBatchComments()[SET_REVIEW_BAR_RENDERED]();
   },
   beforeDestroy() {
     document.body.classList.remove(REVIEW_BAR_VISIBLE_CLASS_NAME);
   },
   methods: {
-    ...mapActions('batchComments', ['expandAllDiscussions', 'discardDrafts']),
+    ...mapActions(useBatchComments, ['expandAllDiscussions', 'discardDrafts']),
     async discardReviews() {
       this.discarding = true;
 

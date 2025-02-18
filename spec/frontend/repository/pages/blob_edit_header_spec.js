@@ -3,11 +3,10 @@ import MockAdapter from 'axios-mock-adapter';
 import { GlButton } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtility from '~/lib/utils/url_utility';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import BlobEditHeader from '~/repository/pages/blob_edit_header.vue';
-import { createAlert } from '~/alert';
 import { stubComponent } from 'helpers/stub_component';
 
 jest.mock('~/alert');
@@ -101,6 +100,7 @@ describe('BlobEditHeader', () => {
         loading: false,
         branchAllowsCollaboration: false,
         valid: true,
+        error: null,
       });
     });
 
@@ -122,23 +122,33 @@ describe('BlobEditHeader', () => {
       expect(visitUrlSpy).toHaveBeenCalledWith('/update/path');
     });
 
-    it('creates alert when there is no filePath in response', async () => {
-      mock.onPut('/update').reply(HTTP_STATUS_OK);
-      await submitForm();
+    describe('error handling', () => {
+      const errorMessage = 'Custom error message';
 
-      expect(createAlert).toHaveBeenCalledWith({
-        captureError: true,
-        message: 'An error occurred editing the blob',
+      it('shows error message in modal when response contains error', async () => {
+        mock.onPut('/update').replyOnce(HTTP_STATUS_OK, { error: errorMessage });
+        await submitForm();
+
+        expect(findCommitChangesModal().props('error')).toBe(errorMessage);
+        expect(visitUrlSpy).not.toHaveBeenCalled();
       });
-    });
 
-    it('on error, creates an alert error', async () => {
-      mock.onPut('/update').timeout();
-      await submitForm();
+      it('shows error message in modal when request fails', async () => {
+        mock.onPut('/update').replyOnce(HTTP_STATUS_UNPROCESSABLE_ENTITY, { error: errorMessage });
+        await submitForm();
 
-      expect(createAlert).toHaveBeenCalledWith({
-        captureError: true,
-        message: 'An error occurred editing the blob',
+        expect(findCommitChangesModal().props('error')).toBe(errorMessage);
+      });
+
+      it('clears error on successful submission', async () => {
+        mock.onPut('/update').replyOnce(HTTP_STATUS_UNPROCESSABLE_ENTITY);
+        await submitForm();
+
+        mock.onPut('/update').replyOnce(HTTP_STATUS_OK, { filePath: '/update/path' });
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+        await submitForm();
+
+        expect(findCommitChangesModal().props('error')).toBeNull();
       });
     });
   });
@@ -172,6 +182,7 @@ describe('BlobEditHeader', () => {
         branchAllowsCollaboration: false,
         loading: false,
         valid: true,
+        error: null,
       });
     });
 
@@ -191,16 +202,6 @@ describe('BlobEditHeader', () => {
       const putData = JSON.parse(mock.history.post[0].data);
       expect(putData.content).toBe(content);
       expect(visitUrlSpy).toHaveBeenCalledWith('/new/file');
-    });
-
-    it('on error, creates an alert error', async () => {
-      mock.onPost('/update').timeout();
-      await submitForm();
-
-      expect(createAlert).toHaveBeenCalledWith({
-        captureError: true,
-        message: 'An error occurred creating the blob',
-      });
     });
   });
 });

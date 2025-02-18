@@ -2,8 +2,8 @@
 
 module Resolvers
   class ProjectsResolver < BaseResolver
+    prepend ::Projects::LookAheadPreloads
     include ProjectSearchArguments
-    include LooksAhead
 
     type Types::ProjectType.connection_type, null: true
 
@@ -59,20 +59,6 @@ module Resolvers
 
     def unconditional_includes
       [:creator, :group, :invited_groups, :project_setting]
-    end
-
-    def preloads
-      {
-        full_path: [:route],
-        topics: [:topics],
-        import_status: [:import_state],
-        service_desk_address: [:project_feature, :service_desk_setting],
-        jira_import_status: [:jira_imports],
-        container_repositories: [:container_repositories],
-        container_repositories_count: [:container_repositories],
-        web_url: { namespace: [:route] },
-        is_catalog_resource: [:catalog_resource]
-      }
     end
 
     def finder_params(args)

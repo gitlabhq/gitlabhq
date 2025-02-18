@@ -20,5 +20,5 @@ export const SORT_FIELD_MAPPING = {
 export const DEFAULT_PER_PAGE = 10;
 
 export const HARBOR_REGISTRY_HELP_PAGE_PATH = helpPagePath(
-  'user/packages/harbor_container_registry/index',
+  'user/packages/harbor_container_registry/_index',
 );

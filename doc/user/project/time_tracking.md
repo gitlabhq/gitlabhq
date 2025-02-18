@@ -2,24 +2,30 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Time tracking
 ---
 
-# Time tracking
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - Time tracking for tasks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438577) in GitLab 17.0.
-> - Time tracking for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12396) in GitLab 17.5. Your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
-> - Minimum role to add, edit, and remove estimate [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< /details >}}
+
+{{< history >}}
+
+- Time tracking for tasks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438577) in GitLab 17.0.
+- Time tracking for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12396) in GitLab 17.5. Your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
+- Minimum role to add, edit, and remove estimate [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You can estimate and track the time you spend on an item, such as:
 
-- [Epic](../group/epics/index.md). Your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
-- [Issue](issues/index.md).
+- [Epic](../group/epics/_index.md). Your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
+- [Issue](issues/_index.md).
 - [Task](../tasks.md).
-- [Merge request](merge_requests/index.md).
+- [Merge request](merge_requests/_index.md).
 
 Then you can [view a report](#view-an-items-time-tracking-report) that shows totals over time.
 
@@ -91,12 +97,16 @@ Prerequisites:
 
 #### Using the user interface
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101563) in GitLab 15.7.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150564) in GitLab 17.0. When you don't specify when time was spent, current time is used.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101563) in GitLab 15.7.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150564) in GitLab 17.0. When you don't specify when time was spent, current time is used.
+
+{{< /history >}}
 
 To add a time entry using the user interface:
 
-1. In the **Time tracking** section of the sidebar, select **Add time entry** (**{plus}**). A dialog opens.
+1. In the **Time tracking** section of the sidebar, select **Add time entry** ({{< icon name="plus" >}}). A dialog opens.
 1. Enter:
 
    - The amount of time spent.
@@ -144,7 +154,11 @@ so if you remove more time than already entered, GitLab ignores the subtraction.
 
 ### Delete time spent
 
-> - Delete button [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356796) in GitLab 15.1.
+{{< history >}}
+
+- Delete button [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356796) in GitLab 15.1.
+
+{{< /history >}}
 
 A timelog is a single entry of time spent, either positive or negative.
 
@@ -154,8 +168,8 @@ Prerequisites:
 
 To delete a timelog, either:
 
-- In the time tracking report, on the right of a timelog entry, select **Delete time spent** (**{remove}**).
-- Use the [GraphQL API](../../api/graphql/reference/index.md#mutationtimelogdelete).
+- In the time tracking report, on the right of a timelog entry, select **Delete time spent** ({{< icon name="remove" >}}).
+- Use the [GraphQL API](../../api/graphql/reference/_index.md#mutationtimelogdelete).
 
 ### Delete all the time spent
 
@@ -185,16 +199,26 @@ The breakdown of spent time displayed is limited to a maximum of 100 entries.
 
 ## Global time tracking report
 
-DETAILS:
-**Status**: Experiment
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344002) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `global_time_tracking_report`. Disabled by default.
-> - Enabled on GitLab.com in GitLab 16.5.
+- Status: Experiment
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344002) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `global_time_tracking_report`. Disabled by default.
+- Enabled on GitLab.com in GitLab 16.5.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `global_time_tracking_report`.
 On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
+
+{{< /alert >}}
 
 View a report of time spent in issues, tasks, and merge requests across all of GitLab.
 
@@ -226,11 +250,14 @@ The following time units are available:
 
 ### Limit displayed units to hours
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-In GitLab self-managed instances, you can limit the display of time units to hours.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+On GitLab Self-Managed, you can limit the display of time units to hours.
 To do so:
 
 1. On the left sidebar, select **Search or go to**.
@@ -244,10 +271,10 @@ With this option enabled, `75h` is displayed instead of `1w 4d 3h`.
 ## Related topics
 
 - Time tracking GraphQL references:
-  - [Connection](../../api/graphql/reference/index.md#timelogconnection)
-  - [Edge](../../api/graphql/reference/index.md#timelogedge)
-  - [Fields](../../api/graphql/reference/index.md#timelog)
-  - [Timelogs](../../api/graphql/reference/index.md#querytimelogs)
-  - [Group timelogs](../../api/graphql/reference/index.md#grouptimelogs)
-  - [Project Timelogs](../../api/graphql/reference/index.md#projecttimelogs)
-  - [User Timelogs](../../api/graphql/reference/index.md#usertimelogs)
+  - [Connection](../../api/graphql/reference/_index.md#timelogconnection)
+  - [Edge](../../api/graphql/reference/_index.md#timelogedge)
+  - [Fields](../../api/graphql/reference/_index.md#timelog)
+  - [Timelogs](../../api/graphql/reference/_index.md#querytimelogs)
+  - [Group timelogs](../../api/graphql/reference/_index.md#grouptimelogs)
+  - [Project Timelogs](../../api/graphql/reference/_index.md#projecttimelogs)
+  - [User Timelogs](../../api/graphql/reference/_index.md#usertimelogs)

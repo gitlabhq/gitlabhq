@@ -22,6 +22,7 @@ export const DEFAULT_SNOWPLOW_OPTIONS = {
 
 export const ACTION_ATTR_SELECTOR = '[data-track-action]';
 export const LOAD_ACTION_ATTR_SELECTOR = '[data-track-action="render"]';
+// Keep these in sync with the strings used in spec/support/matchers/internal_events_matchers.rb
 export const INTERNAL_EVENTS_SELECTOR = '[data-event-tracking]';
 export const LOAD_INTERNAL_EVENTS_SELECTOR = '[data-event-tracking-load="true"]';
 
@@ -46,5 +47,6 @@ export const SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT =
 export const SERVICE_PING_PIPELINE_SECURITY_VISIT = 'users_visiting_pipeline_security';
 
 export const FIND_FILE_BUTTON_CLICK = 'click_find_file_button_on_repository_pages';
-
 export const FIND_FILE_SHORTCUT_CLICK = 'click_go_to_file_shortcut';
+
+export const REF_SELECTOR_CLICK = 'click_ref_selector_on_blob_page';

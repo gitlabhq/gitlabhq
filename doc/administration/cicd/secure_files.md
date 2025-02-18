@@ -2,15 +2,21 @@
 stage: Mobile
 group: Mobile DevOps
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Secure Files administration
 ---
 
-# Secure Files administration
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350748) and feature flag `ci_secure_files` removed in GitLab 15.7.
+{{< /details >}}
+
+{{< history >}}
+
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350748) and feature flag `ci_secure_files` removed in GitLab 15.7.
+
+{{< /history >}}
 
 You can securely store up to 100 files for use in CI/CD pipelines as secure files.
 These files are stored securely outside of your project's repository and are not version controlled.
@@ -90,16 +96,23 @@ are stored locally, follow the steps below.
 
 ## Using object storage
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Instead of storing Secure Files on disk, you should use [one of the supported object storage options](../object_storage.md#supported-object-storage-providers).
 This configuration relies on valid credentials to be configured already.
 
 ### Consolidated object storage
 
-> - Support for consolidated object storage was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149873) in GitLab 17.0.
+{{< history >}}
+
+- Support for consolidated object storage was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149873) in GitLab 17.0.
+
+{{< /history >}}
 
 Using the [consolidated form](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form)
 of the object storage is recommended.
@@ -121,9 +134,9 @@ The following settings are:
 
 See [the available connection settings for different providers](../object_storage.md#configure-the-connection-settings).
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, but using
    the values you want:
@@ -139,8 +152,11 @@ See [the available connection settings for different providers](../object_storag
    }
    ```
 
-   NOTE:
-   If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs:
+  {{< alert type="note" >}}
+
+  If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs:
+
+  {{< /alert >}}
 
    ```ruby
    gitlab_rails['ci_secure_files_object_store_connection'] = {
@@ -158,7 +174,9 @@ See [the available connection settings for different providers](../object_storag
 
 1. [Migrate any existing local states to the object storage](#migrate-to-object-storage).
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
 
@@ -187,15 +205,24 @@ See [the available connection settings for different providers](../object_storag
 
 1. [Migrate any existing local states to the object storage](#migrate-to-object-storage).
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Migrate to object storage
 
-> - [Introduced](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/readme/-/issues/125) in GitLab 16.1.
+{{< history >}}
 
-WARNING:
+- [Introduced](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/readme/-/issues/125) in GitLab 16.1.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 It's not possible to migrate Secure Files from object storage back to local storage,
 so proceed with caution.
+
+{{< /alert >}}
 
 To migrate Secure Files to object storage, follow the instructions below.
 

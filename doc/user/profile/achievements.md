@@ -2,20 +2,29 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Achievements
 ---
 
-# Achievements
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
-**Status:** Experiment
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113156) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `achievements`. Disabled by default.
+{{< /details >}}
 
-FLAG:
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113156) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `achievements`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is not available. To make it available,
 an administrator can [enable the feature flag](../../administration/feature_flags.md) named `achievements`.
+
+{{< /alert >}}
 
 Achievements are a way to reward users for their activity on GitLab.
 As a namespace maintainer or owner, you can create custom achievements for specific contributions. You can award these
@@ -70,7 +79,7 @@ To view a user's achievements:
    - Date when the achievement was awarded to the user
    - Namespace that awarded the achievement if the user is a member of the namespace or the namespace is public
 
-To retrieve a list of a user's achievements, query the [`user` GraphQL type](../../api/graphql/reference/index.md#user).
+To retrieve a list of a user's achievements, query the [`user` GraphQL type](../../api/graphql/reference/_index.md#user).
 
 ```graphql
 query {
@@ -108,7 +117,7 @@ To create an achievement:
   1. Optional. Enter a description and upload an avatar for the achievement.
   1. Select **Save changes**.
 
-- With the GraphQL API, call the [`achievementsCreate` GraphQL mutation](../../api/graphql/reference/index.md#mutationachievementscreate):
+- With the GraphQL API, call the [`achievementsCreate` GraphQL mutation](../../api/graphql/reference/_index.md#mutationachievementscreate):
 
   ```graphql
   mutation achievementsCreate($file: Upload!) {
@@ -155,7 +164,7 @@ Prerequisites:
 
 - You must have the Maintainer or Owner role for the namespace.
 
-To update an achievement, call the [`achievementsUpdate` GraphQL mutation](../../api/graphql/reference/index.md#mutationachievementsupdate).
+To update an achievement, call the [`achievementsUpdate` GraphQL mutation](../../api/graphql/reference/_index.md#mutationachievementsupdate).
 
 ```graphql
 mutation achievementsUpdate($file: Upload!) {
@@ -186,7 +195,7 @@ Prerequisites:
 
 - You must have the Maintainer or Owner role for the namespace.
 
-To award an achievement to a user, call the [`achievementsAward` GraphQL mutation](../../api/graphql/reference/index.md#mutationachievementsaward).
+To award an achievement to a user, call the [`achievementsAward` GraphQL mutation](../../api/graphql/reference/_index.md#mutationachievementsaward).
 
 ```graphql
 mutation {
@@ -217,7 +226,7 @@ Prerequisites:
 
 - You must have the Maintainer or Owner role for the namespace.
 
-To revoke an achievement, call the [`achievementsRevoke` GraphQL mutation](../../api/graphql/reference/index.md#mutationachievementsrevoke).
+To revoke an achievement, call the [`achievementsRevoke` GraphQL mutation](../../api/graphql/reference/_index.md#mutationachievementsrevoke).
 
 ```graphql
 mutation {
@@ -248,7 +257,7 @@ Prerequisites:
 
 - You must have the Owner role for the namespace.
 
-To delete an awarded achievement, call the [`userAchievementsDelete` GraphQL mutation](../../api/graphql/reference/index.md#mutationuserachievementsdelete).
+To delete an awarded achievement, call the [`userAchievementsDelete` GraphQL mutation](../../api/graphql/reference/_index.md#mutationuserachievementsdelete).
 
 ```graphql
 mutation {
@@ -279,7 +288,7 @@ Prerequisites:
 
 - You must have the Maintainer or Owner role for the namespace.
 
-To delete an achievement, call the [`achievementsDelete` GraphQL mutation](../../api/graphql/reference/index.md#mutationachievementsdelete).
+To delete an achievement, call the [`achievementsDelete` GraphQL mutation](../../api/graphql/reference/_index.md#mutationachievementsdelete).
 
 ```graphql
 mutation {
@@ -305,11 +314,15 @@ If you don't want to display achievements on your profile, you can opt out. To d
 
 ## Change visibility of specific achievements
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161225) in GitLab 17.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161225) in GitLab 17.3.
+
+{{< /history >}}
 
 If you don't want to display all achievements on your profile, you can change the visibility of specific achievements.
 
-To hide one of your achievements, call the [`userAchievementsUpdate` GraphQL mutation](../../api/graphql/reference/index.md#mutationuserachievementsupdate).
+To hide one of your achievements, call the [`userAchievementsUpdate` GraphQL mutation](../../api/graphql/reference/_index.md#mutationuserachievementsupdate).
 
 ```graphql
 mutation {
@@ -332,7 +345,7 @@ To show one of your achievements again, call the same mutation with the value `t
 
 By default, achievements on your profile are displayed in ascending order by awarded date.
 
-To change the order of your achievements, call the [`userAchievementPrioritiesUpdate` GraphQL mutation](../../api/graphql/reference/index.md#mutationuserachievementprioritiesupdate)
+To change the order of your achievements, call the [`userAchievementPrioritiesUpdate` GraphQL mutation](../../api/graphql/reference/_index.md#mutationuserachievementprioritiesupdate)
 with an ordered list of all prioritized achievements.
 
 ```graphql

@@ -18,7 +18,7 @@ RSpec.describe 'User deletes feature flag', :js, feature_category: :feature_flag
 
     visit(project_feature_flags_path(project))
 
-    find('.js-feature-flag-delete-button').click
+    click_button('Delete')
     click_button('Delete feature flag')
     expect(page).to have_current_path(project_feature_flags_path(project))
   end

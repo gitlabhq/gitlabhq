@@ -1,5 +1,10 @@
+import { mapState, mapActions } from 'pinia';
 // eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters, mapState } from 'vuex';
+import {
+  mapActions as mapVuexActions,
+  mapGetters as mapVuexGetters,
+  mapState as mapVuexState,
+} from 'vuex';
 import { getDraftReplyFormData, getDraftFormData } from '~/batch_comments/utils';
 import {
   TEXT_DIFF_POSITION_TYPE,
@@ -11,21 +16,25 @@ import { clearDraft } from '~/lib/utils/autosave';
 import { sprintf } from '~/locale';
 import { formatLineRange } from '~/notes/components/multiline_comment_utils';
 import { SAVING_THE_COMMENT_FAILED, SOMETHING_WENT_WRONG } from '~/diffs/i18n';
+import { useBatchComments } from '~/batch_comments/store';
 
 export default {
   computed: {
-    ...mapState({
+    ...mapVuexState({
       noteableData: (state) => state.notes.noteableData,
       notesData: (state) => state.notes.notesData,
-      withBatchComments: (state) => state.batchComments?.withBatchComments,
     }),
-    ...mapGetters('diffs', ['getDiffFileByHash']),
-    ...mapGetters('batchComments', ['shouldRenderDraftRowInDiscussion', 'draftForDiscussion']),
-    ...mapState('diffs', ['commit', 'showWhitespace']),
+    ...mapVuexGetters('diffs', ['getDiffFileByHash']),
+    ...mapState(useBatchComments, [
+      'shouldRenderDraftRowInDiscussion',
+      'draftForDiscussion',
+      'isMergeRequest',
+    ]),
+    ...mapVuexState('diffs', ['commit', 'showWhitespace']),
   },
   methods: {
-    ...mapActions('diffs', ['cancelCommentForm', 'toggleFileCommentForm']),
-    ...mapActions('batchComments', ['addDraftToReview', 'saveDraft', 'insertDraftIntoDrafts']),
+    ...mapVuexActions('diffs', ['cancelCommentForm', 'toggleFileCommentForm']),
+    ...mapActions(useBatchComments, ['addDraftToReview', 'saveDraft', 'insertDraftIntoDrafts']),
     // eslint-disable-next-line max-params
     addReplyToReview(noteText, isResolving, parentElement, errorCallback) {
       const postData = getDraftReplyFormData({
@@ -129,7 +138,7 @@ export default {
       });
     },
     showDraft(replyId) {
-      return this.withBatchComments && this.shouldRenderDraftRowInDiscussion(replyId);
+      return this.isMergeRequest && this.shouldRenderDraftRowInDiscussion(replyId);
     },
   },
 };

@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Store GitLab activity data in ClickHouse
 ---
-
-# Store GitLab activity data in ClickHouse
 
 ## Overview of the existing implementation
 
@@ -28,7 +27,7 @@ Several features use activity data:
 - The user's [contribution calendar](../../../user/profile/contributions_calendar.md) on the profile page.
 - Paginated list of the user's contributions.
 - Paginated list of user activity for a Project and a Group.
-- [Contribution analytics](../../../user/group/contribution_analytics/index.md).
+- [Contribution analytics](../../../user/group/contribution_analytics/_index.md).
 
 ### How is the activity data created
 
@@ -105,8 +104,11 @@ Most of the data is written once however, we cannot say that the table is append
 
 ### Example queries
 
-NOTE:
+{{< alert type="note" >}}
+
 These queries have been significantly simplified from the actual queries from production.
+
+{{< /alert >}}
 
 Database query for the user's contribution graph:
 

@@ -306,6 +306,7 @@ module BlobHelper
   def vue_blob_header_app_data(project, blob, ref)
     {
       blob_path: blob.path,
+      is_binary: blob.binary?,
       breadcrumbs: breadcrumb_data_attributes,
       escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
       history_link: project_commits_path(project, ref),

@@ -2,20 +2,29 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Deploy to a Kubernetes cluster with cluster certificates (deprecated)
 ---
 
-# Deploy to a Kubernetes cluster with cluster certificates (deprecated)
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
 
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+{{< /details >}}
 
-WARNING:
+{{< history >}}
+
+- [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-To connect your cluster to GitLab, use the [GitLab agent](../../clusters/agent/index.md).
+To connect your cluster to GitLab, use the [GitLab agent](../../clusters/agent/_index.md).
 To deploy with the agent, use the [CI/CD workflow](../../clusters/agent/ci_cd_workflow.md).
+
+{{< /alert >}}
 
 A Kubernetes cluster can be the destination for a deployment job. If
 
@@ -25,13 +34,13 @@ A Kubernetes cluster can be the destination for a deployment job. If
   the cluster from your jobs using tools such as `kubectl` or `helm`.
 - You don't use the GitLab cluster integration, you can still deploy to your
   cluster. However, you must configure Kubernetes tools yourself
-  using [CI/CD variables](../../../ci/variables/index.md#for-a-project)
+  using [CI/CD variables](../../../ci/variables/_index.md#for-a-project)
   before you can interact with the cluster from your jobs.
 
 ## Deployment variables
 
-Deployment variables require a valid [Deploy Token](../deploy_tokens/index.md) named
-[`gitlab-deploy-token`](../deploy_tokens/index.md#gitlab-deploy-token), and the
+Deployment variables require a valid [Deploy Token](../deploy_tokens/_index.md) named
+[`gitlab-deploy-token`](../deploy_tokens/_index.md#gitlab-deploy-token), and the
 following command in your deployment job script, for Kubernetes to access the registry:
 
 - Using Kubernetes 1.18+:
@@ -49,7 +58,7 @@ following command in your deployment job script, for Kubernetes to access the re
 The Kubernetes cluster integration exposes these
 [deployment variables](../../../ci/variables/predefined_variables.md#deployment-variables) in the
 GitLab CI/CD build environment to deployment jobs. Deployment jobs have
-[defined a target environment](../../../ci/environments/index.md).
+[defined a target environment](../../../ci/environments/_index.md).
 
 | Deployment Variable        | Description |
 |----------------------------|-------------|
@@ -70,7 +79,7 @@ of the form `<prefix>-<environment>`, where `<prefix>` is of the form
 
 You can customize the deployment namespace in a few ways:
 
-- You can choose between a **namespace per [environment](../../../ci/environments/index.md)**
+- You can choose between a **namespace per [environment](../../../ci/environments/_index.md)**
   or a **namespace per project**. A namespace per environment is the default and recommended
   setting, as it prevents the mixing of resources between production and non-production environments.
 - When using a project-level cluster, you can additionally customize the namespace prefix.
@@ -100,8 +109,8 @@ combined with *one* of the following:
 
 ## Web terminals for Kubernetes clusters
 
-The Kubernetes integration adds [web terminal](../../../ci/environments/index.md#web-terminals-deprecated)
-support to your [environments](../../../ci/environments/index.md). This is based
+The Kubernetes integration adds [web terminal](../../../ci/environments/_index.md#web-terminals-deprecated)
+support to your [environments](../../../ci/environments/_index.md). This is based
 on the `exec` functionality found in Docker and Kubernetes, so you get a new
 shell session in your existing containers. To use this integration, you
 should deploy to Kubernetes using the deployment variables above, ensuring any
@@ -130,18 +139,21 @@ However, sometimes GitLab cannot create them. In such instances, your job can fa
 This job failed because the necessary resources were not successfully created.
 ```
 
-To find the cause of this error when creating a namespace and service account, check the [logs](../../../administration/logs/index.md#kuberneteslog-deprecated).
+To find the cause of this error when creating a namespace and service account, check the [logs](../../../administration/logs/_index.md#kuberneteslog-deprecated).
 
 Reasons for failure include:
 
 - The token you gave GitLab does not have [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
   privileges required by GitLab.
 - Missing `KUBECONFIG` or `KUBE_TOKEN` deployment variables. To be passed to your job, they must have a matching
-  [`environment:name`](../../../ci/environments/index.md). If your job has no
+  [`environment:name`](../../../ci/environments/_index.md). If your job has no
   `environment:name` set, the Kubernetes credentials are not passed to it.
 
-NOTE:
+{{< alert type="note" >}}
+
 Project-level clusters upgraded from GitLab 12.0 or older may be configured
 in a way that causes this error. Ensure you clear the
 [GitLab-managed cluster](gitlab_managed_clusters.md) option if you want to manage
 namespaces and service accounts yourself.
+
+{{< /alert >}}

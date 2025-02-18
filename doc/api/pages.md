@@ -2,23 +2,31 @@
 stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Pages API
 ---
 
-# Pages API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Endpoints for managing [GitLab Pages](../user/project/pages/index.md).
+{{< /details >}}
 
-The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/index.md) and [using](../user/project/pages/index.md) the feature.
+Endpoints for managing [GitLab Pages](../user/project/pages/_index.md).
+
+The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/_index.md) and [using](../user/project/pages/_index.md) the feature.
 
 ## Unpublish Pages
 
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/498658) the minimum required role from administrator access to the Maintainer role in GitLab 17.9
+
+{{< /history >}}
+
 Prerequisites:
 
-- You must have administrator access to the instance.
+- You must have at least the Maintainer role for the project.
 
 Remove Pages.
 
@@ -28,7 +36,7 @@ DELETE /projects/:id/pages
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 ```shell
 curl --request 'DELETE' --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/2/pages"
@@ -36,7 +44,11 @@ curl --request 'DELETE' --header "PRIVATE-TOKEN: <your_access_token>" "https://g
 
 ## Get Pages settings for a project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436932) in GitLab 16.8.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436932) in GitLab 16.8.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -52,7 +64,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
@@ -69,7 +81,7 @@ response attributes:
 | ----------------------------------------- | ---------- |-------------------------------------------------------------------------------------------------------------------------------|
 | `created_at`                              | date       | Date deployment was created.                                                                                                  |
 | `url`                                     | string     | URL for this deployment.                                                                                                      |
-| `path_prefix`                             | string     | Path prefix of this deployment when using [parallel deployments](../user/project/pages/index.md#parallel-deployments). |
+| `path_prefix`                             | string     | Path prefix of this deployment when using [parallel deployments](../user/project/pages/_index.md#parallel-deployments). |
 | `root_directory`                          | string     | Root directory.                                                                                                               |
 
 Example request:
@@ -105,11 +117,16 @@ Example response:
 
 ## Update Pages settings for a project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147227) in GitLab 17.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147227) in GitLab 17.0.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/498658) the minimum required role from administrator access to the Maintainer role in GitLab 17.9
+
+{{< /history >}}
 
 Prerequisites:
 
-- You must have administrator access to the instance.
+- You must have at least the Maintainer role for the project.
 
 Update Pages settings for the project.
 
@@ -121,7 +138,7 @@ Supported attributes:
 
 | Attribute                       | Type           | Required | Description                                                                                                         |
 | --------------------------------| -------------- | -------- | --------------------------------------------------------------------------------------------------------------------|
-| `id`                            | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths)                                 |
+| `id`                            | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)                                 |
 | `pages_unique_domain_enabled`   | boolean        | No       | Whether to use unique domain                                                                                        |
 | `pages_https_only`              | boolean        | No       | Whether to force HTTPs                                                                                              |
 | `pages_primary_domain`          | string         | No       | Set the primary domain from the existing assigned domains to redirect all Pages requests to. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481334) in GitLab 17.8. |
@@ -141,7 +158,7 @@ response attributes:
 | ----------------------------------------- | ---------- |-------------------------------------------------------------------------------------------------------------------------------|
 | `created_at`                              | date       | Date deployment was created.                                                                                                  |
 | `url`                                     | string     | URL for this deployment.                                                                                                      |
-| `path_prefix`                             | string     | Path prefix of this deployment when using [parallel deployments](../user/project/pages/index.md#parallel-deployments). |
+| `path_prefix`                             | string     | Path prefix of this deployment when using [parallel deployments](../user/project/pages/_index.md#parallel-deployments). |
 | `root_directory`                          | string     | Root directory.                                                                                                               |
 
 Example request:

@@ -2,26 +2,34 @@
 stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-ignore_in_report: true
+title: Use Akeyless secrets in GitLab CI/CD
 ---
 
-# Use Akeyless secrets in GitLab CI/CD
+{{< details >}}
 
-DETAILS:
-**Status:** Experiment
+- Status: Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164040) in GitLab 17.4.
+{{< /details >}}
 
-FLAG:
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164040) in GitLab 17.4.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 This feature is an [experiment](../../policy/development_stages_support.md)
 and not intended for production use. There is no support available for this feature
 and it is subject to removal at any time in accordance to GitLab policy.
+
+{{< /alert >}}
 
 You can use the `secrets:akeyless` keyword to authenticate and retrieve Akeyless secrets.
 
 Prerequisites:
 
-- Save your Akeyless access ID as a [CI/CD variable in your GitLab project](../variables/index.md#for-a-project)
+- Save your Akeyless access ID as a [CI/CD variable in your GitLab project](../variables/_index.md#for-a-project)
   named `AKEYLESS_ACCESS_ID`.
 - This integration only supports [static secrets](https://docs.akeyless.io/docs/static-secrets).
 
@@ -222,7 +230,7 @@ job:
 
 ## Troubleshooting
 
-## `The secrets provider can not be found. Check your CI/CD variables and try again.` message
+### `The secrets provider can not be found. Check your CI/CD variables and try again.` message
 
 You might receive this error when attempting to start a job configured to access Akeyless:
 

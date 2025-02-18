@@ -13,6 +13,10 @@ module Gitlab
       include Gitlab::UsageDataCounters::RedisSum
 
       def track_event(event_name, category: nil, additional_properties: {}, **kwargs)
+        unless Gitlab::Tracking::EventDefinition.internal_event_exists?(event_name)
+          Gitlab::AppJsonLogger.warn("InternalEvents.track_event called with undefined event: #{event_name}")
+        end
+
         Gitlab::Tracking::EventValidator.new(event_name, additional_properties, kwargs).validate!
 
         event_definition = Gitlab::Tracking::EventDefinition.find(event_name)
@@ -20,8 +24,6 @@ module Gitlab
 
         track_analytics_event(event_name, send_snowplow_event, category: category,
           additional_properties: additional_properties, **kwargs)
-
-        return if Feature.disabled?(:move_ai_tracking_to_instrumentation_layer, kwargs[:user])
 
         kwargs[:additional_properties] = additional_properties
         event_definition.extra_tracking_classes.each do |tracking_class|

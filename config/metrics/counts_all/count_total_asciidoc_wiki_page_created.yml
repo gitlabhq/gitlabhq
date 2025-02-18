@@ -13,9 +13,6 @@ events:
   - name: create_wiki_page
     filter:
       property: asciidoc
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

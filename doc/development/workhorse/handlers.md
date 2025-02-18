@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+title: Workhorse handlers
 ---
-
-# Workhorse handlers
 
 Long HTTP requests are hard to handle efficiently in Rails.
 The requests are either memory-inefficient (file uploads) or impossible at all due to shorter timeouts

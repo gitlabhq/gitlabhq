@@ -510,3 +510,18 @@ export const formatTimeSpent = (seconds, limitToHours) => {
   const negative = seconds < 0;
   return (negative ? '- ' : '') + stringifyTime(parseSeconds(seconds, { limitToHours }));
 };
+
+/**
+ * Formats a date into ISO 8601 date format (yyyy-mm-dd)
+ * @param { number } year The full year (e.g., 2023)
+ * @param { number } monthIndex The zero-based month index (0-11, where 0 = January)
+ * @param { number } day The day of the month (1-31)
+ * @returns { string } Date string in ISO 8601 format (yyyy-mm-dd)
+ * @example formatIso8601Date(2023, 0, 15) // returns '2023-01-15'
+ */
+export const formatIso8601Date = (year, monthIndex, day) => {
+  return [year, monthIndex + 1, day]
+    .map(String)
+    .map((s) => s.padStart(2, '0'))
+    .join('-');
+};

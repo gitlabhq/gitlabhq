@@ -1,48 +1,98 @@
 import { GlAlert } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import { uniqueId } from 'lodash';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WikiNotesApp from '~/pages/shared/wikis/wiki_notes/components/wiki_notes_app.vue';
 import WikiCommentForm from '~/pages/shared/wikis/wiki_notes/components/wiki_comment_form.vue';
 import PlaceholderNote from '~/pages/shared/wikis/wiki_notes/components/placeholder_note.vue';
 import SkeletonNote from '~/vue_shared/components/notes/skeleton_note.vue';
 import WikiDiscussion from '~/pages/shared/wikis/wiki_notes/components/wiki_discussion.vue';
-import WikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
+import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
 import WikiNotesActivityHeader from '~/pages/shared/wikis/wiki_notes/components/wiki_notes_activity_header.vue';
 import eventHub, {
   EVENT_EDIT_WIKI_DONE,
   EVENT_EDIT_WIKI_START,
 } from '~/pages/shared/wikis/event_hub';
-import { note, noteableId } from '../mock_data';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import { note, noteableId, queryVariables } from '../mock_data';
+
+Vue.use(VueApollo);
+
+const mockDiscussion = (...children) => {
+  return {
+    __typename: 'Discussion',
+    id: uniqueId(),
+    replyId: uniqueId(),
+    resolvable: false,
+    resolved: false,
+    resolvedAt: null,
+    resolvedBy: null,
+    notes: {
+      nodes: children.map((c) => ({
+        __typename: 'Note',
+        id: uniqueId(),
+        author: null,
+        body: c,
+        bodyHtml: c,
+        createdAt: '2023-05-18T14:24:07.000+00:00',
+        lastEditedAt: null,
+        url: 'https://path/to/2/',
+        awardEmoji: null,
+        userPermissions: {
+          adminNote: true,
+          awardEmoji: true,
+          readNote: true,
+          createNote: true,
+          resolveNote: true,
+          repositionNote: true,
+        },
+        discussion: null,
+      })),
+    },
+  };
+};
 
 describe('WikiNotesApp', () => {
   let wrapper;
+  let fakeApollo;
 
-  const $apollo = {
-    queries: {
-      wikiPage: {
-        loading: false,
-        refetch: jest.fn().mockResolvedValue({}),
-      },
-    },
-  };
+  const createWrapper = async ({
+    provideData = { queryVariables },
+    mockQueryResponse = {},
+  } = {}) => {
+    fakeApollo = createMockApollo([
+      [
+        wikiPageQuery,
+        jest.fn().mockResolvedValue({
+          data: {
+            wikiPage: {
+              id: 'gid://gitlab/WikiPage/1',
+              title: 'home',
+              discussions: {
+                nodes: [mockDiscussion('Discussion 1')],
+              },
+            },
+            ...mockQueryResponse,
+          },
+        }),
+      ],
+    ]);
 
-  const createWrapper = ({ provideData = { containerType: 'project' } } = {}) =>
-    shallowMountExtended(WikiNotesApp, {
+    wrapper = shallowMountExtended(WikiNotesApp, {
+      apolloProvider: fakeApollo,
       provide: {
-        pageInfo: {
-          slug: 'home',
-        },
         containerId: noteableId,
         noteCount: 5,
         ...provideData,
       },
-      mocks: {
-        $apollo,
-      },
     });
 
-  beforeEach(() => {
-    wrapper = createWrapper();
+    await nextTick();
+  };
+
+  beforeEach(async () => {
+    await createWrapper();
   });
 
   describe('when editing a wiki page', () => {
@@ -66,7 +116,7 @@ describe('WikiNotesApp', () => {
   });
 
   it('should render skeleton notes before content loads', () => {
-    wrapper = createWrapper();
+    createWrapper();
     const skeletonNotes = wrapper.findAllComponents(SkeletonNote);
 
     expect(skeletonNotes.length).toBe(5);
@@ -76,8 +126,8 @@ describe('WikiNotesApp', () => {
     const commentForm = wrapper.findComponent(WikiCommentForm);
 
     expect(commentForm.props()).toMatchObject({
-      noteableId: '',
-      noteId: noteableId,
+      noteableId: 'gid://gitlab/WikiPage/1',
+      noteId: 'gid://gitlab/WikiPage/1',
     });
   });
 
@@ -98,10 +148,6 @@ describe('WikiNotesApp', () => {
   describe('when there is an error while fetching discussions', () => {
     beforeEach(() => {
       wrapper.vm.$options.apollo.wikiPage.error.call(wrapper.vm);
-    });
-
-    afterEach(() => {
-      jest.resetAllMocks();
     });
 
     it('should render error message correctly', async () => {
@@ -129,54 +175,51 @@ describe('WikiNotesApp', () => {
     it('should attempt to fetch Discussions when retry button is clicked', async () => {
       const errorAlert = wrapper.findComponent(GlAlert);
 
+      jest.spyOn(wrapper.vm.$apollo.queries.wikiPage, 'refetch');
       await errorAlert.vm.$emit('primaryAction');
       expect(wrapper.vm.$apollo.queries.wikiPage.refetch).toHaveBeenCalled();
     });
   });
 
   describe('when there are no errors while fetching discussions', () => {
-    beforeEach(() => {
-      const mockData = {
-        wikiPage: {
-          id: 'gid://gitlab/WikiPage/1',
-          discussions: {
-            nodes: [
-              { id: 1, notes: { nodes: [{ body: 'Discussion 1' }] } },
-              { id: 2, notes: { nodes: [{ body: 'Discussion 2' }] } },
-              {
-                id: 3,
-                notes: {
-                  nodes: [
-                    { id: 31, body: 'Discussion 3 Note 1' },
-                    { id: 32, body: 'Discussion 3 Note 2' },
-                    { id: 33, body: 'Discussion 3 Note 3' },
-                  ],
-                },
-              },
-            ],
-          },
-        },
+    let discussions;
+    beforeEach(async () => {
+      discussions = {
+        nodes: [
+          mockDiscussion('Discussion 1'),
+          mockDiscussion('Discussion 2'),
+          mockDiscussion('Discussion 3 Note 1', 'Discussion 3 Note 2', 'Discussion 3 Note 3'),
+        ],
       };
 
-      wrapper.vm.$options.apollo.wikiPage.result.call(wrapper.vm, { data: mockData });
-    });
-
-    afterEach(() => {
-      jest.resetAllMocks();
+      await createWrapper({
+        mockQueryResponse: {
+          wikiPage: {
+            id: 'gid://gitlab/WikiPage/1',
+            title: 'home',
+            discussions,
+          },
+        },
+      });
     });
 
     it('should render discussions correctly', () => {
       const wikiDiscussions = wrapper.findAllComponents(WikiDiscussion);
 
       expect(wikiDiscussions.length).toBe(3);
-      expect(wikiDiscussions.at(0).props()).toMatchObject({
-        discussion: [{ body: 'Discussion 1' }],
-        noteableId: 'gid://gitlab/WikiPage/1',
-      });
-      expect(wikiDiscussions.at(1).props()).toMatchObject({
-        discussion: [{ body: 'Discussion 2' }],
-        noteableId: 'gid://gitlab/WikiPage/1',
-      });
+      expect(wikiDiscussions.at(0).props('noteableId')).toEqual('gid://gitlab/WikiPage/1');
+      expect(wikiDiscussions.at(1).props('noteableId')).toEqual('gid://gitlab/WikiPage/1');
+      expect(wikiDiscussions.at(2).props('noteableId')).toEqual('gid://gitlab/WikiPage/1');
+
+      expect(wikiDiscussions.at(0).props('discussion')).toHaveLength(1);
+      expect(wikiDiscussions.at(1).props('discussion')).toHaveLength(1);
+      expect(wikiDiscussions.at(2).props('discussion')).toHaveLength(3);
+
+      expect(wikiDiscussions.at(0).props('discussion')[0].body).toEqual('Discussion 1');
+      expect(wikiDiscussions.at(1).props('discussion')[0].body).toEqual('Discussion 2');
+      expect(wikiDiscussions.at(2).props('discussion')[0].body).toEqual('Discussion 3 Note 1');
+      expect(wikiDiscussions.at(2).props('discussion')[1].body).toEqual('Discussion 3 Note 2');
+      expect(wikiDiscussions.at(2).props('discussion')[2].body).toEqual('Discussion 3 Note 3');
     });
 
     it('should not render error alert', () => {
@@ -184,63 +227,58 @@ describe('WikiNotesApp', () => {
       expect(errorAlert.exists()).toBe(false);
     });
 
-    it('should delete the note correctly when the WikiDiscussions emits "note-deleted" when there are replies', () => {
+    it('should delete the note correctly when the WikiDiscussions emits "note-deleted" when there are replies', async () => {
       const wikiDiscussions = wrapper.findAllComponents(WikiDiscussion);
 
       // delete first note
-      wikiDiscussions.at(2).vm.$emit('note-deleted', 31);
-      let notes = wrapper.vm.discussions[2].notes.nodes;
-      expect(notes).toHaveLength(2);
-      expect(notes).not.toContainEqual({
-        id: 31,
+      wikiDiscussions.at(2).vm.$emit('note-deleted', discussions.nodes[2].notes.nodes[0].id);
+      await nextTick();
+
+      const findNotes = () => wikiDiscussions.at(2).props('discussion');
+      expect(findNotes()).toHaveLength(2);
+      expect(findNotes()).not.toContainEqual({
+        id: discussions.nodes[2].notes.nodes[0].id,
         body: 'Discussion 3 Note 1',
       });
 
       // delete last note
-      wikiDiscussions.at(2).vm.$emit('note-deleted', 33);
-      notes = wrapper.vm.discussions[2].notes.nodes;
-      expect(notes).toHaveLength(1);
-      expect(notes).toMatchObject([
+      wikiDiscussions.at(2).vm.$emit('note-deleted', discussions.nodes[2].notes.nodes[2].id);
+      await nextTick();
+
+      expect(findNotes()).toHaveLength(1);
+      expect(findNotes()).toMatchObject([
         {
-          id: 32,
+          id: discussions.nodes[2].notes.nodes[1].id,
           body: 'Discussion 3 Note 2',
         },
       ]);
 
-      // delete only note
-      wikiDiscussions.at(2).vm.$emit('note-deleted', 32);
-      const { discussions } = wrapper.vm;
-      expect(discussions).toHaveLength(2);
-      expect(discussions).not.toContainEqual(
-        expect.objectContaining({
-          id: 3,
-        }),
-      );
+      // delete remaning note
+      wikiDiscussions.at(2).vm.$emit('note-deleted', 2);
+      await nextTick();
+
+      expect(wrapper.findAllComponents(WikiDiscussion)).toHaveLength(2);
     });
   });
 
   describe('when fetching discussions', () => {
-    const setUpAndReturnVariables = (containerType) => {
-      wrapper = createWrapper({ provideData: { containerType } });
+    const setUpAndReturnVariables = (id) => {
+      createWrapper({ provideData: { queryVariables: { ...queryVariables, ...id } } });
 
       const variablesSpy = jest.spyOn(WikiNotesApp.apollo.wikiPage, 'variables');
       WikiNotesApp.apollo.wikiPage.variables.call(wrapper.vm);
 
-      expect(wrapper.vm.$options.apollo.wikiPage.query).toBe(WikiPageQuery);
+      expect(wrapper.vm.$options.apollo.wikiPage.query).toBe(wikiPageQuery);
       return variablesSpy.mock.results[0].value;
     };
 
-    afterEach(() => {
-      jest.resetAllMocks();
-    });
-
     it('should set variable data when containerType is group', () => {
-      const variables = setUpAndReturnVariables('group');
+      const variables = setUpAndReturnVariables({ namespaceId: 'gid://gitlab/Group/7' });
       expect(variables).toMatchObject({ slug: 'home', namespaceId: 'gid://gitlab/Group/7' });
     });
 
     it('should set variable data when containerType is project', () => {
-      const variables = setUpAndReturnVariables('project');
+      const variables = setUpAndReturnVariables({ projectId: 'gid://gitlab/Project/7' });
 
       expect(variables).toMatchObject({ slug: 'home', projectId: 'gid://gitlab/Project/7' });
     });
@@ -267,17 +305,6 @@ describe('WikiNotesApp', () => {
     });
 
     it('shouldupdateDiscussions when "creating-note:success" is called', async () => {
-      const mockData = {
-        wikiPage: {
-          id: 'gid://gitlab/WikiPage/1',
-          discussions: {
-            nodes: [{ id: 1, notes: { nodes: [{ body: 'Discussion 1' }] } }],
-          },
-        },
-      };
-      wrapper.vm.$options.apollo.wikiPage.result.call(wrapper.vm, { data: mockData });
-      await nextTick();
-
       const newDiscussion = {
         id: '2',
         notes: {

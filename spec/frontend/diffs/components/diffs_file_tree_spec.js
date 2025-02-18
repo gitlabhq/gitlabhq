@@ -4,8 +4,13 @@ import { Mousetrap } from '~/lib/mousetrap';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
+import { getCookie, removeCookie, setCookie } from '~/lib/utils/common_utils';
+import { TREE_LIST_WIDTH_STORAGE_KEY } from '~/diffs/constants';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
 describe('DiffsFileTree', () => {
+  useLocalStorageSpy();
+
   let wrapper;
 
   const createComponent = ({ visible = true } = {}) => {
@@ -15,6 +20,13 @@ describe('DiffsFileTree', () => {
       },
     });
   };
+
+  it('re-emits clickFile event', () => {
+    const obj = {};
+    createComponent();
+    wrapper.findComponent(TreeList).vm.$emit('clickFile', obj);
+    expect(wrapper.emitted('clickFile')).toStrictEqual([[obj]]);
+  });
 
   describe('visibility', () => {
     describe('when renderDiffFiles and showTreeList are true', () => {
@@ -91,6 +103,32 @@ describe('DiffsFileTree', () => {
       wrapper.findComponent(PanelResizer).vm.$emit('update:size', 300);
       await nextTick();
       expect(wrapper.findComponent(TreeList).props('hideFileStats')).toBe(false);
+    });
+
+    describe('persistence', () => {
+      beforeEach(() => {
+        removeCookie(TREE_LIST_WIDTH_STORAGE_KEY);
+        window.localStorage.clear();
+      });
+
+      it('recovers width value from cookies', () => {
+        setCookie(TREE_LIST_WIDTH_STORAGE_KEY, '250');
+        createComponent();
+        checkWidth(250);
+      });
+
+      it('recovers width value from local storage', () => {
+        window.localStorage.setItem(TREE_LIST_WIDTH_STORAGE_KEY, '260');
+        createComponent();
+        checkWidth(260);
+      });
+
+      it('stores width value in cookies', async () => {
+        createComponent();
+        wrapper.findComponent(PanelResizer).vm.$emit('resize-end', 350);
+        await nextTick();
+        expect(getCookie(TREE_LIST_WIDTH_STORAGE_KEY)).toBe('350');
+      });
     });
   });
 });

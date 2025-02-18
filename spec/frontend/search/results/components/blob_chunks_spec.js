@@ -1,11 +1,13 @@
 import { GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import BlobChunks from '~/search/results/components/blob_chunks.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import {
   EVENT_CLICK_BLOB_RESULT_BLAME_LINE,
   EVENT_CLICK_BLOB_RESULT_LINE,
 } from '~/search/results/tracking';
+import { mockDataForBlobChunk } from '../../mock_data';
 
 describe('BlobChunks', () => {
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
@@ -26,8 +28,10 @@ describe('BlobChunks', () => {
   const findGlLink = () => wrapper.findAllComponents(GlLink);
   const findLine = () => wrapper.findAllByTestId('search-blob-line');
   const findLineNumbers = () => wrapper.findAllByTestId('search-blob-line-numbers');
-  const findLineCode = () => wrapper.findAllByTestId('search-blob-line-code');
-  const findRootElement = () => wrapper.find('#search-blob-content');
+  const findNonHighlightedLineCode = () =>
+    wrapper.findAllByTestId('search-blob-line-code-non-highlighted');
+  const findHighlightedLineCode = () =>
+    wrapper.findAllByTestId('search-blob-line-code-highlighted');
   const findBlameLink = () =>
     findGlLink().wrappers.filter(
       (w) => w.attributes('data-testid') === 'search-blob-line-blame-link',
@@ -35,48 +39,21 @@ describe('BlobChunks', () => {
   const findLineLink = () =>
     findGlLink().wrappers.filter((w) => w.attributes('data-testid') === 'search-blob-line-link');
 
-  describe('component basics', () => {
+  describe('when initial render', () => {
     beforeEach(() => {
-      createComponent({
-        chunk: {
-          lines: [
-            {
-              lineNumber: '1',
-              richText: '',
-              text: '',
-              __typename: 'SearchBlobLine',
-            },
-            {
-              lineNumber: '2',
-              richText: '<b>test1</b>',
-              text: 'test1',
-              __typename: 'SearchBlobLine',
-            },
-            { lineNumber: 3, richText: '', text: '', __typename: 'SearchBlobLine' },
-          ],
-          matchCountInChunk: 1,
-          __typename: 'SearchBlobChunk',
-        },
-        blameLink: 'https://gitlab.com/blame/test.js',
-        fileUrl: 'https://gitlab.com/file/test.js',
-        position: 1,
-      });
+      createComponent(mockDataForBlobChunk);
     });
 
-    it(`renders default state`, () => {
-      expect(findLine()).toHaveLength(3);
-      expect(findLineNumbers()).toHaveLength(3);
-      expect(findLineCode()).toHaveLength(3);
-      expect(findGlLink()).toHaveLength(6);
-      expect(findGlIcon()).toHaveLength(3);
+    it('renders default state', () => {
+      expect(findLine()).toHaveLength(4);
+      expect(findLineNumbers()).toHaveLength(4);
+      expect(findNonHighlightedLineCode()).toHaveLength(4);
+      expect(findHighlightedLineCode()).toHaveLength(0);
+      expect(findGlLink()).toHaveLength(8);
+      expect(findGlIcon()).toHaveLength(4);
     });
 
-    it(`renders proper colors`, () => {
-      expect(findRootElement().classes('white')).toBe(true);
-      expect(findLineCode().at(1).find('b').classes('hll')).toBe(true);
-    });
-
-    it(`renders links correctly`, () => {
+    it('renders links correctly', () => {
       expect(findGlLink().at(0).attributes('href')).toBe('https://gitlab.com/blame/test.js#L1');
       expect(findGlLink().at(0).attributes('title')).toBe('View blame');
       expect(findGlLink().at(0).findComponent(GlIcon).exists()).toBe(true);
@@ -96,6 +73,18 @@ describe('BlobChunks', () => {
       trackedLink().at(0).vm.$emit('click');
 
       expect(trackEventSpy).toHaveBeenCalledWith(event, { property: '1', value: 1 }, undefined);
+    });
+  });
+
+  describe('when frontend highlighting', () => {
+    beforeEach(async () => {
+      createComponent(mockDataForBlobChunk);
+      await waitForPromises();
+    });
+
+    it('renders proper colors', () => {
+      expect(findHighlightedLineCode().exists()).toBe(true);
+      expect(findHighlightedLineCode().at(2).text()).toBe('console.log("test")');
     });
   });
 });

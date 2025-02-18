@@ -24,6 +24,8 @@ RSpec.describe Types::TodoableInterface, feature_category: :notifications do
       expect(described_class.resolve_type(build(:project), {})).to eq(Types::ProjectType)
       expect(described_class.resolve_type(build(:group), {})).to eq(Types::GroupType)
       expect(described_class.resolve_type(build(:key), {})).to eq(Types::KeyType)
+      expect(described_class.resolve_type(build(:wiki_page_meta), {})).to eq(Types::Wikis::WikiPageType)
+      expect(described_class.resolve_type(build(:user), {})).to eq(Types::UserType)
     end
 
     it 'raises an error for an unknown type' do

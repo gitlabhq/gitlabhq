@@ -211,7 +211,7 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
         end
-        get ':id/pipelines/:pipeline_id/variables', feature_category: :secrets_management, urgency: :low do
+        get ':id/pipelines/:pipeline_id/variables', feature_category: :ci_variables, urgency: :low do
           authorize! :read_pipeline_variable, pipeline
 
           present pipeline.variables, with: Entities::Ci::Variable
@@ -287,6 +287,7 @@ module API
           requires :name, type: String, desc: 'The name of the pipeline', documentation: { example: 'Deployment to production' }
         end
         route_setting :authentication, job_token_allowed: true
+        route_setting :authorization, job_token_policies: :admin_jobs
         put ':id/pipelines/:pipeline_id/metadata', urgency: :low, feature_category: :continuous_integration do
           authorize! :update_pipeline, pipeline
 

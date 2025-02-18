@@ -13,9 +13,6 @@ events:
   - name: push_package_to_registry
     filter:
       label: pypi
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

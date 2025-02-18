@@ -32,13 +32,7 @@ module Gitlab
           return unless milestone_events_supported?
 
           copy_events(ResourceMilestoneEvent.table_name, original_entity.resource_milestone_events) do |event|
-            if event.remove?
-              event_attributes_with_milestone(event, nil)
-            else
-              destination_milestone = matching_milestone(event.milestone_title)
-
-              event_attributes_with_milestone(event, destination_milestone) if destination_milestone.present?
-            end
+            event_attributes_with_milestone(event, event.milestone_id)
           end
         end
 
@@ -58,11 +52,11 @@ module Gitlab
           ['id']
         end
 
-        def event_attributes_with_milestone(event, milestone)
+        def event_attributes_with_milestone(event, milestone_id)
           event.attributes
             .except('id')
             .merge(entity_key => new_entity.id,
-              'milestone_id' => milestone&.id,
+              'milestone_id' => milestone_id,
               'action' => ResourceMilestoneEvent.actions[event.action],
               'state' => ResourceMilestoneEvent.states[event.state])
         end
@@ -97,21 +91,6 @@ module Gitlab
         def both_respond_to?(method)
           original_entity.respond_to?(method) &&
             new_entity.respond_to?(method)
-        end
-
-        def matching_milestone(title)
-          return if title.blank? || !new_entity.supports_milestone?
-
-          params = { title: title, project_ids: new_entity.project&.id, group_ids: group&.id }
-
-          milestones = MilestonesFinder.new(params).execute
-          milestones.first
-        end
-
-        def group
-          if new_entity.project&.group && current_user.can?(:read_group, new_entity.project.group)
-            new_entity.project.group
-          end
         end
       end
     end

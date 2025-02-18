@@ -17,7 +17,7 @@ RSpec.describe Organizations::PathValidator, feature_category: :cell do
 
       validator.validate_each(organization, :path, "Path with spaces, and comma's!")
 
-      expect(organization.errors[:path]).to include(Gitlab::PathRegex.namespace_format_message)
+      expect(organization.errors[:path]).to include(Gitlab::PathRegex.organization_format_message)
     end
 
     it 'adds a message when the path is reserved when creating' do

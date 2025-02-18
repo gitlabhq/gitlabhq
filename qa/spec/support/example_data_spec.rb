@@ -10,7 +10,7 @@ RSpec.describe QA::Support::ExampleData do
 
   let(:tags) { [] }
   let(:spec_files) { [] }
-  let(:default_tags) { QA::Specs::Runner::DEFAULT_SKIPPED_TAGS.map { |tag| "~#{tag}" } }
+  let(:default_tags) { QA::Specs::Runner::DEFAULT_SKIPPED_TAGS }
   let(:default_spec_files) { QA::Specs::Runner::DEFAULT_TEST_PATH_ARGS - ["--"] }
 
   before do

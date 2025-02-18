@@ -6,7 +6,7 @@ PIPELINE_CHANGES_MESSAGE = <<~MSG
 This merge request contains changes to the pipeline configuration for the GitLab project.
 
 Please consider the effect of the changes in this merge request on the following:
-- Effects on different [pipeline types](https://docs.gitlab.com/ee/development/pipelines/index.html#pipelines-types-for-merge-requests)
+- Effects on different [pipeline types](https://docs.gitlab.com/ee/development/pipelines/#pipelines-types-for-merge-requests)
 - Effects on non-canonical projects:
   - `gitlab-foss`
   - `security`

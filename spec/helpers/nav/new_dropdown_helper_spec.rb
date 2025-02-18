@@ -166,7 +166,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
           end
 
           it 'does not have new organization menu item' do
-            expect(view_model[:menu_sections]).to match_array([])
+            expect(view_model[:menu_sections]).to be_empty
           end
         end
 
@@ -176,7 +176,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
           end
 
           it 'does not have new organization menu item' do
-            expect(view_model[:menu_sections]).to match_array([])
+            expect(view_model[:menu_sections]).to be_empty
           end
         end
       end

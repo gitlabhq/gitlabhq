@@ -65,7 +65,7 @@ ul.related-merge-requests > li gl-emoji {
   }
 
   &.closed {
-    color: $red-500;
+    @apply gl-text-danger;
   }
 
   &.open {

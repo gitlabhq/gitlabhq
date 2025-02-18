@@ -36,7 +36,7 @@ default:
 
 .next-ruby-variables: &next-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_NEXT}"
-  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_2"
+  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_3"
 
 .default-branch-pipeline-failure-variables: &default-branch-pipeline-failure-variables
   CREATE_RAILS_FLAKY_TEST_ISSUES: "true"
@@ -61,6 +61,9 @@ default:
 workflow:
   name: '$PIPELINE_NAME'
   rules:
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/514740
+    - if: '$GITLAB_USER_LOGIN == "gitlab-crowdin-bot" && $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_APPROVED != "true"'
+      when: never
     - if: '$CI_PIPELINE_SOURCE == "pipeline" && $GITALY_TEST'
       variables:
         <<: *default-ruby-variables
@@ -81,7 +84,7 @@ workflow:
     # they serve no purpose and will run anyway when the changes are merged.
     - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release-tools\/\d+\.\d+\.\d+-rc\d+$/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/ && $CI_PROJECT_PATH == "gitlab-org/gitlab"'
       when: never
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_1/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_2/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/'
       variables:
         <<: [*default-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
@@ -112,7 +115,7 @@ workflow:
     # This variable can be specified in manual or scheduled pipelines to run CI with the next Rails version.
     # Specifying BUNDLE_GEMFILE: Gemfile.next wouldn't work because QA jobs require
     # BUNDLE_GEMFILE to be Gemfile even with the next Rails version pipelines.
-    - if: '$RUN_WITH_NEXT_RAILS_VERSION'
+    - if: '$CI_COMMIT_BRANCH == "rails-next" && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         <<: *next-ruby-variables
         BUNDLE_GEMFILE: Gemfile.next
@@ -132,7 +135,7 @@ workflow:
         <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
         CRYSTALBALL: "true"
         PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
-    - if: '$CI_COMMIT_BRANCH == "ruby3_2" && $CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$CI_COMMIT_BRANCH == "ruby-next" && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         <<: *next-ruby-variables
         PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
@@ -226,6 +229,7 @@ variables:
   RSPEC_TESTS_MAPPING_ALT_PATH: crystalball/mapping-alt.json
   RSPEC_VIEWS_INCLUDING_PARTIALS_PATH: rspec/views_including_partials.txt
   RSPEC_AUTO_EXPLAIN_LOG_PATH: auto_explain/auto_explain.ndjson.gz
+  RUBYOPT: "--yjit"
   TMP_TEST_FOLDER: "${CI_PROJECT_DIR}/tmp/tests"
   TMP_TEST_GITLAB_WORKHORSE_PATH: "${TMP_TEST_FOLDER}/${GITLAB_WORKHORSE_FOLDER}"
 

@@ -137,7 +137,8 @@ export const allBlobs = (state, getters) =>
       });
     }
 
-    acc.find((f) => f.path === parentPath).tree.push(file);
+    const id = state.diffFiles.find((diff) => diff.file_hash === file.fileHash)?.id;
+    acc.find((f) => f.path === parentPath).tree.push({ ...file, id });
 
     return acc;
   }, []);
@@ -225,4 +226,14 @@ export const diffFiles = (state, getters) => {
 export const linkedFile = (state) => {
   if (!state.linkedFileHash) return null;
   return state.diffFiles.find((file) => file.file_hash === state.linkedFileHash);
+};
+
+export const fileTree = (state) => {
+  const diffs = state.diffFiles;
+  const mapToId = (item) => {
+    const id = diffs.find((diff) => diff.file_hash === item.fileHash)?.id;
+    const tree = item.tree.map(mapToId);
+    return { ...item, id, tree };
+  };
+  return state.tree.map(mapToId);
 };

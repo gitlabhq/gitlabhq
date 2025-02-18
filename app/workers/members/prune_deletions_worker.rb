@@ -3,6 +3,7 @@
 module Members
   class PruneDeletionsWorker
     include ApplicationWorker
+    include CronjobChildWorker
     include LimitedCapacity::Worker
     include Gitlab::Utils::StrongMemoize
 
@@ -65,7 +66,9 @@ module Members
       log_monitoring_data(user.id, namespace.id, destroyed_count, destroy_duration)
 
       # when all memberships removed, cleanup schedule:
-      member_deletion_schedule.destroy! if memberships.count === 0
+      cleanup_schedule(member_deletion_schedule) if memberships.count === 0
+    rescue Gitlab::Access::AccessDeniedError
+      cleanup_schedule(member_deletion_schedule)
     end
 
     def member_deletion_schedules
@@ -81,6 +84,10 @@ module Members
         destroyed_count: destroyed_count,
         destroy_duration_s: destroy_duration
       )
+    end
+
+    def cleanup_schedule(member_deletion_schedule)
+      member_deletion_schedule.destroy!
     end
   end
 end

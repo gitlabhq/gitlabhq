@@ -2,22 +2,27 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Terraform Module Registry API
 ---
 
-# Terraform Module Registry API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This is the API documentation for the [Terraform Module Registry](../../user/packages/terraform_module_registry/index.md).
+{{< /details >}}
 
-WARNING:
+This is the API documentation for the [Terraform Module Registry](../../user/packages/terraform_module_registry/_index.md).
+
+{{< alert type="warning" >}}
+
 This API is used by the [Terraform CLI](https://www.terraform.io/)
 and is generally not meant for manual consumption. Undocumented authentication methods might be removed in the future.
 
+{{< /alert >}}
+
 For instructions on how to upload and install Terraform modules from the GitLab
-Terraform Module Registry, see the [Terraform Module Registry documentation](../../user/packages/terraform_module_registry/index.md).
+Terraform Module Registry, see the [Terraform Module Registry documentation](../../user/packages/terraform_module_registry/_index.md).
 
 ## List available versions for a specific module
 
@@ -283,7 +288,7 @@ Tokens that can be used to authenticate:
 | Header          | Value |
 |-----------------|-------|
 | `PRIVATE-TOKEN` | A [personal access token](../../user/profile/personal_access_tokens.md) with `api` scope. |
-| `DEPLOY-TOKEN`  | A [deploy token](../../user/project/deploy_tokens/index.md) with `write_package_registry` scope. |
+| `DEPLOY-TOKEN`  | A [deploy token](../../user/project/deploy_tokens/_index.md) with `write_package_registry` scope. |
 | `JOB-TOKEN`     | A [job token](../../ci/jobs/ci_job_token.md). |
 
 Example response:

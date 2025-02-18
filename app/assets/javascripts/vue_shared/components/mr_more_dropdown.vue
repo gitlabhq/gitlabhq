@@ -330,7 +330,11 @@ export default {
           </template>
         </gl-disclosure-dropdown-item>
 
-        <gl-disclosure-dropdown-item class="js-sidebar-lock-root">
+        <gl-disclosure-dropdown-item
+          v-if="canUpdateMergeRequest"
+          data-testid="lock-merge-request"
+          class="js-sidebar-lock-root"
+        >
           <template #list-item>
             {{ sprintf($options.i18n.lock, { issuableType: $options.i18n.issuableName }) }}
           </template>

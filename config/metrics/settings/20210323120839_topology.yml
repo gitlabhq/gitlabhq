@@ -9,9 +9,6 @@ milestone: "13.11"
 introduced_by_url: https://gitlab.com/groups/gitlab-org/-/epics/3209
 time_frame: none
 data_source: prometheus
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

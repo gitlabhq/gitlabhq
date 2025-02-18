@@ -68,7 +68,7 @@ const GraphiQLLogo = React.createElement(
 
 const graphiqlContainer = document.getElementById('graphiql-container');
 
-function apolloFetcher(graphQLParams) {
+function apolloFetcher(graphQLParams, { headers }) {
   let query = gql(graphQLParams.query);
 
   /*
@@ -89,11 +89,19 @@ function apolloFetcher(graphQLParams) {
     };
   }
 
-  return apolloClient.subscribe({
+  const apolloObject = {
     query,
     variables: graphQLParams.variables,
     operationName: graphQLParams.operationName,
-  });
+  };
+
+  if (headers?.REQUEST_PATH) {
+    apolloObject.context = {
+      uri: headers?.REQUEST_PATH,
+    };
+  }
+
+  return apolloClient.subscribe(apolloObject);
 }
 
 createRoot(graphiqlContainer).render(

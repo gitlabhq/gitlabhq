@@ -14,6 +14,7 @@ module Gitlab
         validate :validate_max_size
         validate :validate_public_folder
         validate :validate_max_entries
+        validate :validate_pages_publish_options
       end
 
       def initialize(project, build)
@@ -52,7 +53,7 @@ module Gitlab
 
       # Calculate page size after extract
       def total_size
-        root_dir = build.options[:publish] || PUBLIC_DIR
+        root_dir = build.pages[:publish] || PUBLIC_DIR
 
         build.artifacts_metadata_entry("#{root_dir}/", recursive: true).total_size
       end
@@ -91,6 +92,16 @@ module Gitlab
         return if latest_pipeline_id <= build.pipeline_id
 
         errors.add(:base, 'build SHA is outdated for this ref')
+      end
+
+      def validate_pages_publish_options
+        return unless build.options.present?
+        return unless build.options[:pages].is_a?(Hash)
+        return unless build.options.key?(:publish) && build.options[:pages]&.key?(:publish)
+
+        errors.add(
+          :base,
+          _("Either the `publish` or `pages.publish` option may be present in `.gitlab-ci.yml`, but not both."))
       end
 
       def latest_sha

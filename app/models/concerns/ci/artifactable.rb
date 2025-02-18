@@ -69,5 +69,3 @@ module Ci
     end
   end
 end
-
-Ci::Artifactable.prepend_mod

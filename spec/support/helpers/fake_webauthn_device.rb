@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'webauthn/fake_client'
 
 class FakeWebauthnDevice

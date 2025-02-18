@@ -49,7 +49,7 @@ module Gitlab
              *Documentation*
 
              For more information about GitLab chatops, refer to its
-             documentation: https://docs.gitlab.com/ee/ci/chatops/index.html.
+             documentation: https://docs.gitlab.com/ee/ci/chatops/.
           MESSAGE
 
           message

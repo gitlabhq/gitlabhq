@@ -22,6 +22,7 @@ module Ci
       @runner = runner
       @runner_manager = runner_manager
       @metrics = ::Gitlab::Ci::Queue::Metrics.new(runner)
+      @logger = ::Ci::RegisterJobService::Logger.new(runner: runner)
     end
 
     def execute(params = {})
@@ -30,9 +31,7 @@ module Ci
 
       @metrics.increment_queue_operation(:queue_attempt)
 
-      result = @metrics.observe_queue_time(:process, @runner.runner_type) do
-        process_queue(params)
-      end
+      result = process_queue_with_instrumentation(params)
 
       # Since we execute this query against replica it might lead to false-positive
       # We might receive the positive response: "hi, we don't have any more builds for you".
@@ -47,9 +46,20 @@ module Ci
       else
         result
       end
+
+    ensure
+      @logger.commit
     end
 
     private
+
+    def process_queue_with_instrumentation(params)
+      @metrics.observe_queue_time(:process, @runner.runner_type) do
+        @logger.instrument(:process_queue, once: true) do
+          process_queue(params)
+        end
+      end
+    end
 
     def process_queue(params)
       valid = true
@@ -82,7 +92,9 @@ module Ci
           next
         end
 
-        result = process_build(build, params)
+        result = @logger.instrument(:process_build) do
+          process_build(build, params)
+        end
         next unless result
 
         if result.valid?
@@ -147,27 +159,16 @@ module Ci
       ::Gitlab::Database::LoadBalancing::SessionMap.clear_session
 
       @metrics.observe_queue_time(:retrieve, @runner.runner_type) do
-        queue_query_proc.call
+        @logger.instrument(:retrieve_queue, once: true) do
+          queue_query_proc.call
+        end
       end
     end
 
     def process_build(build, params)
-      unless build.pending?
-        @metrics.increment_queue_operation(:build_not_pending)
+      return remove_from_queue!(build) unless build.pending?
 
-        ##
-        # If this build can not be picked because we had stale data in
-        # `ci_pending_builds` table, we need to respond with 409 to retry
-        # this operation.
-        #
-        if ::Ci::UpdateBuildQueueService.new.remove!(build)
-          return Result.new(nil, nil, nil, false)
-        end
-
-        return
-      end
-
-      if runner.matches_build?(build)
+      if runner_matched?(build)
         @metrics.increment_queue_operation(:build_can_pick)
       else
         @metrics.increment_queue_operation(:build_not_pick)
@@ -181,8 +182,8 @@ module Ci
 
       # In case when 2 runners try to assign the same build, second runner will be declined
       # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
-      if assign_runner!(build, params)
-        present_build!(build)
+      if assign_runner_with_instrumentation!(build, params)
+        present_build_with_instrumentation!(build)
       end
     rescue ActiveRecord::StaleObjectError
       # We are looping to find another build that is not conflicting
@@ -217,16 +218,45 @@ module Ci
       MAX_QUEUE_DEPTH
     end
 
+    def remove_from_queue!(build)
+      @metrics.increment_queue_operation(:build_not_pending)
+
+      ##
+      # If this build can not be picked because we had stale data in
+      # `ci_pending_builds` table, we need to respond with 409 to retry
+      # this operation.
+      #
+      Result.new(nil, nil, nil, false) if ::Ci::UpdateBuildQueueService.new.remove!(build)
+    end
+
+    def runner_matched?(build)
+      @logger.instrument(:process_build_runner_matched) do
+        runner.matches_build?(build)
+      end
+    end
+
+    def present_build_with_instrumentation!(build)
+      @logger.instrument(:process_build_present_build) do
+        present_build!(build)
+      end
+    end
+
     # Force variables evaluation to occur now
     def present_build!(build)
       # We need to use the presenter here because Gitaly calls in the presenter
       # may fail, and we need to ensure the response has been generated.
-      presented_build = ::Ci::BuildRunnerPresenter.new(build) # rubocop:disable CodeReuse/Presenter
+      presented_build = @logger.instrument(:present_build_presenter) do
+        ::Ci::BuildRunnerPresenter.new(build) # rubocop:disable CodeReuse/Presenter -- old code
+      end
 
-      log_artifacts_context(build)
-      log_build_dependencies_size(presented_build)
+      @logger.instrument(:present_build_logs) do
+        log_artifacts_context(build)
+        log_build_dependencies_size(presented_build)
+      end
 
-      build_json = Gitlab::Json.dump(::API::Entities::Ci::JobRequest::Response.new(presented_build))
+      build_json = @logger.instrument(:present_build_response_json) do
+        Gitlab::Json.dump(::API::Entities::Ci::JobRequest::Response.new(presented_build))
+      end
       Result.new(build, build_json, presented_build, true)
     end
 
@@ -242,20 +272,32 @@ module Ci
       end
     end
 
+    def assign_runner_with_instrumentation!(build, params)
+      @logger.instrument(:process_build_assign_runner) do
+        assign_runner!(build, params)
+      end
+    end
+
     def assign_runner!(build, params)
       build.runner_id = runner.id
       build.runner_session_attributes = params[:session] if params[:session].present?
 
-      failure_reason, _ = pre_assign_runner_checks.find { |_, check| check.call(build, params) }
+      failure_reason, _ = @logger.instrument(:assign_runner_failure_reason) do
+        pre_assign_runner_checks.find { |_, check| check.call(build, params) }
+      end
 
       if failure_reason
         @metrics.increment_queue_operation(:runner_pre_assign_checks_failed)
 
-        build.drop!(failure_reason)
+        @logger.instrument(:assign_runner_drop) do
+          build.drop!(failure_reason)
+        end
       else
         @metrics.increment_queue_operation(:runner_pre_assign_checks_success)
 
-        build.run!
+        @logger.instrument(:assign_runner_run) do
+          build.run!
+        end
         persist_runtime_features(build, params)
 
         build.runner_manager = runner_manager if runner_manager

@@ -85,7 +85,7 @@ module Gitlab
       end
 
       def composite?
-        @user.has_composite_identity? && composite_identity_enabled?
+        @user.has_composite_identity?
       end
 
       def sidekiq_link!(job)
@@ -93,7 +93,6 @@ module Gitlab
       end
 
       def link!(scope_user)
-        return self unless composite_identity_enabled?
         return self unless scope_user
 
         ##
@@ -127,10 +126,6 @@ module Gitlab
       end
 
       private
-
-      def composite_identity_enabled?
-        Feature.enabled?(:composite_identity, @user)
-      end
 
       def scoped_user_id
         scoped_user.id

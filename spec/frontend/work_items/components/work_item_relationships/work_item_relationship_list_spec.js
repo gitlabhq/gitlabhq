@@ -2,6 +2,7 @@ import DraggableList from 'vuedraggable';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { visitUrl } from '~/lib/utils/url_utility';
 import WorkItemRelationshipList from '~/work_items/components/work_item_relationships/work_item_relationship_list.vue';
 import WorkItemLinkChildContents from '~/work_items/components/shared/work_item_link_child_contents.vue';
 
@@ -9,6 +10,8 @@ import removeLinkedItemsMutation from '~/work_items/graphql/remove_linked_items.
 import addLinkedItemsMutation from '~/work_items/graphql/add_linked_items.mutation.graphql';
 
 import { mockBlockingLinkedItem } from '../../mock_data';
+
+jest.mock('~/lib/utils/url_utility');
 
 describe('WorkItemRelationshipList', () => {
   let wrapper;
@@ -24,6 +27,7 @@ describe('WorkItemRelationshipList', () => {
     heading = 'Blocking',
     canUpdate = true,
     isLoggedIn = true,
+    activeChildItemId = null,
   } = {}) => {
     if (isLoggedIn) {
       window.gon.current_user_id = 1;
@@ -38,6 +42,7 @@ describe('WorkItemRelationshipList', () => {
         heading,
         canUpdate,
         workItemFullPath,
+        activeChildItemId,
       },
       mocks: {
         $apollo: {
@@ -65,20 +70,19 @@ describe('WorkItemRelationshipList', () => {
     removeEventListener: jest.fn(),
   };
 
-  beforeEach(() => {
-    createComponent({ linkedItems: mockLinkedItems });
-  });
-
   it('renders linked item list', () => {
+    createComponent({ linkedItems: mockLinkedItems });
     expect(findHeading().text()).toBe('Blocking');
     expect(wrapper.html()).toMatchSnapshot();
   });
 
   it('renders work item list with drag and drop ability when canUpdate is true', () => {
+    createComponent({ linkedItems: mockLinkedItems });
     expect(findDraggableWorkItemsList().exists()).toBe(true);
   });
 
   it('renders work item link child contents with correct props', () => {
+    createComponent({ linkedItems: mockLinkedItems });
     expect(findWorkItemLinkChildContents().props()).toMatchObject({
       childItem: mockLinkedItems[0].workItem,
       canUpdate: true,
@@ -87,8 +91,49 @@ describe('WorkItemRelationshipList', () => {
     });
   });
 
+  it('highlights the item when the drawer is opened', () => {
+    const ACTIVE_DRAWER_CLASS = 'gl-border-default gl-bg-blue-50 hover:gl-bg-blue-50';
+    createComponent({
+      linkedItems: mockLinkedItems,
+      activeChildItemId: mockLinkedItems[0].workItem.id,
+    });
+    expect(findWorkItemLinkChildContents().attributes('class')).toContain(ACTIVE_DRAWER_CLASS);
+  });
+
+  it('opens the drawer on click when the item is not an incident', () => {
+    createComponent({ linkedItems: mockLinkedItems });
+    findWorkItemLinkChildContents().vm.$emit('click');
+
+    expect(wrapper.emitted('showModal')).toEqual([
+      [expect.objectContaining({ child: mockLinkedItems[0].workItem })],
+    ]);
+  });
+
+  it('redirects to the url of the linked item on click when the item is an incident', () => {
+    const mockLinkedItemsWithIncident = [
+      {
+        ...mockLinkedItems[0],
+        workItem: {
+          ...mockLinkedItems[0].workItem,
+          workItemType: {
+            id: 'gid://gitlab/WorkItems::Type/5',
+            name: 'Incident',
+            iconName: 'issue-type-incident',
+            __typename: 'WorkItemType',
+          },
+        },
+      },
+    ];
+
+    createComponent({ linkedItems: mockLinkedItemsWithIncident });
+    findWorkItemLinkChildContents().vm.$emit('click');
+
+    expect(visitUrl).toHaveBeenCalledWith(mockLinkedItemsWithIncident[0].workItem.webUrl);
+  });
+
   describe('drag start', () => {
     beforeEach(() => {
+      createComponent({ linkedItems: mockLinkedItems });
       jest.spyOn(document, 'addEventListener');
       findDraggableWorkItemsList().vm.$emit('start', {
         to: mockTo,
@@ -119,6 +164,7 @@ describe('WorkItemRelationshipList', () => {
 
   describe('drag move', () => {
     beforeEach(() => {
+      createComponent({ linkedItems: mockLinkedItems });
       // We're manually calling `move` function here as VueDraggable doesn't expose it as an event
       // even when Sortable.js has already defined it https://github.com/SortableJS/Sortable?tab=readme-ov-file#options
       findDraggableWorkItemsList().vm.move({

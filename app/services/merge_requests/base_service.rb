@@ -89,6 +89,7 @@ module MergeRequests
       trigger_merge_request_reviewers_updated(merge_request)
 
       set_first_reviewer_assigned_at_metrics(merge_request) if new_reviewers.any?
+      trigger_user_merge_request_updated(merge_request)
     end
 
     def cleanup_environments(merge_request)
@@ -279,6 +280,12 @@ module MergeRequests
 
     def trigger_merge_request_approval_state_updated(merge_request)
       GraphqlTriggers.merge_request_approval_state_updated(merge_request)
+    end
+
+    def trigger_user_merge_request_updated(merge_request)
+      [merge_request.assignees, merge_request.reviewers].flatten.uniq.each do |user|
+        GraphqlTriggers.user_merge_request_updated(user, merge_request)
+      end
     end
 
     def set_first_reviewer_assigned_at_metrics(merge_request)

@@ -19,6 +19,12 @@ query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
         group
         text
       }
+      errorMessages {
+        nodes {
+          id
+          content
+        }
+      }
       createdAt
       user {
         id
@@ -55,8 +61,6 @@ query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
       configSource
       failureReason
       source
-      yamlErrors
-      yamlErrorMessages
       trigger
       ...PipelineHeaderData
     }

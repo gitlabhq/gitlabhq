@@ -4,6 +4,7 @@ module Ci
   class Trigger < Ci::ApplicationRecord
     include Presentable
     include Limitable
+    include Expirable
 
     TRIGGER_TOKEN_PREFIX = 'glptt-'
 
@@ -18,6 +19,8 @@ module Ci
 
     validates :token, presence: true, uniqueness: true
     validates :owner, presence: true
+
+    validate :expires_at_before_instance_max_expiry_date, on: :create
 
     attr_encrypted :encrypted_token_tmp,
       attribute: :encrypted_token,
@@ -48,6 +51,22 @@ module Ci
 
     def can_access_project?
       Ability.allowed?(self.owner, :create_build, project)
+    end
+
+    protected
+
+    def expires_at_before_instance_max_expiry_date
+      return if Feature.disabled?(:trigger_token_expiration, project)
+
+      return unless expires_at
+
+      max_expiry_date = Date.current.advance(days: PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS)
+      return if expires_at.before?(max_expiry_date)
+
+      errors.add(
+        :expires_at,
+        format(_("must be before %{expiry_date}"), expiry_date: max_expiry_date)
+      )
     end
 
     private

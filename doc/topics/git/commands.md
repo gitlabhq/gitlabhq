@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Common Git commands
 ---
-
-# Common Git commands
 
 Learn more about the most commonly used Git commands.
 

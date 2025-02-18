@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Create Jira credentials'
 ---
-
-# Tutorial: Create Jira credentials
 
 This tutorial shows you how to create Jira credentials. You can use your new Jira credentials to
 configure the [Jira issues integration](configure.md) in GitLab for Jira Data Center or Jira Server.
@@ -23,7 +22,7 @@ Prerequisites:
 
 To create a Jira user:
 
-1. On the top bar, in the upper-right corner, select **Administration** (**{settings}**) > **User management**.
+1. On the top bar, in the upper-right corner, select **Administration** ({{< icon name="settings" >}}) > **User management**.
 1. [Create a new user account](https://confluence.atlassian.com/adminjiraserver/create-edit-or-remove-a-user-938847025.html#Create,edit,orremoveauser-CreateusersmanuallyinJira) with write access to your Jira projects.
 
    Alternatively, you can use an existing user account, provided the user belongs to a Jira group that has been granted
@@ -40,7 +39,7 @@ Now that you've created a user named `gitlab`, it's time to create a group for t
 
 To create a Jira group for the user:
 
-1. On the top bar, in the upper-right corner, select **Administration** (**{settings}**) > **User management**.
+1. On the top bar, in the upper-right corner, select **Administration** ({{< icon name="settings" >}}) > **User management**.
 1. On the left sidebar, select **Groups**.
 1. In the **Add group** section, enter a name for the group (for example,
    `gitlab-developers`), then select **Add group**.
@@ -59,7 +58,7 @@ it's time to create a permission scheme for the group.
 
 To create a permission scheme for the group:
 
-1. On the top bar, in the upper-right corner, select **Administration** (**{settings}**) > **Issues**.
+1. On the top bar, in the upper-right corner, select **Administration** ({{< icon name="settings" >}}) > **Issues**.
 1. On the left sidebar, select **Permission schemes**.
 1. Select **Add permission scheme**.
 1. On the **Add permission scheme** dialog:

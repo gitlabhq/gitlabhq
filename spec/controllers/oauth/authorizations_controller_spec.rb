@@ -61,6 +61,21 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
     end
   end
 
+  shared_examples 'RequestPayloadLogger information appended' do
+    it 'logs custom information in the payload' do
+      expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+        method.call(payload)
+
+        expect(payload[:remote_ip]).to be_present
+        expect(payload[:username]).to eq(user.username)
+        expect(payload[:user_id]).to be_present
+        expect(payload[:ua]).to be_present
+      end
+
+      subject
+    end
+  end
+
   describe 'GET #new' do
     subject { get :new, params: params }
 
@@ -176,7 +191,7 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
             it 'displays the warning message' do
               subject
               expect(response.body).to have_css(
-                'p.gl-text-orange-500', text: "Make sure you trust #{application.name} before authorizing.")
+                'p.gl-text-warning', text: "Make sure you trust #{application.name} before authorizing.")
               expect(response.body).to have_css('[data-testid="warning-solid-icon"]')
             end
           end
@@ -336,10 +351,14 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
         end
       end
     end
+
+    it_behaves_like "RequestPayloadLogger information appended"
   end
 
   describe 'POST #create' do
     subject { post :create, params: params }
+
+    it_behaves_like "RequestPayloadLogger information appended"
 
     include_examples 'OAuth Authorizations require confirmed user'
   end
@@ -362,6 +381,82 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
 
     it 'includes GonHelper module' do
       expect(controller).to be_a(Gitlab::GonHelper)
+    end
+  end
+
+  describe '#audit_oauth_authorization' do
+    let(:pre_auth) { instance_double(Doorkeeper::OAuth::PreAuthorization) }
+    let(:client) { instance_double(Doorkeeper::OAuth::Client) }
+
+    before do
+      allow(controller).to receive(:pre_auth).and_return(pre_auth)
+      allow(pre_auth).to receive(:client).and_return(client)
+      allow(client).to receive(:application).and_return(application)
+    end
+
+    context 'when response is successful' do
+      before do
+        allow(controller).to receive(:performed?).and_return(true)
+        allow(controller).to receive_message_chain(:response, :successful?).and_return(true)
+      end
+
+      it 'creates an audit event' do
+        expect(Gitlab::Audit::Auditor).to receive(:audit).with(
+          name: 'user_authorized_oauth_application',
+          author: user,
+          scope: user,
+          target: application,
+          message: 'User authorized an OAuth application.',
+          additional_details: {
+            application_name: application.name,
+            application_id: application.id,
+            scopes: application.scopes.to_a
+          },
+          ip_address: request.remote_ip
+        )
+
+        controller.send(:audit_oauth_authorization)
+      end
+    end
+
+    context 'when response is a redirect' do
+      before do
+        allow(controller).to receive(:performed?).and_return(true)
+        allow(controller).to receive_message_chain(:response, :successful?).and_return(false)
+        allow(controller).to receive_message_chain(:response, :redirect?).and_return(true)
+      end
+
+      it 'creates an audit event' do
+        expect(Gitlab::Audit::Auditor).to receive(:audit)
+
+        controller.send(:audit_oauth_authorization)
+      end
+    end
+
+    context 'when response is not performed' do
+      before do
+        allow(controller).to receive(:performed?).and_return(false)
+      end
+
+      it 'does not create an audit event' do
+        expect(Gitlab::Audit::Auditor).not_to receive(:audit)
+
+        controller.send(:audit_oauth_authorization)
+      end
+    end
+
+    context 'when response is neither successful nor redirect' do
+      before do
+        allow(controller).to receive(:performed?).and_return(true)
+        allow(controller).to receive_message_chain(:response, :successful?).and_return(false)
+        allow(controller).to receive_message_chain(:response, :redirect?).and_return(false)
+      end
+
+      it 'does not create an audit event' do
+        expect(Gitlab::Audit::Auditor).not_to receive(:audit)
+
+        controller.send(:audit_oauth_authorization)
+      end
     end
   end
 end

@@ -232,6 +232,28 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:admin_abuse_report_assignees).class_name('Admin::AbuseReportAssignee') }
     it { is_expected.to have_many(:early_access_program_tracking_events).class_name('EarlyAccessProgram::TrackingEvent') }
 
+    describe '#triggers' do
+      let(:user) { create(:user) }
+      let(:expired_trigger) { create(:ci_trigger, expires_at: 5.years.ago, owner: user) }
+      let(:valid_trigger) { create(:ci_trigger, expires_at: 1.month.from_now, owner: user) }
+
+      it { is_expected.to have_many(:triggers).class_name('Ci::Trigger').with_foreign_key('owner_id') }
+
+      it 'returns non-expired triggers by default' do
+        expect(user.triggers).to eq([valid_trigger])
+      end
+
+      context 'with FF trigger_token_expiration disabled' do
+        before do
+          stub_feature_flags(trigger_token_expiration: false)
+        end
+
+        it 'returns all triggers by default' do
+          expect(user.triggers).to match_array([expired_trigger, valid_trigger])
+        end
+      end
+    end
+
     it do
       is_expected.to have_many(:assigned_abuse_reports).class_name('AbuseReport')
         .through(:admin_abuse_report_assignees)
@@ -257,10 +279,10 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     describe 'organizations association' do
-      let_it_be(:default_organization) { create(:organization, :default) }
+      let_it_be(:organization) { create(:organization) }
 
       it 'does not create a cross-database query' do
-        user = create(:user)
+        user = create(:user, organizations: [organization])
 
         with_cross_joins_prevented do
           expect(user.organizations.count).to eq(1)
@@ -732,15 +754,6 @@ RSpec.describe User, feature_category: :user_profile do
       let(:user) { build(:user, username: username) }
 
       include_examples 'username validations'
-
-      context 'when created without an organization' do
-        let_it_be(:default_organization) { create(:organization, :default) }
-        let_it_be(:user) { create(:user) }
-
-        it 'is assigned to the default organization' do
-          expect(user.reload.organizations).to contain_exactly(Organizations::Organization.default_organization)
-        end
-      end
     end
 
     context 'when updating user' do
@@ -1899,30 +1912,6 @@ RSpec.describe User, feature_category: :user_profile do
       it 'synchronizes the gpg keys when the email is updated' do
         expect(user).to receive(:update_invalid_gpg_signatures).at_most(:twice)
         user.update!(email: 'shawnee.ritchie@denesik.com')
-      end
-    end
-  end
-
-  context 'when after_create_commit :create_default_organization_user on default organization' do
-    let_it_be(:default_organization) { create(:organization, :default) }
-    let(:user) { create(:user) }
-
-    subject(:create_user) { user }
-
-    context 'when user is created as an instance admin' do
-      let(:user) { create(:admin) }
-
-      it 'adds user to organization_users as an owner of default organization' do
-        expect { create_user }.to change { Organizations::OrganizationUser.count }.by(1)
-        expect(default_organization.owner?(user)).to be(true)
-      end
-    end
-
-    context 'when user is created as a regular user' do
-      it 'adds user to organization_users as a regular user of default organization' do
-        expect { create_user }.to change { Organizations::OrganizationUser.count }.by(1)
-        expect(default_organization.owner?(user)).to be(false)
-        expect(default_organization.user?(user)).to be(true)
       end
     end
   end
@@ -8949,6 +8938,19 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '.id_exists?' do
+    let_it_be(:user) { create(:user) }
+    let(:user_id) { user.id }
+
+    it 'returns true if a user with the given id exists' do
+      expect(described_class.id_exists?(user_id)).to be(true)
+    end
+
+    it 'returns false if a username with the id does not exist' do
+      expect(described_class.id_exists?('invalid_id')).to be(false)
+    end
+  end
+
   context 'when email is not unique' do
     let_it_be(:existing_user) { create(:user) }
 
@@ -8989,6 +8991,22 @@ RSpec.describe User, feature_category: :user_profile do
 
     it 'is equal to one hour' do
       expect(user.ldap_sync_time).to eq(1.hour)
+    end
+  end
+
+  describe '#readable_by?' do
+    let_it_be(:user) { create :user }
+
+    context 'when it is the user' do
+      let(:user_2) { user }
+
+      it { expect(user.readable_by?(user_2)).to eq true }
+    end
+
+    context 'when key does not belong to user' do
+      let(:user_2) { build(:user) }
+
+      it { expect(user.readable_by?(user_2)).to eq false }
     end
   end
 

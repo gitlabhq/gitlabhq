@@ -51,9 +51,11 @@ export const clusterAgents = [
       nodes: [
         {
           metadata: { version: 'v14.8.0' },
+          warnings: [],
         },
         {
           metadata: { version: 'v14.8.0' },
+          warnings: [],
         },
       ],
     },
@@ -79,6 +81,7 @@ export const clusterAgents = [
       nodes: [
         {
           metadata: { version: 'v14.6.0' },
+          warnings: [{ version: { message: 'This agent is outdated' } }],
         },
       ],
     },
@@ -104,9 +107,11 @@ export const clusterAgents = [
       nodes: [
         {
           metadata: { version: 'v14.7.0' },
+          warnings: [],
         },
         {
           metadata: { version: 'v14.8.0' },
+          warnings: [],
         },
       ],
     },
@@ -132,9 +137,11 @@ export const clusterAgents = [
       nodes: [
         {
           metadata: { version: 'v14.5.0' },
+          warnings: [{ version: { message: 'This agent is outdated' } }],
         },
         {
           metadata: { version: 'v14.3.0' },
+          warnings: [{ version: { message: 'This agent is outdated' } }],
         },
       ],
     },
@@ -311,14 +318,22 @@ const ciAccessAuthorizedAgentsNodes = [
       userAccessAuthorizations: null,
       connections: null,
       tokens: null,
-      project: agentProject,
+      project: { id: '2', fullPath: 'path/to/another/project' },
     },
   },
 ];
 const userAccessAuthorizedAgentsNodes = [
   {
     agent: {
-      ...agents[0],
+      __typename: 'ClusterAgent',
+      id: '4',
+      name: 'user-access-agent-1',
+      webPath: 'shared-project/agent-1',
+      createdAt: timestamp,
+      userAccessAuthorizations: null,
+      connections: null,
+      tokens: null,
+      project: { id: '2', fullPath: 'path/to/another/project' },
     },
   },
 ];
@@ -329,7 +344,16 @@ export const clusterAgentsResponse = {
       id: 'gid://gitlab/Project/1',
       clusterAgents: {
         nodes: agents,
+        count: agents.length,
       },
+    },
+  },
+};
+
+export const sharedAgentsResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
       ciAccessAuthorizedAgents: {
         nodes: ciAccessAuthorizedAgentsNodes,
       },
@@ -346,6 +370,12 @@ const trees = [
     name: 'agent-2',
     path: '.gitlab/agents/agent-2',
     webPath: '/project/path/.gitlab/agents/agent-2',
+  },
+  {
+    id: 'tree-2',
+    name: 'new-agent-2',
+    path: '.gitlab/agents/new-agent-2',
+    webPath: '/project/path/.gitlab/agents/new-agent-2',
   },
 ];
 
@@ -364,17 +394,6 @@ export const treeListResponseData = {
 };
 
 export const expectedAgentsList = [
-  {
-    id: '1',
-    name: 'agent-1',
-    webPath: '/agent-1',
-    configFolder: undefined,
-    status: 'unused',
-    lastContact: null,
-    connections: null,
-    tokens: null,
-    project: agentProject,
-  },
   {
     id: '2',
     name: 'agent-2',
@@ -397,12 +416,11 @@ export const expectedAgentsList = [
     project: agentProject,
   },
   {
-    id: '3',
-    name: 'ci-agent-1',
+    id: '1',
+    name: 'agent-1',
+    webPath: '/agent-1',
     configFolder: undefined,
-    webPath: 'shared-project/agent-1',
     status: 'unused',
-    isShared: true,
     lastContact: null,
     connections: null,
     tokens: null,
@@ -432,23 +450,6 @@ export const createAgentErrorResponse = {
         tokens,
       },
       errors: ['could not create agent'],
-    },
-  },
-};
-
-export const getAgentResponse = {
-  data: {
-    project: {
-      __typename: 'Project',
-      id: 'project-1',
-      clusterAgents: { nodes: [{ ...agent, connections, tokens }] },
-      ciAccessAuthorizedAgents: { nodes: [] },
-      userAccessAuthorizedAgents: { nodes: [] },
-      repository: {
-        tree: {
-          trees: { nodes: [{ ...agent, path: null }] },
-        },
-      },
     },
   },
 };

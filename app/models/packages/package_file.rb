@@ -99,6 +99,16 @@ class Packages::PackageFile < ApplicationRecord
       .where(packages_conan_file_metadata: { conan_package_reference: conan_package_reference })
   end
 
+  scope :with_conan_recipe_revision, ->(recipe_revision) do
+    joins(conan_file_metadatum: :recipe_revision)
+      .where(packages_conan_recipe_revisions: { revision: recipe_revision })
+  end
+
+  scope :without_conan_recipe_revision, -> do
+    joins(:conan_file_metadatum)
+      .where(packages_conan_file_metadata: { recipe_revision_id: nil })
+  end
+
   def self.most_recent!
     recent.first!
   end

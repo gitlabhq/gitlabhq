@@ -93,6 +93,8 @@ export default {
           this.terraformData.collapsed = formattedData;
           this.terraformData.expanded = [...valid, ...invalid];
 
+          this.$emit('loaded', this.terraformData.collapsed.invalid.length);
+
           return {
             ...res,
             data: formattedData,
@@ -196,5 +198,7 @@ export default {
     :summary="summary"
     :content="terraformData.expanded"
     :fetch-collapsed-data="fetchCollapsedData"
+    :label="__('Terraform')"
+    path="terraform"
   />
 </template>

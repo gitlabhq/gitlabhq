@@ -1,0 +1,13 @@
+---
+description: Tracks when a manifest in container registry is deleted
+internal_events: true
+action: delete_manifest_from_container_registry
+identifiers:
+- project
+product_group: container_registry
+milestone: '17.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177595
+tiers:
+- free
+- premium
+- ultimate

@@ -98,7 +98,7 @@ RSpec.describe 'JobRetry', feature_category: :continuous_integration do
     it 'returns an error' do
       post_graphql_mutation(mutation, current_user: user)
 
-      expect(mutation_response['job']).to be(nil)
+      expect(mutation_response['job']).to be_nil
       expect(mutation_response['errors']).to match_array(['Job cannot be retried'])
     end
   end

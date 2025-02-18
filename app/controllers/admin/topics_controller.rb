@@ -25,7 +25,8 @@ class Admin::TopicsController < Admin::ApplicationController
     @topic = Projects::Topic.new(topic_params)
 
     if @topic.save
-      redirect_to admin_topics_path, notice: format(_('Topic %{topic_name} was successfully created.'), topic_name: @topic.name)
+      redirect_to admin_topics_path,
+        notice: format(_('Topic %{topic_name} was successfully created.'), topic_name: @topic.name)
     else
       render "new"
     end

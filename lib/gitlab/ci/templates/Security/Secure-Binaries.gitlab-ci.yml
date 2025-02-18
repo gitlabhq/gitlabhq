@@ -18,7 +18,7 @@ variables:
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
   SECURE_BINARIES_ANALYZERS: >-
-    bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kics, kubesec, semgrep, gemnasium, gemnasium-maven, gemnasium-python,
+    bandit, brakeman, gosec, gitlab-advanced-sast, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kics, kubesec, semgrep, gemnasium, gemnasium-maven, gemnasium-python,
     license-finder,
     dast, dast-runner-validation, api-security
 
@@ -31,9 +31,8 @@ variables:
 .download_images:
   allow_failure: true
   image: docker:stable
-  only:
-    refs:
-      - branches
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
@@ -69,127 +68,113 @@ bandit:
   extends: .download_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "2"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bbandit\b/
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bbandit\b/'
 
 brakeman:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "3"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bbrakeman\b/
+    SECURE_BINARIES_ANALYZER_VERSION: "4"
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bbrakeman\b/'
 
 gosec:
   extends: .download_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "3"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bgosec\b/
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bgosec\b/'
 
 spotbugs:
   extends: .download_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "5"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bspotbugs\b/
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bspotbugs\b/'
 
 flawfinder:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "3"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bflawfinder\b/
+    SECURE_BINARIES_ANALYZER_VERSION: "4"
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bflawfinder\b/'
 
 phpcs-security-audit:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "3"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bphpcs-security-audit\b/
+    SECURE_BINARIES_ANALYZER_VERSION: "4"
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bphpcs-security-audit\b/'
 
 security-code-scan:
   extends: .download_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "3"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bsecurity-code-scan\b/
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bsecurity-code-scan\b/'
 
 nodejs-scan:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "3"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bnodejs-scan\b/
+    SECURE_BINARIES_ANALYZER_VERSION: "4"
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bnodejs-scan\b/'
 
 eslint:
   extends: .download_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "2"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\beslint\b/
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\beslint\b/'
 
 secrets:
   extends: .download_images
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bsecrets\b/
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "6"
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bsecrets\b/'
 
 semgrep:
   extends: .download_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "5"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bsemgrep\b/
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bsemgrep\b/'
+
+gitlab-advanced-sast:
+  extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "1"
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bgitlab-advanced-sast\b/'
 
 sobelow:
   extends: .download_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "5"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bsobelow\b/
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bsobelow\b/'
 
 pmd-apex:
   extends: .download_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "5"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bsecrets\b/
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bpmd-apex\b/'
 
 kubesec:
   extends: .download_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "5"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bkubesec\b/
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bkubesec\b/'
+
+kics:
+  extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "5"
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bkics\b/'
 
 #
 # Dependency Scanning jobs
@@ -197,24 +182,24 @@ kubesec:
 
 gemnasium:
   extends: .download_images
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bgemnasium\b/
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "5"
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bgemnasium\b/'
 
 gemnasium-maven:
   extends: .download_images
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bgemnasium-maven\b/
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "5"
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bgemnasium-maven\b/'
 
 gemnasium-python:
   extends: .download_images
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bgemnasium-python\b/
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "5"
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bgemnasium-python\b/'
 
 #
 # License Scanning
@@ -223,11 +208,9 @@ gemnasium-python:
 license-finder:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "3"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\blicense-finder\b/
+    SECURE_BINARIES_ANALYZER_VERSION: "4"
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\blicense-finder\b/'
 
 #
 # DAST
@@ -236,27 +219,21 @@ license-finder:
 dast:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "2"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bdast\b/
+    SECURE_BINARIES_ANALYZER_VERSION: "5"
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bdast\b/'
 
 dast-runner-validation:
   extends: .download_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "1"
     SECURE_BINARIES_IMAGE: "${CI_TEMPLATE_REGISTRY_HOST}/security-products/${CI_JOB_NAME}:${SECURE_BINARIES_ANALYZER_VERSION}"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bdast-runner-validation\b/
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bdast-runner-validation\b/'
 
 api-security:
   extends: .download_images
   variables:
     SECURE_BINARIES_ANALYZER_VERSION: "5"
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bapi-security\b/
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bapi-security\b/'

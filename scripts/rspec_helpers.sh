@@ -209,8 +209,13 @@ function change_exit_code_if_applicable() {
   local found_infra_error=$previous_exit_status
   local new_exit_code=$previous_exit_status
 
-  change_exit_code_if_known_flaky_tests $previous_exit_status || found_known_flaky_test=$?
-  change_exit_code_if_known_infra_error $previous_exit_status || found_infra_error=$?
+  # We need to call the GitLab API for those functions.
+  if [[ -n "$TEST_FAILURES_PROJECT_TOKEN" ]]; then
+    change_exit_code_if_known_flaky_tests $previous_exit_status || found_known_flaky_test=$?
+    change_exit_code_if_known_infra_error $previous_exit_status || found_infra_error=$?
+  else
+    echoinfo "TEST_FAILURES_PROJECT_TOKEN is not set. We won't try to change the exit code."
+  fi
 
   # Update new_exit_code if either of the checks changed the values
   # Ensure infra error exit code takes precedence because we want to retry it if possible
@@ -223,7 +228,6 @@ function change_exit_code_if_applicable() {
     alert_job_in_slack $new_exit_code "Known infra error caused this job to fail"
   elif [[ $found_known_flaky_test -ne $previous_exit_status ]]; then
     new_exit_code=$found_known_flaky_test
-    alert_job_in_slack $new_exit_code "A Known flaky test caused this job to fail"
   fi
 
   echo "New exit code: $new_exit_code"

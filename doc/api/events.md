@@ -1,14 +1,16 @@
 ---
-stage: Software Supply Chain Security
-group: Compliance
+stage: none
+group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Events API
 ---
 
-# Events API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## Filter parameters
 
@@ -19,7 +21,11 @@ These options are in lowercase.
 
 ### Target types
 
-> - Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) in GitLab 17.3. Your administrator must have [enabled the new look for epics](../user/group/epics/epic_work_items.md).
+{{< history >}}
+
+- Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) in GitLab 17.3. Your administrator must have [enabled the new look for epics](../user/group/epics/epic_work_items.md).
+
+{{< /history >}}
 
 Available target types for the `target_type` parameter are:
 
@@ -47,7 +53,10 @@ YYYY-MM-DD
 
 ### Event Time Period Limit
 
-GitLab removes events older than 3 years from the events table for performance reasons.
+For information about activity retention limits, see:
+
+- [User activity time period limit](../user/profile/contributions_calendar.md#event-time-period-limit)
+- [Project activity time period limit](../user/project/working_with_projects.md#event-time-period-limit)
 
 ## List currently authenticated user's events
 
@@ -278,8 +287,11 @@ Example response:
 
 ## List a Project's visible events
 
-NOTE:
+{{< alert type="note" >}}
+
 This endpoint has been around longer than the others. Documentation was formerly located in the [Projects API pages](projects.md).
+
+{{< /alert >}}
 
 Get a list of visible events for a particular project.
 
@@ -291,7 +303,7 @@ Parameters:
 
 | Attribute     | Type           | Required | Description                                                                                         |
 |---------------|----------------|----------|-----------------------------------------------------------------------------------------------------|
-| `project_id`  | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths)                 |
+| `project_id`  | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)                 |
 | `action`      | string         | no       | Include only events of a particular [action type](#actions)                                         |
 | `target_type` | string         | no       | Include only events of a particular [target type](#target-types)                                    |
 | `before`      | date           | no       | Include only events created before a particular date. [View how to format dates](#date-formatting). |

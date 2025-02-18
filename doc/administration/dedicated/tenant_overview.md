@@ -1,15 +1,17 @@
 ---
-stage: SaaS Platforms
-group: GitLab Dedicated
-description: View information about your GitLab Dedicated instance with Switchboard.
+stage: GitLab Dedicated
+group: Switchboard
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: View information about your GitLab Dedicated instance with Switchboard.
+title: View GitLab Dedicated instance details
 ---
 
-# View GitLab Dedicated instance details
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab Dedicated
+
+{{< /details >}}
 
 Monitor your GitLab Dedicated instance details, maintenance windows, and configuration status in Switchboard.
 
@@ -48,9 +50,12 @@ The **Maintenance windows** section displays the:
 - Most recent emergency maintenance window (if applicable)
 - Upcoming GitLab version upgrade
 
-NOTE:
-Each Sunday night in UTC, Switchboard updates to display the planned GitLab version upgrades for the upcoming week's maintenance windows. For more information, see [Maintenance windows](../../administration/dedicated/maintenance.md#maintenance-windows).
+{{< alert type="note" >}}
+
+Each Sunday night in UTC, Switchboard updates to display the planned GitLab version upgrades for the upcoming week's maintenance windows. For more information, see [Maintenance windows](../dedicated/maintenance.md#maintenance-windows).
+
+{{< /alert >}}
 
 ## Hosted runners
 
-The **Hosted runners** section shows the [hosted runners](../../administration/dedicated/hosted_runners.md) associated with your instance.
+The **Hosted runners** section shows the [hosted runners](../dedicated/hosted_runners.md) associated with your instance.

@@ -2,13 +2,15 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: System hooks
 ---
 
-# System hooks
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 System hooks (not to be confused with [server hooks](server_hooks.md) or [file hooks](file_hooks.md)) perform HTTP POST
 requests and are triggered on the following events:
@@ -53,12 +55,19 @@ As an example, use system hooks for logging or changing information in an LDAP s
 You can also enable triggers for other events, such as push events, and disable the `repository_update` event
 when you create a system hook.
 
-NOTE:
+{{< alert type="note" >}}
+
 For push and tag events, the same structure and deprecations are followed as [project and group webhooks](../user/project/integrations/webhooks.md). However, commits are never displayed.
+
+{{< /alert >}}
 
 ## Create a system hook
 
-> - **Name** and **Description** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141977) in GitLab 16.9.
+{{< history >}}
+
+- **Name** and **Description** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141977) in GitLab 16.9.
+
+{{< /history >}}
 
 To create a system hook:
 
@@ -77,7 +86,7 @@ To create a system hook:
 1. In the **Trigger** section, select the checkbox for each GitLab
    [event](../user/project/integrations/webhook_events.md) you want to trigger the webhook.
 1. Optional. Clear the **Enable SSL verification** checkbox
-   to disable [SSL verification](../user/project/integrations/index.md#ssl-verification).
+   to disable [SSL verification](../user/project/integrations/_index.md#ssl-verification).
 1. Select **Add system hook**.
 
 ## Hooks request example

@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Jobs artifacts administration
 ---
 
-# Jobs artifacts administration
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This is the administration documentation. To learn how to use job artifacts in your GitLab CI/CD pipeline,
 see the [job artifacts configuration documentation](../../ci/jobs/job_artifacts.md).
@@ -20,9 +22,9 @@ finishes. This feature is enabled by default in all GitLab installations.
 
 To disable artifacts site-wide:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -36,7 +38,9 @@ To disable artifacts site-wide:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -59,7 +63,9 @@ To disable artifacts site-wide:
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -78,7 +84,9 @@ To disable artifacts site-wide:
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -98,30 +106,35 @@ To disable artifacts site-wide:
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Storing job artifacts
 
 GitLab Runner can upload an archive containing the job artifacts to GitLab. By default,
 this is done when the job succeeds, but can also be done on failure, or always, with the
-[`artifacts:when`](../../ci/yaml/index.md#artifactswhen) parameter.
+[`artifacts:when`](../../ci/yaml/_index.md#artifactswhen) parameter.
 
 Most artifacts are compressed by GitLab Runner before being sent to the coordinator. The exception to this is
-[reports artifacts](../../ci/yaml/index.md#artifactsreports), which are compressed after uploading.
+[reports artifacts](../../ci/yaml/_index.md#artifactsreports), which are compressed after uploading.
 
 ### Using local storage
 
 If you're using the Linux package or have a self-compiled installation, you
 can change the location where the artifacts are stored locally.
 
-NOTE:
+{{< alert type="note" >}}
+
 For Docker installations, you can change the path where your data is mounted.
 For the Helm chart, use
 [object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
 
-::Tabs
+{{< /alert >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
 
 The artifacts are stored by default in `/var/opt/gitlab/gitlab-rails/shared/artifacts`.
 
@@ -138,7 +151,9 @@ The artifacts are stored by default in `/var/opt/gitlab/gitlab-rails/shared/arti
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 The artifacts are stored by default in `/home/git/gitlab/shared/artifacts`.
 
@@ -162,7 +177,9 @@ The artifacts are stored by default in `/home/git/gitlab/shared/artifacts`.
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Using object storage
 
@@ -173,9 +190,12 @@ If you configure GitLab to store artifacts on object storage, you may also want 
 [eliminate local disk usage for job logs](job_logs.md#prevent-local-disk-usage).
 In both cases, job logs are archived and moved to object storage when the job completes.
 
-WARNING:
+{{< alert type="warning" >}}
+
 In a multi-server setup you must use one of the options to
 [eliminate local disk usage for job logs](job_logs.md#prevent-local-disk-usage), or job logs could be lost.
+
+{{< /alert >}}
 
 You should use the [consolidated object storage settings](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
@@ -187,54 +207,66 @@ processing is done in a background worker and requires **no downtime**.
 1. [Configure the object storage](#using-object-storage).
 1. Migrate the artifacts:
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle Linux package (Omnibus)
+   {{< tab title="Linux package (Omnibus)" >}}
 
    ```shell
    sudo gitlab-rake gitlab:artifacts:migrate
    ```
 
-   :::TabTitle Docker
+   {{< /tab >}}
+
+   {{< tab title="Docker" >}}
 
    ```shell
    sudo docker exec -t <container name> gitlab-rake gitlab:artifacts:migrate
    ```
 
-   :::TabTitle Self-compiled (source)
+   {{< /tab >}}
+
+   {{< tab title="Self-compiled (source)" >}}
 
    ```shell
    sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
    ```
 
-   ::EndTabs
+      {{< /tab >}}
+
+   {{< /tabs >}}
 
 1. Optional. Track the progress and verify that all job artifacts migrated
    successfully using the PostgreSQL console.
    1. Open a PostgreSQL console:
 
-      ::Tabs
+      {{< tabs >}}
 
-      :::TabTitle Linux package (Omnibus)
+      {{< tab title="Linux package (Omnibus)" >}}
 
       ```shell
       sudo gitlab-psql
       ```
 
-      :::TabTitle Docker
+      {{< /tab >}}
+
+      {{< tab title="Docker" >}}
 
       ```shell
       sudo docker exec -it <container_name> /bin/bash
       gitlab-psql
       ```
 
-      :::TabTitle Self-compiled (source)
+      {{< /tab >}}
+
+      {{< tab title="Self-compiled (source)" >}}
 
       ```shell
       sudo -u git -H psql -d gitlabhq_production
       ```
 
-      ::EndTabs
+      {{< /tab >}}
+
+      {{< /tabs >}}
 
    1. Verify that all artifacts migrated to object storage with the following
       SQL query. The number of `objectstg` should be the same as `total`:
@@ -249,15 +281,17 @@ processing is done in a background worker and requires **no downtime**.
 
 1. Verify that there are no files on disk in the `artifacts` directory:
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle Linux package (Omnibus)
+   {{< tab title="Linux package (Omnibus)" >}}
 
    ```shell
    sudo find /var/opt/gitlab/gitlab-rails/shared/artifacts -type f | grep -v tmp | wc -l
    ```
 
-   :::TabTitle Docker
+   {{< /tab >}}
+
+   {{< tab title="Docker" >}}
 
    Assuming you mounted `/var/opt/gitlab` to `/srv/gitlab`:
 
@@ -265,15 +299,19 @@ processing is done in a background worker and requires **no downtime**.
    sudo find /srv/gitlab/gitlab-rails/shared/artifacts -type f | grep -v tmp | wc -l
    ```
 
-   :::TabTitle Self-compiled (source)
+   {{< /tab >}}
+
+   {{< tab title="Self-compiled (source)" >}}
 
    ```shell
    sudo find /home/git/gitlab/shared/artifacts -type f | grep -v tmp | wc -l
    ```
 
-   ::EndTabs
+      {{< /tab >}}
 
-1. If [Geo](../geo/index.md) is enabled, [reverify all job artifacts](../geo/replication/troubleshooting/synchronization_verification.md#reverify-all-components-or-any-ssf-data-type-which-supports-verification).
+   {{< /tabs >}}
+
+1. If [Geo](../geo/_index.md) is enabled, [reverify all job artifacts](../geo/replication/troubleshooting/synchronization_verification.md#reverify-one-component-on-all-sites).
 
 In some cases, you need to run the [orphan artifact file cleanup Rake task](../../raketasks/cleanup.md#remove-orphan-artifact-files)
 to clean up orphaned artifacts.
@@ -288,18 +326,18 @@ To migrate artifacts back to local storage:
 
 ## Expiring artifacts
 
-If [`artifacts:expire_in`](../../ci/yaml/index.md#artifactsexpire_in) is used to set
+If [`artifacts:expire_in`](../../ci/yaml/_index.md#artifactsexpire_in) is used to set
 an expiry for the artifacts, they are marked for deletion right after that date passes.
 Otherwise, they expire per the [default artifacts expiration setting](../settings/continuous_integration.md#default-artifacts-expiration).
 
 Artifacts are deleted by the `expire_build_artifacts_worker` cron job which Sidekiq
-runs every 7 minutes (`*/7 * * * *` in [Cron](../../topics/cron/index.md) syntax).
+runs every 7 minutes (`*/7 * * * *` in [Cron](../../topics/cron/_index.md) syntax).
 
 To change the default schedule on which expired artifacts are deleted:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line (or uncomment it if
    it already exists and is commented out), substituting your schedule in cron
@@ -315,7 +353,9 @@ To change the default schedule on which expired artifacts are deleted:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -339,7 +379,9 @@ To change the default schedule on which expired artifacts are deleted:
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -358,7 +400,9 @@ To change the default schedule on which expired artifacts are deleted:
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -379,7 +423,9 @@ To change the default schedule on which expired artifacts are deleted:
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Set the maximum file size of the artifacts
 

@@ -9,9 +9,9 @@ module Types
         graphql_name 'WorkItemWidgetParticipants'
         description 'Represents a participants widget'
 
-        implements Types::WorkItems::WidgetInterface
+        implements ::Types::WorkItems::WidgetInterface
 
-        field :participants, Types::UserType.connection_type,
+        field :participants, ::Types::UserType.connection_type,
           null: true,
           description: 'Participants in the work item.'
 

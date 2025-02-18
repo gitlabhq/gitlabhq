@@ -2,13 +2,15 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Kroki
 ---
 
-# Kroki
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 With the [Kroki](https://kroki.io) integration,
 you can create diagrams-as-code within AsciiDoc, Markdown, reStructuredText, and Textile.
@@ -31,8 +33,11 @@ You can use the free public cloud instance `https://kroki.io` or you can [instal
 on your own infrastructure.
 After you've installed Kroki, make sure to update the **Kroki URL** in the settings to point to your instance.
 
-NOTE:
+{{< alert type="note" >}}
+
 Kroki diagrams are not stored on GitLab, so standard GitLab access controls and other user permission restrictions are not in force.
+
+{{< /alert >}}
 
 ### Docker
 

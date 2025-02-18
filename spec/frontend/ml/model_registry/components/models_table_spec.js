@@ -13,8 +13,6 @@ describe('ModelsTable', () => {
     wrapper = mount(ModelsTable, {
       propsData: {
         items,
-        canWriteModelRegistry,
-
         ...props,
       },
       stubs: {
@@ -26,6 +24,7 @@ describe('ModelsTable', () => {
       },
       provide: {
         projectPath: 'projectPath',
+        canWriteModelRegistry,
       },
     });
   };

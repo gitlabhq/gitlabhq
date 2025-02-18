@@ -5,12 +5,6 @@ module API
   module Conan
     module V1
       class ProjectPackages < ::API::Base
-        helpers do
-          def search_project
-            project
-          end
-        end
-
         params do
           requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
         end

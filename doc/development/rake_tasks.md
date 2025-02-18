@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Rake tasks for developers
 ---
-
-# Rake tasks for developers
 
 Rake tasks are available for developers and others contributing to GitLab.
 
@@ -50,12 +49,15 @@ project.
 
 #### Seeding issues for Insights charts
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can seed issues specifically for working with the
-[Insights charts](../user/project/insights/index.md) with the
+[Insights charts](../user/project/insights/_index.md) with the
 `gitlab:seed:insights:issues` task:
 
 ```shell
@@ -76,7 +78,7 @@ You can seed groups with subgroups that contain milestones/projects/issues
 with the `gitlab:seed:group_seed` task:
 
 ```shell
-bin/rake "gitlab:seed:group_seed[subgroup_depth, username]"
+bin/rake "gitlab:seed:group_seed[subgroup_depth, username, organization_path]"
 ```
 
 Group are additionally seeded with epics if GitLab instance has epics feature available.
@@ -141,7 +143,7 @@ bundle exec rake 'gitlab:seed:development_metrics[your_project_id]'
 
 #### Seed a project with vulnerabilities
 
-You can seed a project with [security vulnerabilities](../user/application_security/vulnerabilities/index.md).
+You can seed a project with [security vulnerabilities](../user/application_security/vulnerabilities/_index.md).
 
 ```shell
 # Seed all projects
@@ -153,7 +155,7 @@ bin/rake 'gitlab:seed:vulnerabilities[group-path/project-path]'
 
 #### Seed a project with environments
 
-You can seed a project with [environments](../ci/environments/index.md).
+You can seed a project with [environments](../ci/environments/_index.md).
 
 By default, this creates 10 environments, each with the prefix `ENV_`.
 Only `project_path` is required to run this command.
@@ -174,7 +176,7 @@ bundle exec rake gitlab:seed:dependencies
 
 #### Seed CI variables
 
-You can seed a project, group, or instance with [CI variables](../ci/variables/index.md).
+You can seed a project, group, or instance with [CI variables](../ci/variables/_index.md).
 
 By default, each command creates 10 CI variables. Variable names are prepended with its own
 default prefix (`VAR_` for project-level variables, `GROUP_VAR_` for group-level variables,
@@ -340,7 +342,7 @@ bundle exec rake rubocop:todo:generate\[Gitlab/NamespacedClass,Lint/Syntax\]
 
 Some shells require brackets to be escaped or quoted.
 
-See [Resolving RuboCop exceptions](../development/rubocop_development_guide.md#resolving-rubocop-exceptions)
+See [Resolving RuboCop exceptions](rubocop_development_guide.md#resolving-rubocop-exceptions)
 on how to proceed from here.
 
 ### Run RuboCop in graceful mode
@@ -401,7 +403,7 @@ See [How to update Emojis](fe_guide/emojis.md) for detailed instructions.
 
 ## Update project templates
 
-See [contributing to project templates for GitLab team members](project_templates.md#for-gitlab-team-members).
+See [contributing to project templates for GitLab team members](project_templates/add_new_template.md#for-gitlab-team-members).
 
 ## Generate route lists
 
@@ -486,7 +488,7 @@ bundle exec rake gitlab:graphql:compile_docs
 In its current state, the Rake task:
 
 - Generates output for GraphQL objects.
-- Places the output at `doc/api/graphql/reference/index.md`.
+- Places the output at `doc/api/graphql/reference/_index.md`.
 
 This uses some features from `graphql-docs` gem like its schema parser and helper methods.
 The docs generator code comes from our side giving us more flexibility, like using Haml templates and generating Markdown files.
@@ -524,12 +526,15 @@ bundle exec rake gitlab:graphql:update_all
 ## Update audit event types documentation
 
 For information on updating audit event types documentation, see
-[Generate documentation](audit_event_guide/index.md#generate-documentation).
+[Generate documentation](audit_event_guide/_index.md#generate-documentation).
 
 ## Update OpenAPI client for Error Tracking feature
 
-NOTE:
+{{< alert type="note" >}}
+
 This Rake task needs `docker` to be installed.
+
+{{< /alert >}}
 
 To update generated code for OpenAPI client located in
 `gems/error_tracking_open_api` run the following commands:

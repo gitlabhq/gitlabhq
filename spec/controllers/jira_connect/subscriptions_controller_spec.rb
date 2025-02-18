@@ -40,7 +40,7 @@ RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrat
         let(:content_type) { 'application/json' }
 
         it 'renders the relevant data as JSON', :aggregate_failures do
-          expect(json_response).to include('groups_path' => api_v4_groups_path(params: { min_access_level: Gitlab::Access::MAINTAINER, skip_groups: [subscription.namespace_id] }))
+          expect(json_response).to include('groups_path' => api_v4_groups_path(params: { min_access_level: Gitlab::Access::MAINTAINER, skip_groups: subscription.namespace_id.to_s }))
           expect(json_response).to include(
             'subscriptions' => [
               'group' => {

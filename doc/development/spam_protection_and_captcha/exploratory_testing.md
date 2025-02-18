@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Exploratory testing of CAPTCHAs
 ---
-
-# Exploratory testing of CAPTCHAs
 
 You can reliably test CAPTCHA on review apps, and in your local development environment (GDK).
 You can always:
@@ -84,12 +83,15 @@ no CAPTCHA popup displays. You are prevented from submitting the form at all.
 
 ### HTML page to render reCAPTCHA
 
-NOTE:
+{{< alert type="note" >}}
+
 If you use **the Google official test reCAPTCHA credentials** listed in
 [Set up Akismet and reCAPTCHA](#set-up-akismet-and-recaptcha), the
 CAPTCHA response string does not matter. It can be any string. If you use a
 real, valid key pair, you must solve the CAPTCHA to obtain a
 valid CAPTCHA response to use. You can do this once only, and only before it expires.
+
+{{< /alert >}}
 
 To directly test the GraphQL API via GraphQL Explorer (`http://gdk.test:3000/-/graphql-explorer`),
 get a reCAPTCHA response string via this form: `public/recaptcha.html` (`http://gdk.test:3000/recaptcha.html`):
@@ -253,10 +255,13 @@ REST response:
 
 GraphQL request:
 
-NOTE:
+{{< alert type="note" >}}
+
 The GitLab GraphiQL implementation doesn't allow passing of headers, so we must write
 this as a `curl` query. Here, `--data-binary` is used to properly handle escaped double quotes
 in the JSON-embedded query.
+
+{{< /alert >}}
 
 ```shell
 export CAPTCHA_RESPONSE="<CAPTCHA response obtained from HTML page to render CAPTCHA>"

@@ -6,7 +6,7 @@ import { WORKSPACE_PROJECT } from '~/issues/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
-import { isNotesWidget } from '../utils';
+import { findNotesWidget } from '../utils';
 import WorkItemStateBadge from './work_item_state_badge.vue';
 import WorkItemTypeIcon from './work_item_type_icon.vue';
 
@@ -57,7 +57,7 @@ export default {
       return this.workItem?.workItemType?.iconName;
     },
     isDiscussionLocked() {
-      return this.workItem?.widgets?.find(isNotesWidget)?.discussionLocked;
+      return findNotesWidget(this.workItem)?.discussionLocked;
     },
     isWorkItemConfidential() {
       return this.workItem?.confidential;

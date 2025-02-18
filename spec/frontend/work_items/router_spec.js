@@ -7,6 +7,7 @@ import {
   workItemByIidResponseFactory,
   allowedChildrenTypesResponse,
   mockProjectPermissionsQueryResponse,
+  allowedParentTypesResponse,
 } from 'jest/work_items/mock_data';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import App from '~/work_items/components/app.vue';
@@ -18,6 +19,7 @@ import { createRouter } from '~/work_items/router';
 import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
 import getAllowedWorkItemChildTypes from '~/work_items/graphql/work_item_allowed_children.query.graphql';
 import workspacePermissionsQuery from '~/work_items/graphql/workspace_permissions.query.graphql';
+import getAllowedWorkItemParentTypes from '~/work_items/graphql/work_item_allowed_parent_types.query.graphql';
 
 jest.mock('~/behaviors/markdown/render_gfm');
 
@@ -38,6 +40,7 @@ describe('Work items router', () => {
   const workspacePermissionsHandler = jest
     .fn()
     .mockResolvedValue(mockProjectPermissionsQueryResponse());
+  const allowedParentTypesHandler = jest.fn().mockResolvedValue(allowedParentTypesResponse);
 
   const createComponent = async (routeArg) => {
     const router = createRouter({ fullPath: '/work_item' });
@@ -51,6 +54,7 @@ describe('Work items router', () => {
       [workItemUpdatedSubscription, workItemUpdatedSubscriptionHandler],
       [getAllowedWorkItemChildTypes, allowedChildrenTypesHandler],
       [workspacePermissionsQuery, workspacePermissionsHandler],
+      [getAllowedWorkItemParentTypes, allowedParentTypesHandler],
     ];
 
     wrapper = mount(App, {

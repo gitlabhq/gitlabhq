@@ -7,7 +7,7 @@
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/471869  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     We're updating the base image of some of the analyzers used to scan your code for security vulnerabilities.
-    We're only changing the analyzer images that are already based on Red Hat Universal Base Image (UBI), so this change only affects you if you've specifically enabled [FIPS mode](https://docs.gitlab.com/ee/development/fips_compliance.html) for security scanning.
+    We're only changing the analyzer images that are already based on Red Hat Universal Base Image (UBI), so this change only affects you if you've specifically enabled [FIPS mode](https://docs.gitlab.com/development/fips_compliance/) for security scanning.
     The default images that GitLab security scans use are not affected because they aren't based on UBI.
 
     In GitLab 17.3, we will change the base image of the UBI-based analyzers from UBI Minimal to [UBI Micro](https://www.redhat.com/en/blog/introduction-ubi-micro), which includes fewer unnecessary packages and omits a package manager.

@@ -21,7 +21,7 @@ module WebHooks
       result = WebHooks::CreateService.new(current_user).execute(hook_params, relation)
 
       if result.success?
-        flash[:notice] = _('Webhook was created')
+        flash[:notice] = _('Webhook created')
       else
         self.hooks = relation.select(&:persisted?)
         flash[:alert] = result.message
@@ -32,7 +32,7 @@ module WebHooks
 
     def update
       if hook.update(hook_params)
-        flash[:notice] = _('Webhook was updated')
+        flash[:notice] = _('Webhook updated')
         redirect_to action: :edit
       else
         render 'edit'
@@ -79,7 +79,7 @@ module WebHooks
       result = WebHooks::DestroyService.new(current_user).execute(hook)
 
       if result[:status] == :success
-        flash[:notice] = result[:async] ? _('Webhook was scheduled for deletion') : _('Webhook was deleted')
+        flash[:notice] = result[:async] ? _('Webhook scheduled for deletion') : _('Webhook deleted')
       else
         flash[:alert] = result[:message]
       end

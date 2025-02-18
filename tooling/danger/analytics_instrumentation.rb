@@ -14,7 +14,7 @@ module Tooling
         For the following files, a review from the [Data team and Analytics Instrumentation team](https://gitlab.com/groups/gitlab-org/analytics-section/analytics-instrumentation/engineers/-/group_members?with_inherited_permissions=exclude) is recommended
         Please check the ~"analytics instrumentation" [Service Ping guide](https://docs.gitlab.com/ee/development/service_ping/) or the [Snowplow guide](https://docs.gitlab.com/ee/development/snowplow/).
 
-        For MR review guidelines, see the [Internal Analytics review guidelines](https://docs.gitlab.com/ee/development/internal_analytics/review_guidelines.html).
+        For MR review guidelines, see the [Internal Analytics review guidelines](https://docs.gitlab.com/development/internal_analytics/review_guidelines/).
 
         %<changed_files>s
 
@@ -27,11 +27,11 @@ module Tooling
 
       CHANGED_USAGE_DATA_MESSAGE = <<~MSG
         Notice that implementing metrics directly in usage_data.rb has been deprecated.
-        Please use [Instrumentation Classes](https://docs.gitlab.com/ee/development/internal_analytics/metrics/metrics_instrumentation.html) instead.
+        Please use [Instrumentation Classes](https://docs.gitlab.com/development/internal_analytics/metrics/metrics_instrumentation/) instead.
       MSG
 
       CHANGE_DEPRECATED_DATA_SOURCE_MESSAGE = <<~MSG
-        Redis and RedisHLL tracking is deprecated, consider using Internal Events tracking instead https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/quick_start.html#defining-event-and-metrics
+        Redis and RedisHLL tracking is deprecated, consider using Internal Events tracking instead https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/quick_start/#defining-event-and-metrics
       MSG
 
       WORKFLOW_LABELS = [

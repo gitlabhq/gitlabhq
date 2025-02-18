@@ -1,6 +1,7 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
+import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 import { ASC } from '~/notes/constants';
@@ -9,7 +10,9 @@ import { clearDraft } from '~/lib/utils/autosave';
 import { findWidget } from '~/issues/list/utils';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
+import { updateCacheAfterCreatingNote } from '../../graphql/cache_utils';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
+import workItemNotesByIidQuery from '../../graphql/notes/work_item_notes_by_iid.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import { TRACKING_CATEGORY_SHOW, WIDGET_TYPE_EMAIL_PARTICIPANTS, i18n } from '../../constants';
 import WorkItemNoteSignedOut from './work_item_note_signed_out.vue';
@@ -69,6 +72,11 @@ export default {
     markdownPreviewPath: {
       type: String,
       required: true,
+    },
+    newCommentTemplatePaths: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
     autocompleteDataSources: {
       type: Object,
@@ -255,11 +263,25 @@ export default {
         this.$emit('replied');
         clearDraft(this.autosaveKey);
         this.cancelEditing();
+        this.doFullPageReloadIfIncident(commentText);
       } catch (error) {
         this.$emit('error', error.message);
         Sentry.captureException(error);
       } finally {
         this.isSubmitting = false;
+      }
+    },
+    // Until incidents are fully migrated to work items
+    // we need to browse to the detail page again
+    // so the legacy detail view is rendered.
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/502823
+    doFullPageReloadIfIncident(commentText) {
+      // Matches quick actions /promote_to incident /promote_to_incident and /type incident case insensitive
+      const incidentTypeChangeRegex =
+        /\/(promote_to(?:_incident|\s{1,3}incident)|type\s{1,3}incident)(?!\S)/im;
+
+      if (incidentTypeChangeRegex.test(commentText)) {
+        visitUrl(this.workItem.webUrl);
       }
     },
     cancelEditing() {
@@ -271,11 +293,27 @@ export default {
       this.isEditing = true;
       this.$emit('startReplying');
     },
-    onNoteUpdate(store, createNoteData) {
-      const numErrors = createNoteData.data?.createNote?.errors?.length;
+    addDiscussionToCache(cache, newNote) {
+      const queryArgs = {
+        query: workItemNotesByIidQuery,
+        variables: { fullPath: this.fullPath, iid: this.workItemIid },
+      };
+      const sourceData = cache.readQuery(queryArgs);
+      if (!sourceData) {
+        return;
+      }
+      cache.writeQuery({
+        ...queryArgs,
+        data: updateCacheAfterCreatingNote(sourceData, newNote),
+      });
+    },
+    onNoteUpdate(cache, { data }) {
+      this.addDiscussionToCache(cache, data.createNote.note);
+
+      const numErrors = data?.createNote?.errors?.length;
 
       if (numErrors) {
-        const { errors } = createNoteData.data.createNote;
+        const { errors } = data.createNote;
 
         // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/503600
         // Refetching widgets as a temporary solution for dynamic updates
@@ -299,7 +337,7 @@ export default {
           return;
         }
 
-        throw new Error(createNoteData.data?.createNote?.errors[0]);
+        throw new Error(data?.createNote?.errors[0]);
       }
     },
   },
@@ -344,6 +382,7 @@ export default {
             :is-new-discussion="isNewDiscussion"
             :autocomplete-data-sources="autocompleteDataSources"
             :markdown-preview-path="markdownPreviewPath"
+            :new-comment-template-paths="newCommentTemplatePaths"
             :work-item-state="workItemState"
             :work-item-id="workItemId"
             :autofocus="autofocus"

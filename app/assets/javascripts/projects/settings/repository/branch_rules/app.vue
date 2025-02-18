@@ -197,6 +197,7 @@ export default {
           "
           :approval-rules-total="rule.approvalRules ? rule.approvalRules.nodes.length : 0"
           :matching-branches-count="rule.matchingBranchesCount"
+          :project-path="projectPath"
         />
       </ul>
 

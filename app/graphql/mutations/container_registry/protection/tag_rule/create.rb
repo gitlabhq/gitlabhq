@@ -30,8 +30,7 @@ module Mutations
 
           argument :minimum_access_level_for_delete,
             Types::ContainerRegistry::Protection::TagRuleAccessLevelEnum,
-            required: true,
-            validates: { allow_blank: false },
+            required: false,
             description: copy_field_description(
               Types::ContainerRegistry::Protection::TagRuleType,
               :minimum_access_level_for_delete
@@ -39,8 +38,7 @@ module Mutations
 
           argument :minimum_access_level_for_push,
             Types::ContainerRegistry::Protection::TagRuleAccessLevelEnum,
-            required: true,
-            validates: { allow_blank: false },
+            required: false,
             description: copy_field_description(
               Types::ContainerRegistry::Protection::TagRuleType,
               :minimum_access_level_for_push
@@ -59,7 +57,10 @@ module Mutations
               raise_resource_not_available_error!("'container_registry_protected_tags' feature flag is disabled")
             end
 
-            response = ::ContainerRegistry::Protection::CreateTagRuleService.new(project, current_user, kwargs).execute
+            response =
+              ::ContainerRegistry::Protection::CreateTagRuleService
+                .new(project: project, current_user: current_user, params: kwargs)
+                .execute
 
             { container_protection_tag_rule: response[:container_protection_tag_rule],
               errors: response.errors }

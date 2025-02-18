@@ -23,6 +23,12 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
       get api("/projects/#{project.id}/deployments", user), params: params
     end
 
+    it_behaves_like 'enforcing job token policies', :read_deployments do
+      let(:request) do
+        get api("/projects/#{source_project.id}/deployments"), params: { job_token: target_job.token }
+      end
+    end
+
     context 'as member of the project' do
       it 'returns projects deployments sorted by id asc' do
         perform_request
@@ -168,6 +174,13 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
       shared_examples "returns project deployments" do
         let(:project) { deployment.environment.project }
 
+        it_behaves_like 'enforcing job token policies', :read_deployments do
+          let(:request) do
+            get api("/projects/#{source_project.id}/deployments/#{deployment.id}"),
+              params: { job_token: target_job.token }
+          end
+        end
+
         it 'returns the expected response' do
           get api("/projects/#{project.id}/deployments/#{deployment.id}", user)
 
@@ -242,12 +255,11 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
     end
 
     it_behaves_like 'enforcing job token policies', [:admin_deployments, :admin_environments] do
-      # let(:accessed_project) { project }
       let(:request) do
         post(
-          api("/projects/#{project.id}/deployments"),
+          api("/projects/#{source_project.id}/deployments"),
           params: {
-            job_token: job.token,
+            job_token: target_job.token,
             environment: 'production',
             sha: sha,
             ref: 'master',
@@ -460,6 +472,13 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
       )
     end
 
+    it_behaves_like 'enforcing job token policies', :admin_deployments do
+      let(:request) do
+        put api("/projects/#{source_project.id}/deployments/#{deploy.id}"),
+          params: { status: 'success', job_token: target_job.token }
+      end
+    end
+
     context 'as a maintainer' do
       it 'returns a 403 when updating a deployment with a build' do
         deploy.update!(deployable: build)
@@ -592,6 +611,13 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
       )
     end
 
+    it_behaves_like 'enforcing job token policies', :admin_deployments do
+      let(:request) do
+        delete api("/projects/#{source_project.id}/deployments/#{old_deploy.id}"),
+          params: { job_token: target_job.token }
+      end
+    end
+
     context 'as an maintainer' do
       it 'deletes a deployment' do
         delete api("/projects/#{project.id}/deployments/#{old_deploy.id}", user)
@@ -643,6 +669,12 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
     let!(:deployment) { create(:deployment, :success, project: project) }
 
     subject { get api("/projects/#{project.id}/deployments/#{deployment.id}/merge_requests", user) }
+
+    it_behaves_like 'enforcing job token policies', :read_deployments do
+      let(:request) do
+        get api("/projects/#{source_project.id}/deployments/#{deployment.id}/merge_requests"), params: { job_token: target_job.token }
+      end
+    end
 
     context 'when a user is not a member of the deployment project' do
       let(:user) { build(:user) }

@@ -2,7 +2,7 @@ import { GlFormInputGroup } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
-import CodeDropdownItem from '~/vue_shared/components/code_dropdown/code_dropdown_item.vue';
+import CodeDropdownCloneItem from '~/repository/components/code_dropdown/code_dropdown_clone_item.vue';
 
 describe('CloneCodeDropdown', () => {
   let wrapper;
@@ -18,8 +18,8 @@ describe('CloneCodeDropdown', () => {
     embeddable: true,
   };
 
-  const findCodeDropdownItems = () => wrapper.findAllComponents(CodeDropdownItem);
-  const findCodeDropdownItemAtIndex = (index) => findCodeDropdownItems().at(index);
+  const findCodeDropdownCloneItems = () => wrapper.findAllComponents(CodeDropdownCloneItem);
+  const findCodeDropdownCloneItemAtIndex = (index) => findCodeDropdownCloneItems().at(index);
   const findCopySshUrlButton = () => wrapper.findComponentByTestId('copy-ssh-url');
   const findCopyHttpUrlButton = () => wrapper.findComponentByTestId('copy-http-url');
   const findCopyEmbeddedCodeButton = () => wrapper.findComponentByTestId('copy-embedded-code');
@@ -46,7 +46,7 @@ describe('CloneCodeDropdown', () => {
     `('renders correct link and a copy-button for $name', ({ index, link }) => {
       createComponent();
 
-      const group = findCodeDropdownItemAtIndex(index);
+      const group = findCodeDropdownCloneItemAtIndex(index);
       expect(group.props('link')).toBe(link);
     });
 

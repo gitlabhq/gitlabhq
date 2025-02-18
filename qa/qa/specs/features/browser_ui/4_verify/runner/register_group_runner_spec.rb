@@ -21,9 +21,14 @@ module QA
         Page::Group::Menu.perform(&:go_to_runners)
 
         Page::Group::Runners::Index.perform do |group_runners|
-          Support::Retrier.retry_on_exception(sleep_interval: 2, message: "Retry failed to verify online runner") do
-            expect(group_runners).to have_active_runner(runner)
-          end
+          expect { group_runners.has_active_runner?(runner) }.to eventually_be(true).within(sleep_interval: 2)
+
+          group_runners.go_to_runner_managers_page(runner)
+        end
+
+        Page::Runners::RunnerManagersDetail.perform do |runner_managers|
+          runner_managers.expand_runners
+          expect(runner_managers).to have_online_runner
         end
       end
     end

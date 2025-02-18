@@ -71,6 +71,23 @@ RSpec.describe Import::ValidateRemoteGitEndpointService, feature_category: :impo
         expect(result.success?).to be(true)
       end
 
+      context 'when server reply with capitized 001e# reply (Bonobo server)' do
+        let(:valid_response) do
+          { status: 200,
+            body: '001E# service=git-upload-pack',
+            headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' } }
+        end
+
+        it 'returns success when HTTP response is valid and contains correct payload' do
+          stub_full_request(endpoint_url, method: :get).to_return(valid_response)
+
+          result = subject.execute
+
+          expect(result).to be_a(ServiceResponse)
+          expect(result.success?).to be(true)
+        end
+      end
+
       it 'reports error when status code is not 200' do
         error_response = { status: 401 }
         stub_full_request(endpoint_url, method: :get).to_return(error_response)

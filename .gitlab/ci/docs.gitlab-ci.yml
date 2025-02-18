@@ -48,7 +48,7 @@ review-docs-cleanup:
   needs: []
   variables:
     GIT_DEPTH: 1
-    # By default, deploy the Review App using the `main` branch of the `gitlab-org/technical-writing-group/gitlab-docs-hugo` project
+    # By default, deploy the Review App using the `main` branch of the `gitlab-org/technical-writing/docs-gitlab-com` project
     DOCS_BRANCH: main
   environment:
     name: review-docs/mr-${CI_MERGE_REQUEST_IID}-hugo
@@ -59,13 +59,13 @@ review-docs-cleanup:
     - source ./scripts/utils.sh
     - install_gitlab_gem
 
-# Deploy documentation review app by using GitLab Docs Hugo project (gitlab-org/technical-writing-group/gitlab-docs-hugo)
+# Deploy documentation review app by using GitLab Docs Hugo project (gitlab-org/technical-writing/docs-gitlab-com)
 review-docs-hugo-deploy:
   extends: .review-docs-hugo
   script:
     - ./scripts/trigger-build.rb docs-hugo deploy
 
-# Cleanup remote environment of gitlab-org/technical-writing-group/gitlab-docs-hugo
+# Cleanup remote environment of gitlab-org/technical-writing/docs-gitlab-com
 review-docs-hugo-cleanup:
   extends: .review-docs-hugo
   environment:
@@ -76,7 +76,7 @@ review-docs-hugo-cleanup:
 
 .docs-markdown-lint-image:
   # When updating the image version here, update it in /scripts/lint-doc.sh too.
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-markdown:alpine-3.20-vale-3.7.1-markdownlint2-0.14.0-lychee-0.15.1
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/lint-markdown:alpine-3.21-vale-3.9.3-markdownlint2-0.17.1-lychee-0.18.0
 
 docs-lint markdown:
   extends:
@@ -110,6 +110,28 @@ docs code_quality:
       - gl-code-quality-report-docs.json
     expire_in: 2 weeks
     when: always
+
+docs hugo_build:
+  image: hugomods/hugo:exts-0.142.0
+  extends:
+    - .default-retry
+    - .docs:rules:docs-lint
+  stage: lint
+  needs: []
+  dependencies: []
+  before_script:
+    - apk add --no-cache git make nodejs npm bash
+    - git clone --depth 1 --filter=tree:0 https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com.git
+    - cd docs-gitlab-com
+    - make add-latest-icons
+    # Copy the current project's docs to the appropriate location in the docs website
+    - cp -r ../doc/* content/
+  script:
+    # Test that Hugo will build
+    - hugo --gc --printPathWarnings --panicOnWarning
+    # Test for invalid index pages
+    # See https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/scripts/check-index-filenames.sh
+    - make check-index-pages SEARCH_DIR="../doc"
 
 docs-lint links:
   extends:

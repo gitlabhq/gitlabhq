@@ -21,6 +21,7 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_categ
       end
 
       before do
+        stub_feature_flags(your_work_projects_vue: false)
         sign_in(user)
       end
 
@@ -141,22 +142,16 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_categ
           end
         end
 
-        context 'when feature flag your_work_projects_vue is false' do
-          before do
-            stub_feature_flags(your_work_projects_vue: false)
-          end
+        it 'does not redirect ?personal=true to /personal' do
+          get :index, params: { personal: true }
 
-          it 'does not redirect ?personal=true to /personal' do
-            get :index, params: { personal: true }
+          expect(response).not_to redirect_to(personal_dashboard_projects_path)
+        end
 
-            expect(response).not_to redirect_to(personal_dashboard_projects_path)
-          end
+        it 'does not ?archived=only to /inactive' do
+          get :index, params: { archived: 'only' }
 
-          it 'does not ?archived=only to /inactive' do
-            get :index, params: { archived: 'only' }
-
-            expect(response).not_to redirect_to(inactive_dashboard_projects_path)
-          end
+          expect(response).not_to redirect_to(inactive_dashboard_projects_path)
         end
       end
     end
@@ -166,6 +161,7 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_categ
     render_views
 
     before do
+      stub_feature_flags(your_work_projects_vue: false)
       sign_in(user)
     end
 
@@ -223,6 +219,7 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_categ
 
   context 'atom requests' do
     before do
+      stub_feature_flags(your_work_projects_vue: false)
       sign_in(user)
     end
 
@@ -296,6 +293,42 @@ RSpec.describe Dashboard::ProjectsController, :aggregate_failures, feature_categ
             expect(response.body).to include(project.full_name)
           end
         end
+      end
+    end
+  end
+
+  describe '#starred' do
+    let_it_be(:project) { create(:project, name: 'Project 1') }
+    let_it_be(:project2) { create(:project, name: 'Project Two') }
+
+    before_all do
+      project.add_developer(user)
+      project2.add_developer(user)
+      user.toggle_star(project2)
+    end
+
+    context 'when your_work_projects_vue feature flag is enabled' do
+      before do
+        sign_in(user)
+      end
+
+      it 'does not assign all_starred_projects' do
+        get :starred
+
+        expect(assigns(:all_starred_projects)).to be_nil
+      end
+    end
+
+    context 'when your_work_projects_vue feature flag is disabled' do
+      before do
+        stub_feature_flags(your_work_projects_vue: false)
+        sign_in(user)
+      end
+
+      it 'assigns all_starred_projects' do
+        get :starred
+
+        expect(assigns(:all_starred_projects)).to contain_exactly(project2)
       end
     end
   end

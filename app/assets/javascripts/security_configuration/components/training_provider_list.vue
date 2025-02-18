@@ -241,7 +241,7 @@ export default {
     </div>
     <ul v-else class="gl-m-0 gl-list-none gl-p-0">
       <li v-for="provider in securityTrainingProviders" :key="provider.id" class="gl-mb-6">
-        <gl-card :body-class="{ 'gl-bg-gray-10': !securityTrainingEnabled }">
+        <gl-card :body-class="{ 'gl-bg-subtle': !securityTrainingEnabled }">
           <div class="gl-flex">
             <gl-toggle
               :value="provider.isEnabled"

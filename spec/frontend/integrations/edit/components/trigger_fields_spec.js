@@ -199,8 +199,8 @@ describe('TriggerFields', () => {
 
         fields.wrappers.forEach((field, index) => {
           expect(field.attributes()).toMatchObject(expectedResults[index]);
-          expect(field.vm.$attrs.readonly).toBe(isInheriting);
-          expect(field.vm.$attrs.value).toBe(events[index].field.value);
+          expect(field.props('readonly')).toBe(isInheriting);
+          expect(field.props('value')).toBe(events[index].field.value);
         });
       });
     });

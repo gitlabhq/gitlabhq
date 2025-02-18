@@ -418,6 +418,14 @@ RSpec.describe Gitlab::Database, feature_category: :database do
     ensure
       new_connection&.disconnect!
     end
+
+    it 'returns nil when database model does not exist' do
+      connection = Project.connection
+      db_config = double(name: 'unknown')
+
+      expect(described_class).to receive(:db_config_for_connection).with(connection).and_return(db_config)
+      expect(described_class.gitlab_schemas_for_connection(connection)).to be_nil
+    end
   end
 
   describe '.database_base_models_with_gitlab_shared' do

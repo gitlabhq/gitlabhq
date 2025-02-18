@@ -42,8 +42,10 @@ describe('OrganizationUrlField', () => {
     ).toBe('http://127.0.0.1:3000/-/organizations/');
     expect(findInput().attributes('id')).toBe(defaultPropsData.id);
     expect(findInput().vm.$attrs).toMatchObject({
-      value: defaultPropsData.value,
       invalidFeedback: defaultPropsData.validation.invalidFeedback,
+    });
+    expect(findInput().props()).toMatchObject({
+      value: defaultPropsData.value,
       state: defaultPropsData.validation.state,
     });
   });

@@ -35,8 +35,6 @@ module RuboCop
         @todos = Hash.new { |hash, cop_name| hash[cop_name] = CopTodo.new(cop_name) }
         @todo_dir = TodoDir.new(directory)
         @config_inspect_todo_dir = load_config_inspect_todo_dir
-        @config_old_todo_yml = load_config_old_todo_yml
-        check_multiple_configurations!
         create_todos_retaining_exclusions(@config_inspect_todo_dir)
 
         super
@@ -79,14 +77,6 @@ module RuboCop
         path.delete_prefix("#{parent}/")
       end
 
-      def check_multiple_configurations!
-        cop_names = @config_inspect_todo_dir.keys & @config_old_todo_yml.keys
-        return if cop_names.empty?
-
-        list = cop_names.sort.map { |cop_name| "- #{cop_name}" }.join("\n")
-        raise "Multiple configurations found for cops:\n#{list}\n"
-      end
-
       def create_todos_retaining_exclusions(inspected_cop_config)
         inspected_cop_config.each do |cop_name, config|
           todo = @todos[cop_name]
@@ -98,7 +88,7 @@ module RuboCop
       def config_for(todo)
         cop_name = todo.cop_name
 
-        @config_old_todo_yml[cop_name] || @config_inspect_todo_dir[cop_name] || {}
+        @config_inspect_todo_dir[cop_name] || {}
       end
 
       def previously_disabled?(todo)
@@ -130,15 +120,6 @@ module RuboCop
           config = YAML.load_file(path)
           combined.update(config) if Hash === config
         end
-      end
-
-      # Load YAML configuration from `.rubocop_todo.yml`.
-      # We consider this file already old, obsolete, and to be removed soon.
-      def load_config_old_todo_yml
-        path = File.expand_path(File.join(directory, '../.rubocop_todo.yml'))
-        config = YAML.load_file(path) if File.exist?(path)
-
-        config || {}
       end
     end
   end

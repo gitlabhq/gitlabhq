@@ -22,6 +22,7 @@ import {
   getAggregationsUrl,
   prepareSearchAggregations,
   setDataToLS,
+  skipBlobESCount,
 } from './utils';
 
 export const fetchGroups = ({ commit }, search) => {
@@ -158,7 +159,12 @@ export const setLabelFilterSearch = ({ commit }, { value }) => {
 
 export const fetchSidebarCount = ({ commit, state }) => {
   const items = Object.values(state.navigation)
-    .filter((navigationItem) => !navigationItem.active && navigationItem.count_link)
+    .filter(
+      (navigationItem) =>
+        !navigationItem.active &&
+        navigationItem.count_link &&
+        skipBlobESCount(state, navigationItem.scope),
+    )
     .map((navItem) => {
       const navigationItem = { ...navItem };
       const modifications = {

@@ -342,7 +342,7 @@ RSpec.describe System::BroadcastMessage, feature_category: :notifications do
   end
 
   describe '.current_show_in_cli_banner_messages', :use_clean_rails_memory_store_caching do
-    subject { -> { described_class.current_show_in_cli_banner_messages } }
+    subject { -> { described_class.current_show_in_cli_banner_messages(user_access_level: 50) } }
 
     it 'only returns banner messages that has show_in_cli as true' do
       show_in_cli_message = create(:broadcast_message)
@@ -350,6 +350,11 @@ RSpec.describe System::BroadcastMessage, feature_category: :notifications do
       create(:broadcast_message, show_in_cli: false)
 
       expect(subject.call).to contain_exactly(show_in_cli_message)
+    end
+
+    it 'filters by user access level' do
+      expect(described_class).to receive(:current_banner_messages).with(user_access_level: 50).and_call_original
+      subject.call
     end
   end
 

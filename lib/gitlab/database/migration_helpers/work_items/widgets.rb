@@ -11,7 +11,10 @@ module Gitlab
           # include Gitlab::Database::MigrationHelpers::WorkItems::Widgets
           #
           # Define the following constants in the migration class
-          # WORK_ITEM_TYPE_ENUM_VALUE = 8
+          #
+          # Use [8] for a single type
+          # WORK_ITEM_TYPE_ENUM_VALUES = [8,9]
+          #
           # Use only one array item to add a single widget
           # WIDGETS = [
           #   {
@@ -31,11 +34,11 @@ module Gitlab
           #
           # Then define the #up and down methods like this:
           # def up
-          #   add_widget_definitions(type_enum_value: WORK_ITEM_TYPE_ENUM_VALUE, widgets: WIDGETS)
+          #   add_widget_definitions(type_enum_values: WORK_ITEM_TYPE_ENUM_VALUES, widgets: WIDGETS)
           # end
           #
           # def down
-          #   remove_widget_definitions(type_enum_value: WORK_ITEM_TYPE_ENUM_VALUE, widgets: WIDGETS)
+          #   remove_widget_definitions(type_enum_values: WORK_ITEM_TYPE_ENUM_VALUES, widgets: WIDGETS)
           # end
           #
           # Run a migration test for migrations that use this helper with:
@@ -45,16 +48,22 @@ module Gitlab
           # RSpec.describe AddDesignsAndDevelopmentWidgetsToTicketWorkItemType, :migration do
           #   it_behaves_like 'migration that adds widgets to a work item type'
           # end
-          def add_widget_definitions(type_enum_value:, widgets:)
-            work_item_type = migration_work_item_type.find_by(base_type: type_enum_value)
+          def add_widget_definitions(widgets:, type_enum_value: nil, type_enum_values: [])
+            enum_values = Array(type_enum_values) + [type_enum_value].compact
 
-            # Work item type should exist in production applications, checking here to avoid failures
+            work_item_types = migration_work_item_type.where(base_type: enum_values)
+
+            # Work item types should exist in production applications, checking here to avoid failures
             # if inconsistent data is present.
-            return say(type_missing_message(type_enum_value)) unless work_item_type
+            validate_work_item_types(enum_values, work_item_types)
 
-            widget_definitions = widgets.map do |w|
-              { work_item_type_id: work_item_type.id, widget_options: nil }.merge(w)
+            widget_definitions = work_item_types.flat_map do |work_item_type|
+              widgets.map do |w|
+                { work_item_type_id: work_item_type.id, widget_options: nil }.merge(w)
+              end
             end
+
+            return if widget_definitions.empty?
 
             migration_widget_definition.upsert_all(
               widget_definitions,
@@ -62,13 +71,16 @@ module Gitlab
             )
           end
 
-          def remove_widget_definitions(type_enum_value:, widgets:)
-            work_item_type = migration_work_item_type.find_by(base_type: type_enum_value)
+          def remove_widget_definitions(widgets:, type_enum_value: nil, type_enum_values: [])
+            enum_values = Array(type_enum_values) + [type_enum_value].compact
 
-            return say(type_missing_message(type_enum_value)) unless work_item_type
+            work_item_types = migration_work_item_type.where(base_type: enum_values)
+
+            validate_work_item_types(enum_values, work_item_types)
+            return if work_item_types.empty?
 
             migration_widget_definition.where(
-              work_item_type_id: work_item_type.id,
+              work_item_type_id: work_item_types.pluck(:id),
               widget_type: widgets.pluck(:widget_type)
             ).delete_all
           end
@@ -88,6 +100,12 @@ module Gitlab
               Work item type with enum value #{type_enum_value} does not exist,
               skipping widget processing.
             MESSAGE
+          end
+
+          def validate_work_item_types(enum_values, work_item_types)
+            found_types = work_item_types&.pluck(:base_type) || []
+            missing_types = enum_values - found_types
+            missing_types.each { |type| say(type_missing_message(type)) }
           end
         end
       end

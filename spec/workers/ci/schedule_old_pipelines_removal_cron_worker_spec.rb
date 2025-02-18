@@ -95,25 +95,5 @@ RSpec.describe Ci::ScheduleOldPipelinesRemovalCronWorker,
         end
       end
     end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_delete_old_pipelines: false)
-      end
-
-      it 'does not enqueue DestroyOldPipelinesWorker jobs' do
-        expect(Ci::DestroyOldPipelinesWorker).not_to receive(:perform_with_capacity)
-
-        worker.perform
-      end
-
-      it 'does not enqueue projects to be processed' do
-        worker.perform
-
-        Gitlab::Redis::SharedState.with do |redis|
-          expect(redis.lpop(described_class::QUEUE_KEY)).to be_nil
-        end
-      end
-    end
   end
 end

@@ -92,6 +92,16 @@ const transformOptions = (options = {}) => {
 
 const installed = new WeakMap();
 
+export const getMatchedComponents = (instance, path) => {
+  if (instance.getMatchedComponents) {
+    return instance.getMatchedComponents(path);
+  }
+
+  const route = path ? instance.resolve(path) : instance.currentRoute.value;
+
+  return route.matched.flatMap((record) => Object.values(record.components));
+};
+
 export default class VueRouterCompat {
   constructor(options) {
     // eslint-disable-next-line no-constructor-return

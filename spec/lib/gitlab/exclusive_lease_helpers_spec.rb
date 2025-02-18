@@ -58,7 +58,7 @@ RSpec.describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state d
         let(:options) { { ttl: 10.minutes } }
 
         it 'receives the specified argument' do
-          expect(Gitlab::ExclusiveLease).to receive(:new).with(unique_key, { timeout: 10.minutes } )
+          expect(Gitlab::ExclusiveLease).to receive(:new).with(unique_key, { timeout: 10.minutes })
 
           expect { subject }.to raise_error('Failed to obtain a lock')
         end

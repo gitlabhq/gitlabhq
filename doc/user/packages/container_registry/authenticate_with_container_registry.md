@@ -2,18 +2,20 @@
 stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Authenticate with the container registry
 ---
 
-# Authenticate with the container registry
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To authenticate with the container registry, you can use a:
 
 - [Personal access token](../../profile/personal_access_tokens.md).
-- [Deploy token](../../project/deploy_tokens/index.md).
+- [Deploy token](../../project/deploy_tokens/_index.md).
 - [Project access token](../../project/settings/project_access_tokens.md).
 - [Group access token](../../group/settings/group_access_tokens.md).
 
@@ -22,11 +24,14 @@ All of these authentication methods require the minimum scope:
 - For read (pull) access, to be `read_registry`.
 - For write (push) access, to be `write_registry` and `read_registry`.
 
-NOTE:
+{{< alert type="note" >}}
+
 [Admin Mode](../../../administration/settings/sign_in_restrictions.md#admin-mode)
 does not apply during authentication with the container registry. If you are an administrator
 with Admin Mode enabled, and you create a personal access token without the `admin_mode` scope,
 that token works even though Admin Mode is enabled.
+
+{{< /alert >}}
 
 To authenticate, run the `docker login` command. For example:
 
@@ -38,7 +43,7 @@ echo "$TOKEN" | docker login registry.example.com -u <username> --password-stdin
 After authentication, the client caches the credentials. Later operations make authorization
 requests that return JWT tokens, authorized to do only the specified operation.
 Tokens remain valid for [5 minutes by default](../../../administration/packages/container_registry.md#increase-token-duration),
-and [15 minutes on GitLab.com](../../gitlab_com/index.md#gitlab-container-registry).
+and [15 minutes on GitLab.com](../../gitlab_com/_index.md#gitlab-container-registry).
 
 ## Use GitLab CI/CD to authenticate
 
@@ -59,7 +64,7 @@ To use CI/CD to authenticate with the container registry, you can use:
   echo "$CI_JOB_TOKEN" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
   ```
 
-- A [deploy token](../../project/deploy_tokens/index.md#gitlab-deploy-token) with the minimum scope of:
+- A [deploy token](../../project/deploy_tokens/_index.md#gitlab-deploy-token) with the minimum scope of:
   - For read (pull) access, `read_registry`.
   - For write (push) access, `read_registry` and `write_registry`.
 

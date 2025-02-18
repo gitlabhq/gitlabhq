@@ -58,7 +58,7 @@ RSpec.describe Gitlab::Utils::DelegatorOverride::Validator do
     it 'adds the allowlist in the ancestors' do
       ancestor_validator = described_class.new(ee_delegator_extension)
       ancestor_validator.add_allowlist([:bar])
-      validator.expand_on_ancestors( { ee_delegator_extension => ancestor_validator })
+      validator.expand_on_ancestors({ ee_delegator_extension => ancestor_validator })
 
       expect(validator.allowed_method_names).to contain_exactly(:bar)
     end
@@ -73,7 +73,7 @@ RSpec.describe Gitlab::Utils::DelegatorOverride::Validator do
       validator.add_allowlist([:foo])
       ancestor_validator = described_class.new(ee_delegator_extension)
       ancestor_validator.add_allowlist([:bar])
-      validator.expand_on_ancestors( { ee_delegator_extension => ancestor_validator })
+      validator.expand_on_ancestors({ ee_delegator_extension => ancestor_validator })
 
       expect { validator.validate_overrides! }.not_to raise_error
     end

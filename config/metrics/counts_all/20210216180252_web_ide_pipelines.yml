@@ -6,7 +6,7 @@ product_group: remote_development
 product_categories:
 - web_ide
 value_type: number
-status: active
+status: removed
 time_frame: all
 data_source: redis
 instrumentation_class: RedisMetric
@@ -14,9 +14,6 @@ options:
   prefix: web_ide
   event: pipelines_count
   include_usage_prefix: false
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium
@@ -24,3 +21,5 @@ tiers:
 performance_indicator_type: []
 milestone: "<13.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54332
+milestone_removed: "17.9"
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176298

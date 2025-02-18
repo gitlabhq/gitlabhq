@@ -2,15 +2,17 @@
 stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Project wikis API
 ---
 
-# Project wikis API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-The project [wikis](../user/project/wiki/index.md) API is available only in APIv4.
+{{< /details >}}
+
+The project [wikis](../user/project/wiki/_index.md) API is available only in APIv4.
 An API for [group wikis](group_wikis.md) is also available.
 
 ## List wiki pages
@@ -23,7 +25,7 @@ GET /projects/:id/wikis
 
 | Attribute      | Type           | Required | Description |
 | -------------- | -------------- | -------- | ----------- |
-| `id`           | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`           | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `with_content` | boolean        | No       | Include pages' content. |
 
 ```shell
@@ -67,7 +69,7 @@ GET /projects/:id/wikis/:slug
 
 | Attribute     | Type           | Required | Description |
 | ------------- | -------------- | -------- | ----------- |
-| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `slug`        | string         | Yes      | URL encoded slug (a unique string) of the wiki page, such as `dir%2Fpage_name`. |
 | `render_html` | boolean        | No       | Return the rendered HTML of the wiki page. |
 | `version`     | string         | No       | Wiki page version SHA. |
@@ -98,7 +100,7 @@ POST /projects/:id/wikis
 
 | Attribute | Type           | Required | Description |
 | ----------| -------------- | -------- | ----------- |
-| `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `content` | string         | Yes      | The content of the wiki page. |
 | `title`   | string         | Yes      | The title of the wiki page. |
 | `format`  | string         | No       | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, `asciidoc`, and `org`. |
@@ -130,7 +132,7 @@ PUT /projects/:id/wikis/:slug
 
 | Attribute | Type           | Required                          | Description |
 | --------- | -------        | --------------------------------- | ----------- |
-| `id`      | integer/string | Yes                               | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | Yes                               | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `content` | string         | Yes, if `title` is not provided   | The content of the wiki page. |
 | `title`   | string         | Yes, if `content` is not provided | The title of the wiki page. |
 | `format`  | string         | No                                | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, `asciidoc`, and `org`. |
@@ -163,7 +165,7 @@ DELETE /projects/:id/wikis/:slug
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `slug`    | string         | Yes      | URL-encoded slug (a unique string) of the wiki page, such as `dir%2Fpage_name`. |
 
 ```shell
@@ -183,7 +185,7 @@ POST /projects/:id/wikis/attachments
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `file`    | string         | Yes      | The attachment to be uploaded. |
 | `branch`  | string         | No       | The name of the branch. Defaults to the wiki repository default branch. |
 

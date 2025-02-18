@@ -2,20 +2,21 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Container registry for a secondary site
 ---
 
-# Container registry for a secondary site
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-You can set up a container registry on your **secondary** Geo site that mirrors the one on the **primary** Geo site.
+{{< /details >}}
 
-NOTE:
-The container registry replication is used only for disaster recovery purposes. We do not recommend
-pulling the container registry data from the secondary. For a feature proposal to implement it in the
-future, see [Geo: Accelerate container images by serving read request from secondary site](https://gitlab.com/gitlab-org/gitlab/-/issues/365864) for details. You or your GitLab representative are encouraged to upvote this feature to register your interest.
+You can set up a container registry on your **secondary** Geo site that mirrors the one on the **primary** Geo site. This container registry replication is used only for disaster recovery purposes.
+
+Do not push to the container registry on the **secondary** Geo site, because the data is not propagated to the **primary** site.
+
+We do not recommend pulling container registry data from the **secondary** site because it may be stale. The feature request [issue 365864](https://gitlab.com/gitlab-org/gitlab/-/issues/365864) would solve this problem. You are encouraged to upvote the issue to register your interest.
 
 ## Supported container registries
 
@@ -103,15 +104,20 @@ To be able to replicate new container images, the container registry must send n
    ]
    ```
 
-   NOTE:
-   Replace `<example.com>` with the `external_url` defined in your primary site's `/etc/gitlab/gitlab.rb` file, and
+   {{< alert type="note" >}}
+
+Replace `<example.com>` with the `external_url` defined in your primary site's `/etc/gitlab/gitlab.rb` file, and
    replace `<replace_with_a_secret_token>` with a case sensitive alphanumeric string
    that starts with a letter. You can generate one with `< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32 | sed "s/^[0-9]*//"; echo`
 
-   NOTE:
-   If you use an external Registry (not the one integrated with GitLab), you only need to specify
+   {{< /alert >}}
+
+   {{< alert type="note" >}}
+
+If you use an external Registry (not the one integrated with GitLab), you only need to specify
    the notification secret (`registry['notification_secret']`) in the
    `/etc/gitlab/gitlab.rb` file.
+   {{< /alert >}}
 
 1. For GitLab HA only. Edit `/etc/gitlab/gitlab.rb` on every web node:
 
@@ -187,7 +193,7 @@ Geo::ContainerRepositoryRegistry.replication_enabled?
 
 ### Missing container registry notification event
 
-1. When an image is pushed to the primary site's container registry, it should trigger a [Container Registry notification](../../../administration/packages/container_registry.md#configure-container-registry-notifications)
+1. When an image is pushed to the primary site's container registry, it should trigger a [Container Registry notification](../../packages/container_registry.md#configure-container-registry-notifications)
 1. The primary site's container registry calls the primary site's API on `https://<example.com>/api/v4/container_registry_event/events`
 1. The primary site inserts a record to the `geo_events` table with `replicable_name: 'container_repository', model_record_id: <ID of the container repository>`.
 1. The record gets replicated by PostgreSQL to the secondary site's database.
@@ -209,9 +215,9 @@ To fix this, make sure that the authorization headers being sent with the regist
 
 #### Registry error: `token from untrusted issuer: "<token>"`
 
-To replicate a container image, Sidekiq uses JWT to authenticate itself towards the container registry. Geo replication takes it as a prerequisite that the [container registry configuration](../../../administration/packages/container_registry.md) has been done correctly.
+To replicate a container image, Sidekiq uses JWT to authenticate itself towards the container registry. Geo replication takes it as a prerequisite that the [container registry configuration](../../packages/container_registry.md) has been done correctly.
 
-Make sure that both sites share a single signing key pair, as instructed under [Configure secondary site](#configure-secondary-site), and that both container registries, plus primary and secondary sites are [all configured to use the same token issuer](../../../administration/packages/container_registry.md#configure-gitlab-and-registry-to-run-on-separate-nodes-linux-package-installations).
+Make sure that both sites share a single signing key pair, as instructed under [Configure secondary site](#configure-secondary-site), and that both container registries, plus primary and secondary sites are [all configured to use the same token issuer](../../packages/container_registry.md#configure-gitlab-and-registry-to-run-on-separate-nodes-linux-package-installations).
 
 On multinode deployments, make sure that the issuer configured on the Sidekiq node matches the value configured on the registries.
 

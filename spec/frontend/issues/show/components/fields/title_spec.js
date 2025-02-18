@@ -23,7 +23,7 @@ describe('Title field component', () => {
   });
 
   it('renders form control with formState title', () => {
-    expect(findInput().attributes('value')).toBe('test');
+    expect(findInput().props('value')).toBe('test');
   });
 
   it('triggers update with meta+enter', () => {

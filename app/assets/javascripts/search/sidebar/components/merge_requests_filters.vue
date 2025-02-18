@@ -25,16 +25,13 @@ export default {
     ...mapGetters(['hasMissingProjectContext']),
     ...mapState(['groupInitialJson', 'searchType']),
     shouldShowSourceBranchFilter() {
-      return (
-        this.glFeatures.searchMrFilterSourceBranch &&
-        (!this.hasMissingProjectContext || this.groupInitialJson?.id)
-      );
+      return !this.hasMissingProjectContext || this.groupInitialJson?.id;
     },
     isAdvancedSearch() {
       return this.searchType === SEARCH_TYPE_ADVANCED;
     },
     shouldShowAuthorFilter() {
-      return this.isAdvancedSearch && this.glFeatures.searchMrFilterAuthor;
+      return this.isAdvancedSearch;
     },
   },
 };

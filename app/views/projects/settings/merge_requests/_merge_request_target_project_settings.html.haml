@@ -3,9 +3,10 @@
 - form = local_assigns.fetch(:form)
 
 = form.fields_for :project_setting do |settings|
-  .form-group
-    %b= s_('ProjectSettings|Target project')
-    %p.gl-text-subtle
+  %fieldset.form-group{ aria: { describedby: :merge_request_target_project_settings_description } }
+    %legend{ class: 'gl-m-0 gl-heading-5 gl-border-0' }
+      = s_('ProjectSettings|Target project')
+    %p.gl-text-subtle{ id: :merge_request_target_project_settings_description }
       = s_('ProjectSettings|The default target project for merge requests created in this fork project.')
 
     = settings.gitlab_ui_radio_component :mr_default_target_self,

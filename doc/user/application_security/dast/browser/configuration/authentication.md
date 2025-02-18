@@ -1,11 +1,10 @@
 ---
+type: reference, howto
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
+title: Authentication
 ---
-
-# Authentication
 
 For complete coverage, the DAST analyzer must authenticate with the application being tested. This
 requires configuring the authentication credentials and authentication method in the DAST CI/CD job.
@@ -40,9 +39,12 @@ When choosing authentication credentials:
 
 ## Getting started
 
-NOTE:
+{{< alert type="note" >}}
+
 You should periodically confirming that the analyzer's authentication is still working, as this tends to break over
 time due to changes to the application.
+
+{{< /alert >}}
 
 To run a DAST authenticated scan:
 
@@ -125,7 +127,7 @@ dast:
 ```
 
 Do **not** define `DAST_AUTH_USERNAME` and `DAST_AUTH_PASSWORD` in the YAML job definition file as this could present a security risk. Instead, create them as masked CI/CD variables using the GitLab UI.
-See [Custom CI/CD variables](../../../../../ci/variables/index.md#for-a-project) for more information.
+See [Custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project) for more information.
 
 ### Configuration for a single-step login form
 
@@ -148,7 +150,7 @@ dast:
 ```
 
 Do **not** define `DAST_AUTH_USERNAME` and `DAST_AUTH_PASSWORD` in the YAML job definition file as this could present a security risk. Instead, create them as masked CI/CD variables using the GitLab UI.
-See [Custom CI/CD variables](../../../../../ci/variables/index.md#for-a-project) for more information.
+See [Custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project) for more information.
 
 ### Configuration for a multi-step login form
 
@@ -182,7 +184,7 @@ dast:
 ```
 
 Do **not** define `DAST_AUTH_USERNAME` and `DAST_AUTH_PASSWORD` in the YAML job definition file as this could present a security risk. Instead, create them as masked CI/CD variables using the GitLab UI.
-See [Custom CI/CD variables](../../../../../ci/variables/index.md#for-a-project) for more information.
+See [Custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project) for more information.
 
 ### Configuration for Single Sign-On (SSO)
 
@@ -543,8 +545,11 @@ Authentication failed because a home page should be displayed after login. Inste
 
 ### Configure the authentication report
 
-WARNING:
+{{< alert type="warning" >}}
+
 The authentication report can contain sensitive information such as the credentials used to perform the login.
+
+{{< /alert >}}
 
 An authentication report can be saved as a CI/CD job artifact to assist with understanding the cause of an authentication failure.
 

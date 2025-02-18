@@ -1,15 +1,17 @@
 ---
-description: "Automatic Let's Encrypt SSL certificates for GitLab Pages."
 stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Automatic Let's Encrypt SSL certificates for GitLab Pages.
+title: GitLab Pages Let's Encrypt certificates
 ---
 
-# GitLab Pages Let's Encrypt certificates
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
 
 The GitLab Pages integration with Let's Encrypt (LE) allows you
 to use LE certificates for your Pages website with custom domains
@@ -19,27 +21,30 @@ GitLab does it for you, out-of-the-box.
 [Let's Encrypt](https://letsencrypt.org) is a free, automated, and
 open source Certificate Authority.
 
-WARNING:
+{{< alert type="warning" >}}
+
 This feature covers only certificates for **custom domains**, not the wildcard certificate required to run
-[Pages daemon](../../../../administration/pages/index.md) (Self-managed, Free, Premium, and Ultimate only). Wildcard
+[Pages daemon](../../../../administration/pages/_index.md) (Self-managed, Free, Premium, and Ultimate only). Wildcard
 certificate generation is tracked in [this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3342).
+
+{{< /alert >}}
 
 ## Prerequisites
 
 Before you can enable automatic provisioning of an SSL certificate for your domain, make sure you have:
 
-- Created a [project](../index.md#getting-started) in GitLab
+- Created a [project](../_index.md#getting-started) in GitLab
   containing your website's source code.
-- Acquired a domain (`example.com`) and added a [DNS entry](index.md)
+- Acquired a domain (`example.com`) and added a [DNS entry](_index.md)
   pointing it to your Pages website. The top-level domain (`.com`) must be a
   [public suffix](https://publicsuffix.org/).
-- [Added your domain to your Pages project](index.md#1-add-a-custom-domain)
+- [Added your domain to your Pages project](_index.md#1-add-a-custom-domain)
   and verified your ownership.
 - Verified your website is up and running, accessible through your custom domain.
 
 The GitLab integration with Let's Encrypt is enabled and available on GitLab.com.
 For **self-managed** GitLab instances, make sure your administrator has
-[enabled it](../../../../administration/pages/index.md#lets-encrypt-integration).
+[enabled it](../../../../administration/pages/_index.md#lets-encrypt-integration).
 
 ## Enabling Let's Encrypt integration for your custom domain
 
@@ -47,7 +52,7 @@ Once you've met the requirements, enable Let's Encrypt integration:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
-1. Next to the domain name, select **Edit** (**{pencil}**).
+1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
 1. Turn on the **Automatic certificate management using Let's Encrypt** toggle.
 
    ![Enable Let's Encrypt](img/lets_encrypt_integration_v12_1.png)
@@ -72,13 +77,13 @@ If you get an error **Something went wrong while obtaining the Let's Encrypt cer
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
-1. Next to the domain name, select **Edit** (**{pencil}**).
-1. In **Verification status**, select **Retry verification** (**{retry}**).
+1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
+1. In **Verification status**, select **Retry verification** ({{< icon name="retry" >}}).
 1. If you're still getting the same error:
    1. Make sure you have properly set only one `CNAME` or `A` DNS record for your domain.
    1. Make sure your domain **doesn't have** an `AAAA` DNS record.
    1. If you have a `CAA` DNS record for your domain or any higher level domains, make sure [it includes `letsencrypt.org`](https://letsencrypt.org/docs/caa/).
-   1. Make sure [your domain is verified](index.md#1-add-a-custom-domain).
+   1. Make sure [your domain is verified](_index.md#1-add-a-custom-domain).
    1. Go to step 1.
 
 ### Obtaining a certificate hangs for more than an hour
@@ -95,7 +100,7 @@ Remove and add the domain for GitLab Pages again by following these steps:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
 1. Next to the domain name, select **Remove**.
-1. [Add the domain again, and verify it](index.md#1-add-a-custom-domain).
+1. [Add the domain again, and verify it](_index.md#1-add-a-custom-domain).
 1. [Enable Let's Encrypt integration for your domain](#enabling-lets-encrypt-integration-for-your-custom-domain).
 1. If you're still getting the same error:
    1. Make sure you have properly set only one `CNAME` or `A` DNS record for your domain.

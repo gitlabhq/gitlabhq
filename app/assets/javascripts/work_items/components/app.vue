@@ -1,5 +1,15 @@
+<script>
+export default {
+  props: {
+    newCommentTemplatePaths: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
+};
+</script>
+
 <template>
-  <div>
-    <router-view />
-  </div>
+  <router-view :new-comment-template-paths="newCommentTemplatePaths" />
 </template>

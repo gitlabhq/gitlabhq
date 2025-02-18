@@ -2,13 +2,16 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Migrating from the DAST proxy-based analyzer to DAST version 5
 ---
 
-# Migrating from the DAST proxy-based analyzer to DAST version 5
+{{< history >}}
 
-> - The [DAST proxy-based analyzer](proxy-based.md) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.6 and removed in 17.0.
+- The [DAST proxy-based analyzer](proxy-based.md) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.6 and removed in 17.0.
 
-[DAST version 5](browser/index.md) replaces the proxy-based analyzer with a browser-based analyzer. This document serves as a guide to
+{{< /history >}}
+
+[DAST version 5](browser/_index.md) replaces the proxy-based analyzer with a browser-based analyzer. This document serves as a guide to
 migrate from the proxy-based analyzer to DAST version 5.
 
 Follow this migration guide if all the following conditions apply:
@@ -100,7 +103,7 @@ Changes to make:
 
 - Use `DAST_CHECKS_TO_RUN` instead of `DAST_ONLY_INCLUDE_RULES`. Change the IDs used to GitLab DAST vulnerability check IDs.
 - Use `DAST_CHECKS_TO_EXCLUDE` instead of `DAST_EXCLUDE_RULES`. Change the IDs used to GitLab DAST vulnerability check IDs.
-- See [vulnerability check](browser/checks/index.md) documentation for descriptions and IDs of GitLab DAST vulnerability checks.
+- See [vulnerability check](browser/checks/_index.md) documentation for descriptions and IDs of GitLab DAST vulnerability checks.
 - CI/CD variables `DAST_AGGREGATE_VULNERABILITIES` and `DAST_MAX_URLS_PER_VULNERABILITY` are no longer supported.
 
 ### Why migrating produces different vulnerabilities
@@ -135,7 +138,7 @@ See the DAST version 5 [troubleshooting](browser/troubleshooting.md) documentati
 ## Changes to CI/CD variables
 
 The following table outlines migration actions required for each proxy-based analyzer CI/CD variable.
-See [configuration](browser/configuration/index.md) for more information on configuring DAST version 5.
+See [configuration](browser/configuration/_index.md) for more information on configuring DAST version 5.
 
 | Proxy-based analyzer CI/CD variable  | Required action          | Notes                                                                                    |
 |:-------------------------------------|:-------------------------|:-----------------------------------------------------------------------------------------|

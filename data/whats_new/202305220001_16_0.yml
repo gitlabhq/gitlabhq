@@ -124,12 +124,12 @@
 
     After the GitLab Agent for Kubernetes is configured and [the dependencies are installed](https://docs.gitlab.com/ee/user/workspace/#prerequisites) in your self-hosted cluster or cloud platform of choice, you can define your development environment in a `.devfile.yaml` file and store it in a public project. Then, you and any other developers with access to the agent can create a workspace based on the `.devfile.yaml` file and edit directly in the embedded Web IDE. You'll have full terminal access to the container, allowing you to work more efficiently. When you're done, or if something goes wrong, you can shut down the workspace and start a fresh, new workspace for your next development task.
 
-    This short video walks you through the lifecycle of a workspace in the current Beta. Learn more about workspaces in the [documentation](https://docs.gitlab.com/ee/user/workspace/index.html) and let us know what you think in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
+    This short video walks you through the lifecycle of a workspace in the current Beta. Learn more about workspaces in the [documentation](https://docs.gitlab.com/ee/user/workspace/) and let us know what you think in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
   stage: Create
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/workspace/index.html
+  documentation_link: https://docs.gitlab.com/ee/user/workspace/
   image_url: https://img.youtube.com/vi/yjweL075Cdo/hqdefault.jpg
   published_at: 2023-05-22
   release: 16.0

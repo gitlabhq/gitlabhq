@@ -18,7 +18,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/subscriptions/gitlab_com/index.html#ci-pipeline-minutes'
+  documentation_link: 'https://docs.gitlab.com/ee/subscriptions/gitlab_com/#ci-pipeline-minutes'
   image_url: https://about.gitlab.com/images/14_2/CI_minutes_usage_graph.png
   published_at: 2021-08-22
   release: 14.2

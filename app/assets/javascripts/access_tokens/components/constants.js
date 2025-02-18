@@ -11,6 +11,7 @@ const BASE_FIELDS = [
   {
     key: 'name',
     label: __('Token name'),
+    isRowHeader: true,
     sortable: true,
   },
   {

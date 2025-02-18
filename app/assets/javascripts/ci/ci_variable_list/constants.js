@@ -68,11 +68,9 @@ export const CONTAINS_VARIABLE_REFERENCE_MESSAGE = __(
 export const DEFAULT_EXCEEDS_VARIABLE_LIMIT_TEXT = s__(
   'CiVariables|You have reached the maximum number of variables available. To add new variables, you must reduce the number of defined variables.',
 );
-export const ENVIRONMENT_SCOPE_LINK_TITLE = __('Learn more');
 export const EXCEEDS_VARIABLE_LIMIT_TEXT = s__(
   'CiVariables|This %{entity} has %{currentVariableCount} defined CI/CD variables. The maximum number of variables per %{entity} is %{maxVariableLimit}. To add new variables, you must reduce the number of defined variables.',
 );
-export const FLAG_LINK_TITLE = s__('CiVariable|Define a CI/CD variable in the UI');
 export const MAXIMUM_VARIABLE_LIMIT_REACHED = s__(
   'CiVariables|Maximum number of variables reached.',
 );

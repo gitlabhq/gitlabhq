@@ -319,9 +319,17 @@ RSpec.describe API::Helpers, feature_category: :shared do
             end
           end
 
-          context 'when the `enforce_job_token_policies` feature flag is disabled' do
+          context 'when job token policies are skipped' do
             before do
-              stub_feature_flags(enforce_job_token_policies: false)
+              allow(helper).to receive(:route_setting).with(:authorization).and_return(skip_job_token_policies: true)
+            end
+
+            it { is_expected.to eq project }
+          end
+
+          context 'when the `add_policies_to_ci_job_token` feature flag is disabled' do
+            before do
+              stub_feature_flags(add_policies_to_ci_job_token: false)
             end
 
             it { is_expected.to eq project }
@@ -337,9 +345,9 @@ RSpec.describe API::Helpers, feature_category: :shared do
             find_project!
           end
 
-          context 'when the `enforce_job_token_policies` feature flag is disabled' do
+          context 'when the `add_policies_to_ci_job_token` feature flag is disabled' do
             before do
-              stub_feature_flags(enforce_job_token_policies: false)
+              stub_feature_flags(add_policies_to_ci_job_token: false)
             end
 
             it { is_expected.to eq project }
@@ -617,7 +625,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
 
     context 'when organization is private' do
-      let_it_be(:private_organization) { create(:organization) }
+      let_it_be(:private_organization) { create(:organization, :private) }
 
       context 'when user is authenticated' do
         context 'when user is part of the organization' do

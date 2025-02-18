@@ -8,6 +8,7 @@ import PageHeading from '~/vue_shared/components/page_heading.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import createModelVersionMutation from '~/ml/experiment_tracking/graphql/mutations/promote_model_version.mutation.graphql';
+import ModelSelectionDropdown from './model_selection_dropdown.vue';
 
 export default {
   name: 'PromoteRun',
@@ -19,6 +20,7 @@ export default {
     GlFormGroup,
     GlFormInput,
     MarkdownEditor,
+    ModelSelectionDropdown,
   },
   props: {
     candidate: {
@@ -34,15 +36,16 @@ export default {
       versionData: null,
       markdownDocPath: helpPagePath('user/markdown'),
       markdownEditorRestrictedToolBarItems: ['full-screen'],
+      selectedModel: null,
     };
   },
   computed: {
     versionDescription() {
-      if (this.candidate.latestVersion) {
+      if (this.latestVersion) {
         return sprintf(
           s__('MlModelRegistry|Must be a semantic version. Latest version is %{latestVersion}'),
           {
-            latestVersion: this.candidate.latestVersion,
+            latestVersion: this.latestVersion,
           },
         );
       }
@@ -64,10 +67,13 @@ export default {
       return null;
     },
     modelGid() {
-      return this.candidate.modelGid;
+      return this.candidate?.modelGid || this.selectedModel?.id;
     },
     submitDisabled() {
-      return this.version === null || !this.isSemver;
+      return this.version === null || !this.isSemver || this.modelGid === null;
+    },
+    latestVersion() {
+      return this.candidate?.latestVersion || this.selectedModel?.latestVersion?.version;
     },
   },
   methods: {
@@ -76,7 +82,7 @@ export default {
         mutation: createModelVersionMutation,
         variables: {
           projectPath: this.candidate.projectPath,
-          modelId: this.candidate.modelGid,
+          modelId: this.modelGid,
           version: this.version,
           description: this.description,
           candidateId: this.candidate.info.gid,
@@ -134,6 +140,10 @@ export default {
     optionalText: s__('MlModelRegistry|(Optional)'),
     versionLabelText: s__('MlModelRegistry|Version'),
     versionDescriptionText: s__('MlModelRegistry|Description'),
+    modelSelectionLabelText: s__('MlModelRegistry|Model'),
+    modelDescription: s__(
+      'MlModelRegistry|Select the model that will contain the new version. The run will move to the default experiment of that model.',
+    ),
   },
 };
 </script>
@@ -156,6 +166,21 @@ export default {
     </page-heading>
 
     <gl-form>
+      <gl-form-group
+        data-testid="modelSelectionDescriptionId"
+        :label="$options.i18n.modelSelectionLabelText"
+        state
+        :description="$options.i18n.modelDescription"
+      >
+        <p v-if="candidate.modelGid">
+          {{ candidate.modelName }}
+        </p>
+        <model-selection-dropdown
+          v-else
+          v-model="selectedModel"
+          :project-path="candidate.projectPath"
+        />
+      </gl-form-group>
       <gl-form-group
         data-testid="versionDescriptionId"
         :label="$options.i18n.versionLabelText"

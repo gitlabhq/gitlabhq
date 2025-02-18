@@ -2,15 +2,17 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Feature flags API
 ---
 
-# Feature flags API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-This API is for managing Flipper-based [feature flags used in development of GitLab](../development/feature_flags/index.md).
+{{< /details >}}
+
+This API is for managing Flipper-based [feature flags used in development of GitLab](../development/feature_flags/_index.md).
 
 All methods require administrator authorization.
 
@@ -111,8 +113,11 @@ Set a feature's gate value. If a feature with the given name doesn't exist yet,
 it's created. The value can be a boolean, or an integer to indicate
 percentage of time.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Before you enable a feature still in development, you should understand the [security and stability risks](../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
+
+{{< /alert >}}
 
 ```plaintext
 POST /features/:name
@@ -123,7 +128,7 @@ POST /features/:name
 | `name`          | string         | yes      | Name of the feature to create or update                                                                                                                                                          |
 | `value`         | integer/string | yes      | `true` or `false` to enable/disable, or an integer for percentage of time                                                                                                                        |
 | `key`           | string         | no       | `percentage_of_actors` or `percentage_of_time` (default)                                                                                                                                         |
-| `feature_group` | string         | no       | A [Feature group](../development/feature_flags/index.md#feature-groups) name                                                                                                                                                                             |
+| `feature_group` | string         | no       | A [Feature group](../development/feature_flags/_index.md#feature-groups) name                                                                                                                                                                             |
 | `user`          | string         | no       | A GitLab username or comma-separated multiple usernames                                                                                                                                          |
 | `group`         | string         | no       | A GitLab group's path, for example `gitlab-org`, or comma-separated multiple group paths                                                                                                         |
 | `namespace`     | string         | no       | A GitLab group or user namespace's path, for example `john-doe`, or comma-separated multiple namespace paths. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353117) in GitLab 15.0. |

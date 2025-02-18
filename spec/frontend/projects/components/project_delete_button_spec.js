@@ -12,12 +12,15 @@ describe('Project remove modal', () => {
 
   const defaultProps = {
     confirmPhrase: 'foo',
+    disabled: false,
     formPath: 'some/path',
     isFork: false,
     issuesCount: 1,
     mergeRequestsCount: 2,
     forksCount: 3,
     starsCount: 4,
+    buttonText: 'Delete project',
+    nameWithNamespace: 'Foo / Bar',
   };
 
   const createComponent = (props = {}) => {
@@ -45,12 +48,15 @@ describe('Project remove modal', () => {
     it('passes confirmPhrase and formPath props to the shared delete button', () => {
       expect(findSharedDeleteButton().props()).toEqual({
         confirmPhrase: defaultProps.confirmPhrase,
+        disabled: defaultProps.disabled,
         forksCount: defaultProps.forksCount,
         formPath: defaultProps.formPath,
         isFork: defaultProps.isFork,
         issuesCount: defaultProps.issuesCount,
         mergeRequestsCount: defaultProps.mergeRequestsCount,
         starsCount: defaultProps.starsCount,
+        buttonText: defaultProps.buttonText,
+        nameWithNamespace: defaultProps.nameWithNamespace,
       });
     });
   });

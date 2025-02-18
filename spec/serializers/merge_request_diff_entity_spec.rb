@@ -76,7 +76,8 @@ RSpec.describe MergeRequestDiffEntity, feature_category: :code_review_workflow d
     context 'when @merge_request_diffs.size > 1' do
       let(:merge_request) { create(:merge_request_with_multiple_diffs) }
 
-      it 'returns difference between size and diff index' do
+      it 'returns difference between size and diff index',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/445703' do
         expect(merge_request_diffs.size).to eq(2)
 
         # diff index: 0

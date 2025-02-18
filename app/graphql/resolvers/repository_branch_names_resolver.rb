@@ -19,7 +19,7 @@ module Resolvers
       description: 'Number of branch names to return.'
 
     def resolve(search_pattern:, offset:, limit:)
-      Repositories::BranchNamesFinder.new(object, offset: offset, limit: limit, search: search_pattern).execute
+      ::Repositories::BranchNamesFinder.new(object, offset: offset, limit: limit, search: search_pattern).execute
     end
   end
 end

@@ -2,9 +2,8 @@
 stage: none
 group: none
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Get started deploying and releasing your application
 ---
-
-# Get started deploying and releasing your application
 
 Start with previewing your application, and end with deploying
 it to production in front of your users. Manage containers and packages, use
@@ -33,7 +32,7 @@ applications.
 
 For more information, see:
 
-- [Packages and registries](../packages/index.md)
+- [Packages and registries](../packages/_index.md)
 
 ## Step 2: Deploy your application across environments
 
@@ -53,13 +52,13 @@ the main branch. These temporary environments are called review apps.
 
 For more information, see:
 
-- [Environments](../../ci/environments/index.md)
-- [Deploy to AWS](../../ci/cloud_deployment/index.md)
-- [Deploy to Kubernetes](../clusters/agent/index.md)
+- [Environments](../../ci/environments/_index.md)
+- [Deploy to AWS](../../ci/cloud_deployment/_index.md)
+- [Deploy to Kubernetes](../clusters/agent/_index.md)
 - [Dashboard for Kubernetes](../../ci/environments/kubernetes_dashboard.md)
 - [Environments Dashboard](../../ci/environments/environments_dashboard.md)
-- [Operations Dashboard](../operations_dashboard/index.md)
-- [Review apps](../../ci/review_apps/index.md)
+- [Operations Dashboard](../operations_dashboard/_index.md)
+- [Review apps](../../ci/review_apps/_index.md)
 
 ## Step 3: Stay compliant with continuous delivery features
 
@@ -98,7 +97,7 @@ permissions if you want to control who is allowed to create, update, and delete 
 
 For more information, see:
 
-- [Releases](../project/releases/index.md)
+- [Releases](../project/releases/_index.md)
 
 ## Step 5: Roll out changes safely
 
@@ -129,7 +128,7 @@ GitLab automatically builds and deploys your website whenever you push changes t
 
 For more information, see:
 
-- [GitLab Pages](../project/pages/index.md)
+- [GitLab Pages](../project/pages/_index.md)
 
 ## Step 7: Go opinionated with Auto Deploy
 

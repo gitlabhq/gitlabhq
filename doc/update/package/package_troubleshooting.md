@@ -2,27 +2,33 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting
 ---
 
-# Troubleshooting
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-## Get the status of a GitLab installation
+{{< /details >}}
+
+To help with troubleshooting, run the following commands.
 
 ```shell
 sudo gitlab-ctl status
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```
 
-- Information on using `gitlab-ctl` to perform [maintenance tasks](https://docs.gitlab.com/omnibus/maintenance/index.html).
-- Information on using `gitlab-rake` to [check the configuration](../../administration/raketasks/maintenance.md#check-gitlab-configuration).
+For more information on:
+
+- Using `gitlab-ctl` for maintenance, see [Maintenance commands](https://docs.gitlab.com/omnibus/maintenance/).
+- Using `gitlab-rake` for configuration checking, see
+  [Check GitLab configuration](../../administration/raketasks/maintenance.md#check-gitlab-configuration).
 
 ## RPM 'package is already installed' error
 
-If you are using RPM and you are upgrading from GitLab Community Edition to GitLab Enterprise Edition you may get an error like this:
+If you are using RPM and you are upgrading from GitLab Community Edition to GitLab Enterprise Edition you might get an
+error similar to:
 
 ```shell
 package gitlab-7.5.2_omnibus.5.2.1.ci-1.el7.x86_64 (which is newer than gitlab-7.5.2_ee.omnibus.5.2.1.ci-1.el7.x86_64) is already installed
@@ -36,9 +42,11 @@ sudo rpm -Uvh --oldpackage gitlab-7.5.2_ee.omnibus.5.2.1.ci-1.el7.x86_64.rpm
 
 ## Package obsoleted by installed package
 
-CE and EE packages are marked as obsoleting and replacing each other so that both aren't installed and running at the same time.
+Community Edition (CE) and Enterprise Edition (EE) packages are marked as obsoleting each other so that both aren't
+installed at the same time.
 
-If you are using local RPM files to switch from CE to EE or vice versa, use `rpm` for installing the package rather than `yum`. If you try to use yum, then you may get an error like this:
+If you are using local RPM files to switch from CE to EE or vice versa, use `rpm` for installing the package rather than
+`yum`. If you try to use yum, then you may get an error like this:
 
 ```plaintext
 Cannot install package gitlab-ee-11.8.3-ee.0.el6.x86_64. It is obsoleted by installed package gitlab-ce-11.8.3-ce.0.el6.x86_64
@@ -47,13 +55,15 @@ Cannot install package gitlab-ee-11.8.3-ee.0.el6.x86_64. It is obsoleted by inst
 To avoid this issue, either:
 
 - Use the same instructions provided in the
-  [Upgrade using a manually-downloaded package](index.md#by-using-a-downloaded-package) section.
+  [Upgrade using a manually-downloaded package](_index.md#by-using-a-downloaded-package) section.
 - Temporarily disable this checking in yum by adding `--setopt=obsoletes=0` to the options given to the command.
 
-## 500 error when accessing Project > Settings > Repository
+## 500 error when accessing project repository settings
 
-This error occurs when GitLab is converted from CE > EE > CE, and then back to EE.
-When viewing a project's repository settings, you can view this error in the logs:
+This error occurs when GitLab is converted from Community Edition (CE) to Enterprise Edition (EE), and then to
+CE and then back to EE.
+
+When viewing a project's repository settings, you can see this error in the logs:
 
 ```shell
 Processing by Projects::Settings::RepositoryController#show as HTML
@@ -69,8 +79,8 @@ After the instance is moved back to CE and then is upgraded to EE again, the
 `push_rules` table already exists in the database. Therefore, a migration is
 unable to add the `commit_message_regex_change` column.
 
-This results in the [backport migration of EE tables](https://gitlab.com/gitlab-org/gitlab/-/blob/cf00e431024018ddd82158f8a9210f113d0f4dbc/db/migrate/20190402150158_backport_enterprise_schema.rb#L1619) not working correctly.
-The backport migration assumes that certain tables in the database do not exist when running CE.
+This results in the [backport migration of EE tables](https://gitlab.com/gitlab-org/gitlab/-/blob/cf00e431024018ddd82158f8a9210f113d0f4dbc/db/migrate/20190402150158_backport_enterprise_schema.rb#L1619)
+not working correctly. The backport migration assumes that certain tables in the database do not exist when running CE.
 
 To fix this issue:
 
@@ -97,10 +107,12 @@ To fix this issue:
 
 ## 500 errors with `PG::UndefinedColumn: ERROR:..` message in logs
 
-After upgrading, if you start getting `500` errors in the logs showings messages similar to `PG::UndefinedColumn: ERROR:...`, these errors could be cause by either:
+After upgrading, if you start getting `500` errors in the logs that show messages similar to `PG::UndefinedColumn: ERROR:...`,
+these errors could be cause by either:
 
 - [Database migrations](../background_migrations.md) not being complete. Wait until migrations are completed.
-- Database migrations being complete, but GitLab needing to load the new schema. To load the new schema, [restart GitLab](../../administration/restart_gitlab.md).
+- Database migrations being complete, but GitLab needing to load the new schema. To load the new schema,
+  [restart GitLab](../../administration/restart_gitlab.md).
 
 ## Error: Failed to connect to the internal GitLab API
 
@@ -160,41 +172,29 @@ To fix this error:
 
 ## Missing asset files
 
-Following an upgrade, GitLab might not be correctly serving up assets such as images, JavaScript, and style sheets.
-It might be generating 500 errors, or the web UI may be failing to render properly.
+Following an upgrade, GitLab might not correctly serve up assets such as:
+
+- Images
+- JavaScript
+- Style sheets
+
+GitLab might generate 500 errors, or the web UI might fail to render properly.
 
 In a scaled out GitLab environment, if one web server behind the load balancer is demonstrating
 this issue, the problem occurs intermittently.
 
 The [Rake task to recompile](../../administration/raketasks/maintenance.md#precompile-the-assets) the
-assets doesn't apply to an Omnibus installation which serves
+assets doesn't apply to a Linux package installation which serves
 pre-compiled assets from `/opt/gitlab/embedded/service/gitlab-rails/public/assets`.
 
-Potential causes and fixes:
-
-- [Ensure no old processes are running](#old-processes).
-- [Remove duplicate sprockets files](#duplicate-sprockets-files)
-- [The installation is incomplete](#incomplete-installation)
-- [NGINX Gzip support is disabled](#nginx-gzip-support)
-
-## ActiveRecord::LockWaitTimeout error, retrying after sleep
-
-In rare cases, Sidekiq is busy and locks the table that migrations is trying to alter.
-To resolve this issue, you should put GitLab in read-only mode and stop Sidekiq.
-
-```shell
-gitlab-ctl stop sidekiq
-```
+The following sections outline possible causes and solutions.
 
 ### Old processes
 
-The most likely cause is that an old Puma process is running, instructing clients
-to request asset files from a previous release of GitLab. As the files no longer exist,
-HTTP 404 errors are returned.
+The most likely cause of old processes is that an old Puma process is running. And old Puma process can instruct clients
+to request asset files from a previous release of GitLab. Because the files no longer exist, HTTP 404 errors are returned.
 
-A reboot is the best way to ensure these old Puma processes are no longer running.
-
-Alternatively:
+A reboot is the best way to ensure these old Puma processes are no longer running. Alternatively, you can:
 
 1. Stop Puma:
 
@@ -210,7 +210,6 @@ Alternatively:
    ```
 
 1. Verify with `ps` that the Puma processes have stopped running.
-
 1. Start Puma
 
    ```shell
@@ -228,7 +227,7 @@ provide a mapping from the filenames in the application code to the unique filen
 
 Make sure there's only one sprockets file. [Rails uses the first one](https://github.com/rails/sprockets-rails/blob/118ce60b1ffeb7a85640661b014cd2ee3c4e3e56/lib/sprockets/railtie.rb#L201).
 
-A check for duplicate sprockets files runs during Omnibus GitLab upgrades:
+A check for duplicate sprockets files runs during Linux package upgrades:
 
 ```plaintext
 GitLab discovered stale file(s) from the previous install that need to be cleaned up.
@@ -245,15 +244,13 @@ Options for resolving this include:
   gitlab-ctl restart puma
   ```
 
-- If you don't have the message, perform a reinstall
-  (see [incomplete installation](#incomplete-installation) below for more details)
-  to generate it again.
-
+- If you don't have the message, perform a reinstall to generate it again. For more information, see
+  [Incomplete installation](#incomplete-installation).
 - Remove all the sprockets files and then follow the instructions for an [incomplete installation](#incomplete-installation).
 
 ### Incomplete installation
 
-An incomplete installation could be the cause of this issue.
+An incomplete installation could be the cause of missing asset file problems.
 
 Verify the package to determine if this is the problem:
 
@@ -272,7 +269,7 @@ Verify the package to determine if this is the problem:
 
 To reinstall the package to fix an incomplete installation:
 
-1. Check the installed version
+1. Check the installed version:
 
    - For Debian distributions:
 
@@ -300,7 +297,7 @@ To reinstall the package to fix an incomplete installation:
      yum reinstall gitlab-ee-14.4.0
      ```
 
-### NGINX Gzip support
+### NGINX Gzip support disabled
 
 Check whether `nginx['gzip_enabled']` has been disabled:
 
@@ -310,3 +307,14 @@ grep gzip /etc/gitlab/gitlab.rb
 
 This might prevent some assets from being served.
 [Read more](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6087#note_558194395) in one of the related issues.
+
+## ActiveRecord::LockWaitTimeout error, retrying after sleep
+
+In rare cases, Sidekiq is busy and locks the table that migrations are trying to alter. To resolve this issue:
+
+1. Put GitLab in read-only mode.
+1. Stop Sidekiq:
+
+   ```shell
+   gitlab-ctl stop sidekiq
+   ```

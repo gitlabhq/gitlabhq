@@ -21,6 +21,7 @@ describe('Token access table', () => {
   const findProjectAvatar = () => wrapper.findByTestId('token-access-avatar');
   const findName = () => wrapper.findByTestId('token-access-name');
   const findPolicies = () => findAllTableRows().at(0).findAll('td').at(1);
+  const findAutopopulatedIcon = () => wrapper.findByTestId('autopopulated-icon');
 
   describe.each`
     type         | items
@@ -122,6 +123,34 @@ describe('Token access table', () => {
 
     it('does not show edit button', () => {
       expect(findEditButton().exists()).toBe(false);
+    });
+  });
+
+  describe('group auto-populated icon', () => {
+    it('shows the icon when the item is auto-populated', () => {
+      createComponent({ items: [mockGroups[0]] });
+
+      expect(findAutopopulatedIcon().exists()).toBe(true);
+    });
+
+    it('does no shows the icon when the item is not auto-populated', () => {
+      createComponent({ items: [mockGroups[2]] });
+
+      expect(findAutopopulatedIcon().exists()).toBe(false);
+    });
+  });
+
+  describe('project auto-populated icon', () => {
+    it('shows the icon when the item is auto-populated', () => {
+      createComponent({ items: [mockProjects[0]] });
+
+      expect(findAutopopulatedIcon().exists()).toBe(true);
+    });
+
+    it('does no shows the icon when the item is not auto-populated', () => {
+      createComponent({ items: [mockProjects[1]] });
+
+      expect(findAutopopulatedIcon().exists()).toBe(false);
     });
   });
 });

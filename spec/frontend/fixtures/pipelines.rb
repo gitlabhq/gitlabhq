@@ -72,64 +72,79 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
     expect(response).to be_successful
   end
 
-  describe GraphQL::Query, type: :request do # rubocop:disable RSpec/MultipleMemoizedHelpers -- new rule, will be fixed in follow-up
+  describe GraphQL::Query, type: :request do
     fixtures_path = 'graphql/pipelines/'
-    get_pipeline_actions_query = 'get_pipeline_actions.query.graphql'
-    get_pipeline_summary_query = 'get_pipeline_summary.query.graphql'
-    get_pipeline_iid_query = 'get_pipeline_iid.query.graphql'
+    let(:base_pipeline) { create(:ci_pipeline, project: project, sha: '0000') }
 
-    let!(:pipeline_with_manual_actions) { create(:ci_pipeline, project: project, user: user) }
-    let!(:pipeline_summary) { create(:ci_pipeline, project: project, finished_at: 1.hour.ago) }
-    let(:commit) { create(:commit, project: project) }
-
-    let!(:build_stage) do
-      create(:ci_stage, name: 'build', pipeline: pipeline_with_manual_actions, project:
-                                pipeline_with_manual_actions.project)
+    def queries
+      {
+        actions: get_graphql_query_as_string(
+          "ci/pipelines_page/graphql/queries/get_pipeline_actions.query.graphql"
+        ),
+        downstream_jobs: get_graphql_query_as_string(
+          "ci/pipeline_mini_graph/graphql/queries/get_downstream_pipeline_jobs.query.graphql"
+        ),
+        iid: get_graphql_query_as_string(
+          "ci/pipeline_editor/graphql/queries/get_pipeline_iid.query.graphql"
+        ),
+        summary: get_graphql_query_as_string(
+          "ci/common/pipeline_summary/graphql/queries/get_pipeline_summary.query.graphql"
+        )
+      }
     end
 
-    let!(:test_stage) do
-      create(:ci_stage, name: 'test', pipeline: pipeline_with_manual_actions, project:
-                               pipeline_with_manual_actions.project)
-    end
+    it "#{fixtures_path}get_pipeline_actions.query.graphql.json" do
+      stages = {
+        build: create(:ci_stage, name: 'build', pipeline: base_pipeline, project: base_pipeline.project),
+        test: create(:ci_stage, name: 'test', pipeline: base_pipeline, project: base_pipeline.project)
+      }
 
-    let!(:build_scheduled) do
-      create(:ci_build, :scheduled, pipeline: pipeline_with_manual_actions, ci_stage: test_stage)
-    end
+      create(:ci_build, :scheduled, pipeline: base_pipeline, ci_stage: stages[:test])
+      create(:ci_build, :manual, pipeline: base_pipeline, ci_stage: stages[:build])
+      create(:ci_build, :manual, :skipped, pipeline: base_pipeline, ci_stage: stages[:build])
 
-    let!(:build_manual) { create(:ci_build, :manual, pipeline: pipeline_with_manual_actions, ci_stage: build_stage) }
-    let!(:build_manual_cannot_play) do
-      create(:ci_build, :manual, :skipped, pipeline: pipeline_with_manual_actions, ci_stage: build_stage)
-    end
-
-    let_it_be(:query) do
-      get_graphql_query_as_string("ci/pipelines_page/graphql/queries/#{get_pipeline_actions_query}")
-    end
-
-    let_it_be(:pipeline_summary_query) do
-      get_graphql_query_as_string("ci/common/pipeline_summary/graphql/queries/#{get_pipeline_summary_query}")
-    end
-
-    let_it_be(:pipeline_iid_query) do
-      get_graphql_query_as_string("ci/pipeline_editor/graphql/queries/#{get_pipeline_iid_query}")
-    end
-
-    it "#{fixtures_path}#{get_pipeline_actions_query}.json" do
-      post_graphql(query, current_user: user,
-        variables: { fullPath: project.full_path, iid: pipeline_with_manual_actions.iid })
+      post_graphql(
+        queries[:actions],
+        current_user: user,
+        variables: { fullPath: project.full_path, iid: base_pipeline.iid }
+      )
 
       expect_graphql_errors_to_be_empty
     end
 
-    it "#{fixtures_path}#{get_pipeline_summary_query}.json" do
-      post_graphql(pipeline_summary_query, current_user: user,
-        variables: { fullPath: project.full_path, iid: pipeline_summary.iid, includeCommitInfo: true })
+    it "#{fixtures_path}get_downstream_pipeline_jobs.query.graphql.json" do
+      stage = create(:ci_stage, name: 'test', pipeline: base_pipeline, project: base_pipeline.project)
+      create(:ci_build, pipeline: base_pipeline, ci_stage: stage, name: 'test_job')
+      create(:ci_build, pipeline: base_pipeline, ci_stage: stage, name: 'another_test_job')
+
+      post_graphql(
+        queries[:downstream_jobs],
+        current_user: user,
+        variables: { fullPath: project.full_path, iid: base_pipeline.iid }
+      )
 
       expect_graphql_errors_to_be_empty
     end
 
-    it "#{fixtures_path}#{get_pipeline_iid_query}.json" do
-      post_graphql(pipeline_iid_query, current_user: user,
-        variables: { fullPath: project.full_path, sha: commit.sha })
+    it "#{fixtures_path}get_pipeline_iid.query.graphql.json" do
+      post_graphql(
+        queries[:iid],
+        current_user: user,
+        variables: { fullPath: project.full_path, sha: commit.sha }
+      )
+
+      expect_graphql_errors_to_be_empty
+    end
+
+    it "#{fixtures_path}get_pipeline_summary.query.graphql.json" do
+      commit = create(:commit, project: project)
+      base_pipeline.update!(sha: commit.id, user: user, finished_at: 1.hour.ago)
+
+      post_graphql(
+        queries[:summary],
+        current_user: user,
+        variables: { fullPath: project.full_path, iid: base_pipeline.iid, includeCommitInfo: true }
+      )
 
       expect_graphql_errors_to_be_empty
     end

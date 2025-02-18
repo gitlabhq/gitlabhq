@@ -1,7 +1,7 @@
 export const getQueryResponse = {
   data: {
     namespace: {
-      id: '1',
+      id: 1,
       __typename: 'Project',
       mergeRequests: {
         pageInfo: {

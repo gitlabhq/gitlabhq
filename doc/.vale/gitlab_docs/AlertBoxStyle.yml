@@ -10,7 +10,8 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Update the format of the '%s' alert box. View the style guide for details."
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#alert-boxes
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#alert-boxes
+vocab: false
 level: error
 nonword: true
 scope: raw

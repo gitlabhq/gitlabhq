@@ -2,8 +2,8 @@
 stage: Package
 group: Container Registry
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Harbor registry
 ---
-# Harbor registry
 
 ## Enable Harbor registry
 
@@ -17,7 +17,7 @@ The Harbor configuration requires four fields: `url`, `project_name`, `username`
 | `username` | The username used to sign in to the Harbor instance. |
 | `password` | The password used to sign in to the Harbor instance. |
 
-You can use [GitLab CI/CD predefined variables](../../ci/variables/index.md) along with the following Harbor registry variables to request data from the Harbor instance.
+You can use [GitLab CI/CD predefined variables](../../ci/variables/_index.md) along with the following Harbor registry variables to request data from the Harbor instance.
 
 | Variable | Description |
 | --- | --- |
@@ -135,8 +135,11 @@ The relevant front-end code is located in the `app/assets/javascripts/packages_a
 └── utils.js
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 You can check out this [discussion](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82777#note_1017875324) to see why we use the REST API instead of GraphQL.
+
+{{< /alert >}}
 
 The file `harbor_registry/pages/index.vue` only contains a single Vue router-view component, which goes to the `images list`, `image detail`, and `tags list` pages via `router.js`.
 

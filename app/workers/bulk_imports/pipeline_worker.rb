@@ -79,8 +79,7 @@ module BulkImports
 
     def run
       return if pipeline_tracker.canceled?
-      return skip_tracker if entity.failed?
-      return cancel_tracker if entity.canceled?
+      return if invalid_entity_status?
 
       raise(Pipeline::FailedError, "Export from source instance failed: #{export_status.error}") if export_failed?
       raise(Pipeline::ExpiredError, 'Empty export status on source instance') if empty_export_timeout?
@@ -185,16 +184,22 @@ module BulkImports
       re_enqueue(exception.retry_delay)
     end
 
-    def skip_tracker
-      logger.info(log_attributes(message: 'Skipping pipeline due to failed entity'))
-
-      pipeline_tracker.update!(status_event: 'skip', jid: jid)
+    def invalid_entity_status?
+      if entity.failed?
+        handle_invalid_status('skip', 'Skipping pipeline due to failed entity')
+      elsif entity.timeout?
+        handle_invalid_status('cleanup_stale', 'Timeout pipeline due to timeout entity')
+      elsif entity.canceled?
+        handle_invalid_status('cancel', 'Canceling pipeline due to canceled entity')
+      else
+        false
+      end
     end
 
-    def cancel_tracker
-      logger.info(log_attributes(message: 'Canceling pipeline due to canceled entity'))
-
-      pipeline_tracker.update!(status_event: 'cancel', jid: jid)
+    def handle_invalid_status(status_event, message)
+      logger.info(log_attributes(message: message))
+      pipeline_tracker.update!(status_event: status_event, jid: jid)
+      true
     end
 
     def log_attributes(extra = {})

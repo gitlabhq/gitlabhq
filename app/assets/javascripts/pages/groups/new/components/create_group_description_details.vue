@@ -24,8 +24,8 @@ export default {
     GlSprintf,
   },
   paths: {
-    groupsHelpPath: helpPagePath('user/group/index'),
-    subgroupsHelpPath: helpPagePath('user/group/subgroups/index'),
+    groupsHelpPath: helpPagePath('user/group/_index'),
+    subgroupsHelpPath: helpPagePath('user/group/subgroups/_index'),
   },
   props: {
     parentGroupName: {

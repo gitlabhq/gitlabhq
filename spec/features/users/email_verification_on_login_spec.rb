@@ -270,7 +270,7 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
     end
   end
 
-  shared_examples 'no email verification required when 2fa enabled or ff disabled' do
+  shared_examples 'no email verification required when 2fa enabled' do
     context 'when 2FA is enabled' do
       let_it_be(:user) { create(:user, :two_factor) }
 
@@ -299,7 +299,7 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
     end
 
     it_behaves_like 'email verification required'
-    it_behaves_like 'no email verification required when 2fa enabled or ff disabled'
+    it_behaves_like 'no email verification required when 2fa enabled'
 
     describe 'when waiting for the auto unlock time' do
       before do
@@ -320,15 +320,7 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
     end
 
     it_behaves_like 'email verification required'
-    it_behaves_like 'no email verification required when 2fa enabled or ff disabled'
-
-    context 'when the check_ip_address_for_email_verification feature flag is disabled' do
-      before do
-        stub_feature_flags(check_ip_address_for_email_verification: false)
-      end
-
-      it_behaves_like 'no email verification required'
-    end
+    it_behaves_like 'no email verification required when 2fa enabled'
   end
 
   describe 'when a previous authentication event exists for the same ip address' do

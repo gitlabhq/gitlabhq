@@ -2,30 +2,40 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Conan API
 ---
 
-# Conan API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This is the API documentation for [Conan Packages](../../user/packages/conan_repository/index.md).
+{{< /details >}}
 
-WARNING:
+This is the API documentation for [Conan Packages](../../user/packages/conan_repository/_index.md).
+
+{{< alert type="warning" >}}
+
 This API is used by the [Conan package manager client](https://docs.conan.io/en/latest/)
 and is generally not meant for manual consumption.
 
-For instructions on how to upload and install Conan packages from the GitLab
-package registry, see the [Conan package registry documentation](../../user/packages/conan_repository/index.md).
+{{< /alert >}}
 
-NOTE:
+For instructions on how to upload and install Conan packages from the GitLab
+package registry, see the [Conan package registry documentation](../../user/packages/conan_repository/_index.md).
+
+{{< alert type="note" >}}
+
 These endpoints do not adhere to the standard API authentication methods.
 See each route for details on how credentials are expected to be passed. Undocumented authentication methods might be removed in the future.
 
-NOTE:
-The Conan registry is not FIPS compliant and is disabled when [FIPS mode](../../development/fips_compliance.md) is enabled.
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
+The Conan registry is not FIPS compliant and is disabled when [FIPS mode](../../development/fips_gitlab.md) is enabled.
 These endpoints will all return 404 Not Found.
+{{< /alert >}}
 
 ## Route prefix
 
@@ -43,7 +53,7 @@ The examples in this document all use the instance-level prefix.
 ```
 
 When using the instance-level routes, be aware that there is a
-[naming restriction](../../user/packages/conan_repository/index.md#package-recipe-naming-convention-for-instance-remotes)
+[naming restriction](../../user/packages/conan_repository/_index.md#package-recipe-naming-convention-for-instance-remotes)
 for Conan recipes.
 
 ### Project-level

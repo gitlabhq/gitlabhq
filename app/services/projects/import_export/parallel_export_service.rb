@@ -64,8 +64,8 @@ module Projects
       end
 
       def cleanup
-        FileUtils.rm_rf(shared.export_path) if File.exist?(shared.export_path)
-        FileUtils.rm_rf(shared.archive_path) if File.exist?(shared.archive_path)
+        FileUtils.rm_rf(shared.export_path)
+        FileUtils.rm_rf(shared.archive_path)
       end
 
       def log_info(message)

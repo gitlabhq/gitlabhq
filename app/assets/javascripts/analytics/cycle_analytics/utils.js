@@ -22,7 +22,7 @@ export const transformStagesForPathNavigation = ({
   const formattedStages = stages.map((stage) => {
     return {
       metric: medians[stage?.id],
-      selected: stage?.id === selectedStage?.id, // Also could null === null cause an issue here?
+      selected: stage?.id && stage?.id === selectedStage?.id,
       stageCount: stageCounts && stageCounts[stage?.id],
       icon: null,
       ...stage,
@@ -77,6 +77,7 @@ export const buildCycleAnalyticsInitialData = ({
   createdAfter,
   createdBefore,
   namespaceName,
+  namespacePath,
   namespaceRestApiRequestPath,
 } = {}) => {
   return {
@@ -84,6 +85,7 @@ export const buildCycleAnalyticsInitialData = ({
     groupPath,
     namespace: {
       name: namespaceName,
+      path: namespacePath,
       restApiRequestPath: namespaceRestApiRequestPath,
     },
     createdAfter: newDate(createdAfter),

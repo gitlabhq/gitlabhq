@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: 'Database case study: Namespaces storage statistics'
 ---
-
-# Database case study: Namespaces storage statistics
 
 ## Introduction
 
@@ -14,7 +13,7 @@ storage consumed by a group, and allow easy management.
 
 ## Proposal
 
-1. Create a new ActiveRecord model to hold the namespaces' statistics in an aggregated form (only for root [namespaces](../../user/namespace/index.md)).
+1. Create a new ActiveRecord model to hold the namespaces' statistics in an aggregated form (only for root [namespaces](../../user/namespace/_index.md)).
 1. Refresh the statistics in this model every time a project belonging to this namespace is changed.
 
 ## Problem

@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting two-factor authentication
 ---
 
-# Troubleshooting two-factor authentication
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
 
 ## Error: `HTTP Basic: Access denied. If a password was provided for Git authentication ...`
 
@@ -36,9 +38,9 @@ Instead you can authenticate:
   - For Git requests over HTTP(S), a PAT with `read_repository` or `write_repository` scope is required.
   - For [GitLab container registry](../../packages/container_registry/authenticate_with_container_registry.md) requests, a PAT
     with `read_registry` or `write_registry` scope is required.
-  - For [dependency proxy](../../packages/dependency_proxy/index.md#authenticate-with-the-dependency-proxy-for-container-images) requests, a PAT with
+  - For [dependency proxy](../../packages/dependency_proxy/_index.md#authenticate-with-the-dependency-proxy-for-container-images) requests, a PAT with
     `read_registry` and `write_registry` scopes is required.
-- If you have configured LDAP, using an [LDAP password](../../../administration/auth/ldap/index.md)
+- If you have configured LDAP, using an [LDAP password](../../../administration/auth/ldap/_index.md)
 - Using an [OAuth credential helper](../../profile/account/two_factor_authentication.md#oauth-credential-helpers).
 
 ## Error: "invalid pin code"
@@ -129,9 +131,12 @@ After signing in, immediately set up 2FA with a new device.
 
 ### Disable and reset 2FA on your account
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 If other methods are unavailable, create a support ticket to request
 a GitLab global administrator to disable 2FA for your account.
@@ -151,4 +156,4 @@ You should sign in and re-enable 2FA as soon as possible.
 
 If you are a top-level Owner of a namespace on a paid plan, you can disable 2FA for enterprise users.
 For more information, see
-[Disable two-factor-authentication](../../enterprise_user/index.md#disable-two-factor-authentication).
+[Disable two-factor-authentication](../../enterprise_user/_index.md#disable-two-factor-authentication).

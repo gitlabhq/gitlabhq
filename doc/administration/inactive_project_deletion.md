@@ -2,17 +2,23 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Inactive project deletion
 ---
 
-# Inactive project deletion
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0 [with a flag](../administration/feature_flags.md) named `inactive_projects_deletion`. Disabled by default.
-> - [Feature flag `inactive_projects_deletion`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96803) removed in GitLab 15.4.
-> - Configuration through GitLab UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85575) in GitLab 15.1.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0 [with a flag](feature_flags.md) named `inactive_projects_deletion`. Disabled by default.
+- [Feature flag `inactive_projects_deletion`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96803) removed in GitLab 15.4.
+- Configuration through GitLab UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85575) in GitLab 15.1.
+
+{{< /history >}}
 
 Administrators of large GitLab instances can find that over time, projects become inactive and are no longer used.
 These projects take up unnecessary disk space.
@@ -21,7 +27,7 @@ With inactive project deletion, you can identify these projects, warn the mainta
 projects if they remain inactive. When an inactive project is deleted, the action generates an audit event that it was
 performed by the @GitLab-Admin-Bot.
 
-For the default setting on GitLab.com, see the [GitLab.com settings page](../user/gitlab_com/index.md#inactive-project-deletion).
+For the default setting on GitLab.com, see the [GitLab.com settings page](../user/gitlab_com/_index.md#inactive-project-deletion).
 
 ## Configure inactive project deletion
 

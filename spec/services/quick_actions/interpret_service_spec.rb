@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe QuickActions::InterpretService, feature_category: :text_editors do
   include AfterNextHelpers
 
+  let_it_be(:support_bot) { Users::Internal.support_bot }
   let_it_be(:group) { create(:group) }
   let_it_be(:public_project) { create(:project, :public, group: group) }
   let_it_be(:repository_project) { create(:project, :repository) }
@@ -32,6 +33,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     )
     project.add_developer(current_user)
   end
+
+  before_all { Users::Internal.support_bot_id }
 
   describe '#execute' do
     let_it_be(:work_item) { create(:work_item, :task, project: project) }
@@ -529,7 +532,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     shared_examples 'failed command' do |error_msg|
-      let(:match_msg) { error_msg ? eq(error_msg) : be_empty }
+      let(:msg) { error_msg || try(:output_msg) }
+      let(:match_msg) { msg ? eq(msg) : be_empty }
 
       it 'populates {} if content contains an unsupported command' do
         _, updates, _ = service.execute(content, issuable)
@@ -539,6 +543,17 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
       it "returns #{error_msg || 'an empty'} message" do
         _, _, message = service.execute(content, issuable)
+
+        expect(message).to match_msg
+      end
+    end
+
+    shared_examples 'explain message' do |error_msg|
+      let(:msg) { error_msg || try(:output_msg) }
+      let(:match_msg) { msg ? include(msg) : be_empty }
+
+      it "returns #{error_msg || 'an empty'} message" do
+        _, message = service.explain(content, issuable)
 
         expect(message).to match_msg
       end
@@ -590,31 +605,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
     end
 
-    shared_examples 'duplicate command' do
-      it 'fetches issue and populates canonical_issue_id if content contains /duplicate issue_reference' do
-        issue_duplicate # populate the issue
-        _, updates, _ = service.execute(content, issuable)
-
-        expect(updates).to eq(canonical_issue_id: issue_duplicate.id)
-      end
-
-      it 'returns the duplicate message' do
-        _, _, message = service.execute(content, issuable)
-        translated_string = _("Closed this issue. Marked as related to, and a duplicate of, %{issue_duplicate_to_reference}.")
-        formatted_message = format(translated_string, issue_duplicate_to_reference: issue_duplicate.to_reference(project).to_s)
-
-        expect(message).to eq(formatted_message)
-      end
-
-      it 'includes duplicate reference' do
-        _, explanations = service.explain(content, issuable)
-        translated_string = _("Closes this issue. Marks as related to, and a duplicate of, %{issue_duplicate_to_reference}.")
-        formatted_message = format(translated_string, issue_duplicate_to_reference: issue_duplicate.to_reference(project).to_s)
-
-        expect(explanations).to eq([formatted_message])
-      end
-    end
-
     shared_examples 'copy_metadata command' do
       it 'fetches issue or merge request and copies labels and milestone if content contains /copy_metadata reference' do
         source_issuable # populate the issue
@@ -656,7 +646,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
 
       context "when we pass a work_item" do
-        let(:work_item) { create(:work_item, :issue) }
+        let(:work_item) { create(:work_item, :issue, project: project) }
         let(:move_command) { "/move #{project.full_path}" }
 
         it '/move execution method message' do
@@ -1276,6 +1266,16 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
             expect(message).to match("Requested a review from #{user.to_reference}.")
           end
+        end
+      end
+
+      context 'when users are not set' do
+        let(:content) { "/request_review , " }
+
+        it 'returns an error message' do
+          _, explanations = service.explain(content, issuable)
+
+          expect(explanations).to eq(['Failed to request a review because no user was specified.'])
         end
       end
 
@@ -1932,6 +1932,28 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         let(:issuable) { issue }
       end
 
+      context "when a work item type issue is passed" do
+        let(:content) { "/copy_metadata #{source_issuable.to_reference(project)}" }
+        let(:issuable) { create(:work_item, project: project) }
+
+        it_behaves_like 'copy_metadata command' do
+          let(:source_issuable) do
+            create(:work_item, project: project, milestone: milestone).tap do |wi|
+              wi.labels << [todo_label, inreview_label]
+            end
+          end
+        end
+
+        it_behaves_like 'failed command' do
+          let(:other_project) { build(:project, :public) }
+          let(:source_issuable) do
+            create(:work_item, project: other_project).tap do |wi|
+              wi.labels << [todo_label, inreview_label]
+            end
+          end
+        end
+      end
+
       context 'when the parent issuable has a milestone' do
         it_behaves_like 'copy_metadata command' do
           let(:source_issuable) { create(:labeled_issue, project: project, labels: [todo_label, inreview_label], milestone: milestone) }
@@ -1976,10 +1998,43 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     context '/duplicate command' do
-      it_behaves_like 'duplicate command' do
-        let(:issue_duplicate) { create(:issue, project: project) }
-        let(:content) { "/duplicate #{issue_duplicate.to_reference}" }
-        let(:issuable) { issue }
+      let_it_be(:other_public_project) { create(:project, :public) }
+      let_it_be(:other_private_project) { create(:project, :private) }
+
+      context 'when duplicating an issue' do
+        let(:duplicate_item) { create(:issue, project: project) }
+
+        context 'with reference' do
+          it_behaves_like 'duplicate command' do
+            let(:content) { "/duplicate #{duplicate_item.to_reference}" }
+            let(:issuable) { issue }
+          end
+        end
+
+        context 'with url' do
+          it_behaves_like 'duplicate command' do
+            let(:content) { "/duplicate #{Gitlab::UrlBuilder.build(duplicate_item)}" }
+            let(:issuable) { issue }
+          end
+        end
+      end
+
+      context 'when duplicating a work item' do
+        let(:duplicate_item) { create(:work_item, project: project) }
+
+        context 'with reference' do
+          it_behaves_like 'duplicate command' do
+            let(:content) { "/duplicate #{duplicate_item.to_reference}" }
+            let(:issuable) { issue }
+          end
+        end
+
+        context 'with url' do
+          it_behaves_like 'duplicate command' do
+            let(:content) { "/duplicate #{Gitlab::UrlBuilder.build(duplicate_item)}" }
+            let(:issuable) { issue }
+          end
+        end
       end
 
       it_behaves_like 'failed command' do
@@ -1989,23 +2044,93 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
       context 'cross project references' do
         it_behaves_like 'duplicate command' do
-          let(:other_project) { create(:project, :public) }
-          let(:issue_duplicate) { create(:issue, project: other_project) }
-          let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }
+          let(:duplicate_item) { create(:issue, project: other_public_project) }
+          let(:content) { "/duplicate #{duplicate_item.to_reference(project)}" }
           let(:issuable) { issue }
         end
 
-        it_behaves_like 'failed command', _('Failed to mark this issue as a duplicate because referenced issue was not found.') do
-          let(:content) { "/duplicate imaginary##{non_existing_record_iid}" }
-          let(:issuable) { issue }
+        context 'when executing command' do
+          context 'when item not found' do
+            let(:output_msg) do
+              _('Failed to mark this Issue as a duplicate because referenced item was not found.')
+            end
+
+            context 'when referencing an non-existent item' do
+              let(:content) { "/duplicate imaginary##{non_existing_record_iid}" }
+              let(:issuable) { issue }
+
+              it_behaves_like 'failed command'
+            end
+
+            context 'when referencing an inaccessible item' do
+              let(:duplicate_item) { create(:issue, project: other_private_project) }
+              let(:content) { "/duplicate #{duplicate_item.to_reference(project)}" }
+              let(:issuable) { issue }
+
+              it_behaves_like 'failed command'
+            end
+          end
+
+          context 'when trying to mark item duplicate of itself' do
+            let(:output_msg) { _('Failed to mark the Issue as duplicate of itself.') }
+            let(:issuable) { issue }
+            let(:content) { "/duplicate #{issuable.to_reference(project)}" }
+
+            it_behaves_like 'failed command'
+          end
+
+          context 'with insufficient permissions' do
+            let(:output_msg) { _('Failed to mark this Issue as duplicate due to insufficient permissions.') }
+            let(:duplicate_item) { create(:issue, project: project) }
+            let(:issuable) { issue }
+            let(:content) { "/duplicate #{duplicate_item.to_reference(project)}" }
+
+            before do
+              allow(service).to receive(:can_mark_as_duplicate?).and_return(false)
+            end
+
+            it_behaves_like 'failed command'
+          end
         end
 
-        it_behaves_like 'failed command', _('Failed to mark this issue as a duplicate because referenced issue was not found.') do
-          let(:other_project) { create(:project, :private) }
-          let(:issue_duplicate) { create(:issue, project: other_project) }
+        context 'when explaining the command' do
+          let(:output_msg) { _('Cannot mark this Issue as a duplicate because referenced item was not found.') }
 
-          let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }
-          let(:issuable) { issue }
+          context 'when referencing an non-existent item' do
+            let(:content) { "/duplicate imaginary##{non_existing_record_iid}" }
+            let(:issuable) { issue }
+
+            it_behaves_like 'explain message'
+          end
+
+          context 'when referencing an inaccessible item' do
+            let(:duplicate_item) { create(:issue, project: other_private_project) }
+            let(:content) { "/duplicate #{duplicate_item.to_reference(project)}" }
+            let(:issuable) { issue }
+
+            it_behaves_like 'explain message'
+          end
+
+          context 'when trying to mark item duplicate of itself' do
+            let(:output_msg) { _('Cannot mark the Issue as duplicate of itself.') }
+            let(:issuable) { issue }
+            let(:content) { "/duplicate #{issuable.to_reference(project)}" }
+
+            it_behaves_like 'explain message'
+          end
+
+          context 'with insufficient permissions' do
+            let(:output_msg) { _('Cannot mark this Issue as duplicate due to insufficient permissions.') }
+            let(:duplicate_item) { create(:issue, project: project) }
+            let(:issuable) { issue }
+            let(:content) { "/duplicate #{duplicate_item.to_reference(project)}" }
+
+            before do
+              allow(service).to receive(:can_mark_as_duplicate?).and_return(false)
+            end
+
+            it_behaves_like 'explain message'
+          end
         end
       end
     end
@@ -2193,6 +2318,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
     end
 
+    # rubocop:disable RSpec/MultipleMemoizedHelpers -- we need a few extra helpers for these examples
     context '/board_move command' do
       let_it_be(:todo) { create(:label, project: project, title: 'To Do') }
       let_it_be(:inreview) { create(:label, project: project, title: 'In Review') }
@@ -2280,6 +2406,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         it_behaves_like 'failed command', 'Could not apply board_move command.'
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
     context '/tag command' do
       let(:issuable) { commit }
@@ -2834,7 +2961,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           expect(message).to eq(s_('ServiceDesk|Converted issue to Service Desk ticket.'))
           expect(issuable).to have_attributes(
             confidential: expected_confidentiality,
-            author_id: Users::Internal.support_bot.id,
+            author_id: Users::Internal.support_bot_id,
             service_desk_reply_to: 'user@example.com'
           )
         end
@@ -2910,12 +3037,12 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       context 'when issue is Service Desk issue' do
         before do
           issue.update!(
-            author: Users::Internal.support_bot,
+            author: support_bot,
             service_desk_reply_to: 'user@example.com'
           )
         end
 
-        it 'is not part of the available commands' do
+        it 'is not part of the available commands', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/512578' do
           expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :convert_to_ticket))
         end
       end
@@ -3333,6 +3460,16 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
         expect(explanations).to eq([formatted_message])
       end
+
+      context 'when users are not set' do
+        let(:content) { "/assign_reviewer , " }
+
+        it 'returns an error message' do
+          _, explanations = service.explain(content, merge_request)
+
+          expect(explanations).to eq(['Failed to assign a reviewer because no user was specified.'])
+        end
+      end
     end
 
     describe 'milestone command' do
@@ -3403,7 +3540,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           _, explanations = service.explain(content, merge_request)
 
           expect(explanations)
-            .to contain_exactly _("Problem with copy_metadata command: Failed to find issue or merge request.")
+            .to contain_exactly _("Problem with copy_metadata command: Failed to find work item or merge request.")
         end
       end
     end
@@ -3997,6 +4134,9 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
   describe '#available_commands' do
     context 'when Guest is creating a new issue' do
       let_it_be(:guest) { create(:user) }
+      let_it_be(:developer) { create(:user) }
+
+      let(:current_user) { guest }
 
       let(:issue) { build(:issue, project: public_project) }
       let(:service) { described_class.new(container: project, current_user: guest) }
@@ -4022,7 +4162,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     context 'when target is a work item type of issue' do
-      let(:target) { create(:work_item, :issue) }
+      let(:target) { create(:work_item, :issue, project: project) }
 
       context "when work_item supports move and clone commands" do
         it 'does recognize the actions' do

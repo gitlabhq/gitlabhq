@@ -81,6 +81,21 @@ RSpec.describe Gitlab::Pages::DeploymentValidations, :aggregate_failures, featur
         include_examples "valid pages deployment"
       end
 
+      context 'and the directory specified with `pages.publish` is included in the artifacts' do
+        let(:build_options) { { pages: { publish: 'foo' } } }
+
+        include_examples "valid pages deployment"
+      end
+
+      context 'and `publish` is present in root as well as pages' do
+        let(:build_options) { { publish: 'foo', pages: { publish: 'foo' } } }
+
+        include_examples "invalid pages deployment",
+          message: <<~MSG.squish
+          Either the `publish` or `pages.publish` option may be present in `.gitlab-ci.yml`, but not both.
+          MSG
+      end
+
       context 'and the directory specified with `publish` is not included in the artifacts' do
         let(:build_options) { { publish: 'bar' } }
 

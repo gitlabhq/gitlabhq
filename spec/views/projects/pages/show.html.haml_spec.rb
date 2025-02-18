@@ -10,7 +10,6 @@ RSpec.describe 'projects/pages/show' do
   let(:domain) { create(:pages_domain, project: project) }
 
   before do
-    stub_feature_flags(new_pages_ui: false)
     allow(project).to receive(:pages_deployed?).and_return(true)
     stub_pages_setting(external_https: true)
     stub_lets_encrypt_settings

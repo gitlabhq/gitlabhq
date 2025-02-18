@@ -10,6 +10,19 @@
   - add_to_breadcrumbs _("Issues"), project_issues_path(@project)
   - breadcrumb_title _("New issue")
 
+- if @merge_request_to_resolve_discussions_of
+  .follow_up_work_item_details.hidden
+    %span.permission
+      = @merge_request_to_resolve_discussions_of.discussions_can_be_resolved_by?(current_user)
+    %span.note-link
+      = link_to_discussions_to_resolve(@merge_request_to_resolve_discussions_of, @discussion_to_resolve)
+
+.follow_up_work_item.hidden
+  %span.follow-up-title
+    = @issue.title
+  .follow-up-description
+    = @issue.description
+
 - if Feature.enabled?(:work_items_view_preference, current_user) && current_user&.user_preference&.use_work_items_view
   #js-work-items{ data: work_items_show_data(@project, current_user) }
 - else

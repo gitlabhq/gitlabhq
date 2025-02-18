@@ -2,13 +2,15 @@
 stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Create a GitLab Pages deployment for a static site
 ---
 
-# Create a GitLab Pages deployment for a static site
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If you already have a GitLab project that contains your static site or framework,
 you can generate a GitLab Pages website from it.
@@ -22,8 +24,11 @@ a pipeline deploys your Pages website.
 - Your app must [output files to the `public` folder](../public_folder.md). If you create
   this folder during the build pipeline, you do not need to commit it to Git.
 
-  WARNING:
+  {{< alert type="warning" >}}
+
   This step is important. Ensure your files are in a root-level `public` folder.
+
+  {{< /alert >}}
 
 - You must have a project that either:
   - Generates static sites or a client-rendered single-page application (SPA),

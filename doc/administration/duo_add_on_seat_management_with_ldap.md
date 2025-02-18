@@ -2,15 +2,21 @@
 stage: Fulfillment
 group: Provision
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Duo add-on seat management with LDAP
 ---
 
-# GitLab Duo add-on seat management with LDAP
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175101) in GitLab 17.8.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175101) in GitLab 17.8.
+
+{{< /history >}}
 
 GitLab administrators can configure automatic GitLab Duo add-on seat assignment based on LDAP group membership. When enabled, GitLab will automatically assign or remove add-on seats for users when they sign in, depending on their LDAP group memberships.
 
@@ -52,7 +58,7 @@ sequenceDiagram
 
 To turn on add-on seat management with LDAP:
 
-1. Open the GitLab configuration file you have edited for the [installation](../administration/auth/ldap/ldap_synchronization.md#gitlab-duo-add-on-for-groups).
+1. Open the GitLab configuration file you have edited for the [installation](auth/ldap/ldap_synchronization.md#gitlab-duo-add-on-for-groups).
 1. Add the `duo_add_on_groups` setting to your LDAP server configuration.
 1. Specify an array of LDAP group names that should have Duo Add-on seats.
 
@@ -69,4 +75,4 @@ gitlab_rails['ldap_servers'] = {
 
 ## Troubleshooting
 
-See [LDAP troubleshooting](../administration/auth/ldap/ldap-troubleshooting.md).
+See [LDAP troubleshooting](auth/ldap/ldap-troubleshooting.md).

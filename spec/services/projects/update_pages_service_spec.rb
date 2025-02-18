@@ -101,7 +101,7 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
     end
   end
 
-  RSpec.shared_examples 'for new artifacts' do
+  context 'for new artifacts' do
     context "for a valid job" do
       let!(:artifacts_archive) { create(:ci_job_artifact, :correct_checksum, file: file, job: build) }
 
@@ -186,6 +186,10 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
         let(:file) { custom_root_file }
         let(:metadata_filename) { custom_root_file_metadata }
 
+        before do
+          allow(build).to receive(:pages_generator?).and_return(true)
+        end
+
         context 'when the directory specified with `publish` is included in the artifacts' do
           let(:options) { { publish: 'foo' } }
 
@@ -194,6 +198,38 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
 
             deployment = project.pages_deployments.last
             expect(deployment.root_directory).to eq(options[:publish])
+          end
+        end
+
+        context 'when the directory specified with `pages.publish` is included in the artifacts' do
+          let(:options) { { pages: { publish: 'foo' } } }
+
+          it 'sets the correct root directory for pages deployment' do
+            expect(service.execute[:status]).to eq(:success)
+
+            deployment = project.pages_deployments.last
+            expect(deployment.root_directory).to eq('foo')
+          end
+        end
+
+        context 'when `publish` and `pages.publish` is not specified and there is a folder named `public`' do
+          let(:file) { fixture_file_upload("spec/fixtures/pages.zip") }
+          let(:metadata_filename) { "spec/fixtures/pages.zip.meta" }
+
+          it 'creates pages_deployment and saves it in the metadata' do
+            expect(service.execute[:status]).to eq(:success)
+          end
+        end
+
+        context 'when `publish` and `pages.publish` both are specified' do
+          let(:options) { { pages: { publish: 'foo' }, publish: 'bar' } }
+
+          it 'returns an error' do
+            expect(service.execute[:status]).not_to eq(:success)
+
+            expect(GenericCommitStatus.last.description)
+              .to eq(
+                "Either the `publish` or `pages.publish` option may be present in `.gitlab-ci.yml`, but not both.")
           end
         end
 
@@ -283,7 +319,7 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
 
       context "when sha on branch was updated before deployment was uploaded" do
         before do
-          expect(subject).to receive(:create_pages_deployment).and_wrap_original do |m, *args|
+          expect(service).to receive(:create_pages_deployment).and_wrap_original do |m, *args|
             build.update!(ref: 'feature')
             m.call(*args)
           end
@@ -327,18 +363,6 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
           .to eq('The uploaded artifact size does not match the expected value')
       end
     end
-  end
-
-  context 'with ff_pages_use_open_file feature flag disabled' do
-    before do
-      stub_feature_flags(ff_pages_use_open_file: false)
-    end
-
-    it_behaves_like 'for new artifacts'
-  end
-
-  context 'with ff_pages_use_open_file feature flag enabled' do
-    it_behaves_like 'for new artifacts'
   end
 
   # this situation should never happen in real life because all new archives have sha256

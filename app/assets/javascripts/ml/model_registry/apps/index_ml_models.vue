@@ -39,6 +39,7 @@ export default {
       projectPath: this.projectPath,
       maxAllowedFileSize: this.maxAllowedFileSize,
       markdownPreviewPath: this.markdownPreviewPath,
+      canWriteModelRegistry: this.canWriteModelRegistry,
     };
   },
   props: {
@@ -146,7 +147,7 @@ export default {
     ...i18n,
   },
   sortableFields: BASE_SORT_FIELDS,
-  docHref: helpPagePath('user/project/ml/model_registry/index.md'),
+  docHref: helpPagePath('user/project/ml/model_registry/_index.md'),
   emptyState: {
     title: s__('MlModelRegistry|Import your machine learning models'),
     description: s__(
@@ -200,7 +201,6 @@ export default {
       :error-message="errorMessage"
       :is-loading="isLoading"
       :sortable-fields="$options.sortableFields"
-      can-write-model-registry
       @fetch-page="fetchPage"
     >
       <template #empty-state>

@@ -69,6 +69,22 @@ describe('Tracking', () => {
         maxLocalStorageQueueSize: MAX_LOCAL_STORAGE_QUEUE_SIZE,
       });
     });
+
+    it('does not initialize tracking if not enabled', () => {
+      jest.spyOn(Tracking, 'enabled').mockReturnValue(false);
+
+      initUserTracking();
+
+      expect(snowplowSpy).not.toHaveBeenCalled();
+    });
+
+    it('dispatches SnowplowInitialized event after initializing', () => {
+      const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
+
+      initUserTracking();
+
+      expect(dispatchEventSpy).toHaveBeenCalledWith(new Event('SnowplowInitialized'));
+    });
   });
 
   describe('initDefaultTrackers', () => {
@@ -169,6 +185,51 @@ describe('Tracking', () => {
           context: [standardContext, ...experimentContexts],
         });
       });
+    });
+
+    it('does not initialize default trackers if not enabled', () => {
+      jest.spyOn(Tracking, 'enabled').mockReturnValue(false);
+
+      initDefaultTrackers();
+
+      expect(snowplowSpy).not.toHaveBeenCalled();
+      expect(bindDocumentSpy).not.toHaveBeenCalled();
+      expect(trackLoadEventsSpy).not.toHaveBeenCalled();
+      expect(enableFormTracking).not.toHaveBeenCalled();
+      expect(setAnonymousUrlsSpy).not.toHaveBeenCalled();
+      expect(bindInternalEventDocumentSpy).not.toHaveBeenCalled();
+      expect(trackInternalLoadEventsSpy).not.toHaveBeenCalled();
+      expect(initBrowserSDKSpy).not.toHaveBeenCalled();
+    });
+
+    it('flushes pending events before other tracking methods', () => {
+      const flushPendingEventsSpy = jest.spyOn(Tracking, 'flushPendingEvents').mockImplementation();
+
+      initDefaultTrackers();
+
+      expect(flushPendingEventsSpy.mock.invocationCallOrder[0]).toBeLessThan(
+        bindDocumentSpy.mock.invocationCallOrder[0],
+      );
+      expect(flushPendingEventsSpy.mock.invocationCallOrder[0]).toBeLessThan(
+        trackLoadEventsSpy.mock.invocationCallOrder[0],
+      );
+      expect(flushPendingEventsSpy.mock.invocationCallOrder[0]).toBeLessThan(
+        bindInternalEventDocumentSpy.mock.invocationCallOrder[0],
+      );
+      expect(flushPendingEventsSpy.mock.invocationCallOrder[0]).toBeLessThan(
+        trackInternalLoadEventsSpy.mock.invocationCallOrder[0],
+      );
+      expect(flushPendingEventsSpy.mock.invocationCallOrder[0]).toBeLessThan(
+        initBrowserSDKSpy.mock.invocationCallOrder[0],
+      );
+    });
+
+    it('calls setAnonymousUrls before initializing trackers', () => {
+      initDefaultTrackers();
+
+      expect(setAnonymousUrlsSpy.mock.invocationCallOrder[0]).toBeLessThan(
+        snowplowSpy.mock.invocationCallOrder[0],
+      );
     });
   });
 });

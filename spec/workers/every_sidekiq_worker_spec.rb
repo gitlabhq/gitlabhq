@@ -25,10 +25,12 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
     worker_queues << 'default'
 
     missing_from_file = worker_queues - file_worker_queues
-    expect(missing_from_file).to be_empty, "expected #{missing_from_file.to_a.inspect} to be in Gitlab::SidekiqConfig::QUEUE_CONFIG_PATHS"
+    expect(missing_from_file).to be_empty,
+      "expected #{missing_from_file.to_a.inspect} to be in Gitlab::SidekiqConfig::QUEUE_CONFIG_PATHS"
 
     unnecessarily_in_file = file_worker_queues - worker_queues
-    expect(unnecessarily_in_file).to be_empty, "expected #{unnecessarily_in_file.to_a.inspect} not to be in Gitlab::SidekiqConfig::QUEUE_CONFIG_PATHS"
+    expect(unnecessarily_in_file).to be_empty,
+      "expected #{unnecessarily_in_file.to_a.inspect} not to be in Gitlab::SidekiqConfig::QUEUE_CONFIG_PATHS"
   end
 
   it 'has its queue or namespace in config/sidekiq_queues.yml', :aggregate_failures do
@@ -58,7 +60,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
     # Please see doc/development/sidekiq_style_guide.md#feature-categorization for more details.
     it 'has a feature_category attribute', :aggregate_failures do
       workers_without_defaults.each do |worker|
-        expect(worker.get_feature_category).to be_a(Symbol), "expected #{worker.inspect} to declare a feature_category or feature_category_not_owned!"
+        expect(worker.get_feature_category).to be_a(Symbol),
+          "expected #{worker.inspect} to declare a feature_category or feature_category_not_owned!"
       end
     end
 
@@ -71,7 +74,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
                   .reject(&:feature_category_not_owned?)
 
       workers_with_feature_categories.each do |worker|
-        expect(feature_categories).to include(worker.get_feature_category), "expected #{worker.inspect} to declare a valid feature_category, but got #{worker.get_feature_category}"
+        expect(feature_categories).to include(worker.get_feature_category),
+          "expected #{worker.inspect} to declare a valid feature_category, but got #{worker.get_feature_category}"
       end
     end
 
@@ -85,7 +89,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
                                .select { |worker| worker.get_urgency == :high }
 
       high_urgency_workers.each do |worker|
-        expect(worker.get_worker_resource_boundary).not_to eq(:memory), "#{worker.inspect} cannot be both memory-bound and high urgency"
+        expect(worker.get_worker_resource_boundary).not_to eq(:memory),
+          "#{worker.inspect} cannot be both memory-bound and high urgency"
       end
     end
 
@@ -102,13 +107,14 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
                                .select { |worker| worker.get_urgency == :high }
 
       high_urgency_workers.each do |worker|
-        expect(worker.worker_has_external_dependencies?).to be_falsey, "#{worker.inspect} cannot have both external dependencies and be high urgency"
+        expect(worker.worker_has_external_dependencies?).to be_falsey,
+          "#{worker.inspect} cannot have both external dependencies and be high urgency"
       end
     end
   end
 
-  context 'retries' do
-    let(:cronjobs)  do
+  context 'when retries' do
+    let(:cronjobs) do
       workers_without_defaults.select { |worker| worker.klass < CronjobQueue }
     end
 
@@ -165,7 +171,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Ci::PipelineArtifacts::CreateQualityReportWorker' => 3,
         'Ci::PipelineCleanupRefWorker' => 3,
         'Ci::PipelineBridgeStatusWorker' => 3,
-        'Ci::PipelineSuccessUnlockArtifactsWorker' => 3,
         'Ci::RefDeleteUnlockArtifactsWorker' => 3,
         'Ci::Refs::UnlockPreviousPipelinesWorker' => 3,
         'Ci::ResourceGroups::AssignResourceFromResourceGroupWorker' => 3,
@@ -443,6 +448,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Search::Elastic::DeleteWorker' => 3,
         'Search::Zoekt::AdjustIndicesReservedStorageBytesEventWorker' => 1,
         'Search::Zoekt::DeleteProjectEventWorker' => 1,
+        'Search::Zoekt::IndexMarkedAsReadyEventWorker' => 1,
+        'Search::Zoekt::IndexMarkAsPendingEvictionEventWorker' => 1,
         'Search::Zoekt::IndexMarkedAsToDeleteEventWorker' => 1,
         'Search::Zoekt::IndexOverWatermarkEventWorker' => 1,
         'Search::Zoekt::IndexToEvictEventWorker' => 1,
@@ -455,6 +462,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Search::Zoekt::RepoMarkedAsToDeleteEventWorker' => 1,
         'Search::Zoekt::RepoToIndexEventWorker' => 1,
         'Search::Zoekt::TaskFailedEventWorker' => 1,
+        'Search::Zoekt::UpdateIndexUsedStorageBytesEventWorker' => 1,
+        'Search::Zoekt::SaasRolloutEventWorker' => 1,
         'Security::StoreScansWorker' => 3,
         'Security::TrackSecureScansWorker' => 1,
         'ServiceDeskEmailReceiverWorker' => 3,
@@ -486,6 +495,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'VulnerabilityExports::ExportDeletionWorker' => 3,
         'VulnerabilityExports::ExportWorker' => 3,
         'VirtualRegistries::Packages::DestroyOrphanCachedResponsesWorker' => 0,
+        'VirtualRegistries::Packages::Cache::DestroyOrphanEntriesWorker' => 0,
         'WaitForClusterCreationWorker' => 3,
         'WebHookWorker' => 4,
         'WebHooks::LogExecutionWorker' => 3,

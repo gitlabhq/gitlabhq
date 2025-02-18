@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Configure GitLab running in a Docker container
 ---
 
-# Configure GitLab running in a Docker container
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This container uses the official Linux package, so you can use
 the unique configuration file `/etc/gitlab/gitlab.rb` to configure the instance.
@@ -39,7 +41,7 @@ context of a running container.
       [SMTP settings](https://docs.gitlab.com/omnibus/settings/smtp.html). The GitLab Docker image
       doesn't have an SMTP server pre-installed.
 
-   1. If desired [enable HTTPS](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
+   1. If desired [enable HTTPS](https://docs.gitlab.com/omnibus/settings/ssl/).
 
 1. Save the file and restart the container to reconfigure GitLab:
 
@@ -136,10 +138,13 @@ port `2424`:
      gitlab/gitlab-ee:<version>-ee.0
    ```
 
-   NOTE:
-   The format to publish ports is `hostPort:containerPort`. Read more in the
+   {{< alert type="note" >}}
+
+The format to publish ports is `hostPort:containerPort`. Read more in the
    Docker documentation about
    [exposing incoming ports](https://docs.docker.com/network/#published-ports).
+
+   {{< /alert >}}
 
 1. Enter the running container:
 

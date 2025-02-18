@@ -2,10 +2,9 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Use the GitLab Workflow extension for VS Code to handle common GitLab tasks directly in VS Code."
+description: Use the GitLab Workflow extension for VS Code to handle common GitLab tasks directly in VS Code.
+title: CI/CD pipelines in the VS Code extension
 ---
-
-# CI/CD pipelines in the VS Code extension
 
 If your GitLab project uses CI/CD pipelines, you can start, watch, and debug CI/CD pipelines from the
 GitLab Workflow extension for VS Code. When you work locally on a Git branch, the bottom status bar
@@ -63,7 +62,7 @@ To show alerts for your current Git branch:
 
 To view the output for a CI/CD job for your current branch:
 
-1. On the left vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
+1. On the left vertical menu bar, select **GitLab Workflow** ({{< icon name="tanuki" >}}) to display the extension sidebar.
 1. On the sidebar, expand **For current branch** to show its most recent pipeline.
 1. Select your desired job to open it in a new VS Code tab:
 

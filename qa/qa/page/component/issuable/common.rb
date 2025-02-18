@@ -21,6 +21,16 @@ module QA
             base.view 'app/assets/javascripts/related_issues/components/related_issuable_input.vue' do
               element 'add-issue-field'
             end
+
+            base.view 'app/assets/javascripts/vue_shared/issuable/show/components/issuable_header.vue' do
+              element 'issue-author'
+            end
+          end
+
+          def has_author?(author_username)
+            within_element('issue-author') do
+              has_text?(author_username)
+            end
           end
         end
       end

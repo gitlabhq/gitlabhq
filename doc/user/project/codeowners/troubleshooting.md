@@ -2,14 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Use Code Owners to define experts for your code base, and set review requirements based on file type or location."
+description: Use Code Owners to define experts for your code base, and set review requirements based on file type or location.
+title: Troubleshooting Code Owners
 ---
 
-# Troubleshooting Code Owners
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When working with Code Owners, you might encounter the following issues.
 
@@ -17,7 +19,7 @@ For more information about how the Code Owners feature handles errors, see [Erro
 
 ## Approvals do not show
 
-The [`CODEOWNERS` file](index.md#codeowners-file) must be present in the target branch before the
+The [`CODEOWNERS` file](_index.md#codeowners-file) must be present in the target branch before the
 merge request is created.
 
 Code Owner approval rules only update when the merge request is created.

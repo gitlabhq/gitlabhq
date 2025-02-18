@@ -2,13 +2,15 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Bring a demoted primary site back online
 ---
 
-# Bring a demoted primary site back online
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 After a failover, it is possible to fail back to the demoted **primary** site to
 restore your original configuration. This process consists of two steps:
@@ -16,15 +18,18 @@ restore your original configuration. This process consists of two steps:
 1. Making the old **primary** site a **secondary** site.
 1. Promoting a **secondary** site to a **primary** site.
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you have any doubts about the consistency of the data on this site, we recommend setting it up from scratch.
+
+{{< /alert >}}
 
 ## Configure the former **primary** site to be a **secondary** site
 
 Since the former **primary** site is out of sync with the current **primary** site, the first step is to bring the former **primary** site up to date. Note, deletion of data stored on disk like
 repositories and uploads is not replayed when bringing the former **primary** site back
 into sync, which may result in increased disk usage.
-Alternatively, you can [set up a new **secondary** GitLab instance](../setup/index.md) to avoid this.
+Alternatively, you can [set up a new **secondary** GitLab instance](../setup/_index.md) to avoid this.
 
 To bring the former **primary** site up to date:
 
@@ -45,20 +50,25 @@ To bring the former **primary** site up to date:
    sudo gitlab-ctl start
    ```
 
-   NOTE:
-   If you [disabled the **primary** site permanently](index.md#step-2-permanently-disable-the-primary-site),
+   {{< alert type="note" >}}
+
+If you [disabled the **primary** site permanently](_index.md#step-2-permanently-disable-the-primary-site),
    you need to undo those steps now. For distributions with systemd, such as Debian/Ubuntu/CentOS7+, you must run
    `sudo systemctl enable gitlab-runsvdir`. For distributions without systemd, such as CentOS 6, you need to install
    the GitLab instance from scratch and set it up as a **secondary** site by
-   following [Setup instructions](../setup/index.md). In this case, you don't need to follow the next step.
+   following [Setup instructions](../setup/_index.md). In this case, you don't need to follow the next step.
 
-   NOTE:
-   If you [changed the DNS records](index.md#step-4-optional-updating-the-primary-domain-dns-record)
+   {{< /alert >}}
+
+   {{< alert type="note" >}}
+
+If you [changed the DNS records](_index.md#step-4-optional-updating-the-primary-domain-dns-record)
    for this site during disaster recovery procedure you may need to
    [block all the writes to this site](planned_failover.md#prevent-updates-to-the-primary-site)
    during this procedure.
+   {{< /alert >}}
 
-1. [Set up Geo](../setup/index.md). In this case, the **secondary** site
+1. [Set up Geo](../setup/_index.md). In this case, the **secondary** site
    refers to the former **primary** site.
    1. If [PgBouncer](../../postgresql/pgbouncer.md) was enabled on the **current secondary** site
       (when it was a primary site) disable it by editing `/etc/gitlab/gitlab.rb`
@@ -66,7 +76,7 @@ To bring the former **primary** site up to date:
    1. You can then set up database replication on the **secondary** site.
 
 If you have lost your original **primary** site, follow the
-[setup instructions](../setup/index.md) to set up a new **secondary** site.
+[setup instructions](../setup/_index.md) to set up a new **secondary** site.
 
 ## Promote the **secondary** site to **primary** site
 
@@ -104,8 +114,12 @@ Use-cases:
 
 ### Skipping re-transfer of blobs or files
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352530) in GitLab 16.8 [with a flag](../../feature_flags.md) named `geo_skip_download_if_exists`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435788) in GitLab 16.9. Feature flag `geo_skip_download_if_exists` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352530) in GitLab 16.8 [with a flag](../../feature_flags.md) named `geo_skip_download_if_exists`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435788) in GitLab 16.9. Feature flag `geo_skip_download_if_exists` removed.
+
+{{< /history >}}
 
 When you add a secondary site which has preexisting file data, then the secondary Geo site will avoid re-transferring that data. This applies to:
 

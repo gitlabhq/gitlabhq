@@ -1,8 +1,17 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlBadge, GlModal, GlSprintf, GlTable } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlBadge,
+  GlDrawer,
+  GlModal,
+  GlSkeletonLoader,
+  GlSprintf,
+  GlTable,
+} from '@gitlab/ui';
 
 import containerProtectionTagRuleEmptyRulesQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.empty_rules.json';
+import containerProtectionTagRuleMaxRulesQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.max_rules.json';
 import containerProtectionTagRuleNullProjectQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.null_project.json';
 import containerProtectionTagRuleQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.json';
 import deleteContainerProtectionTagRuleMutationPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_tag_rule.mutation.graphql.json';
@@ -18,9 +27,10 @@ import {
 import waitForPromises from 'helpers/wait_for_promises';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import ContainerProtectionTagRules from '~/packages_and_registries/settings/project/components/container_protection_tag_rules.vue';
+import ContainerProtectionTagRuleForm from '~/packages_and_registries/settings/project/components/container_protection_tag_rule_form.vue';
 import getContainerProtectionTagRulesQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql';
 import deleteContainerProtectionTagRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_tag_rule.mutation.graphql';
-import { MinimumAccessLevelOptions } from '~/packages_and_registries/settings/project/constants';
+import { MinimumAccessLevelText } from '~/packages_and_registries/settings/project/constants';
 
 Vue.use(VueApollo);
 
@@ -31,11 +41,16 @@ describe('ContainerProtectionTagRules', () => {
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findDescription = () => wrapper.findByTestId('description');
   const findEmptyText = () => wrapper.findByTestId('empty-text');
+  const findMaxRulesText = () => wrapper.findByTestId('max-rules');
   const findLoader = () => wrapper.findByTestId('loading-icon');
+  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findTableLoader = () => wrapper.findByTestId('table-loading-icon');
   const findTableComponent = () => wrapper.findComponent(GlTable);
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findDrawer = () => wrapper.findComponent(GlDrawer);
+  const findDrawerTitle = () => wrapper.findComponent(GlDrawer).find('h2');
+  const findForm = () => wrapper.findComponent(ContainerProtectionTagRuleForm);
   const findModal = () => wrapper.findComponent(GlModal);
 
   const defaultProvidedValues = {
@@ -83,6 +98,7 @@ describe('ContainerProtectionTagRules', () => {
 
     it('renders card component with title', () => {
       expect(findCrudComponent().props('title')).toBe('Protected container image tags');
+      expect(findCrudComponent().props('toggleText')).toBeNull();
     });
 
     it('renders card component with description', () => {
@@ -93,6 +109,14 @@ describe('ContainerProtectionTagRules', () => {
 
     it('shows loading icon', () => {
       expect(findLoader().exists()).toBe(true);
+    });
+
+    it('shows skeleton loader', () => {
+      expect(findSkeletonLoader().exists()).toBe(true);
+    });
+
+    it('drawer is hidden', () => {
+      expect(findDrawer().props('open')).toBe(false);
     });
 
     it('hides the table', () => {
@@ -121,6 +145,7 @@ describe('ContainerProtectionTagRules', () => {
     const findTableBody = () => extendedWrapper(findTable().findAllByRole('rowgroup').at(1));
     const findTableRow = (i) => extendedWrapper(findTableBody().findAllByRole('row').at(i));
     const findTableRowCell = (i, j) => extendedWrapper(findTableRow(i).findAllByRole('cell').at(j));
+    const findTableRowButtonEdit = (i) => findTableRow(i).findByRole('button', { name: /edit/i });
     const findTableRowButtonDelete = (i) =>
       findTableRow(i).findByRole('button', { name: /delete/i });
 
@@ -132,6 +157,14 @@ describe('ContainerProtectionTagRules', () => {
 
       it('hides loading icon', () => {
         expect(findLoader().exists()).toBe(false);
+      });
+
+      it('hides skeleton loader', () => {
+        expect(findSkeletonLoader().exists()).toBe(false);
+      });
+
+      it('sets toggleText prop on CrudComponent', () => {
+        expect(findCrudComponent().props('toggleText')).toBe('Add protection rule');
       });
 
       it('shows count badge', () => {
@@ -182,24 +215,30 @@ describe('ContainerProtectionTagRules', () => {
         tagRules.forEach((protectionRule, i) => {
           expect(findTableRowCell(i, 0).text()).toBe(protectionRule.tagNamePattern);
           expect(findTableRowCell(i, 1).text()).toBe(
-            MinimumAccessLevelOptions[protectionRule.minimumAccessLevelForPush],
+            MinimumAccessLevelText[protectionRule.minimumAccessLevelForPush],
           );
           expect(findTableRowCell(i, 2).text()).toBe(
-            MinimumAccessLevelOptions[protectionRule.minimumAccessLevelForDelete],
+            MinimumAccessLevelText[protectionRule.minimumAccessLevelForDelete],
           );
         });
       });
 
       describe('column "rowActions"', () => {
-        describe('button "Delete"', () => {
+        describe.each`
+          buttonName  | buttonFinder
+          ${'Edit'}   | ${findTableRowButtonEdit}
+          ${'Delete'} | ${findTableRowButtonDelete}
+        `('button "$buttonName"', ({ buttonFinder }) => {
           it('exists in table', () => {
-            expect(findTableRowButtonDelete(0).exists()).toBe(true);
+            expect(buttonFinder(0).exists()).toBe(true);
           });
 
           describe('when button is clicked', () => {
-            it('renders the "delete container protection rule" confirmation modal', async () => {
-              await findTableRowButtonDelete(0).trigger('click');
+            beforeEach(async () => {
+              await buttonFinder(0).trigger('click');
+            });
 
+            it('renders the "delete container protection rule" confirmation modal', () => {
               const modalId = getBinding(findTableRowButtonDelete(0).element, 'gl-modal');
 
               expect(findModal().props('modal-id')).toBe(modalId);
@@ -335,6 +374,104 @@ describe('ContainerProtectionTagRules', () => {
           expect($toast.show).toHaveBeenCalledWith('Container protection rule deleted.');
         });
       });
+    });
+
+    describe.each`
+      description                                       | beforeFn                                            | title                     | toastMessage
+      ${'when `Add protection rule` button is clicked'} | ${() => findCrudComponent().vm.$emit('showForm')}   | ${'Add protection rule'}  | ${'Container protection rule created.'}
+      ${'when `Edit` button for a rule is clicked'}     | ${() => findTableRowButtonEdit(0).trigger('click')} | ${'Edit protection rule'} | ${'Container protection rule updated.'}
+    `('$description', ({ beforeFn, title, toastMessage }) => {
+      beforeEach(async () => {
+        createComponent({
+          mountFn: mountExtended,
+        });
+
+        await waitForPromises();
+        await beforeFn();
+      });
+
+      it('opens drawer', () => {
+        expect(findDrawer().props('open')).toBe(true);
+      });
+
+      it(`sets the appropriate drawer title: ${title}`, () => {
+        expect(findDrawerTitle().text()).toBe(title);
+      });
+
+      it('renders form', () => {
+        expect(findForm().exists()).toBe(true);
+      });
+
+      describe('when drawer emits `close` event', () => {
+        beforeEach(async () => {
+          await findDrawer().vm.$emit('close');
+        });
+
+        it('closes drawer', () => {
+          expect(findDrawer().props('open')).toBe(false);
+        });
+      });
+
+      describe('when form emits `cancel` event', () => {
+        beforeEach(async () => {
+          await findForm().vm.$emit('cancel');
+        });
+
+        it('closes drawer', () => {
+          expect(findDrawer().props('open')).toBe(false);
+        });
+      });
+
+      describe('when form emits `submit` event', () => {
+        it('refetches protection rules after successful graphql mutation', async () => {
+          const containerProtectionTagRuleQueryResolver = jest
+            .fn()
+            .mockResolvedValue(containerProtectionTagRuleQueryPayload);
+
+          createComponent({
+            containerProtectionTagRuleQueryResolver,
+            mountFn: mountExtended,
+          });
+
+          await waitForPromises();
+
+          expect(containerProtectionTagRuleQueryResolver).toHaveBeenCalledTimes(1);
+
+          await beforeFn();
+          await findForm().vm.$emit('submit');
+
+          expect(findDrawer().props('open')).toBe(false);
+          expect(containerProtectionTagRuleQueryResolver).toHaveBeenCalledTimes(2);
+          expect($toast.show).toHaveBeenCalledWith(toastMessage);
+        });
+      });
+    });
+  });
+
+  describe('when data is loaded & contains maximum number of tag protection rules', () => {
+    beforeEach(async () => {
+      createComponent({
+        containerProtectionTagRuleQueryResolver: jest
+          .fn()
+          .mockResolvedValue(containerProtectionTagRuleMaxRulesQueryPayload),
+      });
+      await waitForPromises();
+    });
+
+    it('hides skeleton loader', () => {
+      expect(findSkeletonLoader().exists()).toBe(false);
+    });
+
+    it('sets toggleText prop on CrudComponent to null', () => {
+      expect(findCrudComponent().props('toggleText')).toBeNull();
+    });
+
+    it('shows maximum number of rules reached text', () => {
+      expect(findMaxRulesText().text()).toBe('Maximum number of rules reached.');
+    });
+
+    it('shows count badge', () => {
+      expect(findBadge().text()).toMatchInterpolatedText('5 of 5');
     });
   });
 

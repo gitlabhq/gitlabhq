@@ -26,7 +26,8 @@ class TodosFinder
   NONE = '0'
 
   TODO_TYPES = Set.new(
-    %w[Commit Issue WorkItem MergeRequest DesignManagement::Design AlertManagement::Alert Namespace Project Key]
+    %w[Commit Issue WorkItem MergeRequest DesignManagement::Design AlertManagement::Alert Namespace Project Key
+      WikiPage::Meta]
   ).freeze
 
   attr_accessor :current_user, :params
@@ -52,7 +53,7 @@ class TodosFinder
     items = by_action(items)
     items = by_author(items)
     items = by_state(items)
-    items = by_snoozed_status(items) if Feature.enabled?(:todos_snoozing, current_user)
+    items = by_snoozed_status(items)
     items = by_target_id(items)
     items = by_types(items)
     items = by_group(items)
@@ -148,21 +149,26 @@ class TodosFinder
   end
 
   def sort(items)
-    if params[:sort]
-      # For users with a lot of todos, sorting by created_at can be unusably slow.
-      # Given that todos have sequential ids, we can simply sort by them instead
-      sort_by = case params[:sort]
-                when :created_desc
-                  :id_desc
-                when :created_asc
-                  :id_asc
-                else
-                  params[:sort]
-                end
-      items.sort_by_attribute(sort_by)
-    else
-      items.order_id_desc
-    end
+    sort_by = case params[:sort]
+              # If no sort order is provided, we default to sorting by ID to bypass the custom sort
+              # by snoozed_until and created_at which could break some SQL queries.
+              when nil
+                :id_desc
+              when :created_desc
+                use_snooze_custom_sort? ? :snoozed_and_creation_dates_desc : :id_desc
+              when :created_asc
+                use_snooze_custom_sort? ? :snoozed_and_creation_dates_asc : :id_asc
+              else
+                params[:sort]
+              end
+
+    items.sort_by_attribute(sort_by)
+  end
+
+  # We only need to surface snoozed to-dos when querying pending items. The special sort order is
+  # unnecessary in the `Done` and `All` tabs where we can simply sort by ID (= creation date).
+  def use_snooze_custom_sort?
+    Feature.enabled?(:snoozed_todos_sort_order, current_user) && filter_pending_only?
   end
 
   def by_action(items)

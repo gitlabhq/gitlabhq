@@ -1372,7 +1372,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   end
 
   describe 'gitlab:db:reset_as_non_superuser' do
-    let(:connection_pool) { instance_double(ActiveRecord::ConnectionAdapters::ConnectionPool ) }
+    let(:connection_pool) { instance_double(ActiveRecord::ConnectionAdapters::ConnectionPool) }
     let(:connection) { instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) }
     let(:configurations) { double(ActiveRecord::DatabaseConfigurations) }
     let(:configuration) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, env_name: 'test', name: 'main') }

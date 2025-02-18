@@ -27,6 +27,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    error: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     ...mapState(['query', 'groupInitialJson', 'projectInitialJson', 'repositoryRef']),
@@ -75,6 +80,9 @@ export default {
         this?.resultsTotal ?? 0,
       );
     },
+    hasError() {
+      return Boolean(this.error);
+    },
   },
   methods: {
     handleInput(selected) {
@@ -98,7 +106,7 @@ export default {
       <template #term
         ><code>{{ query.search }}</code></template
       ><template #groupNameLink
-        ><gl-link :href="`${getBaseURL}/${groupInitialJson.name}`">{{
+        ><gl-link :href="`${getBaseURL}/${groupInitialJson.full_path}`">{{
           groupInitialJson.full_name
         }}</gl-link></template
       >
@@ -118,7 +126,7 @@ export default {
         />
       </template>
       <template #ProjectWithGroupPathLink
-        ><gl-link :href="`${getBaseURL}/${groupInitialJson.name}/${projectInitialJson.name}`">{{
+        ><gl-link :href="`${getBaseURL}/${projectInitialJson.full_path}`">{{
           projectInitialJson.name_with_namespace
         }}</gl-link></template
       >

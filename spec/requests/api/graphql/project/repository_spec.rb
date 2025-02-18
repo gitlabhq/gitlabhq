@@ -32,7 +32,7 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
     it 'returns nil' do
       post_graphql(query, current_user: current_user)
 
-      expect(graphql_data['project']).to be(nil)
+      expect(graphql_data['project']).to be_nil
     end
   end
 

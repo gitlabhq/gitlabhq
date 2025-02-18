@@ -13,9 +13,6 @@ instrumentation_class: DistinctCountProjectsWithExpirationPolicyMetric
 options:
   enabled: true
   cadence: 14d
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

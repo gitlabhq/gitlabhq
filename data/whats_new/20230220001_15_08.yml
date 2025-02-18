@@ -12,9 +12,9 @@
   image_url: https://about.gitlab.com/images/15_8/manage-block-external-status-checks.png
   published_at: 2023-01-22
   release: 15.8
-- name: SCIM support for self-managed GitLab
+- name: SCIM support for GitLab Self-Managed
   description: |  # Do not modify this line, instead modify the lines below.
-    Self-managed GitLab now supports the open standard System for Cross-domain Identity Management (SCIM), which allows you to automatically:
+    GitLab Self-Managed now supports the open standard System for Cross-domain Identity Management (SCIM), which allows you to automatically:
 
         - Create users.
         - Remove users by deactivating their SCIM identities.
@@ -38,16 +38,16 @@
 
     - You don't need to manually export each project to a file and then import all those export files to a new location. Now all projects
       within a top-level group are migrated automatically, making your work more efficient.
-    - When migrating from self-managed GitLab to GitLab.com, user associations (such as comment author) are not changed to the user who is importing the
+    - When migrating from GitLab Self-Managed to GitLab.com, user associations (such as comment author) are not changed to the user who is importing the
       projects. Migration using direct transfer maps users and their contributions correctly, provided
       [a few conditions are met](https://docs.gitlab.com/ee/user/group/import/#preparation).
 
-    This feature is available on GitLab.com. You can migrate from a self-managed GitLab to GitLab.com
+    This feature is available on GitLab.com. You can migrate from a GitLab Self-Managed to GitLab.com
     right now!
 
     To enable it on GitLab self-managed instances, see the linked documentation.
 
-    Learn more about migrating GitLab projects by direct transfer Beta and what’s coming next in our recent [blog post](https://about.gitlab.com/blog/2023/01/18/try-out-new-way-to-migrate-projects/).
+    Learn more about migrating GitLab projects by direct transfer Beta and what's coming next in our recent [blog post](https://about.gitlab.com/blog/2023/01/18/try-out-new-way-to-migrate-projects/).
   stage: Foundations
   self-managed: false
   gitlab-com: true

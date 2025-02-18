@@ -15,9 +15,6 @@ events:
 - name: expand_merge_request_widget
   filter:
     label: terraform
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

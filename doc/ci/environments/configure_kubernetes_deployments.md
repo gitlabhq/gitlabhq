@@ -2,24 +2,32 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Configure Kubernetes deployments (deprecated)
 ---
 
-# Configure Kubernetes deployments (deprecated)
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-WARNING:
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
-If you are deploying to a [Kubernetes cluster](../../user/infrastructure/clusters/index.md)
+{{< /alert >}}
+
+If you are deploying to a [Kubernetes cluster](../../user/infrastructure/clusters/_index.md)
 associated with your project, you can configure these deployments from your
 `.gitlab-ci.yml` file.
 
-NOTE:
+{{< alert type="note" >}}
+
 Kubernetes configuration isn't supported for Kubernetes clusters
 [managed by GitLab](../../user/project/clusters/gitlab_managed_clusters.md).
+
+{{< /alert >}}
 
 The following configuration options are supported:
 

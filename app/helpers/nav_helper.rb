@@ -23,15 +23,11 @@ module NavHelper
   end
 
   def page_gutter_class
-    merge_request_sidebar = current_controller?('merge_requests')
-    work_item_epic_page = current_controller?('epics') && @group.work_item_epics_enabled?
-    skip_right_sidebar_classes = merge_request_sidebar || work_item_epic_page
-
     if (page_has_markdown? || current_path?('projects/merge_requests#diffs')) && !current_controller?('conflicts')
       if cookies[:collapsed_gutter] == 'true'
-        ["page-gutter", ('right-sidebar-collapsed' unless skip_right_sidebar_classes).to_s]
+        ["page-gutter", ('right-sidebar-collapsed' unless skip_right_sidebar_classes?).to_s]
       else
-        ["page-gutter", ('right-sidebar-expanded' unless skip_right_sidebar_classes).to_s]
+        ["page-gutter", ('right-sidebar-expanded' unless skip_right_sidebar_classes?).to_s]
       end
     elsif current_path?('jobs#show')
       %w[page-gutter build-sidebar right-sidebar-expanded]
@@ -82,6 +78,25 @@ module NavHelper
     end
 
     links
+  end
+
+  def merge_request_sidebar?
+    current_controller?('merge_requests')
+  end
+
+  def work_item_epic_page?
+    current_controller?('epics') && @group.work_item_epics_enabled?
+  end
+
+  def new_issue_look?
+    current_controller?('issues') &&
+      current_user&.user_preference&.use_work_items_view &&
+      !@issue&.work_item_type&.incident? &&
+      !@issue&.from_service_desk?
+  end
+
+  def skip_right_sidebar_classes?
+    merge_request_sidebar? || work_item_epic_page? || new_issue_look?
   end
 end
 

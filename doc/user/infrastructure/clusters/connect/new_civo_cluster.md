@@ -2,14 +2,13 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Create a Civo Kubernetes cluster
 ---
-
-# Create a Civo Kubernetes cluster
 
 Every new Civo account receives [$250 in credit](https://dashboard.civo.com/signup) to get started with the GitLab integration with Civo Kubernetes. You can also use a marketplace app to install GitLab on your Civo Kubernetes cluster.
 
 Learn how to create a new cluster on Civo Kubernetes through
-[Infrastructure as Code (IaC)](../../index.md). This process uses the Civo
+[Infrastructure as Code (IaC)](../../_index.md). This process uses the Civo
 and Kubernetes Terraform providers to create Civo Kubernetes clusters. You connect the clusters to GitLab
 by using the GitLab agent for Kubernetes.
 
@@ -94,7 +93,7 @@ After configuring your project, manually trigger the provisioning of your cluste
 1. On the left sidebar, select **Build > Pipelines**.
 1. Select **New pipeline**.
 1. Select **Run pipeline**, and then select the newly created pipeline from the list.
-1. Next to the **deploy** job, select **Manual action** (**{status_manual}**).
+1. Next to the **deploy** job, select **Manual action** ({{< icon name="status_manual" >}}).
 
 When the pipeline finishes successfully, you can see your new cluster:
 
@@ -110,7 +109,7 @@ After you provision the cluster, it is connected to GitLab and is ready for depl
 1. On the left sidebar, select **Operate > Kubernetes clusters**.
 1. In the list, view the **Connection status** column.
 
-For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../index.md).
+For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../_index.md).
 
 ## Remove the cluster
 
@@ -119,7 +118,7 @@ A cleanup job is included in your pipeline by default.
 To remove all created resources:
 
 1. On the left sidebar, select **Build > Pipelines**, and then select the most recent pipeline.
-1. Next to the **destroy-environment** job, select **Manual action** (**{status_manual}**).
+1. Next to the **destroy-environment** job, select **Manual action** ({{< icon name="status_manual" >}}).
 
 ## Civo support
 

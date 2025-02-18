@@ -2,9 +2,8 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting project import and export
 ---
-
-# Troubleshooting project import and export
 
 If you are having trouble with import or export, use a Rake task to enable debug mode:
 
@@ -73,7 +72,7 @@ project files on disk.
 ## Import succeeds with `Total number of not imported relations: XX` message
 
 If you receive a `Total number of not imported relations: XX` message, and issues
-aren't created during the import, check [exceptions_json.log](../logs/index.md#exceptions_jsonlog).
+aren't created during the import, check [exceptions_json.log](../logs/_index.md#exceptions_jsonlog).
 You might see an error like `N is out of range for ActiveModel::Type::Integer with limit 4 bytes`,
 where `N` is the integer exceeding the 4-byte integer limit. If that's the case, you
 are likely hitting the issue with rebalancing of `relative_position` field of the issues.

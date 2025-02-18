@@ -2,9 +2,8 @@
 stage: none
 group: Engineering Productivity
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Software design guides
 ---
-
-# Software design guides
 
 ## Use ubiquitous language instead of CRUD terminology
 
@@ -193,7 +192,7 @@ In exceptional cases, we may need to add a new bounded context to the list. This
 
    - Existing workers would be already in the RuboCop TODO file so they do not raise offenses. However, they should
      also be moved into the bounded context whenever possible.
-     Follow the Sidekiq [renaming worker](../development/sidekiq/compatibility_across_updates.md#renaming-worker-classes) guide.
+     Follow the Sidekiq [renaming worker](sidekiq/compatibility_across_updates.md#renaming-worker-classes) guide.
 
 1. **We are renaming a feature category and the `config/bounded_contexts.yml` references that. Is it safe to update?**
 

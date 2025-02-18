@@ -13,6 +13,7 @@ import {
   MSG_MR_IM_REVIEWER,
   MSG_MR_IVE_CREATED,
   MSG_IN_ALL_GITLAB,
+  MSG_MR_IM_WORKING_ON,
 } from '~/vue_shared/global_search/constants';
 
 import {
@@ -106,6 +107,20 @@ export const MOCK_DEFAULT_SEARCH_OPTIONS = [
   {
     text: MSG_MR_IVE_CREATED,
     href: `${MOCK_MR_PATH}/?author_username=${MOCK_USERNAME}`,
+  },
+];
+export const MOCK_DASHBOARD_FLAG_ENABLED_SEARCH_OPTIONS = [
+  {
+    text: MSG_ISSUES_ASSIGNED_TO_ME,
+    href: `${MOCK_ISSUE_PATH}/?assignee_username=${MOCK_USERNAME}`,
+  },
+  {
+    text: MSG_ISSUES_IVE_CREATED,
+    href: `${MOCK_ISSUE_PATH}/?author_username=${MOCK_USERNAME}`,
+  },
+  {
+    text: MSG_MR_IM_WORKING_ON,
+    href: MOCK_MR_PATH,
   },
 ];
 export const MOCK_SCOPED_SEARCH_OPTIONS_DEF = [

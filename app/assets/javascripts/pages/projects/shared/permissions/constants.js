@@ -46,13 +46,18 @@ export const CVE_ID_REQUEST_BUTTON_I18N = {
 };
 
 export const modelExperimentsHelpPath = helpPagePath(
-  'user/project/ml/experiment_tracking/index.md',
+  'user/project/ml/experiment_tracking/_index.md',
 );
 
-export const modelRegistryHelpPath = helpPagePath('user/project/ml/model_registry/index.md');
+export const modelRegistryHelpPath = helpPagePath('user/project/ml/model_registry/_index.md');
+
+export const extendedPratExpiryWebhooksExecuteHelpPath = helpPagePath(
+  'user/project/settings/_index.md',
+  { anchor: 'add-additional-webhook-triggers-for-project-access-token-expiration' },
+);
 
 export const duoHelpPath = helpPagePath('user/ai_features');
-export const amazonQHelpPath = helpPagePath('user/duo_amazon_q/index.md');
+export const amazonQHelpPath = helpPagePath('user/duo_amazon_q/_index.md');
 
 export const pipelineExecutionPoliciesHelpPath = helpPagePath(
   'user/application_security/policies/pipeline_execution_policies',

@@ -2,9 +2,8 @@
 stage: Monitor
 group: Analytics Instrumentation
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Metric lifecycle
 ---
-
-# Metric lifecycle
 
 The following guidelines explain the steps to follow at each stage of a metric's lifecycle.
 
@@ -14,8 +13,11 @@ Follow the [metrics instrumentation](metrics_instrumentation.md) guide.
 
 ## Change an existing metric
 
-WARNING:
+{{< alert type="warning" >}}
+
 We want to **PREVENT** changes to the calculation logic or important attributes on any metric as this invalidates comparisons of the same metric across different versions of GitLab.
+
+{{< /alert >}}
 
 If you change a metric, you have to consider that not all instances of GitLab are running on the newest version. Old instances will still report the old version of the metric.
 Additionally, a metric's reported numbers are primarily interesting compared to previously reported numbers.
@@ -54,7 +56,7 @@ Currently, the [Metrics Dictionary](https://metrics.gitlab.com/) is built automa
    - Set `milestone_removed:` to the number of the
      milestone in which the metric was removed.
 
-   Do not remove the metric's YAML definition altogether. Some self-managed instances might not immediately update to the latest version of GitLab, and
+   Do not remove the metric's YAML definition altogether. Some GitLab Self-Managed instances might not immediately update to the latest version of GitLab, and
    therefore continue to report the removed metric. The Analytics Instrumentation team requires a record of all removed metrics to identify and filter them.
 
 ## Group name changes

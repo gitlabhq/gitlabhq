@@ -1,0 +1,22 @@
+---
+key_path: redis_hll_counters.pipeline_authoring.ci_interpolation_users
+description: Count of unique users who are using interpolation in their CI
+product_group: pipeline_authoring
+value_type: number
+status: active
+milestone: "16.0"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118236
+time_frame:
+- 28d
+- 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+performance_indicator_type: []
+tiers:
+- free
+- premium
+- ultimate
+options:
+  events:
+    - ci_interpolation_users

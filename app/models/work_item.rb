@@ -5,7 +5,8 @@ class WorkItem < Issue
 
   COMMON_QUICK_ACTIONS_COMMANDS = [
     :title, :reopen, :close, :cc, :tableflip, :shrug, :type, :promote_to, :checkin_reminder,
-    :subscribe, :unsubscribe, :confidential, :award, :react, :move, :clone
+    :subscribe, :unsubscribe, :confidential, :award, :react, :move, :clone, :copy_metadata,
+    :duplicate, :promote_to_incident
   ].freeze
 
   self.table_name = 'issues'
@@ -17,11 +18,6 @@ class WorkItem < Issue
 
   has_one :parent_link, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_id
   has_one :work_item_parent, through: :parent_link, class_name: 'WorkItem'
-  has_one :dates_source,
-    class_name: 'WorkItems::DatesSource',
-    foreign_key: 'issue_id',
-    inverse_of: :work_item,
-    autosave: true
   has_one :weights_source, class_name: 'WorkItems::WeightsSource'
 
   has_many :child_links, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_parent_id
@@ -116,6 +112,16 @@ class WorkItem < Issue
     override :related_link_class
     def related_link_class
       WorkItems::RelatedWorkItemLink
+    end
+
+    def sync_callback_class(association_name)
+      ::WorkItems::DataSync::NonWidgets.const_get(association_name.to_s.camelcase, false)
+    rescue NameError
+      nil
+    end
+
+    def non_widgets
+      [:related_vulnerabilities, :pending_escalations]
     end
   end
 

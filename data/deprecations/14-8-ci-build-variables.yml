@@ -4,7 +4,7 @@
   breaking_change: true
   reporter: dhershkovitch
   body: |
-    The predefined CI/CD variables that start with `CI_BUILD_*` were deprecated in GitLab 9.0, and will be removed in GitLab 16.0. If you still use these variables, be sure to change to the replacement [predefined variables](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html) which are functionally identical:
+    The predefined CI/CD variables that start with `CI_BUILD_*` were deprecated in GitLab 9.0, and will be removed in GitLab 16.0. If you still use these variables, be sure to change to the replacement [predefined variables](https://docs.gitlab.com/ci/variables/predefined_variables/) which are functionally identical:
 
     | Removed variable      | Replacement variable    |
     | --------------------- |------------------------ |

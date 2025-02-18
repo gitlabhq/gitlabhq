@@ -6,7 +6,8 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Use lowercase for the anchor link."
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#anchor-links
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#anchor-links
+vocab: false
 level: error
 scope: raw
 raw:

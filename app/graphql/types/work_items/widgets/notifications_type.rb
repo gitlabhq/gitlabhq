@@ -10,7 +10,7 @@ module Types
         graphql_name 'WorkItemWidgetNotifications'
         description 'Represents the notifications widget'
 
-        implements Types::WorkItems::WidgetInterface
+        implements ::Types::WorkItems::WidgetInterface
 
         field :subscribed, GraphQL::Types::Boolean,
           null: false,

@@ -46,8 +46,8 @@ export const initSecurityConfiguration = (el) => {
       containerScanningForRegistryEnabled,
       secretDetectionConfigurationPath,
       ...parseBooleanDataAttributes(el, [
-        'preReceiveSecretDetectionAvailable',
-        'preReceiveSecretDetectionEnabled',
+        'secretPushProtectionAvailable',
+        'secretPushProtectionEnabled',
         'userIsProjectAdmin',
       ]),
     },

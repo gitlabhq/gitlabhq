@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: CI/CD variables
 ---
-
-# CI/CD variables
 
 Use CI/CD variables to set up the Auto DevOps domain, provide a custom
 Helm chart, or scale your application.
@@ -22,7 +21,7 @@ Use these variables to customize and deploy your build.
 | `AUTO_BUILD_IMAGE_VERSION`              | Customize the image version used for the `build` job. See [list of versions](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image/-/releases). |
 | `AUTO_DEPLOY_IMAGE_VERSION`             | Customize the image version used for Kubernetes deployment jobs. See [list of versions](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/releases). |
 | `AUTO_DEVOPS_ATOMIC_RELEASE`            | Auto DevOps uses [`--atomic`](https://v2.helm.sh/docs/helm/#options-43) for Helm deployments by default. Set this variable to `false` to disable the use of `--atomic` |
-| `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`   | The builder used when building with Cloud Native Buildpacks. The default builder is `heroku/buildpacks:18`. [More details](stages.md#auto-build-using-cloud-native-buildpacks). |
+| `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`   | The builder used when building with Cloud Native Buildpacks. The default builder is `heroku/buildpacks:22`. [More details](stages.md#auto-build-using-cloud-native-buildpacks). |
 | `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS`    | Extra arguments to be passed to the `docker build` command. Using quotes doesn't prevent word splitting. [More details](customize.md#pass-arguments-to-docker-build). |
 | `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` | A [comma-separated list of CI/CD variable names](customize.md#forward-cicd-variables-to-the-build-environment) to be forwarded to the build environment (the buildpack builder or `docker build`). |
 | `AUTO_DEVOPS_BUILD_IMAGE_CNB_PORT`      | In GitLab 15.0 and later, port exposed by the generated Docker image. Set to `false` to prevent exposing any ports. Defaults to `5000`. |
@@ -68,8 +67,11 @@ Use these variables to customize and deploy your build.
 
 ## Database variables
 
-WARNING:
+{{< alert type="warning" >}}
+
 From [GitLab 16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/343988), `POSTGRES_ENABLED` is no longer set by default.
+
+{{< /alert >}}
 
 Use these variables to integrate CI/CD with PostgreSQL databases.
 
@@ -80,7 +82,7 @@ Use these variables to integrate CI/CD with PostgreSQL databases.
 | `POSTGRES_ENABLED`                      | Whether PostgreSQL is enabled. Set to `true` to enable the automatic deployment of PostgreSQL. |
 | `POSTGRES_USER`                         | The PostgreSQL user. Defaults to `user`. Set it to use a custom username. |
 | `POSTGRES_PASSWORD`                     | The PostgreSQL password. Defaults to `testing-password`. Set it to use a custom password. |
-| `POSTGRES_DB`                           | The PostgreSQL database name. Defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/index.md#predefined-cicd-variables). Set it to use a custom database name. |
+| `POSTGRES_DB`                           | The PostgreSQL database name. Defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/_index.md#predefined-cicd-variables). Set it to use a custom database name. |
 | `POSTGRES_VERSION`                      | Tag for the [`postgres` Docker image](https://hub.docker.com/_/postgres) to use. Defaults to `9.6.16` for tests and deployments. If `AUTO_DEVOPS_POSTGRES_CHANNEL` is set to `1`, deployments uses the default version `9.6.2`. |
 | `POSTGRES_HELM_UPGRADE_VALUES_FILE`     | When using [auto-deploy-image v2](upgrading_auto_deploy_dependencies.md), this variable allows the `helm upgrade` values file for PostgreSQL to be overridden. Defaults to `.gitlab/auto-deploy-postgres-values.yaml`. |
 | `POSTGRES_HELM_UPGRADE_EXTRA_ARGS`      | When using [auto-deploy-image v2](upgrading_auto_deploy_dependencies.md), this variable allows extra PostgreSQL options in `helm upgrade` commands when deploying the application. Using quotes doesn't prevent word splitting. |
@@ -93,7 +95,7 @@ Use these variables to integrate CI/CD with PostgreSQL databases.
 
 | **Job name**                           | **CI/CD variable**              | **GitLab version**    | **Description** |
 |----------------------------------------|---------------------------------|-----------------------|-----------------|
-| `.fuzz_base`                           | `COVFUZZ_DISABLED`              |                       | [Read more](../../user/application_security/coverage_fuzzing/index.md) about how `.fuzz_base` provide capability for your own jobs. The job isn't created if the value is `"true"`. |
+| `.fuzz_base`                           | `COVFUZZ_DISABLED`              |                       | [Read more](../../user/application_security/coverage_fuzzing/_index.md) about how `.fuzz_base` provide capability for your own jobs. The job isn't created if the value is `"true"`. |
 | `apifuzzer_fuzz`                       | `API_FUZZING_DISABLED`          |                       | The job isn't created if the value is `"true"`. |
 | `build`                                | `BUILD_DISABLED`                |                       | If the variable is present, the job isn't created. |
 | `build_artifact`                       | `BUILD_DISABLED`                |                       | If the variable is present, the job isn't created. |
@@ -197,12 +199,15 @@ limitations with the Auto DevOps scripting environment.
 
 Add replica variables when you want to scale your deployments:
 
-1. Add a replica variable as a [project CI/CD variable](../../ci/variables/index.md#for-a-project).
+1. Add a replica variable as a [project CI/CD variable](../../ci/variables/_index.md#for-a-project).
 1. To scale your application, redeploy it.
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    Do not scale your application using Kubernetes directly. Helm might not detect the change,
    and subsequent deployments with Auto DevOps can undo your changes.
+
+   {{< /alert >}}
 
 ### Custom replica variables
 
@@ -264,23 +269,29 @@ You can also enable manual deployment in your [project settings](requirements.md
 
 ## Deploy policy for canary environments
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use a [canary environment](../../user/project/canary_deployments.md) before
 deploying any changes to production.
 
-If you set `CANARY_ENABLED`, GitLab creates two [manual jobs](../../ci/pipelines/index.md#add-manual-interaction-to-your-pipeline):
+If you set `CANARY_ENABLED`, GitLab creates two [manual jobs](../../ci/pipelines/_index.md#add-manual-interaction-to-your-pipeline):
 
 - `canary` - Deploys the application to the canary environment.
 - `production_manual` - Deploys the application to production.
 
 ## Incremental rollout to production
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use an incremental rollout to continuously deploy your application,
 starting with only a few pods. You can increase the number of pods
@@ -327,9 +338,12 @@ With `INCREMENTAL_ROLLOUT_MODE` set to `manual` and with `STAGING_ENABLED`:
 
 ## Timed incremental rollout to production
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use a timed incremental rollout to continuously deploy your application, starting with
 only a few pods.

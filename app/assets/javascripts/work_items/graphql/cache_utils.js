@@ -5,16 +5,18 @@ import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { issuesListClient } from '~/issues/list';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { getBaseURL } from '~/lib/utils/url_utility';
+import { getBaseURL, getParameterByName } from '~/lib/utils/url_utility';
 import { convertEachWordToTitleCase } from '~/lib/utils/text_utility';
 import { getDraft, clearDraft } from '~/lib/utils/autosave';
+import { findWidget } from '~/issues/list/utils';
 import {
   findHierarchyWidgets,
   findHierarchyWidgetChildren,
+  findNotesWidget,
+  getNewWorkItemAutoSaveKey,
   isNotesWidget,
   newWorkItemFullPath,
   newWorkItemId,
-  getNewWorkItemAutoSaveKey,
 } from '../utils';
 import {
   WIDGET_TYPE_ASSIGNEES,
@@ -40,8 +42,7 @@ import workItemByIidQuery from './work_item_by_iid.query.graphql';
 import workItemByIdQuery from './work_item_by_id.query.graphql';
 import getWorkItemTreeQuery from './work_item_tree.query.graphql';
 
-const getNotesWidgetFromSourceData = (draftData) =>
-  draftData?.workspace?.workItem?.widgets.find(isNotesWidget);
+const getNotesWidgetFromSourceData = (draftData) => findNotesWidget(draftData?.workspace?.workItem);
 
 const updateNotesWidgetDataInDraftData = (draftData, notesWidget) => {
   const noteWidgetIndex = draftData.workspace.workItem.widgets.findIndex(isNotesWidget);
@@ -52,13 +53,12 @@ const updateNotesWidgetDataInDraftData = (draftData, notesWidget) => {
  * Work Item note create subscription update query callback
  *
  * @param currentNotes
- * @param subscriptionData
+ * @param newNote
  */
-export const updateCacheAfterCreatingNote = (currentNotes, subscriptionData) => {
-  if (!subscriptionData.data?.workItemNoteCreated) {
+export const updateCacheAfterCreatingNote = (currentNotes, newNote) => {
+  if (!newNote) {
     return currentNotes;
   }
-  const newNote = subscriptionData.data.workItemNoteCreated;
 
   return produce(currentNotes, (draftData) => {
     const notesWidget = getNotesWidgetFromSourceData(draftData);
@@ -209,6 +209,7 @@ export const addHierarchyChildren = ({ cache, id, workItem, childrenIds }) => {
   cache.writeQuery({
     ...queryArgs,
     data: produce(sourceData, (draftState) => {
+      const widget = findHierarchyWidgets(draftState?.workItem.widgets);
       const newChildren = findHierarchyWidgetChildren(workItem);
 
       const existingChildren = findHierarchyWidgetChildren(draftState?.workItem);
@@ -224,6 +225,8 @@ export const addHierarchyChildren = ({ cache, id, workItem, childrenIds }) => {
           existingChildren.unshift(item);
         }
       }
+      widget.hasChildren = childrenToAdd?.length > 0;
+      widget.count += childrenToAdd.length;
     }),
   });
 };
@@ -303,6 +306,8 @@ export const setNewWorkItemCache = async (
   workItemType,
   workItemTypeId,
   workItemTypeIconName,
+  workItemTitle = '',
+  workItemDescription = '',
   // eslint-disable-next-line max-params
 ) => {
   const workItemAttributesWrapperOrder = [
@@ -333,9 +338,21 @@ export const setNewWorkItemCache = async (
 
   const widgets = [];
 
+  const autosaveKey = getNewWorkItemAutoSaveKey(fullPath, workItemType);
+  const getStorageDraftString = getDraft(autosaveKey);
+  const draftData = JSON.parse(getDraft(autosaveKey));
+
+  const draftTitle = draftData?.workspace?.workItem?.title || '';
+  const draftDescriptionWidget =
+    findWidget(WIDGET_TYPE_DESCRIPTION, draftData?.workspace?.workItem) || {};
+  const draftDescription = draftDescriptionWidget?.description || null;
+  const isWorkItemToResolveDiscussion = getParameterByName(
+    'merge_request_to_resolve_discussions_of',
+  );
+
   widgets.push({
     type: WIDGET_TYPE_DESCRIPTION,
-    description: null,
+    description: isWorkItemToResolveDiscussion ? workItemDescription : draftDescription,
     descriptionHtml: '',
     lastEditedAt: null,
     lastEditedBy: null,
@@ -510,12 +527,6 @@ export const setNewWorkItemCache = async (
 
   const newWorkItemPath = newWorkItemFullPath(fullPath, workItemType);
 
-  const autosaveKey = getNewWorkItemAutoSaveKey(fullPath, workItemType);
-
-  const getStorageDraftString = getDraft(autosaveKey);
-
-  const draftData = JSON.parse(getDraft(autosaveKey));
-
   // get the widgets stored in draft data
   const draftDataWidgetTypes = map(draftData?.workspace?.workItem?.widgets, 'type') || [];
   const freshWidgetTypes = map(widgets, 'type') || [];
@@ -544,63 +555,63 @@ export const setNewWorkItemCache = async (
       fullPath: newWorkItemPath,
       iid: NEW_WORK_ITEM_IID,
     },
-    data: isValidDraftData
-      ? { ...draftData }
-      : {
-          workspace: {
+    data: {
+      workspace: {
+        id: newWorkItemPath,
+        workItem: {
+          id: newWorkItemId(workItemType),
+          iid: NEW_WORK_ITEM_IID,
+          archived: false,
+          title: isWorkItemToResolveDiscussion ? workItemTitle : draftTitle,
+          state: 'OPEN',
+          description: null,
+          confidential: false,
+          createdAt: null,
+          updatedAt: null,
+          closedAt: null,
+          webUrl: `${baseURL}/groups/gitlab-org/-/work_items/new`,
+          reference: '',
+          createNoteEmail: null,
+          project: null,
+          namespace: {
             id: newWorkItemPath,
-            workItem: {
-              id: newWorkItemId(workItemType),
-              iid: NEW_WORK_ITEM_IID,
-              archived: false,
-              title: '',
-              state: 'OPEN',
-              description: null,
-              confidential: false,
-              createdAt: null,
-              updatedAt: null,
-              closedAt: null,
-              webUrl: `${baseURL}/groups/gitlab-org/-/work_items/new`,
-              reference: '',
-              createNoteEmail: null,
-              project: null,
-              namespace: {
-                id: newWorkItemPath,
-                fullPath,
-                name: newWorkItemPath,
-                __typename: 'Namespace',
-              },
-              author: {
-                id: currentUserId,
-                avatarUrl: gon?.current_user_avatar_url,
-                username: gon?.current_username,
-                name: gon?.current_user_fullname,
-                webUrl: `${baseURL}/${gon?.current_username}`,
-                webPath: `/${gon?.current_username}`,
-                __typename: 'UserCore',
-              },
-              workItemType: {
-                id: workItemTypeId || 'mock-work-item-type-id',
-                name: workItemTitleCase,
-                iconName: workItemTypeIconName,
-                __typename: 'WorkItemType',
-              },
-              userPermissions: {
-                deleteWorkItem: true,
-                updateWorkItem: true,
-                adminParentLink: true,
-                setWorkItemMetadata: true,
-                createNote: true,
-                adminWorkItemLink: true,
-                markNoteAsInternal: true,
-                __typename: 'WorkItemPermissions',
-              },
-              widgets,
-              __typename: 'WorkItem',
-            },
+            fullPath,
+            name: newWorkItemPath,
+            fullName: newWorkItemPath,
             __typename: 'Namespace',
           },
+          author: {
+            id: currentUserId,
+            avatarUrl: gon?.current_user_avatar_url,
+            username: gon?.current_username,
+            name: gon?.current_user_fullname,
+            webUrl: `${baseURL}/${gon?.current_username}`,
+            webPath: `/${gon?.current_username}`,
+            __typename: 'UserCore',
+          },
+          workItemType: {
+            id: workItemTypeId || 'mock-work-item-type-id',
+            name: workItemTitleCase,
+            iconName: workItemTypeIconName,
+            __typename: 'WorkItemType',
+          },
+          userPermissions: {
+            deleteWorkItem: true,
+            updateWorkItem: true,
+            adminParentLink: true,
+            setWorkItemMetadata: true,
+            createNote: true,
+            adminWorkItemLink: true,
+            markNoteAsInternal: true,
+            reportSpam: true,
+            __typename: 'WorkItemPermissions',
+          },
+          widgets,
+          __typename: 'WorkItem',
         },
+        __typename: 'Namespace',
+      },
+    },
   });
 };
 
@@ -612,6 +623,7 @@ export const optimisticUserPermissions = {
   createNote: false,
   adminWorkItemLink: false,
   markNoteAsInternal: false,
+  reportSpam: false,
   __typename: 'WorkItemPermissions',
 };
 

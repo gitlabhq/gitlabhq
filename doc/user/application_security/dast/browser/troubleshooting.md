@@ -1,11 +1,10 @@
 ---
+type: reference, howto
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
+title: Troubleshooting
 ---
-
-# Troubleshooting
 
 The following troubleshooting scenarios have been collected from customer support cases. If you
 experience a problem not addressed here, or the information here does not fix your problem, create a
@@ -186,9 +185,12 @@ For example, the following output shows that four anchor links we discovered dur
 
 ## Chromium DevTools logging
 
-WARNING:
+{{< alert type="warning" >}}
+
 Logging DevTools messages is a security risk. The output contains secrets such as usernames, passwords and authentication tokens.
 The output is uploaded to the GitLab server and may be visible in job logs.
+
+{{< /alert >}}
 
 The DAST Browser-based scanner orchestrates a Chromium browser using the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
 Logging DevTools messages helps provide transparency into what the browser is doing. For example, if selecting a button does not work, a DevTools message might show that the cause is a CORS error in a browser console log.

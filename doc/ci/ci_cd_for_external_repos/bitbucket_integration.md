@@ -2,17 +2,19 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Using GitLab CI/CD with a Bitbucket Cloud repository
 ---
 
-# Using GitLab CI/CD with a Bitbucket Cloud repository
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab CI/CD can be used with Bitbucket Cloud by:
 
-1. Creating a [CI/CD project](index.md).
+1. Creating a [CI/CD project](_index.md).
 1. Connecting your Git repository by URL.
 
 To use GitLab CI/CD with a Bitbucket Cloud repository:
@@ -27,7 +29,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
 
 1. In GitLab, create a project:
 
-   1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+   1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
    1. Select **Run CI/CD for external repository**.
    1. Select **Repository by URL**.
    1. Complete the fields:
@@ -63,7 +65,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
 1. In GitLab, from **Settings > CI/CD > Variables**, add variables to allow
    communication with Bitbucket through the Bitbucket API:
 
-   - `BITBUCKET_ACCESS_TOKEN`: The Bitbucket app password created above. This variable should be [masked](../variables/index.md#mask-a-cicd-variable).
+   - `BITBUCKET_ACCESS_TOKEN`: The Bitbucket app password created above. This variable should be [masked](../variables/_index.md#mask-a-cicd-variable).
    - `BITBUCKET_USERNAME`: The username of the Bitbucket account.
    - `BITBUCKET_NAMESPACE`: Set this variable if your GitLab and Bitbucket namespaces differ.
    - `BITBUCKET_REPOSITORY`: Set this variable if your GitLab and Bitbucket project names differ.

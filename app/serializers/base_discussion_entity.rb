@@ -46,7 +46,7 @@ class BaseDiscussionEntity < Grape::Entity
     end
 
     expose :resolve_with_issue_path, if: ->(d, _) { d.noteable.is_a?(MergeRequest) } do |discussion|
-      new_project_issue_path(discussion.project, merge_request_to_resolve_discussions_of: discussion.noteable.iid, discussion_to_resolve: discussion.id) if discussion&.project&.issues_enabled?
+      new_project_issue_path(discussion.project, merge_request_to_resolve_discussions_of: discussion.noteable.iid, discussion_to_resolve: discussion.id, merge_request_id: discussion.noteable.id) if discussion&.project&.issues_enabled?
     end
   end
 

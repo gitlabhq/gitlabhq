@@ -7,6 +7,10 @@
     "disable_password_authentication_for_users_with_sso_identities": {
       "type": "boolean",
       "description": "Restrict users to SSO sign-in when the user has one or more associated SSO identities"
+    },
+    "root_moved_permanently_redirection": {
+      "type": "boolean",
+      "description": "When enabled, it will send 301 Moved Permanently instead of 302 if you want web crawlers to index a different site such as the Home Page URL."
     }
   }
 }

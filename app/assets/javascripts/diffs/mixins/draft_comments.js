@@ -1,10 +1,10 @@
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
+import { useBatchComments } from '~/batch_comments/store';
 import { IMAGE_DIFF_POSITION_TYPE } from '../constants';
 
 export default {
   computed: {
-    ...mapGetters('batchComments', [
+    ...mapState(useBatchComments, [
       'shouldRenderDraftRow',
       'shouldRenderParallelDraftRow',
       'draftsForLine',

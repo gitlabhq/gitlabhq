@@ -32,7 +32,7 @@ module Tooling
 
           ⚠️ **Warning**: If your test modifies data, `let_it_be` may be unsuitable, and cause state leaks! Use `let_it_be_with_reload` or `let_it_be_with_refind` instead.
 
-          Unsure which method to use? See the [testing best practices](https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#optimize-factory-usage)
+          Unsure which method to use? See the [testing best practices](https://docs.gitlab.com/development/testing_guide/best_practices/#optimize-factory-usage)
           for background information and alternative options for optimizing factory usage.
 
           If you're concerned about causing state leaks, or if you know `let` or `let!` are the better options, ignore this comment.

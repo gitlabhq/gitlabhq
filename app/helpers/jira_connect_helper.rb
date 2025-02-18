@@ -2,7 +2,7 @@
 
 module JiraConnectHelper
   def jira_connect_app_data(subscriptions, installation)
-    skip_groups = subscriptions.map(&:namespace_id)
+    skip_groups = subscriptions.map(&:namespace_id).join(',')
 
     {
       groups_path: api_v4_groups_path(params: { skip_groups: skip_groups }),

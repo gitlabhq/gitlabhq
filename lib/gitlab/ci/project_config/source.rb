@@ -8,7 +8,7 @@ module Gitlab
 
         def initialize(
           project:, sha:, custom_content: nil, pipeline_source: nil, pipeline_source_bridge: nil,
-          triggered_for_branch: false, ref: nil, pipeline_policy_context: nil)
+          triggered_for_branch: false, ref: nil)
           @project = project
           @sha = sha
           @custom_content = custom_content
@@ -16,7 +16,6 @@ module Gitlab
           @pipeline_source_bridge = pipeline_source_bridge
           @triggered_for_branch = triggered_for_branch
           @ref = ref
-          @pipeline_policy_context = pipeline_policy_context
         end
 
         def exists?
@@ -41,8 +40,6 @@ module Gitlab
         def url
           nil
         end
-
-        attr_reader :pipeline_policy_context
 
         private
 

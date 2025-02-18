@@ -43,6 +43,14 @@ module Gitlab
           }
         }
 
+        if repo_type == Gitlab::GlRepository::PROJECT
+          project = repository.container
+          root_namespace = project&.root_namespace
+
+          attrs[:ProjectID] = project.id if project
+          attrs[:RootNamespaceID] = root_namespace.id if root_namespace
+        end
+
         # Custom option for git-receive-pack command
         receive_max_input_size = Gitlab::CurrentSettings.receive_max_input_size.to_i
         if receive_max_input_size > 0
@@ -74,7 +82,9 @@ module Gitlab
         ]
       end
 
-      def send_git_archive(repository, ref:, format:, append_sha:, path: nil)
+      def send_git_archive(
+        repository, ref:, format:, append_sha:, path: nil, include_lfs_blobs: true,
+        exclude_paths: [])
         format ||= 'tar.gz'
         format = format.downcase
 
@@ -88,7 +98,8 @@ module Gitlab
 
         raise "Repository or ref not found" if metadata.empty?
 
-        params = send_git_archive_params(repository, metadata, path, archive_format(format))
+        params = send_git_archive_params(repository, metadata, path, archive_format(format), include_lfs_blobs,
+          exclude_paths)
 
         # If present, DisableCache must be a Boolean. Otherwise
         # workhorse ignores it.
@@ -366,7 +377,7 @@ module Gitlab
         end
       end
 
-      def send_git_archive_params(repository, metadata, path, format)
+      def send_git_archive_params(repository, metadata, path, format, include_lfs_blobs, exclude_paths)
         {
           'ArchivePath' => metadata['ArchivePath'],
           'GetArchiveRequest' => encode_binary(
@@ -376,7 +387,8 @@ module Gitlab
               prefix: metadata['ArchivePrefix'],
               format: format,
               path: Gitlab::EncodingHelper.encode_binary(path.presence || ""),
-              include_lfs_blobs: true
+              include_lfs_blobs: include_lfs_blobs,
+              exclude: exclude_paths.map { |exclude_path| Gitlab::EncodingHelper.encode_binary(exclude_path) }
             ).to_proto
           )
         }

@@ -2,13 +2,15 @@
 stage: Foundations
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Search API
 ---
 
-# Search API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Every API call to search must be authenticated.
 
@@ -22,7 +24,7 @@ these additional scopes are available for the [advanced search](#advanced-search
 - `notes`
 
 If you want to use basic search instead, see
-[specify a search type](../user/search/index.md#specify-a-search-type).
+[specify a search type](../user/search/_index.md#specify-a-search-type).
 
 ## Advanced search API
 
@@ -139,8 +141,11 @@ Example response:
 ]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `assignee` column is deprecated. It is shown as a single-sized array `assignees` to conform to the GitLab EE API.
+
+{{< /alert >}}
 
 ### Scope: `merge_requests`
 
@@ -300,8 +305,11 @@ Example response:
 
 ### Scope: `wiki_blobs`
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
 
@@ -328,13 +336,19 @@ Example response:
 ]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+
+{{< /alert >}}
 
 ### Scope: `commits`
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
 
@@ -369,8 +383,11 @@ Example response:
 
 ### Scope: `blobs`
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
 
@@ -449,7 +466,7 @@ Example response:
 
 ## Group search API
 
-Search for a [term](../user/search/index.md) in the specified group.
+Search for a [term](../user/search/_index.md) in the specified group.
 
 If a user is not a member of a group and the group is private, a `GET` request on that group results in a `404 Not Found` status code.
 
@@ -459,7 +476,7 @@ GET /groups/:id/search
 
 | Attribute | Type | Required | Description  |
 | --------- | ---- | -------- | -------------|
-| `id`                | integer or string   | Yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`                | integer or string   | Yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `scope`       | string   | Yes | The scope to search in. Values include `projects`, `issues`, `merge_requests`, `milestones`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`. |
 | `search`      | string   | Yes | The search term. |
 | `confidential` | boolean   | No | Filter by confidentiality. Supports only `issues` scope; other scopes are ignored. |
@@ -801,13 +818,19 @@ Example response:
 ]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+
+{{< /alert >}}
 
 ### Scope: `notes`
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
 
@@ -844,7 +867,7 @@ Example response:
 
 ## Project search API
 
-Search for a [term](../user/search/index.md) in the specified project.
+Search for a [term](../user/search/_index.md) in the specified project.
 
 If a user is not a member of a project and the project is private, a `GET` request on that project results in a `404` status code.
 
@@ -854,7 +877,7 @@ GET /projects/:id/search
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ------------|
-| `id` | integer or string | Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id` | integer or string | Yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `scope`       | string   | Yes | The scope to search in. Values include `issues`, `merge_requests`, `milestones`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`. |
 | `search`      | string   | Yes | The search term. |
 | `confidential` | boolean   | No | Filter by confidentiality. Supports `issues` scope; other scopes are ignored. |
@@ -928,8 +951,11 @@ Example response:
 ]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+{{< /alert >}}
 
 ### Scope: `merge_requests`
 
@@ -1058,8 +1084,11 @@ Example response:
 
 ### Scope: `wiki_blobs`
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
 
@@ -1103,13 +1132,19 @@ Example response:
 ]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+
+{{< /alert >}}
 
 ### Scope: `commits`
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
 
@@ -1144,8 +1179,11 @@ Example response:
 
 ### Scope: `blobs`
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
 

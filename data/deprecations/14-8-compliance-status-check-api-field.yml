@@ -4,7 +4,7 @@
   breaking_change: true
   reporter: sam.white
   body: |  # Do not modify this line, instead modify the lines below.
-    The [external status check API](https://docs.gitlab.com/ee/api/status_checks.html) was originally implemented to
+    The [external status check API](https://docs.gitlab.com/api/status_checks/) was originally implemented to
     support pass-by-default requests to mark a status check as passing. Pass-by-default requests are now deprecated.
     Specifically, the following are deprecated:
 

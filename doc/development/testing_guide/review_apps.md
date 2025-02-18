@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Using review apps in the development of GitLab
 ---
-
-# Using review apps in the development of GitLab
 
 Review apps are deployed using the `start-review-app-pipeline` job which triggers a child pipeline containing a series of jobs to perform the various tasks needed to deploy a review app.
 
@@ -188,16 +187,16 @@ subgraph "CNG-mirror pipeline"
   stop a review app manually, and is also started by GitLab once a merge
   request's branch is deleted after being merged.
 - The Kubernetes cluster is connected to the `gitlab` projects using the
-  [GitLab Kubernetes integration](../../user/infrastructure/clusters/index.md). This basically
+  [GitLab Kubernetes integration](../../user/infrastructure/clusters/_index.md). This basically
   allows to have a link to the review app directly from the merge request widget.
 
 ### Auto-stopping of review apps
 
 Review apps are automatically stopped 2 days after the last deployment thanks to
-the [Environment auto-stop](../../ci/environments/index.md#stop-an-environment-after-a-certain-time-period) feature.
+the [Environment auto-stop](../../ci/environments/_index.md#stop-an-environment-after-a-certain-time-period) feature.
 
 If you need your review app to stay up for a longer time, you can
-[pin its environment](../../ci/environments/index.md#override-an-environments-scheduled-stop-date-and-time) or retry the
+[pin its environment](../../ci/environments/_index.md#override-an-environments-scheduled-stop-date-and-time) or retry the
 `review-deploy` job to update the "latest deployed at" time.
 
 The `review-cleanup` job that automatically runs in scheduled
@@ -255,4 +254,4 @@ find a way to limit it to only us.**
 
 ---
 
-[Return to Testing documentation](index.md)
+[Return to Testing documentation](_index.md)

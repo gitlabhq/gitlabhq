@@ -2,26 +2,33 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Geo database replication
 ---
 
-# Geo database replication
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This document describes the minimal required steps to replicate your primary
 GitLab database to a secondary site's database. You may have to change some
 values, based on attributes including your database's setup and size.
 
-NOTE:
+{{< alert type="note" >}}
+
 If your GitLab installation uses external PostgreSQL instances (not managed by a Linux package installation),
 the roles cannot perform all necessary configuration steps. In this case, use the
 [Geo with external PostgreSQL instances](external_database.md) process instead.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 The stages of the setup process must be completed in the documented order.
-If not, [complete all prior stages](../setup/index.md#using-linux-package-installations) before proceeding.
+If not, [complete all prior stages](../setup/_index.md#using-linux-package-installations) before proceeding.
+{{< /alert >}}
 
 Ensure the **secondary** site is running the same version of GitLab Enterprise Edition as the **primary** site. Confirm you have added a license for a [Premium or Ultimate subscription](https://about.gitlab.com/pricing/) to your **primary** site.
 
@@ -58,12 +65,15 @@ The following guide assumes that:
 - You have a **primary** site already set up (the GitLab server you are
   replicating from), running PostgreSQL (or equivalent version) managed by your Linux package installation, and
   you have a new **secondary** site set up with the same
-  [versions of PostgreSQL](../index.md#requirements-for-running-geo),
+  [versions of PostgreSQL](../_index.md#requirements-for-running-geo),
   OS, and GitLab on all sites.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Geo works with streaming replication. Logical replication is not supported at this time.
 There is an [issue where support is being discussed](https://gitlab.com/gitlab-org/gitlab/-/issues/7420).
+
+{{< /alert >}}
 
 #### Step 1. Configure the **primary** site
 
@@ -167,8 +177,11 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    connect to the **primary** site's database. For this reason, you need the IP address of
    each site.
 
-   NOTE:
-   For external PostgreSQL instances, see [additional instructions](external_database.md).
+   {{< alert type="note" >}}
+
+For external PostgreSQL instances, see [additional instructions](external_database.md).
+
+   {{< /alert >}}
 
    If you are using a cloud provider, you can look up the addresses for each
    Geo site through your cloud provider's management console.
@@ -204,10 +217,13 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    corresponding to the given address. See [the PostgreSQL documentation](https://www.postgresql.org/docs/12/runtime-config-connection.html)
    for more details.
 
-   NOTE:
-   If you need to use `0.0.0.0` or `*` as the `listen_address`, you also must add
+   {{< alert type="note" >}}
+
+If you need to use `0.0.0.0` or `*` as the `listen_address`, you also must add
    `127.0.0.1/32` to the `postgresql['md5_auth_cidr_addresses']` setting, to allow Rails to connect through
    `127.0.0.1`. For more information, see [issue 5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
+
+   {{< /alert >}}
 
    Depending on your network configuration, the suggested addresses may
    be incorrect. If your **primary** and **secondary** sites connect over a local
@@ -339,8 +355,11 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    gitlab-ctl stop sidekiq
    ```
 
-   NOTE:
-   This step is important so you don't try to execute anything before the site is fully configured.
+   {{< alert type="note" >}}
+
+This step is important so you don't try to execute anything before the site is fully configured.
+
+   {{< /alert >}}
 
 1. [Check TCP connectivity](../../raketasks/maintenance.md) to the **primary** site's PostgreSQL server:
 
@@ -348,12 +367,15 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    gitlab-rake gitlab:tcp_check[<primary_site_ip>,5432]
    ```
 
-   NOTE:
-   If this step fails, you may be using the wrong IP address, or a firewall may
+   {{< alert type="note" >}}
+
+If this step fails, you may be using the wrong IP address, or a firewall may
    be preventing access to the site. Check the IP address, paying close
    attention to the difference between public and private addresses. Ensure
    that, if a firewall is present, the **secondary** site is permitted to connect to the
    **primary** site on port 5432.
+
+   {{< /alert >}}
 
 1. Create a file `server.crt` in the **secondary** site, with the content you got on the last step of the **primary** site's setup:
 
@@ -391,11 +413,14 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
       -h <primary_site_ip>
    ```
 
-   NOTE:
-   If you are using manually generated certificates and want to use
+   {{< alert type="note" >}}
+
+If you are using manually generated certificates and want to use
    `sslmode=verify-full` to benefit from the full hostname verification,
    replace `verify-ca` with `verify-full` when
    running the command.
+
+   {{< /alert >}}
 
    When prompted, enter the _plaintext_ password you set in the first step for the
    `gitlab_replicator` user. If all worked correctly, you should see
@@ -464,9 +489,12 @@ needed files for streaming replication.
 The directories used are the defaults that are set up in a Linux package installation. If you have
 changed any defaults, configure the script accordingly (replacing any directories and paths).
 
-WARNING:
+{{< alert type="warning" >}}
+
 Make sure to run this on the **secondary** site as it removes all PostgreSQL's
 data before running `pg_basebackup`.
+
+{{< /alert >}}
 
 1. SSH into your GitLab **secondary** site and sign in as root:
 
@@ -482,12 +510,18 @@ data before running `pg_basebackup`.
 
 1. Execute the command below to start a backup/restore and begin the replication
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    Each Geo **secondary** site must have its own unique replication slot name.
    Using the same slot name between two secondaries breaks PostgreSQL replication.
 
-   NOTE:
+   {{< /alert >}}
+
+   {{< alert type="note" >}}
+
    Replication slot names must only contain lowercase letters, numbers, and the underscore character.
+
+   {{< /alert >}}
 
    When prompted, enter the _plaintext_ password you set up for the `gitlab_replicator`
    user in the first step.
@@ -499,12 +533,15 @@ data before running `pg_basebackup`.
       --sslmode=verify-ca
    ```
 
-   NOTE:
+   {{< alert type="note" >}}
+
    If you have generated custom PostgreSQL certificates, you need to use
    `--sslmode=verify-full` (or omit the `sslmode` line entirely), to benefit from the extra
    validation of the full host name in the certificate CN / SAN for additional security.
    Otherwise, using the automatically created certificate with `verify-full` fails,
    as it has a generic `PostgreSQL` CN which doesn't match the `--host` value in this command.
+
+   {{< /alert >}}
 
    This command also takes a number of additional options. You can use `--help`
    to list them all, but here are some tips:
@@ -537,8 +574,11 @@ data before running `pg_basebackup`.
 
 The replication process is now complete.
 
-NOTE:
+{{< alert type="note" >}}
+
 The replication process only copies the data from the primary site's database to the secondary site's database. To complete your secondary site configuration, [add the secondary site on your primary site](../replication/configuration.md#step-3-add-the-secondary-site).
+
+{{< /alert >}}
 
 ### PgBouncer support (optional)
 
@@ -591,7 +631,7 @@ On the GitLab Geo **primary** site:
    sudo gitlab-ctl restart postgresql
    ```
 
-Until the password is updated on any **secondary** sites, the [PostgreSQL log](../../logs/index.md#postgresql-logs) on
+Until the password is updated on any **secondary** sites, the [PostgreSQL log](../../logs/_index.md#postgresql-logs) on
 the secondaries report the following error message:
 
 ```console
@@ -673,9 +713,9 @@ and other database best practices.
 Set up a persistent replication slot on the primary database to ensure continuous data replication from the primary
 database to the Patroni cluster on the secondary node.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Primary with Patroni cluster
+{{< tab title="Primary with Patroni cluster" >}}
 
 To set up database replication with Patroni on a secondary site, you must
 configure a _permanent replication slot_ on the primary site's Patroni cluster,
@@ -740,7 +780,9 @@ Leader instance**:
    gitlab-ctl reconfigure
    ```
 
-:::TabTitle Primary with single PostgreSQL instance
+{{< /tab >}}
+
+{{< tab title="Primary with single PostgreSQL instance" >}}
 
 1. SSH into your single node instance and sign in as root:
 
@@ -802,7 +844,9 @@ Leader instance**:
    GRANT EXECUTE ON FUNCTION public.pg_shadow_lookup(text) TO pgbouncer;
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ##### Step 2. Configure the internal load balancer on the primary site
 
@@ -913,9 +957,12 @@ On each node running a PgBouncer instance on the **secondary** site:
 
 ##### Step 4. Configure a Standby cluster on the secondary site
 
-NOTE:
+{{< alert type="note" >}}
+
 If you are converting a secondary site with a single PostgreSQL instance to a Patroni Cluster, you must start on the PostgreSQL instance. It becomes the Patroni Standby Leader instance,
 and then you can switch over to another replica if you need to.
+
+{{< /alert >}}
 
 For each node running a Patroni instance on the secondary site:
 
@@ -1066,4 +1113,4 @@ Follow [Geo with external PostgreSQL instances](external_database.md#configure-t
 
 ## Troubleshooting
 
-Read the [troubleshooting document](../replication/troubleshooting/index.md).
+Read the [troubleshooting document](../replication/troubleshooting/_index.md).

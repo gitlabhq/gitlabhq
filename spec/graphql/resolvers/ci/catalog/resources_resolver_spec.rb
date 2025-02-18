@@ -15,7 +15,10 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
   let_it_be(:internal_project) { create(:project, :internal, name: 'internal') }
   let_it_be(:private_resource) { create(:ci_catalog_resource, :published, project: private_namespace_project) }
   let_it_be(:private_resource_2) { create(:ci_catalog_resource, project: private_namespace_project_2) }
-  let_it_be(:public_resource) { create(:ci_catalog_resource, :published, project: public_namespace_project) }
+  let_it_be(:public_resource) do
+    create(:ci_catalog_resource, :published, project: public_namespace_project, verification_level: 100)
+  end
+
   let_it_be(:internal_resource) { create(:ci_catalog_resource, :published, project: internal_project) }
   let_it_be(:user) { create(:user) }
 
@@ -24,13 +27,15 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
   let(:sort) { nil }
   let(:scope) { nil }
   let(:project_path) { nil }
+  let(:verification_level) { nil }
 
   let(:args) do
     {
       project_path: project_path,
       sort: sort,
       search: search,
-      scope: scope
+      scope: scope,
+      verification_level: verification_level
     }.compact
   end
 
@@ -92,6 +97,14 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
             expect(result.items.count).to be(3)
             expect(result.items.pluck(:name)).to contain_exactly('public', 'internal', 'z private test')
           end
+        end
+      end
+
+      context 'with verification_level argument' do
+        let(:verification_level) { :gitlab_maintained }
+
+        it 'returns published catalog resources that match the verification level' do
+          expect(result.items.pluck(:name)).to contain_exactly('public')
         end
       end
     end

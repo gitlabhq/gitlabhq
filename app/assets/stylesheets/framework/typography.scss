@@ -82,7 +82,7 @@
   // to make room for the summary toggle
   details summary {
     @apply gl-font-bold;
-    
+
     h1, h2, h3, h4, h5, h6 {
       a.anchor {
         @apply -gl-ml-7;
@@ -190,7 +190,7 @@
 
     td,
     th {
-      border: 1px solid $border-color;
+      @apply gl-border;
     }
 
     tr {
@@ -615,7 +615,8 @@
   }
 
   .exampleblock > div:nth-of-type(1) {
-    border: $gl-border-size-3 solid $border-color;
+    @apply gl-border;
+    border-width: $gl-border-size-3;
     border-radius: $gl-border-radius-base;
     padding: $gl-padding-12 $gl-padding-24;
 
@@ -832,7 +833,7 @@ wbr {
     content: '';
     width: 16rem;
     max-width: 100%;
-    border-top: 1px solid $border-color;
+    @apply gl-border-t;
     position: absolute;
     top: 0;
     left: 0;

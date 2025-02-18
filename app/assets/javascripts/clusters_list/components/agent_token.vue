@@ -8,7 +8,7 @@ import { I18N_AGENT_TOKEN, HELM_VERSION_POLICY_URL } from '../constants';
 
 export default {
   i18n: I18N_AGENT_TOKEN,
-  advancedInstallPath: helpPagePath('user/clusters/agent/install/index', {
+  advancedInstallPath: helpPagePath('user/clusters/agent/install/_index', {
     anchor: 'advanced-installation-method',
   }),
   HELM_VERSION_POLICY_URL,

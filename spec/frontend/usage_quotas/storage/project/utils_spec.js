@@ -1,4 +1,4 @@
-import { PROJECT_STORAGE_TYPES } from '~/usage_quotas/storage/constants';
+import { PROJECT_STORAGE_TYPES } from '~/usage_quotas/storage/project/constants';
 import {
   getStorageTypesFromProjectStatistics,
   descendingStorageUsageSort,

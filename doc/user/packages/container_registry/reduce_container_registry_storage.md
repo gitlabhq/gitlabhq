@@ -2,13 +2,15 @@
 stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Reduce container registry storage
 ---
 
-# Reduce container registry storage
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Container registries can grow in size over time if you don't manage your registry usage. For example,
 if you add a large number of images or tags:
@@ -21,11 +23,18 @@ to automatically manage your container registry usage.
 
 ## View container registry usage
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5523) in GitLab 15.7
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5523) in GitLab 15.7
+
+{{< /history >}}
 
 To view the storage usage for the container registry:
 
@@ -84,7 +93,11 @@ the size value only changes when:
 
 ## Cleanup policy
 
-> - [Required permissions](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) changed from developer to maintainer in GitLab 15.0.
+{{< history >}}
+
+- [Required permissions](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) changed from developer to maintainer in GitLab 15.0.
+
+{{< /history >}}
 
 The cleanup policy is a scheduled job you can use to remove tags from the container registry.
 For the project where it's defined, tags matching the regex pattern are removed.
@@ -95,9 +108,12 @@ To delete the underlying layers and images that aren't associated with any tags,
 
 ### Enable the cleanup policy
 
-WARNING:
+{{< alert type="warning" >}}
+
 For performance reasons, enabled cleanup policies are automatically disabled for projects on
 GitLab.com that don't have a container image.
+
+{{< /alert >}}
 
 ### How the cleanup policy works
 
@@ -116,15 +132,20 @@ The cleanup policy:
 1. Orders the remaining tags by `created_date`.
 1. Excludes the N tags based on the `keep_n` value (Number of tags to retain).
 1. Excludes the tags more recent than the `older_than` value (Expiration interval).
+1. Excludes [protected tags](protected_container_tags.md).
 1. Deletes the remaining tags in the list from the container registry.
 
-WARNING:
+{{< alert type="warning" >}}
+
 On GitLab.com, the execution time for the cleanup policy is limited. Some tags may remain in
 the container registry after the policy runs. The next time the policy runs, the remaining tags are included.
 It may take multiple runs to delete all tags.
 
-WARNING:
-GitLab self-managed installations support third-party container registries that comply with the
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
+GitLab Self-Managed instances support third-party container registries that comply with the
 [Docker Registry HTTP API V2](https://distribution.github.io/distribution/spec/api/)
 specification. However, this specification does not include a tag delete operation. Therefore, GitLab uses a
 workaround to delete tags when interacting with third-party container registries. Refer to
@@ -133,6 +154,7 @@ for more information. Due to possible implementation variations, this workaround
 to work with all third-party registries in the same predictable way. If you use the GitLab Container
 Registry, this workaround is not required because we implemented a special tag delete operation. In
 this case, you can expect cleanup policies to be consistent and predictable.
+{{< /alert >}}
 
 #### Example cleanup policy workflow
 
@@ -192,15 +214,21 @@ To create a cleanup policy in the UI:
    | **Remove tags older than** | Remove only tags older than X days. |
    | **Remove tags matching**   | A regex pattern that determines which tags to remove. This value cannot be blank. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
 
-   NOTE:
-   Both keep and remove regex patterns are automatically surrounded with `\A` and `\Z` anchors, so you do not need to include them. However, make sure to take this into account when choosing and testing your regex patterns.
+   {{< alert type="note" >}}
+
+Both keep and remove regex patterns are automatically surrounded with `\A` and `\Z` anchors, so you do not need to include them. However, make sure to take this into account when choosing and testing your regex patterns.
+
+   {{< /alert >}}
 
 1. Select **Save**.
 
 The policy runs on the scheduled interval you selected.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you edit the policy and select **Save** again, the interval is reset.
+
+{{< /alert >}}
 
 ### Regex pattern examples
 
@@ -244,7 +272,11 @@ Here are some examples of regex patterns you can use:
 
 ### Set cleanup limits to conserve resources
 
-> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84996) the feature flag `container_registry_expiration_policies_throttling` in GitLab 15.0.
+{{< history >}}
+
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84996) the feature flag `container_registry_expiration_policies_throttling` in GitLab 15.0.
+
+{{< /history >}}
 
 Cleanup policies are executed as a background process. This process is complex, and depending on the number of tags to delete,
 the process can take time to finish.
@@ -349,7 +381,7 @@ View some common [regex pattern examples](#regex-pattern-examples).
 
 There can be different reasons behind this:
 
-- If you are on GitLab self-managed instances and you have 1000+ tags in a container repository, you
+- If you are on GitLab Self-Managed and you have 1000+ tags in a container repository, you
   might run into a [Container Registry token expiration issue](https://gitlab.com/gitlab-org/gitlab/-/issues/288814),
   with `error authorizing context: invalid token` in the logs.
 
@@ -369,7 +401,7 @@ the tags. To create the list and delete the tags:
    the tags' names are written to the `list_o_tags.out` file:
 
    ```shell
-   # Get a list of all tags in a certain container repository while considering [pagination](../../../api/rest/index.md#pagination)
+   # Get a list of all tags in a certain container repository while considering [pagination](../../../api/rest/_index.md#pagination)
    echo -n "" > list_o_tags.out; for i in {1..N}; do curl --fail-with-body --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags?per_page=100&page=${i}" | jq '.[].name' | sed 's:^.\(.*\).$:\1:' >> list_o_tags.out; done
    ```
 
@@ -388,9 +420,9 @@ the tags. To create the list and delete the tags:
 1. Remove any tags that you want to keep from the `list_o_tags.out` file. For example, you can use `sed` to
    parse the file and remove the tags.
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle Linux
+   {{< tab title="Linux" >}}
 
    ```shell
    # Remove the `latest` tag from the file
@@ -406,7 +438,9 @@ the tags. To create the list and delete the tags:
    sed -i '/_v3$/d' list_o_tags.out
    ```
 
-   :::TabTitle macOS
+   {{< /tab >}}
+
+   {{< tab title="macOS" >}}
 
    ```shell
    # Remove the `latest` tag from the file
@@ -422,7 +456,9 @@ the tags. To create the list and delete the tags:
    sed -i .bak '/_v3$/d' list_o_tags.out
    ```
 
-   ::EndTabs
+      {{< /tab >}}
+
+   {{< /tabs >}}
 
 1. Double-check the `list_o_tags.out` file to make sure it contains only the tags that you want to
    delete.

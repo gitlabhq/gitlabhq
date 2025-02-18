@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Importing a database dump into a staging environment
 ---
-
-# Importing a database dump into a staging environment
 
 Sometimes it is useful to import the database from a production environment
 into a staging environment for testing. The procedure below assumes you have

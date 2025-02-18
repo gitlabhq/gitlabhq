@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Rename table without downtime
 ---
-
-# Rename table without downtime
 
 With our database helper methods built into GitLab, it's possible to rename a database table without downtime.
 

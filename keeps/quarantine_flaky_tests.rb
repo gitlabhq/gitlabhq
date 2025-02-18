@@ -14,6 +14,10 @@ Gitlab::HTTP_V2.configure do |config|
     p message
     p http_method
   end
+  config.log_with_level_proc = ->(log_level, message_params) do
+    p log_level
+    p message_params
+  end
 end
 
 module Keeps

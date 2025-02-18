@@ -1,19 +1,19 @@
 <script>
 import { GlButton, GlModal, GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { __, s__, sprintf } from '~/locale';
-import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
+import { __ } from '~/locale';
 import { isMetaClick } from '~/lib/utils/common_utils';
-import { isWorkItemItemValidEnum, newWorkItemPath } from '~/work_items/utils';
+import { convertTypeEnumToName, newWorkItemPath } from '~/work_items/utils';
 import {
   I18N_NEW_WORK_ITEM_BUTTON_LABEL,
   I18N_WORK_ITEM_CREATED,
   sprintfWorkItem,
-  I18N_WORK_ITEM_ERROR_FETCHING_TYPES,
   ROUTES,
   RELATED_ITEM_ID_URL_QUERY_PARAM,
+  WORK_ITEM_TYPE_NAME_LOWERCASE_MAP,
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_VALUE_MAP,
 } from '../constants';
-import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import CreateWorkItem from './create_work_item.vue';
 import CreateWorkItemCancelConfirmationModal from './create_work_item_cancel_confirmation_modal.vue';
 
@@ -30,6 +30,16 @@ export default {
   },
   inject: ['fullPath'],
   props: {
+    allowedWorkItemTypes: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    alwaysShowWorkItemTypeSelect: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     description: {
       type: String,
       required: false,
@@ -78,7 +88,7 @@ export default {
     relatedItem: {
       type: Object,
       required: false,
-      validator: (i) => i.id && i.type && i.reference,
+      validator: (i) => i.id && i.type && i.reference && i.webUrl,
       default: null,
     },
   },
@@ -86,45 +96,9 @@ export default {
     return {
       isCreateModalVisible: false,
       isConfirmationModalVisible: false,
+      selectedWorkItemTypeName: this.workItemTypeName,
       shouldDiscardDraft: false,
-      workItemTypes: [],
     };
-  },
-  apollo: {
-    workItemTypes: {
-      query() {
-        return namespaceWorkItemTypesQuery;
-      },
-      variables() {
-        return {
-          fullPath: this.fullPath,
-          name: this.workItemTypeName,
-        };
-      },
-      update(data) {
-        return data.workspace?.workItemTypes?.nodes ?? [];
-      },
-      async result() {
-        if (!this.workItemTypes || this.workItemTypes.length === 0) {
-          return;
-        }
-
-        // We need a valid enum of fetching workItemTypes which otherwise causes issues in cache
-        if (!isWorkItemItemValidEnum(this.workItemTypeName)) {
-          return;
-        }
-        await setNewWorkItemCache(
-          this.fullPath,
-          this.workItemTypes[0]?.widgetDefinitions,
-          this.workItemTypeName,
-          this.workItemTypes[0]?.id,
-          this.workItemTypes[0]?.iconName,
-        );
-      },
-      error() {
-        this.error = I18N_WORK_ITEM_ERROR_FETCHING_TYPES;
-      },
-    },
   },
   computed: {
     useVueRouter() {
@@ -134,27 +108,45 @@ export default {
         this.$router.options.routes.some((route) => route.name === 'workItem')
       );
     },
+    newWorkItemPathQuery() {
+      let query = '';
+      let previousQueryParam = false;
+      // Only add query string if there's a work item type selected
+      if (this.selectedWorkItemTypeName && this.useVueRouter) {
+        query += previousQueryParam ? '&' : '?';
+        // eslint-disable-next-line @gitlab/require-i18n-strings
+        query += `type=${this.selectedWorkItemTypeName}`;
+        previousQueryParam = true;
+      }
+      if (this.relatedItem) {
+        query += previousQueryParam ? '&' : '?';
+        query += `${RELATED_ITEM_ID_URL_QUERY_PARAM}=${this.relatedItem.id}`;
+      }
+      return query;
+    },
     newWorkItemPath() {
       return newWorkItemPath({
         fullPath: this.fullPath,
         isGroup: this.isGroup,
         workItemTypeName: this.workItemTypeName,
-        query: this.relatedItem ? `?${RELATED_ITEM_ID_URL_QUERY_PARAM}=${this.relatedItem.id}` : '',
+        query: this.newWorkItemPathQuery,
       });
     },
+    selectedWorkItemTypeLowercase() {
+      return WORK_ITEM_TYPE_NAME_LOWERCASE_MAP[
+        convertTypeEnumToName(this.selectedWorkItemTypeName)
+      ];
+    },
+    newWorkItemButtonText() {
+      return this.alwaysShowWorkItemTypeSelect && this.workItemTypeName
+        ? sprintfWorkItem(I18N_NEW_WORK_ITEM_BUTTON_LABEL, '')
+        : this.newWorkItemText;
+    },
     newWorkItemText() {
-      return sprintfWorkItem(I18N_NEW_WORK_ITEM_BUTTON_LABEL, this.workItemTypeName);
+      return sprintfWorkItem(I18N_NEW_WORK_ITEM_BUTTON_LABEL, this.selectedWorkItemTypeLowercase);
     },
     workItemCreatedText() {
-      return sprintfWorkItem(I18N_WORK_ITEM_CREATED, this.workItemTypeName);
-    },
-    cancelConfirmationText() {
-      return sprintf(
-        s__('WorkItem|Are you sure you want to cancel creating this %{workItemType}?'),
-        {
-          workItemType: this.workItemTypeName.toLocaleLowerCase(),
-        },
-      );
+      return sprintfWorkItem(I18N_WORK_ITEM_CREATED, this.selectedWorkItemTypeLowercase);
     },
   },
   watch: {
@@ -169,6 +161,7 @@ export default {
     hideCreateModal() {
       this.$emit('hideModal');
       this.isCreateModalVisible = false;
+      this.selectedWorkItemTypeName = this.workItemTypeName;
     },
     showCreateModal(event) {
       if (Boolean(event) && isMetaClick(event)) {
@@ -201,6 +194,8 @@ export default {
       this.hideConfirmationModal();
     },
     handleDiscardDraft(modal) {
+      this.selectedWorkItemTypeName = this.workItemTypeName;
+
       if (modal === 'createModal') {
         // This is triggered on the create modal when the user didn't update the form,
         // so we just hide the create modal as there's no draft to discard
@@ -217,13 +212,18 @@ export default {
     /*
      End of the methods for the confirmation modal when enabled
     */
-    handleCreated(workItem) {
+    handleCreated({ workItem }) {
       this.$toast.show(this.workItemCreatedText, {
         autoHideDelay: 10000,
         action: {
           text: __('View details'),
           onClick: () => {
-            if (this.useVueRouter) {
+            // Take incidents to the legacy detail view with a full page load
+            if (
+              this.useVueRouter &&
+              WORK_ITEM_TYPE_VALUE_MAP[workItem?.workItemType?.name] !==
+                WORK_ITEM_TYPE_ENUM_INCIDENT
+            ) {
               this.$router.push({ name: 'workItem', params: { iid: workItem.iid } });
             } else {
               visitUrl(workItem.webUrl);
@@ -232,29 +232,18 @@ export default {
         },
       });
       this.$emit('workItemCreated', workItem);
-      if (this.workItemTypes && this.workItemTypes[0] && this.workItemTypeName) {
-        setNewWorkItemCache(
-          this.fullPath,
-          this.workItemTypes[0]?.widgetDefinitions,
-          this.workItemTypeName,
-          this.workItemTypes[0]?.id,
-          this.workItemTypes[0]?.iconName,
-        );
-      }
       this.hideCreateModal();
     },
     redirectToNewPage(event) {
-      if (isMetaClick(event)) {
-        // opening in a new tab
-        return;
-      }
-
       event.preventDefault();
 
       if (this.useVueRouter) {
         this.$router.push({
           name: ROUTES.new,
-          query: { [RELATED_ITEM_ID_URL_QUERY_PARAM]: this.relatedItem?.id },
+          query: {
+            [RELATED_ITEM_ID_URL_QUERY_PARAM]: this.relatedItem?.id,
+            type: this.selectedWorkItemTypeName,
+          },
         });
       } else {
         visitUrl(this.newWorkItemPath);
@@ -283,12 +272,14 @@ export default {
         data-testid="new-epic-button"
         :href="newWorkItemPath"
         @click="showCreateModal"
-        >{{ newWorkItemText }}
+        >{{ newWorkItemButtonText }}
       </gl-button>
     </template>
     <gl-modal
       modal-id="create-work-item-modal"
       modal-class="create-work-item-modal"
+      :aria-label="newWorkItemText"
+      :title="newWorkItemText"
       body-class="!gl-pb-0"
       :visible="isCreateModalVisible"
       scrollable
@@ -300,7 +291,7 @@ export default {
         <div class="gl-text gl-flex gl-w-full gl-items-center gl-gap-x-2">
           <h2 class="modal-title">{{ newWorkItemText }}</h2>
           <gl-button
-            v-gl-tooltip
+            v-gl-tooltip.right
             data-testid="new-work-item-modal-link"
             :href="newWorkItemPath"
             :title="__('Open in full page')"
@@ -313,6 +304,8 @@ export default {
         </div>
       </template>
       <create-work-item
+        :allowed-work-item-types="allowedWorkItemTypes"
+        :always-show-work-item-type-select="alwaysShowWorkItemTypeSelect"
         :description="description"
         hide-form-title
         sticky-form-submit
@@ -323,6 +316,7 @@ export default {
         :work-item-type-name="workItemTypeName"
         :related-item="relatedItem"
         :should-discard-draft="shouldDiscardDraft"
+        @changeType="selectedWorkItemTypeName = $event"
         @confirmCancel="handleConfirmCancellation"
         @discardDraft="handleDiscardDraft('createModal')"
         @workItemCreated="handleCreated"
@@ -330,7 +324,7 @@ export default {
     </gl-modal>
     <create-work-item-cancel-confirmation-modal
       :is-visible="isConfirmationModalVisible"
-      :work-item-type-name="workItemTypeName"
+      :work-item-type-name="selectedWorkItemTypeLowercase"
       @continueEditing="handleContinueEditing"
       @discardDraft="handleDiscardDraft('confirmModal')"
     />

@@ -10,6 +10,7 @@ import {
   GlSprintf,
   GlFormRadio,
   GlFormRadioGroup,
+  GlPopover,
 } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -28,6 +29,7 @@ import {
   projectString,
   variableTypes,
 } from '~/ci/ci_variable_list/constants';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { mockTracking } from 'helpers/tracking_helper';
 import { mockVariablesWithScopes } from '../mocks';
 
@@ -93,38 +95,126 @@ describe('CI Variable Drawer', () => {
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findEnvironmentScopeDropdown = () => wrapper.findComponent(CiEnvironmentsDropdown);
   const findExpandedCheckbox = () => wrapper.findByTestId('ci-variable-expanded-checkbox');
-  const findFlagsDocsLink = () => wrapper.findByTestId('ci-variable-flags-docs-link');
   const findKeyField = () => wrapper.findComponent(GlFormCombobox);
   const findVisibilityRadioButtons = () => wrapper.findAllComponents(GlFormRadio);
   const findVisibilityRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findProtectedCheckbox = () => wrapper.findByTestId('ci-variable-protected-checkbox');
   const findValueField = () => wrapper.findByTestId('ci-variable-value');
-  const findValueLabel = () => wrapper.findByTestId('ci-variable-value-label');
+  const findInvalidMaskedValueErrorsWrapper = () => wrapper.find('.invalid-feedback');
+  const findInvalidMaskedValueErrorList = () => findInvalidMaskedValueErrorsWrapper().find('ul');
   const findHiddenVariableTip = () => wrapper.findByTestId('hidden-variable-tip');
   const findTitle = () => findDrawer().find('h2');
   const findTypeDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findVariablesPrecedenceDocsLink = () =>
     wrapper.findByTestId('ci-variable-precedence-docs-link');
+  const findVariablesMaskedValueDocsLink = () =>
+    wrapper.findByTestId('ci-variable-masked-value-docs-link');
+  const findVisibilityLabelHelpContainer = () =>
+    wrapper.findByTestId('visibility-popover-container');
+  const findVisibilityLabelHelpPopover = () =>
+    findVisibilityLabelHelpContainer().findComponent(GlPopover);
+  const findEnvironmentsLabelHelpContainer = () =>
+    wrapper.findByTestId('environments-popover-container');
+  const findEnvironmentsLabelHelpPopover = () =>
+    findEnvironmentsLabelHelpContainer().findComponent(GlPopover);
 
   describe('template', () => {
     beforeEach(() => {
       createComponent({ stubs: { GlFormGroup, GlLink, GlSprintf } });
     });
 
-    it('renders docs link for variables precendece', () => {
+    it('renders docs link for variables precedence', () => {
       expect(findVariablesPrecedenceDocsLink().attributes('href')).toBe(
-        helpPagePath('ci/variables/index', { anchor: 'cicd-variable-precedence' }),
+        helpPagePath('ci/variables/_index', { anchor: 'cicd-variable-precedence' }),
       );
     });
 
-    it('renders docs link for flags', () => {
-      expect(findFlagsDocsLink().attributes('href')).toBe(
-        helpPagePath('ci/variables/index', { anchor: 'define-a-cicd-variable-in-the-ui' }),
+    it('renders docs link for masked CI/CD variable requirements', () => {
+      createComponent({ mountFn: mountExtended });
+
+      expect(findVariablesMaskedValueDocsLink().attributes('href')).toBe(
+        helpPagePath('ci/variables/_index', { anchor: 'mask-a-cicd-variable' }),
       );
     });
 
     it('value field is resizable', () => {
       expect(findValueField().props('noResize')).toBe(false);
+    });
+
+    describe('environments label', () => {
+      it('has a help icon', () => {
+        const helpIcon = findEnvironmentsLabelHelpContainer().findComponent(HelpIcon);
+
+        expect(helpIcon.exists()).toBe(true);
+      });
+
+      it('has a popover', () => {
+        const popover = findEnvironmentsLabelHelpPopover();
+
+        expect(popover.exists()).toBe(true);
+        expect(popover.props()).toMatchObject({
+          target: 'environments-popover-target',
+          container: 'environments-popover-container',
+        });
+      });
+
+      describe('popover', () => {
+        it('renders the correct content', () => {
+          const popover = findEnvironmentsLabelHelpPopover();
+
+          expect(popover.text()).toContain(
+            'You can use a specific environment name like production, or include a wildcard (*) to match multiple environments, like review*.  Learn how to restrict CI/CD variables to specific environments for better security.',
+          );
+        });
+
+        it('renders the documentation link', () => {
+          const popover = findEnvironmentsLabelHelpPopover();
+          const link = popover.findComponent(GlLink);
+          const documentationLink = helpPagePath('ci/environments/_index', {
+            anchor: 'limit-the-environment-scope-of-a-cicd-variable',
+          });
+
+          expect(link.attributes('href')).toBe(documentationLink);
+        });
+      });
+    });
+
+    describe('visibility label', () => {
+      it('has a help icon', () => {
+        const helpIcon = findVisibilityLabelHelpContainer().findComponent(HelpIcon);
+
+        expect(helpIcon.exists()).toBe(true);
+      });
+
+      it('has a popover', () => {
+        const popover = findVisibilityLabelHelpPopover();
+
+        expect(popover.exists()).toBe(true);
+        expect(popover.props()).toMatchObject({
+          target: 'visibility-popover-target',
+          container: 'visibility-popover-container',
+        });
+      });
+
+      describe('popover', () => {
+        it('renders the correct content', () => {
+          const popover = findVisibilityLabelHelpPopover();
+
+          expect(popover.text()).toContain(
+            "Set the visibility level for the variable's value. The Masked and hidden option is only available for new variables. You cannot update an existing variable to be hidden.",
+          );
+        });
+
+        it('renders the documentation link', () => {
+          const popover = findVisibilityLabelHelpPopover();
+          const link = popover.findComponent(GlLink);
+          const documentationLink = helpPagePath('ci/variables/_index', {
+            anchor: 'hide-a-cicd-variable',
+          });
+
+          expect(link.attributes('href')).toBe(documentationLink);
+        });
+      });
     });
   });
 
@@ -243,6 +333,23 @@ describe('CI Variable Drawer', () => {
             expect(findVisibilityRadioGroup().attributes('checked')).toBe(expectedVisibility);
           },
         );
+
+        it('is updated on variable update', async () => {
+          await createComponent({
+            props: {
+              selectedVariable: {
+                ...mockProjectVariableFileType,
+                masked: true,
+                hidden: true,
+              },
+            },
+          });
+
+          expect(findVisibilityRadioGroup().attributes('checked')).toBe(VISIBILITY_HIDDEN);
+          await wrapper.setProps({ mutationResponse: { message: 'Success', hasError: false } });
+
+          expect(findVisibilityRadioGroup().attributes('checked')).toBe(VISIBILITY_VISIBLE);
+        });
       });
 
       it('is disabled when editing a hidden variable', () => {
@@ -400,26 +507,22 @@ describe('CI Variable Drawer', () => {
         shortAndMultiLineAndUnsupportedChar: 'short\n!',
         multiLineAndUnsupportedChar: 'multiline\nvalue!',
       };
+      const maskedValidationIssuesTitle = 'Unable to create masked variable because:';
       const maskedValidationIssuesText = {
-        short: 'The value must have at least 8 characters.',
-        multiLine:
-          'This value cannot be masked because it contains the following characters: whitespace characters.',
-        unsupportedChar:
-          'This value cannot be masked because it contains the following characters: |.',
-        unsupportedDollarChar:
-          'This value cannot be masked because it contains the following characters: $.',
-        twoUnsupportedChars:
-          'This value cannot be masked because it contains the following characters: |, !.',
-        threeUnsupportedChars:
-          'This value cannot be masked because it contains the following characters: %, |, !.',
+        short: 'The value must have 8 characters.',
+        multiLine: 'The value cannot contain the following characters: whitespace characters.',
+        unsupportedChar: 'The value cannot contain the following characters: |.',
+        unsupportedDollarChar: 'The value cannot contain the following characters: $.',
+        twoUnsupportedChars: 'The value cannot contain the following characters: |, !.',
+        threeUnsupportedChars: 'The value cannot contain the following characters: %, |, !.',
         shortAndMultiLine:
-          'This value cannot be masked because it contains the following characters: whitespace characters. The value must have at least 8 characters.',
+          'The value cannot contain the following characters: whitespace characters.The value must have 8 characters.',
         shortAndUnsupportedChar:
-          'This value cannot be masked because it contains the following characters: !. The value must have at least 8 characters.',
+          'The value cannot contain the following characters: !.The value must have 8 characters.',
         shortAndMultiLineAndUnsupportedChar:
-          'This value cannot be masked because it contains the following characters: ! and whitespace characters. The value must have at least 8 characters.',
+          'The value cannot contain the following characters: ! and whitespace characters.The value must have 8 characters.',
         multiLineAndUnsupportedChar:
-          'This value cannot be masked because it contains the following characters: ! and whitespace characters.',
+          'The value cannot contain the following characters: ! and whitespace characters.',
       };
 
       describe.each`
@@ -440,7 +543,7 @@ describe('CI Variable Drawer', () => {
         'masking requirements',
         ({ value, canSubmit, trackingErrorProperty, validationIssueKey }) => {
           beforeEach(() => {
-            createComponent();
+            createComponent({ mountFn: mountExtended });
 
             trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
             findKeyField().vm.$emit('input', 'NEW_VARIABLE');
@@ -450,7 +553,7 @@ describe('CI Variable Drawer', () => {
 
           itif(canSubmit)(`can submit when value is ${value}`, () => {
             /* eslint-disable jest/no-standalone-expect */
-            expect(findValueLabel().attributes('invalid-feedback')).toBe('');
+            expect(findInvalidMaskedValueErrorList().text()).toBe('');
             expect(findConfirmBtn().attributes('disabled')).toBeUndefined();
             /* eslint-enable jest/no-standalone-expect */
           });
@@ -459,9 +562,10 @@ describe('CI Variable Drawer', () => {
             `shows validation errors and disables submit button when value is ${value}`,
             () => {
               const validationIssueText = maskedValidationIssuesText[validationIssueKey] || '';
+              const errorText = findInvalidMaskedValueErrorsWrapper().text();
 
               /* eslint-disable jest/no-standalone-expect */
-              expect(findValueLabel().attributes('invalid-feedback')).toBe(validationIssueText);
+              expect(errorText).toBe(`${maskedValidationIssuesTitle} ${validationIssueText}`);
               expect(findConfirmBtn().attributes('disabled')).toBeDefined();
               /* eslint-enable jest/no-standalone-expect */
             },
@@ -513,7 +617,7 @@ describe('CI Variable Drawer', () => {
       });
 
       it('when creating a hidden variable, value field behaves like a masked variable', async () => {
-        createComponent();
+        createComponent({ mountFn: mountExtended });
 
         findKeyField().vm.$emit('input', 'NEW_VARIABLE');
         findValueField().vm.$emit('input', '~v@lid:symbols.');
@@ -522,7 +626,7 @@ describe('CI Variable Drawer', () => {
         await nextTick();
 
         expect(findHiddenVariableTip().exists()).toBe(false);
-        expect(findValueLabel().attributes('invalid-feedback')).toBe('');
+        expect(findInvalidMaskedValueErrorList().text()).toBe('');
         expect(findConfirmBtn().attributes('disabled')).toBeUndefined();
 
         findValueField().vm.$emit('input', 'dollar$ign');
@@ -530,7 +634,7 @@ describe('CI Variable Drawer', () => {
         await nextTick();
 
         expect(findHiddenVariableTip().exists()).toBe(false);
-        expect(findValueLabel().attributes('invalid-feedback')).not.toBe('');
+        expect(findInvalidMaskedValueErrorList().text()).not.toBe('');
         expect(findConfirmBtn().attributes('disabled')).toBeDefined();
       });
 

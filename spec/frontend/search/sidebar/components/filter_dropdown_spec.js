@@ -1,4 +1,4 @@
-import { GlCollapsibleListbox, GlListboxItem, GlIcon } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlListboxItem, GlIcon, GlAvatar } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import FilterDropdown from '~/search/sidebar/components/shared/filter_dropdown.vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -35,6 +35,7 @@ describe('BranchDropdown', () => {
 
   const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findGlListboxItems = () => wrapper.findAllComponents(GlListboxItem);
+  const findGlAvatar = () => wrapper.findAllComponents(GlAvatar);
   const findErrorMessage = () => wrapper.findByTestId('branch-dropdown-error');
 
   describe('when nothing is selected', () => {
@@ -95,6 +96,7 @@ describe('BranchDropdown', () => {
       jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
       await waitForPromises();
       expect(findGlListboxItems()).toHaveLength(1);
+      expect(findGlAvatar()).toHaveLength(1);
     });
 
     it('emits hide', () => {

@@ -2,24 +2,33 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Feature flag user lists API
 ---
 
-# Feature flag user lists API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205409) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to GitLab Free in 13.5.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205409) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to GitLab Free in 13.5.
+
+{{< /history >}}
 
 API for accessing GitLab feature flag user lists.
 
 Users with at least the Developer [role](../user/permissions.md) can access the feature flag user lists API.
 
-NOTE:
+{{< alert type="note" >}}
+
 `GET` requests return twenty results at a time because the API results
-are [paginated](rest/index.md#pagination). You can change this value.
+are [paginated](rest/_index.md#pagination). You can change this value.
+
+{{< /alert >}}
 
 ## List all feature flag user lists for a project
 
@@ -31,7 +40,7 @@ GET /projects/:id/feature_flags_user_lists
 
 | Attribute | Type           | Required | Description                                                                      |
 | --------- | -------------- | -------- | -------------------------------------------------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `search`  | string         | no       | Return user lists matching the search criteria.                                  |
 
 ```shell
@@ -73,7 +82,7 @@ POST /projects/:id/feature_flags_user_lists
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).       |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).       |
 | `name`              | string           | yes        | The name of the list. |
 | `user_xids`         | string           | yes        | A comma-separated list of external user IDs. |
 
@@ -113,7 +122,7 @@ GET /projects/:id/feature_flags_user_lists/:iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).       |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).       |
 | `iid`               | integer/string   | yes        | The internal ID of the project's feature flag user list.                               |
 
 ```shell
@@ -144,7 +153,7 @@ PUT /projects/:id/feature_flags_user_lists/:iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).       |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).       |
 | `iid`               | integer/string   | yes        | The internal ID of the project's feature flag user list.                               |
 | `name`              | string           | no         | The name of the list.                                                          |
 | `user_xids`         | string           | no         | A comma-separated list of external user IDs.                                                    |
@@ -185,7 +194,7 @@ DELETE /projects/:id/feature_flags_user_lists/:iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).       |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).       |
 | `iid`               | integer/string   | yes        | The internal ID of the project's feature flag user list                                |
 
 ```shell

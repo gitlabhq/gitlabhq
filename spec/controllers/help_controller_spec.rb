@@ -306,6 +306,34 @@ RSpec.describe HelpController do
         it_behaves_like 'documentation pages redirect', 'https://in-yaml.gitlab.com'
       end
 
+      context 'when path contains _index' do
+        let(:path) { 'user/ssh/_index' }
+        let(:gitlab_version) { version }
+
+        before do
+          allow(Settings).to receive(:gitlab_docs) { double(enabled: true, host: 'https://in-yaml.gitlab.com') }
+          stub_version(gitlab_version, 'ignored_revision_value')
+        end
+
+        it 'redirects to the path without _index and with version' do
+          get :show, params: { path: path }, format: :md
+
+          expect(response).to redirect_to('https://in-yaml.gitlab.com/13.4/user/ssh/')
+        end
+
+        context 'when it is a pre-release' do
+          before do
+            stub_version('13.4.0-pre', 'ignored_revision_value')
+          end
+
+          it 'redirects to the path without _index and without version' do
+            get :show, params: { path: path }, format: :md
+
+            expect(response).to redirect_to('https://in-yaml.gitlab.com/user/ssh/')
+          end
+        end
+      end
+
       context 'when requested file is missing' do
         before do
           stub_application_setting(help_page_documentation_base_url: '')

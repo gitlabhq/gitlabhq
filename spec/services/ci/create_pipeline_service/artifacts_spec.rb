@@ -41,7 +41,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :job_artifacts do
 
         it 'creates pipeline with builds' do
           expect(pipeline).to be_persisted
-          expect(pipeline).not_to have_yaml_errors
+          expect(pipeline.error_messages).to be_empty
           expect(pipeline.builds.pluck(:name)).to contain_exactly('test-job', 'dependency-scanning-job')
         end
       end
@@ -59,7 +59,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :job_artifacts do
 
         it 'creates pipeline with yaml errors' do
           expect(pipeline).to be_persisted
-          expect(pipeline).to have_yaml_errors
+          expect(pipeline.error_messages).not_to be_empty
         end
       end
     end

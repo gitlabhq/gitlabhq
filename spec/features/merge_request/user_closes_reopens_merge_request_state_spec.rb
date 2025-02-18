@@ -18,7 +18,7 @@ RSpec.describe 'User closes/reopens a merge request', :js, feature_category: :co
       visit merge_request_path(open_merge_request)
     end
 
-    context 'when clicking the top `Close merge request` button', :aggregate_failures do
+    context 'when clicking the top `Close merge request` button' do
       it 'closes the merge request' do
         expect(page).to have_css('.gl-badge', text: 'Open')
 
@@ -31,7 +31,7 @@ RSpec.describe 'User closes/reopens a merge request', :js, feature_category: :co
       end
     end
 
-    context 'when clicking the bottom `Close merge request` button', :aggregate_failures do
+    context 'when clicking the bottom `Close merge request` button' do
       it 'closes the merge request' do
         expect(page).to have_css('.gl-badge', text: 'Open')
 
@@ -51,7 +51,7 @@ RSpec.describe 'User closes/reopens a merge request', :js, feature_category: :co
       visit merge_request_path(closed_merge_request)
     end
 
-    context 'when clicking the top `Reopen merge request` button', :aggregate_failures do
+    context 'when clicking the top `Reopen merge request` button' do
       it 'reopens the merge request', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444681' do
         expect(page).to have_css('.gl-badge', text: 'Closed')
 
@@ -64,7 +64,7 @@ RSpec.describe 'User closes/reopens a merge request', :js, feature_category: :co
       end
     end
 
-    context 'when clicking the bottom `Reopen merge request` button', :aggregate_failures do
+    context 'when clicking the bottom `Reopen merge request` button' do
       it 'reopens the merge request' do
         expect(page).to have_css('.gl-badge', text: 'Closed')
 

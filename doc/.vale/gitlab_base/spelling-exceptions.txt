@@ -183,6 +183,7 @@ colocate
 colocated
 colocating
 commit's
+committer's
 Command Palette
 CommonMark
 compilable
@@ -415,6 +416,7 @@ GLQL's
 Gmail
 Godep
 Golang
+Goldmark
 Gollum
 Google
 goroutine
@@ -912,6 +914,8 @@ SHAs
 shfmt
 Shippo
 Shopify
+shortcode
+shortcodes
 Sidekiq
 Sigstore
 Silverlight

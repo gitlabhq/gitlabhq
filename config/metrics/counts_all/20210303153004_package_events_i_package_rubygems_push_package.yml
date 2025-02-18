@@ -15,9 +15,6 @@ events:
   - name: push_package_to_registry
     filter:
       label: rubygems
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

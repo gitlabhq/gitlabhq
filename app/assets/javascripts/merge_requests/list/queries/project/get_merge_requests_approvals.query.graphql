@@ -1,0 +1,68 @@
+#import "ee_else_ce/merge_request_dashboard/queries/merge_request_approval.fragment.graphql"
+
+query getProjectMergeRequestsApprovals(
+  $fullPath: ID!
+  $sort: MergeRequestSort
+  $state: MergeRequestState
+  $search: String
+  $approvedBy: [String!]
+  $assigneeUsernames: String
+  $assigneeWildcardId: AssigneeWildcardId
+  $reviewerUsername: String
+  $reviewerWildcardId: ReviewerWildcardId
+  $authorUsername: String
+  $draft: Boolean
+  $labelName: [String!]
+  $releaseTag: String
+  $mergeUser: String
+  $milestoneTitle: String
+  $milestoneWildcardId: MilestoneWildcardId
+  $myReactionEmoji: String
+  $sourceBranches: [String!]
+  $targetBranches: [String!]
+  $deployedBefore: Time
+  $deployedAfter: Time
+  $environmentName: String
+  $not: MergeRequestsResolverNegatedParams
+  $beforeCursor: String
+  $afterCursor: String
+  $firstPageSize: Int
+  $lastPageSize: Int
+) {
+  namespace: project(fullPath: $fullPath) {
+    id
+    mergeRequests(
+      sort: $sort
+      state: $state
+      search: $search
+      approvedBy: $approvedBy
+      assigneeUsername: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
+      reviewerUsername: $reviewerUsername
+      reviewerWildcardId: $reviewerWildcardId
+      authorUsername: $authorUsername
+      draft: $draft
+      labelName: $labelName
+      releaseTag: $releaseTag
+      mergedBy: $mergeUser
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      sourceBranches: $sourceBranches
+      targetBranches: $targetBranches
+      deployedBefore: $deployedBefore
+      deployedAfter: $deployedAfter
+      environmentName: $environmentName
+      not: $not
+      before: $beforeCursor
+      after: $afterCursor
+      first: $firstPageSize
+      last: $lastPageSize
+    ) {
+      nodes {
+        id
+        ...MergeRequestApprovalFragment
+      }
+    }
+  }
+}

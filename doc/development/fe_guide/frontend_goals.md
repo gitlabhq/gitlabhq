@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Frontend Goals
 ---
-
-# Frontend Goals
 
 This section defines the _desired state_ of the GitLab frontend and how we see it over the next few years. It is a living document and will adapt as technologies and team dynamics evolve.
 

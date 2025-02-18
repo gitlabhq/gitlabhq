@@ -97,8 +97,8 @@ export default {
         ? newWorkItemFullPath(this.fullPath, this.workItemType)
         : this.fullPath;
     },
-    canUpdate() {
-      return this.workItem?.userPermissions?.updateWorkItem;
+    canUpdateMetadata() {
+      return this.workItem?.userPermissions?.setWorkItemMetadata;
     },
     dropdownLabelText() {
       return n__('%d contact', '%d contacts', this.selectedCount);
@@ -269,7 +269,7 @@ export default {
 <template>
   <work-item-sidebar-dropdown-widget
     :dropdown-label="s__('Crm|Contacts')"
-    :can-update="canUpdate"
+    :can-update="canUpdateMetadata"
     dropdown-name="crm-contacts"
     :loading="isLoading"
     :list-items="listItems"
@@ -326,7 +326,7 @@ export default {
                 </div>
                 <div
                   v-if="organizationName !== s__('Crm|No organization')"
-                  class="gl-flex gl-flex-col gl-gap-2 gl-rounded-base gl-bg-gray-50 gl-p-3"
+                  class="gl-flex gl-flex-col gl-gap-2 gl-rounded-base gl-bg-strong gl-p-3"
                 >
                   <div class="gl-font-bold">{{ organizationName }}</div>
                   <div

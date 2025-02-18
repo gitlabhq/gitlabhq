@@ -11,7 +11,7 @@
   manual_task: true
   window: "3"
   body: |
-    You can configure the container registry to send [webhook notifications](https://docs.gitlab.com/ee/administration/packages/container_registry.html#configure-container-registry-notifications) in response to events happening in the registry. The configuration uses the `threshold` and `backoff` parameters to specify how many failures are allowed before backing off for a period of time before retrying.
+    You can configure the container registry to send [webhook notifications](https://docs.gitlab.com/administration/packages/container_registry/#configure-container-registry-notifications) in response to events happening in the registry. The configuration uses the `threshold` and `backoff` parameters to specify how many failures are allowed before backing off for a period of time before retrying.
 
     The problem is that the event will be held in memory forever until it is successful or the registry is shut down. This is not ideal as it can cause high memory and CPU usage on the registry side if the events are not sent properly. It will also delay any new events added to the queue of events.
 

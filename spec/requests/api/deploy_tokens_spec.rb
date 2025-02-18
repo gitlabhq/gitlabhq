@@ -386,16 +386,38 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
           send(entity).send("add_#{authorized_role}", user)
         end
 
-        it 'creates the deploy token' do
-          expect { subject }.to change { DeployToken.count }.by(1)
+        ::DeployToken::AVAILABLE_SCOPES.map(&:to_s).each do |scope|
+          context "with valid scope #{scope}" do
+            before do
+              params[:scopes] = [scope.to_sym]
+            end
 
-          expect(response).to have_gitlab_http_status(:created)
-          expect(response).to match_response_schema('public_api/v4/deploy_token')
-          expect(json_response['name']).to eq('Foo')
-          expect(json_response['scopes']).to eq(['read_repository'])
-          expect(json_response['username']).to eq('Bar')
-          expect(json_response['expires_at'].to_time.to_i).to eq(expires_time.to_i)
-          expect(json_response['token']).to match(/gldt-[A-Za-z0-9_-]{20}/)
+            it 'creates the deploy token' do
+              expect { subject }.to change { DeployToken.count }.by(1)
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(response).to match_response_schema('public_api/v4/deploy_token')
+              expect(json_response['name']).to eq('Foo')
+              expect(json_response['scopes']).to eq([scope])
+              expect(json_response['username']).to eq('Bar')
+              expect(json_response['expires_at'].to_time.to_i).to eq(expires_time.to_i)
+              expect(json_response['token']).to match(/gldt-[A-Za-z0-9_-]{20}/)
+            end
+          end
+
+          context 'with all scopes' do
+            before do
+              params[:scopes] = ::DeployToken::AVAILABLE_SCOPES
+            end
+
+            it 'creates the deploy token with all scopes' do
+              expect { subject }.to change { DeployToken.count }.by(1)
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(response).to match_response_schema('public_api/v4/deploy_token')
+              expect(json_response['scopes']).to eq(::DeployToken::AVAILABLE_SCOPES.map(&:to_s))
+            end
+          end
         end
 
         context 'with no optional params given' do

@@ -654,7 +654,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
   describe '#housekeeping' do
     let_it_be(:group) { create(:group) }
-    let(:housekeeping_service_dbl) { instance_double(Repositories::HousekeepingService) }
+    let(:housekeeping_service_dbl) { instance_double(::Repositories::HousekeepingService) }
     let(:params) do
       {
         namespace_id: project.namespace.path,
@@ -665,7 +665,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
     let(:prune) { nil }
     let_it_be(:project) { create(:project, group: group) }
-    let(:housekeeping) { Repositories::HousekeepingService.new(project) }
+    let(:housekeeping) { ::Repositories::HousekeepingService.new(project) }
 
     subject { post :housekeeping, params: params }
 
@@ -674,7 +674,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         group.add_owner(user)
         sign_in(user)
 
-        allow(Repositories::HousekeepingService).to receive(:new).with(project, :eager).and_return(housekeeping)
+        allow(::Repositories::HousekeepingService).to receive(:new).with(project, :eager).and_return(housekeeping)
       end
 
       it 'forces a full garbage collection' do
@@ -707,7 +707,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         let(:prune) { true }
 
         it 'enqueues pruning' do
-          allow(Repositories::HousekeepingService).to receive(:new).with(project, :prune).and_return(housekeeping_service_dbl)
+          allow(::Repositories::HousekeepingService).to receive(:new).with(project, :prune).and_return(housekeeping_service_dbl)
           expect(housekeeping_service_dbl).to receive(:execute)
 
           subject
@@ -939,7 +939,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
               project_setting_attributes: {
                 show_default_award_emojis: boolean_value,
                 enforce_auth_checks_on_uploads: boolean_value,
-                emails_enabled: boolean_value
+                emails_enabled: boolean_value,
+                extended_prat_expiry_webhooks_execute: boolean_value
               }
             }
           }
@@ -950,6 +951,29 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           expect(project.enforce_auth_checks_on_uploads?).to eq(result)
           expect(project.emails_enabled?).to eq(result)
           expect(project.emails_disabled?).to eq(!result)
+          expect(project.extended_prat_expiry_webhooks_execute?).to eq(result)
+        end
+
+        context 'when extended_expiry_webhook_execution_setting feature flag is false' do
+          before do
+            stub_feature_flags(extended_expiry_webhook_execution_setting: false)
+          end
+
+          it "does not update extended_expiry_webhook_execution_setting" do
+            put :update, params: {
+              namespace_id: project.namespace,
+              id: project.path,
+              project: {
+                project_setting_attributes: {
+                  extended_prat_expiry_webhooks_execute: boolean_value
+                }
+              }
+            }
+
+            project.reload
+
+            expect(project.extended_prat_expiry_webhooks_execute?).to be false
+          end
         end
       end
     end

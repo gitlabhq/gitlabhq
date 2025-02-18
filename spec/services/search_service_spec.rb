@@ -442,7 +442,7 @@ RSpec.describe SearchService, feature_category: :global_search do
 
     it 'returns an empty array when not abusive' do
       allow(params).to receive(:abusive?).and_return false
-      expect(search_service.abuse_messages).to match_array([])
+      expect(search_service.abuse_messages).to be_empty
     end
 
     it 'calls on abuse_detection.errors.full_messages when abusive' do
@@ -489,27 +489,21 @@ RSpec.describe SearchService, feature_category: :global_search do
     using RSpec::Parameterized::TableSyntax
     let(:search) { 'foobar' }
 
-    where(:scope, :feature_flag, :enabled, :expected) do
-      'blobs'          | :global_search_code_tab           | false | false
-      'blobs'          | :global_search_code_tab           | true  | true
-      'commits'        | :global_search_commits_tab        | false | false
-      'commits'        | :global_search_commits_tab        | true  | true
-      'issues'         | :global_search_issues_tab         | false | false
-      'issues'         | :global_search_issues_tab         | true  | true
-      'merge_requests' | :global_search_merge_requests_tab | false | false
-      'merge_requests' | :global_search_merge_requests_tab | true  | true
-      'snippet_titles' | :global_search_snippet_titles_tab | false | false
-      'snippet_titles' | :global_search_snippet_titles_tab | true  | true
-      'wiki_blobs'     | :global_search_wiki_tab           | false | false
-      'wiki_blobs'     | :global_search_wiki_tab           | true  | true
-      'users'          | :global_search_users_tab          | false | false
-      'users'          | :global_search_users_tab          | true  | true
-      'random'         | :random                           | nil   | true
+    where(:scope, :admin_setting, :setting_enabled, :expected) do
+      'issues'         | :global_search_issues_enabled         | false | false
+      'issues'         | :global_search_issues_enabled         | true  | true
+      'merge_requests' | :global_search_merge_requests_enabled | false | false
+      'merge_requests' | :global_search_merge_requests_enabled | true  | true
+      'snippet_titles' | :global_search_snippet_titles_enabled | false | false
+      'snippet_titles' | :global_search_snippet_titles_enabled | true  | true
+      'users'          | :global_search_users_enabled          | false | false
+      'users'          | :global_search_users_enabled          | true  | true
+      'random'         | :random                               | nil   | true
     end
 
     with_them do
       it 'returns false when feature_flag is not enabled and returns true when feature_flag is enabled' do
-        stub_feature_flags(feature_flag => enabled)
+        stub_application_setting(admin_setting => setting_enabled)
         expect(search_service.global_search_enabled_for_scope?).to eq expected
       end
     end
@@ -522,13 +516,13 @@ RSpec.describe SearchService, feature_category: :global_search do
       end
 
       it 'returns false when feature_flag is not enabled' do
-        stub_feature_flags(global_search_snippet_titles_tab: false)
+        stub_application_setting(global_search_snippet_titles_enabled: false)
 
         expect(search_service.global_search_enabled_for_scope?).to eq false
       end
 
       it 'returns true when feature_flag is enabled' do
-        stub_feature_flags(global_search_snippet_titles_tab: true)
+        stub_application_setting(global_search_snippet_titles_enabled: true)
 
         expect(search_service.global_search_enabled_for_scope?).to eq true
       end

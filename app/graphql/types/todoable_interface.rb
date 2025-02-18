@@ -18,6 +18,8 @@ module Types
 
     def self.resolve_type(object, context)
       case object
+      when User
+        Types::UserType
       when WorkItem
         Types::WorkItemType
       when Issue
@@ -36,6 +38,8 @@ module Types
         Types::GroupType
       when Key # SSH key
         Types::KeyType
+      when WikiPage::Meta
+        Types::Wikis::WikiPageType
       else
         raise "Unknown GraphQL type for #{object}"
       end

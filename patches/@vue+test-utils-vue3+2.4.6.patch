@@ -1,0 +1,14 @@
+diff --git a/node_modules/@vue/test-utils-vue3/dist/vue-test-utils.cjs.js b/node_modules/@vue/test-utils-vue3/dist/vue-test-utils.cjs.js
+index 118b9b3..5083f20 100644
+--- a/node_modules/@vue/test-utils-vue3/dist/vue-test-utils.cjs.js
++++ b/node_modules/@vue/test-utils-vue3/dist/vue-test-utils.cjs.js
+@@ -8025,7 +8025,8 @@ function createStubComponentsTransformer(_a) {
+             return ((_c = (_b = (_a = config.plugins).createStubs) === null || _b === void 0 ? void 0 : _b.call(_a, {
+                 name: stubName,
+                 component: type,
+-                registerStub: registerStub
++                registerStub: registerStub,
++								stubs: stubs
+             })) !== null && _c !== void 0 ? _c : createStub({
+                 name: stubName,
+                 type: type,

@@ -2,13 +2,15 @@
 stage: Foundations
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting Elasticsearch access
 ---
 
-# Troubleshooting Elasticsearch access
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When working with Elasticsearch access, you might encounter the following issues.
 
@@ -75,10 +77,10 @@ es_url.save!
 One of the most valuable tools for identifying issues with the Elasticsearch
 integration are logs. The most relevant logs for this integration are:
 
-1. [`sidekiq.log`](../../../administration/logs/index.md#sidekiqlog) - All of the
+1. [`sidekiq.log`](../../../administration/logs/_index.md#sidekiqlog) - All of the
    indexing happens in Sidekiq, so much of the relevant logs for the
    Elasticsearch integration can be found in this file.
-1. [`elasticsearch.log`](../../../administration/logs/index.md#elasticsearchlog) - There
+1. [`elasticsearch.log`](../../../administration/logs/_index.md#elasticsearchlog) - There
    are additional logs specific to Elasticsearch that are sent to this file
    that might contain diagnostic information about searching,
    indexing, or migrations.

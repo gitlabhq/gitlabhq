@@ -6,7 +6,8 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Use a comma before the last 'and' or 'or' in a list of four or more items."
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#punctuation
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#punctuation
+vocab: false
 level: warning
 raw:
   - '(?:[\w-_` ]+,){2,}(?:[\w-_` ]+) (and |or )'

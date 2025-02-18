@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Secret Detection
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Remove a secret from your commits'
 ---
-
-# Tutorial: Remove a secret from your commits
 
 If your application uses external resources, you usually need to authenticate your
 application with a **secret**, like a token or key. If a secret is pushed to a
@@ -162,4 +161,4 @@ Even if you don't think many people have access to the secret, you should replac
 
 ## Next steps
 
-To improve your application security, consider enabling at least one of the [secret detection](index.md) methods in your project.
+To improve your application security, consider enabling at least one of the [secret detection](_index.md) methods in your project.

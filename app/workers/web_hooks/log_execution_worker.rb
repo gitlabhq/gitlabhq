@@ -16,7 +16,7 @@ module WebHooks
     # treat this worker as idempotent. Currently this is set to
     # the Job ID (jid) of the parent worker.
     def perform(hook_id, log_data, response_category, _unique_by)
-      hook = WebHook.find_by_id(hook_id)
+      hook = ::WebHook.find_by_id(hook_id)
 
       return unless hook # hook has been deleted before we could run.
 

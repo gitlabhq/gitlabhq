@@ -7,8 +7,8 @@ RSpec.shared_context 'for maven virtual registry api setup' do
   let_it_be(:group) { create(:group) }
   let_it_be_with_reload(:registry) { create(:virtual_registries_packages_maven_registry, group: group) }
   let_it_be(:upstream) { create(:virtual_registries_packages_maven_upstream, registry: registry) }
-  let_it_be_with_reload(:cached_response) do
-    create(:virtual_registries_packages_maven_cached_response, upstream: upstream)
+  let_it_be_with_reload(:cache_entry) do
+    create(:virtual_registries_packages_maven_cache_entry, upstream: upstream)
   end
 
   let_it_be(:project) { create(:project, namespace: group) }

@@ -1,9 +1,0 @@
----
-name: ci_delete_old_pipelines
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/498969
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171142
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/503153
-milestone: '17.7'
-group: group::ci platform
-type: beta
-default_enabled: false

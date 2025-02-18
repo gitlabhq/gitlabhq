@@ -7,7 +7,7 @@ default:
   image: node:21.7.3
 
   # This folder is cached between builds
-  # https://docs.gitlab.com/ee/ci/yaml/index.html#cache
+  # https://docs.gitlab.com/ee/ci/yaml/#cache
   cache:
     paths:
       - node_modules/

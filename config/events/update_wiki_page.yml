@@ -14,9 +14,6 @@ additional_properties:
 product_group: knowledge
 milestone: '17.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149271
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

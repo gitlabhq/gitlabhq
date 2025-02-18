@@ -31,7 +31,7 @@ RSpec.describe 'PipelineCreate', feature_category: :pipeline_composition do
     QL
   end
 
-  let(:params) { { ref: 'master', variables: [] } }
+  let(:params) { { ref: 'master', variables: [{ key: 'key', value: 'value', variable_type: 'ENV_VAR' }] } }
 
   let(:mutation_response) { graphql_mutation_response(:pipeline_create) }
 

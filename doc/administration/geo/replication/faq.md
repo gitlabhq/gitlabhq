@@ -2,17 +2,19 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Geo Frequently Asked Questions
 ---
 
-# Geo Frequently Asked Questions
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 ## What are the minimum requirements to run Geo?
 
-The requirements are listed [on the index page](../index.md#requirements-for-running-geo)
+The requirements are listed [on the index page](../_index.md#requirements-for-running-geo)
 
 ## How does Geo know which projects to sync?
 
@@ -44,7 +46,7 @@ So even if we have an outdated tracking database, the validation should activate
 Yes, but there are limitations to what we replicate (see
 [What data is replicated to a **secondary** site?](#what-data-is-replicated-to-a-secondary-site)).
 
-Read the documentation for [Disaster Recovery](../disaster_recovery/index.md).
+Read the documentation for [Disaster Recovery](../disaster_recovery/_index.md).
 
 ## What data is replicated to a **secondary** site?
 
@@ -96,6 +98,6 @@ Yes, projects scheduled for deletion by [delayed deletion](../../settings/visibi
 ## What happens to my secondary sites with when my primary site goes down?
 
 When a primary site goes down,
-[your secondary will not be accessible through the UI](../secondary_proxy/index.md#behavior-of-secondary-sites-when-the-primary-geo-site-is-down)
+[your secondary will not be accessible through the UI](../secondary_proxy/_index.md#behavior-of-secondary-sites-when-the-primary-geo-site-is-down)
 unless your restore the services on your primary site or you perform a promotion
 on your secondary site.

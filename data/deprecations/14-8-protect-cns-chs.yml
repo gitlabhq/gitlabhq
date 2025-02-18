@@ -17,9 +17,9 @@
 
     To integrate these technologies into GitLab, add the desired Helm charts
     into your copy of the
-    [Cluster Management Project Template](https://docs.gitlab.com/ee/user/clusters/management_project_template.html).
+    [Cluster Management Project Template](https://docs.gitlab.com/user/clusters/management_project_template/).
     Deploy these Helm charts in production by calling commands through GitLab
-    [CI/CD](https://docs.gitlab.com/ee/user/clusters/agent/ci_cd_workflow.html).
+    [CI/CD](https://docs.gitlab.com/user/clusters/agent/ci_cd_workflow/).
 
     As part of this change, the following specific capabilities within GitLab
     are now deprecated, and are scheduled for removal in GitLab 15.0:

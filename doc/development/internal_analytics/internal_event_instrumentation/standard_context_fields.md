@@ -2,9 +2,8 @@
 stage: Monitor
 group: Analytics Instrumentation
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GitLab Standard Context Fields
 ---
-
-# GitLab Standard Context Fields
 
 Standard context, also referred to as [Cloud context](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/proposals/-/blob/master/doc/data_usage_collection_outside_gitlab_codebase.md?ref_type=heads), describes all the fields available in the GitLab Standard Context schema.
 
@@ -59,6 +58,17 @@ Standard context, also referred to as [Cloud context](https://gitlab.com/gitlab-
 | `context_generated_at` | string, null | Timestamp indicating when the context was generated.    | `"2023-12-20T10:00:00Z"`    |
 | `correlation_id`      | string, null  | Unique request ID for each request.                     | `uuid`                      |
 | `extra`               | object, null  | Additional data associated with the event, in key-value pair format. | `{"key": "value"}`          |
+
+### Adding a New Field to the Standard Context
+
+To add a new field to the standard context:
+
+1. Create a merge request in the [iglu](https://gitlab.com/gitlab-org/iglu/-/tree/master/public/schemas/com.gitlab/gitlab_standard/jsonschema?ref_type=heads) repository to update the schema.
+
+1. If the new field should be pseudonymized, add it to the [ATTRIBUTE_TO_PSEUDONYMISE](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/snowplow-pseudonymization/-/blob/main/lib/snowplow/gitlab_standard_context.rb?ref_type=heads#L9) constant in the `snowplow-pseudonymization` project.
+
+1. Update the `GITLAB_STANDARD_SCHEMA_URL` in [tracking/standard_context.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/tracking/standard_context.rb#L6) to match the new version from `gitlab-org/iglu`.
+1. Start sending events that include the new field in Standard Context.
 
 ### Related Links
 

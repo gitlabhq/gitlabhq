@@ -34,6 +34,13 @@
     "token": {
       "type": "string"
     },
+    "expires_at": {
+      "type": [
+        "date-time",
+        "null"
+      ],
+      "format": "date-time"
+    },
     "has_token_exposed": {
       "type": "boolean"
     },

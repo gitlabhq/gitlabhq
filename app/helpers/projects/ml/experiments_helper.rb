@@ -44,25 +44,6 @@ module Projects
         Gitlab::Json.generate(candidates.flat_map(&selector).map(&:name).uniq)
       end
 
-      def experiments_as_data(project, experiments)
-        data = experiments.map do |experiment|
-          {
-            name: experiment.name,
-            path: link_to_experiment(project, experiment),
-            candidate_count: experiment.candidate_count,
-            updated_at: experiment.updated_at,
-            user: {
-              id: experiment.user&.id,
-              name: experiment.user&.name,
-              path: experiment&.user ? user_path(experiment&.user) : nil,
-              avatar_url: experiment.user&.avatar_url
-            }
-          }
-        end
-
-        Gitlab::Json.generate(data)
-      end
-
       def page_info(paginator)
         {
           has_next_page: paginator.has_next_page?,

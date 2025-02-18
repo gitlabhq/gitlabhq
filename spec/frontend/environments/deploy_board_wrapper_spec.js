@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlCollapse, GlIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { stubTransition } from 'helpers/stub_transition';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import DeployBoardWrapper from '~/environments/components/deploy_board_wrapper.vue';
 import DeployBoard from '~/environments/components/deploy_board.vue';
@@ -22,7 +21,6 @@ describe('~/environments/components/deploy_board_wrapper.vue', () => {
     return mountExtended(DeployBoardWrapper, {
       propsData: { environment: resolvedEnvironment, rolloutStatus, ...propsData },
       provide: { helpPagePath: '/help' },
-      stubs: { transition: stubTransition() },
       apolloProvider: mockApollo,
     });
   };

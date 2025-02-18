@@ -11,7 +11,7 @@ module Types
             required: true,
             description: 'Amount of time spent in human readable format. For example: 1h 30m.'
 
-          argument :spent_at, Types::TimeType,
+          argument :spent_at, ::Types::TimeType,
             required: false,
             description: 'Timestamp of when the time tracked was spent at, ' \
               'if not provided would be set to current timestamp.'

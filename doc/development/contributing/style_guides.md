@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Development style guides
 ---
-
-# Development style guides
 
 ## Editor/IDE styling standardization
 
@@ -146,7 +145,7 @@ See the dedicated [Ruby Style Guide](../backend/ruby_style_guide.md).
 
 ## Go
 
-See the dedicated [Go standards and style guidelines](../go_guide/index.md).
+See the dedicated [Go standards and style guidelines](../go_guide/_index.md).
 
 ## Shell commands (Ruby)
 
@@ -154,7 +153,7 @@ See the dedicated [Guidelines for shell commands in the GitLab codebase](../shel
 
 ## Shell scripting
 
-See the dedicated [Shell scripting standards and style guidelines](../shell_scripting_guide/index.md).
+See the dedicated [Shell scripting standards and style guidelines](../shell_scripting_guide/_index.md).
 
 ## Markdown
 
@@ -166,7 +165,7 @@ We're following [Ciro Santilli's Markdown Style Guide](https://cirosantilli.com/
 
 ## Documentation
 
-See the dedicated [Documentation Style Guide](../documentation/styleguide/index.md).
+See the dedicated [Documentation Style Guide](../documentation/styleguide/_index.md).
 
 ### Guidelines for good practices
 
@@ -196,7 +195,7 @@ guidelines, do not use it for user documentation. For user documentation, use
 
 ## Python
 
-See the dedicated [Python Development Guidelines](../python_guide/index.md).
+See the dedicated [Python Development Guidelines](../python_guide/_index.md).
 
 ## Misc
 

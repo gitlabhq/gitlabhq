@@ -18,13 +18,6 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         .with_foreign_key('work_item_id')
     end
 
-    it 'has one `dates_source`' do
-      is_expected.to have_one(:dates_source)
-        .class_name('WorkItems::DatesSource')
-        .with_foreign_key('issue_id')
-        .inverse_of(:work_item)
-    end
-
     it 'has many `work_item_children`' do
       is_expected.to have_many(:work_item_children)
         .class_name('WorkItem')
@@ -250,7 +243,8 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         :assignees,
         :labels,
         :start_and_due_date,
-        :current_user_todos
+        :current_user_todos,
+        :development
       ])
     end
 
@@ -263,7 +257,8 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
 
     it 'returns quick action commands supported for all work items' do
       is_expected.to include(:title, :reopen, :close, :cc, :tableflip, :shrug, :type, :promote_to, :checkin_reminder,
-        :subscribe, :unsubscribe, :confidential, :award, :move, :clone)
+        :subscribe, :unsubscribe, :confidential, :award, :move, :clone, :copy_metadata, :duplicate,
+        :promote_to_incident)
     end
 
     it 'omits quick action commands from assignees widget' do
@@ -299,6 +294,10 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
 
       it 'returns quick action commands from current user todos widget' do
         is_expected.to include(:todo, :done)
+      end
+
+      it 'returns quick action commands from development widget' do
+        is_expected.to include(:create_merge_request)
       end
     end
   end

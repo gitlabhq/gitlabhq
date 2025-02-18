@@ -2,13 +2,15 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Protected branches API
 ---
 
-# Protected branches API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## Valid access levels
 
@@ -23,7 +25,11 @@ The access levels are defined in the `ProtectedRefAccess.allowed_access_levels` 
 
 ## List protected branches
 
-> - Deploy key information [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116846) in GitLab 16.0.
+{{< history >}}
+
+- Deploy key information [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116846) in GitLab 16.0.
+
+{{< /history >}}
 
 Gets a list of [protected branches](../user/project/repository/branches/protected.md) from a project
 as they are defined in the UI. If a wildcard is set, it is returned instead of the exact name
@@ -35,7 +41,7 @@ GET /projects/:id/protected_branches
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `search` | string | no | Name or part of the name of protected branches to be searched for |
 
 In the following example, the project ID is `5`.
@@ -162,7 +168,7 @@ GET /projects/:id/protected_branches/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `name` | string | yes | The name of the branch or wildcard |
 
 In the following example, the project ID is `5` and branch name is `main`:
@@ -231,7 +237,11 @@ Example response:
 
 ## Protect repository branches
 
-> - `deploy_key_id` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166598) in GitLab 17.5.
+{{< history >}}
+
+- `deploy_key_id` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166598) in GitLab 17.5.
+
+{{< /history >}}
 
 Protects a single repository branch or several project repository
 branches using a wildcard protected branch.
@@ -242,13 +252,13 @@ POST /projects/:id/protected_branches
 
 | Attribute                                    | Type | Required | Description |
 | -------------------------------------------- | ---- | -------- | ----------- |
-| `id`                                         | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                                         | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `name`                                       | string         | yes | The name of the branch or wildcard. |
 | `allow_force_push`                           | boolean        | no  | When enabled, members who can push to this branch can also force push. (default: `false`) |
 | `allowed_to_merge`                           | array          | no  | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
 | `allowed_to_push`                            | array          | no  | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
 | `allowed_to_unprotect`                       | array          | no  | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. The access level `No access` is not available for this field. Premium and Ultimate only. |
-| `code_owner_approval_required`               | boolean        | no  | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/index.md). (defaults: false) Premium and Ultimate only. |
+| `code_owner_approval_required`               | boolean        | no  | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/_index.md). (defaults: false) Premium and Ultimate only. |
 | `merge_access_level`                         | integer        | no  | Access levels allowed to merge. (defaults: `40`, Maintainer role). |
 | `push_access_level`                          | integer        | no  | Access levels allowed to push. (defaults: `40`, Maintainer role) |
 | `unprotect_access_level`                     | integer        | no  | Access levels allowed to unprotect. (defaults: `40`, Maintainer role) |
@@ -346,9 +356,12 @@ The following example response includes:
 
 ### Example with user push access and group merge access
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Elements in the `allowed_to_push` / `allowed_to_merge` / `allowed_to_unprotect` array should take the
 form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`.
@@ -410,11 +423,18 @@ The following example response includes:
 
 ### Example with deploy key access
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166598) in GitLab 17.5.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166598) in GitLab 17.5.
+
+{{< /history >}}
 
 Elements in the `allowed_to_push` array should take the form `{user_id: integer}`, `{group_id: integer}`,
 `{deploy_key_id: integer}`, or `{access_level: integer}`.
@@ -473,11 +493,18 @@ The following example response includes:
 
 ### Example with allow to push and allow to merge access
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Moved to GitLab Premium in 13.9.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Moved to GitLab Premium in 13.9.
+
+{{< /history >}}
 
 Example request:
 
@@ -558,7 +585,7 @@ DELETE /projects/:id/protected_branches/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `name` | string | yes | The name of the branch |
 
 In the following example, the project ID is `5` and branch name is `*-stable`.
@@ -571,8 +598,12 @@ curl --request DELETE \
 
 ## Update a protected branch
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101903) in GitLab 15.6.
-> - `deploy_key_id` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166598) in GitLab 17.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101903) in GitLab 15.6.
+- `deploy_key_id` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166598) in GitLab 17.5.
+
+{{< /history >}}
 
 Updates a protected branch.
 
@@ -582,13 +613,13 @@ PATCH /projects/:id/protected_branches/:name
 
 | Attribute                                    | Type           | Required | Description |
 | -------------------------------------------- | ---- | -------- | ----------- |
-| `id`                                         | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                                         | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `name`                                       | string         | yes | The name of the branch or wildcard. |
 | `allow_force_push`                           | boolean        | no  | When enabled, members who can push to this branch can also force push. |
 | `allowed_to_merge`                           | array          | no  | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
 | `allowed_to_push`                            | array          | no  | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
 | `allowed_to_unprotect`                       | array          | no  | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{access_level: integer}`, or `{id: integer, _destroy: true}` to destroy an existing access level. The access level `No access` is not available for this field. Premium and Ultimate only. |
-| `code_owner_approval_required`               | boolean        | no       | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/index.md). Premium and Ultimate only. |
+| `code_owner_approval_required`               | boolean        | no       | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/_index.md). Premium and Ultimate only. |
 
 In the following example, the project ID is `5` and branch name is `feature-branch`.
 
@@ -689,5 +720,5 @@ Example response:
 ## Related topics
 
 - [Protected branches](../user/project/repository/branches/protected.md)
-- [Branches](../user/project/repository/branches/index.md)
+- [Branches](../user/project/repository/branches/_index.md)
 - [Branches API](branches.md)

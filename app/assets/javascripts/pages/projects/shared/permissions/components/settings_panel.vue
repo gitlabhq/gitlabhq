@@ -1,8 +1,17 @@
 <script>
-import { GlButton, GlSprintf, GlLink, GlFormCheckbox, GlFormSelect, GlToggle } from '@gitlab/ui';
+import {
+  GlButton,
+  GlCard,
+  GlSprintf,
+  GlLink,
+  GlFormCheckbox,
+  GlFormSelect,
+  GlToggle,
+} from '@gitlab/ui';
 import SecretManagerSettings from 'ee_component/pages/projects/shared/permissions/components/secret_manager_settings.vue';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__ } from '~/locale';
 import {
   VISIBILITY_LEVEL_PRIVATE_INTEGER,
@@ -22,6 +31,7 @@ import {
   duoHelpPath,
   amazonQHelpPath,
   pipelineExecutionPoliciesHelpPath,
+  extendedPratExpiryWebhooksExecuteHelpPath,
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
 import ProjectFeatureSetting from './project_feature_setting.vue';
@@ -87,6 +97,12 @@ export default {
     ),
     confirmButtonText: __('Save changes'),
     emailsLabel: s__('ProjectSettings|Email notifications'),
+    extendedPratExpiryWebhooksExecuteLabel: s__(
+      'ProjectSettings|Add additional webhook triggers for project access token expiry.',
+    ),
+    extendedPratExpiryWebhooksExecuteHelpText: s__(
+      'ProjectSettings|If enabled, project access tokens expiry webhooks execute 60, 30, and 7 days before the token expires. If disabled, these webhooks only execute 7 days before the token expires. %{linkStart}Learn more%{linkEnd}',
+    ),
     showDiffPreviewLabel: s__('ProjectSettings|Include diff previews'),
     showDiffPreviewHelpText: s__(
       'ProjectSettings|Emails are not encrypted. Concerned administrators may want to disable diff previews.',
@@ -105,12 +121,14 @@ export default {
   modelExperimentsHelpPath,
   modelRegistryHelpPath,
   pipelineExecutionPoliciesHelpPath,
+  extendedPratExpiryWebhooksExecuteHelpPath,
   components: {
     CiCatalogSettings,
     ProjectFeatureSetting,
     ProjectSettingRow,
     CascadingLockIcon,
     GlButton,
+    GlCard,
     GlSprintf,
     GlLink,
     GlFormCheckbox,
@@ -123,7 +141,7 @@ export default {
         'jh_component/pages/projects/shared/permissions/components/other_project_settings.vue'
       ),
   },
-  mixins: [settingsMixin],
+  mixins: [settingsMixin, glFeatureFlagMixin()],
   inject: ['cascadingSettingsData'],
   props: {
     requestCveAvailable: {
@@ -337,6 +355,7 @@ export default {
       enforceAuthChecksOnUploads: true,
       emailsEnabled: true,
       showDiffPreviewInEmail: true,
+      extendedPratExpiryWebhooksExecute: false,
       cveIdRequestEnabled: true,
       duoFeaturesEnabled: false,
       sppRepositoryPipelineAccess: false,
@@ -548,10 +567,8 @@ export default {
 </script>
 
 <template>
-  <div>
-    <div
-      class="project-visibility-setting gl-border-1 gl-border-solid gl-border-default gl-px-5 gl-py-3"
-    >
+  <gl-card class="project-visibility-setting" body-class="gl-flex gl-flex-col gl-gap-6">
+    <template #header>
       <project-setting-row
         ref="project-visibility-settings"
         :help-path="visibilityHelpPath"
@@ -630,10 +647,9 @@ export default {
           </label>
         </div>
       </project-setting-row>
-    </div>
-    <div
-      class="gl-mb-5 gl-flex gl-flex-col gl-gap-6 gl-border-1 gl-border-t-0 gl-border-solid gl-border-default gl-bg-gray-10 gl-px-5 gl-py-3"
-    >
+    </template>
+
+    <template #default>
       <project-setting-row
         ref="issues-settings"
         :help-path="issuesHelpPath"
@@ -941,6 +957,7 @@ export default {
         <project-feature-setting
           v-model="pagesAccessLevel"
           :label="$options.i18n.pagesLabel"
+          :access-control-forced="pagesAccessControlForced"
           :options="pagesFeatureAccessLevelOptions"
           name="project[project_feature_attributes][pages_access_level]"
         />
@@ -1036,7 +1053,7 @@ export default {
         </template>
         <gl-toggle
           v-model="duoFeaturesEnabled"
-          class="gl-mb-4 gl-mt-2"
+          class="gl-mt-2"
           :disabled="duoFeaturesLocked"
           :label="duoEnabledSetting.label"
           label-position="hidden"
@@ -1044,121 +1061,140 @@ export default {
           data-testid="duo_features_enabled_toggle"
         />
       </project-setting-row>
-    </div>
 
-    <project-setting-row v-if="canDisableEmails" ref="email-settings" class="mb-3">
-      <label class="js-emails-enabled">
-        <h5>{{ $options.i18n.emailsLabel }}</h5>
-        <input
-          :value="emailsEnabled"
-          type="hidden"
-          name="project[project_setting_attributes][emails_enabled]"
-        />
-        <gl-form-checkbox v-model="emailsEnabled">
-          {{ s__('ProjectSettings|Enable email notifications') }}
-          <template #help>{{
-            s__('ProjectSettings|Enable sending email notifications for this project')
-          }}</template>
-        </gl-form-checkbox>
-      </label>
-      <project-setting-row
-        v-if="canSetDiffPreviewInEmail"
-        ref="enable-diff-preview-settings"
-        class="gl-px-7"
-      >
-        <input
-          :value="findDiffPreviewValue"
-          type="hidden"
-          name="project[project_setting_attributes][show_diff_preview_in_email]"
-        />
-        <gl-form-checkbox v-model="findDiffPreviewValue" :disabled="!emailsEnabled">
-          {{ $options.i18n.showDiffPreviewLabel }}
-          <template #help>{{ $options.i18n.showDiffPreviewHelpText }}</template>
-        </gl-form-checkbox>
+      <project-setting-row v-if="canDisableEmails" ref="email-settings">
+        <label class="js-emails-enabled">
+          <h5>{{ $options.i18n.emailsLabel }}</h5>
+          <input
+            :value="emailsEnabled"
+            type="hidden"
+            name="project[project_setting_attributes][emails_enabled]"
+          />
+          <gl-form-checkbox v-model="emailsEnabled">
+            {{ s__('ProjectSettings|Enable email notifications') }}
+            <template #help>{{
+              s__('ProjectSettings|Enable sending email notifications for this project')
+            }}</template>
+          </gl-form-checkbox>
+        </label>
+        <project-setting-row
+          v-if="canSetDiffPreviewInEmail"
+          ref="enable-diff-preview-settings"
+          class="gl-px-7"
+        >
+          <input
+            :value="findDiffPreviewValue"
+            type="hidden"
+            name="project[project_setting_attributes][show_diff_preview_in_email]"
+          />
+          <gl-form-checkbox v-model="findDiffPreviewValue" :disabled="!emailsEnabled">
+            {{ $options.i18n.showDiffPreviewLabel }}
+            <template #help>{{ $options.i18n.showDiffPreviewHelpText }}</template>
+          </gl-form-checkbox>
+        </project-setting-row>
       </project-setting-row>
-    </project-setting-row>
-    <project-setting-row class="mb-3">
-      <input
-        :value="showDefaultAwardEmojis"
-        type="hidden"
-        name="project[project_setting_attributes][show_default_award_emojis]"
-      />
-      <gl-form-checkbox
-        v-model="showDefaultAwardEmojis"
-        name="project[project_setting_attributes][show_default_award_emojis]"
-      >
-        {{ s__('ProjectSettings|Show default emoji reactions') }}
-        <template #help>{{
-          s__(
-            'ProjectSettings|Always show thumbs-up and thumbs-down emoji buttons on issues, merge requests, and snippets.',
-          )
-        }}</template>
-      </gl-form-checkbox>
-    </project-setting-row>
-    <project-setting-row class="gl-mb-5">
-      <input
-        :value="warnAboutPotentiallyUnwantedCharacters"
-        type="hidden"
-        name="project[project_setting_attributes][warn_about_potentially_unwanted_characters]"
-      />
-      <gl-form-checkbox
-        v-model="warnAboutPotentiallyUnwantedCharacters"
-        name="project[project_setting_attributes][warn_about_potentially_unwanted_characters]"
-      >
-        {{ $options.i18n.pucWarningLabel }}
-        <template #help>{{ $options.i18n.pucWarningHelpText }}</template>
-      </gl-form-checkbox>
-    </project-setting-row>
-    <ci-catalog-settings
-      v-if="canAddCatalogResource"
-      class="gl-mb-5"
-      :full-path="confirmationPhrase"
-    />
-    <secret-manager-settings
-      v-if="canManageSecretManager"
-      class="gl-mb-5"
-      :full-path="confirmationPhrase"
-    />
-    <other-project-settings />
-    <project-setting-row
-      v-if="policySettingsAvailable"
-      data-testid="pipeline-execution-policy-settings"
-    >
-      <label>
-        <h5>{{ $options.i18n.pipelineExecutionPoliciesLabel }}</h5>
+      <project-setting-row>
         <input
-          :value="sppRepositoryPipelineAccess"
+          :value="showDefaultAwardEmojis"
           type="hidden"
-          name="project[project_setting_attributes][spp_repository_pipeline_access]"
+          name="project[project_setting_attributes][show_default_award_emojis]"
         />
         <gl-form-checkbox
-          v-model="sppRepositoryPipelineAccess"
-          :disabled="sppRepositoryPipelineAccessLocked"
+          v-model="showDefaultAwardEmojis"
+          name="project[project_setting_attributes][show_default_award_emojis]"
         >
-          {{ $options.i18n.sppRepositoryPipelineAccessLabel }}
+          {{ s__('ProjectSettings|Show default emoji reactions') }}
+          <template #help>{{
+            s__(
+              'ProjectSettings|Always show thumbs-up and thumbs-down emoji buttons on issues, merge requests, and snippets.',
+            )
+          }}</template>
+        </gl-form-checkbox>
+      </project-setting-row>
+      <project-setting-row>
+        <input
+          :value="warnAboutPotentiallyUnwantedCharacters"
+          type="hidden"
+          name="project[project_setting_attributes][warn_about_potentially_unwanted_characters]"
+        />
+        <gl-form-checkbox
+          v-model="warnAboutPotentiallyUnwantedCharacters"
+          name="project[project_setting_attributes][warn_about_potentially_unwanted_characters]"
+        >
+          {{ $options.i18n.pucWarningLabel }}
+          <template #help>{{ $options.i18n.pucWarningHelpText }}</template>
+        </gl-form-checkbox>
+      </project-setting-row>
+      <project-setting-row v-if="glFeatures.extendedExpiryWebhookExecutionSetting">
+        <input
+          :value="extendedPratExpiryWebhooksExecute"
+          type="hidden"
+          name="project[project_setting_attributes][extended_prat_expiry_webhooks_execute]"
+        />
+        <gl-form-checkbox
+          v-model="extendedPratExpiryWebhooksExecute"
+          name="project[project_setting_attributes][extended_prat_expiry_webhooks_execute]"
+        >
+          {{ $options.i18n.extendedPratExpiryWebhooksExecuteLabel }}
           <template #help>
-            <gl-sprintf :message="$options.i18n.sppRepositoryPipelineAccessHelpText">
+            <gl-sprintf :message="$options.i18n.extendedPratExpiryWebhooksExecuteHelpText">
               <template #link="{ content }">
-                <gl-link :href="$options.pipelineExecutionPoliciesHelpPath" target="_blank">{{
-                  content
-                }}</gl-link>
+                <gl-link
+                  :href="$options.extendedPratExpiryWebhooksExecuteHelpPath"
+                  target="_blank"
+                  >{{ content }}</gl-link
+                >
               </template>
             </gl-sprintf>
           </template>
         </gl-form-checkbox>
-      </label>
-    </project-setting-row>
-    <confirm-danger
-      v-if="isVisibilityReduced"
-      button-variant="confirm"
-      :disabled="false"
-      :phrase="confirmationPhrase"
-      :button-text="$options.i18n.confirmButtonText"
-      data-testid="project-features-save-button"
-      @confirm="$emit('confirm')"
-    />
-    <gl-button v-else type="submit" variant="confirm" data-testid="project-features-save-button">
-      {{ $options.i18n.confirmButtonText }}
-    </gl-button>
-  </div>
+      </project-setting-row>
+      <ci-catalog-settings v-if="canAddCatalogResource" :full-path="confirmationPhrase" />
+      <secret-manager-settings v-if="canManageSecretManager" :full-path="confirmationPhrase" />
+      <other-project-settings />
+      <project-setting-row
+        v-if="policySettingsAvailable"
+        data-testid="pipeline-execution-policy-settings"
+      >
+        <label>
+          <h5>{{ $options.i18n.pipelineExecutionPoliciesLabel }}</h5>
+          <input
+            :value="sppRepositoryPipelineAccess"
+            type="hidden"
+            name="project[project_setting_attributes][spp_repository_pipeline_access]"
+          />
+          <gl-form-checkbox
+            v-model="sppRepositoryPipelineAccess"
+            :disabled="sppRepositoryPipelineAccessLocked"
+          >
+            {{ $options.i18n.sppRepositoryPipelineAccessLabel }}
+            <template #help>
+              <gl-sprintf :message="$options.i18n.sppRepositoryPipelineAccessHelpText">
+                <template #link="{ content }">
+                  <gl-link :href="$options.pipelineExecutionPoliciesHelpPath" target="_blank">{{
+                    content
+                  }}</gl-link>
+                </template>
+              </gl-sprintf>
+            </template>
+          </gl-form-checkbox>
+        </label>
+      </project-setting-row>
+    </template>
+
+    <template #footer>
+      <confirm-danger
+        v-if="isVisibilityReduced"
+        button-variant="confirm"
+        :disabled="false"
+        :phrase="confirmationPhrase"
+        :button-text="$options.i18n.confirmButtonText"
+        data-testid="project-features-save-button"
+        @confirm="$emit('confirm')"
+      />
+      <gl-button v-else type="submit" variant="confirm" data-testid="project-features-save-button">
+        {{ $options.i18n.confirmButtonText }}
+      </gl-button>
+    </template>
+  </gl-card>
 </template>

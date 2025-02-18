@@ -5,7 +5,7 @@
 
 # Read more about this feature https://docs.gitlab.com/ee/user/application_security/coverage_fuzzing
 #
-# Configure coverage fuzzing with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
+# Configure coverage fuzzing with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/).
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/coverage_fuzzing/#available-cicd-variables
 
 variables:

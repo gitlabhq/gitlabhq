@@ -1,9 +1,10 @@
 ---
-redirect_to: '../../administration/license_file.md'
-remove_date: '2025-04-14'
+redirect_to: ../../administration/license_file.md
+remove_date: "2025-04-14"
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](../../administration/license_file.md).
 

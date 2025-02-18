@@ -2,15 +2,21 @@
 stage: Foundations
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Search admin API
 ---
 
-# Search admin API
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120751) in GitLab 16.1
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120751) in GitLab 16.1
+
+{{< /history >}}
 
 The search admin API returns information about [advanced search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations).
 

@@ -1,13 +1,16 @@
-import { GlButton, GlPagination, GlTable } from '@gitlab/ui';
+import { GlButton, GlModal, GlPagination, GlTable } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import AccessTokenTableApp from '~/access_tokens/components/access_token_table_app.vue';
 import { EVENT_SUCCESS, PAGE_SIZE } from '~/access_tokens/components/constants';
+import { createAlert, VARIANT_DANGER } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import { sprintf } from '~/locale';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
+
+jest.mock('~/alert');
 
 describe('~/access_tokens/components/access_token_table_app', () => {
   let wrapper;
@@ -74,9 +77,15 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     await nextTick();
   };
 
+  const triggerTokenRotation = async () => {
+    await wrapper.findAllComponents(GlButton).at(1).trigger('click');
+    await wrapper.findComponent(GlModal).vm.$emit('primary');
+    await axios.waitForAll();
+  };
+
   const findTable = () => wrapper.findComponent(GlTable);
-  const findHeaders = () => findTable().findAll('th > div > span');
-  const findCells = () => findTable().findAll('td');
+  const findHeaders = () => findTable().findAll('thead th > div > span');
+  const findCells = () => findTable().findAll('tbody td, tbody th');
   const findPagination = () => wrapper.findComponent(GlPagination);
 
   beforeEach(() => {
@@ -101,6 +110,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
   afterEach(() => {
     wrapper?.destroy();
     mockAxios.restore();
+    createAlert.mockClear();
   });
 
   describe.each`
@@ -175,7 +185,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       const assistiveElement = lastUsed.find('.gl-sr-only');
       expect(anchor.exists()).toBe(true);
       expect(anchor.attributes('href')).toBe(
-        '/help/user/profile/personal_access_tokens.md#view-the-time-at-and-ips-where-a-token-was-last-used',
+        '/help/user/profile/personal_access_tokens.md#view-token-usage-information',
       );
       expect(assistiveElement.text()).toBe('The last time a token was used');
     });
@@ -189,7 +199,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       const assistiveElement = lastUsedIPs.find('.gl-sr-only');
       expect(anchor.exists()).toBe(true);
       expect(anchor.attributes('href')).toBe(
-        '/help/user/profile/personal_access_tokens.md#view-the-time-at-and-ips-where-a-token-was-last-used',
+        '/help/user/profile/personal_access_tokens.md#view-token-usage-information',
       );
       expect(assistiveElement.text()).toBe(
         'The last five distinct IP addresses from where the token was used',
@@ -227,12 +237,6 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       expect(buttons.at(1).attributes()).toMatchObject({
         'aria-label': 'Rotate',
         'data-testid': 'rotate-button',
-        href: '/-/user_settings/personal_access_tokens/1/rotate',
-        'data-confirm': sprintf(
-          'Are you sure you want to rotate the %{accessTokenType} "%{tokenName}"? This action cannot be undone. Any tools that rely on this access token will stop working.',
-          { accessTokenType, tokenName: 'a' },
-        ),
-        'data-remote': '', // this attribute is necessary for the correct functioning of the button
       });
       expect(buttons.at(1).props('category')).toBe('tertiary');
 
@@ -250,10 +254,51 @@ describe('~/access_tokens/components/access_token_table_app', () => {
         '/-/user_settings/personal_access_tokens/2/revoke',
       );
       expect(buttons.at(0).props('category')).toBe('tertiary');
-      expect(buttons.at(1).attributes('href')).toBe(
-        '/-/user_settings/personal_access_tokens/2/rotate',
-      );
       expect(buttons.at(1).props('category')).toBe('tertiary');
+    });
+
+    it('updates the table after a token is rotated', async () => {
+      const rotatePath = '/-/user_settings/personal_access_tokens/1/rotate';
+      mockAxios.onPut(rotatePath).reply(HTTP_STATUS_OK, {
+        new_token: 'new_token',
+        active_access_tokens: defaultActiveAccessTokens,
+        total: 1,
+      });
+      createComponent({ backendPagination });
+
+      await triggerTokenRotation();
+
+      expect(mockAxios.history.put).toHaveLength(1);
+      expect(mockAxios.history.put[0]).toMatchObject({
+        url: rotatePath,
+      });
+      const cells = findCells();
+      expect(cells).toHaveLength(16);
+      expect(cells.at(0).text()).toBe('a');
+      expect(cells.at(8).text()).toBe('b');
+      expect(createAlert).not.toHaveBeenCalled();
+    });
+
+    it('shows error if token fails to be rotated', async () => {
+      const revokePath = '/-/user_settings/personal_access_tokens/1/rotate';
+      mockAxios.onPut(revokePath).reply(HTTP_STATUS_UNPROCESSABLE_ENTITY, {
+        active_access_tokens: defaultActiveAccessTokens,
+        total: defaultActiveAccessTokens.length,
+        message: 'Token already revoked',
+      });
+      createComponent({ backendPagination });
+
+      await triggerTokenRotation();
+
+      expect(mockAxios.history.put).toHaveLength(1);
+      expect(mockAxios.history.put[0]).toMatchObject({
+        url: revokePath,
+      });
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Token already revoked',
+        variant: VARIANT_DANGER,
+      });
     });
 
     describe('when revoke_path and rotate_path are', () => {

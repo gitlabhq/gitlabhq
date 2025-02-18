@@ -209,7 +209,7 @@ export default {
 
 <template>
   <tr class="tree-item">
-    <td class="tree-item-file-name gl-relative gl-cursor-default">
+    <th class="tree-item-file-name gl-relative gl-cursor-default gl-font-normal" scope="row">
       <component
         :is="linkComponent"
         ref="link"
@@ -251,7 +251,7 @@ export default {
         name="lock"
         :size="12"
       />
-    </td>
+    </th>
     <td class="tree-commit cursor-default gl-hidden sm:gl-table-cell">
       <gl-link
         v-if="commitData"

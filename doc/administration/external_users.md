@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: External users
 ---
 
-# External users
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 In cases where it is desired that a user has access only to some internal or
 private projects, there is the option of creating **External Users**. This
@@ -30,11 +32,14 @@ For example, if an external user is added as Guest, and your project is internal
 private, they do not have access to the code; you need to grant the external
 user access at the Reporter level or above if you want them to have access to the code. You should
 always take into account the
-[project's visibility](../user/public_access.md#change-project-visibility) and [permissions settings](../user/project/settings/index.md#configure-project-features-and-permissions)
+[project's visibility](../user/public_access.md#change-project-visibility) and [permissions settings](../user/project/settings/_index.md#configure-project-features-and-permissions)
 as well as the permission level of the user.
 
-NOTE:
-External users still count towards a license seat, unless the user has the [Guest role](../subscriptions/self_managed/index.md#free-guest-users) in the Ultimate tier.
+{{< alert type="note" >}}
+
+External users still count towards a license seat, unless the user has the [Guest role](../subscriptions/self_managed/_index.md#free-guest-users) in the Ultimate tier.
+
+{{< /alert >}}
 
 An administrator can flag a user as external by either of the following methods:
 
@@ -47,7 +52,7 @@ An administrator can flag a user as external by either of the following methods:
 Additionally, users can be set as external users using:
 
 - [SAML groups](../integration/saml.md#external-groups).
-- [LDAP groups](../administration/auth/ldap/ldap_synchronization.md#external-groups).
+- [LDAP groups](auth/ldap/ldap_synchronization.md#external-groups).
 - the [External providers list](../integration/omniauth.md#create-an-external-providers-list).
 
 ## Set a new user to external

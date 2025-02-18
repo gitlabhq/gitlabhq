@@ -2,20 +2,25 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: ZenTao (deprecated)
 ---
 
 <!--- start_remove The following content will be removed on remove_date: '2025-08-01' -->
 
-# ZenTao (deprecated)
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-WARNING:
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/377825) in GitLab 15.7
 and is planned for removal in 18.0.
 This change is a breaking change.
+
+{{< /alert >}}
 
 [ZenTao](https://www.zentao.net/) is a web-based project management platform.
 

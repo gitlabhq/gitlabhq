@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: HAML
 ---
-
-# HAML
 
 [HAML](https://haml.info/) is the [Ruby on Rails](https://rubyonrails.org/) template language that GitLab uses.
 
@@ -78,8 +77,11 @@ For example:
 
 When using the GitLab UI form builder, the following components are available for use in HAML.
 
-NOTE:
+{{< alert type="note" >}}
+
 Currently only the listed components are available but more components are planned.
+
+{{< /alert >}}
 
 #### `gitlab_ui_checkbox_component`
 

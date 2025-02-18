@@ -18,9 +18,6 @@ events:
     filter:
       label: license_compliance
 data_category: optional
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

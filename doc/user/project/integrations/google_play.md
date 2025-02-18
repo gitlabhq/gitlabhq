@@ -2,18 +2,24 @@
 stage: none
 group: unassigned
 info: This is a GitLab Incubation Engineering program. No technical writer assigned to this group.
+title: Google Play
 ---
 
-# Google Play
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111621) in GitLab 15.10 [with a flag](../../../administration/feature_flags.md) named `google_play_integration`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389611) in GitLab 15.11. Feature flag `google_play_integration` removed.
+{{< /details >}}
 
-This feature is part of [Mobile DevOps](../../../ci/jobs/mobile_devops.md) developed by [GitLab Incubation Engineering](https://handbook.gitlab.com/handbook/engineering/development/incubation/).
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111621) in GitLab 15.10 [with a flag](../../../administration/feature_flags.md) named `google_play_integration`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389611) in GitLab 15.11. Feature flag `google_play_integration` removed.
+
+{{< /history >}}
+
+This feature is part of [Mobile DevOps](../../../ci/mobile_devops/_index.md) developed by [GitLab Incubation Engineering](https://handbook.gitlab.com/handbook/engineering/development/incubation/).
 The feature is still in development, but you can:
 
 - [Request a feature](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=feature_request).
@@ -47,7 +53,7 @@ After you enable the integration, the global variables `$SUPPLY_PACKAGE_NAME` an
 
 ### CI/CD variable security
 
-Malicious code pushed to your `.gitlab-ci.yml` file could compromise your variables, including `$SUPPLY_JSON_KEY_DATA`, and send them to a third-party server. For more information, see [CI/CD variable security](../../../ci/variables/index.md#cicd-variable-security).
+Malicious code pushed to your `.gitlab-ci.yml` file could compromise your variables, including `$SUPPLY_JSON_KEY_DATA`, and send them to a third-party server. For more information, see [CI/CD variable security](../../../ci/variables/_index.md#cicd-variable-security).
 
 ## Enable the integration in fastlane
 

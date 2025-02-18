@@ -3,7 +3,7 @@
 module Types
   module WorkItems
     module WidgetInterface
-      include Types::BaseInterface
+      include ::Types::BaseInterface
 
       graphql_name 'WorkItemWidget'
 
@@ -34,7 +34,8 @@ module Types
         ::WorkItems::Widgets::CrmContacts => ::Types::WorkItems::Widgets::CrmContactsType,
         ::WorkItems::Widgets::EmailParticipants => ::Types::WorkItems::Widgets::EmailParticipantsType,
         ::WorkItems::Widgets::CustomStatus => ::Types::WorkItems::Widgets::CustomStatusType,
-        ::WorkItems::Widgets::LinkedResources => ::Types::WorkItems::Widgets::LinkedResourcesType
+        ::WorkItems::Widgets::LinkedResources => ::Types::WorkItems::Widgets::LinkedResourcesType,
+        ::WorkItems::Widgets::ErrorTracking => ::Types::WorkItems::Widgets::ErrorTrackingType
       }.freeze
 
       def self.type_mappings

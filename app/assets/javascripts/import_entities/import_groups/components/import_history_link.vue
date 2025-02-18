@@ -1,9 +1,9 @@
 <script>
-import { GlLink } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 
 export default {
   components: {
-    GlLink,
+    GlButton,
   },
 
   props: {
@@ -26,5 +26,5 @@ export default {
 };
 </script>
 <template>
-  <gl-link :href="historyPathWithId">{{ s__('BulkImport|Migration details') }} &gt;</gl-link>
+  <gl-button :href="historyPathWithId">{{ s__('BulkImport|Migration details') }}</gl-button>
 </template>

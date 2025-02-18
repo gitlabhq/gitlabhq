@@ -57,7 +57,7 @@ describe('WorkItemCreateBranchMergeRequestSplitButton', () => {
       wrapper = createComponent({ isConfidentialWorkItem: true });
       await findCreateModal().vm.$emit('fetchedPermissions', true);
 
-      expect(findMainButton().text()).toBe('Create confidential merge request');
+      expect(findMainButton().text()).toBe('Create merge request');
     });
 
     it('hides the button when the user does not have permission to create merge requests', async () => {

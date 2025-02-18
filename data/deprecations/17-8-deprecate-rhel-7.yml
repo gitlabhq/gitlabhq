@@ -8,5 +8,5 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     Red Hat Enterprise Linux (RHEL) 7 reached [end of maintenance support in June 2024](https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux/rhel-7-end-of-maintenance).
 
-    Therefore, we will longer publish Linux packages for RHEL 7 and RHEL 7 compatible operating systems.
+    Therefore, we will no longer publish Linux packages for RHEL 7 and RHEL 7 compatible operating systems.
     Users should upgrade to RHEL 8 for continued support.

@@ -22,6 +22,7 @@ describe('Blob Header Default Actions', () => {
 
   const defaultProvide = {
     blobHash: 'foo-bar',
+    glFeatures: { blobOverflowMenu: true },
   };
 
   const findDefaultActions = () => wrapper.findComponent(DefaultActions);
@@ -126,6 +127,12 @@ describe('Blob Header Default Actions', () => {
       });
     });
 
+    it('does not render DefaultActions when on blob page', () => {
+      createComponent({ propsData: { isBlobPage: true } });
+
+      expect(findDefaultActions().exists()).toBe(false);
+    });
+
     it.each([[{ showBlameToggle: true }], [{ showBlameToggle: false }]])(
       'passes the `showBlameToggle` prop to the viewer switcher',
       (propsData) => {
@@ -151,15 +158,6 @@ describe('Blob Header Default Actions', () => {
         },
       });
       expect(findViewSwitcher().exists()).toBe(false);
-    });
-
-    it('does not render default actions is corresponding prop is passed', () => {
-      createComponent({
-        propsData: {
-          hideDefaultActions: true,
-        },
-      });
-      expect(findDefaultActions().exists()).toBe(false);
     });
 
     it.each`

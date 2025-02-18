@@ -11,17 +11,12 @@ class QueueBackfillDetectedAtFromCreatedAtColumn < Gitlab::Database::Migration[2
   SUB_BATCH_SIZE = 100
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :vulnerabilities,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # No-op because application logic bypassed default database-level value
+    # Fixed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180582
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :vulnerabilities, :id, [])
+    # No-op because application logic bypassed default database-level value
+    # Fixed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180582
   end
 end

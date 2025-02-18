@@ -2,11 +2,10 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Contribute code with the Web IDE
 ---
 
-# Contribute code with the Web IDE
-
-The [GitLab Web IDE](../../../user/project/web_ide/index.md) is a built-in advanced editor with commit staging.
+The [GitLab Web IDE](../../../user/project/web_ide/_index.md) is a built-in advanced editor with commit staging.
 
 The example in this section shows how to modify a line of code as part of a community contribution
 to GitLab code using the Web IDE.
@@ -49,7 +48,7 @@ to GitLab code using the Web IDE.
 
 1. Select **Commit to new branch** from the **Commit to** dropdown list, and enter `1st-contrib-example`.
 
-   If your code change addresses an issue, [start the branch name with the issue number](../../../user/project/repository/branches/index.md#prefix-branch-names-with-issue-numbers).
+   If your code change addresses an issue, [start the branch name with the issue number](../../../user/project/repository/branches/_index.md#prefix-branch-names-with-issue-numbers).
 
 1. In the notification that appears in the lower right, select **Create MR**.
 

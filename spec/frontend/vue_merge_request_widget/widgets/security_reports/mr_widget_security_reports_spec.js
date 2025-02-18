@@ -37,6 +37,10 @@ describe('vue_merge_request_widget/widgets/security_reports/mr_widget_security_r
       await waitForPromises();
     });
 
+    it('emits loaded event', () => {
+      expect(wrapper.emitted('loaded')[0]).toContain(0);
+    });
+
     it('displays the correct message', () => {
       expect(wrapper.findByText('Security scans have run').exists()).toBe(true);
     });

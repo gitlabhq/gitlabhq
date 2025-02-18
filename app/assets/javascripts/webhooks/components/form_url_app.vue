@@ -159,15 +159,13 @@ export default {
     radioMaskUrlText: s__('Webhooks|Mask portions of URL'),
     radioMaskUrlHelp: s__('Webhooks|Do not show sensitive data such as tokens in the UI.'),
     urlDescription: s__(
-      'Webhooks|URL must be percent-encoded if it contains one or more special characters.',
+      'Webhooks|The URL must be percent-encoded if it contains one or more special characters.',
     ),
     urlLabel: __('URL'),
     urlPlaceholder: 'http://example.com/trigger-ci.json',
     urlPreview: s__('Webhooks|URL preview'),
     valuePartOfUrl: s__('Webhooks|Must match part of URL'),
-    tokenWillBeCleared: s__(
-      'Webhooks|Secret token will be cleared on save unless token is updated.',
-    ),
+    tokenWillBeCleared: s__('Webhooks|The secret token is cleared on save unless it is updated.'),
   },
 };
 </script>

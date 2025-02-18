@@ -1,11 +1,10 @@
 ---
+type: reference, howto
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
+title: Customize analyzer settings
 ---
-
-# Customize analyzer settings
 
 ## Managing scope
 
@@ -80,7 +79,7 @@ dast:
 
 Vulnerability detection is gradually being migrated from the default Zed Attack Proxy (ZAP) solution
 to the browser-based analyzer. For details of the vulnerability detection already migrated, see
-[browser-based vulnerability checks](../checks/index.md).
+[browser-based vulnerability checks](../checks/_index.md).
 
 The crawler runs the target website in a browser with DAST/ZAP configured as the proxy server. This
 ensures that all requests and responses made by the browser are passively scanned by DAST/ZAP. When
@@ -143,5 +142,8 @@ dast:
     DAST_PAGE_DOM_READY_TIMEOUT: "15s"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Adjusting these values may impact scan time because they adjust how long each browser waits for various activities to complete.
+
+{{< /alert >}}

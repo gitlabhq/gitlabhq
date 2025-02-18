@@ -210,6 +210,29 @@ RSpec.describe 'Project > Settings > Packages and registries',
         expect(settings_block).to have_text 'Protected container image tags'
       end
 
+      describe 'creating a rule' do
+        it 'creates a rule' do
+          visit_method
+
+          within_testid settings_block_id do
+            click_button 'Add protection rule'
+          end
+
+          expect(page).to have_selector 'h2', text: 'Add protection rule'
+          fill_in 'Protect container tags matching', with: 'v.*'
+          select 'Owner', from: 'Minimum role allowed to push'
+          select 'Admin', from: 'Minimum role allowed to delete'
+          click_button 'Add rule'
+
+          settings_block = find_by_testid(settings_block_id)
+          expect(page).not_to have_selector 'h2', text: 'Add protection rule'
+          expect(page).to have_content('Container protection rule created.')
+          expect(settings_block).to have_content('v.*')
+          expect(settings_block).to have_content('Owner')
+          expect(settings_block).to have_content('Administrator')
+        end
+      end
+
       context 'with protection rule' do
         let_it_be(:container_protection_tag_rule) do
           create(:container_registry_protection_tag_rule,
@@ -226,6 +249,27 @@ RSpec.describe 'Project > Settings > Packages and registries',
           expect(settings_block).to have_content(container_protection_tag_rule.tag_name_pattern)
           expect(settings_block).to have_content('Maintainer')
           expect(settings_block).to have_content('Owner')
+        end
+
+        it 'updates a rule' do
+          visit_method
+
+          within_testid settings_block_id do
+            click_button 'Edit'
+          end
+
+          expect(page).to have_selector 'h2', text: 'Edit protection rule'
+          fill_in 'Protect container tags matching', with: 'v1.*'
+          select 'Maintainer', from: 'Minimum role allowed to push'
+          select 'Maintainer', from: 'Minimum role allowed to delete'
+          click_button 'Save changes'
+
+          settings_block = find_by_testid(settings_block_id)
+          expect(page).not_to have_selector 'h2', text: 'Edit protection rule'
+          expect(page).to have_content('Container protection rule updated.')
+          expect(settings_block).to have_content('v1.*')
+          expect(find_by_testid('minimum-access-level-push-value')).to have_content('Maintainer')
+          expect(find_by_testid('minimum-access-level-delete-value')).to have_content('Maintainer')
         end
 
         it 'deletes rule' do

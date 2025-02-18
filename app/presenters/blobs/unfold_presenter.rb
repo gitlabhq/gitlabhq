@@ -32,11 +32,18 @@ module Blobs
     end
 
     # Returns an array of Gitlab::Diff::Line with match line added
-    def diff_lines
+    def diff_lines(with_positions_and_indent: false)
       diff_lines = lines.map.with_index do |line, index|
         full_line = limited_blob_lines[index].delete("\n")
 
-        Gitlab::Diff::Line.new(full_line, nil, nil, nil, nil, rich_text: line)
+        if with_positions_and_indent
+          new_pos = index + since
+          old_pos = new_pos - offset
+          line[0, 0] = ' '
+          Gitlab::Diff::Line.new(full_line, nil, nil, old_pos, new_pos, rich_text: line)
+        else
+          Gitlab::Diff::Line.new(full_line, nil, nil, nil, nil, rich_text: line)
+        end
       end
 
       add_match_line(diff_lines)

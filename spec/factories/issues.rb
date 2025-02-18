@@ -125,14 +125,5 @@ FactoryBot.define do
         end
       end
     end
-
-    after(:build) do |issue, _|
-      next if issue.attributes['work_item_type_id'].blank?
-
-      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
-      issue.write_attribute(:work_item_type_id, -issue.attributes['work_item_type_id'])
-      # clearing attribute change to avoid update callbacks on initial save
-      issue.clear_work_item_type_id_change
-    end
   end
 end

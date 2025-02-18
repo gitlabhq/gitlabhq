@@ -2,10 +2,9 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Settings and commands in the GitLab Workflow extension for VS Code."
+description: Settings and commands in the GitLab Workflow extension for VS Code.
+title: GitLab Workflow extension settings and commands
 ---
-
-# GitLab Workflow extension settings and commands
 
 ## Command Palette commands
 
@@ -15,7 +14,7 @@ This extension provides several sets of commands that you can trigger in the
 ### Manage projects and code
 
 - `GitLab: Authenticate`
-- [`GitLab: Compare Current Branch with Default Branch`](index.md#compare-with-default-branch):
+- [`GitLab: Compare Current Branch with Default Branch`](_index.md#compare-with-default-branch):
   Compare your branch with the repository's default branch and view changes on GitLab.
 - `GitLab: Open Current Project on GitLab`
 - [`GitLab: Open Remote Repository`](remote_urls.md): Browse a remote GitLab repository.
@@ -25,15 +24,15 @@ This extension provides several sets of commands that you can trigger in the
 
 ### Manage issues and merge requests
 
-- [`GitLab: Advanced Search (Issues, Merge Requests, Commits, Comments...)`](index.md#search-issues-and-merge-requests)
+- [`GitLab: Advanced Search (Issues, Merge Requests, Commits, Comments...)`](_index.md#search-issues-and-merge-requests)
 - `GitLab: Copy Link to Active File on GitLab`
 - `GitLab: Create New Issue on Current Project`
 - `GitLab: Create New Merge Request on Current Project`: Open the merge request page to create a merge request.
-- [`GitLab: Open Active File on GitLab`](index.md#open-current-file-in-gitlab-ui) -
+- [`GitLab: Open Active File on GitLab`](_index.md#open-current-file-in-gitlab-ui) -
   View active file on GitLab with highlighting active line number and selected text block.
 - `GitLab: Open Merge Request for Current Branch`
-- [`GitLab: Search Project Issues (Supports Filters)`](index.md#search-issues-and-merge-requests).
-- [`GitLab: Search Project Merge Requests (Supports Filters)`](index.md#search-issues-and-merge-requests).
+- [`GitLab: Search Project Issues (Supports Filters)`](_index.md#search-issues-and-merge-requests).
+- [`GitLab: Search Project Merge Requests (Supports Filters)`](_index.md#search-issues-and-merge-requests).
 - `GitLab: Show Issues Assigned to Me`: Open issues assigned to you on GitLab.
 - `GitLab: Show Merge Requests Assigned to Me`: Open merge requests assigned to you on GitLab.
 
@@ -55,10 +54,10 @@ This extension provides several sets of commands that you can trigger in the
 
 - `GitLab: Apply Snippet Patch`
 - `GitLab: Clone Wiki`
-- [`GitLab: Create Snippet`](index.md#create-a-snippet): Create a public, internal, or private snippet
+- [`GitLab: Create Snippet`](_index.md#create-a-snippet): Create a public, internal, or private snippet
   from an entire file or selection.
-- [`GitLab: Create Snippet Patch`](index.md#create-a-patch-file): Create a `.patch` file from the entire file, or a selection.
-- [`GitLab: Insert Snippet`](index.md#insert-a-snippet): Insert a single-file or multi-file project snippet.
+- [`GitLab: Create Snippet Patch`](_index.md#create-a-patch-file): Create a `.patch` file from the entire file, or a selection.
+- [`GitLab: Insert Snippet`](_index.md#insert-a-snippet): Insert a single-file or multi-file project snippet.
 - `GitLab: Publish Workspace to GitLab`
 - `GitLab: Refresh Sidebar`
 - `GitLab: Show Extension Logs`
@@ -94,6 +93,7 @@ If you use self-signed certificates to connect to your GitLab instance, read the
 | `gitlab.duoCodeSuggestions.enabled` | true | Toggle to enable or disable AI-assisted code suggestions. |
 | `gitlab.duoCodeSuggestions.enabledSupportedLanguages` | Not applicable | The [supported languages](../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages) for which to enable Code Suggestions. By default, all supported languages are enabled. |
 | `gitlab.duoCodeSuggestions.openTabsContext` | true | Toggle to enable or disable sending of context across open tabs to improve Code Suggestions. |
+| `gitlab.keybindingHints.enabled"` | true | Enable keybinding hints for GitLab Duo. |
 | `gitlab.pipelineGitRemoteName` | null | The name of the Git remote name corresponding to the GitLab repository with your pipelines. If set to `null` or missing, then the extension uses the same remote as for the non-pipeline features. |
 | `gitlab.showPipelineUpdateNotifications` | false | Set to `true` to show an alert when a pipeline completes. |
 

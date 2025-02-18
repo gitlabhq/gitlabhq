@@ -12,7 +12,9 @@ module ActiveContext
     # - Unquoted identifiers (column names)
     # - Direct interpolation of arrays and limits
     class ProcessorExample
-      def self.to_sql(node)
+      include ActiveContext::Databases::Concerns::Processor
+
+      def self.transform(node)
         new.process(node)
       end
 

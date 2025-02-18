@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Create a Git branch for your changes
 ---
-
-# Create a Git branch for your changes
 
 A **branch** is a copy of the files in the repository at the time you create the branch.
 You can work in your branch without affecting other branches. When
@@ -24,9 +23,9 @@ To create a branch:
 git checkout -b <name-of-branch>
 ```
 
-GitLab enforces [branch naming rules](../../user/project/repository/branches/index.md#name-your-branch)
+GitLab enforces [branch naming rules](../../user/project/repository/branches/_index.md#name-your-branch)
 to prevent problems, and provides
-[branch naming patterns](../../user/project/repository/branches/index.md#prefix-branch-names-with-issue-numbers)
+[branch naming patterns](../../user/project/repository/branches/_index.md#prefix-branch-names-with-issue-numbers)
 to streamline merge request creation.
 
 ## Switch to a branch
@@ -61,5 +60,5 @@ To update your branch with the latest changes in the default branch, either:
 
 ## Related topics
 
-- [Branches](../../user/project/repository/branches/index.md)
-- [Tags](../../user/project/repository/tags/index.md)
+- [Branches](../../user/project/repository/branches/_index.md)
+- [Tags](../../user/project/repository/tags/_index.md)

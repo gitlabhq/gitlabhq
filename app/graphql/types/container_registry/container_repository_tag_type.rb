@@ -23,6 +23,14 @@ module Types
       field :revision, GraphQL::Types::String, null: true, description: 'Revision of the tag.'
       field :short_revision, GraphQL::Types::String, null: true, description: 'Short revision of the tag.'
       field :total_size, GraphQL::Types::BigInt, null: true, description: 'Size of the tag.'
+
+      field :protection,
+        Types::ContainerRegistry::Protection::AccessLevelType,
+        null: true,
+        experiment: { milestone: '17.9' },
+        method: :protection_rule,
+        description: 'Minimum GitLab access level required to push and delete container image tags. ' \
+          'If multiple protection rules match an image tag, the highest access levels are applied'
     end
   end
 end

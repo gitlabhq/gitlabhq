@@ -8,6 +8,6 @@ default: '48'
 description: Amount of time (in hours) that users are allowed to skip forced configuration
   of two-factor authentication.
 encrypted: false
-gitlab_com_different_than_default: false
+gitlab_com_different_than_default: true
 jihu: false
 not_null: false

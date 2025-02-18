@@ -42,11 +42,13 @@ module Gitlab
           end
 
           def parse_body(issue_event)
-            if issue_event.event == 'unassigned'
-              "#{SystemNotes::IssuablesService.issuable_events[:unassigned]} `@#{issue_event[:assignee].login}`"
-            else
-              "#{SystemNotes::IssuablesService.issuable_events[:assigned]} `@#{issue_event[:assignee].login}`"
-            end
+            body = if issue_event.event == 'unassigned'
+                     SystemNotes::IssuablesService.issuable_events[:unassigned]
+                   else
+                     SystemNotes::IssuablesService.issuable_events[:assigned]
+                   end
+
+            "#{body} #{backticked_username(issue_event[:assignee])}"
           end
         end
       end

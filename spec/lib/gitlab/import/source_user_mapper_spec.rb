@@ -62,8 +62,9 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
         new_placeholder_user = User.where(user_type: :placeholder).last
 
         expect(new_placeholder_user.name).to eq("Placeholder #{source_name}")
-        expect(new_placeholder_user.username).to match(/^aprycontributor_placeholder_user_\d+$/)
-        expect(new_placeholder_user.email).to match(/^#{import_type}_\h+_\d+@#{Settings.gitlab.host}$/)
+        expect(new_placeholder_user.username).to match(/^aprycontributor_placeholder_[[:alnum:]]+$/)
+        expect(new_placeholder_user.email)
+          .to match(/^aprycontributor_placeholder_[[:alnum:]]+@noreply.#{Settings.gitlab.host}$/)
       end
     end
 
@@ -368,6 +369,146 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
             import_type: import_type,
             source_hostname: source_hostname
           ).find_source_user(source_user_identifier)
+        end
+      end
+    end
+
+    context "when the source user is in a state that returns nil for `#mapped_user_id`" do
+      include ExclusiveLeaseHelpers
+
+      shared_examples 'returns the existing source user, in a reset state' do
+        specify do
+          allow(::Import::Framework::Logger).to receive(:info).and_call_original
+
+          expect(::Import::Framework::Logger).to receive(:info).with(
+            message: 'Resetting source user state',
+            source_user_status: existing_import_source_user.status,
+            source_user_id: existing_import_source_user.id,
+            source_user_reassign_to_user_id: existing_import_source_user.reassign_to_user_id,
+            source_user_placeholder_user_id: existing_import_source_user.placeholder_user_id
+          )
+
+          expect { find_source_user }.to change { existing_import_source_user.reload.mapped_user_id }.from(nil)
+          expect(find_source_user).to eq(existing_import_source_user)
+          expect(find_source_user).to have_attributes(
+            status: 0,
+            reassign_to_user_id: nil,
+            placeholder_user_id: be_present,
+            reassignment_token: nil
+          )
+        end
+
+        it 'takes an exclusive lease' do
+          key = end_with(":#{existing_import_source_user.source_user_identifier}")
+          lease = stub_exclusive_lease(key, timeout: described_class::LOCK_TTL)
+
+          expect(lease).to receive(:try_obtain)
+          expect(lease).to receive(:cancel)
+
+          find_source_user
+        end
+
+        context 'when exclusive lease was retried' do
+          let(:update_sql) { start_with('UPDATE "import_source_users"') }
+
+          context 'and source user was not reset while waiting' do
+            before do
+              allow_next_instance_of(described_class) do |source_user_mapper|
+                allow(source_user_mapper).to receive(:in_lock).and_yield(true)
+              end
+            end
+
+            it 'continues to reset the source user' do
+              recorder = ActiveRecord::QueryRecorder.new { find_source_user }
+
+              expect(recorder.log).to include(update_sql)
+              expect(find_source_user).to eq(existing_import_source_user)
+            end
+          end
+
+          context 'and source user was reset while waiting' do
+            before do
+              allow_next_instance_of(described_class) do |source_user_mapper|
+                allow(source_user_mapper).to receive(:in_lock).and_yield(true)
+                allow(source_user_mapper).to receive(:reset_source_user?).and_return(true, false)
+              end
+            end
+
+            it 'does not continue to reset the source user' do
+              recorder = ActiveRecord::QueryRecorder.new { find_source_user }
+
+              expect(recorder.log).not_to include(update_sql)
+              expect(find_source_user).to eq(existing_import_source_user)
+            end
+          end
+        end
+
+        context 'when there are ActiveRecord validation errors' do
+          before do
+            allow_next_found_instance_of(Import::SourceUser) do |source_user|
+              allow(source_user).to receive(:save).and_return(false)
+              allow(source_user).to receive_message_chain(:errors, :full_messages).and_return(['mocked_error'])
+            end
+          end
+
+          it 'logs the errors and destroys the source user record' do
+            expect(::Import::Framework::Logger).to receive(:error).with(
+              message: 'Failed to save source user after resetting',
+              source_user_id: kind_of(Integer),
+              source_user_validation_errors: ['mocked_error']
+            )
+
+            expect(existing_import_source_user).to be_invalid
+            expect { find_source_user }.to change { Import::SourceUser.count }.by(-1)
+            expect(find_source_user).to be_nil
+            expect(Import::SourceUser.find_by_id(existing_import_source_user.id)).to be_nil
+          end
+        end
+      end
+
+      context 'as the reassigned to user was deleted' do
+        let_it_be_with_reload(:existing_import_source_user) do
+          create(
+            :import_source_user,
+            :completed,
+            namespace: namespace,
+            import_type: import_type,
+            source_hostname: source_hostname
+          )
+        end
+
+        before do
+          existing_import_source_user.reassign_to_user.destroy!
+          existing_import_source_user.reload
+        end
+
+        it_behaves_like 'returns the existing source user, in a reset state'
+
+        it 'retains its placeholder user' do
+          expect { find_source_user }.not_to change { existing_import_source_user.reload.placeholder_user_id }
+        end
+      end
+
+      context 'as placeholder user was deleted' do
+        let_it_be_with_reload(:existing_import_source_user) do
+          create(
+            :import_source_user,
+            :awaiting_approval,
+            namespace: namespace,
+            import_type: import_type,
+            source_hostname: source_hostname
+          )
+        end
+
+        before do
+          existing_import_source_user.placeholder_user.destroy!
+          existing_import_source_user.reload
+        end
+
+        it_behaves_like 'returns the existing source user, in a reset state'
+
+        it 'creates a new placeholder user' do
+          expect { find_source_user }.to change { existing_import_source_user.reload.placeholder_user_id }.from(nil)
         end
       end
     end

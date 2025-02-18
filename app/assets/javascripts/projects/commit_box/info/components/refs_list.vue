@@ -95,7 +95,7 @@ export default {
 
 <template>
   <div>
-    <gl-icon :name="refIcon" :size="16" class="gl-ml-2 gl-mr-3" />
+    <gl-icon :name="refIcon" variant="default" :size="16" class="gl-ml-2 gl-mr-3" />
     <gl-loading-icon v-if="isLoading" size="sm" inline />
     <span v-if="showEmptyMessage">{{ emptyMessage }}</span>
     <span v-else-if="showNameSpace" data-testid="title" class="gl-mr-2">{{ namespace }}</span>

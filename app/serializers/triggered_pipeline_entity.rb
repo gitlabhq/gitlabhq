@@ -6,10 +6,12 @@ class TriggeredPipelineEntity < Grape::Entity
   MAX_EXPAND_DEPTH = 3
 
   expose :id
-  expose :user, using: UserEntity
+  expose :iid
   expose :active?, as: :active
   expose :coverage, unless: proc { options[:disable_coverage] }
+  expose :name
   expose :source
+  expose :user, using: UserEntity
 
   expose :source_job do
     expose :name do |pipeline|

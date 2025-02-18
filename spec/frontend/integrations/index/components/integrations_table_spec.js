@@ -1,4 +1,4 @@
-import { GlTable, GlIcon, GlLink } from '@gitlab/ui';
+import { GlTable, GlLink, GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import IntegrationsTable from '~/integrations/index/components/integrations_table.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -37,16 +37,18 @@ describe('IntegrationsTable', () => {
   });
 
   describe.each`
-    scenario                          | integrations                     | shouldRenderActiveIcon
+    scenario                          | integrations                     | expectActiveIcon
     ${'when integration is active'}   | ${[mockActiveIntegrations[0]]}   | ${true}
     ${'when integration is inactive'} | ${[mockInactiveIntegrations[0]]} | ${false}
-  `('$scenario', ({ shouldRenderActiveIcon, integrations }) => {
+  `('$scenario', ({ expectActiveIcon, integrations }) => {
     beforeEach(() => {
       createComponent({ integrations });
     });
 
-    it(`${shouldRenderActiveIcon ? 'renders' : 'does not render'} icon in first column`, () => {
-      expect(findTable().findComponent(GlIcon).exists()).toBe(shouldRenderActiveIcon);
+    it(`${expectActiveIcon ? 'renders' : 'does not render'} icon in first column`, () => {
+      expect(findTable().find('[data-testid="integration-active-icon"]').exists()).toBe(
+        expectActiveIcon,
+      );
     });
   });
 
@@ -74,6 +76,8 @@ describe('IntegrationsTable', () => {
   });
 
   describe.each([true, false])('when integrations inactive property is %p', (inactive) => {
+    const findEditButton = () => findTable().findComponent(GlButton);
+
     beforeEach(() => {
       createComponent({ integrations: mockInactiveIntegrations, inactive });
     });
@@ -81,5 +85,16 @@ describe('IntegrationsTable', () => {
     it(`${inactive ? 'does not render' : 'render'} updated_at field`, () => {
       expect(findTable().find('[aria-label="Updated At"]').exists()).toBe(!inactive);
     });
+
+    if (inactive) {
+      it('renders Edit button as "Add integration"', () => {
+        expect(findEditButton().props('icon')).toBe('plus');
+        expect(findEditButton().text()).toBe('Add');
+      });
+    } else {
+      it('renders Edit button as "Configure"', () => {
+        expect(findEditButton().props('icon')).toBe('settings');
+      });
+    }
   });
 });

@@ -35,6 +35,7 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
 
     context 'when Redis calls are made' do
       let_it_be(:redis_store_class) { define_helper_redis_store_class }
+      let(:redis_store_name) { redis_store_class.store_name.underscore }
 
       before do
         redis_store_class.with(&:ping)
@@ -70,13 +71,13 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
         expect(payload[:redis_queues_read_bytes]).to be >= 0
         expect(payload[:redis_queues_write_bytes]).to be >= 0
 
-        # Sessions payload
-        expect(payload[:redis_sessions_calls]).to eq(2)
-        expect(payload[:redis_sessions_cross_slot_calls]).to eq(1)
-        expect(payload[:redis_sessions_allowed_cross_slot_calls]).to eq(1)
-        expect(payload[:redis_sessions_duration_s]).to be >= 0
-        expect(payload[:redis_sessions_read_bytes]).to be >= 0
-        expect(payload[:redis_sessions_write_bytes]).to be >= 0
+        # Redis store payload
+        expect(payload[:"redis_#{redis_store_name}_calls"]).to eq(2)
+        expect(payload[:"redis_#{redis_store_name}_cross_slot_calls"]).to eq(1)
+        expect(payload[:"redis_#{redis_store_name}_allowed_cross_slot_calls"]).to eq(1)
+        expect(payload[:"redis_#{redis_store_name}_duration_s"]).to be >= 0
+        expect(payload[:"redis_#{redis_store_name}_read_bytes"]).to be >= 0
+        expect(payload[:"redis_#{redis_store_name}_write_bytes"]).to be >= 0
 
         # Gitaly
         expect(payload[:gitaly_calls]).to be_nil

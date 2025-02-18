@@ -14,8 +14,6 @@ module Doorkeeper # rubocop:disable Gitlab/BoundedContexts -- Override from a ge
         inverse_of: :openid_request
 
       belongs_to :organization, class_name: 'Organizations::Organization', optional: false
-
-      attribute :organization_id, default: -> { Organizations::Organization::DEFAULT_ORGANIZATION_ID }
     end
   end
 end

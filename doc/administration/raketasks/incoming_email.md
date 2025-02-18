@@ -2,15 +2,21 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Incoming email Rake tasks
 ---
 
-# Incoming email Rake tasks
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108279) in GitLab 15.9.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108279) in GitLab 15.9.
+
+{{< /history >}}
 
 The following are Incoming email-related Rake tasks.
 
@@ -22,32 +28,40 @@ GitLab can use [Incoming email](../incoming_email.md) secrets read from an encry
 
 Show the contents of the current Incoming email secrets.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
 sudo gitlab-rake gitlab:incoming_email:secret:show
 ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 Use a Kubernetes secret to store the incoming email password. For more information,
 read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets.html#imap-password-for-incoming-emails).
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 ```shell
 sudo docker exec -t <container name> gitlab:incoming_email:secret:show
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 ```shell
 bundle exec rake gitlab:incoming_email:secret:show RAILS_ENV=production
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 #### Example output
 
@@ -60,64 +74,80 @@ user: 'incoming-email@mail.example.com'
 
 Opens the secret contents in your editor, and writes the resulting content to the encrypted secret file when you exit.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
 sudo gitlab-rake gitlab:incoming_email:secret:edit EDITOR=vim
 ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 Use a Kubernetes secret to store the incoming email password. For more information,
 read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets.html#imap-password-for-incoming-emails).
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 ```shell
 sudo docker exec -t <container name> gitlab:incoming_email:secret:edit EDITOR=editor
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 ```shell
 bundle exec rake gitlab:incoming_email:secret:edit RAILS_ENV=production EDITOR=vim
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Write raw secret
 
 Write new secret content by providing it on `STDIN`.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
 echo -e "password: 'examplepassword'" | sudo gitlab-rake gitlab:incoming_email:secret:write
 ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 Use a Kubernetes secret to store the incoming email password. For more information,
 read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets.html#imap-password-for-incoming-emails).
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 ```shell
 sudo docker exec -t <container name> /bin/bash
 echo -e "password: 'examplepassword'" | gitlab-rake gitlab:incoming_email:secret:write
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 ```shell
 echo -e "password: 'examplepassword'" | bundle exec rake gitlab:incoming_email:secret:write RAILS_ENV=production
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Secrets examples
 

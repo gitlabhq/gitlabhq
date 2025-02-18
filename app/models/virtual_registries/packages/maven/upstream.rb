@@ -9,8 +9,8 @@ module VirtualRegistries
           class_name: 'VirtualRegistries::Packages::Maven::RegistryUpstream',
           inverse_of: :upstream
         has_one :registry, class_name: 'VirtualRegistries::Packages::Maven::Registry', through: :registry_upstream
-        has_many :cached_responses,
-          class_name: 'VirtualRegistries::Packages::Maven::CachedResponse',
+        has_many :cache_entries,
+          class_name: 'VirtualRegistries::Packages::Maven::Cache::Entry',
           inverse_of: :upstream
 
         ignore_column :encrypted_credentials, remove_with: '17.9', remove_after: '2025-01-23'
@@ -55,8 +55,26 @@ module VirtualRegistries
           { Authorization: authorization }
         end
 
-        def default_cached_responses
-          cached_responses.default
+        def default_cache_entries
+          cache_entries.default
+        end
+
+        def object_storage_key_for(registry_id:)
+          hash = Digest::SHA2.hexdigest(SecureRandom.uuid)
+          Gitlab::HashedPath.new(
+            'virtual_registries',
+            'packages',
+            'maven',
+            registry_id.to_s,
+            'upstream',
+            id.to_s,
+            'cache',
+            'entry',
+            hash[0..1],
+            hash[2..3],
+            hash[4..],
+            root_hash: registry_id
+          ).to_s
         end
 
         private

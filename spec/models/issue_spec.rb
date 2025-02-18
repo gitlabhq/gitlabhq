@@ -119,6 +119,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     it { is_expected.to have_many(:design_versions) }
     it { is_expected.to have_one(:sentry_issue) }
     it { is_expected.to have_one(:alert_management_alert) }
+    it { is_expected.to have_one(:dates_source).class_name('WorkItems::DatesSource').inverse_of(:work_item) }
     it { is_expected.to have_many(:alert_management_alerts).validate(false) }
     it { is_expected.to have_many(:resource_milestone_events) }
     it { is_expected.to have_many(:resource_state_events) }
@@ -2607,16 +2608,17 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#work_item_type_id' do
-    let_it_be(:work_item_type) { create(:work_item_type, :non_default) }
+    let_it_be(:work_item_type1) { create(:work_item_type, :non_default) }
+    let_it_be(:work_item_type2) { create(:work_item_type, :non_default) }
     let_it_be(:issue) { create(:issue, project: reusable_project) }
 
     it 'returns the correct work_item_types.id value even if the value in the column is wrong' do
       issue.update_columns(
-        work_item_type_id: non_existing_record_id,
-        correct_work_item_type_id: work_item_type.correct_id
+        work_item_type_id: work_item_type2.id,
+        correct_work_item_type_id: work_item_type1.correct_id
       )
 
-      expect(issue.work_item_type_id).to eq(work_item_type.id)
+      expect(issue.work_item_type_id).to eq(work_item_type1.id)
     end
   end
 

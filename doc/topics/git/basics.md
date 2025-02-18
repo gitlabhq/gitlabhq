@@ -1,11 +1,10 @@
 ---
 stage: Create
 group: Source Code
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Common Git commands and workflows.
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+title: Basic Git operations
 ---
-
-# Basic Git operations
 
 Basic Git operations help you to manage your Git repositories and to make changes to your code.
 They provide you with the following benefits:
@@ -62,7 +61,7 @@ For more information, see [Add files to a branch](add_files.md).
 
 A merge request is a request to merge changes from one branch into another branch.
 Merge requests provide a way to collaborate and review code changes.
-For more information, see [Merge requests](../../user/project/merge_requests/index.md)
+For more information, see [Merge requests](../../user/project/merge_requests/_index.md)
 and [Merge your branch](merge.md).
 
 ## Update your fork
@@ -74,7 +73,7 @@ For more information, see [Update a fork](forks.md).
 ## Related topics
 
 - [Get started learning Git](get_started.md)
-  - [Install Git](how_to_install_git/index.md)
+  - [Install Git](how_to_install_git/_index.md)
   - [Common Git commands](commands.md)
 - [Advanced operations](advanced.md)
 - [Troubleshooting Git](troubleshooting_git.md)

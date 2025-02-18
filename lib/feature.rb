@@ -240,7 +240,7 @@ module Feature
 
     # This method is called from config/initializers/0_inject_feature_flags.rb and can be used
     # to register Flipper groups.
-    # See https://docs.gitlab.com/ee/development/feature_flags/index.html
+    # See https://docs.gitlab.com/ee/development/feature_flags/
     #
     # EE feature groups should go inside the ee/lib/ee/feature.rb version of this method.
     def register_feature_groups; end

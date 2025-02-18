@@ -1,0 +1,9 @@
+---
+name: allow_guest_plus_roles_to_pull_packages
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/336622
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177267
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/512210
+milestone: '17.9'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

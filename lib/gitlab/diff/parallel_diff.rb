@@ -10,7 +10,7 @@ module Gitlab
         free_right_index = nil
 
         lines = []
-        diff_lines.each do |line|
+        diff_lines&.each do |line|
           if line.removed?
             lines << {
               left: line,

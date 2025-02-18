@@ -2,16 +2,18 @@
 stage: Monitor
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Alert Management alerts API
 ---
 
-# Alert Management alerts API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The Alert Management alerts API is limited to metric images. For more API endpoints, see the
-[GraphQL API](graphql/reference/index.md#alertmanagementalert).
+[GraphQL API](graphql/reference/_index.md#alertmanagementalert).
 
 ## Upload metric image
 
@@ -21,7 +23,7 @@ POST /projects/:id/alert_management_alerts/:alert_iid/metric_images
 
 | Attribute   | Type           | Required | Description |
 |-------------|----------------|----------|-------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `alert_iid` | integer        | yes      | The internal ID of a project's alert. |
 
 Example request:
@@ -55,7 +57,7 @@ GET /projects/:id/alert_management_alerts/:alert_iid/metric_images
 
 | Attribute   | Type           | Required | Description |
 |-------------|----------------|----------|-------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `alert_iid` | integer        | yes      | The internal ID of a project's alert. |
 
 Example request:
@@ -96,7 +98,7 @@ PUT /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
 
 | Attribute   | Type           | Required | Description |
 |-------------|----------------|----------|-------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `alert_iid` | integer        | yes      | The internal ID of a project's alert. |
 | `image_id`  | integer        | yes      | The ID of the image. |
 | `url`       | string         | no       | The URL to view more metrics information. |
@@ -132,7 +134,7 @@ DELETE /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
 
 | Attribute   | Type           | Required | Description |
 |-------------|----------------|----------|-------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `alert_iid` | integer        | yes      | The internal ID of a project's alert. |
 | `image_id`  | integer        | yes      | The ID of the image. |
 

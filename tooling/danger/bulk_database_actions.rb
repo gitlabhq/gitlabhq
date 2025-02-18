@@ -7,7 +7,7 @@ module Tooling
     class BulkDatabaseActions < Suggestion
       MATCH = %r{\A\+\s+(\S*\.)?((bulk_)?(insert|update|upsert|delete|destroy)(_all)?)\b}
       REPLACEMENT = nil
-      DOCUMENTATION_LINK = 'https://docs.gitlab.com/ee/development/database_review.html#preparation-when-using-bulk-update-operations'
+      DOCUMENTATION_LINK = 'https://docs.gitlab.com/development/database_review/#preparation-when-using-bulk-update-operations'
 
       SUGGESTION = <<~MESSAGE_MARKDOWN.freeze
         When using `insert`, `update`, `upsert`, `delete`, `destroy` commands, or their `bulk/all` variants (e.g., `bulk_insert`, `update_all`), you must include the full

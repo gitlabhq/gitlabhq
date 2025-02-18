@@ -2,13 +2,15 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments.
+title: Jira migration options
 ---
 
-# Jira migration options
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You have several options to migrate your Jira projects to GitLab. Before you decide on a migration strategy,
 first decide if you even need to move your Jira issues to GitLab. In many cases, the Jira issue data is no longer
@@ -45,17 +47,17 @@ To import the Jira issue data from a CSV file into your GitLab project:
       - Only `title`, `description`, `due_date`, and `milestone` are imported.
       - You can [add quick actions to the description field](../quick_actions.md) to set other issue metadata automatically during the import process.
 1. Create a new GitLab group and project:
-   1. Sign in to your GitLab account and [create a group](../../group/index.md#create-a-group) to host your migrated projects.
-   1. In the new group, [create a new project](../index.md#create-a-blank-project) to hold the migrated Jira issues.
+   1. Sign in to your GitLab account and [create a group](../../group/_index.md#create-a-group) to host your migrated projects.
+   1. In the new group, [create a new project](../_index.md#create-a-blank-project) to hold the migrated Jira issues.
 1. Import the Jira data into GitLab:
    1. In your new GitLab project, on the left sidebar, select **Plan > Issues**.
-   1. Select **Actions** (**{ellipsis_v}**) **> Import from Jira**.
+   1. Select **Actions** ({{< icon name="ellipsis_v" >}}) **> Import from Jira**.
    1. Follow the on-screen instructions to complete the import process.
 1. Verify the migration:
    1. Review the imported issues to ensure the project migrated to GitLab successfully.
    1. Test the features of your migrated Jira project in GitLab.
 1. Adjust your workflows and settings:
-   1. Customize your GitLab [project settings](../settings/index.md), such as [description templates](../description_templates.md), [labels](../labels.md), and [milestones](../milestones/index.md), to match your team's needs.
+   1. Customize your GitLab [project settings](../settings/_index.md), such as [description templates](../description_templates.md), [labels](../labels.md), and [milestones](../milestones/_index.md), to match your team's needs.
    1. Familiarize your team with the GitLab interface and any new workflows or processes introduced by the migration.
 1. Decommission your Jira instance:
    1. When you're satisfied with the migration, you can decommission your Jira instance and fully transition to GitLab.
@@ -77,10 +79,21 @@ To establish a one-way or two-way data synchronization between Jira and GitLab, 
 
 You can use one of the available open-source migration scripts to help you migrate your Jira issues to GitLab.
 
-Many of our customers have had success using [jira2gitlab](https://github.com/swingbit/jira2gitlab).
+Many of our customers have had success using [`jira2gitlab`](https://github.com/swingbit/jira2gitlab).
 
 View a complete demo of the process: <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Migrating from Jira to GitLab with Jira2GitLab](https://www.youtube.com/watch?v=aJfnTZrS4t4)
 <!-- Video published on 2024-01-09 -->
+
+## Use a first-party script
+
+[GitLab Professional Services](https://about.gitlab.com/services/) has built their fork of the previously-mentioned `jira2gitlab` script, `Jira2Lab`:
+
+- Blog post: [Seamlessly migrate from Jira to GitLab with Jira2Lab at scale](https://about.gitlab.com/blog/2024/10/10/seamlessly-migrate-from-jira-to-gitlab-with-jira2lab-at-scale/)
+- [Repository](https://gitlab.com/gitlab-org/professional-services-automation/tools/migration/jira2lab)
+
+As stated in the `Jira2Lab` README:
+
+> We encourage users to compare both tools to best meet their migration needs.
 
 ## Write your own script
 
@@ -88,8 +101,8 @@ For full control over the migration process, you can write your own custom scrip
 your Jira issues to GitLab in a way that suits your needs exactly. GitLab provides APIs to help
 automate your migration:
 
-- [REST API](../../../api/rest/index.md)
-- [GraphQL API](../../../api/graphql/index.md)
+- [REST API](../../../api/rest/_index.md)
+- [GraphQL API](../../../api/graphql/_index.md)
 
 To get started, familiarize yourself with the following GitLab API endpoints:
 
@@ -107,7 +120,7 @@ When writing your script, you need to map the Jira issue fields to their corresp
 - **Story Point**: Map this value to the GitLab issue's **weight** value.
 - **Sprint**: Map this value to the GitLab issue's **iteration** value. This value is meaningful
   only for issues that have not been completed or are scheduled for a future sprint. Before importing
-  the data, create the required [iterations](../../group/iterations/index.md#iteration-cadences) in the
+  the data, create the required [iterations](../../group/iterations/_index.md#iteration-cadences) in the
   parent group of your project.
 
 You might also need to handle parsing the Atlassian Document Format and mapping it to GitLab Flavored Markdown.

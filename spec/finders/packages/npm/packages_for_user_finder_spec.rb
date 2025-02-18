@@ -33,15 +33,32 @@ RSpec.describe ::Packages::Npm::PackagesForUserFinder, feature_category: :packag
       let(:project_or_group) { group }
 
       before_all do
-        project.add_reporter(user)
+        project.add_guest(user)
       end
 
       it_behaves_like 'searches for packages'
       it_behaves_like 'avoids N+1 database queries in the package registry'
 
-      context 'when an user is a reporter of both projects' do
+      context 'with a project inaccessible to user, but with a public registry' do
+        let_it_be(:project_with_public_package_registry) { create(:project, group: group) }
+        let_it_be(:other_package) do
+          create(:npm_package, project: project_with_public_package_registry, name: package.name)
+        end
+
+        before do
+          project_with_public_package_registry
+            .project_feature
+            .update_attribute(:package_registry_access_level, ::ProjectFeature::PUBLIC)
+        end
+
+        it 'excludes the packages from the public registry' do
+          is_expected.to contain_exactly(package)
+        end
+      end
+
+      context 'when an user is a guest of both projects' do
         before_all do
-          project2.add_reporter(user)
+          project2.add_guest(user)
         end
 
         it { is_expected.to contain_exactly(package, package_with_diff_project) }
@@ -54,6 +71,33 @@ RSpec.describe ::Packages::Npm::PackagesForUserFinder, feature_category: :packag
           end
 
           it_behaves_like 'searches for packages'
+        end
+      end
+
+      context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+        before_all do
+          stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+          project.add_reporter(user)
+        end
+
+        it_behaves_like 'searches for packages'
+
+        context 'when an user is a reporter of both projects' do
+          before_all do
+            project2.add_reporter(user)
+          end
+
+          it { is_expected.to contain_exactly(package, package_with_diff_project) }
+
+          context 'when the second project has the package registry disabled' do
+            before_all do
+              project.reload.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+              project2.reload.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+                package_registry_access_level: 'disabled', packages_enabled: false)
+            end
+
+            it_behaves_like 'searches for packages'
+          end
         end
       end
     end

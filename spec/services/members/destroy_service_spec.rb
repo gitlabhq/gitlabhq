@@ -226,25 +226,6 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
           destroy_member
         end
 
-        context 'when feature-flag `drop_lease_usage_project_recalculate_workers` is disabled' do
-          before do
-            stub_feature_flags(drop_lease_usage_project_recalculate_workers: false)
-          end
-
-          it 'refreshes user authorizations using a lock', :aggregate_failures do
-            expect(Gitlab::ExclusiveLease)
-            .to receive(:new).with(lock_key_for_update_highest_role, timeout: 10.minutes.to_i).and_call_original
-
-            expect(Gitlab::ExclusiveLease)
-              .to receive(:new).with(lock_key_for_authorizations_refresh, timeout: 10.seconds).and_call_original
-
-            expect(Gitlab::ExclusiveLease)
-              .not_to receive(:new).with(lock_key, timeout: timeout)
-
-            destroy_member
-          end
-        end
-
         it 'destroys the membership' do
           expect { destroy_member }.to change { entity.members.count }.by(-1)
         end

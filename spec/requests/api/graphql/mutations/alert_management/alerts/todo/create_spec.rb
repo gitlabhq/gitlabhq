@@ -39,9 +39,7 @@ RSpec.describe 'Creating a todo for the alert', feature_category: :incident_mana
 
   context 'todo already exists' do
     before do
-      stub_feature_flags(multiple_todos: false)
-
-      create(:todo, :pending, project: project, user: user, target: alert)
+      post_graphql_mutation(mutation, current_user: user)
     end
 
     it 'surfaces an error' do

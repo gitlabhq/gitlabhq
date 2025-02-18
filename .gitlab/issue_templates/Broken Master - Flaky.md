@@ -16,7 +16,7 @@ Please read the below documentations for a workflow of triaging and resolving br
 
 <!-- If the pipeline failure is reproducible, provide steps to recreate the issue locally. Please use an ordered list. -->
 
-Please refer to [Flaky tests documentation](https://docs.gitlab.com/ee/development/testing_guide/flaky_tests.html) to
+Please refer to [Flaky tests documentation](https://docs.gitlab.com/development/testing_guide/flaky_tests/) to
 learn more about how to reproduce them.
 
 ### Proposed Resolution

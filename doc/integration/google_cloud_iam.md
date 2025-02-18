@@ -2,16 +2,22 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Google Cloud Workload Identity Federation and IAM policies
 ---
 
-# Google Cloud Workload Identity Federation and IAM policies
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
+
+{{< /history >}}
 
 To use Google Cloud integrations like the
 [Google Artifact Management integration](../user/project/integrations/google_artifact_management.md),
@@ -64,14 +70,14 @@ GitLab to Google Cloud at the GitLab organization level. If you want to control
 access to Google Cloud on a per project basis, then you must configure your
 IAM policies for your workload identity pool provider. For more
 information on controlling who can access Google Cloud from your GitLab
-organization, see [Access control with IAM](https://cloud.google.com/docs/gitlab/access-control).
+organization, see [Access control with IAM](https://cloud.google.com/docs/gitlab).
 
 ## GitLab authentication with Workload Identity Federation
 
 After your workload identity pool and provider are set up to map your GitLab
 roles and permissions to IAM roles, you can provision runners
 to deploy workloads from GitLab to Google Cloud by setting the
-[`identity`](../ci/yaml/index.md#identity) keyword to
+[`identity`](../ci/yaml/_index.md#identity) keyword to
 `google_cloud` for authorization on Google Cloud.
 
 For more information on provisioning runners using the GitLab on Google Cloud integration, see the
@@ -94,10 +100,13 @@ To use the GitLab UI to set up the Workload Identity Federation:
 1. Locate the Google Cloud IAM integration and select **Configure**.
 1. Select **Guided setup** and follow the instructions.
 
-NOTE:
+{{< alert type="note" >}}
+
 Due to a known issue, the fields in the page for the Google Cloud IAM integration might not
 populate after you run the script in the guided setup. If the fields are empty, refresh the page.
 For more information, see [issue 448831](https://gitlab.com/gitlab-org/gitlab/-/issues/448831).
+
+{{< /alert >}}
 
 ### With the Google Cloud CLI
 
@@ -173,7 +182,7 @@ Prerequisites:
   claims included in the JWT ID token to the corresponding identity attributes
   that are used in Identity and Access Management (IAM) policies to grant access.
   For more information, see the [supported OIDC custom claims](google_cloud_iam.md#oidc-custom-claims) that you can use
-  to [control access to Google Cloud](https://cloud.google.com/docs/gitlab/access-control#control-access-google).
+  to [control access to Google Cloud](https://cloud.google.com/docs/gitlab#control-access-google).
 
 To restrict [identity token access](https://cloud.google.com/iam/docs/workload-identity-federation#mapping) to a specific GitLab project or group, use an attribute condition. Use the attribute `assertion.project_id` for a project and the attribute `assertion.namespace_id` for a group.
 For more information, see the Google Cloud documentation about how to [define an attribute condition](https://cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines#gitlab-saas_2). After you define the attribute condition, you can [update the workload identity provider](https://cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines#update_attribute_condition_on_a_workload_identity_provider).
@@ -256,7 +265,7 @@ artifacts to the Google Artifact Registry from the GitLab project `gitlab-org/my
 1. In the **Display name** column, select your workload identity pool.
 
 1. In the **Providers** section, next to the workload identity provider you want to edit,
-   select **Edit** (**{pencil}**) to open **Provider details**.
+   select **Edit** ({{< icon name="pencil" >}}) to open **Provider details**.
 
 1. In the **Attribute mapping** section, select **Add mapping**.
 1. In the **Google N** text box, enter:

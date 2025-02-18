@@ -2,9 +2,8 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Job artifact troubleshooting for administrators
 ---
-
-# Job artifact troubleshooting for administrators
 
 When administering job artifacts, you might encounter the following issues.
 
@@ -74,15 +73,17 @@ You can check the database to confirm if your instance has artifacts with the `u
 
 1. Start a database console:
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle Linux package (Omnibus)
+   {{< tab title="Linux package (Omnibus)" >}}
 
    ```shell
    sudo gitlab-psql
    ```
 
-   :::TabTitle Helm chart (Kubernetes)
+   {{< /tab >}}
+
+   {{< tab title="Helm chart (Kubernetes)" >}}
 
    ```shell
    # Find the toolbox pod
@@ -91,20 +92,26 @@ You can check the database to confirm if your instance has artifacts with the `u
    kubectl exec -it <toolbox-pod-name> -- /srv/gitlab/bin/rails dbconsole --include-password --database main
    ```
 
-   :::TabTitle Docker
+   {{< /tab >}}
+
+   {{< tab title="Docker" >}}
 
    ```shell
    sudo docker exec -it <container_name> /bin/bash
    gitlab-psql
    ```
 
-   :::TabTitle Self-compiled (source)
+   {{< /tab >}}
+
+   {{< tab title="Self-compiled (source)" >}}
 
    ```shell
    sudo -u git -H psql -d gitlabhq_production
    ```
 
-   ::EndTabs
+      {{< /tab >}}
+
+   {{< /tabs >}}
 
 1. Run the following query:
 
@@ -139,7 +146,7 @@ GitLab 15.3 and later. It analyzes the artifacts returned by the above database 
 determines which should be `locked` or `unlocked`. Artifacts are then deleted
 by that worker if needed.
 
-The worker can be enabled on self-managed instances:
+The worker can be enabled on GitLab Self-Managed:
 
 1. Start a [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
 
@@ -161,7 +168,7 @@ in 24 hours.
 There is a related `ci_job_artifacts_backlog_large_loop_limit` feature flag
 which causes the worker to process `unknown` artifacts
 [in batches that are five times larger](https://gitlab.com/gitlab-org/gitlab/-/issues/356319).
-This flag is not recommended for use on self-managed instances.
+This flag is not recommended for use.
 
 ### List projects and builds with artifacts with a specific expiration (or no expiration)
 
@@ -247,10 +254,13 @@ To change the number of job artifacts listed, change the number in `limit(50)`.
 
 ### Delete old builds and artifacts
 
-WARNING:
+{{< alert type="warning" >}}
+
 These commands remove data permanently. Before running them in a production environment,
 you should try them in a test environment first and make a backup of the instance
 that can be restored if needed.
+
+{{< /alert >}}
 
 #### Delete old artifacts for a project
 
@@ -359,10 +369,13 @@ they are not scheduled by a background queue.
 
 ### Delete old pipelines
 
-WARNING:
+{{< alert type="warning" >}}
+
 These commands remove data permanently. Before running them in a production environment,
 consider seeking guidance from a Support Engineer. You should also try them in a test environment first
 and make a backup of the instance that can be restored if needed.
+
+{{< /alert >}}
 
 Deleting a pipeline also removes that pipeline's:
 
@@ -410,7 +423,7 @@ review:
   WARNING: Uploading artifacts as "archive" to coordinator... failed id=12345 responseStatus=500 Internal Server Error status=500 token=abcd1234
   ```
 
-- The [workhorse log](../logs/index.md#workhorse-logs) for an error message similar to:
+- The [workhorse log](../logs/_index.md#workhorse-logs) for an error message similar to:
 
   ```json
   {"error":"MissingRegion: could not find region configuration","level":"error","msg":"error uploading S3 session","time":"2021-03-16T22:10:55-04:00"}

@@ -2,13 +2,15 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Mailgun
 ---
 
-# Mailgun
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 When you use Mailgun to send emails for your GitLab instance and [Mailgun](https://www.mailgun.com/)
 integration is enabled and configured in GitLab, you can receive their webhook for
@@ -21,8 +23,12 @@ After completing the integration, Mailgun `temporary_failure` and `permanent_fai
 
 ## Configure your Mailgun domain
 
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/359113) the `/-/members/mailgun/permanent_failures` URL in GitLab 15.0.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/359113) the URL to handle both temporary and permanent failures in GitLab 15.0.
+{{< history >}}
+
+- [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/359113) the `/-/members/mailgun/permanent_failures` URL in GitLab 15.0.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/359113) the URL to handle both temporary and permanent failures in GitLab 15.0.
+
+{{< /history >}}
 
 Before you can enable Mailgun in GitLab, set up your own Mailgun endpoints to receive the webhooks.
 

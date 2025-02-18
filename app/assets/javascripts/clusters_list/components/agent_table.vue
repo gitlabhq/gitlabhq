@@ -13,9 +13,6 @@ import {
   GlDisclosureDropdownItem,
   GlModalDirective,
 } from '@gitlab/ui';
-import semverLt from 'semver/functions/lt';
-import semverInc from 'semver/functions/inc';
-import semverPrerelease from 'semver/functions/prerelease';
 import { __, s__, sprintf } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -60,13 +57,12 @@ export default {
   mixins: [timeagoMixin],
   AGENT_STATUSES,
   troubleshootingLink: helpPagePath('user/clusters/agent/troubleshooting'),
-  versionUpdateLink: helpPagePath('user/clusters/agent/install/index', {
+  versionUpdateLink: helpPagePath('user/clusters/agent/install/_index', {
     anchor: 'update-the-agent-version',
   }),
-  configHelpLink: helpPagePath('user/clusters/agent/install/index', {
+  configHelpLink: helpPagePath('user/clusters/agent/install/_index', {
     anchor: 'create-an-agent-configuration-file',
   }),
-  inject: ['kasCheckVersion'],
   props: {
     agents: {
       required: true,
@@ -93,41 +89,50 @@ export default {
   computed: {
     fields() {
       const tdClass = '!gl-pt-3 !gl-pb-4 !gl-align-middle';
+      const thClass = '!gl-border-t-0';
       return [
         {
           key: 'name',
           label: this.$options.i18n.nameLabel,
+          isRowHeader: true,
           tdClass,
+          thClass,
         },
         {
           key: 'status',
           label: this.$options.i18n.statusLabel,
           tdClass,
+          thClass,
         },
         {
           key: 'lastContact',
           label: this.$options.i18n.lastContactLabel,
           tdClass,
+          thClass,
         },
         {
           key: 'version',
           label: this.$options.i18n.versionLabel,
           tdClass,
+          thClass,
         },
         {
           key: 'agentID',
           label: this.$options.i18n.agentIdLabel,
           tdClass,
+          thClass,
         },
         {
           key: 'configuration',
           label: this.$options.i18n.configurationLabel,
           tdClass,
+          thClass,
         },
         {
           key: 'options',
           label: '',
           tdClass,
+          thClass,
         },
       ];
     },
@@ -137,8 +142,8 @@ export default {
       }
 
       return this.agents.map((agent) => {
-        const versions = this.getAgentVersions(agent);
-        return { ...agent, versions };
+        const { versions, warnings } = this.getAgentVersions(agent);
+        return { ...agent, versions, warnings };
       });
     },
     showPagination() {
@@ -171,14 +176,27 @@ export default {
     getAgentConfigPath,
     getAgentVersions(agent) {
       const agentConnections = agent.connections?.nodes || [];
+      const versions = [];
+      const warnings = [];
 
-      const agentVersions = agentConnections.map((agentConnection) =>
-        agentConnection.metadata.version.replace('v', ''),
-      );
+      agentConnections.forEach((connection) => {
+        const version = connection.metadata.version?.replace('v', '');
+        if (version && !versions.includes(version)) {
+          versions.push(version);
+        }
 
-      const uniqueAgentVersions = [...new Set(agentVersions)];
+        connection.warnings?.forEach((warning) => {
+          const message = warning?.version?.message;
+          if (message && !warnings.includes(message)) {
+            warnings.push(message);
+          }
+        });
+      });
 
-      return uniqueAgentVersions.sort((a, b) => a.localeCompare(b));
+      return {
+        versions: versions.sort((a, b) => a.localeCompare(b)),
+        warnings,
+      };
     },
     getAgentVersionString(agent) {
       return agent.versions[0] || '';
@@ -186,37 +204,18 @@ export default {
     isVersionMismatch(agent) {
       return agent.versions.length > 1;
     },
-    // isVersionOutdated determines if the agent version is outdated compared to the KAS / GitLab version
-    // using the following heuristics:
-    // - KAS Version is used as *server* version if available, otherwise the GitLab version is used.
-    // - returns `outdated` if the agent has a different major version than the server
-    // - returns `outdated` if the agents minor version is at least two proper versions older than the server
-    //   - *proper* -> not a prerelease version. Meaning that server prereleases (with `-rcN`) suffix are counted as the previous minor version
-    //
-    // Note that it does NOT support if the agent is newer than the server version.
-    isVersionOutdated(agent) {
-      if (!agent.versions.length) return false;
-
-      const agentVersion = this.getAgentVersionString(agent);
-      let allowableAgentVersion = semverInc(agentVersion, 'minor');
-
-      const isServerPrerelease = Boolean(semverPrerelease(this.kasCheckVersion));
-      if (isServerPrerelease) {
-        allowableAgentVersion = semverInc(allowableAgentVersion, 'minor');
-      }
-
-      return semverLt(allowableAgentVersion, this.kasCheckVersion);
+    hasWarnings(agent) {
+      return agent.warnings.length > 0;
     },
-
     getVersionPopoverTitle(agent) {
-      if (this.isVersionMismatch(agent) && this.isVersionOutdated(agent)) {
-        return this.$options.i18n.versionMismatchOutdatedTitle;
+      if (this.isVersionMismatch(agent) && this.hasWarnings(agent)) {
+        return this.$options.i18n.versionWarningsMismatchTitle;
       }
       if (this.isVersionMismatch(agent)) {
         return this.$options.i18n.versionMismatchTitle;
       }
-      if (this.isVersionOutdated(agent)) {
-        return this.$options.i18n.versionOutdatedTitle;
+      if (this.hasWarnings(agent)) {
+        return this.$options.i18n.versionWarningsTitle;
       }
 
       return null;
@@ -262,7 +261,9 @@ export default {
       data-testid="cluster-agent-list-table"
     >
       <template #cell(name)="{ item }">
-        <div class="gl-flex gl-flex-wrap gl-justify-end gl-gap-3 md:gl-justify-start">
+        <div
+          class="gl-flex gl-flex-wrap gl-justify-end gl-gap-3 gl-font-normal md:gl-justify-start"
+        >
           <gl-link :href="item.webPath" data-testid="cluster-agent-name-link">{{
             item.name
           }}</gl-link
@@ -329,44 +330,32 @@ export default {
           {{ getAgentVersionString(item) }}
 
           <gl-icon
-            v-if="isVersionMismatch(item) || isVersionOutdated(item)"
+            v-if="isVersionMismatch(item) || hasWarnings(item)"
             name="warning"
-            class="gl-ml-2 gl-text-orange-500"
+            class="gl-ml-2"
+            variant="warning"
           />
         </span>
 
         <gl-popover
-          v-if="isVersionMismatch(item) || isVersionOutdated(item)"
+          v-if="isVersionMismatch(item) || hasWarnings(item)"
           :target="getVersionCellId(item)"
           :title="getVersionPopoverTitle(item)"
           :data-testid="getPopoverTestId(item)"
           placement="right"
           container="viewport"
         >
-          <div v-if="isVersionMismatch(item) && isVersionOutdated(item)">
-            <p>{{ $options.i18n.versionMismatchText }}</p>
-
-            <p class="gl-mb-0">
-              <gl-sprintf :message="$options.i18n.versionOutdatedText">
-                <template #version>{{ kasCheckVersion }}</template>
-              </gl-sprintf>
-              <gl-link :href="$options.versionUpdateLink" class="gl-text-sm">
-                {{ $options.i18n.viewDocsText }}</gl-link
-              >
-            </p>
-          </div>
-          <p v-else-if="isVersionMismatch(item)" class="gl-mb-0">
+          <p v-if="isVersionMismatch(item)" class="gl-mb-0">
             {{ $options.i18n.versionMismatchText }}
           </p>
-
-          <p v-else-if="isVersionOutdated(item)" class="gl-mb-0">
-            <gl-sprintf :message="$options.i18n.versionOutdatedText">
-              <template #version>{{ kasCheckVersion }}</template>
-            </gl-sprintf>
+          <div v-if="hasWarnings(item)">
+            <p v-for="(warning, index) of item.warnings" :key="index" class="gl-mb-0">
+              {{ warning }}
+            </p>
             <gl-link :href="$options.versionUpdateLink" class="gl-text-sm">
               {{ $options.i18n.viewDocsText }}</gl-link
             >
-          </p>
+          </div>
         </gl-popover>
       </template>
 
@@ -401,7 +390,7 @@ export default {
 
       <template #cell(options)="{ item }">
         <gl-disclosure-dropdown
-          :title="$options.i18n.actions"
+          :toggle-text="$options.i18n.actions"
           text-sr-only
           category="tertiary"
           no-caret

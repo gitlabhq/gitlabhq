@@ -31,6 +31,7 @@ module QA
 
         Page::Group::BulkImport.perform do |import_page|
           import_page.import_group(destination_group_path, sandbox.full_path)
+          import_page.has_imported_group?(destination_group_path)
         end
 
         reload!

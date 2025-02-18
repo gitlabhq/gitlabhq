@@ -19,12 +19,12 @@ describe('CreateGroupDescriptionDetails component', () => {
     createComponent();
 
     const groupsLink = findLinkHref(0);
-    expect(groupsLink.attributes('href')).toBe(helpPagePath('user/group/index'));
+    expect(groupsLink.attributes('href')).toBe(helpPagePath('user/group/_index'));
     expect(groupsLink.text()).toBe('Groups');
 
     const subgroupsLink = findLinkHref(1);
     expect(subgroupsLink.text()).toBe('subgroups');
-    expect(subgroupsLink.attributes('href')).toBe(helpPagePath('user/group/subgroups/index'));
+    expect(subgroupsLink.attributes('href')).toBe(helpPagePath('user/group/subgroups/_index'));
 
     expect(wrapper.text()).toBe(
       'Groups allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects. Groups can also be nested by creating subgroups.',
@@ -35,12 +35,12 @@ describe('CreateGroupDescriptionDetails component', () => {
     createComponent({ parentGroupName: 'parent', importExistingGroupPath: '/path' });
 
     const groupsLink = findLinkHref(0);
-    expect(groupsLink.attributes('href')).toBe(helpPagePath('user/group/index'));
+    expect(groupsLink.attributes('href')).toBe(helpPagePath('user/group/_index'));
     expect(groupsLink.text()).toBe('Groups');
 
     const subgroupsLink = findLinkHref(1);
     expect(subgroupsLink.text()).toBe('subgroups');
-    expect(subgroupsLink.attributes('href')).toBe(helpPagePath('user/group/subgroups/index'));
+    expect(subgroupsLink.attributes('href')).toBe(helpPagePath('user/group/subgroups/_index'));
 
     const importGroupLink = findLinkHref(2);
     expect(importGroupLink.text()).toBe('import an existing group');

@@ -2,25 +2,25 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Update self-compiled installations with patch versions
 ---
 
-# Universal update guide for patch versions for self-compiled installations
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-## Select Version to Install
+{{< /details >}}
 
-Make sure you view [this update guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/update/patch_versions.md) from the tag (version) of GitLab you would like to install.
-In most cases this should be the highest numbered production tag (without `rc` in it).
-You can select the tag in the version dropdown list in the upper-left corner of GitLab.
+Update self-compiled installations with patch versions.
 
-### 0. Backup
+Prerequisites:
 
-Make a backup just in case things go south. Depending on the installation method, backup commands vary. See the [backing up and restoring GitLab](../administration/backup_restore/index.md) documentation.
+- A [back up](../administration/backup_restore/_index.md) of your self-compiled installation.
 
-### 1. Stop server
+## Stop GitLab server
+
+To stop the GitLab server:
 
 ```shell
 # For systems running systemd
@@ -30,22 +30,36 @@ sudo systemctl stop gitlab.target
 sudo service gitlab stop
 ```
 
-### 2. Get latest code for the stable branch
+## Get latest code for the stable branch
 
-In the commands below, replace `LATEST_TAG` with the latest GitLab tag you want
-to update to, for example `v8.0.3`. Use `git tag -l 'v*.[0-9]' --sort='v:refname'`
-to see a list of all tags. Make sure to update patch versions only (check your
-current version with `cat VERSION`).
+In the following commands, replace `LATEST_TAG` with the GitLab tag to update to. For example, `v8.0.3`.
 
-```shell
-cd /home/git/gitlab
+1. Check your current version:
 
-sudo -u git -H git fetch --all
-sudo -u git -H git checkout -- Gemfile.lock db/structure.sql locale
-sudo -u git -H git checkout LATEST_TAG -b LATEST_TAG
-```
+   ```shell
+   cat VERSION
+   ```
 
-### 3. Install libraries, migrations, etc
+1. Get a list of all available tags:
+
+   ```shell
+   git tag -l 'v*.[0-9]' --sort='v:refname'
+   ```
+
+1. Choose a patch version for your current major and minor version.
+1. Check out the code for the patch version to use:
+
+   ```shell
+   cd /home/git/gitlab
+
+   sudo -u git -H git fetch --all
+   sudo -u git -H git checkout -- Gemfile.lock db/structure.sql locale
+   sudo -u git -H git checkout LATEST_TAG -b LATEST_TAG
+   ```
+
+## Install libraries and run migrations
+
+To install libraries and run migrations, run the following commands:
 
 ```shell
 cd /home/git/gitlab
@@ -67,7 +81,9 @@ sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
 sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile cache:clear RAILS_ENV=production NODE_ENV=production NODE_OPTIONS="--max_old_space_size=4096"
 ```
 
-### 4. Update GitLab Workhorse to the corresponding version
+## Update GitLab Workhorse to the new patch version
+
+To update GitLab Workhorse to the new patch version:
 
 ```shell
 cd /home/git/gitlab
@@ -75,7 +91,9 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 ```
 
-### 5. Update Gitaly to the corresponding version
+## Update Gitaly to the new patch version
+
+To update Gitaly to the new patch version:
 
 ```shell
 cd /home/git/gitlab
@@ -83,7 +101,9 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,/home/git/repositories]" RAILS_ENV=production
 ```
 
-### 6. Update GitLab Shell to the corresponding version
+## Update GitLab Shell to the new patch version
+
+To update GitLab Shell to the new patch version:
 
 ```shell
 cd /home/git/gitlab-shell
@@ -93,7 +113,9 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_SHELL_VERSION) -b v$(</h
 sudo -u git -H make build
 ```
 
-### 7. Update GitLab Pages to the corresponding version (skip if not using pages)
+## Update GitLab Pages to the new patch version (if required)
+
+If you're using GitLab Pages, update GitLab Pages to the new patch version:
 
 ```shell
 cd /home/git/gitlab-pages
@@ -103,15 +125,21 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
 sudo -u git -H make
 ```
 
-### 8. Install/Update `gitlab-elasticsearch-indexer`
+## Install or update `gitlab-elasticsearch-indexer`
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-Follow the [install instruction](../integration/advanced_search/elasticsearch.md#install-an-elasticsearch-or-aws-opensearch-cluster).
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-### 9. Start application
+{{< /details >}}
+
+To install or update `gitlab-elasticsearch-indexer`, follow the
+[installation instruction](../integration/advanced_search/elasticsearch.md#install-an-elasticsearch-or-aws-opensearch-cluster).
+
+## Start GitLab
+
+To start GitLab, run the following commands:
 
 ```shell
 # For systems running systemd
@@ -123,9 +151,9 @@ sudo service gitlab start
 sudo service nginx restart
 ```
 
-### 10. Check application status
+## Check GitLab and its environment
 
-Check if GitLab and its environment are configured correctly:
+To check if GitLab and its environment are configured correctly, run:
 
 ```shell
 cd /home/git/gitlab
@@ -141,7 +169,6 @@ sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
 If all items are green, then congratulations upgrade complete!
 
-### 11. Make sure background migrations are finished
+## Make sure background migrations are finished
 
-[Check the status of background migrations](../update/background_migrations.md)
-and make sure they are finished.
+[Check the status of background migrations](background_migrations.md) and make sure they are finished.

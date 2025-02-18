@@ -1164,6 +1164,13 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       put api("/projects/#{project.id}/pipelines/#{pipeline.id}/metadata", current_user), params: { name: name }
     end
 
+    it_behaves_like 'enforcing job token policies', :admin_jobs do
+      let(:request) do
+        put api("/projects/#{source_project.id}/pipelines/#{pipeline.id}/metadata"),
+          params: { name: name, job_token: target_job.token }
+      end
+    end
+
     context 'authorized user' do
       let(:current_user) { create(:user) }
 

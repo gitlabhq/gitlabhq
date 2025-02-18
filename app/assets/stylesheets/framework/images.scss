@@ -54,3 +54,16 @@ svg {
     vertical-align: -3px;
   }
 }
+
+.integration-logo {
+  &[alt='Diffblue Cover'],
+  &[alt='Drone'],
+  &[alt='GitHub'],
+  &[alt='Mattermost notifications'],
+  &[alt='Mattermost slash commands'],
+  &[alt='Phorge'] {
+    .gl-dark & {
+      filter: invert(1) brightness(2);
+    }
+  }
+}

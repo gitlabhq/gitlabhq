@@ -2,14 +2,16 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Understand merge conflicts, and learn how to fix them in Git projects."
+description: Understand merge conflicts, and learn how to fix them in Git projects.
+title: Merge conflicts
 ---
 
-# Merge conflicts
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Merge conflicts occur when two branches in a merge request, the source and target,
 have different changes to the same lines of code. In most cases, GitLab can merge changes together,
@@ -109,21 +111,21 @@ The merge conflict resolution editor helps you resolve these conflicts in GitLab
 If your merge request is stuck with a `Checking ability to merge automatically`
 message, you can:
 
-- Use the `/rebase` [quick action](../../../user/project/quick_actions.md#issues-merge-requests-and-epics) in the GitLab UI.
+- Use the `/rebase` [quick action](../quick_actions.md#issues-merge-requests-and-epics) in the GitLab UI.
 - [Rebase with Git](../../../topics/git/git_rebase.md#rebase).
 
 To troubleshoot CI/CD pipeline issues, see [Debugging CI/CD pipelines](../../../ci/debugging.md).
 
 ### Rebase with a quick action
 
-You can rebase a merge request from the GitLab UI with the `/rebase` [quick action](../../../user/project/quick_actions.md).
+You can rebase a merge request from the GitLab UI with the `/rebase` [quick action](../quick_actions.md).
 
 Prerequisites:
 
 - No merge conflicts exist.
-- You must have at least the [Developer role](../../../user/permissions.md) for the source project.
+- You must have at least the [Developer role](../../permissions.md) for the source project.
 - If the merge request is in a fork, the fork must allow commits
-  [from members of the upstream project](../../../user/project/merge_requests/allow_collaboration.md).
+  [from members of the upstream project](allow_collaboration.md).
 
 To rebase with the quick action:
 

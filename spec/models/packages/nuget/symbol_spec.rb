@@ -26,13 +26,23 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
     it { is_expected.to validate_presence_of(:object_storage_key) }
     it { is_expected.to validate_presence_of(:size) }
     it { is_expected.to validate_uniqueness_of(:object_storage_key).case_insensitive }
+    it { is_expected.to validate_presence_of(:project) }
 
     context 'for signature & file_path uniqueness' do
-      let(:new_symbol) { build(:nuget_symbol, signature: symbol.signature) }
+      let(:package) { build_stubbed(:nuget_package) }
 
-      context 'when package is nil' do
+      let(:new_symbol) do
+        build(
+          :nuget_symbol,
+          signature: symbol.signature,
+          package: package,
+          project: package.project
+        )
+      end
+
+      context 'when symbol has basic validation error' do
         before do
-          symbol.package = nil
+          new_symbol.project = nil
           new_symbol.validate
         end
 
@@ -41,9 +51,8 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
         end
       end
 
-      context 'when package is installable' do
+      context 'when symbol does not have basic validation errors' do
         before do
-          new_symbol.object_storage_key = '123/foobar/456'
           new_symbol.validate
         end
 
@@ -52,11 +61,10 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
         end
       end
 
-      context 'when package is not installable' do
+      context 'when existing package is not installable' do
         before do
           new_symbol.package = symbol.package if package_exists
           symbol.package.update_column(:status, :pending_destruction)
-          new_symbol.object_storage_key = '123/foobar/456'
           new_symbol.validate
         end
 

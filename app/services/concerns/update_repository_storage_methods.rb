@@ -99,7 +99,7 @@ module UpdateRepositoryStorageMethods
     object_pool = repository.project&.pool_repository&.object_pool
     hint = object_pool ? object_pool.relative_path : ""
 
-    Repositories::ReplicateService.new(raw_repository)
+    ::Repositories::ReplicateService.new(raw_repository)
       .execute(new_repository, type.name, partition_hint: hint)
   end
 

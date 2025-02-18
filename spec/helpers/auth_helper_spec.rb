@@ -448,6 +448,127 @@ RSpec.describe AuthHelper, feature_category: :system_access do
     end
   end
 
+  describe '#oidc_providers' do
+    subject(:oidc_providers) { helper.oidc_providers }
+
+    let(:oidc_strategy) { 'OmniAuth::Strategies::OpenIDConnect' }
+
+    let(:oidc_provider_1_name) { 'openid_connect' }
+    let(:oidc_provider_1) do
+      Struct.new(:name, :args).new(
+        oidc_provider_1_name,
+        {}
+      )
+    end
+
+    let(:oidc_provider_2_name) { 'openid_connect2' }
+    let(:oidc_provider_2) do
+      Struct.new(:name, :args).new(
+        oidc_provider_2_name,
+        'strategy_class' => oidc_strategy
+      )
+    end
+
+    let(:oidc_provider_3_name) { 'openid_connect3' }
+    let(:oidc_provider_3) do
+      Struct.new(:name, :args).new(
+        oidc_provider_3_name,
+        'strategy_class' => oidc_strategy
+      )
+    end
+
+    let(:ldap_provider_name) { 'ldap_provider' }
+    let(:ldap_strategy) { 'OmniAuth::Strategies::LDAP' }
+    let(:ldap_provider) do
+      Struct.new(:name, :args).new(
+        ldap_provider_name,
+        'strategy_class' => ldap_strategy
+      )
+    end
+
+    let(:google_oauth2_provider_name) { 'google_oauth2' }
+    let(:google_oauth2_provider) do
+      Struct.new(:name, :args).new(
+        google_oauth2_provider_name,
+        'app_id' => 'YOUR_APP_ID'
+      )
+    end
+
+    context 'when a default openid_connect provider is configured' do
+      before do
+        stub_omniauth_config(providers: [oidc_provider_1])
+      end
+
+      it 'returns the provider' do
+        expect(oidc_providers).to match_array([:openid_connect])
+      end
+    end
+
+    context 'when the configuration specifies no provider' do
+      before do
+        stub_omniauth_config(providers: [])
+      end
+
+      it 'returns an empty list' do
+        expect(oidc_providers).to be_empty
+      end
+    end
+
+    context 'when the configuration specifies a provider with an OIDC strategy_class' do
+      before do
+        stub_omniauth_config(providers: [oidc_provider_2])
+      end
+
+      it 'returns the provider' do
+        expect(oidc_providers).to match_array([oidc_provider_2_name.to_sym])
+      end
+    end
+
+    context 'when the configuration specifies 1 default oidc provider and 1 with an OIDC strategy_class' do
+      before do
+        stub_omniauth_config(providers: [oidc_provider_1, oidc_provider_2])
+      end
+
+      it 'returns the providers' do
+        expect(oidc_providers).to match_array([oidc_provider_1_name.to_sym, oidc_provider_2_name.to_sym])
+      end
+    end
+
+    context 'when the configuration specifies two providers with an OIDC strategy_class' do
+      before do
+        stub_omniauth_config(providers: [oidc_provider_2, oidc_provider_3])
+      end
+
+      it 'returns the providers' do
+        expect(oidc_providers).to match_array([oidc_provider_2_name.to_sym, oidc_provider_3_name.to_sym])
+      end
+    end
+
+    context 'when the configuration specifies a non-OIDC provider' do
+      before do
+        stub_omniauth_config(providers: [ldap_provider])
+      end
+
+      it 'returns an empty list' do
+        expect(oidc_providers).to be_empty
+      end
+    end
+
+    context 'when the configuration specifies 2 non-oidc, 1 default oidc provider and 2 with an OIDC strategy_class' do
+      before do
+        stub_omniauth_config(
+          providers: [oidc_provider_1, ldap_provider, oidc_provider_2, google_oauth2_provider, oidc_provider_3]
+        )
+      end
+
+      it 'returns the providers' do
+        expect(oidc_providers).to match_array(
+          [oidc_provider_1_name.to_sym, oidc_provider_2_name.to_sym, oidc_provider_3_name.to_sym]
+        )
+      end
+    end
+  end
+
   describe '#delete_otp_authenticator_data' do
     context 'when password is required' do
       it 'returns data to delete the OTP authenticator' do

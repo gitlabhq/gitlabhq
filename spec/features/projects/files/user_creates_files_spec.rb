@@ -18,6 +18,7 @@ RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(blob_overflow_menu: false)
     project.add_maintainer(user)
     sign_in(user)
   end

@@ -13,6 +13,7 @@ export default {
     GlDisclosureDropdown,
   },
   i18n: {
+    label: s__('ciReport|Security scanning'),
     apiError: s__(
       'SecurityReports|Failed to get security report information. Please reload the page or try again later.',
     ),
@@ -56,6 +57,8 @@ export default {
             }
           });
         });
+
+        this.$emit('loaded', 0);
 
         return artifacts;
       },
@@ -128,6 +131,8 @@ export default {
     :is-collapsible="false"
     :help-popover="$options.widgetHelpPopover"
     :summary="summary"
+    :label="$options.i18n.label"
+    path="security-reports"
     @is-loading="handleIsLoading"
   >
     <template #action-buttons>

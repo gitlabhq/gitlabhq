@@ -20,8 +20,6 @@ import { PROMO_URL, DOCS_URL_IN_EE_DIR } from '~/constants';
 import {
   integrationTypes,
   integrationSteps,
-  createStepNumbers,
-  editStepNumbers,
   JSON_VALIDATE_DELAY,
   targetPrometheusUrlPlaceholder,
   typeSet,
@@ -386,15 +384,6 @@ export default {
       this.parsedPayload = [];
       this.updateMapping([]);
     },
-    getLabelWithStepNumber(step, label) {
-      let stepNumber = editStepNumbers[step];
-
-      if (this.isCreating) {
-        stepNumber = createStepNumbers[step];
-      }
-
-      return stepNumber ? `${stepNumber}.${label}` : label;
-    },
   },
 };
 </script>
@@ -406,15 +395,11 @@ export default {
         <gl-form-group
           v-if="isCreating"
           id="integration-type"
-          :label="
-            getLabelWithStepNumber(
-              $options.integrationSteps.selectType,
-              $options.i18n.integrationFormSteps.selectType.label,
-            )
-          "
+          :label="$options.i18n.integrationFormSteps.selectType.label"
           label-for="integration-type"
         >
           <gl-form-select
+            id="integration-type"
             v-model="integrationForm.type"
             :disabled="isSelectDisabled"
             class="gl-max-w-full"
@@ -435,12 +420,7 @@ export default {
         <div class="gl-mt-3">
           <gl-form-group
             v-if="isHttp"
-            :label="
-              getLabelWithStepNumber(
-                $options.integrationSteps.nameIntegration,
-                $options.i18n.integrationFormSteps.nameIntegration.label,
-              )
-            "
+            :label="$options.i18n.integrationFormSteps.nameIntegration.label"
             label-for="name-integration"
             :invalid-feedback="$options.i18n.integrationFormSteps.nameIntegration.error"
             :state="validationState.name"
@@ -458,14 +438,7 @@ export default {
 
           <gl-form-group
             v-if="!isNone"
-            :label="
-              getLabelWithStepNumber(
-                isHttp
-                  ? $options.integrationSteps.enableHttpIntegration
-                  : $options.integrationSteps.enablePrometheusIntegration,
-                $options.i18n.integrationFormSteps.enableIntegration.label,
-              )
-            "
+            :label="$options.i18n.integrationFormSteps.enableIntegration.label"
           >
             <span>{{ $options.i18n.integrationFormSteps.enableIntegration.help }}</span>
 
@@ -481,12 +454,7 @@ export default {
           <template v-if="showMappingBuilder">
             <gl-form-group
               data-testid="sample-payload-section"
-              :label="
-                getLabelWithStepNumber(
-                  $options.integrationSteps.customizeMapping,
-                  $options.i18n.integrationFormSteps.mapFields.label,
-                )
-              "
+              :label="$options.i18n.integrationFormSteps.mapFields.label"
               label-for="sample-payload"
               class="!gl-mb-0"
               :invalid-feedback="samplePayload.error"

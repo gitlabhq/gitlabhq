@@ -349,7 +349,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
         it 'restricts release sources' do
           post_query
 
-          expect(data).to match_array([])
+          expect(data).to be_empty
         end
       end
     end

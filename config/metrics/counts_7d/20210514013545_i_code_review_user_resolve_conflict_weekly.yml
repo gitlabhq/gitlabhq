@@ -15,9 +15,6 @@ options:
   events:
     - i_code_review_user_resolve_conflict
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61654
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

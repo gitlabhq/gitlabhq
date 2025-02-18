@@ -1,0 +1,31 @@
+---
+# Cop supports --autocorrect.
+Style/EndlessMethod:
+  Details: grace period
+  Exclude:
+    - 'app/models/concerns/enum_inheritance.rb'
+    - 'app/models/pages/project_settings.rb'
+    - 'ee/app/controllers/groups/security/compliance_dashboard/frameworks_controller.rb'
+    - 'ee/app/models/compliance_management/framework.rb'
+    - 'ee/app/services/compliance_management/frameworks/json_export_service.rb'
+    - 'ee/app/services/sbom/ingestion/vulnerability_data.rb'
+    - 'lib/backup/tasks/artifacts.rb'
+    - 'lib/backup/tasks/builds.rb'
+    - 'lib/backup/tasks/ci_secure_files.rb'
+    - 'lib/backup/tasks/database.rb'
+    - 'lib/backup/tasks/external_diffs.rb'
+    - 'lib/backup/tasks/lfs.rb'
+    - 'lib/backup/tasks/packages.rb'
+    - 'lib/backup/tasks/pages.rb'
+    - 'lib/backup/tasks/registry.rb'
+    - 'lib/backup/tasks/repositories.rb'
+    - 'lib/backup/tasks/task.rb'
+    - 'lib/backup/tasks/terraform_state.rb'
+    - 'lib/backup/tasks/uploads.rb'
+    - 'lib/gitlab/pages/deployment_validations.rb'
+    - 'lib/gitlab/repositories/design_management_repository.rb'
+    - 'lib/gitlab/repositories/project_repository.rb'
+    - 'lib/gitlab/repositories/repo_type.rb'
+    - 'lib/gitlab/repositories/snippet_repository.rb'
+    - 'lib/gitlab/repositories/wiki_repository.rb'
+    - 'lib/gitlab/usage_data.rb'

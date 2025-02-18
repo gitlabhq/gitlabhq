@@ -80,7 +80,6 @@ Style/SymbolProc:
     - 'ee/lib/gitlab/geo/oauth/logout_state.rb'
     - 'ee/spec/factories/issues.rb'
     - 'ee/spec/features/billings/qrtly_reconciliation_alert_spec.rb'
-    - 'ee/spec/helpers/ee/geo_helper_spec.rb'
     - 'ee/spec/helpers/ee/registrations_helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/search_results_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/document_reference_spec.rb'

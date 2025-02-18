@@ -2,16 +2,18 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "GitLab administrator: enable and disable GitLab features deployed behind feature flags"
+description: 'GitLab administrator: enable and disable GitLab features deployed behind feature flags'
+title: Enable and disable GitLab features deployed behind feature flags
 ---
 
-# Enable and disable GitLab features deployed behind feature flags
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-GitLab adopted [feature flags strategies](../development/feature_flags/index.md)
+{{< /details >}}
+
+GitLab adopted [feature flags strategies](../development/feature_flags/_index.md)
 to deploy features in an early stage of development so that they can be
 incrementally rolled out.
 
@@ -47,8 +49,11 @@ GitLab, the feature flag status may change.
 
 Before enabling a disabled feature flag in a production GitLab environment, it is crucial to understand the potential risks involved.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Data corruption, stability degradation, performance degradation, and security issues may occur if you enable a feature that's disabled by default.
+
+{{< /alert >}}
 
 Features that are disabled by default may change or be removed without notice in a future version of GitLab.
 

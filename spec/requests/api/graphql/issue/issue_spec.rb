@@ -43,7 +43,7 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
 
       post_graphql(query)
 
-      expect(issue_data).to be nil
+      expect(issue_data).to be_nil
     end
   end
 
@@ -125,7 +125,7 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
 
         post_graphql(query, current_user: current_user)
 
-        expect(graphql_errors).not_to be nil
+        expect(graphql_errors).not_to be_nil
         expect(graphql_errors.first['message']).to eq("\"#{gid}\" does not represent an instance of Issue")
       end
     end
@@ -231,7 +231,7 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
       it 'returns nil' do
         post_graphql(query, current_user: current_user)
 
-        expect(issue_data).to be nil
+        expect(issue_data).to be_nil
       end
     end
 
@@ -252,7 +252,7 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
       create(:work_item, :task, project: project).tap { |wi| create(:work_item_link, source_id: issue.id, target: wi) }
     end
 
-    let(:issue_fields) { ['linkedWorkItems { nodes { id } }'] }
+    let(:issue_fields) { ['linkedWorkItems { nodes { workItem { id } } }'] }
 
     before do
       project.add_developer(current_user)
@@ -260,9 +260,9 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
       post_graphql(query, current_user: current_user)
     end
 
-    it 'returns the related merge request' do
+    it 'returns the related work items' do
       expect(issue_data['linkedWorkItems']['nodes']).to include a_hash_including({
-        'id' => related_work_item.to_global_id.to_s
+        'workItem' => { 'id' => related_work_item.to_global_id.to_s }
       })
     end
 

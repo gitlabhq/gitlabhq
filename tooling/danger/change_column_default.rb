@@ -11,7 +11,7 @@ module Tooling
       MIGRATION_METHODS_REGEX = /^\+\s*(.*\.)?(#{METHODS.join('|')})[(\s]/
       MIGRATION_FILES_REGEX = %r{^db/(post_)?migrate}
 
-      DOCUMENTATION = 'https://docs.gitlab.com/ee/development/database/avoiding_downtime_in_migrations.html#changing-column-defaults'
+      DOCUMENTATION = 'https://docs.gitlab.com/development/database/avoiding_downtime_in_migrations/#changing-column-defaults'
       COMMENT =
         "Changing column default is difficult because of how Rails handles values that are equal to the default. " \
         "Please make sure all columns are declared as `columns_changing_default`. " \

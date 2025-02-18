@@ -34,29 +34,6 @@ describe('Too Large Viewer', () => {
   const findLinks = () => wrapper.findAllComponents(GlLink);
 
   describe('when file is too large', () => {
-    beforeEach(() => createComponent());
-
-    it('renders header text', () => {
-      expect(wrapper.text()).toContain('The file could not be displayed because it is too large.');
-    });
-
-    it('renders single download link with correct attributes', () => {
-      const links = findLinks();
-
-      expect(links).toHaveLength(1);
-
-      expect(links.at(0).attributes()).toMatchObject({
-        ...DEFAULT_LINK_ATTRIBUTES,
-        download: DEFAULT_BLOB_DATA.name,
-      });
-    });
-
-    it('renders correct description text', () => {
-      expect(wrapper.text()).toContain('You can download it.');
-    });
-  });
-
-  describe('when file is collapsed', () => {
     beforeEach(() => createComponent({ richViewer: { renderError: 'collapsed' } }));
 
     it('renders two links for raw view and download', () => {

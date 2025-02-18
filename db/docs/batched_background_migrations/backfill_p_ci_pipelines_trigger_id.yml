@@ -2,7 +2,7 @@
 migration_job_name: BackfillPCiPipelinesTriggerId
 description: Backfill p_ci_pipelines.trigger_id by going through ci_trigger_requests
 feature_category: continuous_integration
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174132
-milestone: '17.7'
-queued_migration_version: 20241204050830
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176645
+milestone: '17.9'
+queued_migration_version: 20250114055621
 finalized_by: # version of the migration that finalized this BBM

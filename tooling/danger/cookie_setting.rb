@@ -7,7 +7,7 @@ module Tooling
     class CookieSetting < Suggestion
       MATCH = %r{cookies(?:\.encrypted|\.signed|\.permanent)*\[([^\]]+)\]\s*=[^=]}
       REPLACEMENT = nil
-      DOCUMENTATION_LINK = 'https://docs.gitlab.com/ee/development/cookies.html#cookies-on-rails'
+      DOCUMENTATION_LINK = 'https://docs.gitlab.com/development/cookies/#cookies-on-rails'
 
       SUGGESTION = <<~MESSAGE_MARKDOWN.freeze
         It looks like you are setting a server-side cookie. Please note that if you set

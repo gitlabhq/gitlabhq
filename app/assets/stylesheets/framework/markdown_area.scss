@@ -88,7 +88,7 @@
 
 .md-suggestion-diff {
   display: table !important;
-  border: 1px solid $border-color !important;
+  @apply gl-border #{!important};
 
   td {
     border: 0 !important;
@@ -109,8 +109,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: $gray-10;
-  border: 1px solid $border-color;
+  @apply gl-bg-section;
+  @apply gl-border;
+  @apply gl-border-section;
   border-radius: $gl-border-radius-base $gl-border-radius-base 0 0;
 }
 

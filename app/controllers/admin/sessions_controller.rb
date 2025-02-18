@@ -28,7 +28,8 @@ class Admin::SessionsController < ApplicationController
       render :new
     end
   rescue Gitlab::Auth::CurrentUserMode::NotRequestedError
-    redirect_to new_admin_session_path, alert: _('Re-authentication period expired or never requested. Please try again')
+    redirect_to new_admin_session_path,
+      alert: _('Re-authentication period expired or never requested. Please try again')
   end
 
   def destroy

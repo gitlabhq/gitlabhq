@@ -20,7 +20,11 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
     let(:url) { "/projects/#{project.id}/packages" }
     let(:package_schema) { 'public_api/v4/packages/packages' }
 
-    subject { get api(url), params: params }
+    subject(:request) { get api(url), params: params }
+
+    it_behaves_like 'enforcing job token policies', :read_packages do
+      let(:params) { { job_token: target_job.token } }
+    end
 
     context 'without the need for a license' do
       context 'project is public' do
@@ -115,7 +119,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
           it_behaves_like 'returns packages', :project, :developer
           it_behaves_like 'returns packages', :project, :reporter
           it_behaves_like 'rejects packages access', :project, :no_type, :not_found
-          it_behaves_like 'rejects packages access', :project, :guest, :forbidden
+          it_behaves_like 'returns packages', :project, :guest
 
           context 'user is a maintainer' do
             before do
@@ -226,6 +230,10 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
     let(:single_package_schema) { 'public_api/v4/packages/package' }
 
     subject { get api(package_url, user) }
+
+    it_behaves_like 'enforcing job token policies', :read_packages do
+      let(:request) { get api(package_url), params: { job_token: target_job.token } }
+    end
 
     shared_examples 'no destroy url' do
       it 'returns no destroy url' do
@@ -413,6 +421,10 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
       end
     end
 
+    it_behaves_like 'enforcing job token policies', :read_packages do
+      let(:request) { get api(package_pipelines_url), params: { job_token: target_job.token } }
+    end
+
     context 'without the need for a license' do
       context 'when the package does not exist' do
         let(:package_pipelines_url) { "/projects/#{project.id}/packages/0/pipelines" }
@@ -450,7 +462,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
           :public  | :guest      | false | :personal_access_token | false | 'returning response status' | :unauthorized
           :public  | :anonymous  | false | nil                    | true  | 'returns package pipelines' | :success
           :private | :developer  | true  | :personal_access_token | true  | 'returns package pipelines' | :success
-          :private | :guest      | true  | :personal_access_token | true  | 'returning response status' | :forbidden
+          :private | :guest      | true  | :personal_access_token | true  | 'returns package pipelines' | :success
           :private | :developer  | true  | :personal_access_token | false | 'returning response status' | :unauthorized
           :private | :guest      | true  | :personal_access_token | false | 'returning response status' | :unauthorized
           :private | :developer  | false | :personal_access_token | true  | 'returning response status' | :not_found
@@ -621,6 +633,14 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
   end
 
   describe 'DELETE /projects/:id/packages/:package_id' do
+    it_behaves_like 'enforcing job token policies', :admin_packages do
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      let(:request) { delete api(package_url), params: { job_token: target_job.token } }
+    end
+
     context 'without the need for a license' do
       context 'project is public' do
         it 'returns 403 for non authenticated user' do

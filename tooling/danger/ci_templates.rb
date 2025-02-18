@@ -10,7 +10,7 @@ module Tooling
         1. Ensure the merge request has the ~"ci::templates" label.
         If the merge request modifies CI/CD Template files, Danger will do this for you.
         1. Prepare your MR for a CI/CD Template review according to the
-        [template development guide](https://docs.gitlab.com/ee/development/cicd/templates.html).
+        [template development guide](https://docs.gitlab.com/development/cicd/templates/).
         1. Assign and `@` mention the CI/CD Template reviewer suggested by Reviewer Roulette.
       MSG
 

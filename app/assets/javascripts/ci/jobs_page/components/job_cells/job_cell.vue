@@ -67,7 +67,7 @@ export default {
 
 <template>
   <div>
-    <div class="-gl-mx-3 -gl-mb-2 -gl-mt-3 gl-truncate gl-p-3">
+    <div class="-gl-mx-3 -gl-mb-2 -gl-mt-3 gl-truncate gl-p-3 gl-font-normal">
       <gl-icon
         v-if="jobStuck"
         v-gl-tooltip="$options.i18n.stuckText"
@@ -87,14 +87,21 @@ export default {
     </div>
 
     <div class="gl-mt-1 gl-flex gl-items-center gl-justify-end gl-text-subtle lg:gl-justify-start">
-      <div v-if="jobRef" class="gl-max-w-26 gl-truncate gl-rounded-base gl-bg-gray-50 gl-px-2">
+      <div v-if="jobRef" class="gl-max-w-26 gl-truncate gl-rounded-base gl-bg-strong gl-px-2">
         <gl-icon
           v-if="createdByTag"
+          variant="subtle"
           name="label"
           :size="$options.iconSize"
           data-testid="label-icon"
         />
-        <gl-icon v-else name="fork" :size="$options.iconSize" data-testid="fork-icon" />
+        <gl-icon
+          v-else
+          name="fork"
+          :size="$options.iconSize"
+          variant="subtle"
+          data-testid="fork-icon"
+        />
         <gl-link
           class="gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
           :href="job.refPath"
@@ -103,8 +110,8 @@ export default {
         >
       </div>
       <span v-else>{{ __('none') }}</span>
-      <div class="gl-ml-2 gl-flex gl-items-center gl-rounded-base gl-bg-gray-50 gl-px-2">
-        <gl-icon class="gl-mx-2" name="commit" :size="$options.iconSize" />
+      <div class="gl-ml-2 gl-flex gl-items-center gl-rounded-base gl-bg-strong gl-px-2">
+        <gl-icon class="gl-mx-2" name="commit" :size="$options.iconSize" variant="subtle" />
         <gl-link
           class="gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
           :href="job.commitPath"

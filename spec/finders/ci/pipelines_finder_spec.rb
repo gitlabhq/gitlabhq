@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::PipelinesFinder do
   let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:empty_project) { create(:project, :public) }
   let(:current_user) { nil }
   let(:params) { {} }
 
@@ -44,66 +45,64 @@ RSpec.describe Ci::PipelinesFinder do
     end
 
     context 'when scope is branches or tags' do
-      let!(:pipeline_branch) { create(:ci_pipeline, project: project) }
-      let!(:pipeline_tag) { create(:ci_pipeline, project: project, ref: 'v1.0.0', tag: true) }
+      let!(:pipeline_branches1) { create_list(:ci_pipeline, 2, project: project) }
+      let!(:pipeline_branch2) { create(:ci_pipeline, project: project, ref: '2-mb-file') }
+      let!(:pipeline_tag1) { create(:ci_pipeline, project: project, ref: 'v1.0.0', tag: true) }
+      let!(:pipeline_tag2) { create(:ci_pipeline, project: project, ref: 'v1.1.1', tag: true) }
 
       context 'when scope is branches' do
         let(:params) { { scope: 'branches' } }
 
+        context 'when project has no branches' do
+          let!(:project) { empty_project }
+
+          it 'returns empty result' do
+            is_expected.to be_empty
+          end
+        end
+
         context 'when project has child pipelines' do
-          let!(:child_pipeline) { create(:ci_pipeline, project: project, source: :parent_pipeline) }
+          let!(:child_pipeline) { create(:ci_pipeline, project: project, ref: pipeline_branch2.ref, source: :parent_pipeline) }
 
           let!(:pipeline_source) do
-            create(:ci_sources_pipeline, pipeline: child_pipeline, source_pipeline: pipeline_branch)
+            create(:ci_sources_pipeline, pipeline: child_pipeline, source_pipeline: pipeline_branch2)
           end
 
-          it 'displays child pipelines' do
-            is_expected.to contain_exactly(pipeline_branch)
-          end
-
-          context 'when exclude_child_pipelines_from_tag_branch_query FF is disabled' do
-            before do
-              stub_feature_flags(exclude_child_pipelines_from_tag_branch_query: false)
-            end
-
-            it 'displays child pipelines' do
-              is_expected.to contain_exactly(child_pipeline)
-            end
+          it 'filters out child pipelines and shows only the parent pipelines' do
+            is_expected.to match_array([pipeline_branches1.last, pipeline_branch2])
           end
         end
 
         it 'returns matched pipelines' do
-          is_expected.to eq([pipeline_branch])
+          is_expected.to match_array([pipeline_branches1.last, pipeline_branch2])
         end
       end
 
       context 'when scope is tags' do
         let(:params) { { scope: 'tags' } }
 
+        context 'when project has no tags' do
+          let!(:project) { empty_project }
+
+          it 'returns empty result' do
+            is_expected.to be_empty
+          end
+        end
+
         context 'when project has child pipelines' do
           let!(:child_pipeline) { create(:ci_pipeline, project: project, source: :parent_pipeline, ref: 'v1.0.0', tag: true) }
 
           let!(:pipeline_source) do
-            create(:ci_sources_pipeline, pipeline: child_pipeline, source_pipeline: pipeline_tag)
+            create(:ci_sources_pipeline, pipeline: child_pipeline, source_pipeline: pipeline_tag1)
           end
 
           it 'filters out child pipelines and shows only the parents by default' do
-            is_expected.to contain_exactly(pipeline_tag)
-          end
-
-          context 'when exclude_child_pipelines_from_tag_branch_query FF is disabled' do
-            before do
-              stub_feature_flags(exclude_child_pipelines_from_tag_branch_query: false)
-            end
-
-            it 'displays child pipelines' do
-              is_expected.to contain_exactly(child_pipeline)
-            end
+            is_expected.to match_array([pipeline_tag1, pipeline_tag2])
           end
         end
 
         it 'returns matched pipelines' do
-          is_expected.to eq([pipeline_tag])
+          is_expected.to match_array([pipeline_tag1, pipeline_tag2])
         end
       end
     end

@@ -3,6 +3,7 @@
 module DependencyProxy
   class CleanupManifestWorker
     include ApplicationWorker
+    include CronjobChildWorker
     include ::Packages::CleanupArtifactWorker
     include Gitlab::Utils::StrongMemoize
 

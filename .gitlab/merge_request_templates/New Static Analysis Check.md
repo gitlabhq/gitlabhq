@@ -22,7 +22,7 @@ Please describe the proposal and add a link to the source (for example, http://w
 - [ ] (If applicable) One style is getting a majority of vote (compared to the other choice).
 - [ ] (If applicable) Update the MR with the chosen style.
 - [ ] Create a follow-up issue to fix the current offenses as a separate iteration: ISSUE_LINK
-- [ ] Follow the [review process](https://docs.gitlab.com/ee/development/code_review.html) as usual.
+- [ ] Follow the [review process](https://docs.gitlab.com/development/code_review/) as usual.
 - [ ] Once approved and merged by a maintainer, mention it again:
   - [ ] In the relevant Slack channels (e.g. `#development`, `#backend`, `#frontend`).
   - [ ] (Optional depending on the impact of the change) In the Engineering Week in Review.

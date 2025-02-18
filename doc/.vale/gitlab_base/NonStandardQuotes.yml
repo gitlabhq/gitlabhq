@@ -6,9 +6,10 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Use standard single quotes or double quotes only. Do not use left or right quotes."
+vocab: false
 level: warning
 ignorecase: true
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#punctuation
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#punctuation
 scope: raw
 raw:
   - '[‘’“”]'

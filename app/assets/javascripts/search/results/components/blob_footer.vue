@@ -38,7 +38,7 @@ export default {
       showMore: false,
       filePath: this.file?.path,
       projectPath: this.file?.projectPath,
-      fileLink: this.file.url,
+      fileLink: this.file.fileUrl,
       fileMatchCountTotal: this.file.matchCountTotal,
     };
   },

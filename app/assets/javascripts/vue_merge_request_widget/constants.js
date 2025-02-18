@@ -229,7 +229,7 @@ export const CLICK_FULL_REPORT_ON_MERGE_REQUEST_WIDGET =
 export { STATE_MACHINE };
 
 export const INVALID_RULES_DOCS_PATH = helpPagePath(
-  'user/project/merge_requests/approvals/index.md',
+  'user/project/merge_requests/approvals/_index.md',
   {
     anchor: 'invalid-rules',
   },

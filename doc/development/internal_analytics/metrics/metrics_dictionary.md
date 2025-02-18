@@ -2,11 +2,10 @@
 stage: Monitor
 group: Analytics Instrumentation
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Metrics Dictionary Guide
 ---
 
-# Metrics Dictionary Guide
-
-[Service Ping](../service_ping/index.md) metrics are defined in individual YAML files definitions from which the
+[Service Ping](../service_ping/_index.md) metrics are defined in individual YAML files definitions from which the
 [Metrics Dictionary](https://metrics.gitlab.com/) is built. Currently, the metrics dictionary is built automatically once an hour.
 
 - When a change to a metric is made in a YAML file, you can see the change in the dictionary within 1 hour of the change getting deployed to production.
@@ -30,8 +29,11 @@ All metrics are stored in YAML files:
 
 - [`config/metrics`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/metrics)
 
-WARNING:
+{{< alert type="warning" >}}
+
 Only metrics with a metric definition YAML and whose status is not `removed` are added to the Service Ping JSON payload.
+
+{{< /alert >}}
 
 Each metric is defined in a YAML file consisting of a number of fields:
 
@@ -49,9 +51,9 @@ Each metric is defined in a YAML file consisting of a number of fields:
 | `performance_indicator_type` | no       | `array`; may be set to one of [`gmau`, `smau`, `paid_gmau`, `umau`, `customer_health_score`, `devops_report`, `lighthouse`, or `leading_indicator`](https://handbook.gitlab.com/handbook/business-technology/data-team/data-catalog/). |
 | `tier`                       | yes      | `array`; may contain one or a combination of `free`, `premium` or `ultimate`. The [tier](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. This should be verbose and contain all tiers where a metric is available. |
 | `tiers`                       | no      | `array`; may contain one or a combination of `free`, `premium` or `ultimate`. The [tiers](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. This should be verbose and contain all tiers where a metric is available. |
-| `milestone`                  | yes      | The milestone when the metric is introduced and when it's available to self-managed instances with the official GitLab release. |
+| `milestone`                  | yes      | The milestone when the metric is introduced and when it's available to GitLab Self-Managed instances with the official GitLab release. |
 | `milestone_removed`          | no       | The milestone when the metric is removed. Required for removed metrics. |
-| `introduced_by_url`          | yes      | The URL to the merge request that introduced the metric to be available for self-managed instances. |
+| `introduced_by_url`          | yes      | The URL to the merge request that introduced the metric to be available for GitLab Self-Managed instances. |
 | `removed_by_url`             | no       | The URL to the merge request that removed the metric. Required for removed metrics. |
 | `repair_issue_url`           | no       | The URL of the issue that was created to repair a metric with a `broken` status. |
 | `options`                    | no       | `object`: options information needed to calculate the metric value. |

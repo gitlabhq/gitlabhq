@@ -17,8 +17,11 @@ module ContainerRegistry
 
       def execute
         unless can?(current_user, :admin_container_image, container_protection_tag_rule.project)
-          error_message = _('Unauthorized to delete a protection rule for container image tags')
-          return service_response_error(message: error_message)
+          return service_response_error(message: _('Unauthorized to delete a protection rule for container image tags'))
+        end
+
+        unless ::ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+          return service_response_error(message: _('GitLab container registry API not supported'))
         end
 
         deleted_container_protection_tag_rule = container_protection_tag_rule.destroy!

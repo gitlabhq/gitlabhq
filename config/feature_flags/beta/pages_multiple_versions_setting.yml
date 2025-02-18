@@ -1,8 +1,0 @@
----
-name: pages_multiple_versions_setting
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127142
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/422145
-milestone: '16.4'
-type: beta
-group: group::knowledge
-default_enabled: true

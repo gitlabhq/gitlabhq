@@ -3,9 +3,8 @@ stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 description: Learn how to contribute to GitLab Documentation.
+title: Documentation and UI link tests
 ---
-
-# Documentation and UI link tests
 
 For testing:
 
@@ -32,12 +31,11 @@ To check the links on a single project:
 
 To check links on the entire [GitLab documentation site](https://docs.gitlab.com):
 
-1. Make sure you have all the documentation projects cloned in the same directory as your `gitlab-docs` clone. You can
-   run `make clone-all-docs-projects` to clone any projects you don't have in that location. If you want to update
-   the documentation projects, run `make update-all-projects`.
-1. Go to the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory.
-1. Run `make internal-links-and-anchors-check`, which builds the GitLab Docs site with `nanoc` and checks links on the
-   built site by using `nanoc`.
+1. Make sure you have all the documentation projects cloned in the same directory as your `docs-gitlab-com` clone. You can
+   run `make clone-docs-projects` to clone any projects you don't have in that location.
+1. Go to the [`docs-gitlab-com`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com) directory.
+1. Run `hugo`, which builds the GitLab Docs site.
+1. Run `lychee --offline public` to check links.
 
 ## Run UI link tests locally
 

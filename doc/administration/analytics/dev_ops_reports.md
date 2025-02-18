@@ -2,25 +2,30 @@
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: DevOps adoption by instance
 ---
 
-# DevOps adoption by instance
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 DevOps Reports give you an overview of your entire instance's adoption of
 development, security, and operations features, along with a DevOps score.
 
-For more information about this feature, see also [DevOps adoption by group](../../user/group/devops_adoption/index.md).
+For more information about this feature, see also [DevOps adoption by group](../../user/group/devops_adoption/_index.md).
 
 ## DevOps score
 
-NOTE:
+{{< alert type="note" >}}
+
 To view the DevOps score, you must activate your GitLab instance's [Service Ping](../settings/usage_statistics.md#service-ping).
 DevOps Score is a comparative tool, so your score data must be centrally processed by GitLab Inc. first.
 If Service Ping is not activated, the DevOps score value is 0.
+
+{{< /alert >}}
 
 You can use the DevOps score to compare your DevOps status to other organizations.
 
@@ -70,4 +75,4 @@ To remove a group from the DevOps Reports:
 
 - From the **Add or remove groups** dropdown list, clear the group you want to remove.
 - From the **Adoption by group** table, in the row of the group you want to remove, select
-**Remove Group from the table** (**{remove}**).
+**Remove Group from the table** ({{< icon name="remove" >}}).

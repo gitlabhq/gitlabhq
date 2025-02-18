@@ -1,3 +1,8 @@
+import subItemActive from 'test_fixtures/search_navigation/sub_item_active.json';
+import noActiveItems from 'test_fixtures/search_navigation/no_active_items.json';
+import partialNavigationActive from 'test_fixtures/search_navigation/partial_navigation_active.json';
+import rootLevelActive from 'test_fixtures/search_navigation/root_level_active.json';
+
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { MAX_FREQUENCY, SIDEBAR_PARAMS, LS_REGEX_HANDLE } from '~/search/store/constants';
 import {
@@ -11,9 +16,11 @@ import {
   addCountOverLimit,
   injectRegexSearch,
   scopeCrawler,
+  skipBlobESCount,
 } from '~/search/store/utils';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
+
 import {
   MOCK_LS_KEY,
   MOCK_GROUPS,
@@ -23,7 +30,6 @@ import {
   MOCK_AGGREGATIONS,
   SMALL_MOCK_AGGREGATIONS,
   TEST_RAW_BUCKETS,
-  MOCK_NAVIGATION,
 } from '../mock_data';
 
 const PREV_TIME = new Date().getTime() - 1;
@@ -361,48 +367,84 @@ describe('Global Search Store Utils', () => {
 
   describe('scopeCrawler', () => {
     it('returns the correct scope when active item is at root level', () => {
-      const navigationClone = { ...MOCK_NAVIGATION };
-      navigationClone.epics.active = true;
-      delete navigationClone.issues.active;
-      const result = scopeCrawler(navigationClone);
-
-      expect(result).toBe('epics');
+      const result = scopeCrawler(rootLevelActive);
+      expect(result).toBe('merge_requests');
     });
 
     it('returns the correct parent scope when active item is in sub_items', () => {
-      const navigationClone = { ...MOCK_NAVIGATION };
-      navigationClone.epics.active = false;
-      navigationClone.issues.sub_items.objective.active = true;
-      const result = scopeCrawler(navigationClone);
-
+      const result = scopeCrawler(subItemActive);
       expect(result).toBe('issues');
     });
 
     it('returns null when no items are active', () => {
-      const navigationClone = { ...MOCK_NAVIGATION };
-      delete navigationClone.issues.active;
-      delete navigationClone.epics.active;
-      delete navigationClone.issues.sub_items.objective.active;
-
-      const result = scopeCrawler(navigationClone);
+      const result = scopeCrawler(noActiveItems);
       expect(result).toBeNull();
     });
 
-    it('returns the scope of the deepest active sub_item', () => {
-      const navigationClone = { ...MOCK_NAVIGATION };
-      navigationClone.issues.sub_items.objective.active = true;
-      const result = scopeCrawler(navigationClone);
-      expect(result).toBe('issues');
+    it('returns parentScope if provided and active item is found', () => {
+      const parentScope = 'customScope';
+      const result = scopeCrawler(partialNavigationActive, parentScope);
+      expect(result).toBe(parentScope);
+    });
+  });
+  describe('skipBlobESCount', () => {
+    const SCOPE_BLOB = 'blobs';
+
+    let state;
+
+    beforeEach(() => {
+      state = {
+        query: {},
+        zoektAvailable: false,
+      };
+
+      window.gon = {
+        features: {
+          zoektMultimatchFrontend: false,
+        },
+      };
     });
 
-    it('returns parentScope if provided and active item is found', () => {
-      const navigationClone = { ...MOCK_NAVIGATION.issues.sub_items };
+    it('returns true when no group_id or project_id is present', () => {
+      expect(skipBlobESCount(state, SCOPE_BLOB)).toBe(true);
+    });
 
-      navigationClone.objective.active = true;
+    it('returns true when zoektMultimatchFrontend feature flag is off', () => {
+      state.query.group_id = '1';
+      state.zoektAvailable = true;
 
-      const parentScope = 'customScope';
-      const result = scopeCrawler(navigationClone, parentScope);
-      expect(result).toBe(parentScope);
+      expect(skipBlobESCount(state, SCOPE_BLOB)).toBe(true);
+    });
+
+    it('returns true when zoekt is not available', () => {
+      state.query.group_id = '1';
+      window.gon.features.zoektMultimatchFrontend = true;
+
+      expect(skipBlobESCount(state, SCOPE_BLOB)).toBe(true);
+    });
+
+    it('returns true when scope is not blob', () => {
+      state.query.group_id = '1';
+      state.zoektAvailable = true;
+      window.gon.features.zoektMultimatchFrontend = true;
+
+      expect(skipBlobESCount(state, 'not_blob')).toBe(true);
+    });
+
+    it('returns false when all conditions are met', () => {
+      state.query.group_id = '1';
+      state.zoektAvailable = true;
+      window.gon.features.zoektMultimatchFrontend = true;
+
+      expect(skipBlobESCount(state, SCOPE_BLOB)).toBe(false);
+    });
+
+    it('returns false when using project_id instead of group_id', () => {
+      state.query.project_id = '1';
+      state.zoektAvailable = true;
+      window.gon.features.zoektMultimatchFrontend = true;
+
+      expect(skipBlobESCount(state, SCOPE_BLOB)).toBe(false);
     });
   });
 });

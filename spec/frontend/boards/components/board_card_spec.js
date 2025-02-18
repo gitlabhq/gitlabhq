@@ -2,6 +2,7 @@ import { GlLabel } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { visitUrl } from '~/lib/utils/url_utility';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -11,6 +12,8 @@ import selectedBoardItemsQuery from '~/boards/graphql/client/selected_board_item
 import activeBoardItemQuery from '~/boards/graphql/client/active_board_item.query.graphql';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import { mockLabelList, mockIssue, DEFAULT_COLOR } from '../mock_data';
+
+jest.mock('~/lib/utils/url_utility');
 
 describe('Board card', () => {
   let wrapper;
@@ -244,5 +247,18 @@ describe('Board card', () => {
       );
       expect(wrapper.attributes('style')).toBe(undefined);
     });
+  });
+
+  it('should redirect to the incident page on card click when item is incident', async () => {
+    mountComponent({
+      item: {
+        ...mockIssue,
+        type: 'INCIDENT',
+      },
+    });
+
+    await selectCard();
+
+    expect(visitUrl).toHaveBeenCalledWith(mockIssue.webUrl);
   });
 });

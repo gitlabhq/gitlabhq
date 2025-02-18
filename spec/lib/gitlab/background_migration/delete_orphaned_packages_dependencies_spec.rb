@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedPackagesDependencies, schema: 20230721095222,
+RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedPackagesDependencies, schema: 20231220225325,
   feature_category: :package_registry do
   let!(:migration_attrs) do
     {

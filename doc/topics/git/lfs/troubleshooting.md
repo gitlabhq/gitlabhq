@@ -1,10 +1,9 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting Git LFS
 ---
-
-# Troubleshooting Git LFS
 
 When working with Git LFS, you might encounter the following issues.
 
@@ -43,7 +42,7 @@ These problems can cause `501` errors:
 
 - Git LFS support is not enabled on the GitLab server. Check with your GitLab
   administrator why Git LFS is not enabled on the server. See
-  [LFS administration documentation](../../../administration/lfs/index.md) for instructions
+  [LFS administration documentation](../../../administration/lfs/_index.md) for instructions
   on how to enable Git LFS support.
 
 - The Git LFS client version is not supported by GitLab server. You should:
@@ -87,7 +86,7 @@ server for Git LFS, and you encounter this problem:
 1. Consider a manual push with `git lfs push --all`.
 
 If you store Git LFS files outside of GitLab, you can
-[disable Git LFS](index.md#enable-or-disable-git-lfs-for-a-project) on your project.
+[disable Git LFS](_index.md#enable-or-disable-git-lfs-for-a-project) on your project.
 
 ## Hosting LFS objects externally
 
@@ -102,7 +101,7 @@ If you use an external LFS store, GitLab can't verify the LFS objects. Pushes th
 fail if you have GitLab LFS support enabled.
 
 To stop push failures, you can disable Git LFS support in your
-[Project settings](index.md#enable-or-disable-git-lfs-for-a-project). However, this approach
+[Project settings](_index.md#enable-or-disable-git-lfs-for-a-project). However, this approach
 might not be desirable, because it also disables GitLab LFS features like:
 
 - Verifying LFS objects.

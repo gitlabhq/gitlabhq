@@ -2,13 +2,15 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Automatic background verification
 ---
 
-# Automatic background verification
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Automatic background verification ensures that the transferred data matches a
 calculated checksum. If the checksum of the data on the **primary** site matches checksum of the
@@ -79,23 +81,7 @@ On the **primary** site:
 ## Reset verification for projects where verification has failed
 
 Geo actively tries to correct verification failures marking the repository to
-be resynced with a back-off period. If you want to reset them manually, this
-Rake task marks projects where verification has failed or the checksum mismatch
-to be resynced without the back-off period:
-
-Run the appropriate commands on a **Rails node on the secondary** site.
-
-For repositories:
-
-```shell
-sudo gitlab-rake geo:verification:repository:reset
-```
-
-For wikis:
-
-```shell
-sudo gitlab-rake geo:verification:wiki:reset
-```
+be resynced with a back-off period. You can also manually [resync and reverify individual components through the UI or the Rails console](../replication/troubleshooting/synchronization_verification.md#resync-and-reverify-individual-components).
 
 ## Reconcile differences with checksum mismatches
 

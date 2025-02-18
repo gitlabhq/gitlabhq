@@ -1,10 +1,11 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import store from '~/mr_notes/stores';
+import { pinia } from '~/pinia/instance';
+import { useBatchComments } from '~/batch_comments/store';
 
 export const initReviewBar = () => {
   const el = document.getElementById('js-review-bar');
@@ -17,6 +18,7 @@ export const initReviewBar = () => {
   new Vue({
     el,
     store,
+    pinia,
     apolloProvider,
     components: {
       ReviewBar: () => import('./components/review_bar.vue'),
@@ -26,13 +28,13 @@ export const initReviewBar = () => {
       canSummarize: parseBoolean(el.dataset.canSummarize),
     },
     computed: {
-      ...mapGetters('batchComments', ['draftsCount']),
+      ...mapState(useBatchComments, ['draftsCount']),
     },
     mounted() {
       this.fetchDrafts();
     },
     methods: {
-      ...mapActions('batchComments', ['fetchDrafts']),
+      ...mapActions(useBatchComments, ['fetchDrafts']),
     },
     render(createElement) {
       if (this.draftsCount === 0) return null;

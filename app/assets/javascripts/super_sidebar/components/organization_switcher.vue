@@ -26,7 +26,7 @@ export default {
     ),
     learnMore: __('Learn more'),
   },
-  switchingOrganizationsDocsPath: helpPagePath('user/organization/index.md', {
+  switchingOrganizationsDocsPath: helpPagePath('user/organization/_index.md', {
     anchor: 'switch-organizations',
   }),
   components: { GlDisclosureDropdown, GlAvatar, GlIcon, GlLoadingIcon, GlLink },

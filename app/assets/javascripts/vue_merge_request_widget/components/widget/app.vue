@@ -1,10 +1,12 @@
 <script>
-import { GlSprintf } from '@gitlab/ui';
+import { GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
+import { n__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import StateContainer from '../state_container.vue';
 
 export default {
   components: {
+    GlSkeletonLoader,
     GlSprintf,
     StateContainer,
     MrSecurityWidget: () =>
@@ -16,31 +18,58 @@ export default {
       import('~/vue_merge_request_widget/widgets/accessibility/index.vue'),
   },
   mixins: [glFeatureFlagsMixin()],
+  provide() {
+    return {
+      reportsTabContent: this.reportsTabContent,
+      reportsTabSidebar: this.reportsTabSidebar,
+    };
+  },
   props: {
     mr: {
       type: Object,
       required: true,
     },
+    reportsTabContent: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    reportsTabSidebar: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
-      collapsed: this.glFeatures.mrReportsTab,
+      collapsed:
+        this.reportsTabContent || this.reportsTabSidebar ? false : this.glFeatures.mrReportsTab,
+      findingsCount: 0,
+      loadedCount: 0,
     };
   },
   computed: {
     testReportWidget() {
+      if (!this.isViewingReport('test-summary')) return undefined;
+
       return this.mr.testResultsPath && 'MrTestReportWidget';
     },
 
     terraformPlansWidget() {
+      if (!this.isViewingReport('terraform')) return undefined;
+
       return this.mr.terraformReportsPath && 'MrTerraformWidget';
     },
 
     codeQualityWidget() {
+      if (!this.isViewingReport('code-quality')) return undefined;
+
       return this.mr.codequalityReportsPath ? 'MrCodeQualityWidget' : undefined;
     },
 
     accessibilityWidget() {
+      if (!this.isViewingReport('accessibility')) return undefined;
+
       return this.mr.accessibilityReportPath ? 'MrAccessibilityWidget' : undefined;
     },
 
@@ -53,6 +82,33 @@ export default {
         this.accessibilityWidget,
       ].filter((w) => w);
     },
+    collapsedSummaryText() {
+      return n__('%d findings', '%d findings', this.findingsCount);
+    },
+    statusIcon() {
+      if (this.loadedCount < this.widgets.length) return 'loading';
+
+      return 'warning';
+    },
+    isLoadingSummary() {
+      return false;
+    },
+  },
+  mounted() {
+    if (this.reportsTabContent && !this.widgets.length) {
+      this.$router.push({ path: '/' });
+    }
+  },
+  methods: {
+    isViewingReport(reportName) {
+      if (!this.reportsTabContent) return true;
+
+      return this.$route.params.report === reportName;
+    },
+    onLoadedReport(findings) {
+      this.findingsCount += findings;
+      this.loadedCount += 1;
+    },
   },
 };
 </script>
@@ -61,31 +117,51 @@ export default {
   <section
     v-if="widgets.length"
     role="region"
-    :aria-label="__('Merge request reports')"
+    :aria-label="reportsTabContent ? null : __('Merge request reports')"
     data-testid="mr-widget-app"
-    class="mr-section-container"
+    :class="{
+      'mr-section-container': !reportsTabContent && !reportsTabSidebar,
+    }"
   >
     <state-container
-      v-if="glFeatures.mrReportsTab"
-      status="success"
+      v-if="glFeatures.mrReportsTab && !reportsTabContent && !reportsTabSidebar"
+      :status="statusIcon"
       is-collapsible
       collapse-on-desktop
       :collapsed="collapsed"
+      :is-loading="isLoadingSummary"
       :expand-details-tooltip="__('Expand merge request reports')"
       :collapse-details-tooltip="__('Collapse merge request reports')"
       @toggle="collapsed = !collapsed"
     >
-      <strong>
-        <gl-sprintf :message="__('Merge reports (%{reportsCount}):')">
-          <template #reportsCount>{{ widgets.length }}</template>
+      <template #loading>
+        <gl-skeleton-loader :width="334" :height="24">
+          <rect x="0" y="0" width="24" height="24" rx="4" />
+          <rect x="32" y="2" width="302" height="20" rx="4" />
+        </gl-skeleton-loader>
+      </template>
+      <template #default>
+        <gl-sprintf
+          :message="__('%{strongStart}Merge reports (%{reportsCount}):%{strongEnd} %{summaryText}')"
+        >
+          <template #strong="{ content }">
+            <strong>
+              <gl-sprintf :message="content">
+                <template #reportsCount>{{ widgets.length }}</template>
+              </gl-sprintf>
+            </strong>
+          </template>
+          <template #summaryText>&nbsp;{{ collapsedSummaryText }}</template>
         </gl-sprintf>
-      </strong>
+      </template>
     </state-container>
     <div
       v-show="!collapsed"
       data-testid="reports-widgets-container"
+      class="reports-widgets-container"
       :class="{
-        'gl-border-t gl-relative gl-border-t-section gl-bg-subtle': glFeatures.mrReportsTab,
+        'gl-border-t gl-relative gl-border-t-section gl-bg-subtle':
+          glFeatures.mrReportsTab && !reportsTabContent && !reportsTabSidebar,
       }"
     >
       <component
@@ -94,7 +170,11 @@ export default {
         :key="widget.name || index"
         :mr="mr"
         class="mr-widget-section"
-        :class="{ 'gl-border-t gl-border-t-section': index > 0 }"
+        :class="{
+          'gl-border-t gl-border-t-section': index > 0 && !reportsTabContent && !reportsTabSidebar,
+        }"
+        :reports-tab-sidebar="reportsTabSidebar"
+        @loaded="onLoadedReport"
       />
     </div>
   </section>

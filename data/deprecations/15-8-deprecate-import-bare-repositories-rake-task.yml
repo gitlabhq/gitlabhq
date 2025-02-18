@@ -18,10 +18,10 @@
 
      Alternatives to using the `gitlab:import:repos` Rake task include:
 
-     - Migrating projects using either [an export file](https://docs.gitlab.com/ee/user/project/settings/import_export.html) or
-       [direct transfer](https://docs.gitlab.com/ee/user/group/import/#migrate-groups-by-direct-transfer-recommended) migrate repositories as well.
-     - Importing a [repository by URL](https://docs.gitlab.com/ee/user/project/import/repo_by_url.html).
-     - Importing [repositories from a non-GitLab source](https://docs.gitlab.com/ee/user/project/import/).
+     - Migrating projects using either [an export file](https://docs.gitlab.com/user/project/settings/import_export/) or
+       [direct transfer](https://docs.gitlab.com/user/group/import/#migrate-groups-by-direct-transfer-recommended) migrate repositories as well.
+     - Importing a [repository by URL](https://docs.gitlab.com/user/project/import/repo_by_url/).
+     - Importing [repositories from a non-GitLab source](https://docs.gitlab.com/user/project/import/).
   stage: Foundations
   tiers:
   issue_url: https://gitlab.com/gitlab-com/Product/-/issues/5255

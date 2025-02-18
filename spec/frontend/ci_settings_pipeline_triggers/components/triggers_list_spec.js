@@ -74,7 +74,7 @@ describe('TriggersList', () => {
     });
 
     it('displays a table with expected headers', () => {
-      const headers = ['Token', 'Description', 'Owner', 'Last Used', 'Actions'];
+      const headers = ['Token', 'Description', 'Owner', 'Last Used', 'Expires', 'Actions'];
       headers.forEach((header, i) => {
         expect(findHeaderAt(i).text()).toBe(header);
       });
@@ -120,6 +120,14 @@ describe('TriggersList', () => {
       expect(findCell(0, 3).text()).toBe('Never');
 
       expect(findCell(1, 3).findComponent(TimeAgoTooltip).props('time')).toBe(triggers[1].lastUsed);
+    });
+
+    it('displays a time ago label when expiration set', () => {
+      expect(findCell(0, 4).text()).toBe('Never');
+
+      expect(findCell(1, 4).findComponent(TimeAgoTooltip).props('time')).toBe(
+        triggers[1].expiresAt,
+      );
     });
 
     it('displays actions in a rows', () => {

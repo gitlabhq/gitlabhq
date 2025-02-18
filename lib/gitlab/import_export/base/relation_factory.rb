@@ -87,6 +87,8 @@ module Gitlab
           setup_base_models
           setup_models
 
+          return if @relation_hash.empty?
+
           generate_imported_object
         end
 

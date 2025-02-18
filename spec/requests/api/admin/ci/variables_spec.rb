@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::API::Admin::Ci::Variables, :aggregate_failures, feature_category: :pipeline_composition do
+RSpec.describe ::API::Admin::Ci::Variables, :aggregate_failures, feature_category: :ci_variables do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user) { create(:user) }
   let_it_be(:variable) { create(:ci_instance_variable) }

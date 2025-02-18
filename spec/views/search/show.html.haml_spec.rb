@@ -46,7 +46,7 @@ RSpec.describe 'search/show', feature_category: :global_search do
     end
   end
 
-  context 'unfurling support' do
+  context 'for unfurling support' do
     let(:group) { build(:group) }
     let(:search_results) do
       instance_double(Gitlab::GroupSearchResults).tap do |double|
@@ -60,7 +60,7 @@ RSpec.describe 'search/show', feature_category: :global_search do
       assign(:group, group)
     end
 
-    context 'search with full count' do
+    context 'for search with full count' do
       let(:search_service_presenter) do
         instance_double(SearchServicePresenter,
           without_count?: false,
@@ -87,7 +87,7 @@ RSpec.describe 'search/show', feature_category: :global_search do
       end
     end
 
-    context 'search without full count' do
+    context 'for search without full count' do
       let(:search_service_presenter) do
         instance_double(SearchServicePresenter,
           without_count?: true,

@@ -235,7 +235,7 @@ class TodoService
   end
 
   def resolve_todos(todos, current_user, resolution: :done, resolved_by_action: :system_done)
-    todos_ids = todos.batch_update(state: resolution, resolved_by_action: resolved_by_action)
+    todos_ids = todos.batch_update(state: resolution, resolved_by_action: resolved_by_action, snoozed_until: nil)
 
     current_user.update_todos_count_cache
 
@@ -245,7 +245,7 @@ class TodoService
   def resolve_todo(todo, current_user, resolution: :done, resolved_by_action: :system_done)
     return if todo.done?
 
-    todo.update(state: resolution, resolved_by_action: resolved_by_action)
+    todo.update(state: resolution, resolved_by_action: resolved_by_action, snoozed_until: nil)
 
     GraphqlTriggers.issuable_todo_updated(todo.target)
 
@@ -332,24 +332,13 @@ class TodoService
   end
 
   def excluded_user_ids(users, attributes)
-    users_single_todos, users_multiple_todos = users.partition { |u| Feature.disabled?(:multiple_todos, u) }
-    excluded_user_ids = []
+    return [] unless users.present?
+    return [] if Todo::ACTIONS_MULTIPLE_ALLOWED.include?(attributes.fetch(:action))
 
-    if users_single_todos.present?
-      excluded_user_ids += pending_todos(
-        users_single_todos,
-        attributes.slice(:project_id, :target_id, :target_type, :commit_id, :discussion)
-      ).distinct_user_ids
-    end
-
-    if users_multiple_todos.present? && Todo::ACTIONS_MULTIPLE_ALLOWED.exclude?(attributes.fetch(:action))
-      excluded_user_ids += pending_todos(
-        users_multiple_todos,
-        attributes.slice(:project_id, :target_id, :target_type, :commit_id, :discussion, :action)
-      ).distinct_user_ids
-    end
-
-    excluded_user_ids
+    pending_todos(
+      users,
+      attributes.slice(:project_id, :target_id, :target_type, :commit_id, :discussion, :action)
+    ).distinct_user_ids
   end
 
   def bulk_insert_todos(users, attributes)

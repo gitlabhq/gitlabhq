@@ -1,6 +1,8 @@
 <script>
 import Tracking from '~/tracking';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { visitUrl } from '~/lib/utils/url_utility';
+import { WORK_ITEM_TYPE_ENUM_INCIDENT } from '~/work_items/constants';
 import setSelectedBoardItemsMutation from '~/boards/graphql/client/set_selected_board_items.mutation.graphql';
 import unsetSelectedBoardItemsMutation from '~/boards/graphql/client/unset_selected_board_items.mutation.graphql';
 import selectedBoardItemsQuery from '~/boards/graphql/client/selected_board_items.query.graphql';
@@ -118,6 +120,13 @@ export default {
       if (e.target.closest('.js-no-trigger-title') && (e.ctrlKey || e.metaKey || e.button === 1)) {
         return;
       }
+
+      // we redirect to incident page instead of opening the drawer
+      // should be removed when we introduce incident WI type
+      if (this.item.type === WORK_ITEM_TYPE_ENUM_INCIDENT) {
+        visitUrl(this.item.webUrl);
+        return;
+      }
       e.preventDefault();
 
       const isMultiSelect = e.ctrlKey || e.metaKey;
@@ -222,7 +231,7 @@ export default {
         'gl-cursor-grab': isDraggable,
         'is-active !gl-bg-blue-50 hover:!gl-bg-blue-50': isActive,
         'is-disabled': isDisabled,
-        'gl-cursor-not-allowed gl-bg-gray-10': item.isLoading,
+        'gl-cursor-not-allowed gl-bg-subtle': item.isLoading,
       },
     ]"
     :index="index"

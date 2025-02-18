@@ -53,6 +53,11 @@ export default {
       required: false,
       default: false,
     },
+    containerTag: {
+      type: String,
+      required: false,
+      default: 'section',
+    },
     isLoading: {
       type: Boolean,
       required: false,
@@ -164,14 +169,15 @@ export default {
 </script>
 
 <template>
-  <section
+  <component
+    :is="containerTag"
     :id="anchorId"
     ref="crudComponent"
     class="crud gl-border gl-rounded-base gl-border-section gl-bg-subtle"
     :class="{ 'gl-mt-5': isCollapsible }"
   >
     <header
-      class="crud-header gl-border-b gl-flex gl-flex-wrap gl-justify-between gl-gap-x-5 gl-gap-y-2 gl-rounded-t-base gl-border-section gl-bg-section gl-px-5 gl-py-4"
+      class="crud-header gl-border-b gl-relative gl-flex gl-flex-wrap gl-justify-between gl-gap-x-5 gl-gap-y-2 gl-rounded-t-base gl-border-section gl-bg-section gl-px-5 gl-py-4"
       :class="[
         headerClass,
         {
@@ -216,8 +222,8 @@ export default {
           <template v-else>{{ description }}</template>
         </p>
       </div>
-      <div class="gl-flex gl-items-baseline gl-gap-3" data-testid="crud-actions">
-        <slot name="actions"></slot>
+      <div class="gl-flex gl-items-center gl-gap-3" data-testid="crud-actions">
+        <slot name="actions" :show-form="showForm"></slot>
         <gl-button
           v-if="toggleText && !isFormUsedAndVisible"
           size="small"
@@ -249,7 +255,7 @@ export default {
 
     <div
       v-if="isFormUsedAndVisible"
-      class="gl-border-b gl-border-section gl-bg-section gl-p-5 gl-pt-4"
+      class="gl-border-b gl-border-section gl-bg-subtle gl-p-5 gl-pt-4"
       data-testid="crud-form"
     >
       <slot name="form" :hide-form="hideForm"></slot>
@@ -283,5 +289,5 @@ export default {
     >
       <slot name="footer"></slot>
     </footer>
-  </section>
+  </component>
 </template>

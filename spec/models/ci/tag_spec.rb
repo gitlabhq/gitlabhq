@@ -7,7 +7,8 @@ RSpec.describe Ci::Tag, feature_category: :continuous_integration do
     [create(:ci_tag, name: 'Awesome'), create(:ci_tag, name: 'awesome'), create(:ci_tag, name: 'epic')]
   end
 
-  it { is_expected.to have_many(:taggings).class_name('Ci::Tagging') }
+  it { is_expected.to have_many(:job_taggings).class_name('Ci::BuildTag') }
+  it { is_expected.to have_many(:runner_taggings).class_name('Ci::RunnerTagging') }
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:name) }
@@ -25,14 +26,6 @@ RSpec.describe Ci::Tag, feature_category: :continuous_integration do
 
   describe '.named_any' do
     it { expect(described_class.named_any(%w[awesome epic])).to contain_exactly(*tags[1..]) }
-  end
-
-  describe '.for_context' do
-    it 'returns the tags for the specified context' do
-      Ci::Tagging.create!(tag_id: tags.first.id, context: 'tags')
-
-      expect(described_class.for_context('tags')).to contain_exactly(tags.first)
-    end
   end
 
   describe '.find_or_create_all_with_like_by_name' do

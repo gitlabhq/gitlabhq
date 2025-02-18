@@ -2,13 +2,15 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Disaster recovery for planned failover
 ---
 
-# Disaster recovery for planned failover
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The primary use-case of Disaster Recovery is to ensure business continuity in
 the event of unplanned outage, but it can be used in conjunction with a planned
@@ -22,7 +24,7 @@ length of this window is determined by your replication capacity - when the
 data loss.
 
 This document assumes you already have a fully configured, working Geo setup.
-Read this document and the [Disaster Recovery](index.md) failover
+Read this document and the [Disaster Recovery](_index.md) failover
 documentation in full before proceeding. Planned failover is a major operation,
 and if performed incorrectly, there is a high risk of data loss. Consider
 rehearsing the procedure until you are comfortable with the necessary steps and
@@ -59,12 +61,12 @@ site you are about to failover to:
 rsync --archive --perms --delete root@<geo-primary>:/var/opt/gitlab/gitlab-rails/shared/registry/. /var/opt/gitlab/gitlab-rails/shared/registry
 ```
 
-Alternatively, you can [back up](../../../administration/backup_restore/index.md#back-up-gitlab)
+Alternatively, you can [back up](../../backup_restore/_index.md#back-up-gitlab)
 the container registry on the primary site and restore it onto the secondary
 site:
 
 1. On your primary site, back up only the registry and
-   [exclude specific directories from the backup](../../../administration/backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup):
+   [exclude specific directories from the backup](../../backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup):
 
    ```shell
    # Create a backup in the /var/opt/gitlab/backups folder
@@ -74,7 +76,7 @@ site:
 1. Copy the backup tarball generated from your primary site to the `/var/opt/gitlab/backups` folder
    on your secondary site.
 
-1. On your secondary site, restore the registry following the [Restore GitLab](../../../administration/backup_restore/index.md#restore-gitlab)
+1. On your secondary site, restore the registry following the [Restore GitLab](../../backup_restore/_index.md#restore-gitlab)
    documentation.
 
 ## Preflight checks
@@ -89,7 +91,7 @@ Each step is described in more detail below.
 
 ### DNS TTL
 
-If you plan to [update the primary domain DNS record](index.md#step-4-optional-updating-the-primary-domain-dns-record),
+If you plan to [update the primary domain DNS record](_index.md#step-4-optional-updating-the-primary-domain-dns-record),
 you may wish to maintain a low TTL to ensure fast propagation of DNS changes.
 
 ### Object storage
@@ -200,7 +202,7 @@ If a runner is repeatedly unable to connect to a GitLab instance, it stops tryin
 To ensure that all data is replicated to a secondary site, updates (write requests) need to
 be disabled on the **primary** site:
 
-1. Enable [maintenance mode](../../maintenance_mode/index.md) on the **primary** site.
+1. Enable [maintenance mode](../../maintenance_mode/_index.md) on the **primary** site.
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Monitoring > Background jobs**.
 1. On the Sidekiq dashboard, select **Cron**.
@@ -247,7 +249,7 @@ At this point, your **secondary** site contains an up-to-date copy of everything
 
 ## Promote the **secondary** site
 
-After the replication is finished, [promote the **secondary** site to a **primary** site](index.md). This process causes a brief outage on the **secondary** site, and users may need to sign in again. If you follow the steps correctly, the old primary Geo site should still be disabled and user traffic should go to the newly-promoted site instead.
+After the replication is finished, [promote the **secondary** site to a **primary** site](_index.md). This process causes a brief outage on the **secondary** site, and users may need to sign in again. If you follow the steps correctly, the old primary Geo site should still be disabled and user traffic should go to the newly-promoted site instead.
 
 When the promotion is completed, the maintenance window is over, and your new **primary** site now
 begins to diverge from the old one. If problems do arise at this point, failing

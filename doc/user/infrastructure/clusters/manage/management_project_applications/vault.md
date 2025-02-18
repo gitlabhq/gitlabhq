@@ -2,13 +2,15 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Install Vault with a cluster management project
 ---
 
-# Install Vault with a cluster management project
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 [HashiCorp Vault](https://www.vaultproject.io/) is a secrets management solution which
 can be used to safely manage and store passwords, credentials, certificates, and more. A Vault
@@ -20,10 +22,10 @@ a single source of access, control, and auditability around all your sensitive
 credentials and certificates. This feature requires giving GitLab the highest level of access and
 control. Therefore, if GitLab is compromised, the security of this Vault instance is as well. To
 avoid this security risk, GitLab recommends using your own HashiCorp Vault to leverage
-[external secrets with CI](../../../../../ci/secrets/index.md).
+[external secrets with CI](../../../../../ci/secrets/_index.md).
 
 Assuming you already have a project created from a
-[management project template](../../../../../user/clusters/management_project_template.md), to install Vault you should
+[management project template](../../../../clusters/management_project_template.md), to install Vault you should
 uncomment this line from your `helmfile.yaml`:
 
 ```yaml
@@ -37,7 +39,7 @@ Vault application causes downtime.
 
 To optimally use Vault in a production environment, it's ideal to have a good understanding
 of the internals of Vault and how to configure it. This can be done by reading
-the [Vault Configuration guide](../../../../../ci/secrets/index.md#configure-your-vault-server),
+the [Vault Configuration guide](../../../../../ci/secrets/_index.md#configure-your-vault-server),
 the [Vault documentation](https://developer.hashicorp.com/vault/docs/internals) and
 the Vault Helm chart [`values.yaml` file](https://github.com/hashicorp/vault-helm/blob/v0.3.3/values.yaml).
 

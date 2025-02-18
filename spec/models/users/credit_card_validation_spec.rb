@@ -116,7 +116,7 @@ RSpec.describe Users::CreditCardValidation, feature_category: :user_profile do
         let_it_be(:holder_name_hash) { nil }
 
         it 'returns an empty array' do
-          expect(similar_by_holder_name).to match_array([])
+          expect(similar_by_holder_name).to be_empty
         end
       end
     end

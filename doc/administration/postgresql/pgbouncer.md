@@ -2,17 +2,22 @@
 stage: Data Access
 group: Database Operations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Working with the bundled PgBouncer service
 ---
 
-# Working with the bundled PgBouncer service
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-NOTE:
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 PgBouncer is bundled in the `gitlab-ee` package, but is free to use.
 For support, you need a [Premium subscription](https://about.gitlab.com/pricing/).
+
+{{< /alert >}}
 
 [PgBouncer](https://www.pgbouncer.org/) is used to seamlessly migrate database
 connections between servers in a failover scenario. Additionally, it can be used
@@ -43,8 +48,11 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 
 1. Run `gitlab-ctl reconfigure`
 
-   NOTE:
-   If the database was already running, it needs to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
+   {{< alert type="note" >}}
+
+If the database was already running, it needs to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
+
+   {{< /alert >}}
 
 1. On the node you are running PgBouncer on, make sure the following is set in `/etc/gitlab/gitlab.rb`
 
@@ -91,7 +99,7 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 
 Do not backup or restore GitLab through a PgBouncer connection: it causes a GitLab outage.
 
-[Read more about this and how to reconfigure backups](../../administration/backup_restore/backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer).
+[Read more about this and how to reconfigure backups](../backup_restore/backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer).
 
 ## Enable Monitoring
 
@@ -179,7 +187,7 @@ ote_pid | tls
 
 Some database changes have to be done directly, and not through PgBouncer.
 
-The main affected tasks are [database restores](../../administration/backup_restore/backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer)
+The main affected tasks are [database restores](../backup_restore/backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer)
 and [GitLab upgrades with database migrations](../../update/zero_downtime.md).
 
 1. To find the primary node, run the following on a database node:

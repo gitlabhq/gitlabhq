@@ -23,7 +23,7 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
   end
 
   def stop_button_selector
-    'button[title="Stop environment"]'
+    'button[aria-label="Stop environment"]'
   end
 
   def upcoming_deployment_content_selector
@@ -451,18 +451,20 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
         create(:environment, :will_auto_stop, project: project, name: 'staging/review-2', state: :available)
       end
 
-      it 'users unfurls an environment folder' do
+      it 'shows folder name linked to the folder page' do
         visit_environments(project)
+        wait_for_requests
 
         expect(page).not_to have_content 'review-1'
         expect(page).not_to have_content 'review-2'
         expect(page).to have_content 'staging 2'
 
-        page.click_button _('Expand')
+        expect(page).to have_link('staging')
 
-        expect(page).to have_content 'review-1'
-        expect(page).to have_content 'review-2'
-        expect(page).to have_content 'Auto stop in'
+        click_link 'staging'
+
+        expect(page).to have_current_path(folder_project_environments_path(project, 'staging'))
+        expect(page).to have_content 'Environments / staging'
       end
     end
 
@@ -472,17 +474,20 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
         create(:environment, :will_auto_stop, project: project, name: 'staging/review-2', state: :stopped)
       end
 
-      it 'users unfurls an environment folder' do
+      it 'shows folder name linked to the folder page' do
         visit_environments(project, scope: 'stopped')
+        wait_for_requests
 
         expect(page).not_to have_content 'review-1'
         expect(page).not_to have_content 'review-2'
         expect(page).to have_content 'staging 2'
 
-        page.click_button _('Expand')
+        expect(page).to have_link('staging')
 
-        expect(page).to have_content 'review-1'
-        expect(page).to have_content 'review-2'
+        click_link 'staging'
+
+        expect(page).to have_current_path(folder_project_environments_path(project, 'staging'))
+        expect(page).to have_content 'Environments / staging'
       end
     end
   end

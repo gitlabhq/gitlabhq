@@ -48,7 +48,8 @@ if Gitlab.ee?
       Analytics::ValueStreamDashboard::Count,
       Ci::FinishedBuildChSyncEvent,
       Search::Zoekt::Task,
-      Ai::CodeSuggestionEvent
+      Ai::CodeSuggestionEvent,
+      Ai::DuoChatEvent
     ])
 else
   Gitlab::Database::Partitioning.register_tables(
@@ -88,19 +89,6 @@ Gitlab::Database::Partitioning.register_tables(
     {
       limit_connection_names: %i[main],
       table_name: 'merge_request_diff_commits_b5377a7a34',
-      partitioned_column: :merge_request_diff_id, strategy: :int_range, partition_size: 200_000_000
-    }
-  ]
-)
-
-# Enable partition management for the backfill table during merge_request_diff_files partitioning.
-# This way new partitions will be created as the trigger syncs new rows across to this table.
-#
-Gitlab::Database::Partitioning.register_tables(
-  [
-    {
-      limit_connection_names: %i[main],
-      table_name: 'merge_request_diff_files_99208b8fac',
       partitioned_column: :merge_request_diff_id, strategy: :int_range, partition_size: 200_000_000
     }
   ]

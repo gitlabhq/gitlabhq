@@ -16,8 +16,8 @@ module Packages
     # /!\ This function doesn't check user permissions
     # at the package level.
     def packages_for(user, within_group:)
-      return ::Packages::Package.none unless within_group
-      return ::Packages::Package.none unless Ability.allowed?(user, :read_group, within_group)
+      return packages_class.none unless within_group
+      return packages_class.none unless Ability.allowed?(user, :read_group, within_group)
 
       projects = if user.is_a?(DeployToken)
                    user.accessible_projects
@@ -25,7 +25,7 @@ module Packages
                    within_group.all_projects
                  end
 
-      ::Packages::Package.for_projects(projects).installable
+      packages_class.for_projects(projects).installable
     end
 
     def packages_visible_to_user(user, within_group:, with_package_registry_enabled: false)
@@ -63,12 +63,16 @@ module Packages
     def projects_visible_to_reporters(user, within_group:, within_public_package_registry: false)
       return user.accessible_projects if user.is_a?(DeployToken)
 
-      unless within_public_package_registry
-        return within_group.all_projects.public_or_visible_to_user(user, ::Gitlab::Access::REPORTER)
-      end
+      access = if Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, within_group.root_ancestor)
+                 ::Gitlab::Access::GUEST
+               else
+                 ::Gitlab::Access::REPORTER
+               end
+
+      return within_group.all_projects.public_or_visible_to_user(user, access) unless within_public_package_registry
 
       ::Project
-        .public_or_visible_to_user(user, Gitlab::Access::REPORTER)
+        .public_or_visible_to_user(user, access)
         .or(::Project.with_public_package_registry)
         .in_namespace(within_group.self_and_descendants)
     end

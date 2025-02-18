@@ -35,7 +35,7 @@ export default {
     cancelableJobsErrorMsg: CANCELABLE_JOBS_ERROR_MSG,
   },
   filterSearchBoxStyles:
-    'gl-my-0 gl-p-5 gl-bg-gray-10 gl-text-default gl-border-b gl-border-default',
+    'gl-my-0 gl-p-5 gl-bg-subtle gl-text-default gl-border-b gl-border-default',
   components: {
     JobsSkeletonLoader,
     JobsTableEmptyState,
@@ -59,6 +59,10 @@ export default {
     emptyStateSvgPath: {
       default: '',
       required: false,
+    },
+    canUpdateAllJobs: {
+      default: false,
+      required: true,
     },
   },
   apollo: {
@@ -240,7 +244,7 @@ export default {
     <jobs-table-tabs
       :all-jobs-count="count"
       :loading="loading"
-      :show-cancel-all-jobs-button="isCancelable"
+      :show-cancel-all-jobs-button="canUpdateAllJobs && isCancelable"
       @fetchJobsByStatus="fetchJobsByStatus"
     />
 

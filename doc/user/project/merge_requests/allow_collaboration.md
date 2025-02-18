@@ -2,14 +2,16 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "When you fork a merge request, you can set whether or not members of the upstream repository can contribute to your fork."
+description: When you fork a merge request, you can set whether or not members of the upstream repository can contribute to your fork.
+title: Collaborate on merge requests across forks
 ---
 
-# Collaborate on merge requests across forks
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When you open a merge request from your [fork](../repository/forking_workflow.md), you can allow upstream
 members to collaborate with you on your branch.
@@ -70,7 +72,7 @@ in the merge request.
 To see the pipeline status from the merge request page of a forked project
 going back to the original project:
 
-1. [Create a group](../../group/index.md#create-a-group) containing all the upstream members.
+1. [Create a group](../../group/_index.md#create-a-group) containing all the upstream members.
 1. On the left sidebar, select **Search or go to** and find the forked project.
 1. Go to the **Manage > Members** page in the forked project and invite the newly-created
    group to the forked project.

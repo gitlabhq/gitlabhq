@@ -649,7 +649,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     it 'has valid commit ids as keys' do
-      expect(subject.keys).to all( match(Commit::COMMIT_SHA_PATTERN) )
+      expect(subject.keys).to all(match(Commit::COMMIT_SHA_PATTERN))
     end
 
     it 'does not error when dereferenced_target is nil' do

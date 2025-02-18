@@ -2,9 +2,8 @@
 stage: Systems
 group: Cloud Connector
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Cached queries guidelines
 ---
-
-# Cached queries guidelines
 
 Rails provides an [SQL query cache](https://guides.rubyonrails.org/caching_with_rails.html#sql-caching)
 which is used to cache the results of database queries for the duration of a request.
@@ -93,7 +92,7 @@ below the query. You can see multiple duplicate cached queries in this modal win
 
 ![Performance Bar Cached Queries Modal](img/performance_bar_cached_queries_v13_6.png)
 
-Select the ellipsis (**{ellipsis_h}**) to expand the actual stack trace:
+Select the ellipsis ({{< icon name="ellipsis_h" >}}) to expand the actual stack trace:
 
 ```ruby
 [

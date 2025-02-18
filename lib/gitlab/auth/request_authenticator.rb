@@ -68,12 +68,8 @@ module Gitlab
       #
       # Overridden in EE
       def find_user_for_graphql_api_request
-        if Feature.enabled? :graphql_minimal_auth_methods # rubocop:disable Gitlab/FeatureFlagWithoutActor -- reverting MR
-          find_user_from_web_access_token(:api, scopes: graphql_authorization_scopes) ||
-            find_user_from_personal_access_token_for_api_or_git
-        else
-          find_user_from_any_authentication_method(:api)
-        end
+        find_user_from_web_access_token(:api, scopes: graphql_authorization_scopes) ||
+          find_user_from_personal_access_token_for_api_or_git
       end
 
       # Overridden in EE
@@ -86,17 +82,9 @@ module Gitlab
           find_user_from_web_access_token(request_format, scopes: [:api, :read_api]) ||
           find_user_from_feed_token(request_format) ||
           find_user_from_static_object_token(request_format) ||
-          find_user_from_job_token_basic_auth_feature_flag_wrapper ||
           find_user_from_job_token ||
           find_user_from_personal_access_token_for_api_or_git ||
           find_user_for_git_or_lfs_request
-      end
-
-      def find_user_from_job_token_basic_auth_feature_flag_wrapper
-        user = find_user_from_job_token_basic_auth
-        return if ::Feature.enabled?(:request_authenticator_exclude_job_token_basic_auth, user)
-
-        user
       end
 
       def access_token

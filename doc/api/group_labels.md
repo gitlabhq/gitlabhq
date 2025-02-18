@@ -2,13 +2,15 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group labels API
 ---
 
-# Group labels API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This API supports managing [group labels](../user/project/labels.md#types-of-labels).
 It allows users to list, create, update, and delete group labels. Furthermore, users can subscribe to and
@@ -24,7 +26,7 @@ GET /groups/:id/labels
 
 | Attribute     | Type           | Required | Description                                                                                                                                                                  |
 | ---------     | ----           | -------- | -----------                                                                                                                                                                  |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths).                                                               |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).                                                               |
 | `with_counts` | boolean        | no       | Whether or not to include issue and merge request counts. Defaults to `false`. |
 | `include_ancestor_groups` | boolean | no | Include ancestor groups. Defaults to `true`. |
 | `include_descendant_groups` | boolean | no | Include descendant groups. Defaults to `false`. |
@@ -76,7 +78,7 @@ GET /groups/:id/labels/:label_id
 
 | Attribute     | Type           | Required | Description                                                                                                                                                                  |
 | ---------     | ----           | -------- | -----------                                                                                                                                                                  |
-| `id`          | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths).                                                               |
+| `id`          | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).                                                               |
 | `label_id` | integer or string | yes | The ID or title of a group's label. |
 | `include_ancestor_groups` | boolean | no | Include ancestor groups. Defaults to `true`. |
 | `include_descendant_groups` | boolean | no | Include descendant groups. Defaults to `false`. |
@@ -113,7 +115,7 @@ POST /groups/:id/labels
 
 | Attribute     | Type    | Required | Description                  |
 | ------------- | ------- | -------- | ---------------------------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `name`        | string  | yes      | The name of the label        |
 | `color`       | string  | yes      | The color of the label given in 6-digit hex notation with leading '#' sign (for example, #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
 | `description` | string  | no       | The description of the label, |
@@ -151,7 +153,7 @@ PUT /groups/:id/labels/:label_id
 
 | Attribute     | Type    | Required | Description                  |
 | ------------- | ------- | -------- | ---------------------------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `label_id` | integer or string | yes | The ID or title of a group's label. |
 | `new_name`    | string  | no      | The new name of the label        |
 | `color`       | string  | no      | The color of the label given in 6-digit hex notation with leading '#' sign (for example, #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
@@ -179,8 +181,11 @@ Example response:
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 An older endpoint `PUT /groups/:id/labels` with `name` in the parameters is still available, but deprecated.
+
+{{< /alert >}}
 
 ## Delete a group label
 
@@ -192,15 +197,18 @@ DELETE /groups/:id/labels/:label_id
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id`      | integer or string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`      | integer or string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `label_id` | integer or string | yes | The ID or title of a group's label. |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/labels/bug"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 An older endpoint `DELETE /groups/:id/labels` with `name` in the parameters is still available, but deprecated.
+
+{{< /alert >}}
 
 ## Subscribe to a group label
 
@@ -213,7 +221,7 @@ POST /groups/:id/labels/:label_id/subscribe
 
 | Attribute  | Type              | Required | Description                          |
 | ---------- | ----------------- | -------- | ------------------------------------ |
-| `id`      | integer or string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`      | integer or string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `label_id` | integer or string | yes      | The ID or title of a group's label. |
 
 ```shell
@@ -249,7 +257,7 @@ POST /groups/:id/labels/:label_id/unsubscribe
 
 | Attribute  | Type              | Required | Description                          |
 | ---------- | ----------------- | -------- | ------------------------------------ |
-| `id`      | integer or string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`      | integer or string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `label_id` | integer or string | yes      | The ID or title of a group's label. |
 
 ```shell

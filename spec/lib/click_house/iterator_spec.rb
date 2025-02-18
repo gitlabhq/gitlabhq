@@ -88,7 +88,7 @@ RSpec.describe ClickHouse::Iterator, :click_house, feature_category: :database d
     end
 
     it 'returns no data' do
-      expect(collect_ids_with_batch_size(3)).to match_array([])
+      expect(collect_ids_with_batch_size(3)).to be_empty
     end
   end
 end

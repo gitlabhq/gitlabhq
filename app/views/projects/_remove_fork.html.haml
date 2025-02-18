@@ -4,7 +4,7 @@
 = render Pajamas::CardComponent.new do |c|
   - c.with_header do
     .gl-flex.gl-grow
-      %h4.gl-text-base.gl-leading-24.gl-m-0.danger-title= _('Remove fork relationship')
+      %h4.gl-text-base.gl-leading-24.gl-m-0.gl-text-danger= _('Remove fork relationship')
     %p.gl-text-subtle.gl-text-sm.gl-m-0
       = remove_fork_project_description_message(@project)
 

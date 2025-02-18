@@ -78,9 +78,9 @@ module Gitlab
 
         if repository.container.nil?
           begin
-            identifier = Gitlab::GlRepository::Identifier.parse(repository.gl_repository)
+            identifier = Gitlab::Repositories::Identifier.parse(repository.gl_repository)
             identifier.container
-          rescue Gitlab::GlRepository::Identifier::InvalidIdentifier
+          rescue Gitlab::Repositories::Identifier::InvalidIdentifier
             nil
           end
         else

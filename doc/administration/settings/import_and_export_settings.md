@@ -1,21 +1,23 @@
 ---
 stage: Foundations
 group: Import and Integrate
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Import and export settings
 ---
 
-# Import and export settings
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Settings for import- and export-related features.
 
 ## Configure allowed import sources
 
 Before you can import projects from other systems, you must enable the
-[import source](../../user/gitlab_com/index.md#default-import-sources) for that system.
+[import source](../../user/gitlab_com/_index.md#default-import-sources) for that system.
 
 1. Sign in to GitLab as a user with Administrator access level.
 1. On the left sidebar, at the bottom, select **Admin**.
@@ -39,17 +41,29 @@ To enable the export of
 
 ## Enable migration of groups and projects by direct transfer
 
-DETAILS:
-**Status:** Beta
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8.
+- Status: Beta
 
-WARNING:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 In GitLab 16.1 and earlier, you should **not** use direct transfer with [scheduled scan execution policies](../../user/application_security/policies/scan_execution_policies.md). If using direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 This feature is in [beta](../../policy/development_stages_support.md#beta) and subject to change without notice.
 This feature is not ready for production use.
+{{< /alert >}}
 
 Migration of groups and projects by direct transfer is disabled by default.
 To enable migration of groups and projects by direct transfer:
@@ -63,14 +77,18 @@ To enable migration of groups and projects by direct transfer:
 1. Select **Save changes**.
 
 The same setting
-[is available](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls) in the API as the
+[is available](../../api/settings.md#available-settings) in the API as the
 `bulk_import_enabled` attribute.
 
 ## Enable silent admin exports
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151278) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `export_audit_events`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153351) in GitLab 17.1. Feature flag `export_audit_events` removed.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152143) for file export downloads in GitLab 17.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151278) in GitLab 17.0 [with a flag](../feature_flags.md) named `export_audit_events`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153351) in GitLab 17.1. Feature flag `export_audit_events` removed.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152143) for file export downloads in GitLab 17.1.
+
+{{< /history >}}
 
 Enable silent admin exports to prevent [audit events](../audit_event_reports.md) when
 instance administrators trigger a [project or group file export](../../user/project/settings/import_export.md) or download the export file.
@@ -85,7 +103,12 @@ To enable silent admin project and group file exports:
 
 ## Allow contribution mapping to administrators
 
-> - Introduced in GitLab 17.5 [with flag](../../administration/feature_flags.md) named `importer_user_mapping`. Disabled by default.
+{{< history >}}
+
+- Introduced in GitLab 17.5 [with a flag](../feature_flags.md) named `importer_user_mapping`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175371) in GitLab 17.7.
+
+{{< /history >}}
 
 Allow mapping of imported user contributions to administrators.
 
@@ -98,7 +121,11 @@ To allow mapping of imported user contributions to administrators:
 
 ## Max export size
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86124) in GitLab 15.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86124) in GitLab 15.0.
+
+{{< /history >}}
 
 To modify the maximum file size for exports in GitLab:
 
@@ -119,14 +146,18 @@ This setting applies only to repositories
 [imported from a GitLab export file](../../user/project/settings/import_export.md#import-a-project-and-its-data).
 
 If you choose a size larger than the configured value for the web server,
-you may receive errors. See the [troubleshooting section](../../administration/settings/account_and_limit_settings.md#troubleshooting) for more
+you may receive errors. See the [troubleshooting section](../settings/account_and_limit_settings.md#troubleshooting) for more
 details.
 
-For GitLab.com repository size limits, read [accounts and limit settings](../../user/gitlab_com/index.md#account-and-limit-settings).
+For GitLab.com repository size limits, read [accounts and limit settings](../../user/gitlab_com/_index.md#account-and-limit-settings).
 
 ## Maximum remote file size for imports
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3.
+
+{{< /history >}}
 
 By default, the maximum remote file size for imports from external object storages (for example, AWS) is 10 GiB.
 
@@ -139,7 +170,11 @@ To modify this setting:
 
 ## Maximum download file size for imports by direct transfer
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3.
+
+{{< /history >}}
 
 By default, the maximum download file size for imports by direct transfer is 5 GiB.
 
@@ -152,11 +187,15 @@ To modify this setting:
 
 ## Maximum decompressed file size for imported archives
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128218) in GitLab 16.3.
-> - **Maximum decompressed file size for archives from imports** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130081) from **Maximum decompressed size** in GitLab 16.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128218) in GitLab 16.3.
+- **Maximum decompressed file size for archives from imports** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130081) from **Maximum decompressed size** in GitLab 16.4.
+
+{{< /history >}}
 
 When you import a project using [file exports](../../user/project/settings/import_export.md) or
-[direct transfer](../../user/group/import/index.md), you can specify the
+[direct transfer](../../user/group/import/_index.md), you can specify the
 maximum decompressed file size for imported archives. The default value is 25 GiB.
 
 When you import a compressed file, the decompressed size cannot exceed the maximum decompressed file size limit. If the
@@ -175,7 +214,11 @@ To modify this setting:
 
 ## Timeout for decompressing archived files
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128218) in GitLab 16.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128218) in GitLab 16.4.
+
+{{< /history >}}
 
 When you [import a project](../../user/project/settings/import_export.md), you can specify the maximum time out for decompressing imported archives. The default value is 210 seconds.
 
@@ -188,7 +231,11 @@ To modify the maximum decompressed file size for imports in GitLab:
 
 ## Maximum number of simultaneous import jobs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11.
+
+{{< /history >}}
 
 You can specify the maximum number of import jobs that are executed simultaneously for:
 
@@ -203,7 +250,7 @@ The default job limit is:
 
 - For the GitHub importer, 1000.
 - For the Bitbucket Cloud and Bitbucket Server importer, 100. The Bitbucket importers have a low default limit because
-  we haven't yet determined a good default limit. Administrators of GitLab Self-Managed instances should experiment with
+  we haven't yet determined a good default limit. Instance administrators should experiment with
   a higher limit.
 
 To modify this setting:
@@ -215,14 +262,18 @@ To modify this setting:
 
 ## Maximum number of simultaneous batch export jobs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169122) in GitLab 17.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169122) in GitLab 17.6.
+
+{{< /history >}}
 
 Direct transfer exports can consume a significant amount of resources.
 To prevent using up the database or Sidekiq processes,
 administrators can configure the `concurrent_relation_batch_export_limit` setting.
 
 The default value is `8` jobs, which corresponds to a
-[reference architecture for up to 40 RPS or 2,000 users](../../administration/reference_architectures/2k_users.md).
+[reference architecture for up to 40 RPS or 2,000 users](../reference_architectures/2k_users.md).
 If you encounter `PG::QueryCanceled: ERROR: canceling statement due to statement timeout` errors
 or jobs getting interrupted due to Sidekiq memory limits, you might want to reduce this number.
 If you have enough resources, you can increase this number to process more concurrent export jobs.

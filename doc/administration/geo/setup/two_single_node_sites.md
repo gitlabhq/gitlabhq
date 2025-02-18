@@ -2,25 +2,27 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Set up Geo for two single-node sites
 ---
 
-# Set up Geo for two single-node sites
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The following guide provides concise instructions on how to deploy GitLab Geo for a two single-node site installation using two Linux package instances with no external services set up.
 
 Prerequisites:
 
 - You have at least two independently working GitLab sites.
-  To create the sites, see the [GitLab reference architectures documentation](../../reference_architectures/index.md).
+  To create the sites, see the [GitLab reference architectures documentation](../../reference_architectures/_index.md).
   - One GitLab site serves as the **Geo primary site**. You can use different reference architecture sizes for each Geo site. If you already have a working GitLab instance, you can use it as the primary site.
   - The second GitLab site serves as the **Geo secondary site**. Geo supports multiple secondary sites.
 - The Geo primary site has at least a [GitLab Premium](https://about.gitlab.com/pricing/) license.
   You need only one license for all sites.
-- Confirm all sites meet the [requirements for running Geo](../index.md#requirements-for-running-geo).
+- Confirm all sites meet the [requirements for running Geo](../_index.md#requirements-for-running-geo).
 
 ## Set up Geo for Linux package (Omnibus)
 
@@ -63,10 +65,13 @@ Prerequisites:
 
 1. Create a password for the `gitlab` database user and update Rail to use the new password.
 
-   NOTE:
+   {{< alert type="note" >}}
+
    The values configured for the `gitlab_rails['db_password']` and `postgresql['sql_user_password']` settings need to match.
    However, only the `postgresql['sql_user_password']` value should be the MD5 encrypted password.
    Changes to this are being discussed in [Rethink how we handle PostgreSQL passwords in cookbooks](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5713).
+
+   {{< /alert >}}
 
    1. Generate a MD5 hash of the desired password:
 
@@ -157,10 +162,13 @@ Prerequisites:
       private addresses (which correspond to "internal address" for Google Cloud Platform) for
       `postgresql['md5_auth_cidr_addresses']` and `postgresql['listen_address']`.
 
-      NOTE:
+      {{< alert type="note" >}}
+
       If you need to use `0.0.0.0` or `*` as the `listen_address`, you also must add
       `127.0.0.1/32` to the `postgresql['md5_auth_cidr_addresses']` setting, to allow
       Rails to connect through `127.0.0.1`. For more information, see [issue 5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
+
+      {{< /alert >}}
 
       Depending on your network configuration, the suggested addresses might
       be incorrect. If your primary and secondary sites connect over a local
@@ -355,10 +363,13 @@ The script uses the default Linux package directories.
 If you changed the defaults, replace the directory and path
 names in the script below with your own names.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Run the replication script on only the secondary site.
 The script removes all PostgreSQL data before it runs `pg_basebackup`,
 which can lead to data loss.
+
+{{< /alert >}}
 
 To replicate the database:
 
@@ -376,9 +387,12 @@ To replicate the database:
 
 1. Execute the following command to back up and restore the database, and begin the replication.
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    Each Geo secondary site must have its own unique replication slot name.
    Using the same slot name between two secondaries breaks PostgreSQL replication.
+
+   {{< /alert >}}
 
    ```shell
    gitlab-ctl replicate-geo-database \
@@ -401,10 +415,13 @@ Follow the documentation to [configure fast lookup of authorized SSH keys](../..
 
 Fast lookup is [required for Geo](../../operations/fast_ssh_key_lookup.md#fast-lookup-is-required-for-geo).
 
-NOTE:
+{{< alert type="note" >}}
+
 Authentication is handled by the primary site. Don't set up custom authentication for the secondary site.
 Any change that requires access to the **Admin** area should be made in the primary site, because the
 secondary site is a read-only copy.
+
+{{< /alert >}}
 
 ### Manually replicate secret GitLab values
 
@@ -571,7 +588,7 @@ You must manually replicate the secret file across all of your secondary sites, 
    1. Select **Geo > Sites**.
    1. Select **Add site**.
 
-      ![Add secondary site](../replication/img/adding_a_secondary_v15_8.png)
+      ![Form to add a new site with three input fields: Name, External URL, and Internal URL (optional).](../replication/img/adding_a_secondary_v15_8.png)
 
    1. In **Name**, enter the value for `gitlab_rails['geo_node_name']` in
       `/etc/gitlab/gitlab.rb`. The values must match exactly.
@@ -594,7 +611,7 @@ You must manually replicate the secret file across all of your secondary sites, 
    gitlab-rake gitlab:geo:check
    ```
 
-   If any of the checks fail, see the [troubleshooting documentation](../replication/troubleshooting/index.md).
+   If any of the checks fail, see the [troubleshooting documentation](../replication/troubleshooting/_index.md).
 
 1. To verify that the secondary site is reachable, SSH into a Rails or Sidekiq server on your primary site and sign in as root:
 
@@ -602,7 +619,7 @@ You must manually replicate the secret file across all of your secondary sites, 
    gitlab-rake gitlab:geo:check
    ```
 
-   If any of the checks fail, check the [troubleshooting documentation](../replication/troubleshooting/index.md).
+   If any of the checks fail, check the [troubleshooting documentation](../replication/troubleshooting/_index.md).
 
 After the secondary site is added to the Geo administration page and restarted,
 the site automatically starts to replicate missing data from the primary site
@@ -650,4 +667,4 @@ site **Geo Sites** dashboard in your browser.
 
 ## Related topics
 
-- [Troubleshooting Geo](../replication/troubleshooting/index.md)
+- [Troubleshooting Geo](../replication/troubleshooting/_index.md)

@@ -11,9 +11,6 @@ status: broken
 repair_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382900
 time_frame: none
 data_source: system
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

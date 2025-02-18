@@ -14,7 +14,7 @@ module WorkItems
       end
 
       def verify_can_move_work_item(work_item, target_namespace)
-        if work_item.namespace_id == target_namespace.id || work_item.project_id == target_namespace.id
+        if same_namespace?(target_namespace, work_item)
           error_message = s_('MoveWorkItem|Cannot move work item to same project or group it originates from.')
 
           return error(error_message, :unprocessable_entity)
@@ -46,6 +46,11 @@ module WorkItems
         end
 
         success({})
+      end
+
+      def same_namespace?(target_namespace, work_item)
+        (target_namespace.instance_of?(::Project) && work_item.project_id == target_namespace.id) ||
+          (work_item.namespace.instance_of?(target_namespace.class) && work_item.namespace_id == target_namespace.id)
       end
 
       def move_work_item

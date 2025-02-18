@@ -6,9 +6,6 @@ identifiers:
 product_group: anti-abuse
 milestone: '15.9'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169117
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

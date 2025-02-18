@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Merge request analytics with ClickHouse
 ---
-
-# Merge request analytics with ClickHouse
 
 The [merge request analytics feature](../../../user/analytics/merge_request_analytics.md)
 shows statistics about the merged merge requests in the project and also exposes record-level metadata.
@@ -176,9 +175,12 @@ FROM generateRandom('id UInt64, project_id UInt8, author_id UInt8, milestone_id 
 LIMIT 1000000;
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Some integer data types were cast as `UInt8` so it is highly probable that they
 have same values across different rows.
+
+{{< /alert >}}
 
 The original count query only aggregated data for one month. With ClickHouse, we can
 attempt aggregating the data for the whole year.

@@ -8,14 +8,6 @@ gitlab_schema: gitlab_main_cell
 description: An Experiment Metadata record holds extra information about the experiment
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104267
 milestone: '15.7'
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: experiment_id
-        table: ml_experiments
-        sharding_key: project_id
-        belongs_to: experiment
-desired_sharding_key_migration_job_name: BackfillMlExperimentMetadataProjectId
 table_size: small
+sharding_key:
+  project_id: projects

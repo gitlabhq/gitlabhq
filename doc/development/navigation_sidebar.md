@@ -2,9 +2,8 @@
 stage: Foundations
 group: Personal Productivity
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Navigation sidebar
 ---
-
-# Navigation sidebar
 
 Follow these guidelines when contributing additions or changes to the
 [redesigned](https://gitlab.com/groups/gitlab-org/-/epics/9044) navigation
@@ -28,17 +27,24 @@ Pages can render arbitrary content into the sidebar using the `SidebarPortal`
 component. Content passed to its default slot is rendered below that
 page's navigation items in the sidebar.
 
-NOTE:
+{{< alert type="note" >}}
+
 Only one instance of this component on a given page is supported. This is to
 avoid ordering issues and cluttering the sidebar.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 You can use arbitrary content. You should implement nav items by subclassing `::Sidebars::Panel`.
 If you must use Vue to render nav items (for example, if you need to use Vue Router) you can make an exception.
 However, in the corresponding `panel.rb` file, you must add a comment that explains how the nav items are rendered.
+{{< /alert >}}
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not use the `SidebarPortalTarget` component. It is internal to the sidebar.
+{{< /alert >}}
 
 ## Snowplow Tracking
 

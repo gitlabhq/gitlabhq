@@ -1,4 +1,4 @@
-- title: "Removal of tags from small SaaS runners on Linux"
+- title: "Removal of tags from small GitLab.com runners on Linux"
   removal_milestone: "17.0"
   announcement_milestone: "16.9"
   breaking_change: true
@@ -7,7 +7,7 @@
   issue_url: https://gitlab.com/gitlab-org/gitlab-runner/-/issues/30829
   manual_task: true
   body: |  # (required) Don't change this line.
-    Due to historical reasons, small Linux SaaS Runners had a lot of tags attached because they were used as labels. We want to streamline the tag to just use `saas-linux-small-amd64` and be consistent across all SaaS runners.
+    Due to historical reasons, small Linux GitLab.com Runners had a lot of tags attached because they were used as labels. We want to streamline the tag to just use `saas-linux-small-amd64` and be consistent across all GitLab.com runners.
 
     We are deprecating the tags: `docker`, `east-c`, `gce`, `git-annex`, `linux`, `mongo`, `mysql`, `postgres`, `ruby`, `shared`.
 

@@ -6,6 +6,9 @@ COLOR_GREEN="\e[32m"
 COLOR_YELLOW="\e[33m"
 COLOR_RESET="\e[39m"
 
+# Projects that are included on the Docs website besides gitlab
+EXTERNAL_DOCS_PROJECTS="omnibus charts runner operator"
+
 cd "$(dirname "$0")/.." || exit 1
 # shellcheck disable=2059
 printf "${COLOR_GREEN}INFO: Linting documents at path $(pwd) as $(whoami)...${COLOR_RESET}\n"
@@ -30,22 +33,6 @@ if ! scripts/lint-docs-metadata.sh
 then
   # shellcheck disable=2059
   printf "${COLOR_RED}ERROR: These documentation pages need front matter!${COLOR_RESET}"
-  ((ERRORCODE++))
-fi
-
-# Test for non-standard spaces (NBSP, NNBSP, ZWSP) in documentation.
-# shellcheck disable=2059
-printf "${COLOR_GREEN}INFO: Checking for non-standard spaces...${COLOR_RESET}\n"
-if grep --extended-regexp --binary-file=without-match --recursive '[  ​]' doc/ >/dev/null 2>&1;
-then
-  # shellcheck disable=2059
-  printf "${COLOR_RED}ERROR: Non-standard spaces (NBSP, NNBSP, ZWSP) should not be used in documentation!${COLOR_RESET}"
-  printf " https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#spaces-between-words\n"
-  printf "Replace with standard spaces:\n" >&2
-  # Find the spaces, then add color codes with sed to highlight each NBSP or NNBSP in the output.
-  # shellcheck disable=SC1018
-  grep --extended-regexp --binary-file=without-match --recursive --color=auto '[  ]' doc \
-       | sed -e ''/ /s//"$(printf "\033[0;101m \033[0m")"/'' -e ''/ /s//"$(printf "\033[0;101m \033[0m")"/''
   ((ERRORCODE++))
 fi
 
@@ -201,7 +188,7 @@ function run_locally_or_in_container() {
   local cmd=$1
   local args=$2
   local files=$3
-  local registry_url="registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.20-vale-3.7.1-markdownlint2-0.14.0-lychee-0.15.1"
+  local registry_url="registry.gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/lint-markdown:alpine-3.20-vale-3.9.3-markdownlint2-0.17.1-lychee-0.15.1"
 
   if hash "${cmd}" 2>/dev/null
   then
@@ -252,6 +239,19 @@ fi
 # shellcheck disable=2059
 printf "${COLOR_GREEN}INFO: Looking for Vale to lint prose, either installed locally or available in documentation linting image...${COLOR_RESET}\n"
 run_locally_or_in_container 'vale' "--minAlertLevel error --output=doc/.vale/vale.tmpl" "${MD_DOC_PATH_VALE}"
+
+# Check for restricted directory names that would conflict with other project's docs
+# shellcheck disable=2059
+printf "${COLOR_GREEN}INFO: Checking for restricted directory names...${COLOR_RESET}\n"
+for dir in $EXTERNAL_DOCS_PROJECTS; do
+  if [ -d "doc/$dir" ]; then
+    # shellcheck disable=2059
+    printf "${COLOR_RED}ERROR: Found restricted directory name '${dir}' in doc/ directory.${COLOR_RESET}\n"
+    printf "This directory name conflicts with existing documentation repositories.\n" >&2
+    ((ERRORCODE++))
+    break
+  fi
+done
 
 if [ "$ERRORCODE" -ne 0 ]
 then

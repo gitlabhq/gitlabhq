@@ -1,0 +1,9 @@
+---
+name: change_ci_enabled_hurestic
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/505851
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180183
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517272
+milestone: '17.9'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

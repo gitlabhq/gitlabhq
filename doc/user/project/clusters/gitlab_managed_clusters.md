@@ -2,23 +2,31 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab-managed clusters (deprecated)
 ---
 
-# GitLab-managed clusters (deprecated)
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
 
-> - [Disabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
+{{< /details >}}
 
-WARNING:
+> - [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-To connect your cluster to GitLab, use the [GitLab agent](../../../user/clusters/agent/index.md).
-To manage applications, use the [Cluster Project Management Template](../../../user/clusters/management_project_template.md).
+To connect your cluster to GitLab, use the [GitLab agent](../../clusters/agent/_index.md).
+To manage applications, use the [Cluster Project Management Template](../../clusters/management_project_template.md).
 
-FLAG:
+{{< /alert >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `certificate_based_clusters`.
+
+{{< /alert >}}
 
 You can choose to allow GitLab to manage your cluster for you. If your cluster
 is managed by GitLab, resources for your projects are automatically created. See
@@ -26,14 +34,17 @@ the [Access controls](cluster_access.md) section for
 details about the created resources.
 
 If you choose to manage your own cluster, project-specific resources aren't created
-automatically. If you are using [Auto DevOps](../../../topics/autodevops/index.md), you must
+automatically. If you are using [Auto DevOps](../../../topics/autodevops/_index.md), you must
 explicitly provide the `KUBE_NAMESPACE` [deployment variable](deploy_to_cluster.md#deployment-variables)
 for your deployment jobs to use. Otherwise, a namespace is created for you.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Be aware that manually managing resources that have been created by GitLab, like
 namespaces and service accounts, can cause unexpected errors. If this occurs, try
 [clearing the cluster cache](#clearing-the-cluster-cache).
+
+{{< /alert >}}
 
 ## Clearing the cluster cache
 
@@ -51,7 +62,7 @@ To clear the cache:
 ## Base domain
 
 Specifying a base domain automatically sets `KUBE_INGRESS_BASE_DOMAIN` as an deployment variable.
-If you are using [Auto DevOps](../../../topics/autodevops/index.md), this domain is used for the different
+If you are using [Auto DevOps](../../../topics/autodevops/_index.md), this domain is used for the different
 stages. For example, Auto Review Apps and Auto Deploy.
 
 The domain should have a wildcard DNS configured to the Ingress IP address.

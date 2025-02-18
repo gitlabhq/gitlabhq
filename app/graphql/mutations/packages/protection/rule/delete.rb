@@ -18,7 +18,6 @@ module Mutations
           field :package_protection_rule,
             Types::Packages::Protection::RuleType,
             null: true,
-            experiment: { milestone: '16.6' },
             description: 'Packages protection rule that was deleted successfully.'
 
           def resolve(id:, **_kwargs)

@@ -109,7 +109,7 @@ module Sidebars
         end
 
         def service_desk_menu_item
-          return ::Sidebars::NilMenuItem.new(item_id: :service_desk) unless context.project.service_desk_enabled?
+          return ::Sidebars::NilMenuItem.new(item_id: :service_desk) unless ::ServiceDesk.enabled?(context.project)
 
           ::Sidebars::MenuItem.new(
             title: _('Service Desk'),

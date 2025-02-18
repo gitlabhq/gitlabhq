@@ -80,6 +80,12 @@ module GraphqlTriggers
       :issuable_todo_updated, { issuable_id: issuable.to_gid }, issuable
     )
   end
+
+  def self.user_merge_request_updated(user, merge_request)
+    return unless Feature.enabled?(:merge_request_dashboard_realtime, user, type: :wip)
+
+    GitlabSchema.subscriptions.trigger(:user_merge_request_updated, { user_id: user.to_gid }, merge_request)
+  end
 end
 
 GraphqlTriggers.prepend_mod

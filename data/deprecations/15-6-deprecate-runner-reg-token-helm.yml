@@ -12,10 +12,10 @@
   manual_task: true
   window: "1"
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    The [`runnerRegistrationToken`](https://docs.gitlab.com/runner/install/kubernetes.html) parameter to use the GitLab Helm Chart to install a runner on Kubernetes is deprecated.
+    The [`runnerRegistrationToken`](https://docs.gitlab.com/runner/install/kubernetes/) parameter to use the GitLab Helm Chart to install a runner on Kubernetes is deprecated.
 
     We plan to implement a new method to bind runners to a GitLab instance leveraging `runnerToken`
-    as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html).
+    as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ci/runners/new_creation_workflow/).
     The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 
     From GitLab 18.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.

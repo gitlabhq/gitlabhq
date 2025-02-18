@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.shared_examples 'a permitted attribute' do |relation_sym, permitted_attributes, additional_attributes = []|
   let(:prohibited_attributes) { %w[remote_url my_attributes my_ids token my_id test] }
 

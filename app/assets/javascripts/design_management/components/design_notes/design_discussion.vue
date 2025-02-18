@@ -361,7 +361,7 @@ export default {
       <li
         v-show="isReplyPlaceholderVisible"
         class="reply-wrapper discussion-reply-holder"
-        :class="{ 'gl-bg-gray-10': !isLoggedIn }"
+        :class="{ 'gl-bg-subtle': !isLoggedIn }"
       >
         <template v-if="!isLoggedIn">
           <design-note-signed-out :register-path="registerPath" :sign-in-path="signInPath" />

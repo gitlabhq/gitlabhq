@@ -55,7 +55,7 @@ describe('VisibilityLevel', () => {
   it('renders label description with link to docs', () => {
     expect(wrapper.text()).toContain('Who can see this organization?');
     expect(findHelpPageLink().props()).toEqual({
-      href: 'user/organization/index',
+      href: 'user/organization/_index',
       anchor: 'view-an-organizations-visibility-level',
     });
     expect(findHelpPageLink().text()).toBe('Learn more about visibility levels');

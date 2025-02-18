@@ -3,6 +3,7 @@ import { GlBadge, GlLink } from '@gitlab/ui';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
+import featureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -11,6 +12,7 @@ export default {
     GlBadge,
     GlLink,
   },
+  mixins: [featureFlagMixin()],
   props: {
     blob: {
       type: Object,
@@ -64,7 +66,7 @@ export default {
       <component
         :is="showAsLink ? 'gl-link' : 'strong'"
         v-bind="linkHref"
-        class="file-title-name mr-1 js-blob-header-filepath gl-break-all gl-font-bold"
+        class="file-title-name js-blob-header-filepath gl-mr-1 gl-break-all gl-font-bold gl-text-strong"
         :class="{ '!gl-text-blue-700 hover:gl-cursor-pointer': showAsLink }"
         data-testid="file-title-content"
         >{{ fileName }}</component
@@ -72,6 +74,7 @@ export default {
     </template>
 
     <clipboard-button
+      v-if="!glFeatures.blobOverflowMenu"
       :text="blob.path"
       :gfm="gfmCopyText"
       :title="__('Copy file path')"
@@ -79,7 +82,7 @@ export default {
       css-class="gl-mr-2"
     />
 
-    <small v-if="showBlobSize" class="gl-mr-3">{{ blobSize }}</small>
+    <small v-if="showBlobSize" class="gl-mr-3 gl-text-subtle">{{ blobSize }}</small>
 
     <gl-badge v-if="showLfsBadge">{{ __('LFS') }}</gl-badge>
   </div>

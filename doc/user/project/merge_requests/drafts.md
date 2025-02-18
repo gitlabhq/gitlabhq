@@ -2,14 +2,16 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Prevent an incomplete merge request from merging until it's ready by setting it as a draft."
+description: Prevent an incomplete merge request from merging until it's ready by setting it as a draft.
+title: Draft merge requests
 ---
 
-# Draft merge requests
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If a merge request isn't ready to merge, you can block it from merging until you
 [mark it as ready](#mark-merge-requests-as-ready). Merge requests marked as **Draft**
@@ -19,13 +21,17 @@ cannot merge until you remove the **Draft** flag, even if they meet all other me
 
 ## Mark merge requests as drafts
 
-> - `/draft` quick action as a toggle [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92654) in GitLab 15.4.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108073) the draft status to use a checkbox in GitLab 15.8.
+{{< history >}}
+
+- `/draft` quick action as a toggle [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92654) in GitLab 15.4.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108073) the draft status to use a checkbox in GitLab 15.8.
+
+{{< /history >}}
 
 You can flag a merge request as a draft in several ways:
 
 - **Viewing a merge request**: In the upper-right corner of the merge request,
-  select **Merge request actions** (**{ellipsis_v}**), then **Mark as draft**.
+  select **Merge request actions** ({{< icon name="ellipsis_v" >}}), then **Mark as draft**.
 - **Creating or editing a merge request**: Add `[Draft]`, `Draft:` or `(Draft)` to
   the beginning of the merge request's title, or select **Mark as draft**
   below the **Title** field.

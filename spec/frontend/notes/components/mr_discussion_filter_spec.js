@@ -1,8 +1,8 @@
-import { mount } from '@vue/test-utils';
 import { GlCollapsibleListbox, GlListboxItem, GlButton } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import DiscussionFilter from '~/notes/components/mr_discussion_filter.vue';
 import {
@@ -39,13 +39,13 @@ describe('Merge request discussion filter component', () => {
       },
     });
 
-    wrapper = mount(DiscussionFilter, {
+    wrapper = mountExtended(DiscussionFilter, {
       store,
     });
   }
 
   function findDropdownItem({ value }) {
-    return wrapper.findComponent(GlCollapsibleListbox).find(`[data-testid=listbox-item-${value}]`);
+    return wrapper.findComponentByTestId(`listbox-item-${value}`);
   }
 
   afterEach(() => {
@@ -179,6 +179,33 @@ describe('Merge request discussion filter component', () => {
 
         expect(trackingSpy).toHaveBeenCalledTimes(1);
         expect(trackingSpy).toHaveBeenCalledWith(undefined, trackingEvent, expect.any(Object));
+      },
+    );
+  });
+
+  describe('sort direction button', () => {
+    beforeEach(createComponent);
+
+    it.each`
+      sortOrder | expectedTitle                   | expectedIcon
+      ${'asc'}  | ${'Sort direction: Ascending'}  | ${'sort-lowest'}
+      ${'desc'} | ${'Sort direction: Descending'} | ${'sort-highest'}
+    `(
+      'has the correct attributes and props when the sort-order is "$sortOrder"',
+      async ({ sortOrder, expectedTitle, expectedIcon }) => {
+        store.state.notes.discussionSortOrder = sortOrder;
+        await nextTick();
+
+        const sortDirectionButton = wrapper.findByTestId('mr-discussion-sort-direction');
+
+        expect(sortDirectionButton.attributes()).toMatchObject({
+          title: expectedTitle,
+          'aria-label': expectedTitle,
+        });
+
+        expect(sortDirectionButton.props()).toMatchObject({
+          icon: expectedIcon,
+        });
       },
     );
   });

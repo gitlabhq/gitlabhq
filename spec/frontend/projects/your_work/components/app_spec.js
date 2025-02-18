@@ -39,6 +39,10 @@ import { createAlert } from '~/alert';
 import { ACCESS_LEVEL_OWNER_INTEGER } from '~/access_level/constants';
 import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '~/graphql_shared/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import {
+  TIMESTAMP_TYPE_CREATED_AT,
+  TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
+} from '~/vue_shared/components/resource_lists/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { programmingLanguages } from './mock_data';
@@ -78,7 +82,7 @@ describe('YourWorkProjectsApp', () => {
     },
   });
 
-  const createComponent = ({
+  const createComponent = async ({
     projectsCountHandler = successHandler,
     userPreferencesUpdateHandler = userPreferencesUpdateSuccessHandler,
     route = defaultRoute,
@@ -88,7 +92,7 @@ describe('YourWorkProjectsApp', () => {
       [userPreferencesUpdateMutation, userPreferencesUpdateHandler],
     ]);
     router = createRouter();
-    router.push(route);
+    await router.push(route);
 
     wrapper = mountExtended(YourWorkProjectsApp, {
       apolloProvider: mockApollo,
@@ -116,18 +120,15 @@ describe('YourWorkProjectsApp', () => {
 
   describe('template', () => {
     describe('when project counts are loading', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('does not show count badges', () => {
+      it('does not show count badges', async () => {
+        await createComponent();
         expect(wrapper.findComponent(GlBadge).exists()).toBe(false);
       });
     });
 
     describe('when project counts are successfully retrieved', () => {
       beforeEach(async () => {
-        createComponent();
+        await createComponent();
         await waitForPromises();
       });
 
@@ -144,7 +145,7 @@ describe('YourWorkProjectsApp', () => {
       const error = new Error();
 
       beforeEach(async () => {
-        createComponent({ projectsCountHandler: jest.fn().mockRejectedValue(error) });
+        await createComponent({ projectsCountHandler: jest.fn().mockRejectedValue(error) });
         await waitForPromises();
       });
 
@@ -165,8 +166,8 @@ describe('YourWorkProjectsApp', () => {
       expect(findActiveTab().text()).toContain('Contributed');
     });
 
-    it('renders filtered search bar with correct props', () => {
-      createComponent();
+    it('renders filtered search bar with correct props', async () => {
+      await createComponent();
 
       expect(findFilteredSearchAndSort().props()).toMatchObject({
         filteredSearchTokens: [
@@ -208,10 +209,13 @@ describe('YourWorkProjectsApp', () => {
     });
 
     describe('when filtered search bar is submitted', () => {
-      beforeEach(() => {
-        createComponent();
+      beforeEach(async () => {
+        await createComponent();
 
-        findFilteredSearchAndSort().vm.$emit('filter', { [FILTERED_SEARCH_TERM_KEY]: searchTerm });
+        findFilteredSearchAndSort().vm.$emit('filter', {
+          [FILTERED_SEARCH_TERM_KEY]: searchTerm,
+        });
+        await waitForPromises();
       });
 
       it('updates query string', () => {
@@ -221,7 +225,7 @@ describe('YourWorkProjectsApp', () => {
 
     describe('when sort is changed', () => {
       beforeEach(async () => {
-        createComponent({
+        await createComponent({
           route: {
             ...defaultRoute,
             query: {
@@ -255,7 +259,7 @@ describe('YourWorkProjectsApp', () => {
 
     describe('when sort direction is changed', () => {
       beforeEach(async () => {
-        createComponent({
+        await createComponent({
           route: {
             ...defaultRoute,
             query: {
@@ -292,7 +296,7 @@ describe('YourWorkProjectsApp', () => {
     const error = new Error();
 
     beforeEach(async () => {
-      createComponent({ userPreferencesUpdateHandler: jest.fn().mockRejectedValue(error) });
+      await createComponent({ userPreferencesUpdateHandler: jest.fn().mockRejectedValue(error) });
 
       findFilteredSearchAndSort().vm.$emit('sort-by-change', SORT_OPTION_UPDATED.value);
       await waitForPromises();
@@ -323,8 +327,8 @@ describe('YourWorkProjectsApp', () => {
       [QUERY_PARAM_START_CURSOR]: mockStartCursor,
     };
 
-    beforeEach(() => {
-      createComponent({
+    beforeEach(async () => {
+      await createComponent({
         route: { name, query },
       });
     });
@@ -353,8 +357,8 @@ describe('YourWorkProjectsApp', () => {
 
   describe('onTabUpdate', () => {
     describe('when tab is already active', () => {
-      beforeEach(() => {
-        createComponent();
+      beforeEach(async () => {
+        await createComponent();
         router.push = jest.fn();
       });
 
@@ -368,8 +372,8 @@ describe('YourWorkProjectsApp', () => {
     });
 
     describe('when tab is a valid tab', () => {
-      beforeEach(() => {
-        createComponent();
+      beforeEach(async () => {
+        await createComponent();
         router.push = jest.fn();
       });
 
@@ -383,8 +387,8 @@ describe('YourWorkProjectsApp', () => {
     });
 
     describe('when tab is an invalid tab', () => {
-      beforeEach(() => {
-        createComponent();
+      beforeEach(async () => {
+        await createComponent();
         router.push = jest.fn();
       });
 
@@ -398,9 +402,9 @@ describe('YourWorkProjectsApp', () => {
     });
 
     describe('when gon.relative_url_root is set', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         gon.relative_url_root = '/gitlab';
-        createComponent();
+        await createComponent();
         router.push = jest.fn();
       });
 
@@ -409,7 +413,14 @@ describe('YourWorkProjectsApp', () => {
 
         await nextTick();
 
-        expect(router.options.base).toBe('/gitlab');
+        if (router.options.base) {
+          // Vue router 3
+          expect(router.options.base).toBe('/gitlab');
+        } else {
+          // Vue router 4
+          expect(router.currentRoute.href).toBe('/gitlab/');
+        }
+
         expect(router.push).toHaveBeenCalledWith({ name: PROJECT_DASHBOARD_TABS[3].value });
       });
     });
@@ -418,7 +429,7 @@ describe('YourWorkProjectsApp', () => {
   describe('when page is changed', () => {
     describe('when going to next page', () => {
       beforeEach(async () => {
-        createComponent({
+        await createComponent({
           route: defaultRoute,
         });
 
@@ -429,6 +440,8 @@ describe('YourWorkProjectsApp', () => {
           startCursor: null,
           hasPreviousPage: true,
         });
+
+        await waitForPromises();
       });
 
       it('sets `end_cursor` query string', () => {
@@ -440,7 +453,7 @@ describe('YourWorkProjectsApp', () => {
 
     describe('when going to previous page', () => {
       beforeEach(async () => {
-        createComponent({
+        await createComponent({
           route: {
             ...defaultRoute,
             query: {
@@ -464,6 +477,33 @@ describe('YourWorkProjectsApp', () => {
           start_cursor: mockStartCursor,
         });
       });
+    });
+  });
+
+  describe.each`
+    sort                      | expectedTimestampType
+    ${'name_asc'}             | ${TIMESTAMP_TYPE_CREATED_AT}
+    ${'name_desc'}            | ${TIMESTAMP_TYPE_CREATED_AT}
+    ${'created_asc'}          | ${TIMESTAMP_TYPE_CREATED_AT}
+    ${'created_desc'}         | ${TIMESTAMP_TYPE_CREATED_AT}
+    ${'latest_activity_asc'}  | ${TIMESTAMP_TYPE_LAST_ACTIVITY_AT}
+    ${'latest_activity_desc'} | ${TIMESTAMP_TYPE_LAST_ACTIVITY_AT}
+    ${'stars_asc'}            | ${TIMESTAMP_TYPE_CREATED_AT}
+    ${'stars_desc'}           | ${TIMESTAMP_TYPE_CREATED_AT}
+  `('when sort is $sort', ({ sort, expectedTimestampType }) => {
+    beforeEach(async () => {
+      await createComponent({
+        route: {
+          ...defaultRoute,
+          query: {
+            sort,
+          },
+        },
+      });
+    });
+
+    it('correctly passes timestampType prop to TabView component', () => {
+      expect(findTabView().props('timestampType')).toBe(expectedTimestampType);
     });
   });
 });

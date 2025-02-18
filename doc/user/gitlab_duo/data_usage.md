@@ -1,11 +1,10 @@
 ---
 stage: AI-powered
 group: AI Model Validation
-description: AI-powered features and functionality.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: AI-powered features and functionality.
+title: GitLab Duo data usage
 ---
-
-# GitLab Duo data usage
 
 GitLab Duo uses generative AI to help increase your velocity and make you more productive. Each AI-powered feature operates independently and is not required for other features to function.
 
@@ -31,16 +30,16 @@ GitLab has arranged zero-day data retention with Anthropic, Fireworks AI, and Go
 
 All of these AI providers are under data protection agreements with GitLab that prohibit the use of Customer Content for their own purposes, except to perform their independent legal obligations.
 
-GitLab Duo Chat retains chat history to help you return quickly to previously discussed topics. You can delete chats in the GitLab Duo Chat interface. GitLab does not otherwise retain input and output data unless customers provide consent through a GitLab [Support Ticket](https://about.gitlab.com/support/portal/). Learn more about [AI feature logging](../../administration/logs/index.md).
+GitLab Duo Chat retains chat history to help you return quickly to previously discussed topics. You can delete chats in the GitLab Duo Chat interface. GitLab does not otherwise retain input and output data unless customers provide consent through a GitLab [Support Ticket](https://about.gitlab.com/support/portal/). Learn more about [AI feature logging](../../administration/logs/_index.md).
 
 ## Training data
 
-GitLab does not train generative AI models based on private (non-public) data. The vendors we work with also do not train models based on private data.
+GitLab does not train generative AI models.
 
 For more information on our AI [sub-processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors), see:
 
 - Google Vertex AI models API [data governance](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance), [responsible AI](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/responsible-ai), [details about foundation model training](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance#foundation_model_training), Google [Secure AI Framework (SAIF)](https://safety.google/cybersecurity-advancements/saif/), and [release notes](https://cloud.google.com/vertex-ai/docs/release-notes).
-- Anthropic Claude's [constitution](https://www.anthropic.com/news/claudes-constitution), training data [FAQ](https://support.anthropic.com/en/articles/7996885-how-do-you-use-personal-data-in-model-training), [models overview](https://docs.anthropic.com/claude/docs/models-overview), and [data recency article](https://support.anthropic.com/en/articles/8114494-how-up-to-date-is-claude-s-training-data).
+- Anthropic Claude's [constitution](https://www.anthropic.com/news/claudes-constitution), training data [FAQ](https://support.anthropic.com/en/articles/7996885-how-do-you-use-personal-data-in-model-training), [models overview](https://docs.anthropic.com/en/docs/about-claude/models), and [data recency article](https://support.anthropic.com/en/articles/8114494-how-up-to-date-is-claude-s-training-data).
 
 ## Telemetry
 
@@ -71,3 +70,21 @@ Generative AI may produce unexpected results that may be:
 - Out of date information
 
 GitLab is actively iterating on all our AI-assisted capabilities to improve the quality of the generated content. We improve the quality through prompt engineering, evaluating new AI/ML models to power these features, and through novel heuristics built into these features directly.
+
+## Secret detection and redaction
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/632) in GitLab 17.9.
+
+{{< /history >}}
+
+GitLab Duo includes secret detection and redaction, powered by Gitleaks. It automatically
+detects and removes sensitive information like API keys, credentials, and tokens from your
+code before processing it with large language models. This security feature is particularly
+important for compliance with data protection regulations, like GDPR.
+
+Your code goes through a pre-scan security workflow when using GitLab Duo:
+
+1. Your code is scanned for sensitive information using Gitleaks.
+1. Any detected secrets are automatically removed from the request.

@@ -63,7 +63,8 @@ module ServiceDesk
         # so all reply by email features work as expected.
         # Using the Service Desk alias address generated from `service_desk_email`
         # doesn't allow to ingest email replies, so we'd always add a new issue.
-        addresses_from_headers.include?(project.service_desk_alias_address)
+        alias_address = ::ServiceDesk::Emails.new(project).alias_address
+        addresses_from_headers.include?(alias_address)
       end
 
       def incorrect_from?

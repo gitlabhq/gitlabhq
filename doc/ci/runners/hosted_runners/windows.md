@@ -2,14 +2,16 @@
 stage: Verify
 group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Hosted runners on Windows
 ---
 
-# Hosted runners on Windows
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
-**Status:** Beta
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+- Status: Beta
+
+{{< /details >}}
 
 Hosted runners on Windows autoscale by launching virtual machines on
 the Google Cloud Platform. This solution uses an
@@ -33,7 +35,7 @@ GitLab offers the following machine type for hosted runners on Windows.
 ## Supported Windows versions
 
 The Windows runner virtual machine instances do not use the GitLab Docker executor. This means that you can't specify
-[`image`](../../../ci/yaml/index.md#image) or [`services`](../../../ci/yaml/index.md#services) in your pipeline configuration.
+[`image`](../../yaml/_index.md#image) or [`services`](../../yaml/_index.md#services) in your pipeline configuration.
 
 You can execute your job in one of the following Windows versions:
 

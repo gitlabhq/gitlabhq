@@ -8,6 +8,7 @@
 extends: substitution
 message: "Use '%s' instead of '%s'."
 link: https://handbook.gitlab.com/handbook/communication/top-misused-terms/
+vocab: false
 level: error
 action:
   name: replace
@@ -31,12 +32,12 @@ swap:
   developer permissions: the Developer role
   disallow: prevent
   frontmatter: front matter
-  GitLab self hosted: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
-  GitLab self-hosted: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
+  GitLab self hosted: GitLab Self-Managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
+  GitLab self-hosted: GitLab Self-Managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
   GitLabber: GitLab team member
   GitLabbers: GitLab team members
   GitLab-shell: GitLab Shell
-  gitlab omnibus: Linux package
+  gitlab omnibus(?! builder): "Linux package"
   golang: Go
   guest access: the Guest role
   guest permission: the Guest role
@@ -60,8 +61,8 @@ swap:
   reporter permission: the Reporter role
   reporter permissions: the Reporter role
   rubocop: RuboCop
-  self hosted GitLab: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
-  self-hosted GitLab: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
+  self hosted GitLab: GitLab Self-Managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
+  self-hosted GitLab: GitLab Self-Managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
   styleguide: style guide
   the administrator access level: administrator access
   to login: to log in

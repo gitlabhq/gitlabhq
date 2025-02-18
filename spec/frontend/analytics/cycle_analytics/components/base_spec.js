@@ -11,6 +11,7 @@ import StageTable from '~/analytics/cycle_analytics/components/stage_table.vue';
 import ValueStreamFilters from '~/analytics/cycle_analytics/components/value_stream_filters.vue';
 import { NOT_ENOUGH_DATA_ERROR } from '~/analytics/cycle_analytics/constants';
 import initState from '~/analytics/cycle_analytics/store/state';
+import { filterParams } from '~/analytics/cycle_analytics/store/getters';
 import {
   transformedProjectStagePathData,
   selectedStage,
@@ -26,7 +27,7 @@ const selectedStageEvents = issueEvents.events;
 const noDataSvgPath = 'path/to/no/data';
 const noAccessSvgPath = 'path/to/no/access';
 const selectedStageCount = stageCounts[selectedStage.id];
-const namespaceRestApiRequestPath = 'full/path/to/foo';
+const namespaceRestApiRequestPath = 'rest/full/path/to/foo';
 
 Vue.use(Vuex);
 
@@ -40,7 +41,13 @@ const defaultState = {
   createdAfter,
   stageCounts,
   groupPath,
-  namespace: { restApiRequestPath: namespaceRestApiRequestPath },
+  namespace: { restApiRequestPath: namespaceRestApiRequestPath, path },
+  filters: {
+    authors: {},
+    milestones: {},
+    assignees: {},
+    labels: {},
+  },
 };
 
 function createStore({ initialState = {}, initialGetters = {} }) {
@@ -52,10 +59,7 @@ function createStore({ initialState = {}, initialGetters = {} }) {
     },
     getters: {
       pathNavigationData: () => transformedProjectStagePathData,
-      filterParams: () => ({
-        created_after: createdAfter,
-        created_before: createdBefore,
-      }),
+      filterParams,
       ...initialGetters,
     },
   });
@@ -102,10 +106,24 @@ describe('Value stream analytics component', () => {
     expect(findOverviewMetrics().exists()).toBe(true);
   });
 
+  it('sets the request params for the metrics component', () => {
+    expect(findOverviewMetrics().props('requestParams')).toMatchObject({
+      assigneeUsernames: null,
+      authorUsername: null,
+      milestoneTitle: null,
+      labelNames: null,
+      endDate: '2019-01-14',
+      startDate: '2018-12-15',
+    });
+  });
+
   it('passes relevant props to the metrics component', () => {
-    expect(findOverviewMetrics().props('isLicensed')).toBe(false);
-    expect(findOverviewMetrics().props('queryType')).toBe('FLOW_METRICS_QUERY_TYPE');
-    expect(findOverviewMetrics().props('isProjectNamespace')).toBe(true);
+    expect(findOverviewMetrics().props()).toMatchObject({
+      requestPath: path,
+      isLicensed: false,
+      queryType: 'FLOW_METRICS_QUERY_TYPE',
+      isProjectNamespace: true,
+    });
   });
 
   it('renders the stage table', () => {
@@ -169,7 +187,7 @@ describe('Value stream analytics component', () => {
     it('renders a link to the value streams dashboard using the namespace path', () => {
       expect(findOverviewMetrics().props('dashboardsPath')).toBeDefined();
       expect(findOverviewMetrics().props('dashboardsPath')).toBe(
-        '/full/path/to/foo/-/analytics/dashboards/value_streams_dashboard',
+        '/rest/full/path/to/foo/-/analytics/dashboards/value_streams_dashboard',
       );
     });
   });

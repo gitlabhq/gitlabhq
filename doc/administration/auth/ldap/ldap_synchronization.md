@@ -2,15 +2,17 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: LDAP synchronization
 ---
 
-# LDAP synchronization
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-If you have [configured LDAP to work with GitLab](index.md), GitLab can automatically synchronize
+{{< /details >}}
+
+If you have [configured LDAP to work with GitLab](_index.md), GitLab can automatically synchronize
 users and groups.
 
 LDAP synchronization updates user and group information for existing GitLab users that have an LDAP identity assigned. It does not create new GitLab users through LDAP.
@@ -37,7 +39,11 @@ You must consider your LDAP server's rate limits when configuring LDAP synchroni
 
 ## User sync
 
-> - Preventing LDAP user's profile name synchronization [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11336) in GitLab 15.11.
+{{< history >}}
+
+- Preventing LDAP user's profile name synchronization [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11336) in GitLab 15.11.
+
+{{< /history >}}
 
 Once per day, GitLab runs a worker to check and update GitLab
 users against LDAP.
@@ -62,13 +68,16 @@ For more information, see [Bitmask Searches in LDAP](https://ctovswild.com/2009/
 The process also updates the following user information:
 
 - Name. Because of a [sync issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342598), `name` is not synchronized if
-  [**Prevent users from changing their profile name**](../../../administration/settings/account_and_limit_settings.md#disable-user-profile-name-changes) is enabled or `sync_name` is set to `false`.
+  [**Prevent users from changing their profile name**](../../settings/account_and_limit_settings.md#disable-user-profile-name-changes) is enabled or `sync_name` is set to `false`.
 - Email address.
 - SSH public keys if `sync_ssh_keys` is set.
 - Kerberos identity if Kerberos is enabled.
 
-NOTE:
+{{< alert type="note" >}}
+
 If your LDAP server has a rate limit, that limit might be reached during the user sync process. Check the [rate limit documentation](#ldap-servers-with-rate-limits) for more information.
+
+{{< /alert >}}
 
 ### Synchronize LDAP user's profile name
 
@@ -76,9 +85,9 @@ By default, GitLab synchronizes the LDAP user's profile name field.
 
 To prevent this synchronization, you can set `sync_name` to `false`.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -96,7 +105,9 @@ To prevent this synchronization, you can set `sync_name` to `false`.
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -121,7 +132,9 @@ To prevent this synchronization, you can set `sync_name` to `false`.
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -144,7 +157,9 @@ To prevent this synchronization, you can set `sync_name` to `false`.
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -166,7 +181,9 @@ To prevent this synchronization, you can set `sync_name` to `false`.
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Blocked users
 
@@ -184,9 +201,12 @@ A blocked user is unblocked when they sign in with LDAP if all of the following 
 
 **All users** are blocked if the LDAP server is unavailable when an LDAP user synchronization is run.
 
-NOTE:
+{{< alert type="note" >}}
+
 If all users are blocked due to the LDAP server not being available when an LDAP user synchronization is run,
 a subsequent LDAP user synchronization does not automatically unblock those users.
+
+{{< /alert >}}
 
 ## Group sync
 
@@ -205,12 +225,15 @@ be available to GitLab. For example, `group_base` could be
 `ou=groups,dc=example,dc=com`. In the configuration file, it looks like the
 following.
 
-NOTE:
+{{< alert type="note" >}}
+
 If your LDAP server has a rate limit, that limit might be reached during the group sync process. Check the [rate limit documentation](#ldap-servers-with-rate-limits) for more information.
 
-::Tabs
+{{< /alert >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -228,7 +251,9 @@ If your LDAP server has a rate limit, that limit might be reached during the gro
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -253,7 +278,9 @@ If your LDAP server has a rate limit, that limit might be reached during the gro
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -276,7 +303,9 @@ If your LDAP server has a rate limit, that limit might be reached during the gro
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -298,14 +327,19 @@ If your LDAP server has a rate limit, that limit might be reached during the gro
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 To take advantage of group sync, group Owners or users with the [Maintainer role](../../../user/permissions.md) must
 [create one or more LDAP group links](../../../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
-NOTE:
+{{< alert type="note" >}}
+
 If you frequently experience connection issues between your LDAP server and GitLab instance, try reducing the frequency with which GitLab performs an LDAP group sync by
 [setting the group sync worker interval](#adjust-ldap-group-sync-schedule) to be greater than the 1 hour default.
+
+{{< /alert >}}
 
 ### Add group links
 
@@ -319,16 +353,19 @@ administrators. Specify a group CN for `admin_group` and all members of the
 LDAP group are given administrator privileges. The configuration looks
 like the following.
 
-NOTE:
+{{< alert type="note" >}}
+
 Administrators are not synced unless `group_base` is also
 specified alongside `admin_group`. Also, only specify the CN of the `admin_group`,
 as opposed to the full DN.
 Additionally, if an LDAP user has an `admin` role, but is not a member of the `admin_group`
 group, GitLab revokes their `admin` role when syncing.
 
-::Tabs
+{{< /alert >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -347,7 +384,9 @@ group, GitLab revokes their `admin` role when syncing.
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -373,7 +412,9 @@ group, GitLab revokes their `admin` role when syncing.
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -397,7 +438,9 @@ group, GitLab revokes their `admin` role when syncing.
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -420,7 +463,9 @@ group, GitLab revokes their `admin` role when syncing.
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Global group memberships lock
 
@@ -437,7 +482,7 @@ When global group memberships lock is enabled:
 
 To enable global group memberships lock:
 
-1. [Configure LDAP](index.md#configure-ldap).
+1. [Configure LDAP](_index.md#configure-ldap).
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
@@ -449,7 +494,7 @@ By default, group members with the Owner role can manage [LDAP group synchroniza
 
 GitLab administrators can remove this permission from group Owners:
 
-1. [Configure LDAP](index.md#configure-ldap).
+1. [Configure LDAP](_index.md#configure-ldap).
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
@@ -463,13 +508,13 @@ When **Allow group owners to manage LDAP-related settings** is disabled:
 ### External groups
 
 Using the `external_groups` setting allows you to mark all users belonging
-to these groups as [external users](../../../administration/external_users.md).
+to these groups as [external users](../../external_users.md).
 Group membership is checked periodically through the `LdapGroupSync` background
 task.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -487,7 +532,9 @@ task.
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -512,7 +559,9 @@ task.
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -535,7 +584,9 @@ task.
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -557,17 +608,19 @@ task.
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### GitLab Duo add-on for groups
 
-The `duo_add_on_groups` setting automatically [manages Duo add-on seats](../../../administration/duo_add_on_seat_management_with_ldap.md) for users who authenticate through LDAP. This feature helps organizations to streamline their **GitLab Duo** seat allocation process based on LDAP group memberships.
+The `duo_add_on_groups` setting automatically [manages Duo add-on seats](../../duo_add_on_seat_management_with_ldap.md) for users who authenticate through LDAP. This feature helps organizations to streamline their **GitLab Duo** seat allocation process based on LDAP group memberships.
 
 To enable add-on seat management for groups, you must configure the `duo_add_on_groups` setting in your GitLab instance:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -585,7 +638,9 @@ To enable add-on seat management for groups, you must configure the `duo_add_on_
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -610,7 +665,9 @@ To enable add-on seat management for groups, you must configure the `duo_add_on_
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -633,7 +690,9 @@ To enable add-on seat management for groups, you must configure the `duo_add_on_
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -655,7 +714,9 @@ To enable add-on seat management for groups, you must configure the `duo_add_on_
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Group sync technical details
 
@@ -732,8 +793,11 @@ network and LDAP server response time affects these metrics.
 By default, GitLab runs a worker once per day at 01:30 a.m. server time to
 check and update GitLab users against LDAP.
 
-WARNING:
-Do not run the sync process too frequently as this could lead to multiple syncs running concurrently. Most installations do not need to modify the sync schedule. For more information, see the [LDAP Security documentation](index.md#security).
+{{< alert type="warning" >}}
+
+Do not run the sync process too frequently as this could lead to multiple syncs running concurrently. Most installations do not need to modify the sync schedule. For more information, see the [LDAP Security documentation](_index.md#security).
+
+{{< /alert >}}
 
 You can manually configure LDAP user sync times by setting the
 following configuration values, in cron format. If needed, you can
@@ -741,9 +805,9 @@ use a [crontab generator](http://www.crontabgenerator.com).
 The example below shows how to set LDAP user
 sync to run once every 12 hours at the top of the hour.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -757,7 +821,9 @@ sync to run once every 12 hours at the top of the hour.
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -781,7 +847,9 @@ sync to run once every 12 hours at the top of the hour.
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -800,7 +868,9 @@ sync to run once every 12 hours at the top of the hour.
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -821,7 +891,9 @@ sync to run once every 12 hours at the top of the hour.
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Adjust LDAP group sync schedule
 
@@ -829,16 +901,19 @@ By default, GitLab runs a group sync process every hour, on the hour.
 The values shown are in cron format. If needed, you can use a
 [Crontab Generator](http://www.crontabgenerator.com).
 
-WARNING:
+{{< alert type="warning" >}}
+
 Do not start the sync process too frequently as this could lead to multiple syncs running concurrently. Most installations do not need to modify the sync schedule.
+
+{{< /alert >}}
 
 You can manually configure LDAP group sync times by setting the
 following configuration values. The example below shows how to set group
 sync to run once every two hours at the top of the hour.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -852,7 +927,9 @@ sync to run once every two hours at the top of the hour.
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -876,7 +953,9 @@ sync to run once every two hours at the top of the hour.
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -895,7 +974,9 @@ sync to run once every two hours at the top of the hour.
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -916,7 +997,9 @@ sync to run once every two hours at the top of the hour.
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Troubleshooting
 

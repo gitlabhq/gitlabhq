@@ -14,7 +14,7 @@
 
 ## Moving docs to a new location?
 
-Read the [redirect guidelines](https://docs.gitlab.com/ee/development/documentation/redirects.html) first.
+Read the [redirect guidelines](https://docs.gitlab.com/development/documentation/redirects/) first.
 
 - [ ] Make sure the old link is not removed and has its contents replaced with
       a link to the new location.

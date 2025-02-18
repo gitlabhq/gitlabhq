@@ -6,10 +6,10 @@ import eventHub from '../event_hub';
 import stopEnvironmentMutation from '../graphql/mutations/stop_environment.mutation.graphql';
 
 export default {
-  environmentOnStopLink: helpPagePath('ci/yaml/index.html', {
+  environmentOnStopLink: helpPagePath('ci/yaml/_index.html', {
     anchor: 'environmenton_stop',
   }),
-  stoppingEnvironmentDocsLink: helpPagePath('ci/environments/index', {
+  stoppingEnvironmentDocsLink: helpPagePath('ci/environments/_index', {
     anchor: 'stopping-an-environment',
   }),
 

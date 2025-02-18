@@ -120,6 +120,7 @@ module API
         optional :ci_push_repository_for_job_token_allowed, type: Boolean, desc: "Allow pushing to this project's repository by authenticating with a CI/CD job token generated in this project."
         optional :ci_id_token_sub_claim_components, type: Array[String], values: %w[project_path ref_type ref], desc: 'Claims that will be used to build the sub claim in id tokens'
         optional :ci_delete_pipelines_in_seconds, type: Integer, desc: 'Pipelines older than the configured time are deleted'
+        optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size for each job's artifacts"
       end
 
       params :optional_update_params_ee do
@@ -219,6 +220,7 @@ module API
           :ci_pipeline_variables_minimum_override_role,
           :ci_push_repository_for_job_token_allowed,
           :ci_delete_pipelines_in_seconds,
+          :max_artifacts_size,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,

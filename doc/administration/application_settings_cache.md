@@ -2,13 +2,15 @@
 stage: Systems
 group: Cloud Connector
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Application cache interval
 ---
 
-# Application cache interval
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 By default, GitLab caches application settings for 60 seconds. Occasionally,
 you may need to increase that interval to have more delay between application
@@ -22,9 +24,9 @@ extra load for Redis and PostgreSQL.
 
 To change the expiry value:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -40,7 +42,9 @@ To change the expiry value:
    gitlab-ctl restart
    ```
 
-:::TabTitle Self-compiled (Source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (Source)" >}}
 
 1. Edit `config/gitlab.yml`:
 
@@ -52,4 +56,6 @@ To change the expiry value:
 1. Save the file, and then [restart](restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}

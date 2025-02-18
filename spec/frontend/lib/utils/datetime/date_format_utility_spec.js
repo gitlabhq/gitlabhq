@@ -542,4 +542,10 @@ describe('date_format_utility.js', () => {
       });
     });
   });
+
+  describe('formatIso8601Date', () => {
+    it('creates a ISO-8601 formated date', () => {
+      expect(utils.formatIso8601Date(2021, 5, 1)).toBe('2021-06-01');
+    });
+  });
 });

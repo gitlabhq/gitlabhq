@@ -2,21 +2,26 @@
 stage: Data Access
 group: Database Operations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: PostgreSQL
 ---
 
-# PostgreSQL
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This page contains information about PostgreSQL the GitLab Support team uses
 when troubleshooting. GitLab makes this information public, so that anyone can
 make use of the Support team's collected knowledge.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Some procedures documented here may break your GitLab instance. Use at your
 own risk.
+
+{{< /alert >}}
 
 If you're on a [paid tier](https://about.gitlab.com/pricing/) and aren't sure
 how to use these commands, [contact Support](https://about.gitlab.com/support/)
@@ -24,9 +29,9 @@ for assistance with any issues you're having.
 
 ## Start a database console
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 Recommended for:
 
@@ -45,13 +50,17 @@ it takes longer to initialize:
 sudo gitlab-rails db-console --database main
 ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 ```shell
 docker exec -it <container-id> gitlab-psql
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 Use the `psql` command that's part of [your PostgreSQL installation](../../install/installation.md#7-database).
 
@@ -59,7 +68,9 @@ Use the `psql` command that's part of [your PostgreSQL installation](../../insta
 sudo -u git -H psql -d gitlabhq_production
 ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 - If you run a hybrid environment, and PostgreSQL runs on a Linux packaged installation (Omnibus),
   the recommended approach is to use the database console locally on those servers. Refer to the details
@@ -68,7 +79,9 @@ sudo -u git -H psql -d gitlabhq_production
 - Run `gitlab-rails db-console` in the toolbox pod.
   - Refer to our [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) for details.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 To exit the console, type: `quit`.
 
@@ -99,7 +112,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 - Managing PostgreSQL versions on Linux package installations [from the development docs](https://docs.gitlab.com/omnibus/development/managing-postgresql-versions.html).
 
 - [PostgreSQL scaling](../postgresql/replication_and_failover.md)
-  - Including [troubleshooting](../../administration/postgresql/replication_and_failover_troubleshooting.md)
+  - Including [troubleshooting](../postgresql/replication_and_failover_troubleshooting.md)
     `gitlab-ctl patroni check-leader` and PgBouncer errors.
 
 - [Developer database documentation](../../development/feature_development.md#database-guides),
@@ -136,13 +149,16 @@ Quoting from issue [#30528](https://gitlab.com/gitlab-org/gitlab/-/issues/30528)
 
 <!-- vale gitlab_base.FutureTense = YES -->
 
-NOTE:
+{{< alert type="note" >}}
+
 In Support, our general approach to reconfiguring timeouts (applies also to the
 HTTP stack) is that it's acceptable to do it temporarily as a workaround. If it
 makes GitLab usable for the customer, then it buys time to understand the
 problem more completely, implement a hot fix, or make some other change that
 addresses the root cause. Generally, the timeouts should be put back to
 reasonable defaults after the root cause is resolved.
+
+{{< /alert >}}
 
 In this case, the guidance we had from development was to drop `deadlock_timeout`
 or `statement_timeout`, but to leave the third setting at 60 seconds. Setting
@@ -186,30 +202,36 @@ postgresql['idle_in_transaction_session_timeout'] = '60s'
 
 Once saved, [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-NOTE:
+{{< alert type="note" >}}
+
 These are Linux package settings. If an external database, such as a customer's PostgreSQL installation
 or Amazon RDS is being used, these values don't get set, and would have to be set externally.
 
+{{< /alert >}}
+
 ### Temporarily changing the statement timeout
 
-WARNING:
+{{< alert type="warning" >}}
+
 The following advice does not apply in case
 [PgBouncer](../postgresql/pgbouncer.md) is enabled,
 because the changed timeout might affect more transactions than intended.
+
+{{< /alert >}}
 
 In some situations, it may be desirable to set a different statement timeout
 without having to [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation),
 which in this case would restart Puma and Sidekiq.
 
 For example, a backup may fail with the following errors in the output of the
-[backup command](../../administration/backup_restore/index.md#back-up-gitlab)
+[backup command](../backup_restore/_index.md#back-up-gitlab)
 because the statement timeout was too short:
 
 ```plaintext
 pg_dump: error: Error message from server: server closed the connection unexpectedly
 ```
 
-You may also see errors in the [PostgreSQL logs](../logs/index.md#postgresql-logs):
+You may also see errors in the [PostgreSQL logs](../logs/_index.md#postgresql-logs):
 
 ```plaintext
 canceling statement due to statement timeout
@@ -323,7 +345,7 @@ PANIC: could not write to file 'pg_xlog/xlogtemp.123': No space left on device
 When troubleshooting problems with Geo, you should:
 
 - Review [common Geo errors](../geo/replication/troubleshooting/common.md#fixing-common-errors).
-- [Review your Geo configuration](../geo/replication/troubleshooting/index.md), including:
+- [Review your Geo configuration](../geo/replication/troubleshooting/_index.md), including:
   - Reconfiguring hosts and ports.
   - Reviewing and fixing the user and password mappings.
 

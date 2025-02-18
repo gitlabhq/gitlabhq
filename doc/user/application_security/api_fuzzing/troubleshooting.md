@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting
 ---
-
-# Troubleshooting
 
 ## API Fuzzing job times out after N hours
 
@@ -67,7 +66,7 @@ Before proceeding with a solution, it is important to confirm that the error mes
 
 The text `http://[::]:5000` in the previous message could be different in your case, for instance it could be `http://[::]:5500` or `http://127.0.0.1:5500`. As long as the remaining parts of the error message are the same, it is safe to assume the port was already taken.
 
-If you did not find evidence that the port was already taken, check other troubleshooting sections which also address the same error message shown in the job console output. If there are no more options, feel free to [get support or request an improvement](index.md#get-support-or-request-an-improvement) through the proper channels.
+If you did not find evidence that the port was already taken, check other troubleshooting sections which also address the same error message shown in the job console output. If there are no more options, feel free to [get support or request an improvement](_index.md#get-support-or-request-an-improvement) through the proper channels.
 
 Once you have confirmed the issue was produced because the port was already taken. Then, [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) introduced the configuration variable `FUZZAPI_API_PORT`. This configuration variable allows setting a fixed port number for the scanner background component.
 
@@ -191,8 +190,8 @@ To detect and correct elements that don't comply with the OpenAPI specifications
 
 | Editor                                             | OpenAPI 2.0                   | OpenAPI 3.0.x                 | OpenAPI 3.1.x |
 |----------------------------------------------------|-------------------------------|-------------------------------|---------------|
-| [Swagger Editor](https://editor.swagger.io/)       | **{check-circle}** YAML, JSON | **{check-circle}** YAML, JSON | **{dotted-circle}** YAML, JSON |
-| [Stoplight Studio](https://stoplight.io/solutions) | **{check-circle}** YAML, JSON | **{check-circle}** YAML, JSON | **{check-circle}** YAML, JSON |
+| [Swagger Editor](https://editor.swagger.io/)       | {{< icon name="check-circle" >}} YAML, JSON | {{< icon name="check-circle" >}} YAML, JSON | {{< icon name="dotted-circle" >}} YAML, JSON |
+| [Stoplight Studio](https://stoplight.io/solutions) | {{< icon name="check-circle" >}} YAML, JSON | {{< icon name="check-circle" >}} YAML, JSON | {{< icon name="check-circle" >}} YAML, JSON |
 
 If your OpenAPI document is generated manually, load your document in the editor and fix anything that is non-compliant. If your document is generated automatically, load it in your editor to identify the issues in the schema, then go to the application and perform the corrections based on the framework you are using.
 
@@ -323,7 +322,7 @@ The following example uses the [statically defined credentials](../../../ci/dock
    }
    ```
 
-1. Add the `DOCKER_AUTH_CONFIG` as a CI/CD variable. Instead of adding the configuration variable directly in your `.gitlab-ci.yml` file you should create a project [CI/CD variable](../../../ci/variables/index.md#for-a-project).
+1. Add the `DOCKER_AUTH_CONFIG` as a CI/CD variable. Instead of adding the configuration variable directly in your `.gitlab-ci.yml` file you should create a project [CI/CD variable](../../../ci/variables/_index.md#for-a-project).
 1. Rerun your job, and the statically-defined credentials are now used to sign in to the private container registry `registry.example.com`, and let you pull the image `my-target-app:latest`. If succeeded the job console shows an output like:
 
    ```log

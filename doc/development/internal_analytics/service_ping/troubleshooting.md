@@ -2,9 +2,8 @@
 stage: Monitor
 group: Analytics Instrumentation
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Troubleshooting Service Ping
 ---
-
-# Troubleshooting Service Ping
 
 ## Set up and test Service Ping locally
 
@@ -71,7 +70,7 @@ and run a local container instance:
 1. On your local machine, make sure you are signed in to the GitLab Docker registry. You can find the instructions for this in
    [Authenticate to the GitLab container registry](../../../user/packages/container_registry/authenticate_with_container_registry.md).
 1. Once signed in, download the new image by using `docker pull registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`
-1. For more information about working with and running Omnibus GitLab containers in Docker, refer to [GitLab Docker images](../../../install/docker/index.md) documentation.
+1. For more information about working with and running Omnibus GitLab containers in Docker, refer to [GitLab Docker images](../../../install/docker/_index.md) documentation.
 
 ### Test with GitLab development toolkits
 

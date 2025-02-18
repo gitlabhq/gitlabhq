@@ -9,12 +9,10 @@ import {
   appendRedirectQuery,
   toggleRememberMeQuery,
 } from './preserve_url_fragment';
-import SigninTabsMemoizer from './signin_tabs_memoizer';
 import UsernameValidator from './username_validator';
 
 new UsernameValidator(); // eslint-disable-line no-new
 new LengthValidator(); // eslint-disable-line no-new
-new SigninTabsMemoizer(); // eslint-disable-line no-new
 new NoEmojiValidator(); // eslint-disable-line no-new
 
 appendUrlFragment();

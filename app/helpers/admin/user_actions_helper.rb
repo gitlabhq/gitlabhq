@@ -81,3 +81,5 @@ module Admin
     end
   end
 end
+
+::Admin::UserActionsHelper.prepend_mod

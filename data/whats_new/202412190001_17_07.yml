@@ -65,7 +65,7 @@
   self-managed: true
   gitlab-com: true
   available_in: ["Premium", "Ultimate"]
-  documentation_link: https://docs.gitlab.com/ee/api/graphql/reference/index.html#queryprojectsusingcomponents
+  documentation_link: https://docs.gitlab.com/ee/api/graphql/reference/#queryprojectsusingcomponents
   image_url: https://about.gitlab.com/images/17_7/catalog.png
   published_at: 2024-12-19
   release: 17.7

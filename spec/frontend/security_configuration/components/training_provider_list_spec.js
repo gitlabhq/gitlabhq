@@ -407,7 +407,7 @@ describe('TrainingProviderList component', () => {
       it('adds backgrounds color', () => {
         findCards().wrappers.forEach((card) => {
           expect(card.props('bodyClass')).toMatchObject({
-            'gl-bg-gray-10': true,
+            'gl-bg-subtle': true,
           });
         });
       });

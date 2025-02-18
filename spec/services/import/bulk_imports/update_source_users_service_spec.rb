@@ -237,7 +237,7 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
 
       expect(import_source_user_1.placeholder_user.reload).to have_attributes(
         name: 'Placeholder John Doe',
-        username: 'johndoe_placeholder_user_1'
+        username: match(/\Ajohndoe_placeholder_[[:alnum:]]+\z/)
       )
     end
 

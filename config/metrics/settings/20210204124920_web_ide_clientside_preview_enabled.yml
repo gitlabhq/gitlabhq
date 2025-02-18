@@ -9,9 +9,6 @@ value_type: boolean
 status: removed
 time_frame: none
 data_source: database
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

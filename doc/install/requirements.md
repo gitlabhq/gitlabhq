@@ -1,15 +1,17 @@
 ---
 stage: Systems
 group: Distribution
-description: Prerequisites for installation.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Prerequisites for installation.
+title: GitLab installation requirements
 ---
 
-# GitLab installation requirements
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This page contains information about the system requirements to install GitLab.
 
@@ -32,7 +34,7 @@ The workload includes your users' activity, use of automation and mirroring, and
 
 For a maximum of 20 requests per second or 1,000 users, you should have 8 vCPU.
 For more users or higher workload,
-see [reference architectures](../administration/reference_architectures/index.md).
+see [reference architectures](../administration/reference_architectures/_index.md).
 
 ## Memory
 
@@ -41,7 +43,7 @@ The workload includes your users' activity, use of automation and mirroring, and
 
 For a maximum of 20 requests per second or 1,000 users, you should have 16 GB of memory.
 For more users or higher workload,
-see [reference architectures](../administration/reference_architectures/index.md).
+see [reference architectures](../administration/reference_architectures/_index.md).
 
 In some cases, GitLab can run with at least 8 GB of memory.
 For more information, see
@@ -53,7 +55,7 @@ For more information, see
 You can also use an [external PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server)
 [which must be tuned correctly](#postgresql-tuning).
 
-Depending on the [number of users](../administration/reference_architectures/index.md),
+Depending on the [number of users](../administration/reference_architectures/_index.md),
 the PostgreSQL server should have:
 
 - For most GitLab instances, at least 5 to 10 GB of storage
@@ -81,12 +83,12 @@ For more information, see [managing PostgreSQL extensions](postgresql_extensions
 
 ### GitLab Geo
 
-For [GitLab Geo](../administration/geo/index.md), you should use the Linux package or
-[validated cloud providers](../administration/reference_architectures/index.md#recommended-cloud-providers-and-services)
+For [GitLab Geo](../administration/geo/_index.md), you should use the Linux package or
+[validated cloud providers](../administration/reference_architectures/_index.md#recommended-cloud-providers-and-services)
 to install GitLab.
 Compatibility with other external databases is not guaranteed.
 
-For more information, see [requirements for running Geo](../administration/geo/index.md#requirements-for-running-geo).
+For more information, see [requirements for running Geo](../administration/geo/_index.md#requirements-for-running-geo).
 
 ### Locale compatibility
 
@@ -104,7 +106,7 @@ For more information, see [upgrading operating systems for PostgreSQL](../admini
 
 ### GitLab schemas
 
-You should create or use databases exclusively for GitLab, [Geo](../administration/geo/index.md),
+You should create or use databases exclusively for GitLab, [Geo](../administration/geo/_index.md),
 [Gitaly Cluster](../administration/gitaly/praefect.md), or other components.
 Do not create or modify databases, schemas, users, or other properties except when you follow:
 
@@ -119,7 +121,7 @@ The main GitLab application uses three schemas:
 
 During Rails database migrations, GitLab might create or modify schemas or tables.
 Database migrations are tested against the schema definition in the GitLab codebase.
-If you modify any schema, [GitLab upgrades](../update/index.md) might fail.
+If you modify any schema, [GitLab upgrades](../update/_index.md) might fail.
 
 ### PostgreSQL tuning
 
@@ -141,7 +143,7 @@ To adjust Puma settings:
 
 - For the Linux package, see [Puma settings](../administration/operations/puma.md).
 - For the GitLab Helm chart, see the
-  [`webservice` chart](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).
+  [`webservice` chart](https://docs.gitlab.com/charts/charts/gitlab/webservice/).
 
 ### Workers
 
@@ -206,7 +208,7 @@ By default, [Prometheus](https://prometheus.io) and its related exporters are en
 These processes consume approximately 200 MB of memory.
 
 For more information, see
-[monitoring GitLab with Prometheus](../administration/monitoring/prometheus/index.md).
+[monitoring GitLab with Prometheus](../administration/monitoring/prometheus/_index.md).
 
 ## Supported web browsers
 
@@ -228,4 +230,4 @@ Running GitLab with JavaScript disabled in these browsers is not supported.
 ## Related topics
 
 - [Install GitLab Runner](https://docs.gitlab.com/runner/install/)
-- [Secure your installation](../security/index.md)
+- [Secure your installation](../security/_index.md)

@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Processes for GitLab Shell
 ---
-
-# Processes for GitLab Shell
 
 ## Releasing a new version
 
@@ -28,9 +27,12 @@ Rails application:
 1. Update `GITLAB_SHELL_VERSION` in the Rails application to the **raw
    version**.
 
-   NOTE:
-   This can be done as a separate merge request, or in a merge request
+   {{< alert type="note" >}}
+
+This can be done as a separate merge request, or in a merge request
    that uses the latest GitLab Shell changes.
+
+   {{< /alert >}}
 
 ## Security releases
 

@@ -1,19 +1,21 @@
 ---
-stage: SaaS Platforms
-group: GitLab Dedicated
-description: Configure network access and security settings for GitLab Dedicated.
+stage: GitLab Dedicated
+group: Switchboard
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Configure network access and security settings for GitLab Dedicated.
+title: GitLab Dedicated network access and security
 ---
 
-# GitLab Dedicated network access and security
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab Dedicated
+
+{{< /details >}}
 
 ## Bring your own domain (BYOD)
 
-You can use a [custom hostname](../../../subscriptions/gitlab_dedicated/index.md#bring-your-own-domain) to access your GitLab Dedicated instance. You can also provide a custom hostname for the bundled container registry and Kubernetes Agent Server (KAS) services.
+You can use a [custom hostname](../../../subscriptions/gitlab_dedicated/_index.md#bring-your-own-domain) to access your GitLab Dedicated instance. You can also provide a custom hostname for the bundled container registry and Kubernetes Agent Server (KAS) services.
 
 ### Let's Encrypt certificates
 
@@ -128,8 +130,11 @@ Prerequisites:
 - Add the ARN of the role that GitLab Dedicated uses to connect to your endpoint service to the Allowed Principals list on the Endpoint Service. You can find this ARN in Switchboard under Outbound private link IAM principal. For more information, see [Manage permissions](https://docs.aws.amazon.com/vpc/latest/privatelink/configure-endpoint-service.html#add-remove-permissions).
 - Recommended. Set **Acceptance required** to **No** to enable GitLab Dedicated to connect in a single operation. If set to **Yes**, you must manually accept the connection after it's initiated.
 
-  NOTE:
-  If you set **Acceptance required** to **Yes**, Switchboard cannot accurately determine when the link is accepted. After you manually accept the link, the status shows as **Pending** instead of **Active** until next scheduled maintenance. After maintenance, the link status refreshes and shows as connected.
+  {{< alert type="note" >}}
+
+If you set **Acceptance required** to **Yes**, Switchboard cannot accurately determine when the link is accepted. After you manually accept the link, the status shows as **Pending** instead of **Active** until next scheduled maintenance. After maintenance, the link status refreshes and shows as connected.
+
+  {{< /alert >}}
 
 - Once the endpoint service is created, note the Service Name and if you have enabled Private DNS or not.
 
@@ -146,9 +151,9 @@ Prerequisites:
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
 1. Expand **Outbound private link**.
-1. Go to the outbound private link you want to delete, then select **Delete** (**{remove}**).
+1. Go to the outbound private link you want to delete, then select **Delete** ({{< icon name="remove" >}}).
 1. Select **Delete**.
-1. Optional. To delete all the links in a region, from the region header, select **Delete** (**{remove}**). This also deletes the region configuration.
+1. Optional. To delete all the links in a region, from the region header, select **Delete** ({{< icon name="remove" >}}). This also deletes the region configuration.
 
 #### Add an outbound private link with a support request
 
@@ -252,7 +257,7 @@ IP addresses that have been added to your IP allowlist can be viewed on the Conf
 1. Expand **Allowed Source List Config / IP allowlist**.
 1. Turn on the **Enable** toggle.
 1. Select **Add Item**.
-1. Enter the IP address and description. To add another IP address, repeat steps 5 and 6.
+1. Enter the IPv4 **Address** and **Description**. To add another IPv4 address, repeat steps 5 and 6. IPv6 addresses are not supported.
 1. Select **Save**.
 1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window. After the changes are applied, the IP addresses are added to the IP allowlist for your instance.
 
@@ -272,7 +277,7 @@ The configuration is applied during the next maintenance window.
 
 ### Enable SCIM provisioning for your IP allowlist
 
-You can use SCIM with external identity providers to automatically provision and manage users. To use SCIM, your identity provider must be able to access the [instance SCIM API](../../../development/internal_api/index.md#instance-scim-api) endpoints. By default, IP allowlisting blocks communication to these endpoints.
+You can use SCIM with external identity providers to automatically provision and manage users. To use SCIM, your identity provider must be able to access the [instance SCIM API](../../../development/internal_api/_index.md#instance-scim-api) endpoints. By default, IP allowlisting blocks communication to these endpoints.
 
 To enable SCIM while maintaining your IP allowlist:
 

@@ -2,17 +2,23 @@
 stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group epic boards API
 ---
 
-# Group epic boards API
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385903) in GitLab 15.9.
+{{< /details >}}
 
-Every API call to [group epic boards](../user/group/epics/epic_boards.md#epic-boards) must be authenticated.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385903) in GitLab 15.9.
+
+{{< /history >}}
+
+Every API call to [group epic boards](../user/group/epics/epic_boards.md) must be authenticated.
 
 If a user is not a member of a group and the group is private, a `GET`
 request results in `404` status code.
@@ -27,7 +33,7 @@ GET /groups/:id/epic_boards
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) accessible by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) accessible by the authenticated user |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epic_boards"
@@ -110,7 +116,7 @@ GET /groups/:id/epic_boards/:board_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) accessible by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) accessible by the authenticated user |
 | `board_id` | integer | yes | The ID of an epic board |
 
 ```shell
@@ -182,7 +188,11 @@ Example response:
 
 ## List group epic board lists
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385904) in GitLab 15.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385904) in GitLab 15.9.
+
+{{< /history >}}
 
 Gets a list of the epic board's lists.
 Does not include `open` and `closed` lists.
@@ -193,7 +203,7 @@ GET /groups/:id/epic_boards/:board_id/lists
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) accessible by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) accessible by the authenticated user |
 | `board_id` | integer | yes | The ID of an epic board |
 
 ```shell
@@ -242,7 +252,11 @@ Example response:
 
 ## Single group epic board list
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385904) in GitLab 15.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385904) in GitLab 15.9.
+
+{{< /history >}}
 
 Gets a single board list.
 
@@ -252,7 +266,7 @@ GET /groups/:id/epic_boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) accessible by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) accessible by the authenticated user |
 | `board_id` | integer | yes | The ID of an epic board |
 | `list_id` | integer | yes | The ID of an epic board's list |
 

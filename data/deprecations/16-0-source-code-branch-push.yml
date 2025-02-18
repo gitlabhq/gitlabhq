@@ -6,7 +6,7 @@
   stage: Create
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/12776
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    GitLab administrators can no longer perform actions on protected branches or tags unless they have been explicitly granted that permission. These actions include pushing and merging into a [protected branch](https://docs.gitlab.com/ee/user/project/repository/branches/protected.html), unprotecting a branch, and creating [protected tags](https://docs.gitlab.com/ee/user/project/protected_tags.html).
+    GitLab administrators can no longer perform actions on protected branches or tags unless they have been explicitly granted that permission. These actions include pushing and merging into a [protected branch](https://docs.gitlab.com/user/project/repository/branches/protected/), unprotecting a branch, and creating [protected tags](https://docs.gitlab.com/user/project/protected_tags/).
 #
 # OPTIONAL FIELDS
 #

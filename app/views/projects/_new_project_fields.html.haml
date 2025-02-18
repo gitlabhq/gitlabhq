@@ -10,7 +10,7 @@
   .form-group.gl-form-group.project-name.col-sm-12
     = f.label :name, class: 'label-bold' do
       %span= _("Project name")
-    = f.text_field :name, placeholder: "My awesome project", class: "form-control gl-form-input input-lg", data: { testid: 'project-name', track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true }
+    = f.text_field :name, placeholder: "My awesome project", class: "form-control gl-form-input input-lg", data: { testid: 'project-name', track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true, describedby: 'js-project-name-description' }
     %small#js-project-name-description.form-text.gl-text-subtle
       = s_("ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces.")
     #js-project-name-error.gl-field-error.gl-mt-2.gl-hidden
@@ -44,7 +44,7 @@
       = render Pajamas::AlertComponent.new(dismissible: false,
         variant: :success) do |c|
         - c.with_body do
-          - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/profile/index.md', anchor: 'add-details-to-your-profile-with-a-readme') }
+          - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/profile/_index.md', anchor: 'add-details-to-your-profile-with-a-readme') }
           = html_escape(_('%{project_path} is a project that you can use to add a README to your GitLab profile. Create a public project and initialize the repository with a README to get started. %{help_link_start}Learn more%{help_link_end}.')) % { project_path: "<strong>#{current_user.username} / #{current_user.username}</strong>".html_safe, help_link_start: help_link_start, help_link_end: '</a>'.html_safe }
 
 - if include_description
@@ -90,7 +90,7 @@
         = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
       - c.with_help_text do
         = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
-        = link_to _('Learn more.'), help_page_path('user/application_security/sast/index.md'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
+        = link_to _('Learn more.'), help_page_path('user/application_security/sast/_index.md'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
 
   - if display_sha256_repository
     #js-experimental-setting-accordion.form-group.gl-mb-6
@@ -103,7 +103,8 @@
             = s_("ProjectsNew|Might break existing functionality with other repositories or APIs. It's not possible to change SHA-256 repositories back to the default SHA-1 hashing algorithm.")
 
 
--# this partial is from JiHu, see details in https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/675
-= render_if_exists 'shared/other_project_options', f: f, visibility_level: visibility_level, track_label: track_label
-= f.submit _('Create project'), class: "js-create-project-button", data: { testid: 'project-create-button', track_label: "#{track_label}", track_action: "click_button", track_property: "create_project", track_value: "" }, pajamas_button: true
-= link_button_to _('Cancel'), @parent_group || dashboard_groups_path, data: { track_label: "#{track_label}", track_action: "click_button", track_property: "cancel", track_value: "" }
+.gl-flex.gl-gap-3
+  -# this partial is from JiHu, see details in https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/675
+  = render_if_exists 'shared/other_project_options', f: f, visibility_level: visibility_level, track_label: track_label
+  = f.submit _('Create project'), class: "js-create-project-button", data: { testid: 'project-create-button', track_label: "#{track_label}", track_action: "click_button", track_property: "create_project", track_value: "" }, pajamas_button: true
+  = link_button_to _('Cancel'), @parent_group || dashboard_groups_path, data: { track_label: "#{track_label}", track_action: "click_button", track_property: "cancel", track_value: "" }

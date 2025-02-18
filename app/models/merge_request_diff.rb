@@ -910,7 +910,7 @@ class MergeRequestDiff < ApplicationRecord
     return unless stored_externally?
     return if File.exist?(external_diff_cache_filepath)
 
-    Dir.mkdir(external_diff_cache_dir) unless Dir.exist?(external_diff_cache_dir)
+    FileUtils.mkdir_p(external_diff_cache_dir)
 
     opening_external_diff do |external_diff|
       File.open(external_diff_cache_filepath, 'wb') do |file|

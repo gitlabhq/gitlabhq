@@ -17,7 +17,7 @@ exports[`Delete user modal renders modal with form included 1`] = `
   />
   <gl-form-input-stub
     autocomplete="off"
-    autofocus=""
+    autofocus="true"
     name="username"
     type="text"
     value=""

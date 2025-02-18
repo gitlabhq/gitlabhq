@@ -120,6 +120,7 @@ RSpec.describe Groups::Settings::AccessTokensController, feature_category: :syst
 
     it 'sets available scopes' do
       expect(assigns(:scopes)).to include(Gitlab::Auth::K8S_PROXY_SCOPE)
+      expect(assigns(:scopes)).to include(Gitlab::Auth::SELF_ROTATE_SCOPE)
     end
   end
 end

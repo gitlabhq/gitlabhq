@@ -1,15 +1,17 @@
 ---
-description: "Merge request analytics help you understand the efficiency of your code review process, and the productivity of your team." # Up to ~200 chars long. They will be displayed in Google Search snippets. It may help to write the page intro first, and then reuse it here.
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Merge request analytics help you understand the efficiency of your code review process, and the productivity of your team.
+title: Merge request analytics
 ---
 
-# Merge request analytics
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Merge request analytics provide DevOps managers with valuable insights into their team's code review and merging workflows.
 Based on the detailed metrics and trends related to merge requests, organizations can monitor and optimize their development processes.

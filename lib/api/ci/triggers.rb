@@ -112,6 +112,8 @@ module API
         params do
           requires :description, type: String, desc: 'The trigger token description',
             documentation: { example: 'my trigger token description' }
+          optional :expires_at, type: DateTime, desc: 'Timestamp of when the pipeline trigger token expires.',
+            documentation: { example: '2024-07-01' }
         end
         post ':id/triggers' do
           authenticate!
@@ -121,7 +123,8 @@ module API
             ::Ci::PipelineTriggers::CreateService.new(
               project: user_project,
               user: current_user,
-              description: declared_params(include_missing: false)[:description]
+              description: declared_params(include_missing: false)[:description],
+              expires_at: declared_params(include_missing: true)[:expires_at]
             ).execute
 
           if response.success?

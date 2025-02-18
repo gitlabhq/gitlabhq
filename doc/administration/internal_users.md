@@ -2,11 +2,14 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Internal users
 ---
 
-# Internal users
+{{< history >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97584) in GitLab 15.4, bots are indicated with a badge in user listings.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97584) in GitLab 15.4, bots are indicated with a badge in user listings.
+
+{{< /history >}}
 
 GitLab uses internal users (sometimes referred to as "bots") to perform actions or functions that cannot be attributed
 to a regular user.
@@ -27,13 +30,13 @@ when a snippet's original author wasn't available. For example, when the user wa
 
 Other examples of internal users:
 
-- [GitLab Automation Bot](../user/group/iterations/index.md#gitlab-automation-bot-user)
+- [GitLab Automation Bot](../user/group/iterations/_index.md#gitlab-automation-bot-user)
 - [GitLab Security Bot](#gitlab-security-bot)
 - [GitLab Security Policy Bot](#gitlab-security-policy-bot)
 - [Alert Bot](../operations/incident_management/alerts.md#trigger-actions-from-alerts)
 - [Ghost User](../user/profile/account/delete_account.md#associated-records)
 - [Support Bot](../user/project/service_desk/configure.md#support-bot-user)
-- [Placeholder User](../user/project/import/index.md#placeholder-users) created during imports
+- [Placeholder User](../user/project/import/_index.md#placeholder-users) created during imports
 - Visual Review Bot
 - Resource access tokens, including [project access tokens](../user/project/settings/project_access_tokens.md)
   and [group access tokens](../user/group/settings/group_access_tokens.md), which are
@@ -54,10 +57,10 @@ is an internal user that cannot be accessed or modified by regular users and is 
 ## GitLab Security Bot
 
 GitLab Security Bot is an internal user responsible for commenting on merge requests that violate a
-[security policy](../user/application_security/policies/index.md).
+[security policy](../user/application_security/policies/_index.md).
 
 ## GitLab Security Policy Bot
 
 GitLab Security Policy Bot is an internal user responsible for triggering scheduled pipelines
-defined in [security policies](../user/application_security/policies/index.md). This account is
+defined in [security policies](../user/application_security/policies/_index.md). This account is
 created in every project on which a security policy is enforced.

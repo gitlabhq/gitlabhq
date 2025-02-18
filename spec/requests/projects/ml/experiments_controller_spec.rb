@@ -53,54 +53,13 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
   end
 
   describe 'GET index' do
-    describe 'renderering' do
+    describe 'rendering' do
       before do
         list_experiments
       end
 
       it 'renders the template' do
         expect(response).to render_template('projects/ml/experiments/index')
-      end
-
-      it 'does not perform N+1 sql queries' do
-        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { list_experiments }
-
-        create_list(:ml_experiments, 2, project: project, user: user)
-
-        expect { list_experiments }.not_to exceed_all_query_limit(control_count)
-      end
-    end
-
-    describe 'pagination' do
-      let_it_be(:experiments) do
-        create_list(:ml_experiments, 3, project: project)
-      end
-
-      let(:params) { basic_params.merge(id: experiment.iid) }
-
-      before do
-        stub_const("Projects::Ml::ExperimentsController::MAX_EXPERIMENTS_PER_PAGE", 2)
-
-        list_experiments
-      end
-
-      it 'fetches only MAX_CANDIDATES_PER_PAGE candidates' do
-        expect(assigns(:experiments).size).to eq(2)
-      end
-
-      it 'paginates', :aggregate_failures do
-        page = assigns(:experiments)
-
-        expect(page.first).to eq(experiments.last)
-        expect(page.last).to eq(experiments[1])
-
-        new_params = params.merge(cursor: assigns(:page_info)[:end_cursor])
-
-        list_experiments(new_params)
-
-        new_page = assigns(:experiments)
-
-        expect(new_page.first).to eq(experiments.first)
       end
     end
 
@@ -201,10 +160,10 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
         end
       end
 
-      it 'does not perform N+1 sql queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/458136' do
-        control_count = ActiveRecord::QueryRecorder.new(skip_cached: true) { show_experiment }
+      it 'does not perform N+1 sql queries' do
+        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { show_experiment }
 
-        create_list(:ml_candidates, 2, :with_metrics_and_params, experiment: experiment)
+        create_list(:ml_candidates, 2, :with_metrics_and_params, experiment: experiment, project: experiment.project)
 
         expect { show_experiment }.not_to exceed_all_query_limit(control_count)
       end

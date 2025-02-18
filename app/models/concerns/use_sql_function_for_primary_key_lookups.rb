@@ -57,16 +57,6 @@ module UseSqlFunctionForPrimaryKeyLookups
 
       return unless verification_arel.ast == arel.ast
 
-      if table_name == "namespaces" && Feature.enabled?(:log_sql_function_namespace_lookups, Feature.current_request)
-        using_primary = Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).use_primary?
-        Gitlab::AppLogger.info(
-          message: "Namespaces lookup using function",
-          backtrace: caller,
-          using_primary: using_primary,
-          primary_key_value: pk_value
-        )
-      end
-
       function_call = Arel::Nodes::NamedFunction.new("find_#{table_name}_by_id", [pk_value_attribute]).as(table_name)
       filter_empty_row = "#{quoted_table_name}.#{connection.quote_column_name(primary_key)} IS NOT NULL"
 

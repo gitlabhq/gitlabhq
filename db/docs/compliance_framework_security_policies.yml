@@ -8,24 +8,7 @@ description: Persists the relation between compliance_frameworks and security_or
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135291
 milestone: '16.6'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: policy_configuration_id
-        table: security_orchestration_policy_configurations
-        sharding_key: project_id
-        belongs_to: policy_configuration
-  namespace_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: policy_configuration_id
-        table: security_orchestration_policy_configurations
-        sharding_key: namespace_id
-        belongs_to: policy_configuration
-desired_sharding_key_migration_job_name:
-- BackfillComplianceFrameworkSecurityPoliciesProjectId
-- BackfillComplianceFrameworkSecurityPoliciesNamespaceId
 table_size: small
+sharding_key:
+  project_id: projects
+  namespace_id: namespaces

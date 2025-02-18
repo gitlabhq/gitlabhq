@@ -1,16 +1,22 @@
 ---
 stage: Foundations
 group: Global Search
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Advanced search
 ---
 
-# Advanced search
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - Moved to GitLab Premium in 13.9.
+{{< /details >}}
+
+{{< history >}}
+
+- Moved to GitLab Premium in 13.9.
+
+{{< /history >}}
 
 You can use advanced search for faster, more efficient search across the entire GitLab
 instance. Advanced search is based on Elasticsearch, a purpose-built full-text search
@@ -34,16 +40,20 @@ You can use advanced search in:
 
 ## Enable advanced search
 
-- For [GitLab.com](../../subscriptions/gitlab_com/index.md) and [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md),
+- For [GitLab.com](../../subscriptions/gitlab_com/_index.md) and [GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md),
   advanced search is enabled in paid subscriptions.
-- For [GitLab self-managed](../../subscriptions/self_managed/index.md), an administrator must
+- For [GitLab Self-Managed](../../subscriptions/self_managed/_index.md), an administrator must
   [enable advanced search](../../integration/advanced_search/elasticsearch.md#enable-advanced-search).
 
 ## Syntax
 
 <!-- Remember to also update the tables in `doc/drawers/advanced_search_syntax.md` -->
 
-> - Refining user search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388409) in GitLab 15.10.
+{{< history >}}
+
+- Refining user search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388409) in GitLab 15.10.
+
+{{< /history >}}
 
 Advanced search uses [`simple_query_string`](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html),
 which supports both exact and fuzzy queries.
@@ -59,7 +69,7 @@ You can refine user search with `simple_query_string`.
 | `+`                 | And              | [`display +banner`](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=display+%2Bbanner&snippets=) |
 | `-`                 | Exclude          | [`display -banner`](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=display+-banner) |
 | `*`                 | Partial          | [`bug error 50*`](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=bug+error+50%2A&snippets=) |
-| `\`                 | Escape           | [`\*md`](https://gitlab.com/search?snippets=&scope=blobs&repository_ref=&search=%5C*md&group_id=9970&project_id=278964) |
+| <code>&#92;</code>  | Escape           | [`\*md`](https://gitlab.com/search?snippets=&scope=blobs&repository_ref=&search=%5C*md&group_id=9970&project_id=278964) |
 | `#`                 | Issue ID         | [`#23456`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=%2323456&group_id=9970&project_id=278964) |
 | `!`                 | Merge request ID | [`!23456`](https://gitlab.com/search?snippets=&scope=merge_requests&repository_ref=&search=%2123456&group_id=9970&project_id=278964) |
 

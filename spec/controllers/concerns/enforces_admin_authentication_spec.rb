@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe EnforcesAdminAuthentication do
-  include AdminModeHelper
-
   let(:user) { create(:user) }
 
   before do
@@ -16,6 +14,49 @@ RSpec.describe EnforcesAdminAuthentication do
 
     def index
       head :ok
+    end
+  end
+
+  describe '.authorize!' do
+    controller(ApplicationController) do
+      include EnforcesAdminAuthentication
+
+      authorize! :ability, only: :index
+
+      def index
+        head :ok
+      end
+    end
+
+    context 'when the user is an admin', :enable_admin_mode do
+      let(:user) { create(:admin) }
+
+      it 'renders ok' do
+        get :index
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when the user is a regular user' do
+      it 'renders a 404' do
+        get :index
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      context 'when an ability grants access' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :ability, :global).and_return(true)
+        end
+
+        it 'renders ok' do
+          get :index
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
     end
   end
 
@@ -31,11 +72,7 @@ RSpec.describe EnforcesAdminAuthentication do
           expect(assigns(:current_user_mode)&.admin_mode?).to be(false)
         end
 
-        context 'when admin mode is active' do
-          before do
-            enable_admin_mode!(user)
-          end
-
+        context 'when admin mode is active', :enable_admin_mode do
           it 'renders ok' do
             get :index
 

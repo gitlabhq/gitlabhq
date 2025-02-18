@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Proofread Translations
 ---
-
-# Proofread Translations
 
 Most translations are contributed, reviewed, and accepted by the community. We
 are very appreciative of the work done by translators and proofreaders!

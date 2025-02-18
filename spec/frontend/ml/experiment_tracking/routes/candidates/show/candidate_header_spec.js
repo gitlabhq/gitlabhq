@@ -10,7 +10,7 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_header.vue', (
   let wrapper;
 
   const defaultProps = {
-    info: newCandidate().info,
+    candidate: newCandidate(),
   };
 
   const createWrapper = (props = {}) => {
@@ -84,9 +84,12 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_header.vue', (
     testCases.forEach(({ status, variant }) => {
       it(`renders correct badge variant for ${status} status`, () => {
         wrapper = createWrapper({
-          info: {
-            ...defaultProps.info,
-            status,
+          candidate: {
+            ...defaultProps.candidate,
+            info: {
+              ...defaultProps.candidate.info,
+              status,
+            },
           },
         });
 
@@ -98,10 +101,13 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_header.vue', (
   describe('When author is not provided', () => {
     beforeEach(() => {
       wrapper = createWrapper({
-        info: {
-          ...defaultProps.info,
-          authorName: null,
-          authorWebUrl: null,
+        candidate: {
+          ...defaultProps.candidate,
+          info: {
+            ...defaultProps.candidate.info,
+            authorName: null,
+            authorWebUrl: null,
+          },
         },
       });
     });
@@ -125,6 +131,21 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_header.vue', (
         actionPrimaryText: 'Delete run',
         modalTitle: 'Delete run?',
       });
+    });
+  });
+  describe('When can not write to model experiments', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({
+        candidate: {
+          ...defaultProps.candidate,
+          canWriteModelExperiments: false,
+        },
+      });
+    });
+
+    it('hides the delete button', () => {
+      const deleteButton = findDeleteButton();
+      expect(deleteButton.exists()).toBe(false);
     });
   });
 

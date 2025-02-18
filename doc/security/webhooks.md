@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Filtering outbound requests
 ---
 
-# Filtering outbound requests
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To protect against the risk of data loss and exposure, GitLab administrators can now use outbound request filtering controls to restrict certain outbound requests made by the GitLab instance.
 
@@ -86,7 +88,11 @@ Prerequisites:
 
 ## Filter requests
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377371) in GitLab 15.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377371) in GitLab 15.10.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -169,7 +175,7 @@ To resolve this issue, [configure GitLab to no longer fetch runner release versi
 
 ### GitLab subscription management is blocked
 
-When you [filter requests](#filter-requests), [GitLab subscription management](../subscriptions/self_managed/index.md)
+When you [filter requests](#filter-requests), [GitLab subscription management](../subscriptions/self_managed/_index.md)
 is blocked.
 
 To work around this problem, add `customers.gitlab.com:443` to the
@@ -192,6 +198,6 @@ This error can occur when outbound requests to the GitLab cloud server are not a
 
 1. Add `https://cloud.gitlab.com:443` to the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 1. Select **Save Changes**.
-1. After GitLab has access to the [cloud server](../user/ai_features.md), [manually synchronize your license](../subscriptions/self_managed/index.md#manually-synchronize-subscription-data)
+1. After GitLab has access to the [cloud server](../user/ai_features.md), [manually synchronize your license](../subscriptions/self_managed/_index.md#manually-synchronize-subscription-data)
 
 For more information, see the [GitLab Duo Code Suggestions troubleshooting documentation](../user/project/repository/code_suggestions/troubleshooting.md).

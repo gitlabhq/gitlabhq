@@ -19,6 +19,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, __, n__ } from '~/locale';
+import { createAlert } from '~/alert';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   IDENTITY_VERIFICATION_REQUIRED_ERROR,
@@ -49,6 +50,7 @@ const i18n = {
   maxWarningsSummary: __('%{total} warnings found: showing first %{warningsDisplayed}'),
   removeVariableLabel: s__('CiVariables|Remove variable'),
   learnMore: __('Learn more'),
+  pipelineAriaLabel: s__('Pipeline|Variable'),
 };
 
 export default {
@@ -347,35 +349,45 @@ export default {
     },
     async createPipeline() {
       this.submitted = true;
+      try {
+        const {
+          data: {
+            pipelineCreate: { errors, pipeline },
+          },
+        } = await this.$apollo.mutate({
+          mutation: createPipelineMutation,
+          variables: {
+            input: {
+              projectPath: this.projectPath,
+              ref: this.refShortName,
+              variables: filterVariables(this.variables),
+            },
+          },
+        });
 
-      const { data } = await this.$apollo.mutate({
-        mutation: createPipelineMutation,
-        variables: {
-          endpoint: this.pipelinesPath,
-          // send shortName as fall back for query params
-          // https://gitlab.com/gitlab-org/gitlab/-/issues/287815
-          ref: this.refQueryParam,
-          variablesAttributes: filterVariables(this.variables),
-        },
-      });
+        const pipelineErrors = pipeline?.errorMessages?.nodes?.map((node) => node?.content) || '';
+        const totalWarnings = pipeline?.warningMessages?.nodes?.length || 0;
 
-      const { id, errors, totalWarnings, warnings } = data.createPipeline;
+        if (pipeline?.path) {
+          visitUrl(pipeline.path);
+        } else if (errors?.length > 0 || pipelineErrors.length || totalWarnings) {
+          const warnings = pipeline?.warningMessages?.nodes?.map((node) => node?.content) || '';
+          const error = errors[0] || pipelineErrors[0] || '';
 
-      if (id) {
-        visitUrl(`${this.pipelinesPath}/${id}`);
-        return;
+          this.reportError({
+            title: i18n.submitErrorTitle,
+            error,
+            warnings,
+            totalWarnings,
+          });
+        }
+      } catch (error) {
+        createAlert({ message: i18n.submitErrorTitle });
+        Sentry.captureException(error);
       }
 
       // always re-enable submit button
       this.submitted = false;
-      const [error] = errors;
-
-      this.reportError({
-        title: i18n.submitErrorTitle,
-        error,
-        warnings,
-        totalWarnings,
-      });
     },
     onRefsLoadingError(error) {
       this.reportError({ title: i18n.refsLoadingErrorTitle });
@@ -397,8 +409,11 @@ export default {
         value: option,
       }));
     },
+    getPipelineAriaLabel(index) {
+      return `${this.$options.i18n.pipelineAriaLabel} ${index + 1}`;
+    },
   },
-  learnMorePath: helpPagePath('ci/variables/index', {
+  learnMorePath: helpPagePath('ci/variables/_index', {
     anchor: 'cicd-variable-precedence',
   }),
 };
@@ -477,6 +492,7 @@ export default {
             :selected="variable.variable_type"
             block
             fluid-width
+            :aria-label="getPipelineAriaLabel(index)"
             :class="$options.formElementClasses"
             data-testid="pipeline-form-ci-variable-type"
             @select="setVariableAttribute(variable.key, 'variable_type', $event)"

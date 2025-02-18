@@ -1057,10 +1057,6 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   end
 
   describe 'GET /users/:id_or_username/status' do
-    before do
-      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
-    end
-
     context 'when finding the user by id' do
       it_behaves_like 'rendering user status' do
         let(:path) { "/users/#{user.id}/status" }
@@ -1079,20 +1075,33 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       end
     end
 
-    context 'when the rate limit has been reached' do
-      let(:path) { "/users/#{user.username.upcase}/status" }
+    context 'when rate limited' do
+      let(:current_user) { create(:user) }
+      let(:path) { "/users/#{user.username}/status" }
+      let(:request) { get api(path, current_user) }
 
-      before do
-        stub_feature_flags(rate_limiting_user_endpoints: true)
-      end
+      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
+        before do
+          stub_feature_flags(rate_limiting_user_endpoints: true)
+        end
 
-      it 'returns status 429 Too Many Requests', :aggregate_failures do
-        ip = '1.2.3.4'
-        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_status, scope: ip).and_return(true)
+        context 'when user is authenticated' do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_status do
+            def request
+              get api(path, current_user)
+            end
+          end
+        end
 
-        get api(path, user), env: { REMOTE_ADDR: ip }
+        context 'when user is unauthenticated' do
+          let(:current_user) { nil }
 
-        expect(response).to have_gitlab_http_status(:too_many_requests)
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_status do
+            def request
+              get api(path, current_user)
+            end
+          end
+        end
       end
     end
   end
@@ -1218,15 +1227,40 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         expect(json_response).to be_empty
       end
     end
+
+    context 'when rate limited' do
+      let(:current_user) { create(:user) }
+      let(:request) { get api(path, current_user) }
+
+      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
+        before do
+          stub_feature_flags(rate_limiting_user_endpoints: true)
+        end
+
+        context 'when user is authenticated' do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_followers do
+            def request
+              get api(path, current_user)
+            end
+          end
+        end
+
+        context 'when user is unauthenticated' do
+          let(:current_user) { nil }
+
+          it 'returns 403' do
+            request
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+      end
+    end
   end
 
   describe 'GET /users/:id/following' do
     let(:followee) { create(:user) }
-    let(:path) { "/users/#{user.id}/followers" }
-
-    before do
-      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
-    end
+    let(:path) { "/users/#{user.id}/following" }
 
     context 'for an anonymous user' do
       it 'returns 403' do
@@ -1267,18 +1301,32 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       end
     end
 
-    context 'when the rate limit has been reached' do
-      before do
-        stub_feature_flags(rate_limiting_user_endpoints: true)
-      end
+    context 'when rate limited' do
+      let(:current_user) { create(:user) }
+      let(:request) { get api(path, current_user) }
 
-      it 'returns status 429 Too Many Requests', :aggregate_failures do
-        ip = '1.2.3.4'
-        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_followers, scope: ip).and_return(true)
+      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
+        before do
+          stub_feature_flags(rate_limiting_user_endpoints: true)
+        end
 
-        get api(path, user), env: { REMOTE_ADDR: ip }
+        context 'when user is authenticated' do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_following do
+            def request
+              get api(path, current_user)
+            end
+          end
+        end
 
-        expect(response).to have_gitlab_http_status(:too_many_requests)
+        context 'when user is unauthenticated' do
+          let(:current_user) { nil }
+
+          it 'returns 403' do
+            request
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
       end
     end
   end
@@ -2489,10 +2537,6 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
     let(:path) { "/users/#{user.id}/keys" }
 
-    before do
-      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
-    end
-
     it 'returns 404 for non-existing user' do
       get api("/users/#{non_existing_record_id}/keys")
 
@@ -2541,14 +2585,32 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       end
     end
 
-    context 'when the rate limit has been reached' do
-      it 'returns status 429 Too Many Requests', :aggregate_failures do
-        ip = '1.2.3.4'
-        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_keys, scope: ip).and_return(true)
+    context 'when rate limited' do
+      let(:current_user) { create(:user) }
+      let(:request) { get api(path, current_user) }
 
-        get api(path), env: { REMOTE_ADDR: ip }
+      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
+        before do
+          stub_feature_flags(rate_limiting_user_endpoints: true)
+        end
 
-        expect(response).to have_gitlab_http_status(:too_many_requests)
+        context 'when user is authenticated' do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_keys do
+            def request
+              get api(path, current_user)
+            end
+          end
+        end
+
+        context 'when user is unauthenticated' do
+          let(:current_user) { nil }
+
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_keys do
+            def request
+              get api(path, current_user)
+            end
+          end
+        end
       end
     end
   end
@@ -2593,10 +2655,6 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   describe 'GET /user/:id/keys/:key_id' do
     let(:path) { "/users/#{user.id}/keys/#{key.id}" }
 
-    before do
-      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
-    end
-
     it 'gets existing key' do
       user.keys << key
 
@@ -2622,14 +2680,32 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(json_response['message']).to eq('404 Key Not Found')
     end
 
-    context 'when the rate limit has been reached' do
-      it 'returns status 429 Too Many Requests', :aggregate_failures do
-        ip = '1.2.3.4'
-        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_specific_key, scope: ip).and_return(true)
+    context 'when rate limited' do
+      let(:current_user) { create(:user) }
+      let(:request) { get api(path, current_user) }
 
-        get api(path), env: { REMOTE_ADDR: ip }
+      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
+        before do
+          stub_feature_flags(rate_limiting_user_endpoints: true)
+        end
 
-        expect(response).to have_gitlab_http_status(:too_many_requests)
+        context 'when user is authenticated' do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_specific_key do
+            def request
+              get api(path, current_user)
+            end
+          end
+        end
+
+        context 'when user is unauthenticated' do
+          let(:current_user) { nil }
+
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_specific_key do
+            def request
+              get api(path, current_user)
+            end
+          end
+        end
       end
     end
   end
@@ -2711,10 +2787,6 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   describe 'GET /user/:id/gpg_keys' do
     let(:path) { "/users/#{user.id}/gpg_keys" }
 
-    before do
-      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
-    end
-
     it 'returns 404 for non-existing user' do
       get api("/users/#{non_existing_record_id}/gpg_keys")
 
@@ -2733,24 +2805,38 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(json_response.first['key']).to eq(gpg_key.key)
     end
 
-    context 'when the rate limit has been reached' do
-      it 'returns status 429 Too Many Requests', :aggregate_failures do
-        ip = '1.2.3.4'
-        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_gpg_keys, scope: ip).and_return(true)
+    context 'when rate limited' do
+      let(:current_user) { create(:user) }
+      let(:request) { get api(path, current_user) }
 
-        get api(path), env: { REMOTE_ADDR: ip }
+      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
+        before do
+          stub_feature_flags(rate_limiting_user_endpoints: true)
+        end
 
-        expect(response).to have_gitlab_http_status(:too_many_requests)
+        context 'when user is authenticated' do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_keys do
+            def request
+              get api(path, current_user)
+            end
+          end
+        end
+
+        context 'when user is unauthenticated' do
+          let(:current_user) { nil }
+
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_keys do
+            def request
+              get api(path, current_user)
+            end
+          end
+        end
       end
     end
   end
 
   describe 'GET /user/:id/gpg_keys/:key_id' do
     let(:path) { "/users/#{user.id}/gpg_keys/#{gpg_key.id}" }
-
-    before do
-      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
-    end
 
     it 'returns 404 for non-existing user' do
       get api("/users/#{non_existing_record_id}/gpg_keys/1")
@@ -2775,14 +2861,32 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(json_response['key']).to eq(gpg_key.key)
     end
 
-    context 'when the rate limit has been reached' do
-      it 'returns status 429 Too Many Requests', :aggregate_failures do
-        ip = '1.2.3.4'
-        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_specific_gpg_key, scope: ip).and_return(true)
+    context 'when rate limited' do
+      let(:current_user) { create(:user) }
+      let(:request) { get api(path, current_user) }
 
-        get api(path), env: { REMOTE_ADDR: ip }
+      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
+        before do
+          stub_feature_flags(rate_limiting_user_endpoints: true)
+        end
 
-        expect(response).to have_gitlab_http_status(:too_many_requests)
+        context 'when user is authenticated' do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_specific_gpg_key do
+            def request
+              get api(path, current_user)
+            end
+          end
+        end
+
+        context 'when user is unauthenticated' do
+          let(:current_user) { nil }
+
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_specific_gpg_key do
+            def request
+              get api(path, current_user)
+            end
+          end
+        end
       end
     end
   end

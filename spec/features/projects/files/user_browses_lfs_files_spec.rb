@@ -7,6 +7,7 @@ RSpec.describe 'Projects > Files > User browses LFS files', feature_category: :s
   let(:user) { project.first_owner }
 
   before do
+    stub_feature_flags(blob_overflow_menu: false)
     sign_in(user)
   end
 

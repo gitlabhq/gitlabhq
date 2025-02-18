@@ -2,24 +2,26 @@
 stage: Monitor
 group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Usage statistics
 ---
 
-# Usage statistics
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab Inc. periodically collects information about your instance in order
 to perform various actions.
 
-For free self-managed instances, all usage statistics are [opt-out](#enable-or-disable-service-ping).
+For free GitLab Self-Managed instances, all usage statistics are [opt-out](#enable-or-disable-service-ping).
 For information about other tiers, see [Customer Product Usage Information](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/#service-ping-formerly-known-as-usage-ping).
 
 ## Service Ping
 
 Service Ping is a process that collects and sends a weekly payload to GitLab Inc.
-For more information, see the [Service Ping guide](../../development/internal_analytics/service_ping/index.md). When Service Ping is enabled, GitLab gathers data from other instances and enables certain [instance-level analytics features](../../user/analytics/index.md)
+For more information, see the [Service Ping guide](../../development/internal_analytics/service_ping/_index.md). When Service Ping is enabled, GitLab gathers data from other instances and enables certain [instance-level analytics features](../../user/analytics/_index.md)
 that are dependent on Service Ping.
 
 ### Why enable Service Ping?
@@ -39,13 +41,16 @@ There are several other benefits to enabling Service Ping:
 
 ## Registration Features Program
 
-In GitLab versions 14.1 and later, GitLab Free customers with a self-managed instance running
+In GitLab versions 14.1 and later, GitLab Free customers with a GitLab Self-Managed instance running
 GitLab Enterprise Edition can receive paid features by registering with GitLab and sending us
 activity data through Service Ping. Features introduced here do not remove the feature from its paid
 tier. Instances on a paid tier are subject to our [Product Usage Data policy](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/) managed by [Cloud Licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
 
-NOTE:
+{{< alert type="note" >}}
+
 Registration is not required for participation.
+
+{{< /alert >}}
 
 ### Available features
 
@@ -57,28 +62,28 @@ In the following table, you can see:
 | Feature | Available in |
 | ------ | ------ |
 | [Email from GitLab](../email_from_gitlab.md)       |   GitLab 14.1 and later     |
-| [Repository size limit](../../administration/settings/account_and_limit_settings.md#repository-size-limit) | GitLab 14.4 and later |
+| [Repository size limit](../settings/account_and_limit_settings.md#repository-size-limit) | GitLab 14.4 and later |
 | [Group access restriction by IP address](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address) | GitLab 14.4 and later |
-| [View description change history](../../user/discussions/index.md#view-description-change-history) | GitLab 16.0 and later |
-| [Maintenance mode](../maintenance_mode/index.md) | GitLab 16.0 and later |
+| [View description change history](../../user/discussions/_index.md#view-description-change-history) | GitLab 16.0 and later |
+| [Maintenance mode](../maintenance_mode/_index.md) | GitLab 16.0 and later |
 | [Configurable issue boards](../../user/project/issue_board.md#configurable-issue-boards) | GitLab 16.0 and later |
-| [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/index.md) | GitLab 16.0 and later |
-| [Password complexity requirements](../../administration/settings/sign_up_restrictions.md#password-complexity-requirements) | GitLab 16.0 and later |
+| [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/_index.md) | GitLab 16.0 and later |
+| [Password complexity requirements](../settings/sign_up_restrictions.md#password-complexity-requirements) | GitLab 16.0 and later |
 | [Group wikis](../../user/project/wiki/group.md) | GitLab 16.5 and later |
-| [Issue analytics](../../user/group/issues_analytics/index.md) | GitLab 16.5 and later |
-| [Custom Text in Emails](../../administration/settings/email.md#custom-additional-text) | GitLab 16.5 and later |
-| [Contribution analytics](../../user/group/contribution_analytics/index.md) | GitLab 16.5 and later |
+| [Issue analytics](../../user/group/issues_analytics/_index.md) | GitLab 16.5 and later |
+| [Custom Text in Emails](../settings/email.md#custom-additional-text) | GitLab 16.5 and later |
+| [Contribution analytics](../../user/group/contribution_analytics/_index.md) | GitLab 16.5 and later |
 | [Group file templates](../../user/group/manage.md#group-file-templates) | GitLab 16.6 and later |
 | [Group webhooks](../../user/project/integrations/webhooks.md#group-webhooks) | GitLab 16.6 and later |
 | [Service Level Agreement countdown timer](../../operations/incident_management/incidents.md#service-level-agreement-countdown-timer) | GitLab 16.6 and later |
 | [Lock project membership to group](../../user/group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) | GitLab 16.6 and later |
-| [Users and permissions report](../../administration/admin_area.md#user-permission-export) | GitLab 16.6 and later |
+| [Users and permissions report](../admin_area.md#user-permission-export) | GitLab 16.6 and later |
 | [Advanced search](../../user/search/advanced_search.md) | GitLab 16.6 and later |
-| [DevOps Adoption](../../user/group/devops_adoption/index.md) | GitLab 16.6 and later |
-| [Сross-project pipelines with artifacts dependencies](../../ci/yaml/index.md#needsproject) | GitLab 16.7 and later |
+| [DevOps Adoption](../../user/group/devops_adoption/_index.md) | GitLab 16.6 and later |
+| [Сross-project pipelines with artifacts dependencies](../../ci/yaml/_index.md#needsproject) | GitLab 16.7 and later |
 | [Feature flag related issues](../../operations/feature_flags.md#feature-flag-related-issues) | GitLab 16.7 and later |
 | [Merged results pipelines](../../ci/pipelines/merged_results_pipelines.md) | GitLab 16.7 and later |
-| [CI/CD for external repositories](../../ci/ci_cd_for_external_repos/index.md) | GitLab 16.7 and later |
+| [CI/CD for external repositories](../../ci/ci_cd_for_external_repos/_index.md) | GitLab 16.7 and later |
 | [CI/CD for GitHub](../../ci/ci_cd_for_external_repos/github_integration.md) | GitLab 16.7 and later |
 
 ### Enable registration features
@@ -114,8 +119,8 @@ for all authenticated users, and on the **Admin** area pages. The statuses are:
 
 ### Request flow example
 
-The following example shows a basic request/response flow between a
-GitLab Self-Managed instance and the GitLab Version Application:
+The following example shows a basic request/response flow between your
+instance and the GitLab Version Application:
 
 ```mermaid
 sequenceDiagram
@@ -135,12 +140,15 @@ If your GitLab instance is behind a proxy, set the appropriate
 
 ## Enable or disable Service Ping
 
-NOTE:
+{{< alert type="note" >}}
+
 Whether you can disable Service Ping completely depends on the instance's tier and the specific license.
 For more information, see [Customer Product Usage Information](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/#service-ping-formerly-known-as-usage-ping).
 Service Ping settings only control whether the data is being shared with GitLab, or limited to only internal use by the instance.
 Even if you disable Service Ping, the `gitlab_service_ping_worker` background job still periodically generates a Service Ping payload for your instance.
 The payload is available in the [Metrics and profiling](#manually-upload-service-ping-payload) admin section.
+
+{{< /alert >}}
 
 ### Through the UI
 
@@ -157,9 +165,9 @@ To enable or disable Service Ping:
 To disable Service Ping and prevent it from being configured in the future through
 the **Admin** area.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -173,7 +181,9 @@ the **Admin** area.
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -191,7 +201,9 @@ the **Admin** area.
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Enable or disable optional data in Service Ping
 
@@ -210,9 +222,9 @@ To enable or disable optional data in Service Ping:
 
 ### Through the configuration file
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -226,7 +238,9 @@ To enable or disable optional data in Service Ping:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -244,12 +258,14 @@ To enable or disable optional data in Service Ping:
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Access the Service Ping payload
 
 You can access the exact JSON payload sent to GitLab Inc. in the **Admin** area or through the API.
-See an [example Service Ping payload](../../development/internal_analytics/service_ping/index.md#example-service-ping-payload).
+See an [example Service Ping payload](../../development/internal_analytics/service_ping/_index.md#example-service-ping-payload).
 
 ### In the UI
 
@@ -265,7 +281,7 @@ See [service ping API documentation](../../api/usage_data.md).
 ## Manually upload Service Ping payload
 
 You can upload the Service Ping payload to GitLab even if your instance doesn't have internet access,
-or if the Service Ping [cron job](../../development/internal_analytics/service_ping/index.md#how-service-ping-works) is not enabled.
+or if the Service Ping [cron job](../../development/internal_analytics/service_ping/_index.md#how-service-ping-works) is not enabled.
 
 To upload the payload manually:
 

@@ -391,6 +391,7 @@ export default {
                     __typename: 'WorkItemWidgetHierarchy',
                     type: 'HIERARCHY',
                     hasChildren: false,
+                    hasParent: true,
                     depthLimitReachedByType: [],
                     rolledUpCountsByType: [],
                     parent: { id: toParentId },
@@ -410,6 +411,7 @@ export default {
                     __typename: 'WorkItemWidgetHierarchy',
                     type: 'HIERARCHY',
                     hasChildren: true,
+                    hasParent: true,
                     depthLimitReachedByType: [],
                     rolledUpCountsByType: [],
                     parent: null,
@@ -490,6 +492,9 @@ export default {
       }
     },
     onClick(event, child) {
+      if (event.metaKey || event.ctrlKey) {
+        return;
+      }
       if (this.isTopLevel) {
         this.$emit('show-modal', { event, child: event.childItem || child });
       } else {

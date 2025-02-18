@@ -3,11 +3,11 @@ hostname: gdk.test
 sshd:
   additional_config: 'AcceptEnv GIT_PROTOCOL'
 webpack:
+  enabled: false
   live_reload: false
   sourcemaps: false
   incremental: false
   static: true
-  enabled: true
 vite:
   enabled: false
   hot_module_reloading: false
@@ -36,4 +36,4 @@ tracer:
     enabled: false
 # https://gitlab.com/gitlab-org/gitlab/-/issues/471172
 gitlab_http_router:
-  enabled: false
+  enabled: true

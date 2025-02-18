@@ -2,21 +2,23 @@
 stage: Monitor
 group: Analytics Instrumentation
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Migrating existing tracking to internal event tracking
 ---
-
-# Migrating existing tracking to internal event tracking
 
 GitLab Internal Events Tracking exposes a unified API on top of the deprecated Snowplow and Redis/RedisHLL event tracking options.
 
 This page describes how you can switch from one of the previous methods to using Internal Events Tracking.
 
-NOTE:
+{{< alert type="note" >}}
+
 Tracking events directly via Snowplow, Redis/RedisHLL is deprecated but won't be removed in the foreseeable future.
 While we encourage you to migrate to Internal Event tracking the deprecated methods will continue to work for existing events and metrics.
 
+{{< /alert >}}
+
 ## Migrating from existing Snowplow tracking
 
-If you are already tracking events in Snowplow, you can also start collecting metrics from self-managed instances by switching to Internal Events Tracking.
+If you are already tracking events in Snowplow, you can also start collecting metrics from GitLab Self-Managed instances by switching to Internal Events Tracking.
 
 The event triggered by Internal Events has some special properties compared to previously tracking with Snowplow directly:
 
@@ -191,6 +193,6 @@ To start using Internal Events Tracking, follow these steps:
 
 ### Frontend
 
-If you are calling `trackRedisHllUserEvent` in the frontend to track the frontend event, you can convert this to Internal events by using mixin, raw JavaScript or data tracking attribute,
+You can convert `trackRedisHllUserEvent` calls to Internal events by using the mixin, raw JavaScript, or the `data-event-tracking` attribute.
 
-[Quick start guide](quick_start.md#frontend-tracking) has example for each methods.
+[Quick start guide](quick_start.md#frontend-tracking) has examples for each method.

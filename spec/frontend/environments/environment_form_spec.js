@@ -106,7 +106,7 @@ describe('~/environments/components/form.vue', () => {
 
     it('links to documentation regarding environments', () => {
       const link = wrapper.findByRole('link', { name: 'More information.' });
-      expect(link.attributes('href')).toBe('/help/ci/environments/index.md');
+      expect(link.attributes('href')).toBe('/help/ci/environments/_index.md');
     });
 
     it('links to documentation regarding granting kubernetes access', () => {

@@ -29,7 +29,7 @@ export default {
     <template v-if="keys.length > 0">
       <div
         role="row"
-        class="gl-responsive-table-row table-row-header !gl-border-default gl-bg-gray-10 gl-text-base gl-font-bold gl-text-strong md:gl-pl-5 md:gl-pr-5"
+        class="gl-responsive-table-row table-row-header !gl-border-default gl-bg-subtle gl-text-base gl-font-bold gl-text-strong md:gl-pl-5 md:gl-pr-5"
       >
         <div role="rowheader" class="table-section section-40">
           {{ s__('DeployKeys|Deploy key') }}
@@ -48,7 +48,7 @@ export default {
         :project-id="projectId"
       />
     </template>
-    <div v-else class="gl-bg-gray-10 gl-p-5 gl-text-subtle" data-testid="empty-state">
+    <div v-else class="gl-bg-subtle gl-p-5 gl-text-subtle" data-testid="empty-state">
       <span v-if="hasSearch">{{ s__('DeployKeys|No search results found.') }}</span>
       <span v-else>{{
         s__('DeployKeys|No deploy keys found, start by adding a new one above.')

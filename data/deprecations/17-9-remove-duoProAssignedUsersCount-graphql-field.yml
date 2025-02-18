@@ -1,0 +1,16 @@
+- title: "Remove duoProAssignedUsersCount GraphQL field"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.9"
+  breaking_change: true
+  window: 3
+  reporter: hsnir1
+  stage: plan
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/498671
+  # Use the impact calculator https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
+  impact: low # Can be one of: [critical, high, medium, low]
+  scope: group, project # Can be one or a combination of: [instance, group, project]
+  resolution_role: Admin # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: false # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  body: |  # (required) Don't change this line.
+    In 18.0 we are removing the `duoProAssignedUsersCount` GraphQL field. Users may experience issues if they are using this field with the [`aiMetrics` API](https://docs.gitlab.com/api/graphql/reference/#aimetrics), and instead they can use the `duoAssignedUsersCount`. This removal is part of the [fix to count both GitLab Duo Pro and Duo seats assigned users](https://gitlab.com/gitlab-org/gitlab/-/issues/485510).
+  tiers: ultimate

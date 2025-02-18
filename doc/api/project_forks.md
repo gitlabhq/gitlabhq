@@ -2,13 +2,15 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Project forks API
 ---
 
-# Project forks API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can manage [project forks](../user/project/repository/forking_workflow.md) by using the REST API.
 
@@ -30,7 +32,7 @@ POST /projects/:id/fork
 
 | Attribute                | Type              | Required | Description |
 |:-------------------------|:------------------|:---------|:------------|
-| `id`                     | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                     | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `branches`               | string            | No       | Branches to fork (empty for all branches). |
 | `description`            | string            | No       | The description assigned to the resultant project after forking. |
 | `mr_default_target_self` | boolean           | No       | For forked projects, target merge requests to this project. If `false`, the target is the upstream project. |
@@ -53,7 +55,7 @@ Supported attributes:
 
 | Attribute                     | Type              | Required | Description |
 |:------------------------------|:------------------|:---------|:------------|
-| `id`                          | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                          | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `archived`                    | boolean           | No       | Limit by archived status. |
 | `membership`                  | boolean           | No       | Limit by projects that the current user is a member of. |
 | `min_access_level`            | integer           | No       | Limit by current user minimal [role (`access_level`)](members.md#roles). |
@@ -179,7 +181,7 @@ Supported attributes:
 | Attribute        | Type              | Required | Description |
 |:-----------------|:------------------|:---------|:------------|
 | `forked_from_id` | ID                | Yes      | The ID of the project that was forked from. |
-| `id`             | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`             | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ## Delete a fork relationship between projects
 
@@ -197,4 +199,4 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |

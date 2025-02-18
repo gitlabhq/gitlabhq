@@ -2,18 +2,20 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Customizing analyzer settings
 ---
-
-# Customizing analyzer settings
 
 The API fuzzing behavior can be changed through CI/CD variables.
 
 The API fuzzing configuration files must be in your repository's `.gitlab` directory.
 
-WARNING:
+{{< alert type="warning" >}}
+
 All customization of GitLab security scanning tools should be tested in a merge request before
 merging these changes to the default branch. Failure to do so can give unexpected results,
 including a large number of false positives.
+
+{{< /alert >}}
 
 ## Authentication
 
@@ -26,10 +28,10 @@ provide a script that performs an authentication flow or calculates the token.
 is an authentication method built into the HTTP protocol and used in conjunction with
 [transport layer security (TLS)](https://en.wikipedia.org/wiki/Transport_Layer_Security).
 
-We recommended that you [create a CI/CD variable](../../../../ci/variables/index.md#for-a-project)
+We recommended that you [create a CI/CD variable](../../../../ci/variables/_index.md#for-a-project)
 for the password (for example, `TEST_API_PASSWORD`), and set it to be masked. You can create CI/CD
 variables from the GitLab project's page at **Settings > CI/CD**, in the **Variables** section.
-Because of the [limitations on masked variables](../../../../ci/variables/index.md#mask-a-cicd-variable),
+Because of the [limitations on masked variables](../../../../ci/variables/_index.md#mask-a-cicd-variable),
 you should Base64-encode the password before adding it as a variable.
 
 Finally, add two CI/CD variables to your `.gitlab-ci.yml` file:
@@ -74,7 +76,7 @@ outgoing HTTP requests.
 
 Follow these steps to provide the bearer token with `FUZZAPI_OVERRIDES_ENV`:
 
-1. [Create a CI/CD variable](../../../../ci/variables/index.md#for-a-project),
+1. [Create a CI/CD variable](../../../../ci/variables/_index.md#for-a-project),
    for example `TEST_API_BEARERAUTH`, with the value
    `{"headers":{"Authorization":"Bearer dXNlcm5hbWU6cGFzc3dvcmQ="}}` (substitute your token). You
    can create CI/CD variables from the GitLab projects page at **Settings > CI/CD**, in the
@@ -395,7 +397,7 @@ variables:
 ```
 
 In this example `.gitlab-ci.yml`, the `SECRET_OVERRIDES` variable provides the JSON. This is a
-[group or instance level CI/CD variable defined in the UI](../../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui):
+[group or instance level CI/CD variable defined in the UI](../../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui):
 
 ```yaml
 stages:
@@ -422,9 +424,12 @@ to execute. The provided command creates the overrides JSON file as defined prev
 
 You might want to install other scripting runtimes like NodeJS or Ruby, or maybe you need to install a dependency for your overrides command. In this case, you should set the `FUZZAPI_PRE_SCRIPT` to the file path of a script that provides those prerequisites. The script provided by `FUZZAPI_PRE_SCRIPT` is executed once, before the analyzer starts.
 
-NOTE:
+{{< alert type="note" >}}
+
 When performing actions that require elevated permissions, make use of the `sudo` command.
 For example, `sudo apk add nodejs`.
+
+{{< /alert >}}
 
 See the [Alpine Linux package management](https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management)
 page for information about installing Alpine Linux packages.
@@ -439,8 +444,11 @@ Optionally:
 
 - `FUZZAPI_PRE_SCRIPT`: Script to install runtimes or dependencies before the analyzer starts.
 
-WARNING:
+{{< alert type="warning" >}}
+
 To execute scripts in Alpine Linux you must first use the command [`chmod`](https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html) to set the [execution permission](https://www.gnu.org/software/coreutils/manual/html_node/Setting-Permissions.html). For example, to set the execution permission of `script.py` for everyone, use the command: `sudo chmod a+x script.py`. If needed, you can version your `script.py` with the execution permission already set.
+
+{{< /alert >}}
 
 ```yaml
 stages:
@@ -896,8 +904,11 @@ In your job output you can check if any URLs matched any provided regular expres
 2021-05-27 21:51:08 [INF] API Fuzzing: ------------------------------------------------
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Each value in `FUZZAPI_EXCLUDE_URLS` is a regular expression. Characters such as `.` , `*` and `$` among many others have special meanings in [regular expressions](https://en.wikipedia.org/wiki/Regular_expression#Standards).
+
+{{< /alert >}}
 
 ### Examples
 

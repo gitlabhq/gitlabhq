@@ -2,13 +2,15 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Project iterations API
 ---
 
-# Project iterations API
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This page describes the project iterations API.
 There's a separate [group iterations API](group_iterations.md) page.
@@ -20,7 +22,7 @@ We no longer have project-level iterations, but you can use this endpoint to fet
 Returns a list of project iterations.
 
 Iterations created by **Enable automatic scheduling** in
-[Iteration cadences](../user/group/iterations/index.md#iteration-cadences) return `null` for
+[Iteration cadences](../user/group/iterations/_index.md#iteration-cadences) return `null` for
 the `title` and `description` fields.
 
 ```plaintext

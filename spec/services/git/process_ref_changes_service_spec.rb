@@ -54,21 +54,6 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
 
         subject.execute
       end
-
-      context 'when feature throttle_with_process_commit_worker_pool is disabled' do
-        before do
-          allow(push_service_class).to receive(:new).and_return(service)
-          stub_feature_flags(throttle_with_process_commit_worker_pool: false)
-        end
-
-        it 'does not call BranchPushService with process_commit_worker_pool' do
-          next unless push_service_class == Git::BranchPushService
-
-          expect(Gitlab::Git::ProcessCommitWorkerPool).not_to receive(:new)
-
-          subject.execute
-        end
-      end
     end
 
     context 'changes exceed push_event_hooks_limit' do
@@ -201,10 +186,10 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
     end
 
     describe "housekeeping", :clean_gitlab_redis_cache, :clean_gitlab_redis_queues, :clean_gitlab_redis_shared_state do
-      let(:housekeeping) { Repositories::HousekeepingService.new(project) }
+      let(:housekeeping) { ::Repositories::HousekeepingService.new(project) }
 
       before do
-        allow(Repositories::HousekeepingService).to receive(:new).and_return(housekeeping)
+        allow(::Repositories::HousekeepingService).to receive(:new).and_return(housekeeping)
 
         allow(push_service_class)
           .to receive(:new)

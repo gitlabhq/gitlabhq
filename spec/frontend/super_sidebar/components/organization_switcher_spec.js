@@ -185,7 +185,7 @@ describe('OrganizationSwitcher', () => {
           'Switching between organizations is not currently supported.',
         );
         expect(wrapper.findComponent(GlLink).attributes('href')).toBe(
-          helpPagePath('user/organization/index.md', {
+          helpPagePath('user/organization/_index.md', {
             anchor: 'switch-organizations',
           }),
         );

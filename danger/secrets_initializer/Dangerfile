@@ -5,6 +5,6 @@ if helper.all_changed_files.detect { |file| file == 'config/initializers/01_secr
    ## Application secrets changes
 
    This merge request makes changes to application secrets.
-   Please review the [required steps to avoid upgrade or deployment problems](https://docs.gitlab.com/ee/development/application_secrets.html#warning-before-you-add-a-new-secret-to-application-secrets).
+   Please review the [required steps to avoid upgrade or deployment problems](https://docs.gitlab.com/development/application_secrets/#warning-before-you-add-a-new-secret-to-application-secrets).
   MSG
 end

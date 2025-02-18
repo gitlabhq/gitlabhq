@@ -48,34 +48,83 @@ module Gitlab
         describe '#uses_keyword?' do
           subject { result.uses_keyword?(keyword) }
 
-          let(:keyword) { :run }
-
-          context 'when the :run keyword is present in a job' do
-            let(:config_content) do
-              <<~YAML
+          using_table = {
+            run: {
+              present: <<~YAML,
                 job1:
-                  script: echo 'hello'
+                  script: echo
                 job2:
                   run:
                     - name: test_run
                       script: echo run step
               YAML
-            end
-
-            it { is_expected.to be_truthy }
-          end
-
-          context 'when the :run keyword is not present in any job' do
-            let(:config_content) do
-              <<~YAML
+              absent: <<~YAML
                 job1:
-                  script: echo 'hello'
+                  script: echo
                 job2:
-                  script: echo 'world'
+                  script: echo
               YAML
-            end
+            },
+            only: {
+              present: <<~YAML,
+                job1:
+                  script: echo
+                  only:
+                    - main
+                    - /^issue-.*$/
+                    - merge_requests
+                job2:
+                  script: echo
+              YAML
+              absent: <<~YAML
+                job1:
+                  script: echo
+                  rules:
+                    - if: $CI_COMMIT_BRANCH
+                    - if: $CI_COMMIT_TAG
+                job2:
+                  script: echo
+                  rules:
+                    - if: $CI_COMMIT_BRANCH
+                    - if: $CI_COMMIT_TAG
+              YAML
+            },
+            except: {
+              present: <<~YAML,
+                job1:
+                  script: echo
+                job2:
+                  script: echo
+                  except:
+                    - main
+                    - /^stable-branch.*$/
+                    - schedules
+              YAML
+              absent: <<~YAML
+                job1:
+                  script: echo
+                job2:
+                  script: echo
+              YAML
+            }
+          }
 
-            it { is_expected.to be_falsy }
+          using_table.each do |tested_keyword, configs|
+            context "when checking for :#{tested_keyword} keyword" do
+              let(:keyword) { tested_keyword }
+
+              context "when the :#{tested_keyword} keyword is present in a job" do
+                let(:config_content) { configs[:present] }
+
+                it { is_expected.to be_truthy }
+              end
+
+              context "when the :#{tested_keyword} keyword is not present in any job" do
+                let(:config_content) { configs[:absent] }
+
+                it { is_expected.to be_falsey }
+              end
+            end
           end
         end
 

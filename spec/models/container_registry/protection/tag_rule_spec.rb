@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_category: :container_registry do
+  using RSpec::Parameterized::TableSyntax
+
   it_behaves_like 'having unique enum values'
 
   describe 'relationships' do
@@ -39,8 +41,6 @@ RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_cat
     subject { build(:container_registry_protection_tag_rule) }
 
     describe '#tag_name_pattern' do
-      it { is_expected.to validate_presence_of(:minimum_access_level_for_delete) }
-      it { is_expected.to validate_presence_of(:minimum_access_level_for_push) }
       it { is_expected.to validate_presence_of(:tag_name_pattern) }
       it { is_expected.to validate_length_of(:tag_name_pattern).is_at_most(100) }
       it { is_expected.to validate_uniqueness_of(:tag_name_pattern).scoped_to(:project_id) }
@@ -55,6 +55,53 @@ RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_cat
 
         invalid_regexps.each do |invalid_regexp|
           it { is_expected.not_to allow_value(invalid_regexp).for(:tag_name_pattern) }
+        end
+      end
+    end
+
+    describe '#validate_access_levels' do
+      subject(:tag_rule) { described_class.new(attributes) }
+
+      let(:minimum_access_level_for_delete) { Gitlab::Access::ADMIN }
+      let(:minimum_access_level_for_push) { Gitlab::Access::OWNER }
+      let(:attributes) do
+        {
+          tag_name_pattern: '.*',
+          minimum_access_level_for_delete: minimum_access_level_for_delete,
+          minimum_access_level_for_push: minimum_access_level_for_push
+        }
+      end
+
+      context 'when both access levels are present' do
+        it 'is valid' do
+          expect(tag_rule).to be_valid
+        end
+      end
+
+      context 'when both access levels are nil' do
+        let(:minimum_access_level_for_delete) { nil }
+        let(:minimum_access_level_for_push) { nil }
+
+        it 'is valid' do
+          expect(tag_rule).to be_valid
+        end
+      end
+
+      context 'when minimum_access_level_for_push is nil' do
+        let(:minimum_access_level_for_push) { nil }
+
+        it 'is not valid' do
+          expect(tag_rule).not_to be_valid
+          expect(tag_rule.errors[:base]).to include('Access levels should either both be present or both be nil')
+        end
+      end
+
+      context 'when minimum_access_level_for_delete is nil' do
+        let(:minimum_access_level_for_delete) { nil }
+
+        it 'is not valid' do
+          expect(tag_rule).not_to be_valid
+          expect(tag_rule.errors[:base]).to include('Access levels should either both be present or both be nil')
         end
       end
     end
@@ -96,8 +143,6 @@ RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_cat
       rule_four
     end
 
-    using RSpec::Parameterized::TableSyntax
-
     where(:user_access_level, :actions, :expected_rules) do
       Gitlab::Access::DEVELOPER  | ['push']         | lazy { [rule_one, rule_two, rule_three, rule_four] }
       Gitlab::Access::DEVELOPER  | ['delete']       | lazy { [rule_one, rule_two, rule_three, rule_four] }
@@ -121,6 +166,66 @@ RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_cat
       it 'returns the expected rules' do
         is_expected.to match_array(expected_rules)
       end
+    end
+  end
+
+  describe '.for_delete_and_access' do
+    let_it_be(:rule_one) do
+      create(:container_registry_protection_tag_rule,
+        tag_name_pattern: 'one',
+        minimum_access_level_for_push: :maintainer,
+        minimum_access_level_for_delete: :maintainer)
+    end
+
+    let_it_be(:rule_two) do
+      create(:container_registry_protection_tag_rule,
+        tag_name_pattern: 'two',
+        minimum_access_level_for_push: :owner,
+        minimum_access_level_for_delete: :maintainer)
+    end
+
+    let_it_be(:rule_three) do
+      create(:container_registry_protection_tag_rule,
+        tag_name_pattern: 'three',
+        minimum_access_level_for_push: :maintainer,
+        minimum_access_level_for_delete: :admin)
+    end
+
+    let_it_be(:rule_four) do
+      create(:container_registry_protection_tag_rule,
+        tag_name_pattern: 'four',
+        minimum_access_level_for_push: :admin,
+        minimum_access_level_for_delete: :admin)
+    end
+
+    where(:user_access_level, :expected_rules) do
+      Gitlab::Access::DEVELOPER  | [ref(:rule_one), ref(:rule_two), ref(:rule_three), ref(:rule_four)]
+      Gitlab::Access::MAINTAINER | [ref(:rule_three), ref(:rule_four)]
+      Gitlab::Access::OWNER      | [ref(:rule_three), ref(:rule_four)]
+      Gitlab::Access::ADMIN      | []
+    end
+
+    with_them do
+      subject { described_class.for_delete_and_access(user_access_level) }
+
+      it 'returns the expected rules' do
+        is_expected.to match_array(expected_rules)
+      end
+    end
+  end
+
+  describe '.tag_name_patterns_for_projects' do
+    let_it_be(:rule) { create(:container_registry_protection_tag_rule) }
+    let_it_be(:rule2) { create(:container_registry_protection_tag_rule) }
+
+    subject(:result) { described_class.tag_name_patterns_for_project(rule.project_id) }
+
+    it 'contains matched rule' do
+      expect(result.pluck(:tag_name_pattern)).to contain_exactly(rule.tag_name_pattern)
+    end
+
+    it 'selects only the tag_name_pattern' do
+      expect(result.select_values).to contain_exactly(:tag_name_pattern)
     end
   end
 

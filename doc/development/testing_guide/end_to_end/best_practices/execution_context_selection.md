@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Execution context selection
 ---
-
-# Execution context selection
 
 Some tests are designed to be run against specific environments, or in specific [pipelines](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/debugging-qa-test-failures/#qa-test-pipelines) or jobs. We can specify the test execution context using the `only` and `except` metadata.
 
@@ -19,10 +18,13 @@ Some tests are designed to be run against specific environments, or in specific 
 | `pipeline`   | Match a pipeline                 | `Array` or `Static` |
 | `job`        | Match a job                      | `Array` or `Static` |
 
-WARNING:
+{{< alert type="warning" >}}
+
 You cannot specify `:production` and `{ <switch>: 'value' }` simultaneously.
 These options are mutually exclusive. If you want to specify production, you
 can control the `tld` and `domain` independently.
+
+{{< /alert >}}
 
 ## Examples
 

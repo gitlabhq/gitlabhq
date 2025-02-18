@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Linux cheat sheet
 ---
 
-# Linux cheat sheet
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This is the GitLab Support Team's collection of information regarding Linux, that they
 sometimes use while troubleshooting. It is listed here for transparency,
@@ -16,10 +18,13 @@ and for users with experience with Linux. If you are currently
 having an issue with GitLab, you may want to check your [support options](https://about.gitlab.com/support/)
 first, before attempting to use this information.
 
-WARNING:
+{{< alert type="warning" >}}
+
 It is [beyond the scope of GitLab Support to assist in systems administration](https://about.gitlab.com/support/statement-of-support/#training). GitLab administrators are expected to know these commands for their distribution
 of choice. If you are a GitLab Support Engineer, consider this a cross-reference to
 translate `yum` -> `apt-get` and the like.
+
+{{< /alert >}}
 
 Most of the commands below have not been labeled as to which distribution they work
 on. Contributions are welcome to help add them.

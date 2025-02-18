@@ -1,0 +1,12 @@
+---
+api_type:
+attr: anti_abuse_settings
+clusterwide: true
+column: anti_abuse_settings
+db_type: jsonb
+default: "'{}'::jsonb"
+description: Configuration settings related to anti-abuse features
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

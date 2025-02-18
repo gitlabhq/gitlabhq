@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Performance tuning and testing speed
 ---
-
-# Performance tuning and testing speed
 
 Security tools that perform dynamic analysis testing, such as API security testing, perform testing by sending requests to an instance of your running application. The requests are engineered to test for specific vulnerabilities that might exist in your application. The speed of a dynamic analysis test depends on the following:
 
@@ -106,8 +105,11 @@ api_security:
     APISEC_EXCLUDE_PATHS: /api/large_response_json
 ```
 
+{{< alert type="warning" >}}
+
 Excluding operations from testing could allow some vulnerabilities to go undetected.
-{: .alert .alert-warning}
+
+{{< /alert >}}
 
 ### Splitting a test into multiple jobs
 

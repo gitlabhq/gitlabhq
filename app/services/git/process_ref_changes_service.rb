@@ -57,9 +57,7 @@ module Git
           create_push_event: !create_bulk_push_event
         }
 
-        if ref_type == :branch && Feature.enabled?(:throttle_with_process_commit_worker_pool, project)
-          options[:process_commit_worker_pool] = process_commit_worker_pool
-        end
+        options[:process_commit_worker_pool] = process_commit_worker_pool if ref_type == :branch
 
         push_service_class.new(
           project,
@@ -135,10 +133,10 @@ module Git
     end
 
     def perform_housekeeping
-      housekeeping = Repositories::HousekeepingService.new(project)
+      housekeeping = ::Repositories::HousekeepingService.new(project)
       housekeeping.increment!
       housekeeping.execute if housekeeping.needed?
-    rescue Repositories::HousekeepingService::LeaseTaken
+    rescue ::Repositories::HousekeepingService::LeaseTaken
     end
 
     def process_commit_worker_pool

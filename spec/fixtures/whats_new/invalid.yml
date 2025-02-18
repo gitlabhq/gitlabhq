@@ -4,7 +4,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [ALL]
-  documentation_link: https://docs.gitlab.com/ee/user/project/requirements/index.html
+  documentation_link: https://docs.gitlab.com/ee/user/project/requirements/
   image_url: https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png
   published_at: 2020-04-22
   release: 12.10
@@ -14,7 +14,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free]
-  documentation_link: https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/index.html
+  documentation_link: https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/
   image_url: https://about.gitlab.com/images/12_10/jwt-vault-1.png
   published_at: 2020-04-22
   release: 12.10

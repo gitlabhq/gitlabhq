@@ -156,7 +156,7 @@ export default {
     <div class="gl-mb-2">
       <div
         v-if="shouldShowRefInfo"
-        class="gl-inline-block gl-rounded-base gl-bg-gray-50 gl-px-2 gl-text-subtle"
+        class="gl-inline-block gl-rounded-base gl-bg-strong gl-px-2 gl-text-subtle"
         data-testid="commit-ref-info"
       >
         <gl-icon v-if="tag" name="tag" :size="12" variant="subtle" />
@@ -178,7 +178,7 @@ export default {
         </tooltip-on-truncate>
       </div>
 
-      <div class="gl-inline-block gl-rounded-base gl-bg-gray-50 gl-px-2 gl-text-sm gl-text-default">
+      <div class="gl-inline-block gl-rounded-base gl-bg-strong gl-px-2 gl-text-sm gl-text-default">
         <gl-icon name="commit" class="js-commit-icon" :size="12" />
         <gl-link :href="commitUrl" class="gl-text-gray-700" data-testid="commit-sha">{{
           shortSha

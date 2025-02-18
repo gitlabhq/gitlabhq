@@ -1,0 +1,20 @@
+---
+description: Time series pipeline analytics was collected
+internal_events: true
+action: collect_time_series_pipeline_analytics
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  property:
+    description: "Time series period (for example: day, week, or month)"
+product_group: runner
+product_categories:
+- fleet_visibility
+milestone: '17.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179014
+tiers:
+- free
+- premium
+- ultimate

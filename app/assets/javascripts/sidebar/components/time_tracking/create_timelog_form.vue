@@ -226,6 +226,7 @@ export default {
         <gl-form-group
           key="spent-at"
           optional
+          :optional-text="__('(optional)')"
           label-for="spent-at"
           :label="s__(`CreateTimelogForm|Spent at`)"
         >
@@ -240,7 +241,12 @@ export default {
           />
         </gl-form-group>
       </div>
-      <gl-form-group :label="s__('CreateTimelogForm|Summary')" optional label-for="summary">
+      <gl-form-group
+        :label="s__('CreateTimelogForm|Summary')"
+        optional
+        :optional-text="__('(optional)')"
+        label-for="summary"
+      >
         <gl-form-textarea id="summary" v-model="summary" rows="3" no-resize />
       </gl-form-group>
       <gl-alert v-if="saveError" variant="danger" class="gl-mb-3" :dismissible="false">

@@ -2,13 +2,15 @@
 stage: Verify
 group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Job logs
 ---
 
-# Job logs
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Job logs are sent by a runner while it's processing a job. You can see
 logs in places like job pages, pipelines, and email notifications.
@@ -31,15 +33,18 @@ The `ROOT_PATH` varies per environment:
 
 ## Changing the job logs local location
 
-NOTE:
+{{< alert type="note" >}}
+
 For Docker installations, you can change the path where your data is mounted.
 For the Helm chart, use object storage.
 
+{{< /alert >}}
+
 To change the location where the job logs are stored:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Optional. If you have existing job logs, pause continuous integration data
    processing by temporarily stopping Sidekiq:
@@ -81,7 +86,9 @@ To change the location where the job logs are stored:
    sudo rm -rf /var/opt/gitlab/gitlab-ci/builds
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Optional. If you have existing job logs, pause continuous integration data
    processing by temporarily stopping Sidekiq:
@@ -137,7 +144,9 @@ To change the location where the job logs are stored:
    sudo rm -rf /home/git/gitlab/builds
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Uploading logs to object storage
 
@@ -151,7 +160,7 @@ See "Phase 3: uploading" in [Data flow](#data-flow) to learn about the process.
 
 The job log file size limit in GitLab is 100 megabytes by default.
 Any job that exceeds the limit is marked as failed, and dropped by the runner.
-For more details, see [Maximum file size for job logs](../../administration/instance_limits.md#maximum-file-size-for-job-logs).
+For more details, see [Maximum file size for job logs](../instance_limits.md#maximum-file-size-for-job-logs).
 
 ## Prevent local disk usage
 
@@ -174,22 +183,30 @@ see [Delete job logs](../../user/storage_management_automation.md#delete-job-log
 Alternatively, you can delete job logs with shell commands. For example, to delete all job logs older than 60 days, run the following
 command from a shell in your GitLab instance.
 
-NOTE:
+{{< alert type="note" >}}
+
 For the Helm chart, use the storage management tools provided with your object
 storage.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 The following command permanently deletes the log files and is irreversible.
 
-::Tabs
+{{< /alert >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
 find /var/opt/gitlab/gitlab-rails/shared/artifacts -name "job.log" -mtime +60 -delete
 ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 Assuming you mounted `/var/opt/gitlab` to `/srv/gitlab`:
 
@@ -197,13 +214,17 @@ Assuming you mounted `/var/opt/gitlab` to `/srv/gitlab`:
 find /srv/gitlab/gitlab-rails/shared/artifacts -name "job.log" -mtime +60 -delete
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 ```shell
 find /home/git/gitlab/shared/artifacts -name "job.log" -mtime +60 -delete
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 After the logs are deleted, you can find any broken file references by running
 the Rake task that checks the
@@ -213,14 +234,14 @@ For more information, see how to
 
 ## Incremental logging architecture
 
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-incremental-logging).
+> - To use in your instance, ask a GitLab administrator to [enable it](#enable-or-disable-incremental-logging).
 
 By default, job logs are sent from the GitLab Runner in chunks and cached
 temporarily on disk. After the job completes, a background job archives the job
 log. The log is moved to the artifacts directory by default, or to object
 storage if configured.
 
-In a [scaled-out architecture](../reference_architectures/index.md) with Rails and
+In a [scaled-out architecture](../reference_architectures/_index.md) with Rails and
 Sidekiq running on more than one server, these two locations on the file system
 have to be shared using NFS, which is not recommended. Instead:
 

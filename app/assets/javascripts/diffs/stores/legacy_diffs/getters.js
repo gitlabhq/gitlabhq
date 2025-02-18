@@ -9,7 +9,6 @@ import {
   DIFF_COMPARE_HEAD_VERSION_INDEX,
 } from '~/diffs/constants';
 import { useNotes } from '~/notes/store/legacy_notes';
-import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { computeSuggestionCommitMessage } from '../../utils/suggestions';
 import { parallelizeDiffLines } from '../../store/utils';
 
@@ -160,7 +159,8 @@ export function allBlobs() {
       });
     }
 
-    acc.find((f) => f.path === parentPath).tree.push(file);
+    const id = this.diffFiles.find((diff) => diff.file_hash === file.fileHash)?.id;
+    acc.find((f) => f.path === parentPath).tree.push({ ...file, id });
 
     return acc;
   }, []);
@@ -218,7 +218,7 @@ export function diffLines() {
 
 export function suggestionCommitMessage() {
   return (values = {}) => {
-    const { mrMetadata } = useMrNotes().page;
+    const { mrMetadata } = this.tryStore('legacyMrNotes');
     return computeSuggestionCommitMessage({
       message: this.defaultSuggestionCommitMessage,
       values: {
@@ -349,4 +349,14 @@ export function diffCompareDropdownSourceVersions() {
     });
   }
   return versions;
+}
+
+export function fileTree() {
+  const diffs = this.diffFiles;
+  const mapToId = (item) => {
+    const id = diffs.find((diff) => diff.file_hash === item.fileHash)?.id;
+    const tree = item.tree.map(mapToId);
+    return { ...item, id, tree };
+  };
+  return this.tree.map(mapToId);
 }

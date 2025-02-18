@@ -3,15 +3,14 @@ stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 description: Learn how to contribute to GitLab Documentation.
+title: markdownlint documentation tests
 ---
-
-# markdownlint documentation tests
 
 [markdownlint](https://github.com/DavidAnson/markdownlint) checks that Markdown syntax follows
 [certain rules](https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#rules), and is
 used by the `docs-lint` test.
 
-Our [Documentation Style Guide](../styleguide/index.md#markdown) and
+Our [Documentation Style Guide](../styleguide/_index.md#markdown) and
 [Markdown Guide](https://handbook.gitlab.com/docs/markdown-guide/) elaborate on which choices must
 be made when selecting Markdown syntax for GitLab documentation. This tool helps catch deviations
 from those guidelines.
@@ -33,7 +32,7 @@ You can use markdownlint:
   - [`markdownlint-cli`](https://github.com/igorshubovych/markdownlint-cli#markdownlint-cli).
   - [`markdownlint-cli2`](https://github.com/DavidAnson/markdownlint-cli2#markdownlint-cli2).
 - [In a code editor](#configure-markdownlint-in-your-editor).
-- [In a `pre-push` hook](index.md#configure-pre-push-hooks).
+- [In a `pre-push` hook](_index.md#configure-pre-push-hooks).
 
 ## Install markdownlint
 

@@ -38,6 +38,7 @@ FactoryBot.define do
       read_package_registry { true }
       write_package_registry { true }
       read_virtual_registry { true }
+      write_virtual_registry { true }
     end
 
     trait :dependency_proxy_scopes do

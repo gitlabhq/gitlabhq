@@ -27,7 +27,7 @@ import {
 import {
   renderDeleteSuccessToast,
   deleteParams,
-} from 'ee_else_ce/vue_shared/components/resource_lists/utils';
+} from 'ee_else_ce/vue_shared/components/projects_list/utils';
 import { deleteProject } from '~/api/projects_api';
 import { createAlert } from '~/alert';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -36,8 +36,8 @@ const MOCK_DELETE_PARAMS = {
   testParam: true,
 };
 
-jest.mock('ee_else_ce/vue_shared/components/resource_lists/utils', () => ({
-  ...jest.requireActual('ee_else_ce/vue_shared/components/resource_lists/utils'),
+jest.mock('ee_else_ce/vue_shared/components/projects_list/utils', () => ({
+  ...jest.requireActual('ee_else_ce/vue_shared/components/projects_list/utils'),
   renderDeleteSuccessToast: jest.fn(),
   deleteParams: jest.fn(() => MOCK_DELETE_PARAMS),
 }));
@@ -78,7 +78,7 @@ describe('ProjectsListItem', () => {
   const findForksStat = () => wrapper.findByTestId('forks-btn');
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ProjectListItemActions);
-  const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
+  const findAccessLevelBadge = () => wrapper.findByTestId('user-access-role');
   const findCiCatalogBadge = () => wrapper.findByTestId('ci-catalog-badge');
   const findProjectDescription = () => wrapper.findComponent(ProjectListItemDescription);
   const findInactiveBadge = () => wrapper.findComponent(ProjectListItemInactiveBadge);
@@ -394,7 +394,8 @@ describe('ProjectsListItem', () => {
       it('displays confirmation modal with correct props', () => {
         expect(wrapper.findComponent(DeleteModal).props()).toMatchObject({
           visible: true,
-          confirmPhrase: project.name,
+          confirmPhrase: project.fullPath,
+          nameWithNamespace: project.nameWithNamespace,
           isFork: true,
           issuesCount: '0',
           forksCount: '0',
@@ -517,5 +518,11 @@ describe('ProjectsListItem', () => {
     it('renders CI icon component', () => {
       expect(wrapper.findComponent(CiIcon).props('status')).toBe(detailedStatus);
     });
+  });
+
+  it('adds data-testid attribute to content', () => {
+    createComponent();
+
+    expect(wrapper.findByTestId('project-content').exists()).toBe(true);
   });
 });

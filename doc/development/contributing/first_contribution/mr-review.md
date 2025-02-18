@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Create a merge request
 ---
-
-# Create a merge request
 
 Now you're ready to push changes from the community fork to the main GitLab repository!
 
@@ -45,7 +44,7 @@ Someone from GitLab will look at your request and let you know what the next ste
 
 ## Complete the review process
 
-After you create a merge request, GitLab automatically triggers a [CI/CD pipeline](../../../ci/pipelines/index.md)
+After you create a merge request, GitLab automatically triggers a [CI/CD pipeline](../../../ci/pipelines/_index.md)
 that runs tests, linting, security scans, and more.
 
 Your pipeline must be successful for your merge request to be merged.

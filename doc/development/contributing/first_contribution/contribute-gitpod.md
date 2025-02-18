@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Contribute code with Gitpod
 ---
-
-# Contribute code with Gitpod
 
 Now for the fun part. Let's edit some code.
 
@@ -19,7 +18,7 @@ I want to change `Customize the color of GitLab` to `Customize the color theme o
    Select `master` in the status bar, then from the **Select a branch or tag to checkout** box,
    select **Create new branch** and enter a name for the new branch.
 
-   If your code change addresses an issue, [start the branch name with the issue number](../../../user/project/repository/branches/index.md#prefix-branch-names-with-issue-numbers).
+   If your code change addresses an issue, [start the branch name with the issue number](../../../user/project/repository/branches/_index.md#prefix-branch-names-with-issue-numbers).
 
    The examples in this doc use a new branch called `ui-updates`.
 

@@ -2,13 +2,15 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Importing issues from CSV
 ---
 
-# Importing issues from CSV
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 > - Additionally [allowed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) for Planner role in GitLab 17.7.
 
@@ -16,10 +18,10 @@ You can import issues to a project by uploading a CSV file with the following co
 
 | Name          | Required?              | Description                                      |
 |:--------------|:-----------------------|:-------------------------------------------------|
-| `title`       | **{check-circle}** Yes | Issue title.                                     |
-| `description` | **{check-circle}** Yes | Issue description.                               |
-| `due_date`    | **{dotted-circle}** No | Issue due date in `YYYY-MM-DD` format. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91317) in GitLab 15.2. |
-| `milestone`   | **{dotted-circle}** No | Title of the issue milestone. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112204) in GitLab 16.7.         |
+| `title`       | {{< icon name="check-circle" >}} Yes | Issue title.                                     |
+| `description` | {{< icon name="check-circle" >}} Yes | Issue description.                               |
+| `due_date`    | {{< icon name="dotted-circle" >}} No | Issue due date in `YYYY-MM-DD` format. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91317) in GitLab 15.2. |
+| `milestone`   | {{< icon name="dotted-circle" >}} No | Title of the issue milestone. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112204) in GitLab 16.7.         |
 
 Data in other columns is not imported.
 
@@ -44,7 +46,7 @@ To import issues:
 
 1. Go to your project's **Issues** page.
 1. Open the import feature, depending if the project has issues:
-   - The project has existing issues: in the upper-right corner, next to **Bulk edit**, select **Actions** (**{ellipsis_v}**) **> Import CSV**.
+   - The project has existing issues: in the upper-right corner, next to **Bulk edit**, select **Actions** ({{< icon name="ellipsis_v" >}}) **> Import CSV**.
    - The project has no issues: in the middle of the page, select **Import CSV**.
 1. Select the file you want to import, and then select **Import issues**.
 

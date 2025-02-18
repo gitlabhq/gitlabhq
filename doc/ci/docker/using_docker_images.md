@@ -2,13 +2,15 @@
 stage: Verify
 group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Run your CI/CD jobs in Docker containers
 ---
 
-# Run your CI/CD jobs in Docker containers
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can run your CI/CD jobs in Docker containers hosted on dedicated CI/CD build servers or your local machine.
 
@@ -16,7 +18,7 @@ To run CI/CD jobs in a Docker container, you need to:
 
 1. Register a runner and configure it to use the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html).
 1. Specify the container image where you want to run the CI/CD jobs in the `.gitlab-ci.yml` file.
-1. Optional. Run other services, like MySQL, in containers. Do this by specifying [services](../services/index.md)
+1. Optional. Run other services, like MySQL, in containers. Do this by specifying [services](../services/_index.md)
    in your `.gitlab-ci.yml` file.
 
 ## Register a runner that uses the Docker executor
@@ -99,7 +101,11 @@ The image name must be in one of the following formats:
 
 ## Extended Docker configuration options
 
-> - Introduced in GitLab and GitLab Runner 9.4.
+{{< history >}}
+
+- Introduced in GitLab and GitLab Runner 9.4.
+
+{{< /history >}}
 
 You can use a string or a map for the `image` or `services` entries:
 
@@ -139,7 +145,11 @@ When a CI job runs in a Docker container, the `before_script`, `script`, and `af
 
 ### Override the entrypoint of an image
 
-> - Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](../docker/using_docker_images.md#extended-docker-configuration-options).
+{{< history >}}
+
+- Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](../docker/using_docker_images.md#extended-docker-configuration-options).
+
+{{< /history >}}
 
 Before explaining the available entrypoint override methods, let's describe
 how the runner starts. It uses a Docker image for the containers used in the
@@ -149,9 +159,9 @@ CI/CD jobs:
    from `Dockerfile` that may be overridden in the `.gitlab-ci.yml` file.
 1. The runner attaches itself to a running container.
 1. The runner prepares a script (the combination of
-   [`before_script`](../yaml/index.md#before_script),
-   [`script`](../yaml/index.md#script),
-   and [`after_script`](../yaml/index.md#after_script)).
+   [`before_script`](../yaml/_index.md#before_script),
+   [`script`](../yaml/_index.md#script),
+   and [`after_script`](../yaml/_index.md#after_script)).
 1. The runner sends the script to the container's shell `stdin` and receives the
    output.
 
@@ -203,7 +213,7 @@ In the `config.toml` file, you can define:
 - In the [`[runners.docker]`](https://docs.gitlab.com/runner/configuration/advanced-configuration#the-runnersdocker-section) section,
   the container image used to run CI/CD jobs
 - In the [`[[runners.docker.services]]`](https://docs.gitlab.com/runner/configuration/advanced-configuration#the-runnersdockerservices-section) section,
-  the [services](../services/index.md) container
+  the [services](../services/_index.md) container
 
 ```toml
 [runners.docker]
@@ -224,7 +234,7 @@ To access private container registries, the GitLab Runner process can use:
 
 To define which option should be used, the runner process reads the configuration in this order:
 
-- A `DOCKER_AUTH_CONFIG` [CI/CD variable](../variables/index.md).
+- A `DOCKER_AUTH_CONFIG` [CI/CD variable](../variables/_index.md).
 - A `DOCKER_AUTH_CONFIG` environment variable set in the runner's `config.toml` file.
 - A `config.json` file in `$HOME/.docker` directory of the user running the process.
   If the `--user` flag is provided to run the child processes as unprivileged user,
@@ -232,7 +242,7 @@ To define which option should be used, the runner process reads the configuratio
 
 ### Requirements and limitations
 
-- Available for [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/index.html)
+- Available for [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/)
   in GitLab Runner 13.1 and later.
 - [Credentials Store](#use-a-credentials-store) and [Credential Helpers](#use-credential-helpers)
   require binaries to be added to the GitLab Runner `$PATH`, and require access to do so. Therefore,
@@ -245,7 +255,7 @@ You can access a private registry using two approaches. Both require setting the
 `DOCKER_AUTH_CONFIG` with appropriate authentication information.
 
 1. Per-job: To configure one job to access a private registry, add
-   `DOCKER_AUTH_CONFIG` as a [CI/CD variable](../variables/index.md).
+   `DOCKER_AUTH_CONFIG` as a [CI/CD variable](../variables/_index.md).
 1. Per-runner: To configure a runner so all its jobs can access a
    private registry, add `DOCKER_AUTH_CONFIG` as an environment variable in the
    runner's configuration.
@@ -297,8 +307,11 @@ Use one of the following methods to determine the value for `DOCKER_AUTH_CONFIG`
   bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
   ```
 
-NOTE:
-If your username includes special characters like `@`, you must escape them with a backslash (`\`) to prevent authentication problems.
+  {{< alert type="note" >}}
+
+If your username includes special characters like `@`, you must escape them with a backslash (<code>&#92;</code>) to prevent authentication problems.
+
+  {{< /alert >}}
 
   Create the Docker JSON configuration content as follows:
 
@@ -317,7 +330,7 @@ If your username includes special characters like `@`, you must escape them with
 To configure a single job with access for `registry.example.com:5000`,
 follow these steps:
 
-1. Create a [CI/CD variable](../variables/index.md) `DOCKER_AUTH_CONFIG` with the content of the
+1. Create a [CI/CD variable](../variables/_index.md) `DOCKER_AUTH_CONFIG` with the content of the
    Docker configuration file as the value:
 
    ```json
@@ -390,7 +403,7 @@ To configure a Credentials Store:
 1. Make GitLab Runner use it. You can accomplish this by using one of the following options:
 
    - Create a
-     [CI/CD variable](../variables/index.md)
+     [CI/CD variable](../variables/_index.md)
      `DOCKER_AUTH_CONFIG` with the content of the
      Docker configuration file as the value:
 
@@ -410,7 +423,11 @@ pulling from Docker Hub fails. Docker daemon tries to use the same credentials f
 
 ### Use Credential Helpers
 
-> - Introduced in GitLab Runner 12.0.
+{{< history >}}
+
+- Introduced in GitLab Runner 12.0.
+
+{{< /history >}}
 
 As an example, let's assume that you want to use the `<aws_account_id>.dkr.ecr.<region>.amazonaws.com/private/image:latest`
 image. This image is private and requires you to sign in to a private container registry.
@@ -422,7 +439,7 @@ To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follo
    Make sure that GitLab Runner can access the credentials.
 1. Make GitLab Runner use it. You can accomplish this by using one of the following options:
 
-   - Create a [CI/CD variable](../variables/index.md)
+   - Create a [CI/CD variable](../variables/_index.md)
      `DOCKER_AUTH_CONFIG` with the content of the
      Docker configuration file as the value:
 
@@ -444,8 +461,11 @@ To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follo
      }
      ```
 
-     NOTE:
+     {{< alert type="note" >}}
+
      If you use `{"credsStore": "ecr-login"}`, set the region explicitly in the AWS shared configuration file (`~/.aws/config`). The region must be specified when the ECR Credential Helper retrieves the authorization token.
+
+     {{< /alert >}}
 
    - Or, if you're running self-managed runners,
      add the previous JSON to `${GITLAB_RUNNER_HOME}/.docker/config.json`.
@@ -495,7 +515,7 @@ secure and streamlined interactions with AWS services, especially for containeri
 to manage, deploy, and update Docker images on Amazon ECR. This setup helps avoid time consuming, error-prone configurations,
 and manual credential management.
 
-1. [Authenticate GitLab with AWS](../cloud_deployment/index.md#authenticate-gitlab-with-aws).
+1. [Authenticate GitLab with AWS](../cloud_deployment/_index.md#authenticate-gitlab-with-aws).
 1. Create a `Dockerfile` with the following content:
 
    ```Dockerfile
@@ -561,4 +581,4 @@ and manual credential management.
            - Dockerfile
    ```
 
-1. [Register the runner](https://docs.gitlab.com/runner/register/index.html#docker).
+1. [Register the runner](https://docs.gitlab.com/runner/register/#docker).

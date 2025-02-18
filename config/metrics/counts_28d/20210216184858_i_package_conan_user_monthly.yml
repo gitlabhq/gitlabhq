@@ -13,9 +13,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
   - i_package_conan_user
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

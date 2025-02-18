@@ -31,7 +31,8 @@ module Integrations::Actions
       format.html do
         if saved
           PropagateIntegrationWorker.perform_async(integration.id)
-          redirect_to scoped_edit_integration_path(integration, project: integration.project, group: integration.group), notice: success_message
+          redirect_to scoped_edit_integration_path(integration, project: integration.project, group: integration.group),
+            notice: success_message
         else
           render 'shared/integrations/edit'
         end

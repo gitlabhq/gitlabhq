@@ -31,7 +31,7 @@
 %h4= _('Headers')
 %pre
   - if hook_log.response_headers.blank?
-    = s_('Webhooks|Response headers data is empty')
+    = s_('Webhooks|Response headers are empty')
   - else
     - hook_log.response_headers.each do |k, v|
       <span class="gl-font-bold">#{k}:</span> #{v}

@@ -2,15 +2,17 @@
 stage: Growth
 group: Acquisition
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Instance review
 ---
 
-# Instance review
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-If you run a self-managed instance with 50 or more users on the Free tier
+{{< /details >}}
+
+If you run a GitLab Self-Managed instance with 50 or more users on the Free tier
 ([either Community Edition or unlicensed Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/)),
 you can request a free instance review.
 

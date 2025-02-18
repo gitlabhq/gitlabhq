@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Ruby 3 gotchas
 ---
-
-# Ruby 3 gotchas
 
 This section documents several problems we found while working on [Ruby 3 support](https://gitlab.com/groups/gitlab-org/-/epics/5149)
 and which led to subtle bugs or test failures that were difficult to understand. We encourage every GitLab contributor

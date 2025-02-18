@@ -1,6 +1,7 @@
 ---
 table_name: keys
 classes:
+- CloudConnector::Keys
 - DeployKey
 - Key
 - LDAPKey

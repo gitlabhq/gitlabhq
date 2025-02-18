@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Uploads migrate Rake tasks
 ---
 
-# Uploads migrate Rake tasks
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 There is a Rake task for migrating uploads between different storage types.
 
@@ -81,10 +83,13 @@ The Rake task uses three parameters to find uploads to migrate:
 | `model_class`    | string        | Type of the model to migrate from.                     |
 | `mount_point`    | string/symbol | Name of the model's column the uploader is mounted on. |
 
-NOTE:
+{{< alert type="note" >}}
+
 These parameters are mainly internal to the structure of GitLab, you may want to refer to the task list
 instead below. After running these individual tasks, we recommend that you run the [all-in-one Rake task](#all-in-one-rake-task)
 to migrate any uploads not included in the listed types.
+
+{{< /alert >}}
 
 This task also accepts an environment variable which you can use to override
 the default batch size:
@@ -95,9 +100,9 @@ the default batch size:
 
 The following shows how to run `gitlab:uploads:migrate` for individual types of uploads.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
 # gitlab-rake gitlab:uploads:migrate[uploader_class, model_class, mount_point]
@@ -125,7 +130,9 @@ gitlab-rake "gitlab:uploads:migrate[FileUploader, MergeRequest]"
 gitlab-rake "gitlab:uploads:migrate[DesignManagement::DesignV432x230Uploader, DesignManagement::Action, :image_v432x230]"
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 Use `RAILS_ENV=production` for every task.
 
@@ -155,18 +162,23 @@ sudo -u git -H bundle exec rake "gitlab:uploads:migrate[FileUploader, MergeReque
 sudo -u git -H bundle exec rake "gitlab:uploads:migrate[DesignManagement::DesignV432x230Uploader, DesignManagement::Action]"
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Migrate to local storage
 
 If you need to disable [object storage](../../object_storage.md) for any reason, you must first
 migrate your data out of object storage and back into your local storage.
 
-WARNING:
+{{< alert type="warning" >}}
+
 **Extended downtime is required** so no new files are created in object storage during
 the migration. A configuration setting to allow migrating
 from object storage to local files with only a brief moment of downtime for configuration changes
 is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/30979).
+
+{{< /alert >}}
 
 ### All-in-one Rake task
 

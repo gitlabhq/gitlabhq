@@ -2,7 +2,7 @@ import Dropzone from 'dropzone';
 import $ from 'jquery';
 import { escape } from 'lodash';
 import './behaviors/preview_markdown';
-import { spriteIcon } from '~/lib/utils/common_utils';
+import { spriteIcon, insertText } from '~/lib/utils/common_utils';
 import { getFilename } from '~/lib/utils/file_upload';
 import { truncate } from '~/lib/utils/text_utility';
 import { n__, __ } from '~/locale';
@@ -210,16 +210,9 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
       formattedText += '\n\n';
     }
     const textarea = child.get(0);
-    const caretStart = textarea.selectionStart;
-    const caretEnd = textarea.selectionEnd;
-    const textEnd = $(child).val().length;
-    const beforeSelection = $(child).val().substring(0, caretStart);
-    const afterSelection = $(child).val().substring(caretEnd, textEnd);
-    $(child).val(beforeSelection + formattedText + afterSelection);
-    textarea.setSelectionRange(caretStart + formattedText.length, caretEnd + formattedText.length);
-    textarea.style.height = `${textarea.scrollHeight}px`;
+    insertText(textarea, formattedText);
     formTextarea.get(0).dispatchEvent(new Event('input'));
-    return formTextarea.trigger('input');
+    formTextarea.trigger('input');
   };
 
   addFileToForm = (path) => {
@@ -238,14 +231,14 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
   const insertToTextArea = (filename, url) => {
     const $child = $(child);
     const textarea = $child.get(0);
-    const caretStart = textarea.selectionStart;
-    const caretEnd = textarea.selectionEnd;
     const formattedText = `{{${filename}}}`;
-    $child.val((index, val) => val.replace(formattedText, url));
-    textarea.setSelectionRange(
-      caretStart - formattedText.length + url.length,
-      caretEnd - formattedText.length + url.length,
-    );
+
+    const replaceStart = textarea.value.indexOf(formattedText);
+    if (replaceStart !== -1) {
+      const replaceEnd = replaceStart + formattedText.length;
+      textarea.setSelectionRange(replaceStart, replaceEnd);
+    }
+    insertText(textarea, url);
     $child.trigger('change');
   };
 
@@ -265,7 +258,6 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
           // eslint-disable-next-line @gitlab/require-i18n-strings
           md += `{width=${width} height=${height}}`;
         }
-
         insertToTextArea(filename, md);
         closeSpinner();
       })

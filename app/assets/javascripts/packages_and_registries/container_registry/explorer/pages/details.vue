@@ -56,7 +56,7 @@ export default {
     anchor: 'container-registry-garbage-collection',
   }),
   runCleanupPoliciesHelpUrl: helpPagePath('administration/packages/container_registry', {
-    anchor: 'run-the-cleanup-policy-now',
+    anchor: 'run-the-cleanup-policy',
   }),
   apollo: {
     containerRepository: {

@@ -147,7 +147,7 @@ module Projects
     end
 
     def ambiguous_head_documentation_link
-      url = Rails.application.routes.url_helpers.help_page_path('user/project/repository/branches/index.md', anchor: 'error-ambiguous-head-branch-exists')
+      url = Rails.application.routes.url_helpers.help_page_path('user/project/repository/branches/_index.md', anchor: 'error-ambiguous-head-branch-exists')
 
       format('<a href="%{url}" target="_blank" rel="noopener noreferrer">', url: url)
     end
@@ -169,6 +169,8 @@ module Projects
       params.delete(:emails_enabled) unless can?(current_user, :set_emails_disabled, project)
 
       params.delete(:runner_registration_enabled) if Gitlab::CurrentSettings.valid_runner_registrars.exclude?('project')
+
+      params.delete(:max_artifacts_size) unless can?(current_user, :update_max_artifacts_size, project)
     end
 
     def after_update

@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Predefined system of user roles
 ---
-
-# Predefined system of user roles
 
 ## Instance
 
@@ -40,9 +39,12 @@ The visibility level of a group can be changed only if all subgroups and
 sub-projects have the same or lower visibility level. For example, a group can be set
 to internal only if all subgroups and projects are internal or private.
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you migrate an existing group to a lower visibility level, that action does not migrate subgroups
 in the same way. This is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/22406).
+
+{{< /alert >}}
 
 Visibility levels can be found in the `Gitlab::VisibilityLevel` module.
 
@@ -92,8 +94,11 @@ can still view the groups and their entities (like epics).
 Project membership (where the group membership is already taken into account)
 is stored in the `project_authorizations` table.
 
-NOTE:
+{{< alert type="note" >}}
+
 Projects in personal namespaces have a maximum role of Owner.
+
+{{< /alert >}}
 
 #### Guest role
 

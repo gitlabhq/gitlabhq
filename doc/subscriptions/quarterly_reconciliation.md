@@ -1,15 +1,17 @@
 ---
 stage: Fulfillment
 group: Subscription Management
-description: Billing examples.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Billing examples.
+title: Quarterly reconciliation and annual true-ups
 ---
 
-# Quarterly reconciliation and annual true-ups
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In accordance with [the GitLab Subscription Agreement](https://about.gitlab.com/terms/),
 GitLab reviews your seat usage and sends you an invoice for any overages.
@@ -61,11 +63,11 @@ If you are billed quarterly:
 At the end of each subscription quarter, GitLab notifies you about overages.
 The date you're notified about the overage is not the same as the date you are billed.
 
-1. An email that communicates the [overage seat quantity](gitlab_com/index.md#seats-owed)
+1. An email that communicates the [overage seat quantity](gitlab_com/_index.md#seats-owed)
 and expected invoice amount is sent:
 
    - On GitLab.com: On the reconciliation date, to group owners.
-   - On GitLab self-managed: Six days after the reconciliation date, to administrators.
+   - On GitLab Self-Managed: Six days after the reconciliation date, to administrators.
 
 1. Seven days after the email notification, the subscription is updated to include the additional seats,
 and an invoice is generated for a prorated amount.
@@ -84,6 +86,7 @@ You are excluded from quarterly reconciliation if you:
 - Purchased your subscription from a reseller or another channel partner.
 - Purchased a subscription that is not a 12-month term (includes multi-year and non-standard length subscriptions).
 - Purchased your subscription with a purchasing order.
+- Purchased an [Enterprise Agile Planning](gitlab_com/_index.md#enterprise-agile-planning) product.
 - Are a public sector customer.
 - Have an offline environment and used a license file to activate your subscription.
 - Are enrolled in a program that provides a Free tier such as the GitLab for Education,

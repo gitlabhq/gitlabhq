@@ -9,15 +9,15 @@ module Types
         graphql_name 'WorkItemWidgetStartAndDueDate'
         description 'Represents a start and due date widget'
 
-        implements Types::WorkItems::WidgetInterface
+        implements ::Types::WorkItems::WidgetInterface
 
         field :due_date,
-          Types::DateType,
+          ::Types::DateType,
           null: true,
           description: 'Due date of the work item.'
 
         field :start_date,
-          Types::DateType,
+          ::Types::DateType,
           null: true,
           description: 'Start date of the work item.'
 

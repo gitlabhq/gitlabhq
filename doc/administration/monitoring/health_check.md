@@ -2,13 +2,15 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Health check
 ---
 
-# Health check
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab provides liveness and readiness probes to indicate service health and
 reachability to required services. These probes report on the status of the
@@ -16,7 +18,7 @@ database connection, Redis connection, and access to the file system. These
 endpoints [can be provided to schedulers like Kubernetes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) to hold
 traffic until the system is ready or restart the container as needed.
 
-Health check endpoints are normally used for load balancers
+Health check endpoints are typically used for load balancers
 and other Kubernetes scheduling systems that need to determine
 service availability before redirecting traffic.
 
@@ -40,7 +42,7 @@ Apdex measurements are used to determine uptime.
 ## IP allowlist
 
 To access monitoring resources, the requesting client IP needs to be included in the allowlist.
-For details, see [how to add IPs to the allowlist for the monitoring endpoints](../../administration/monitoring/ip_allowlist.md).
+For details, see [how to add IPs to the allowlist for the monitoring endpoints](../monitoring/ip_allowlist.md).
 
 ## Using the endpoints locally
 
@@ -121,10 +123,13 @@ This check is being exempt from Rack Attack.
 
 ## Liveness
 
-WARNING:
+{{< alert type="warning" >}}
+
 In GitLab [12.4](https://about.gitlab.com/upcoming-releases/)
 the response body of the Liveness check was changed
 to match the example below.
+
+{{< /alert >}}
 
 Checks whether the application server is running.
 This probe is used to know if Rails Controllers
@@ -156,7 +161,7 @@ This check is being exempt from Rack Attack.
 
 ## Sidekiq
 
-Learn how to configure the [Sidekiq health checks](../../administration/sidekiq/sidekiq_health_check.md).
+Learn how to configure the [Sidekiq health checks](../sidekiq/sidekiq_health_check.md).
 
 <!-- ## Troubleshooting
 

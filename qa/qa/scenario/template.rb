@@ -33,7 +33,19 @@ module QA
           @pipeline_mapping = kwargs
         end
 
-        attr_reader :pipeline_mapping
+        # Glob pattern limiting which specs scenario can run
+        #
+        # @param pattern [String]
+        # @return [String]
+        def spec_glob_pattern(pattern)
+          unless pattern.is_a?(String) && pattern.end_with?("_spec.rb")
+            raise ArgumentError, "Scenario #{self.class.name} defines pattern that is not matching only spec files"
+          end
+
+          @spec_pattern = pattern
+        end
+
+        attr_reader :pipeline_mapping, :spec_pattern
       end
 
       def perform(options, *args)
@@ -51,6 +63,7 @@ module QA
         Specs::Runner.perform do |specs|
           specs.tty = true
           specs.tags = self.class.focus
+          specs.spec_pattern = self.class.spec_pattern
           specs.options = args if args.any?
         end
       end

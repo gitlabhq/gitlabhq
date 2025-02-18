@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitHub
 ---
 
-# GitHub
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can update GitHub with pipeline status updates from GitLab.
 The GitHub integration can help you if you use GitLab for CI/CD.
@@ -43,7 +45,7 @@ Complete these steps in GitLab:
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
-After configuring the integration, see [Pipelines for external pull requests](../../../ci/ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests)
+After configuring the integration, see [Pipelines for external pull requests](../../../ci/ci_cd_for_external_repos/_index.md#pipelines-for-external-pull-requests)
 to configure pipelines to run for open pull requests.
 
 ### Static or dynamic status check names

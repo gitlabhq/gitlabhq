@@ -9,9 +9,9 @@
 #
 # Please delete this line and above before submitting your merge request.
 
-- name: SAML Group Sync for self-managed GitLab
+- name: SAML Group Sync for GitLab Self-Managed
   description: |  # Do not modify this line, instead modify the lines below.
-    You can now map a group in your identity provider to a self-managed GitLab group using SAML group links. Previously, this feature was only available for GitLab.com. Group memberships are updated when a user logs into GitLab through their SAML provider. This new functionality decreases the workload for GitLab administrators and reduces onboarding time for group members.
+    You can now map a group in your identity provider to a GitLab Self-Managed group using SAML group links. Previously, this feature was only available for GitLab.com. Group memberships are updated when a user logs into GitLab through their SAML provider. This new functionality decreases the workload for GitLab administrators and reduces onboarding time for group members.
   stage: Foundations  # String value of the stage that the feature was created in. e.g., Growth
   self-managed: true
   gitlab-com: true

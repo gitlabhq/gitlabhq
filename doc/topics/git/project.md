@@ -1,19 +1,22 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Create a project with `git push`
 ---
 
-# Create a project with `git push`
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use `git push` to add a local project repository to GitLab. After you add a repository,
 GitLab creates your project in your chosen namespace.
 
-NOTE:
+{{< alert type="note" >}}
+
 You cannot use `git push` to create projects with paths that were previously used or
 [renamed](../../user/project/working_with_projects.md#rename-a-repository).
 Previously used project paths have a redirect. Instead of creating a new project,
@@ -21,12 +24,14 @@ the redirect causes push attempts to redirect requests to the renamed project lo
 To create a new project for a previously used or renamed project, use the UI
 or the [Projects API](../../api/projects.md#create-a-project).
 
+{{< /alert >}}
+
 Prerequisites:
 
 <!--- To push with SSH, you must have [an SSH key](../ssh.md) that is
   [added to your GitLab account](../ssh.md#add-an-ssh-key-to-your-gitlab-account).
 -->
-- You must have permission to add new projects to a [namespace](../../user/namespace/index.md).
+- You must have permission to add new projects to a [namespace](../../user/namespace/_index.md).
   To verify your permissions:
 
   1. On the left sidebar, select **Search or go to** and find your group.
@@ -61,7 +66,7 @@ To create a project with `git push`:
       Replace the following values:
 
       - `gitlab.example.com` with the machine domain name hosts your Git repository.
-      - `namespace` with your [namespace](../../user/namespace/index.md) name.
+      - `namespace` with your [namespace](../../user/namespace/_index.md) name.
       - `myproject` with your project name.
       - If specifying a port, change `00` to your project's required port number.
       - Optional. To export existing repository tags, append the `--tags` flag to
@@ -85,6 +90,6 @@ but you can [change the project's visibility](../../user/public_access.md#change
 
 ## Related topics
 
-- [Create a blank project](../../user/project/index.md)
-- [Create a project from a template](../../user/project/index.md#create-a-project-from-a-built-in-template)
+- [Create a blank project](../../user/project/_index.md)
+- [Create a project from a template](../../user/project/_index.md#create-a-project-from-a-built-in-template)
 - [Clone a repository to your local machine](clone.md)

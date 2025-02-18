@@ -12,7 +12,7 @@
 - name: Track use of security scanning across multiple teams
   description: |
    Track which groups across your organization have enabled SAST and DAST scanning. This is helpful for verifying compliance with organizational requirements, responding to audit requests, and tracking progress on company initiatives to make applications more secure. To track adoption, go to the **Sec** tab in DevOps Adoption either at the group level or instance level.
-   To see groups that have enabled fuzz testing and dependency scanning, use [the DevOps API](https://docs.gitlab.com/ee/api/graphql/reference/index.html#devopsadoptionsnapshot). Fuzz testing and dependency scanning will be added to the DevOps Adoption UI in an upcoming release.
+   To see groups that have enabled fuzz testing and dependency scanning, use [the DevOps API](https://docs.gitlab.com/ee/api/graphql/reference/#devopsadoptionsnapshot). Fuzz testing and dependency scanning will be added to the DevOps Adoption UI in an upcoming release.
   stage: Foundations
   self-managed: true
   gitlab-com: true
@@ -53,12 +53,12 @@
   release: 14.1
 - name: Registration Features
   description: |
-   [Registration Features](https://docs.gitlab.com/ee/development/service_ping/index.html#registration-features-program) introduces the ability for free, self-managed users running GitLab EE to access paid features by registering with GitLab and sharing activity data via [Service Ping](https://docs.gitlab.com/ee/development/service_ping/index.html#what-is-service-ping). The first feature introduced is [email from GitLab](https://docs.gitlab.com/ee/tools/email.html), enabling instance administrators to email users within their instance.
+   [Registration Features](https://docs.gitlab.com/ee/development/service_ping/#registration-features-program) introduces the ability for free, self-managed users running GitLab EE to access paid features by registering with GitLab and sharing activity data via [Service Ping](https://docs.gitlab.com/ee/development/service_ping/#what-is-service-ping). The first feature introduced is [email from GitLab](https://docs.gitlab.com/ee/tools/email.html), enabling instance administrators to email users within their instance.
   stage: Growth
   self-managed: true
   gitlab-com: false
   available_in: [Free]
-  documentation_link: 'https://docs.gitlab.com/ee/development/service_ping/index.html#registration-features-program'
+  documentation_link: 'https://docs.gitlab.com/ee/development/service_ping/#registration-features-program'
   image_url: https://about.gitlab.com/images/14_1/registration-features.png
   published_at: 2021-07-22
   release: 14.1

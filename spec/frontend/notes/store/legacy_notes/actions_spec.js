@@ -26,7 +26,7 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { createCustomGetters, createTestPiniaAction } from 'helpers/pinia_helpers';
 import { useBatchComments } from '~/batch_comments/store';
-import { globalAccessorPlugin } from '~/pinia';
+import { globalAccessorPlugin } from '~/pinia/plugins';
 import {
   discussionMock,
   notesDataMock,

@@ -81,44 +81,6 @@
   }
 }
 
-
-.clipboard-group,
-.commit-sha-group {
-  display: inline-flex;
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .label,
-  .btn:not(.gl-button) {
-    padding: $gl-vert-padding $gl-btn-padding;
-    border: 1px $gray-200 solid;
-    font-size: $gl-font-size;
-    line-height: $line-height-base;
-    border-radius: 0;
-    display: flex;
-    align-items: center;
-  }
-
-  .label-monospace {
-    user-select: text;
-    @apply gl-text-default;
-    background-color: $gray-10;
-  }
-
-  .btn svg {
-    top: auto;
-  }
-
-  :first-child {
-    border-bottom-left-radius: $gl-border-radius-base;
-    border-top-left-radius: $gl-border-radius-base;
-  }
-
-  :last-child {
-    border-bottom-right-radius: $gl-border-radius-base;
-    border-top-right-radius: $gl-border-radius-base;
-  }
-}
-
 .commit,
 .generic-commit-status {
   a {

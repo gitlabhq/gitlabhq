@@ -190,7 +190,12 @@ export default {
           {{ serviceDeskReplyTo }}
         </template>
         <template #author>
-          <gl-link class="js-user-link gl-font-bold" :href="author.webUrl" :data-user-id="authorId">
+          <gl-link
+            class="js-user-link gl-font-bold"
+            :href="author.webUrl"
+            :data-user-id="authorId"
+            data-testid="issue-author"
+          >
             <span :class="[{ 'gl-hidden': !isAuthorExternal }, 'sm:gl-inline']">
               {{ author.name }}
             </span>

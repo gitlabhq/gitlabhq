@@ -6,14 +6,6 @@ feature_categories:
 - dependency_management
 milestone: '16.7'
 gitlab_schema: gitlab_sec
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: sbom_occurrence_id
-        table: sbom_occurrences
-        sharding_key: project_id
-        belongs_to: occurrence
-desired_sharding_key_migration_job_name: BackfillSbomOccurrencesVulnerabilitiesProjectId
+sharding_key:
+  project_id: projects
 table_size: small

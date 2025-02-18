@@ -3,6 +3,11 @@
 module Pages
   class DeleteService < BaseService
     def execute
+      if current_user.is_a?(User) && !can_remove_pages?
+        return ServiceResponse.error(message: _('The current user is not authorized to remove the Pages deployment'),
+          reason: :forbidden)
+      end
+
       PagesDeployment.deactivate_all(project)
 
       # project.pages_domains.delete_all will just nullify project_id:
@@ -26,6 +31,10 @@ module Pages
       })
 
       Gitlab::EventStore.publish(event)
+    end
+
+    def can_remove_pages?
+      can?(current_user, :remove_pages, project)
     end
   end
 end

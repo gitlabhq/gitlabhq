@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Customizing analyzer settings
 ---
-
-# Customizing analyzer settings
 
 ## Authentication
 
@@ -17,10 +16,10 @@ provide a script that performs an authentication flow or calculates the token.
 is an authentication method built into the HTTP protocol and used in conjunction with
 [transport layer security (TLS)](https://en.wikipedia.org/wiki/Transport_Layer_Security).
 
-We recommended that you [create a CI/CD variable](../../../../ci/variables/index.md#for-a-project)
+We recommended that you [create a CI/CD variable](../../../../ci/variables/_index.md#for-a-project)
 for the password (for example, `TEST_API_PASSWORD`), and set it to be masked. You can create CI/CD
 variables from the GitLab project's page at **Settings > CI/CD**, in the **Variables** section.
-Because of the [limitations on masked variables](../../../../ci/variables/index.md#mask-a-cicd-variable),
+Because of the [limitations on masked variables](../../../../ci/variables/_index.md#mask-a-cicd-variable),
 you should Base64-encode the password before adding it as a variable.
 
 Finally, add two CI/CD variables to your `.gitlab-ci.yml` file:
@@ -64,7 +63,7 @@ variable's content is a JSON snippet that provides headers and cookies to add to
 
 Follow these steps to provide the Bearer token with `APISEC_OVERRIDES_ENV`:
 
-1. [Create a CI/CD variable](../../../../ci/variables/index.md#for-a-project),
+1. [Create a CI/CD variable](../../../../ci/variables/_index.md#for-a-project),
    for example `TEST_API_BEARERAUTH`, with the value
    `{"headers":{"Authorization":"Bearer dXNlcm5hbWU6cGFzc3dvcmQ="}}` (substitute your token). You
    can create CI/CD variables from the GitLab projects page at **Settings > CI/CD**, in the
@@ -372,7 +371,7 @@ variables:
 ```
 
 In this example `.gitlab-ci.yml`, the `SECRET_OVERRIDES` variable provides the JSON. This is a
-[group or instance CI/CD variable defined in the UI](../../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui):
+[group or instance CI/CD variable defined in the UI](../../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui):
 
 ```yaml
 stages:
@@ -399,9 +398,12 @@ to execute. The provided command creates the overrides JSON file as defined prev
 
 You might want to install other scripting runtimes like NodeJS or Ruby, or maybe you need to install a dependency for your overrides command. In this case, you should set the `APISEC_PRE_SCRIPT` to the file path of a script which provides those prerequisites. The script provided by `APISEC_PRE_SCRIPT` is executed once before the analyzer starts.
 
-NOTE:
+{{< alert type="note" >}}
+
 When performing actions that require elevated permissions, make use of the `sudo` command.
 For example, `sudo apk add nodejs`.
+
+{{< /alert >}}
 
 See the [Alpine Linux package management](https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management) page for information about installing Alpine Linux packages.
 
@@ -415,8 +417,11 @@ Optionally:
 
 - `APISEC_PRE_SCRIPT`: Script to install runtimes or dependencies before the scan starts.
 
-WARNING:
+{{< alert type="warning" >}}
+
 To execute scripts in Alpine Linux you must first use the command [`chmod`](https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html) to set the [execution permission](https://www.gnu.org/software/coreutils/manual/html_node/Setting-Permissions.html). For example, to set the execution permission of `script.py` for everyone, use the command: `sudo chmod a+x script.py`. If needed, you can version your `script.py` with the execution permission already set.
+
+{{< /alert >}}
 
 ```yaml
 stages:
@@ -591,7 +596,7 @@ In the previous sample, you could use the script `user-pre-scan-set-up.sh` to al
 
 ## Request Headers
 
-The request headers feature lets you specify fixed values for the headers during the scan session. For example, you can use the configuration variable `APISEC_REQUEST_HEADERS` to set a fixed value in the `Cache-Control` header. If the headers you need to set include sensitive values like the `Authorization` header, use the [masked variable](../../../../ci/variables/index.md#mask-a-cicd-variable) feature along with the [variable `APISEC_REQUEST_HEADERS_BASE64`](#base64).
+The request headers feature lets you specify fixed values for the headers during the scan session. For example, you can use the configuration variable `APISEC_REQUEST_HEADERS` to set a fixed value in the `Cache-Control` header. If the headers you need to set include sensitive values like the `Authorization` header, use the [masked variable](../../../../ci/variables/_index.md#mask-a-cicd-variable) feature along with the [variable `APISEC_REQUEST_HEADERS_BASE64`](#base64).
 
 If the `Authorization` header or any other header needs to get updated while the scan is in progress, consider using the [overrides](#overrides) feature.
 
@@ -601,10 +606,13 @@ The order in which the different headers are provided into the variable `APISEC_
 
 ### Base64
 
-The `APISEC_REQUEST_HEADERS_BASE64` variable accepts the same list of headers as `APISEC_REQUEST_HEADERS`, with the only difference that the entire value of the variable must be Base64-encoded. For example, to set `APISEC_REQUEST_HEADERS_BASE64` variable to `Authorization: QmVhcmVyIFRPS0VO, Cache-control: bm8tY2FjaGU=`, ensure you convert the list to its Base64 equivalent: `QXV0aG9yaXphdGlvbjogUW1WaGNtVnlJRlJQUzBWTywgQ2FjaGUtY29udHJvbDogYm04dFkyRmphR1U9`, and the Base64-encoded value must be used. This is useful when storing secret header values in a [masked variable](../../../../ci/variables/index.md#mask-a-cicd-variable), which has character set restrictions.
+The `APISEC_REQUEST_HEADERS_BASE64` variable accepts the same list of headers as `APISEC_REQUEST_HEADERS`, with the only difference that the entire value of the variable must be Base64-encoded. For example, to set `APISEC_REQUEST_HEADERS_BASE64` variable to `Authorization: QmVhcmVyIFRPS0VO, Cache-control: bm8tY2FjaGU=`, ensure you convert the list to its Base64 equivalent: `QXV0aG9yaXphdGlvbjogUW1WaGNtVnlJRlJQUzBWTywgQ2FjaGUtY29udHJvbDogYm04dFkyRmphR1U9`, and the Base64-encoded value must be used. This is useful when storing secret header values in a [masked variable](../../../../ci/variables/_index.md#mask-a-cicd-variable), which has character set restrictions.
 
-WARNING:
-Base64 is used to support the [masked variable](../../../../ci/variables/index.md#mask-a-cicd-variable) feature. Base64 encoding is not by itself a security measure, because sensitive values can be easily decoded.
+{{< alert type="warning" >}}
+
+Base64 is used to support the [masked variable](../../../../ci/variables/_index.md#mask-a-cicd-variable) feature. Base64 encoding is not by itself a security measure, because sensitive values can be easily decoded.
+
+{{< /alert >}}
 
 ### Example: Adding a list of headers on each request using plain text
 
@@ -626,7 +634,7 @@ variables:
 
 ### Example: Using a masked CI/CD variable
 
-The following `.gitlab-ci.yml` sample assumes the [masked variable](../../../../ci/variables/index.md#mask-a-cicd-variable) `SECRET_REQUEST_HEADERS_BASE64` is defined as a [group or instance CI/CD variable defined in the UI](../../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui). The value of `SECRET_REQUEST_HEADERS_BASE64` is set to `WC1BQ01FLVNlY3JldDogc31jcnt0ISwgWC1BQ01FLVRva2VuOiA3MDVkMTZmNWUzZmI=`, which is the Base64-encoded text version of `X-ACME-Secret: s3cr3t!, X-ACME-Token: 705d16f5e3fb`. Then, it can be used as follows:
+The following `.gitlab-ci.yml` sample assumes the [masked variable](../../../../ci/variables/_index.md#mask-a-cicd-variable) `SECRET_REQUEST_HEADERS_BASE64` is defined as a [group or instance CI/CD variable defined in the UI](../../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui). The value of `SECRET_REQUEST_HEADERS_BASE64` is set to `WC1BQ01FLVNlY3JldDogc31jcnt0ISwgWC1BQ01FLVRva2VuOiA3MDVkMTZmNWUzZmI=`, which is the Base64-encoded text version of `X-ACME-Secret: s3cr3t!, X-ACME-Token: 705d16f5e3fb`. Then, it can be used as follows:
 
 ```yaml
 stages:
@@ -642,7 +650,7 @@ variables:
   APISEC_REQUEST_HEADERS_BASE64: $SECRET_REQUEST_HEADERS_BASE64
 ```
 
-Consider using `APISEC_REQUEST_HEADERS_BASE64` when storing secret header values in a [masked variable](../../../../ci/variables/index.md#mask-a-cicd-variable), which has character set restrictions.
+Consider using `APISEC_REQUEST_HEADERS_BASE64` when storing secret header values in a [masked variable](../../../../ci/variables/_index.md#mask-a-cicd-variable), which has character set restrictions.
 
 ## Exclude Paths
 
@@ -939,8 +947,11 @@ In your job output you can check if any URLs matched any provided regular expres
 2021-05-27 21:51:08 [INF] API SECURITY: ------------------------------------------------
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Each value in `APISEC_EXCLUDE_URLS` is a regular expression. Characters such as `.` , `*` and `$` among many others have special meanings in [regular expressions](https://en.wikipedia.org/wiki/Regular_expression#Standards).
+
+{{< /alert >}}
 
 #### Examples
 

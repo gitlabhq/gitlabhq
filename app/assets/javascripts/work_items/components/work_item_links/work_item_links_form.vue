@@ -21,6 +21,8 @@ import {
   I18N_MAX_WORK_ITEMS_ERROR_MESSAGE,
   MAX_WORK_ITEMS,
   sprintfWorkItem,
+  WIDGET_TYPE_MILESTONE,
+  WIDGET_TYPE_ITERATION,
 } from '../../constants';
 import WorkItemProjectsListbox from './work_item_projects_listbox.vue';
 import WorkItemGroupsListbox from './work_item_groups_listbox.vue';
@@ -72,7 +74,7 @@ export default {
     parentIteration: {
       type: Object,
       required: false,
-      default: () => {},
+      default: () => ({}),
     },
     parentMilestone: {
       type: Object,
@@ -159,7 +161,7 @@ export default {
         };
       }
 
-      if (this.parentMilestoneId) {
+      if (this.parentMilestoneId && this.isWidgetSupported(WIDGET_TYPE_MILESTONE)) {
         workItemInput = {
           ...workItemInput,
           milestoneWidget: {
@@ -168,7 +170,7 @@ export default {
         };
       }
 
-      if (this.associateIteration) {
+      if (this.associateIteration && this.isWidgetSupported(WIDGET_TYPE_ITERATION)) {
         workItemInput = {
           ...workItemInput,
           iterationWidget: {
@@ -301,6 +303,7 @@ export default {
     markFormSubmitInProgress(value) {
       this.submitInProgress = value;
       this.$emit('update-in-progress', this.submitInProgress);
+      if (!value) this.$refs.wiTitleInput?.$el?.focus();
     },
     addChild() {
       this.markFormSubmitInProgress(true);
@@ -340,7 +343,6 @@ export default {
           } else {
             this.unsetError();
             this.workItemsToAdd = [];
-            this.closeForm();
           }
         })
         .catch(() => {
@@ -379,7 +381,6 @@ export default {
           } else {
             this.unsetError();
             this.$emit('addChild');
-            this.closeForm();
           }
         })
         .catch(() => {
@@ -394,6 +395,11 @@ export default {
     },
     closeForm() {
       this.$emit('cancel');
+    },
+    isWidgetSupported(widgetType) {
+      const childrenType = this.workItemTypes.find((type) => type.name === this.childrenTypeName);
+      const widgetDefinitions = childrenType?.widgetDefinitions?.flatMap((i) => i.type) || [];
+      return widgetDefinitions.indexOf(widgetType) !== -1;
     },
   },
   i18n: {

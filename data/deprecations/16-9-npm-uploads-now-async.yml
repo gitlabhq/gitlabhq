@@ -10,4 +10,4 @@
 
     From 17.0, npm and Yarn packages will be uploaded asynchronously. This is a breaking change because you might have pipelines that expect the package to be available as soon as it's published.
 
-    As a workaround, you should use the [packages API](https://docs.gitlab.com/ee/api/packages.html) to check for packages.
+    As a workaround, you should use the [packages API](https://docs.gitlab.com/api/packages/) to check for packages.

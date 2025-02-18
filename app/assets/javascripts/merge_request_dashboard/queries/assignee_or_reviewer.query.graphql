@@ -6,6 +6,7 @@ query assigneeOrReviewer(
   $assignedReviewStates: [MergeRequestReviewState!]
   $reviewerReviewStates: [MergeRequestReviewState!]
   $mergedAfter: Time
+  $not: MergeRequestsResolverNegatedParams
   $perPage: Int!
   $afterCursor: String
   $sort: MergeRequestSort = UPDATED_DESC
@@ -17,6 +18,7 @@ query assigneeOrReviewer(
       assignedReviewStates: $assignedReviewStates
       reviewerReviewStates: $reviewerReviewStates
       mergedAfter: $mergedAfter
+      not: $not
       first: $perPage
       after: $afterCursor
       sort: $sort

@@ -10,7 +10,7 @@ exports[`Design management list item component when item appears in view after i
 
 exports[`Design management list item component with notes renders item with multiple comments 1`] = `
 <a
-  class="gl-text-default hover:gl-text-default"
+  class="focus:gl-focus gl-block gl-rounded-base gl-text-default hover:gl-text-default"
 >
   <gl-card-stub
     bodyclass="gl-p-0 gl-flex gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
@@ -73,7 +73,7 @@ exports[`Design management list item component with notes renders item with mult
 
 exports[`Design management list item component with notes renders item with single comment 1`] = `
 <a
-  class="gl-text-default hover:gl-text-default"
+  class="focus:gl-focus gl-block gl-rounded-base gl-text-default hover:gl-text-default"
 >
   <gl-card-stub
     bodyclass="gl-p-0 gl-flex gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"

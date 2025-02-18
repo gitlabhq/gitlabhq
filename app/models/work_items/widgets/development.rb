@@ -3,6 +3,14 @@
 module WorkItems
   module Widgets
     class Development < Base
+      def self.quick_action_commands
+        [:create_merge_request]
+      end
+
+      def self.quick_action_params
+        [:branch_name]
+      end
+
       def closing_merge_requests
         work_item.merge_requests_closing_issues
       end

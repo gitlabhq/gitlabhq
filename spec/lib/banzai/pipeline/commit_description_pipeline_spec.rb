@@ -8,7 +8,7 @@ RSpec.describe Banzai::Pipeline::CommitDescriptionPipeline, feature_category: :s
 
     it 'formats correctly' do
       markdown = <<~MESSAGE
-        (cherry picked from commit #{project.repository.commit.id})
+        (cherry-picked from commit #{project.repository.commit.id})
 
         Co-authored-by: example <example@example.com>
       MESSAGE

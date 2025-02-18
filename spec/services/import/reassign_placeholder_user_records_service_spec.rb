@@ -121,7 +121,7 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
   describe '#execute', :aggregate_failures do
     before do
-      allow(service).to receive_messages(db_health_check!: nil, db_table_health_check!: nil, check_db_health?: true)
+      allow(service).to receive_messages(db_health_check!: nil, db_table_unavailable?: false)
     end
 
     shared_examples 'a successful reassignment' do
@@ -199,35 +199,6 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
             expires_at: today + 1.day
           )
         )
-      end
-
-      context 'when the membership table is unhealthy' do
-        let(:db_members_table_health_failure) do
-          described_class::DatabaseHealthError.new("#{Member.table_name} table unhealthy")
-        end
-
-        it 'returns a reschedule response' do
-          allow(service).to receive(:db_table_health_check!).with(Member).and_raise(db_members_table_health_failure)
-
-          result = service.execute
-
-          expect(result.status).to eq(:ok)
-          expect(result.reason).to eq(:db_health_check_failed)
-          expect(result.message).to eq('Rescheduling placeholder user records reassignment: database health')
-        end
-
-        it 'logs a warning' do
-          allow(service).to receive(:db_table_health_check!).with(Member).and_raise(db_members_table_health_failure)
-
-          expect(::Import::Framework::Logger).to receive(:warn).with(
-            hash_including(
-              message: "members table unhealthy. Rescheduling reassignment",
-              source_user_id: source_user.id
-            )
-          )
-
-          service.execute
-        end
       end
 
       it 'calls UserProjectAccessChangedService' do
@@ -687,12 +658,12 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
   context 'when database is healthy' do
     before do
-      allow(service).to receive_messages(db_health_check!: nil, db_table_health_check!: nil, check_db_health?: true)
+      allow(service).to receive_messages(db_health_check!: nil, db_table_unhealthy: false)
     end
 
     it 'checks all tables and individual tables' do
       expect(service).to receive(:db_health_check!).at_least(:once)
-      expect(service).to receive(:db_table_health_check!).at_least(:once)
+      expect(service).to receive(:db_table_unavailable?).at_least(:once)
 
       service.execute
     end
@@ -704,7 +675,7 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
       it 'does not check database health' do
         expect(service).not_to receive(:db_health_check!)
-        expect(service).not_to receive(:db_table_health_check!)
+        expect(service).not_to receive(:db_table_unavailable?)
 
         service.execute
       end
@@ -712,7 +683,7 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
   end
 
   context 'when database is unhealthy' do
-    let(:db_table_health_failure) { described_class::DatabaseHealthError.new("#{User.table_name} table unhealthy") }
+    let(:db_table_health_failure) { described_class::DatabaseHealthError.new("#{User.table_name} table unavailable") }
     let(:db_health_failure) { described_class::DatabaseHealthError.new("Database unhealthy") }
 
     it 'returns a reschedule response when checking global tables' do
@@ -739,7 +710,7 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
     end
 
     it 'returns a reschedule response when checking a single table' do
-      allow(service).to receive(:db_table_health_check!).and_raise(db_table_health_failure)
+      allow(service).to receive(:db_table_unavailable?).and_return true
 
       result = service.execute
 
@@ -749,11 +720,11 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
     end
 
     it 'logs a warning when checking a single table' do
-      allow(service).to receive(:db_table_health_check!).and_raise(db_table_health_failure)
+      allow(service).to receive(:reassign_placeholder_references).and_raise(db_table_health_failure)
 
       expect(::Import::Framework::Logger).to receive(:warn).with(
         hash_including(
-          message: "users table unhealthy. Rescheduling reassignment",
+          message: "users table unavailable. Rescheduling reassignment",
           source_user_id: source_user.id
         )
       )
@@ -762,7 +733,7 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
     end
   end
 
-  describe '#db_table_health_check!' do
+  describe '#db_table_unavailable?' do
     let(:health_status) { Gitlab::Database::HealthStatus }
     let(:table_health_indicator_class) { health_status::Indicators::AutovacuumActiveOnTable }
     let(:table_health_indicator) { instance_double(table_health_indicator_class) }
@@ -783,17 +754,17 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
       allow(table_health_indicator).to receive(:evaluate).and_return(stop_signal)
     end
 
-    context 'when the table is unhealthy' do
-      it 'raises an error' do
-        expect { service.send(:db_table_health_check!, User) }.to raise_error(described_class::DatabaseHealthError)
+    context 'when a table is unavailable' do
+      it 'returns true' do
+        expect(service.send(:db_table_unavailable?, User)).to be true
       end
     end
 
-    context 'when the table is healthy' do
+    context 'when the table is available' do
       let(:stop) { false }
 
-      it 'returns nil' do
-        expect(service.send(:db_table_health_check!, User)).to be_nil
+      it 'returns false' do
+        expect(service.send(:db_table_unavailable?, User)).to be false
       end
     end
   end

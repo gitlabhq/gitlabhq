@@ -1,0 +1,3 @@
+- blob = viewer.blob
+.file-content.js-markup-content.md
+  = markup("#{blob.name}.md", "```#{BlobViewer::Graph.graph_format(blob)}\n#{blob.data}\n```", viewer.banzai_render_context)

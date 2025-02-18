@@ -1,9 +1,10 @@
 ---
-redirect_to: '../development/metrics.md'
-remove_date: '2025-03-10'
+redirect_to: ../development/metrics.md
+remove_date: "2025-03-10"
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](../development/metrics.md).
 

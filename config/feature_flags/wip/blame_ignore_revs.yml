@@ -1,0 +1,9 @@
+---
+name: blame_ignore_revs
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/501404
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178550
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514325
+milestone: '17.9'
+group: group::source code
+type: wip
+default_enabled: false

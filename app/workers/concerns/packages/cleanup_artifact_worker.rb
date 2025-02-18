@@ -3,6 +3,7 @@
 module Packages
   module CleanupArtifactWorker
     extend ActiveSupport::Concern
+    include CronjobChildWorker
     include LimitedCapacity::Worker
     include Gitlab::Utils::StrongMemoize
 

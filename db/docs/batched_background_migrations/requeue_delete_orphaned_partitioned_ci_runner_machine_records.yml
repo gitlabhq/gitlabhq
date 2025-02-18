@@ -1,0 +1,12 @@
+---
+migration_job_name: RequeueDeleteOrphanedPartitionedCiRunnerMachineRecords
+description: >-
+  This migration re-queues the job to remove ci_runner_machines_687967fa8a records
+  that don't have a matching ci_runners_e59bb2812d record, this time running also
+  for self-managed environments.
+  This can happen because there was a period in time where a FK didn't exist.
+feature_category: fleet_visibility
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177774
+milestone: '17.9'
+queued_migration_version: 20250113164152
+finalized_by: # version of the migration that finalized this BBM

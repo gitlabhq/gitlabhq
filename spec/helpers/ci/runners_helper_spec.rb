@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:admin_user) { create(:user, :admin) }
+  let_it_be(:non_admin_user) { create(:user) }
+  let_it_be(:user) { non_admin_user }
 
   before do
     allow(helper).to receive(:current_user).and_return(user)
@@ -46,10 +48,34 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
     end
   end
 
-  describe '#admin_runners_data_attributes' do
-    subject { helper.admin_runners_data_attributes }
+  describe '#admin_runners_app_data', :enable_admin_mode do
+    let_it_be(:user) { admin_user }
 
-    it_behaves_like 'admin_runners_data_attributes contains data'
+    subject(:data) { helper.admin_runners_app_data }
+
+    it 'returns correct data' do
+      expect(data).to include(
+        runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
+        new_runner_path: '/admin/runners/new',
+        allow_registration_token: 'true',
+        registration_token: Gitlab::CurrentSettings.runners_registration_token,
+        online_contact_timeout_secs: 7200,
+        stale_timeout_secs: 604800,
+        tag_suggestions_path: '/admin/runners/tag_list.json',
+        can_admin_runners: 'true'
+      )
+    end
+
+    context 'when current user is not an admin' do
+      let_it_be(:user) { non_admin_user }
+
+      it 'returns the correct data' do
+        expect(data).to include(
+          registration_token: nil,
+          can_admin_runners: 'false'
+        )
+      end
+    end
   end
 
   describe '#group_shared_runners_settings_data' do

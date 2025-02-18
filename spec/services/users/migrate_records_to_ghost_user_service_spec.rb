@@ -140,6 +140,21 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
       end
     end
 
+    context 'for todos' do
+      include_examples 'migrating records to the ghost user', Todo, [:author] do
+        let(:issue) { create(:issue, project: project, author: user) }
+        let(:created_record) do
+          create(
+            :todo,
+            project: issue.project,
+            user: create(:user),
+            author: user,
+            target: issue
+          )
+        end
+      end
+    end
+
     context 'for releases' do
       include_examples 'migrating records to the ghost user', Release, [:author] do
         let(:created_record) { create(:release, author: user) }
@@ -208,7 +223,7 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
         created_project = create(:project, creator: user)
 
         # associations to be destroyed
-        todos = create_list(:todo, 2, project: issue.project, user: user, author: user, target: issue)
+        todos = create_list(:todo, 2, project: issue.project, user: user, author: create(:user), target: issue)
         event = create(:event, project: issue.project, author: user)
 
         query_recorder = ActiveRecord::QueryRecorder.new do
@@ -225,7 +240,6 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
         expect(resource_label_event.user_id).to be_nil
         expect(resource_state_event.user_id).to be_nil
         expect(created_project.creator_id).to be_nil
-        expect(user.authored_todos).to be_empty
         expect(user.todos).to be_empty
         expect(user.authored_events).to be_empty
 
@@ -238,7 +252,6 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
         ]
 
         expected_queries += delete_in_batches_regexps(:todos, :user_id, user, todos)
-        expected_queries += delete_in_batches_regexps(:todos, :author_id, user, todos)
         expected_queries += delete_in_batches_regexps(:events, :author_id, user, [event])
 
         expect(query_recorder.log).to include(*expected_queries)

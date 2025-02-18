@@ -15,6 +15,7 @@ RSpec.describe GitlabSchema.types['BranchRule'], feature_category: :source_code_
       matching_branches_count
       created_at
       updated_at
+      squash_option
     ]
   end
 

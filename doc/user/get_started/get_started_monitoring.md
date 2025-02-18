@@ -2,10 +2,9 @@
 stage: Monitor
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Get Started monitoring your application"
+description: Get Started monitoring your application
+title: Get started with monitoring your application in GitLab
 ---
-
-# Get started with monitoring your application in GitLab
 
 Monitoring is a crucial part of maintaining and optimizing your applications.
 GitLab observability features help you track errors, analyze application performance, and respond to incidents.
@@ -35,7 +34,7 @@ To enable observability features, you need administrator or the Owner role for t
 
 For more information, see:
 
-- [Create a project](../project/index.md)
+- [Create a project](../project/_index.md)
 
 ## Step 2: Track application errors with error tracking
 
@@ -53,7 +52,7 @@ Set up incident management features to troubleshoot issues and resolve incidents
 
 For more information, see:
 
-- [Incident Management](../../operations/incident_management/index.md)
+- [Incident Management](../../operations/incident_management/_index.md)
 
 ## Step 4: Analyze and improve
 
@@ -68,5 +67,5 @@ Use the data and insights gathered to continuously improve your application and 
 
 For more information, see:
 
-- [Insight dashboards](../project/insights/index.md)
-- [Executable runbooks](../project/clusters/runbooks/index.md)
+- [Insight dashboards](../project/insights/_index.md)
+- [Executable runbooks](../project/clusters/runbooks/_index.md)

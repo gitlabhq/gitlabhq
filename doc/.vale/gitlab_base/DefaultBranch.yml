@@ -6,6 +6,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Use 'default branch' or `main` instead of `master`, when possible."
+vocab: false
 level: warning
 ignorecase: true
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#default-branch

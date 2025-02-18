@@ -2,13 +2,15 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting Code Quality
 ---
 
-# Troubleshooting Code Quality
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When working with Code Quality, you might encounter the following issues.
 
@@ -16,7 +18,7 @@ When working with Code Quality, you might encounter the following issues.
 
 You are probably using a private runner with the Docker-in-Docker socket-binding configuration.
 You should configure Code Quality checks to run on your worker as documented in
-[Use private runners](../../ci/testing/code_quality_codeclimate_scanning.md#use-private-runners).
+[Use private runners](../testing/code_quality_codeclimate_scanning.md#use-private-runners).
 
 ## Changing the default configuration has no effect
 
@@ -39,13 +41,13 @@ Missing report on the target branch can be due to:
 - Newly added Code Quality job in your `.gitlab-ci.yml`.
 - Your pipeline is not set to run the Code Quality job on your target branch.
 - Commits are made to the default branch that do not run the Code Quality job.
-- The [`artifacts:expire_in`](../yaml/index.md#artifactsexpire_in) CI/CD setting can cause the Code Quality artifacts to expire faster than desired.
+- The [`artifacts:expire_in`](../yaml/_index.md#artifactsexpire_in) CI/CD setting can cause the Code Quality artifacts to expire faster than desired.
 
 Verify the presence of report on the base commit by obtaining the `base_sha` using the [merge request API](../../api/merge_requests.md#get-single-mr) and use the [pipelines API with the `sha` attribute](../../api/pipelines.md#list-project-pipelines) to check if pipelines ran.
 
 ## Only a single Code Quality report is displayed, but more are defined
 
-Code Quality automatically [combines multiple reports](../../ci/testing/code_quality.md#scan-code-for-quality-violations).
+Code Quality automatically [combines multiple reports](../testing/code_quality.md#scan-code-for-quality-violations).
 
 In GitLab 15.6 and earlier, Code Quality used only the artifact from the latest created job (with the largest job ID). Code Quality artifacts from earlier jobs were ignored.
 
@@ -152,7 +154,7 @@ Example:
 ### Kubernetes
 
 If you have access to GitLab Runner configuration and the Kubernetes cluster,
-you can [mount a ConfigMap](https://docs.gitlab.com/runner/executors/kubernetes/index.html#configmap-volume).
+you can [mount a ConfigMap](https://docs.gitlab.com/runner/executors/kubernetes/#configmap-volume).
 
 Replace `gitlab.example.com` with the actual domain of the registry.
 
@@ -185,7 +187,7 @@ To gain insight into the errors, you can execute a GraphQL query using the follo
 1. Go to the pipeline details page.
 1. Append `.json` to the URL.
 1. Copy the `iid` of the pipeline.
-1. Go to the [interactive GraphQL explorer](../../api/graphql/index.md#interactive-graphql-explorer).
+1. Go to the [interactive GraphQL explorer](../../api/graphql/_index.md#interactive-graphql-explorer).
 1. Run the following query:
 
    ```graphql

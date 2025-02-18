@@ -14,9 +14,6 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75587
 time_frame: none
 data_source: system
 data_category: optional
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

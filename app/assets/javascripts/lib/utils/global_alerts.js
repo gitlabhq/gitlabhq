@@ -1,4 +1,9 @@
+import createEventHub from '~/helpers/event_hub_factory';
+
 export const GLOBAL_ALERTS_SESSION_STORAGE_KEY = 'vueGlobalAlerts';
+export const GLOBAL_ALERTS_DISMISS_EVENT = 'vueGlobalAlertsDismiss';
+
+export const eventHub = createEventHub();
 
 /**
  * Get global alerts from session storage
@@ -34,4 +39,12 @@ export const removeGlobalAlertById = (id) => {
     GLOBAL_ALERTS_SESSION_STORAGE_KEY,
     JSON.stringify(existingAlerts.filter((alert) => alert.id !== id)),
   );
+};
+
+/**
+ * Programmatically dismiss global alert by id
+ * @param {String} id
+ */
+export const dismissGlobalAlertById = (id) => {
+  eventHub.$emit(GLOBAL_ALERTS_DISMISS_EVENT, id);
 };

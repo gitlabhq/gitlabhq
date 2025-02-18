@@ -822,7 +822,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
             actions = subject
 
             expect(environment).to be_stopped
-            expect(actions).to match_array([])
+            expect(actions).to be_empty
           end
 
           context 'when the auto stop setting is set to :with_action' do
@@ -834,7 +834,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
               actions = subject
 
               expect(environment).to be_available
-              expect(actions).to match_array([])
+              expect(actions).to be_empty
             end
           end
         end

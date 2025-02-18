@@ -37,6 +37,8 @@ RSpec.describe 'getting organization information', feature_category: :cell do
     let(:current_user) { create(:user) }
 
     context 'when organization is private' do
+      let_it_be(:organization) { create(:organization, :private) }
+
       it 'returns no organization' do
         request_organization
 
@@ -45,8 +47,6 @@ RSpec.describe 'getting organization information', feature_category: :cell do
     end
 
     context 'when organization is public' do
-      let_it_be(:organization) { create(:organization, :public) }
-
       it 'only returns the public organization' do
         request_organization
 

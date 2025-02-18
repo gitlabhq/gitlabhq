@@ -8,14 +8,6 @@ description: Keeps relation between protected branches and external status check
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62186
 milestone: '14.0'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: external_status_check_id
-        table: external_status_checks
-        sharding_key: project_id
-        belongs_to: external_status_check
-desired_sharding_key_migration_job_name: BackfillExternalStatusChecksProtectedBranchesProjectId
 table_size: small
+sharding_key:
+  project_id: projects

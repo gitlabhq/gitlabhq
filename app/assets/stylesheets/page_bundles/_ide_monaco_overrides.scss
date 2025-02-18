@@ -71,7 +71,7 @@
 
     .diffOverview {
       background-color: $white;
-      border-left: 1px solid $border-color;
+      @apply gl-border-l;
       cursor: ns-resize;
     }
 
@@ -88,7 +88,7 @@
     }
 
     .line-numbers {
-      color: $t-gray-a-24;
+      @apply gl-text-alpha-dark-24;
     }
 
     .view-overlays {

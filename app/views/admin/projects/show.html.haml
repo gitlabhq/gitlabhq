@@ -6,9 +6,10 @@
 - current_user_is_group_owner = @group && @group.has_owner?(current_user)
 
 = render ::Layouts::PageHeadingComponent.new(@project.full_name) do |c|
-  - c.with_actions do
-    = render Pajamas::ButtonComponent.new(href: edit_admin_namespace_project_path({ id: @project.to_param, namespace_id: @project.namespace.to_param })) do
-      = _('Edit')
+  - if current_user.can_admin_all_resources?
+    - c.with_actions do
+      = render Pajamas::ButtonComponent.new(href: edit_admin_namespace_project_path({ id: @project.to_param, namespace_id: @project.namespace.to_param })) do
+        = _('Edit')
 
 - if @project.last_repository_check_failed?
   = render Pajamas::AlertComponent.new(variant: :danger,
@@ -106,7 +107,7 @@
                 = _('Git LFS status:')
               %strong
                 = project_lfs_status(@project)
-                = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index.md')
+                = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/_index.md')
           - else
             %li{ class: '!gl-px-5' }
               %span.light
@@ -137,41 +138,43 @@
 
     = render_if_exists 'admin/projects/geo_status_widget', locals: { project: @project }
 
-    = render ::Layouts::CrudComponent.new(s_('ProjectSettings|Transfer project')) do |c|
-      - c.with_body do
-        = gitlab_ui_form_for @project, url: transfer_admin_project_path(@project), method: :put do |f|
-          .form-group
-            .col-form-label
-              = f.label :new_namespace_id, _("Namespace")
-            .js-namespace-select{ data: { field_name: 'new_namespace_id', toggle_text_placeholder: _('Search for Namespace') } }
-          .form-group
-            = f.submit _('Transfer'), pajamas_button: true
+    - if current_user.can_admin_all_resources?
+      = render ::Layouts::CrudComponent.new(s_('ProjectSettings|Transfer project')) do |c|
+        - c.with_body do
+          = gitlab_ui_form_for @project, url: transfer_admin_project_path(@project), method: :put do |f|
+            .form-group
+              .col-form-label
+                = f.label :new_namespace_id, _("Namespace")
+              .js-namespace-select{ data: { field_name: 'new_namespace_id', toggle_text_placeholder: _('Search for Namespace') } }
+            .form-group
+              = f.submit _('Transfer'), pajamas_button: true
 
-    = render ::Layouts::CrudComponent.new(_('Repository check'), options: { class: 'repository-check' }) do |c|
-      - c.with_body do
-        = gitlab_ui_form_for @project, url: repository_check_admin_project_path(@project), method: :post do |f|
-          .form-group
-            - if @project.last_repository_check_at.nil?
-              = _("This repository has never been checked.")
-            - elsif @project.last_repository_check_failed?
-              - failed_message = _("This repository was last checked %{last_check_timestamp}. The check %{strong_start}failed.%{strong_end} See the 'repocheck.log' file for error messages.")
-              - failed_message = failed_message % { last_check_timestamp: @project.last_repository_check_at.to_fs(:medium), strong_start: "<strong class='gl-text-danger'>", strong_end: "</strong>" }
-              = failed_message.html_safe
-            - else
-              = _("This repository was last checked %{last_check_timestamp}. The check passed.") % { last_check_timestamp: @project.last_repository_check_at.to_fs(:medium) }
+      = render ::Layouts::CrudComponent.new(_('Repository check'), options: { class: 'repository-check' }) do |c|
+        - c.with_body do
+          = gitlab_ui_form_for @project, url: repository_check_admin_project_path(@project), method: :post do |f|
+            .form-group
+              - if @project.last_repository_check_at.nil?
+                = _("This repository has never been checked.")
+              - elsif @project.last_repository_check_failed?
+                - failed_message = _("This repository was last checked %{last_check_timestamp}. The check %{strong_start}failed.%{strong_end} See the 'repocheck.log' file for error messages.")
+                - failed_message = failed_message % { last_check_timestamp: @project.last_repository_check_at.to_fs(:medium), strong_start: "<strong class='gl-text-danger'>", strong_end: "</strong>" }
+                = failed_message.html_safe
+              - else
+                = _("This repository was last checked %{last_check_timestamp}. The check passed.") % { last_check_timestamp: @project.last_repository_check_at.to_fs(:medium) }
 
-            = link_to sprite_icon('question-o'), help_page_path('administration/repository_checks.md')
+              = link_to sprite_icon('question-o'), help_page_path('administration/repository_checks.md')
 
-          .form-group
-            = f.submit _('Trigger repository check'), pajamas_button: true
+            .form-group
+              = f.submit _('Trigger repository check'), pajamas_button: true
 
   .gl-flex.gl-flex-col.gl-gap-5
     - if @group
       = render ::Layouts::CrudComponent.new(_('Group members'),
         icon: 'user',
         count: @group_members.size) do |c|
-        - c.with_actions do
-          = render 'shared/members/manage_access_button', path: group_group_members_path(@group)
+        - if current_user.can_admin_all_resources?
+          - c.with_actions do
+            = render 'shared/members/manage_access_button', path: group_group_members_path(@group)
         - c.with_body do
           %ul.content-list.members-list
             = render partial: 'shared/members/member',
@@ -187,8 +190,9 @@
     = render ::Layouts::CrudComponent.new(_('%{project_name} project members') % { project_name: @project.name },
       icon: 'user',
       count: @project.users.size) do |c|
-      - c.with_actions do
-        = render 'shared/members/manage_access_button', path: project_project_members_path(@project)
+      - if current_user.can_admin_all_resources?
+        - c.with_actions do
+          = render 'shared/members/manage_access_button', path: project_project_members_path(@project)
       - c.with_body do
         %ul.content-list.project_members.members-list
           = render partial: 'shared/members/member',

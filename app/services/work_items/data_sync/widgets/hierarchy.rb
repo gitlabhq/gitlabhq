@@ -17,15 +17,17 @@ module WorkItems
           handle_children
         end
 
-        # Nothing to delete as we relink existing child links to the new parent in `relink_children_to_target_work_item`
-        def post_move_cleanup; end
+        # Nothing to delete for children as we relink existing child links
+        # to the new parent in `relink_children_to_target_work_item`
+        def post_move_cleanup
+          return unless work_item.parent_link.present?
+
+          work_item.parent_link.destroy!
+        end
 
         private
 
         def handle_parent
-          # TBD: this will be replaced with the more detailed implementation of the hierarchy(parent) widget sync.
-          # see: - https://gitlab.com/gitlab-org/gitlab/-/issues/501211
-          #      - https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176013
           return unless work_item.parent_link.present?
 
           parent_link_attributes = work_item.parent_link.attributes.except("id").tap do |attributes|
@@ -44,8 +46,7 @@ module WorkItems
           relink_children_to_target_work_item
 
           # We only support moving child items for the issue work item type for now
-          issue_type = WorkItems::Type.default_issue_type
-          move_children if issue_type.id == work_item.work_item_type.id
+          move_children if work_item.work_item_type.issue?
         end
 
         def relink_children_to_target_work_item
@@ -66,6 +67,10 @@ module WorkItems
         end
 
         def move_children
+          # Reload as the child_links association was just changed by relinking child items
+          # in `relink_children_to_target_work_item`
+          target_work_item.reset
+
           # We iterate over "new work item" child links now, because we have relinked child items from moved work item
           # to the new work item in `relink_children_to_target_work_item`.
           target_work_item.child_links.each do |link|

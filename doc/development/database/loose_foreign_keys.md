@@ -1,10 +1,9 @@
 ---
-stage: Data Access
-group: Database Frameworks
+stage: Tenant Scale
+group: Cells Infrastructure
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Loose foreign keys
 ---
-
-# Loose foreign keys
 
 ## Problem statement
 
@@ -46,8 +45,11 @@ we can:
 1. For each record in the table, delete the associated `ci_pipelines` records
    using the `project_id` column.
 
-NOTE:
+{{< alert type="note" >}}
+
 For this procedure to work, we must register which tables to clean up asynchronously.
+
+{{< /alert >}}
 
 ## The `scripts/decomposition/generate-loose-foreign-key`
 
@@ -56,8 +58,11 @@ decomposition effort. It presents existing keys and allows chosen foreign keys t
 converted into loose foreign keys. This ensures consistency between foreign key and loose foreign
 key definitions, and ensures that they are properly tested.
 
-WARNING:
+{{< alert type="warning" >}}
+
 We strongly advise you to use the automation script for swapping any foreign key to a loose foreign key.
+
+{{< /alert >}}
 
 The tool ensures that all aspects of swapping a foreign key are covered. This includes:
 
@@ -387,9 +392,12 @@ def show
 end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 This example is unlikely in GitLab, because we usually look up the parent models to perform
 permission checks.
+
+{{< /alert >}}
 
 ## A note on `dependent: :destroy` and `dependent: :nullify`
 
@@ -844,8 +852,11 @@ When the cleanup is done, the older partitions are automatically detached by the
 
 ### PartitionManager bug
 
-NOTE:
+{{< alert type="note" >}}
+
 This issue happened in the past on Staging and it has been mitigated.
+
+{{< /alert >}}
 
 When adding a new partition, the default value of the `partition` column is also updated. This is
 a schema change that is executed in the same transaction as the new partition creation. It's highly

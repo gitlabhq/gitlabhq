@@ -47,11 +47,6 @@ export const ENVIRONMENTS_SCOPE = {
   STOPPED: 'stopped',
 };
 
-export const ENVIRONMENT_COUNT_BY_SCOPE = {
-  [ENVIRONMENTS_SCOPE.ACTIVE]: 'activeCount',
-  [ENVIRONMENTS_SCOPE.STOPPED]: 'stoppedCount',
-};
-
 export const REVIEW_APP_MODAL_I18N = {
   title: s__('Environments|Enable Review Apps'),
   intro: s__(

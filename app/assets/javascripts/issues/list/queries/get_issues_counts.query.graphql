@@ -24,6 +24,7 @@ query getIssuesCount(
   $createdBefore: Time
   $closedAfter: Time
   $closedBefore: Time
+  $subscribed: SubscriptionStatus
 ) {
   group(fullPath: $fullPath) @skip(if: $isProject) {
     id
@@ -51,6 +52,7 @@ query getIssuesCount(
       createdBefore: $createdBefore
       closedAfter: $closedAfter
       closedBefore: $closedBefore
+      subscribed: $subscribed
     ) {
       count
     }
@@ -78,6 +80,7 @@ query getIssuesCount(
       createdBefore: $createdBefore
       closedAfter: $closedAfter
       closedBefore: $closedBefore
+      subscribed: $subscribed
     ) {
       count
     }
@@ -105,6 +108,7 @@ query getIssuesCount(
       createdBefore: $createdBefore
       closedAfter: $closedAfter
       closedBefore: $closedBefore
+      subscribed: $subscribed
     ) {
       count
     }
@@ -136,6 +140,7 @@ query getIssuesCount(
       createdBefore: $createdBefore
       closedAfter: $closedAfter
       closedBefore: $closedBefore
+      subscribed: $subscribed
     ) {
       count
     }
@@ -164,6 +169,7 @@ query getIssuesCount(
       createdBefore: $createdBefore
       closedAfter: $closedAfter
       closedBefore: $closedBefore
+      subscribed: $subscribed
     ) {
       count
     }
@@ -192,6 +198,7 @@ query getIssuesCount(
       createdBefore: $createdBefore
       closedAfter: $closedAfter
       closedBefore: $closedBefore
+      subscribed: $subscribed
     ) {
       count
     }

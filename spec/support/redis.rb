@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'gitlab/redis'
 
 RSpec.configure do |config|

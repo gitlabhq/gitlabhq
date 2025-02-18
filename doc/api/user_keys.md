@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: User SSH and GPG keys API
 ---
 
-# User SSH and GPG keys API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use this API to interact with SSH and GPG keys for users. For more information, see [SSH keys](../user/ssh.md) and [GPG keys](../user/project/repository/signed_commits/gpg.md).
 
@@ -16,7 +18,7 @@ Use this API to interact with SSH and GPG keys for users. For more information, 
 
 Lists all SSH keys for your user account.
 
-Use the `page` and `per_page` [pagination parameters](rest/index.md#offset-based-pagination) to filter the results.
+Use the `page` and `per_page` [pagination parameters](rest/_index.md#offset-based-pagination) to filter the results.
 
 Prerequisites:
 
@@ -41,13 +43,15 @@ Example response:
     "id": 1,
     "title": "Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
-    "created_at": "2014-08-01T14:47:39.080Z"
+    "created_at": "2014-08-01T14:47:39.080Z",
+    "usage_type": "auth"
   },
   {
     "id": 3,
     "title": "Another Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
-    "created_at": "2014-08-01T14:47:39.080Z"
+    "created_at": "2014-08-01T14:47:39.080Z",
+    "usage_type": "signing"
   }
 ]
 ```
@@ -101,7 +105,8 @@ Example response:
   "id": 1,
   "title": "Public key",
   "key": "<SSH_KEY>",
-  "created_at": "2014-08-01T14:47:39.080Z"
+  "created_at": "2014-08-01T14:47:39.080Z",
+  "usage_type": "auth"
 }
 ```
 
@@ -134,13 +139,18 @@ Example response:
   "id": 1,
   "title": "Public key",
   "key": "<SSH_KEY>",
-  "created_at": "2014-08-01T14:47:39.080Z"
+  "created_at": "2014-08-01T14:47:39.080Z",
+  "usage_type": "auth"
 }
 ```
 
 ## Add an SSH key
 
-> - The `usage_type` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105551) in GitLab 15.7.
+{{< history >}}
+
+- The `usage_type` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105551) in GitLab 15.7.
+
+{{< /history >}}
 
 Adds an SSH key for your user account.
 
@@ -192,12 +202,19 @@ Example response:
 
 ## Add an SSH key for a user
 
-> - The `usage_type` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105551) in GitLab 15.7.
+{{< history >}}
+
+- The `usage_type` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105551) in GitLab 15.7.
+
+{{< /history >}}
 
 Adds an SSH key for a given user account.
 
-NOTE:
+{{< alert type="note" >}}
+
 This also adds an audit event.
+
+{{< /alert >}}
 
 Prerequisites:
 

@@ -9,14 +9,6 @@ description: Represents a Terraform state file at a point in time, with a corres
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35211
 milestone: '13.4'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: terraform_state_id
-        table: terraform_states
-        sharding_key: project_id
-        belongs_to: terraform_state
-desired_sharding_key_migration_job_name: BackfillTerraformStateVersionsProjectId
 table_size: small
+sharding_key:
+  project_id: projects

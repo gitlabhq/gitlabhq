@@ -2,30 +2,35 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Install an offline GitLab Self-Managed instance
 ---
 
-# Install an offline GitLab Self-Managed instance
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This is a step-by-step guide that helps you install, configure, and use a GitLab Self-Managed
 instance entirely offline.
 
 ## Installation
 
-NOTE:
+{{< alert type="note" >}}
+
 This guide assumes the server is Ubuntu 20.04 using the [Omnibus installation method](https://docs.gitlab.com/omnibus/) and is running GitLab [Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/). Instructions for other servers may vary.
 This guide also assumes the server host resolves as `my-host.internal`, which you should replace with your
 server's FQDN, and that you have access to a different server with Internet access to download the required package files.
+
+{{< /alert >}}
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a video walkthrough of this process, see [Offline GitLab Installation: Downloading & Installing](https://www.youtube.com/watch?v=TJaq4ua2Prw).
 
 ### Download the GitLab package
 
-You should [manually download the GitLab package](../../update/package/index.md#by-using-a-downloaded-package) and relevant dependencies using a server of the same operating system type that has access to the Internet.
+You should [manually download the GitLab package](../../update/package/_index.md#by-using-a-downloaded-package) and relevant dependencies using a server of the same operating system type that has access to the Internet.
 
 If your offline environment has no local network access, you must manually transport the relevant package through physical media, such as a USB drive.
 
@@ -58,7 +63,7 @@ sudo cd /path/to/mount
 sudo dpkg -i <package_name>.deb
 ```
 
-[Use the relevant commands for your operating system to install the package](../../update/package/index.md#by-using-a-downloaded-package) but make sure to specify an `http`
+[Use the relevant commands for your operating system to install the package](../../update/package/_index.md#by-using-a-downloaded-package) but make sure to specify an `http`
 URL for the `EXTERNAL_URL` installation step. Once installed, we can manually
 configure the SSL ourselves.
 
@@ -75,7 +80,7 @@ sudo EXTERNAL_URL="http://my-host.internal" dpkg -i <gitlab_package_name>.deb
 ## Enabling SSL
 
 Follow these steps to enable SSL for your fresh instance. These steps reflect those for
-[manually configuring SSL in Omnibus's NGINX configuration](https://docs.gitlab.com/omnibus/settings/ssl/index.html#configure-https-manually):
+[manually configuring SSL in Omnibus's NGINX configuration](https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually):
 
 1. Make the following changes to `/etc/gitlab/gitlab.rb`:
 
@@ -230,8 +235,8 @@ always fails because it uses `pool.ntp.org`. This error can be ignored but you c
 ## Enabling the Package Metadata Database
 
 Enabling the Package Metadata Database is required to enable
-[Continuous Vulnerability Scanning](../../user/application_security/continuous_vulnerability_scanning/index.md)
-and [license scanning of CycloneDX files](../../user/compliance/license_scanning_of_cyclonedx_files/index.md).
+[Continuous Vulnerability Scanning](../../user/application_security/continuous_vulnerability_scanning/_index.md)
+and [license scanning of CycloneDX files](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md).
 This process requires the use of License and/or Advisory Data under what is collectively called the Package Metadata Database, which is licensed under the [EE License](https://storage.googleapis.com/prod-export-license-bucket-1a6c642fc4de57d4/LICENSE).
 Note the following in relation to use of the Package Metadata Database:
 
@@ -409,5 +414,5 @@ Additionally, checkpoint data should exist for the particular package registry b
 - For licenses: `sudo gitlab-rails runner "puts \"maven data has been synced up to #{PackageMetadata::Checkpoint.where(data_type: 'licenses', purl_type: 'maven')}\""`
 - For advisories: `sudo gitlab-rails runner "puts \"maven data has been synced up to #{PackageMetadata::Checkpoint.where(data_type: 'advisories', purl_type: 'maven')}\""`
 
-Finally, you can check the [`application_json.log`](../../administration/logs/index.md#application_jsonlog) logs to verify that the
+Finally, you can check the [`application_json.log`](../../administration/logs/_index.md#application_jsonlog) logs to verify that the
 sync job has run and is without error by searching for `DEBUG` messages where the class is `PackageMetadata::SyncService`. Example: `{"severity":"DEBUG","time":"2023-06-22T16:41:00.825Z","correlation_id":"a6e80150836b4bb317313a3fe6d0bbd6","class":"PackageMetadata::SyncService","message":"Evaluating data for licenses:gcp/prod-export-license-bucket-1a6c642fc4de57d4/v2/pypi/1694703741/0.ndjson"}`.

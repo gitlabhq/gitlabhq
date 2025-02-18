@@ -3,6 +3,7 @@ import DraggableList from 'vuedraggable';
 
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { ESC_KEY_CODE } from '~/lib/utils/keycodes';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
@@ -12,7 +13,7 @@ import WorkItemLinkChildContents from '../shared/work_item_link_child_contents.v
 import removeLinkedItemsMutation from '../../graphql/remove_linked_items.mutation.graphql';
 import addLinkedItemsMutation from '../../graphql/add_linked_items.mutation.graphql';
 
-import { RELATIONSHIP_TYPE_ENUM } from '../../constants';
+import { RELATIONSHIP_TYPE_ENUM, WORK_ITEM_TYPE_VALUE_INCIDENT } from '../../constants';
 
 export default {
   RELATIONSHIP_TYPE_ENUM,
@@ -54,6 +55,11 @@ export default {
     workItemFullPath: {
       type: String,
       required: true,
+    },
+    activeChildItemId: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -181,6 +187,14 @@ export default {
         Sentry.captureException(error);
       }
     },
+    handleLinkedItemClick(event, linkedItem) {
+      // if the linkedItem is incident, redirect to the incident page
+      if (linkedItem?.workItem?.workItemType?.name === WORK_ITEM_TYPE_VALUE_INCIDENT) {
+        visitUrl(linkedItem.workItem.webUrl);
+      } else {
+        this.$emit('showModal', { event, child: linkedItem.workItem });
+      }
+    },
   },
 };
 </script>
@@ -218,7 +232,11 @@ export default {
           :can-update="canUpdate"
           :show-labels="showLabels"
           :work-item-full-path="workItemFullPath"
-          @click="$emit('showModal', { event: $event, child: linkedItem.workItem })"
+          :class="{
+            'gl-border-default gl-bg-blue-50 hover:gl-bg-blue-50':
+              activeChildItemId === linkedItem.workItem.id,
+          }"
+          @click="handleLinkedItemClick($event, linkedItem)"
           @removeChild="$emit('removeLinkedItem', linkedItem.workItem)"
         />
       </li>

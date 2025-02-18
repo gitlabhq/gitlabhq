@@ -72,7 +72,8 @@ export default {
         v-gl-tooltip.bottom
         :title="__('Confidential')"
         name="eye-slash"
-        class="gl-mr-2 gl-cursor-help gl-text-orange-500"
+        class="gl-mr-2 gl-cursor-help"
+        variant="warning"
       />
       <gl-link
         :href="suggestion.webUrl"

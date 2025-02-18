@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # These helpers allow you to manage and register
 # U2F and WebAuthn devices
 #

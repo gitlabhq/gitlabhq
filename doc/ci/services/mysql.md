@@ -2,26 +2,31 @@
 stage: Verify
 group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Using MySQL
 ---
 
-# Using MySQL
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Many applications depend on MySQL as their database, and you may
 need it for your tests to run.
 
 ## Use MySQL with the Docker executor
 
-If you want to use a MySQL container, you can use [GitLab Runner](../runners/index.md) with the Docker executor.
+If you want to use a MySQL container, you can use [GitLab Runner](../runners/_index.md) with the Docker executor.
 
 This example shows you how to set a username and password that GitLab uses to access the MySQL container. If you do not set a username and password, you must use `root`.
 
-NOTE:
+{{< alert type="note" >}}
+
 Variables set in the GitLab UI are not passed down to the service containers.
-For more information, see [GitLab CI/CD variables](../variables/index.md).
+For more information, see [GitLab CI/CD variables](../variables/_index.md).
+
+{{< /alert >}}
 
 1. To specify a MySQL image, add the following to your `.gitlab-ci.yml` file:
 
@@ -73,10 +78,13 @@ GitLab Runner with the Shell executor.
 
 1. Choose a MySQL root password and type it twice when asked.
 
-   NOTE:
-   As a security measure, you can run `mysql_secure_installation` to
+   {{< alert type="note" >}}
+
+As a security measure, you can run `mysql_secure_installation` to
    remove anonymous users, drop the test database, and disable remote logins by
    the root user.
+
+   {{< /alert >}}
 
 1. Create a user by logging in to MySQL as root:
 
@@ -131,5 +139,5 @@ GitLab Runner with the Shell executor.
 ## Example project
 
 To view a MySQL example, create a fork of this [sample project](https://gitlab.com/gitlab-examples/mysql).
-This project uses publicly-available [instance runners](../runners/index.md) on [GitLab.com](https://gitlab.com).
+This project uses publicly-available [instance runners](../runners/_index.md) on [GitLab.com](https://gitlab.com).
 Update the README.md file, commit your changes, and view the CI/CD pipeline to see it in action.

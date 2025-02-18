@@ -10,7 +10,7 @@ export default {
     GlLink,
   },
   inject: ['config'],
-  containerRegistryHelpUrl: helpPagePath('user/packages/container_registry/index'),
+  containerRegistryHelpUrl: helpPagePath('user/packages/container_registry/_index'),
 };
 </script>
 <template>

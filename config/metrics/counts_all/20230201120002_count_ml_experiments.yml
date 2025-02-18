@@ -13,9 +13,6 @@ data_source: database
 data_category: optional
 instrumentation_class: CountMlExperimentsMetric
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

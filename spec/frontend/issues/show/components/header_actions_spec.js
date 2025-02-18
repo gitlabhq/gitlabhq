@@ -139,6 +139,7 @@ describe('HeaderActions component', () => {
   const findCopyRefenceDropdownItem = () => wrapper.findByTestId('copy-reference');
   const findCopyEmailItem = () => wrapper.findByTestId('copy-email');
   const findPromoteToEpicButton = () => wrapper.findByTestId('promote-button');
+  const findLockIssueToggle = () => wrapper.findByTestId('lock-issue-toggle');
 
   const findModal = () => wrapper.findComponent(GlModal);
 
@@ -341,6 +342,26 @@ describe('HeaderActions component', () => {
         await findEditButton().vm.$emit('click');
         expect(issuesEventHub.$emit).toHaveBeenCalledWith('open.form');
       });
+    });
+  });
+
+  describe('Locking discussion', () => {
+    it.each`
+      description                                                                                    | canUpdateIssue | issueType        | isLoggedIn | isExpected
+      ${'shows lock issue toggle when type is issue, user is signed in, and canUpdateIssue is true'} | ${true}        | ${TYPE_ISSUE}    | ${true}    | ${true}
+      ${'does not show lock issue toggle if canUpdateIssue is false'}                                | ${false}       | ${TYPE_ISSUE}    | ${true}    | ${false}
+      ${'does not show lock issue toggle if type is not issue'}                                      | ${true}        | ${TYPE_INCIDENT} | ${true}    | ${false}
+      ${'does not show lock issue toggle if user is not signed in'}                                  | ${true}        | ${TYPE_ISSUE}    | ${false}   | ${false}
+    `('$description', ({ canUpdateIssue, issueType, isLoggedIn, isExpected }) => {
+      wrapper = mountComponent({
+        isLoggedIn,
+        props: {
+          canUpdateIssue,
+          issueType,
+        },
+      });
+
+      expect(findLockIssueToggle().exists()).toBe(isExpected);
     });
   });
 

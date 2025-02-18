@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillVsCodeSettingsVersion, schema: 20231212135235, feature_category: :web_ide do
+RSpec.describe Gitlab::BackgroundMigration::BackfillVsCodeSettingsVersion, schema: 20231220225325, feature_category: :web_ide do
   let(:vs_code_settings) { table(:vs_code_settings) }
 
   let(:users) { table(:users) }

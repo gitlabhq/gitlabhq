@@ -82,7 +82,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
         expect(@merge_request).to be_valid
         expect(@merge_request.title).to eq('New title')
         expect(@merge_request.assignees).to match_array([user])
-        expect(@merge_request.reviewers).to match_array([])
+        expect(@merge_request.reviewers).to be_empty
         expect(@merge_request).to be_closed
         expect(@merge_request.labels.count).to eq(1)
         expect(@merge_request.labels.first.title).to eq(label.name)
@@ -724,6 +724,13 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
         it_behaves_like 'triggers GraphQL subscription mergeRequestReviewersUpdated' do
           let(:action) { update_merge_request({ reviewer_ids: [user2.id] }) }
+        end
+
+        it 'triggers GraphQL subscription userMergeRequestUpdated' do
+          expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(user3, merge_request)
+          expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(user2, merge_request)
+
+          update_merge_request(reviewer_ids: [user2.id])
         end
 
         describe 'recording the first reviewer assigned at timestamp' do

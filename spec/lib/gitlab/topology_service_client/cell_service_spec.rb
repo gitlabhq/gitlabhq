@@ -8,7 +8,7 @@ RSpec.describe Gitlab::TopologyServiceClient::CellService, feature_category: :ce
 
   let(:cell_info) do
     Gitlab::Cells::TopologyService::CellInfo.new(
-      name: "cell-1",
+      id: 1,
       address: "127.0.0.1:3000",
       session_prefix: "cell-1-",
       sequence_range: Gitlab::Cells::TopologyService::SequenceRange.new(minval: 1, maxval: 1000)
@@ -18,7 +18,7 @@ RSpec.describe Gitlab::TopologyServiceClient::CellService, feature_category: :ce
   describe '#get_cell_info' do
     context 'when topology service is disabled' do
       it 'raises an error when topology service is not enabled' do
-        expect(Gitlab.config.topology_service).to receive(:enabled).and_return(false)
+        expect(Gitlab.config.cell.topology_service).to receive(:enabled).and_return(false)
 
         expect { cell_service }.to raise_error(NotImplementedError)
       end
@@ -26,14 +26,14 @@ RSpec.describe Gitlab::TopologyServiceClient::CellService, feature_category: :ce
 
     context 'when topology service is enabled' do
       before do
-        allow(Gitlab.config.topology_service).to receive(:enabled).once.and_return(true)
-        allow(Gitlab.config.cell).to receive(:name).twice.and_return("cell-1")
+        allow(Gitlab.config.cell).to receive(:id).twice.and_return(1)
+        allow(Gitlab.config.cell.topology_service).to receive(:enabled).once.and_return(true)
       end
 
       it 'returns the cell information' do
         expect_next_instance_of(service_class) do |instance|
           expect(instance).to receive(:get_cell).with(
-            Gitlab::Cells::TopologyService::GetCellRequest.new(cell_name: "cell-1")
+            Gitlab::Cells::TopologyService::GetCellRequest.new(cell_id: 1)
           ).and_return(Gitlab::Cells::TopologyService::GetCellResponse.new(cell_info: cell_info))
         end
 
@@ -43,11 +43,11 @@ RSpec.describe Gitlab::TopologyServiceClient::CellService, feature_category: :ce
       it 'returns nil if the cell is not found' do
         expect_next_instance_of(service_class) do |instance|
           expect(instance).to receive(:get_cell).with(
-            Gitlab::Cells::TopologyService::GetCellRequest.new(cell_name: "cell-1")
+            Gitlab::Cells::TopologyService::GetCellRequest.new(cell_id: 1)
           ).and_raise(GRPC::NotFound)
         end
 
-        expected_error = "Cell 'cell-1' not found on Topology Service"
+        expected_error = "Cell '1' not found on Topology Service"
         expect(Gitlab::AppLogger).to receive(:error).with(hash_including(message: expected_error))
         expect(cell_service.get_cell_info).to be_nil
       end
@@ -57,8 +57,8 @@ RSpec.describe Gitlab::TopologyServiceClient::CellService, feature_category: :ce
   describe '#cell_sequence_range' do
     context 'when topology service is enabled' do
       before do
-        allow(Gitlab.config.topology_service).to receive(:enabled).once.and_return(true)
-        allow(Gitlab.config.cell).to receive(:name).twice.and_return("cell-1")
+        allow(Gitlab.config.cell).to receive(:id).twice.and_return(1)
+        allow(Gitlab.config.cell.topology_service).to receive(:enabled).once.and_return(true)
       end
 
       context 'when a cell exists in topology service' do

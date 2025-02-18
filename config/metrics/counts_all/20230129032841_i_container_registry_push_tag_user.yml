@@ -1,0 +1,24 @@
+---
+key_path: redis_hll_counters.user_container_registry.i_container_registry_push_tag_user
+description: A count of users that have pushed a tag to the registry
+product_group: container_registry
+product_categories:
+- container_registry
+value_type: number
+status: active
+milestone: '15.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107918
+time_frame:
+- 28d
+- 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+  - i_container_registry_push_tag_user
+performance_indicator_type: []
+tiers:
+- free
+- premium
+- ultimate

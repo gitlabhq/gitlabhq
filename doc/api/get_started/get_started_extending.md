@@ -1,10 +1,9 @@
 ---
 stage: none
 group: none
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Get started extending GitLab
 ---
-
-# Get started extending GitLab
 
 Interact programmatically with GitLab.
 Automate tasks, integrate with other tools, and create custom workflows.
@@ -25,7 +24,7 @@ These integrations cover a variety of areas, including:
 
 For more information, see:
 
-- [The list of integrations](../../integration/index.md)
+- [The list of integrations](../../integration/_index.md)
 
 ## Step 2: Set up webhooks
 
@@ -68,7 +67,7 @@ Then use the API to automate tasks, like creating projects and adding members to
 For more information, see:
 
 - [The REST API](../api_resources.md)
-- [The GraphQL API](../graphql/reference/index.md)
+- [The GraphQL API](../graphql/reference/_index.md)
 
 ## Step 4: Use the GitLab CLI
 

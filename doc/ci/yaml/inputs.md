@@ -2,16 +2,22 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Define inputs for configuration added with `include`
 ---
 
-# Define inputs for configuration added with `include`
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a beta feature.
-> - [Made generally available](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062) in GitLab 17.0.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a beta feature.
+- [Made generally available](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062) in GitLab 17.0.
+
+{{< /history >}}
 
 Use inputs to increase the flexibility of CI/CD configuration files that are designed
 to be reused.
@@ -63,16 +69,16 @@ With `spec:inputs`:
 
 Additionally, use:
 
-- [`spec:inputs:default`](index.md#specinputsdefault) to define default values for inputs
+- [`spec:inputs:default`](_index.md#specinputsdefault) to define default values for inputs
   when not specified. When you specify a default, the inputs are no longer mandatory.
-- [`spec:inputs:description`](index.md#specinputsdescription) to give a description to
+- [`spec:inputs:description`](_index.md#specinputsdescription) to give a description to
   a specific input. The description does not affect the input, but can help people
   understand the input details or expected values.
-- [`spec:inputs:options`](index.md#specinputsoptions) to specify a list of allowed values
+- [`spec:inputs:options`](_index.md#specinputsoptions) to specify a list of allowed values
   for an input.
-- [`spec:inputs:regex`](index.md#specinputsregex) to specify a regular expression
+- [`spec:inputs:regex`](_index.md#specinputsregex) to specify a regular expression
   that the input must match.
-- [`spec:inputs:type`](index.md#specinputstype) to force a specific input type, which
+- [`spec:inputs:type`](_index.md#specinputstype) to force a specific input type, which
   can be `string` (default when not specified), `array`, `number`, or `boolean`.
 
 ### Define inputs with multiple parameters
@@ -168,7 +174,11 @@ test_job:
 
 #### Array type
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407176) in GitLab 16.11.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407176) in GitLab 16.11.
+
+{{< /history >}}
 
 The content of the items in an array type can be any valid YAML map, sequence, or scalar. More complex YAML features
 like [`!reference`](yaml_optimization.md#reference-tags) cannot be used.
@@ -208,9 +218,13 @@ spec:
 
 ## Set input values when using `include`
 
-> - `include:with` [renamed to `include:inputs`](https://gitlab.com/gitlab-org/gitlab/-/issues/406780) in GitLab 16.0.
+{{< history >}}
 
-Use [`include:inputs`](index.md#includeinputs) to set the values for the parameters
+- `include:with` [renamed to `include:inputs`](https://gitlab.com/gitlab-org/gitlab/-/issues/406780) in GitLab 16.0.
+
+{{< /history >}}
+
+Use [`include:inputs`](_index.md#includeinputs) to set the values for the parameters
 when the included configuration is added to the pipeline.
 
 For example, to include the `scan-website-job.yml` in the [example above](#define-inputs-with-multiple-parameters):
@@ -239,7 +253,7 @@ In this example, the inputs for the included configuration are:
 
 ### Use `include:inputs` with multiple files
 
-[`inputs`](index.md#includeinputs) must be specified separately for each included file.
+[`inputs`](_index.md#includeinputs) must be specified separately for each included file.
 For example:
 
 ```yaml
@@ -258,9 +272,9 @@ You can pass inputs to [downstream pipelines](../pipelines/downstream_pipelines.
 if the downstream pipeline's configuration file uses [`spec:inputs`](#define-input-parameters-with-specinputs).
 For example:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Parent-child pipeline
+{{< tab title="Parent-child pipeline" >}}
 
 ```yaml
 trigger-job:
@@ -274,7 +288,9 @@ trigger-job:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 ```
 
-:::TabTitle Multi-project pipeline
+{{< /tab >}}
+
+{{< tab title="Multi-project pipeline" >}}
 
 ```yaml
 trigger-job:
@@ -289,7 +305,9 @@ trigger-job:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Include the same file multiple times
 
@@ -353,7 +371,7 @@ this functionality.
 
 ### Use `inputs` with `needs`
 
-You can use array type inputs with [`needs`](index.md#needs) for complex job dependencies.
+You can use array type inputs with [`needs`](_index.md#needs) for complex job dependencies.
 
 For example, in a file named `component.yml`:
 
@@ -398,7 +416,7 @@ test_job:
 
 ### Allow `needs` to be expanded when included
 
-You can have [`needs`](index.md#needs) in an included job, but also add additional jobs
+You can have [`needs`](_index.md#needs) in an included job, but also add additional jobs
 to the `needs` array with `spec:inputs`.
 
 For example:
@@ -445,7 +463,7 @@ my-other-job:
 
 ### Add `needs` to an included job that doesn't have `needs`
 
-You can add [`needs`](index.md#needs) to an included job that does not have `needs`
+You can add [`needs`](_index.md#needs) to an included job that does not have `needs`
 already defined. For example, in a CI/CD component's configuration:
 
 ```yaml
@@ -485,7 +503,11 @@ my-other-job:
 
 ## Specify functions to manipulate input values
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
+
+{{< /history >}}
 
 You can specify predefined functions in the interpolation block to manipulate the input value.
 The format supported is the following:
@@ -521,12 +543,16 @@ In this example, assuming the input uses the default value and `$MY_VAR` is an u
 
 #### `expand_vars`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387632) in GitLab 16.5.
+{{< history >}}
 
-Use `expand_vars` to expand [CI/CD variables](../variables/index.md) in the input value.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387632) in GitLab 16.5.
+
+{{< /history >}}
+
+Use `expand_vars` to expand [CI/CD variables](../variables/_index.md) in the input value.
 
 Only variables you can [use with the `include` keyword](includes.md#use-variables-with-include) and which are
-**not** [masked](../variables/index.md#mask-a-cicd-variable) can be expanded.
+**not** [masked](../variables/_index.md#mask-a-cicd-variable) can be expanded.
 [Nested variable expansion](../variables/where_variables_can_be_used.md#nested-variable-expansion) is not supported.
 
 Example:
@@ -547,7 +573,11 @@ would expand to `test my value`.
 
 #### `truncate`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
+
+{{< /history >}}
 
 Use `truncate` to shorten the interpolated value. For example:
 

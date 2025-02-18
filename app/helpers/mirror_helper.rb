@@ -14,7 +14,7 @@ module MirrorHelper
         'for the project%{docs_link_end}.'
     )
 
-    docs_link = link_to('', help_page_path('topics/git/lfs/index.md'), target: '_blank', rel: 'noopener noreferrer')
+    docs_link = link_to('', help_page_path('topics/git/lfs/_index.md'), target: '_blank', rel: 'noopener noreferrer')
 
     safe_format(template, tag_pair(docs_link, :docs_link_start, :docs_link_end))
   end
@@ -25,7 +25,7 @@ module MirrorHelper
         'for the project%{docs_link_end}.'
     )
 
-    docs_link = link_to('', help_page_path('topics/git/lfs/index.md'), target: '_blank', rel: 'noopener noreferrer')
+    docs_link = link_to('', help_page_path('topics/git/lfs/_index.md'), target: '_blank', rel: 'noopener noreferrer')
 
     safe_format(template, tag_pair(docs_link, :docs_link_start, :docs_link_end))
   end

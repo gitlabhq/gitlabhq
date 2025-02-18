@@ -2,15 +2,21 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Merged results pipelines
 ---
 
-# Merged results pipelines
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91849) in GitLab 15.1, merged results pipelines also run on [Draft merge requests](../../user/project/merge_requests/drafts.md).
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91849) in GitLab 15.1, merged results pipelines also run on [Draft merge requests](../../user/project/merge_requests/drafts.md).
+
+{{< /history >}}
 
 A merged results pipeline runs on the result of the source and target branches merged together.
 It is a type of [merge request pipeline](merge_request_pipelines.md).
@@ -35,7 +41,7 @@ To use merged results pipelines:
 - Your project's `.gitlab-ci.yml` file must be configured to
   [run jobs in merge request pipelines](merge_request_pipelines.md#prerequisites).
 - Your repository must be a GitLab repository, not an
-  [external repository](../ci_cd_for_external_repos/index.md).
+  [external repository](../ci_cd_for_external_repos/_index.md).
 
 ## Enable merged results pipelines
 
@@ -47,10 +53,13 @@ Maintainer role:
 1. In the **Merge options** section, select **Enable merged results pipelines**.
 1. Select **Save changes**.
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you select the checkbox but don't configure your pipeline to use
 merge request pipelines, your merge requests may become stuck in an
 unresolved state or your pipelines may be dropped.
+
+{{< /alert >}}
 
 ## Troubleshooting
 

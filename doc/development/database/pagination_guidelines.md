@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Pagination guidelines
 ---
-
-# Pagination guidelines
 
 This document gives an overview of the current capabilities and provides best practices for paginating over data in GitLab, and in particular for PostgreSQL.
 
@@ -66,11 +65,14 @@ Offset-based pagination is the easiest way to paginate over records, however, it
 - Avoid using page numbers, use next and previous page buttons.
   - Keyset pagination doesn't support page numbers.
 - For APIs, advise against building URLs for the next page by "hand".
-  - Promote the usage of the [`Link` header](../../api/rest/index.md#pagination-link-header) where the URLs for the next and previous page are provided by the backend.
+  - Promote the usage of the [`Link` header](../../api/rest/_index.md#pagination-link-header) where the URLs for the next and previous page are provided by the backend.
   - This way changing the URL structure is possible without breaking backward compatibility.
 
-NOTE:
+{{< alert type="note" >}}
+
 Infinite scroll can use keyset pagination without affecting the user experience since there are no exposed page numbers.
+
+{{< /alert >}}
 
 ## Options for pagination
 
@@ -147,8 +149,11 @@ CREATE INDEX index_on_issues_project_id ON issues (project_id, id);
 
 By making the `id` column part of the index, the previous query reads maximum 20 rows. The query performs well regardless of the number of issues within a project. So with this change, we've also improved the initial page load (when the user loads the issue page).
 
-NOTE:
+{{< alert type="note" >}}
+
 Here we're leveraging the ordered property of the b-tree database index. Values in the index are sorted so reading 20 rows does not require further sorting.
+
+{{< /alert >}}
 
 #### Known issues
 
@@ -220,7 +225,7 @@ We can argue that a typical user does not visit these pages. However, API users 
 
 Keyset pagination addresses the performance concerns of "skipping" previous rows when requesting a large page, however, it's not a drop-in replacement for offset-based pagination. When moving an API endpoint from offset-based pagination to keyset-based pagination, both must be supported. Removing one type of pagination entirely is a [breaking changes](../../update/terminology.md#breaking-change).
 
-Keyset pagination used in both the [GraphQL API](../graphql_guide/pagination.md#keyset-pagination) and the [REST API](../../api/rest/index.md#keyset-based-pagination).
+Keyset pagination used in both the [GraphQL API](../graphql_guide/pagination.md#keyset-pagination) and the [REST API](../../api/rest/_index.md#keyset-based-pagination).
 
 Consider the following `issues` table:
 
@@ -280,8 +285,11 @@ In GraphQL, the parameters are serialized to JSON and then encoded:
 eyJpZCI6Ijk0NzMzNTk0IiwidXBkYXRlZF9hdCI6IjIwMjEtMDQtMDkgMDg6NTA6MDUuODA1ODg0MDAwIFVUQyJ9
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Pagination parameters are visible to the user, so be careful about which columns we order by.
+
+{{< /alert >}}
 
 Keyset pagination can only provide the next, previous, first, and last pages.
 

@@ -22,8 +22,8 @@ export default {
   name: 'ReleasesIndexApp',
   i18n,
   links: {
-    alertInfoMessageLink: helpPagePath('ci/yaml/index.html', { anchor: 'release' }),
-    alertInfoPublishLink: helpPagePath('ci/components/index', { anchor: 'publish-a-new-release' }),
+    alertInfoMessageLink: helpPagePath('ci/yaml/_index.html', { anchor: 'release' }),
+    alertInfoPublishLink: helpPagePath('ci/components/_index', { anchor: 'publish-a-new-release' }),
   },
   components: {
     CiCdCatalogWrapper,
@@ -325,7 +325,6 @@ export default {
     <release-block
       v-for="(release, index) in releases"
       :key="getReleaseKey(release, index)"
-      :class="{ 'linked-card gl-relative': releases.length > 1 && index !== releases.length - 1 }"
       :release="release"
       :sort="sort"
     />
@@ -340,14 +339,3 @@ export default {
     />
   </div>
 </template>
-<style>
-.linked-card::after {
-  width: 1px;
-  content: ' ';
-  border: 1px solid #e5e5e5;
-  height: 17px;
-  top: 100%;
-  position: absolute;
-  left: 23px;
-}
-</style>

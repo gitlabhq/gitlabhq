@@ -74,10 +74,22 @@ class LintDocsRedirect
   ##   The navigation.yaml equivalent is:              ee/administration/appearance.html
   ##
   def check_for_missing_nav_entry(file)
-    file_sub = file["old_path"].gsub('doc', project_slug).gsub('index.md', '').gsub('.md', '.html')
+    file_sub = file["old_path"].gsub('doc', project_slug).gsub(/_?index\.md/, '').gsub('.md',
+      '.html')
 
-    result = navigation_file.include?(file_sub)
+    result = navigation_file.include?("'#{file_sub}'")
     return unless result
+
+    # If we're here, the path exists in navigation
+    # Now check if this is a rename between index.md and _index.md
+    if renamed_doc_file?(file)
+      old_basename = File.basename(file['old_path'])
+      new_basename = File.basename(file['new_path'])
+
+      # Allow renames between index.md and _index.md
+      return if %w[index.md _index.md].include?(old_basename) &&
+        %w[index.md _index.md].include?(new_basename)
+    end
 
     warning(file)
 

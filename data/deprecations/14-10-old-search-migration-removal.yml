@@ -6,7 +6,7 @@
     As Advanced Search migrations usually require support multiple code paths for a long period of time,
     it's important to clean those up when we safely can. We use GitLab major version upgrades as a safe
     time to remove backward compatibility for indices that have not been fully migrated. See the
-    [upgrade documentation](https://docs.gitlab.com/ee/update/index.html#upgrading-to-a-new-major-version) for details.
+    [upgrade documentation](https://docs.gitlab.com/update/#upgrading-to-a-new-major-version) for details.
   stage: enablement
   tiers: premium, ultimate
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/359133

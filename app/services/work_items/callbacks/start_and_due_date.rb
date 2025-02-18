@@ -5,6 +5,9 @@ module WorkItems
     class StartAndDueDate < Base
       include ::Gitlab::Utils::StrongMemoize
 
+      # Required for the Legacy Issues
+      ALLOWED_PARAMS = [:due_date, :start_date].freeze
+
       def before_update
         assign_attributes
       end
@@ -16,7 +19,9 @@ module WorkItems
       private
 
       def assign_attributes
-        return unless has_permission?(:set_work_item_metadata)
+        # This callback is also used on Legacy Issues,
+        # for this reason we need to dynamically check for the permission.
+        return unless has_permission?(:"set_#{work_item.to_ability_name}_metadata")
         return if dates_source_attributes.blank?
         return if work_item.invalid?
 

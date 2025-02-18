@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Create a complex pipeline'
 ---
 
-# Tutorial: Create a complex pipeline
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This tutorial walks you through configuring a progressively more complex CI/CD pipeline
 through small, iterative steps. The pipeline is always fully functional,
@@ -41,7 +43,7 @@ Before adding the pipeline configuration, you must first set up a Docusaurus pro
 on GitLab.com:
 
 1. Create a new project under your username (not a group):
-   1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+   1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
    1. Select **Create blank project**.
    1. Enter the project details:
       - In the **Project name** field, enter the name of your project, for example `My Pipeline Tutorial Project`.
@@ -96,9 +98,9 @@ in the project and runners are available to run jobs.
 
 This step introduces:
 
-- [Jobs](../jobs/index.md): These are self-contained parts of a pipeline that run your commands.
-  Jobs run on [runners](../runners/index.md), separate from the GitLab instance.
-- [`script`](../yaml/index.md#script): This section of a job's configuration is
+- [Jobs](../jobs/_index.md): These are self-contained parts of a pipeline that run your commands.
+  Jobs run on [runners](../runners/_index.md), separate from the GitLab instance.
+- [`script`](../yaml/_index.md#script): This section of a job's configuration is
   where you define the commands for jobs. If there are multiple commands (in an array),
   they run in order. Each command executes as if it was run as a CLI command.
   By default, if a command fails or returns an error, the job is flagged as failed
@@ -120,7 +122,7 @@ Commit and push this change to GitLab, then:
    followed by the date.
 
 Now that you have a `.gitlab-ci.yml` file in your project, you can make all future changes
-to pipeline configuration with the [pipeline editor](../pipeline_editor/index.md).
+to pipeline configuration with the [pipeline editor](../pipeline_editor/_index.md).
 
 ## Add a job to build the site
 
@@ -129,12 +131,12 @@ Start by adding a job that builds the site.
 
 This step introduces:
 
-- [`image`](../yaml/index.md#image): Tell the runner which Docker
+- [`image`](../yaml/_index.md#image): Tell the runner which Docker
   container to use to run the job in. The runner:
   1. Downloads the container image and starts it.
   1. Clones your GitLab project into the running container.
   1. Runs the `script` commands, one at a time.
-- [`artifacts`](../yaml/index.md#artifacts): Jobs are self-contained and do not share
+- [`artifacts`](../yaml/_index.md#artifacts): Jobs are self-contained and do not share
   resources with each other. If you want files generated in one job to be used in
   another job, you must save them as artifacts first. Then later jobs can retrieve the
   artifacts and use the generated files.
@@ -172,11 +174,11 @@ After verifying the Docusaurus site builds in `build-job`, you can add a job tha
 
 This step introduces:
 
-- [`stage`](../yaml/index.md#stage) and [`stages`](../yaml/index.md#stage): The most common
+- [`stage`](../yaml/_index.md#stage) and [`stages`](../yaml/_index.md#stage): The most common
   pipeline configurations group jobs into stages. Jobs in the same stage can run in parallel,
   while jobs in later stages wait for jobs in earlier stages to complete. If a job fails,
   the whole stage is considered failed and jobs in later stages do not start running.
-- [GitLab Pages](../../user/project/pages/index.md): To host your static site, you
+- [GitLab Pages](../../user/project/pages/_index.md): To host your static site, you
   will use GitLab Pages.
 
 In this step:
@@ -226,8 +228,11 @@ To view your site:
 - Make sure **Use unique domain** is off.
 - Under **Access pages**, select the link. The URL format should be similar to: `https://<my-username>.gitlab.io/<project-name>`. For more information, see [GitLab Pages default domain names](../../user/project/pages/getting_started_part_one.md#gitlab-pages-default-domain-names).
 
-NOTE:
-If you need to [use unique domains](../../user/project/pages/index.md#unique-domains), in `docusaurus.config.js`, set `baseUrl`: to `/`.
+{{< alert type="note" >}}
+
+If you need to [use unique domains](../../user/project/pages/_index.md#unique-domains), in `docusaurus.config.js`, set `baseUrl`: to `/`.
+
+{{< /alert >}}
 
 ## Add test jobs
 
@@ -237,10 +242,10 @@ that uses Markdown and generated HTML, so this tutorial adds jobs to test the Ma
 
 This step introduces:
 
-- [`allow_failure`](../yaml/index.md#allow_failure): Jobs that fail intermittently,
+- [`allow_failure`](../yaml/_index.md#allow_failure): Jobs that fail intermittently,
   or are expected to fail, can slow down productivity or be difficult to troubleshoot.
   Use `allow_failure` to let jobs fail without halting pipeline execution.
-- [`dependencies`](../yaml/index.md#dependencies): Use `dependencies` to control
+- [`dependencies`](../yaml/_index.md#dependencies): Use `dependencies` to control
   artifact downloads in individual jobs by listing which jobs to fetch artifacts from.
 
 In this step:
@@ -330,12 +335,12 @@ to the default branch.
 
 This step introduces:
 
-- [`rules`](../yaml/index.md#rules): Add rules to each job to configure in which
+- [`rules`](../yaml/_index.md#rules): Add rules to each job to configure in which
   pipelines they run. You can configure jobs to run in [merge request pipelines](../pipelines/merge_request_pipelines.md),
   [scheduled pipelines](../pipelines/schedules.md), or other specific situations.
   Rules are evaluated from top to bottom, and if a rule matches, the job is
   added to the pipeline.
-- [CI/CD variables](../variables/index.md): use these environment variables
+- [CI/CD variables](../variables/_index.md): use these environment variables
   to configure job behavior in the configuration file and in script commands.
   [Predefined CI/CD variables](../variables/predefined_variables.md) are variables
   that you do not need to manually define. They are automatically injected into pipelines
@@ -428,12 +433,12 @@ single sources of truth.
 
 This step introduces:
 
-- [Hidden jobs](../jobs/index.md#hide-jobs): Jobs that start with `.` are never
+- [Hidden jobs](../jobs/_index.md#hide-a-job): Jobs that start with `.` are never
   added to a pipeline. Use them to hold configuration you want to reuse.
-- [`extends`](../yaml/index.md#extends): Use extends to repeat configuration in
+- [`extends`](../yaml/_index.md#extends): Use extends to repeat configuration in
   multiple places, often from hidden jobs. If you update the hidden job's configuration,
   all jobs extending the hidden job use the updated configuration.
-- [`default`](../yaml/index.md#default): Set keyword defaults that apply to all jobs
+- [`default`](../yaml/_index.md#default): Set keyword defaults that apply to all jobs
   when not defined.
 - YAML overriding: When reusing configuration with `extends` or `default`, you can explicitly
   define a keyword in the job to override the `extends` or `default` configuration.
@@ -513,4 +518,4 @@ The file is simpler, but it should have the same behavior as the previous step.
 
 You've just created a full pipeline and streamlined it to be more efficient. Nice work!
 Now you can take this knowledge, learn about the rest of the `.gitlab-ci.yml` keywords
-in the [CI/CD YAML syntax reference](../yaml/index.md), and build your own pipelines.
+in the [CI/CD YAML syntax reference](../yaml/_index.md), and build your own pipelines.

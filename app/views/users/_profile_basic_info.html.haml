@@ -1,6 +1,0 @@
-.gl-text-default
-  = render 'middle_dot_divider', stacking: true do
-    @#{@user.username}
-  - if can?(current_user, :read_user_profile, @user)
-    = render 'middle_dot_divider', stacking: true do
-      = s_('Member since %{date}') % { date: l(@user.created_at.to_date, format: :long) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineSchedules::VariablesUpdateService, feature_category: :continuous_integration do
+RSpec.describe Ci::PipelineSchedules::VariablesUpdateService, feature_category: :ci_variables do
   let_it_be(:reporter) { create(:user) }
   let_it_be_with_reload(:user) { create(:user) }
   let_it_be_with_reload(:developer) { create(:user) }

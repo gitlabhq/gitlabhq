@@ -2,16 +2,18 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Admin area
 ---
 
-# GitLab Admin area
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
-The **Admin** area provides a web UI to manage and configure features of GitLab
-self-managed instances. If you are an administrator, to access the **Admin** area:
+{{< /details >}}
+
+The **Admin** area provides a web UI to manage and configure features of a
+GitLab Self-Managed instance. If you are an administrator, to access the **Admin** area:
 
 - In GitLab 17.3 and later: on the left sidebar, at the bottom, select **Admin**.
 - In GitLab 16.7 and later: on the left sidebar, at the bottom, select **Admin area**.
@@ -21,17 +23,27 @@ self-managed instances. If you are an administrator, to access the **Admin** are
 If the GitLab instance uses Admin Mode, you must [enable Admin Mode for your session](settings/sign_in_restrictions.md#turn-on-admin-mode-for-your-session) before
 the **Admin** button is visible.
 
-NOTE:
-Only administrators on GitLab self-managed or GitLab Dedicated can access the **Admin** area. On GitLab.com the **Admin** area feature is not available.
+{{< alert type="note" >}}
+
+Only administrators on GitLab Self-Managed or GitLab Dedicated can access the **Admin** area. On GitLab.com the **Admin** area feature is not available.
+
+{{< /alert >}}
 
 ## Administering organizations
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419540) in GitLab 16.10 [with a flag](feature_flags.md) named `ui_for_organizations`. Disabled by default.
+{{< history >}}
 
-FLAG:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419540) in GitLab 16.10 [with a flag](feature_flags.md) named `ui_for_organizations`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](feature_flags.md) named `ui_for_organizations`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
+
+{{< /alert >}}
 
 You can administer all organizations in the GitLab instance from the **Admin** area's Organizations page.
 
@@ -95,7 +107,11 @@ You can combine the filter options. For example, to list only public projects wi
 
 ## Administering users
 
-> - Filtering users [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
+{{< history >}}
+
+- Filtering users [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
+
+{{< /history >}}
 
 You can administer all users in the GitLab instance from the **Admin** area's Users page:
 
@@ -109,7 +125,7 @@ You can use the user search box to search and filter users by:
 - User **state**.
 
 You can also type text into the search box. For example, the name of a specific user.
-This text search is case insensitive, and applies partial matching to name, username and email for self-managed instances.
+This text search is case insensitive, and applies partial matching to name, username and email.
 
 For each user, the following are listed:
 
@@ -149,7 +165,11 @@ By default, impersonation is enabled. GitLab can be configured to [disable imper
 
 ### User identities
 
-> - The ability to see a user's SCIM identity was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294608) in GitLab 15.3.
+{{< history >}}
+
+- The ability to see a user's SCIM identity was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294608) in GitLab 15.3.
+
+{{< /history >}}
 
 When using authentication providers, administrators can see the identities for a user:
 
@@ -163,11 +183,14 @@ the identities being used for an account.
 
 ### User permission export
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-An administrator can export user permissions for all users in the GitLab instance from the **Admin** area's Users page.
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+An administrator can export user permissions for all active users in the GitLab instance from the **Admin** area's Users page.
 The export lists direct membership the users have in groups and projects.
 
 The export process exports the first 100,000 users, and includes this data:
@@ -183,7 +206,7 @@ To do this:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
-1. On the top right, select **Export permissions as CSV** (**{export}**).
+1. On the top right, select **Export permissions as CSV** ({{< icon name="export" >}}).
 
 ### Users statistics
 
@@ -196,7 +219,7 @@ The following totals are also included:
 - Blocked users
 - Total users
 
-GitLab billing is based on the number of [**Billable users**](../subscriptions/self_managed/index.md#billable-users).
+GitLab billing is based on the number of [**Billable users**](../subscriptions/self_managed/_index.md#billable-users).
 
 ### Add email to user
 
@@ -225,7 +248,7 @@ By default, users can create top-level groups. To prevent a user from creating a
 1. Clear the **Can create top-level group** checkbox.
 1. Select **Save changes**.
 
-It is also possible to [limit which roles can create a subgroup within a group](../user/group/subgroups/index.md#change-who-can-create-subgroups).
+It is also possible to [limit which roles can create a subgroup within a group](../user/group/subgroups/_index.md#change-who-can-create-subgroups).
 
 ## Administering groups
 
@@ -252,11 +275,15 @@ and Large File Storage (LFS) for all projects in the group. For more information
 To search for groups by name, enter your criteria in the search field. The group search is case
 insensitive, and applies partial matching.
 
-To [Create a new group](../user/group/index.md#create-a-group) select **New group**.
+To [Create a new group](../user/group/_index.md#create-a-group) select **New group**.
 
 ## Administering topics
 
-> - Merging topics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366884) in GitLab 15.5.
+{{< history >}}
+
+- Merging topics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366884) in GitLab 15.5.
+
+{{< /history >}}
 
 You can categorize and find similar projects with [topics](../user/project/project_topics.md).
 
@@ -289,10 +316,13 @@ To create a topic:
 
 The created topics are displayed on the **Explore topics** page.
 
-NOTE:
+{{< alert type="note" >}}
+
 The assigned topics are visible only to everyone with access to the project,
 but everyone can see which topics exist on the GitLab instance.
 Do not include sensitive information in the name of a topic.
+
+{{< /alert >}}
 
 ### Edit a topic
 
@@ -332,7 +362,7 @@ To merge topics:
 ## Administering Gitaly servers
 
 You can list all Gitaly servers in the GitLab instance from the **Admin** area's **Gitaly servers**
-page. For more details, see [Gitaly](gitaly/index.md).
+page. For more details, see [Gitaly](gitaly/_index.md).
 
 To access the **Gitaly servers** page:
 
@@ -353,7 +383,11 @@ For each Gitaly server, the following details are listed:
 
 ### Administering runners
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/340859) from **Overview > Runners** to **CI/CD > Runners** in GitLab 15.8.
+{{< history >}}
+
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/340859) from **Overview > Runners** to **CI/CD > Runners** in GitLab 15.8.
+
+{{< /history >}}
 
 You can administer all runners in the GitLab instance from the **Admin** area's **Runners** page. See
 [GitLab Runner](https://docs.gitlab.com/runner/) for more information.
@@ -381,8 +415,12 @@ You can also filter runners by status, type, and tag. To filter:
 
 #### Bulk delete runners
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370241) in GitLab 15.4.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/353981) in GitLab 15.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370241) in GitLab 15.4.
+- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/353981) in GitLab 15.5.
+
+{{< /history >}}
 
 You can delete multiple runners at the same time.
 
@@ -410,7 +448,11 @@ You can also edit, pause, or remove each runner.
 
 ### Administering Jobs
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/386311) from **Overview > Jobs** to **CI/CD > Jobs** in GitLab 15.8.
+{{< history >}}
+
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/386311) from **Overview > Jobs** to **CI/CD > Jobs** in GitLab 15.8.
+
+{{< /history >}}
 
 You can administer all jobs in the GitLab instance from the **Admin** area's Jobs page.
 
@@ -441,7 +483,11 @@ The following topics document the **Monitoring** section of the **Admin** area.
 
 ### System information
 
-> - Support for relative time [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341248) in GitLab 15.2. "Uptime" statistic was renamed to "System started".
+{{< history >}}
+
+- Support for relative time [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341248) in GitLab 15.2. "Uptime" statistic was renamed to "System started".
+
+{{< /history >}}
 
 The **System information** page provides the following statistics:
 
@@ -490,22 +536,28 @@ For multi-node systems we recommend ingesting the logs into services like Elasti
 
 The contents of these log files can be useful when troubleshooting a problem.
 
-For details of these log files and their contents, see [Log system](logs/index.md).
+For details of these log files and their contents, see [Log system](logs/_index.md).
 
 The content of each log file is listed in chronological order. To minimize performance issues, a maximum 2000 lines of each log file are shown.
 
 ### Audit events
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The **Audit events** page lists changes made within the GitLab server. With this information you can control, analyze, and track every change.
 
 ### Statistics
 
-The **Instance overview** section of the Dashboard lists the current statistics of the GitLab instance. This information is retrieved using the [Application statistics API](../api/statistics.md#get-current-application-statistics).
+The **Instance overview** section of the Dashboard lists the current statistics of the GitLab instance. This information is retrieved using the [Application statistics API](../api/statistics.md#get-details-on-current-application-statistics).
 
-NOTE:
+{{< alert type="note" >}}
+
 These statistics show exact counts for values less than 10,000. For values of 10,000 and higher, these statistics show approximate data
 when [TablesampleCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/tablesample_count_strategy.rb?ref_type=heads#L16) and [ReltuplesCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/reltuples_count_strategy.rb?ref_type=heads) strategies are used for calculations.
+
+{{< /alert >}}

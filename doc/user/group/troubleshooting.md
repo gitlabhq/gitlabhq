@@ -2,9 +2,8 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting groups
 ---
-
-# Troubleshooting groups
 
 ## Validation errors on namespaces and groups
 
@@ -30,8 +29,11 @@ Group.find_by_sql("SELECT * FROM namespaces WHERE name LIKE '%oup'")
 
 If transferring a group doesn't work through the UI or API, you may want to attempt the transfer in a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 ```ruby
 user = User.find_by_username('<username>')
@@ -61,8 +63,11 @@ end
 At times, a group deletion may get stuck. If needed, in a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session),
 you can attempt to delete a group using the following command:
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 ```ruby
 GroupDestroyWorker.new.perform(group_id, user_id)

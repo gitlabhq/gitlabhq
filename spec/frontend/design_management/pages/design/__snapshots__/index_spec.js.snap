@@ -2,7 +2,7 @@
 
 exports[`Design management design index page when loaded renders design index 1`] = `
 <div
-  class="design-detail fixed-top gl-bg-gray-10 gl-flex gl-flex-col gl-justify-center gl-w-full js-design-detail lg:gl-flex-row"
+  class="design-detail fixed-top gl-bg-subtle gl-flex gl-flex-col gl-justify-center gl-w-full js-design-detail lg:gl-flex-row"
 >
   <div
     class="gl-flex gl-flex-col gl-grow gl-overflow-hidden gl-relative"

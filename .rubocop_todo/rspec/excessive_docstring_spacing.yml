@@ -59,7 +59,6 @@ RSpec/ExcessiveDocstringSpacing:
     - 'spec/models/concerns/deployment_platform_spec.rb'
     - 'spec/models/concerns/discussion_on_diff_spec.rb'
     - 'spec/models/identity_spec.rb'
-    - 'spec/models/integrations/pipelines_email_spec.rb'
     - 'spec/models/merge_request_spec.rb'
     - 'spec/models/namespaces/randomized_suffix_path_spec.rb'
     - 'spec/models/repository_spec.rb'

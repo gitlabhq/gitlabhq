@@ -28,7 +28,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
       </h2>
     </div>
     <div
-      class="gl-flex gl-gap-3 gl-items-baseline"
+      class="gl-flex gl-gap-3 gl-items-center"
       data-testid="crud-actions"
     >
       <gl-button-stub

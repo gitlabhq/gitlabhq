@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting Sidekiq
 ---
 
-# Troubleshooting Sidekiq
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Sidekiq is the background job processor GitLab uses to asynchronously run
 tasks. When things go wrong it can be difficult to troubleshoot. These
@@ -43,7 +45,7 @@ Example log output:
 {"severity":"INFO","time":"2020-06-08T14:39:50.648Z","class":"NewIssueWorker","args":["455","1"],"retry":3,"queue":"new_issue","backtrace":true,"jid":"a24af71f96fd129ec47f5d1e","created_at":"2020-06-08T14:39:50.643Z","meta.user":"root","meta.project":"h5bp/html5-boilerplate","meta.root_namespace":"h5bp","meta.caller_id":"Projects::IssuesController#create","correlation_id":"f9UCZHqhuP7","uber-trace-id":"28f65730f99f55a3:a5d2b62dec38dffc:48ddd092707fa1b7:1","enqueued_at":"2020-06-08T14:39:50.646Z","pid":65011,"message":"NewIssueWorker JID-a24af71f96fd129ec47f5d1e: start","job_status":"start","scheduling_latency_s":0.001144}
 ```
 
-When using [Sidekiq JSON logging](../logs/index.md#sidekiqlog),
+When using [Sidekiq JSON logging](../logs/_index.md#sidekiqlog),
 arguments logs are limited to a maximum size of 10 kilobytes of text;
 any arguments after this limit are discarded and replaced with a
 single argument containing the string `"..."`.
@@ -232,7 +234,7 @@ function in Rugged. In the stack, we can see `rev_parse` is being called by the 
 in [containerized environments](https://rbspy.github.io/using-rbspy/index.html#containers).
 It requires at least the `SYS_PTRACE` capability, otherwise it terminates with a `permission denied` error.
 
-::Tabs
+{{< tabs >}}
 
 ::: TabTitle Kubernetes
 
@@ -243,13 +245,15 @@ securityContext:
       - SYS_PTRACE
 ```
 
-:::TabTitle Docker
+{{< tab title="Docker" >}}
 
 ```shell
 docker run --cap-add SYS_PTRACE [...]
 ```
 
-:::TabTitle Docker Compose
+{{< /tab >}}
+
+{{< tab title="Docker Compose" >}}
 
 ```yaml
 services:
@@ -259,7 +263,9 @@ services:
       - SYS_PTRACE
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Process profiling with `perf`
 
@@ -503,6 +509,20 @@ end
 queue = Sidekiq::Queue.new('repository_import')
 queue.each do |job|
   job.delete if job.jid == 'my-job-id'
+end
+```
+
+### Remove Sidekiq jobs for a specific worker (destructive)
+
+```ruby
+queue = Sidekiq::Queue.new("default")
+
+queue.each do |job|
+  if job.klass == "TodosDestroyer::PrivateFeaturesWorker"
+    # Uncomment the line below to actually delete jobs
+    #job.delete
+    puts "Deleted job ID #{job.jid}"
+  end
 end
 ```
 

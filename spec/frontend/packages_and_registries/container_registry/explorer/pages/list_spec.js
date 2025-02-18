@@ -148,7 +148,7 @@ describe('List Page', () => {
     expect(findRegistryHeader().props()).toMatchObject({
       imagesCount: 2,
       metadataLoading: false,
-      helpPagePath: helpPagePath('user/packages/container_registry/index'),
+      helpPagePath: helpPagePath('user/packages/container_registry/_index'),
       hideExpirationPolicyData: false,
       showCleanupPolicyLink: false,
       expirationPolicy: {},

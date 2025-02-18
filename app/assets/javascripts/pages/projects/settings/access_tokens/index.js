@@ -8,7 +8,4 @@ import {
 initAccessTokenTableApp();
 initExpiresAtField();
 initNewAccessTokenApp();
-
-if (gon.features.retainResourceAccessTokenUserAfterRevoke) {
-  initInactiveAccessTokenTableApp();
-}
+initInactiveAccessTokenTableApp();

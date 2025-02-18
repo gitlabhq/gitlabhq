@@ -40,7 +40,8 @@ module Gitlab
           user_type: :import_user,
           name: 'Import User',
           username: username_and_email_generator.username,
-          email: username_and_email_generator.email
+          email: username_and_email_generator.email,
+          organizations: [root_ancestor.organization]
         ) do |u|
           u.assign_personal_namespace(root_ancestor.organization)
         end
@@ -56,7 +57,8 @@ module Gitlab
       def username_and_email_generator
         Gitlab::Utils::UsernameAndEmailGenerator.new(
           username_prefix: username_prefix,
-          email_domain: "noreply.#{Gitlab.config.gitlab.host}"
+          email_domain: "noreply.#{Gitlab.config.gitlab.host}",
+          random_segment: random_segment
         )
       end
       strong_memoize_attr :username_and_email_generator
@@ -74,7 +76,11 @@ module Gitlab
       end
 
       def username_prefix
-        "import_user_namespace_#{root_ancestor.id}"
+        "import_user_#{root_ancestor.path}"
+      end
+
+      def random_segment
+        SecureRandom.alphanumeric(4)
       end
 
       def import_user_in_cache

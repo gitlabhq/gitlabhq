@@ -12,9 +12,6 @@ data_source: database
 instrumentation_class: CountBulkImportsEntitiesMetric
 options:
   source_type: project_entity
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

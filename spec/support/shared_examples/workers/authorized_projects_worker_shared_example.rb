@@ -21,23 +21,6 @@ RSpec.shared_examples "refreshes user's project authorizations" do
       job.perform(user.id)
     end
 
-    context 'when feature-flag `drop_lease_usage_authorized_projects_worker` is disabled' do
-      before do
-        stub_feature_flags(drop_lease_usage_authorized_projects_worker: false)
-      end
-
-      it 'calls refresh authorized projects service with redis lock' do
-        expect(service).to receive(:execute)
-
-        expect(Users::RefreshAuthorizedProjectsService)
-          .to receive(:new)
-          .with(user, source: described_class.name)
-          .and_return(service)
-
-        job.perform(user.id)
-      end
-    end
-
     context 'when the user is not found' do
       it 'does not call the refresh authorized projects service' do
         expect(Users::RefreshAuthorizedProjectsService).not_to receive(:new)

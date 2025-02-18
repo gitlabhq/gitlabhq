@@ -2,13 +2,12 @@
 stage: AI-powered
 group: AI Model Validation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: AI gateway
 ---
 
-# AI gateway
+The [AI gateway](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/) is a standalone service that gives access to AI-powered GitLab Duo features.
 
-The [AI gateway](../../architecture/blueprints/ai_gateway/index.md) is a standalone service that gives access to AI-powered GitLab Duo features.
-
-GitLab operates an instance of *AI gateway* that is used by all GitLab instances, including self-managed, GitLab Dedicated, and GitLab.com via [Cloud Connector](../../development/cloud_connector/index.md).
+GitLab operates an instance of *AI gateway* that is used by all GitLab instances, including self-managed, GitLab Dedicated, and GitLab.com via [Cloud Connector](../../development/cloud_connector/_index.md).
 
 This page describes where the AI gateway is deployed, and answers questions about region selection, data routing, and data sovereignty.
 

@@ -2,9 +2,8 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Backup archive process
 ---
-
-# Backup archive process
 
 When you run the [backup command](backup_gitlab.md#backup-command), a backup script creates a backup archive file to store your GitLab data.
 
@@ -145,9 +144,12 @@ Because backups are created from live instances, files might be modified during 
 In this case, an [alternate strategy](backup_gitlab.md#backup-strategy-option) can be used to back up files. The `rsync` utility creates a copy of the
 files to back up and passes them to `tar` for archiving.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you are using this strategy, the machine running the backup Rake task must have
 sufficient storage for both the copied files and the compressed archive.
+
+{{< /alert >}}
 
 ## Backup ID
 
@@ -185,7 +187,7 @@ The backup information file includes the following:
 
 ## Backup staging directory
 
-The backup staging directory is a temporary storage location used during the back up and restore processes.
+The backup staging directory is a temporary storage location used during the backup and restore processes.
 This directory:
 
 - Stores backup artifacts before creating the GitLab backup archive.

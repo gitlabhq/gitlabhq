@@ -2,13 +2,15 @@
 stage: Data Access
 group: Database Operations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: PostgreSQL Server Exporter
 ---
 
-# PostgreSQL Server Exporter
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The [PostgreSQL Server Exporter](https://github.com/prometheus-community/postgres_exporter) allows you to export various PostgreSQL metrics.
 
@@ -16,7 +18,7 @@ For self-compiled installations, you must install and configure it yourself.
 
 To enable the PostgreSQL Server Exporter:
 
-1. [Enable Prometheus](index.md#configuring-prometheus).
+1. [Enable Prometheus](_index.md#configuring-prometheus).
 1. Edit `/etc/gitlab/gitlab.rb` and enable `postgres_exporter`:
 
    ```ruby

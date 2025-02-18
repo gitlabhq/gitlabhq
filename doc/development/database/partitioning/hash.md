@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Hash Partitioning
 ---
-
-# Hash Partitioning
 
 Hash partitioning is a method of dividing a large table into smaller, more manageable partitions based on a hash function applied to a specified column, typically the ID column. It offers unique advantages for certain use cases, but it also comes with limitations.
 

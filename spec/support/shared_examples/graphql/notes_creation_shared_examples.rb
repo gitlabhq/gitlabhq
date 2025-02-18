@@ -113,10 +113,7 @@ end
 
 RSpec.shared_examples 'a Note mutation update with errors' do
   context 'when there are ActiveRecord validation errors' do
-    let(:params) { { body: '', confidential: true } }
-
-    it_behaves_like 'a mutation that returns errors in the response',
-      errors: ["Note can't be blank", 'Confidential can not be changed for existing notes']
+    let(:params) { { body: '' } }
 
     it 'does not update the Note' do
       post_graphql_mutation(mutation, current_user: current_user)

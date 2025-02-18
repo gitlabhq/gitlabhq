@@ -19,8 +19,11 @@ import {
   WIDGET_TYPE_COLOR,
   WIDGET_TYPE_CRM_CONTACTS,
   WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_VALUE_MAP,
 } from '../constants';
+import { findHierarchyWidgetDefinition } from '../utils';
 import workItemParticipantsQuery from '../graphql/work_item_participants.query.graphql';
+import workItemAllowedParentTypesQuery from '../graphql/work_item_allowed_parent_types.query.graphql';
 
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemDueDate from './work_item_due_date.vue';
@@ -49,6 +52,8 @@ export default {
     WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
     WorkItemRolledupDates: () =>
       import('ee_component/work_items/components/work_item_rolledup_dates.vue'),
+    WorkItemCustomFields: () =>
+      import('ee_component/work_items/components/work_item_custom_fields.vue'),
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['hasSubepicsFeature'],
@@ -74,6 +79,7 @@ export default {
   data() {
     return {
       workItemParticipants: [],
+      allowedParentTypes: [],
     };
   },
   apollo: {
@@ -100,13 +106,31 @@ export default {
         Sentry.captureException(e);
       },
     },
+    allowedParentTypes: {
+      query: workItemAllowedParentTypesQuery,
+      variables() {
+        return {
+          id: this.workItem.id,
+        };
+      },
+      update(data) {
+        return (
+          findHierarchyWidgetDefinition(data.workItem)?.allowedParentTypes?.nodes.map(
+            (el) => WORK_ITEM_TYPE_VALUE_MAP[el.name],
+          ) || []
+        );
+      },
+      error(e) {
+        Sentry.captureException(e);
+      },
+    },
   },
   computed: {
     workItemType() {
       return this.workItem.workItemType?.name;
     },
-    canUpdate() {
-      return this.workItem?.userPermissions?.updateWorkItem;
+    canUpdateMetadata() {
+      return this.workItem?.userPermissions?.setWorkItemMetadata;
     },
     canDelete() {
       return this.workItem?.userPermissions?.deleteWorkItem;
@@ -144,11 +168,14 @@ export default {
     showRolledupDates() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC;
     },
-    showParent() {
+    isParentEnabled() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC ? this.hasSubepicsFeature : true;
     },
     workItemParent() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
+    },
+    showParent() {
+      return this.allowedParentTypes.length > 0 && this.workItemHierarchy && this.isParentEnabled;
     },
     workItemTimeTracking() {
       return this.isWidgetPresent(WIDGET_TYPE_TIME_TRACKING);
@@ -165,6 +192,9 @@ export default {
     workItemCrmContacts() {
       return this.isWidgetPresent(WIDGET_TYPE_CRM_CONTACTS) && this.glFeatures.workItemsAlpha;
     },
+    showWorkItemCustomFields() {
+      return this.glFeatures.customFieldsFeature;
+    },
   },
   methods: {
     isWidgetPresent(type, workItem = this.workItem) {
@@ -176,153 +206,150 @@ export default {
 
 <template>
   <div class="work-item-attributes-wrapper">
-    <template v-if="workItemAssignees">
-      <work-item-assignees
-        class="js-assignee work-item-attributes-item"
-        :can-update="canUpdate"
-        :full-path="fullPath"
-        :is-group="isGroup"
-        :work-item-id="workItem.id"
-        :assignees="workItemAssignees.assignees.nodes"
-        :participants="workItemParticipants"
-        :work-item-author="workItemAuthor"
-        :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
-        :work-item-type="workItemType"
-        :can-invite-members="workItemAssignees.canInviteMembers"
-        @error="$emit('error', $event)"
-        @assigneesUpdated="
-          $emit('attributesUpdated', { type: $options.ListType.assignee, ids: $event })
-        "
-      />
-    </template>
-    <template v-if="workItemLabels">
-      <work-item-labels
-        class="js-labels work-item-attributes-item"
-        :can-update="canUpdate"
-        :full-path="fullPath"
-        :is-group="isGroup"
-        :work-item-id="workItem.id"
-        :work-item-iid="workItem.iid"
-        :work-item-type="workItemType"
-        @error="$emit('error', $event)"
-        @labelsUpdated="$emit('attributesUpdated', { type: $options.ListType.label, ids: $event })"
-      />
-    </template>
-    <template v-if="workItemWeight">
-      <work-item-weight
-        class="work-item-attributes-item"
-        :can-update="canUpdate"
-        :full-path="fullPath"
-        :widget="workItemWeight"
-        :work-item-id="workItem.id"
-        :work-item-iid="workItem.iid"
-        :work-item-type="workItemType"
-        @error="$emit('error', $event)"
-      />
-    </template>
-    <template v-if="canWorkItemRollUp && showRolledupDates">
-      <work-item-rolledup-dates
-        class="work-item-attributes-item"
-        :can-update="canUpdate"
-        :full-path="fullPath"
-        :start-date="workItemStartAndDueDate.startDate"
-        :due-date="workItemStartAndDueDate.dueDate"
-        :is-fixed="workItemStartAndDueDate.isFixed"
-        :should-roll-up="canWorkItemRollUp"
-        :work-item-type="workItemType"
-        :work-item="workItem"
-        @error="$emit('error', $event)"
-      />
-    </template>
-    <template v-if="workItemMilestone">
-      <work-item-milestone
-        class="js-milestone work-item-attributes-item"
-        :is-group="isGroup"
-        :full-path="fullPath"
-        :work-item-id="workItem.id"
-        :work-item-milestone="workItemMilestone.milestone"
-        :work-item-type="workItemType"
-        :can-update="canUpdate"
-        @error="$emit('error', $event)"
-        @milestoneUpdated="
-          $emit('attributesUpdated', { type: $options.ListType.milestone, ids: [$event] })
-        "
-      />
-    </template>
-    <template v-if="workItemIteration">
-      <work-item-iteration
-        class="work-item-attributes-item"
-        :full-path="fullPath"
-        :is-group="isGroup"
-        :iteration="workItemIteration.iteration"
-        :can-update="canUpdate"
-        :work-item-id="workItem.id"
-        :work-item-iid="workItem.iid"
-        :work-item-type="workItemType"
-        @error="$emit('error', $event)"
-        @iterationUpdated="
-          $emit('attributesUpdated', { type: $options.ListType.iteration, ids: [$event] })
-        "
-      />
-    </template>
-    <template v-if="workItemStartAndDueDate && !showRolledupDates">
-      <work-item-due-date
-        class="work-item-attributes-item"
-        :can-update="canUpdate"
-        :due-date="workItemStartAndDueDate.dueDate"
-        :start-date="workItemStartAndDueDate.startDate"
-        :work-item-type="workItemType"
-        :full-path="fullPath"
-        :work-item="workItem"
-        @error="$emit('error', $event)"
-      />
-    </template>
-    <template v-if="workItemProgress">
-      <work-item-progress
-        class="work-item-attributes-item"
-        :can-update="canUpdate"
-        :progress="workItemProgress.progress"
-        :work-item-id="workItem.id"
-        :work-item-type="workItemType"
-        @error="$emit('error', $event)"
-      />
-    </template>
-    <template v-if="workItemHealthStatus">
-      <work-item-health-status
-        class="work-item-attributes-item"
-        :work-item-id="workItem.id"
-        :work-item-iid="workItem.iid"
-        :work-item-type="workItemType"
-        :full-path="fullPath"
-        @error="$emit('error', $event)"
-      />
-    </template>
-    <template v-if="workItemColor">
-      <work-item-color
-        class="work-item-attributes-item"
-        :work-item="workItem"
-        :full-path="fullPath"
-        :can-update="canUpdate"
-        @error="$emit('error', $event)"
-      />
-    </template>
-    <template v-if="workItemHierarchy && showParent">
-      <work-item-parent
-        class="work-item-attributes-item"
-        :can-update="canUpdate"
-        :work-item-id="workItem.id"
-        :work-item-type="workItemType"
-        :parent="workItemParent"
-        :has-parent="hasParent"
-        :group-path="groupPath"
-        :is-group="isGroup"
-        @error="$emit('error', $event)"
-      />
-    </template>
+    <work-item-assignees
+      v-if="workItemAssignees"
+      class="js-assignee work-item-attributes-item"
+      :can-update="canUpdateMetadata"
+      :full-path="fullPath"
+      :is-group="isGroup"
+      :work-item-id="workItem.id"
+      :assignees="workItemAssignees.assignees.nodes"
+      :participants="workItemParticipants"
+      :work-item-author="workItemAuthor"
+      :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
+      :work-item-type="workItemType"
+      :can-invite-members="workItemAssignees.canInviteMembers"
+      @error="$emit('error', $event)"
+      @assigneesUpdated="
+        $emit('attributesUpdated', { type: $options.ListType.assignee, ids: $event })
+      "
+    />
+    <work-item-labels
+      v-if="workItemLabels"
+      class="js-labels work-item-attributes-item"
+      :can-update="canUpdateMetadata"
+      :full-path="fullPath"
+      :is-group="isGroup"
+      :work-item-id="workItem.id"
+      :work-item-iid="workItem.iid"
+      :work-item-type="workItemType"
+      @error="$emit('error', $event)"
+      @labelsUpdated="$emit('attributesUpdated', { type: $options.ListType.label, ids: $event })"
+    />
+    <work-item-weight
+      v-if="workItemWeight"
+      class="work-item-attributes-item"
+      :can-update="canUpdateMetadata"
+      :full-path="fullPath"
+      :widget="workItemWeight"
+      :work-item-id="workItem.id"
+      :work-item-iid="workItem.iid"
+      :work-item-type="workItemType"
+      @error="$emit('error', $event)"
+    />
+    <work-item-rolledup-dates
+      v-if="canWorkItemRollUp && showRolledupDates"
+      class="work-item-attributes-item"
+      :can-update="canUpdateMetadata"
+      :full-path="fullPath"
+      :start-date="workItemStartAndDueDate.startDate"
+      :due-date="workItemStartAndDueDate.dueDate"
+      :is-fixed="workItemStartAndDueDate.isFixed"
+      :should-roll-up="canWorkItemRollUp"
+      :work-item-type="workItemType"
+      :work-item="workItem"
+      @error="$emit('error', $event)"
+    />
+    <work-item-milestone
+      v-if="workItemMilestone"
+      class="js-milestone work-item-attributes-item"
+      :is-group="isGroup"
+      :full-path="fullPath"
+      :work-item-id="workItem.id"
+      :work-item-milestone="workItemMilestone.milestone"
+      :work-item-type="workItemType"
+      :can-update="canUpdateMetadata"
+      @error="$emit('error', $event)"
+      @milestoneUpdated="
+        $emit('attributesUpdated', { type: $options.ListType.milestone, ids: [$event] })
+      "
+    />
+    <work-item-iteration
+      v-if="workItemIteration"
+      class="work-item-attributes-item"
+      :full-path="fullPath"
+      :is-group="isGroup"
+      :iteration="workItemIteration.iteration"
+      :can-update="canUpdateMetadata"
+      :work-item-id="workItem.id"
+      :work-item-iid="workItem.iid"
+      :work-item-type="workItemType"
+      @error="$emit('error', $event)"
+      @iterationUpdated="
+        $emit('attributesUpdated', { type: $options.ListType.iteration, ids: [$event] })
+      "
+    />
+    <work-item-due-date
+      v-if="workItemStartAndDueDate && !showRolledupDates"
+      class="work-item-attributes-item"
+      :can-update="canUpdateMetadata"
+      :due-date="workItemStartAndDueDate.dueDate"
+      :start-date="workItemStartAndDueDate.startDate"
+      :work-item-type="workItemType"
+      :full-path="fullPath"
+      :work-item="workItem"
+      @error="$emit('error', $event)"
+    />
+    <work-item-progress
+      v-if="workItemProgress"
+      class="work-item-attributes-item"
+      :can-update="canUpdateMetadata"
+      :progress="workItemProgress.progress"
+      :work-item-id="workItem.id"
+      :work-item-type="workItemType"
+      @error="$emit('error', $event)"
+    />
+    <work-item-health-status
+      v-if="workItemHealthStatus"
+      class="work-item-attributes-item"
+      :work-item-id="workItem.id"
+      :work-item-iid="workItem.iid"
+      :work-item-type="workItemType"
+      :full-path="fullPath"
+      @error="$emit('error', $event)"
+    />
+    <work-item-color
+      v-if="workItemColor"
+      class="work-item-attributes-item"
+      :work-item="workItem"
+      :full-path="fullPath"
+      :can-update="canUpdateMetadata"
+      @error="$emit('error', $event)"
+    />
+    <work-item-custom-fields
+      v-if="showWorkItemCustomFields"
+      :work-item-id="workItem.id"
+      :work-item-type="workItemType"
+      :full-path="fullPath"
+      :can-update="canUpdateMetadata"
+      @error="$emit('error', $event)"
+    />
+    <work-item-parent
+      v-if="showParent"
+      class="work-item-attributes-item"
+      :can-update="canUpdateMetadata"
+      :work-item-id="workItem.id"
+      :work-item-type="workItemType"
+      :parent="workItemParent"
+      :has-parent="hasParent"
+      :group-path="groupPath"
+      :is-group="isGroup"
+      @error="$emit('error', $event)"
+    />
     <work-item-time-tracking
       v-if="workItemTimeTracking"
       class="work-item-attributes-item"
-      :can-update="canUpdate"
+      :can-update="canUpdateMetadata"
       :time-estimate="workItemTimeTracking.timeEstimate"
       :timelogs="workItemTimeTracking.timelogs.nodes"
       :total-time-spent="workItemTimeTracking.totalTimeSpent"
@@ -330,15 +357,14 @@ export default {
       :work-item-iid="workItem.iid"
       :work-item-type="workItemType"
     />
-    <template v-if="workItemCrmContacts">
-      <work-item-crm-contacts
-        class="gl-border-t gl-mb-5 gl-border-subtle gl-pt-5"
-        :full-path="fullPath"
-        :work-item-id="workItem.id"
-        :work-item-iid="workItem.iid"
-        :work-item-type="workItemType"
-      />
-    </template>
+    <work-item-crm-contacts
+      v-if="workItemCrmContacts"
+      class="gl-border-t gl-mb-5 gl-border-subtle gl-pt-5"
+      :full-path="fullPath"
+      :work-item-id="workItem.id"
+      :work-item-iid="workItem.iid"
+      :work-item-type="workItemType"
+    />
     <participants
       v-if="workItemParticipants.length"
       class="work-item-attributes-item"

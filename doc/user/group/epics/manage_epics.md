@@ -2,20 +2,26 @@
 stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Manage epics
 ---
 
-# Manage epics
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This page collects instructions for all the things you can do with [epics](index.md) or in relation
+{{< /details >}}
+
+This page collects instructions for all the things you can do with [epics](_index.md) or in relation
 to them.
 
 ## Create an epic
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -25,9 +31,9 @@ To create an epic in the group you're in:
 
 1. Get to the New Epic form:
    - Go to your group and from the left sidebar select **Epics**. Then select **New epic**.
-   - From an epic in your group, select **Epic actions** (**{ellipsis_v}**). Then select **New epic**.
-   - From anywhere, in the top menu, select **New** (**{plus-square}**). Then select **New epic**.
-   - In an empty [roadmap](../roadmap/index.md), select **New epic**.
+   - From an epic in your group, select **Epic actions** ({{< icon name="ellipsis_v" >}}). Then select **New epic**.
+   - From anywhere, in the top menu, select **New** ({{< icon name="plus-square" >}}). Then select **New epic**.
+   - In an empty [roadmap](../roadmap/_index.md), select **New epic**.
 
 1. Enter a title.
 1. Complete the fields.
@@ -64,7 +70,11 @@ The parent epic's start date then reflects this change and propagates upwards to
 
 ## Edit an epic
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 After you create an epic, you can edit the following details:
 
@@ -92,8 +102,12 @@ To edit an epic's start date, due date, or labels:
 
 ### Reorder list items in the epic description
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.1.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.1.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 When you view an epic that has a list in the description, you can also reorder the list items.
 
@@ -106,14 +120,18 @@ Prerequisites:
 
 To reorder list items, when viewing an epic:
 
-1. Hover over the list item row to make the grip icon (**{grip}**) visible.
+1. Hover over the list item row to make the grip icon ({{< icon name="grip" >}}) visible.
 1. Select and hold the grip icon.
 1. Drag the row to the new position in the list.
 1. Release the grip icon.
 
 ### Bulk edit epics
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Users with at least the Planner role can manage epics.
 
@@ -133,16 +151,26 @@ To update multiple epics at the same time:
 
 ### Open epics in a drawer
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `issues_list_drawer`. Disabled by default.
-> - Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170066) from `issues_list_drawer` to `epics_list_drawer` in GitLab 17.6.
+- Offering: GitLab Self-Managed
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `issues_list_drawer`. Disabled by default.
+- Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170066) from `issues_list_drawer` to `epics_list_drawer` in GitLab 17.6.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 When this feature is enabled, when you select an epic from the list or epic board, it opens in a drawer.
 You can then edit the epic or create comments.
@@ -158,16 +186,26 @@ To open the epic in full view, either:
 
 ## Assignees
 
-DETAILS:
-**Status:** Beta
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4231) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `work_items_beta`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
+- Status: Beta
+- Offering: GitLab.com, GitLab Self-Managed
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4231) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `work_items_beta`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 If your administrator [enabled the new look for epics](epic_work_items.md),
 an epic can be assigned to one or more users.
@@ -184,7 +222,11 @@ If you find a bug, use the
 
 ### Change assignee on an epic
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -203,12 +245,19 @@ The assignee is changed without having to refresh the page.
 
 ## Epic color
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79940) in GitLab 14.9 [with a flag](../../../administration/feature_flags.md) named `epic_color_highlight`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365336) in GitLab 16.11. Feature flag `epic_color_highlight` removed.
-> - Customizable color [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394864) in GitLab 17.5.
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79940) in GitLab 14.9 [with a flag](../../../administration/feature_flags.md) named `epic_color_highlight`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365336) in GitLab 16.11. Feature flag `epic_color_highlight` removed.
+- Customizable color [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394864) in GitLab 17.5.
+
+{{< /history >}}
 
 You can set a color for an epic to categorize and prioritize tasks visually.
 Use colors to:
@@ -217,7 +266,7 @@ Use colors to:
 - Indicate levels in the epic hierarchy.
 - Group related epics together.
 
-Epic colors are visible in [roadmaps](../roadmap/index.md) and [epic boards](epic_boards.md).
+Epic colors are visible in [roadmaps](../roadmap/_index.md) and [epic boards](epic_boards.md).
 
 On roadmaps, the timeline bars match the epic's color:
 
@@ -229,7 +278,11 @@ On epic boards, the color shows on the epic's card accent:
 
 ### Change an epic's color
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -248,8 +301,12 @@ The epic's color is updated.
 
 ## Delete an epic
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/452189) in GitLab 16.11. In GitLab 16.10 and earlier, if you delete an epic, all its child epics and their descendants are deleted as well. If needed, you can [remove child epics](#remove-a-child-epic-from-a-parent-epic) from the parent epic before you delete it.
-> - [Allowed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) Planner role to delete an epic in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/452189) in GitLab 16.11. In GitLab 16.10 and earlier, if you delete an epic, all its child epics and their descendants are deleted as well. If needed, you can [remove child epics](#remove-a-child-epic-from-a-parent-epic) from the parent epic before you delete it.
+- [Allowed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) Planner role to delete an epic in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -257,14 +314,18 @@ Prerequisites:
 
 To delete an epic:
 
-1. Select **Epic actions** (**{ellipsis_v}**), then **Delete epic**.
+1. Select **Epic actions** ({{< icon name="ellipsis_v" >}}), then **Delete epic**.
 1. Select **Delete**. On the confirmation dialog, select **Delete epic**.
 
 Deleting an epic releases all existing issues from their associated epic in the system.
 
 ## Close an epic
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -272,13 +333,17 @@ Prerequisites:
 
 To close an epic:
 
-- In the upper-right corner, select **Epic actions** (**{ellipsis_v}**), then **Close epic**.
+- In the upper-right corner, select **Epic actions** ({{< icon name="ellipsis_v" >}}), then **Close epic**.
 
 You can also use the `/close` [quick action](../../project/quick_actions.md).
 
 ## Reopen a closed epic
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You can reopen an epic that was closed.
 
@@ -288,7 +353,7 @@ Prerequisites:
 
 To do so, either:
 
-- In the upper-right corner, select **Epic actions** (**{ellipsis_v}**) and then **Reopen epic**.
+- In the upper-right corner, select **Epic actions** ({{< icon name="ellipsis_v" >}}) and then **Reopen epic**.
 - Use the `/reopen` [quick action](../../project/quick_actions.md).
 
 You can also create an epic by
@@ -321,7 +386,11 @@ To view epics in a group:
 
 ### Who can view an epic
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Whether you can view an epic depends on the [group visibility level](../../public_access.md) and
 the epic's [confidentiality status](#make-an-epic-confidential):
@@ -338,7 +407,11 @@ than 1000. The cached value is rounded to thousands or millions and updated ever
 
 ## Filter the list of epics
 
-> - Filtering by group was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385191) in GitLab 15.9.
+{{< history >}}
+
+- Filtering by group was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385191) in GitLab 15.9.
+
+{{< /history >}}
 
 You can filter the list of epics by:
 
@@ -362,9 +435,13 @@ To filter:
 
 ### Filter with the OR operator
 
-> - OR filtering for labels and authors was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382969) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104292) in GitLab 15.9.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/296031) in GitLab 17.0. Feature flag `or_issuable_queries` removed.
+{{< history >}}
+
+- OR filtering for labels and authors was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382969) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104292) in GitLab 15.9.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/296031) in GitLab 17.0. Feature flag `or_issuable_queries` removed.
+
+{{< /history >}}
 
 You can use the OR operator (**is one of: `||`**) when you [filter the list of epics](#filter-the-list-of-epics) by:
 
@@ -384,7 +461,7 @@ You can sort the epics list by:
 
 Each option contains a button that can toggle the order between **Ascending** and **Descending**.
 The sort option and order is saved and used wherever you browse epics, including the
-[Roadmap](../roadmap/index.md).
+[Roadmap](../roadmap/_index.md).
 
 ![epics sort](img/epics_sort_v14_7.png)
 
@@ -401,15 +478,22 @@ or newest items to be shown first.
 
 ## Make an epic confidential
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 If you're working on items that contain private information, you can make an epic confidential.
 
-NOTE:
+{{< alert type="note" >}}
+
 A confidential epic can only contain [confidential issues](../../project/issues/confidential_issues.md)
 and confidential child epics. However, merge requests are public, if created in a public project.
 Read [Merge requests for confidential issues](../../project/merge_requests/confidential.md)
 to learn how to create a confidential merge request.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -421,11 +505,11 @@ To make an epic confidential:
 - **In an existing epic:** on the right sidebar, select **Edit** next to **Confidentiality**, and then
   select **Turn on**.
 
-In GitLab 15.6 and later, you can also use the `/confidential` [quick action](../../../user/project/quick_actions.md).
+In GitLab 15.6 and later, you can also use the `/confidential` [quick action](../../project/quick_actions.md).
 
 ## Manage issues assigned to an epic
 
-This section collects instructions for all the things you can do with [issues](../../project/issues/index.md)
+This section collects instructions for all the things you can do with [issues](../../project/issues/_index.md)
 in relation to epics.
 
 ### View issues assigned to an epic
@@ -466,7 +550,11 @@ Tasks are not included in these counts.
 
 ### View epic progress
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5163) in GitLab 17.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5163) in GitLab 17.1.
+
+{{< /history >}}
 
 On the **Child issues and epics** section header, the epic progress percentage is displayed.
 
@@ -486,10 +574,17 @@ Tasks are not included in this calculation.
 
 ### Health status
 
-DETAILS:
-**Tier:** Ultimate
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9002) in GitLab 17.5.
+- Tier: Ultimate
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9002) in GitLab 17.5.
+
+{{< /history >}}
 
 Use health status on epics to gain quick insight into project progress.
 Health status helps you communicate and manage potential issues proactively.
@@ -510,7 +605,11 @@ To address risks to timely delivery of your planned work, incorporate a review o
 
 #### Change health status of an epic
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -531,7 +630,11 @@ You can also set and clear health statuses using the `/health_status` and `/clea
 
 ### Add an issue to an epic
 
-> - Maximum number of child issues and epics [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/452111) to 5000 in GitLab 17.1.
+{{< history >}}
+
+- Maximum number of child issues and epics [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/452111) to 5000 in GitLab 17.1.
+
+{{< /history >}}
 
 Add an existing issue to an epic, or create a new issue that's automatically
 added to the epic.
@@ -540,9 +643,13 @@ The maximum number of direct child issues and epics is 5000.
 
 #### Add an existing issue to an epic
 
-> - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+{{< history >}}
 
-You can add existing issues to an epic, including issues in a project from a [different group hierarchy](index.md#child-issues-from-different-group-hierarchies).
+- Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+
+{{< /history >}}
+
+You can add existing issues to an epic, including issues in a project from a [different group hierarchy](_index.md#child-issues-from-different-group-hierarchies).
 Newly added issues appear at the top of the list of issues in the **Child issues and epics** section.
 
 An epic contains a list of issues and an issue can be set as a child item of at most one epic.
@@ -574,7 +681,11 @@ If your administrator [enabled the new look for epics](epic_work_items.md), this
 
 #### Create an issue from an epic
 
-> - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+{{< history >}}
+
+- Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+
+{{< /history >}}
 
 Creating an issue from an epic enables you to maintain focus on the broader context of the epic
 while dividing work into smaller parts.
@@ -607,7 +718,11 @@ If your administrator [enabled the new look for epics](epic_work_items.md), this
 
 ### Remove an issue from an epic
 
-> - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+{{< history >}}
+
+- Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+
+{{< /history >}}
 
 You can remove issues from an epic when you're on the epic's details page.
 After you remove an issue from an epic, the issue is no longer associated with this epic.
@@ -618,7 +733,7 @@ Prerequisites:
 
 To remove an issue from an epic:
 
-1. Next to the issue you want to remove, select **Remove** (**{close}**).
+1. Next to the issue you want to remove, select **Remove** ({{< icon name="close" >}}).
    The **Remove issue** warning appears.
 1. Select **Remove**.
 
@@ -626,7 +741,11 @@ To remove an issue from an epic:
 
 ### Reorder issues assigned to an epic
 
-> - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+{{< history >}}
+
+- Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+
+{{< /history >}}
 
 New issues show at the top of the list in the **Child issues and epics** section.
 You can reorder the list of issues by dragging them.
@@ -648,11 +767,18 @@ If your administrator [enabled the new look for epics](epic_work_items.md), this
 
 ### Move issues between epics
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+
+{{< /history >}}
 
 New issues appear at the top of the list in the **Child issues and epics**
 tab. You can move issues from one epic to another.
@@ -683,9 +809,12 @@ For more on epic templates, see [Epic Templates - Repeatable sets of issues](htt
 
 ## Multi-level child epics
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can add any epic that belongs to a group or subgroup of the parent epic's group.
 New child epics appear at the top of the list of epics in the **Child issues and epics** section.
@@ -700,7 +829,11 @@ Epics can contain multiple nested child epics, up to a total of 7 levels deep.
 
 ### Add a parent epic to an epic
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11198) in GitLab 17.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11198) in GitLab 17.5.
+
+{{< /history >}}
 
 To create a hierarchy of epics, add a parent epic to an existing epic.
 This helps organize and track related work across multiple epics.
@@ -724,10 +857,14 @@ The parent epic is added.
 
 ### Child epics from other groups
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8502) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `child_epics_from_different_hierarchies`. Disabled by default.
-> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
-> - Cross-group child epics [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375622) in GitLab 15.9. Enabled by default.
-> - [Feature flag `child_epics_from_different_hierarchies`](https://gitlab.com/gitlab-org/gitlab/-/issues/382719) removed in GitLab 15.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8502) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `child_epics_from_different_hierarchies`. Disabled by default.
+- Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
+- Cross-group child epics [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375622) in GitLab 15.9. Enabled by default.
+- [Feature flag `child_epics_from_different_hierarchies`](https://gitlab.com/gitlab-org/gitlab/-/issues/382719) removed in GitLab 15.10.
+
+{{< /history >}}
 
 Add a child epic that belongs to a group that is different from the parent epic's group.
 
@@ -740,7 +877,7 @@ To add a child epic from another group, paste the epic's URL when [adding an exi
 
 ### View child epics on a roadmap
 
-From an epic, view its child epics and related milestones on the [roadmap](../roadmap/index.md).
+From an epic, view its child epics and related milestones on the [roadmap](../roadmap/_index.md).
 
 Prerequisites:
 
@@ -758,7 +895,11 @@ If your administrator [enabled the new look for epics](epic_work_items.md), this
 
 ### Add a child epic to an epic
 
-> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
+{{< history >}}
+
+- Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -799,7 +940,11 @@ If your administrator [enabled the new look for epics](epic_work_items.md), this
 
 ### Move child epics between epics
 
-> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
+{{< history >}}
+
+- Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
+
+{{< /history >}}
 
 New child epics appear at the top of the list in the **Child issues and epics** section.
 You can move child epics from one epic to another.
@@ -823,7 +968,11 @@ If your administrator [enabled the new look for epics](epic_work_items.md), this
 
 ### Reorder child epics assigned to an epic
 
-> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
+{{< history >}}
+
+- Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
+
+{{< /history >}}
 
 New child epics appear at the top of the list in the **Child issues and epics** section.
 You can reorder the list of child epics.
@@ -845,7 +994,11 @@ If your administrator [enabled the new look for epics](epic_work_items.md), this
 
 ### Remove a child epic from a parent epic
 
-> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
+{{< history >}}
+
+- Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -853,6 +1006,6 @@ Prerequisites:
 
 To remove a child epic from a parent epic:
 
-1. Select **Remove** (**{close}**) in the parent epic's list of epics.
+1. Select **Remove** ({{< icon name="close" >}}) in the parent epic's list of epics.
    The **Remove epic** warning appears.
 1. Select **Remove**.

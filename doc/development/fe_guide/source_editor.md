@@ -2,20 +2,19 @@
 stage: Create
 group: Source Code
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Source Editor
 ---
-
-# Source Editor
 
 **Source Editor** provides the editing experience at GitLab. This thin wrapper around
 [the Monaco editor](https://microsoft.github.io/monaco-editor/) provides necessary
 helpers and abstractions, and extends Monaco [using extensions](#extensions). Multiple
 GitLab features use it, including:
 
-- [Web IDE](../../user/project/web_ide/index.md)
+- [Web IDE](../../user/project/web_ide/_index.md)
 - [CI Linter](../../ci/yaml/lint.md)
 - [Snippets](../../user/snippets.md)
 - [Web Editor](../../user/project/repository/web_editor.md)
-- [Security Policies](../../user/application_security/policies/index.md)
+- [Security Policies](../../user/application_security/policies/_index.md)
 
 ## When to use Source Editor
 
@@ -27,7 +26,7 @@ displaying read-only content in the Source Editor is still a valid option.
 
 ## How to use Source Editor
 
-Source Editor is framework-agnostic and can be used in any application, including both
+Source Editor is framework-independent and can be used in any application, including both
 Rails and Vue. To help with integration, we have the dedicated `<source-editor>`
 Vue component, but the integration of Source Editor is generally straightforward:
 

@@ -2,15 +2,17 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Scripts and job logs
 ---
 
-# Scripts and job logs
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-You can use special syntax in [`script`](index.md#script) sections to:
+{{< /details >}}
+
+You can use special syntax in [`script`](_index.md#script) sections to:
 
 - [Split long commands](#split-long-commands) into multiline commands.
 - [Use color codes](#add-color-codes-to-script-output) to make job logs easier to review.
@@ -64,8 +66,8 @@ job:
 
 ## Set a default `before_script` or `after_script` for all jobs
 
-You can use [`before_script`](index.md#before_script) and [`after_script`](index.md#after_script)
-with [`default`](index.md#default):
+You can use [`before_script`](_index.md#before_script) and [`after_script`](_index.md#after_script)
+with [`default`](_index.md#default):
 
 - Use `before_script` with `default` to define a default array of commands that
   should run before the `script` commands in all jobs.
@@ -98,10 +100,14 @@ job2:
 
 ## Skip `after_script` commands if a job is canceled
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `ci_canceling_status`. Enabled by default. Requires GitLab Runner version 16.11.1.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/460285) in GitLab 17.3. Feature flag `ci_canceling_status` removed.
+{{< history >}}
 
-[`after_script`](index.md) commands run if a job is canceled while the `before_script`
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `ci_canceling_status`. Enabled by default. Requires GitLab Runner version 16.11.1.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/460285) in GitLab 17.3. Feature flag `ci_canceling_status` removed.
+
+{{< /history >}}
+
+[`after_script`](_index.md) commands run if a job is canceled while the `before_script`
 or `script` section of that job are running.
 
 The job's status in the UI is `canceling` while the `after_script` are executing,
@@ -130,12 +136,15 @@ job1:
 You can split long commands into multiline commands to improve readability with
 `|` (literal) and `>` (folded) [YAML multiline block scalar indicators](https://yaml-multiline.info/).
 
-WARNING:
+{{< alert type="warning" >}}
+
 If multiple commands are combined into one command string, only the last command's
 failure or success is reported.
 [Failures from earlier commands are ignored due to a bug](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/25394).
 To work around this, run each command as a separate `script` item, or add an `exit 1`
 command to each command string.
+
+{{< /alert >}}
 
 You can use the `|` (literal) YAML multiline block scalar indicator to write
 commands over multiple lines in the `script` section of a job description.
@@ -236,7 +245,7 @@ job:
     - echo -e "\e[31mThis text is red,\e[0m but this text isn't\e[31m however this text is red again."
 ```
 
-You can define the color codes in Shell environment variables, or even [CI/CD variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file),
+You can define the color codes in Shell environment variables, or even [CI/CD variables](../variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file),
 which makes the commands easier to read and reusable.
 
 For example, using the same example as above and environment variables defined in a `before_script`:
@@ -381,7 +390,7 @@ GitLab Runner runs the container's shell in non-interactive mode, so the shell's
 environment variable is set to `dumb`. To fix the formatting for these tools, you can:
 
 - Add an additional script line to set `TERM=ansi` in the shell's environment before running the command.
-- Add a `TERM` [CI/CD variable](../variables/index.md) with a value of `ansi`.
+- Add a `TERM` [CI/CD variable](../variables/_index.md) with a value of `ansi`.
 
 ### `after_script` section execution stops early and incorrect `$CI_JOB_STATUS` values
 

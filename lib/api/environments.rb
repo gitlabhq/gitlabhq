@@ -74,6 +74,7 @@ module API
         optional :auto_stop_setting, type: String, default: "always", values: Environment.auto_stop_settings.keys, desc: 'The auto stop setting for the environment. Allowed values are `always` and `with_action`'
       end
       route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :admin_environments
       post ':id/environments' do
         authorize! :create_environment, user_project
 
@@ -116,6 +117,7 @@ module API
         optional :auto_stop_setting, type: String, values: Environment.auto_stop_settings.keys, desc: 'The auto stop setting for the environment. Allowed values are `always` and `with_action`'
       end
       route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :admin_environments
       put ':id/environments/:environment_id' do
         authorize! :update_environment, user_project
 
@@ -155,6 +157,7 @@ module API
         optional :dry_run, type: Boolean, desc: "Defaults to true for safety reasons. It performs a dry run where no actual deletion will be performed. Set to false to actually delete the environment", default: true
       end
       route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :admin_environments
       delete ":id/environments/review_apps" do
         authorize! :read_environment, user_project
 
@@ -186,10 +189,11 @@ module API
         requires :environment_id, type: Integer, desc: 'The ID of the environment'
       end
       route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :admin_environments
       delete ':id/environments/:environment_id' do
         authorize! :read_environment, user_project
-
         environment = user_project.environments.find(params[:environment_id])
+
         authorize! :destroy_environment, environment
 
         destroy_conditionally!(environment)
@@ -209,10 +213,14 @@ module API
         optional :force, type: Boolean, default: false, desc: 'Force environment to stop without executing `on_stop` actions'
       end
       route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :admin_environments
       post ':id/environments/:environment_id/stop' do
         authorize! :read_environment, user_project
 
         environment = user_project.environments.find(params[:environment_id])
+
+        authorize! :stop_environment, environment
+
         ::Environments::StopService.new(user_project, current_user, declared_params(include_missing: false))
                                  .execute(environment)
 
@@ -234,6 +242,7 @@ module API
           desc: 'Stop all environments that were last modified or deployed to before this date.'
       end
       route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :admin_environments
       post ':id/environments/stop_stale' do
         authorize! :stop_environment, user_project
 
@@ -262,6 +271,7 @@ module API
         requires :environment_id, type: Integer, desc: 'The ID of the environment'
       end
       route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :read_environments
       get ':id/environments/:environment_id' do
         authorize! :read_environment, user_project
 

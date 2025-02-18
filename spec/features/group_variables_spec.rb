@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group variables', :js, feature_category: :secrets_management do
+RSpec.describe 'Group variables', :js, feature_category: :ci_variables do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let!(:variable) { create(:ci_group_variable, key: 'test_key', value: 'test_value', masked: true, group: group) }

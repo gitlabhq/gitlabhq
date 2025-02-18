@@ -2,18 +2,22 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Geo glossary
 ---
 
+{{< details >}}
 
-# Geo glossary
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< /details >}}
 
-NOTE:
+{{< alert type="note" >}}
+
 We are updating the Geo documentation, user interface and commands to reflect these changes. Not all pages comply with
 these definitions yet.
+
+{{< /alert >}}
 
  These are the defined terms to describe all aspects of Geo. Using a set of clearly
  defined terms helps us to communicate efficiently and avoids confusion. The language
@@ -31,7 +35,7 @@ these definitions yet.
 | Primary site           | A GitLab site whose data is being replicated by at least one secondary site. There can only be a single primary site.                                                                     | Geo-specific | Geo deployment, Primary node                    |
 | Secondary site         | A GitLab site that is configured to replicate the data of a primary site. There can be one or more secondary sites.                                                                       | Geo-specific | Geo deployment, Secondary node                  |
 | Geo deployment         | A collection of two or more GitLab sites with exactly one primary site being replicated by one or more secondary sites.                                                                   | Geo-specific |                                                 |
-| Reference architecture | A [specified configuration of GitLab based on Requests per Second or user count](../reference_architectures/index.md), possibly including multiple nodes and multiple sites.                                   | GitLab       |                                                 |
+| Reference architecture | A [specified configuration of GitLab based on Requests per Second or user count](../reference_architectures/_index.md), possibly including multiple nodes and multiple sites.                                   | GitLab       |                                                 |
 | Promoting              | Changing the role of a site from secondary to primary.                                                                                                                                    | Geo-specific |                                                 |
 | Demoting               | Changing the role of a site from primary to secondary.                                                                                                                                    | Geo-specific |                                                 |
 | Failover               | The entire process that shifts users from a primary Site to a secondary site. This includes promoting a secondary, but contains other parts as well. For example, scheduling maintenance. | Geo-specific |                                                 |

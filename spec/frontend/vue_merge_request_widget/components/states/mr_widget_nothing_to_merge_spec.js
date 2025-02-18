@@ -30,7 +30,7 @@ describe('NothingToMerge', () => {
     });
 
     it('renders text with link to CI Help Page', () => {
-      expect(findHelpLink().attributes('href')).toBe(helpPagePath('ci/quick_start/index.html'));
+      expect(findHelpLink().attributes('href')).toBe(helpPagePath('ci/quick_start/_index.html'));
     });
   });
 });

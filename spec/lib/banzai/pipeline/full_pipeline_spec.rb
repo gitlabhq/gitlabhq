@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
+  include RepoHelpers
   using RSpec::Parameterized::TableSyntax
 
   it_behaves_like 'sanitize pipeline'
@@ -257,6 +258,61 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
           Timeout.timeout(BANZAI_FILTER_TIMEOUT_MAX) { described_class.to_html(markdown, project: nil) }
         end.not_to raise_error
       end
+    end
+  end
+
+  describe 'when using include in code segements' do
+    let_it_be(:project)        { create(:project, :repository) }
+    let_it_be(:ref)            { 'markdown' }
+    let_it_be(:requested_path) { '/' }
+    let_it_be(:commit)         { project.commit(ref) }
+    let_it_be(:context) do
+      {
+        commit: commit,
+        project: project,
+        ref: ref,
+        text_source: :blob,
+        requested_path: requested_path,
+        no_sourcepos: true
+      }
+    end
+
+    let_it_be(:project_files) do
+      {
+        'diagram.puml' => "@startuml\nBob -> Sara : Hello\n@enduml",
+        'code.yaml' => "---\ntest: true"
+      }
+    end
+
+    let(:input) do
+      <<~MD
+        ```plantuml
+        ::include{file=diagram.puml}
+        ```
+        ```yaml
+        ::include{file=code.yaml}
+        ```
+      MD
+    end
+
+    around do |example|
+      create_and_delete_files(project, project_files, branch_name: ref) do
+        example.run
+      end
+    end
+
+    subject(:output) { described_class.call(input, context)[:output].to_html }
+
+    it 'renders PlanUML' do
+      stub_application_setting(plantuml_enabled: true, plantuml_url: "http://localhost:8080")
+
+      is_expected.to include 'http://localhost:8080/png/U9npA2v9B2efpStXSifFKj2rKmXEB4fKi5BmICt9oUToICrB0Se10EdD34a0'
+    end
+
+    it 'renders code' do
+      is_expected.to include 'language-yaml'
+      is_expected.to include '<span class="na">test</span>'
+      is_expected.to include '<span class="kc">true</span>'
     end
   end
 end

@@ -2,13 +2,15 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Discord Notifications
 ---
 
-# Discord Notifications
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The Discord Notifications integration sends event notifications from GitLab to the channel for which the webhook was created.
 
@@ -28,7 +30,11 @@ and configure it in GitLab.
 
 ## Configure created webhook in GitLab
 
-> - Event webhook overrides [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125621) in GitLab 16.3.
+{{< history >}}
+
+- Event webhook overrides [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125621) in GitLab 16.3.
+
+{{< /history >}}
 
 With the webhook URL created in the Discord channel, you can set up the Discord Notifications integration in GitLab.
 

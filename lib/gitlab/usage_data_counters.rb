@@ -4,7 +4,6 @@ module Gitlab
   module UsageDataCounters
     COUNTERS = [
       DiffsCounter,
-      WebIdeCounter,
       MergeRequestWidgetExtensionCounter
     ].freeze
 

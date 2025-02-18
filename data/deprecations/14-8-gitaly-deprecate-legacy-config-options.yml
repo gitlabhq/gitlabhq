@@ -5,7 +5,7 @@
   reporter: mjwood  # GitLab username of the person reporting the deprecation
   body: |  # Do not modify this line, instead modify the lines below.
     Using environment variables `GIT_CONFIG_SYSTEM` and `GIT_CONFIG_GLOBAL` to configure Gitaly is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352609).
-    These variables are being replaced with standard [`config.toml` Gitaly configuration](https://docs.gitlab.com/ee/administration/gitaly/reference.html).
+    These variables are being replaced with standard [`config.toml` Gitaly configuration](https://docs.gitlab.com/administration/gitaly/reference/).
 
     GitLab instances that use `GIT_CONFIG_SYSTEM` and `GIT_CONFIG_GLOBAL` to configure Gitaly should switch to configuring using
     `config.toml`.

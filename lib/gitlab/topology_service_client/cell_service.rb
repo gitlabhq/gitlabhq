@@ -6,10 +6,10 @@ module Gitlab
   module TopologyServiceClient
     class CellService < BaseService
       def get_cell_info
-        response = client.get_cell(Gitlab::Cells::TopologyService::GetCellRequest.new(cell_name: cell_name))
+        response = client.get_cell(Gitlab::Cells::TopologyService::GetCellRequest.new(cell_id: cell_id))
         response.cell_info
       rescue GRPC::NotFound
-        Gitlab::AppLogger.error(message: "Cell '#{cell_name}' not found on Topology Service")
+        Gitlab::AppLogger.error(message: "Cell '#{cell_id}' not found on Topology Service")
         nil
       end
 

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ContainerRegistry::Protection::DeleteTagRuleService, '#execute', feature_category: :container_registry do
+  include ContainerRegistryHelpers
+
   let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user, maintainer_of: project) }
   let_it_be_with_refind(:container_protection_tag_rule) do
@@ -11,6 +13,10 @@ RSpec.describe ContainerRegistry::Protection::DeleteTagRuleService, '#execute', 
 
   subject(:service_execute) do
     described_class.new(container_protection_tag_rule, current_user: current_user).execute
+  end
+
+  before do
+    stub_gitlab_api_client_to_support_gitlab_api(supported: true)
   end
 
   shared_examples 'a successful service response' do
@@ -90,5 +96,14 @@ RSpec.describe ContainerRegistry::Protection::DeleteTagRuleService, '#execute', 
     let(:container_protection_tag_rule) { build_stubbed(:container_registry_protection_tag_rule, project: project) }
 
     it { expect { service_execute }.to raise_error(ArgumentError) }
+  end
+
+  context 'when the GitLab API is not supported' do
+    before do
+      stub_gitlab_api_client_to_support_gitlab_api(supported: false)
+    end
+
+    it_behaves_like 'an erroneous service response',
+      message: 'GitLab container registry API not supported'
   end
 end

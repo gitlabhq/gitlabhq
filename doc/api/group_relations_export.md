@@ -2,19 +2,21 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group relations export API
 ---
 
-# Group relations export API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The group relations export API partially exports a group's structure as separate files for each
 top-level
 relation (for example, milestones, boards, and labels).
 
-The group relations export API is primarily used in [group migration by direct transfer](../user/group/import/index.md)
+The group relations export API is primarily used in [group migration by direct transfer](../user/group/import/_index.md)
 and your GitLab instance must meet [certain prerequisites](../user/group/import/direct_transfer_migrations.md#prerequisites).
 
 This API can't be used with the [group import and export API](group_import_export.md).

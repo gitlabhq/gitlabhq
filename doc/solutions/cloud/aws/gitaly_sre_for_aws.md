@@ -3,13 +3,15 @@ stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
 description: Doing SRE for Gitaly instances on AWS.
+title: SRE Considerations for Gitaly on AWS
 ---
 
-# SRE Considerations for Gitaly on AWS
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 ## Gitaly SRE considerations
 
@@ -36,8 +38,11 @@ Complete performance metrics should be collected for Gitaly instances for identi
 
 Gitaly functions as the primary Git Repository Storage in GitLab. However, it's not a streaming file server. It also does a lot of demanding computing work, such as preparing and caching Git packfiles which informs some of the performance recommendations below.
 
-NOTE:
+{{< alert type="note" >}}
+
 All recommendations are for production configurations, including performance testing. For test configurations, like training or functional testing, you can use less expensive options. However, you should adjust or rebuild if performance is an issue.
+
+{{< /alert >}}
 
 #### Overall recommendations
 
@@ -84,11 +89,11 @@ All recommendations are for production configurations, including performance tes
 
 ### AWS Gitaly backup
 
-Due to the nature of how Praefect tracks the replication metadata of Gitaly disk information, the best backup method is [the official backup and restore Rake tasks](../../../administration/backup_restore/index.md).
+Due to the nature of how Praefect tracks the replication metadata of Gitaly disk information, the best backup method is [the official backup and restore Rake tasks](../../../administration/backup_restore/_index.md).
 
 ### AWS Gitaly recovery
 
-Gitaly Cluster does not support snapshot backups as these can cause issues where the Praefect database becomes out of syn with the disk storage. Due to the nature of how Praefect rebuilds the replication metadata of Gitaly disk information during a restore, the best recovery method is [the official backup and restore Rake tasks](../../../administration/backup_restore/index.md).
+Gitaly Cluster does not support snapshot backups as these can cause issues where the Praefect database becomes out of syn with the disk storage. Due to the nature of how Praefect rebuilds the replication metadata of Gitaly disk information during a restore, the best recovery method is [the official backup and restore Rake tasks](../../../administration/backup_restore/_index.md).
 
 ### Gitaly long term management
 

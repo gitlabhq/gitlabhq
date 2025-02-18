@@ -9,6 +9,38 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
     allow(helper).to receive(:current_user).and_return(user)
   end
 
+  describe '#dashboard_value' do
+    context 'when feature flag your_work_projects_vue is enabled' do
+      it 'returns dashboard of current user' do
+        allow(user).to receive(:dashboard).and_return('your_activity')
+
+        expect(helper.dashboard_value).to eq('your_activity')
+      end
+    end
+
+    context 'when feature flag your_work_projects_vue is disabled' do
+      before do
+        stub_feature_flags(your_work_projects_vue: false)
+      end
+
+      context 'when dashboard of current user is member_projects' do
+        it 'returns projects' do
+          allow(user).to receive(:dashboard).and_return('member_projects')
+
+          expect(helper.dashboard_value).to eq('projects')
+        end
+      end
+
+      context 'when dashboard of current user is not member_projects' do
+        it 'returns projects' do
+          allow(user).to receive(:dashboard).and_return('your_activity')
+
+          expect(helper.dashboard_value).to eq('your_activity')
+        end
+      end
+    end
+  end
+
   describe '#dashboard_choices' do
     before do
       allow(helper).to receive(:can?).and_return(false)
@@ -26,19 +58,43 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
       expect { helper.dashboard_choices }.to raise_error(KeyError)
     end
 
-    it 'provides better option descriptions' do
-      expect(helper.dashboard_choices).to match_array [
-        { text: "Your Projects (default)", value: 'projects' },
-        { text: "Starred Projects", value: 'stars' },
-        { text: "Your Activity", value: 'your_activity' },
-        { text: "Your Projects' Activity", value: 'project_activity' },
-        { text: "Starred Projects' Activity", value: 'starred_project_activity' },
-        { text: "Followed Users' Activity", value: 'followed_user_activity' },
-        { text: "Your Groups", value: 'groups' },
-        { text: "Your To-Do List", value: 'todos' },
-        { text: "Assigned issues", value: 'issues' },
-        { text: "Assigned merge requests", value: 'merge_requests' }
-      ]
+    context 'when feature flag your_work_projects_vue is enabled' do
+      it 'returns expected options' do
+        expect(helper.dashboard_choices).to match_array [
+          { text: "Your Contributed Projects (default)", value: 'projects' },
+          { text: "Starred Projects", value: 'stars' },
+          { text: "Member Projects", value: 'member_projects' },
+          { text: "Your Activity", value: 'your_activity' },
+          { text: "Your Projects' Activity", value: 'project_activity' },
+          { text: "Starred Projects' Activity", value: 'starred_project_activity' },
+          { text: "Followed Users' Activity", value: 'followed_user_activity' },
+          { text: "Your Groups", value: 'groups' },
+          { text: "Your To-Do List", value: 'todos' },
+          { text: "Assigned issues", value: 'issues' },
+          { text: "Assigned merge requests", value: 'merge_requests' }
+        ]
+      end
+    end
+
+    context 'when feature flag your_work_projects_vue is disabled' do
+      before do
+        stub_feature_flags(your_work_projects_vue: false)
+      end
+
+      it 'returns expected options' do
+        expect(helper.dashboard_choices).to match_array [
+          { text: "Your Projects (default)", value: 'projects' },
+          { text: "Starred Projects", value: 'stars' },
+          { text: "Your Activity", value: 'your_activity' },
+          { text: "Your Projects' Activity", value: 'project_activity' },
+          { text: "Starred Projects' Activity", value: 'starred_project_activity' },
+          { text: "Followed Users' Activity", value: 'followed_user_activity' },
+          { text: "Your Groups", value: 'groups' },
+          { text: "Your To-Do List", value: 'todos' },
+          { text: "Assigned issues", value: 'issues' },
+          { text: "Assigned merge requests", value: 'merge_requests' }
+        ]
+      end
     end
   end
 
@@ -215,7 +271,7 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
       it 'returns no classes' do
         stub_user
 
-        expect(helper.custom_diff_color_classes).to match_array([])
+        expect(helper.custom_diff_color_classes).to be_empty
       end
     end
   end
@@ -259,7 +315,7 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
 
       context 'when Web IDE Extension Marketplace feature is enabled' do
         before do
-          allow(::WebIde::ExtensionsMarketplace).to receive(:feature_enabled?).with(user: user).and_return(true)
+          allow(::WebIde::ExtensionMarketplace).to receive(:feature_enabled?).with(user: user).and_return(true)
         end
 
         it 'includes extension marketplace integration' do

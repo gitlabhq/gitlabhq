@@ -39,7 +39,7 @@ export default {
       'InfrastructureRegistry|For more information on the Terraform registry, %{linkStart}see our documentation%{linkEnd}.',
     ),
   },
-  terraformHelpPath: helpPagePath('user/packages/terraform_module_registry/index', {
+  terraformHelpPath: helpPagePath('user/packages/terraform_module_registry/_index', {
     anchor: 'reference-a-terraform-module',
   }),
 };

@@ -33,7 +33,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
   def create_issue_to_resolve_discussions_path
     if can?(current_user, :create_issue, project) && project.issues_enabled?
-      new_project_issue_path(project, merge_request_to_resolve_discussions_of: iid)
+      new_project_issue_path(project, merge_request_to_resolve_discussions_of: iid, merge_request_id: id)
     end
   end
 

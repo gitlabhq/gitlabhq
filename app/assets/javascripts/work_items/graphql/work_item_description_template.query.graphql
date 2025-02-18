@@ -1,12 +1,5 @@
-query workItemDescriptionTemplate($fullPath: ID!, $name: String!) {
-  namespace(fullPath: $fullPath) {
-    id
-    workItemDescriptionTemplates(name: $name) {
-      __typename
-      nodes @client {
-        name
-        content
-      }
-    }
+query workItemDescriptionTemplate($name: String!, $projectId: Int!) {
+  workItemDescriptionTemplateContent(templateContentInput: { name: $name, projectId: $projectId }) {
+    content
   }
 }

@@ -568,6 +568,22 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
           end
         end
       end
+
+      context 'when issue does not have due date' do
+        let(:due_date) { Time.zone.today }
+        let(:update_params) { { due_date: due_date } }
+
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/517311
+        it 'updates the issue dates with fixed start and due date', :sidekiq_inline do
+          expect { update_issue(update_params) }
+            .to change { issue.due_date }.to(due_date)
+
+          expect(issue.dates_source).not_to be_nil
+          expect(issue.dates_source.due_date).to be(due_date)
+          expect(issue.dates_source.due_date_is_fixed).to be(true)
+          expect(issue.dates_source.start_date_is_fixed).to be(true)
+        end
+      end
     end
 
     context 'when description changed' do

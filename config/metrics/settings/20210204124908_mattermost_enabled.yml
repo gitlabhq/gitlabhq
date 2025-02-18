@@ -13,9 +13,6 @@ instrumentation_class: GitlabConfigMetric
 options:
   config:
     mattermost: enabled
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

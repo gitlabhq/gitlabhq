@@ -2,17 +2,23 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Identity verification
 ---
 
-# Identity verification
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95722) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `identity_verification`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371389) in GitLab 16.0.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/371389) in GitLab 16.11. Feature flag `identity_verification` removed.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95722) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `identity_verification`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371389) in GitLab 16.0.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/371389) in GitLab 16.11. Feature flag `identity_verification` removed.
+
+{{< /history >}}
 
 Identity verification provides multiple layers of GitLab account security.
 Depending on your [risk score](../integration/arkose.md), you might be required to perform up to
@@ -22,7 +28,7 @@ three stages of verification to register an account:
 - **Medium-risk users** - Phone number verification.
 - **High-risk users** - Credit card verification.
 
-Users created after signing in with [SAML SSO for GitLab.com groups](../user/group/saml_sso/index.md) are exempt from identity verification.
+Users created after signing in with [SAML SSO for GitLab.com groups](../user/group/saml_sso/_index.md) are exempt from identity verification.
 
 ## Email verification
 

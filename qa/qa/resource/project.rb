@@ -419,6 +419,10 @@ module QA
         auto_paginated_response(request_url(api_pipelines_path, per_page: '100', **kwargs), attempts: attempts)
       end
 
+      def has_pipeline_with_ref?(ref)
+        pipelines.any? { |pipeline| pipeline[:ref] == ref }
+      end
+
       def latest_pipeline
         # Observing in https://gitlab.com/gitlab-org/gitlab/-/issues/481642#note_2081214771
         # Sometimes in either canary or staging-canary,

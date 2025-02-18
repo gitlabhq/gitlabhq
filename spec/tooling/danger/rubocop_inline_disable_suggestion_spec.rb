@@ -23,7 +23,7 @@ RSpec.describe Tooling::Danger::RubocopInlineDisableSuggestion, feature_category
 
     If that isn't possible, please provide the reason as a code comment in the
     same line where the rule is disabled separated by ` -- `.
-    See [rubocop best practices](https://docs.gitlab.com/ee/development/rubocop_development_guide.html#disabling-rules-inline).
+    See [rubocop best practices](https://docs.gitlab.com/development/rubocop_development_guide/#disabling-rules-inline).
 
     ----
 

@@ -8,10 +8,6 @@ module ActiveContext
 
         attr_reader :options
 
-        def prefix
-          options[:prefix] || DEFAULT_PREFIX
-        end
-
         def search(_)
           raise NotImplementedError
         end

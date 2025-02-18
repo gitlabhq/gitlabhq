@@ -5,13 +5,13 @@ module Resolvers
     class LinkedItemsResolver < BaseResolver
       prepend ::WorkItems::LookAheadPreloads
 
-      argument :filter, Types::WorkItems::RelatedLinkTypeEnum,
+      argument :filter, ::Types::WorkItems::RelatedLinkTypeEnum,
         required: false,
         description: "Filter by link type. " \
           "Supported values: #{Types::WorkItems::RelatedLinkTypeEnum.values.keys.to_sentence}. " \
           'Returns all types if omitted.'
 
-      type Types::WorkItems::LinkedItemType.connection_type, null: true
+      type ::Types::WorkItems::LinkedItemType.connection_type, null: true
 
       def resolve_with_lookahead(**args)
         apply_lookahead(related_work_items(args))

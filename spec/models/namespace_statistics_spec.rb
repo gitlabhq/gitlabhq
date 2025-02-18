@@ -97,7 +97,7 @@ RSpec.describe NamespaceStatistics, type: :model, feature_category: :consumables
     let_it_be(:statistics, reload: true) { create(:namespace_statistics, namespace: group) }
     let_it_be(:dependency_proxy_manifest) { create(:dependency_proxy_manifest, group: group, size: 50) }
     let_it_be(:dependency_proxy_blob) { create(:dependency_proxy_blob, group: group, size: 50) }
-    let_it_be(:vreg_maven_cached_response) { create(:virtual_registries_packages_maven_cached_response, group: group, size: 50) }
+    let_it_be(:vreg_maven_cache_entry) { create(:virtual_registries_packages_maven_cache_entry, group: group, size: 50) }
 
     subject(:update_dependency_proxy_size) { statistics.update_dependency_proxy_size }
 

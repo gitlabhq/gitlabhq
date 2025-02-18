@@ -37,6 +37,12 @@ class GlobalPolicy < BasePolicy
       @user.service_account?
   end
 
+  condition(:service_account_generated_email) do
+    @user&.service_account? &&
+      @user.email.start_with?(User::SERVICE_ACCOUNT_PREFIX) &&
+      @user.email.end_with?(User::NOREPLY_EMAIL_DOMAIN)
+  end
+
   rule { bot & ~bot_with_quick_actions_permitted }.policy do
     prevent :use_quick_actions
   end
@@ -82,6 +88,9 @@ class GlobalPolicy < BasePolicy
 
   rule { project_bot | service_account }.policy do
     prevent :log_in
+  end
+
+  rule { project_bot | service_account_generated_email }.policy do
     prevent :receive_notifications
   end
 
@@ -140,6 +149,16 @@ class GlobalPolicy < BasePolicy
     enable :create_instance_runner
     enable :read_web_hook
     enable :admin_web_hook
+
+    # Admin pages
+    enable :read_admin_audit_log
+    enable :read_admin_background_jobs
+    enable :read_admin_background_migrations
+    enable :read_admin_cicd
+    enable :read_admin_gitaly_servers
+    enable :read_admin_health_check
+    enable :read_admin_metrics_dashboard
+    enable :read_admin_system_information
   end
 
   # We can't use `read_statistics` because the user may have different permissions for different projects

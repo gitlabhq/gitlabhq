@@ -25,6 +25,7 @@ import {
   LINKED_CATEGORIES_MAP,
   WORK_ITEM_TYPE_VALUE_INCIDENT,
   WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
 } from '~/work_items/constants';
 import {
   isAssigneesWidget,
@@ -119,7 +120,10 @@ export default {
       );
     },
     isIncident() {
-      return this.issuable.workItemType?.name === WORK_ITEM_TYPE_VALUE_INCIDENT;
+      return (
+        this.issuable.workItemType?.name === WORK_ITEM_TYPE_VALUE_INCIDENT ||
+        this.issuable.type === WORK_ITEM_TYPE_ENUM_INCIDENT
+      );
     },
     isServiceDeskIssue() {
       return (
@@ -170,7 +174,9 @@ export default {
     filteredLinkedItems() {
       const linkedItems = findLinkedItemsWidget(this.issuable)?.linkedItems?.nodes || [];
       return linkedItems.filter((item) => {
-        return item.linkType !== LINKED_CATEGORIES_MAP.RELATES_TO;
+        return (
+          item.linkType !== LINKED_CATEGORIES_MAP.RELATES_TO && item.workItemState !== STATE_CLOSED
+        );
       });
     },
     createdAt() {
@@ -362,7 +368,7 @@ export default {
     class="issue !gl-flex !gl-px-5"
     :class="{
       closed: issuable.closedAt,
-      'gl-bg-blue-50': isActive,
+      '!gl-bg-feedback-info': isActive,
       'gl-cursor-pointer': preventRedirect && !showCheckbox,
       'hover:gl-bg-subtle': preventRedirect && !isActive && !showCheckbox,
     }"

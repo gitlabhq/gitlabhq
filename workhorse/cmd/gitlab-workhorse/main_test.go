@@ -54,10 +54,13 @@ func TestMain(m *testing.M) {
 		log.WithError(err).Fatal()
 	}
 
-	defer gitaly.CloseConnections()
 	gitaly.InitializeSidechannelRegistry(logrus.StandardLogger())
 
-	os.Exit(m.Run())
+	code := m.Run()
+
+	gitaly.CloseConnections()
+
+	os.Exit(code)
 }
 
 func TestDeniedClone(t *testing.T) {

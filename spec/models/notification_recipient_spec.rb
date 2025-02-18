@@ -16,7 +16,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
 
     context 'when user has a composite identity' do
       before do
-        allow(recipient).to receive(:has_composite_identity?).and_return(true)
+        allow(user).to receive(:composite_identity_enforced).and_return(true)
       end
 
       it 'returns false' do

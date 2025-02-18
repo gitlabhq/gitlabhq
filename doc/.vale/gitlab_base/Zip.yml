@@ -8,6 +8,7 @@
 extends: existence
 message: "Wrap '%s' in backticks to prevent unintentional links to .zip domain names."
 link: 'https://docs.gitlab.com/ee/development/documentation/styleguide/index.md#backticks-in-markdown'
+vocab: false
 nonword: true
 level: error
 ignorecase: true

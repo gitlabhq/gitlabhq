@@ -8,5 +8,5 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     Long term service and support (LTSS) for [Oracle Linux 7 ends in December 2024](https://wiki.debian.org/LTS).
 
-    Therefore, we will longer support the Oracle Linux 7 distribution for Linux package installs. Users should upgrade to
+    Therefore, we will no longer support the Oracle Linux 7 distribution for Linux package installs. Users should upgrade to
     Oracle Linux 8 for continued support.

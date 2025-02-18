@@ -19,6 +19,7 @@ module Import
     def initialize(import_source_user)
       @import_source_user = import_source_user
       @reassigned_by_user = import_source_user.reassigned_by_user
+      @unavailable_tables = []
       @project_membership_created = false
     end
 
@@ -33,11 +34,10 @@ module Import
         reassign_placeholder_references
 
         if placeholder_memberships.any?
-          db_table_health_check!(Member) if Feature.enabled?(:reassignment_throttling, reassigned_by_user)
-
           create_memberships
           delete_placeholder_memberships
         end
+
       rescue DatabaseHealthError => error
         log_warn("#{error.message}. Rescheduling reassignment")
 
@@ -56,7 +56,7 @@ module Import
 
     private
 
-    attr_accessor :import_source_user, :reassigned_by_user
+    attr_accessor :import_source_user, :reassigned_by_user, :unavailable_tables
 
     def warn_about_any_risky_reassignments
       warn_about_reassign_to_admin if import_source_user.reassign_to_user.admin? # rubocop:disable Cop/UserAdmin -- Not authentication related
@@ -98,7 +98,14 @@ module Import
           alias_version: reference_group.alias_version
         ) do |model_relation, placeholder_references|
           if Feature.enabled?(:reassignment_throttling, reassigned_by_user)
-            db_table_health_check!(model_relation)
+            # If table health check fails, skip processing this relation
+            # and move on to the next one. We later raise a `DatabaseHealthError` to
+            # reschedule the reassignment where the skipped relations can be tried again.
+            if db_table_unavailable?(model_relation)
+              unavailable_tables << model_relation.table_name
+              next
+            end
+
             db_health_check!
           end
 
@@ -107,6 +114,7 @@ module Import
           # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/504995
           Kernel.sleep RELATION_BATCH_SLEEP unless Feature.enabled?(:reassignment_throttling, reassigned_by_user)
         end
+
       rescue Import::PlaceholderReferences::AliasResolver::MissingAlias => e
         ::Import::Framework::Logger.error(
           message: "#{reference_group.model} is not a model, " \
@@ -115,6 +123,8 @@ module Import
           source_user_id: import_source_user.id
         )
       end
+
+      raise DatabaseHealthError if unavailable_tables.any?
     end
 
     def reassign_placeholder_records_batch(model_relation, placeholder_references)
@@ -231,17 +241,14 @@ module Import
       @project_membership_created == true
     end
 
-    def db_table_health_check!(model)
+    def db_table_unavailable?(model)
       health_context = Gitlab::Database::HealthStatus::Context.new(
         DatabaseHealthStatusChecker.new(import_source_user.id, self.class.name),
         nil,
         [model.table_name]
       )
 
-      stop_signal = Gitlab::Database::HealthStatus
-        .evaluate(health_context, DATABASE_TABLE_HEALTH_INDICATORS).any?(&:stop?)
-
-      raise DatabaseHealthError, "#{model.table_name} table unhealthy" if stop_signal
+      Gitlab::Database::HealthStatus.evaluate(health_context, DATABASE_TABLE_HEALTH_INDICATORS).any?(&:stop?)
     end
 
     def db_health_check!

@@ -1,0 +1,25 @@
+---
+key_path: redis_hll_counters.count_distinct_user_id_from_delete_ml_model
+description: Count of unique users that deleted ML model from registry
+product_group: package_registry
+product_categories:
+- mlops
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177854
+time_frame:
+- 28d
+- 7d
+data_source: internal_events
+data_category: optional
+tiers:
+- free
+- premium
+- ultimate
+events:
+- name: delete_package_from_registry
+  unique: user.id
+  filter:
+    label: ml_model

@@ -9,9 +9,6 @@ value_type: number
 status: active
 time_frame: 28d
 data_source: database
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium
@@ -21,5 +18,6 @@ performance_indicator_type:
 - gmau
 - paid_gmau
 - customer_health_score
+- lighthouse
 milestone: "12.9"
 introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26441"

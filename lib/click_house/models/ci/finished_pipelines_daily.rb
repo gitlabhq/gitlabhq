@@ -11,7 +11,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
         end
 
         def self.time_window_valid?(from_time, to_time)
-          (to_time - from_time) / 1.day < TIME_BUCKETS_LIMIT
+          (to_time - from_time) / 1.day <= TIME_BUCKETS_LIMIT
         end
 
         def self.validate_time_window(from_time, to_time)

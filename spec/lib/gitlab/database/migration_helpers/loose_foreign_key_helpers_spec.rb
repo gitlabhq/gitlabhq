@@ -71,4 +71,70 @@ RSpec.describe Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers do
 
     it { expect(migration.has_loose_foreign_key?(table_name)).to be_truthy }
   end
+
+  context 'with partitioned tables' do
+    let(:current_schema) { migration.connection.current_schema }
+    let(:dynamic_partitions_schema) { Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA }
+    let(:partitioned_table) { :_test_partitioned_loose_fk_test_table }
+    let(:partitioned_table_identifier) { "#{current_schema}.#{partitioned_table}" }
+    let(:partition) { :_test_partition_01 }
+    let(:partition_identifier) { "#{dynamic_partitions_schema}.#{partition}" }
+
+    before do
+      migration.connection.execute <<~SQL
+        CREATE TABLE #{partitioned_table}(
+          id serial not null,
+          partition_id integer,
+          primary key (id, partition_id)
+        ) PARTITION BY LIST (partition_id);
+
+        CREATE TABLE #{dynamic_partitions_schema}.#{partition} PARTITION OF #{partitioned_table}
+        FOR VALUES IN (1);
+
+        INSERT INTO #{partitioned_table}(id, partition_id) VALUES(1, 1);
+        INSERT INTO #{partitioned_table}(id, partition_id) VALUES(2, 1);
+        INSERT INTO #{partitioned_table}(id, partition_id) VALUES(3, 1);
+
+        DELETE FROM loose_foreign_keys_deleted_records;
+      SQL
+    end
+
+    after do
+      migration.connection.execute <<~SQL
+        DROP TABLE #{partitioned_table} CASCADE;
+      SQL
+    end
+
+    it 'adds the loose foreign key trigger functionality to the partitioned table' do
+      migration.track_record_deletions_override_table_name(partitioned_table_identifier)
+
+      expect do
+        migration.connection.execute("DELETE FROM #{partitioned_table}")
+      end.to change {
+        LooseForeignKeys::DeletedRecord.where(fully_qualified_table_name: partitioned_table_identifier).count
+      }.by(3)
+    end
+
+    it 'adds the loose foreign key trigger functionality to the partition' do
+      migration.track_record_deletions_override_table_name(partition_identifier, partitioned_table)
+
+      expect do
+        migration.connection.execute("DELETE FROM #{partition_identifier}")
+      end.to change {
+        # For partitions, we add the LFK deleted_records for the parent partitioned table
+        LooseForeignKeys::DeletedRecord.where(fully_qualified_table_name: partitioned_table_identifier).count
+      }.by(3)
+    end
+
+    it 'allows removing the loose foreign key trigger from partitions as well' do
+      migration.track_record_deletions_override_table_name(partition_identifier, partitioned_table)
+      migration.untrack_record_deletions(partition_identifier)
+
+      expect do
+        migration.connection.execute("DELETE FROM #{partition_identifier}")
+      end.not_to change {
+        LooseForeignKeys::DeletedRecord.where(fully_qualified_table_name: partitioned_table_identifier).count
+      }
+    end
+  end
 end

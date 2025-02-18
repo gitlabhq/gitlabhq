@@ -17,7 +17,7 @@ module Tooling
 
         To prevent an incident, ensure the updated frontend code is backwards compatible.
 
-        For more information, see the [multiversion compatibility documentation](https://docs.gitlab.com/ee/development/graphql_guide/reviewing.html#multiversion-compatibility).
+        For more information, see the [multiversion compatibility documentation](https://docs.gitlab.com/development/graphql_guide/reviewing/#multiversion-compatibility).
         MARKDOWN
       end
 

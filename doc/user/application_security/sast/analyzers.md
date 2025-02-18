@@ -2,18 +2,24 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: SAST analyzers
 ---
 
-# SAST analyzers
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
+{{< /details >}}
+
+{{< history >}}
+
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
+
+{{< /history >}}
 
 Static Application Security Testing (SAST) uses analyzers
-to detect vulnerabilities in source code. Each analyzer is a wrapper around a [scanner](../terminology/index.md#scanner), a third-party code analysis tool.
+to detect vulnerabilities in source code. Each analyzer is a wrapper around a [scanner](../terminology/_index.md#scanner), a third-party code analysis tool.
 
 The analyzers are published as Docker images that SAST uses to launch dedicated containers for each
 analysis. We recommend a minimum of 4 GB RAM to ensure consistent performance of the analyzers.
@@ -24,14 +30,14 @@ For each scanner, an analyzer:
 
 - Exposes its detection logic.
 - Handles its execution.
-- Converts its output to a [standard format](../terminology/index.md#secure-report-format).
+- Converts its output to a [standard format](../terminology/_index.md#secure-report-format).
 
 ## Official analyzers
 
 SAST supports the following official analyzers:
 
-- [Advanced SAST](gitlab_advanced_sast.md), providing cross-file and cross-function taint analysis and improved detection accuracy. Ultimate only.
-- [`kubesec`](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec), based on Kubesec. Off by default; see [Enabling KubeSec analyzer](index.md#enabling-kubesec-analyzer).
+- [`gitlab-advanced-sast`](gitlab_advanced_sast.md), providing cross-file and cross-function taint analysis and improved detection accuracy. Ultimate only.
+- [`kubesec`](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec), based on Kubesec. Off by default; see [Enabling KubeSec analyzer](_index.md#enabling-kubesec-analyzer).
 - [`pmd-apex`](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex), based on PMD with rules for the Apex language.
 - [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep), based on the Semgrep OSS engine [with GitLab-managed rules](rules.md#semgrep-based-analyzer).
 - [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow), based on Sobelow.
@@ -53,7 +59,7 @@ To see the analyzer version supported in a previous GitLab version, select a his
 The following GitLab analyzers have reached [End of Support](../../../update/terminology.md#end-of-support)
 status and do not receive updates. They were replaced by the Semgrep-based analyzer [with GitLab-managed rules](rules.md#semgrep-based-analyzer).
 
-After you upgrade to GitLab 17.3.1 or later, a one-time data migration [automatically resolves](index.md#automatic-vulnerability-resolution) findings from the analyzers that reached End of Support.
+After you upgrade to GitLab 17.3.1 or later, a one-time data migration [automatically resolves](_index.md#automatic-vulnerability-resolution) findings from the analyzers that reached End of Support.
 This includes all of the analyzers listed below except for SpotBugs, because SpotBugs still scans Groovy code.
 The migration only resolves vulnerabilities that you haven't confirmed or dismissed, and it doesn't affect vulnerabilities that were [automatically translated to Semgrep-based scanning](#transition-to-semgrep-based-scanning).
 For details, see [issue 444926](https://gitlab.com/gitlab-org/gitlab/-/issues/444926).
@@ -74,26 +80,29 @@ For details, see [issue 444926](https://gitlab.com/gitlab-org/gitlab/-/issues/44
 
 Footnotes:
 
-1. SpotBugs remains a [supported analyzer](index.md#supported-languages-and-frameworks) for Groovy. It only activates when Groovy code is detected.
+1. SpotBugs remains a [supported analyzer](_index.md#supported-languages-and-frameworks) for Groovy. It only activates when Groovy code is detected.
 
 ## SAST analyzer features
 
 For an analyzer to be considered generally available, it is expected to minimally
 support the following features:
 
-- [Customizable configuration](index.md#available-cicd-variables)
-- [Customizable rulesets](customize_rulesets.md#customize-rulesets)
-- [Scan projects](index.md#supported-languages-and-frameworks)
+- [Customizable configuration](_index.md#available-cicd-variables)
+- [Customizable rulesets](customize_rulesets.md)
+- [Scan projects](_index.md#supported-languages-and-frameworks)
 - Multi-project support
-- [Offline support](index.md#running-sast-in-an-offline-environment)
-- [Output results in JSON report format](index.md#download-a-sast-report)
-- [SELinux support](index.md#running-sast-in-selinux)
+- [Offline support](_index.md#running-sast-in-an-offline-environment)
+- [Output results in JSON report format](_index.md#download-a-sast-report)
+- [SELinux support](_index.md#running-sast-in-selinux)
 
 ## Post analyzers
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Post analyzers enrich the report output by an analyzer. A post analyzer doesn't modify report
 content directly. Instead, it enhances the results with additional properties, including:
@@ -103,13 +112,13 @@ content directly. Instead, it enhances the results with additional properties, i
 
 ## Transition to Semgrep-based scanning
 
-In addition to the [GitLab Advanced SAST analyzer](gitlab_advanced_sast.md), GitLab also provides a [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) that covers [multiple languages](index.md#supported-languages-and-frameworks).
+In addition to the [GitLab Advanced SAST analyzer](gitlab_advanced_sast.md), GitLab also provides a [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) that covers [multiple languages](_index.md#supported-languages-and-frameworks).
 GitLab maintains the analyzer and writes [detection rules](rules.md) for it.
 These rules replace language-specific analyzers that were used in previous releases.
 
 ### Vulnerability translation
 
-The Vulnerability Management system automatically moves vulnerabilities from the old analyzer to a new Semgrep-based finding when possible. For translation to the Advanced SAST, please refer to the [Advanced SAST documentation](gitlab_advanced_sast.md).
+The Vulnerability Management system automatically moves vulnerabilities from the old analyzer to a new Semgrep-based finding when possible. For translation to the GitLab Advanced SAST analyzer, please refer to the [GitLab Advanced SAST documentation](gitlab_advanced_sast.md).
 
 When this happens, the system combines the vulnerabilities from each analyzer into a single record.
 
@@ -126,7 +135,7 @@ If a vulnerability doesn't match:
 
 ## Customize analyzers
 
-Use [CI/CD variables](index.md#available-cicd-variables)
+Use [CI/CD variables](_index.md#available-cicd-variables)
 in your `.gitlab-ci.yml` file to customize the behavior of your analyzers.
 
 ### Use a custom Docker mirror
@@ -137,8 +146,11 @@ Prerequisites:
 
 - The custom Docker registry must provide images for all the official analyzers.
 
-NOTE:
+{{< alert type="note" >}}
+
 This variable affects all Secure analyzers, not just the analyzers for SAST.
+
+{{< /alert >}}
 
 To have GitLab download the analyzers' images from a custom Docker registry, define the prefix with
 the `SECURE_ANALYZERS_PREFIX` CI/CD variable.

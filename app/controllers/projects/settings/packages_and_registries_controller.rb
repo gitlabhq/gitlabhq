@@ -34,10 +34,11 @@ module Projects
 
       def set_feature_flag_packages_protected_packages
         push_frontend_feature_flag(:packages_protected_packages_conan, project)
+        push_frontend_feature_flag(:packages_protected_packages_maven, project)
       end
 
       def set_feature_flag_container_registry_protected_tags
-        push_frontend_feature_flag(:container_registry_protected_tags, project.root_ancestor)
+        push_frontend_feature_flag(:container_registry_protected_tags, project)
       end
     end
   end

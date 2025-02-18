@@ -5,12 +5,25 @@ module WorkItems
     class Milestone < Base
       delegate :milestone, to: :work_item
 
-      def self.quick_action_commands
-        [:milestone, :remove_milestone]
-      end
+      class << self
+        def quick_action_commands
+          [:milestone, :remove_milestone]
+        end
 
-      def self.quick_action_params
-        [:milestone_id]
+        def quick_action_params
+          [:milestone_id]
+        end
+
+        def sorting_keys
+          {
+            milestone_due_asc: {
+              description: 'Milestone due date by ascending order.'
+            },
+            milestone_due_desc: {
+              description: 'Milestone due date by descending order.'
+            }
+          }
+        end
       end
     end
   end

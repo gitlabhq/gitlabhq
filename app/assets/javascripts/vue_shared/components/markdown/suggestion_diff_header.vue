@@ -161,7 +161,7 @@ export default {
     <div v-else-if="isLoggedIn" class="gl-flex gl-flex-wrap gl-items-center gl-gap-3">
       <div v-if="isBatched">
         <gl-button
-          class="btn-inverted js-remove-from-batch-btn"
+          class="js-remove-from-batch-btn"
           :disabled="isApplying"
           size="small"
           @click="removeSuggestionFromBatch"
@@ -171,7 +171,7 @@ export default {
       </div>
       <div v-else-if="!isDisableButton && suggestionsCount > 1">
         <gl-button
-          class="btn-inverted js-add-to-batch-btn"
+          class="js-add-to-batch-btn"
           data-testid="add-suggestion-batch-button"
           :disabled="isDisableButton"
           size="small"

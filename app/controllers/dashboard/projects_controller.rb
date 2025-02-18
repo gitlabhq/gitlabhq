@@ -11,14 +11,16 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   before_action :set_non_archived_param, only: [:index, :starred]
   before_action :set_sorting
-  before_action :projects, only: [:index]
+  # When your_work_projects_vue FF is enabled we load the projects via GraphQL query
+  # so we don't want to preload the projects at the controller level to avoid duplicate queries.
+  before_action :projects, only: [:index], unless: :your_work_projects_vue_feature_flag_enabled?
   skip_cross_project_access_check :index, :starred
 
   feature_category :groups_and_projects
   urgency :low, [:starred, :index]
 
   def index
-    if Feature.enabled?(:your_work_projects_vue, current_user)
+    if your_work_projects_vue_feature_flag_enabled?
       return redirect_to personal_dashboard_projects_path if params[:personal] == "true"
       return redirect_to inactive_dashboard_projects_path if params[:archived] == "only"
     end
@@ -41,8 +43,10 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def starred
-    @projects = load_projects(params.merge(starred: true, not_aimed_for_deletion: true))
-      .includes(:forked_from_project, :topics)
+    unless your_work_projects_vue_feature_flag_enabled?
+      @projects = load_projects(params.merge(starred: true, not_aimed_for_deletion: true))
+        .includes(:forked_from_project, :topics)
+    end
 
     @groups = []
 
@@ -122,6 +126,10 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
   def sorting_field
     Project::SORTING_PREFERENCE_FIELD
+  end
+
+  def your_work_projects_vue_feature_flag_enabled?
+    Feature.enabled?(:your_work_projects_vue, current_user)
   end
 end
 

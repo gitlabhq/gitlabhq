@@ -6,6 +6,8 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:agent) { create(:cluster_agent, project: project) }
 
+  let(:client) { described_class.new }
+
   describe '#initialize' do
     context 'kas is not enabled' do
       before do
@@ -51,11 +53,11 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
       let(:server_info) { double }
       let(:response) { double(Gitlab::Agent::ServerInfo::Rpc::GetServerInfoResponse, current_server_info: server_info) }
 
-      subject { described_class.new.get_server_info }
+      subject { client.get_server_info }
 
       before do
         expect(Gitlab::Agent::ServerInfo::Rpc::ServerInfo::Stub).to receive(:new)
-          .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
           .and_return(stub)
 
         expect(Gitlab::Agent::ServerInfo::Rpc::GetServerInfoRequest).to receive(:new)
@@ -76,11 +78,11 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
 
       let(:connected_agents) { [double] }
 
-      subject { described_class.new.get_connected_agents_by_agent_ids(agent_ids: [agent.id]) }
+      subject { client.get_connected_agents_by_agent_ids(agent_ids: [agent.id]) }
 
       before do
         expect(Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub).to receive(:new)
-          .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
           .and_return(stub)
 
         expect(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIDsRequest).to receive(:new)
@@ -107,11 +109,11 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
 
       let(:agent_configurations) { [double] }
 
-      subject { described_class.new.list_agent_config_files(project: project) }
+      subject { client.list_agent_config_files(project: project) }
 
       before do
         expect(Gitlab::Agent::ConfigurationProject::Rpc::ConfigurationProject::Stub).to receive(:new)
-          .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
           .and_return(stub)
 
         expect(Gitlab::Agent::Entity::GitalyRepository).to receive(:new)
@@ -135,7 +137,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
     end
 
     describe '#send_autoflow_event' do
-      subject { described_class.new.send_autoflow_event(project: project, type: 'any-type', id: 'any-id', data: { 'any-data-key': 'any-data-value' }) }
+      subject { client.send_autoflow_event(project: project, type: 'any-type', id: 'any-id', data: { 'any-data-key': 'any-data-value' }) }
 
       context 'when autoflow_enabled FF is disabled' do
         before do
@@ -159,7 +161,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
           stub_feature_flags(autoflow_enabled: true)
 
           expect(Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub).to receive(:new)
-            .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
+            .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
             .and_return(stub)
 
           expect(Gitlab::Agent::Event::Project).to receive(:new)
@@ -204,11 +206,11 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
       let(:project_param) { instance_double(Gitlab::Agent::Event::Project) }
       let(:response) { double(Gitlab::Agent::Notifications::Rpc::GitPushEventResponse) }
 
-      subject { described_class.new.send_git_push_event(project: project) }
+      subject { client.send_git_push_event(project: project) }
 
       before do
         expect(Gitlab::Agent::Notifications::Rpc::Notifications::Stub).to receive(:new)
-          .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
           .and_return(stub)
 
         expect(Gitlab::Agent::Event::Project).to receive(:new)
@@ -242,14 +244,134 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
           .and_return(credentials)
 
         expect(Gitlab::Agent::ConfigurationProject::Rpc::ConfigurationProject::Stub).to receive(:new)
-          .with('example.kas.internal', credentials, timeout: described_class::TIMEOUT)
+          .with('example.kas.internal', credentials, timeout: client.send(:timeout))
           .and_return(stub)
 
         allow(stub).to receive(:list_agent_config_files)
           .and_return(double(config_files: []))
 
-        described_class.new.list_agent_config_files(project: project)
+        client.list_agent_config_files(project: project)
       end
+    end
+
+    describe '#get_environment_template' do
+      let_it_be(:environment) { create(:environment, project: project, cluster_agent: agent) }
+      let(:stub) { instance_double(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub) }
+      let(:request) { instance_double(Gitlab::Agent::ManagedResources::Rpc::GetEnvironmentTemplateRequest) }
+      let(:template) { double("templates", name: "test-template", data: "{}") }
+      let(:response) { double(Gitlab::Agent::ManagedResources::Rpc::GetEnvironmentTemplateResponse, template: template) }
+      let(:template_name) { 'default' }
+
+      subject { client.get_environment_template(environment: environment, template_name: template_name) }
+
+      before do
+        expect(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub).to receive(:new)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
+          .and_return(stub)
+
+        expect(Gitlab::Agent::ManagedResources::Rpc::GetEnvironmentTemplateRequest).to receive(:new)
+          .with(
+            template_name: template_name,
+            agent_name: agent.name,
+            gitaly_info: instance_of(Gitlab::Agent::Entity::GitalyInfo),
+            gitaly_repository: instance_of(Gitlab::Agent::Entity::GitalyRepository),
+            default_branch: project.default_branch_or_main)
+          .and_return(request)
+
+        expect(stub).to receive(:get_environment_template)
+          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .and_return(response)
+      end
+
+      it { expect(subject).to eq(template) }
+    end
+
+    describe '#get_default_environment_template' do
+      let(:stub) { instance_double(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub) }
+      let(:request) { instance_double(Gitlab::Agent::ManagedResources::Rpc::GetDefaultEnvironmentTemplateRequest) }
+      let(:template) { double("templates", name: "test-template", data: "{}") }
+      let(:response) { double(Gitlab::Agent::ManagedResources::Rpc::GetDefaultEnvironmentTemplateResponse, template: template) }
+
+      subject { client.get_default_environment_template }
+
+      before do
+        expect(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub).to receive(:new)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
+          .and_return(stub)
+
+        expect(Gitlab::Agent::ManagedResources::Rpc::GetDefaultEnvironmentTemplateRequest).to receive(:new)
+          .and_return(request)
+
+        expect(stub).to receive(:get_default_environment_template)
+          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .and_return(response)
+      end
+
+      it { expect(subject).to eq(template) }
+    end
+
+    describe '#render_environment_template' do
+      let_it_be(:environment) { create(:environment, project: project, cluster_agent: agent) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:build) { create(:ci_build, user: user) }
+      let(:stub) { instance_double(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub) }
+      let(:request) { instance_double(Gitlab::Agent::ManagedResources::Rpc::RenderEnvironmentTemplateRequest) }
+      let(:template) { double("templates", name: "test-template", data: "{}") }
+      let(:response) { double(Gitlab::Agent::ManagedResources::Rpc::RenderEnvironmentTemplateResponse, template: template) }
+
+      subject { client.render_environment_template(template: template, environment: environment, build: build) }
+
+      before do
+        expect(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub).to receive(:new)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
+          .and_return(stub)
+
+        expect(Gitlab::Agent::ManagedResources::Rpc::RenderEnvironmentTemplateRequest).to receive(:new)
+          .with(
+            template: Gitlab::Agent::ManagedResources::EnvironmentTemplate.new(
+              name: template.name,
+              data: template.data),
+            info: instance_of(Gitlab::Agent::ManagedResources::TemplatingInfo))
+          .and_return(request)
+
+        expect(stub).to receive(:render_environment_template)
+          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .and_return(response)
+      end
+
+      it { expect(subject).to eq(template) }
+    end
+
+    describe '#ensure_environment' do
+      let_it_be(:environment) { create(:environment, project: project, cluster_agent: agent) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:build) { create(:ci_build, user: user) }
+      let(:stub) { instance_double(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub) }
+      let(:request) { instance_double(Gitlab::Agent::ManagedResources::Rpc::EnsureEnvironmentRequest) }
+      let(:template) { double("templates", name: "test-template", data: "{}") }
+      let(:response) { double(Gitlab::Agent::ManagedResources::Rpc::EnsureEnvironmentResponse) }
+
+      subject { client.ensure_environment(template: template, environment: environment, build: build) }
+
+      before do
+        expect(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub).to receive(:new)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
+          .and_return(stub)
+
+        expect(Gitlab::Agent::ManagedResources::Rpc::EnsureEnvironmentRequest).to receive(:new)
+          .with(
+            template: Gitlab::Agent::ManagedResources::RenderedEnvironmentTemplate.new(
+              name: template.name,
+              data: template.data),
+            info: instance_of(Gitlab::Agent::ManagedResources::TemplatingInfo))
+          .and_return(request)
+
+        expect(stub).to receive(:ensure_environment)
+          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .and_return(response)
+      end
+
+      it { expect(subject).to eq(response) }
     end
   end
 end

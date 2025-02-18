@@ -8,25 +8,6 @@ module Ci
     included do
       after_save :save_tags
 
-      # rubocop:disable Cop/ActiveRecordDependent -- existing
-      has_many :tag_taggings, -> { includes(:tag).where(context: :tags) }, # rubocop:disable Rails/InverseOf -- existing
-        as: :taggable,
-        class_name: 'Ci::Tagging',
-        dependent: :destroy,
-        after_add: :dirtify_tag_list,
-        after_remove: :dirtify_tag_list
-
-      has_many :tags,
-        class_name: 'Ci::Tag',
-        through: :tag_taggings,
-        source: :tag,
-        after_add: :dirtify_tag_list,
-        after_remove: :dirtify_tag_list
-
-      has_many :taggings, as: :taggable, dependent: :destroy, class_name: '::Ci::Tagging'
-      has_many :base_tags, through: :taggings, source: :tag, class_name: '::Ci::Tag'
-      # rubocop:enable Cop/ActiveRecordDependent -- existing
-
       attribute :tag_list, Gitlab::Database::Type::TagListType.new
 
       scope :tagged_with, ->(tags, like_search_enabled: false) do
@@ -38,9 +19,7 @@ module Ci
       end
 
       scope :with_tag, ->(name, like_search_enabled: false) do
-        query = Tagging
-                  .merge(unscoped.scoped_tagging)
-                  .where(context: :tags)
+        query = taggings_join_model.scoped_taggables
 
         if like_search_enabled
           query = query.where(tag_id: Tag.where("name LIKE ?", "%#{sanitize_sql_like(name)}%")) # rubocop:disable GitlabSecurity/SqlInjection -- we are sanitizing
@@ -49,11 +28,6 @@ module Ci
         end
 
         where_exists(query)
-      end
-
-      scope :scoped_tagging, -> do
-        where(arel_table[primary_key].eq(Tagging.arel_table[:taggable_id]))
-          .where(Tagging.arel_table[:taggable_type].eq(base_class.name))
       end
     end
 
@@ -75,13 +49,8 @@ module Ci
 
     private
 
-    def dirtify_tag_list(_tag)
-      attribute_will_change!(:tag_list)
-      clear_memoization(:tag_list)
-    end
-
     def context_tags
-      base_tags.where(taggings: { context: :tags, tagger_id: nil })
+      tags
     end
 
     def tag_list_cache_set?
@@ -96,13 +65,11 @@ module Ci
       old_tags = current_tags - tags
       new_tags = tags - current_tags
 
-      taggings.by_context(:tags).where(tag_id: old_tags).delete_all if old_tags.present?
+      taggings.where(tag_id: old_tags).delete_all if old_tags.present?
+      Gitlab::Ci::Tags::BulkInsert.bulk_insert_tags!([self]) if new_tags.present?
 
-      new_tags.each do |tag|
-        taggings.create!(tag_id: tag.id, context: 'tags', taggable: self)
-      end
-
-      yield(new_tags, old_tags) if block_given?
+      taggings.reset
+      context_tags.reset
 
       true
     end

@@ -1,5 +1,5 @@
-<!-- Custom Roles documentation: See https://docs.gitlab.com/ee/user/custom_roles.html -->
-<!-- Available Permissions: https://docs.gitlab.com/ee/user/custom_roles/abilities.html -->
+<!-- Custom Roles documentation: See https://docs.gitlab.com/user/custom_roles/ -->
+<!-- Available Permissions: https://docs.gitlab.com/user/custom_roles/abilities/ -->
 <!-- Example of Permission Request: See https://gitlab.com/gitlab-org/gitlab/-/issues/442851 -->
 
 ## Proposed Permission

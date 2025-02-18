@@ -1,5 +1,6 @@
 <script>
 import {
+  GlBadge,
   GlSkeletonLoader,
   GlTable,
   GlLink,
@@ -7,11 +8,14 @@ import {
   GlButton,
   GlIcon,
   GlPagination,
+  GlPopover,
   GlFormCheckbox,
   GlTooltipDirective,
 } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import { s__, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
+import { updateHistory, getParameterByName, setUrlParams } from '~/lib/utils/url_utility';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -41,6 +45,7 @@ import {
   I18N_BULK_DELETE_PARTIAL_ERROR,
   I18N_BULK_DELETE_CONFIRMATION_TOAST,
   I18N_BULK_DELETE_MAX_SELECTED,
+  I18N_CHECKBOX,
 } from '../constants';
 import JobCheckbox from './job_checkbox.vue';
 import ArtifactsBulkDelete from './artifacts_bulk_delete.vue';
@@ -58,6 +63,7 @@ const INITIAL_PAGINATION_STATE = {
 export default {
   name: 'JobArtifactsTable',
   components: {
+    GlBadge,
     GlSkeletonLoader,
     GlTable,
     GlLink,
@@ -65,6 +71,7 @@ export default {
     GlButton,
     GlIcon,
     GlPagination,
+    GlPopover,
     GlFormCheckbox,
     TimeAgo,
     CiIcon,
@@ -121,6 +128,7 @@ export default {
       isBulkDeleteModalVisible: false,
       jobArtifactsToDelete: [],
       isBulkDeleting: false,
+      page: INITIAL_CURRENT_PAGE,
     };
   },
   computed: {
@@ -149,7 +157,7 @@ export default {
         return [
           {
             key: 'checkbox',
-            label: '',
+            label: I18N_CHECKBOX,
             thClass: 'gl-w-1/20',
           },
           ...this.$options.fields,
@@ -193,7 +201,17 @@ export default {
         : '';
     },
   },
+  created() {
+    this.updateQueryParamsFromUrl();
+    window.addEventListener('popstate', this.updateQueryParamsFromUrl);
+  },
+  destroyed() {
+    window.removeEventListener('popstate', this.updateQueryParamsFromUrl);
+  },
   methods: {
+    updateQueryParamsFromUrl() {
+      this.page = Number(getParameterByName('page')) || INITIAL_CURRENT_PAGE;
+    },
     refetchArtifacts() {
       this.$apollo.queries.jobArtifacts.refetch();
     },
@@ -205,6 +223,11 @@ export default {
       return `#${id}`;
     },
     handlePageChange(page) {
+      this.page = page;
+
+      updateHistory({
+        url: setUrlParams({ page }),
+      });
       const { startCursor, endCursor } = this.pageInfo;
 
       if (page > this.pagination.currentPage) {
@@ -335,6 +358,38 @@ export default {
       this.jobArtifactsToDelete = job.artifacts.nodes.map((node) => node.id);
       this.handleBulkDeleteModalShow();
     },
+    artifactBadges(artifacts = []) {
+      if (!artifacts.length) {
+        return { first: null, remaining: [] };
+      }
+
+      // Extract file types and normalize to lowercase
+      const fileTypeList = artifacts.map((artifact) => artifact.fileType?.toLowerCase() || '');
+
+      // Find the first security file type (sast/dast)
+      const securityFileType = fileTypeList.find(
+        (fileType) => fileType === 'sast' || fileType === 'dast',
+      );
+
+      if (securityFileType) {
+        const index = fileTypeList.findIndex((fileType) => fileType === securityFileType);
+        // Move security file type to the front of the array
+        fileTypeList.unshift(fileTypeList.splice(index, 1)[0]);
+      }
+
+      return {
+        first: fileTypeList.shift(),
+        remaining: fileTypeList,
+      };
+    },
+    popoverText(remaining = []) {
+      return sprintf(s__('Artifacts|+%{count} more'), {
+        count: remaining.length,
+      });
+    },
+    popoverTarget(id) {
+      return `artifact-popover-${id}`;
+    },
   },
   fields: [
     {
@@ -406,7 +461,7 @@ export default {
       :fields="fields"
       :busy="$apollo.queries.jobArtifacts.loading"
       stacked="sm"
-      details-td-class="!gl-bg-gray-10 !gl-p-0 gl-overflow-auto"
+      details-td-class="!gl-bg-subtle !gl-p-0 gl-overflow-auto"
       :tbody-tr-attr="$options.TBODY_TR_ATTR"
     >
       <template #table-busy>
@@ -472,13 +527,34 @@ export default {
           <gl-link :href="item.webPath">
             {{ item.name }}
           </gl-link>
+          <template v-if="artifactBadges(item.artifacts.nodes)">
+            <gl-badge data-testid="visible-file-type-badge">
+              {{ artifactBadges(item.artifacts.nodes).first }}
+            </gl-badge>
+            <template v-if="artifactBadges(item.artifacts.nodes).remaining.length">
+              <gl-badge :id="popoverTarget(item.id)" data-testid="file-types-popover-text">
+                {{ popoverText(artifactBadges(item.artifacts.nodes).remaining) }}
+              </gl-badge>
+              <gl-popover :target="popoverTarget(item.id)" placement="right" triggers="hover focus">
+                <div class="gl-flex gl-flex-wrap gl-gap-3">
+                  <gl-badge
+                    v-for="(fileType, index) in artifactBadges(item.artifacts.nodes).remaining"
+                    :key="index"
+                    data-testid="remaining-file-type-badges"
+                  >
+                    {{ fileType }}
+                  </gl-badge>
+                </div>
+              </gl-popover>
+            </template>
+          </template>
         </div>
         <div class="gl-mb-1">
           <gl-icon name="pipeline" class="gl-mr-2" />
           <gl-link :href="item.pipeline.path" class="gl-mr-2">
             {{ pipelineId(item) }}
           </gl-link>
-          <span class="gl-inline-block gl-rounded-base gl-bg-gray-50 gl-px-2">
+          <span class="gl-inline-block gl-rounded-base gl-bg-strong gl-px-2">
             <gl-icon name="commit" :size="12" class="gl-mr-2" />
             <gl-link :href="item.commitPath" class="gl-text-sm gl-text-default gl-font-monospace">
               {{ item.shortSha }}
@@ -486,7 +562,7 @@ export default {
           </span>
         </div>
         <div>
-          <span class="gl-inline-block gl-rounded-base gl-bg-gray-50 gl-px-2">
+          <span class="gl-inline-block gl-rounded-base gl-bg-strong gl-px-2">
             <gl-icon name="branch" :size="12" class="gl-mr-1" />
             <gl-link :href="item.refPath" class="gl-text-sm gl-text-default gl-font-monospace">
               {{ item.refName }}
@@ -546,7 +622,7 @@ export default {
       :prev-page="prevPage"
       :next-page="nextPage"
       align="center"
-      class="gl-mt-3"
+      class="gl-mt-6"
       @input="handlePageChange"
     />
   </div>

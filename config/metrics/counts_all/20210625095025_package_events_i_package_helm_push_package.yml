@@ -15,9 +15,6 @@ events:
     filter:
       label: helm
 data_category: optional
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe QA::Tools::Ci::ScenarioExamples do
-  let(:runnable_specs) { described_class.fetch(tests) }
+  subject(:example_fetcher) { described_class.new(tests) }
+
+  let(:runnable_specs) { example_fetcher.fetch }
 
   let(:tests) { nil }
   let(:examples) { [] }
@@ -9,6 +11,73 @@ RSpec.describe QA::Tools::Ci::ScenarioExamples do
   before do
     allow(Gitlab::QA::TestLogger).to receive(:logger).and_return(Logger.new(StringIO.new))
     allow(QA::Support::ExampleData).to receive(:fetch).and_return(examples)
+  end
+
+  context "with custom spec pattern in scenario class" do
+    let(:specs) { ["specs/feature/fake_spec.rb"] }
+
+    let(:scenario_class) do
+      Class.new(QA::Scenario::Template) do
+        spec_glob_pattern "specs/feature/*_spec.rb"
+      end
+    end
+
+    before do
+      allow(Dir).to receive(:glob).and_return(specs)
+      allow(example_fetcher).to receive(:all_scenario_classes).and_return([scenario_class])
+    end
+
+    context "without specific specs" do
+      it "uses pattern defined in scenario class" do
+        example_fetcher.fetch
+
+        expect(QA::Support::ExampleData).to have_received(:fetch).with([], specs, logger: kind_of(Logger))
+      end
+    end
+
+    context "with specific tests" do
+      let(:tests) { ["specs/feature/fake_spec.rb", "specs/ee/feature/fake_spec.rb"] }
+
+      before do
+        tests.each { |spec| allow(File).to receive(:file?).with(spec).and_return(true) }
+      end
+
+      it "uses only tests matching pattern in scenario class" do
+        example_fetcher.fetch
+
+        expect(QA::Support::ExampleData).to have_received(:fetch).with([], specs, logger: kind_of(Logger))
+      end
+    end
+
+    context "with folder in specific test list" do
+      let(:tests) { ["specs/feature", "specs/ee/feature"] }
+
+      before do
+        tests.each do |spec|
+          allow(File).to receive(:file?).with(spec).and_return(false)
+          allow(File).to receive(:directory?).with(spec).and_return(true)
+        end
+      end
+
+      it "uses only tests matching pattern within folder" do
+        example_fetcher.fetch
+
+        expect(QA::Support::ExampleData).to have_received(:fetch).with([], specs, logger: kind_of(Logger))
+      end
+    end
+
+    context "with specific tests not matching custom pattern" do
+      let(:tests) { ["specs/ee/feature/fake_spec.rb"] }
+
+      before do
+        tests.each { |spec| allow(File).to receive(:file?).with(spec).and_return(true) }
+      end
+
+      it "returns empty list" do
+        expect(runnable_specs).to eq(scenario_class => [])
+        expect(QA::Support::ExampleData).not_to have_received(:fetch)
+      end
+    end
   end
 
   context "with rspec returning runnable specs" do

@@ -2,20 +2,22 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting jobs
 ---
 
-# Troubleshooting jobs
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When working with jobs, you might encounter the following issues.
 
 ## Jobs or pipelines run unexpectedly when using `changes:`
 
-You might have jobs or pipelines that run unexpectedly when using [`rules: changes`](../yaml/index.md#ruleschanges)
-or [`only: changes`](../yaml/index.md#onlychanges--exceptchanges) without
+You might have jobs or pipelines that run unexpectedly when using [`rules: changes`](../yaml/_index.md#ruleschanges)
+or [`only: changes`](../yaml/_index.md#onlychanges--exceptchanges) without
 [merge request pipelines](../pipelines/merge_request_pipelines.md).
 
 Pipelines on branches or tags that don't have an explicit association with a merge request
@@ -70,17 +72,17 @@ To run protected manual jobs:
 
 The configuration for a pipeline is only fetched when the pipeline is created.
 When you rerun a job, uses the same configuration each time. If you update configuration files,
-including separate files added with [`include`](../yaml/index.md#include), you must
+including separate files added with [`include`](../yaml/_index.md#include), you must
 start a new pipeline to use the new configuration.
 
 ## `Job may allow multiple pipelines to run for a single action` warning
 
-When you use [`rules`](../yaml/index.md#rules) with a `when` clause without an `if`
+When you use [`rules`](../yaml/_index.md#rules) with a `when` clause without an `if`
 clause, multiple pipelines may run. Usually this occurs when you push a commit to
 a branch that has an open merge request associated with it.
 
 To [prevent duplicate pipelines](job_rules.md#avoid-duplicate-pipelines), use
-[`workflow: rules`](../yaml/index.md#workflow) or rewrite your rules to control
+[`workflow: rules`](../yaml/_index.md#workflow) or rewrite your rules to control
 which pipelines can run.
 
 ## `This GitLab CI configuration is invalid` for variable expressions
@@ -128,3 +130,75 @@ In this example:
 - `if: "$ENVIRONMENT" == "production"` is invalid, because the variable is quoted.
 - `if: $ENVIRONMENT == production` is invalid, because the string is not quoted.
 - `if: "production" == "production"` is invalid, because there is no CI/CD variable to compare.
+
+## `get_sources` job section fails because of an HTTP/2 problem
+
+Sometimes, jobs fail with the following cURL error:
+
+```plaintext
+++ git -c 'http.userAgent=gitlab-runner <version>' fetch origin +refs/pipelines/<id>:refs/pipelines/<id> ...
+error: RPC failed; curl 16 HTTP/2 send again with decreased length
+fatal: ...
+```
+
+You can work around this problem by configuring Git and `libcurl` to
+[use HTTP/1.1](https://git-scm.com/docs/git-config#Documentation/git-config.txt-httpversion).
+The configuration can be added to:
+
+- A job's [`pre_get_sources_script`](../yaml/_index.md#hookspre_get_sources_script):
+
+  ```yaml
+  job_name:
+    hooks:
+      pre_get_sources_script:
+        - git config --global http.version "HTTP/1.1"
+  ```
+
+- The [runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
+  with [Git configuration environment variables](https://git-scm.com/docs/git-config#ENVIRONMENT):
+
+  ```toml
+  [[runners]]
+  ...
+  environment = [
+    "GIT_CONFIG_COUNT=1",
+    "GIT_CONFIG_KEY_0=http.version",
+    "GIT_CONFIG_VALUE_0=HTTP/1.1"
+  ]
+  ```
+
+## Job using `resource_group` gets stuck
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+If a job using [`resource_group`](../yaml/_index.md#resource_group) gets stuck, a
+GitLab administrator can try run the following commands from the [rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+# find resource group by name
+resource_group = Project.find_by_full_path('...').resource_groups.find_by(key: 'the-group-name')
+busy_resources = resource_group.resources.where('build_id IS NOT NULL')
+
+# identify which builds are occupying the resource
+# (I think it should be 1 as of today)
+busy_resources.pluck(:build_id)
+
+# it's good to check why this build is holding the resource.
+# Is it stuck? Has it been forcefully dropped by the system?
+# free up busy resources
+busy_resources.update_all(build_id: nil)
+```
+
+## `You are not authorized to run this manual job` message
+
+You can receive this message and have a disabled **Run** button when trying to run a manual job if:
+
+- The target environment is a [protected environment](../environments/protected_environments.md)
+  and your account is not included in the **Allowed to deploy** list.
+- The setting to [prevent outdated deployment jobs](../environments/deployment_safety.md#prevent-outdated-deployment-jobs)
+  is enabled and running the job would overwrite the latest deployment.

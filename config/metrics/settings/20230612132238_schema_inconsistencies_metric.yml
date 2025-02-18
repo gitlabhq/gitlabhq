@@ -12,9 +12,6 @@ data_source: system
 data_category: optional
 instrumentation_class: SchemaInconsistenciesMetric
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

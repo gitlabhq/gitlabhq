@@ -2,17 +2,22 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Terraform template recipes
 ---
 
-# Terraform template recipes
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-WARNING:
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 The Terraform CI/CD templates are deprecated and will be removed in GitLab 18.0.
 See [the deprecation announcement](../../../update/deprecations.md#deprecate-terraform-cicd-templates) for more information.
+
+{{< /alert >}}
 
 You can customize your Terraform integration by adding the recipes on
 this page to your pipeline.
@@ -117,7 +122,7 @@ state-list:
 The `gitlab-terraform` command sets up a `terraform` command and runs
 it with the given arguments.
 
-To run this job in the Terraform state-specific [resource group](../../../ci/resource_groups/index.md),
+To run this job in the Terraform state-specific [resource group](../../../ci/resource_groups/_index.md),
 assign the job with `resource_group`:
 
 ```yaml
@@ -185,7 +190,7 @@ To define a custom container image:
    ```
 
 1. In a new job, define a `prepare` stage that builds the image whenever the `Dockerfile` changes.
-   - The built image is pushed to the [GitLab container registry](../../packages/container_registry/index.md). A tag is applied to indicate whether the image was built from a merge request or from the default branch.
+   - The built image is pushed to the [GitLab container registry](../../packages/container_registry/_index.md). A tag is applied to indicate whether the image was built from a merge request or from the default branch.
 1. Use your image in your Terraform jobs, such as `build` and `deploy`.
    - You can combine your image with specialized `before_script` configurations to perform setup commands, like to generate inputs for Terraform.
 

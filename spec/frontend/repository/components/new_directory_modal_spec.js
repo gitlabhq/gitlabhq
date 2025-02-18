@@ -27,7 +27,7 @@ const initialProps = {
 const defaultFormValue = {
   dirName: 'foo',
   originalBranch: initialProps.originalBranch,
-  branchName: initialProps.targetBranch,
+  targetBranch: initialProps.targetBranch,
   commitMessage: initialProps.commitMessage,
   createNewMr: true,
 };
@@ -60,8 +60,12 @@ describe('NewDirectoryModal', () => {
     await nextTick();
   };
 
-  const submitForm = async () => {
-    findCommitChangesModal().vm.$emit('submit-form', new FormData());
+  const submitForm = async ({ branchName } = {}) => {
+    const formData = new FormData();
+    if (branchName) {
+      formData.append('branch_name', branchName);
+    }
+    findCommitChangesModal().vm.$emit('submit-form', formData);
     await waitForPromises();
   };
 
@@ -108,15 +112,28 @@ describe('NewDirectoryModal', () => {
         expect(findCommitChangesModal().props('valid')).toBe(true);
       });
 
-      it('passes additional formData', async () => {
-        const { dirName, branchName } = defaultFormValue;
-        mock.onPost(initialProps.path).reply(HTTP_STATUS_OK, {});
-        await fillForm();
-        await submitForm();
+      describe('passes additional formData', () => {
+        it('passes original branch name as branch name if branch name does not exist on formData', async () => {
+          const { dirName, originalBranch } = defaultFormValue;
+          mock.onPost(initialProps.path).reply(HTTP_STATUS_OK, {});
+          await fillForm();
+          await submitForm();
 
-        const formData = mock.history.post[0].data;
-        expect(formData.get('dir_name')).toBe(dirName);
-        expect(formData.get('branch_name')).toBe(branchName);
+          const formData = mock.history.post[0].data;
+          expect(formData.get('dir_name')).toBe(dirName);
+          expect(formData.get('branch_name')).toBe(originalBranch);
+        });
+
+        it('passes target branch name as branch name if branch name does exist on formData', async () => {
+          const { dirName, targetBranch } = defaultFormValue;
+          mock.onPost(initialProps.path).reply(HTTP_STATUS_OK, {});
+          await fillForm();
+          await submitForm({ branchName: targetBranch });
+
+          const formData = mock.history.post[0].data;
+          expect(formData.get('dir_name')).toBe(dirName);
+          expect(formData.get('branch_name')).toBe(targetBranch);
+        });
       });
 
       it('redirects to the new directory', async () => {

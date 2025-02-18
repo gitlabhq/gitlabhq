@@ -1,7 +1,7 @@
 <!--
 * Use this template for documentation issues identified
-* by [Vale](https://docs.gitlab.com/ee/development/documentation/testing/vale.html)
-* or [markdownlint](https://docs.gitlab.com/ee/development/documentation/testing/markdownlint.html).
+* by [Vale](https://docs.gitlab.com/development/documentation/testing/vale/)
+* or [markdownlint](https://docs.gitlab.com/development/documentation/testing/markdownlint/).
 * This template is meant to describe work for first-time contributors or
 * for work during Hackathons.
 *
@@ -20,14 +20,14 @@ Do you want to work on this issue?
 
 ## To resolve the issue
 
-[Follow these instructions to create a merge request](https://docs.gitlab.com/ee/development/documentation/workflow.html#how-to-update-the-docs).
+[Follow these instructions to create a merge request](https://docs.gitlab.com/development/documentation/workflow/#how-to-update-the-docs).
 
 - Don't submit your merge request until after the Hackathon has started.
 - Try to address the issue in a single merge request.
 - Try to stick to the scope of the issue. If you see other improvements that can be made in the file, open a separate merge request.
 - When you create the merge request, select the **Documentation** merge request description template.
 - In the merge request's description, add a link to this issue.
-- Follow the [commit message guidelines](https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#commit-messages-guidelines).
+- Follow the [commit message guidelines](https://docs.gitlab.com/development/contributing/merge_request_workflow/#commit-messages-guidelines).
   Use three to five words for your commit message, start with message with a capital letter, and do **not** end it in a period.
   Other commit messages can cause the pipeline to fail.
 

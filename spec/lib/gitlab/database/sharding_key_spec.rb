@@ -9,12 +9,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_sharding_key) do
     [
-      'compliance_framework_security_policies', # has a desired sharding key instead
       'merge_request_diff_commits_b5377a7a34', # has a desired sharding key instead
-      'merge_request_diff_files_99208b8fac', # has a desired sharding key instead
-      'ml_model_metadata', # has a desired sharding key instead.
       'p_ci_pipeline_variables', # has a desired sharding key instead
-      'sbom_occurrences_vulnerabilities', # has desired sharding key instead
       'web_hook_logs_daily' # temporary copy of web_hook_logs
     ]
   end
@@ -26,7 +22,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       *tables_with_alternative_not_null_constraint,
       'analytics_devops_adoption_segments.namespace_id',
       *['badges.project_id', 'badges.group_id'],
-      *['boards.project_id', 'boards.group_id'],
       'ci_pipeline_schedules.project_id',
       'ci_sources_pipelines.project_id',
       'ci_triggers.project_id',
@@ -34,7 +29,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       *['internal_ids.project_id', 'internal_ids.namespace_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/451900
       *['labels.project_id', 'labels.group_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
-      *['milestones.project_id', 'milestones.group_id'],
       'sprints.group_id',
       *['todos.project_id', 'todos.group_id']
     ]
@@ -59,14 +53,16 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   #   2. It does not yet have a foreign key as the index is still being backfilled
   let(:allowed_to_be_missing_foreign_key) do
     [
-      'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
+      'ci_builds_metadata.project_id',
+      'ci_deleted_objects.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'ci_job_artifacts.project_id',
       'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
       'ci_pipeline_chat_data.project_id',
-      'ci_builds_metadata.project_id',
-      'ci_deleted_objects.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
+      'ci_pipeline_messages.project_id',
       'p_ci_job_annotations.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'p_ci_pipelines_config.project_id', # LFK already present on p_ci_pipelines and cascade delete all ci resources
+      'dast_profiles_pipelines.project_id', # LFK already present on dast_profiles and will cascade delete
+      'dast_scanner_profiles_builds.project_id', # LFK already present on dast_scanner_profiles and will cascade delete
       'ldap_group_links.group_id',
       'namespace_descendants.namespace_id',
       'p_batched_git_ref_updates_deletions.project_id',
@@ -84,7 +80,12 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       # See more: https://gitlab.com/gitlab-org/gitlab/-/issues/462598#note_1949768698
       'gitlab_subscription_histories.namespace_id',
       # allowed as it points to itself
-      'organizations.id'
+      'organizations.id',
+      # contains an object storage reference. Group_id is the sharding key but we can't use the usual cascade delete FK.
+      'virtual_registries_packages_maven_cache_entries.group_id',
+      # The table contains references in the object storage and thus can't have cascading delete
+      # nor being NULL by the definition of a sharding key.
+      'packages_nuget_symbols.project_id'
     ]
   end
 
@@ -190,9 +191,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     # To add a table to this list, create an issue under https://gitlab.com/groups/gitlab-org/-/epics/11670.
     # Use https://gitlab.com/gitlab-org/gitlab/-/issues/476206 as an example.
     work_in_progress = {
-      "namespaces" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476209',
+      "bulk_import_failures" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517824",
       "organization_users" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476210',
-      "projects" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476211',
       "push_rules" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476212',
       "snippets" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476216',
       "topics" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/463254',
@@ -200,18 +200,14 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       "oauth_access_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_openid_requests" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_device_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
-      "uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199"
-    }
-
-    # Link to any discussions for tables where an exception to this rule was agreed.
-    exceptions = {
-      "bulk_import_entities" => "https://gitlab.com/gitlab-org/gitlab/-/issues/463854#note_2162355315"
+      "uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "bulk_import_trackers" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517823"
     }
 
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }
 
     organization_id_columns = ApplicationRecord.connection.select_rows(sql)
-    checks = organization_id_columns.reject { |column| work_in_progress[column[0]] || exceptions[column[0]] }
+    checks = organization_id_columns.reject { |column| work_in_progress[column[0]] }
     messages = checks.filter_map do |check|
       table_name, *violations = check
 
@@ -279,6 +275,17 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
 
       fks.reject! { |fk| fk.constrained_table_name.in?(tables_exempted_from_sharding_table_names) }
 
+      # Remove after https://gitlab.com/gitlab-org/gitlab/-/issues/515383 is resolved
+      tables_to_be_fixed = %w[shards]
+      if entry.table_name.in?(tables_to_be_fixed)
+        raise "Expected there to be failures, but no failures for #{entry.table_name}." unless fks.present?
+
+        puts "Table #{entry.table_name} will need to be fixed later. There are references from:\n\n" \
+          "#{fks.map(&:constrained_table_name).join("\n")}"
+
+        next
+      end
+
       # rubocop:disable Layout/LineLength -- sorry, long URL
       expect(fks).to be_empty,
         "#{entry.table_name} is exempted from sharding, but has foreign key references to it.\n" \
@@ -336,7 +343,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       Starting from GitLab #{starting_from_milestone}, we expect all new tables to define a `sharding_key`.
 
       To choose an appropriate sharding_key for this table please refer
-      to our guidelines at https://docs.gitlab.com/ee/development/cells/index.html#defining-a-sharding-key-for-all-cell-local-tables, or consult with the Tenant Scale group.
+      to our guidelines at https://docs.gitlab.com/ee/development/cells/#defining-a-sharding-key-for-all-cell-local-tables, or consult with the Tenant Scale group.
     HEREDOC
   end
 

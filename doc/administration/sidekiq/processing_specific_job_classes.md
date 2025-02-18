@@ -2,14 +2,16 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Processing specific job classes
 ---
 
-# Processing specific job classes
+{{< alert type="warning" >}}
 
-WARNING:
 These are advanced settings. While they are used on GitLab.com, most GitLab
 instances should only add more processes that listen to all queues. This is the
-same approach described in the [Reference Architectures](../reference_architectures/index.md).
+same approach described in the [Reference Architectures](../reference_architectures/_index.md).
+
+{{< /alert >}}
 
 Most GitLab instances should have [all processes to listen to all queues](extra_sidekiq_processes.md#start-multiple-processes).
 
@@ -20,14 +22,21 @@ lowers the load on Redis, which is important on very large-scale deployments.
 
 ## Routing rules
 
-> - [Default routing rule value](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97908) introduced in GitLab 15.4.
-> - Queue selectors [replaced by routing rules](https://gitlab.com/gitlab-org/gitlab/-/issues/390787) in GitLab 17.0.
+{{< history >}}
 
-NOTE:
+- [Default routing rule value](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97908) introduced in GitLab 15.4.
+- Queue selectors [replaced by routing rules](https://gitlab.com/gitlab-org/gitlab/-/issues/390787) in GitLab 17.0.
+
+{{< /history >}}
+
+{{< alert type="note" >}}
+
 Mailer jobs cannot be routed by routing rules, and always go to the
 `mailers` queue. When using routing rules, ensure that at least one process is
 listening to the `mailers` queue. Typically this can be placed alongside the
 `default` queue.
+
+{{< /alert >}}
 
 We recommend most GitLab instances using routing rules to manage their Sidekiq
 queues. This allows administrators to choose single queue names for groups of
@@ -108,7 +117,7 @@ employed by routing rules. A query includes two components:
 ### Available attributes
 
 Queue matching query works upon the worker attributes, described in
-[Sidekiq style guide](../../development/sidekiq/index.md). We support querying
+[Sidekiq style guide](../../development/sidekiq/_index.md). We support querying
 based on a subset of worker attributes:
 
 - `feature_category` - the
@@ -130,6 +139,9 @@ based on a subset of worker attributes:
   to load data in memory before saving it for export.
 - `tags` - short-lived annotations for queues. These are expected to frequently
   change from release to release, and may be removed entirely.
+- `queue_namespace` - Some workers are grouped by a namespace, and
+  `name` is prefixed with `<queue_namespace>:`. For example, for a queue `name` of `cronjob:admin_email`,
+  `queue_namespace` is `cronjob`. Use this attribute to select a group of workers.
 
 `has_external_dependencies` is a boolean attribute: only the exact
 string `true` is considered true, and everything else is considered

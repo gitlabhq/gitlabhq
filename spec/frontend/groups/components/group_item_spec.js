@@ -3,7 +3,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import GroupFolder from '~/groups/components/group_folder.vue';
 import GroupItem from 'jh_else_ce/groups/components/group_item.vue';
 import ItemActions from '~/groups/components/item_actions.vue';
-import VisibilityIcon from '~/vue_shared/components/visibility_icon.vue';
+import VisibilityIconButton from '~/vue_shared/components/visibility_icon_button.vue';
 import eventHub from '~/groups/event_hub';
 import { getGroupItemMicrodata } from '~/groups/store/utils';
 import * as urlUtilities from '~/lib/utils/url_utility';
@@ -120,7 +120,7 @@ describe('GroupItemComponent', () => {
     });
   });
 
-  describe('visibilityIcon', () => {
+  describe('visibilityIconButton', () => {
     describe('if item represents a group', () => {
       it('should display the visibility icon with appropriate props', () => {
         const group = { ...mockParentGroupItem };
@@ -129,7 +129,7 @@ describe('GroupItemComponent', () => {
         group.visibility = VISIBILITY_LEVEL_PRIVATE_STRING;
         wrapper = createComponent({ group });
 
-        expect(wrapper.findComponent(VisibilityIcon).props()).toEqual({
+        expect(wrapper.findComponent(VisibilityIconButton).props()).toEqual({
           isGroup: true,
           tooltipPlacement: 'bottom',
           visibilityLevel: VISIBILITY_LEVEL_PRIVATE_STRING,
@@ -146,7 +146,7 @@ describe('GroupItemComponent', () => {
         group.visibility = VISIBILITY_LEVEL_PRIVATE_STRING;
         wrapper = createComponent({ group });
 
-        expect(wrapper.findComponent(VisibilityIcon).props()).toEqual({
+        expect(wrapper.findComponent(VisibilityIconButton).props()).toEqual({
           isGroup: false,
           tooltipPlacement: 'bottom',
           visibilityLevel: VISIBILITY_LEVEL_PRIVATE_STRING,

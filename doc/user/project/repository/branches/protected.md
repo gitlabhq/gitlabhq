@@ -2,14 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Protected branches in GitLab restrict who can push to, merge, or modify a Git branch."
+description: Protected branches in GitLab restrict who can push to, merge, or modify a Git branch.
+title: Protected branches
 ---
 
-# Protected branches
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In GitLab, [permissions](../../../permissions.md) are fundamentally defined around the
 idea of having read or write permission to the repository and branches. To impose
@@ -29,7 +31,11 @@ The [default branch](default.md) for your repository is protected by default.
 
 ## Who can modify a protected branch
 
-> - Branch push permission [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118532) to require GitLab administrators to also have the **allowed** permission in GitLab 16.0.
+{{< history >}}
+
+- Branch push permission [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118532) to require GitLab administrators to also have the **allowed** permission in GitLab 16.0.
+
+{{< /history >}}
 
 When a branch is protected, the default behavior enforces these restrictions on the branch.
 
@@ -84,8 +90,8 @@ that matches `v1.x` must set `Allowed to push and merge` to `No one`, like this:
 
 ### Set the default branch protection level
 
-Administrators can set a default branch protection level in the
-[**Admin** area](default.md#instance-level-default-branch-protection).
+Administrators can [set a default branch protection level](default.md#for-all-projects-in-an-instance)
+in the **Admin** area.
 
 ## Add protection to existing branches
 
@@ -110,9 +116,12 @@ To protect a branch:
 1. From the **Allowed to merge** list, select a role that can merge into this branch.
 1. From the **Allowed to push and merge** list, select a role that can push to this branch.
 
-   NOTE:
-   In GitLab Premium and Ultimate, you can also add groups or individual users
+   {{< alert type="note" >}}
+
+In GitLab Premium and Ultimate, you can also add groups or individual users
    to **Allowed to merge** and **Allowed to push and merge**.
+
+   {{< /alert >}}
 
 1. Select **Protect**.
 
@@ -120,12 +129,19 @@ The protected branch displays in the list of protected branches.
 
 ### For all projects in a group
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 [with a flag](../../../../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500250) in GitLab 17.6. Feature flag `group_protected_branches` removed.
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 [with a flag](../../../../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500250) in GitLab 17.6. Feature flag `group_protected_branches` removed.
+
+{{< /history >}}
 
 Group owners can create protected branches for a group. These settings are inherited
 by all projects in the group and can't be overridden by project settings.
@@ -142,7 +158,7 @@ To protect a branch for all the projects in a group:
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. In the **Branch** text box, type the branch name or a wildcard.
-   Branch names and wildcards [are case-sensitive](index.md#name-your-branch).
+   Branch names and wildcards [are case-sensitive](_index.md#name-your-branch).
 1. From the **Allowed to merge** list, select a role that can merge into this branch.
 1. From the **Allowed to push and merge** list, select a role that can push to this branch.
 1. Select **Protect**.
@@ -167,9 +183,12 @@ to a protected branch:
    Allowed to push and merge: @group-x/subgroup-y
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 When you assign a group to a protected branch, only direct members of that group are included.
 Members from parent groups are not automatically granted permissions to the protected branch.
+
+{{< /alert >}}
 
 #### Group inheritance and eligibility
 
@@ -216,9 +235,12 @@ To grant access to **Subgroup Y** members for **Project A**, you must share the 
 the subgroup. Adding the subgroup directly to the protected branch settings is not effective
 and isn't applicable to subgroup members.
 
-NOTE:
+{{< alert type="note" >}}
+
 For a group to have protected branch permissions, the project must be directly shared with the group.
 Inherited project membership from parent groups is not sufficient for protected branch permissions.
+
+{{< /alert >}}
 
 ## Protect multiple branches with wildcard rules
 
@@ -238,7 +260,7 @@ To protect multiple branches at the same time:
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, type the branch name and a wildcard.
-   Branch names and wildcards [are case-sensitive](index.md#name-your-branch). For example:
+   Branch names and wildcards [are case-sensitive](_index.md#name-your-branch). For example:
 
    | Wildcard protected branch | Matching branches                                      |
    |---------------------------|--------------------------------------------------------|
@@ -294,15 +316,15 @@ Alternatively, you can [create](branch_rules.md#create-a-branch-rule) or [edit](
 
 ## Allow deploy keys to push to a protected branch
 
-You can push to a protected branch with a [deploy key](../../deploy_keys/index.md).
+You can push to a protected branch with a [deploy key](../../deploy_keys/_index.md).
 
 Prerequisites:
 
 - The deploy key must be enabled for your project. A project deploy key is enabled by default when
   it is created. However, a public deploy key must be
-  [granted](../../deploy_keys/index.md#grant-project-access-to-a-public-deploy-key) access to the
+  [granted](../../deploy_keys/_index.md#grant-project-access-to-a-public-deploy-key) access to the
   project.
-- The deploy key must have [write access](../../deploy_keys/index.md#permissions) to your project
+- The deploy key must have [write access](../../deploy_keys/_index.md#permissions) to your project
   repository.
 - The owner of the deploy key must have at least read access to the project.
 - The owner of the deploy key must also be a member of the project.
@@ -370,11 +392,14 @@ As the most permissive option determines the behavior, the resulting permissions
 
 ## Require Code Owner approval on a protected branch
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-For a protected branch, you can require at least one approval by a [Code Owner](../../codeowners/index.md).
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+For a protected branch, you can require at least one approval by a [Code Owner](../../codeowners/_index.md).
 If a branch is protected by multiple rules, code owner approval is required if _any_ of
 the applicable rules have **Required approval from code owners** enabled.
 
@@ -424,7 +449,7 @@ Because [merge request pipelines](../../../../ci/pipelines/merge_request_pipelin
 branch, a pipeline isn't created if the user opening a merge request does not have permission to merge
 or push to the source branch.
 
-See [Security on protected branches](../../../../ci/pipelines/index.md#pipeline-security-on-protected-branches)
+See [Security on protected branches](../../../../ci/pipelines/_index.md#pipeline-security-on-protected-branches)
 for details about the pipelines security model.
 
 ## Create a new branch with protections
@@ -455,9 +480,9 @@ branches by using the GitLab web interface:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Branches**.
-1. Next to the branch you want to delete, select **Delete** (**{remove}**).
+1. Next to the branch you want to delete, select **Delete** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, enter the branch name and select **Yes, delete protected branch**.
-   Branch names [are case-sensitive](index.md#name-your-branch).
+   Branch names [are case-sensitive](_index.md#name-your-branch).
 
 Protected branches can only be deleted by using GitLab either from the UI or API.
 This prevents accidentally deleting a branch through local Git commands or
@@ -466,7 +491,7 @@ third-party Git clients.
 ## Related topics
 
 - [Protected branches API](../../../../api/protected_branches.md)
-- [Branches](index.md)
+- [Branches](_index.md)
 - [Branches API](../../../../api/branches.md)
 
 ## Troubleshooting
@@ -474,5 +499,5 @@ third-party Git clients.
 ### Branch names are case-sensitive
 
 Branch names in `git` are case-sensitive. When configuring your protected branch,
-or your [target branch workflow](index.md#configure-workflows-for-target-branches),
+or your [target branch workflow](_index.md#configure-workflows-for-target-branches),
 `dev` is not the same `DEV` or `Dev`.

@@ -2,15 +2,17 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab CI/CD `workflow` keyword
 ---
 
-# GitLab CI/CD `workflow` keyword
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Use the [`workflow`](index.md#workflow) keyword to control when pipelines are created.
+{{< /details >}}
+
+Use the [`workflow`](_index.md#workflow) keyword to control when pipelines are created.
 
 The `workflow` keyword is evaluated before jobs. For example, if a job is configured to run
 for tags, but the workflow prevents tag pipelines, the job never runs.
@@ -112,7 +114,7 @@ workflow:
     - ...                # Previously defined workflow rules here
 ```
 
-[Triggered pipelines](../triggers/index.md) that run on a branch have a `$CI_COMMIT_BRANCH`
+[Triggered pipelines](../triggers/_index.md) that run on a branch have a `$CI_COMMIT_BRANCH`
 set and could be blocked by a similar rule. Triggered pipelines have a pipeline source
 of `trigger` or `pipeline`, so `&& $CI_PIPELINE_SOURCE == "push"` ensures the rule
 does not block triggered pipelines.
@@ -161,10 +163,13 @@ build-job:
 
 ## `workflow:rules` templates (Deprecated)
 
-WARNING:
+{{< alert type="warning" >}}
+
 The `workflow:rules` templates were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/456394)
 in GitLab 17.0 and are planned for removal in 18.0. This change is a breaking change.
 To configure `workflow:rules` in your pipeline, add the keyword explicitly. See the examples above for options.
+
+{{< /alert >}}
 
 GitLab provides templates that set up `workflow: rules`
 for common scenarios. These templates help prevent duplicate pipelines.
@@ -179,7 +184,7 @@ as a source. However, this pipeline type does not support any features offered b
 or [merge trains](../pipelines/merge_trains.md).
 This template intentionally avoids those features.
 
-To [include](index.md#include) it:
+To [include](_index.md#include) it:
 
 ```yaml
 include:
@@ -191,7 +196,7 @@ makes your pipelines run for the default branch, tags, and
 all types of merge request pipelines. Use this template if you use any of the
 [merge request pipelines features](../pipelines/merge_request_pipelines.md).
 
-To [include](index.md#include) it:
+To [include](_index.md#include) it:
 
 ```yaml
 include:

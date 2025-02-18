@@ -1,6 +1,5 @@
 <script>
 import { GlIcon, GlAlert, GlTooltipDirective, GlModalDirective } from '@gitlab/ui';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { s__, __ } from '~/locale';
 import { findWidget } from '~/issues/list/utils';
@@ -51,7 +50,6 @@ export default {
     GlTooltip: GlTooltipDirective,
     GlModalDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     workItemFullPath: {
       type: String,
@@ -148,9 +146,6 @@ export default {
     },
     tooltipText() {
       return this.workItemState === STATE_OPEN ? this.openStateText : this.closedStateText;
-    },
-    workItemsAlphaEnabled() {
-      return this.glFeatures.workItemsAlpha;
     },
     showAddButton() {
       return this.canUpdate && this.showCreateOptions;

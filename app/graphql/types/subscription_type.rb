@@ -72,6 +72,12 @@ module Types
       subscription: Subscriptions::IssuableUpdated, null: true,
       description: 'Triggered when a todo on an issuable is updated.',
       experiment: { milestone: '17.5' }
+
+    field :user_merge_request_updated,
+      subscription: Subscriptions::User::MergeRequestUpdated,
+      null: true,
+      description: 'Triggered when a merge request the user is an assignee or a reviewer of is updated.',
+      experiment: { milestone: '17.9' }
   end
 end
 

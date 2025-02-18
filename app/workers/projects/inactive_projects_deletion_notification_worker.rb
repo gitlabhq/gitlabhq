@@ -3,6 +3,7 @@
 module Projects
   class InactiveProjectsDeletionNotificationWorker
     include ApplicationWorker
+    include CronjobChildWorker
     include ExceptionBacktrace
 
     idempotent!

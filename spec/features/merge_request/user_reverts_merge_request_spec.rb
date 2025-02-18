@@ -41,7 +41,7 @@ RSpec.describe 'User reverts a merge request', :js, feature_category: :code_revi
     expect(page).to have_content('The merge request has been successfully reverted.')
   end
 
-  it 'does not revert a merge request that was previously reverted', :sidekiq_might_not_need_inline do
+  it 'does not revert a merge request that was previously reverted', :sidekiq_might_not_need_inline, :allowed_to_be_slow do
     revert_commit
 
     revert_commit

@@ -42,7 +42,7 @@ export default {
     jobPillClasses() {
       return [
         { 'gl-opacity-3': this.isFadedOut },
-        { 'gl-bg-gray-50 gl-shadow-inner-1-gray-200': this.isHovered },
+        { 'gl-bg-strong gl-shadow-inner-1-gray-200': this.isHovered },
       ];
     },
   },

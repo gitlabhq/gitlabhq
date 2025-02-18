@@ -488,7 +488,7 @@ RSpec.describe Ability, feature_category: :system_access do
     context 'with composite identity', :request_store do
       before do
         ::Gitlab::SafeRequestStore[request_store_key] = delegated_user
-        allow(user).to receive(:has_composite_identity?).and_return(true)
+        allow(user).to receive(:composite_identity_enforced).and_return(true)
       end
 
       context 'when both users are members' do
@@ -521,19 +521,9 @@ RSpec.describe Ability, feature_category: :system_access do
           expect(subject).to be_falsey
         end
 
-        context 'with disabled composite_identity feature flag' do
-          before do
-            stub_feature_flags(composite_identity: false)
-          end
-
-          it 'returns true' do
-            expect(subject).to be_truthy
-          end
-        end
-
         context 'with unenforced composite identity' do
           before do
-            allow(user).to receive(:has_composite_identity?).and_return(false)
+            allow(user).to receive(:composite_identity_enforced).and_return(false)
           end
 
           it 'returns true' do

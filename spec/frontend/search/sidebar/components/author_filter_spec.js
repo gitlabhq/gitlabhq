@@ -8,13 +8,19 @@ import axios from '~/lib/utils/axios_utils';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import AuthorFilter from '~/search/sidebar/components/author_filter/index.vue';
 import FilterDropdown from '~/search/sidebar/components/shared/filter_dropdown.vue';
-import { MOCK_QUERY, mockAuthorsAxiosResponse } from '../../mock_data';
+import { MOCK_QUERY } from '../../mock_data';
 
 Vue.use(Vuex);
 
 describe('Author filter', () => {
   let wrapper;
   const mock = new MockAdapter(axios);
+
+  // Mock author data that matches the expected structure
+  const mockAuthors = [
+    { username: 'root', name: 'Administrator', text: 'Administrator', value: 'root' },
+    { username: 'john', name: 'John Doe', text: 'John Doe', value: 'john' },
+  ];
 
   const actions = {
     setQuery: jest.fn(),
@@ -29,10 +35,12 @@ describe('Author filter', () => {
     },
   };
 
-  const createComponent = (state) => {
+  const createComponent = (state = {}) => {
     const store = new Vuex.Store({
-      ...defaultState,
-      state,
+      state: {
+        ...defaultState.state,
+        ...state,
+      },
       actions,
     });
 
@@ -45,23 +53,23 @@ describe('Author filter', () => {
   const findGlFormCheckbox = () => wrapper.findComponent(GlFormCheckbox);
 
   beforeEach(() => {
+    // Setup default API mock
+    mock.onGet(/\/-\/autocomplete\/users\.json.*/).reply(200, mockAuthors);
+
     createComponent();
   });
 
-  describe('when initial state', () => {
-    it('renders the component', () => {
-      expect(findFilterDropdown().exists()).toBe(true);
-      expect(findGlFormCheckbox().exists()).toBe(true);
-    });
+  afterEach(() => {
+    mock.reset();
+    actions.setQuery.mockReset();
+    actions.applyQuery.mockReset();
   });
 
   describe.each(['not[author_username]', 'author_username'])(
-    `when author is selected for %s author search`,
+    'when author is selected for %s author search',
     (authorParam) => {
       beforeEach(async () => {
-        mock
-          .onGet('/-/autocomplete/users.json?current_user=true&active=true&search=')
-          .reply(200, mockAuthorsAxiosResponse);
+        // First create the component with initial state
         createComponent({
           query: {
             ...MOCK_QUERY,
@@ -69,6 +77,11 @@ describe('Author filter', () => {
           },
         });
 
+        // Ensure authors data is loaded before selection
+        await wrapper.vm.getCachedDropdownData();
+        await nextTick();
+
+        // Then simulate selection
         findFilterDropdown().vm.$emit('selected', 'root');
         await nextTick();
       });
@@ -89,8 +102,7 @@ describe('Author filter', () => {
 
   describe('when opening dropdown', () => {
     beforeEach(() => {
-      jest.spyOn(axios, 'get');
-      jest.spyOn(AjaxCache, 'retrieve');
+      jest.spyOn(AjaxCache, 'retrieve').mockResolvedValue(mockAuthors);
 
       createComponent({
         groupInitialJson: {
@@ -101,15 +113,94 @@ describe('Author filter', () => {
       });
     });
 
-    afterEach(() => {
-      mock.restore();
-    });
-
-    it('calls AjaxCache with correct params', () => {
+    it('calls AjaxCache with correct params', async () => {
       findFilterDropdown().vm.$emit('shown');
+      await nextTick();
       expect(AjaxCache.retrieve).toHaveBeenCalledWith(
         '/-/autocomplete/users.json?current_user=true&active=true&group_id=1&search=',
       );
+    });
+
+    // we are testing a UX fix https://gitlab.com/gitlab-org/gitlab/-/issues/507804
+    describe('UX flow for author selection and search', () => {
+      beforeEach(() => {
+        mock.onGet(/\/-\/autocomplete\/users\.json.*/).reply(200, [
+          { username: 'root', name: 'Administrator', text: 'Administrator', value: 'root' },
+          { username: 'john', name: 'John Doe', text: 'John Doe', value: 'john' },
+        ]);
+      });
+
+      it('does not change selected author name when none was selected', async () => {
+        createComponent();
+
+        expect(findFilterDropdown().props('selectedItem')).toBe('');
+        findFilterDropdown().vm.$emit('shown');
+        await nextTick();
+
+        findFilterDropdown().vm.$emit('search', 'john');
+        await nextTick();
+
+        expect(findFilterDropdown().props('selectedItem')).toBe('');
+      });
+
+      it('maintains selected author while searching for others', async () => {
+        createComponent();
+
+        await wrapper.vm.getCachedDropdownData();
+        await nextTick();
+
+        findFilterDropdown().vm.$emit('selected', 'root');
+        await nextTick();
+
+        expect(findFilterDropdown().props('selectedItem')).toBe('root');
+        expect(findFilterDropdown().props('searchText')).toBe('Administrator');
+
+        findFilterDropdown().vm.$emit('shown');
+        await nextTick();
+
+        findFilterDropdown().vm.$emit('search', 'john');
+        await nextTick();
+
+        expect(findFilterDropdown().props('selectedItem')).toBe('root');
+        expect(findFilterDropdown().props('searchText')).toBe('Administrator');
+      });
+
+      describe('edge cases', () => {
+        it('handles search with no results', async () => {
+          createComponent();
+
+          await wrapper.vm.getCachedDropdownData();
+          await nextTick();
+
+          findFilterDropdown().vm.$emit('selected', 'root');
+          await nextTick();
+
+          findFilterDropdown().vm.$emit('search', 'nonexistent');
+          await nextTick();
+
+          expect(findFilterDropdown().props('selectedItem')).toBe('root');
+          expect(findFilterDropdown().props('searchText')).toBe('Administrator');
+        });
+
+        it('handles multiple searches without changing selection', async () => {
+          createComponent();
+
+          await wrapper.vm.getCachedDropdownData();
+          await nextTick();
+
+          findFilterDropdown().vm.$emit('selected', 'root');
+          await nextTick();
+
+          const searches = ['john', 'admin', 'test'];
+          for (const searchTerm of searches) {
+            findFilterDropdown().vm.$emit('search', searchTerm);
+            nextTick(() => {
+              expect(findFilterDropdown().props('selectedItem')).toBe('root');
+              expect(findFilterDropdown().props('searchText')).toBe('Administrator');
+            });
+          }
+        });
+      });
     });
   });
 

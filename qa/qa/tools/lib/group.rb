@@ -24,6 +24,87 @@ module QA
 
           group[:id]
         end
+
+        def get_group_graphql(group)
+          query = <<~GRAPHQL
+            query {
+              group(fullPath: "#{group[:full_path]}") {
+                securityPolicyProject {
+                  id
+                }
+              }
+            }
+          GRAPHQL
+
+          graphql_request(query)
+        end
+
+        def get_subgroups_graphql(group)
+          query = <<~GRAPHQL
+            query {
+              group(fullPath: "#{group[:full_path]}") {
+                descendantGroups {
+                  nodes {
+                    id
+                    name
+                    fullPath
+                    securityPolicyProject {
+                      id
+                      name
+                      fullPath
+                    }
+                  }
+                }
+              }
+            }
+          GRAPHQL
+
+          graphql_request(query)
+        end
+
+        def get_group_projects_graphql(group)
+          query = <<~GRAPHQL
+            query {
+              group(fullPath: "#{group[:full_path]}") {
+                projects(includeSubgroups: true) {
+                  nodes {
+                    id
+                    name
+                    fullPath
+                    securityPolicyProject {
+                      id
+                      name
+                      fullPath
+                    }
+                  }
+                }
+              }
+            }
+          GRAPHQL
+
+          graphql_request(query)
+        end
+
+        def has_security_policy_project?(group)
+          response = get_group_graphql(group)
+          response&.dig(:data, :group, :securityPolicyProject).present?
+        end
+
+        def subgroups_with_security_policy_projects(group)
+          response = get_subgroups_graphql(group)
+          subgroups = response&.dig(:data, :group, :descendantGroups, :nodes)
+          subgroups.select do |subgroup|
+            subgroup&.dig(:securityPolicyProject).present?
+          end
+        end
+
+        def projects_with_security_policy_projects(group)
+          response = get_group_projects_graphql(group)
+          projects = response&.dig(:data, :group, :projects, :nodes)
+          projects.select do |project|
+            project&.dig(:securityPolicyProject).present?
+          end
+        end
       end
     end
   end

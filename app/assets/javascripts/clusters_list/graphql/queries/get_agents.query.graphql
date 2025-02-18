@@ -7,22 +7,7 @@ query getAgents($projectPath: ID!) {
       nodes {
         ...ClusterAgentFragment
       }
-    }
-
-    ciAccessAuthorizedAgents {
-      nodes {
-        agent {
-          ...ClusterAgentFragment
-        }
-      }
-    }
-
-    userAccessAuthorizedAgents {
-      nodes {
-        agent {
-          ...ClusterAgentFragment
-        }
-      }
+      count
     }
   }
 }

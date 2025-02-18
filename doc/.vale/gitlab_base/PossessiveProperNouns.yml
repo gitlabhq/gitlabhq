@@ -9,6 +9,7 @@ message: "Remove 's from %s."
 level: warning
 ignorecase: true
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/#possessives
+vocab: false
 tokens:
   - Amazon's
   - Apple's

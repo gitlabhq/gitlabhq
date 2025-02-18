@@ -1,11 +1,13 @@
 <script>
 import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
+import { mapActions as mapVuexActions } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import * as types from '~/batch_comments/stores/modules/batch_comments/mutation_types';
 import { clearDraft } from '~/lib/utils/autosave';
+import { useBatchComments } from '~/batch_comments/store';
 
 export default {
   components: {
@@ -43,8 +45,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('batchComments', ['isPublishing']),
-    ...mapGetters('batchComments', ['isPublishingDraft']),
+    ...mapState(useBatchComments, ['isPublishing', 'isPublishingDraft']),
     draftCommands() {
       return this.draft.references.commands;
     },
@@ -59,17 +60,17 @@ export default {
     }
   },
   methods: {
-    ...mapActions('batchComments', [
+    ...mapActions(useBatchComments, [
       'deleteDraft',
       'updateDraft',
       'publishSingleDraft',
       'scrollToDraft',
       'toggleResolveDiscussion',
     ]),
-    ...mapMutations('batchComments', {
+    ...mapActions(useBatchComments, {
       setDraftEditing: types.SET_DRAFT_EDITING,
     }),
-    ...mapActions(['setSelectedCommentPositionHover']),
+    ...mapVuexActions(['setSelectedCommentPositionHover']),
     update(data) {
       this.updateDraft(data);
     },

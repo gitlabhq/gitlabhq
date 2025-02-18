@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GitLab Developers Guide to service measurement
 ---
-
-# GitLab Developers Guide to service measurement
 
 You can enable service measurement to debug any slow service's execution time, number of SQL calls, garbage collection stats, memory usage, etc.
 
@@ -19,7 +18,7 @@ The measuring module is a tool that allows to measure a service's execution, and
 - RSS memory usage
 - Server worker ID
 
-The measuring module logs these measurements into a structured log called [`service_measurement.log`](../administration/logs/index.md#service_measurementlog),
+The measuring module logs these measurements into a structured log called [`service_measurement.log`](../administration/logs/_index.md#service_measurementlog),
 as a single entry for each service execution.
 
 For GitLab.com, `service_measurement.log` is ingested in Elasticsearch and Kibana as part of our monitoring solution.
@@ -75,7 +74,7 @@ To actually use it, you need to enable measuring for the desired service by enab
 ### Enabling measurement using feature flags
 
 In the following example, the `:gitlab_service_measuring_projects_import_service`
-[feature flag](feature_flags/index.md#controlling-feature-flags-locally) is used to enable the measuring feature
+[feature flag](feature_flags/_index.md#controlling-feature-flags-locally) is used to enable the measuring feature
 for `Projects::ImportService`.
 
 From ChatOps:

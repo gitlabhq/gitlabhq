@@ -4,6 +4,7 @@ class PlanLimits < ApplicationRecord
   include SafelyChangeColumnDefault
 
   columns_changing_default :ci_max_artifact_size_lsif
+  columns_changing_default :active_versioned_pages_deployments_limit_by_namespace
 
   ALLOWED_LIMITS_HISTORY_ATTRIBUTES = %i[notification_limit enforcement_limit storage_size_limit
     dashboard_limit_enabled_at].freeze

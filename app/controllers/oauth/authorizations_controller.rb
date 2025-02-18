@@ -4,11 +4,17 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   include Gitlab::GonHelper
   include InitializesCurrentUserMode
   include Gitlab::Utils::StrongMemoize
+  include RequestPayloadLogger
+
+  alias_method :auth_user, :current_user
 
   prepend_before_action :set_current_organization
 
   before_action :add_gon_variables
   before_action :verify_confirmed_email!, :verify_admin_allowed!
+  # rubocop: disable Rails/LexicallyScopedActionFilter -- :create is defined in Doorkeeper::AuthorizationsController
+  after_action :audit_oauth_authorization, only: [:create]
+  # rubocop: enable Rails/LexicallyScopedActionFilter
 
   layout 'minimal'
 
@@ -33,6 +39,26 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   end
 
   private
+
+  def audit_oauth_authorization
+    return unless performed? && (response.successful? || response.redirect?) && pre_auth&.client
+
+    application = pre_auth.client.application
+
+    Gitlab::Audit::Auditor.audit(
+      name: 'user_authorized_oauth_application',
+      author: current_user,
+      scope: current_user,
+      target: application,
+      message: 'User authorized an OAuth application.',
+      additional_details: {
+        application_name: application.name,
+        application_id: application.id,
+        scopes: application.scopes.to_a
+      },
+      ip_address: request.remote_ip
+    )
+  end
 
   # Chrome blocks redirections if the form-action CSP directive is present
   # and the redirect location's scheme isn't allow-listed

@@ -115,13 +115,13 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter, :
       context 'when the merger user is not provided' do
         let(:merger_user) { nil }
 
-        it 'adds a note referencing the merger user' do
+        it 'adds a note referencing the ghost user' do
           expect { subject.execute }
             .to change { Note.count }.by(1)
             .and not_change(merge_request, :updated_at)
 
           metrics = merge_request.metrics.reload
-          expect(metrics.merged_by).to be_nil
+          expect(metrics.merged_by).to eq(Users::Internal.ghost)
           expect(metrics.merged_at).to eq(merged_at)
 
           last_note = merge_request.notes.last

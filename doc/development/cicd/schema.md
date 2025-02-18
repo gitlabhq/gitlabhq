@@ -2,11 +2,10 @@
 stage: Verify
 group: Pipeline Authoring
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Contribute to the CI/CD Schema
 ---
 
-# Contribute to the CI/CD Schema
-
-The [pipeline editor](../../ci/pipeline_editor/index.md) uses a CI/CD schema to enhance
+The [pipeline editor](../../ci/pipeline_editor/_index.md) uses a CI/CD schema to enhance
 the authoring experience of our CI/CD configuration files. With the CI/CD schema, the editor can:
 
 - Validate the content of the CI/CD configuration file as it is being written in the editor.
@@ -30,7 +29,7 @@ a step-by-step introduction on how to work with JSON schemas.
 
 The CI/CD schema is at [`app/assets/javascripts/editor/schema/ci.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/editor/schema/ci.json).
 It contains all the keywords available for authoring CI/CD configuration files.
-Check the [CI/CD YAML syntax reference](../../ci/yaml/index.md) for a comprehensive list of
+Check the [CI/CD YAML syntax reference](../../ci/yaml/_index.md) for a comprehensive list of
 all available keywords.
 
 All keywords are defined under `definitions`. We use these definitions as

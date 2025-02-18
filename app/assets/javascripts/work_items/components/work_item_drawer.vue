@@ -4,7 +4,10 @@ import { __ } from '~/locale';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
-import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
+import {
+  DETAIL_VIEW_QUERY_PARAM_NAME,
+  INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
+} from '~/work_items/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl, setUrlParams, updateHistory, removeParams } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -23,7 +26,14 @@ export default {
     WorkItemDetail: () => import('~/work_items/components/work_item_detail.vue'),
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['fullPath', 'isGroup'],
+  inject: {
+    preventRouterNav: {
+      from: INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
+      default: false,
+    },
+    isGroup: {},
+    fullPath: {},
+  },
   inheritAttrs: false,
   props: {
     open: {
@@ -44,6 +54,11 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    newCommentTemplatePaths: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
   },
   data() {
@@ -74,12 +89,14 @@ export default {
     activeItem: {
       deep: true,
       immediate: true,
-      handler(newValue) {
+      handler(newValue, oldValue) {
         if (newValue?.iid) {
           this.setDrawerParams();
           // focus on header link when drawer is updated
           this.$nextTick(() => {
-            this.focusOnHeaderLink();
+            if (!oldValue || oldValue?.iid !== newValue?.iid) {
+              this.focusOnHeaderLink();
+            }
           });
         }
       },
@@ -170,6 +187,7 @@ export default {
         const excludedElements = document.querySelectorAll(selector);
         for (const parent of excludedElements) {
           if (parent.contains(event.target)) {
+            this.$emit('clicked-outside');
             return;
           }
         }
@@ -178,6 +196,7 @@ export default {
         const excludedElements = document.querySelectorAll(this.clickOutsideExcludeSelector);
         for (const parent of excludedElements) {
           if (parent.contains(event.target)) {
+            this.$emit('clicked-outside');
             return;
           }
         }
@@ -198,6 +217,7 @@ export default {
     '#create-timelog-modal',
     '#set-time-estimate-modal',
     '[id^="insert-comment-template-modal"]',
+    'input[type="file"]',
     '.pika-single',
     '.atwho-container',
     '.item-title',
@@ -223,6 +243,7 @@ export default {
     header-height="calc(var(--top-bar-height) + var(--performance-bar-height))"
     class="gl-w-full gl-leading-reset lg:gl-w-[480px] xl:gl-w-[768px] min-[1440px]:gl-w-[912px]"
     @close="handleClose"
+    @opened="$emit('opened')"
   >
     <template #title>
       <div class="gl-text gl-flex gl-w-full gl-items-center gl-gap-x-2 xl:gl-px-4">
@@ -240,7 +261,6 @@ export default {
           data-testid="work-item-drawer-copy-button"
           :title="copyTooltipText"
           category="tertiary"
-          class="gl-text-subtle"
           icon="link"
           size="small"
           :aria-label="$options.i18n.copyTooltipText"
@@ -253,7 +273,6 @@ export default {
           :href="activeItem.webUrl"
           :title="$options.i18n.openTooltipText"
           category="tertiary"
-          class="gl-text-subtle"
           icon="maximize"
           size="small"
           :aria-label="$options.i18n.openTooltipText"
@@ -267,6 +286,7 @@ export default {
         :work-item-iid="activeItem.iid"
         :modal-work-item-full-path="activeItemFullPath"
         :modal-is-group="modalIsGroup"
+        :new-comment-template-paths="newCommentTemplatePaths"
         is-drawer
         class="work-item-drawer !gl-pt-0 xl:!gl-px-6"
         @deleteWorkItem="deleteWorkItem"

@@ -2,16 +2,18 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Install cert-manager with a cluster management project
 ---
 
-# Install cert-manager with a cluster management project
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Assuming you already have a project created from a
-[management project template](../../../../../user/clusters/management_project_template.md), to install cert-manager you should
+[management project template](../../../../clusters/management_project_template.md), to install cert-manager you should
 uncomment this line from your `helmfile.yaml`:
 
 ```yaml
@@ -29,11 +31,14 @@ And update the `applications/cert-manager/helmfile.yaml` with a valid email addr
         email: example@example.com
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 If your Kubernetes version is earlier than 1.20 and you are
 [migrating from GitLab Managed Apps to a cluster management project](../../../../clusters/migrating_from_gma_to_project_template.md),
 then you can instead use `- path: applications/cert-manager-legacy/helmfile.yaml` to
 take over an existing release of cert-manager v0.10.
+
+{{< /alert >}}
 
 cert-manager:
 

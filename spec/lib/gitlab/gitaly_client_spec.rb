@@ -394,6 +394,26 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       expect(results[:metadata]).to include('gitaly-session-id')
     end
 
+    context 'with gitaly_context' do
+      let(:gitaly_context) { { key: :value } }
+
+      it 'passes context as "gitaly-client-context-bin"' do
+        kwargs = described_class.request_kwargs('default', timeout: 1, gitaly_context: gitaly_context)
+
+        expect(kwargs[:metadata]['gitaly-client-context-bin']).to eq(gitaly_context.to_json)
+      end
+
+      context 'when empty context' do
+        let(:gitaly_context) { {} }
+
+        it 'does not provide "gitaly-client-context-bin"' do
+          kwargs = described_class.request_kwargs('default', timeout: 1, gitaly_context: gitaly_context)
+
+          expect(kwargs[:metadata]).not_to have_key('gitaly-client-context-bin')
+        end
+      end
+    end
+
     context 'when RequestStore is not enabled' do
       it 'sets a different gitaly-session-id per request' do
         gitaly_session_id = described_class.request_kwargs('default', timeout: 1)[:metadata]['gitaly-session-id']
@@ -959,11 +979,35 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
     end
   end
 
+  describe '.call' do
+    subject(:call) do
+      described_class.call(storage, service, rpc, request, remote_storage: remote_storage, timeout: timeout, gitaly_context: gitaly_context)
+    end
+
+    let(:storage) { 'default' }
+    let(:service) { :ref_service }
+    let(:rpc) { :find_local_branches }
+    let(:request) { Gitaly::FindLocalBranchesRequest.new }
+    let(:remote_storage) { nil }
+    let(:timeout) { 10.seconds }
+    let(:gitaly_context) { { key: :value } }
+
+    it 'inits Gitlab::GitalyClient::Call instance with provided arguments' do
+      expect(Gitlab::GitalyClient::Call).to receive(:new).with(
+        storage, service, rpc, request, remote_storage, timeout, gitaly_context: gitaly_context
+      ).and_call_original
+
+      call
+    end
+  end
+
   describe '.execute' do
     subject(:execute) do
       described_class.execute('default', :ref_service, :find_local_branches, Gitaly::FindLocalBranchesRequest.new,
-        remote_storage: nil, timeout: 10.seconds)
+        remote_storage: nil, timeout: 10.seconds, gitaly_context: gitaly_context)
     end
+
+    let(:gitaly_context) { {} }
 
     it 'raises an exception when running within a concurrent Ruby thread' do
       Thread.current[:restrict_within_concurrent_ruby] = true
@@ -972,6 +1016,18 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
         "Cannot run 'gitaly' if running from `Concurrent::Promise`.")
 
       Thread.current[:restrict_within_concurrent_ruby] = nil
+    end
+
+    context 'with gitaly_context' do
+      let(:gitaly_context) { { key: :value } }
+
+      it 'passes the gitaly_context to .request_kwargs' do
+        expect(described_class).to receive(:request_kwargs).with(
+          'default', timeout: 10.seconds, remote_storage: nil, gitaly_context: gitaly_context
+        ).and_call_original
+
+        execute
+      end
     end
   end
 end

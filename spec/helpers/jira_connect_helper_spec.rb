@@ -91,10 +91,8 @@ RSpec.describe JiraConnectHelper, feature_category: :integrations do
         end
       end
 
-      it 'passes group as "skip_groups" param' do
-        skip_groups_param = CGI.escape('skip_groups[]')
-
-        expect(subject[:groups_path]).to include("#{skip_groups_param}=#{subscription.namespace.id}")
+      it 'passes group as comma-separated skip_groups param' do
+        expect(subject[:groups_path]).to include("skip_groups=#{subscription.namespace.id}")
       end
 
       it 'assigns gitlab_user_path to nil' do

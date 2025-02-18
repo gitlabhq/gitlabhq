@@ -333,8 +333,6 @@ export default {
       <environment-folder
         v-for="folder in folders"
         :key="folder.name"
-        :scope="scope"
-        :search="search"
         :nested-environment="folder" />
       <environment-item
         v-for="environment in environments"

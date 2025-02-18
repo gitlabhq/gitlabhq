@@ -108,17 +108,11 @@ class MergeRequestPollWidgetEntity < Grape::Entity
     presenter(merge_request).revert_in_fork_path
   end
 
-  expose :squash_enabled_by_default do |merge_request|
-    presenter(merge_request).project.squash_enabled_by_default?
-  end
+  expose :squash_enabled_by_default?, as: :squash_enabled_by_default
 
-  expose :squash_readonly do |merge_request|
-    presenter(merge_request).project.squash_readonly?
-  end
+  expose :squash_readonly?, as: :squash_readonly
 
-  expose :squash_on_merge do |merge_request|
-    presenter(merge_request).squash_on_merge?
-  end
+  expose :squash_on_merge?, as: :squash_on_merge
 
   expose :approvals_widget_type do |merge_request|
     presenter(merge_request).approvals_widget_type

@@ -3,8 +3,21 @@ import $ from 'jquery';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { insertText } from '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
+import { isValidURL } from '~/lib/utils/url_utility';
 
+const BOLD_TAG_PATTERN = '**';
+const INLINE_CODE_TAG_PATTERN = '`';
+const ITALIC_TAG_PATTERN = '_';
 const LINK_TAG_PATTERN = '[{text}](url)';
+const STRIKETHROUGH_TAG_PATTERN = '~~';
+
+const ALLOWED_UNDO_TAGS = [
+  BOLD_TAG_PATTERN,
+  INLINE_CODE_TAG_PATTERN,
+  ITALIC_TAG_PATTERN,
+  STRIKETHROUGH_TAG_PATTERN,
+];
+
 const INDENT_CHAR = ' ';
 const INDENT_LENGTH = 2;
 
@@ -14,6 +27,8 @@ const INDENT_LENGTH = 2;
 // followed by one or more whitespace characters
 const LIST_LINE_HEAD_PATTERN =
   /^(?<indent>\s*)(?<leader>((?<isUl>[*+-])|(?<isOl>\d+\.))( \[([xX~\s])\])?\s)(?<content>.)?/;
+
+const INDENTED_LINE_PATTERN = /^(?<indent>\s+)(?<content>.)?/;
 
 // detect a horizontal rule that might be mistaken for a list item (not full pattern for an <hr>)
 const HR_PATTERN = /^((\s{0,3}-+\s*-+\s*-+\s*[\s-]*)|(\s{0,3}\*+\s*\*+\s*\*+\s*[\s*]*))$/;
@@ -64,6 +79,87 @@ function lineAfterSelection(text, textArea) {
   split = split.split('\n');
 
   return split[0];
+}
+
+/**
+ * Return subsequent lines after textArea.selectionEnd
+ * that satisfy the provided condition.
+ *
+ * @param {Object} textArea - the targeted text area
+ * @param {Function} condition - A function that takes a string as an
+ *        argument and returns a boolean indicating whether the line
+ *        meets the specified condition.
+ * @returns {Object} An object containing:
+ *   - {Array} lines - An array of lines that satisfy the condition.
+ *   - {Number} startPos - The starting position of the first line
+ *        that satisfies the condition.
+ *   - {Number} endPos - The ending position of the last line that
+ *        satisfies the condition.
+ */
+function linesAfterSelection(textArea, condition) {
+  const { selectionEnd, value } = textArea;
+
+  const selectionEndOfLine = value.indexOf('\n', selectionEnd);
+  if (selectionEndOfLine === -1) {
+    return { lines: [], startPos: -1, endPos: -1 };
+  }
+
+  const remainingText = value.substring(selectionEndOfLine);
+
+  const lines = [];
+  const startPos = selectionEndOfLine + 1; // Move to new line
+  let currentPos = startPos;
+
+  for (const line of remainingText.replace(/^\n/, '').split('\n')) {
+    if (!condition(line)) break;
+
+    lines.push(line);
+    currentPos += line.length + 1; // +1 for the newline character
+  }
+
+  return { lines, startPos, endPos: currentPos - 1 }; // -1 to exclude the last newline
+}
+
+/**
+ * Returns the single character before the current selection,
+ * or empty string if there is none.
+ *
+ * @param {String} text - the text of the targeted text area
+ * @param {Object} textArea - the targeted text area
+ * @returns {String}
+ */
+function characterBeforeSelection(text, textArea) {
+  return text.substring(Math.max(0, textArea.selectionStart - 1), textArea.selectionStart);
+}
+
+/**
+ * Returns the single character after the current selection,
+ * or empty string if there is none.
+ *
+ * @param {String} text - the text of the targeted text area
+ * @param {Object} textArea - the targeted text area
+ * @returns {String}
+ */
+function characterAfterSelection(text, textArea) {
+  return text.substring(textArea.selectionEnd, Math.min(textArea.selectionEnd + 1, text.length));
+}
+
+/**
+ * Returns true if either brackets or parentheses surround the current
+ * selection, false otherwise.
+ *
+ * @param {String} text - the text of the targeted text area
+ * @param {Object} textArea - the targeted text area
+ * @returns {Boolean}
+ */
+function isSelectionBracketed(text, textArea) {
+  const before = characterBeforeSelection(text, textArea);
+  const after = characterAfterSelection(text, textArea);
+  const pairedBrackets = {
+    '[': ']',
+    '(': ')',
+  };
+  return pairedBrackets[before] === after;
 }
 
 /**
@@ -125,6 +221,26 @@ function setNewSelectionRange(
   }
 
   textArea.setSelectionRange(newStart, newEnd);
+}
+
+function isURL(text) {
+  // Extracted as part of markdown_paste_url feature. Retaining
+  // old behavior for Add a link if flag is disabled. Replace
+  // isURL call sites with isValidURL when removing the flag
+  if (gon.features?.markdownPasteUrl) {
+    return isValidURL(text);
+  }
+  if (URL) {
+    try {
+      const url = new URL(text);
+      if (url.origin !== 'null' || url.origin === null) {
+        return true;
+      }
+    } catch (e) {
+      // ignore - no valid url
+    }
+  }
+  return false;
 }
 
 function convertMonacoSelectionToAceFormat(sel) {
@@ -280,7 +396,7 @@ export function insertMarkdownText({
   let editorSelectionStart;
   let editorSelectionEnd;
   let lastNewLine;
-  let textToInsert;
+  let textToUpdate;
   selected = selected.toString();
 
   if (editor) {
@@ -293,17 +409,9 @@ export function insertMarkdownText({
   // check for link pattern and selected text is an URL
   // if so fill in the url part instead of the text part of the pattern.
   if (tag === LINK_TAG_PATTERN) {
-    if (URL) {
-      try {
-        const url = new URL(selected);
-
-        if (url.origin !== 'null' || url.origin === null) {
-          tag = '[text]({text})';
-          select = 'text';
-        }
-      } catch (e) {
-        // ignore - no valid url
-      }
+    if (isURL(selected)) {
+      tag = '[text]({text})';
+      select = 'text';
     }
   }
 
@@ -349,14 +457,21 @@ export function insertMarkdownText({
 
   const startChar = !wrap && !currentLineEmpty && !isBeginning ? '\n' : '';
   const textPlaceholder = '{text}';
+  const shouldRemoveTags =
+    selected.length >= tag.length * 2 &&
+    selected.startsWith(tag) &&
+    selected.endsWith(tag) &&
+    ALLOWED_UNDO_TAGS.includes(tag);
+  const getSelectedWithoutTags = () => selected.slice(tag.length, selected.length - tag.length);
+  const getSelectedWithTags = () => `${startChar}${tag}${selected}${wrap ? tag : ''}`;
 
   if (selectedSplit.length > 1 && (!wrap || (blockTag != null && blockTag !== ''))) {
     if (blockTag != null && blockTag !== '') {
-      textToInsert = editor
+      textToUpdate = editor
         ? editorBlockTagText(text, blockTag, selected, editor)
         : blockTagText(text, textArea, blockTag, selected);
     } else {
-      textToInsert = selectedSplit
+      textToUpdate = selectedSplit
         .map((val) => {
           if (tag.indexOf(textPlaceholder) > -1) {
             return tag.replace(textPlaceholder, val);
@@ -369,25 +484,27 @@ export function insertMarkdownText({
         .join('\n');
     }
   } else if (tag.indexOf(textPlaceholder) > -1) {
-    textToInsert = tag.replace(textPlaceholder, () =>
+    textToUpdate = tag.replace(textPlaceholder, () =>
       selected.replace(/\\n/g, '\n').replace(/%br/g, '\\n'),
     );
+  } else if (shouldRemoveTags) {
+    textToUpdate = getSelectedWithoutTags();
   } else {
-    textToInsert = String(startChar) + tag + selected + (wrap ? tag : '');
+    textToUpdate = getSelectedWithTags();
   }
 
   if (removedFirstNewLine) {
-    textToInsert = `\n${textToInsert}`;
+    textToUpdate = `\n${textToUpdate}`;
   }
 
   if (removedLastNewLine) {
-    textToInsert += '\n';
+    textToUpdate += '\n';
   }
 
   if (editor) {
-    editor.replaceSelectedText(textToInsert, select);
+    editor.replaceSelectedText(textToUpdate, select);
   } else {
-    insertText(textArea, textToInsert);
+    insertText(textArea, textToUpdate);
   }
 
   moveCursor({
@@ -530,35 +647,102 @@ function handleSurroundSelectedText(e, textArea) {
     });
   }
 }
+
 /* eslint-enable @gitlab/require-i18n-strings */
 
+function isEnterPressedOnly(e) {
+  return e.key === 'Enter' && !e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey;
+}
+
+function shouldHandleIndentation(e, textArea) {
+  return (
+    isEnterPressedOnly(e) &&
+    textArea.selectionStart === textArea.selectionEnd &&
+    !compositioningNoteText
+  );
+}
+
 /**
- * Returns the content for a new line following a list item.
+ * Returns the content for a new line following a ordered list item.
  *
  * @param {Object} listLineMatch - regex match of the current line
- * @param {Object?} nextLineMatch - regex match of the next line
- * @returns string with the new list item
+ * @param {Number} num - number for the list item
+ * @returns {String} with the new list item
  */
-function continueOlText(listLineMatch, nextLineMatch) {
+function createOlText(listLineMatch, num) {
   const { indent, leader } = listLineMatch.groups;
-  const { indent: nextIndent, isOl: nextIsOl } = nextLineMatch?.groups ?? {};
-
-  const [numStr, postfix = ''] = leader.split('.');
-
-  const incrementBy = nextIsOl && nextIndent === indent ? 0 : 1;
-  const num = parseInt(numStr, 10) + incrementBy;
-
+  const [, postfix = ''] = leader.split('.');
   return `${indent}${num}.${postfix}`;
+}
+
+/**
+ * Returns the ordering number for ordered list item
+ *
+ * @param {Object} regex match of the current line
+ * @returns {Number} ordering nubmer for the regex match of the current line
+ */
+function parseOlNum({ groups: { leader } }) {
+  return parseInt(leader, 10);
+}
+
+/**
+ * Update ordered list line numbers in textArea from startPos to endPos
+ *
+ * @param {Object} textArea - textArea object
+ * @param {Array} lines - array of strings from startPos to endPos in textArea
+ * @param {Number} startPos - start position of the lines array
+ * @param {Number} endPos - end position of the lines array
+ * @param {Number} from - starting number for the first line in lines
+ */
+function updateOlLineNumbers({ textArea, lines, startPos, endPos, from }) {
+  if (lines.length === 0) {
+    return;
+  }
+
+  const incrementedLines = [];
+  const { selectionStart, selectionEnd } = textArea;
+
+  let orderingNumber = from;
+  lines.forEach((line) => {
+    const lineMatch = line.match(LIST_LINE_HEAD_PATTERN);
+    const lineContent = line.slice(lineMatch.groups.leader.length + lineMatch.groups.indent.length);
+
+    const incrementedLine = createOlText(lineMatch, orderingNumber) + lineContent;
+    incrementedLines.push(incrementedLine);
+    orderingNumber = orderingNumber + 1;
+  });
+
+  textArea.focus();
+  textArea.setSelectionRange(startPos, endPos);
+  const textToInsert = incrementedLines.join('\n');
+  insertText(textArea, textToInsert);
+  textArea.setSelectionRange(selectionStart, selectionEnd);
+}
+
+/**
+ * Updates all subsequent ordered list items starting from textArea.endPos
+ *
+ * @param {Object} textArea - the targeted text area
+ * @param {Object} listLineMatch - regex match of the current line
+ * @param {Number} from - starting number for the first subsequent ordered list line
+ */
+function updateOlLineNumbersAfterSelection(textArea, listLineMatch, from) {
+  const { indent } = listLineMatch.groups;
+  const { lines, startPos, endPos } = linesAfterSelection(textArea, (text) => {
+    const textMatch = text.match(LIST_LINE_HEAD_PATTERN);
+    const { indent: nextIndent, isOl: nextIsOl } = textMatch?.groups ?? {};
+    return nextIsOl && nextIndent === indent;
+  });
+
+  updateOlLineNumbers({ textArea, lines, startPos, endPos, from });
 }
 
 function handleContinueList(e, textArea) {
   if (!gon.markdown_automatic_lists) return;
-  if (!(e.key === 'Enter')) return;
-  if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
-  if (textArea.selectionStart !== textArea.selectionEnd) return;
 
-  // prevent unintended line breaks inserted using Japanese IME on MacOS
-  if (compositioningNoteText) return;
+  if (!shouldHandleIndentation(e, textArea)) {
+    return;
+  }
 
   const selectedLines = linesFromSelection(textArea);
   const firstSelectedLine = selectedLines.lines[0];
@@ -578,6 +762,7 @@ function handleContinueList(e, textArea) {
       // erase empty list item - select the text and allow the
       // natural line feed to erase the text
       textArea.selectionStart = textArea.selectionStart - listLineMatch[0].length;
+      updateOlLineNumbersAfterSelection(textArea, listLineMatch, 1);
       return;
     }
 
@@ -585,10 +770,9 @@ function handleContinueList(e, textArea) {
 
     // Behaviors specific to either `ol` or `ul`
     if (isOl) {
-      const nextLine = lineAfterSelection(textArea.value, textArea);
-      const nextLineMatch = nextLine.match(LIST_LINE_HEAD_PATTERN);
-
-      itemToInsert = continueOlText(listLineMatch, nextLineMatch);
+      const nextNum = parseOlNum(listLineMatch) + 1;
+      itemToInsert = createOlText(listLineMatch, nextNum);
+      updateOlLineNumbersAfterSelection(textArea, listLineMatch, nextNum + 1);
     } else {
       if (firstSelectedLine.match(HR_PATTERN)) return;
 
@@ -610,12 +794,54 @@ function handleContinueList(e, textArea) {
   }
 }
 
+function handleContinueIndentedText(e, textArea) {
+  if (!gon.features?.continueIndentedText) return;
+
+  if (!shouldHandleIndentation(e, textArea)) {
+    return;
+  }
+
+  const selectedLines = linesFromSelection(textArea);
+  const firstSelectedLine = selectedLines.lines[0];
+  const lineMatch = firstSelectedLine.match(INDENTED_LINE_PATTERN);
+
+  if (!lineMatch) return;
+
+  const { indent, content } = lineMatch.groups;
+  const isInsideLeadingWhitespace =
+    selectedLines.selectionStart - selectedLines.startPos < indent.length;
+  if (isInsideLeadingWhitespace) {
+    return;
+  }
+
+  if (!content) {
+    textArea.selectionStart -= lineMatch[0].length;
+    return;
+  }
+
+  e.preventDefault();
+
+  updateText({
+    tag: indent,
+    textArea,
+    blockTag: '',
+    wrap: false,
+    select: '',
+    tagContent: '',
+  });
+}
+
 export function keypressNoteText(e) {
   const textArea = this;
 
   if ($(textArea).atwho?.('isSelecting')) return;
 
   handleContinueList(e, textArea);
+
+  // If this was in fact a valid list item, indentation was handled already
+  if (!e.isDefaultPrevented()) {
+    handleContinueIndentedText(e, textArea);
+  }
   handleSurroundSelectedText(e, textArea);
 }
 
@@ -625,6 +851,37 @@ export function compositionStartNoteText() {
 
 export function compositionEndNoteText() {
   compositioningNoteText = false;
+}
+
+function handleMarkdownPasteUrl(e) {
+  const textArea = e.target;
+  if (textArea.selectionStart === textArea.selectionEnd) return;
+  const text = textArea.value;
+  // If the user has selected [text](_url_), or [_text_](url),
+  // we want to do a simple paste not add additional markdown.
+  if (isSelectionBracketed(text, textArea)) return;
+  if (!e.clipboardData) return;
+
+  let pastedText = e.clipboardData.getData('text');
+  if (!pastedText) return;
+  pastedText = pastedText.trim();
+  if (isURL(pastedText)) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    const selected = selectedText(text, textArea);
+
+    const textToInsert = `[${selected}](${pastedText})`;
+    insertText(textArea, textToInsert);
+  }
+  // If it wasn't a URL, just let default paste happen
+}
+
+export function handlePasteModifications(e) {
+  if (!gon.features?.markdownPasteUrl) return;
+  // Transparently unwrap event in case we're bound through jQuery.
+  // Need the original event to access the clipboard.
+  const event = e?.originalEvent ? e.originalEvent : e;
+  handleMarkdownPasteUrl(event);
 }
 
 export function updateTextForToolbarBtn($toolbarBtn) {
@@ -656,6 +913,7 @@ export function addMarkdownListeners(form) {
     .on('keydown', keypressNoteText)
     .on('compositionstart', compositionStartNoteText)
     .on('compositionend', compositionEndNoteText)
+    .on('paste', handlePasteModifications)
     .each(function attachTextareaShortcutHandlers() {
       Shortcuts.initMarkdownEditorShortcuts($(this), updateTextForToolbarBtn);
     });
@@ -664,7 +922,6 @@ export function addMarkdownListeners(form) {
     .off('click', '.js-md')
     .on('click', '.js-md', function () {
       const $toolbarBtn = $(this);
-
       return updateTextForToolbarBtn($toolbarBtn);
     });
 
@@ -696,6 +953,7 @@ export function removeMarkdownListeners(form) {
     .off('keydown', keypressNoteText)
     .off('compositionstart', compositionStartNoteText)
     .off('compositionend', compositionEndNoteText)
+    .off('paste', handlePasteModifications)
     .each(function removeTextareaShortcutHandlers() {
       Shortcuts.removeMarkdownEditorShortcuts($(this));
     });

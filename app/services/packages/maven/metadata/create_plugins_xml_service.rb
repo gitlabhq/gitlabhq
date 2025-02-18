@@ -56,11 +56,10 @@ module Packages
             "#{@package.name}/#{artifact_id}"
           end
 
-          packages = @package.project.packages
-                                     .maven
-                                     .displayable
-                                     .with_name(package_names)
-                                     .has_version
+          packages = ::Packages::Maven::Package.for_projects(@package.project)
+                                               .displayable
+                                               .with_name(package_names)
+                                               .has_version
 
           ::Packages::Maven::Metadatum.for_package_ids(packages.select(:id))
                                       .order_created

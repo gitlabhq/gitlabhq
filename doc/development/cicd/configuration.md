@@ -2,9 +2,8 @@
 stage: Verify
 group: Pipeline Authoring
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Contribute to the CI/CD configuration
 ---
-
-# Contribute to the CI/CD configuration
 
 ## Glossary
 
@@ -82,7 +81,7 @@ end
 ## Feature Flag Usage
 
 When adding new CI/CD configuration keywords, it is important to use feature flags to control the rollout of the change.
-This allows us to test the change in production without affecting all users. For more information, see the [feature flags documentation](../feature_flags/index.md).
+This allows us to test the change in production without affecting all users. For more information, see the [feature flags documentation](../feature_flags/_index.md).
 
 A common place to check for a feature flag is in the `Gitlab::Config::Entry::Node#value` method. For example:
 
@@ -104,7 +103,7 @@ end
 
 ### Feature Flag Actor
 
-In entry classes, we have no access to the current project or user. However, it's discouraged to use feature flags without [an actor](../feature_flags/index.md#feature-actors).
+In entry classes, we have no access to the current project or user. However, it's discouraged to use feature flags without [an actor](../feature_flags/_index.md#feature-actors).
 To solve this problem, we have three options;
 
 1. Use `Feature.enabled?(:feature_flag, Feature.current_request)`.

@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Testing PHP projects
 ---
 
-# Testing PHP projects
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This guide covers basic building instructions for PHP projects.
 
@@ -253,7 +255,7 @@ run. If you're using the Docker executor, you can leverage Docker to
 link to other containers. With GitLab Runner, this can be achieved by defining
 a `service`.
 
-This functionality is covered in [the CI services](../services/index.md)
+This functionality is covered in [the CI services](../services/_index.md)
 documentation.
 
 ## Testing things locally
@@ -273,7 +275,7 @@ gitlab-runner exec shell test:app
 
 We have set up an [Example PHP Project](https://gitlab.com/gitlab-examples/php) for your convenience
 that runs on [GitLab.com](https://gitlab.com) using our publicly available
-[instance runners](../runners/index.md).
+[instance runners](../runners/_index.md).
 
 Want to hack on it? Fork it, commit, and push your changes. Within a few
 moments the changes are picked by a public runner and the job begins.

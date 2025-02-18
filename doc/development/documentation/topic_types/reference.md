@@ -2,9 +2,8 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Reference topic type
 ---
-
-# Reference topic type
 
 Reference information should be in an easily-scannable format,
 like a table or list. It's similar to a dictionary or encyclopedia entry.
@@ -14,7 +13,8 @@ like a table or list. It's similar to a dictionary or encyclopedia entry.
 Reference topics should be in this format:
 
 ```markdown
-# Title (a noun, like "Pipeline settings" or "Administrator options")
+title: Title (a noun, like "Pipeline settings" or "Administrator options")
+---
 
 Introductory sentence.
 

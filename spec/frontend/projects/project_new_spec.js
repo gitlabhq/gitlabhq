@@ -33,7 +33,7 @@ describe('New Project', () => {
                   <input id="project_import_url_password" />
                 </div>
               </div>
-              <input id="project_name" />
+              <input id="project_name" aria-invalid="false" aria-describedby="js-project-name-description" />
               <small id="js-project-name-description" />
               <div class="gl-field-error gl-hidden" id="js-project-name-error" />
               <input id="project_path" />
@@ -104,9 +104,12 @@ describe('New Project', () => {
 
     it('no error message by default', () => {
       expect($projectNameError.classList.contains('gl-hidden')).toBe(true);
+      expect($projectNameDescription.classList.contains('gl-hidden')).toBe(false);
+      expect($projectName.getAttribute('aria-invalid')).toBe('false');
+      expect($projectName.getAttribute('aria-describedby')).toBe($projectNameDescription.id);
     });
 
-    it('show error message if name is validate', () => {
+    it('shows error message if name is invalid', () => {
       $projectName.value = '.validate!Name';
       triggerEvent($projectName, 'change');
 
@@ -115,6 +118,8 @@ describe('New Project', () => {
       );
       expect($projectNameError.classList.contains('gl-hidden')).toBe(false);
       expect($projectNameDescription.classList.contains('gl-hidden')).toBe(true);
+      expect($projectName.getAttribute('aria-invalid')).toBe('true');
+      expect($projectName.getAttribute('aria-describedby')).toBe($projectNameError.id);
     });
   });
 

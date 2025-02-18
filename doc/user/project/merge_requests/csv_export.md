@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Export merge requests to CSV
 ---
 
-# Export merge requests to CSV
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Export all the data collected from a project's merge requests into a comma-separated values (CSV) file.
 
@@ -18,7 +20,7 @@ To export merge requests to a CSV file:
 1. Select **Code > Merge requests**.
 1. Add any searches or filters. This can help you keep the size of the CSV file under the 15 MB limit. The limit ensures
    the file can be emailed to a variety of email providers.
-1. Select **Actions** (**{ellipsis_v}**) **> Export as CSV**.
+1. Select **Actions** ({{< icon name="ellipsis_v" >}}) **> Export as CSV**.
 1. Confirm the correct number of merge requests are to be exported.
 1. Select **Export merge requests**.
 

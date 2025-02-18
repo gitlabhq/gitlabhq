@@ -16,7 +16,7 @@ export const SORT_ASC = 'ASC';
 export const SORT_DESC = 'DESC';
 export const DEFAULT_SORT_VALUE = `${SORT_OPTION_POPULARITY}_${SORT_DESC}`;
 
-export const COMPONENTS_DOCS_URL = helpPagePath('ci/components/index');
+export const COMPONENTS_DOCS_URL = helpPagePath('ci/components/_index');
 
 export const VERIFICATION_LEVEL_GITLAB_MAINTAINED_BADGE_TEXT = s__('CiCatalog|GitLab-maintained');
 export const VERIFICATION_LEVEL_GITLAB_MAINTAINED_ICON = 'tanuki-verified';

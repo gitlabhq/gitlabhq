@@ -16,6 +16,7 @@ module MergeRequests
         trigger_merge_request_merge_status_updated(merge_request)
         trigger_merge_request_reviewers_updated(merge_request)
         trigger_merge_request_approval_state_updated(merge_request)
+        trigger_user_merge_request_updated(merge_request)
         create_system_note(merge_request, user, has_unapproved)
 
         user.invalidate_merge_request_cache_counts if user.merge_request_dashboard_enabled?

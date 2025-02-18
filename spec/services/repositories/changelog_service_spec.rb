@@ -226,10 +226,10 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
         service = described_class
           .new(project, user, version: '1.0.0', to: 'bar')
 
-        finder_spy = instance_spy(Repositories::ChangelogTagFinder)
+        finder_spy = instance_spy(::Repositories::ChangelogTagFinder)
         tag = double(:tag, target_commit: double(:commit, id: '123'))
 
-        allow(Repositories::ChangelogTagFinder)
+        allow(::Repositories::ChangelogTagFinder)
           .to receive(:new)
           .with(project, regex: an_instance_of(String))
           .and_return(finder_spy)
@@ -246,9 +246,9 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
         service = described_class
           .new(project, user, version: '1.0.0', to: 'bar')
 
-        finder_spy = instance_spy(Repositories::ChangelogTagFinder)
+        finder_spy = instance_spy(::Repositories::ChangelogTagFinder)
 
-        allow(Repositories::ChangelogTagFinder)
+        allow(::Repositories::ChangelogTagFinder)
           .to receive(:new)
           .with(project, regex: an_instance_of(String))
           .and_return(finder_spy)

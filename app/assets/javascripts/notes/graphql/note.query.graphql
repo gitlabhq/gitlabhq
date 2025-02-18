@@ -1,26 +1,52 @@
 query snakeCaseNote($id: NoteID!) {
   note(id: $id) {
     id
-    author {
+    discussion {
       id
-      avatar_url: avatarUrl
-      name
-      username
-      web_url: webUrl
-      web_path: webPath
+      notes {
+        nodes {
+          id
+          author {
+            id
+            avatar_url: avatarUrl
+            name
+            username
+            web_url: webUrl
+            web_path: webPath
+          }
+          award_emoji: awardEmoji {
+            nodes {
+              emoji
+              name
+              user {
+                id
+                username
+                name
+              }
+            }
+          }
+          note_html: bodyHtml
+          created_at: createdAt
+          last_edited_at: lastEditedAt
+          last_edited_by: lastEditedBy {
+            id
+            avatar_url: avatarUrl
+            name
+            username
+            web_url: webUrl
+            web_path: webPath
+          }
+          internal
+          url
+          userPermissions {
+            awardEmoji
+            adminNote
+            readNote
+            createNote
+            resolveNote
+          }
+        }
+      }
     }
-    body_html: bodyHtml
-    created_at: createdAt
-    last_edited_at: lastEditedAt
-    last_edited_by: lastEditedBy {
-      id
-      avatar_url: avatarUrl
-      name
-      username
-      web_url: webUrl
-      web_path: webPath
-    }
-    internal
-    url
   }
 }

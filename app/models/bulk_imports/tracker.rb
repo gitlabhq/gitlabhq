@@ -91,7 +91,7 @@ class BulkImports::Tracker < ApplicationRecord
     end
 
     event :cleanup_stale do
-      transition [:created, :started] => :timeout
+      transition [:enqueued, :created, :started] => :timeout
     end
 
     after_transition any => [:finished, :failed] do |tracker|

@@ -2,9 +2,8 @@
 stage: Systems
 group: Cloud Connector
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: 'Cloud Connector: Architecture'
 ---
-
-# Cloud Connector: Architecture
 
 [GitLab Cloud Connector](https://about.gitlab.com/direction/cloud-connector/) is a way to access services common to
 multiple GitLab deployments, instances, and cells. As of now, Cloud Connector is not a
@@ -21,8 +20,8 @@ terms:
 
 - **GitLab Rails:** The main GitLab application.
 - **GitLab.com:** The multi-tenant GitLab SaaS deployment operated by GitLab Inc.
-- **Dedicated:** A single-tenant GitLab SaaS deployment operated by GitLab Inc.
-- **Self-managed:** Any GitLab instance operated by a customer, potentially deployed to a private cloud.
+- **GitLab Dedicated:** A single-tenant GitLab SaaS deployment operated by GitLab Inc.
+- **GitLab Self-Managed:** Any GitLab instance operated by a customer, potentially deployed to a private cloud.
 - **GitLab instance:** Any of the above.
 - **Backend service:** A GitLab-operated web service invoked by a GitLab instance to deliver functionality
   that's part of the Cloud Connector set of features. The AI gateway is one example.
@@ -51,7 +50,7 @@ terms:
 
 Most GitLab features can be delivered directly from a GitLab instance, regardless of where it is deployed.
 Some features, however, require 3rd party vendor integration or are difficult to operate outside of the
-GitLab.com. This presents self-managed and Dedicated customers with a problem since they are not easily
+GitLab.com. This presents GitLab Self-Managed and GitLab Dedicated customers with a problem since they are not easily
 able to access those features.
 
 Cloud Connector solves this problem by:
@@ -158,7 +157,7 @@ The JWT issued for instance access carries the following claims (not exhaustive,
 - `nbf`: The time this token can not be used before (UNIX timestamp), this is set to 5 seconds before the time the token was issued.
 - `iat`: The time this token was issued at (UNIX timestamp), this is set to the time the token was issued.
 - `jti`: The JWT ID, set to a randomly created UUID (e.g.: `0099dd6c-b66e-4787-8ae2-c451d86025ae`).
-- `gitlab_realm`: A string to differentiate between requests from self-managed and GitLab.com.
+- `gitlab_realm`: A string to differentiate between requests from GitLab Self-Managed and GitLab.com.
   This is `self-managed` when issued by the Customers Portal and `saas` when issued by GitLab.com.
 - `scopes`: A list of access scopes that define which features this token is valid for. We obtain these
   based on decisions such as how paid features are bundled into GitLab tiers and add-ons.
@@ -172,7 +171,7 @@ The JWT issues for user access carries the following claims (not exhaustive, sub
 - `nbf`: The time this token can not be used before (UNIX timestamp), this is set to the time the token was issued.
 - `iat`: The time this token was issued at (UNIX timestamp), this is set to the time the token was issued.
 - `jti`: The JWT ID, set to a randomly created UUID (e.g.: `0099dd6c-b66e-4787-8ae2-c451d86025ae`).
-- `gitlab_realm`: A string to differentiate between requests from self-managed and GitLab.com. Either `self-managed` or `saas`.
+- `gitlab_realm`: A string to differentiate between requests from GitLab Self-Managed and GitLab.com. Either `self-managed` or `saas`.
 - `scopes`: A list of access scopes that define which features this token is valid for. We obtain these
   based on decisions such as how paid features are bundled into GitLab tiers and add-ons as well as what features
   are allowed to be accessed with a user token.
@@ -185,7 +184,7 @@ services are currently required to:
 - Perform signature verification of JWTs and access scope checks for each request.
 
 The following flow charts should help to understand what happens when a user consumes a Cloud Connector feature,
-such as talking to an AI chat bot, for both GitLab.com and Dedicated/self-managed deployments.
+such as talking to an AI chat bot, for both GitLab.com and GitLab Dedicated/GitLab Self-Managed deployments.
 
 ### GitLab.com
 
@@ -216,8 +215,8 @@ sequenceDiagram
 
 ### GitLab Dedicated/Self-Managed
 
-For Dedicated and self-managed instances the key problem is one of trust delegation:
-we cannot trust any individual self-managed instance and let them issue tokens, but
+For Dedicated and GitLab Self-Managed instances the key problem is one of trust delegation:
+we cannot trust any individual GitLab Self-Managed instance and let them issue tokens, but
 we can delegate trust by letting an instance regularly authorize itself with CustomersDot,
 which is controlled by GitLab Inc. While we do control GitLab Dedicated instances, for simplicity
 we currently consider them "self-managed" from a Cloud Connector standpoint.
@@ -258,13 +257,13 @@ sequenceDiagram
 Cloud Connector access data is structured JSON data that is stored in the instance's local database.
 On top of the IJWT, it contains additional information about the services made available
 such as whether the service is considered fully launched or in beta stage. This information is particularly
-useful for self-managed instances whose upgrade cadence we do not control, because it allows us to
+useful for GitLab Self-Managed instances whose upgrade cadence we do not control, because it allows us to
 sync in data that are subject to change and control access to some GitLab features remotely.
 
 ### AI gateway
 
 AI gateway is able to issue UJWTs which are meant for users to directly communicate with the AI gateway,
-i.e. not having to make a call to a GitLab instance first. This is in addition to using a IJWT.
+that is not having to make a call to a GitLab instance first. This is in addition to using a IJWT.
 Only GitLab instances can request a UJWT, which is done by making a request with the IJWT.
 AI gateway will then return a short-lived UJWT that the instance can pass over to the user.
 The client can use this UJWT to directly communicate with the AI gateway.

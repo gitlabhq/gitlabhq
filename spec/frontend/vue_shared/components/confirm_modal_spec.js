@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlAlert } from '@gitlab/ui';
 import { merge } from 'lodash';
 import { TEST_HOST } from 'helpers/test_constants';
 import eventHub, { EVENT_OPEN_CONFIRM_MODAL } from '~/vue_shared/components/confirm_modal_eventhub';
@@ -133,6 +134,25 @@ describe('vue_shared/components/confirm_modal', () => {
       it('renders message', () => {
         expect(findForm().element.innerHTML).toContain(expectation);
       });
+    });
+  });
+
+  describe('when the modal has errorAlertMessage property', () => {
+    beforeEach(() => {
+      createComponent();
+      const modalData = merge(
+        { ...MOCK_MODAL_DATA },
+        { modalAttributes: { errorAlertMessage: 'the alert message' } },
+      );
+
+      triggerOpenWithEventHub(modalData);
+    });
+
+    it('displays an alert component with the errorAlertMessage as the content', () => {
+      const alert = wrapper.findComponent(GlAlert);
+
+      expect(alert.props('variant')).toBe('danger');
+      expect(alert.text()).toBe('the alert message');
     });
   });
 

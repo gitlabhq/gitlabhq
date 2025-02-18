@@ -56,7 +56,8 @@ module API
     end
 
     params do
-      requires :id, types: [Integer, String], desc: 'The group ID or full group path.', regexp: ::API::Concerns::Packages::Nuget::PrivateEndpoints::POSITIVE_INTEGER_REGEX
+      requires :id, types: [Integer, String], desc: 'The group ID or full group path.',
+        regexp: ::API::Concerns::Packages::Nuget::PrivateEndpoints::POSITIVE_INTEGER_REGEX
     end
 
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -66,8 +67,11 @@ module API
         end
 
         authenticate_with do |accept|
-          accept.token_types(:personal_access_token_with_username, :deploy_token_with_username, :job_token_with_username)
-                .sent_through(:http_basic_auth)
+          accept.token_types(
+            :personal_access_token_with_username,
+            :deploy_token_with_username,
+            :job_token_with_username
+          ).sent_through(:http_basic_auth)
         end
 
         namespace '/nuget' do

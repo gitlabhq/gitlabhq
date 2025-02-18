@@ -42,7 +42,6 @@
   .file-blame-legend {
     text-align: right;
     padding: 8px $gl-padding;
-    @apply gl-bg-subtle gl-border-b gl-border-b-section;
 
     @include media-breakpoint-down(xs) {
       text-align: left;
@@ -63,16 +62,44 @@
       padding: 0 2px;
     }
 
-    @for $i from 0 through 5 {
-      .legend-box-#{$i} {
-        background-color: mix($blame-cyan, $blame-blue, $i / 5 * 100%);
-      }
+    .legend-box-0 {
+      background-color: $gl-color-data-blue-900;
     }
 
-    @for $i from 1 through 4 {
-      .legend-box-#{$i + 5} {
-        background-color: mix($blame-gray, $blame-cyan, $i / 4 * 100%);
-      }
+    .legend-box-1 {
+      background-color: $gl-color-data-blue-800;
+    }
+
+    .legend-box-2 {
+      background-color: $gl-color-data-blue-700;
+    }
+
+    .legend-box-3 {
+      background-color: $gl-color-data-blue-600;
+    }
+
+    .legend-box-4 {
+      background-color: $gl-color-data-blue-500;
+    }
+
+    .legend-box-5 {
+      background-color: $gl-color-data-blue-400;
+    }
+
+    .legend-box-6 {
+      background-color: $gl-color-data-blue-300;
+    }
+
+    .legend-box-7 {
+      background-color: $gl-color-data-blue-200;
+    }
+
+    .legend-box-8 {
+      background-color: $gl-color-data-blue-100;
+    }
+
+    .legend-box-9 {
+      background-color: $gl-color-data-blue-50;
     }
   }
 
@@ -173,13 +200,13 @@ span.idiff {
 
   .new-file {
     a {
-      color: $green-600;
+      @apply gl-text-success;
     }
   }
 
   .deleted-file {
     a {
-      color: $red-500;
+      @apply gl-text-danger;
     }
   }
 
@@ -187,7 +214,7 @@ span.idiff {
     text-decoration: none;
 
     .new-file {
-      color: $green-600;
+      @apply gl-text-success;
     }
 
     .deleted-file {
@@ -203,7 +230,7 @@ span.idiff {
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    @apply gl-bg-subtle gl-border-b gl-border-b-section;
+    @apply gl-bg-subtle gl-border-b;
     padding: $gl-padding-8 $gl-padding;
     margin: 0;
     min-height: px-to-rem($file-header-height);
@@ -272,7 +299,7 @@ span.idiff {
 
     .file-info {
       font-size: $label-font-size;
-      color: $diff-image-info-color;
+      @apply gl-text-subtle;
     }
   }
 
@@ -449,7 +476,7 @@ span.idiff {
 
   .tr {
     display: flex;
-    @apply gl-border-b gl-border-b-subtle dark:gl-border-b-section;
+    @apply gl-border-b;
 
     &.last-row {
       border-bottom: 0;
@@ -480,16 +507,44 @@ span.idiff {
     height: 100%;
   }
 
-  @for $i from 0 through 5 {
-    .blame-commit-age-#{$i} {
-      border-left-color: mix($blame-cyan, $blame-blue, $i / 5 * 100%);
-    }
+  .blame-commit-age-0 {
+    border-left-color: $gl-color-data-blue-900;
   }
 
-  @for $i from 1 through 4 {
-    .blame-commit-age-#{$i + 5} {
-      border-left-color: mix($blame-gray, $blame-cyan, $i / 4 * 100%);
-    }
+  .blame-commit-age-1 {
+    border-left-color: $gl-color-data-blue-800;
+  }
+
+  .blame-commit-age-2 {
+    border-left-color: $gl-color-data-blue-700;
+  }
+
+  .blame-commit-age-3 {
+    border-left-color: $gl-color-data-blue-600;
+  }
+
+  .blame-commit-age-4 {
+    border-left-color: $gl-color-data-blue-500;
+  }
+
+  .blame-commit-age-5 {
+    border-left-color: $gl-color-data-blue-400;
+  }
+
+  .blame-commit-age-6 {
+    border-left-color: $gl-color-data-blue-300;
+  }
+
+  .blame-commit-age-7 {
+    border-left-color: $gl-color-data-blue-200;
+  }
+
+  .blame-commit-age-8 {
+    border-left-color: $gl-color-data-blue-100;
+  }
+
+  .blame-commit-age-9 {
+    border-left-color: $gl-color-data-blue-50;
   }
 
   .doc-versions {
@@ -503,7 +558,7 @@ span.idiff {
 
 .blame.file-content .td.line-numbers {
   float: none;
-  @apply gl-border-l gl-border-l-section;
+  @apply gl-border-l;
   border-radius: 0;
 
   .file-line-num {

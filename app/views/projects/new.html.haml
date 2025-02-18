@@ -5,45 +5,66 @@
 - add_page_specific_style 'page_bundles/new_namespace'
 - add_page_specific_style 'page_bundles/projects'
 
-.project-edit-container
-  .project-edit-errors
-    = render 'projects/errors'
-
-  .js-new-project-creation{ data: {
-    is_ci_cd_available: remote_mirror_setting_enabled?.to_s,
+- if Feature.enabled?(:new_project_creation_form, @user)
+  #js-vue-new-project-app{ data: {
+    namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id_from(params))&.full_path || @current_user_group&.full_path,
+    namespace_id: namespace_id_from(params) || @current_user_group&.id,
+    user_namespace_id: current_user.namespace_id,
     has_errors: @project.errors.any?.to_s,
     new_project_guidelines: brand_new_project_guidelines,
     push_to_create_project_command: push_to_create_project_command,
-    project_help_path: help_page_path("user/project/index.md"),
     root_path: root_path,
+    projects_url: dashboard_projects_url,
     parent_group_url: @project.parent && group_url(@project.parent),
     parent_group_name: @project.parent&.name,
-    projects_url: dashboard_projects_url,
-    can_import_projects: params[:namespace_id].presence ? current_user.can?(:import_projects, @namespace).to_s : 'true' } }
+    project_help_path: help_page_path("user/project/_index.md"),
+    is_ci_cd_available: remote_mirror_setting_enabled?.to_s,
+    can_import_projects: params[:namespace_id].presence ? current_user.can?(:import_projects, @namespace).to_s : 'true',
+    import_sources_enabled: import_sources_enabled?.to_s,
+    track_label: local_assigns.fetch(:track_label, 'blank_project'),
+    can_select_namespace: current_user.can_select_namespace?.to_s,
+    can_create_project: current_user.can_create_project?.to_s,
+    user_project_limit: current_user.projects_limit } }
+- else
+  .project-edit-container
+    .project-edit-errors
+      = render 'projects/errors'
 
-  .row{ 'v-cloak': true }
-    #blank-project-pane.tab-pane.active
-      = gitlab_ui_form_for @project, html: { class: 'new_project gl-mt-3' } do |f|
-        = render 'new_project_fields', f: f, project_name_id: "blank-project-name", include_description: false
+    .js-new-project-creation{ data: {
+      is_ci_cd_available: remote_mirror_setting_enabled?.to_s,
+      has_errors: @project.errors.any?.to_s,
+      new_project_guidelines: brand_new_project_guidelines,
+      push_to_create_project_command: push_to_create_project_command,
+      project_help_path: help_page_path("user/project/_index.md"),
+      root_path: root_path,
+      parent_group_url: @project.parent && group_url(@project.parent),
+      parent_group_name: @project.parent&.name,
+      projects_url: dashboard_projects_url,
+      can_import_projects: params[:namespace_id].presence ? current_user.can?(:import_projects, @namespace).to_s : 'true' } }
 
-    #create-from-template-pane.tab-pane
-      = render Pajamas::CardComponent.new(card_options: { class: 'gl-my-5' }) do |c|
-        - c.with_body do
-          %div
-            - link = link_to('', 'https://gitlab.com/gitlab-org/project-templates/contributing', target: '_blank', rel: 'noopener noreferrer')
-            = safe_format(_('Learn how to %{link_start}contribute to the built-in templates%{link_end}'), tag_pair(link, :link_start, :link_end))
-      = gitlab_ui_form_for @project, html: { class: 'new_project' } do |f|
-        .project-template
-          .form-group
+    .row{ 'v-cloak': true }
+      #blank-project-pane.tab-pane.active
+        = gitlab_ui_form_for @project, html: { class: 'new_project gl-mt-3' } do |f|
+          = render 'new_project_fields', f: f, project_name_id: "blank-project-name", include_description: false
+
+      #create-from-template-pane.tab-pane
+        = render Pajamas::CardComponent.new(card_options: { class: 'gl-my-5' }) do |c|
+          - c.with_body do
             %div
-              = render 'project_templates', f: f, project: @project
+              - link = link_to('', 'https://gitlab.com/gitlab-org/project-templates/contributing', target: '_blank', rel: 'noopener noreferrer')
+              = safe_format(_('Learn how to %{link_start}contribute to the built-in templates%{link_end}'), tag_pair(link, :link_start, :link_end))
+        = gitlab_ui_form_for @project, html: { class: 'new_project' } do |f|
+          .project-template
+            .form-group
+              %div
+                = render 'project_templates', f: f, project: @project
 
-    #import-project-pane.tab-pane.js-toggle-container
-      - if import_sources_enabled?
-        = render 'import_project_pane', destination_namespace_id: @namespace&.id
-      - else
-        .nothing-here-block
-          %h4= s_('ProjectsNew|No import options available')
-          %p= s_('ProjectsNew|Contact an administrator to enable options for importing your project.')
+      #import-project-pane.tab-pane.js-toggle-container
+        - if import_sources_enabled?
+          = render 'import_project_pane', destination_namespace_id: @namespace&.id
+        - else
+          .nothing-here-block
+            %h4= s_('ProjectsNew|No import options available')
+            %p= s_('ProjectsNew|Contact an administrator to enable options for importing your project.')
 
-    = render_if_exists 'projects/new_ci_cd_only_project_pane'
+      = render_if_exists 'projects/new_ci_cd_only_project_pane'

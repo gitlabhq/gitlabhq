@@ -5,12 +5,12 @@ module Gitlab
     class ChangesAccess
       include Gitlab::Utils::StrongMemoize
 
-      ATTRIBUTES = %i[user_access project protocol changes logger push_options].freeze
+      ATTRIBUTES = %i[user_access project protocol changes logger push_options gitaly_context].freeze
 
       attr_reader(*ATTRIBUTES)
 
       def initialize(
-        changes, user_access:, project:, protocol:, logger:, push_options:
+        changes, user_access:, project:, protocol:, logger:, push_options:, gitaly_context:
       )
         @changes = changes
         @user_access = user_access
@@ -18,6 +18,7 @@ module Gitlab
         @protocol = protocol
         @logger = logger
         @push_options = push_options
+        @gitaly_context = gitaly_context
       end
 
       def validate!
@@ -102,7 +103,8 @@ module Gitlab
               project: project,
               protocol: protocol,
               logger: logger,
-              commits: commits
+              commits: commits,
+              gitaly_context: gitaly_context
             )
           end
       end

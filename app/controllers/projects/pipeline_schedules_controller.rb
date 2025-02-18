@@ -45,7 +45,9 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def play
-    job_id = RunPipelineScheduleWorker.perform_async(schedule.id, current_user.id) # rubocop:disable CodeReuse/Worker
+    job_id = Ci::PipelineSchedules::PlayService
+              .new(schedule.project, current_user)
+              .execute(schedule)
 
     if job_id
       pipelines_link_start = "<a href=\"#{project_pipelines_path(@project)}\">"

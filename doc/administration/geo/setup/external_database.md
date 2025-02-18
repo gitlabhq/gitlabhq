@@ -2,29 +2,34 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Geo with external PostgreSQL instances
 ---
 
-# Geo with external PostgreSQL instances
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This document is relevant if you are using a PostgreSQL instance that is not
 managed by the Linux package. This includes
-[cloud-managed instances](../../reference_architectures/index.md#best-practices-for-the-database-services),
+[cloud-managed instances](../../reference_architectures/_index.md#best-practices-for-the-database-services),
 or manually installed and configured PostgreSQL instances.
 
 Ensure that you are using one of the PostgreSQL versions that
 the [Linux package ships with](../../package_information/postgresql_versions.md)
-to [avoid version mismatches](../index.md#requirements-for-running-geo)
+to [avoid version mismatches](../_index.md#requirements-for-running-geo)
 in case a Geo site has to be rebuilt.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you’re using GitLab Geo, we strongly recommend running instances installed by using the Linux package or using
-[validated cloud-managed instances](../../reference_architectures/index.md#recommended-cloud-providers-and-services),
+[validated cloud-managed instances](../../reference_architectures/_index.md#recommended-cloud-providers-and-services),
 as we actively develop and test based on those.
 We cannot guarantee compatibility with other external databases.
+
+{{< /alert >}}
 
 ## **Primary** site
 
@@ -86,10 +91,13 @@ cloud providers:
 
 When your read-only replica is set up, you can skip to [configure your secondary site](#configure-secondary-site-to-use-the-external-read-replica)
 
-WARNING:
+{{< alert type="warning" >}}
+
 The use of logical replication methods such as [AWS Database Migration Service](https://aws.amazon.com/dms/)
 or [Google Cloud Database Migration Service](https://cloud.google.com/database-migration) to, for instance,
 replicate from an on-premise primary database to an RDS secondary are not supported.
+
+{{< /alert >}}
 
 #### Manually configure the primary database for replication
 
@@ -159,7 +167,7 @@ has three main functions:
 
 1. Configure the replica database.
 1. Configure the tracking database.
-1. Enable the [Geo Log Cursor](../index.md#geo-log-cursor) (not covered in this section).
+1. Enable the [Geo Log Cursor](../_index.md#geo-log-cursor) (not covered in this section).
 
 To configure the connection to the external read-replica database and enable Log Cursor:
 
@@ -213,12 +221,15 @@ to grant additional roles to your tracking database user (by default, this is
 This is for the installation of extensions during installation and upgrades. As an alternative,
 [ensure the extensions are installed manually, and read about the problems that may arise during future GitLab upgrades](../../../install/postgresql_extensions.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 If you want to use Amazon RDS as a tracking database, make sure it has access to
 the secondary database. Unfortunately, just assigning the same security group is not enough as
 outbound rules do not apply to RDS PostgreSQL databases. Therefore, you need to explicitly add an inbound
 rule to the read-replica's security group allowing any TCP traffic from
 the tracking database on port 5432.
+
+{{< /alert >}}
 
 #### Create the tracking database
 

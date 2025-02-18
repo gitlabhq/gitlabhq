@@ -230,18 +230,6 @@ RSpec.describe TodosFinder, feature_category: :notifications do
 
             expect(todos).to match_array([todo2])
           end
-
-          context 'when todos_snoozing feature flag is disabled' do
-            before do
-              stub_feature_flags(todos_snoozing: false)
-            end
-
-            it 'returns all pending todos' do
-              todos = finder.new(user, { is_snoozed: true }).execute
-
-              expect(todos).to match_array([todo1, todo2, todo3])
-            end
-          end
         end
 
         context 'by project' do
@@ -301,27 +289,51 @@ RSpec.describe TodosFinder, feature_category: :notifications do
     describe '#sort' do
       context 'by date' do
         let!(:todo1) { create(:todo, user: user, project: project) }
-        let!(:todo2) { create(:todo, user: user, project: project) }
-        # Todos are created sequentially, so id is a reasonable proxy for created_at
-        # We use this fact to optimize the performance of the finder
-        # In this test we are purposefully setting the created_at to be before the todo1
-        # in order to show that we are actually sorting by id
-        let!(:todo3) { create(:todo, user: user, project: project, created_at: 3.hours.ago) }
+        let!(:todo2) { create(:todo, user: user, project: project, created_at: 3.hours.ago) }
+        let!(:todo3) { create(:todo, user: user, project: project, snoozed_until: 1.hour.ago) }
 
-        it 'sorts with oldest created first' do
-          todos = finder.new(user, { sort: :created_asc }).execute
+        context 'when sorting by ascending date' do
+          subject { finder.new(user, { sort: :created_asc }).execute }
 
-          expect(todos.first).to eq(todo1)
-          expect(todos.second).to eq(todo2)
-          expect(todos.third).to eq(todo3)
+          it { is_expected.to eq([todo2, todo3, todo1]) }
         end
 
-        it 'sorts with newest created first' do
-          todos = finder.new(user, { sort: :created_desc }).execute
+        context 'when sorting by descending date' do
+          subject { finder.new(user, { sort: :created_desc }).execute }
 
-          expect(todos.first).to eq(todo3)
-          expect(todos.second).to eq(todo2)
-          expect(todos.third).to eq(todo1)
+          it { is_expected.to eq([todo1, todo3, todo2]) }
+        end
+
+        context 'when not querying pending to-dos only' do
+          context 'when sorting by ascending date' do
+            subject { finder.new(user, { sort: :created_asc, state: [:done, :pending] }).execute }
+
+            it { is_expected.to eq([todo1, todo2, todo3]) }
+          end
+
+          context 'when sorting by descending date' do
+            subject { finder.new(user, { sort: :created_desc, state: [:done, :pending] }).execute }
+
+            it { is_expected.to eq([todo3, todo2, todo1]) }
+          end
+        end
+
+        context 'when the snoozed_todos_sort_order feature flag is disabled' do
+          before do
+            stub_feature_flags(snoozed_todos_sort_order: false)
+          end
+
+          context 'when sorting by ascending date' do
+            subject { finder.new(user, { sort: :created_asc }).execute }
+
+            it { is_expected.to eq([todo1, todo2, todo3]) }
+          end
+
+          context 'when sorting by descending date' do
+            subject { finder.new(user, { sort: :created_desc }).execute }
+
+            it { is_expected.to eq([todo3, todo2, todo1]) }
+          end
         end
       end
 
@@ -370,7 +382,9 @@ RSpec.describe TodosFinder, feature_category: :notifications do
 
   describe '.todo_types' do
     it 'returns the expected types' do
-      shared_types = %w[Commit Issue WorkItem MergeRequest DesignManagement::Design AlertManagement::Alert Namespace Project Key]
+      shared_types = %w[Commit Issue WorkItem MergeRequest DesignManagement::Design AlertManagement::Alert Namespace
+        Project Key WikiPage::Meta]
+
       expected_result =
         if Gitlab.ee?
           %w[Epic Vulnerability] + shared_types

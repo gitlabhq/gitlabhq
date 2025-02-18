@@ -69,6 +69,7 @@ module API
     end
     route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true,
       authenticate_non_public: true
+    route_setting :authorization, job_token_policies: :read_packages
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before do
         authorize_read_package!(project)

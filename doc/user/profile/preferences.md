@@ -2,13 +2,15 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Profile preferences
 ---
 
-# Profile preferences
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can update your preferences to change the look and feel of GitLab.
 
@@ -26,7 +28,11 @@ To change the color theme:
 
 ### Dark mode
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [experiment](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252).
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [experiment](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252).
+
+{{< /history >}}
 
 Dark mode makes elements on the GitLab UI stand out on a dark background.
 
@@ -36,7 +42,11 @@ Dark mode works only with the **Dark** Syntax highlighting theme. You can report
 
 ## Change the syntax highlighting theme
 
-> - Changing the default syntax highlighting theme for authenticated and unauthenticated users [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25129) in GitLab 15.1.
+{{< history >}}
+
+- Changing the default syntax highlighting theme for authenticated and unauthenticated users [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25129) in GitLab 15.1.
+
+{{< /history >}}
 
 Syntax highlighting is a feature in code editors and IDEs. The highlighter assigns a color to each type of code, such as strings and comments.
 
@@ -49,7 +59,7 @@ To change the syntax highlighting theme:
 
 To view the updated syntax highlighting theme, refresh your project's page.
 
-To customize the syntax highlighting theme, you can also [use the Application settings API](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls). Use `default_syntax_highlighting_theme` to change the syntax highlighting colors on a more granular level.
+To customize the syntax highlighting theme, you can also [use the Application settings API](../../api/settings.md#available-settings). Use `default_syntax_highlighting_theme` to change the syntax highlighting colors on a more granular level.
 
 If these steps do not work, your programming language might not be supported by the syntax highlighters.
 For more information, view [Rouge Ruby Library](https://github.com/rouge-ruby/rouge) for guidance on code files and Snippets. View [Monaco Editor](https://microsoft.github.io/monaco-editor/) and [Monarch](https://microsoft.github.io/monaco-editor/monarch.html) for guidance on the Web IDE.
@@ -70,7 +80,7 @@ To change back to the default colors, clear the **Color for removed lines** and 
 
 ## Behavior
 
-Use the **Behavior** section to customize the behavior and layout of your GitLab self-managed instance. You can change your layout width and choose the default content for your homepage, group and project overview pages. You have options to customize appearance and function, like whitespace rendering, file display, and text automation.
+Use the **Behavior** section to customize the behavior of the system layout and default views. You can change your layout width and choose the default content for your homepage, group and project overview pages. You have options to customize appearance and function, like whitespace rendering, file display, and text automation.
 
 ### Change the layout width on the UI
 
@@ -86,7 +96,11 @@ To change the layout width of your UI:
 
 ### Set the default text editor
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423104) in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423104) in GitLab 17.7.
+
+{{< /history >}}
 
 You can set a default editor for editing content in GitLab.
 If you do not choose a default text editor, your last used choice is preserved.
@@ -100,14 +114,21 @@ If you do not choose a default text editor, your last used choice is preserved.
 
 ### Choose your home organization
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419079) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `ui_for_organizations`. Disabled by default.
+{{< history >}}
 
-FLAG:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419079) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `ui_for_organizations`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag. For more information, see the history.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
-If you are a member of two or more [organizations](../organization/index.md), you can choose a home organization.
+{{< /alert >}}
+
+If you are a member of two or more [organizations](../organization/_index.md), you can choose a home organization.
 This is the organization you are in by default when you first sign in to GitLab.
 
 To choose your home organization:
@@ -120,7 +141,21 @@ To choose your home organization:
 
 ### Choose your homepage
 
-Control what page you view when you select the GitLab logo (**{tanuki}**). You can set your homepage to be Projects (default), Your Groups, Your Activity, and other content.
+{{< history >}}
+
+- [Homepage options changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `your_work_projects_vue`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+When the `your_work_projects_vue` feature flag is enabled, the **Your Contributed Projects** view becomes the default option, and an additional **Member Projects** option is available in the dropdown list. For more information, see the history.
+
+{{< /alert >}}
+
+Control what page you view when you select the GitLab logo ({{< icon name="tanuki" >}}). You can set your homepage to be Your Projects (default), Your Groups, Your Activity, and other content.
+
+To choose your homepage view:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
@@ -135,7 +170,7 @@ You can change the main content on your group overview page. Your group overview
 - Details Dashboard (default), which includes an overview of group activities and projects.
 - Security Dashboard, which might include group security policies and other security topics.
 
-For more information, view [Groups](../../user/group/index.md).
+For more information, view [Groups](../group/_index.md).
 
 To change the default content on your group overview page:
 
@@ -183,7 +218,7 @@ You can view changes to whitespace in diffs.
 
 To view diffs on the Web IDE, follow these steps:
 
-1. On the left sidebar, select **Source Control** (**{branch}**).
+1. On the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
 1. Under the **Changes** tab, select your file.
 
 ### Show whitespace changes in diffs
@@ -244,7 +279,7 @@ To add a new list item when you press the <kbd>Enter</kbd> key:
 
 ### Change the tab width
 
-Change the default size of tabs in diffs, blobs, and snippets. The WebIDE, file editor, and Markdown editor do not support this feature.
+Change the default size of tabs in diffs, blobs, and snippets. The Web IDE, file editor, and Markdown editor do not support this feature.
 
 To adjust the default tab width:
 
@@ -305,7 +340,11 @@ To use exact times on the GitLab UI:
 
 ### Customize time format
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15206) in GitLab 16.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15206) in GitLab 16.6.
+
+{{< /history >}}
 
 You can customize the format used to display times of activities on your group and project overview pages and user
 profiles. You can display times as:
@@ -325,25 +364,35 @@ To customize the time format:
 
 ## Disable exact code search
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
-**Status:** Beta
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.9 [with flags](../../administration/feature_flags.md) named `index_code_with_zoekt` and `search_code_with_zoekt`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) in GitLab 16.6.
-> - Feature flags `index_code_with_zoekt` and `search_code_with_zoekt` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148378) in GitLab 17.1.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
 
-WARNING:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.9 [with flags](../../administration/feature_flags.md) named `index_code_with_zoekt` and `search_code_with_zoekt`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) in GitLab 16.6.
+- Feature flags `index_code_with_zoekt` and `search_code_with_zoekt` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148378) in GitLab 17.1.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 This feature is in [beta](../../policy/development_stages_support.md#beta) and subject to change without notice.
 For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
 
+{{< /alert >}}
+
 Prerequisites:
 
-- For [GitLab self-managed](../../subscriptions/self_managed/index.md), an administrator must
+- For [GitLab Self-Managed](../../subscriptions/self_managed/_index.md), an administrator must
   [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
 
-To disable [exact code search](../../user/search/exact_code_search.md) in user preferences:
+To disable [exact code search](../search/exact_code_search.md) in user preferences:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
@@ -353,7 +402,11 @@ To disable [exact code search](../../user/search/exact_code_search.md) in user p
 
 ## User identities in CI job JSON web tokens
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387537) in GitLab 16.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387537) in GitLab 16.0.
+
+{{< /history >}}
 
 CI/CD jobs generate JSON web tokens, which can include a list of your external identities.
 Instead of making separate API calls to get individual accounts, you can find your user identities in a single authentication token.
@@ -363,7 +416,11 @@ To enable including external identities, see [Token payload](../../ci/secrets/id
 
 ## Control follower engagement
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0.
+
+{{< /history >}}
 
 Turn off the ability to follow or be followed by other GitLab users. By default, your user profile, including your name and profile photo, is public in the **Following** tabs of other users. When you deactivate this setting:
 
@@ -414,20 +471,30 @@ You must be the administrator of the GitLab instance to configure GitLab with So
 
 ### Integrate with the extension marketplace
 
-DETAILS:
-**Offering:** GitLab.com
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
-> - Feature flag `web_ide_oauth` [enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) and feature flag `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
-> - Feature flag `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
-> - Enabled by default for [workspaces](../workspace/index.md) in GitLab 17.6. Workspaces do not require any feature flags for the extension marketplace to be available.
+- Offering: GitLab.com
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+- Feature flag `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) and feature flag `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
+- Feature flag `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
+- Enabled by default for [workspaces](../workspace/_index.md) in GitLab 17.6. Workspaces do not require any feature flags for the extension marketplace to be available.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 
-You can use the [extension marketplace](../project/web_ide/index.md#extension-marketplace) to search and
-manage extensions for the [Web IDE](../project/web_ide/index.md) and [workspaces](../workspace/index.md).
+{{< /alert >}}
+
+You can use the [extension marketplace](../project/web_ide/_index.md#extension-marketplace) to search and
+manage extensions for the [Web IDE](../project/web_ide/_index.md) and [workspaces](../workspace/_index.md).
 For third-party extensions, you must enable the marketplace in user preferences.
 
 To enable the extension marketplace for the Web IDE and workspaces:
@@ -439,8 +506,11 @@ To enable the extension marketplace for the Web IDE and workspaces:
 1. In the third-party extension acknowledgement, select **I understand**.
 1. Select **Save changes**.
 
-NOTE:
+{{< alert type="note" >}}
+
 This preferences checkbox will always be available, even if the feature flags are disabled.
+
+{{< /alert >}}
 
 <!-- ## Troubleshooting
 

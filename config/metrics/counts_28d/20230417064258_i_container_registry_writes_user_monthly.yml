@@ -23,9 +23,6 @@ events:
   unique: user.id
 performance_indicator_type:
 - gmau
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

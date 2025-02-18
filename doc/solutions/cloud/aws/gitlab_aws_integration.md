@@ -2,10 +2,9 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
-description: "Integrations Solutions Index for GitLab and AWS."
+description: Integrations Solutions Index for GitLab and AWS.
+title: Integrate with AWS
 ---
-
-# Integrate with AWS
 
 Learn how to integrate GitLab and AWS.
 
@@ -143,12 +142,12 @@ Top-level groups on GitLab.com are also known as "Namespaces" and naming one aft
 
 ### User authentication and authorization between GitLab and AWS
 
-- [SAML SSO for GitLab.com groups](../../../user/group/saml_sso/index.md) `[GitLab Configuration]` - GitLab.com only
-- [Integrate LDAP with GitLab](../../../administration/auth/ldap/index.md) `[GitLab Configuration]` - Self-managed only
+- [SAML SSO for GitLab.com groups](../../../user/group/saml_sso/_index.md) `[GitLab Configuration]` - GitLab.com only
+- [Integrate LDAP with GitLab](../../../administration/auth/ldap/_index.md) `[GitLab Configuration]` - Self-managed only
 
 ### Runner workload authentication and authorization integration
 
-- [Runner Job Authentication using Open ID & JWT Authentication](../../../ci/cloud_services/aws/index.md). `[GitLab Built]`
+- [Runner Job Authentication using Open ID & JWT Authentication](../../../ci/cloud_services/aws/_index.md). `[GitLab Built]`
   - [Configure OpenID Connect between GitLab and AWS](https://gitlab.com/guided-explorations/aws/configure-openid-connect-in-aws) `[GitLab Solution]` `[CI Solution]`
   - [OIDC and Multi-Account Deployment with GitLab and ECS](https://gitlab.com/guided-explorations/aws/oidc-and-multi-account-deployment-with-ecs) `[GitLab Solution]` `[CI Solution]`
 
@@ -170,7 +169,7 @@ While GitLab can be deployed on a single box for up to 500 users, when it is hor
   - GitLab Instance Scaled on AWS EC2 and PaaS. `[GitLab Built]`
     - [Using GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) - `[GitLab Solution]`
 
-- [Amazon Managed Grafana](https://docs.aws.amazon.com/grafana/latest/userguide/gitlab-AMG-datasource.html) for GitLab self-managed Prometheus metrics. `[AWS Built]`
+- [Amazon Managed Grafana](https://docs.aws.amazon.com/grafana/latest/userguide/gitlab-AMG-datasource.html) for GitLab Self-Managed Prometheus metrics. `[AWS Built]`
 
 ### GitLab Runner on AWS Compute
 

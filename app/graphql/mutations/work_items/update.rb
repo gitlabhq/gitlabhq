@@ -49,7 +49,7 @@ module Mutations
         required: false,
         description: 'Input for start and due date widget.'
       argument :state_event,
-        Types::WorkItems::StateEventEnum,
+        ::Types::WorkItems::StateEventEnum,
         description: 'Close or reopen a work item.',
         required: false
       argument :time_tracking_widget,
@@ -61,7 +61,7 @@ module Mutations
         required: false,
         description: copy_field_description(Types::WorkItemType, :title)
 
-      field :work_item, Types::WorkItemType,
+      field :work_item, ::Types::WorkItemType,
         null: true,
         description: 'Updated work item.'
 

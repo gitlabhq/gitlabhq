@@ -186,4 +186,35 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
       described_class.issuable_todo_updated(issuable)
     end
   end
+
+  describe '.user_merge_request_updated' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:merge_request) { create(:merge_request) }
+
+    it 'triggers the user_merge_request_updated subscription' do
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        :user_merge_request_updated,
+        { user_id: user.to_gid },
+        merge_request
+      ).and_call_original
+
+      described_class.user_merge_request_updated(user, merge_request)
+    end
+
+    describe 'when merge_request_dashboard_realtime is disabled' do
+      before do
+        stub_feature_flags(merge_request_dashboard_realtime: false)
+      end
+
+      it 'does not trigger the user_merge_request_updated subscription' do
+        expect(GitlabSchema.subscriptions).not_to receive(:trigger).with(
+          :user_merge_request_updated,
+          { user_id: user.id },
+          merge_request
+        ).and_call_original
+
+        described_class.user_merge_request_updated(user, merge_request)
+      end
+    end
+  end
 end

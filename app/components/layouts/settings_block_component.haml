@@ -6,7 +6,7 @@
       = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-lg-right', icon_classes: '!-gl-mx-2', button_text_classes: 'gl-sr-only', button_options: @button_options.merge(class: 'settings-toggle js-settings-toggle', 'aria-label': aria_label)) do
         = button_text
     .gl-grow
-      %h2{ class: title_classes }
+      %h2{ class: title_classes, data: { 'event-tracking': 'settings-block-title' } }
         = heading || @heading
       - if description || @description
         %p.gl-text-subtle.gl-m-0

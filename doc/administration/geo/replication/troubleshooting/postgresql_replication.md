@@ -2,13 +2,15 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting Geo PostgreSQL replication
 ---
 
-# Troubleshooting Geo PostgreSQL replication
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The following sections outline troubleshooting steps for fixing replication error messages (indicated by `Database replication working? ... no` in the
 [`geo:check` output](common.md#health-check-rake-task).
@@ -26,8 +28,11 @@ If the secondary site is not able to reconnect, use the following steps to remov
    sudo gitlab-psql -d gitlabhq_production
    ```
 
-   NOTE:
-   Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
+   {{< alert type="note" >}}
+
+Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
+
+   {{< /alert >}}
 
 1. View the replication slots and remove them if they are inactive:
 
@@ -38,7 +43,7 @@ If the secondary site is not able to reconnect, use the following steps to remov
    Slots where `active` is `f` are inactive.
 
 - If this slot should be active, because you have a **secondary** site configured using that slot:
-  - Look for the [PostgreSQL logs](../../../logs/index.md#postgresql-logs) for the **secondary** site,
+  - Look for the [PostgreSQL logs](../../../logs/_index.md#postgresql-logs) for the **secondary** site,
      to view why the replication is not running.
   - If the secondary site is no longer able to reconnect:
 
@@ -59,7 +64,7 @@ If a replication slot is inactive,
 the `pg_wal` logs corresponding to the slot are reserved forever
 (or until the slot is active again). This causes continuous disk usage growth
 and the following messages appear repeatedly in the
-[PostgreSQL logs](../../../logs/index.md#postgresql-logs):
+[PostgreSQL logs](../../../logs/_index.md#postgresql-logs):
 
 ```plaintext
 WARNING: oldest xmin is far in the past

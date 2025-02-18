@@ -2,10 +2,9 @@
 stage: none
 group: unassigned
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
-description: "Learn how GitLab docs' global navigation works and how to add new items."
+description: Learn how GitLab docs' global navigation works and how to add new items.
+title: Global navigation
 ---
-
-# Global navigation
 
 Global navigation (global nav) is the left-most pane in the documentation. You can use the
 global nav to browse the content.
@@ -60,7 +59,7 @@ Documentation pages can be said to belong in the following groups:
 
 - GitLab users. This is documentation for day-to-day use of GitLab for users with any level
   of permissions, from Reporter to Owner.
-- GitLab administrators. This tends to be documentation for self-managed instances that requires
+- GitLab administrators. This tends to be documentation for GitLab Self-Managed instances that requires
   access to the underlying infrastructure hosting GitLab.
 - Other documentation. This includes documentation for customers outside their day-to-day use of
   GitLab and for contributors. Documentation that doesn't fit in the other groups belongs here.
@@ -238,15 +237,6 @@ Example with multiple docs:
       doc_url: 'doc-2-link'
 ```
 
-If you need to add a document in an external URL, add the attribute `external_url`
-below the doc link:
-
-```yaml
-- doc_title: Document 2 title
-  doc_url: 'doc-2-link'
-  external_url: true
-```
-
 All nav links are selectable. If the higher-level link does not have a link
 of its own, it must link to its first sub-item link, mimicking the navigation in GitLab.
 This must be avoided so that we don't have duplicated links nor two `.active` links
@@ -278,30 +268,24 @@ and the following syntax rules.
 
 ##### URLs
 
-URLs can be either relative or external, and the following apply:
+URLs must be relative. In addition:
 
 - All links in the data file must end with `.html` (with the exception
   of `index.html` files), and not `.md`.
-- For `index.html` files, use the clean (canonical) URL: `path/to/`. For example, `https://docs.gitlab.com/ee/install/index.html` becomes `ee/install/`.
+- For `index.html` files, use the clean (canonical) URL: `path/to/`. For example, `https://docs.gitlab.com/ee/install/` becomes `ee/install/`.
 - Do not start any relative link with a forward slash `/`.
 - As convention, always wrap URLs in single quotes `'url'`.
 - Always use the project prefix depending on which project the link you add
   lives in. To find the global nav link, from the full URL remove `https://docs.gitlab.com/`.
-- If a URL links to an external URL, like the [GitLab Design System](https://design.gitlab.com),
-  add the attribute `external_url: true`, for example:
-
-  ```yaml
-  - category_title: GitLab Design System
-    category_url: 'https://design.gitlab.com'
-    external_url: true
-  ```
+- Do not link to external URLs. We don't have link checking for external URLs, and
+  leaving the docs site by clicking the left navigation is a confusing user experience.
 
 Examples of relative URLs:
 
 | Full URL                                                       | Global nav URL                        |
 | -------------------------------------------------------------- | ------------------------------------- |
 | `https://docs.gitlab.com/ee/api/avatar.html`                   | `ee/api/avatar.html`                  |
-| `https://docs.gitlab.com/ee/install/index.html`                | `ee/install/`                         |
+| `https://docs.gitlab.com/ee/install/`                | `ee/install/`                         |
 | `https://docs.gitlab.com/omnibus/settings/database.html`       | `omnibus/settings/database.html`      |
 | `https://docs.gitlab.com/charts/installation/deployment.html`  | `charts/installation/deployment.html` |
 | `https://docs.gitlab.com/runner/install/docker.html`           | `runner/install/docker.html`          |

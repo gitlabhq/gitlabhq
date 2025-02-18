@@ -19,7 +19,7 @@ module Repositories
       user = User.find_by_id(args[:user_id])
       return unless user
 
-      result = Repositories::RewriteHistoryService.new(project, user).execute(
+      result = ::Repositories::RewriteHistoryService.new(project, user).execute(
         blob_oids: args.fetch(:blob_oids, []),
         redactions: args.fetch(:redactions, [])
       )

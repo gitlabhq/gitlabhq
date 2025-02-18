@@ -2,15 +2,17 @@
 stage: Platforms
 group: Scalability
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Rails request SLIs (service level indicators)
 ---
 
-# Rails request SLIs (service level indicators)
+{{< alert type="note" >}}
 
-NOTE:
-This SLI is used for service monitoring. But not for [error budgets for stage groups](../stage_group_observability/index.md#error-budget)
+This SLI is used for service monitoring. But not for [error budgets for stage groups](../stage_group_observability/_index.md#error-budget)
 by default.
 
-The request Apdex SLI and the error rate SLI are [SLIs defined in the application](index.md).
+{{< /alert >}}
+
+The request Apdex SLI and the error rate SLI are [SLIs defined in the application](_index.md).
 
 The request Apdex measures the duration of successful requests as an indicator for
 application performance. This includes the REST and GraphQL API, and the
@@ -93,7 +95,7 @@ a case-by-case basis. Take the following into account:
 1. The workload for some endpoints can sometimes differ greatly
    depending on the parameters specified by the caller. The urgency
    needs to accommodate those differences. In some cases, you could
-   define a separate [application SLI](index.md#defining-a-new-sli)
+   define a separate [application SLI](_index.md#defining-a-new-sli)
    for what the endpoint is doing.
 
    When the endpoints in certain cases turn into no-ops, making them
@@ -176,7 +178,7 @@ the merge request.
 ## How to adjust the urgency
 
 You can specify urgency similar to how endpoints
-[get a feature category](../feature_categorization/index.md). Endpoints without a
+[get a feature category](../feature_categorization/_index.md). Endpoints without a
 specific target use the default urgency: 1s duration. These configurations
 are available:
 
@@ -255,18 +257,21 @@ specify do
 end
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 We can't specify the urgency at the namespace level. The directive is ignored when doing so.
+
+{{< /alert >}}
 
 ### Error budget attribution and ownership
 
 This SLI is used for service level monitoring. It feeds into the
-[error budget for stage groups](../stage_group_observability/index.md#error-budget).
+[error budget for stage groups](../stage_group_observability/_index.md#error-budget).
 
 For more information, read the epic for
 [defining custom SLIs and incorporating them into error budgets](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525)).
 The endpoints for the SLI feed into a group's error budget based on the
-[feature category declared on it](../feature_categorization/index.md).
+[feature category declared on it](../feature_categorization/_index.md).
 
 To know which endpoints are included for your group, you can see the
 request rates on the
@@ -275,6 +280,6 @@ In the **Budget Attribution** row, the **Puma Apdex** log link shows you
 how many requests are not meeting a 1s or 5s target.
 
 For more information about the content of the dashboard, see
-[Dashboards for stage groups](../stage_group_observability/index.md). For more information
+[Dashboards for stage groups](../stage_group_observability/_index.md). For more information
 about our exploration of the error budget itself, see
 [issue 1365](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1365).

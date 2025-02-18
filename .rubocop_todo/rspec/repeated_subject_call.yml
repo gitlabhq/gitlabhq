@@ -2,12 +2,10 @@
 RSpec/RepeatedSubjectCall:
   Exclude:
     - 'ee/spec/controllers/projects/settings/repository_controller_spec.rb'
-    - 'ee/spec/controllers/registrations/groups_controller_spec.rb'
     - 'ee/spec/graphql/mutations/compliance_management/frameworks/update_spec.rb'
     - 'ee/spec/graphql/mutations/vulnerabilities/bulk_dismiss_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/backfill_has_vulnerability_resolution_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/delete_invalid_epic_issues_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/elastic/helper_spec.rb'
     - 'ee/spec/models/burndown_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/branch_rules/destroy_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/compliance_management/frameworks/update_spec.rb'
@@ -32,7 +30,6 @@ RSpec/RepeatedSubjectCall:
     - 'ee/spec/services/sbom/ingestion/tasks/ingest_occurrences_spec.rb'
     - 'ee/spec/services/sbom/ingestion/tasks/ingest_sources_spec.rb'
     - 'ee/spec/services/security/orchestration/assign_service_spec.rb'
-    - 'ee/spec/workers/namespaces/cascade_duo_features_enabled_worker_spec.rb'
     - 'ee/spec/workers/search/zoekt/lost_node_event_worker_spec.rb'
     - 'spec/controllers/admin/runners_controller_spec.rb'
     - 'spec/controllers/concerns/page_limiter_spec.rb'

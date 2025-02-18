@@ -2,16 +2,16 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Migrate to a new server
 ---
-
-# Migrate to a new server
 
 <!-- some details borrowed from GitLab.com move from Azure to GCP detailed at https://gitlab.com/gitlab-com/migration/-/blob/master/.gitlab/issue_templates/failover.md -->
 
 You can use GitLab backup and restore to migrate your instance to a new server. This section outlines a typical procedure for a GitLab deployment running on a single server.
-If you're running GitLab Geo, an alternative option is [Geo disaster recovery for planned failover](../geo/disaster_recovery/planned_failover.md). You must make sure all sites meet the [Geo requirements](../geo/index.md#requirements-for-running-geo) before selecting Geo for the migration.
+If you're running GitLab Geo, an alternative option is [Geo disaster recovery for planned failover](../geo/disaster_recovery/planned_failover.md). You must make sure all sites meet the [Geo requirements](../geo/_index.md#requirements-for-running-geo) before selecting Geo for the migration.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Avoid uncoordinated data processing by both the new and old servers, where multiple
 servers could connect concurrently and process the same data. For example, when using
 [incoming email](../incoming_email.md), if both GitLab instances are
@@ -19,6 +19,8 @@ processing email at the same time, then both instances miss some data.
 This type of problem can occur with other services as well, such as a
 [non-packaged database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server),
 a non-packaged Redis instance, or non-packaged Sidekiq.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -72,7 +74,7 @@ To prepare the new server:
 ## Prepare and transfer content from the old server
 
 1. Ensure you have an up-to-date system-level backup or snapshot of the old server.
-1. Enable [maintenance mode](../maintenance_mode/index.md),
+1. Enable [maintenance mode](../maintenance_mode/_index.md),
    if supported by your GitLab edition.
 1. Block new CI/CD jobs from starting:
    1. Edit `/etc/gitlab/gitlab.rb`, and set the following:
@@ -169,7 +171,7 @@ backups may take a long time. In that case, you may find it easier to transfer t
 The main volumes that you might need to migrate manually are:
 
 - The `/var/opt/gitlab/git-data` directory which contains all the Git data.
-  Be sure to read [the moving repositories documentation section](../../administration/operations/moving_repositories.md#migrating-to-another-gitlab-instance) to eliminate the chance of Git data corruption.
+  Be sure to read [the moving repositories documentation section](../operations/moving_repositories.md#migrating-to-another-gitlab-instance) to eliminate the chance of Git data corruption.
 - The `/var/opt/gitlab/gitlab-rails/shared` directory which contains object data, like artifacts.
 - If you are using the bundled PostgreSQL included with the Linux package,
   you also need to migrate the [PostgreSQL data directory](https://docs.gitlab.com/omnibus/settings/database.html#store-postgresql-data-in-a-different-directory)
@@ -206,7 +208,7 @@ to the new environment.
    1. While still under the Sidekiq dashboard, select **Cron** and then **Enable All**
       to re-enable periodic background jobs.
 1. Test that read-only operations on the GitLab instance work as expected. For example, browse through project repository files, merge requests, and issues.
-1. Disable [Maintenance Mode](../maintenance_mode/index.md), if previously enabled.
+1. Disable [Maintenance Mode](../maintenance_mode/_index.md), if previously enabled.
 1. Test that the GitLab instance is working as expected.
 1. If applicable, re-enable [incoming email](../incoming_email.md) and test it is working as expected.
 1. Update your DNS or load balancer to point at the new server.

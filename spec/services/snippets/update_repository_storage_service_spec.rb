@@ -109,7 +109,7 @@ RSpec.describe Snippets::UpdateRepositoryStorageService, feature_category: :sour
 
         expect do
           subject.execute
-        end.to raise_error(Repositories::ReplicateService::Error, /Failed to verify snippet repository checksum from \w+ to not matching checksum/)
+        end.to raise_error(::Repositories::ReplicateService::Error, /Failed to verify snippet repository checksum from \w+ to not matching checksum/)
 
         expect(snippet).not_to be_repository_read_only
         expect(snippet.repository_storage).to eq('default')

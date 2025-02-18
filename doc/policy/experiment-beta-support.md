@@ -1,9 +1,10 @@
 ---
-redirect_to: 'development_stages_support.md'
-remove_date: '2025-02-27'
+redirect_to: development_stages_support.md
+remove_date: "2025-02-27"
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](development_stages_support.md).
 

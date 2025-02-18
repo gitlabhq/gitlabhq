@@ -121,7 +121,7 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
           verification.update!(token: 'ZROT4ZZXA-Y6') # token from email fixture
         end
 
-        let(:service_desk_address) { project.service_desk_incoming_address }
+        let(:service_desk_address) { ::ServiceDesk::Emails.new(project).send(:incoming_address) }
         let(:verification_address) { 'custom-support-email+verify@example.com' }
         let(:verification_token) { 'ZROT4ZZXA-Y6' }
         let(:shared_email_raw) do
@@ -191,7 +191,7 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
         end
 
         context 'and service desk address from service_desk_email was used as forwarding target' do
-          let(:service_desk_address) { project.service_desk_alias_address }
+          let(:service_desk_address) { ::ServiceDesk::Emails.new(project).alias_address }
 
           it_behaves_like 'a failing verification process', 'incorrect_forwarding_target'
 

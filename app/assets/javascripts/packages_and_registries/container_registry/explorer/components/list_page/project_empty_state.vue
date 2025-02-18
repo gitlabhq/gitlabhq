@@ -36,7 +36,7 @@ export default {
       'ContainerRegistry|You can add an image to this registry with the following commands:',
     ),
   },
-  containerRegistryHelpUrl: helpPagePath('user/packages/container_registry/index'),
+  containerRegistryHelpUrl: helpPagePath('user/packages/container_registry/_index'),
   twoFactorAuthHelpUrl: helpPagePath('user/profile/account/two_factor_authentication'),
   personalAccessTokensHelpUrl: helpPagePath('user/profile/personal_access_tokens'),
 };
@@ -48,7 +48,7 @@ export default {
     :svg-height="null"
   >
     <template #description>
-      <p>
+      <p data-testid="project-empty-state-intro">
         <gl-sprintf :message="$options.i18n.introText">
           <template #docLink="{ content }">
             <gl-link :href="$options.containerRegistryHelpUrl" target="_blank">{{
@@ -58,7 +58,7 @@ export default {
         </gl-sprintf>
       </p>
       <h5>{{ $options.i18n.quickStart }}</h5>
-      <p>
+      <p data-testid="project-empty-state-authentication">
         <gl-sprintf :message="$options.i18n.notLoggedInMessage">
           <template #twofaDocLink="{ content }">
             <gl-link :href="$options.twoFactorAuthHelpUrl" target="_blank">{{ content }}</gl-link>
@@ -75,6 +75,7 @@ export default {
           :value="dockerLoginCommand"
           readonly
           type="text"
+          :aria-label="s__('ContainerRegistry|Docker login command')"
           class="!gl-font-monospace"
         />
         <template #append>
@@ -93,6 +94,7 @@ export default {
           :value="dockerBuildCommand"
           readonly
           type="text"
+          :aria-label="s__('ContainerRegistry|Docker build command')"
           class="!gl-font-monospace"
         />
         <template #append>
@@ -104,7 +106,13 @@ export default {
         </template>
       </gl-form-input-group>
       <gl-form-input-group>
-        <gl-form-input :value="dockerPushCommand" readonly type="text" class="!gl-font-monospace" />
+        <gl-form-input
+          :value="dockerPushCommand"
+          readonly
+          type="text"
+          :aria-label="s__('ContainerRegistry|Docker push command')"
+          class="!gl-font-monospace"
+        />
         <template #append>
           <clipboard-button
             :text="dockerPushCommand"

@@ -30,10 +30,10 @@ RSpec.describe API::NpmGroupPackages, feature_category: :package_registry do
 
         :oauth                 | :public   | :public   | :guest     | :ok
         :oauth                 | :public   | :internal | :guest     | :ok
-        :oauth                 | :public   | :private  | :guest     | :forbidden
+        :oauth                 | :public   | :private  | :guest     | :ok
         :oauth                 | :internal | :internal | :guest     | :ok
-        :oauth                 | :internal | :private  | :guest     | :forbidden
-        :oauth                 | :private  | :private  | :guest     | :forbidden
+        :oauth                 | :internal | :private  | :guest     | :ok
+        :oauth                 | :private  | :private  | :guest     | :ok
         :oauth                 | :public   | :public   | :reporter  | :ok
         :oauth                 | :public   | :internal | :reporter  | :ok
         :oauth                 | :public   | :private  | :reporter  | :ok
@@ -43,10 +43,10 @@ RSpec.describe API::NpmGroupPackages, feature_category: :package_registry do
 
         :personal_access_token | :public   | :public   | :guest     | :ok
         :personal_access_token | :public   | :internal | :guest     | :ok
-        :personal_access_token | :public   | :private  | :guest     | :forbidden
+        :personal_access_token | :public   | :private  | :guest     | :ok
         :personal_access_token | :internal | :internal | :guest     | :ok
-        :personal_access_token | :internal | :private  | :guest     | :forbidden
-        :personal_access_token | :private  | :private  | :guest     | :forbidden
+        :personal_access_token | :internal | :private  | :guest     | :ok
+        :personal_access_token | :private  | :private  | :guest     | :ok
         :personal_access_token | :public   | :public   | :reporter  | :ok
         :personal_access_token | :public   | :internal | :reporter  | :ok
         :personal_access_token | :public   | :private  | :reporter  | :ok

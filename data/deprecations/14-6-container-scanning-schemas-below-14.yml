@@ -6,7 +6,7 @@
     versions earlier than 14.0.0 will no longer be supported in GitLab 15.0. Reports that do not pass validation
     against the schema version declared in the report will also no longer be supported in GitLab 15.0.
 
-    Third-party tools that [integrate with GitLab by outputting a container scanning security report](https://docs.gitlab.com/ee/development/integrations/secure.html#report)
+    Third-party tools that [integrate with GitLab by outputting a container scanning security report](https://docs.gitlab.com/development/integrations/secure/#report)
     as a pipeline job artifact are affected. You must ensure that all output reports adhere to the correct schema with a minimum version of 14.0.0. Reports with a lower version or that fail to validate against the declared schema version will not be processed, and vulnerability findings will not display in MRs, pipelines, or Vulnerability Reports.
 
     To help with the transition, from GitLab 14.10, non-compliant reports will display a

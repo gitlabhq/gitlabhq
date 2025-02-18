@@ -39,8 +39,8 @@ export function getLineClasses(line) {
   return [
     'gl-px-1 gl-rounded-small gl-border-solid gl-border-1 gl-border-white',
     {
-      'gl-bg-green-100 gl-text-green-800': symbol === '+',
-      'gl-bg-red-100 gl-text-red-800': symbol === '-',
+      'gl-bg-status-success gl-text-status-success': symbol === '+',
+      'gl-bg-status-danger gl-text-status-danger': symbol === '-',
     },
   ];
 }

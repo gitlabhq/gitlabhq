@@ -8,6 +8,7 @@ import {
   GlTab,
   GlTabs,
   GlTooltipDirective,
+  GlFormCheckbox,
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
@@ -16,11 +17,11 @@ import Tracking from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   DEFAULT_PAGE_SIZE,
-  getInstrumentTabLabels,
+  INSTRUMENT_TAB_LABELS,
   INSTRUMENT_TODO_FILTER_CHANGE,
-  getStatusByTab,
+  STATUS_BY_TAB,
   TODO_WAIT_BEFORE_RELOAD,
-  getTabsIndices,
+  TABS_INDICES,
 } from '~/todos/constants';
 import getTodosQuery from './queries/get_todos.query.graphql';
 import getPendingTodosCount from './queries/get_pending_todos_count.query.graphql';
@@ -28,6 +29,7 @@ import TodoItem from './todo_item.vue';
 import TodosEmptyState from './todos_empty_state.vue';
 import TodosFilterBar, { SORT_OPTIONS } from './todos_filter_bar.vue';
 import TodosMarkAllDoneButton from './todos_mark_all_done_button.vue';
+import TodosBulkBar from './todos_bulk_bar.vue';
 import TodosPagination from './todos_pagination.vue';
 
 export default {
@@ -38,10 +40,12 @@ export default {
     GlBadge,
     GlTabs,
     GlTab,
+    GlFormCheckbox,
     TodosEmptyState,
     TodosFilterBar,
     TodoItem,
     TodosMarkAllDoneButton,
+    TodosBulkBar,
     TodosPagination,
   },
   directives: {
@@ -67,7 +71,7 @@ export default {
       currentUserId: null,
       pageInfo: {},
       todos: [],
-      currentTab: getTabsIndices().pending,
+      currentTab: TABS_INDICES.pending,
       pendingTodosCount: '-',
       queryFilterValues: {
         groupId: [],
@@ -81,6 +85,8 @@ export default {
       showSpinnerWhileLoading: true,
       currentTime: new Date(),
       currentTimeInterval: null,
+      multiselectState: {},
+      selectAllChecked: false,
     };
   },
   apollo: {
@@ -122,24 +128,53 @@ export default {
   },
   computed: {
     statusByTab() {
-      return getStatusByTab()[this.currentTab];
+      return STATUS_BY_TAB[this.currentTab];
     },
     isLoading() {
       return this.$apollo.queries.todos.loading;
+    },
+    isLoadingWithSpinner() {
+      return this.isLoading && this.showSpinnerWhileLoading;
     },
     isFiltered() {
       // Ignore sort value. It is always present and not really a filter.
       const { sort: _, ...filters } = this.queryFilterValues;
       return Object.values(filters).some((value) => value.length > 0);
     },
+    isOnDoneTab() {
+      return this.currentTab === TABS_INDICES.done;
+    },
     isOnSnoozedTab() {
-      return this.glFeatures.todosSnoozing && this.currentTab === getTabsIndices().snoozed;
+      return this.currentTab === TABS_INDICES.snoozed;
+    },
+    isOnAllTab() {
+      return this.currentTab === TABS_INDICES.all;
     },
     showEmptyState() {
       return !this.isLoading && this.todos.length === 0;
     },
     showMarkAllAsDone() {
-      return this.currentTab === getTabsIndices().pending && !this.showEmptyState;
+      if (this.glFeatures.todosBulkActions) return false;
+
+      return this.currentTab === TABS_INDICES.pending && !this.showEmptyState;
+    },
+    showSelectAll() {
+      if (!this.glFeatures.todosBulkActions) return false;
+      if (this.isOnAllTab) return false;
+
+      return !(this.showEmptyState || this.isLoadingWithSpinner);
+    },
+    selectedIds() {
+      return this.todos.filter((todo) => this.multiselectState[todo.id]).map((todo) => todo.id);
+    },
+    hasIndeterminateSelectAll() {
+      return this.selectedIds.length > 0 && this.selectedIds.length < this.todos.length;
+    },
+  },
+  watch: {
+    selectedIds(ids) {
+      if (!ids.length) this.selectAllChecked = false;
+      else if (ids.length === this.todos.length) this.selectAllChecked = true;
     },
   },
   created() {
@@ -147,13 +182,13 @@ export default {
     const stateFromUrl = searchParams.get('state');
     switch (stateFromUrl) {
       case 'snoozed':
-        this.currentTab = getTabsIndices().snoozed;
+        this.currentTab = TABS_INDICES.snoozed;
         break;
       case 'done':
-        this.currentTab = getTabsIndices().done;
+        this.currentTab = TABS_INDICES.done;
         break;
       case 'all':
-        this.currentTab = getTabsIndices().all;
+        this.currentTab = TABS_INDICES.all;
         break;
       default:
         break;
@@ -178,8 +213,10 @@ export default {
         return;
       }
 
+      this.unselectAll();
+
       this.track(INSTRUMENT_TODO_FILTER_CHANGE, {
-        label: getInstrumentTabLabels()[tabIndex],
+        label: INSTRUMENT_TAB_LABELS[tabIndex],
       });
       this.currentTab = tabIndex;
 
@@ -194,14 +231,12 @@ export default {
     },
     syncActiveTabToUrl() {
       const tabIndexToUrlStateParam = {
-        [getTabsIndices().done]: 'done',
-        [getTabsIndices().all]: 'all',
+        [TABS_INDICES.snoozed]: 'snoozed',
+        [TABS_INDICES.done]: 'done',
+        [TABS_INDICES.all]: 'all',
       };
-      if (this.glFeatures.todosSnoozing) {
-        tabIndexToUrlStateParam[getTabsIndices().snoozed] = 'snoozed';
-      }
       const searchParams = new URLSearchParams(window.location.search);
-      if (this.currentTab === getTabsIndices().pending) {
+      if (this.currentTab === TABS_INDICES.pending) {
         searchParams.delete('state');
       } else {
         searchParams.set('state', tabIndexToUrlStateParam[this.currentTab]);
@@ -222,6 +257,16 @@ export default {
       this.needsRefresh = true;
 
       await this.updateCounts();
+    },
+    handleSelectionChanged(id, isSelected) {
+      this.multiselectState = {
+        ...this.multiselectState,
+        [id]: isSelected,
+      };
+    },
+    handleBulkAction() {
+      this.unselectAll();
+      this.updateAllQueries(false);
     },
     updateCounts() {
       return this.$apollo.queries.pendingTodosCount.refetch();
@@ -257,6 +302,17 @@ export default {
         this.updateTimeoutId = null;
       }, TODO_WAIT_BEFORE_RELOAD);
     },
+    selectAll() {
+      this.multiselectState = Object.fromEntries(this.todos.map((todo) => [todo.id, true]));
+    },
+    unselectAll() {
+      this.multiselectState = {};
+      this.selectAllChecked = false;
+    },
+    handleSelectAllChange(checked) {
+      if (checked) this.selectAll();
+      else this.unselectAll();
+    },
   },
 };
 </script>
@@ -280,7 +336,7 @@ export default {
             </gl-badge>
           </template>
         </gl-tab>
-        <gl-tab v-if="glFeatures.todosSnoozing">
+        <gl-tab>
           <template #title>
             <span>{{ s__('Todos|Snoozed') }}</span>
           </template>
@@ -288,11 +344,6 @@ export default {
         <gl-tab>
           <template #title>
             <span>{{ s__('Todos|Done') }}</span>
-          </template>
-        </gl-tab>
-        <gl-tab>
-          <template #title>
-            <span>{{ s__('Todos|All') }}</span>
           </template>
         </gl-tab>
       </gl-tabs>
@@ -321,24 +372,50 @@ export default {
 
     <div>
       <div class="gl-flex gl-flex-col">
+        <div v-if="showSelectAll" class="gl-flex gl-items-baseline gl-gap-2 gl-px-5 gl-py-3">
+          <gl-form-checkbox
+            v-model="selectAllChecked"
+            data-testid="todos-select-all"
+            class="gl-mb-2 gl-mt-3"
+            :indeterminate="hasIndeterminateSelectAll"
+            @change="handleSelectAllChange"
+            >{{
+              selectAllChecked ? s__('Todos|Clear all') : s__('Todos|Select all')
+            }}</gl-form-checkbox
+          >
+          <span v-show="selectedIds.length">|</span>
+          <todos-bulk-bar
+            v-show="selectedIds.length"
+            :ids="selectedIds"
+            :tab="currentTab"
+            @change="handleBulkAction"
+          />
+        </div>
+
         <gl-loading-icon v-if="isLoading && showSpinnerWhileLoading" size="lg" class="gl-mt-5" />
-        <ul
+        <div
           v-else
           data-testid="todo-item-list-container"
-          class="gl-m-0 gl-border-collapse gl-list-none gl-p-0"
           @mouseenter="startedInteracting"
           @mouseleave="stoppedInteracting"
         >
-          <transition-group name="todos">
+          <transition-group
+            name="todos"
+            tag="ol"
+            data-testid="todo-item-list"
+            class="gl-m-0 gl-list-none gl-p-0"
+          >
             <todo-item
               v-for="todo in todos"
               :key="todo.id"
               :todo="todo"
               :current-user-id="currentUserId"
+              :selected="selectedIds.includes(todo.id)"
               @change="handleItemChanged"
+              @select-change="handleSelectionChanged"
             />
           </transition-group>
-        </ul>
+        </div>
 
         <todos-empty-state v-if="showEmptyState" :is-filtered="isFiltered" />
 

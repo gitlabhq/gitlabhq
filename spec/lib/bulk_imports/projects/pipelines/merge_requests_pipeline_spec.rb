@@ -418,6 +418,15 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
     end
 
     context 'when importer_user_mapping is enabled' do
+      let_it_be(:source_user) do
+        create(:import_source_user,
+          import_type: ::Import::SOURCE_DIRECT_TRANSFER,
+          namespace: group,
+          source_user_identifier: 101,
+          source_hostname: bulk_import.configuration.url
+        )
+      end
+
       let(:importer_user_mapping_enabled) { true }
 
       let(:mr) do
@@ -437,8 +446,8 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
           last_edited_at: '2019-12-27T00:00:00.000Z',
           last_edited_by_id: 101,
           state: 'opened',
-          approvals: [{ user_id: 101 }],
           metrics: { merged_by_id: 101, latest_closed_by_id: 101 },
+          approvals: [{ user_id: 101 }],
           merge_request_assignees: [{ user_id: 101 }],
           merge_request_reviewers: [{ user_id: 101, state: 'unreviewed' }],
           events: [{ author_id: 101, action: 'created', target_type: 'MergeRequest' }],

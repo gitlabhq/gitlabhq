@@ -6,7 +6,7 @@ module API
 
     before { authenticate! }
     before { authorize! :admin_cicd_variables, user_group }
-    feature_category :secrets_management
+    feature_category :ci_variables
 
     helpers ::API::Helpers::VariablesHelpers
 

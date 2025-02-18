@@ -137,14 +137,12 @@ const mixins = {
 
       return this.isOpen ? 'issue-open-m' : 'issue-close';
     },
-    iconClass() {
+    iconVariant() {
       if (this.isMergeRequest && this.isClosed) {
-        return 'merge-request-status closed issue-token-state-icon-closed';
+        return 'danger';
       }
 
-      return this.isOpen
-        ? 'issue-token-state-icon-open gl-fill-icon-success'
-        : 'issue-token-state-icon-closed gl-fill-icon-info';
+      return this.isOpen ? 'success' : 'info';
     },
     computedLinkElementType() {
       return this.path.length > 0 ? 'a' : 'span';

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::API, feature_category: :system_access do
   include GroupAPIHelpers
+  include Auth::DpopTokenHelper
 
   describe 'Record user last activity in after hook' do
     # It does not matter which endpoint is used because last_activity_on should
@@ -26,6 +27,73 @@ RSpec.describe API::API, feature_category: :system_access do
         expect(Users::ActivityService).to receive(:new).with(activity_args).and_call_original
 
         get(api("/projects/#{project.id}/issues", user))
+      end
+    end
+  end
+
+  describe 'DPoP authentication' do
+    context 'when :dpop_authentication FF is disabled' do
+      let(:user) { create(:user) }
+
+      it 'does not check for DPoP token' do
+        stub_feature_flags(dpop_authentication: false)
+
+        get api('/groups')
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when :dpop_authentication FF is enabled' do
+      before do
+        stub_feature_flags(dpop_authentication: true)
+      end
+
+      context 'when DPoP is disabled for the user' do
+        let(:user) { create(:user) }
+
+        it 'does not check for DPoP token' do
+          get api('/groups')
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when DPoP is enabled for the user' do
+        let_it_be(:user) { create(:user, dpop_enabled: true) }
+        let_it_be(:personal_access_token) { create(:personal_access_token, user: user, scopes: [:api]) }
+        let_it_be(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:api]) }
+        let_it_be(:dpop_proof) { generate_dpop_proof_for(user) }
+
+        context 'when API is called with an OAuth token' do
+          it 'does not invoke DPoP' do
+            get api('/groups', oauth_access_token: oauth_token)
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        context 'with a missing DPoP token' do
+          it 'returns 401' do
+            get api('/groups', personal_access_token: personal_access_token)
+            expect(json_response["error_description"]).to eq("DPoP validation error: DPoP header is missing")
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
+        end
+
+        context 'with a valid DPoP token' do
+          it 'returns 200' do
+            get(api('/groups', personal_access_token: personal_access_token), headers: { "dpop" => dpop_proof.proof })
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        context 'with a malformed DPoP token' do
+          it 'returns 401' do
+            get(api('/groups', personal_access_token: personal_access_token), headers: { "dpop" => 'invalid' })
+            # rubocop:disable Layout/LineLength -- We need the entire error message
+            expect(json_response["error_description"]).to eq("DPoP validation error: Malformed JWT, unable to decode. Not enough or too many segments")
+            # rubocop:enable Layout/LineLength
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
+        end
       end
     end
   end

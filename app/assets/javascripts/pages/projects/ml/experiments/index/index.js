@@ -1,6 +1,9 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import MlExperimentsIndex from '~/ml/experiment_tracking/routes/experiments/index';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+
+Vue.use(VueApollo);
 
 const initIndexMlExperiments = () => {
   const element = document.querySelector('#js-project-ml-experiments-index');
@@ -8,17 +11,19 @@ const initIndexMlExperiments = () => {
     return undefined;
   }
 
-  const { experiments, pageInfo, emptyStateSvgPath, mlflowTrackingUrl, count } = element.dataset;
+  const { projectPath, emptyStateSvgPath, mlflowTrackingUrl } = element.dataset;
   const props = {
-    experiments: JSON.parse(experiments),
-    pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),
+    projectPath,
     emptyStateSvgPath,
     mlflowTrackingUrl,
-    count: parseInt(count, 10),
   };
+
+  const apolloProvider = new VueApollo({ defaultClient: createDefaultClient() });
 
   return new Vue({
     el: element,
+    name: 'MlExperimentsIndexApp',
+    apolloProvider,
     render(h) {
       return h(MlExperimentsIndex, { props });
     },

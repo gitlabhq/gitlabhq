@@ -162,7 +162,7 @@ RSpec.shared_examples 'model with repository' do
   end
 
   describe '#after_repository_change_head' do
-    let(:event) { instance_double('Repositories::DefaultBranchChangedEvent') }
+    let(:event) { instance_double('::Repositories::DefaultBranchChangedEvent') }
     let(:event_data) { { container_id: stubbed_container.id, container_type: stubbed_container.class.name } }
 
     it 'calls #reload_default_branch' do
@@ -172,7 +172,7 @@ RSpec.shared_examples 'model with repository' do
     end
 
     it 'publishes an Repositories::DefaultBranchChangedEvent event' do
-      allow(Repositories::DefaultBranchChangedEvent)
+      allow(::Repositories::DefaultBranchChangedEvent)
         .to receive(:new)
         .with(data: event_data)
         .and_return(event)

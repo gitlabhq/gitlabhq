@@ -6,7 +6,7 @@
   stage: scalability
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/439687
   body: |
-    - For Linux package (Omnibus) installations, the [`sidekiq['min_concurrency']` and `sidekiq['max_concurrency']`](https://docs.gitlab.com/ee/administration/sidekiq/extra_sidekiq_processes.html#manage-thread-counts-explicitly) settings are deprecated in GitLab 16.9 and will be removed in GitLab 17.0.
+    - For Linux package (Omnibus) installations, the [`sidekiq['min_concurrency']` and `sidekiq['max_concurrency']`](https://docs.gitlab.com/administration/sidekiq/extra_sidekiq_processes/#manage-thread-counts-explicitly) settings are deprecated in GitLab 16.9 and will be removed in GitLab 17.0.
 
       You can use `sidekiq['concurrency']` in GitLab 16.9 and later to set thread counts explicitly in each process.
 

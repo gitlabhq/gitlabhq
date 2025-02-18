@@ -1,11 +1,10 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Introduction to Git rebase and force push, methods to resolve merge conflicts through the command line."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Introduction to Git rebase and force push, methods to resolve merge conflicts through the command line.
+title: Advanced Git operations
 ---
-
-# Advanced Git operations
 
 Advanced Git operations help you perform tasks to maintain and manage your code.
 They are more complex actions that go beyond [basic Git operations](basics.md).
@@ -32,7 +31,7 @@ When you use advanced Git operations, you should:
 
 - Create a backup or work on a [separate branch](branch.md).
 - Communicate with your team before when you use operations that affect shared branch history.
-- Use descriptive [commit messages](../../tutorials/update_commit_messages/index.md)
+- Use descriptive [commit messages](../../tutorials/update_commit_messages/_index.md)
   when you rewrite history.
 - Update your knowledge of Git to stay current with best practices and new features.
   For more information, see the [Git documentation](https://git-scm.com/docs).
@@ -100,7 +99,7 @@ Use this if:
 - Your organization moved your projects to a new GitLab instance with a new domain name.
 - The project was renamed to a new path in the same GitLab instance.
 
-For more information, see [Update Git remote URLs](../../tutorials/update_git_remote_url/index.md).
+For more information, see [Update Git remote URLs](../../tutorials/update_git_remote_url/_index.md).
 
 ## Related topics
 

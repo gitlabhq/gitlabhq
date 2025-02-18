@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Gems development guidelines
 ---
-
-# Gems development guidelines
 
 GitLab uses Gems as a tool to improve code reusability and modularity
 in a monolithic codebase.
@@ -35,9 +34,12 @@ If the answer is **Yes** for any of the questions above, you should strongly con
 You can always start by creating a new Gem [in the same repository](#in-the-same-repo) and later evaluate whether to migrate it to a separate repository, when it is intended
 to be used by a wider community.
 
-WARNING:
+{{< alert type="warning" >}}
+
 To prevent malicious actors from name-squatting the extracted Gems, follow the instructions
 to [reserve a gem name](#reserve-a-gem-name).
+
+{{< /alert >}}
 
 ## Advantages of using Gems
 
@@ -80,9 +82,12 @@ and prevents complexity (coordinating changes across repositories, new permissio
 
 Gems stored in the same repository should be referenced in `Gemfile` with the `path:` syntax.
 
-WARNING:
+{{< alert type="warning" >}}
+
 To prevent malicious actors from name-squatting the extracted Gems, follow the instructions
 to [reserve a gem name](#reserve-a-gem-name).
+
+{{< /alert >}}
 
 ### Create and use a new Gem
 
@@ -214,7 +219,7 @@ They MUST be always published to RubyGems.
 
 At GitLab we use a number of external gems:
 
-- [LabKit Ruby](https://gitlab.com/gitlab-org/labkit-ruby)
+- [LabKit Ruby](https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby)
 - [GitLab Ruby Gems](https://gitlab.com/gitlab-org/ruby/gems)
 
 ### Potential disadvantages
@@ -264,7 +269,7 @@ The project for a new Gem should always be created in [`gitlab-org/ruby/gems` na
    gem owner <gem-name> --add gitlab_rubygems
    ```
 
-   - Ping [Rémy Coutable](https://gitlab.com/rymai) to confirm the ownership in the [Rubygems committee project](https://gitlab.com/gitlab-dependency-committees/rubygems-committee/-/issues/).
+   - Ping [Rémy Coutable](https://gitlab.com/rymai) to confirm the ownership in the private [Rubygems committee project](https://gitlab.com/gitlab-dependency-committees/rubygems-committee/-/issues/).
 1. Optional. Add some or all of the following users as co-owners:
    - [Marin Jankovski](https://rubygems.org/profiles/marinjankovski)
    - [Rémy Coutable](https://rubygems.org/profiles/rymai)

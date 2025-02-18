@@ -1,14 +1,16 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Project remote mirrors API
 ---
 
-# Project remote mirrors API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 [Push mirrors](../user/project/repository/mirror/push.md)
 defined on a project's repository settings are called remote mirrors. You
@@ -17,10 +19,13 @@ can query and modify the state of these mirrors with the remote mirror API.
 For security reasons, the `url` attribute in the API response is always scrubbed of username
 and password information.
 
-NOTE:
+{{< alert type="note" >}}
+
 [Pull mirrors](../user/project/repository/mirror/pull.md) use
 [a different API endpoint](project_pull_mirroring.md#configure-pull-mirroring-for-a-project) to
 display and update them.
+
+{{< /alert >}}
 
 ## List a project's remote mirrors
 
@@ -87,6 +92,49 @@ Example response:
 }
 ```
 
+## Get a single project's remote mirror public key
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180291) in GitLab 17.9.
+
+{{< /history >}}
+
+Get the public key of a remote mirror that uses SSH authentication.
+
+```plaintext
+GET /projects/:id/remote_mirrors/:mirror_id/public_key
+```
+
+Supported attributes:
+
+| Attribute        | Type           | Required | Description |
+|:-----------------|:---------------|:---------|:------------|
+| `id`             | integer/string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `mirror_id`      | integer        | Yes      | Remote mirror ID. |
+
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute    | Type     | Description |
+|:-------------|:---------|:------------|
+| `public_key` |  string  | Public key of the remote mirror. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486/public_key"
+```
+
+Example response:
+
+```json
+{
+  "public_key": "ssh-rsa AAAAB3NzaC1yc2EA..."
+}
+```
+
 ## Create a pull mirror
 
 Learn how to [configure a pull mirror](project_pull_mirroring.md#configure-pull-mirroring-for-a-project) by using the
@@ -94,10 +142,14 @@ project pull mirroring API.
 
 ## Create a push mirror
 
-> - Field `mirror_branch_regex` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
-> - Field `auth_method` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75155) in GitLab 16.10.
+{{< history >}}
+
+- Field `mirror_branch_regex` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
+- Field `auth_method` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75155) in GitLab 16.10.
+
+{{< /history >}}
 
 Push mirroring is disabled by default. To enable it, include the optional parameter
 `enabled` when you create the mirror:
@@ -142,7 +194,11 @@ Example response:
 
 ## Update a remote mirror's attributes
 
-> - Field `auth_method` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75155) in GitLab 16.10.
+{{< history >}}
+
+- Field `auth_method` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75155) in GitLab 16.10.
+
+{{< /history >}}
 
 Toggle a remote mirror on or off, or change which types of branches are
 mirrored:
@@ -186,9 +242,13 @@ Example response:
 
 ## Force push mirror update
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388907) in GitLab 16.11.
+{{< history >}}
 
-[Force an update](../user/project/repository/mirror/index.md#force-an-update) to a push mirror.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388907) in GitLab 16.11.
+
+{{< /history >}}
+
+[Force an update](../user/project/repository/mirror/_index.md#force-an-update) to a push mirror.
 
 ```plaintext
 POST /projects/:id/remote_mirrors/:mirror_id/sync
@@ -198,7 +258,7 @@ Supported attributes:
 
 | Attribute   | Type              | Required | Description                                                                          |
 |-------------|-------------------|----------|--------------------------------------------------------------------------------------|
-| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `mirror_id` | Integer           | Yes      | The remote mirror ID.                                                                |
 
 If successful, returns [`204`](rest/troubleshooting.md#status-codes).

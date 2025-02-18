@@ -41,16 +41,16 @@ RSpec.describe 'Virtual Registries Packages Maven', :api, :js, feature_category:
     allow(Gitlab::CurrentSettings).to receive(:allow_local_requests_from_web_hooks_and_services?).and_return(true)
   end
 
-  context 'with no cached response' do
-    it 'returns the file contents and create the cached response' do
-      expect { request }.to change { upstream.cached_responses.count }.by(1)
+  context 'with no cache entry' do
+    it 'returns the file contents and create the cache entry' do
+      expect { request }.to change { upstream.cache_entries.count }.by(1)
     end
   end
 
-  context 'with a cached response' do
-    let_it_be_with_reload(:cached_response) do
+  context 'with a cache entry' do
+    let_it_be_with_reload(:cache_entry) do
       create(
-        :virtual_registries_packages_maven_cached_response,
+        :virtual_registries_packages_maven_cache_entry,
         :upstream_checked,
         upstream: upstream,
         relative_path: '/file',
@@ -61,36 +61,36 @@ RSpec.describe 'Virtual Registries Packages Maven', :api, :js, feature_category:
 
     it 'returns the file contents from the cache' do
       expect(::Gitlab::HTTP).not_to receive(:head)
-      expect { request }.not_to change { upstream.cached_responses.count }
+      expect { request }.not_to change { upstream.cache_entries.count }
       expect(request.headers[::API::VirtualRegistries::Packages::Maven::Endpoints::SHA1_CHECKSUM_HEADER])
         .to be_an_instance_of(String)
       expect(request.headers[::API::VirtualRegistries::Packages::Maven::Endpoints::MD5_CHECKSUM_HEADER])
         .to be_an_instance_of(String)
     end
 
-    context 'with a stale cached response' do
+    context 'with a stale cache entry' do
       before do
-        cached_response.update_column(:upstream_checked_at, 2.days.ago)
+        cache_entry.update_column(:upstream_checked_at, 2.days.ago)
       end
 
-      it 'returns the file contents and refresh the cached response' do
+      it 'returns the file contents and refresh the cache entry' do
         expect(::Gitlab::HTTP).to receive(:head).and_call_original
 
-        expect { request }.to not_change { upstream.cached_responses.count }
-          .and change { cached_response.reload.upstream_checked_at }
+        expect { request }.to not_change { upstream.cache_entries.count }
+          .and change { cache_entry.reload.upstream_checked_at }
       end
 
       context 'with a wrong etag' do
         before do
-          cached_response.update_column(:upstream_etag, 'wrong')
+          cache_entry.update_column(:upstream_etag, 'wrong')
         end
 
-        it 'returns the file contents and updates the cached response' do
+        it 'returns the file contents and updates the cache entry' do
           expect(::Gitlab::HTTP).to receive(:head).and_call_original
 
-          expect { request }.to not_change { upstream.cached_responses.count }
-            .and change { cached_response.reload.upstream_checked_at }
-            .and change { cached_response.reload.upstream_etag }.from('wrong').to('"etag"')
+          expect { request }.to not_change { upstream.cache_entries.count }
+            .and change { cache_entry.reload.upstream_checked_at }
+            .and change { cache_entry.reload.upstream_etag }.from('wrong').to('"etag"')
         end
       end
     end

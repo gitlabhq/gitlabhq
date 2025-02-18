@@ -1,21 +1,23 @@
 ---
 stage: AI-powered
 group: AI Model Validation
-description: AI-powered features and functionality.
 info: This page is maintained by Developer Relations, author @dnsmichi, see https://handbook.gitlab.com/handbook/marketing/developer-relations/developer-advocacy/content/#maintained-documentation
+description: AI-powered features and functionality.
+title: GitLab Duo use cases
 ---
-
-# GitLab Duo use cases
 
 The following use cases provide practical examples, exercises, and workflows with GitLab Duo.
 Learn how to:
 
 - Refactor existing source code.
-- Use GitLab Duo Root Cause Analysis to debug problems.
+- Use GitLab Duo Root Cause Analysis to troubleshoot failed jobs.
 - Solve security vulnerabilities.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you have GitLab Self-Managed: GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
+
+{{< /alert >}}
 
 ## Use GitLab Duo to solve development challenges
 
@@ -56,7 +58,7 @@ you need to configure CI/CD.
   Please show a .gitignore and .gitlab-ci.yml configuration for a C# project.
   ```
 
-- If your CI/CD job fails, use root cause analysis to [troubleshoot failed CI/CD jobs](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
+- If your CI/CD job fails, use Root Cause Analysis to [troubleshoot failed CI/CD jobs](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
   Alternatively, you can copy the error message into
   GitLab Duo Chat, and ask for help:
 
@@ -453,8 +455,11 @@ fun main() {
 
 ### Get Started with PowerShell
 
-NOTE:
+{{< alert type="note" >}}
+
 PowerShell support is [experimental](../project/repository/code_suggestions/supported_extensions.md#add-support-for-more-languages).
+
+{{< /alert >}}
 
 1. Use GitLab Duo Chat to ask how to get started with a PowerShell script that prints the file size of the current directory.
 
@@ -550,7 +555,7 @@ introduces a security vulnerability with a [buffer overflow](https://en.wikipedi
     printf("Contents of region: %s\n", region);
 ```
 
-[SAST security scanners](../application_security/sast/analyzers.md) can detect and report the problem. Use [Vulnerability Explanation](../application_security/vulnerabilities/index.md#explaining-a-vulnerability) to understand the problem.
+[SAST security scanners](../application_security/sast/analyzers.md) can detect and report the problem. Use [Vulnerability Explanation](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability) to understand the problem.
 Vulnerability Resolution helps to generate an MR.
 If the suggested changes do not fit requirements, or might lead to problems, you can use Code Suggestions and Chat to refine. For example:
 
@@ -621,10 +626,10 @@ Resources:
 
 - [Project with source code](https://gitlab.com/gitlab-da/use-cases/ai/gitlab-duo-coffee-chat/gitlab-duo-coffee-chat-2024-02-01)
 
-## Root cause analysis use cases
+## Root Cause Analysis use cases
 
-Use root cause analysis to determine the root cause for a CI/CD
-pipeline failure. The following examples illustrate common errors, and
+Use Root Cause Analysis to determine the root cause of a CI/CD
+job failure. The following examples illustrate common errors, and
 encourage you to fork and practice finding and fixing the root cause.
 
 For more information, see the blog post [Developing GitLab Duo: Blending AI and Root Cause Analysis to fix CI/CD pipelines](https://about.gitlab.com/blog/2024/06/06/developing-gitlab-duo-blending-ai-and-root-cause-analysis-to-fix-ci-cd/).
@@ -650,7 +655,7 @@ The project [Challenge: Root Cause Analysis - Go GitLab Release Fetcher](https:/
 provides an exercise to analyze and fix CI/CD problems with a Go Tanuki app. In this exercise,
 the `build` and `docker-build` jobs are failing. When you have fixed
 the problem, the CI/CD pipeline succeeds and the `build` job prints an output.
-The `solution/` directory provides two possible solutions after root cause analysis.
+The `solution/` directory provides two possible solutions.
 
 ## Use GitLab Duo to contribute to GitLab
 
@@ -692,7 +697,7 @@ please explain this error: undefined method `icon` for
 
 ## Code generation prompts
 
-The following examples provide [code generation](../project/repository/code_suggestions/index.md#best-practices-for-code-generation)
+The following examples provide [code generation](../project/repository/code_suggestions/_index.md#best-practices-for-code-generation)
 prompts for the [supported languages](../project/repository/code_suggestions/supported_extensions.md) in GitLab Duo.
 You can use multi-line comments to refine code generation prompts.
 

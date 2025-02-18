@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting the GitLab agent for Kubernetes
 ---
-
-# Troubleshooting the GitLab agent for Kubernetes
 
 When you are using the GitLab agent for Kubernetes, you might experience issues you need to troubleshoot.
 
@@ -89,7 +88,7 @@ This error occurs when your GitLab instance is using a certificate signed by an 
 certificate authority that is unknown to the agent.
 
 To fix this issue, you can present the CA certificate file to the agent
-by [customizing the Helm installation](install/index.md#customize-the-helm-installation).
+by [customizing the Helm installation](install/_index.md#customize-the-helm-installation).
 Add `--set-file config.kasCaCert=my-custom-ca.pem` to the `helm install` command. The file should be a valid PEM or DER-encoded certificate.
 
 When you deploy `agentk` with a set `config.kasCaCert` value, the certificate is added to `configmap` and the certificate file is mounted in `/etc/ssl/certs`.
@@ -123,7 +122,7 @@ items:
 kind: List
 ```
 
-You might see a similar error in the [agent server (KAS) logs](../../../administration/logs/index.md#gitlab-agent-server) of your GitLab application server:
+You might see a similar error in the [agent server (KAS) logs](../../../administration/logs/_index.md#gitlab-agent-server) of your GitLab application server:
 
 ```json
 {"level":"error","time":"2023-03-07T20:19:48.151Z","msg":"AgentInfo()","grpc_service":"gitlab.agent.agent_configuration.rpc.AgentConfiguration","grpc_method":"GetConfiguration","error":"Get \"https://gitlab.example.com/api/v4/internal/kubernetes/agent_info\": x509: certificate signed by unknown authority"}
@@ -153,6 +152,17 @@ To apply the changes:
    ```shell
    gitlab-ctl restart gitlab-kas
    ```
+
+## Error: `Failed to register agent pod`
+
+The agent pod logs might display the error message `Failed to register agent pod. Please make sure the agent version matches the server version`.
+
+To resolve this issue, ensure that the agent version matches the GitLab version.
+
+If the versions match and the error persists:
+
+1. Make sure `gitlab-kas` is running with `gitlab-ctl status gitlab-kas`.
+1. Check the `gitlab-kas` [logs](../../../administration/logs/_index.md#gitlab-agent-server) to make sure the agent is functioning properly.
 
 ## Failed to perform vulnerability scan on workload: jobs.batch already exists
 
@@ -184,7 +194,7 @@ When you install the agent, you might encounter an error that states:
 Error: parse error at (gitlab-agent/templates/observability-secret.yaml:1): unclosed action
 ```
 
-This error is typically caused by an incompatible version of Helm. To resolve the issue, ensure that you are using a version of Helm [compatible with your version of Kubernetes](index.md#supported-kubernetes-versions-for-gitlab-features).
+This error is typically caused by an incompatible version of Helm. To resolve the issue, ensure that you are using a version of Helm [compatible with your version of Kubernetes](_index.md#supported-kubernetes-versions-for-gitlab-features).
 
 ## `GitLab Agent Server: Unauthorized` error on Dashboard for Kubernetes
 

@@ -56,9 +56,8 @@ module Ml
         candidate = ::Ml::Candidate.with_project_id_and_id(@model.project_id, @candidate_id.model_id)
         error(_("Run not found")) unless candidate
         error(_("Run has already a model version")) if candidate.model_version_id
-        error(_("Run's experiment does not belong to this model")) unless candidate.experiment.model_id == @model.id
 
-        candidate.update! model_version: @model_version
+        candidate.update! model_version: @model_version, experiment: @model.default_experiment
 
         package = candidate.package
         package.update!(name: @model_version.name, version: @model_version.version) if package

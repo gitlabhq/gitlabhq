@@ -1,11 +1,10 @@
 ---
+type: reference, howto
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
+title: Enabling the analyzer
 ---
-
-# Enabling the analyzer
 
 To run a DAST scan:
 
@@ -36,9 +35,12 @@ To create the CI/CD job:
    - [`DAST.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.latest.gitlab-ci.yml):
      Latest version of the DAST template.
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    The latest version of the template may include breaking changes. Use the
    stable template unless you need a feature provided only in the latest template.
+
+   {{< /alert >}}
 
    For more information about template versioning, see the
    [CI/CD documentation](../../../../../development/cicd/templates.md#latest-version).
@@ -47,7 +49,7 @@ To create the CI/CD job:
 
 1. Define the URL to be scanned by DAST by using one of these methods:
 
-   - Set the `DAST_TARGET_URL` [CI/CD variable](../../../../../ci/yaml/index.md#variables).
+   - Set the `DAST_TARGET_URL` [CI/CD variable](../../../../../ci/yaml/_index.md#variables).
      If set, this value takes precedence.
 
    - Adding the URL in an `environment_url.txt` file at your project's root is great for testing in

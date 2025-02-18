@@ -138,12 +138,11 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
       ‣ Monthly/Weekly count of unique users who triggered internal_events_cli_used
         Monthly/Weekly count of unique projects where internal_events_cli_used occurred
         Monthly/Weekly count of unique namespaces where internal_events_cli_used occurred
-        Monthly/Weekly count of internal_events_cli_used occurrences
-        Total count of internal_events_cli_used occurrences
+        Monthly/Weekly/Total count of internal_events_cli_used occurrences
       TEXT
 
       with_cli_thread do
-        expect { plain_last_lines(5) }.to eventually_equal_cli_text(expected_output)
+        expect { plain_last_lines(4) }.to eventually_equal_cli_text(expected_output)
       end
     end
 
@@ -159,21 +158,20 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
         select_event_from_list
 
         expected_output = <<~TEXT.chomp
-        ‣ Monthly/Weekly count of unique users who triggered internal_events_cli_used
+        ‣ Monthly count of unique users who triggered internal_events_cli_used
           Monthly/Weekly count of unique projects where internal_events_cli_used occurred
           Monthly/Weekly count of unique namespaces where internal_events_cli_used occurred
-          Monthly count of internal_events_cli_used occurrences
-          Total count of internal_events_cli_used occurrences
-        ✘ Weekly count of internal_events_cli_used occurrences (already defined)
+          Monthly/Weekly/Total count of internal_events_cli_used occurrences
+        ✘ Weekly count of unique users who triggered internal_events_cli_used (already defined)
         TEXT
 
         with_cli_thread do
-          expect { plain_last_lines(6) }.to eventually_equal_cli_text(expected_output)
+          expect { plain_last_lines(5) }.to eventually_equal_cli_text(expected_output)
         end
       end
     end
 
-    context 'with an existing total metric' do
+    context 'with an existing total/monthly/weekly metric' do
       before do
         File.write(
           'ee/config/metrics/counts_all/count_total_internal_events_cli_used.yml',
@@ -188,12 +186,11 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
         ‣ Monthly/Weekly count of unique users who triggered internal_events_cli_used
           Monthly/Weekly count of unique projects where internal_events_cli_used occurred
           Monthly/Weekly count of unique namespaces where internal_events_cli_used occurred
-          Monthly/Weekly count of internal_events_cli_used occurrences
-        ✘ Total count of internal_events_cli_used occurrences (already defined)
+        ✘ Monthly/Weekly/Total count of internal_events_cli_used occurrences (already defined)
         TEXT
 
         with_cli_thread do
-          expect { plain_last_lines(5) }.to eventually_equal_cli_text(expected_output)
+          expect { plain_last_lines(4) }.to eventually_equal_cli_text(expected_output)
         end
       end
     end
@@ -243,13 +240,12 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
       expected_output = <<~TEXT.chomp
       ‣ Monthly/Weekly count of unique users who triggered any of 2 events
         Monthly/Weekly count of unique namespaces where any of 2 events occurred
-        Monthly/Weekly count of any of 2 events occurrences
-        Total count of any of 2 events occurrences
+        Monthly/Weekly/Total count of any of 2 events occurrences
       ✘ Monthly/Weekly count of unique projects where any of 2 events occurred (already defined)
       TEXT
 
       with_cli_thread do
-        expect { plain_last_lines(5) }.to eventually_equal_cli_text(expected_output)
+        expect { plain_last_lines(4) }.to eventually_equal_cli_text(expected_output)
       end
     end
   end
@@ -268,15 +264,14 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
       ])
 
       expected_output = <<~TEXT.chomp
-      ‣ Monthly/Weekly count of internal_events_cli_opened occurrences
-        Total count of internal_events_cli_opened occurrences
+      ‣ Monthly/Weekly/Total count of internal_events_cli_opened occurrences
       ✘ Monthly/Weekly count of unique users who triggered internal_events_cli_opened (user unavailable)
       ✘ Monthly/Weekly count of unique projects where internal_events_cli_opened occurred (project unavailable)
       ✘ Monthly/Weekly count of unique namespaces where internal_events_cli_opened occurred (namespace unavailable)
       TEXT
 
       with_cli_thread do
-        expect { plain_last_lines(5) }.to eventually_equal_cli_text(expected_output)
+        expect { plain_last_lines(4) }.to eventually_equal_cli_text(expected_output)
       end
     end
   end
@@ -339,10 +334,8 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
         Monthly/Weekly count of unique users who triggered internal_events_cli_used where label/property/value is...
         Monthly/Weekly count of unique projects where internal_events_cli_used occurred where label/property/value is...
         Monthly/Weekly count of unique namespaces where internal_events_cli_used occurred where label/property/value is...
-        Monthly/Weekly count of internal_events_cli_used occurrences
-        Monthly/Weekly count of internal_events_cli_used occurrences where label/property/value is...
-        Total count of internal_events_cli_used occurrences
-        Total count of internal_events_cli_used occurrences where label/property/value is...
+        Monthly/Weekly/Total count of internal_events_cli_used occurrences
+        Monthly/Weekly/Total count of internal_events_cli_used occurrences where label/property/value is...
         Monthly/Weekly count of unique values for 'label' from internal_events_cli_used occurrences
         Monthly/Weekly count of unique values for 'property' from internal_events_cli_used occurrences
         Monthly/Weekly count of unique values for 'value' from internal_events_cli_used occurrences
@@ -352,7 +345,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
       TEXT
 
       with_cli_thread do
-        expect { plain_last_lines(16) }.to eventually_equal_cli_text(expected_output)
+        expect { plain_last_lines(14) }.to eventually_equal_cli_text(expected_output)
       end
     end
 
@@ -383,10 +376,8 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
           Monthly/Weekly count of unique users who triggered any of 2 events where label/value/property is...
           Monthly/Weekly count of unique projects where any of 2 events occurred where label/value/property is...
           Monthly/Weekly count of unique namespaces where any of 2 events occurred where label/value/property is...
-          Monthly/Weekly count of any of 2 events occurrences
-          Monthly/Weekly count of any of 2 events occurrences where label/value/property is...
-          Total count of any of 2 events occurrences
-          Total count of any of 2 events occurrences where label/value/property is...
+          Monthly/Weekly/Total count of any of 2 events occurrences
+          Monthly/Weekly/Total count of any of 2 events occurrences where label/value/property is...
           Monthly/Weekly count of unique values for 'label' from any of 2 events occurrences
           Monthly/Weekly count of unique values for 'value' from any of 2 events occurrences
           Monthly/Weekly count of unique values for 'label' from any of 2 events occurrences where value/property is...
@@ -395,7 +386,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
         TEXT
 
         with_cli_thread do
-          expect { plain_last_lines(15) }.to eventually_equal_cli_text(expected_output)
+          expect { plain_last_lines(13) }.to eventually_equal_cli_text(expected_output)
         end
       end
 
@@ -443,6 +434,22 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
     end
 
     context "when creating a single metric" do
+      let(:metrics) do
+        [
+          { events: events.map { |e| { 'name' => e[:action] } }, time_frame: '7d' },
+          { events: events.map { |e| { 'name' => e[:action] } }, time_frame: '28d' }
+        ]
+      end
+
+      before do
+        metrics.each do |metric|
+          File.write(
+            "config/metrics/counts_#{metric[:time_frame]}/count_total_cli_events_#{metric[:time_frame]}.yml",
+            metric.transform_keys(&:to_s).to_yaml
+          )
+        end
+      end
+
       it 'shows link to the metric dashboard' do
         queue_cli_inputs([
           "2\n", # Enum-select: New Metric   -- calculate how often one or more existing events occur over time
@@ -452,8 +459,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
           "\e[B", # Arrow down to: internal_events_cli_used
           ' ', # Multi-select: internal_events_cli_used
           "\n", # Submit selections
-          "\e[B", # Arrow down to: Total count
-          "\n", # Select: Total count
+          "\n", # Select: Monthly/Weekly/Total count
           "where a definition file was created with the CLI\n", # Input description
           "1\n", # Select: Copy & continue
           "\e[B \n", # Skip product categories

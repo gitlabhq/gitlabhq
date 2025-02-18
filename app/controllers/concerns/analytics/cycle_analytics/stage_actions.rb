@@ -85,7 +85,11 @@ module Analytics
       end
 
       def list_service
-        Analytics::CycleAnalytics::Stages::ListService.new(parent: namespace, current_user: current_user, params: list_params)
+        Analytics::CycleAnalytics::Stages::ListService.new(
+          parent: namespace,
+          current_user: current_user,
+          params: list_params
+        )
       end
 
       def cycle_analytics_configuration(stages)

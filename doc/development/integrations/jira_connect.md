@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GitLab for Jira Cloud app development
 ---
-
-# GitLab for Jira Cloud app development
 
 Developers have two options for how set up a development environment for the GitLab for Jira Cloud app:
 

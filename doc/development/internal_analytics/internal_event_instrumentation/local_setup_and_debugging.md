@@ -2,13 +2,15 @@
 stage: Monitor
 group: Analytics Instrumentation
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Local setup and debugging
 ---
 
-# Local setup and debugging
+{{< alert type="note" >}}
 
-NOTE:
 To track user interactions in the browser, browser settings, such as privacy filters (e.g.
 AdBlock, uBlock) and Do-Not-Track (DNT). [Read more about settings that affects tracking](https://snowplow.io/blog/how-many-visitors-block-your-tracking/).
+
+{{< /alert >}}
 
 Internal events are using a tool called Snowplow under the hood. To develop and test internal events, there are several tools to test frontend and backend events:
 
@@ -84,7 +86,7 @@ The Monitor's Keyboard commands:
 
 ## Snowplow Micro
 
-By default, self-managed instances do not collect event data through Snowplow. We can use [Snowplow Micro](https://docs.snowplow.io/docs/testing-debugging/snowplow-micro/what-is-micro/), a Docker based Snowplow collector, to test events locally:
+By default, GitLab Self-Managed instances do not collect event data through Snowplow. We can use [Snowplow Micro](https://docs.snowplow.io/docs/testing-debugging/snowplow-micro/what-is-micro/), a Docker based Snowplow collector, to test events locally:
 
 1. Ensure [Docker is installed and working](https://www.docker.com/get-started/).
 
@@ -153,7 +155,7 @@ It works in production, staging, and local development environments. It is espec
 
 ## Remote event collector
 
-On GitLab.com events are sent to a collector configured by GitLab. By default, self-managed instances do not have a collector configured and do not collect data with Snowplow.
+On GitLab.com events are sent to a collector configured by GitLab. By default, GitLab Self-Managed instances do not have a collector configured and do not collect data with Snowplow.
 
 You can configure your instance to use a custom Snowplow collector.
 

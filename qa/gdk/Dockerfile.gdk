@@ -1,4 +1,4 @@
-ARG GDK_SHA=d2c7d9655805919511f234743ca2b3d8e178ac6f
+ARG GDK_SHA=ec2dbaf1ea2d19566d1d72c1ddc1815ff501a9ad
 # Use tag prefix when running on 'stable' branch to make sure 'protected' image is used which is not deleted by registry cleanup
 ARG GDK_BASE_TAG_PREFIX
 
@@ -50,8 +50,8 @@ RUN set -eux; \
     cd gitaly \
     && go clean -cache -modcache -r \
     && rm -rf _build/cache \
-              _build/deps \
-              _build/intermediate
+    _build/deps \
+    _build/intermediate
 
 # Install gitlab gem dependencies
 #
@@ -110,7 +110,8 @@ RUN set -eux; \
     && cp .ruby-version ./gitlab/ \
     && cp .tool-versions ./gitlab/ \
     && make redis/redis.conf all \
-    && gdk kill
+    && gdk kill \
+    && rm -rf ./gitlab/.git
 
 ENTRYPOINT [ "/home/gdk/entrypoint" ]
 CMD [ "gdk", "tail" ]

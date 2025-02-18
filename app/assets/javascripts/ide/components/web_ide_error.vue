@@ -28,7 +28,7 @@ export default {
     primaryButtonText: __('Reload'),
     secondaryButtonText: __('Sign out'),
   },
-  REPORT_ISSUE_URL: helpPagePath('user/project/web_ide/index', { anchor: '#report-a-problem' }),
+  REPORT_ISSUE_URL: helpPagePath('user/project/web_ide/_index', { anchor: '#report-a-problem' }),
 };
 </script>
 <template>

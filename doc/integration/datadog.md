@@ -2,13 +2,15 @@
 stage: Verify
 group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Datadog
 ---
 
-# Datadog
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The Datadog integration enables you to connect your GitLab projects to [Datadog](https://www.datadoghq.com/),
 synchronizing repository metadata to enrich your Datadog telemetry, have Datadog comment on Merge Requests, and send CI/CD pipeline and job information to Datadog.
@@ -43,9 +45,12 @@ failures and performance issues.
 
 For more information, see the [Datadog CI Visibility documentation](https://docs.datadoghq.com/continuous_integration/pipelines/?tab=gitlab).
 
-WARNING:
+{{< alert type="warning" >}}
+
 Datadog CI Visibility is priced per committer. Using this feature might affect your Datadog bill.
 For details, see the [Datadog pricing page](https://www.datadoghq.com/pricing/?product=ci-pipeline-visibility#products).
+
+{{< /alert >}}
 
 This feature is based on [Webhooks](../user/project/integrations/webhooks.md),
 and only requires configuration in GitLab:

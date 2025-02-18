@@ -78,6 +78,7 @@ export const mockGroups = [
     webUrl: 'http://localhost/some-group',
     defaultPermissions: false,
     jobTokenPolicies: ['READ_JOBS', 'ADMIN_CONTAINERS'],
+    autopopulated: true,
     __typename: 'Group',
   },
   {
@@ -87,6 +88,7 @@ export const mockGroups = [
     webUrl: 'http://localhost/another-group',
     defaultPermissions: true,
     jobTokenPolicies: [],
+    autopopulated: true,
     __typename: 'Group',
   },
   {
@@ -96,6 +98,7 @@ export const mockGroups = [
     webUrl: 'http://localhost/a-sub-group',
     defaultPermissions: false,
     jobTokenPolicies: [],
+    autopopulated: false,
     __typename: 'Group',
   },
 ];
@@ -113,6 +116,7 @@ export const mockProjects = [
     defaultPermissions: false,
     jobTokenPolicies: ['READ_JOBS'],
     isLocked: false,
+    autopopulated: true,
     __typename: 'Project',
   },
   {
@@ -127,6 +131,7 @@ export const mockProjects = [
     defaultPermissions: true,
     jobTokenPolicies: [],
     isLocked: true,
+    autopopulated: false,
     __typename: 'Project',
   },
 ];
@@ -167,10 +172,10 @@ export const inboundGroupsAndProjectsWithScopeResponse = {
       ciJobTokenScope: {
         __typename: 'CiJobTokenScopeType',
         inboundAllowlist: {
-          __typename: 'ProjectConnection',
+          __typename: 'CiJobTokenAccessibleProjectConnection',
           nodes: [
             {
-              __typename: 'Project',
+              __typename: 'CiJobTokenAccessibleProject',
               fullPath: 'root/ci-project',
               id: 'gid://gitlab/Project/23',
               name: 'ci-project',
@@ -180,10 +185,10 @@ export const inboundGroupsAndProjectsWithScopeResponse = {
           ],
         },
         groupsAllowlist: {
-          __typename: 'GroupConnection',
+          __typename: 'CiJobTokenAccessibleGroupConnection',
           nodes: [
             {
-              __typename: 'Group',
+              __typename: 'CiJobTokenAccessibleGroup',
               fullPath: 'root/ci-group',
               id: 'gid://gitlab/Group/45',
               name: 'ci-group',
@@ -192,6 +197,8 @@ export const inboundGroupsAndProjectsWithScopeResponse = {
             },
           ],
         },
+        groupAllowlistAutopopulatedIds: ['gid://gitlab/Group/45'],
+        inboundAllowlistAutopopulatedIds: ['gid://gitlab/Project/23'],
       },
     },
   },
@@ -262,7 +269,7 @@ export const mockAuthLogsResponse = (hasNextPage = false) => ({
             __typename: 'CiJobTokenAuthLog',
             lastAuthorizedAt: '2024-10-25',
             originProject: {
-              __typename: 'Project',
+              __typename: 'CiJobTokenAccessibleProject',
               fullPath: 'root/project-that-triggers-external-pipeline',
               path: 'project-that-triggers-external-pipeline',
               avatarUrl: null,
@@ -280,3 +287,26 @@ export const mockAuthLogsResponse = (hasNextPage = false) => ({
     },
   },
 });
+
+export const mockAutopopulateAllowlistResponse = {
+  data: {
+    ciJobTokenScopeAutopopulateAllowlist: {
+      status: 'complete',
+      errors: [],
+      __typename: 'CiJobTokenScopeAutopopulateAllowlistPayload',
+    },
+  },
+};
+
+export const mockAutopopulateAllowlistError = {
+  data: {
+    ciJobTokenScopeAutopopulateAllowlist: {
+      errors: [
+        {
+          message: 'An error occurred',
+        },
+      ],
+      __typename: 'CiJobTokenScopeAutopopulateAllowlistPayload',
+    },
+  },
+};

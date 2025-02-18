@@ -2,14 +2,21 @@
 
 require 'spec_helper'
 
-RSpec.describe Preloaders::GroupRootAncestorPreloader do
-  let_it_be(:user) { create(:user) }
+RSpec.describe Preloaders::GroupRootAncestorPreloader, feature_category: :groups_and_projects do
   let_it_be(:root_parent1) { create(:group, :private, name: 'root-1', path: 'root-1') }
   let_it_be(:root_parent2) { create(:group, :private, name: 'root-2', path: 'root-2') }
   let_it_be(:guest_group) { create(:group, name: 'public guest', path: 'public-guest') }
-  let_it_be(:private_maintainer_group) { create(:group, :private, name: 'b private maintainer', path: 'b-private-maintainer', parent: root_parent1) }
-  let_it_be(:private_developer_group) { create(:group, :private, project_creation_level: nil, name: 'c public developer', path: 'c-public-developer') }
-  let_it_be(:public_maintainer_group) { create(:group, :private, name: 'a public maintainer', path: 'a-public-maintainer', parent: root_parent2) }
+  let_it_be(:private_maintainer_group) do
+    create(:group, :private, name: 'b private maintainer', path: 'b-private-maintainer', parent: root_parent1)
+  end
+
+  let_it_be(:private_developer_group) do
+    create(:group, :private, project_creation_level: nil, name: 'c public developer', path: 'c-public-developer')
+  end
+
+  let_it_be(:public_maintainer_group) do
+    create(:group, :private, name: 'a public maintainer', path: 'a-public-maintainer', parent: root_parent2)
+  end
 
   let(:root_query_regex) do
     if Feature.enabled?(:use_sql_functions_for_primary_key_lookups, Feature.current_request)

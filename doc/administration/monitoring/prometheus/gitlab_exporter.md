@@ -2,13 +2,15 @@
 stage: Systems
 group: Cloud Connector
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab exporter
 ---
 
-# GitLab exporter
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The [GitLab exporter](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter) enables you to
 measure various GitLab metrics pulled from Redis and the database in Linux package
@@ -18,7 +20,7 @@ For self-compiled installations, you must install and configure it yourself.
 
 To enable the GitLab exporter in a Linux package instance:
 
-1. [Enable Prometheus](index.md#configuring-prometheus).
+1. [Enable Prometheus](_index.md#configuring-prometheus).
 1. Edit `/etc/gitlab/gitlab.rb`.
 1. Add, or find and uncomment, the following line, making sure it's set to `true`:
 

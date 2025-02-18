@@ -149,12 +149,14 @@ class Group < Namespace
   delegate :runner_token_expiration_interval, :runner_token_expiration_interval=, :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
   delegate :subgroup_runner_token_expiration_interval, :subgroup_runner_token_expiration_interval=, :subgroup_runner_token_expiration_interval_human_readable, :subgroup_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
   delegate :project_runner_token_expiration_interval, :project_runner_token_expiration_interval=, :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
+  delegate :force_pages_access_control, :force_pages_access_control=, to: :namespace_settings, allow_nil: true
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :group_feature, update_only: true
 
   validate :visibility_level_allowed_by_projects
   validate :visibility_level_allowed_by_sub_groups
+  validate :visibility_level_allowed_by_organization, if: :should_validate_visibility_level?
   validate :visibility_level_allowed_by_parent
   validate :two_factor_authentication_allowed
   validates :variables, nested_attributes_duplicates: { scope: :environment_scope }
@@ -508,6 +510,12 @@ class Group < Namespace
     human_name
   end
 
+  def visibility_level_allowed_by_organization?(level = self.visibility_level)
+    return true unless organization
+
+    level <= organization.visibility_level
+  end
+
   def visibility_level_allowed_by_parent?(level = self.visibility_level)
     return true unless parent_id && parent_id.nonzero?
 
@@ -523,7 +531,8 @@ class Group < Namespace
   end
 
   def visibility_level_allowed?(level = self.visibility_level)
-    visibility_level_allowed_by_parent?(level) &&
+    visibility_level_allowed_by_organization?(level) &&
+      visibility_level_allowed_by_parent?(level) &&
       visibility_level_allowed_by_projects?(level) &&
       visibility_level_allowed_by_sub_groups?(level)
   end
@@ -889,6 +898,10 @@ class Group < Namespace
     # TODO: group hooks https://gitlab.com/gitlab-org/gitlab/-/issues/216904
   end
 
+  def find_or_initialize_integration(integration)
+    Integration.find_or_initialize_non_project_specific_integration(integration, group_id: id)
+  end
+
   def execute_integrations(data, hooks_scope)
     integrations.public_send(hooks_scope).each do |integration| # rubocop:disable GitlabSecurity/PublicSend
       integration.async_execute(data)
@@ -928,7 +941,7 @@ class Group < Namespace
   end
 
   def has_project_with_service_desk_enabled?
-    Gitlab::ServiceDesk.supported? && all_projects.service_desk_enabled.exists?
+    ::ServiceDesk.supported? && all_projects.service_desk_enabled.exists?
   end
   strong_memoize_attr :has_project_with_service_desk_enabled?
 
@@ -991,12 +1004,12 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items_alpha)
   end
 
-  def glql_integration_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:glql_integration)
+  def continue_indented_text_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:continue_indented_text, type: :wip)
   end
 
-  def wiki_comments_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:wiki_comments, type: :wip)
+  def glql_integration_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:glql_integration)
   end
 
   # Note: this method is overridden in EE to check the work_item_epics feature flag  which also enables this feature
@@ -1133,6 +1146,16 @@ class Group < Namespace
 
   def path_changed_hook
     system_hook_service.execute_hooks_for(self, :rename)
+  end
+
+  def should_validate_visibility_level?
+    new_record? || changes.has_key?(:visibility_level)
+  end
+
+  def visibility_level_allowed_by_organization
+    return if visibility_level_allowed_by_organization?
+
+    errors.add(:visibility_level, "#{visibility} is not allowed since the organization has a #{organization.visibility} visibility.")
   end
 
   def visibility_level_allowed_by_parent

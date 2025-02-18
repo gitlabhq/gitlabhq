@@ -3,6 +3,7 @@
 module ContainerRegistry
   class RecordDataRepairDetailWorker
     include ApplicationWorker
+    include CronjobChildWorker
     include ExclusiveLeaseGuard
     include LimitedCapacity::Worker
     include Gitlab::Utils::StrongMemoize

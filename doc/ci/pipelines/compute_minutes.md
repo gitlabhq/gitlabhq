@@ -1,17 +1,23 @@
 ---
 stage: Verify
 group: Pipeline Execution
-description: Calculations, quotas, purchase information.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Calculations, quotas, purchase information.
+title: Compute minutes
 ---
 
-# Compute minutes
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "compute minutes" in GitLab 16.1.
+{{< /details >}}
+
+{{< history >}}
+
+- [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "compute minutes" in GitLab 16.1.
+
+{{< /history >}}
 
 The amount of time that projects can use to run jobs on [instance runners](../runners/runners_scope.md#instance-runners)
 on GitLab.com is limited. This limit is tracked with a compute quota. [Project runners](../runners/runners_scope.md#project-runners)
@@ -25,12 +31,12 @@ On GitLab.com:
 
 - Compute quotas are enabled for all projects, but certain
   projects [consume compute minutes at a slower rate](#cost-factor).
-- The base monthly compute quota for a GitLab.com [namespace](../../user/namespace/index.md)
+- The base monthly compute quota for a GitLab.com [namespace](../../user/namespace/_index.md)
   is determined by its [license tier](https://about.gitlab.com/pricing/).
 - You can [purchase additional compute minutes](../../subscriptions/gitlab_com/compute_minutes.md)
   if you need more than the amount of compute in your monthly quota.
 
-Compute quotas [are disabled by default on self-managed instances](../../administration/cicd/compute_minutes.md).
+Compute quotas [are disabled by default on GitLab Self-Managed](../../administration/cicd/compute_minutes.md).
 
 ## View compute usage
 
@@ -44,7 +50,11 @@ In some cases, the quota limit is replaced by one of the following labels:
 
 ### View usage quota reports for a group
 
-> - Displaying instance runners duration per project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355666) in GitLab 15.0.
+{{< history >}}
+
+- Displaying instance runners duration per project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355666) in GitLab 15.0.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -63,7 +73,11 @@ subgroups, sorted in descending order of compute usage.
 
 ### View usage quota reports for a personal namespace
 
-> - Displaying instance runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
+{{< history >}}
+
+- Displaying instance runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
+
+{{< /history >}}
 
 You can view the compute usage for your personal namespace:
 
@@ -79,7 +93,7 @@ with compute usage or instance runners usage in the current month only.
 On GitLab.com an in-app banner is displayed and an email notification sent to the
 namespace owners when the remaining compute minutes is:
 
-- Less than 30% of the quota.
+- Less than 25% of the quota.
 - Less than 5% of the quota.
 - Completely used (zero minutes remaining).
 
@@ -91,7 +105,7 @@ In pipelines that have already started:
   by 1,000 compute minutes. After the 1,000 compute minute grace period, any remaining running jobs
   are also dropped.
 
-If you're using GitLab.com, you can [purchase additional packs of compute minutes](../../subscriptions/gitlab_com/index.md)
+If you're using GitLab.com, you can [purchase additional packs of compute minutes](../../subscriptions/gitlab_com/_index.md)
 to continue running CI/CD pipelines on instance runners.
 
 Project runners are not affected by the compute quota and continue processing jobs.
@@ -122,8 +136,8 @@ The compute used by one pipeline is the total compute minutes used by all the jo
 that ran in the pipeline. Jobs can run concurrently, so the total compute usage
 can be higher than the end-to-end duration of a pipeline.
 
-[Trigger jobs](../../ci/yaml/index.md#trigger) do not execute on runners, so they do not
-consume compute minutes, even when using [`strategy:depend`](../yaml/index.md#triggerstrategy)
+[Trigger jobs](../yaml/_index.md#trigger) do not execute on runners, so they do not
+consume compute minutes, even when using [`strategy:depend`](../yaml/_index.md#triggerstrategy)
 to wait for the [downstream pipeline](../pipelines/downstream_pipelines.md) status.
 The triggered downstream pipeline consumes compute minutes the same as other pipelines.
 
@@ -140,7 +154,7 @@ The default cost factors for jobs running on instance runners on GitLab.com are:
 - Discounted dynamically for [community contributions to GitLab projects](#community-contributions-to-gitlab-projects).
 - Increased if you use [different types of instance runners](#gitlab-hosted-runner-cost-factors).
 
-The cost factors on self-managed instances [are different](../../administration/cicd/compute_minutes.md).
+The cost factors on GitLab Self-Managed [are different](../../administration/cicd/compute_minutes.md).
 
 #### Community contributions to GitLab projects
 
@@ -208,8 +222,8 @@ use to reduce your usage:
 - If you are using project mirrors, ensure that [pipelines for mirror updates](../../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates)
   is disabled.
 - Reduce the frequency of [scheduled pipelines](schedules.md).
-- [Skip pipelines](index.md#skip-a-pipeline) when not needed.
-- Use [interruptible](../yaml/index.md#interruptible) jobs which can be auto-canceled
+- [Skip pipelines](_index.md#skip-a-pipeline) when not needed.
+- Use [interruptible](../yaml/_index.md#interruptible) jobs which can be auto-canceled
   if a new pipeline starts.
 - If a job doesn't have to run in every pipeline, use [`rules`](../jobs/job_control.md)
   to make it only run when it's needed.

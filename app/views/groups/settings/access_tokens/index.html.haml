@@ -51,10 +51,9 @@
       - c.with_body do
         #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, backend_pagination: 'true', initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This group has no active access tokens.'), show_role: true } }
 
-    - if Feature.enabled?(:retain_resource_access_token_user_after_revoke, @group.root_ancestor)
-      .gl-mt-5
-        = render ::Layouts::CrudComponent.new(_('Inactive group access tokens'),
-          icon: 'token',
-          count: @inactive_access_tokens_size) do |c|
-          - c.with_body do
-            #js-inactive-access-token-table-app{ data: { no_inactive_tokens_message: _('This group has no inactive access tokens.'), pagination_url: inactive_group_settings_access_tokens_url(@group, format: :json) } }
+    .gl-mt-5
+      = render ::Layouts::CrudComponent.new(_('Inactive group access tokens'),
+        icon: 'token',
+        count: @inactive_access_tokens_size) do |c|
+        - c.with_body do
+          #js-inactive-access-token-table-app{ data: { no_inactive_tokens_message: _('This group has no inactive access tokens.'), pagination_url: inactive_group_settings_access_tokens_url(@group, format: :json) } }

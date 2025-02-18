@@ -63,8 +63,6 @@ RSpec.describe Ci::JobToken::Jwt, feature_category: :secrets_management do
 
     context 'with a valid token' do
       it 'successfully decodes the token with subject' do
-        decoded_token = described_class.decode(encoded_token)
-
         expect(decoded_token).to be_present
         expect(decoded_token.job).to eq(job)
       end
@@ -163,9 +161,9 @@ RSpec.describe Ci::JobToken::Jwt, feature_category: :secrets_management do
   describe '#scoped_user' do
     let(:encoded_token) { described_class.encode(job) }
     let(:decoded_token) { described_class.decode(encoded_token) }
-    let(:scoped_user) { create(:user) }
+    let_it_be(:scoped_user) { create(:user) }
 
-    context 'when the job doe not have scoped user' do
+    context 'when the job does not have scoped user' do
       it 'does not encode the scoped user in the JWT payload' do
         expect(decoded_token.scoped_user).to be_nil
       end
@@ -179,6 +177,24 @@ RSpec.describe Ci::JobToken::Jwt, feature_category: :secrets_management do
       it 'encodes the scoped user in the JWT payload' do
         expect(decoded_token.scoped_user).to eq(scoped_user)
       end
+    end
+  end
+
+  describe '#cell_id' do
+    let(:encoded_token) { described_class.encode(job) }
+    let(:decoded_token) { described_class.decode(encoded_token) }
+
+    it 'encodes the cell_id in the JWT payload' do
+      expect(decoded_token.cell_id).to eq(Gitlab.config.cell.id)
+    end
+  end
+
+  describe '#organization' do
+    let(:encoded_token) { described_class.encode(job) }
+    let(:decoded_token) { described_class.decode(encoded_token) }
+
+    it 'encodes the organization in the JWT payload' do
+      expect(decoded_token.organization).to eq(job.project.organization)
     end
   end
 

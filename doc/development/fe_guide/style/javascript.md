@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: JavaScript style guide
 ---
-
-# JavaScript style guide
 
 We use [the Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) and its accompanying
 linter to manage most of our JavaScript style guidelines.
@@ -12,8 +11,11 @@ linter to manage most of our JavaScript style guidelines.
 In addition to the style guidelines set by Airbnb, we also have a few specific rules
 listed below.
 
-NOTE:
+{{< alert type="note" >}}
+
 You can run ESLint locally by running `yarn run lint:eslint:all` or `yarn run lint:eslint $PATH_TO_FILE`.
+
+{{< /alert >}}
 
 ## Avoid `forEach`
 
@@ -122,8 +124,11 @@ things.map(parseInt);
 things.map(Number);
 ```
 
-NOTE:
-If the String could represent a non-integer (i.e., it includes a decimal), **do not** use `parseInt`. Consider `Number` or `parseFloat` instead.
+{{< alert type="note" >}}
+
+If the String could represent a non-integer (a number that includes a decimal), **do not** use `parseInt`. Consider `Number` or `parseFloat` instead.
+
+{{< /alert >}}
 
 ## CSS Selectors - Use `js-` prefix
 

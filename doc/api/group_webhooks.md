@@ -2,13 +2,15 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group webhooks API
 ---
 
-# Group webhooks API
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Interact with group [webhooks](../user/project/integrations/webhooks.md) by using the REST API. Also called group hooks.
 These are different from [system hooks](system_hooks.md) that are system wide and [project webhooks](project_webhooks.md) that are limited to one project.
@@ -29,7 +31,7 @@ Supported attributes:
 
 | Attribute | Type            | Required | Description |
 | --------- | --------------- | -------- | ----------- |
-| `id`      | integer/string  | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer/string  | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -96,7 +98,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer        | yes      | The ID of a group hook. |
 
 Example request:
@@ -149,7 +151,11 @@ Example response:
 
 ## Get group hook events
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151048) in GitLab 17.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151048) in GitLab 17.3.
+
+{{< /history >}}
 
 Get a list of events for a specific group hook in the past seven days from start date.
 
@@ -161,7 +167,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description                                                                                                                                                                                 |
 |-----------|-------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths).                                                                                                          |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).                                                                                                          |
 | `hook_id` | integer           | Yes      | The ID of a project hook.                                                                                                                                                                   |
 | `status` | integer or string | No | The response status code of the events, for example: `200` or `500`. You can search by status category: `successful` (200-299), `client_failure` (400-499), and `server_failure` (500-599). |
 | `page`             | integer | No | Page to retrieve. Defaults to `1`.                                                                                                                                                          |
@@ -426,7 +432,11 @@ Example response:
 
 ### Resend group hook event
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151130) in GitLab 17.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151130) in GitLab 17.4.
+
+{{< /history >}}
 
 Resends a specific hook event.
 
@@ -442,7 +452,7 @@ Supported attributes:
 
 | Attribute | Type             | Required | Description             |
 |-----------|------------------|----------|-------------------------|
-| `id`      | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer          | Yes      | The ID of a group hook. |
 | `hook_event_id`      | integer | Yes      | The ID of a hook event. |
 
@@ -472,16 +482,16 @@ Supported attributes:
 
 | Attribute                    | Type           | Required | Description |
 | -----------------------------| -------------- |----------| ----------- |
-| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `url`                        | string         | yes      | The hook URL. |
 | `name`                       | string         | no       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
 | `description`                | string         | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
 | `push_events`                | boolean        | no       | Trigger hook on push events. |
 | `push_events_branch_filter`  | string         | no       | Trigger hook on push events for matching branches only. |
 | `branch_filter_strategy`     | string         | no       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
-| `issues_events`              | boolean        | no       | Trigger hook on issues events. |
-| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events. |
-| `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events. |
+| `issues_events`              | boolean        | no       | Trigger hook on issue events. |
+| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issue events. |
+| `merge_requests_events`      | boolean        | no       | Trigger hook on merge request events. |
 | `tag_push_events`            | boolean        | no       | Trigger hook on tag push events. |
 | `note_events`                | boolean        | no       | Trigger hook on note events. |
 | `confidential_note_events`   | boolean        | no       | Trigger hook on confidential note events. |
@@ -558,7 +568,7 @@ Supported attributes:
 
 | Attribute                    | Type           | Required | Description |
 | ---------------------------- | -------------- | -------- | ----------- |
-| `id`                         | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`                         | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id`                    | integer        | yes      | The ID of the group hook. |
 | `url`                        | string         | yes      | The hook URL. |
 | `name`                       | string         | no       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
@@ -566,9 +576,9 @@ Supported attributes:
 | `push_events`                | boolean        | no       | Trigger hook on push events. |
 | `push_events_branch_filter`  | string         | no       | Trigger hook on push events for matching branches only. |
 | `branch_filter_strategy`     | string         | no       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
-| `issues_events`              | boolean        | no       | Trigger hook on issues events. |
-| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events. |
-| `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events. |
+| `issues_events`              | boolean        | no       | Trigger hook on issue events. |
+| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issue events. |
+| `merge_requests_events`      | boolean        | no       | Trigger hook on merge request events. |
 | `tag_push_events`            | boolean        | no       | Trigger hook on tag push events. |
 | `note_events`                | boolean        | no       | Trigger hook on note events. |
 | `confidential_note_events`   | boolean        | no       | Trigger hook on confidential note events. |
@@ -652,7 +662,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer        | yes      | The ID of the group hook. |
 
 Example request:
@@ -665,8 +675,12 @@ On success, no message is returned.
 
 ## Trigger a test group hook
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455589) in GitLab 17.1.
-> - Special rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150486) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`. Enabled by default.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455589) in GitLab 17.1.
+- Special rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150486) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`. Enabled by default.
+
+{{< /history >}}
 
 Trigger a test hook for a specified group.
 
@@ -681,7 +695,7 @@ POST /groups/:id/hooks/:hook_id/test/:trigger
 | Attribute | Type              | Required | Description                                                                                                                                                                                                                                                |
 |-----------|-------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `hook_id` | integer           | Yes      | The ID of the group hook.                                                                                                                                                                                                                                  |
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths).                                                                                                                                                                           |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).                                                                                                                                                                           |
 | `trigger` | string            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `emoji_events`, or `resource_access_token_events`. |
 
 Example request:
@@ -698,7 +712,11 @@ Example response:
 
 ## Set a custom header
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+
+{{< /history >}}
 
 Sets a custom header.
 
@@ -710,7 +728,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer           | Yes      | The ID of the group hook. |
 | `key`     | string            | Yes      | The key of the custom header. |
 | `value`   | string            | Yes      | The value of the custom header. |
@@ -725,7 +743,11 @@ On success, no message is returned.
 
 ## Delete a custom header
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+
+{{< /history >}}
 
 Deletes a custom header.
 
@@ -737,7 +759,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer           | Yes      | The ID of the group hook. |
 | `key`     | string            | Yes      | The key of the custom header. |
 
@@ -751,7 +773,11 @@ On success, no message is returned.
 
 ## Set a URL variable
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+
+{{< /history >}}
 
 ```plaintext
 PUT /groups/:id/hooks/:hook_id/url_variables/:key
@@ -761,7 +787,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer           | Yes      | The ID of the group hook. |
 | `key`     | string            | Yes      | The key of the URL variable. |
 | `value`   | string            | Yes      | The value of the URL variable. |
@@ -776,7 +802,11 @@ On success, no message is returned.
 
 ## Delete a URL variable
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+
+{{< /history >}}
 
 ```plaintext
 DELETE /groups/:id/hooks/:hook_id/url_variables/:key
@@ -786,7 +816,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer           | Yes      | The ID of the group hook. |
 | `key`     | string            | Yes      | The key of the URL variable. |
 

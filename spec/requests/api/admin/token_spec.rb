@@ -53,6 +53,8 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
   let(:runner_authentication_token) { create(:ci_runner, registration_type: :authenticated_user) }
   let(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
   let(:ci_trigger) { create(:ci_trigger) }
+  let(:ci_build) { create(:ci_build, status: :running) }
+  let(:feature_flags_client) { create(:operations_feature_flags_client) }
 
   let(:plaintext) { nil }
   let(:params) { { token: plaintext } }
@@ -68,11 +70,13 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
             [ref(:group_deploy_token), lazy { group_deploy_token.token }],
             [ref(:project_deploy_token), lazy { project_deploy_token.token }],
             [ref(:user), lazy { user.feed_token }],
+            [ref(:user), lazy { user.incoming_email_token }],
             [ref(:oauth_application), lazy { oauth_application.plaintext_secret }],
             [ref(:cluster_agent_token), lazy { cluster_agent_token.token }],
             [ref(:runner_authentication_token), lazy { runner_authentication_token.token }],
             [ref(:impersonation_token), lazy { impersonation_token.token }],
-            [ref(:ci_trigger), lazy { ci_trigger.token }]
+            [ref(:ci_trigger), lazy { ci_trigger.token }],
+            [ref(:feature_flags_client), lazy { feature_flags_client.token }]
           ]
         end
 
@@ -83,6 +87,51 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['id']).to eq(token.id)
           end
+        end
+      end
+
+      context 'with valid CI job token' do
+        let(:token) { ci_build }
+        let(:plaintext) { ci_build.token }
+
+        it 'contains a job' do
+          post_token
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['job']['id']).to eq(ci_build.id)
+        end
+      end
+
+      context 'with _gitlab_session' do
+        let(:session_id) { 'session_id' }
+        let(:plaintext) { "_gitlab_session=#{session_id}" }
+
+        context 'with a valid session in ActiveSession' do
+          before do
+            rack_session = Rack::Session::SessionId.new(session_id)
+            allow(ActiveSession).to receive(:sessions_from_ids)
+              .with([rack_session.private_id]).and_return([{ 'warden.user.user.key' => [[user.id],
+                user.authenticatable_salt] }])
+          end
+
+          it 'returns info about the token' do
+            post_token
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['id']).to eq(user.id)
+          end
+        end
+
+        context 'with an unknown session' do
+          let(:session_id) { '_gitlab_session=unknown' }
+
+          it_behaves_like 'returning response status', :not_found
+        end
+
+        context 'with an empty session' do
+          let(:plaintext) { "_gitlab_session=" }
+
+          it_behaves_like 'returning response status', :not_found
         end
       end
 
@@ -97,34 +146,57 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
 
     context 'when the user is an admin' do
       context 'when the token is valid' do
-        where(:token, :plaintext) do
-          [
-            [ref(:personal_access_token), lazy { personal_access_token.token }],
-            [ref(:project_access_token), lazy { project_access_token.token }],
-            [ref(:group_access_token), lazy { group_access_token.token }],
-            [ref(:group_deploy_token), lazy { group_deploy_token.token }],
-            [ref(:project_deploy_token), lazy { project_deploy_token.token }]
-          ]
+        context 'when the token can be revoked' do
+          where(:token, :plaintext) do
+            [
+              [ref(:personal_access_token), lazy { personal_access_token.token }],
+              [ref(:project_access_token), lazy { project_access_token.token }],
+              [ref(:impersonation_token), lazy { impersonation_token.token }],
+              [ref(:group_access_token), lazy { group_access_token.token }],
+              [ref(:group_deploy_token), lazy { group_deploy_token.token }],
+              [ref(:project_deploy_token), lazy { project_deploy_token.token }],
+              [ref(:cluster_agent_token), lazy { cluster_agent_token.token }]
+            ]
+          end
+
+          with_them do
+            it 'revokes the token' do
+              delete_token
+
+              expect(response).to have_gitlab_http_status(:no_content)
+              expect(token.reload.revoked?).to be_truthy
+            end
+          end
         end
 
-        with_them do
-          it 'revokes the token' do
-            delete_token
+        context 'when the token can be reset' do
+          where(:token, :plaintext_attribute, :changed_attribute) do
+            [
+              [ref(:user), :feed_token, :feed_token],
+              [ref(:runner_authentication_token), :token, :token],
+              [ref(:feature_flags_client), :token, :token],
+              [ref(:oauth_application), :plaintext_secret, :secret]
+            ]
+          end
 
-            expect(response).to have_gitlab_http_status(:no_content)
-            expect(token.reload.revoked?).to be_truthy
+          with_them do
+            let(:plaintext) { token.send(plaintext_attribute) }
+            it 'resets the token' do
+              expect { delete_token }.to change { token.reload.send(changed_attribute) }
+
+              expect(response).to have_gitlab_http_status(:no_content)
+            end
           end
         end
       end
 
-      context 'when the token is a feed token' do
-        let(:plaintext) { user.feed_token }
+      context 'when the token is an incoming email token' do
+        let(:plaintext) { user.incoming_email_token }
 
         it 'resets the token' do
-          delete_token
+          expect { delete_token }.to change { user.reload.incoming_email_token }
 
           expect(response).to have_gitlab_http_status(:no_content)
-          expect(user.reload.feed_token).not_to eq(plaintext)
         end
       end
 

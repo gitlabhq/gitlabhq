@@ -10,7 +10,7 @@
 - rich_text_editor_help_text = s_('Preferences|Type in rich text, as you see it.')
 - @color_modes = Gitlab::ColorModes::available_modes.to_json
 - @themes = Gitlab::Themes::available_themes.to_json
-- extensions_marketplace_url = ::WebIde::ExtensionsMarketplace.marketplace_home_url
+- extensions_marketplace_url = ::WebIde::ExtensionMarketplace.marketplace_home_url
 - data_attributes = { color_modes: @color_modes, themes: @themes, integration_views: integration_views.to_json, user_fields: user_fields, body_classes: Gitlab::Themes.body_classes, profile_preferences_path: profile_preferences_path, extensions_marketplace_url: extensions_marketplace_url }
 - @force_desktop_expanded_sidebar = true
 
@@ -46,14 +46,14 @@
     id: 'syntax-highlighting-theme',
     options: { class: 'js-preferences-form' }) do |c|
     - c.with_description do
-      = s_('Preferences|Customize the appearance of the syntax.')
+      = s_('Preferences|Choose the syntax highlighting theme used when viewing or editing code in GitLab.')
       = succeed '.' do
         = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'change-the-syntax-highlighting-theme'), target: '_blank', rel: 'noopener noreferrer'
     - c.with_body do
       .syntax-theme.row
         - Gitlab::ColorSchemes.each do |scheme|
           %label.col-6.col-sm-4.col-md-3.col-lg-auto.gl-mb-5
-            .preview= image_tag "#{scheme.css_class}-scheme-preview.png"
+            .preview= image_tag "#{scheme.css_class}-scheme-preview.png", alt: "#{scheme.css_class} scheme preview"
             = f.gitlab_ui_radio_component :color_scheme_id, scheme.id,
               scheme.name,
               radio_options: { checked: user_color_schema_id == scheme.id }
@@ -103,7 +103,7 @@
       - if Feature.enabled?(:ui_for_organizations, current_user)
         #js-home-organization-setting{ data: { app_data: home_organization_setting_app_data } }
 
-      .js-listbox-input{ data: { label: s_('Preferences|Homepage'), description: s_('Preferences|Choose what content you want to see by default on your homepage.'), name: 'user[dashboard]', items: dashboard_choices.to_json, value: current_user.dashboard, block: true.to_s, toggle_class: 'gl-form-input-xl' } }
+      .js-listbox-input{ data: { label: s_('Preferences|Homepage'), description: s_('Preferences|Choose what content you want to see by default on your homepage.'), name: 'user[dashboard]', items: dashboard_choices.to_json, value: dashboard_value, block: true.to_s, toggle_class: 'gl-form-input-xl' } }
 
       = render_if_exists 'profiles/preferences/group_overview_selector', f: f # EE-specific
 
@@ -187,7 +187,7 @@
     - c.with_description do
       = s_('Preferences|Turns on or off the ability to follow or be followed by other users.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/index.md', anchor: 'follow-users'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/_index.md', anchor: 'follow-users'), target: '_blank', rel: 'noopener noreferrer'
     - c.with_body do
       .form-group
         = f.gitlab_ui_checkbox_component :enabled_following,

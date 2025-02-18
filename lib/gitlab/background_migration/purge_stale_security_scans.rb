@@ -11,7 +11,7 @@ module Gitlab
         self.table_name = 'security_scans'
 
         # Otherwise the schema_spec fails
-        validates :info, json_schema: { filename: 'security_scan_info', draft: 7 }
+        validates :info, json_schema: { filename: 'security_scan_info' }
 
         enum status: { succeeded: 1, purged: 6 }
 

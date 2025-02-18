@@ -465,6 +465,22 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         let(:event) { target_event }
       end
     end
+
+    context 'when the commit fails' do
+      before do
+        allow_next_instance_of(Files::UpdateService) do |instance|
+          allow(instance).to receive(:execute).and_return({ status: :error, message: 'Invalid commit message' })
+        end
+      end
+
+      it 'responds with 422 Unprocessable Entity and sets flash alert' do
+        put :update, params: default_params, format: :json
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['error']).to eq('Invalid commit message')
+        expect(json_response['filePath']).to eq(project_blob_path(project, 'master/CHANGELOG'))
+      end
+    end
   end
 
   describe 'DELETE destroy' do

@@ -83,7 +83,7 @@ export const MAVEN_FORWARDING_FIELDS = {
 
 // Parameters
 
-export const DEPENDENCY_PROXY_DOCS_PATH = helpPagePath('user/packages/dependency_proxy/index');
+export const DEPENDENCY_PROXY_DOCS_PATH = helpPagePath('user/packages/dependency_proxy/_index');
 export const REQUEST_FORWARDING_HELP_PAGE_PATH = helpPagePath(
   'user/packages/package_registry/supported_functionality',
   { anchor: 'deleting-packages' },

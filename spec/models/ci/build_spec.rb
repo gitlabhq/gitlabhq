@@ -46,8 +46,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to have_many(:job_variables).with_foreign_key(:job_id) }
   it { is_expected.to have_many(:report_results).with_foreign_key(:build_id) }
   it { is_expected.to have_many(:pages_deployments).with_foreign_key(:ci_build_id) }
-  it { is_expected.to have_many(:tag_links).with_foreign_key(:build_id).class_name('Ci::BuildTag').inverse_of(:build) }
-  it { is_expected.to have_many(:simple_tags).class_name('Ci::Tag').through(:tag_links).source(:tag) }
+  it { is_expected.to have_many(:taggings).with_foreign_key(:build_id).class_name('Ci::BuildTag').inverse_of(:build) }
+  it { is_expected.to have_many(:tags).class_name('Ci::Tag').through(:taggings).source(:tag) }
 
   it { is_expected.to have_one(:runner_manager).through(:runner_manager_build) }
   it { is_expected.to have_one(:runner_session).with_foreign_key(:build_id) }
@@ -1941,8 +1941,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       expect(build.tags.count).to eq(1)
       expect(build.tags.first.name).to eq('tag')
-      expect(build.tag_links.count).to eq(1)
-      expect(build.tag_links.first.tag.name).to eq('tag')
+      expect(build.taggings.count).to eq(1)
+      expect(build.taggings.first.tag.name).to eq('tag')
     end
 
     it 'strips tags' do
@@ -1959,7 +1959,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         expect(build.tags).to be_empty
-        expect(build.tag_links).to be_empty
+        expect(build.taggings).to be_empty
       end
     end
   end
@@ -2538,6 +2538,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     subject { build.variables }
 
     context 'returns variables' do
+      let(:pages_hostname) { "#{project.namespace.path}.example.com" }
+      let(:pages_url) { "http://#{pages_hostname}/#{project.path}" }
       let(:predefined_variables) do
         [
           { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true, masked: false },
@@ -2614,7 +2616,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_COMMIT_DESCRIPTION', value: pipeline.git_commit_description, public: true, masked: false },
           { key: 'CI_COMMIT_REF_PROTECTED', value: (!!pipeline.protected_ref?).to_s, public: true, masked: false },
           { key: 'CI_COMMIT_TIMESTAMP', value: pipeline.git_commit_timestamp, public: true, masked: false },
-          { key: 'CI_COMMIT_AUTHOR', value: pipeline.git_author_full_text, public: true, masked: false }
+          { key: 'CI_COMMIT_AUTHOR', value: pipeline.git_author_full_text, public: true, masked: false },
+          { key: 'CI_PAGES_HOSTNAME', value: pages_hostname, public: true, masked: false },
+          { key: 'CI_PAGES_URL', value: pages_url, public: true, masked: false }
         ]
       end
 
@@ -2684,14 +2688,15 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
                pipeline_pre_var,
                build_yaml_var,
                job_dependency_var,
-               { key: 'secret', value: 'value', public: false, masked: false }])
+               { key: 'secret', value: 'value', public: false, masked: false },
+               { key: "CI_PAGES_HOSTNAME", value: pages_hostname, masked: false, public: true },
+               { key: "CI_PAGES_URL", value: pages_url, masked: false, public: true }])
           end
         end
 
         context 'when build has environment and user-provided variables' do
           let(:expected_variables) do
-            predefined_variables.map { |variable| variable.fetch(:key) } +
-              %w[YAML_VARIABLE CI_ENVIRONMENT_SLUG CI_ENVIRONMENT_URL]
+            predefined_variables.map { |variable| variable.fetch(:key) }
           end
 
           before do
@@ -2708,12 +2713,20 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
                 { key: 'CI_ENVIRONMENT_URL', value: 'https://gitlab.com', public: true, masked: false }
               ],
               after: 'CI_NODE_TOTAL')
+
+            insert_expected_predefined_variables(
+              [
+                { key: 'YAML_VARIABLE', value: 'staging', public: true, masked: false },
+                { key: 'CI_ENVIRONMENT_SLUG', value: 'start', public: true, masked: false },
+                { key: 'CI_ENVIRONMENT_URL', value: 'https://gitlab.com', public: true, masked: false }
+              ],
+              after: 'CI_COMMIT_AUTHOR')
           end
 
           it 'matches explicit variables ordering' do
             received_variables = subject.map { |variable| variable[:key] }
 
-            expect(received_variables).to eq expected_variables
+            expect(received_variables).to eq(expected_variables)
           end
 
           describe 'CI_ENVIRONMENT_ACTION' do
@@ -2882,7 +2895,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             it_behaves_like 'containing environment variables'
 
             it 'puts $CI_ENVIRONMENT_URL in the last so all other variables are available to be used when runners are trying to expand it' do
-              expect(subject.to_runner_variables.last).to eq(expected_environment_variables.last)
+              ci_env_url = subject.to_runner_variables.find { |var| var[:key] == 'CI_ENVIRONMENT_URL' }
+
+              expect(ci_env_url).to eq(expected_environment_variables.last)
             end
           end
         end
@@ -3164,6 +3179,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when runner is assigned to build' do
       let(:runner) { create(:ci_runner, description: 'description', tag_list: %w[docker linux]) }
+      let(:expected_tags_value) { %w[docker linux].to_s }
 
       before do
         build.update!(runner: runner)
@@ -3171,7 +3187,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it { is_expected.to include({ key: 'CI_RUNNER_ID', value: runner.id.to_s, public: true, masked: false }) }
       it { is_expected.to include({ key: 'CI_RUNNER_DESCRIPTION', value: 'description', public: true, masked: false }) }
-      it { is_expected.to include({ key: 'CI_RUNNER_TAGS', value: 'docker, linux', public: true, masked: false }) }
+      it { is_expected.to include({ key: 'CI_RUNNER_TAGS', value: expected_tags_value, public: true, masked: false }) }
+
+      context 'when the tags are preloaded' do
+        subject { described_class.preload(:tags).find(build.id).variables }
+
+        it { is_expected.to include({ key: 'CI_RUNNER_TAGS', value: expected_tags_value, public: true, masked: false }) }
+      end
     end
 
     context 'when build is for a deployment' do
@@ -4356,9 +4378,34 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#pages', feature_category: :pages do
-    subject { build.pages }
+    where(:pages_generator, :options, :result) do
+      false | {}                    | {}
+      false | { publish: 'public' } | {}
+      true  | nil                   | {}
+      true  | { publish: '' }       | {}
+      true  | {}                    | {}
+      true  | { publish: nil }      | {}
+      true  | { publish: 'public' } | { publish: 'public' }
+      true  | { pages: { publish: 'public' } } | { publish: 'public' }
+      true  | { publish: '$CUSTOM_FOLDER' } | { publish: 'custom_folder' }
+      true  | { pages: { publish: '$CUSTOM_FOLDER' } } | { publish: 'custom_folder' }
+      true  | { publish: '$CUSTOM_FOLDER/$CUSTOM_SUBFOLDER' } | { publish: 'custom_folder/custom_subfolder' }
+      true  | { pages: { publish: '$CUSTOM_FOLDER/$CUSTOM_SUBFOLDER' } } | { publish: 'custom_folder/custom_subfolder' }
+    end
 
-    it { is_expected.to eq({}) }
+    with_them do
+      before do
+        allow(build).to receive_messages(options: options)
+        allow(build).to receive(:pages_generator?).and_return(pages_generator)
+        # Create custom variables to test that they are properly expanded in the `build.pages.publish` property
+        create(:ci_job_variable, key: 'CUSTOM_FOLDER', value: 'custom_folder', job: build)
+        create(:ci_job_variable, key: 'CUSTOM_SUBFOLDER', value: 'custom_subfolder', job: build)
+      end
+
+      subject { build.pages }
+
+      it { is_expected.to include(result) }
+    end
   end
 
   describe 'pages deployments', feature_category: :pages do
@@ -4378,18 +4425,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             { key: 'CI_PAGES_HOSTNAME', value: expected_hostname, public: true, masked: false },
             { key: 'CI_PAGES_URL', value: expected_url, public: true, masked: false }
           )
-        end
-
-        context 'and fix_pages_ci_variables FF is disabled' do
-          before do
-            stub_feature_flags(fix_pages_ci_variables: false)
-          end
-
-          it "includes the expected variables" do
-            expect(build.variables.to_runner_variables).to include(
-              { key: 'CI_PAGES_URL', value: Gitlab::Pages::UrlBuilder.new(project).pages_url, public: true, masked: false }
-            )
-          end
         end
 
         it "calls pages worker" do
@@ -5077,20 +5112,23 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       build.clear_memoization(:build_data)
     end
 
-    context 'with project hooks' do
-      let(:build_data) { double(:BuildData, dup: double(:DupedData)) }
+    context 'when project hooks exists' do
+      let(:build_data) { double(:BuildData) }
 
       before do
         create(:project_hook, project: project, job_events: true)
+        allow(Ci::ExecuteBuildHooksWorker).to receive(:perform_async)
       end
 
-      it 'calls project.execute_hooks(build_data, :job_hooks)' do
+      it 'enqueues ExecuteBuildHooksWorker' do
         expect(::Gitlab::DataBuilder::Build)
-          .to receive(:build).with(build).and_return(build_data)
-        expect(build.project)
-          .to receive(:execute_hooks).with(build_data.dup, :job_hooks)
+            .to receive(:build).with(build).and_return(build_data)
 
         build.execute_hooks
+
+        expect(Ci::ExecuteBuildHooksWorker)
+          .to have_received(:perform_async)
+          .with(project.id, build_data)
       end
 
       context 'with blocked users' do
@@ -5098,47 +5136,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           allow(build).to receive(:user) { FactoryBot.build(:user, :blocked) }
         end
 
-        it 'does not call project.execute_hooks' do
-          expect(build.project).not_to receive(:execute_hooks)
-
+        it 'does not enqueue ExecuteBuildHooksWorker' do
           build.execute_hooks
+
+          expect(Ci::ExecuteBuildHooksWorker).not_to receive(:perform_async)
         end
-      end
-    end
-
-    context 'without project hooks' do
-      it 'does not call project.execute_hooks' do
-        expect(build.project).not_to receive(:execute_hooks)
-
-        build.execute_hooks
-      end
-    end
-
-    context 'with project services' do
-      before do
-        create(:integration, active: true, job_events: true, project: project)
-      end
-
-      it 'executes services' do
-        allow_next_found_instance_of(Integration) do |integration|
-          expect(integration).to receive(:async_execute)
-        end
-
-        build.execute_hooks
-      end
-    end
-
-    context 'without relevant project services' do
-      before do
-        create(:integration, active: true, job_events: false, project: project)
-      end
-
-      it 'does not execute services' do
-        allow_next_found_instance_of(Integration) do |integration|
-          expect(integration).not_to receive(:async_execute)
-        end
-
-        build.execute_hooks
       end
     end
   end
@@ -6160,16 +6162,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       expect(build.source).to eq('scan_execution_policy')
     end
-  end
-
-  describe '#tags_ids_relation' do
-    let(:tag_list) { %w[ruby postgres docker] }
-
-    before do
-      build.update!(tag_list: tag_list)
-    end
-
-    it { expect(build.tags_ids_relation.pluck(:name)).to match_array(tag_list) }
   end
 
   describe '#token' do

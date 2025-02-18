@@ -34,7 +34,7 @@ module Ci
         # runner may have contacted (or not) and be stale: consider both cases.
         title = contacted_at ? s_("Runners|Runner is stale; last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(contacted_at) } : s_("Runners|Runner is stale; it has never contacted this instance")
         icon = 'time-out'
-        span_class = 'gl-text-orange-500'
+        span_class = 'gl-text-warning'
       end
 
       content_tag(:span, class: span_class, title: title, data: { toggle: 'tooltip', container: 'body', testid: 'runner-status-icon', qa_status: status }) do
@@ -59,18 +59,26 @@ module Ci
       end
     end
 
-    def admin_runners_data_attributes
-      {
+    def admin_runners_app_data
+      data = {
         # Runner install help page is external, located at
         # https://gitlab.com/gitlab-org/gitlab-runner
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
         new_runner_path: new_admin_runner_path,
         allow_registration_token: Gitlab::CurrentSettings.allow_runner_registration_token.to_s,
-        registration_token: Gitlab::CurrentSettings.runners_registration_token,
+        registration_token: nil,
         online_contact_timeout_secs: ::Ci::Runner::ONLINE_CONTACT_TIMEOUT.to_i,
         stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i,
-        tag_suggestions_path: tag_list_admin_runners_path(format: :json)
+        tag_suggestions_path: tag_list_admin_runners_path(format: :json),
+        can_admin_runners: false.to_s
       }
+
+      return data unless current_user.can_admin_all_resources?
+
+      data.merge({
+        registration_token: Gitlab::CurrentSettings.runners_registration_token,
+        can_admin_runners: true.to_s
+      })
     end
 
     def group_shared_runners_settings_data(group)

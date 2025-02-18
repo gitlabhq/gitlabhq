@@ -1,0 +1,11 @@
+%tr
+  %td.text-content
+    %p
+      - invited_user = content_tag :span, member_invite_email, class: :highlight
+      - target_link = link_to member_source.human_name, strip_tags(member_source.web_url), class: :highlight
+      - target_name = sanitize_name(member_source.model_name.singular)
+      = sanitize(html_escape(s_('Notify|%{invited_user} has %{highlight_start}declined%{highlight_end} your invitation to join the %{target_link} %{target_name}.')) % { invited_user: invited_user,
+        highlight_start: '<span class="highlight">'.html_safe,
+        highlight_end: '</span>'.html_safe,
+        target_link: target_link,
+        target_name: target_name })

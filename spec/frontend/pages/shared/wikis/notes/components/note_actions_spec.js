@@ -1,5 +1,6 @@
 import { GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import EmojiPicker from '~/emoji/components/picker.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NoteActions from '~/pages/shared/wikis/wiki_notes/components/note_actions.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
@@ -13,6 +14,7 @@ describe('WikiNoteActions', () => {
   const findReplyButton = () => wrapper.findByTestId('wiki-note-reply-button');
   const findCopyNoteButton = () => wrapper.findByTestId('wiki-note-copy-note');
   const findDeleteButton = () => wrapper.findByTestId('wiki-note-delete-button');
+  const findEmojiPicker = () => wrapper.findComponent(EmojiPicker);
 
   const createWrapper = (propsData) => {
     return shallowMountExtended(NoteActions, {
@@ -33,6 +35,7 @@ describe('WikiNoteActions', () => {
         expect(findEditButton().exists()).toBe(false);
         expect(findReportAbuseButton().exists()).toBe(false);
         expect(findDisclosureDropdownGroup().exists()).toBe(false);
+        expect(findEmojiPicker().exists()).toBe(false);
       });
 
       it('should render edit button when showEdit is true', () => {
@@ -43,6 +46,11 @@ describe('WikiNoteActions', () => {
       it('should render reply button when showReply is true', () => {
         wrapper = createWrapper({ showReply: true });
         expect(findReplyButton().exists()).toBe(true);
+      });
+
+      it('should render emoji picker when canAwardEmoji is true', () => {
+        wrapper = createWrapper({ canAwardEmoji: true });
+        expect(findEmojiPicker().exists()).toBe(true);
       });
     });
 
@@ -106,6 +114,7 @@ describe('WikiNoteActions', () => {
       wrapper = createWrapper({
         showReply: true,
         showEdit: true,
+        canAwardEmoji: true,
         canReportAsAbuse: true,
       });
     });
@@ -119,6 +128,12 @@ describe('WikiNoteActions', () => {
       it('emits edit event when edit is clicked', () => {
         findEditButton().vm.$emit('click');
         expect(Boolean(wrapper.emitted('edit'))).toBe(true);
+      });
+
+      it('emits award-emoji event with the correct emoji name when emoji picker emits click event', () => {
+        const emojiPicker = wrapper.findComponent(EmojiPicker);
+        emojiPicker.vm.$emit('click', 'test-emoji');
+        expect(wrapper.emitted('award-emoji')).toEqual([['test-emoji']]);
       });
     });
 
@@ -141,7 +156,6 @@ describe('WikiNoteActions', () => {
         findAbuseCategorySelector().vm.$emit('close-drawer');
 
         await nextTick();
-
         expect(findAbuseCategorySelector().exists()).toEqual(false);
       });
     });

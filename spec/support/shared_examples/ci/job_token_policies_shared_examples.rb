@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'enforcing job token policies' do |policies|
-  context 'when authenticating with a CI Job Token from another project' do
-    let_it_be(:job) { create(:ci_build, :running, user: user) }
-    let_it_be(:allowed_policies) { Array(policies) }
-    let_it_be(:default_permissions) { false }
+RSpec.shared_examples 'enforcing job token policies' do |policies, expected_success_status: :success|
+  context 'when authenticating with a CI job token from another project' do
+    let(:source_project) { project }
+    let(:target_job) { create(:ci_build, :running, user: user) }
+    let(:allowed_policies) { Array(policies) }
+    let(:default_permissions) { false }
 
     before do
       create(:ci_job_token_project_scope_link,
-        source_project: project,
-        target_project: job.project,
+        source_project: source_project,
+        target_project: target_job.project,
         direction: :inbound,
         job_token_policies: allowed_policies,
         default_permissions: default_permissions
@@ -21,7 +22,7 @@ RSpec.shared_examples 'enforcing job token policies' do |policies|
       response
     end
 
-    it { is_expected.to have_gitlab_http_status(:success) }
+    it { is_expected.to have_gitlab_http_status(expected_success_status) }
 
     context 'when the policies are not allowed' do
       let(:allowed_policies) { [] }
@@ -32,7 +33,7 @@ RSpec.shared_examples 'enforcing job token policies' do |policies|
         do_request
 
         expected_message = '403 Forbidden - Insufficient permissions to access this resource ' \
-          "in project #{project.path}. "
+          "in project #{source_project.path}. "
 
         expected_message << if Array(policies).size == 1
                               "The following token permission is required: #{policies}."
@@ -44,17 +45,17 @@ RSpec.shared_examples 'enforcing job token policies' do |policies|
       end
 
       context 'when fine grained permissions are disabled' do
-        let_it_be(:default_permissions) { true }
+        let(:default_permissions) { true }
 
-        it { is_expected.to have_gitlab_http_status(:success) }
+        it { is_expected.to have_gitlab_http_status(expected_success_status) }
       end
 
-      context 'when the `enforce_job_token_policies` feature flag is disabled' do
+      context 'when the `add_policies_to_ci_job_token` feature flag is disabled' do
         before do
-          stub_feature_flags(enforce_job_token_policies: false)
+          stub_feature_flags(add_policies_to_ci_job_token: false)
         end
 
-        it { is_expected.to have_gitlab_http_status(:success) }
+        it { is_expected.to have_gitlab_http_status(expected_success_status) }
       end
     end
   end

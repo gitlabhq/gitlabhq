@@ -20,9 +20,11 @@ import {
   WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY,
   WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY,
   sprintfWorkItem,
+  INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
 } from '../../constants';
 
 import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
+import WorkItemToggleClosedItems from '../shared/work_item_toggle_closed_items.vue';
 import WorkItemRelationshipList from './work_item_relationship_list.vue';
 import WorkItemAddRelationshipForm from './work_item_add_relationship_form.vue';
 
@@ -36,6 +38,12 @@ export default {
     WorkItemRelationshipList,
     WorkItemAddRelationshipForm,
     WorkItemMoreActions,
+    WorkItemToggleClosedItems,
+  },
+  provide() {
+    return {
+      [INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION]: true,
+    };
   },
   props: {
     isGroup: {
@@ -61,6 +69,11 @@ export default {
       required: true,
     },
     workItemType: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    activeChildItemId: {
       type: String,
       required: false,
       default: null,
@@ -133,8 +146,17 @@ export default {
     isEmptyRelatedWorkItems() {
       return !this.error && this.linkedWorkItems.length === 0;
     },
+    displayableLinksCount() {
+      return this.displayableLinks(this.linkedWorkItems)?.length;
+    },
+    showClosedItemsButton() {
+      return !this.showClosed && this.linkedWorkItemsCount > this.displayableLinksCount;
+    },
     hasAllLinkedItemsHidden() {
-      return this.displayableLinks(this.linkedWorkItems).length === 0;
+      return this.displayableLinksCount === 0;
+    },
+    closedItemsCount() {
+      return Math.max(0, this.linkedWorkItemsCount - this.displayableLinksCount);
     },
     countBadgeAriaLabel() {
       const message = sprintf(
@@ -155,6 +177,9 @@ export default {
     },
     openBlocksLinks() {
       return this.displayableLinks(this.linksBlocks);
+    },
+    toggleClosedItemsClasses() {
+      return { '!gl-px-3 gl-pb-3 gl-pt-2': !this.hasAllLinkedItemsHidden };
     },
   },
   mounted() {
@@ -370,6 +395,7 @@ export default {
         :can-update="canAdminWorkItemLink"
         :show-labels="showLabels"
         :work-item-full-path="workItemFullPath"
+        :active-child-item-id="activeChildItemId"
         @showModal="
           $emit('showModal', {
             event: $event.event,
@@ -390,6 +416,7 @@ export default {
         :can-update="canAdminWorkItemLink"
         :show-labels="showLabels"
         :work-item-full-path="workItemFullPath"
+        :active-child-item-id="activeChildItemId"
         @showModal="
           $emit('showModal', {
             event: $event.event,
@@ -410,6 +437,7 @@ export default {
         :can-update="canAdminWorkItemLink"
         :show-labels="showLabels"
         :work-item-full-path="workItemFullPath"
+        :active-child-item-id="activeChildItemId"
         @showModal="
           $emit('showModal', {
             event: $event.event,
@@ -427,6 +455,16 @@ export default {
         data-testid="work-item-no-linked-items-open"
       >
         {{ $options.i18n.noLinkedItemsOpen }}
+      </div>
+
+      <div>
+        <work-item-toggle-closed-items
+          v-if="showClosedItemsButton"
+          :class="toggleClosedItemsClasses"
+          data-testid="work-item-show-closed"
+          :number-of-closed-items="closedItemsCount"
+          @show-closed="toggleShowClosed"
+        />
       </div>
     </template>
   </crud-component>

@@ -1,15 +1,14 @@
 ---
 stage: none
 group: Tutorials
-description: Integrations with third-party services.
 info: For assistance with this tutorials page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+description: Integrations with third-party services.
+title: 'Tutorials: Extend with GitLab'
 ---
-
-# Tutorials: Extend with GitLab
 
 ## Integrate with GitLab
 
-GitLab [integrates](../user/project/integrations/index.md) with a number of third-party services,
+GitLab [integrates](../user/project/integrations/_index.md) with a number of third-party services,
 enabling you to work with those services directly from GitLab.
 
 | Topic | Description | Good for beginners |

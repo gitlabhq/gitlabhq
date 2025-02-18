@@ -3,6 +3,10 @@
 module Gitlab
   module Metrics
     module Lfs
+      include Gitlab::Metrics::SliConfig
+
+      sidekiq_enabled!
+
       class << self
         def initialize_slis!
           Gitlab::Metrics::Sli::ErrorRate.initialize_sli(:lfs_update_objects, [{}])

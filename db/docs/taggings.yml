@@ -1,7 +1,6 @@
 ---
 table_name: taggings
-classes:
-- Ci::Tagging
+classes: []
 feature_categories:
 - continuous_integration
 - runner

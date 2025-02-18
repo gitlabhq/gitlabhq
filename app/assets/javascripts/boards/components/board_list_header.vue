@@ -320,7 +320,7 @@ export default {
   <header
     :class="{
       'gl-h-full': list.collapsed,
-      'gl-bg-gray-50': isSwimlanesHeader,
+      'gl-bg-strong': isSwimlanesHeader,
       'gl-rounded-tl-base gl-rounded-tr-base gl-border-4 gl-border-t-solid': isLabelList,
       'gl-rounded-tl-base gl-rounded-tr-base gl-bg-red-50': boardItemsSizeExceedsMax,
     }"
@@ -345,7 +345,7 @@ export default {
         :aria-label="chevronTooltip"
         :title="chevronTooltip"
         :icon="chevronIcon"
-        class="board-title-caret no-drag gl-cursor-pointer hover:gl-bg-gray-50"
+        class="board-title-caret no-drag gl-cursor-pointer hover:gl-bg-strong"
         :class="{
           '-gl-mt-1': list.collapsed && isLabelList,
           'gl-mb-2': list.collapsed && isLabelList && !isSwimlanesHeader,

@@ -20,7 +20,7 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
     insert_infrastructure_google_cloud_nav
     insert_infrastructure_aws_nav
     project.update!(service_desk_enabled: true)
-    allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(true)
+    allow(::ServiceDesk).to receive(:supported?).and_return(true)
   end
 
   it_behaves_like 'verified navigation bar' do

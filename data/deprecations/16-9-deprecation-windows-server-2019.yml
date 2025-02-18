@@ -7,6 +7,6 @@
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/438554
   manual_task: true
   body: |  # (required) Don't change this line.
-    We have recently announced the release of Windows Server 2022 for our SaaS runners on Windows (Beta). With it, we are deprecating Windows 2019 in GitLab 17.0.
+    We have recently announced the release of Windows Server 2022 for our GitLab.com runners on Windows (Beta). With it, we are deprecating Windows 2019 in GitLab 17.0.
 
-    For more information about how to migrate to using Windows 2022, see [Windows 2022 support for GitLab SaaS runners now available](https://about.gitlab.com/blog/2024/01/22/windows-2022-support-for-gitlab-saas-runners/).
+    For more information about how to migrate to using Windows 2022, see [Windows 2022 support for GitLab.com runners now available](https://about.gitlab.com/blog/2024/01/22/windows-2022-support-for-gitlab-saas-runners/).

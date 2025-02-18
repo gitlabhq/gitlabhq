@@ -2,34 +2,46 @@
 stage: Create
 group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Documentation for the REST API for Code Suggestions."
+description: Documentation for the REST API for Code Suggestions.
+title: Code Suggestions API
 ---
-
-# Code Suggestions API
 
 Use the Code Suggestions API to access the Code Suggestions feature.
 
 ## Generate code completions
 
-DETAILS:
-**Status:** Experiment
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415581) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `code_suggestions_completion_api`. Disabled by default. This feature is an experiment.
-> - Requirement to generate a JWT before calling this endpoint was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127863) in GitLab 16.3.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/416371) in GitLab 16.8. [Feature flag `code_suggestions_completion_api`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138174) removed.
-> - `context` and `user_instruction` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `code_suggestions_context`. Disabled by default.
+- Status: Experiment
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415581) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `code_suggestions_completion_api`. Disabled by default. This feature is an experiment.
+- Requirement to generate a JWT before calling this endpoint was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127863) in GitLab 16.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/416371) in GitLab 16.8. [Feature flag `code_suggestions_completion_api`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138174) removed.
+- `context` and `user_instruction` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `code_suggestions_context`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of the `context` and `user_instruction` attributes is controlled by a feature flag.
 For more information, see the history.
 These attributes are available for testing, but are not ready for production use.
+
+{{< /alert >}}
 
 ```plaintext
 POST /code_suggestions/completions
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 This endpoint rate-limits each user to 60 requests per 1-minute window.
+
+{{< /alert >}}
 
 Use the AI abstraction layer to generate code completions.
 
@@ -103,7 +115,11 @@ Example response:
 
 ## Validate that Code Suggestions is enabled
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138814) in GitLab 16.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138814) in GitLab 16.7.
+
+{{< /history >}}
 
 Use this endpoint to validate if either:
 
@@ -142,15 +158,22 @@ curl --request POST \
 
 ## Fetch direct connection information
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/452044) in GitLab 17.0 [with a flag](../administration/feature_flags.md) named `code_suggestions_direct_completions`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/456443) in GitLab 17.2. Feature flag `code_suggestions_direct_completions` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/452044) in GitLab 17.0 [with a flag](../administration/feature_flags.md) named `code_suggestions_direct_completions`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/456443) in GitLab 17.2. Feature flag `code_suggestions_direct_completions` removed.
+
+{{< /history >}}
 
 ```plaintext
 POST /code_suggestions/direct_access
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 This endpoint rate-limits each user to 10 requests per 5-minute window.
+
+{{< /alert >}}
 
 Returns user-specific connection details which can be used by IDEs/clients to send completion requests directly to AI gateway.
 

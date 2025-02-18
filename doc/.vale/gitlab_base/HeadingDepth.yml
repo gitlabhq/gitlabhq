@@ -6,7 +6,8 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Refactor the section or page to avoid headings greater than H5."
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#heading-levels-in-markdown
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#heading-levels-in-markdown
+vocab: false
 level: suggestion
 scope: raw
 raw:

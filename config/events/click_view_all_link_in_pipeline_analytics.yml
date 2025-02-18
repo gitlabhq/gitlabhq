@@ -9,9 +9,6 @@ identifiers:
 product_group: runner
 milestone: '17.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158957
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

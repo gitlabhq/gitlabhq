@@ -10,9 +10,6 @@ status: active
 time_frame: 28d
 data_source: database
 instrumentation_class: CountJiraImportsMetric
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -2,51 +2,57 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Jira development panel
 ---
 
-# Jira development panel
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use the Jira development panel to view GitLab activity for a Jira issue directly in Jira.
 To set up the Jira development panel:
 
 - **For Jira Cloud**, use the [GitLab for Jira Cloud app](connect-app.md) developed and maintained by GitLab.
-- **For Jira Data Center or Jira Server**, use the [Jira DVCS connector](dvcs/index.md) developed and maintained by Atlassian.
+- **For Jira Data Center or Jira Server**, use the [Jira DVCS connector](dvcs/_index.md) developed and maintained by Atlassian.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Jira development panel integration](https://www.youtube.com/watch?v=VjVTOmMl85M).
 
 ## Feature availability
 
-> - Ability to delete branches [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148712) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `jira_connect_remove_branches`. Disabled by default.
-> - Ability to delete branches made [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158224) in GitLab 17.2. Feature flag `jira_connect_remove_branches` removed.
+{{< history >}}
+
+- Ability to delete branches [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148712) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `jira_connect_remove_branches`. Disabled by default.
+- Ability to delete branches made [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158224) in GitLab 17.2. Feature flag `jira_connect_remove_branches` removed.
+
+{{< /history >}}
 
 This table shows the features available with the Jira DVCS connector and the GitLab for Jira Cloud app:
 
 | Feature                              | Jira DVCS connector    | GitLab for Jira Cloud app |
 |:-------------------------------------|:-----------------------|:--------------------------|
-| Smart Commits                        | **{check-circle}** Yes | **{check-circle}** Yes    |
-| Sync merge requests                  | **{check-circle}** Yes | **{check-circle}** Yes    |
-| Sync branches                        | **{check-circle}** Yes | **{check-circle}** Yes    |
-| Sync commits                         | **{check-circle}** Yes | **{check-circle}** Yes    |
-| Sync existing data                   | **{check-circle}** Yes | **{check-circle}** Yes (see [GitLab data synced to Jira](connect-app.md#gitlab-data-synced-to-jira)) |
-| Sync builds                          | **{dotted-circle}** No | **{check-circle}** Yes    |
-| Sync deployments                     | **{dotted-circle}** No | **{check-circle}** Yes    |
-| Sync feature flags                   | **{dotted-circle}** No | **{check-circle}** Yes    |
+| Smart Commits                        | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes    |
+| Sync merge requests                  | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes    |
+| Sync branches                        | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes    |
+| Sync commits                         | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes    |
+| Sync existing data                   | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes (see [GitLab data synced to Jira](connect-app.md#gitlab-data-synced-to-jira)) |
+| Sync builds                          | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes    |
+| Sync deployments                     | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes    |
+| Sync feature flags                   | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes    |
 | Sync interval                        | Up to 60 minutes       | Real time                 |
-| Delete branches                      | **{dotted-circle}** No | **{check-circle}** Yes    |
-| Create a merge request from a branch | **{check-circle}** Yes | **{check-circle}** Yes    |
-| Create a branch from a Jira issue    | **{dotted-circle}** No | **{check-circle}** Yes    |
+| Delete branches                      | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes    |
+| Create a merge request from a branch | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes    |
+| Create a branch from a Jira issue    | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes    |
 
 ## Connected projects in GitLab
 
 The Jira development panel connects a Jira instance with all its projects to the following:
 
 - **For the [GitLab for Jira Cloud app](connect-app.md)**, linked GitLab groups or subgroups and their projects
-- **For the [Jira DVCS connector](dvcs/index.md)**, linked GitLab groups, subgroups, or personal namespaces and their projects
+- **For the [Jira DVCS connector](dvcs/_index.md)**, linked GitLab groups, subgroups, or personal namespaces and their projects
 
 ## Information displayed in the development panel
 
@@ -111,10 +117,10 @@ You can use Jira deployments to track and visualize the progress of software rel
 
 GitLab sends information about your environments and deployments to Jira if:
 
-- Your project's `.gitlab-ci.yml` file contains the [`environment`](../../ci/yaml/index.md#environment) keyword.
+- Your project's `.gitlab-ci.yml` file contains the [`environment`](../../ci/yaml/_index.md#environment) keyword.
 - A Jira issue ID is [mentioned in certain parts of GitLab](#information-displayed-in-the-development-panel) and a pipeline is triggered.
 
-For more information, see [environments and deployments](../../ci/environments/index.md).
+For more information, see [environments and deployments](../../ci/environments/_index.md).
 
 ## Related topics
 

@@ -50,11 +50,6 @@ describe('ml/experiment_tracking/components/model_experiments_header.vue', () =>
     });
   });
 
-  it('dropdown is hidden when hideMlflowUsage is true', () => {
-    createWrapper({ propsData: { hideMlflowUsage: true } });
-    expect(findDropdown().exists()).toBe(false);
-  });
-
   it('a menu item for creating experiments exist', () => {
     expect(findMenuItem().props()).toMatchObject({
       item: {

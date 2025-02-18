@@ -1,12 +1,14 @@
 <script>
 import { GlButton, GlSprintf, GlLink, GlFormCheckbox } from '@gitlab/ui';
+import { mapState } from 'pinia';
 // eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapActions, mapState } from 'vuex';
+import { mapGetters as mapVuexGetters, mapActions as mapVuexActions } from 'vuex';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
+import { useBatchComments } from '~/batch_comments/store';
 import eventHub from '../event_hub';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
@@ -134,22 +136,19 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
+    ...mapVuexGetters([
       'getDiscussionLastNote',
       'getNoteableData',
       'getNoteableDataByProp',
       'getNotesDataByProp',
       'getUserDataByProp',
     ]),
-    ...mapState({
-      withBatchComments: (state) => state.batchComments?.withBatchComments,
-    }),
-    ...mapGetters('batchComments', ['hasDrafts']),
+    ...mapState(useBatchComments, ['hasDrafts', 'withBatchComments', 'isMergeRequest']),
     autocompleteDataSources() {
       return gl.GfmAutoComplete?.dataSources;
     },
     showBatchCommentsActions() {
-      return this.withBatchComments && this.noteId === '' && !this.discussion.for_commit;
+      return this.isMergeRequest && this.noteId === '' && !this.discussion.for_commit;
     },
     showResolveDiscussionToggle() {
       if (!this.discussion?.notes) return false;
@@ -268,7 +267,7 @@ export default {
     this.updatePlaceholder();
   },
   methods: {
-    ...mapActions(['toggleResolveNote']),
+    ...mapVuexActions(['toggleResolveNote']),
     shouldToggleResolved(beforeSubmitDiscussionState) {
       return (
         this.showResolveDiscussionToggle && beforeSubmitDiscussionState !== this.newResolvedState()

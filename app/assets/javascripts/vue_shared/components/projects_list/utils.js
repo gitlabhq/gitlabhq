@@ -1,3 +1,5 @@
+import toast from '~/vue_shared/plugins/global_toast';
+import { sprintf, __ } from '~/locale';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 
 export const availableGraphQLProjectActions = ({ userPermissions }) => {
@@ -12,4 +14,17 @@ export const availableGraphQLProjectActions = ({ userPermissions }) => {
   }
 
   return baseActions;
+};
+
+export const renderDeleteSuccessToast = (project) => {
+  toast(
+    sprintf(__("Project '%{project_name}' is being deleted."), {
+      project_name: project.name,
+    }),
+  );
+};
+
+export const deleteParams = () => {
+  // Overridden in EE
+  return {};
 };

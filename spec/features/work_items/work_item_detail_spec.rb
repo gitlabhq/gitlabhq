@@ -23,10 +23,19 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   let(:list_path) { project_issues_path(project) }
   let(:work_items_path) { project_work_item_path(project, work_item.iid) }
 
+  shared_examples 'change type action is not displayed' do
+    it 'change type action is not displayed' do
+      click_button _('More actions'), match: :first
+
+      expect(find_by_testid('work-item-actions-dropdown')).not_to have_button(s_('WorkItem|Change type'))
+    end
+  end
+
   context 'for signed in user' do
     let(:linked_item) { task }
 
     before_all do
+      stub_feature_flags(comment_temperature: false)
       group.add_developer(user)
     end
 
@@ -78,6 +87,26 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     it_behaves_like 'work items change type', 'Issue', '[data-testid="issue-type-issue-icon"]'
   end
 
+  context 'for signed in admin' do
+    let_it_be(:admin) { create(:admin) }
+
+    context 'with akismet integration' do
+      let_it_be(:user_agent_detail) { create(:user_agent_detail, subject: work_item) }
+
+      before_all do
+        project.add_maintainer(admin)
+      end
+
+      before do
+        stub_application_setting(akismet_enabled: true)
+        sign_in(admin)
+        visit work_items_path
+      end
+
+      it_behaves_like 'work items submit as spam'
+    end
+  end
+
   context 'for signed in owner' do
     before_all do
       project.add_owner(user)
@@ -96,12 +125,26 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
       project.add_guest(user)
     end
 
-    before do
-      sign_in(user)
-      visit work_items_path
+    context 'for work item authored by guest user' do
+      let_it_be(:key_result) { create(:work_item, :key_result, author: user, project: project) }
+      let_it_be(:note) { create(:note, noteable: key_result, project: key_result.project) }
+
+      before do
+        sign_in(user)
+        visit project_work_item_path(project, key_result.iid)
+      end
+
+      it_behaves_like 'authored work item guest user permissions'
     end
 
-    it_behaves_like 'work items comment actions for guest users'
+    context 'for work item not authored by guest user' do
+      before do
+        sign_in(user)
+        visit work_items_path
+      end
+
+      it_behaves_like 'non-authored work item guest user permissions'
+    end
   end
 
   context 'for user not signed in' do
@@ -125,10 +168,6 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
       expect(page).to have_content(note.note)
     end
 
-    it 'change type action is not displayed' do
-      click_button _('More actions'), match: :first
-
-      expect(find_by_testid('work-item-actions-dropdown')).to have_button(s_('WorkItem|Change type'))
-    end
+    it_behaves_like 'change type action is not displayed'
   end
 end

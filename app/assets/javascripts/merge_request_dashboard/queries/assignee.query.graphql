@@ -7,6 +7,7 @@ query requestingReview(
   $reviewStates: [MergeRequestReviewState!]
   $reviewerWildcardId: ReviewerWildcardId
   $mergedAfter: Time
+  $not: MergeRequestsResolverNegatedParams
   $perPage: Int!
   $afterCursor: String
   $sort: MergeRequestSort = UPDATED_DESC
@@ -19,6 +20,7 @@ query requestingReview(
       reviewStates: $reviewStates
       reviewerWildcardId: $reviewerWildcardId
       mergedAfter: $mergedAfter
+      not: $not
       first: $perPage
       after: $afterCursor
       sort: $sort

@@ -8,9 +8,6 @@ status: removed
 milestone_removed: '13.12'
 time_frame: all
 data_source: database
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

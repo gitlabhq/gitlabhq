@@ -44,13 +44,7 @@ $item-remove-button-space: 42px;
     border-color: var(--gl-border-color-section);
   }
 
-  .merge-request-status.closed {
-    color: $red-500;
-  }
-
-  .issue-token-state-icon-open,
-  .issue-token-state-icon-closed,
-  .confidential-icon,
+  .issue-token-state-icon,
   .item-milestone .icon,
   .item-weight .board-card-info-icon {
     min-width: $gl-padding;
@@ -59,10 +53,6 @@ $item-remove-button-space: 42px;
     &:focus {
       @apply gl-focus;
     }
-  }
-
-  .confidential-icon {
-    color: $orange-500;
   }
 
   .item-title {

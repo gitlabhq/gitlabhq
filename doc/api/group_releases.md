@@ -2,21 +2,30 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group releases API
 ---
 
-# Group releases API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351703) in GitLab 14.10 [with a flag](../administration/feature_flags.md) named `group_releases_finder_inoperator`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/355463) in GitLab 15.0. Feature flag `group_releases_finder_inoperator` removed.
+{{< /details >}}
 
-Review your groups' [releases](../user/project/releases/index.md) with the REST API.
+{{< history >}}
 
-NOTE:
-For more information about the project releases API, see [Releases API](releases/index.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351703) in GitLab 14.10 [with a flag](../administration/feature_flags.md) named `group_releases_finder_inoperator`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/355463) in GitLab 15.0. Feature flag `group_releases_finder_inoperator` removed.
+
+{{< /history >}}
+
+Review your groups' [releases](../user/project/releases/_index.md) with the REST API.
+
+{{< alert type="note" >}}
+
+For more information about the project releases API, see [Releases API](releases/_index.md).
+
+{{< /alert >}}
 
 ## List group releases
 
@@ -31,7 +40,7 @@ Parameters:
 
 | Attribute           | Type           | Required | Description                                                                                                   |
 |---------------------|----------------|----------|---------------------------------------------------------------------------------------------------------------|
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `sort`              | string         | no       | The direction of the order. Either `desc` (default) for descending order or `asc` for ascending order.        |
 | `simple`            | boolean        | no       | Return only limited fields for each release.                                                                  |
 

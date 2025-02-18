@@ -12,8 +12,6 @@ module Types
       GraphQL::Types::String,
       null: true,
       description: 'Description of the label (Markdown rendered as HTML for caching).'
-    field :id, GraphQL::Types::ID, null: false,
-      description: 'Label ID.'
     field :text_color, GraphQL::Types::String, null: false,
       description: 'Text color of the label.'
     field :title, GraphQL::Types::String, null: false,

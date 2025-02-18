@@ -2,21 +2,26 @@
 stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Pages administration for self-compiled installations
 ---
 
-# GitLab Pages administration for self-compiled installations
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-NOTE:
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 Before attempting to enable GitLab Pages, first make sure you have
 [installed GitLab](../../install/installation.md) successfully.
 
+{{< /alert >}}
+
 This document explains how to configure GitLab Pages for self-compiled GitLab installations.
 
-For more information about configuring GitLab Pages for Linux Package installations (recommended), see the [Linux package documentation](index.md).
+For more information about configuring GitLab Pages for Linux Package installations (recommended), see the [Linux package documentation](_index.md).
 
 The advantage of using the Linux package installation is that it contains the latest supported version of GitLab Pages.
 
@@ -60,7 +65,7 @@ Before proceeding with the Pages configuration, make sure that:
   Pages artifacts.
 - Optional. You have a **wildcard certificate** for the Pages domain if you
   decide to serve Pages (`*.example.io`) under HTTPS.
-- Optional but recommended. You have configured and enabled the [instance runners](../../ci/runners/index.md)
+- Optional but recommended. You have configured and enabled the [instance runners](../../ci/runners/_index.md)
   so your users don't have to bring their own.
 
 ### DNS configuration
@@ -76,9 +81,12 @@ host that GitLab runs. For example, an entry would look like this:
 Where `example.io` is the domain to serve GitLab Pages from,
 and `192.0.2.1` is the IP address of your GitLab instance.
 
-NOTE:
+{{< alert type="note" >}}
+
 You should not use the GitLab domain to serve user pages. For more information
 see the [security section](#security).
+
+{{< /alert >}}
 
 ## Configuration
 
@@ -387,8 +395,11 @@ world. Custom domains and TLS are supported.
 
 ## NGINX caveats
 
-NOTE:
+{{< alert type="note" >}}
+
 The following information applies only to self-compiled installations.
+
+{{< /alert >}}
 
 Be extra careful when setting up the domain name in the NGINX configuration. You must
 not remove the backslashes.
@@ -489,7 +500,7 @@ To change this value:
 
 ## Backup
 
-Pages are part of the [regular backup](../../administration/backup_restore/index.md) so there is nothing to configure.
+Pages are part of the [regular backup](../backup_restore/_index.md) so there is nothing to configure.
 
 ## Security
 

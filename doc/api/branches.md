@@ -1,17 +1,19 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Documentation for the REST API for Git branches in GitLab."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Documentation for the REST API for Git branches in GitLab.
+title: Branches API
 ---
 
-# Branches API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This API operates on [repository branches](../user/project/repository/branches/index.md).
+{{< /details >}}
+
+This API operates on [repository branches](../user/project/repository/branches/_index.md).
 
 See also [Protected branches API](protected_branches.md).
 
@@ -19,8 +21,11 @@ See also [Protected branches API](protected_branches.md).
 
 Get a list of repository branches from a project, sorted by name alphabetically.
 
-NOTE:
+{{< alert type="note" >}}
+
 This endpoint can be accessed without authentication if the repository is publicly accessible.
+
+{{< /alert >}}
 
 ```plaintext
 GET /projects/:id/repository/branches
@@ -30,7 +35,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description |
 |:----------|:---------------|:---------|:------------|
-| `id`      | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).|
+| `id`      | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).|
 | `search`  | string         | no       | Return list of branches containing the search string. Use `^term` to find branches that begin with `term`, and `term$` to find branches that end with `term`. |
 | `regex`   | string         | no       | Return list of branches with names matching a [re2](https://github.com/google/re2/wiki/Syntax) regular expression. |
 
@@ -82,8 +87,11 @@ Example response:
 
 Get a single project repository branch.
 
-NOTE:
+{{< alert type="note" >}}
+
 This endpoint can be accessed without authentication if the repository is publicly accessible.
+
+{{< /alert >}}
 
 ```plaintext
 GET /projects/:id/repository/branches/:branch
@@ -93,8 +101,8 @@ Parameters:
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
-| `branch`  | string            | yes      | [URL-encoded name](rest/index.md#namespaced-paths) of the branch. |
+| `id`      | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `branch`  | string            | yes      | [URL-encoded name](rest/_index.md#namespaced-paths) of the branch. |
 
 Example request:
 
@@ -158,7 +166,7 @@ Parameters:
 
 | Attribute | Type    | Required | Description |
 |-----------|---------|----------|-------------|
-| `id`      | integer | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `branch`  | string  | yes      | Name of the branch. |
 | `ref`     | string  | yes      | Branch name or commit SHA to create branch from. |
 
@@ -207,8 +215,11 @@ Example response:
 
 Delete a branch from the repository.
 
-NOTE:
+{{< alert type="note" >}}
+
 In the case of an error, an explanation message is provided.
+
+{{< /alert >}}
 
 ```plaintext
 DELETE /projects/:id/repository/branches/:branch
@@ -218,7 +229,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `branch`  | string         | yes      | Name of the branch. |
 
 Example request:
@@ -229,17 +240,23 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/branches/newbranch"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Deleting a branch does not completely erase all related data.
 Some information persists to maintain project history and to support recovery processes.
 For more information, see [Handle sensitive information](../topics/git/undo.md#handle-sensitive-information).
+
+{{< /alert >}}
 
 ## Delete merged branches
 
 Deletes all branches that are merged into the project's default branch.
 
-NOTE:
+{{< alert type="note" >}}
+
 [Protected branches](../user/project/repository/branches/protected.md) are not deleted as part of this operation.
+
+{{< /alert >}}
 
 ```plaintext
 DELETE /projects/:id/repository/merged_branches
@@ -249,7 +266,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description                                                                                                  |
 |:----------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -261,6 +278,6 @@ curl --request DELETE \
 
 ## Related topics
 
-- [Branches](../user/project/repository/branches/index.md)
+- [Branches](../user/project/repository/branches/_index.md)
 - [Protected branches](../user/project/repository/branches/protected.md)
 - [Protected branches API](protected_branches.md)

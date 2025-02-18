@@ -55,6 +55,32 @@ RSpec.describe API::MergeRequestDiffs, 'MergeRequestDiffs', feature_category: :s
       expect(json_response['diffs'].size).to eq(merge_request_diff.diffs.size)
     end
 
+    it 'returns commits' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions/#{merge_request_diff.id}", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.dig('commits', 0)).to include(
+        'author_name' => 'Job van der Voort',
+        'parent_ids' => %w[1b12f15a11fc6e62177bef08f47bc7b5ce50b141 498214de67004b1da3d820901307bed2a68a8ef6]
+      )
+    end
+
+    context 'when commits_from_gitaly feature flag is disabled' do
+      before do
+        stub_feature_flags(commits_from_gitaly: false)
+      end
+
+      it 'returns commits without parent ids' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions/#{merge_request_diff.id}", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.dig('commits', 0)).to include(
+          'author_name' => 'Job van der Voort',
+          'parent_ids' => []
+        )
+      end
+    end
+
     context 'when unidiff format is requested' do
       it 'returns a diff in Unified format' do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions/#{merge_request_diff.id}", user), params: { unidiff: true }

@@ -2,13 +2,12 @@
 stage: none
 group: unassigned
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Documentation deployments
 ---
-
-# Documentation deployments
 
 ## Deployment environments
 
-The [GitLab documentation site](https://docs.gitlab.com/) is a static site hosted by [GitLab Pages](../../../user/project/pages/index.md). The deployment is done by the [Pages deploy job](#pages-deploy-job).
+The [GitLab documentation site](https://docs.gitlab.com/) is a static site hosted by [GitLab Pages](../../../user/project/pages/_index.md). The deployment is done by the [Pages deploy job](#pages-deploy-job).
 
 The website hosts documentation only for the [currently supported](../../../policy/maintenance.md) GitLab versions. Documentation for older versions is built and uploaded as Docker images to be downloaded from [GitLab Docs archives](https://docs.gitlab.com/archives/).
 
@@ -28,7 +27,7 @@ Documentation deployments have dependencies on pipelines and Docker images as fo
 - The Pages deployment pipelines depend on the latest documentation images (which, in turn, depend on the stable
   pipelines and images.)
 
-For general information on using Docker with CI/CD pipelines, see [Docker integration](../../../ci/docker/index.md).
+For general information on using Docker with CI/CD pipelines, see [Docker integration](../../../ci/docker/_index.md).
 
 ## Stable branches
 
@@ -125,7 +124,7 @@ graph TD
 
 ## Pages deploy job
 
-[GitLab Docs](https://docs.gitlab.com) is a [Pages site](../../../user/project/pages/index.md) and documentation updates
+[GitLab Docs](https://docs.gitlab.com) is a [Pages site](../../../user/project/pages/_index.md) and documentation updates
 for it must be deployed to become available.
 
 The [`pages`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/4c18963fe0a414ad62f55b9e18f922588b2dd155/.gitlab-ci.yml#L491)
@@ -157,7 +156,7 @@ Maintainers can [manually](../../../ci/pipelines/schedules.md#run-manually) run 
 production:
 
 1. Go to the [scheduled pipelines](https://gitlab.com/gitlab-org/gitlab-docs/-/pipeline_schedules) for `gitlab-docs`.
-1. Next to `Build docs.gitlab.com every hour`, select **Play** (**{play}**).
+1. Next to `Build docs.gitlab.com every hour`, select **Play** ({{< icon name="play" >}}).
 
 The updated documentation is available in production after the `pages` and `pages:deploy` jobs
 complete in the new pipeline.

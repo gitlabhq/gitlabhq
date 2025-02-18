@@ -1,19 +1,19 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Documentation for the REST API for Git repositories in GitLab."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Documentation for the REST API for Git repositories in GitLab.
+title: Repositories API
 ---
 
-# Repositories API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## List repository tree
-
-> - Iterating pages of results with a number (`?page=2`) [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67509) in GitLab 14.3.
 
 Get a list of repository files and directories in a project. This endpoint can
 be accessed without authentication if the repository is publicly accessible.
@@ -23,9 +23,12 @@ command. For more information, refer to the section
 [Tree Objects](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects.html#_tree_objects)
 in the Git internals documentation.
 
-WARNING:
-This endpoint changed to [keyset-based pagination](rest/index.md#keyset-based-pagination)
+{{< alert type="warning" >}}
+
+This endpoint changed to [keyset-based pagination](rest/_index.md#keyset-based-pagination)
 in GitLab 15.0. Iterating pages of results with a number (`?page=2`) is unsupported.
+
+{{< /alert >}}
 
 ```plaintext
 GET /projects/:id/repository/tree
@@ -35,11 +38,11 @@ Supported attributes:
 
 | Attribute   | Type           | Required | Description |
 | :---------- | :------------- | :------- | :---------- |
-| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `page_token` | string        | no       | The tree record ID at which to fetch the next page. Used only with keyset pagination. |
-| `pagination` | string        | no       | If `keyset`, use the [keyset-based pagination method](rest/index.md#keyset-based-pagination). |
+| `pagination` | string        | no       | If `keyset`, use the [keyset-based pagination method](rest/_index.md#keyset-based-pagination). |
 | `path`      | string         | no       | The path inside the repository. Used to get content of subdirectories. |
-| `per_page`  | integer        | no       | Number of results to show per page. If not specified, defaults to `20`. For more information, see [Pagination](rest/index.md#pagination). |
+| `per_page`  | integer        | no       | Number of results to show per page. If not specified, defaults to `20`. For more information, see [Pagination](rest/_index.md#pagination). |
 | `recursive` | boolean        | no       | Boolean value used to get a recursive tree. Default is `false`. |
 | `ref`       | string         | no       | The name of a repository branch or tag or, if not given, the default branch. |
 
@@ -111,7 +114,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 | :-------- | :------------- | :------- | :---------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `sha`     | string         | yes      | The blob SHA. |
 
 ## Raw blob content
@@ -127,7 +130,7 @@ Supported attributes:
 
 | Attribute | Type     | Required | Description |
 | :-------- | :------- | :------- | :---------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `sha`     | string | yes      | The blob SHA. |
 
 ## Get file archive
@@ -158,22 +161,24 @@ Supported attributes:
 
 | Attribute   | Type           | Required | Description           |
 |:------------|:---------------|:---------|:----------------------|
-| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `path`      | string         | no       | The subpath of the repository to download. If an empty string, defaults to the whole repository.  |
 | `sha`       | string         | no       | The commit SHA to download. A tag, branch reference, or SHA can be used. If not specified, defaults to the tip of the default branch. |
+| `include_lfs_blobs` | boolean | no | Determines whether LFS objects are included in the archive. Default is `true`. When set to `false`, LFS objects are excluded. |
+| `exclude_paths` | array | no | List of paths to exclude from the archive. |
 
 Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.com/api/v4/projects/<project_id>/repository/archive?sha=<commit_sha>&path=<path>"
+  --url "https://gitlab.com/api/v4/projects/<project_id>/repository/archive?sha=<commit_sha>&path=<path>&exclude_paths=<path1,path2>"
 ```
 
 ## Compare branches, tags or commits
 
 This endpoint can be accessed without authentication if the repository is
 publicly accessible. Diffs can have an empty diff string if
-[diff limits](../development/merge_request_concepts/diffs/index.md#diff-limits) are reached.
+[diff limits](../development/merge_request_concepts/diffs/_index.md#diff-limits) are reached.
 
 ```plaintext
 GET /projects/:id/repository/compare
@@ -183,7 +188,7 @@ Supported attributes:
 
 | Attribute         | Type           | Required | Description |
 | :---------        | :------------- | :------- | :---------- |
-| `id`              | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`              | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `from`            | string         | yes      | The commit SHA or branch name. |
 | `to`              | string         | yes      | The commit SHA or branch name. |
 | `from_project_id` | integer        | no       | The ID to compare from. |
@@ -232,7 +237,11 @@ Example response:
 
 ## Contributors
 
-> - `ref` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156852) in GitLab 17.4.
+{{< history >}}
+
+- `ref` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156852) in GitLab 17.4.
+
+{{< /history >}}
 
 Get repository contributors list. This endpoint can be accessed without
 authentication if the repository is publicly accessible.
@@ -247,7 +256,7 @@ Supported attributes:
 
 | Attribute  | Type           | Required | Description |
 | :--------- | :------------- | :------- | :---------- |
-| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `ref`      | string         | no       | The name of a repository branch or tag. If not given, the default branch. |
 | `order_by` | string         | no       | Return contributors ordered by `name`, `email`, or `commits` (orders by commit date) fields. Default is `commits`. |
 | `sort`     | string         | no       | Return contributors sorted in `asc` or `desc` order. Default is `asc`. |
@@ -287,7 +296,7 @@ GET /projects/:id/repository/merge_base
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ---------------------------------------------------------------------------------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `refs`    | array          | yes      | The refs to find the common ancestor of. Accepts multiple refs.                    |
 
 Example request, with the refs truncated for readability:
@@ -318,9 +327,13 @@ Example response:
 
 ## Add changelog data to a changelog file
 
-> - Commit range limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89032) in GitLab 15.1 [with a flag](../administration/feature_flags.md) named `changelog_commits_limitation`. Disabled by default.
-> - [Enabled on GitLab.com and by default on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/33893) in GitLab 15.3.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/364101) in GitLab 17.3. Feature flag `changelog_commits_limitation` removed.
+{{< history >}}
+
+- Commit range limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89032) in GitLab 15.1 [with a flag](../administration/feature_flags.md) named `changelog_commits_limitation`. Disabled by default.
+- [Enabled on GitLab.com and by default on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/33893) in GitLab 15.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/364101) in GitLab 17.3. Feature flag `changelog_commits_limitation` removed.
+
+{{< /history >}}
 
 Generate changelog data based on commits in a repository.
 
@@ -453,7 +466,11 @@ curl --request POST \
 
 ## Generate changelog data
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172842) authentiation through [CI/CD job token](../ci/jobs/ci_job_token.md) in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172842) authentication through [CI/CD job token](../ci/jobs/ci_job_token.md) in GitLab 17.7.
+
+{{< /history >}}
 
 Generate changelog data based on commits in a repository, without committing
 them to a changelog file.

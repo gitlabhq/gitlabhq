@@ -10,6 +10,7 @@ module Gitlab
             yield multistore
           end
         end
+        alias_method :then, :with
 
         def multistore_pool
           @multistore_pool ||= MultiStoreConnectionPool.new(size: pool_size, name: pool_name) { multistore }

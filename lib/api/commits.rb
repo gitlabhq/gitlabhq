@@ -349,7 +349,7 @@ module API
         ]
       end
       params do
-        requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag to be cherry picked'
+        requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag to be cherry-picked'
         requires :branch,
           type: String,
           desc: 'The name of the branch',

@@ -2,8 +2,8 @@
 stage: Plan
 group: Project Management
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Work items widgets
 ---
-# Work items widgets
 
 ## Frontend architecture
 
@@ -105,7 +105,7 @@ Currently, we have a lot editable widgets which you can find in the [folder](htt
 - [Work item description widget](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/work_item_description.vue)
 ...
 
-We also have a [reuseable base dropdown widget wrapper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/shared/work_item_sidebar_dropdown_widget.vue) which can be used for any new widget having a dropdown. It supports both multi select and single select.
+We also have a [reusable base dropdown widget wrapper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/shared/work_item_sidebar_dropdown_widget.vue) which can be used for any new widget having a dropdown. It supports both multi select and single select.
 
 ## Steps to implement a new work item widget on frontend in the detail view
 
@@ -156,9 +156,12 @@ Now you can update tests for existing files and write tests for the new files:
 1. `spec/frontend/work_items/graphql/resolvers_spec.js` or `ee/spec/frontend/work_items/graphql/resolvers_spec.js`.
 1. `spec/features/work_items/work_item_detail_spec.rb` or `ee/spec/features/work_items/work_item_detail_spec.rb`.
 
-NOTE:
+{{< alert type="note" >}}
+
 You may find some feature specs failing because of excessive SQL queries.
 To resolve this, update the mocked `Gitlab::QueryLimiting::Transaction.threshold` in `spec/support/shared_examples/features/work_items/rolledup_dates_shared_examples.rb`.
+
+{{< /alert >}}
 
 ## Steps to implement a new work item widget on frontend in the create view
 
@@ -173,7 +176,7 @@ Since create view is almost identical to detail view, and we wanted to store in 
 
 For example , when we initialise the create view , we have a function `setNewWorkItemCache` [in work items cache utils](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/graphql/cache_utils) which is called in both [create view work item modal](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/create_work_item_modal.vue) and also [create work item component](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/create_work_item.vue)
 
-You can include the create work item view in any vue file depending on usage. If you pass the `workItemType` of the create view , it will only include the applicable work item widgets which are fetched from [work item types query](../api/graphql/reference/index.md#workitemtype) and only showing the ones in [widget definitions](../api/graphql/reference/index.md#workitemwidgetdefinition)
+You can include the create work item view in any vue file depending on usage. If you pass the `workItemType` of the create view , it will only include the applicable work item widgets which are fetched from [work item types query](../api/graphql/reference/_index.md#workitemtype) and only showing the ones in [widget definitions](../api/graphql/reference/_index.md#workitemwidgetdefinition)
 
 We have a [local mutation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/graphql/update_new_work_item.mutation.graphql) to update the work item draft data in create view
 
@@ -365,8 +368,8 @@ Refer to [merge request #158688](https://gitlab.com/gitlab-org/gitlab/-/merge_re
 1. Assign the widget to the appropriate work item types, by:
    - Adding it to the `WIDGETS_FOR_TYPE` hash in `lib/gitlab/database_importers/work_items/base_type_importer.rb`.
    - Creating a migration in `db/migrate/<version>_add_<widget_name>_widget_to_work_item_types.rb`.
-     Refer to `db/migrate/20241127161525_add_designs_and_development_widgets_to_ticket_work_item_type.rb` for [the latest best practice](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174135/diffs#diff-content-94894df588ba8ac84a6ac5fbd86188f07053ba00).
-     There is no need to use a post-migration, see [discussion on merge request 148119](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148119#note_1837432680). 
+     Refer to `db/migrate/20250121163545_add_custom_fields_widget_to_work_item_types.rb` for [the latest best practice](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176206/diffs#diff-content-b6944f559968654c39493bb9f786ee97f12fd370).
+     There is no need to use a post-migration, see [discussion on merge request 148119](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148119#note_1837432680).
      See `lib/gitlab/database/migration_helpers/work_items/widgets.rb` if you want to learn more about the structure of the migration.
 
      ```ruby
@@ -377,10 +380,9 @@ Refer to [merge request #158688](https://gitlab.com/gitlab-org/gitlab/-/merge_re
        include Gitlab::Database::MigrationHelpers::WorkItems::Widgets
 
        restrict_gitlab_migration gitlab_schema: :gitlab_main
-       disable_ddl_transaction!
-       milestone '17.7'
+       milestone '17.9'
 
-       WORK_ITEM_TYPE_ENUM_VALUE = 8 # ticket
+       WORK_ITEM_TYPE_ENUM_VALUES = 8 # ticket, use [8,9] for multiple types
        # If you want to add one widget, only use one item here.
        WIDGETS = [
          {
@@ -394,11 +396,11 @@ Refer to [merge request #158688](https://gitlab.com/gitlab-org/gitlab/-/merge_re
        ]
 
        def up
-         add_widget_definitions(type_enum_value: WORK_ITEM_TYPE_ENUM_VALUE, widgets: WIDGETS)
+         add_widget_definitions(type_enum_values: WORK_ITEM_TYPE_ENUM_VALUES, widgets: WIDGETS)
        end
 
        def down
-         remove_widget_definitions(type_enum_value: WORK_ITEM_TYPE_ENUM_VALUE, widgets: WIDGETS)
+         remove_widget_definitions(type_enum_values: WORK_ITEM_TYPE_ENUM_VALUES, widgets: WIDGETS)
        end
      end
      ```
@@ -422,7 +424,7 @@ Now you can update tests for existing files and write tests for the new files:
    - CE: `spec/graphql/types/work_items/widgets/<widget_name>_input_type_spec.rb` or `spec/graphql/types/work_items/widgets/<widget_name>_create_input_type_spec.rb` and `spec/graphql/types/work_items/widgets/<widget_name>_update_input_type_spec.rb`.
    - EE: `ee/spec/graphql/types/work_items/widgets/<widget_name>_input_type_spec.rb` or `ee/spec/graphql/types/work_items/widgets/<widget_name>_create_input_type_spec.rb` and `ee/spec/graphql/types/work_items/widgets/<widget_name>_update_input_type_spec.rb`.
 1. Migration: `spec/migrations/<version>_add_<widget_name>_widget_to_work_item_types_spec.rb`. Add the shared example that uses the constants from `described_class`.
-   
+
    ```ruby
    # frozen_string_literal: true
 

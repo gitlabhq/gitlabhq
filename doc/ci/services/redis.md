@@ -2,13 +2,15 @@
 stage: Verify
 group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Using Redis
 ---
 
-# Using Redis
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 As many applications depend on Redis as their key-value store, you
 eventually need it in order for your tests to run. Below you are guided how to
@@ -16,7 +18,7 @@ do this with the Docker and Shell executors of GitLab Runner.
 
 ## Use Redis with the Docker executor
 
-If you are using [GitLab Runner](../runners/index.md) with the Docker executor
+If you are using [GitLab Runner](../runners/_index.md) with the Docker executor
 you basically have everything set up already.
 
 First, in your `.gitlab-ci.yml` add:
@@ -70,7 +72,7 @@ Host: localhost
 
 We have set up an [Example Redis Project](https://gitlab.com/gitlab-examples/redis) for your convenience
 that runs on [GitLab.com](https://gitlab.com) using our publicly available
-[instance runners](../runners/index.md).
+[instance runners](../runners/_index.md).
 
 Want to hack on it? Fork it, commit and push your changes. Within a few
 moments the changes are picked by a public runner and the job begins.

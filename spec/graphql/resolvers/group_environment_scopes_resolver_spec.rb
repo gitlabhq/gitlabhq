@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::GroupEnvironmentScopesResolver, feature_category: :secrets_management do
+RSpec.describe Resolvers::GroupEnvironmentScopesResolver, feature_category: :ci_variables do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
@@ -32,9 +32,7 @@ RSpec.describe Resolvers::GroupEnvironmentScopesResolver, feature_category: :sec
   context 'without a group' do
     describe '#resolve' do
       it 'rails to find any environment scopes' do
-        expect(resolve_environment_scopes.map(&:name)).to match_array(
-          []
-        )
+        expect(resolve_environment_scopes.map(&:name)).to be_empty
       end
     end
   end

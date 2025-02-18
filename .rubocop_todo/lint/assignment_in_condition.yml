@@ -120,7 +120,6 @@ Lint/AssignmentInCondition:
     - 'ee/lib/ee/gitlab/repo_path.rb'
     - 'ee/lib/gem_extensions/elasticsearch/model/indexing/instance_methods.rb'
     - 'ee/lib/gitlab/group_plans_preloader.rb'
-    - 'ee/lib/gitlab/llm/embeddings/utils/base_content_parser.rb'
     - 'ee/lib/gitlab/path_locks_finder.rb'
     - 'ee/lib/gitlab/subscription_portal/clients/graphql.rb'
     - 'ee/lib/system_check/geo/authorized_keys_check.rb'

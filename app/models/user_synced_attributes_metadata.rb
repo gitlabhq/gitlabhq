@@ -5,7 +5,7 @@ class UserSyncedAttributesMetadata < ApplicationRecord
 
   validates :user, presence: true
 
-  SYNCABLE_ATTRIBUTES = %i[name email location].freeze
+  SYNCABLE_ATTRIBUTES = %i[name email location organization job_title].freeze
 
   def read_only?(attribute)
     sync_profile_from_provider? && synced?(attribute)

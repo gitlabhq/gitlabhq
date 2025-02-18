@@ -309,7 +309,7 @@ describe('Details Page', () => {
           runCleanupPoliciesHelpPagePath: helpPagePath(
             'administration/packages/container_registry',
             {
-              anchor: 'run-the-cleanup-policy-now',
+              anchor: 'run-the-cleanup-policy',
             },
           ),
         });

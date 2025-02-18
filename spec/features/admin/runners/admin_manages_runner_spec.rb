@@ -161,21 +161,46 @@ RSpec.describe "Admin manages runner in admin section", :js, feature_category: :
     end
 
     describe 'disable/destroy' do
-      let_it_be(:runner) { create(:ci_runner, :project, projects: [project1]) }
+      context 'when runner is being removed from owner project' do
+        it 'denies removing project runner from project' do
+          within_testid('assigned-projects') do
+            click_on 'Disable'
+          end
 
-      before do
-        visit edit_admin_runner_path(runner)
+          new_runner_project = find_by_testid('unassigned-projects')
+
+          expect(page).to have_content('Failed unassigning runner from project')
+          expect(new_runner_project).to have_content(project2.name)
+        end
       end
 
-      it 'removed project runner from project' do
-        within_testid('assigned-projects') do
-          click_on 'Disable'
+      context 'when project being disabled is runner owner project' do
+        let_it_be(:runner) { create(:ci_runner, :project, projects: [project1, project2]) }
+
+        let(:project_to_delete) { project2 }
+        let(:runner_project_to_delete) { runner.runner_projects.find_by_project_id(project_to_delete.id) }
+        let(:delete_route_path) do
+          admin_namespace_project_runner_project_path(
+            id: runner_project_to_delete,
+            project_id: project_to_delete,
+            namespace_id: project_to_delete.parent
+          )
         end
 
-        new_runner_project = find_by_testid('unassigned-projects')
+        before do
+          visit edit_admin_runner_path(runner)
+        end
 
-        expect(page).to have_content('Runner unassigned from project.')
-        expect(new_runner_project).to have_content(project1.name)
+        it 'removes project runner from project' do
+          within_testid('assigned-projects') do
+            find("a[href='#{delete_route_path}']").click
+          end
+
+          new_runner_project = find_by_testid('unassigned-projects')
+
+          expect(page).to have_content('Runner unassigned from project.')
+          expect(new_runner_project).to have_content(project_to_delete.name)
+        end
       end
     end
   end

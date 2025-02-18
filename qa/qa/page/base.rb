@@ -560,7 +560,7 @@ module QA
 
       def wait_for_gitlab_to_respond
         wait_until(sleep_interval: 5, message: '502 - GitLab is taking too much time to respond') do
-          Capybara.page.has_no_text?('GitLab is taking too much time to respond')
+          Capybara.page.has_no_text?(/GitLab is taking too much time to respond|Waiting for GitLab to boot/)
         end
       end
     end

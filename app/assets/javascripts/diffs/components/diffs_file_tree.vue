@@ -2,6 +2,7 @@
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, MR_TOGGLE_FILE_BROWSER } from '~/behaviors/shortcuts/keybindings';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
+import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import {
   INITIAL_TREE_WIDTH,
   MIN_TREE_WIDTH,
@@ -23,7 +24,10 @@ export default {
   },
   data() {
     const treeWidth =
-      parseInt(localStorage.getItem(TREE_LIST_WIDTH_STORAGE_KEY), 10) || INITIAL_TREE_WIDTH;
+      parseInt(
+        getCookie(TREE_LIST_WIDTH_STORAGE_KEY) || localStorage.getItem(TREE_LIST_WIDTH_STORAGE_KEY),
+        10,
+      ) || INITIAL_TREE_WIDTH;
 
     return {
       treeWidth,
@@ -45,7 +49,7 @@ export default {
       this.$emit('toggled');
     },
     cacheTreeListWidth(size) {
-      localStorage.setItem(TREE_LIST_WIDTH_STORAGE_KEY, size);
+      setCookie(TREE_LIST_WIDTH_STORAGE_KEY, size);
     },
   },
 };
@@ -61,6 +65,6 @@ export default {
       side="right"
       @resize-end="cacheTreeListWidth"
     />
-    <tree-list :hide-file-stats="hideFileStats" />
+    <tree-list :hide-file-stats="hideFileStats" @clickFile="$emit('clickFile', $event)" />
   </div>
 </template>

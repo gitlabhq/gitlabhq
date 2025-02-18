@@ -11,11 +11,11 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     Version 14.x.x [security report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas) are deprecated.
 
-    In GitLab 15.8 and later, [security report scanner integrations](https://docs.gitlab.com/ee/development/integrations/secure.html) that use schema version 14.x.x will display a deprecation warning in the pipeline's **Security** tab.
+    In GitLab 15.8 and later, [security report scanner integrations](https://docs.gitlab.com/development/integrations/secure/) that use schema version 14.x.x will display a deprecation warning in the pipeline's **Security** tab.
 
     In GitLab 16.0 and later, the feature will be removed. Security reports that use schema version 14.x.x will cause an error in the pipeline's **Security** tab.
 
-    For more information, refer to [security report validation](https://docs.gitlab.com/ee/user/application_security/#security-report-validation).
+    For more information, refer to [security report validation](https://docs.gitlab.com/user/application_security/#security-report-validation).
 #
 # OPTIONAL FIELDS
 #

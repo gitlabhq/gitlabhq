@@ -173,8 +173,9 @@ export default {
             v-gl-tooltip
             name="warning-solid"
             :size="16"
-            class="gl-mr-3 gl-text-red-600 hover:gl-cursor-pointer"
+            class="gl-mr-3 gl-text-danger hover:gl-cursor-pointer"
             :title="$options.i18n.status.disabled.tooltip"
+            variant="danger"
           />
           {{ $options.i18n.status.disabled.name }}
         </span>

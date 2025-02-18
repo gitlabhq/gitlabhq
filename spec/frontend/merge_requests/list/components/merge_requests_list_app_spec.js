@@ -33,6 +33,7 @@ import {
   TOKEN_TYPE_ENVIRONMENT,
   TOKEN_TYPE_DEPLOYED_AFTER,
   TOKEN_TYPE_DEPLOYED_BEFORE,
+  TOKEN_TYPE_SUBSCRIBED,
   OPERATOR_IS,
   OPERATOR_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -42,6 +43,7 @@ import MergeRequestsListApp from '~/merge_requests/list/components/merge_request
 import { BRANCH_LIST_REFRESH_INTERVAL } from '~/merge_requests/list/constants';
 import getMergeRequestsQuery from 'ee_else_ce/merge_requests/list/queries/project/get_merge_requests.query.graphql';
 import getMergeRequestsCountsQuery from 'ee_else_ce/merge_requests/list/queries/project/get_merge_requests_counts.query.graphql';
+import getMergeRequestsApprovalsQuery from 'ee_else_ce/merge_requests/list/queries/group/get_merge_requests_approvals.query.graphql';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import MergeRequestReviewers from '~/issuable/components/merge_request_reviewers.vue';
 import issuableEventHub from '~/issues/list/eventhub';
@@ -62,13 +64,32 @@ function createComponent({
   provide = {},
   response = getQueryResponse,
   mountFn = shallowMountExtended,
+  queryResponse = null,
 } = {}) {
-  getQueryResponseMock = jest.fn().mockResolvedValue(response);
+  getQueryResponseMock = queryResponse || jest.fn().mockResolvedValue(response);
   getCountsQueryResponseMock = jest.fn().mockResolvedValue(getCountsQueryResponse);
-  const apolloProvider = createMockApollo([
-    [getMergeRequestsCountsQuery, getCountsQueryResponseMock],
-    [getMergeRequestsQuery, getQueryResponseMock],
-  ]);
+  const getApprovalsQueryResponseMock = jest.fn().mockResolvedValue(response);
+
+  const apolloProvider = createMockApollo(
+    [
+      [getMergeRequestsCountsQuery, getCountsQueryResponseMock],
+      [getMergeRequestsQuery, getQueryResponseMock],
+      [getMergeRequestsApprovalsQuery, getApprovalsQueryResponseMock],
+    ],
+    {},
+    {
+      typePolicies: {
+        Query: {
+          fields: {
+            project: { merge: true },
+          },
+        },
+        MergeRequestConnection: {
+          merge: true,
+        },
+      },
+    },
+  );
   router = new VueRouter({ mode: 'history' });
   router.push = jest.fn();
 
@@ -93,6 +114,7 @@ function createComponent({
       defaultBranch: 'main',
       getMergeRequestsCountsQuery,
       getMergeRequestsQuery,
+      getMergeRequestsApprovalsQuery,
       ...provide,
     },
     apolloProvider,
@@ -147,7 +169,7 @@ describe('Merge requests list app', () => {
 
   describe('fetching branches', () => {
     const apiVersion = 1;
-    const projectId = 2;
+    const projectId = 1;
     const fullPath = 'gitlab-org/gitlab';
     const allBranchesPath = `/api/${apiVersion}/projects/${encodeURIComponent(fullPath)}/repository/branches`;
     const sourceBranchPath = `/-/autocomplete/merge_request_source_branches.json?project_id=${projectId}`;
@@ -204,6 +226,10 @@ describe('Merge requests list app', () => {
 
       beforeEach(() => {
         axiosMock.resetHistory();
+
+        const initialTime = new Date(2025, 0, 1, 12, 0, 0).getTime();
+        jest.useFakeTimers({ legacyFakeTimers: false });
+        jest.setSystemTime(initialTime);
 
         createComponent();
 
@@ -302,6 +328,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_ENVIRONMENT },
           { type: TOKEN_TYPE_DEPLOYED_BEFORE },
           { type: TOKEN_TYPE_DEPLOYED_AFTER },
+          { type: TOKEN_TYPE_SUBSCRIBED },
         ]);
       });
     });
@@ -362,6 +389,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_ENVIRONMENT },
           { type: TOKEN_TYPE_DEPLOYED_BEFORE },
           { type: TOKEN_TYPE_DEPLOYED_AFTER },
+          { type: TOKEN_TYPE_SUBSCRIBED },
         ]);
       });
 
@@ -658,6 +686,22 @@ describe('Merge requests list app', () => {
           assigneeUsernames: 'test-username',
         }),
       );
+    });
+  });
+
+  describe('errors', () => {
+    it('clears error message when "dismiss-alert" event is emitted from IssuableList', async () => {
+      createComponent({ queryResponse: jest.fn().mockRejectedValue(new Error()) });
+
+      await waitForPromises();
+
+      expect(findIssuableList().props('error')).not.toBeNull();
+
+      findIssuableList().vm.$emit('dismiss-alert');
+
+      await nextTick();
+
+      expect(findIssuableList().props('error')).toBeNull();
     });
   });
 });

@@ -2,13 +2,15 @@
 stage: Monitor
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Integrations
 ---
 
-# Integrations
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab can accept alerts from any source via a webhook receiver. [Alert notifications](alerts.md)
 can [trigger paging](paging.md#paging) for on-call rotations or be used to [create incidents](manage_incidents.md#from-an-alert).
@@ -43,9 +45,12 @@ receive alert payloads in JSON format. You can always
 
 ### HTTP Endpoints
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In [GitLab Premium](https://about.gitlab.com/pricing/), you can create multiple
 unique HTTP endpoints to receive alerts from any external source in JSON format,
@@ -73,7 +78,7 @@ and you can [customize the payload](#customize-the-alert-payload-outside-of-gitl
       from your integration's **Send test alert** tab after the integration is created.
 
 The new HTTP Endpoint displays in the [integrations list](#integrations-list).
-You can edit the integration by selecting the **{settings}** settings icon on the right
+You can edit the integration by selecting the {{< icon name="settings" >}} settings icon on the right
 side of the integrations list.
 
 #### Map fields in custom alerts
@@ -101,7 +106,7 @@ parameters. All fields are optional. If the incoming alert does not contain a va
 | `hosts`                   | String or Array | One or more hosts, as to where this incident occurred. |
 | `severity`                | String          | The severity of the alert. Case-insensitive. Can be one of: `critical`, `high`, `medium`, `low`, `info`, `unknown`. Defaults to `critical` if missing or value is not in this list. |
 | `fingerprint`             | String or Array | The unique identifier of the alert. This can be used to group occurrences of the same alert. When the `generic_alert_fingerprinting` feature is enabled, the fingerprint is generated automatically based on the payload (excluding the `start_time`, `end_time`, and `hosts` parameters). |
-| `gitlab_environment_name` | String          | The name of the associated GitLab [environment](../../ci/environments/index.md). Required to [display alerts on a dashboard](../../user/operations_dashboard/index.md#adding-a-project-to-the-dashboard). |
+| `gitlab_environment_name` | String          | The name of the associated GitLab [environment](../../ci/environments/_index.md). Required to [display alerts on a dashboard](../../user/operations_dashboard/_index.md#adding-a-project-to-the-dashboard). |
 
 You can also add custom fields to the alert's payload. The values of extra
 parameters aren't limited to primitive types (such as strings or numbers), but
@@ -111,9 +116,12 @@ can be a nested JSON object. For example:
 { "foo": { "bar": { "baz": 42 } } }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Ensure your requests are smaller than the
 [payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
+
+{{< /alert >}}
 
 ### Example request body
 
@@ -208,7 +216,7 @@ You can alter the nested parameters listed below to configure the GitLab alert.
 | `annotations/runbook`                                                      | String   | No       | Link to documentation or instructions for how to manage this alert. |
 | `endsAt`                                                                   | DateTime | No       | The resolution time of the alert.    |
 | `g0.expr` query parameter in `generatorUrl`                                | String   | No       | Query of associated metric.          |
-| `labels/gitlab_environment_name`                                           | String   | No       | The name of the associated GitLab [environment](../../ci/environments/index.md). Required to [display alerts on a dashboard](../../user/operations_dashboard/index.md#adding-a-project-to-the-dashboard). |
+| `labels/gitlab_environment_name`                                           | String   | No       | The name of the associated GitLab [environment](../../ci/environments/_index.md). Required to [display alerts on a dashboard](../../user/operations_dashboard/_index.md#adding-a-project-to-the-dashboard). |
 | `labels/severity`                                                          | String   | No       | Severity of the alert. Should be one of the [Prometheus severity options](#prometheus-severity-options). Defaults to `critical` if missing or value is not in this list. |
 | `status`                                                                   | String   | No       | Status of the alert in Prometheus. If value is 'resolved', the alert is resolved. |
 | One of `annotations/gitlab_y_label`,  `annotations/title`, `annotations/summary`, or `labels/alertname` | String | No | The Y-Axis label to be used when embedding the metrics for this alert in [GitLab Flavored Markdown](../../user/markdown.md). |
@@ -229,9 +237,12 @@ can be a nested JSON object. For example:
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Ensure your requests are smaller than the
 [payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
+
+{{< /alert >}}
 
 #### Prometheus severity options
 
@@ -349,9 +360,12 @@ curl --request POST \
   <username:password@url>
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Using your authorization key in the URL is insecure, as it's visible in server logs. We recommend
 using one of the above header options if your tooling supports it.
+
+{{< /alert >}}
 
 ## Response body
 
@@ -381,7 +395,7 @@ alert to confirm your integration works properly.
 1. Sign in as a user with at least the Developer role.
 1. Go to **Settings > Monitor** in your project.
 1. Select **Alerts** to expand the section.
-1. Select the **{settings}** settings icon on the right side of the integration in [the list](#integrations-list).
+1. Select the {{< icon name="settings" >}} settings icon on the right side of the integration in [the list](#integrations-list).
 1. Select the **Send test alert** tab to open it.
 1. Enter a test payload in the payload field (valid JSON is required).
 1. Select **Send**.
@@ -390,9 +404,12 @@ GitLab displays an error or success message, depending on the outcome of your te
 
 ## Automatic grouping of identical alerts
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab groups alerts based on their payload. When an incoming alert contains the same payload as another alert
 (excluding the `start_time` and `hosts` attributes), GitLab groups these alerts
@@ -419,16 +436,26 @@ You can also configure the associated [incident to be closed automatically](../i
 
 ## Link to your Opsgenie Alerts
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.2.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-WARNING:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.2.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 We are building deeper integration with Opsgenie and other alerting tools through
 [HTTP endpoint integrations](#single-http-endpoint) so you can see alerts in
 the GitLab interface.
+
+{{< /alert >}}
 
 You can monitor alerts using a GitLab integration with [Opsgenie](https://www.atlassian.com/software/opsgenie).
 

@@ -2,13 +2,15 @@
 stage: Application Security Testing
 group: Secret Detection
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Automatic response to leaked secrets
 ---
 
-# Automatic response to leaked secrets
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab Secret Detection automatically responds when it finds certain types of leaked secrets.
 Automatic responses can:
@@ -34,7 +36,11 @@ GitLab supports automatic response for the following types of secrets:
 
 ## Feature availability
 
-> - [Enabled for non-default branches](https://gitlab.com/gitlab-org/gitlab/-/issues/299212) in GitLab 15.11.
+{{< history >}}
+
+- [Enabled for non-default branches](https://gitlab.com/gitlab-org/gitlab/-/issues/299212) in GitLab 15.11.
+
+{{< /history >}}
 
 Credentials are only post-processed when Secret Detection finds them:
 

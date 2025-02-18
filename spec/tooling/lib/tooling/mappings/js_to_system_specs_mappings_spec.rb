@@ -117,7 +117,7 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
       let(:changed_files) { [] }
 
       it 'returns an empty array' do
-        expect(subject).to match_array([])
+        expect(subject).to be_empty
       end
     end
 
@@ -144,7 +144,7 @@ RSpec.describe Tooling::Mappings::JsToSystemSpecsMappings, feature_category: :to
       let(:changed_files) { ["#{system_specs_base_folder}/deleted.html"] }
 
       it 'returns an empty array' do
-        expect(subject).to match_array([])
+        expect(subject).to be_empty
       end
     end
   end

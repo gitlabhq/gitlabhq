@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Pipeline architecture
 ---
 
-# Pipeline architecture
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Pipelines are the fundamental building blocks for CI/CD in GitLab. This page documents
 some of the important concepts related to them.
@@ -197,7 +199,7 @@ As pipelines grow more complex, a few related problems start to emerge:
   job in next stage begins, causes waits that slow things down.
 - Configuration for the single global pipeline becomes
   hard to manage.
-- Imports with [`include`](../yaml/index.md#include) increase the complexity of the configuration, and can cause
+- Imports with [`include`](../yaml/_index.md#include) increase the complexity of the configuration, and can cause
   namespace collisions where jobs are unintentionally duplicated.
 - Pipeline UX has too many jobs and stages to work with.
 
@@ -205,17 +207,15 @@ Additionally, sometimes the behavior of a pipeline needs to be more dynamic. The
 to choose to start sub-pipelines (or not) is a powerful ability, especially if the
 YAML is dynamically generated.
 
-![Parent pipeline graph expanded](img/parent_pipeline_graph_expanded_v14_3.png)
-
 In the [basic pipeline](#basic-pipelines) and [`needs` pipeline](#pipelines-with-the-needs-keyword)
 examples above, there are two packages that could be built independently.
 These cases are ideal for using [parent-child pipelines](downstream_pipelines.md#parent-child-pipelines).
 It separates out the configuration into multiple files, keeping things simpler.
 You can combine parent-child pipelines with:
 
-- The [`rules` keyword](../yaml/index.md#rules): For example, have the child pipelines triggered only
+- The [`rules` keyword](../yaml/_index.md#rules): For example, have the child pipelines triggered only
   when there are changes to that area.
-- The [`include` keyword](../yaml/index.md#include): Bring in common behaviors, ensuring
+- The [`include` keyword](../yaml/_index.md#include): Bring in common behaviors, ensuring
   you are not repeating yourself.
 - The [`needs` keyword](#pipelines-with-the-needs-keyword) inside of child pipelines, achieving the benefits of both.
 

@@ -5,6 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl } from '~/lib/utils/url_utility';
 import PromoteRun from '~/ml/experiment_tracking/routes/candidates/promote/promote_run.vue';
+import ModelSelectionDropdown from '~/ml/experiment_tracking/routes/candidates/promote/model_selection_dropdown.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import createModelVersionMutation from '~/ml/experiment_tracking/graphql/mutations/promote_model_version.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -12,6 +13,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { createModelVersionResponses } from 'jest/ml/model_registry/graphql_mock_data';
 import { newCandidate } from 'jest/ml/model_registry/mock_data';
+import { model42 } from './mock_data';
 
 Vue.use(VueApollo);
 
@@ -34,13 +36,14 @@ describe('PromoteRun', () => {
 
   const createWrapper = (
     createResolver = jest.fn().mockResolvedValue(createModelVersionResponses.success),
+    withModel = true,
   ) => {
     const requestHandlers = [[createModelVersionMutation, createResolver]];
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMountExtended(PromoteRun, {
       propsData: {
-        candidate: newCandidate(),
+        candidate: newCandidate(withModel),
       },
       apolloProvider,
       stubs: {
@@ -60,6 +63,9 @@ describe('PromoteRun', () => {
     await waitForPromises();
   };
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
+  const findModelSelection = () => wrapper.findByTestId('modelSelectionDescriptionId');
+  const findModelSelectionDropdown = () => wrapper.findComponent(ModelSelectionDropdown);
+  const findVersionDescription = () => wrapper.findByTestId('versionDescriptionId');
 
   describe('Initial state', () => {
     beforeEach(() => {
@@ -82,13 +88,11 @@ describe('PromoteRun', () => {
       });
 
       it('renders the version input label for initial state', () => {
-        expect(wrapper.findByTestId('versionDescriptionId').attributes().description).toBe(
+        expect(findVersionDescription().attributes().description).toBe(
           'Must be a semantic version. Latest version is 1.0.2',
         );
-        expect(wrapper.findByTestId('versionDescriptionId').attributes('invalid-feedback')).toBe(
-          '',
-        );
-        expect(wrapper.findByTestId('versionDescriptionId').attributes('valid-feedback')).toBe('');
+        expect(findVersionDescription().attributes('invalid-feedback')).toBe('');
+        expect(findVersionDescription().attributes('valid-feedback')).toBe('');
       });
 
       it('renders the description input', () => {
@@ -119,6 +123,14 @@ describe('PromoteRun', () => {
       it('does not render the alert by default', () => {
         expect(findGlAlert().exists()).toBe(false);
       });
+
+      it('renders the candidate model name', () => {
+        expect(findModelSelection().text()).toBe('CoolModel');
+      });
+
+      it('does not display model selection dropdown', () => {
+        expect(findModelSelectionDropdown().exists()).toBe(false);
+      });
     });
   });
 
@@ -147,7 +159,7 @@ describe('PromoteRun', () => {
       createWrapper();
     });
     it('renders the version input label for initial state', () => {
-      expect(wrapper.findByTestId('versionDescriptionId').attributes('invalid-feedback')).toBe('');
+      expect(findVersionDescription().attributes('invalid-feedback')).toBe('');
       expect(findPrimaryButton().props()).toMatchObject({
         variant: 'confirm',
         disabled: true,
@@ -158,7 +170,7 @@ describe('PromoteRun', () => {
       async (version) => {
         findVersionInput().vm.$emit('input', version);
         await nextTick();
-        expect(wrapper.findByTestId('versionDescriptionId').attributes('invalid-feedback')).toBe(
+        expect(findVersionDescription().attributes('invalid-feedback')).toBe(
           'Version is not a valid semantic version.',
         );
         expect(findPrimaryButton().props()).toMatchObject({
@@ -172,7 +184,7 @@ describe('PromoteRun', () => {
       async (version) => {
         findVersionInput().vm.$emit('input', version);
         await nextTick();
-        expect(wrapper.findByTestId('versionDescriptionId').attributes('valid-feedback')).toBe(
+        expect(findVersionDescription().attributes('valid-feedback')).toBe(
           'Version is valid semantic version.',
         );
         expect(findPrimaryButton().props()).toMatchObject({
@@ -193,7 +205,7 @@ describe('PromoteRun', () => {
       await submitForm();
     });
 
-    it('Makes a create mutation upon confirm', () => {
+    it('makes a create mutation upon confirm', () => {
       expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith(
         expect.objectContaining({
           mutation: createModelVersionMutation,
@@ -208,7 +220,7 @@ describe('PromoteRun', () => {
       );
     });
 
-    it('Visits the model versions page upon successful create mutation', async () => {
+    it('visits the model versions page upon successful create mutation', async () => {
       createWrapper();
 
       await submitForm();
@@ -226,7 +238,7 @@ describe('PromoteRun', () => {
   });
 
   describe('Failed flow', () => {
-    it('Displays an alert upon failed create mutation', async () => {
+    it('displays an alert upon failed create mutation', async () => {
       const failedCreateResolver = jest.fn().mockResolvedValue(createModelVersionResponses.failure);
       createWrapper(failedCreateResolver);
 
@@ -235,6 +247,70 @@ describe('PromoteRun', () => {
       await submitForm();
 
       expect(findGlAlert().text()).toBe('Version is invalid');
+    });
+  });
+
+  describe('Graphql query error', () => {
+    const error = new Error('Failed to fetch');
+
+    beforeEach(async () => {
+      const errorResolver = jest.fn().mockRejectedValue(error);
+      createWrapper(errorResolver);
+
+      findVersionInput().vm.$emit('input', '1.0.0');
+
+      await submitForm();
+    });
+
+    it('logs a Sentry error', () => {
+      expect(Sentry.captureException).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe('Standalone experiment', () => {
+    beforeEach(() => {
+      createWrapper(undefined, false);
+    });
+
+    it('renders the model name', () => {
+      expect(findModelSelection().attributes()).toMatchObject({
+        description:
+          'Select the model that will contain the new version. The run will move to the default experiment of that model.',
+        label: 'Model',
+      });
+    });
+
+    it('renders the model selection dropdown', () => {
+      expect(findModelSelectionDropdown().props()).toMatchObject({
+        projectPath: 'some/project',
+        value: null,
+      });
+    });
+
+    it('renders the version input label for initial state', () => {
+      expect(findVersionDescription().attributes().description).toBe('Must be a semantic version.');
+    });
+
+    it('makes a create mutation with selected model', async () => {
+      findVersionInput().vm.$emit('input', '1.0.0');
+      findDescriptionInput().vm.$emit('input', 'My model version description');
+      findModelSelectionDropdown().vm.$emit('input', model42);
+      jest.spyOn(apolloProvider.defaultClient, 'mutate');
+
+      await submitForm();
+
+      expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          mutation: createModelVersionMutation,
+          variables: {
+            modelId: 'gid://gitlab/Ml::Model/42',
+            projectPath: 'some/project',
+            version: '1.0.0',
+            description: 'My model version description',
+            candidateId: 'gid://gitlab/Ml::Candidate/1',
+          },
+        }),
+      );
     });
   });
 });

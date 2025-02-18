@@ -13,7 +13,9 @@ module Pages
 
       return unless project_settings
       return unless project_settings.pages_primary_domain
-      return unless event.data['domain'] == project_settings.pages_primary_domain
+
+      primary_domain = URI.parse(project_settings.pages_primary_domain).host
+      return unless event.data['domain'] == primary_domain
 
       project_settings.update!(pages_primary_domain: nil)
     end

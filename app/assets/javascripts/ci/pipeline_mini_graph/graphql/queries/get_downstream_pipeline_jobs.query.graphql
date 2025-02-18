@@ -1,0 +1,32 @@
+query getDownstreamPipelineJobs($fullPath: ID!, $iid: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    pipeline(iid: $iid) {
+      id
+      jobs {
+        nodes {
+          id
+          detailedStatus {
+            id
+            action {
+              id
+              confirmationMessage
+              icon
+              path
+              title
+            }
+            detailsPath
+            group
+            hasDetails
+            icon
+            name
+            tooltip
+          }
+          name
+          scheduled
+          scheduledAt
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+- active = params[:tab] == 'migrate'
+
+- if Feature.enabled?(:cluster_agent_migrations, clusterable) && can_admin_cluster?(current_user, @cluster)
+  = gl_tab_link_to clusterable.cluster_path(@cluster.id, params: { tab: 'migrate' }), { item_active: active } do
+    = s_('ClusterIntegration|Migrate')

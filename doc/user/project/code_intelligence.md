@@ -1,15 +1,17 @@
 ---
 stage: Create
 group: Code Review
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Use code intelligence to find all uses of an object in your project."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use code intelligence to find all uses of an object in your project.
+title: Code intelligence
 ---
 
-# Code intelligence
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Code intelligence adds code navigation features common to interactive
 development environments (IDE), including:
@@ -50,12 +52,19 @@ To see how your language is best supported, review the
 
 ### With the CI/CD component
 
-GitLab provides a [CI/CD component](../../ci/components/index.md) to configure code intelligence
+{{< history >}}
+
+- Python support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301111) in GitLab 17.9.
+
+{{< /history >}}
+
+GitLab provides a [CI/CD component](../../ci/components/_index.md) to configure code intelligence
 in your `.gitlab-ci.yml` file. The component supports these languages:
 
 - Go version 1.21 or later.
 - TypeScript or JavaScript.
 - Java 8, 11, 17, and 21.
+- Python
 
 To contribute more languages to the component, open a merge request in the
 [Code intelligence component project](https://gitlab.com/components/code-intelligence).
@@ -71,15 +80,15 @@ To contribute more languages to the component, open a merge request in the
 
 1. For configuration instructions for the [code intelligence component](https://gitlab.com/components/code-intelligence),
    check the `README` for each supported language.
-1. For more configuration details, see [Use a component](../../ci/components/index.md#use-a-component).
+1. For more configuration details, see [Use a component](../../ci/components/_index.md#use-a-component).
 
 ### Add CI/CD jobs for code intelligence
 
 To enable code intelligence for a project, add GitLab CI/CD jobs to your project's `.gitlab-ci.yml`.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle With a SCIP indexer
+{{< tab title="With a SCIP indexer" >}}
 
 1. Add a job to your `.gitlab-ci.yml` configuration. This job generates the
 SCIP index and converts it to LSIF for use in GitLab:
@@ -112,7 +121,9 @@ SCIP index and converts it to LSIF for use in GitLab:
 1. Depending on your CI/CD configuration, you might need to run the job manually,
    or wait for it to run as part of an existing pipeline.
 
-:::TabTitle With a LSIF indexer
+{{< /tab >}}
+
+{{< tab title="With a LSIF indexer" >}}
 
 1. Add a job (`code_navigation`) to your `.gitlab-ci.yml` configuration to generate the index:
 
@@ -132,13 +143,18 @@ SCIP index and converts it to LSIF for use in GitLab:
 1. Depending on your CI/CD configuration, you might need to run the job manually,
    or wait for it to run as part of an existing pipeline.
 
-::EndTabs
+{{< /tab >}}
 
-NOTE:
+{{< /tabs >}}
+
+{{< alert type="note" >}}
+
 GitLab limits the artifact produced by the code generation jobs to 200 MB by the
 [(`ci_max_artifact_size_lsif`)](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact)
-artifact application limit. On self-managed installations, an instance administrator
+artifact application limit. On GitLab Self-Managed instances, an instance administrator
 can change this value.
+
+{{< /alert >}}
 
 ## View code intelligence results
 

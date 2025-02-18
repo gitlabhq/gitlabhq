@@ -30,6 +30,7 @@ RSpec.describe Gitlab::Redis::HLL, :clean_gitlab_redis_shared_state do
           'test:{metric}-1'                     | 1
           '2020-216-{project_action}'           | 1
           'i_{analytics}_dev_ops_score-2020-32' | 1
+          'i_{analytics}_event:[prop:a,attr:2]' | 1
         end
 
         with_them do

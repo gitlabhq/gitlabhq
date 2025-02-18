@@ -5,9 +5,9 @@ module Resolvers
     class TypesResolver < BaseResolver
       include LooksAhead
 
-      type Types::WorkItems::TypeType.connection_type, null: true
+      type ::Types::WorkItems::TypeType.connection_type, null: true
 
-      argument :name, Types::IssueTypeEnum,
+      argument :name, ::Types::IssueTypeEnum,
         description: 'Filter work item types by the given name.',
         required: false
 

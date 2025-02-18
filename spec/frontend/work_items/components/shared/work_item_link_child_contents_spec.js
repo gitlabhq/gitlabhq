@@ -36,6 +36,7 @@ describe('WorkItemLinkChildContents', () => {
 
   const mockRouterPush = jest.fn();
 
+  const findLinkChild = () => wrapper.findByTestId('links-child');
   const findStatusBadgeComponent = () =>
     wrapper.findByTestId('item-status-icon').findComponent(WorkItemStateBadge);
   const findConfidentialIconComponent = () => wrapper.findByTestId('confidential-icon');
@@ -99,6 +100,14 @@ describe('WorkItemLinkChildContents', () => {
     expect(findConfidentialIconComponent().attributes('title')).toBe('Confidential');
   });
 
+  it('emits click event with correct parameters on clicking child', () => {
+    createComponent();
+    findLinkChild().trigger('click');
+
+    expect(wrapper.emitted('click')).toHaveLength(1);
+    expect(mockRouterPush).not.toHaveBeenCalled();
+  });
+
   it('renders avatars for assignees', () => {
     createComponent();
 
@@ -143,18 +152,7 @@ describe('WorkItemLinkChildContents', () => {
       expect(wrapper.emitted(emittedEvent)).toEqual([[]]);
     });
 
-    it('emits click event with correct parameters on clicking title', () => {
-      const eventObj = {
-        preventDefault: jest.fn(),
-        stopPropagation: jest.fn(),
-      };
-      findTitleEl().vm.$emit('click', eventObj);
-
-      expect(wrapper.emitted('click')).toEqual([[eventObj]]);
-    });
-
     describe('when the linked item can be navigated to via Vue Router', () => {
-      const preventDefault = jest.fn();
       beforeEach(() => {
         createComponent({
           childItem: workItemEpic,
@@ -162,15 +160,13 @@ describe('WorkItemLinkChildContents', () => {
           workItemFullPath: 'gitlab-org/gitlab-test',
         });
 
-        findTitleEl().vm.$emit('click', { preventDefault, stopPropagation: jest.fn() });
+        findLinkChild().trigger('click');
       });
 
       it('pushes a new router state', () => {
         expect(mockRouterPush).toHaveBeenCalled();
       });
-      it('prevents the default event behaviour', () => {
-        expect(preventDefault).toHaveBeenCalled();
-      });
+
       it('does not emit a click event', () => {
         expect(wrapper.emitted('click')).not.toBeDefined();
       });

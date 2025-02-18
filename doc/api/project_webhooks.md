@@ -2,13 +2,15 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Project webhooks
 ---
 
-# Project webhooks
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Manage [project webhooks](../user/project/integrations/webhooks.md) by using the REST API. Project webhooks are different
 to [system hooks](system_hooks.md), which are system-wide, and [group webhooks](group_webhooks.md).
@@ -29,7 +31,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ## Get a project webhook
 
@@ -44,7 +46,7 @@ Supported attributes:
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `hook_id` | integer           | Yes      | ID of a project webhook. |
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example response:
 
@@ -87,7 +89,11 @@ Example response:
 
 ## Get a list of project webhook events
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151048) in GitLab 17.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151048) in GitLab 17.3.
+
+{{< /history >}}
 
 Get a list of events for a specific project webhook in the past 7 days from start date.
 
@@ -100,7 +106,7 @@ Supported attributes:
 | Attribute  | Type              | Required | Description |
 |:-----------|:------------------|:---------|:------------|
 | `hook_id`  | integer           | Yes      | ID of a project webhook. |
-| `id`       | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`       | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `status`   | integer or string | No       | Response status code of the events, for example: `200` or `500`. You can search by status category: `successful` (200-299), `client_failure` (400-499), and `server_failure` (500-599). |
 | `page`     | integer           | No       | Page to retrieve. Defaults to `1`. |
 | `per_page` | integer           | No       | Number of records to return per page. Defaults to `20`. |
@@ -358,7 +364,11 @@ Example response:
 
 ## Resend a project webhook event
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151130) in GitLab 17.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151130) in GitLab 17.4.
+
+{{< /history >}}
 
 Resend a specific project webhook event.
 
@@ -387,7 +397,11 @@ Example response:
 
 ## Add a webhook to a project
 
-> - `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+{{< history >}}
+
+- `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+
+{{< /history >}}
 
 Add a webhook to a specified project.
 
@@ -399,18 +413,18 @@ Supported attributes:
 
 | Attribute                      | Type              | Required | Description |
 |:-------------------------------|:------------------|:---------|:------------|
-| `id`                           | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                           | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `url`                          | string            | Yes      | Project webhook URL. |
 | `name`                         | string            | No       | Name of the project webhook. |
 | `description`                  | string            | No       | Description of the webhook. |
-| `confidential_issues_events`   | boolean           | No       | Trigger project webhook on confidential issues events. |
+| `confidential_issues_events`   | boolean           | No       | Trigger project webhook on confidential issue events. |
 | `confidential_note_events`     | boolean           | No       | Trigger project webhook on confidential note events. |
 | `deployment_events`            | boolean           | No       | Trigger project webhook on deployment events. |
 | `enable_ssl_verification`      | boolean           | No       | Do SSL verification when triggering the webhook. |
 | `feature_flag_events`          | boolean           | No       | Trigger project webhook on feature flag events. |
-| `issues_events`                | boolean           | No       | Trigger project webhook on issues events. |
+| `issues_events`                | boolean           | No       | Trigger project webhook on issue events. |
 | `job_events`                   | boolean           | No       | Trigger project webhook on job events. |
-| `merge_requests_events`        | boolean           | No       | Trigger project webhook on merge requests events. |
+| `merge_requests_events`        | boolean           | No       | Trigger project webhook on merge request events. |
 | `note_events`                  | boolean           | No       | Trigger project webhook on note events. |
 | `pipeline_events`              | boolean           | No       | Trigger project webhook on pipeline events. |
 | `push_events_branch_filter`    | string            | No       | Trigger project webhook on push events for matching branches only. |
@@ -426,7 +440,11 @@ Supported attributes:
 
 ## Edit a project webhook
 
-> - `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+{{< history >}}
+
+- `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+
+{{< /history >}}
 
 Edit a project webhook for a specified project.
 
@@ -439,18 +457,18 @@ Supported attributes:
 | Attribute                      | Type              | Required | Description |
 |:-------------------------------|:------------------|:---------|:------------|
 | `hook_id`                      | integer           | Yes      | ID of the project webhook. |
-| `id`                           | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                           | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `url`                          | string            | Yes      | Project webhook URL. |
 | `name`                         | string            | No       | Name of the project webhook. |
 | `description`                  | string            | No       | Description of the project webhook. |
-| `confidential_issues_events`   | boolean           | No       | Trigger project webhook on confidential issues events. |
+| `confidential_issues_events`   | boolean           | No       | Trigger project webhook on confidential issue events. |
 | `confidential_note_events`     | boolean           | No       | Trigger project webhook on confidential note events. |
 | `deployment_events`            | boolean           | No       | Trigger project webhook on deployment events. |
 | `enable_ssl_verification`      | boolean           | No       | Do SSL verification when triggering the hook. |
 | `feature_flag_events`          | boolean           | No       | Trigger project webhook on feature flag events. |
-| `issues_events`                | boolean           | No       | Trigger project webhook on issues events. |
+| `issues_events`                | boolean           | No       | Trigger project webhook on issue events. |
 | `job_events`                   | boolean           | No       | Trigger project webhook on job events. |
-| `merge_requests_events`        | boolean           | No       | Trigger project webhook on merge requests events. |
+| `merge_requests_events`        | boolean           | No       | Trigger project webhook on merge request events. |
 | `note_events`                  | boolean           | No       | Trigger project webhook on note events. |
 | `pipeline_events`              | boolean           | No       | Trigger project webhook on pipeline events. |
 | `push_events_branch_filter`    | string            | No       | Trigger project webhook on push events for matching branches only. |
@@ -478,7 +496,7 @@ Supported attributes:
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `hook_id` | integer           | Yes      | ID of the project webhook. |
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Note the JSON response differs if the project webhook is available or not. If the project
 hook is available before it's returned in the JSON response or an empty response
@@ -486,8 +504,12 @@ is returned.
 
 ## Trigger a test project webhook
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147656) in GitLab 16.11.
-> - Special rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150066) in GitLab 17.0 [with a flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`. Enabled by default.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147656) in GitLab 16.11.
+- Special rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150066) in GitLab 17.0 [with a flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`. Enabled by default.
+
+{{< /history >}}
 
 Trigger a test project webhook for a specified project.
 
@@ -508,7 +530,7 @@ Supported attributes:
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `hook_id` | integer           | Yes      | ID of the project webhook. |
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `trigger` | string            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `emoji_events`, or `resource_access_token_events`. |
 
 Example response:
@@ -519,7 +541,11 @@ Example response:
 
 ## Set a custom header
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+
+{{< /history >}}
 
 ```plaintext
 PUT /projects/:id/hooks/:hook_id/custom_headers/:key
@@ -529,7 +555,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer           | Yes      | ID of the project webhook. |
 | `key`     | string            | Yes      | Key of the custom header. |
 | `value`   | string            | Yes      | Value of the custom header. |
@@ -538,7 +564,11 @@ On success, this endpoint returns the response code `204 No Content`.
 
 ## Delete a custom header
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+
+{{< /history >}}
 
 ```plaintext
 DELETE /projects/:id/hooks/:hook_id/custom_headers/:key
@@ -548,7 +578,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer           | Yes      | ID of the project webhook. |
 | `key`     | string            | Yes      | Key of the custom header. |
 
@@ -556,7 +586,11 @@ On success, this endpoint returns the response code `204 No Content`.
 
 ## Set a URL variable
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+
+{{< /history >}}
 
 ```plaintext
 PUT /projects/:id/hooks/:hook_id/url_variables/:key
@@ -566,7 +600,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer           | Yes      | ID of the project webhook. |
 | `key`     | string            | Yes      | Key of the URL variable. |
 | `value`   | string            | Yes      | Value of the URL variable. |
@@ -575,7 +609,11 @@ On success, this endpoint returns the response code `204 No Content`.
 
 ## Delete a URL variable
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+
+{{< /history >}}
 
 ```plaintext
 DELETE /projects/:id/hooks/:hook_id/url_variables/:key
@@ -585,7 +623,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer           | Yes      | ID of the project webhook. |
 | `key`     | string            | Yes      | Key of the URL variable. |
 

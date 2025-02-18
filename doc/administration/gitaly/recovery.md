@@ -2,9 +2,8 @@
 stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Gitaly Cluster recovery options and tools
 ---
-
-# Gitaly Cluster recovery options and tools
 
 Gitaly Cluster can recover from primary-node failure and unavailable repositories. Gitaly Cluster can perform data
 recovery and has Praefect tracking database tools.
@@ -130,8 +129,11 @@ The following parameters are available:
   that specifies whether to include in the output repositories that are available but have
   some assigned copies that are not available.
 
-NOTE:
+{{< alert type="note" >}}
+
 `dataloss` is still in [beta](../../policy/development_stages_support.md#beta) and the output format is subject to change.
+
+{{< /alert >}}
 
 To check for repositories with outdated primaries or for unavailable repositories, run:
 
@@ -233,9 +235,12 @@ To check a project's repository checksums across on all Gitaly nodes, run the
 
 ### Accept data loss
 
-WARNING:
+{{< alert type="warning" >}}
+
 `accept-dataloss` causes permanent data loss by overwriting other versions of the repository. Data
 [recovery efforts](#data-recovery) must be performed before using it.
+
+{{< /alert >}}
 
 If it is not possible to bring one of the up to date replicas back online, you may have to accept data
 loss. When accepting data loss, Praefect marks the chosen replica of the repository as the latest version
@@ -249,9 +254,12 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 
 ### Enable writes or accept data loss
 
-WARNING:
+{{< alert type="warning" >}}
+
 `accept-dataloss` causes permanent data loss by overwriting other versions of the repository.
 Data [recovery efforts](#data-recovery) must be performed before using it.
+
+{{< /alert >}}
 
 Praefect provides the following subcommands to re-enable writes or accept data loss. If it is not possible to bring one
 of the up-to-date nodes back online, you might have to accept data loss:
@@ -316,7 +324,11 @@ praefect['configuration'] = {
 
 ### Manually remove repositories
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4715) in GitLab 15.3, support for removing repositories from the Praefect tracking database.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4715) in GitLab 15.3, support for removing repositories from the Praefect tracking database.
+
+{{< /history >}}
 
 The `remove-repository` Praefect sub-command removes a repository from a Gitaly Cluster, and all state associated with a given repository including:
 
@@ -380,7 +392,11 @@ Common maintenance tasks on the Praefect tracking database are documented in thi
 
 ### List untracked repositories
 
-> - `older-than` option added in GitLab 15.0.
+{{< history >}}
+
+- `older-than` option added in GitLab 15.0.
+
+{{< /history >}}
 
 The `list-untracked-repositories` Praefect sub-command lists repositories of the Gitaly Cluster that both:
 
@@ -416,10 +432,13 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 
 ### Manually add a single repository to the tracking database
 
-WARNING:
+{{< alert type="warning" >}}
+
 Because of a [known issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5402), you can't add repositories to the
 Praefect tracking database with Praefect-generated replica paths (`@cluster`). These repositories are not associated with the repository path used by GitLab and are
 inaccessible.
+
+{{< /alert >}}
 
 The `track-repository` Praefect sub-command adds repositories on disk to the Praefect tracking database to be tracked.
 
@@ -472,12 +491,19 @@ This command fails if:
 
 ### Manually add many repositories to the tracking database
 
-> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6319) in GitLab 15.4.
+{{< history >}}
 
-WARNING:
+- [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6319) in GitLab 15.4.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 Because of a [known issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5402), you can't add repositories to the
 Praefect tracking database with Praefect-generated replica paths (`@cluster`). These repositories are not associated with the repository path used by GitLab and are
 inaccessible.
+
+{{< /alert >}}
 
 Migrations using the API automatically add repositories to the Praefect tracking database.
 
@@ -517,7 +543,11 @@ If any entry fails these checks, the command aborts prior to attempting to track
 
 ### List virtual storage details
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4609) in GitLab 15.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4609) in GitLab 15.1.
+
+{{< /history >}}
 
 The `list-storages` Praefect sub-command lists virtual storages and their associated storage nodes. If a virtual storage is:
 

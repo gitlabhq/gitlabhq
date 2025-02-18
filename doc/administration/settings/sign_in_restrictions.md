@@ -2,13 +2,15 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Sign-in restrictions
 ---
 
-# Sign-in restrictions
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can use **Sign-in restrictions** to customize authentication restrictions for web interfaces as well as Git over HTTP(S).
 
@@ -25,12 +27,12 @@ To access sign-in restriction settings:
 You can restrict the password authentication for web interface and Git over HTTP(S):
 
 - **Web interface**: When this feature is disabled, the **Standard** sign-in tab
-  is removed and an [external authentication provider](../auth/index.md)
+  is removed and an [external authentication provider](../auth/_index.md)
   must be used.
 - **Git over HTTP(S)**: When this feature is disabled, a [personal access token](../../user/profile/personal_access_tokens.md)
   or LDAP password must be used to authenticate.
 
-In the event of an external authentication provider outage, use the [GitLab Rails console](../operations/rails_console.md) to [re-enable the standard web sign-in form](#re-enable-standard-web-sign-in-form-in-rails-console). This configuration can also be changed over the [Application settings REST API](../../api/settings.md#change-application-settings) while authenticating with an administrator account's personal access token.
+In the event of an external authentication provider outage, use the [GitLab Rails console](../operations/rails_console.md) to [re-enable the standard web sign-in form](#re-enable-standard-web-sign-in-form-in-rails-console). This configuration can also be changed over the [Application settings REST API](../../api/settings.md#update-application-settings) while authenticating with an administrator account's personal access token.
 
 ### Disable password authentication for users with an SSO identity
 
@@ -111,7 +113,7 @@ authentication are supported by Admin Mode. Admin Mode status is stored in the c
 
 ### Check if your session has Admin Mode enabled
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438674) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `show_admin_mode_within_active_sessions`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438674) in GitLab 16.10 [with a flag](../feature_flags.md) named `show_admin_mode_within_active_sessions`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/444188) in GitLab 16.10.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/438674) in GitLab 17.0. Feature flag `show_admin_mode_within_active_sessions` removed.
 
@@ -184,7 +186,11 @@ see [Email notification for unknown sign-ins](../../user/profile/notifications.m
 
 ## Sign-in information
 
-> - **Sign-in text** setting [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/410885) in GitLab 17.0.
+{{< history >}}
+
+- **Sign-in text** setting [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/410885) in GitLab 17.0.
+
+{{< /history >}}
 
 All users that are not logged in are redirected to the page represented by the configured
 **Home page URL** if value is not empty.

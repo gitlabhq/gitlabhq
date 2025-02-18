@@ -8,10 +8,6 @@ export default {
     emptyStateSearchTitle: __('No results found'),
     emptyStateSearchMinCharDescription: __('Search must be at least 3 characters.'),
     emptyStateSearchDescription: __('Edit your criteria and try again.'),
-    emptyStateProjectsTitle: s__("Projects|You don't have any projects yet."),
-    emptyStateProjectsDescription: s__(
-      'Projects|Projects are where you can store your code, access issues, wiki, and other features of GitLab.',
-    ),
   },
   components: {
     GlEmptyState,
@@ -23,6 +19,18 @@ export default {
       required: false,
       default: '',
     },
+    title: {
+      type: String,
+      required: false,
+      default: s__("Projects|You don't have any projects yet."),
+    },
+    description: {
+      type: String,
+      required: false,
+      default: s__(
+        'Projects|Projects are where you can store your code, access issues, wiki, and other features of GitLab.',
+      ),
+    },
   },
   computed: {
     hasSearch() {
@@ -31,14 +39,12 @@ export default {
     svgPath() {
       return this.hasSearch ? this.emptyStateSearchSvgPath : this.emptyStateProjectsSvgPath;
     },
-    title() {
-      return this.hasSearch
-        ? this.$options.i18n.emptyStateSearchTitle
-        : this.$options.i18n.emptyStateProjectsTitle;
+    computedTitle() {
+      return this.hasSearch ? this.$options.i18n.emptyStateSearchTitle : this.title;
     },
-    description() {
+    computedDescription() {
       if (!this.hasSearch) {
-        return this.$options.i18n.emptyStateProjectsDescription;
+        return this.description;
       }
 
       return this.search.length >= 3
@@ -50,5 +56,10 @@ export default {
 </script>
 
 <template>
-  <gl-empty-state :title="title" :description="description" :svg-path="svgPath" />
+  <gl-empty-state
+    content-class="gl-max-w-75"
+    :title="computedTitle"
+    :description="computedDescription"
+    :svg-path="svgPath"
+  />
 </template>

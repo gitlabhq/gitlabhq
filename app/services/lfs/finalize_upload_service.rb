@@ -2,36 +2,37 @@
 
 module Lfs
   class FinalizeUploadService
-    InvalidUploadedFile = Class.new(StandardError)
-
-    def initialize(oid:, size:, uploaded_file:, project:)
+    def initialize(oid:, size:, uploaded_file:, project:, repository_type:)
       @oid = oid
       @size = size
       @uploaded_file = uploaded_file
       @project = project
+      @repository_type = repository_type
     end
 
     def execute
-      validate_uploaded_file!
+      return service_response_error(:unprocessable_entity, 'Unprocessable entity') unless uploaded_file
+      return service_response_error(:invalid_path, 'Invalid path') unless uploaded_file.is_a?(UploadedFile)
 
-      if store_file!
-        ServiceResponse.success
-      else
-        ServiceResponse.error(reason: :unprocessable_entity, message: 'Unprocessable entity')
+      if size != uploaded_file.size || oid != uploaded_file.sha256
+        return service_response_error(:invalid_uploaded_file, 'SHA256 or size mismatch')
       end
+
+      ServiceResponse.success if store_file!
+
     rescue ActiveRecord::RecordInvalid
-      ServiceResponse.error(reason: :invalid_record, message: 'Invalid record')
-    rescue UploadedFile::InvalidPathError
-      ServiceResponse.error(reason: :invalid_path, message: 'Invalid path')
+      service_response_error(:invalid_record, 'Invalid record')
     rescue ObjectStorage::RemoteStoreError
-      ServiceResponse.error(reason: :remote_store_error, message: 'Remote store error')
-    rescue InvalidUploadedFile
-      ServiceResponse.error(reason: :invalid_uploaded_file, message: 'SHA256 or size mismatch')
+      service_response_error(:remote_store_error, 'Remote store error')
     end
 
     private
 
-    attr_reader :oid, :size, :uploaded_file, :project
+    attr_reader :oid, :size, :uploaded_file, :project, :repository_type
+
+    def service_response_error(reason, message)
+      ServiceResponse.error(reason: reason, message: message)
+    end
 
     def store_file!
       object = LfsObject.for_oid_and_size(oid, size)
@@ -42,38 +43,17 @@ module Lfs
         object = create_file!
       end
 
-      return unless object
-
-      link_to_project!(object)
+      LfsObjectsProject.link_to_project!(object, project, repository_type)
     end
 
     def create_file!
-      return unless uploaded_file.is_a?(UploadedFile)
-
       LfsObject.create!(oid: oid, size: size, file: uploaded_file)
     end
 
     def replace_file!(lfs_object)
-      raise UploadedFile::InvalidPathError unless uploaded_file.is_a?(UploadedFile)
-
       Gitlab::AppJsonLogger.info(message: "LFS file replaced because it did not exist", oid: oid, size: size)
       lfs_object.file = uploaded_file
       lfs_object.save!
-    end
-
-    def link_to_project!(object)
-      LfsObjectsProject.safe_find_or_create_by!( # rubocop:disable Performance/ActiveRecordSubtransactionMethods -- Used in the original controller: https://gitlab.com/gitlab-org/gitlab/-/blob/3841ce47b1d6d4611067ff5b8b86dc9cbf290641/app/controllers/repositories/lfs_storage_controller.rb#L118
-        project: project,
-        lfs_object: object
-      )
-    end
-
-    def validate_uploaded_file!
-      return unless uploaded_file
-
-      return unless size != uploaded_file.size || oid != uploaded_file.sha256
-
-      raise InvalidUploadedFile
     end
   end
 end

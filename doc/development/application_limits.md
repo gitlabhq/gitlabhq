@@ -2,9 +2,8 @@
 stage: Systems
 group: Distribution
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Application limits development
 ---
-
-# Application limits development
 
 This document provides a development guide for contributors to add application
 limits to GitLab.
@@ -188,7 +187,7 @@ The process for adding a new throttle is loosely:
    and apply it to the desired requests.
 1. Add the new settings to the **Admin** area form in `app/views/admin/application_settings/_ip_limits.html.haml`.
 1. Document the new settings in [User and IP rate limits](../administration/settings/user_and_ip_rate_limits.md) and [Application settings API](../api/settings.md).
-1. Configure the rate limit for GitLab.com and document it in [GitLab.com-specific rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
+1. Configure the rate limit for GitLab.com and document it in [GitLab.com-specific rate limits](../user/gitlab_com/_index.md#gitlabcom-specific-rate-limits).
 
 Refer to these past issues for implementation details:
 

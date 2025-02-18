@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Reference architecture: Up to 60 RPS or 3,000 users'
 ---
 
-# Reference architecture: Up to 60 RPS or 3,000 users
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This page describes the GitLab reference architecture designed to target a peak load of 60 requests per second (RPS), the typical peak load of up to 3,000 users, both manual and automated, based on real data.
 
@@ -17,13 +19,13 @@ have a lower user count or total load the [Supported Modifications for lower use
 section details how to reduce this architecture's size while maintaining HA.
 
 For a full list of reference architectures, see
-[Available reference architectures](index.md#available-reference-architectures).
+[Available reference architectures](_index.md#available-reference-architectures).
 
 > - **Target Load:** API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS
 > - **High Availability:** Yes, although [Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution
-> - **Cost calculator template:** [See cost calculator templates section](index.md#cost-calculator-templates)
+> - **Cost calculator template:** [See cost calculator templates section](_index.md#cost-calculator-templates)
 > - **Cloud Native Hybrid Alternative:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-> - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-start-with).
+> - **Unsure which Reference Architecture to use?** [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with).
 
 | Service                                   | Nodes | Configuration         | GCP             | AWS          | Azure    |
 |-------------------------------------------|-------|-----------------------|-----------------|--------------|----------|
@@ -48,19 +50,22 @@ For a full list of reference architectures, see
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
 3. Recommended to be run with a reputable third-party load balancer or service (LB PaaS) which can provide HA capabilities.
-   Sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. Refer to [Load Balancers](index.md#load-balancers) for more information.
+   Sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. Refer to [Load Balancers](_index.md#load-balancers) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
-   Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
+   Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/_index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
 1. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-   However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact Git and Gitaly performance and further adjustments will likely be required.
-6. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](index.md#autoscaling-of-stateful-nodes).
+   However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can *significantly* impact Git and Gitaly performance and further adjustments will likely be required.
+6. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](_index.md#autoscaling-of-stateful-nodes).
    However, [Cloud Native Hybrid setups](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) are generally preferred as certain components
    such as like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 <!-- markdownlint-enable MD029 -->
 
-NOTE:
+{{< alert type="note" >}}
+
 For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
+
+{{< /alert >}}
 
 ```plantuml
 @startuml 3k
@@ -147,12 +152,12 @@ monitor .[#7FFFD4,norank]u--> elb
 
 ## Requirements
 
-Before starting, see the [requirements](index.md#requirements) for reference architectures.
+Before starting, see the [requirements](_index.md#requirements) for reference architectures.
 
 ## Testing methodology
 
 The 3k architecture is designed to cover a large majority of workflows and is regularly
-[smoke and performance tested](index.md#validation-and-test-results) by the Test Platform team
+[smoke and performance tested](_index.md#validation-and-test-results) by the Test Platform team
 against the following endpoint throughput targets:
 
 - API: 60 RPS
@@ -163,12 +168,12 @@ against the following endpoint throughput targets:
 The above targets were selected based on real customer data of total environmental loads corresponding to the user count,
 including CI and other workloads.
 
-If you have metrics to suggest that you have regularly higher throughput against the above endpoint targets, [large monorepos](index.md#large-monorepos)
-or notable [additional workloads](index.md#additional-workloads) these can notably impact the performance environment and [further adjustments may be required](index.md#scaling-an-environment).
+If you have metrics to suggest that you have regularly higher throughput against the above endpoint targets, [large monorepos](_index.md#large-monorepos)
+or notable [additional workloads](_index.md#additional-workloads) these can notably impact the performance environment and [further adjustments may be required](_index.md#scaling-an-environment).
 If this applies to you, we strongly recommended referring to the linked documentation and reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
 
 Testing is done regularly by using our [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) and its dataset, which is available for anyone to use.
-The results of this testing are [available publicly on the GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information on our testing strategy [refer to this section of the documentation](index.md#validation-and-test-results).
+The results of this testing are [available publicly on the GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information on our testing strategy [refer to this section of the documentation](_index.md#validation-and-test-results).
 
 The load balancers used for testing were HAProxy for Linux package environments or equivalent Cloud Provider services with NGINX Ingress for Cloud Native Hybrids. These selections do not represent a specific requirement or recommendation as most [reputable load balancers are expected to work](#configure-the-external-load-balancer).
 
@@ -237,7 +242,7 @@ In a multi-node GitLab configuration, you'll need an external load balancer to r
 traffic to the application servers.
 
 The specifics on which load balancer to use, or its exact configuration
-is beyond the scope of GitLab documentation but refer to [Load Balancers](index.md) for more information around
+is beyond the scope of GitLab documentation but refer to [Load Balancers](_index.md) for more information around
 general requirements. This section will focus on the specifics of
 what to configure for your load balancer of choice.
 
@@ -259,7 +264,7 @@ The basic ports to be used are shown in the table below.
 | 443     | 443          | TCP or HTTPS (*1*) (*2*) |
 | 22      | 22           | TCP                      |
 
-- (*1*): [Web terminal](../../ci/environments/index.md#web-terminals-deprecated) support requires
+- (*1*): [Web terminal](../../ci/environments/_index.md#web-terminals-deprecated) support requires
   your load balancer to correctly handle WebSocket connections. When using
   HTTP or HTTPS proxying, this means your load balancer must be configured
   to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the
@@ -273,7 +278,7 @@ If you're using GitLab Pages with custom domain support you will need some
 additional port configurations.
 GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 `pages_external_url` from `/etc/gitlab/gitlab.rb` at the new virtual IP address. See the
-[GitLab Pages documentation](../pages/index.md) for more information.
+[GitLab Pages documentation](../pages/_index.md) for more information.
 
 | LB Port | Backend Port  | Protocol  |
 | ------- | ------------- | --------- |
@@ -282,7 +287,7 @@ GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 
 - (*1*): The backend port for GitLab Pages depends on the
   `gitlab_pages['external_http']` and `gitlab_pages['external_https']`
-  setting. See [GitLab Pages documentation](../pages/index.md) for more details.
+  setting. See [GitLab Pages documentation](../pages/_index.md) for more details.
 - (*2*): Port 443 for GitLab Pages should always use the TCP protocol. Users can
   configure custom domains with custom SSL, which would not be possible
   if SSL was terminated at the load balancer.
@@ -317,7 +322,7 @@ Configure your load balancer to pass connections on port 443 as `TCP` rather
 than `HTTP(S)` protocol. This will pass the connection to the application node's
 NGINX service untouched. NGINX will have the SSL certificate and listen on port 443.
 
-See the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
+See the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/)
 for details on managing SSL certificates and configuring NGINX.
 
 #### Load balancer terminates SSL without backend SSL
@@ -328,7 +333,7 @@ terminating SSL.
 
 Since communication between the load balancer and GitLab will not be secure,
 there is some additional configuration needed. See the
-[proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html#configure-a-reverse-proxy-or-load-balancer-ssl-termination)
+[proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl/#configure-a-reverse-proxy-or-load-balancer-ssl-termination)
 for details.
 
 #### Load balancer terminates SSL with backend SSL
@@ -341,7 +346,7 @@ Traffic will also be secure between the load balancers and NGINX in this
 scenario. There is no need to add configuration for proxied SSL since the
 connection will be secure all the way. However, configuration will need to be
 added to GitLab to configure SSL certificates. See
-the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
+the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/)
 for details on managing SSL certificates and configuring NGINX.
 
 <div align="right">
@@ -357,7 +362,7 @@ traffic for select internal components if configured
 such as connections to [PgBouncer](#configure-pgbouncer) and [Praefect](#configure-praefect) (Gitaly Cluster).
 
 The specifics on which load balancer to use, or its exact configuration
-is beyond the scope of GitLab documentation but refer to [Load Balancers](index.md) for more information around
+is beyond the scope of GitLab documentation but refer to [Load Balancers](_index.md) for more information around
 general requirements. This section will focus on the specifics of
 what to configure for your load balancer of choice.
 
@@ -423,8 +428,11 @@ Refer to your preferred Load Balancer's documentation for further guidance.
 
 Next, we set up the Consul servers.
 
-NOTE:
+{{< alert type="note" >}}
+
 Consul must be deployed in an odd number of 3 nodes or more. This is to ensure the nodes can take votes as part of a quorum.
+
+{{< /alert >}}
 
 The following IPs will be used as an example:
 
@@ -506,13 +514,13 @@ cluster to be used with GitLab.
 
 ### Provide your own PostgreSQL instance
 
-You can optionally use a [third party external service for PostgreSQL](../../administration/postgresql/external.md).
+You can optionally use a [third party external service for PostgreSQL](../postgresql/external.md).
 
 A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal)
 and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default from
 [14.4.0](https://docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes.html#1440).
 
-See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+See [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
 
 If you use a third party external service:
 
@@ -694,7 +702,7 @@ SSH in to any of the Patroni nodes on the **primary site**:
    ```
 
 If the 'State' column for any node doesn't say "running", check the
-[PostgreSQL replication and failover troubleshooting section](../../administration/postgresql/replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
+[PostgreSQL replication and failover troubleshooting section](../postgresql/replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
 before proceeding.
 
 <div align="right">
@@ -708,9 +716,12 @@ before proceeding.
 Now that the PostgreSQL servers are all set up, let's configure PgBouncer
 for tracking and handling reads/writes to the primary database.
 
-NOTE:
+{{< alert type="note" >}}
+
 PgBouncer is single threaded and doesn't significantly benefit from an increase in CPU cores.
-Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
+Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
+
+{{< /alert >}}
 
 The following IPs are used as an example:
 
@@ -824,12 +835,17 @@ Using [Redis](https://redis.io/) in scalable environment is possible using a **P
 topology with a [Redis Sentinel](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/) service to watch and automatically
 start the failover procedure.
 
-NOTE:
+{{< alert type="note" >}}
+
 Redis clusters must each be deployed in an odd number of 3 nodes or more. This is to ensure Redis Sentinel can take votes as part of a quorum. This does not apply when configuring Redis externally, such as a cloud provider service.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores.
-Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
+Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
+{{< /alert >}}
 
 Redis requires authentication if used with Sentinel. See
 [Redis Security](https://redis.io/docs/latest/operate/rc/security/) documentation for more
@@ -863,7 +879,7 @@ You can optionally use a [third party external service for the Redis instance](.
 - Redis Cluster mode is specifically not supported, but Redis Standalone with HA is.
 - You must set the [Redis eviction mode](../redis/replication_and_failover_external.md#setting-the-eviction-policy) according to your setup.
 
-For more information, see [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services).
+For more information, see [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services).
 
 ### Configure the Redis cluster
 
@@ -1016,20 +1032,23 @@ are supported and can be added if needed.
 repositories. In this configuration, every Git repository is stored on every Gitaly node in the cluster, with one being
 designated the primary, and failover occurs automatically if the primary node goes down.
 
-WARNING:
+{{< alert type="warning" >}}
+
 **Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.**
-**However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact the performance of the environment and further adjustments may be required.**
+**However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can *significantly* impact the performance of the environment and further adjustments may be required.**
 If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
 
+{{< /alert >}}
+
 Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
-Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster).
+Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/_index.md#before-deploying-gitaly-cluster).
 
 For guidance on:
 
 - Implementing sharded Gitaly instead, follow the [separate Gitaly documentation](../gitaly/configure_gitaly.md)
   instead of this section. Use the same Gitaly specs.
 - Migrating existing repositories that aren't managed by Gitaly Cluster, see
-  [migrate to Gitaly Cluster](../gitaly/index.md#migrate-to-gitaly-cluster).
+  [migrate to Gitaly Cluster](../gitaly/_index.md#migrate-to-gitaly-cluster).
 
 The recommended cluster setup includes the following components:
 
@@ -1133,18 +1152,21 @@ There are many third-party solutions for PostgreSQL HA. The solution selected mu
 - A static IP for all connections that doesn't change on failover.
 - [`LISTEN`](https://www.postgresql.org/docs/12/sql-listen.html) SQL functionality must be supported.
 
-NOTE:
+{{< alert type="note" >}}
+
 With a third-party setup, it's possible to colocate Praefect's database on the same server as
 the main [GitLab](#provide-your-own-postgresql-instance) database as a convenience unless
 you are using Geo, where separate database instances are required for handling replication correctly.
 In this setup, the specs of the main database setup shouldn't need to be changed as the impact should be
 minimal.
 
+{{< /alert >}}
+
 A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal)
 and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default from
 [14.4.0](https://docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes.html#1440).
 
-See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+See [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
 
 Once the database is set up, follow the [post configuration](#praefect-postgresql-post-configuration).
 
@@ -1195,8 +1217,11 @@ This is how this would work with a Linux package PostgreSQL setup:
 Praefect is the router and transaction manager for Gitaly Cluster and all connections to Gitaly go through
 it. This section details how to configure it.
 
-NOTE:
+{{< alert type="note" >}}
+
 Praefect must be deployed in an odd number of 3 nodes or more. This is to ensure the nodes can take votes as part of a quorum.
+
+{{< /alert >}}
 
 Praefect requires several secret tokens to secure communications across the Cluster:
 
@@ -1225,8 +1250,11 @@ To configure the Praefect nodes, on each one:
    on the page.
 1. Edit the `/etc/gitlab/gitlab.rb` file to configure Praefect:
 
-   NOTE:
-   You can't remove the `default` entry from `virtual_storages` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
+   {{< alert type="note" >}}
+
+You can't remove the `default` entry from `virtual_storages` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
+
+   {{< /alert >}}
 
    <!--
    Updates to example must be made at:
@@ -1284,7 +1312,7 @@ To configure the Praefect nodes, on each one:
          password: '<praefect_postgresql_password>',
       },
       # Praefect Virtual Storage config
-      # Name of storage hash must match storage name in git_data_dirs on GitLab
+      # Name of storage hash must match storage name in gitlab_rails['repositories_storages'] on the GitLab
       # server ('praefect') and in gitaly['configuration'][:storage] on Gitaly nodes ('gitaly-1')
       virtual_storage: [
          {
@@ -1347,13 +1375,16 @@ To configure the Praefect nodes, on each one:
 
 ### Configure Gitaly
 
-The [Gitaly](../gitaly/index.md) server nodes that make up the cluster have
+The [Gitaly](../gitaly/_index.md) server nodes that make up the cluster have
 requirements that are dependent on data and load.
 
-WARNING:
+{{< alert type="warning" >}}
+
 **Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.**
-**However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact the performance of the environment and further adjustments may be required.**
+**However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can *significantly* impact the performance of the environment and further adjustments may be required.**
 If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+
+{{< /alert >}}
 
 Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
@@ -1522,7 +1553,7 @@ for secure connections, you must:
 
 Additionally the certificate, or its certificate authority, must be installed on all Gitaly servers
 and on all Praefect clients that communicate with it following the procedure described in
-[GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates) (and repeated below).
+[GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates) (and repeated below).
 
 Note the following:
 
@@ -1573,16 +1604,16 @@ To configure Praefect with TLS:
    sudo cp cert.pem /etc/gitlab/trusted-certs/
    ```
 
-1. On the Praefect clients (except Gitaly servers), edit `git_data_dirs` in
+1. On the Praefect clients (except Gitaly servers), edit `gitlab_rails['repositories_storages']` in
    `/etc/gitlab/gitlab.rb` as follows:
 
    ```ruby
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => 'tls://LOAD_BALANCER_SERVER_ADDRESS:3305',
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
-   })
+   }
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
@@ -1599,18 +1630,25 @@ Sidekiq requires connection to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
 It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
 
-NOTE:
+{{< alert type="note" >}}
+
 [Because it's recommended to use Object storage](../object_storage.md) instead of NFS for data objects, the following
 examples include the Object storage configuration.
 
-NOTE:
-If you find that the environment's Sidekiq job processing is slow with long queues
-you can scale it accordingly. Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
+{{< /alert >}}
 
-NOTE:
+{{< alert type="note" >}}
+
+If you find that the environment's Sidekiq job processing is slow with long queues
+you can scale it accordingly. Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 When configuring additional GitLab functionality such as Container Registry, SAML, or LDAP,
 update the Sidekiq configuration in addition to the Rails configuration.
-Refer to the [external Sidekiq documentation](../sidekiq/index.md) for more information.
+Refer to the [external Sidekiq documentation](../sidekiq/_index.md) for more information.
+{{< /alert >}}
 
 The following IPs will be used as an example:
 
@@ -1655,15 +1693,15 @@ To configure the Sidekiq nodes, on each one:
    ]
 
    # Gitaly Cluster
-   ## git_data_dirs get configured for the Praefect virtual storage
-   ## Address is Internal Load Balancer for Praefect
-   ## Token is praefect_external_token
-   git_data_dirs({
+   ## repositories_storages gets configured for the Praefect virtual storage
+   ## Address is the Internal Load Balancer for Praefect
+   ## Token is the praefect_external_token
+   gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => "tcp://10.6.0.40:2305", # internal load balancer IP
        "gitaly_token" => '<praefect_external_token>'
      }
-   })
+   }
 
    # PostgreSQL
    gitlab_rails['db_host'] = '10.6.0.40' # internal load balancer IP
@@ -1772,9 +1810,12 @@ Rails requires connections to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
 It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
 
-NOTE:
+{{< alert type="note" >}}
+
 [Because it's recommended to use Object storage](../object_storage.md) instead of NFS for data objects, the following
 examples include the Object storage configuration.
+
+{{< /alert >}}
 
 On each node perform the following:
 
@@ -1790,15 +1831,15 @@ On each node perform the following:
    ```ruby
    external_url 'https://gitlab.example.com'
 
-   # git_data_dirs get configured for the Praefect virtual storage
-   # Address is Internal Load Balancer for Praefect
-   # Token is praefect_external_token
-   git_data_dirs({
+   # gitlab_rails['repositories_storages'] gets configured for the Praefect virtual storage
+   # Address is the Internal Load Balancer for Praefect
+   # Token is the praefect_external_token
+   gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => "tcp://10.6.0.40:2305", # internal load balancer IP
        "gitaly_token" => '<praefect_external_token>'
      }
-   })
+   }
 
    ## Disable components that will not be on the GitLab application server
    roles(['application_role'])
@@ -1901,15 +1942,15 @@ On each node perform the following:
    ```
 
 1. If you're using [Gitaly with TLS support](#gitaly-cluster-tls-support), make sure the
-   `git_data_dirs` entry is configured with `tls` instead of `tcp`:
+   `gitlab_rails['repositories_storages']` entry is configured with `tls` instead of `tcp`:
 
    ```ruby
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => "tls://10.6.0.40:2305", # internal load balancer IP
        "gitaly_token" => '<praefect_external_token>'
      }
-   })
+   }
    ```
 
    1. Copy the cert into `/etc/gitlab/trusted-certs`:
@@ -1963,7 +2004,7 @@ On each node perform the following:
 When you specify `https` in the `external_url`, as in the previous example,
 GitLab expects that the SSL certificates are in `/etc/gitlab/ssl/`. If the
 certificates aren't present, NGINX will fail to start. For more information, see
-the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
+the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/).
 
 ### GitLab Rails post-configuration
 
@@ -1988,7 +2029,7 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.htm
 ## Configure Prometheus
 
 The Linux package can be used to configure a standalone Monitoring node
-running [Prometheus](../monitoring/prometheus/index.md):
+running [Prometheus](../monitoring/prometheus/_index.md):
 
 1. SSH in to the Monitoring node.
 1. [Download and install](https://about.gitlab.com/install/) the Linux
@@ -2065,7 +2106,7 @@ running [Prometheus](../monitoring/prometheus/index.md):
 GitLab supports using an [object storage](../object_storage.md) service for holding numerous types of data.
 It's recommended over [NFS](../nfs.md) for data objects and in general it's better
 in larger setups as object storage is typically much more performant, reliable,
-and scalable. See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+and scalable. See [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
 
 There are two ways of specifying object storage configuration in GitLab:
 
@@ -2120,8 +2161,11 @@ required. Each component has various considerations and rules to follow, and the
 meets all of these. Smaller versions of this architecture will be fundamentally the same,
 but with smaller performance requirements, the following modifications are supported as follows:
 
-NOTE:
+{{< alert type="note" >}}
+
 If not stated below, no other modifications are supported for lower use counts.
+
+{{< /alert >}}
 
 - Lowering node specs: Depending on your user count, you can lower all suggested node specs as desired. However, it's recommended that you don't go lower than the [general requirements](../../install/requirements.md).
 - Combining select nodes: The following specific components are supported to be combined onto the same nodes to reduce complexity at the cost of some performance:
@@ -2133,7 +2177,7 @@ If not stated below, no other modifications are supported for lower use counts.
   - Consul, Redis Sentinel, and Praefect: Require an odd number, and a minimum of three nodes, for a voting quorum.
 - Running select components in reputable Cloud PaaS solutions: The following specific components are supported to be run on reputable Cloud Provider PaaS solutions. By doing this, additional dependent components can also be removed:
   - PostgreSQL: Can be run on reputable Cloud PaaS solutions such as Google Cloud SQL or Amazon RDS. In this setup, the PgBouncer and Consul nodes are no longer required:
-    - Consul may still be desired if [Prometheus](../monitoring/prometheus/index.md) auto discovery is a requirement, otherwise you would need to [manually add scrape configurations](../monitoring/prometheus/index.md#adding-custom-scrape-configurations) for all nodes.
+    - Consul may still be desired if [Prometheus](../monitoring/prometheus/_index.md) auto discovery is a requirement, otherwise you would need to [manually add scrape configurations](../monitoring/prometheus/_index.md#adding-custom-scrape-configurations) for all nodes.
   - Redis: Can be run on reputable Cloud PaaS solutions such as Google Memorystore and AWS ElastiCache. In this setup, the Redis Sentinel is no longer required.
 
 ## Cloud Native Hybrid reference architecture with Helm Charts (alternative)
@@ -2157,15 +2201,21 @@ Refer to the Helm charts [Advanced configuration](https://docs.gitlab.com/charts
 documentation for setup instructions including guidance on what GitLab secrets to sync
 between Kubernetes and the backend components.
 
-NOTE:
+{{< alert type="note" >}}
+
 This is an **advanced** setup. Running services in Kubernetes is well known
 to be complex. **This setup is only recommended** if you have strong working
 knowledge and experience in Kubernetes. The rest of this
 section assumes this.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 **Gitaly Cluster is not supported to be run in Kubernetes**.
 Refer to [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127) for more details.
+
+{{< /alert >}}
 
 ### Cluster topology
 
@@ -2181,7 +2231,7 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 | Sidekiq              | 7.2 vCPU<br/>16 GB memory (request)<br/>32 GB memory (limit) | 3 x `n1-standard-4` | 3 x `m5.xlarge`  |
 | Supporting services  | 4 vCPU<br/>15 GB memory | 2 x `n1-standard-2` | 2 x `m5.large`   |
 
-- For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
+- For this setup, we **recommend** and regularly [test](_index.md#validation-and-test-results)
   [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
 - GCP and AWS examples of how to reach the Target Node Pool Total are given for convenience. These sizes are used in performance testing but following the example is not required. Different node pool designs can be used as desired as long as the targets are met, and all pods can deploy.
 - The [Webservice](#webservice) and [Sidekiq](#sidekiq) target node pool totals are given for GitLab components only. Additional resources are required for the chosen Kubernetes provider's system processes. The given examples take this into account.
@@ -2211,16 +2261,19 @@ services where applicable):
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
 3. Recommended to be run with a reputable third-party load balancer or service (LB PaaS) which can provide HA capabilities.
-   Sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. Refer to [Load Balancers](index.md#load-balancers) for more information.
+   Sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. Refer to [Load Balancers](_index.md#load-balancers) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
-   Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
+   Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/_index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
 6. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-   However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact Git and Gitaly performance and further adjustments will likely be required.
+   However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can *significantly* impact Git and Gitaly performance and further adjustments will likely be required.
 <!-- markdownlint-enable MD029 -->
 
-NOTE:
+{{< alert type="note" >}}
+
 For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
+
+{{< /alert >}}
 
 ```plantuml
 @startuml 3k
@@ -2356,5 +2409,8 @@ After following this guide you should now have a fresh GitLab environment with c
 
 You may want to configure additional optional features of GitLab depending on your requirements. See [Steps after installing GitLab](../../install/next_steps.md) for more information.
 
-NOTE:
+{{< alert type="note" >}}
+
 Depending on your environment and requirements, additional hardware requirements or adjustments may be required to set up additional features as desired. Refer to the individual pages for more information.
+
+{{< /alert >}}

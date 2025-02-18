@@ -18,8 +18,8 @@ module Gitlab
         )
       end
 
-      def cell_name
-        @cell_name ||= Gitlab.config.cell.name
+      def cell_id
+        @cell_id ||= Gitlab.config.cell.id
       end
 
       def service_credentials
@@ -28,7 +28,7 @@ module Gitlab
       end
 
       def topology_service_address
-        Gitlab.config.topology_service.address
+        Gitlab.config.cell.topology_service.address
       end
 
       def enabled?

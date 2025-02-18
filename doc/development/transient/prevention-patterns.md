@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Preventing Transient Bugs
 ---
-
-# Preventing Transient Bugs
 
 This page covers architectural patterns and tips for developers to follow to prevent [transient bugs.](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#transient-bugs)
 

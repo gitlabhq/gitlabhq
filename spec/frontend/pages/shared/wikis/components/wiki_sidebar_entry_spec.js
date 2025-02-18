@@ -54,7 +54,7 @@ describe('pages/shared/wikis/components/wiki_sidebar_entry', () => {
     it('highlights the searchTerm in the page title', () => {
       buildWrapper({ page: { title: 'Foo', path: '/foo', children: [] }, searchTerm: 'Fo' });
 
-      expect(wrapper.html()).toContain('<strong>Fo</strong>o');
+      expect(wrapper.html()).toContain('<span class="gl-bg-status-warning">Fo</span>o');
     });
   });
 

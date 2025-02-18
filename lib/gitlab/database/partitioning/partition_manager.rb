@@ -5,6 +5,7 @@ module Gitlab
     module Partitioning
       class PartitionManager
         include ::Gitlab::Utils::StrongMemoize
+        include ::Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
         UnsafeToDetachPartitionError = Class.new(StandardError)
 
@@ -19,8 +20,12 @@ module Gitlab
           @connection_name = @connection.pool.db_config.name
         end
 
+        def execute(sql)
+          @connection.execute(sql)
+        end
+
         def sync_partitions(analyze: true)
-          return skip_synching_partitions unless table_partitioned?
+          return skip_syncing_partitions unless table_partitioned?
 
           Gitlab::AppLogger.info(
             message: "Checking state of dynamic postgres partitions",
@@ -92,6 +97,8 @@ module Gitlab
                   connection_name: @connection_name)
 
                 lock_partitions_for_writes(partition) if should_lock_for_writes?
+
+                attach_loose_foreign_key_trigger(partition) if parent_table_has_loose_foreign_key?
               end
 
               model.partitioning_strategy.after_adding_partitions
@@ -147,9 +154,9 @@ module Gitlab
           end
         end
 
-        def skip_synching_partitions
+        def skip_syncing_partitions
           Gitlab::AppLogger.warn(
-            message: "Skipping synching partitions",
+            message: "Skipping syncing partitions",
             table_name: model.table_name,
             connection_name: @connection_name
           )
@@ -225,6 +232,19 @@ module Gitlab
             with_retries: !connection.transaction_open?
           ).lock_writes
         end
+
+        def attach_loose_foreign_key_trigger(partition)
+          partition_identifier = "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{partition.partition_name}"
+
+          return unless has_loose_foreign_key?(partition.table)
+
+          track_record_deletions_override_table_name(partition_identifier, partition.table)
+        end
+
+        def parent_table_has_loose_foreign_key?
+          has_loose_foreign_key?(model.table_name)
+        end
+        strong_memoize_attr :parent_table_has_loose_foreign_key?
       end
     end
   end

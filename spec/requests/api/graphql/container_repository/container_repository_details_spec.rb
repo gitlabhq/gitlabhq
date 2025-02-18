@@ -131,8 +131,6 @@ RSpec.describe 'container repository details', feature_category: :container_regi
     end
   end
 
-  it_behaves_like 'returning proper responses with different permissions', raw_tags: -> { tags }
-
   context 'with a giant size tag' do
     let(:tags) { %w[latest] }
     let(:giant_size) { 1.terabyte }
@@ -215,6 +213,10 @@ RSpec.describe 'container repository details', feature_category: :container_regi
           }
         }
       GQL
+    end
+
+    before do
+      stub_container_registry_gitlab_api_support(supported: false)
     end
 
     it 'sorts the tags', :aggregate_failures do
@@ -385,7 +387,15 @@ RSpec.describe 'container repository details', feature_category: :container_regi
 
   it_behaves_like 'handling graphql network errors with the container registry'
 
-  context 'when list tags API is enabled' do
+  context 'when the Gitlab API is not supported' do
+    before do
+      stub_container_registry_gitlab_api_support(supported: false)
+    end
+
+    it_behaves_like 'returning proper responses with different permissions', raw_tags: -> { tags }
+  end
+
+  context 'when the Gitlab API is supported' do
     before do
       stub_container_registry_config(enabled: true)
       allow_next_instances_of(ContainerRegistry::GitlabApiClient, nil) do |client|
@@ -646,6 +656,134 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       subject
 
       expect(migration_state_response).to eq('')
+    end
+  end
+
+  context 'protection field' do
+    let(:raw_tags_response) { [{ name: 'latest', digest: 'sha256:123' }] }
+    let(:response_body) { { response_body: ::Gitlab::Json.parse(raw_tags_response.to_json) } }
+
+    let(:query) do
+      <<~GQL
+        query($id: ContainerRepositoryID!) {
+          containerRepository(id: $id) {
+            tags(first: 5) {
+              nodes {
+                protection {
+                  minimumAccessLevelForPush
+                  minimumAccessLevelForDelete
+                }
+              }
+            }
+          }
+        }
+      GQL
+    end
+
+    let(:tag_permissions_response) do
+      container_repository_details_response.dig('tags', 'nodes')[0]['protection']
+    end
+
+    before_all do
+      create(
+        :container_registry_protection_tag_rule,
+        project: project,
+        tag_name_pattern: 'latest',
+        minimum_access_level_for_push: 'maintainer',
+        minimum_access_level_for_delete: 'owner'
+      )
+
+      create(
+        :container_registry_protection_tag_rule,
+        project: project,
+        tag_name_pattern: '.*',
+        minimum_access_level_for_push: 'owner',
+        minimum_access_level_for_delete: 'maintainer'
+      )
+
+      create(
+        :container_registry_protection_tag_rule,
+        project: project,
+        tag_name_pattern: 'non-matching-pattern',
+        minimum_access_level_for_push: 'admin',
+        minimum_access_level_for_delete: 'admin'
+      )
+    end
+
+    it 'returns the maximum access fields from the matching protection rules' do
+      subject
+
+      expect(tag_permissions_response).to eq(
+        {
+          'minimumAccessLevelForPush' => 'OWNER',
+          'minimumAccessLevelForDelete' => 'OWNER'
+        }
+      )
+    end
+
+    context 'when the feature container_registry_protected_tags is disabled' do
+      before do
+        stub_feature_flags(container_registry_protected_tags: false)
+      end
+
+      it 'returns nil' do
+        subject
+
+        expect(tag_permissions_response).to eq(
+          {
+            'minimumAccessLevelForPush' => nil,
+            'minimumAccessLevelForDelete' => nil
+          }
+        )
+      end
+    end
+  end
+
+  context 'for tags destroyContainerRepositoryTag field' do
+    let(:tags) { %w[latest alpha] }
+    let(:fields) do
+      <<~GQL
+        tags {
+          nodes {
+            userPermissions {
+              destroyContainerRepositoryTag
+            }
+          }
+        }
+      GQL
+    end
+
+    let(:query) do
+      graphql_query_for(
+        'containerRepository',
+        { id: container_repository_global_id },
+        fields
+      )
+    end
+
+    before_all do
+      create(
+        :container_registry_protection_tag_rule,
+        project: project,
+        tag_name_pattern: '.*',
+        minimum_access_level_for_push: 'owner',
+        minimum_access_level_for_delete: 'maintainer'
+      )
+    end
+
+    it 'avoids N+1 database queries', :use_sql_query_cache do
+      first_user = create(:user, developer_of: project)
+      second_user = create(:user, developer_of: project)
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: first_user, variables: variables)
+      end
+
+      tags.push('beta', 'release')
+
+      expect do
+        post_graphql(query, current_user: second_user, variables: variables) # use a different user to avoid a false positive from authentication queries
+      end.to issue_same_number_of_queries_as(control)
     end
   end
 end

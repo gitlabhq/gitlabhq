@@ -2,13 +2,15 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Deploy keys API
 ---
 
-# Deploy keys API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The deploy keys API can return in responses fingerprints of the public key in the following fields:
 
@@ -17,9 +19,12 @@ The deploy keys API can return in responses fingerprints of the public key in th
 
 ## List all deploy keys
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 > `projects_with_readonly_access` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119147) in GitLab 16.0.
 
@@ -102,11 +107,18 @@ Example response:
 
 ## Add deploy key
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/478476) in GitLab 17.5.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/478476) in GitLab 17.5.
+
+{{< /history >}}
 
 Create a deploy key for the GitLab instance. This endpoint requires administrator
 access.
@@ -156,7 +168,7 @@ GET /projects/:id/deploy_keys
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/deploy_keys"
@@ -191,9 +203,13 @@ Example response:
 
 ## List project deploy keys for user
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88917) in GitLab 15.1.
+{{< history >}}
 
-Get a list of a specified user (requestee) and the authenticated user's (requester) common [project deploy keys](../user/project/deploy_keys/index.md#scope). It lists only the **enabled project keys from the common projects of requester and requestee**.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88917) in GitLab 15.1.
+
+{{< /history >}}
+
+Get a list of a specified user (requestee) and the authenticated user's (requester) common [project deploy keys](../user/project/deploy_keys/_index.md#scope). It lists only the **enabled project keys from the common projects of requester and requestee**.
 
 ```plaintext
 GET /users/:id_or_username/project_deploy_keys
@@ -260,7 +276,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```shell
@@ -295,7 +311,7 @@ POST /projects/:id/deploy_keys
 
 | Attribute    | Type | Required | Description |
 | -----------  | ---- | -------- | ----------- |
-| `id`         | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`         | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `key`        | string   | yes | New deploy key |
 | `title`      | string   | yes | New deploy key's title |
 | `can_push`   | boolean  | no  | Can deploy key push to the project's repository |
@@ -330,7 +346,7 @@ PUT /projects/:id/deploy_keys/:key_id
 
 | Attribute  | Type | Required | Description |
 | ---------  | ---- | -------- | ----------- |
-| `id`       | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`       | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `can_push` | boolean | no  | Can deploy key push to the project's repository |
 | `title`    | string  | no | New deploy key's title |
 
@@ -362,7 +378,7 @@ DELETE /projects/:id/deploy_keys/:key_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```shell
@@ -379,7 +395,7 @@ POST /projects/:id/deploy_keys/:key_id/enable
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```shell

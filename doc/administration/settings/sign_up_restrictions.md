@@ -2,13 +2,15 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Sign-up restrictions
 ---
 
-# Sign-up restrictions
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can enforce the following restrictions on sign ups:
 
@@ -40,7 +42,7 @@ You can also disable new sign ups with the [Rails console](../operations/rails_c
 
 This setting is enabled by default for new GitLab instances.
 When this setting is enabled, any user visiting your GitLab domain and signing up for a new account using the registration form
-must be explicitly [approved](../../administration/moderate_users.md#approve-or-reject-a-user-sign-up) by an
+must be explicitly [approved](../moderate_users.md#approve-or-reject-a-user-sign-up) by an
 administrator before they can start using their account. It is only applicable if sign ups are enabled.
 
 To require administrator approval for new sign ups:
@@ -53,16 +55,23 @@ To require administrator approval for new sign ups:
 If an administrator disables this setting, the users in pending approval state are
 automatically approved in a background job.
 
-NOTE:
+{{< alert type="note" >}}
+
 This setting doesn't apply to LDAP or OmniAuth users. To enforce approvals for new users
 signing up using OmniAuth or LDAP, set `block_auto_created_users` to `true` in the
 [OmniAuth configuration](../../integration/omniauth.md#configure-common-settings) or
-[LDAP configuration](../auth/ldap/index.md#basic-configuration-settings).
+[LDAP configuration](../auth/ldap/_index.md#basic-configuration-settings).
 A [user cap](#user-cap) can also be used to enforce approvals for new users.
+
+{{< /alert >}}
 
 ## Confirm user email
 
-> - Soft email confirmation [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107302/diffs) from a feature flag to an application setting in GitLab 15.9.
+{{< history >}}
+
+- Soft email confirmation [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107302/diffs) from a feature flag to an application setting in GitLab 15.9.
+
+{{< /history >}}
 
 You can send confirmation emails during sign up and require that users confirm
 their email address before they are allowed to sign in.
@@ -82,12 +91,19 @@ The following settings are available:
 
 ## Turn on restricted access
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** Self-managed
-**Status:** Beta
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501717) in GitLab 17.8.
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501717) in GitLab 17.8.
+
+{{< /history >}}
 
 Use restricted access to prevent overage fees.
 Overage fees occur when you exceed the number of licensed users in your subscription,
@@ -104,7 +120,7 @@ To turn on restricted access:
 
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Sign-up restrictions**.
-1. Under **Seat controls**, select **Restricted access**.
+1. Under **Seat control**, select **Restricted access**.
 
 ### Known issues
 
@@ -114,11 +130,6 @@ When you turn on restricted access, the following known issues might occur and r
   - You use SAML or SCIM to add new members, and have exceeded the number of seats in the subscription.
   - Multiple users with administrator access add members simultaneously.
   - New billable users delay accepting an invitation.
-  - You change from using the user cap to restricted access, and have users pending approval
-    from before you changed to restricted access. In this case, those users remain in a pending state. If
-    pending users are approved while using restricted access, you might exceed the number of seats in your subscription.
-  - You have no seats left in the subscription, and non-billable members are promoted to a [billable](../../subscriptions/self_managed/index.md#billable-users)
-    role through group or project member management. As a result, the number of seats in the subscription is exceeded.
 - If you renew your subscription through the GitLab Sales Team for fewer users than your current
   subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
   renewal starts. For example, if you have 20 users and renew your subscription for 15 users,
@@ -126,28 +137,34 @@ you will be charged overages for the five additional users.
 
 ## User cap
 
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab Self-Managed
+
 The user cap is the maximum number of billable users who can sign up or be added to a subscription
 without administrator approval. After the user cap is reached, users who sign up or are
-added must be [approved](../../administration/moderate_users.md#approve-or-reject-a-user-sign-up)
+added must be [approved](../moderate_users.md#approve-or-reject-a-user-sign-up)
 by an administrator. Users can use their account only after they have been approved by an administrator.
 
 If an administrator increases or removes the user cap, users pending approval are automatically approved.
 
-[View how to set up a user cap for groups](../../user/group/manage.md#user-cap-for-groups).
+You can also set up [user caps for individual groups](../../user/group/manage.md#user-cap-for-groups).
 
-NOTE:
+{{< alert type="note" >}}
+
 For instances that use LDAP or OmniAuth, when [administrator approval for new sign-ups](#require-administrator-approval-for-new-sign-ups)
 is enabled or disabled, downtime might occur due to changes in the Rails configuration.
-You can set a user cap to enforce approvals for new users. To ensure the user cap applies immediately, set the cap to a value below the current number of billable users (for example, `1`).
+You can set a user cap to enforce approvals for new users.
+
+{{< /alert >}}
 
 ### Set a user cap
 
 Set a user cap to restrict the number of users who can sign up without administrator approval.
 
-The number of [billable users](../../subscriptions/self_managed/index.md#billable-users) is updated once a day.
+The number of [billable users](../../subscriptions/self_managed/_index.md#billable-users) is updated once a day.
 The user cap might apply only retrospectively after the cap has already been exceeded.
-To ensure the cap is enabled immediately, set the cap to a value below the current number of
-billable users (for example, `1`).
+If the cap is set to a value below the current number of billable users (for example, `1`), the cap is enabled immediately.
 
 Prerequisites:
 
@@ -158,7 +175,7 @@ To set a user cap:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
-1. Enter a number in **User cap**.
+1. In the **User cap** field, enter a number or leave blank for unlimited.
 1. Select **Save changes**.
 
 ### Remove the user cap
@@ -187,11 +204,18 @@ the minimum number of characters a user must have in their password using the Gi
 
 ### Password complexity requirements
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354965) in GitLab 15.2.
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354965) in GitLab 15.2.
+
+{{< /history >}}
 
 By default, the only requirement for user passwords is [minimum password length](#minimum-password-length-limit).
 You can add additional complexity requirements. Changes to password complexity requirements apply to new passwords:
@@ -247,34 +271,44 @@ semicolon, comma, or a new line.
 
 You can limit GitLab access to a subset of the LDAP users on your LDAP server.
 
-See the [documentation on setting up an LDAP user filter](../auth/ldap/index.md#set-up-ldap-user-filter) for more information.
+See the [documentation on setting up an LDAP user filter](../auth/ldap/_index.md#set-up-ldap-user-filter) for more information.
 
 ## Turn on administrator approval for role promotions
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
-**Status:** Beta
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433166) in GitLab 16.9 [with a flag](../feature_flags.md) named `member_promotion_management`.
-> - Feature flag `member_promotion_management` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167757/) from `wip` to `beta` and enabled by default in GitLab 17.5.
+- Tier: Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433166) in GitLab 16.9 [with a flag](../feature_flags.md) named `member_promotion_management`.
+- Feature flag `member_promotion_management` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167757/) from `wip` to `beta` and enabled by default in GitLab 17.5.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
+
+{{< /alert >}}
 
 To prevent existing users from being promoted into a billable role in a project or group,
 turn on administrator approval for role promotions. You can then approve or reject promotion requests
 that are [pending administrator approval](../moderate_users.md#view-users-pending-role-promotion).
 
 - If an administrator adds a user to a group or project:
-  - If the new user role is [billable](../../subscriptions/self_managed/index.md#billable-users),
+  - If the new user role is [billable](../../subscriptions/self_managed/_index.md#billable-users),
   all other membership requests for that user are automatically approved.
   - If the new user role is not billable, other requests for that user remain pending until administrator
   approval.
 
 - If a user who isn't an administrator adds a user to a group or project:
   - If the user does not have any billable role in any group or project, and is added or promoted to a billable role,
-  their request remains [pending until administrator approval(../moderate_users.md#view-users-pending-role-promotion).
+  their request remains [pending until administrator approval](../moderate_users.md#view-users-pending-role-promotion).
   - If the user already has a billable role, administrator approval is not required.
 
 Prerequisites:
@@ -286,11 +320,11 @@ To turn on approvals for role promotions:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
-1. In the **Seat controls** section, select **Approve role promotions**.
+1. In the **Seat control** section, select **Approve role promotions**.
 
 ### Known issues
 
-When a user [requests access to a group](../../user/group/index.md), the initial role assigned is Developer.
+When a user [requests access to a group](../../user/group/_index.md), the initial role assigned is Developer.
 If this access is approved by a user with the Owner role for the group and the user becomes a member of the group, the billable count
 increases if this user did not have a billable role previously.
 

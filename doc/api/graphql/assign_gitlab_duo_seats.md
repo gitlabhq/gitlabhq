@@ -2,13 +2,15 @@
 stage: Fulfillment
 group: Provision
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Assign GitLab Duo seats by using GraphQL
 ---
 
-# Assign GitLab Duo seats by using GraphQL
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 Use the GraphQL API to assign GitLab Duo seats to users.
 
@@ -89,5 +91,5 @@ You can use [GraphiQL](https://gitlab.com/-/graphql-explorer) to assign seats to
 
 ## Related topics
 
-- [GraphQL API Resources](reference/index.md)
+- [GraphQL API Resources](reference/_index.md)
 - [GraphQL specific entities, like fragments and interfaces](https://graphql.org/learn/)

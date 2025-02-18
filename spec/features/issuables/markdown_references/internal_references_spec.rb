@@ -72,7 +72,7 @@ RSpec.describe "Internal references", :js, feature_category: :team_planning do
 
             page.within('.related-items-list') do
               expect(page).to have_content(private_project_merge_request.title)
-              expect(page).to have_css(".ic-issue-open-m")
+              expect(page).to have_css(".issue-token-state-icon")
             end
 
             expect(page).to have_content("mentioned in merge request #{private_project_merge_request.to_reference(public_project)}")

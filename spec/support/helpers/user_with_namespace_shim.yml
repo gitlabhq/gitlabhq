@@ -247,7 +247,6 @@
 - ee/spec/services/ee/projects/remove_paid_features_service_spec.rb
 - ee/spec/services/ee/users/destroy_service_spec.rb
 - ee/spec/services/ee/users/migrate_records_to_ghost_user_service_spec.rb
-- ee/spec/services/epic_issues/create_service_spec.rb
 - ee/spec/services/epics/create_service_spec.rb
 - ee/spec/services/epics/issue_promote_service_spec.rb
 - ee/spec/services/epics/transfer_service_spec.rb
@@ -692,7 +691,6 @@
 - spec/lib/gitlab/relative_positioning/mover_spec.rb
 - spec/lib/gitlab/sample_data_template_spec.rb
 - spec/lib/gitlab/themes_spec.rb
-- spec/lib/gitlab/utils/username_and_email_generator_spec.rb
 - spec/mailers/emails/service_desk_spec.rb
 - spec/mailers/notify_spec.rb
 - spec/migrations/20221002234454_finalize_group_member_namespace_id_migration_spec.rb

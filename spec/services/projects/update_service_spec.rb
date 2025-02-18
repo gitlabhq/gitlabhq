@@ -676,6 +676,28 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       end
     end
 
+    context 'when updating #max_artifacts_size' do
+      context 'for users who have the ability to update max_artifacts_size', :enable_admin_mode do
+        let(:admin_user) { create(:admin) }
+
+        it 'updates max_artifacts_size' do
+          expect { update_project(project, admin_user, max_artifacts_size: 10) }
+            .to change { project.max_artifacts_size }
+                  .to(10)
+        end
+      end
+
+      context 'for users who do not have the ability to update max_artifacts_size' do
+        it 'does not update max_artifacts_size' do
+          maintainer = create(:user)
+          project.add_member(maintainer, :maintainer)
+
+          expect { update_project(project, maintainer, max_artifacts_size: 10) }
+            .not_to change { project.max_artifacts_size }
+        end
+      end
+    end
+
     context 'when updating #runner_registration_enabled' do
       it 'updates the attribute' do
         expect { update_project(project, user, runner_registration_enabled: false) }

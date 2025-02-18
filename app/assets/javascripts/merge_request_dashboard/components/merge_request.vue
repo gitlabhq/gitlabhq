@@ -27,7 +27,6 @@ export default {
     SafeHtml,
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['newListsEnabled'],
   props: {
     mergeRequest: {
       type: Object,
@@ -44,7 +43,6 @@ export default {
   },
   computed: {
     statsAriaLabel() {
-      const comments = n__('%d comment', '%d comments', this.mergeRequest.userNotesCount);
       const fileAdditions = n__(
         '%d file addition',
         '%d file additions',
@@ -56,16 +54,8 @@ export default {
         this.mergeRequest.diffStatsSummary.deletions,
       );
 
-      if (this.newListsEnabled) {
-        return sprintf(__('%{filesChanged}, %{fileAdditions}, %{fileDeletions}'), {
-          filesChanged: n__('%d file', '%d files', this.mergeRequest.diffStatsSummary.fileCount),
-          fileAdditions,
-          fileDeletions,
-        });
-      }
-
-      return sprintf(__('%{comments}, %{fileAdditions}, %{fileDeletions}'), {
-        comments,
+      return sprintf(__('%{filesChanged}, %{fileAdditions}, %{fileDeletions}'), {
+        filesChanged: n__('%d file', '%d files', this.mergeRequest.diffStatsSummary.fileCount),
         fileAdditions,
         fileDeletions,
       });
@@ -85,18 +75,8 @@ export default {
 
 <template>
   <tr :class="{ 'gl-border-b': !isLast }">
-    <td v-if="!newListsEnabled" class="gl-py-4 gl-pl-5 gl-pr-3 gl-align-top">
-      <ci-icon
-        v-if="mergeRequest.headPipeline && mergeRequest.headPipeline.detailedStatus"
-        :status="mergeRequest.headPipeline.detailedStatus"
-        use-link
-        show-tooltip
-      />
-      <gl-icon v-else name="dash" />
-    </td>
-    <td class="gl-px-3 gl-py-4 gl-align-top">
-      <status-badge v-if="newListsEnabled" :merge-request="mergeRequest" :list-id="listId" />
-      <approval-count v-else :merge-request="mergeRequest" />
+    <td class="gl-py-4 gl-pl-5 gl-pr-3 gl-align-top">
+      <status-badge :merge-request="mergeRequest" :list-id="listId" />
     </td>
     <td class="gl-px-3 gl-py-4 gl-align-top">
       <gl-link
@@ -106,35 +86,24 @@ export default {
         {{ mergeRequest.title }}
       </gl-link>
       <div class="gl-mb-2 gl-mt-2 gl-text-sm gl-text-subtle">
-        <gl-sprintf
-          :message="
-            newListsEnabled
-              ? __('%{reference} %{author} %{stats} %{milestone}')
-              : __('%{reference} %{divider} created %{createdAt} by %{author} %{milestone}')
-          "
-        >
+        <gl-sprintf :message="__('%{reference} %{author} %{stats} %{milestone}')">
           <template #reference>{{ mergeRequest.reference }}</template>
-          <template #divider>&middot;</template>
-          <template #createdAt><time-ago-tooltip :time="mergeRequest.createdAt" /></template>
           <template #author>
             <gl-link
               :href="mergeRequest.author.webUrl"
-              class="gl-text-subtle"
-              :class="{ 'gl-mx-2 gl-inline-flex gl-align-bottom': newListsEnabled }"
+              class="gl-mx-2 gl-inline-flex gl-align-bottom gl-text-subtle"
             >
               <user-avatar-image
-                v-if="newListsEnabled"
                 :img-src="mergeRequest.author.avatarUrl"
                 img-alt=""
                 :size="16"
                 lazy
               />
-              <span :class="{ 'gl-sr-only': newListsEnabled }">{{ mergeRequest.author.name }}</span>
+              <span class="gl-sr-only">{{ mergeRequest.author.name }}</span>
             </gl-link>
           </template>
           <template #milestone>
             <template v-if="mergeRequest.milestone">
-              <template v-if="!newListsEnabled">&middot;</template>
               <gl-icon :size="16" name="milestone" />
               {{ mergeRequest.milestone.title }}
             </template>
@@ -170,7 +139,7 @@ export default {
       <assigned-users :users="mergeRequest.reviewers.nodes" type="REVIEWERS" />
     </td>
     <td class="gl-py-4 gl-pl-3 gl-pr-5 gl-align-top">
-      <div v-if="newListsEnabled" class="gl-flex gl-justify-end gl-gap-3">
+      <div class="gl-flex gl-justify-end gl-gap-3">
         <gl-icon
           v-if="isMergeRequestBroken"
           v-gl-tooltip
@@ -191,29 +160,6 @@ export default {
           use-link
           show-tooltip
         />
-      </div>
-      <div
-        v-else
-        class="gl-flex gl-justify-end gl-gap-3"
-        :aria-label="statsAriaLabel"
-        :title="statsAriaLabel"
-      >
-        <div class="gl-whitespace-nowrap">
-          <gl-icon name="comments" class="!gl-align-middle" />
-          {{ mergeRequest.userNotesCount }}
-        </div>
-        <div class="gl-whitespace-nowrap">
-          <gl-icon name="doc-code" />
-          <span>{{ mergeRequest.diffStatsSummary.fileCount }}</span>
-        </div>
-        <div class="gl-flex gl-items-center gl-font-bold gl-text-success">
-          <span>+</span>
-          <span>{{ mergeRequest.diffStatsSummary.additions }}</span>
-        </div>
-        <div class="gl-flex gl-items-center gl-font-bold gl-text-danger">
-          <span>−</span>
-          <span>{{ mergeRequest.diffStatsSummary.deletions }}</span>
-        </div>
       </div>
       <div class="gl-mt-1 gl-text-right gl-text-sm gl-text-subtle">
         <gl-sprintf :message="__('Updated %{updatedAt}')">

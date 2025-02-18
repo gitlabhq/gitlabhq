@@ -29,7 +29,7 @@ module Ci
         associate_response = ServiceResponse.success
         dissociate_response = ServiceResponse.success
         runner.transaction do
-          current_project_ids = runner.runner_projects.map(&:project_id)
+          current_project_ids = runner.project_ids
 
           associate_response = associate_new_projects(new_project_ids, current_project_ids)
           raise ActiveRecord::Rollback, associate_response.errors if associate_response.error?
@@ -57,10 +57,10 @@ module Ci
         end.map(&:execute).select(&:error?)
 
         if error_responses.any?
-          return error_responses.first if error_responses.count == 1
+          return error_responses.sole if error_responses.one?
 
           return ServiceResponse.error(
-            message: error_responses.map(&:message).uniq,
+            message: error_responses.flat_map(&:message).uniq,
             reason: :multiple_errors
           )
         end

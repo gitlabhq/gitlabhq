@@ -19,6 +19,7 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
     forkscount="3"
     issuescount="1"
     mergerequestscount="2"
+    namewithnamespace="Foo / Bar"
     starscount="4"
   />
   <gl-button-stub

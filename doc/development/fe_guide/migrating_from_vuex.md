@@ -2,15 +2,14 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Migrating from Vuex
 ---
-
-# Migrating from Vuex
 
 [Vuex is deprecated in GitLab](vuex.md#deprecated), if you have an existing Vuex store you should strongly consider migrating.
 
 ## Why?
 
-We have defined the [GraphQL API](../../api/graphql/index.md) as the primary choice for all user-facing features.
+We have defined the [GraphQL API](../../api/graphql/_index.md) as the primary choice for all user-facing features.
 We can safely assume that whenever GraphQL is present, so will the Apollo Client.
 We [do not want to use Vuex with Apollo](graphql.md#using-with-vuex), so the VueX stores count
 will naturally decline over time as we move from the REST API to GraphQL.

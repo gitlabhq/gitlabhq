@@ -38,7 +38,13 @@ RSpec.describe Lfs::FinalizeUploadService, feature_category: :source_code_manage
   end
 
   subject(:service) do
-    described_class.new(oid: params[:oid], size: params[:size], uploaded_file: uploaded_file, project: project).execute
+    described_class.new(
+      oid: params[:oid],
+      size: params[:size],
+      uploaded_file: uploaded_file,
+      project: project,
+      repository_type: :project
+    ).execute
   end
 
   describe '#execute' do
@@ -70,8 +76,20 @@ RSpec.describe Lfs::FinalizeUploadService, feature_category: :source_code_manage
         end
       end
 
-      context 'with an invalid file' do
+      context 'when uploaded_file is not a valid instance of UploadedFile' do
         let(:uploaded_file) { 'test' }
+
+        it 'returns an error response' do
+          service
+
+          expect(service).to be_a(ServiceResponse)
+          expect(service).not_to be_success
+          expect(service.message).to eq('Invalid path')
+        end
+      end
+
+      context 'when size and oid does not match' do
+        let(:uploaded_file) { instance_double(UploadedFile, size: 1234, sha256: 'incorrect_sha', is_a?: true) }
 
         it 'returns an error response' do
           service
@@ -85,7 +103,6 @@ RSpec.describe Lfs::FinalizeUploadService, feature_category: :source_code_manage
       context 'when an expected error' do
         [
           [ActiveRecord::RecordInvalid, :invalid_record],
-          [UploadedFile::InvalidPathError, :invalid_path],
           [ObjectStorage::RemoteStoreError, :remote_store_error]
         ].each do |exception_class, expected_reason|
           context "when #{exception_class} raised" do

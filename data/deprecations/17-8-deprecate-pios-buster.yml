@@ -8,5 +8,5 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     Long term service and support (LTSS) for Raspberry Pi OS Buster (formerly known as Raspbian Buster) ended in June 2024.
 
-    Therefore, we will longer support the PiOS Buster distribution for Linux package installs. Users should upgrade to
+    Therefore, we will no longer support the PiOS Buster distribution for Linux package installs. Users should upgrade to
     PiOS Bullseye for continued support.

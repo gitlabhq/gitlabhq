@@ -1,19 +1,25 @@
 ---
 stage: Package
 group: Container Registry
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Documentation for the REST API for container repository protection rules in GitLab."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Documentation for the REST API for container repository protection rules in GitLab.
+title: Container repository protection rules API
 ---
 
-# Container repository protection rules API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155798) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `container_registry_protected_containers`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/429074) in GitLab 17.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/480385) in GitLab 17.8. Feature flag `container_registry_protected_containers` removed.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155798) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `container_registry_protected_containers`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/429074) in GitLab 17.8.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/480385) in GitLab 17.8. Feature flag `container_registry_protected_containers` removed.
+
+{{< /history >}}
 
 ## List container repository protection rules
 
@@ -27,7 +33,7 @@ Supported attributes:
 
 | Attribute                     | Type            | Required | Description                    |
 |-------------------------------|-----------------|----------|--------------------------------|
-| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and a list of container repository protection rules.
 
@@ -68,7 +74,11 @@ Example response:
 
 ## Create a container repository protection rule
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/457518) in GitLab 17.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/457518) in GitLab 17.2.
+
+{{< /history >}}
 
 Create a container repository protection rule for a project's container registry.
 
@@ -80,7 +90,7 @@ Supported attributes:
 
 | Attribute                         | Type           | Required | Description |
 |-----------------------------------|----------------|----------|-------------|
-| `id`                              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `repository_path_pattern`         | string         | Yes      | Container repository path pattern protected by the protection rule. For example `flight/flight-*`. Wildcard character `*` allowed. |
 | `minimum_access_level_for_push`   | string         | No       | Minimum GitLab access level required to push container images to the container registry. For example `maintainer`, `owner` or `admin`. Must be provided when `minimum_access_level_for_delete` is not set. |
 | `minimum_access_level_for_delete` | string         | No       | Minimum GitLab access level required to delete container images in the container registry. For example `maintainer`, `owner`, `admin`. Must be provided when `minimum_access_level_for_push` is not set. |
@@ -112,7 +122,11 @@ curl --request POST \
 
 ## Update a container repository protection rule
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/457518) in GitLab 17.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/457518) in GitLab 17.2.
+
+{{< /history >}}
 
 Update a container repository protection rule for a project's container registry.
 
@@ -124,7 +138,7 @@ Supported attributes:
 
 | Attribute                         | Type           | Required | Description |
 |-----------------------------------|----------------|----------|-------------|
-| `id`                              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `protection_rule_id`              | integer        | Yes      | ID of the protection rule to be updated. |
 | `repository_path_pattern`         | string         | No       | Container repository path pattern protected by the protection rule. For example `flight/flight-*`. Wildcard character `*` allowed. |
 | `minimum_access_level_for_push`   | string         | No       | Minimum GitLab access level required to push container images to the container registry. For example `maintainer`, `owner` or `admin`. Must be provided when `minimum_access_level_for_delete` is not set. To unset the value, use an empty string `""`. |
@@ -155,7 +169,11 @@ curl --request PATCH \
 
 ## Delete a container repository protection rule
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/457518) in GitLab 17.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/457518) in GitLab 17.4.
+
+{{< /history >}}
 
 Deletes a container repository protection rule from a project's container registry.
 
@@ -167,7 +185,7 @@ Supported attributes:
 
 | Attribute            | Type           | Required | Description |
 |----------------------|----------------|----------|-------------|
-| `id`                 | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                 | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `protection_rule_id` | integer        | Yes      | ID of the container repository protection rule to be deleted. |
 
 If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).

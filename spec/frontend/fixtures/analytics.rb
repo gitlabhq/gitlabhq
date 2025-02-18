@@ -47,21 +47,4 @@ RSpec.describe 'Analytics (JavaScript fixtures)', :sidekiq_inline do
       end
     end
   end
-
-  describe Projects::Analytics::CycleAnalytics::SummaryController, type: :controller do
-    render_views
-    let(:params) { { namespace_id: group, project_id: project, value_stream_id: value_stream_id } }
-
-    before do
-      project.add_developer(user)
-
-      sign_in(user)
-    end
-
-    it "projects/analytics/value_stream_analytics/summary.json" do
-      get(:show, params: params, format: :json)
-
-      expect(response).to be_successful
-    end
-  end
 end

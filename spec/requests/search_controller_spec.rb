@@ -149,20 +149,20 @@ RSpec.describe SearchController, type: :request, feature_category: :global_searc
       end
 
       it 'finds a commit in uppercase and redirects to its page' do
-        send_search_request( { search: sha.upcase, scope: 'projects', project_id: project.id })
+        send_search_request({ search: sha.upcase, scope: 'projects', project_id: project.id })
 
         expect(response).to redirect_to(project_commit_path(project, sha))
       end
 
       it 'finds a commit with a partial sha and redirects to its page' do
-        send_search_request( { search: sha[0..10], scope: 'projects', project_id: project.id })
+        send_search_request({ search: sha[0..10], scope: 'projects', project_id: project.id })
 
         expect(response).to redirect_to(project_commit_path(project, sha))
       end
 
       it 'redirects to the commit even if another scope result is returned' do
         create(:note, project: project, note: "This is the #{sha}")
-        send_search_request( { search: sha, scope: 'projects', project_id: project.id })
+        send_search_request({ search: sha, scope: 'projects', project_id: project.id })
 
         expect(response).to redirect_to(project_commit_path(project, sha))
       end

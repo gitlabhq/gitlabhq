@@ -24,6 +24,10 @@ module Gitlab
           @gitlab_shell_version ||= File.read(File.join(ci_project_dir, "GITLAB_SHELL_VERSION")).strip
         end
 
+        def kas_version
+          @kas_version ||= File.read(File.join(ci_project_dir, "GITLAB_KAS_VERSION")).strip
+        end
+
         def ci_project_dir
           @ci_project_dir ||= ENV["CI_PROJECT_DIR"] || raise("CI_PROJECT_DIR is not set")
         end

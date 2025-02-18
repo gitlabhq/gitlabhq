@@ -7,11 +7,11 @@
 
     Gitaly Cluster offers tremendous benefits for our customers such as:
 
-    - [Variable replication factors](https://docs.gitlab.com/ee/administration/gitaly/index.html#replication-factor).
-    - [Strong consistency](https://docs.gitlab.com/ee/administration/gitaly/index.html#strong-consistency).
-    - [Distributed read capabilities](https://docs.gitlab.com/ee/administration/gitaly/index.html#distributed-reads).
+    - [Variable replication factors](https://docs.gitlab.com/administration/gitaly/#replication-factor).
+    - [Strong consistency](https://docs.gitlab.com/administration/gitaly/#strong-consistency).
+    - [Distributed read capabilities](https://docs.gitlab.com/administration/gitaly/#distributed-reads).
 
-    We encourage customers currently using NFS for Git repositories to plan their migration by reviewing our documentation on [migrating to Gitaly Cluster](https://docs.gitlab.com/ee/administration/gitaly/index.html#migrate-to-gitaly-cluster).
+    We encourage customers currently using NFS for Git repositories to plan their migration by reviewing our documentation on [migrating to Gitaly Cluster](https://docs.gitlab.com/administration/gitaly/#migrate-to-gitaly-cluster).
 
   reporter: mjwood
   stage: create

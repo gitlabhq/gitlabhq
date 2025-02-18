@@ -4,12 +4,14 @@ import NewTopLevelGroupAlert from '~/groups/components/new_top_level_group_alert
 import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
 import { sidebarState, JS_TOGGLE_EXPAND_CLASS } from '~/super_sidebar/constants';
 import { s__ } from '~/locale';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import LegacyContainer from './components/legacy_container.vue';
 import WelcomePage from './components/welcome.vue';
 
 export default {
   JS_TOGGLE_EXPAND_CLASS,
   components: {
+    PageHeading,
     NewTopLevelGroupAlert,
     GlBreadcrumb,
     GlIcon,
@@ -150,19 +152,13 @@ export default {
     </div>
 
     <template v-if="activePanel">
-      <div data-testid="active-panel-template" class="gl-flex gl-items-center gl-py-5">
-        <div class="col-auto">
-          <img aria-hidden :src="activePanel.imageSrc" />
-        </div>
-        <div class="col">
-          <h4>{{ activePanel.title }}</h4>
-
-          <p v-if="hasTextDetails">{{ details }}</p>
+      <page-heading :heading="activePanel.title" data-testid="active-panel-template">
+        <template #description>
+          <template v-if="hasTextDetails">{{ details }}</template>
           <component :is="details" v-else v-bind="detailProps" />
-        </div>
-
-        <slot name="extra-description"></slot>
-      </div>
+          <slot name="extra-description"></slot>
+        </template>
+      </page-heading>
 
       <gl-alert
         v-if="identityVerificationRequired"

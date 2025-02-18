@@ -33,7 +33,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/wiki/index.html#wiki-page-templates
+  documentation_link: https://docs.gitlab.com/ee/user/project/wiki/#wiki-page-templates
   image_url: https://about.gitlab.com/images/16_10/wiki_templates.gif
   published_at: 2024-03-21
   release: 16.10

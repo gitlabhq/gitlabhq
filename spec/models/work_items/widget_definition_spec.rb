@@ -22,7 +22,8 @@ RSpec.describe WorkItems::WidgetDefinition, feature_category: :team_planning do
       ::WorkItems::Widgets::Development,
       ::WorkItems::Widgets::CrmContacts,
       ::WorkItems::Widgets::EmailParticipants,
-      ::WorkItems::Widgets::CustomStatus
+      ::WorkItems::Widgets::CustomStatus,
+      ::WorkItems::Widgets::ErrorTracking
     ]
 
     if Gitlab.ee?
@@ -34,7 +35,8 @@ RSpec.describe WorkItems::WidgetDefinition, feature_category: :team_planning do
         ::WorkItems::Widgets::Progress,
         ::WorkItems::Widgets::RequirementLegacy,
         ::WorkItems::Widgets::TestReports,
-        ::WorkItems::Widgets::Color
+        ::WorkItems::Widgets::Color,
+        ::WorkItems::Widgets::CustomFields
       ]
     end
 
@@ -47,8 +49,19 @@ RSpec.describe WorkItems::WidgetDefinition, feature_category: :team_planning do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_uniqueness_of(:name).case_insensitive.scoped_to([:work_item_type_id]) }
+
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
+
+    describe 'name uniqueness' do
+      let_it_be(:test_type) { create(:work_item_type, :non_default, name: 'Test Type') }
+      let_it_be(:existing_widget) { create(:widget_definition, name: 'TesT Widget', work_item_type: test_type) }
+
+      it 'validates uniqueness with a custom validator' do
+        new_widget = build(:widget_definition, name: ' TesT WIDGET ', work_item_type: test_type)
+        expect(new_widget).to be_invalid
+        expect(new_widget.errors.full_messages).to include('Name has already been taken')
+      end
+    end
 
     describe 'widget_options' do
       subject(:widget_definition) do

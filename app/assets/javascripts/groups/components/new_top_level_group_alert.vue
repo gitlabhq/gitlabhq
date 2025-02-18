@@ -17,7 +17,7 @@ export default {
     ),
     primaryBtnText: s__('Groups|Learn more about subgroups'),
   },
-  subgroupsDocsPath: helpPagePath('user/group/subgroups/index'),
+  subgroupsDocsPath: helpPagePath('user/group/subgroups/_index'),
 };
 </script>
 

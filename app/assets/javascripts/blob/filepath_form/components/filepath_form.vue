@@ -1,9 +1,10 @@
 <script>
-import { GlFormInput } from '@gitlab/ui';
+import { GlFormGroup, GlFormInput } from '@gitlab/ui';
 import TemplateSelector from '~/blob/filepath_form/components/template_selector.vue';
 
 export default {
   components: {
+    GlFormGroup,
     GlFormInput,
     TemplateSelector,
   },
@@ -43,7 +44,14 @@ export default {
 </script>
 <template>
   <div class="gl-mr-3 gl-flex gl-w-full gl-flex-col gl-gap-3 lg:gl-w-auto lg:gl-flex-row">
-    <gl-form-input v-model="filename" v-bind="inputOptions" />
+    <gl-form-group
+      class="gl-mb-0"
+      :label="inputOptions.label"
+      :label-for="inputOptions.id"
+      label-class="gl-sr-only"
+    >
+      <gl-form-input v-model="filename" v-bind="inputOptions" />
+    </gl-form-group>
     <template-selector
       v-if="showTemplateSelector"
       :filename="filename"

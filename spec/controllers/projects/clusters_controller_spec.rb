@@ -272,6 +272,67 @@ RSpec.describe Projects::ClustersController, feature_category: :deployment_manag
     end
   end
 
+  describe 'POST migrate' do
+    let_it_be(:cluster) { create(:cluster, :project, projects: [project]) }
+
+    def go
+      post :migrate,
+        params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          configuration_project_id: project.id,
+          id: cluster
+        }
+    end
+
+    include_examples ':certificate_based_clusters feature flag controller responses' do
+      let(:subject) { go }
+    end
+
+    it 'calls the cluster migration service to create a new agent and token' do
+      expect_next_instance_of(
+        Clusters::Migration::CreateService,
+        an_object_having_attributes(class: cluster.class, id: cluster.id),
+        current_user: user,
+        configuration_project_id: project.id.to_s
+      ) do |service|
+        expect(service).to receive(:execute).and_call_original
+      end
+
+      expect { go }.to change { Clusters::Agent.count }.and change { Clusters::AgentToken.count }
+
+      expect(response).to redirect_to(project_cluster_path(project, cluster, tab: 'migrate'))
+      expect(flash[:notice]).to eq(s_('ClusterIntegration|Migrating cluster - initiated'))
+    end
+
+    context 'when the migration service does not succeed' do
+      before do
+        allow_next_instance_of(Clusters::Migration::CreateService) do |service|
+          allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'Error message'))
+        end
+      end
+
+      it 'redirects to the cluster page with an error message' do
+        go
+
+        expect(response).to redirect_to(project_cluster_path(project, cluster, tab: 'migrate'))
+        expect(flash[:alert]).to eq('Migrating cluster - failed: "Error message"')
+      end
+    end
+
+    describe 'security' do
+      it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { expect { go }.to be_allowed_for(:admin) }
+      it('is denied for admin when admin mode is disabled') { expect { go }.to be_denied_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+  end
+
   describe 'GET cluster_status' do
     let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
 

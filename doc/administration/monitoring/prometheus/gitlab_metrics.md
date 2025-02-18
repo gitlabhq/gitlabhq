@@ -2,13 +2,15 @@
 stage: Shared responsibility based on functional area
 group: Shared responsibility based on functional area
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Prometheus metrics
 ---
 
-# GitLab Prometheus metrics
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 To enable the GitLab Prometheus metrics:
 
@@ -34,7 +36,11 @@ For enabling and viewing metrics from Sidekiq nodes, see [Sidekiq metrics](#side
 
 ## Metrics available
 
-> - `caller_id` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392622) from `redis_hit_miss_operations_total` and `redis_cache_generation_duration_seconds` in GitLab 15.11.
+{{< history >}}
+
+- `caller_id` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392622) from `redis_hit_miss_operations_total` and `redis_cache_generation_duration_seconds` in GitLab 15.11.
+
+{{< /history >}}
 
 The following metrics are available:
 
@@ -198,6 +204,7 @@ The following metrics are available:
 | `gitlab_rack_attack_throttle_limit` | Gauge | 17.6 | Reports the maximum number of requests that a client can make before Rack Attack throttles them. | `event_name` |
 | `gitlab_rack_attack_throttle_period_seconds` | Gauge | 17.6 | Reports the duration over which requests for a client are counted before Rack Attack throttles them. | `event_name` |
 | `gitlab_application_rate_limiter_throttle_utilization_ratio` | Histogram | 17.6 | Utilization ratio of a throttle in GitLab Application Rate Limiter. | `throttle_key`, `peek`, `feature_category` |
+| `search_zoekt_task_processing_queue_size` | Gauge | 17.9 | Number of tasks waiting to be processed by Zoekt. | |
 
 ## Metrics controlled by a feature flag
 
@@ -440,9 +447,12 @@ configuration option in `gitlab.yml`. These metrics are served from the
 
 ## Database load balancing metrics
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The following metrics are available:
 
@@ -454,9 +464,12 @@ The following metrics are available:
 
 ## Database partitioning metrics
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The following metrics are available:
 

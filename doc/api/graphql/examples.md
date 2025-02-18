@@ -1,10 +1,9 @@
 ---
 stage: Foundations
 group: Import and Integrate
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GraphQL examples
 ---
-
-# GraphQL examples
 
 GraphQL examples are available for you to test and modify.
 

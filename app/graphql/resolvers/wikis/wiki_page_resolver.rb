@@ -5,6 +5,8 @@ module Resolvers
     class WikiPageResolver < BaseResolver
       description 'Retrieve a wiki page'
 
+      calls_gitaly!
+
       type Types::Wikis::WikiPageType, null: true
 
       argument :slug, GraphQL::Types::String, required: false, description: 'Wiki page slug.'
@@ -28,7 +30,10 @@ module Resolvers
 
         return unless slug.present? && container.present?
 
-        ::WikiPage::Meta.find_by_canonical_slug(slug, container)
+        wiki = Wiki.for_container(container, current_user)
+        page = wiki.find_page(slug, load_content: false)
+
+        page&.find_or_create_meta
       end
 
       private

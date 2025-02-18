@@ -34,7 +34,7 @@
   }
 
   .shared_runners_limit_over_quota {
-    color: $red-500;
+    @apply gl-text-danger;
   }
 }
 

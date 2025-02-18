@@ -14,9 +14,6 @@ events:
   - name: pull_package_from_registry
     filter:
       property: guest
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

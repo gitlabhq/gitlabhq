@@ -187,6 +187,10 @@ module Resolvers
       argument :release_tag, GraphQL::Types::String,
         required: false,
         description: 'Filters merge requests to those without the given release tag.'
+      argument :review_states, [::Types::MergeRequestReviewStateEnum],
+        required: false,
+        description: 'Filters merge requests to those where a reviewer does not have the provided state.',
+        experiment: { milestone: '17.9' }
       argument :reviewer_username, GraphQL::Types::String,
         required: false,
         description: 'Filters merge requests to those not reviewed by the given user.'

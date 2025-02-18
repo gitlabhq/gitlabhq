@@ -1,0 +1,11 @@
+mutation updateContainerProtectionTagRule($input: UpdateContainerProtectionTagRuleInput!) {
+  updateContainerProtectionTagRule(input: $input) {
+    containerProtectionTagRule {
+      id
+      tagNamePattern
+      minimumAccessLevelForPush
+      minimumAccessLevelForDelete
+    }
+    errors
+  }
+}

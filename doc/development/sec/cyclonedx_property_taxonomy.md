@@ -1,13 +1,19 @@
 ---
 stage: Security Risk Management
 group: Security Insights
-info: BEFORE MAKING CHANGES TO THIS FILE, PLEASE REACH OUT TO THE THREAT INSIGHTS ENGINEERING TEAM, @gitlab-org/govern/threat-insights.  To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab CycloneDX property taxonomy
 ---
-
-# GitLab CycloneDX property taxonomy
 
 This document defines the namespaces and properties used by the `gitlab` namespace
 in the [CycloneDX Property Taxonomy](https://github.com/CycloneDX/cyclonedx-property-taxonomy).
+
+{{< alert type="note" >}}
+
+Before making changes to this file, please reach out to the threat insights engineering team,
+`@gitlab-org/govern/threat-insights`.
+
+{{< /alert >}}
 
 ## Where properties should be located
 

@@ -25,7 +25,7 @@
   self-managed: true  # Boolean value (true or false)
   gitlab-com: true  # Boolean value (true or false)
   available_in: [Free, Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/packages/terraform_module_registry/index.html#view-terraform-modules  # This is the documentation URL, but can be a URL to a video if there is one
+  documentation_link: https://docs.gitlab.com/ee/user/packages/terraform_module_registry/#view-terraform-modules  # This is the documentation URL, but can be a URL to a video if there is one
   image_url: https://img.youtube.com/vi/SWRwW4pS7Gk/hqdefault.jpg  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
   published_at: 2024-07-18  # YYYY-MM-DD
   release: 17.2  # XX.Y

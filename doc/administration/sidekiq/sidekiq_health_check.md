@@ -2,20 +2,22 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Sidekiq health check
 ---
 
-# Sidekiq health check
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab provides liveness and readiness probes to indicate service health and
 reachability to the Sidekiq cluster. These endpoints
 [can be provided to schedulers like Kubernetes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
 to hold traffic until the system is ready or restart the container as needed.
 
-The health check server can be set up when [configuring Sidekiq](index.md).
+The health check server can be set up when [configuring Sidekiq](_index.md).
 
 ## Readiness
 

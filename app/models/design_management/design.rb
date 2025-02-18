@@ -16,6 +16,7 @@ module DesignManagement
     include Participable
     include CacheMarkdownField
     include Subscribable
+    include EachBatch
 
     cache_markdown_field :description
 

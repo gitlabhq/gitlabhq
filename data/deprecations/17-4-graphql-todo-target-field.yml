@@ -1,0 +1,15 @@
+- title: "GraphQL `target` field for to-do items replaced with `targetEntity`"
+  announcement_milestone: "17.4"
+  removal_milestone: "18.0"
+  breaking_change: true
+  reporter: jtucker_gl
+  stage: Foundations
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/484987
+  impact: low
+  scope: project
+  resolution_role: maintainer
+  manual_task: true
+  window: "3"
+  body: |
+    Under certain circumstances, the `target` field on a to-do item can be null. The GraphQL schema currently declares this field as non-nullable. The new `targetEntity` field is nullable and replaces the non-nullable `target` field.
+    Update any GraphQL queries that use the `currentUser.todos.target` field to use the new `currentUser.todos.targetEntity` field instead.

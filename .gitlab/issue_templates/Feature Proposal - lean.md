@@ -51,7 +51,7 @@ Explore (../../doc/development/internal_analytics/internal_event_instrumentation
 
 <!--- Checkout these docs to know more
 https://docs.gitlab.com/ee/development/audit_event_guide/#what-are-audit-events
-https://docs.gitlab.com/ee/administration/audit_events.html
+https://docs.gitlab.com/administration/audit_events/
 --->
 
 <!-- Label reminders

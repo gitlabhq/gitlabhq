@@ -70,7 +70,7 @@
         }
 
         &.has-warning {
-          color: $orange-500;
+          @apply gl-text-warning;
         }
       }
 

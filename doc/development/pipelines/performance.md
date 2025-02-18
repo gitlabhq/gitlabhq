@@ -2,13 +2,12 @@
 stage: none
 group: Engineering Productivity
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: CI configuration performance
 ---
-
-# CI configuration performance
 
 ## Interruptible pipelines
 
-By default, all jobs are [interruptible](../../ci/yaml/index.md#interruptible), except the
+By default, all jobs are [interruptible](../../ci/yaml/_index.md#interruptible), except the
 `dont-interrupt-me` job which runs automatically on `main`, and is `manual`
 otherwise.
 
@@ -84,7 +83,7 @@ set `CI_FETCH_REPO_GIT_STRATEGY` to `none`.
    - `.qa-cache`
    - `.yarn-cache`
    - `.assets-compile-cache` (the key includes `${NODE_ENV}` so it's actually two different caches).
-1. These cache definitions are composed of [multiple atomic caches](../../ci/caching/index.md#use-multiple-caches).
+1. These cache definitions are composed of [multiple atomic caches](../../ci/caching/_index.md#use-multiple-caches).
 1. Only the following jobs, running in 2-hourly `maintenance` scheduled pipelines, are pushing (that is, updating) to the caches:
    - `update-setup-test-env-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-gitaly-binaries-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
@@ -126,8 +125,11 @@ We also changed the `setup-test-env` job to:
 1. If the package is retrieved successfully, its content is placed in the right folder (for example, `tmp/tests/gitlab-workhorse`), preventing the building of the binaries when `scripts/setup-test-env` is run later on.
 1. If the package URL returns a 404, the behavior doesn't change compared to the current one: the GitLab Workhorse binaries are built as part of `scripts/setup-test-env`.
 
-NOTE:
+{{< alert type="note" >}}
+
 The version of the package is the workhorse tree SHA (for example, `git rev-parse HEAD:workhorse`).
+
+{{< /alert >}}
 
 ## `cache-assets`
 

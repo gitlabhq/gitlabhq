@@ -1,5 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlLink } from '@gitlab/ui';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -79,6 +80,20 @@ describe('WorkItemMilestone component', () => {
         expect(findSidebarDropdownWidget().props('canUpdate')).toBe(false);
         expect(wrapper.text()).toContain(value);
       });
+    });
+
+    it('shows set milestone with attributes required for popover', () => {
+      createComponent({ mountFn: mountExtended, milestone: mockMilestoneWidgetResponse });
+
+      const milestoneLink = wrapper.findComponent(GlLink);
+      expect(milestoneLink.classes()).toContain('has-popover');
+      expect(milestoneLink.attributes()).toEqual(
+        expect.objectContaining({
+          'data-placement': 'left',
+          'data-reference-type': 'milestone',
+          'data-milestone': '30',
+        }),
+      );
     });
   });
 

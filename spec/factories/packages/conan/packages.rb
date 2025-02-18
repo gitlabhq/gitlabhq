@@ -10,14 +10,17 @@ FactoryBot.define do
 
     transient do
       without_package_files { false }
-      package_references { ['1234567890abcdef1234567890abcdef12345678'] }
+      without_recipe_revisions { false }
+    end
+
+    conan_recipe_revisions do
+      next [] if without_recipe_revisions
+
+      [association(:conan_recipe_revision, package: instance)]
     end
 
     conan_package_references do
-      package_references.map do |ref|
-        association(:conan_package_reference,
-          reference: ref, package: instance)
-      end
+      [association(:conan_package_reference, package: instance, recipe_revision: instance.conan_recipe_revisions.first)]
     end
 
     after :build do |package|
@@ -28,16 +31,16 @@ FactoryBot.define do
 
     after :create do |package, evaluator|
       unless evaluator.without_package_files
-        %i[conan_recipe_file conan_recipe_manifest].each do |file|
-          create :conan_package_file, file, package: package
-        end
-
+        recipe_files = %i[conan_recipe_file conan_recipe_manifest]
         package_file_traits = %i[conan_package_info conan_package_manifest conan_package]
-        package.conan_package_references.each do |reference|
-          package_file_traits.each do |file|
-            create :conan_package_file, file, package: package,
-              conan_package_reference: reference
-          end
+        recipe_files.each do |file|
+          create :conan_package_file, file, package: package,
+            conan_recipe_revision: package.conan_recipe_revisions.first
+        end
+        package_file_traits.each do |file|
+          create :conan_package_file, file, package: package,
+            conan_package_reference: package.conan_package_references.first,
+            conan_recipe_revision: package.conan_recipe_revisions.first
         end
       end
     end

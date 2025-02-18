@@ -57,14 +57,25 @@ RSpec.shared_examples 'wiki_page' do |container_type|
     subject { persisted_page }
   end
 
-  describe '#meta' do
+  describe '#find_or_create_meta' do
     let(:wiki_page) { create(:wiki_page, container: container, content: 'test content') }
-    let!(:meta) { create(:wiki_page_meta, :for_wiki_page, container: container, wiki_page: wiki_page) }
 
-    subject { wiki_page.meta }
+    subject { wiki_page.find_or_create_meta }
 
-    it 'finds the meta record for the page' do
-      expect(subject).to eq(meta)
+    context 'when meta is already created' do
+      let!(:meta) { create(:wiki_page_meta, :for_wiki_page, container: container, wiki_page: wiki_page) }
+
+      it 'finds the meta record for the page' do
+        expect(subject).to eq(meta)
+      end
+    end
+
+    it 'returns a meta record' do
+      expect(subject).to be_an_instance_of(WikiPage::Meta)
+    end
+
+    it 'creates a new WikiPage::Meta record' do
+      expect { subject }.to change { WikiPage::Meta.count }.by(1)
     end
   end
 

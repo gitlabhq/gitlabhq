@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Authenticate with registry in Docker-in-Docker
 ---
 
-# Authenticate with registry in Docker-in-Docker
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When you use Docker-in-Docker, the
 [standard authentication methods](using_docker_images.md#access-an-image-from-a-private-container-registry)
@@ -16,7 +18,7 @@ do not work, because a fresh Docker daemon is started with the service.
 
 ## Option 1: Run `docker login`
 
-In [`before_script`](../yaml/index.md#before_script), run `docker login`:
+In [`before_script`](../yaml/_index.md#before_script), run `docker login`:
 
 ```yaml
 default:
@@ -91,7 +93,7 @@ of this file. You can do this with a command like:
 kubectl create configmap docker-client-config --namespace gitlab-runner --from-file /opt/.docker/config.json
 ```
 
-Update the [volume mounts](https://docs.gitlab.com/runner/executors/kubernetes/index.html#custom-volume-mount)
+Update the [volume mounts](https://docs.gitlab.com/runner/executors/kubernetes/#custom-volume-mount)
 to include the file.
 
 ```toml
@@ -120,10 +122,10 @@ You can define this authentication in several ways:
 
 - In [`pre_build_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
   in the runner configuration file.
-- In [`before_script`](../yaml/index.md#before_script).
-- In [`script`](../yaml/index.md#script).
+- In [`before_script`](../yaml/_index.md#before_script).
+- In [`script`](../yaml/_index.md#script).
 
-The following example shows [`before_script`](../yaml/index.md#before_script).
+The following example shows [`before_script`](../yaml/_index.md#before_script).
 The same commands apply for any solution you implement.
 
 ```yaml

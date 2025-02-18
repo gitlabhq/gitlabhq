@@ -596,6 +596,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
     it 'returns data related to blob header' do
       expect(helper.vue_blob_header_app_data(project, blob, ref)).to include({
         blob_path: blob.path,
+        is_binary: blob.binary?,
         breadcrumbs: breadcrumb_data,
         escaped_ref: ref,
         history_link: project_commits_path(project, ref),

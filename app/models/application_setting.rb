@@ -8,6 +8,7 @@ class ApplicationSetting < ApplicationRecord
   include Sanitizable
 
   ignore_columns %i[
+    cloud_connector_keys
     encrypted_openai_api_key
     encrypted_openai_api_key_iv
     encrypted_anthropic_api_key
@@ -16,7 +17,9 @@ class ApplicationSetting < ApplicationRecord
     encrypted_vertex_ai_credentials_iv
     encrypted_vertex_ai_access_token
     encrypted_vertex_ai_access_token_iv
-  ], remove_with: '17.5', remove_after: '2024-09-19'
+  ], remove_with: '17.10', remove_after: '2025-02-15'
+
+  ignore_column :pre_receive_secret_detection_enabled, remove_with: '17.9', remove_after: '2025-02-15'
 
   ignore_columns %i[
     elasticsearch_aws
@@ -40,6 +43,7 @@ class ApplicationSetting < ApplicationRecord
     elasticsearch_indexed_field_length_limit
     elasticsearch_indexed_file_size_limit_kb
     elasticsearch_max_code_indexing_concurrency
+    security_policy_scheduled_scans_max_concurrency
   ], remove_with: '17.11', remove_after: '2025-04-17'
 
   INSTANCE_REVIEW_MIN_USERS = 50
@@ -128,6 +132,7 @@ class ApplicationSetting < ApplicationRecord
   attribute :repository_storages_weighted, default: -> { {} }
   attribute :kroki_formats, default: -> { {} }
   attribute :default_branch_protection_defaults, default: -> { {} }
+  attribute :vscode_extension_marketplace, default: -> { {} }
 
   chronic_duration_attr_writer :archive_builds_in_human_readable, :archive_builds_in_seconds
 
@@ -703,9 +708,18 @@ class ApplicationSetting < ApplicationRecord
     allow_contribution_mapping_to_admins: [:boolean, { default: false }]
 
   jsonb_accessor :sign_in_restrictions,
-    disable_password_authentication_for_users_with_sso_identities: [:boolean, { default: false }]
+    disable_password_authentication_for_users_with_sso_identities: [:boolean, { default: false }],
+    root_moved_permanently_redirection: [:boolean, { default: false }]
 
   validates :sign_in_restrictions, json_schema: { filename: 'application_setting_sign_in_restrictions' }
+
+  jsonb_accessor :search,
+    global_search_issues_enabled: [:boolean, { default: true }],
+    global_search_merge_requests_enabled: [:boolean, { default: true }],
+    global_search_snippet_titles_enabled: [:boolean, { default: true }],
+    global_search_users_enabled: [:boolean, { default: true }]
+
+  validates :search, json_schema: { filename: 'application_setting_search' }
 
   jsonb_accessor :transactional_emails,
     resource_access_token_notify_inherited: [:boolean, { default: false }],
@@ -803,10 +817,13 @@ class ApplicationSetting < ApplicationRecord
   validates :asciidoc_max_includes,
     numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 64 }
 
-  jsonb_accessor :pages,
-    pages_extra_deployments_default_expiry_seconds: [:integer, { default: 86400 }]
-
+  jsonb_accessor :pages, pages_extra_deployments_default_expiry_seconds: [:integer, { default: 86400 }]
   validates :pages, json_schema: { filename: "application_setting_pages" }
+
+  jsonb_accessor :anti_abuse_settings,
+    enforce_email_subaddress_restrictions: [::Gitlab::Database::Type::JsonbBoolean.new, { default: false }]
+
+  validates :anti_abuse_settings, json_schema: { filename: "anti_abuse_settings", detail_errors: true }
 
   validates :enforce_ci_inbound_job_token_scope_enabled,
     allow_nil: false,
@@ -907,6 +924,9 @@ class ApplicationSetting < ApplicationRecord
   validates :secret_detection_service_url,
     allow_blank: true,
     length: { maximum: 255 }
+
+  validates :vscode_extension_marketplace,
+    json_schema: { filename: "application_setting_vscode_extension_marketplace", detail_errors: true }
 
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?

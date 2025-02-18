@@ -10,6 +10,7 @@ require 'gitlab/housekeeper/gitlab_client'
 require 'gitlab/housekeeper/git'
 require 'gitlab/housekeeper/change'
 require 'gitlab/housekeeper/substitutor'
+require 'gitlab/housekeeper/filter_identifiers'
 require 'awesome_print'
 require 'digest'
 
@@ -36,7 +37,7 @@ module Gitlab
                    all_keeps
                  end
 
-        @filter_identifiers = filter_identifiers
+        @filter_identifiers = ::Gitlab::Housekeeper::FilterIdentifiers.new(filter_identifiers)
       end
 
       def run
@@ -45,7 +46,7 @@ module Gitlab
         git.with_clean_state do
           @keeps.each do |keep_class|
             @logger.puts "Running keep #{keep_class}"
-            keep = keep_class.new(logger: @logger)
+            keep = keep_class.new(logger: @logger, filter_identifiers: @filter_identifiers)
             keep.each_change do |change|
               unless change.valid?
                 @logger.warn "Ignoring invalid change from: #{keep_class}"
@@ -57,7 +58,7 @@ module Gitlab
               branch_name = git.create_branch(change)
               add_standard_change_data(change)
 
-              unless change.matches_filters?(@filter_identifiers)
+              if change.aborted? || !@filter_identifiers.matches_filters?(change.identifiers)
                 # At this point the keep has already run and edited files so we need to
                 # restore the local working copy. We could simply checkout all
                 # changed_files but this is very risky as it could mean losing work that
@@ -67,7 +68,12 @@ module Gitlab
                   git.create_commit(change)
                 end
 
-                @logger.puts "Skipping change: #{change.identifiers} due to not matching filter."
+                if change.aborted?
+                  @logger.puts "Skipping change as it is marked aborted."
+                else
+                  @logger.puts "Skipping change: #{change.identifiers} due to not matching filter."
+                end
+
                 @logger.puts "Modified files have been committed to branch #{branch_name.yellowish}," \
                              "but will not be pushed."
                 @logger.puts

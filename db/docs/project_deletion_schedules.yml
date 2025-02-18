@@ -1,0 +1,12 @@
+---
+table_name: project_deletion_schedules
+classes:
+- Projects::DeletionSchedule
+feature_categories:
+- groups_and_projects
+description: Stores project deletion schedules
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167520
+milestone: '17.7'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

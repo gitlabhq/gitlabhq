@@ -10,7 +10,7 @@ module Mutations
         argument :id, ::Types::GlobalIDType[::WorkItem],
           required: true, description: 'Global ID of the work item.'
 
-        field :work_item, Types::WorkItemType,
+        field :work_item, ::Types::WorkItemType,
           null: true, description: 'Updated work item.'
 
         field :message, GraphQL::Types::String,

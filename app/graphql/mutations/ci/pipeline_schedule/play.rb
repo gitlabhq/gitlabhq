@@ -16,7 +16,7 @@ module Mutations
         def resolve(id:)
           schedule = authorized_find!(id: id)
 
-          job_id = ::Ci::PipelineScheduleService
+          job_id = ::Ci::PipelineSchedules::PlayService
             .new(schedule.project, current_user)
             .execute(schedule)
 
@@ -25,6 +25,9 @@ module Mutations
           else
             { pipeline_schedule: nil, errors: ['Unable to schedule a pipeline to run immediately.'] }
           end
+
+        rescue Gitlab::Access::AccessDeniedError
+          raise_resource_not_available_error!
         end
       end
     end

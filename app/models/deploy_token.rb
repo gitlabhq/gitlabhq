@@ -8,7 +8,7 @@ class DeployToken < ApplicationRecord
 
   AVAILABLE_SCOPES = %i[read_repository read_registry write_registry
     read_package_registry write_package_registry
-    read_virtual_registry].freeze
+    read_virtual_registry write_virtual_registry].freeze
   GITLAB_DEPLOY_TOKEN_NAME = 'gitlab-deploy-token'
   DEPLOY_TOKEN_PREFIX = 'gldt-'
 

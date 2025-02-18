@@ -283,12 +283,12 @@ RSpec.describe Git::WikiPushService, :services, feature_category: :wiki do
   end
 
   describe '#perform_housekeeping', :clean_gitlab_redis_shared_state do
-    let(:housekeeping) { Repositories::HousekeepingService.new(wiki) }
+    let(:housekeeping) { ::Repositories::HousekeepingService.new(wiki) }
 
     subject { create_service(current_sha).execute }
 
     before do
-      allow(Repositories::HousekeepingService).to receive(:new).and_return(housekeeping)
+      allow(::Repositories::HousekeepingService).to receive(:new).and_return(housekeeping)
     end
 
     it 'does not perform housekeeping when not needed' do

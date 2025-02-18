@@ -189,7 +189,7 @@ describe('InviteMembersModal', () => {
         createInviteMembersToProjectWrapper();
 
         expect(findBase().props('accessExpirationHelpLink')).toBe(
-          helpPagePath('user/project/members/index', { anchor: 'add-users-to-a-project' }),
+          helpPagePath('user/project/members/_index', { anchor: 'add-users-to-a-project' }),
         );
       });
     });
@@ -199,7 +199,7 @@ describe('InviteMembersModal', () => {
         createInviteMembersToGroupWrapper();
 
         expect(findBase().props('accessExpirationHelpLink')).toBe(
-          helpPagePath('user/group/index', { anchor: 'add-users-to-a-group' }),
+          helpPagePath('user/group/_index', { anchor: 'add-users-to-a-group' }),
         );
       });
     });

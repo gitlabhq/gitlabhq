@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Control how jobs run
 ---
 
-# Control how jobs run
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Before a new pipeline starts, GitLab checks the pipeline configuration to determine
 which jobs can run in that pipeline. You can configure jobs to run depending on
@@ -19,7 +21,7 @@ conditions like the value of variables or the pipeline type with [`rules`](job_r
 You can require that a job doesn't run unless a user starts it. This is called a **manual job**.
 You might want to use a manual job for something like deploying to production.
 
-To specify a job as manual, add [`when: manual`](../yaml/index.md#when) to the job
+To specify a job as manual, add [`when: manual`](../yaml/_index.md#when) to the job
 in the `.gitlab-ci.yml` file.
 
 By default, manual jobs display as skipped when the pipeline starts.
@@ -33,7 +35,7 @@ Manual jobs can be either optional or blocking.
 
 In optional manual jobs:
 
-- [`allow_failure`](../yaml/index.md#allow_failure) is `true`, which is the default
+- [`allow_failure`](../yaml/_index.md#allow_failure) is `true`, which is the default
   setting for jobs that have `when: manual` defined outside of `rules`.
 - The status does not contribute to the overall pipeline status. A pipeline can
   succeed even if all of its manual jobs fail.
@@ -41,14 +43,14 @@ In optional manual jobs:
 In blocking manual jobs:
 
 - `allow_failure` is `false`, which is the default setting for jobs that have `when: manual`
-  defined inside [`rules`](../yaml/index.md#rules).
+  defined inside [`rules`](../yaml/_index.md#rules).
 - The pipeline stops at the stage where the job is defined. To let the pipeline
   continue running, [run the manual job](#run-a-manual-job).
 - Merge requests in projects with [**Pipelines must succeed**](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge)
   enabled can't be merged with a blocked pipeline.
 - The pipeline shows a status of **blocked**.
 
-When using manual jobs in triggered pipelines with [`strategy: depend`](../yaml/index.md#triggerstrategy),
+When using manual jobs in triggered pipelines with [`strategy: depend`](../yaml/_index.md#triggerstrategy),
 the type of manual job can affect the trigger job's status while the pipeline runs.
 
 ### Run a manual job
@@ -57,13 +59,29 @@ To run a manual job, you must have permission to merge to the assigned branch:
 
 1. Go to the pipeline, job, [environment](../environments/deployments.md#configure-manual-deployments),
    or deployment view.
-1. Next to the manual job, select **Run** (**{play}**).
+1. Next to the manual job, select **Run** ({{< icon name="play" >}}).
 
-You can also [add custom CI/CD variables when running a manual job](index.md#specifying-variables-when-running-manual-jobs).
+### Specify variables when running manual jobs
+
+When running manual jobs you can supply additional job specific variables.
+
+You can do this from the job page of the manual job you want to run with
+additional variables. To access this page, select the **name** of the manual job in
+the pipeline view, *not* **Run** ({{< icon name="play" >}}).
+
+Define CI/CD variables here when you want to alter the execution of a job that uses
+[CI/CD variables](../variables/_index.md).
+
+If you add a variable that is already defined in the CI/CD settings or `.gitlab-ci.yml` file,
+the [variable is overridden](../variables/_index.md#use-pipeline-variables) with the new value.
+Any variables overridden by using this process are [expanded](../variables/_index.md#prevent-cicd-variable-expansion)
+and not [masked](../variables/_index.md#mask-a-cicd-variable).
+
+![The run manual job page with fields for specifying CI/CD variables.](img/manual_job_variables_v13_10.png)
 
 ### Add a confirmation dialog for manual jobs
 
-Use [`manual_confirmation`](../yaml/index.md#manual_confirmation) with `when: manual` to add a confirmation dialog for manual jobs.
+Use [`manual_confirmation`](../yaml/_index.md#manual_confirmation) with `when: manual` to add a confirmation dialog for manual jobs.
 The confirmation dialog helps to prevent accidental deployments or deletions,
 especially for sensitive jobs like those that deploy to production.
 
@@ -71,9 +89,12 @@ Users are prompted to confirm the action before the manual job runs, which provi
 
 ### Protect manual jobs
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use [protected environments](../environments/protected_environments.md)
 to define a list of users authorized to run a manual job. You can authorize only
@@ -112,7 +133,7 @@ by authorized users.
 
 ## Run a job after a delay
 
-Use [`when: delayed`](../yaml/index.md#when) to execute scripts after a waiting period, or if you want to avoid
+Use [`when: delayed`](../yaml/_index.md#when) to execute scripts after a waiting period, or if you want to avoid
 jobs immediately entering the `pending` state.
 
 You can set the period with `start_in` keyword. The value of `start_in` is an elapsed time
@@ -142,16 +163,16 @@ timed rollout 10%:
   environment: production
 ```
 
-To stop the active timer of a delayed job, select **Unschedule** (**{time-out}**).
+To stop the active timer of a delayed job, select **Unschedule** ({{< icon name="time-out" >}}).
 This job can no longer be scheduled to run automatically. You can, however, execute the job manually.
 
-To start a delayed job manually, select **Unschedule** (**{time-out}**) to stop the delay timer and then select **Run** (**{play}**).
+To start a delayed job manually, select **Unschedule** ({{< icon name="time-out" >}}) to stop the delay timer and then select **Run** ({{< icon name="play" >}}).
 Soon GitLab Runner starts the job.
 
 ## Parallelize large jobs
 
 To split a large job into multiple smaller jobs that run in parallel, use the
-[`parallel`](../yaml/index.md#parallel) keyword in your `.gitlab-ci.yml` file.
+[`parallel`](../yaml/_index.md#parallel) keyword in your `.gitlab-ci.yml` file.
 
 Different languages and test suites have different methods to enable parallelization.
 For example, use [Semaphore Test Boosters](https://github.com/renderedtext/test-boosters)
@@ -176,13 +197,16 @@ test:
 You can then go to the **Jobs** tab of a new pipeline build and see your RSpec
 job split into three separate jobs.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Test Boosters reports usage statistics to the author.
+
+{{< /alert >}}
 
 ### Run a one-dimensional matrix of parallel jobs
 
 To run a job multiple times in parallel in a single pipeline, but with different variable values for each instance of the job,
-use the [`parallel:matrix`](../yaml/index.md#parallelmatrix) keyword:
+use the [`parallel:matrix`](../yaml/_index.md#parallelmatrix) keyword:
 
 ```yaml
 deploystacks:
@@ -197,7 +221,7 @@ deploystacks:
 
 ### Run a matrix of parallel trigger jobs
 
-You can run a [trigger](../yaml/index.md#trigger) job multiple times in parallel in a single pipeline,
+You can run a [trigger](../yaml/_index.md#trigger) job multiple times in parallel in a single pipeline,
 but with different variable values for each instance of the job.
 
 ```yaml
@@ -229,7 +253,7 @@ deploystacks: [vultr, data]
 
 ### Select different runner tags for each parallel matrix job
 
-You can use variables defined in `parallel: matrix` with the [`tags`](../yaml/index.md#tags)
+You can use variables defined in `parallel: matrix` with the [`tags`](../yaml/_index.md#tags)
 keyword for dynamic runner selection:
 
 ```yaml
@@ -250,8 +274,8 @@ deploystacks:
 
 ### Fetch artifacts from a `parallel:matrix` job
 
-You can fetch artifacts from a job created with [`parallel:matrix`](../yaml/index.md#parallelmatrix)
-by using the [`dependencies`](../yaml/index.md#dependencies) keyword. Use the job name
+You can fetch artifacts from a job created with [`parallel:matrix`](../yaml/_index.md#parallelmatrix)
+by using the [`dependencies`](../yaml/_index.md#dependencies) keyword. Use the job name
 as the value for `dependencies` as a string in the form:
 
 ```plaintext
@@ -283,9 +307,13 @@ Quotes around the `dependencies` entry are required.
 
 ## Specify a parallelized job using needs with multiple parallelized jobs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3.
+{{< history >}}
 
-You can use variables defined in [`needs:parallel:matrix`](../yaml/index.md#needsparallelmatrix) with multiple parallelized jobs.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3.
+
+{{< /history >}}
+
+You can use variables defined in [`needs:parallel:matrix`](../yaml/_index.md#needsparallelmatrix) with multiple parallelized jobs.
 
 For example:
 

@@ -13,7 +13,7 @@ namespace :explore do
   resources :groups, only: [:index]
   scope :catalog do
     get '/' => 'catalog#index', as: :catalog_index
-    get '/*full_path' => 'catalog#show', as: :catalog
+    get '/*full_path' => 'catalog#show', as: :catalog, constraints: { full_path: /.*/ }
   end
   resources :snippets, only: [:index]
   root to: 'projects#index'

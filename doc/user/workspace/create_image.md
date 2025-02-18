@@ -2,13 +2,12 @@
 stage: Create
 group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Create a custom workspace image to support any workspace you create in GitLab."
+description: Create a custom workspace image to support any workspace you create in GitLab.
+title: 'Tutorial: Create a custom workspace image that supports arbitrary user IDs'
 ---
 
-# Tutorial: Create a custom workspace image that supports arbitrary user IDs
-
 In this tutorial, you'll learn how to create a custom workspace image that supports arbitrary user IDs.
-You can then use this custom image with any [workspace](index.md) you create in GitLab.
+You can then use this custom image with any [workspace](_index.md) you create in GitLab.
 
 To create a custom workspace image that supports arbitrary user IDs, you'll:
 
@@ -68,7 +67,7 @@ When the build is complete, you can test the image locally:
 docker run -ti my-gitlab-workspace sh
 ```
 
-You should now be able to run commands as the `gitlab-workspaces` user.
+You should now have permission to run commands as the `gitlab-workspaces` user.
 
 ## Push the custom workspace image to the GitLab container registry
 
@@ -108,4 +107,8 @@ components:
       image: registry.gitlab.com/your-namespace/my-gitlab-workspace:latest
 ```
 
-You're all set! You can now use this custom image with any [workspace](index.md) you create in GitLab.
+You're all set! You can now use this custom image with any [workspace](_index.md) you create in GitLab.
+
+## Related topics
+
+- [Troubleshooting Workspaces](workspaces_troubleshooting.md)

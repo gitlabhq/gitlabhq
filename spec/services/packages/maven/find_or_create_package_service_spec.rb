@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, developer_of: [project]) }
 
   let(:app_name) { 'my-app' }
   let(:path) { "sandbox/test/app/#{app_name}" }
@@ -53,14 +53,6 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
       it_behaves_like 'returning an error service response', message: with_message do
         it { expect(subject.payload).to be_empty }
       end
-    end
-
-    shared_examples 'reuse existing package when packages_allow_duplicate_exceptions is disabled' do
-      before do
-        stub_feature_flags(packages_allow_duplicate_exceptions: false)
-      end
-
-      it_behaves_like 'reuse existing package'
     end
 
     context 'with path including version' do
@@ -237,8 +229,6 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
         end
 
         it_behaves_like 'returning an error', with_message: 'Duplicate package is not allowed'
-
-        it_behaves_like 'reuse existing package when packages_allow_duplicate_exceptions is disabled'
       end
 
       context 'when the package version matches the exception regex' do
@@ -247,8 +237,6 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
         end
 
         it_behaves_like 'returning an error', with_message: 'Duplicate package is not allowed'
-
-        it_behaves_like 'reuse existing package when packages_allow_duplicate_exceptions is disabled'
       end
 
       context 'when the exception regex is blank' do
@@ -278,16 +266,16 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
       let(:params) { super().merge(path: '/') }
 
       it_behaves_like 'returning an error',
-        with_message: "Validation failed: Maven metadatum app group can't be blank, " \
-                      "Maven metadatum app group is invalid, Maven metadatum app name can't be blank, " \
-                      "Maven metadatum app name is invalid, Name can't be blank, Name is invalid"
+        with_message: "Validation failed: Name can't be blank, Name is invalid, " \
+                      "Maven metadatum app group can't be blank, Maven metadatum app group is invalid, " \
+                      "Maven metadatum app name can't be blank, Maven metadatum app name is invalid"
     end
 
     context 'with parallel execution' do
       it 'only creates one package' do
         expect do
           with_threads { described_class.new(project, user, params).execute }
-        end.to change { Packages::Package.maven.count }.by(1)
+        end.to change { Packages::Maven::Package.count }.by(1)
       end
 
       context 'when CreatePackageService responds with a name_taken error' do

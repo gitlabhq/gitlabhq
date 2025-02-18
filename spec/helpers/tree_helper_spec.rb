@@ -10,6 +10,24 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
 
   let_it_be(:user) { create(:user) }
 
+  describe '#tree_edit_branch' do
+    let(:ref) { 'main' }
+
+    before do
+      allow(helper).to receive(:patch_branch_name).and_return('patch-1')
+    end
+
+    it 'returns nil when cannot edit tree' do
+      allow(helper).to receive(:can_edit_tree?).and_return(false)
+      expect(helper.tree_edit_branch(project, ref)).to be_nil
+    end
+
+    it 'returns the patch branch name when can edit tree' do
+      allow(helper).to receive(:can_edit_tree?).and_return(true)
+      expect(helper.tree_edit_branch(project, ref)).to eq('patch-1')
+    end
+  end
+
   describe '#breadcrumb_data_attributes' do
     let(:ref) { 'main' }
     let(:base_attributes) do

@@ -118,7 +118,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         expect(pipeline.iid).not_to be_nil
         expect(pipeline.repository_source?).to be true
         expect(pipeline.builds.first).to be_kind_of(Ci::Build)
-        expect(pipeline.yaml_errors).not_to be_present
+        expect(pipeline.error_messages).to be_empty
       end
 
       it 'increments the prometheus counter' do
@@ -453,7 +453,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         expect(pipeline).to be_persisted
         expect(pipeline.builds.any?).to be false
         expect(pipeline.status).to eq('failed')
-        expect(pipeline.yaml_errors).not_to be_nil
+        expect(pipeline.error_messages).not_to be_empty
       end
     end
 
@@ -508,7 +508,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         it 'saves error in pipeline' do
           pipeline = execute_service.payload
 
-          expect(pipeline.yaml_errors).to include('Undefined error')
+          expect(pipeline.error_messages[0].content).to include('Undefined error')
         end
 
         it 'logs error' do
@@ -600,7 +600,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       it 'saves error in pipeline' do
         pipeline = execute_service.payload
 
-        expect(pipeline.yaml_errors).to include('Undefined error')
+        expect(pipeline.error_messages[0].content).to include('Undefined error')
       end
 
       it 'logs error' do
@@ -910,7 +910,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
           build = pipeline.builds.first
           expect(pipeline).to be_kind_of(Ci::Pipeline)
           expect(pipeline).to be_valid
-          expect(pipeline.yaml_errors).not_to be_present
+          expect(pipeline.error_messages).to be_empty
           expect(pipeline).to be_persisted
           expect(build).to be_kind_of(Ci::Build)
           expect(build.options).to eq(config[:release].except(:stage, :only))
@@ -1690,11 +1690,9 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         shared_examples 'has errors' do
           it 'contains the expected errors', :aggregate_failures do
             expect(pipeline.builds).to be_empty
-
-            error_message = "'test_a' job needs 'build_a' job, but 'build_a' is not in any previous stage"
-            expect(pipeline.yaml_errors).to eq(error_message)
-            expect(pipeline.error_messages.map(&:content)).to contain_exactly(error_message)
-            expect(pipeline.errors[:base]).to contain_exactly(error_message)
+            error_message = "'test_a' job needs 'build_a' job, but 'build_a' does not exist in the pipeline"
+            expect(pipeline.error_messages.map(&:content).first).to include(error_message)
+            expect(pipeline.errors[:base].first).to include(error_message)
           end
         end
 
@@ -1704,7 +1702,11 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
           it 'does create a pipeline as test_a depends on build_a', :aggregate_failures do
             expect(response).to be_error
-            expect(response.message).to eq("'test_a' job needs 'build_a' job, but 'build_a' is not in any previous stage")
+
+            expect(response.message).to include(
+              "'test_a' job needs 'build_a' job, but 'build_a' does not exist in the pipeline"
+            )
+
             expect(pipeline).to be_persisted
           end
 
@@ -1798,7 +1800,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
           pipeline = response.payload
 
           expect(pipeline).to be_persisted
-          expect(pipeline.yaml_errors)
+          expect(pipeline.error_messages[0].content)
             .to include "my-component@v0.1' - content not found"
         end
       end
@@ -1815,7 +1817,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
             pipeline = response.payload
 
             expect(pipeline).to be_persisted
-            expect(pipeline.yaml_errors).to be_blank
+            expect(pipeline.error_messages).to be_empty
             expect(pipeline.statuses.count).to eq 2
             expect(pipeline.statuses.map(&:name)).to match_array %w[test-1 test-my-job]
           end
@@ -1840,7 +1842,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
             pipeline = response.payload
 
             expect(pipeline).to be_persisted
-            expect(pipeline.yaml_errors)
+            expect(pipeline.error_messages[0].content)
               .to include 'unknown interpolation key: `suite`'
           end
         end
@@ -1863,7 +1865,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
             pipeline = response.payload
 
             expect(pipeline).to be_persisted
-            expect(pipeline.yaml_errors)
+            expect(pipeline.error_messages[0].content)
               .to include 'mapping values are not allowed'
           end
         end
@@ -1935,7 +1937,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
           pipeline = response.payload
 
           expect(pipeline).to be_persisted
-          expect(pipeline.yaml_errors)
+          expect(pipeline.error_messages[0].content)
             .to include "my-component@v0.1' - content not found"
         end
       end
@@ -1952,7 +1954,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
             pipeline = response.payload
 
             expect(pipeline).to be_persisted
-            expect(pipeline.yaml_errors).to be_blank
+            expect(pipeline.error_messages).to be_empty
             expect(pipeline.statuses.count).to eq 2
             expect(pipeline.statuses.map(&:name)).to match_array %w[test-1 test-my-job]
           end
@@ -1979,7 +1981,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
               pipeline = response.payload
 
               expect(pipeline).to be_persisted
-              expect(pipeline.yaml_errors).to be_blank
+              expect(pipeline.error_messages).to be_empty
             end
           end
         end
@@ -2003,7 +2005,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
             pipeline = response.payload
 
             expect(pipeline).to be_persisted
-            expect(pipeline.yaml_errors)
+            expect(pipeline.error_messages[0].content)
               .to include 'unknown interpolation key: `suite`'
           end
         end
@@ -2026,7 +2028,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
             pipeline = response.payload
 
             expect(pipeline).to be_persisted
-            expect(pipeline.yaml_errors)
+            expect(pipeline.error_messages[0].content)
               .to include 'mapping values are not allowed'
           end
         end

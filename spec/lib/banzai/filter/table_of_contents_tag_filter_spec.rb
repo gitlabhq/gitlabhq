@@ -15,6 +15,43 @@ RSpec.describe Banzai::Filter::TableOfContentsTagFilter, feature_category: :mark
       end
     end
 
+    shared_examples 'table of contents tag not recognized' do
+      it 'ignores toc tag when part of a sentence' do
+        doc = pipeline_filter("This is a #{toc_tag} in a sentence\n\n# Foo")
+
+        expect(doc.to_html).to include('toc')
+        expect(doc.to_html).to include('<h1')
+      end
+
+      it 'ignores toc tag in inline code' do
+        doc = pipeline_filter("Use `#{toc_tag}` for table of contents\n\n# Foo")
+
+        expect(doc.to_html).to include("Use <code>#{toc_tag}</code> for table of contents")
+        expect(doc.to_html).to include('<h1')
+      end
+
+      it 'ignores toc tag when at end of paragraph' do
+        doc = pipeline_filter("prefix #{toc_tag}\n\n# Foo")
+
+        expect(doc.to_html).to include('toc')
+        expect(doc.to_html).to include('<h1')
+      end
+
+      it 'ignores toc tag when at start of paragraph' do
+        doc = pipeline_filter("#{toc_tag} suffix\n\n# Foo")
+
+        expect(doc.to_html).to include('toc')
+        expect(doc.to_html).to include('<h1')
+      end
+
+      it 'ignores toc tag when there is another node directly in front' do
+        doc = pipeline_filter("_prefix_#{toc_tag}\n\n# Foo")
+
+        expect(doc.to_html).to include('toc')
+        expect(doc.to_html).to include('<h1')
+      end
+    end
+
     context '[[_TOC_]] as tag' do
       it_behaves_like 'table of contents tag' do
         let(:markdown) { "[[_TOC_]]\n\n# Foo" }
@@ -22,6 +59,10 @@ RSpec.describe Banzai::Filter::TableOfContentsTagFilter, feature_category: :mark
 
       it_behaves_like 'table of contents tag' do
         let(:markdown) { "[[_toc_]]\n\n# Foo" }
+      end
+
+      it_behaves_like 'table of contents tag not recognized' do
+        let(:toc_tag) { '[[_toc_]]' }
       end
 
       it 'does not recognize the toc' do
@@ -41,11 +82,8 @@ RSpec.describe Banzai::Filter::TableOfContentsTagFilter, feature_category: :mark
         let(:markdown) { "[toc]\n\n# Foo" }
       end
 
-      it 'does not recognize the toc' do
-        doc = pipeline_filter("this [toc]\n\n# Foo")
-
-        expect(doc.to_html).to include('this [toc]')
-        expect(doc.to_html).to include('Foo</h1>')
+      it_behaves_like 'table of contents tag not recognized' do
+        let(:toc_tag) { '[toc]' }
       end
     end
   end

@@ -220,6 +220,10 @@ export default {
     cancel() {
       this.$emit('cancel');
     },
+    close() {
+      // This calls cancel after the modal has been hidden
+      this.$refs.modal.hide();
+    },
     async createOrUpdateBoard() {
       const response = await this.$apollo.mutate({
         mutation: this.currentMutation,
@@ -250,6 +254,7 @@ export default {
         try {
           await this.deleteBoard();
           visitUrl(this.boardBaseUrl);
+          this.close();
         } catch (error) {
           setError({ error, message: this.$options.i18n.deleteErrorMessage });
         } finally {
@@ -263,7 +268,7 @@ export default {
           } else {
             this.$emit('addBoard', board);
           }
-          this.cancel();
+          this.close();
         } catch (error) {
           setError({ error, message: this.$options.i18n.saveErrorMessage });
         } finally {
@@ -321,6 +326,7 @@ export default {
 
 <template>
   <gl-modal
+    ref="modal"
     modal-id="board-config-modal"
     modal-class="board-config-modal"
     content-class="gl-absolute gl-top-7"
@@ -330,10 +336,9 @@ export default {
     :title="title"
     :action-primary="primaryProps"
     :action-cancel="cancelProps"
-    @primary="submit"
-    @cancel="cancel"
-    @close="cancel"
-    @hide.prevent
+    :no-close-on-backdrop="true"
+    @primary.prevent="submit"
+    @hidden="cancel"
   >
     <gl-alert
       v-if="error"
@@ -398,7 +403,7 @@ export default {
           {{ $options.i18n.deleteButtonText }}</gl-button
         >
         <div class="gl-flex gl-gap-3">
-          <gl-button class="!gl-m-0" @click="cancel">{{ cancelProps.text }}</gl-button
+          <gl-button class="!gl-m-0" @click="close">{{ cancelProps.text }}</gl-button
           ><gl-button v-bind="primaryProps.attributes" class="!gl-m-0" @click="submit">{{
             primaryProps.text
           }}</gl-button>

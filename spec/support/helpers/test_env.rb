@@ -172,7 +172,6 @@ module TestEnv
     Parallel.each(setup_methods) do |method|
       public_send(method)
     end
-
     post_init
 
     puts "\nTest environment set up in #{Time.now - start} seconds"

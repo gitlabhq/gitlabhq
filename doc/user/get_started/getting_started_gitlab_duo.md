@@ -1,11 +1,10 @@
 ---
 stage: AI-powered
 group: AI Framework
-description: AI-powered features and functionality.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: AI-powered features and functionality.
+title: Get started with GitLab Duo
 ---
-
-# Get started with GitLab Duo
 
 GitLab Duo is your AI-powered assistant. It can help you write, review, and edit code,
 along with a variety of other tasks throughout your GitLab workflow.
@@ -30,8 +29,8 @@ For more information, see:
 
 - [Assign seats to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 - [Features included in Duo Pro and Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
-- [List of GitLab Duo features and their language models](../gitlab_duo/index.md).
-- [Self-hosted models](../../administration/self_hosted_models/index.md).
+- [List of GitLab Duo features and their language models](../gitlab_duo/_index.md).
+- [Self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md).
 - [Health check details](../gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo).
 
 ## Step 2: Try GitLab Duo Chat in the UI
@@ -44,7 +43,7 @@ Try asking Chat a question or type `/` to see a list of slash commands.
 
 For more information, see:
 
-- [GitLab Duo Chat](../gitlab_duo_chat/index.md).
+- [GitLab Duo Chat](../gitlab_duo_chat/_index.md).
 
 ## Step 3: Try other GitLab Duo features
 
@@ -60,7 +59,7 @@ GitLab Duo summarizes the contents of the issue.
 
 For more information, see:
 
-- [The complete list of GitLab Duo features](../gitlab_duo/index.md).
+- [The complete list of GitLab Duo features](../gitlab_duo/_index.md).
 - [Turn on GitLab Duo features that are still in development](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
 
 ## Step 4: Prepare to use GitLab Duo in your IDE
@@ -80,7 +79,7 @@ For more information, see:
 - [Set up the extension for JetBrains](../../editor_extensions/jetbrains_ide/setup.md).
 - [Set up the extension for Visual Studio](../../editor_extensions/visual_studio/setup.md).
 - [Set up the extension for Neovim](../../editor_extensions/neovim/setup.md).
-- [Use the WebIDE](../project/web_ide/index.md).
+- [Use the Web IDE](../project/web_ide/_index.md).
 
 ## Step 5: Confirm that Code Suggestions is on in your IDE
 

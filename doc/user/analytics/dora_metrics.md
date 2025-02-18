@@ -2,13 +2,15 @@
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: DevOps Research and Assessment (DORA) metrics
 ---
 
-# DevOps Research and Assessment (DORA) metrics
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The [DevOps Research and Assessment (DORA)](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance)
 team has identified four metrics that measure DevOps performance.
@@ -24,18 +26,13 @@ For software leaders, tracking velocity alongside quality metrics ensures they'r
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a video explanation, see [DORA metrics: User analytics](https://www.youtube.com/watch?v=jYQSH4EY6_U) and [GitLab speed run: DORA metrics](https://www.youtube.com/watch?v=1BrcMV6rCDw).
 
-## DORA metrics in GitLab
-
-GitLab provides different analytics and insights about DORA metrics, which are available in the following Analytics features:
-
-- DORA metrics in the [Value Streams Dashboard](value_streams_dashboard.md), which are available out-of-the-box and help you identify trends, patterns, and opportunities for improvement. These metrics are displayed in the [DORA metrics comparison panel](value_streams_dashboard.md#devsecops-metrics-comparison-panels) and the [DORA Performers score panel](value_streams_dashboard.md#dora-performers-score-panel).
-- DORA metrics in [CI/CD analytics charts](ci_cd_analytics.md), which show pipeline success rates and duration, and the history of DORA metrics over time.
-- DORA metrics in [Insights reports](../project/insights/index.md), where you can also use [DORA query parameters](../../user/project/insights/index.md#dora-query-parameters) to create custom charts.
-- [(DORA) key metrics API](../../api/dora/metrics.md), which includes all metrics.
-
 ## Deployment frequency
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394712) fix for the frequency calculation formula for `all` and `monthly` intervals in GitLab 16.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394712) fix for the frequency calculation formula for `all` and `monthly` intervals in GitLab 16.0.
+
+{{< /history >}}
 
 Deployment frequency is the frequency of successful deployments to production over the given date range (hourly, daily, weekly, monthly, or yearly).
 
@@ -44,10 +41,13 @@ High deployment frequency means you can get feedback sooner and iterate faster t
 
 ### Deployment frequency forecasting
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**Status:** Experiment
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Experiment
+
+{{< /details >}}
 
 Deployment frequency forecasting (formerly named Value stream forecasting) uses a statistical forecasting model to predict productivity metrics and identify anomalies across the software development lifecycle.
 This information can help you improve planning and decision-making for your product and teams.
@@ -62,12 +62,15 @@ GitLab calculates the deployment frequency from the number of finished deploymen
 
 The calculation takes into account the production `environment tier` or the environments named `production/prod`. The environment must be part of the production deployment tier for its deployment information to appear on the graphs.
 
-You can configure DORA metrics for different environments by specifying `other` under the `environment_tiers` parameter in the [`.gitlab/insights.yml` file](../project/insights/index.md#insights-configuration-file).
+You can configure DORA metrics for different environments by specifying `other` under the `environment_tiers` parameter in the [`.gitlab/insights.yml` file](../project/insights/_index.md#insights-configuration-file).
 
-NOTE:
+{{< alert type="note" >}}
+
 Deployment frequency is calculated as the **average (mean)**, unlike the other DORA metrics that use the median, which is preferred because it provides a more accurate and reliable view of performance.
 This difference is because deployment frequency was added to GitLab prior to adopting the DORA framework, and the calculation of this metric remained unchanged when it was incorporated into other reports.
 [Issue 499591](https://gitlab.com/gitlab-org/gitlab/-/issues/499591) proposes offering the option to customize the calculation method for each metric, choosing between mean and median.
+
+{{< /alert >}}
 
 ### How to improve deployment frequency
 
@@ -154,16 +157,26 @@ The first step is to benchmark the quality and stability, between groups and pro
 
 ## DORA custom calculation rules
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed
-**Status:** Experiment
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `dora_configuration`. Disabled by default. This feature is an [experiment](../../policy/development_stages_support.md).
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
+- Status: Experiment
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `dora_configuration`. Disabled by default. This feature is an [experiment](../../policy/development_stages_support.md).
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
+
+{{< /alert >}}
 
 This feature is an [experiment](../../policy/development_stages_support.md).
 To join the list of users testing this feature, [here is a suggested test flow](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561#steps-to-check-on-localhost).
@@ -198,53 +211,28 @@ record.branches_for_lead_time_for_changes = ['development', 'staging', 'master',
 record.save!
 ```
 
-## Retrieve DORA metrics data
-
-To retrieve DORA data, use the [GraphQL](../../api/graphql/reference/index.md) or the [REST](../../api/dora/metrics.md) APIs.
-
-The following example uses the GraphQL API to retrieve the monthly deployment frequency for a given time period:
-
-```graphql
-{
-  project(fullPath: "gitlab-org/gitlab") {
-    dora {
-      metrics(
-        startDate: "2023-12-01"
-        endDate: "2024-01-31"
-        interval: MONTHLY
-      ) {
-        date
-        deploymentFrequency
-        leadTimeForChanges
-        timeToRestoreService
-        changeFailureRate
-      }
-    }
-  }
-}
-```
-
-You can explore the GraphQL API resources with the interactive [GraphQL explorer](../../api/graphql/index.md#interactive-graphql-explorer).
-
 ## Measure DORA metrics
 
-### Measure DORA metrics without using GitLab CI/CD pipelines
+### Without using GitLab CI/CD pipelines
 
 Deployment frequency is calculated based on the deployments record, which is created for typical push-based deployments.
 These deployment records are not created for pull-based deployments, for example when Container Images are connected to GitLab with an agent.
 
 To track DORA metrics in these cases, you can [create a deployment record](../../api/deployments.md#create-a-deployment) using the Deployments API.
 You must set the environment name where the deployment tier is configured, because the tier variable is specified for the given environment, not for the deployments.
-For more information, see [track deployments of an external deployment tool](../../ci/environments/external_deployment_tools.md).
+For more information, see how to [track deployments of an external deployment tool](../../ci/environments/external_deployment_tools.md).
 
-### Measure DORA metrics with Jira
+### With Jira
 
 - Deployment frequency and lead time for changes are calculated based on GitLab CI/CD and Merge Requests (MRs), and do not require Jira data.
-- Time to restore service and change failure rate require [GitLab incidents](../../operations/incident_management/manage_incidents.md) for the calculation. For more information, see [Measure DORA Time to restore service and Change failure rate with external incidents](#measure-dora-time-to-restore-service-and-change-failure-rate-with-external-incidents) and the [Jira incident replicator guide](https://gitlab.com/smathur/jira-incident-replicator).
+- Time to restore service and change failure rate require [GitLab incidents](../../operations/incident_management/manage_incidents.md) for the calculation. For more information, see how to measure these metrics [with external incidents](#with-external-incidents) and the [Jira incident replicator guide](https://gitlab.com/smathur/jira-incident-replicator).
 
-### Measure DORA Time to restore service and Change failure rate with external incidents
+### With external incidents
 
-For PagerDuty, you can set up a [webhook to automatically create a GitLab incident for each PagerDuty incident](../../operations/incident_management/manage_incidents.md#using-the-pagerduty-webhook).
+You can measure the time to restore service and change failure rate for incident management.
+
+For PagerDuty, you can [set up a webhook](../../operations/incident_management/manage_incidents.md#using-the-pagerduty-webhook)
+to automatically create a GitLab incident for each PagerDuty incident.
 This configuration requires you to make changes in both PagerDuty and GitLab.
 
 For other incident management tools, you can set up the
@@ -254,9 +242,18 @@ and use it to automatically:
 1. [Create an incident when an alert is triggered](../../operations/incident_management/manage_incidents.md#automatically-when-an-alert-is-triggered).
 1. [Close incidents via recovery alerts](../../operations/incident_management/manage_incidents.md#automatically-close-incidents-via-recovery-alerts).
 
-## DORA metrics availability
+## Analytics features
 
-The table below provides an overview of the DORA metrics' availability in projects and groups:
+DORA metrics are displayed in the following analytics features:
+
+- [Value Streams Dashboard](value_streams_dashboard.md) includes the [DORA metrics comparison panel](value_streams_dashboard.md#devsecops-metrics-comparison-panels) and [DORA Performers score panel](value_streams_dashboard.md#dora-performers-score-panel).
+- [CI/CD analytics charts](ci_cd_analytics.md) show the history of DORA metrics over time.
+- [Insights reports](../project/insights/_index.md) provide the option to create custom charts with [DORA query parameters](../project/insights/_index.md#dora-query-parameters).
+- [GraphQL API](../../api/graphql/reference/_index.md) (with the interactive [GraphQL explorer](../../api/graphql/_index.md#interactive-graphql-explorer)) and [REST API](../../api/dora/metrics.md) support the retrieval of metrics data.
+
+## Project and group availability
+
+The following table provides an overview of the DORA metrics' availability in projects and groups.
 
 | Metric                    | Level             | Comments |
 |---------------------------|-------------------|----------|
@@ -267,11 +264,11 @@ The table below provides an overview of the DORA metrics' availability in projec
 | `time_to_restore_service` | Project and group | Unit in days. Aggregation method is median. (Available in UI chart in GitLab 15.1 and later) |
 | `change_failure_rate`     | Project and group | Percentage of deployments. (Available in UI chart in GitLab 15.2 and later) |
 
-### DORA metrics data aggregation
+## Data aggregation
 
-The table below provides an overview of the DORA metrics' data aggregation in different charts.
+The following table provides an overview of the DORA metrics' data aggregation in different charts.
 
-| Metric name | Measured values | Data aggregation in the [Value Streams Dashboard](value_streams_dashboard.md) | Data aggregation in [CI/CD analytics charts](ci_cd_analytics.md) | Data aggregation in [Custom insights reporting](../../user/project/insights/index.md#dora-query-parameters) |
+| Metric name | Measured values | Data aggregation in the [Value Streams Dashboard](value_streams_dashboard.md) | Data aggregation in [CI/CD analytics charts](ci_cd_analytics.md) | Data aggregation in [Custom insights reporting](../project/insights/_index.md#dora-query-parameters) |
 |---------------------------|-------------------|-----------------------------------------------------|------------------------|----------|
 | Deployment frequency | Number of successful deployments | daily average per month | daily average | `day` (default) or `month` |
 | Lead time for changes | Number of seconds to successfully deliver a commit into production | daily median per month | median time |  `day` (default) or `month` |

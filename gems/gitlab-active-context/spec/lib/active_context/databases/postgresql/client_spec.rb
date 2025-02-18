@@ -16,40 +16,131 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
   subject(:client) { described_class.new(options) }
 
   describe '#initialize' do
-    it 'creates a connection pool' do
-      expect(ConnectionPool).to receive(:new)
-        .with(hash_including(size: 2, timeout: 1))
+    let(:connection_pool) { instance_double(ActiveRecord::ConnectionAdapters::ConnectionPool) }
+    let(:connection_model) { class_double(ActiveRecord::Base) }
+
+    before do
+      allow_any_instance_of(described_class).to receive(:create_connection_model)
+        .and_return(connection_model)
+
+      allow(connection_model).to receive(:establish_connection)
+      allow(connection_model).to receive(:connection_pool).and_return(connection_pool)
+    end
+
+    it 'creates a connection pool through ActiveRecord' do
+      expected_config = {
+        'adapter' => 'postgresql',
+        'host' => 'localhost',
+        'port' => 5432,
+        'database' => 'test_db',
+        'username' => 'user',
+        'password' => 'pass',
+        'connect_timeout' => 5,
+        'pool' => 2,
+        'prepared_statements' => false,
+        'advisory_locks' => false,
+        'database_tasks' => false
+      }
+
+      expect(connection_model).to receive(:establish_connection)
+        .with(hash_including(expected_config))
 
       client
     end
   end
 
-  describe '#search' do
-    let(:connection) { instance_double(PG::Connection) }
-    let(:query_result) { instance_double(PG::Result) }
+  describe '#with_raw_connection' do
+    let(:raw_connection) { instance_double(PG::Connection) }
+    let(:connection_pool) { instance_double(ActiveRecord::ConnectionAdapters::ConnectionPool) }
+    let(:ar_connection) { instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) }
+    let(:connection_model) { class_double(ActiveRecord::Base) }
+    let(:yielded_values) { [] }
 
     before do
-      allow(PG).to receive(:connect).and_return(connection)
-      allow(connection).to receive(:exec).and_return(query_result)
+      allow_any_instance_of(described_class).to receive(:create_connection_model)
+        .and_return(connection_model)
+
+      allow(connection_model).to receive(:establish_connection)
+      allow(connection_model).to receive(:connection_pool).and_return(connection_pool)
+
+      allow(connection_pool).to receive(:with_connection).and_yield(ar_connection)
+      allow(ar_connection).to receive_messages(
+        raw_connection: raw_connection
+      )
+
+      allow(raw_connection).to receive(:server_version).and_return(120000)
+    end
+
+    it 'yields raw PostgreSQL connection' do
+      client.with_raw_connection do |conn|
+        yielded_values << conn
+      end
+
+      expect(yielded_values).to eq([raw_connection])
+    end
+  end
+
+  describe '#with_connection' do
+    let(:raw_connection) { instance_double(PG::Connection) }
+    let(:connection_pool) { instance_double(ActiveRecord::ConnectionAdapters::ConnectionPool) }
+    let(:ar_connection) { instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) }
+    let(:connection_model) { class_double(ActiveRecord::Base) }
+    let(:yielded_values) { [] }
+
+    before do
+      allow_any_instance_of(described_class).to receive(:create_connection_model)
+        .and_return(connection_model)
+
+      allow(connection_model).to receive(:establish_connection)
+      allow(connection_model).to receive(:connection_pool).and_return(connection_pool)
+
+      allow(connection_pool).to receive(:with_connection).and_yield(ar_connection)
+      allow(ar_connection).to receive_messages(
+        raw_connection: raw_connection
+      )
+
+      allow(raw_connection).to receive(:server_version).and_return(120000)
+    end
+
+    it 'yields ActiveRecord connection' do
+      client.with_connection do |conn|
+        yielded_values << conn
+      end
+
+      expect(yielded_values).to eq([ar_connection])
+    end
+  end
+
+  describe '#search' do
+    let(:raw_connection) { instance_double(PG::Connection) }
+    let(:query_result) { instance_double(PG::Result) }
+    let(:connection_pool) { instance_double(ActiveRecord::ConnectionAdapters::ConnectionPool) }
+    let(:ar_connection) { instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) }
+    let(:connection_model) { class_double(ActiveRecord::Base) }
+
+    before do
+      allow_any_instance_of(described_class).to receive(:create_connection_model)
+        .and_return(connection_model)
+
+      allow(connection_model).to receive(:establish_connection)
+      allow(connection_model).to receive(:connection_pool).and_return(connection_pool)
+
+      allow(connection_pool).to receive(:with_connection).and_yield(ar_connection)
+      allow(ar_connection).to receive_messages(
+        execute: query_result,
+        raw_connection: raw_connection
+      )
+
+      allow(raw_connection).to receive(:server_version).and_return(120000)
+      allow(ActiveContext::Databases::Postgresql::QueryResult).to receive(:new)
     end
 
     it 'executes query and returns QueryResult' do
-      expect(connection).to receive(:exec).with('SELECT * FROM pg_stat_activity')
+      expect(ar_connection).to receive(:execute).with('SELECT * FROM pg_stat_activity')
       expect(ActiveContext::Databases::Postgresql::QueryResult)
         .to receive(:new).with(query_result)
 
       client.search('test query')
-    end
-  end
-
-  describe '#prefix' do
-    it 'returns default prefix when not specified' do
-      expect(client.prefix).to eq('gitlab_active_context')
-    end
-
-    it 'returns configured prefix' do
-      client = described_class.new(options.merge(prefix: 'custom'))
-      expect(client.prefix).to eq('custom')
     end
   end
 end

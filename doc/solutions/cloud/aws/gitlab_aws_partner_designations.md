@@ -3,9 +3,8 @@ stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
 description: GitLab partnership certifications and designations from AWS.
+title: GitLab partnership certifications and designations from AWS
 ---
-
-# GitLab partnership certifications and designations from AWS
 
 The certifications and designations outlined here can be validated on [GitLabs partner page at AWS](https://partners.amazonaws.com/partners/001E0000018YWFfIAO/GitLab,%20Inc.).
 
@@ -35,4 +34,4 @@ GitLab Instances and Runner have been validated on Amazon Linux 2 and 2023 - thi
 
 GitLab is a marketplace seller and you can purchase and deploy it through AWS marketplace [AWS Program Information](https://aws.amazon.com/marketplace/partners/management-tour)
 
-![AWS Partner Designations Logo](img/all-aws-partner-designations_v16_6.png){: .right}
+![AWS Partner Designations Logo](img/all-aws-partner-designations_v16_6.png)

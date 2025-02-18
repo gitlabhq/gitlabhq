@@ -27,10 +27,10 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
             fullPath
           }
           target {
-            ... on Project {
+            ... on CiJobTokenAccessibleProject {
               fullPath
             }
-            ... on Group {
+            ... on CiJobTokenAccessibleGroup {
               fullPath
             }
           }

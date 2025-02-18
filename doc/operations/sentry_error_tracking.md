@@ -2,19 +2,21 @@
 stage: Monitor
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Sentry error tracking
 ---
 
-# Sentry error tracking
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 [Sentry](https://sentry.io/) is an open source error tracking system. GitLab enables
 administrators to connect Sentry to GitLab, so users can view a list of Sentry errors in GitLab.
 
 GitLab integrates with both the cloud-hosted [Sentry](https://sentry.io) and Sentry
-deployed in your [on-premise instance](https://github.com/getsentry/onpremise/).
+deployed in your [on-premise instance](https://github.com/getsentry/self-hosted).
 
 ## Enable Sentry integration for a project
 
@@ -26,7 +28,7 @@ Prerequisites:
 
 To enable the Sentry integration:
 
-1. Sign up to Sentry.io, or deploy your own [on-premise Sentry instance](https://github.com/getsentry/onpremise/).
+1. Sign up to Sentry.io, or deploy your own [on-premise Sentry instance](https://github.com/getsentry/self-hosted).
 1. [Create a new Sentry project](https://docs.sentry.io/product/sentry-basics/integrate-frontend/create-new-project/).
    For each GitLab project that you want to integrate, create a new Sentry project.
 1. Find or generate a [Sentry auth token](https://docs.sentry.io/api/auth/#auth-tokens).
@@ -62,8 +64,20 @@ When working with Error Tracking, you might encounter the following issues.
 ### Error `Connection failed. Check auth token and try again`
 
 If the **Monitor** feature is disabled in the
-[project settings](../user/project/settings/index.md#configure-project-features-and-permissions),
+[project settings](../user/project/settings/_index.md#configure-project-features-and-permissions),
 you might see an error when you try to [enable Sentry integration for a project](#enable-sentry-integration-for-a-project).
 The resulting request to `/project/path/-/error_tracking/projects.json?api_host=https:%2F%2Fsentry.example.com%2F&token=<token>` returns a 404 error.
 
 To fix this issue, enable the **Monitor** feature for the project.
+
+### Error `Connection has failed. Re-check Auth Token and try again`
+
+On-premise Sentry integrations may encounter this issue when attempting to connect.
+
+To fix this issue:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Network**.
+1. Expand **Outbound requests**.
+1. Select the **Allow requests to the local network from webhooks and integrations** and **Allow requests to the local network from system hooks** checkboxes.
+1. Select **Save changes**.

@@ -2,11 +2,11 @@
 stage: Create
 group: Source Code
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Git LFS development guidelines
 ---
-# Git LFS development guidelines
 
 This page contains developer-centric information for GitLab team members. For the
-user documentation, see [Git Large File Storage](../topics/git/lfs/index.md).
+user documentation, see [Git Large File Storage](../topics/git/lfs/_index.md).
 
 This diagram is a high-level explanation of a Git `push` when Git LFS is in use:
 
@@ -132,7 +132,7 @@ sequenceDiagram
     end
 ```
 
-1. Git LFS requests the ability to download files with authorization header from authorization.
+1. Git LFS requests to download files with authorization header from authorization.
 1. `gitlab` responds with the list of objects and where to find them. See
    [LfsApiController#batch](https://gitlab.com/gitlab-org/gitlab/-/blob/7a2f7a31a88b6085ea89b8ba188a4d92d5fada91/app/controllers/repositories/lfs_api_controller.rb#L25).
 1. Git LFS makes a request for each file for the `href` in the previous response. See
@@ -146,7 +146,7 @@ sequenceDiagram
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
     Note right of Git client: Typical Git push things happen first.
-    Note right of Git client: Suthentication for LFS comes next.
+    Note right of Git client: Authentication for LFS comes next.
     autonumber
     activate GitLab Rails
         Git client ->> GitLab Rails: POST project/namespace/info/lfs/objects/batch
@@ -161,7 +161,7 @@ sequenceDiagram
     end
 ```
 
-1. Git LFS requests the ability to upload files.
+1. Git LFS requests to upload files.
 1. `gitlab` responds with the list of objects and uploads to find them. See
    [LfsApiController#batch](https://gitlab.com/gitlab-org/gitlab/-/blob/7a2f7a31a88b6085ea89b8ba188a4d92d5fada91/app/controllers/repositories/lfs_api_controller.rb#L27).
 1. Git LFS makes a request for each file for the `href` in the previous response. See
@@ -177,7 +177,7 @@ sequenceDiagram
 ## Deep Dive
 
 In April 2019, Francisco Javier López hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/-/issues/1`)
-on the GitLab [Git LFS](../topics/git/lfs/index.md) implementation to share domain-specific
+on the GitLab [Git LFS](../topics/git/lfs/_index.md) implementation to share domain-specific
 knowledge with anyone who may work in this part of the codebase in the future.
 You can find the <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=Yyxwcksr0Qc),
 and the slides on [Google Slides](https://docs.google.com/presentation/d/1E-aw6-z0rYd0346YhIWE7E9A65zISL9iIMAOq2zaw9E/edit)
@@ -225,7 +225,7 @@ sequenceDiagram
    Git option.
 1. When `git` identifies a possible LFS pointer using the
    `.gitattributes` file, `git` calls `gitaly-lfs-smudge` and provides the
-   LFS pointer via the standard input. Gitaly provides `GL_PROJECT_PATH`
+   LFS pointer through the standard input. Gitaly provides `GL_PROJECT_PATH`
    and `GL_INTERNAL_CONFIG` as environment variables to enable lookup of
    the LFS object.
 1. If a valid LFS pointer is decoded, `gitaly-lfs-smudge` makes an
@@ -244,7 +244,7 @@ sequenceDiagram
 
 In step 7, the `gitaly-lfs-smudge` filter must talk to Workhorse, not to
 Rails, or an invalid LFS blob is saved. To support this, GitLab
-[changed the default Omnibus configuration to have Gitaly talk to the Workhorse](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4592)
+[changed the default Linux package configuration to have Gitaly talk to the Workhorse](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4592)
 instead of Rails.
 
 One side effect of this change: the correlation ID of the original
@@ -257,5 +257,5 @@ resolved.
 ## Related topics
 
 - Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
-- User documentation: [Git Large File Storage (LFS)](../topics/git/lfs/index.md)
-- [GitLab Git Large File Storage (LFS) Administration](../administration/lfs/index.md) for self-managed instances
+- User documentation: [Git Large File Storage (LFS)](../topics/git/lfs/_index.md)
+- [GitLab Git Large File Storage (LFS) Administration](../administration/lfs/_index.md) for GitLab Self-Managed

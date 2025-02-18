@@ -9,9 +9,6 @@ identifiers:
 product_group: code_review
 milestone: '16.10'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145998
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

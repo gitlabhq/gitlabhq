@@ -81,33 +81,6 @@ html {
       margin-top: $gl-padding-8;
     }
   }
-
-  /* Stripe the background colors so that adjacent alert-warnings are distinct from one another */
-  .alert-warning {
-    transition: background-color 0.15s, border-color 0.15s;
-    background-color: $orange-500;
-    border-color: $orange-500;
-
-    &:only-of-type {
-      background-color: $orange-500;
-      border-color: $orange-500;
-    }
-
-    + .alert-warning {
-      background-color: $orange-600;
-      border-color: $orange-600;
-
-      + .alert-warning {
-        background-color: $orange-700;
-        border-color: $orange-700;
-
-        + .alert-warning {
-          background-color: $orange-800;
-          border-color: $orange-800;
-        }
-      }
-    }
-  }
 }
 
 .gl--flex-full {
@@ -173,7 +146,7 @@ html {
 
 /*
  * These are used by the `Tab width` user preference in
- * `https://gitlab.com/-/profile/preferences`. The `css_class_for_user` method in 
+ * `https://gitlab.com/-/profile/preferences`. The `css_class_for_user` method in
  * `lib/gitlab/tab_width.rb` is used to add one of these classes to the `body` element.
 */
 

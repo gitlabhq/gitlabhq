@@ -2,13 +2,13 @@
 import { GlDisclosureDropdown, GlDisclosureDropdownGroup, GlTooltipDirective } from '@gitlab/ui';
 import { getHTTPProtocol } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
-import CodeDropdownItem from './code_dropdown_item.vue';
+import CodeDropdownCloneItem from '~/repository/components/code_dropdown/code_dropdown_clone_item.vue';
 
 export default {
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
-    CodeDropdownItem,
+    CodeDropdownCloneItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -147,9 +147,8 @@ export default {
     :auto-close="false"
   >
     <gl-disclosure-dropdown-group v-if="sshUrl">
-      <code-dropdown-item
+      <code-dropdown-clone-item
         :label="$options.i18n.cloneWithSsh"
-        label-class="!gl-text-sm !gl-pt-2"
         :link="sshUrl"
         name="ssh_project_clone"
         input-id="copy-ssh-url-input"
@@ -157,9 +156,8 @@ export default {
       />
     </gl-disclosure-dropdown-group>
     <gl-disclosure-dropdown-group v-if="httpUrl">
-      <code-dropdown-item
+      <code-dropdown-clone-item
         :label="httpLabel"
-        label-class="!gl-text-sm !gl-pt-2"
         :link="httpUrl"
         name="http_project_clone"
         input-id="copy-http-url-input"
@@ -167,9 +165,8 @@ export default {
       />
     </gl-disclosure-dropdown-group>
     <gl-disclosure-dropdown-group v-if="kerberosUrl">
-      <code-dropdown-item
+      <code-dropdown-clone-item
         :label="$options.i18n.cloneWithKerberos"
-        label-class="!gl-text-sm !gl-pt-2"
         :link="kerberosUrl"
         name="kerberos_project_clone"
         input-id="copy-http-url-input"

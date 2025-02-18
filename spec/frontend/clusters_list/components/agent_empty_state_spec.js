@@ -4,7 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 const emptyStateImage = '/path/to/image';
-const installDocsUrl = helpPagePath('user/clusters/agent/index');
+const installDocsUrl = helpPagePath('user/clusters/agent/_index');
 
 describe('AgentEmptyStateComponent', () => {
   let wrapper;

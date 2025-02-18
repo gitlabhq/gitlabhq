@@ -110,7 +110,7 @@ RSpec.describe MergeRequests::CleanupRefsService, feature_category: :code_review
 
       context 'when repository no longer exists' do
         before do
-          Repositories::DestroyService.new(merge_request.project.repository).execute
+          ::Repositories::DestroyService.new(merge_request.project.repository).execute
         end
 
         it 'does not fail and still mark schedule as complete' do

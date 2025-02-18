@@ -46,6 +46,11 @@ describe('CRUD Component', () => {
     expect(findTitle().text()).toBe('CRUD Component title');
   });
 
+  it('renders the element specified by the containerTag prop', () => {
+    createComponent({ containerTag: 'span' });
+    expect(wrapper.element.tagName).toBe('SPAN');
+  });
+
   it('renders `title` slot', () => {
     createComponent({}, { title: '<p>Title slot</p>' });
 
@@ -237,6 +242,17 @@ describe('CRUD Component', () => {
       createComponent({}, { default: defaultSlot });
 
       expect(defaultSlot).toHaveBeenCalledWith(
+        expect.objectContaining({ showForm: wrapper.vm.showForm }),
+      );
+    });
+  });
+
+  describe('actions slot', () => {
+    it('passes the showForm function to the actions slot', () => {
+      const actionsSlot = jest.fn();
+      createComponent({}, { actions: actionsSlot });
+
+      expect(actionsSlot).toHaveBeenCalledWith(
         expect.objectContaining({ showForm: wrapper.vm.showForm }),
       );
     });

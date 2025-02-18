@@ -87,7 +87,8 @@ module Ci
     has_many :projects, through: :runner_projects, disable_joins: true
     has_many :runner_namespaces, inverse_of: :runner, autosave: true
     has_many :groups, through: :runner_namespaces, disable_joins: true
-    has_many :tag_links, class_name: 'Ci::RunnerTagging', inverse_of: :runner
+    has_many :taggings, class_name: 'Ci::RunnerTagging', inverse_of: :runner
+    has_many :tags, class_name: 'Ci::Tag', through: :taggings, source: :tag
 
     # currently we have only 1 namespace assigned, but order is here for consistency
     has_one :owner_runner_namespace, -> { order(:id) }, class_name: 'Ci::RunnerNamespace'
@@ -330,12 +331,8 @@ module Ci
       end
     end
 
-    # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/504277 is closed.
-    def self.sharded_table_proxy_model
-      @sharded_table_proxy_class ||= Class.new(self) do
-        self.table_name = :ci_runners_e59bb2812d
-        self.primary_key = :id
-      end
+    def self.taggings_join_model
+      ::Ci::RunnerTagging
     end
 
     def runner_matcher
@@ -359,11 +356,16 @@ module Ci
         raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
       end
 
+      if self.runner_projects.empty?
+        self.errors.add(:assign_to, 'Taking over an orphaned project runner is not allowed')
+        return false
+      end
+
       begin
         transaction do
-          if self.runner_projects.empty?
-            self.sharding_key_id = project.id
-            self.clear_memoization(:owner)
+          if projects.id_in(sharding_key_id).empty? && !update_project_id
+            self.errors.add(:assign_to, 'Runner is orphaned and no fallback owner exists')
+            next false
           end
 
           self.runner_projects << ::Ci::RunnerProject.new(project: project, runner: self)
@@ -402,24 +404,19 @@ module Ci
       when 'group_type'
         ::Group.find_by_id(sharding_key_id)
       when 'project_type'
-        # NOTE: when a project is deleted, the respective ci_runner_projects records are not immediately
-        # deleted by the LFK, so we might find join records that point to a non-existing project
-        project = ::Project.find_by_id(sharding_key_id)
-        return project if project
+        owner_project = ::Project.find_by_id(sharding_key_id)
 
-        project_ids = runner_projects.order(:id).pluck(:project_id)
-        projects_added_to_runner_asc = Arel.sql("array_position(ARRAY[#{project_ids.join(',')}]::bigint[], id)")
-        Project.order(projects_added_to_runner_asc).find_by_id(project_ids)
+        owner_project || fallback_owner_project
       end
     end
     strong_memoize_attr :owner
 
     def belongs_to_one_project?
-      runner_projects.limit(2).count(:all) == 1
+      runner_projects.one?
     end
 
     def belongs_to_more_than_one_project?
-      runner_projects.limit(2).count(:all) > 1
+      runner_projects.many?
     end
 
     def match_build_if_online?(build)
@@ -427,7 +424,7 @@ module Ci
     end
 
     def only_for?(project)
-      !runner_projects.where.not(project_id: project.id).exists?
+      runner_projects.where.not(project_id: project.id).empty?
     end
 
     def short_sha
@@ -441,59 +438,15 @@ module Ci
       token[start_index..start_index + RUNNER_SHORT_SHA_LENGTH - 1]
     end
 
-    def tag_list
-      if tags.loaded?
-        tags.map(&:name)
-      else
-        super
-      end
-    end
-
     def has_tags?
       tag_list.any?
-    end
-
-    override :save_tags
-    def save_tags
-      super do |new_tags, old_tags|
-        if old_tags.present?
-          tag_links
-            .where(tag_id: old_tags)
-            .delete_all
-        end
-
-        # Avoid inserting partitioned taggings that refer to a missing ci_runners partitioned record, since
-        # the backfill is not yet finalized.
-        ensure_partitioned_runner_record_exists if new_tags.any?
-
-        ci_runner_taggings = new_tags.map do |tag|
-          Ci::RunnerTagging.new(
-            runner_id: id, runner_type: runner_type,
-            tag_id: tag.id, sharding_key_id: sharding_key_id)
-        end
-
-        ::Ci::RunnerTagging.bulk_insert!(
-          ci_runner_taggings,
-          validate: false,
-          unique_by: [:tag_id, :runner_id, :runner_type],
-          returns: :id
-        )
-      end
-    end
-
-    # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/504277 is closed.
-    def ensure_partitioned_runner_record_exists
-      self.class.sharded_table_proxy_model.insert_all(
-        [attributes.except('tag_list')], unique_by: [:id, :runner_type],
-        returning: false, record_timestamps: false
-      )
     end
 
     def predefined_variables
       Gitlab::Ci::Variables::Collection.new
         .append(key: 'CI_RUNNER_ID', value: id.to_s)
         .append(key: 'CI_RUNNER_DESCRIPTION', value: description)
-        .append(key: 'CI_RUNNER_TAGS', value: tag_list.to_s)
+        .append(key: 'CI_RUNNER_TAGS', value: tag_list.to_a.to_s)
     end
 
     def tick_runner_queue
@@ -575,10 +528,6 @@ module Ci
     def ensure_manager(system_xid)
       # rubocop: disable Performance/ActiveRecordSubtransactionMethods -- This is used only in API endpoints outside of transactions
       RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s) do |m|
-        # Avoid inserting partitioned runner managers that refer to a missing ci_runners partitioned record, since
-        # the backfill is not yet finalized.
-        ensure_partitioned_runner_record_exists
-
         m.runner_type = runner_type
         m.sharding_key_id = sharding_key_id
       end
@@ -599,6 +548,28 @@ module Ci
 
     scope :with_upgrade_status, ->(upgrade_status) do
       joins(:runner_managers).merge(RunnerManager.with_upgrade_status(upgrade_status))
+    end
+
+    def fallback_owner_project
+      # NOTE: when a project is deleted, the respective ci_runner_projects records are not immediately
+      # deleted by the LFK, so we might find join records that point to a still-existing project
+      project_ids = runner_projects.order(:id).pluck(:project_id)
+      projects_added_to_runner_asc = Arel.sql("array_position(ARRAY[#{project_ids.join(',')}]::bigint[], id)")
+      Project.order(projects_added_to_runner_asc).find_by_id(project_ids)
+    end
+
+    # Ensure we have a valid sharding_key_id. Logic is similar to the one used in
+    # Ci::Runners::UpdateProjectRunnersOwnerService when a project is deleted
+    def update_project_id
+      project_id = fallback_owner_project&.id
+
+      return if project_id.nil?
+
+      self.clear_memoization(:owner)
+      self.sharding_key_id = project_id
+
+      runner_managers.where(runner_type: :project_type).each_batch { |batch| batch.update_all(sharding_key_id: project_id) }
+      taggings.where(runner_type: :project_type).update_all(sharding_key_id: project_id)
     end
 
     def compute_token_expiration_instance
@@ -661,7 +632,7 @@ module Ci
     end
 
     def any_project
-      errors.add(:runner, 'needs to be assigned to at least one project') unless runner_projects.any?
+      errors.add(:runner, 'needs to be assigned to at least one project') if runner_projects.empty?
     end
 
     def exactly_one_group

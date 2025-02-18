@@ -2,13 +2,15 @@
 stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting Gitaly Cluster
 ---
 
-# Troubleshooting Gitaly Cluster
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Refer to the information below when troubleshooting Gitaly Cluster (Praefect). For information on troubleshooting Gitaly,
 see [Troubleshooting Gitaly](troubleshooting.md).
@@ -89,7 +91,7 @@ Here are common errors and potential causes:
 - 500 response code
   - `ActionView::Template::Error (7:permission denied)`
     - `praefect['configuration'][:auth][:token]` and `gitlab_rails['gitaly_token']` do not match on the GitLab server.
-    - `git_data_dirs` storage configuration is missing on the Sidekiq server.
+    - `gitlab_rails['repositories_storages']` storage configuration is missing on the Sidekiq server.
   - `Unable to save project. Error: 7:permission denied`
     - Secret token in `praefect['configuration'][:virtual_storage]` on GitLab server does not match the
       value in `gitaly['auth_token']` on one or more Gitaly servers.
@@ -115,7 +117,7 @@ To determine the primary node of a repository, use the [`praefect metadata`](#vi
 
 ## View repository metadata
 
-Gitaly Cluster maintains a [metadata database](index.md#components) about the repositories stored on the cluster. Use the `praefect metadata` subcommand
+Gitaly Cluster maintains a [metadata database](_index.md#components) about the repositories stored on the cluster. Use the `praefect metadata` subcommand
 to inspect the metadata for troubleshooting.
 
 You can retrieve a repository's metadata by its Praefect-assigned repository ID:
@@ -125,7 +127,7 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 ```
 
 When the physical path on the physical storage starts with `@cluster`, you can
-[find the repository ID in the physical path](index.md#praefect-generated-replica-paths).
+[find the repository ID in the physical path](_index.md#praefect-generated-replica-paths).
 
 You can also retrieve a repository's metadata by its virtual storage and relative path:
 
@@ -214,7 +216,7 @@ The documented examples specify `-virtual-storage default`. Check the Praefect s
 
 ## Check that repositories are in sync
 
-Is [some cases](index.md#known-issues) the Praefect database can get out of sync with the underlying Gitaly nodes. To check that
+Is [some cases](_index.md#known-issues) the Praefect database can get out of sync with the underlying Gitaly nodes. To check that
 a given repository is fully synced on all nodes, run the [`gitlab:praefect:replicas` Rake task](../raketasks/praefect.md#replica-checksums) on your Rails node.
 This Rake task checksums the repository on all Gitaly nodes.
 

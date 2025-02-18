@@ -2,16 +2,22 @@
 stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Google Artifact Management
 ---
 
-# Google Artifact Management
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../../../policy/development_stages_support.md).
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../../../policy/development_stages_support.md).
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
+
+{{< /history >}}
 
 You can use the Google Artifact Management integration to
 configure and connect a [Google Artifact Registry](https://cloud.google.com/artifact-registry) repository to your GitLab project.
@@ -78,7 +84,7 @@ and populates the `GOOGLE_APPLICATION_CREDENTIALS` and `CLOUDSDK_AUTH_CREDENTIAL
 environment credentials. These environment credentials are automatically detected by client tools,
 like [gcloud CLI](https://cloud.google.com/sdk/gcloud) and [crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md).
 
-To authenticate with the Google Artifact Registry, in the project's `.gitlab-ci.yml` file, use the [`identity`](../../../ci/yaml/index.md#identity) keyword set to `google_cloud`.
+To authenticate with the Google Artifact Registry, in the project's `.gitlab-ci.yml` file, use the [`identity`](../../../ci/yaml/_index.md#identity) keyword set to `google_cloud`.
 
 #### IAM policies
 

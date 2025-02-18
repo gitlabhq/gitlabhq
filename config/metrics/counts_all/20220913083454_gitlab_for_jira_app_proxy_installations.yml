@@ -13,9 +13,6 @@ instrumentation_class: GitlabForJiraAppProxyInstallationsCountMetric
 milestone: "15.5"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97674
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -2,6 +2,11 @@
   padding-bottom: $gl-padding;
 
   --rd-diff-file-border-radius: #{calc($gl-border-radius-base - 1px)};
+
+  &:has([data-file-body][hidden]) .rd-diff-file-toggle [data-opened],
+  &:not(:has([data-file-body][hidden])) .rd-diff-file-toggle [data-closed] {
+    display: none;
+  }
 }
 
 .rd-diff-file-header {
@@ -19,11 +24,11 @@
 }
 
 .rd-lines-added {
-  color: $green-600;
+  @apply gl-text-success;
 }
 
 .rd-lines-removed {
-  color: $red-500;
+  @apply gl-text-danger;
   margin-left: $gl-padding-4;
 }
 
@@ -35,4 +40,11 @@
   > :only-child {
     border-radius: inherit;
   }
+}
+
+[data-file-body][hidden] {
+  display: block !important;
+  // https://web.dev/articles/content-visibility#hide_content_with_content-visibility_hidden
+  // content-visibility: hidden preserves element's rendering state which improves performance for larger diffs
+  content-visibility: hidden;
 }

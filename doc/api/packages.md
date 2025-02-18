@@ -2,17 +2,23 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Packages API
 ---
 
-# Packages API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349418) support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication for the project-level API in GitLab 15.3.
+{{< /details >}}
 
-The API documentation of [GitLab Packages](../administration/packages/index.md).
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349418) support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication for the project-level API in GitLab 15.3.
+
+{{< /history >}}
+
+The API documentation of [GitLab Packages](../administration/packages/_index.md).
 
 ## List packages
 
@@ -29,7 +35,7 @@ GET /projects/:id/packages
 
 | Attribute             | Type           | Required | Description |
 |:----------------------|:---------------|:---------|:------------|
-| `id`                  | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                  | integer/string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `order_by`            | string         | no       | The field to use as order. One of `created_at` (default), `name`, `version`, or `type`. |
 | `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type`        | string         | no       | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, `helm`, `terraform_module`, or `golang`. |
@@ -80,7 +86,7 @@ Example response:
 ]
 ```
 
-By default, the `GET` request returns 20 results, because the API is [paginated](rest/index.md#pagination).
+By default, the `GET` request returns 20 results, because the API is [paginated](rest/_index.md#pagination).
 
 Although you can filter packages by status, working with packages that have a `processing` status
 can result in malformed data or broken packages.
@@ -98,7 +104,7 @@ GET /groups/:id/packages
 
 | Attribute             | Type           | Required | Description |
 |:----------------------|:---------------|:---------|:------------|
-| `id`                  | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`                  | integer/string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `exclude_subgroups`   | boolean        | no       | If the parameter is included as true, packages from projects from subgroups are not listed. Default is `false`. |
 | `order_by`            | string         | no       | The field to use as order. One of `created_at` (default), `name`, `version`, `type`, or `project_path`. |
 | `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
@@ -175,7 +181,7 @@ Example response:
 ]
 ```
 
-By default, the `GET` request returns 20 results, because the API is [paginated](rest/index.md#pagination).
+By default, the `GET` request returns 20 results, because the API is [paginated](rest/_index.md#pagination).
 
 The `_links` object contains the following properties:
 
@@ -195,7 +201,7 @@ GET /projects/:id/packages/:package_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
@@ -275,7 +281,7 @@ GET /projects/:id/packages/:package_id/package_files
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
@@ -334,15 +340,19 @@ Example response:
 ]
 ```
 
-By default, the `GET` request returns 20 results, because the API is [paginated](rest/index.md#pagination).
+By default, the `GET` request returns 20 results, because the API is [paginated](rest/_index.md#pagination).
 
 ## List package pipelines
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.1.
+
+{{< /history >}}
 
 Get a list of pipelines for a single package. The results are sorted by `id` in descending order.
 
-The results are [paginated](rest/index.md#keyset-based-pagination) and return up to 20 records per page.
+The results are [paginated](rest/_index.md#keyset-based-pagination) and return up to 20 records per page.
 
 ```plaintext
 GET /projects/:id/packages/:package_id/pipelines
@@ -350,7 +360,7 @@ GET /projects/:id/packages/:package_id/pipelines
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
@@ -414,7 +424,7 @@ DELETE /projects/:id/packages/:package_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
@@ -431,9 +441,12 @@ deleting a package can introduce a [dependency confusion risk](../user/packages/
 
 ## Delete a package file
 
-WARNING:
+{{< alert type="warning" >}}
+
 Deleting a package file may corrupt your package making it unusable or unpullable from your package
 manager client. When deleting a package file, be sure that you understand what you're doing.
+
+{{< /alert >}}
 
 Delete a package file:
 
@@ -443,7 +456,7 @@ DELETE /projects/:id/packages/:package_id/package_files/:package_file_id
 
 | Attribute         | Type           | Required | Description |
 | ----------------- | -------------- | -------- | ----------- |
-| `id`              | integer/string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`              | integer/string | yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `package_id`      | integer        | yes | ID of a package. |
 | `package_file_id` | integer        | yes | ID of a package file. |
 

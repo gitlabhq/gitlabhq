@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Query users by using GraphQL
 ---
 
-# Query users by using GraphQL
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can query a subset of users in a GitLab instance by using:
 
@@ -48,9 +50,12 @@ You can query a subset of users in a GitLab instance by using:
 
 1. Select **Play**.
 
-NOTE:
+{{< alert type="note" >}}
+
 [The GraphQL API returns a GlobalID, rather than a standard ID](getting_started.md#queries-and-mutations).
 It also expects a GlobalID as an input rather than a single integer.
+
+{{< /alert >}}
 
 This query returns the specified information for the three users with the listed username.
 
@@ -103,5 +108,5 @@ the output includes:
 
 ## Related topics
 
-- [GraphQL API reference](reference/index.md)
+- [GraphQL API reference](reference/_index.md)
 - [GraphQL-specific entities, like fragments and interfaces](https://graphql.org/learn/)

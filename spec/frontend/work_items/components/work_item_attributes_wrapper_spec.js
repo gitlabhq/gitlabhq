@@ -13,7 +13,13 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
 import workItemParticipantsQuery from '~/work_items/graphql/work_item_participants.query.graphql';
-import { workItemResponseFactory, mockParticipantWidget } from '../mock_data';
+import getAllowedWorkItemParentTypes from '~/work_items/graphql/work_item_allowed_parent_types.query.graphql';
+import {
+  workItemResponseFactory,
+  mockParticipantWidget,
+  allowedParentTypesResponse,
+  allowedParentTypesEmptyResponse,
+} from '../mock_data';
 
 describe('WorkItemAttributesWrapper component', () => {
   let wrapper;
@@ -42,6 +48,11 @@ describe('WorkItemAttributesWrapper component', () => {
     .mockResolvedValue(workItemParticipantsQueryResponse);
   const workItemParticipantsQueryFailureHandler = jest.fn().mockRejectedValue(new Error());
 
+  const allowedParentTypesSuccessHandler = jest.fn().mockResolvedValue(allowedParentTypesResponse);
+  const allowedParentTypesEmptyHandler = jest
+    .fn()
+    .mockResolvedValue(allowedParentTypesEmptyResponse);
+
   const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
   const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDate);
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
@@ -56,10 +67,12 @@ describe('WorkItemAttributesWrapper component', () => {
     workItemsAlpha = false,
     groupPath = '',
     workItemParticipantsQueryHandler = workItemParticipantsQuerySuccessHandler,
+    allowedParentTypesHandler = allowedParentTypesSuccessHandler,
   } = {}) => {
     wrapper = shallowMount(WorkItemAttributesWrapper, {
       apolloProvider: createMockApollo([
         [workItemParticipantsQuery, workItemParticipantsQueryHandler],
+        [getAllowedWorkItemParentTypes, allowedParentTypesHandler],
       ]),
       propsData: {
         fullPath: 'group/project',
@@ -171,6 +184,13 @@ describe('WorkItemAttributesWrapper component', () => {
       await waitForPromises();
 
       expect(findWorkItemParent().exists()).toBe(true);
+    });
+
+    it('does not render parent component if it is not supported by the license', async () => {
+      createComponent({ allowedParentTypesHandler: allowedParentTypesEmptyHandler });
+      await waitForPromises();
+
+      expect(findWorkItemParent().exists()).toBe(false);
     });
 
     it.each([true, false])(`renders parent component with hasParent %s`, async (hasParent) => {

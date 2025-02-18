@@ -1,0 +1,17 @@
+# Warning: gitlab_base.Offerings
+#
+# Tests the offering information in the tier badges that appear below topic titles.
+#
+# For a list of all options, see https://docs.gitlab.com/ee/development/documentation/styleguide/#available-product-tier-badges
+extends: substitution
+message: "The offerings are 'GitLab Self-Managed' and 'GitLab Dedicated', with that exact capitalization."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#available-product-tier-badges
+vocab: false
+level: warning
+action:
+  name: replace
+ignorecase: false
+swap:
+  - 'GitLab [Ss]elf-managed': GitLab Self-Managed
+  - '(?<!GitLab )[Ss]elf-[Mm]anaged(?! runner)': GitLab Self-Managed
+  - GitLab dedicated: GitLab Dedicated

@@ -74,6 +74,10 @@ export default {
       required: false,
       default: null,
     },
+    canAdminRunners: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -209,10 +213,11 @@ export default {
       <template #title>{{ s__('Runners|Runners') }}</template>
       <template #actions>
         <runner-dashboard-link />
-        <gl-button :href="newRunnerPath" variant="confirm">
+        <gl-button v-if="canAdminRunners" :href="newRunnerPath" variant="confirm">
           {{ s__('Runners|New instance runner') }}
         </gl-button>
         <registration-dropdown
+          v-if="canAdminRunners"
           :allow-registration-token="allowRegistrationToken"
           :registration-token="registrationToken"
           :type="$options.INSTANCE_TYPE"
@@ -245,7 +250,7 @@ export default {
       <runner-list
         :runners="runners.items"
         :loading="runnersLoading"
-        :checkable="true"
+        :checkable="canAdminRunners"
         @deleted="onDeleted"
       >
         <template #runner-job-status-badge="{ runner }">

@@ -2,22 +2,28 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Project relations export API
 ---
 
-# Project relations export API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - New application setting `bulk_import_enabled` introduced in GitLab 15.8. `bulk_import` feature flag removed.
+{{< /details >}}
+
+{{< history >}}
+
+- New application setting `bulk_import_enabled` introduced in GitLab 15.8. `bulk_import` feature flag removed.
+
+{{< /history >}}
 
 The project relations export API partially exports a project's structure as separate files for each
 top-level
 relation (for example, milestones, issues, and labels).
 
 The project relations export API is primarily used in
-[group migration](../user/group/import/index.md) can't
+[group migration](../user/group/import/_index.md) can't
 be used with the
 [project import and export API](project_import_export.md).
 

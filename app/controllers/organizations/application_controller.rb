@@ -10,9 +10,10 @@ module Organizations
     private
 
     def organization
-      return unless params[:organization_path]
+      organization_path = params.permit(:organization_path)[:organization_path]
+      return unless organization_path
 
-      @organization = Organizations::Organization.find_by_path(params[:organization_path])
+      @organization = Organizations::Organization.find_by_path(organization_path)
     end
     strong_memoize_attr :organization
 

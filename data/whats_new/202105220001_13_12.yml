@@ -35,7 +35,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/yaml/index.html#artifactsexpire_in
+  documentation_link: https://docs.gitlab.com/ee/ci/yaml/#artifactsexpire_in
   image_url: https://about.gitlab.com/images/growth/verify.png
   published_at: 2021-05-22
   release: 13.12
@@ -56,7 +56,7 @@
   release: 13.12
 - name: Configuration tool for Secret Detection
   description: |
-    Following in the footsteps of the [GitLab SAST configuration tool](https://docs.gitlab.com/ee/user/application_security/sast/index.html#configure-sast-in-the-ui) we are adding support for Secret Detection on the Security Configuration page. We believe that [security is a team effort](https://about.gitlab.com/direction/secure/#security-is-a-team-effort) and this configuration experience makes it easier for non-CI experts to get started with [GitLab Secret Detection](https://docs.gitlab.com/ee/user/application_security/secret_detection/). The tool helps a user create a merge request to enable Secret Detection scanning while leveraging best configuration practices like using the GitLab-managed [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml). The Configuration tool can create a new `.gitlab-ci.yml` file if one does not exist or update existing simple GitLab CI files, allowing the tool to be used with projects that already have GitLab CI setup.
+    Following in the footsteps of the [GitLab SAST configuration tool](https://docs.gitlab.com/ee/user/application_security/sast/#configure-sast-in-the-ui) we are adding support for Secret Detection on the Security Configuration page. We believe that [security is a team effort](https://about.gitlab.com/direction/secure/#security-is-a-team-effort) and this configuration experience makes it easier for non-CI experts to get started with [GitLab Secret Detection](https://docs.gitlab.com/ee/user/application_security/secret_detection/). The tool helps a user create a merge request to enable Secret Detection scanning while leveraging best configuration practices like using the GitLab-managed [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml). The Configuration tool can create a new `.gitlab-ci.yml` file if one does not exist or update existing simple GitLab CI files, allowing the tool to be used with projects that already have GitLab CI setup.
   stage: secure
   self-managed: true
   gitlab-com: true

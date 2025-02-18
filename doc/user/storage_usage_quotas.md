@@ -2,27 +2,32 @@
 stage: Fulfillment
 group: Utilization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Storage
 ---
 
-# Storage
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 All projects on GitLab.com have 10 GiB of free storage for their Git repository and Large File Storage (LFS).
 
 When a project's repository and LFS exceed 10 GiB, the project is set to a read-only state.
 You cannot push changes to a read-only project. To increase storage of the project's repository and LFS to more than 10 GiB,
-you must [purchase more storage](../subscriptions/gitlab_com/index.md#purchase-more-storage).
+you must [purchase more storage](../subscriptions/gitlab_com/_index.md#purchase-more-storage).
 
 Only the project's repository and LFS are included in the storage limit. The container registry, package registry, and build artifacts are not included in the limit.
 
 ## View storage
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can view the following statistics for storage usage in projects and namespaces:
 
@@ -49,9 +54,12 @@ Storage usage is displayed in kibibytes (KiB), mebibytes (MiB),
 or gibibytes (GiB). 1 KiB is 2^10 bytes (1024 bytes),
 1 MiB is 2^20 bytes (1024 kibibytes), and 1 GiB is 2^30 bytes (1024 mebibytes).
 
-NOTE:
+{{< alert type="note" >}}
+
 Storage usage labels are being transitioned from `KB` to `KiB`, `MB` to `MiB`, and `GB` to `GiB`. During this transition,
 you might see references to `KB`, `MB`, and `GB` in the UI and documentation.
+
+{{< /alert >}}
 
 ## View project fork storage usage
 
@@ -72,7 +80,7 @@ The cost factor does not apply to private forks in namespaces on the Free plan.
 Excess storage usage is the amount that exceeds the 10 GiB free storage of a project's repository and LFS. If no purchased storage is available,
 the project is set to a read-only state. You cannot push changes to a read-only project.
 
-To remove the read-only state, you must [purchase more storage](../subscriptions/gitlab_com/index.md#purchase-more-storage)
+To remove the read-only state, you must [purchase more storage](../subscriptions/gitlab_com/_index.md#purchase-more-storage)
 for the namespace. After the purchase has completed, the read-only state is removed and projects are automatically
 restored. The amount of available purchased storage must always
 be greater than zero.
@@ -82,7 +90,7 @@ The **Storage** tab of the **Usage Quotas** page displays the following:
 - Purchased storage available is running low.
 - Projects that are at risk of becoming read-only if purchased storage available is zero.
 - Projects that are read-only because purchased storage available is zero. Read-only projects are
-  marked with an information icon (**{information-o}**) beside their name.
+  marked with an information icon ({{< icon name="information-o" >}}) beside their name.
 
 The total storage includes the free and excess storage purchased.
 The remaining excess storage is expressed as a percentage and calculated as:
@@ -94,9 +102,9 @@ The following example describes an excess storage scenario for projects in a nam
 
 | Repository | Storage used | Excess storage | Quota  | Status               |
 |------------|--------------|----------------|--------|----------------------|
-| Red        | 10 GiB        | 0 GiB           | 10 GiB  | Read-only **{lock}** |
+| Red        | 10 GiB        | 0 GiB           | 10 GiB  | Read-only {{< icon name="lock" >}} |
 | Blue       | 8 GiB         | 0 GiB           | 10 GiB  | Not read-only        |
-| Green      | 10 GiB        | 0 GiB           | 10 GiB  | Read-only **{lock}** |
+| Green      | 10 GiB        | 0 GiB           | 10 GiB  | Read-only {{< icon name="lock" >}} |
 | Yellow     | 2 GiB         | 0 GiB           | 10 GiB  | Not read-only        |
 | **Totals** | **30 GiB**    | **0 GiB**       | -      | -                    |
 
@@ -123,7 +131,7 @@ In this example:
 
 ## Manage storage usage
 
-To manage your storage, if you are a namespace Owner, you can [purchase more storage for the namespace](../subscriptions/gitlab_com/index.md#purchase-more-storage).
+To manage your storage, if you are a namespace Owner, you can [purchase more storage for the namespace](../subscriptions/gitlab_com/_index.md#purchase-more-storage).
 
 Depending on your role, you can also use the following methods to manage or reduce your storage:
 
@@ -137,10 +145,10 @@ In addition to managing your storage usage you can consider these options for in
   - GitLab for Education
   - GitLab for Open Source
   - GitLab for Startups
-- Consider a [self-managed subscription](../subscriptions/self_managed/index.md), which does not have storage limits.
+- Consider a [self-managed subscription](../subscriptions/self_managed/_index.md), which does not have storage limits.
 - [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) for more information about your options.
 
 ## Related topics
 
 - [Automate storage management](storage_management_automation.md)
-- [Purchase storage](../subscriptions/gitlab_com/index.md#purchase-more-storage)
+- [Purchase storage](../subscriptions/gitlab_com/_index.md#purchase-more-storage)

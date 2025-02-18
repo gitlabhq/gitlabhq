@@ -33,6 +33,7 @@ RSpec.describe Gitlab::UrlBuilder do
       :release           | ->(release)       { "/#{release.project.full_path}/-/releases/#{release.tag}" }
       :organization      | ->(organization)  { "/-/organizations/#{organization.path}" }
       :ci_build          | ->(build)         { "/#{build.project.full_path}/-/jobs/#{build.id}" }
+      :ci_pipeline       | ->(pipeline)      { "/#{pipeline.project.full_path}/-/pipelines/#{pipeline.id}" }
       :design            | ->(design)        { "/#{design.project.full_path}/-/design_management/designs/#{design.id}/raw_image" }
 
       [:issue, :group_level]     | ->(issue)     { "/groups/#{issue.namespace.full_path}/-/work_items/#{issue.iid}" }
@@ -102,6 +103,17 @@ RSpec.describe Gitlab::UrlBuilder do
 
       it 'returns only the path if only_path is given' do
         expect(subject.build(note, only_path: true)).to eq(path)
+      end
+    end
+
+    context 'when passing a wiki page meta object' do
+      # NOTE: `build_stubbed` doesn't work for wiki_page_meta properly at the moment
+      let_it_be(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page) }
+
+      it 'returns the full URL' do
+        path = "#{wiki_page_meta.container.wiki.wiki_base_path}/#{wiki_page_meta.canonical_slug}"
+
+        expect(subject.build(wiki_page_meta)).to eq("#{Gitlab.config.gitlab.url}#{path}")
       end
     end
 

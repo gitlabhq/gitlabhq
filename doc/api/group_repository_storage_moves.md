@@ -2,17 +2,19 @@
 stage: Create
 group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Documentation for the REST API for moving the storage for repositories in a GitLab group."
+description: Documentation for the REST API for moving the storage for repositories in a GitLab group.
+title: Group repository storage moves API
 ---
 
-# Group repository storage moves API
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Group wiki repositories can be moved between storages. This API can help you, for example,
-[migrate to Gitaly Cluster](../administration/gitaly/index.md#migrate-to-gitaly-cluster)
+[migrate to Gitaly Cluster](../administration/gitaly/_index.md#migrate-to-gitaly-cluster)
 or migrate a [group wiki](../user/project/wiki/group.md). This API does not manage
 project repositories in a group. To schedule project moves, use the
 [project repository storage moves API](project_repository_storage_moves.md).
@@ -50,7 +52,7 @@ GET /group_repository_storage_moves
 ```
 
 By default, `GET` requests return 20 results at a time, because the API results
-are [paginated](rest/index.md#pagination).
+are [paginated](rest/_index.md#pagination).
 
 Example request:
 
@@ -87,7 +89,7 @@ GET /groups/:group_id/repository_storage_moves
 ```
 
 By default, `GET` requests return 20 results at a time, because the API results
-are [paginated](rest/index.md#pagination).
+are [paginated](rest/_index.md#pagination).
 
 Supported attributes:
 

@@ -2,26 +2,35 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Documentation for the REST API for Git tags in GitLab."
+description: Documentation for the REST API for Git tags in GitLab.
+title: Tags API
 ---
 
-# Tags API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## List project repository tags
 
-> - `version` value for the `order_by` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95150) in GitLab 15.4.
-> - `created_at` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451011) in GitLab 16.11.
+{{< history >}}
+
+- `version` value for the `order_by` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95150) in GitLab 15.4.
+- `created_at` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451011) in GitLab 16.11.
+
+{{< /history >}}
 
 Get a list of repository tags from a project, sorted by update date and time in
 descending order.
 
-NOTE:
+{{< alert type="note" >}}
+
 If the repository is publicly accessible, authentication
 (`--header "PRIVATE-TOKEN: <your_access_token>"`) is not required.
+
+{{< /alert >}}
 
 ```plaintext
 GET /projects/:id/repository/tags
@@ -31,7 +40,7 @@ Parameters:
 
 | Attribute  | Type              | Required | Description |
 |------------|-------------------|----------|-------------|
-| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `order_by` | string            | no       | Return tags ordered by `name`, `updated`, or `version`. Default is `updated`. |
 | `sort`     | string            | no       | Return tags sorted in `asc` or `desc` order. Default is `desc`. |
 | `search`   | string            | no       | Return a list of tags matching the search criteria. You can use `^term` and `term$` to find tags that begin and end with `term`. No other regular expressions are supported. |
@@ -77,7 +86,11 @@ Example Response:
 
 ## Get a single repository tag
 
-> - `created_at` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451011) in GitLab 16.11.
+{{< history >}}
+
+- `created_at` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451011) in GitLab 16.11.
+
+{{< /history >}}
 
 Get a specific repository tag determined by its name. This endpoint can be
 accessed without authentication if the repository is publicly accessible.
@@ -90,7 +103,7 @@ Parameters:
 
 | Attribute  | Type              | Required | Description |
 |------------|-------------------|----------|-------------|
-| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `tag_name` | string            | yes      | The name of a tag. |
 
 ```shell
@@ -129,7 +142,11 @@ Example Response:
 
 ## Create a new tag
 
-> - `created_at` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451011) in GitLab 16.11.
+{{< history >}}
+
+- `created_at` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451011) in GitLab 16.11.
+
+{{< /history >}}
 
 Creates a new tag in the repository that points to the supplied ref.
 
@@ -141,7 +158,7 @@ Parameters:
 
 | Attribute  | Type              | Required | Description |
 |------------|-------------------|----------|-------------|
-| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `tag_name` | string            | yes      | The name of a tag. |
 | `ref`      | string            | yes      | Create a tag from a commit SHA, another tag name, or branch name. |
 | `message`  | string            | no       | Create an annotated tag. |
@@ -206,12 +223,16 @@ Parameters:
 
 | Attribute  | Type              | Required | Description |
 |------------|-------------------|----------|-------------|
-| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `tag_name` | string            | yes      | The name of a tag. |
 
 ## Get X.509 signature of a tag
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106578) in GitLab 15.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106578) in GitLab 15.7.
+
+{{< /history >}}
 
 Get the [X.509 signature from a tag](../user/project/repository/signed_commits/x509.md),
 if it is signed. Unsigned tags return a `404 Not Found` response.
@@ -224,7 +245,7 @@ Parameters:
 
 | Attribute  | Type              | Required | Description |
 |------------|-------------------|----------|-------------|
-| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `tag_name` | string            | yes      | The name of a tag. |
 
 ```shell

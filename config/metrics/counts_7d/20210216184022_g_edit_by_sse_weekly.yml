@@ -11,9 +11,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
   - g_edit_by_sse
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

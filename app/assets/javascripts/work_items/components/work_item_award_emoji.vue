@@ -232,7 +232,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="!isLoading" class="gl-mt-3">
+  <div v-if="!isLoading">
     <awards-list
       :awards="awards"
       :can-award-emoji="$options.isLoggedIn"

@@ -22,11 +22,12 @@
           .stats.gl-text-subtle.gl-shrink-0.gl-hidden.sm:gl-flex
             = gl_badge_tag storage_counter(project.statistics&.storage_size)
 
-          .controls.gl-shrink-0.gl-ml-5
-            = render Pajamas::ButtonComponent.new(href: edit_admin_namespace_project_path({ id: project.to_param, namespace_id: project.namespace.to_param }), button_options: { id: dom_id(project) }) do
-              = _('Edit')
-            = render Pajamas::ButtonComponent.new(variant: :danger, button_options: { class: 'delete-project-button', data: { delete_project_url: admin_project_path(project), project_name: project.name } }) do
-              = s_('AdminProjects|Delete')
+          - if current_user.can_admin_all_resources?
+            .controls.gl-shrink-0.gl-ml-5
+              = render Pajamas::ButtonComponent.new(href: edit_admin_namespace_project_path({ id: project.to_param, namespace_id: project.namespace.to_param }), button_options: { id: dom_id(project) }) do
+                = _('Edit')
+              = render Pajamas::ButtonComponent.new(variant: :danger, button_options: { class: 'delete-project-button', data: { delete_project_url: admin_project_path(project), project_name: project.name } }) do
+                = s_('AdminProjects|Delete')
 
     = paginate @projects, theme: 'gitlab'
   - else

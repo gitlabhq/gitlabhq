@@ -11,7 +11,7 @@ module Resolvers
       required: false,
       description: 'IID of the work item. For example, "1".'
     argument :sort,
-      Types::WorkItemSortEnum,
+      Types::WorkItems::SortEnum,
       description: 'Sort work items by criteria.',
       required: false,
       default_value: :created_desc

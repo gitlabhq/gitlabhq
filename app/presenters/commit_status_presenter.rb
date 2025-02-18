@@ -42,7 +42,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
   }.freeze
 
   TROUBLESHOOTING_DOC = {
-    environment_creation_failure: { path: 'ci/environments/index', anchor: 'a-deployment-job-failed-with-this-job-could-not-be-executed-because-it-would-create-an-environment-with-an-invalid-parameter-error' },
+    environment_creation_failure: { path: 'ci/environments/_index', anchor: 'a-deployment-job-failed-with-this-job-could-not-be-executed-because-it-would-create-an-environment-with-an-invalid-parameter-error' },
     failed_outdated_deployment_job: { path: 'ci/environments/deployment_safety', anchor: 'prevent-outdated-deployment-jobs' }
   }.freeze
 

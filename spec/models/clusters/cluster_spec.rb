@@ -23,6 +23,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   it { is_expected.to have_one(:provider_aws) }
   it { is_expected.to have_one(:platform_kubernetes) }
   it { is_expected.to have_one(:integration_prometheus) }
+  it { is_expected.to have_one(:agent_migration).class_name('Clusters::AgentMigration').inverse_of(:cluster) }
   it { is_expected.to have_many(:kubernetes_namespaces) }
   it { is_expected.to have_one(:cluster_project) }
   it { is_expected.to have_many(:deployment_clusters) }

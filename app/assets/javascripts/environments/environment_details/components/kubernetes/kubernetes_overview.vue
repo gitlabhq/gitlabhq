@@ -168,6 +168,9 @@ export default {
         this.fluxKustomization?.metadata?.namespace || this.fluxHelmRelease?.metadata?.namespace
       );
     },
+    agentProjectPath() {
+      return this.clusterAgent.project?.fullPath || '';
+    },
   },
   methods: {
     handleError(message) {
@@ -276,14 +279,14 @@ export default {
     actions: __('Actions'),
     error: __('Error: '),
   },
-  learnMoreLink: helpPagePath('user/clusters/agent/index'),
+  learnMoreLink: helpPagePath('user/clusters/agent/_index'),
   getStartedLink: helpPagePath('ci/environments/kubernetes_dashboard'),
   CLUSTER_EMPTY_SVG,
   CONNECT_MODAL_ID,
 };
 </script>
 <template>
-  <div v-if="clusterAgent" class="-gl-mt-3 gl-bg-gray-10 gl-p-5">
+  <div v-if="clusterAgent" class="-gl-mt-3 gl-bg-subtle gl-p-5">
     <div class="gl-flex gl-flex-wrap gl-items-center gl-justify-between">
       <kubernetes-agent-info :cluster-agent="clusterAgent" class="gl-mb-2 gl-mr-5 gl-grow" />
       <kubernetes-status-bar
@@ -317,7 +320,7 @@ export default {
 
       <connect-to-agent-modal
         :agent-id="clusterAgent.id"
-        :project-path="clusterAgent.project.fullPath"
+        :project-path="agentProjectPath"
         :is-configured="true"
       />
     </div>

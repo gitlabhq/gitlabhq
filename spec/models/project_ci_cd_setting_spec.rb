@@ -41,8 +41,8 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
     it 'validates delete_pipelines_in_seconds' do
       is_expected.to validate_numericality_of(:delete_pipelines_in_seconds)
         .only_integer
-        .is_greater_than_or_equal_to(1.day.seconds.to_i)
-        .is_less_than_or_equal_to(1.year.seconds.to_i)
+        .is_greater_than_or_equal_to(ChronicDuration.parse('1 day'))
+        .is_less_than_or_equal_to(ChronicDuration.parse('1 year'))
         .with_message('must be between 1 day and 1 year')
     end
   end

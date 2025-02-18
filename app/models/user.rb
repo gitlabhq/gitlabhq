@@ -32,6 +32,7 @@ class User < ApplicationRecord
   include IgnorableColumns
   include CrossDatabaseIgnoredTables
   include UseSqlFunctionForPrimaryKeyLookups
+  include Todoable
 
   # `ensure_namespace_correct` needs to be moved to an after_commit (?)
   cross_database_ignore_tables %w[namespaces namespace_settings], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424279'
@@ -76,6 +77,9 @@ class User < ApplicationRecord
   FEED_TOKEN_PREFIX = 'glft-'
 
   FIRST_GROUP_PATHS_LIMIT = 200
+
+  SERVICE_ACCOUNT_PREFIX = 'service_account'
+  NOREPLY_EMAIL_DOMAIN = "noreply.#{Gitlab.config.gitlab.host}".freeze
 
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
   add_authentication_token_field :incoming_email_token, token_generator: -> { self.generate_incoming_mail_token } # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix: the prefix is in the generator
@@ -260,8 +264,8 @@ class User < ApplicationRecord
   has_many :todos,                    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :authored_todos, class_name: 'Todo', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :notification_settings
-  has_many :award_emoji,              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :triggers,                 class_name: 'Ci::Trigger', foreign_key: :owner_id
+  has_many :award_emoji, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :triggers, -> { Feature.enabled?(:trigger_token_expiration) ? not_expired : self }, class_name: 'Ci::Trigger', foreign_key: :owner_id
   has_many :audit_events, foreign_key: :author_id, inverse_of: :user
   has_many :uploaded_uploads, class_name: 'Upload', foreign_key: :uploaded_by_user_id
 
@@ -404,13 +408,24 @@ class User < ApplicationRecord
     update_invalid_gpg_signatures if previous_changes.key?('email')
   end
 
-  after_create_commit :create_default_organization_user
-
   # User's Layout preference
   enum layout: { fixed: 0, fluid: 1 }
 
   # User's Dashboard preference
-  enum dashboard: { projects: 0, stars: 1, your_activity: 10, project_activity: 2, starred_project_activity: 3, groups: 4, todos: 5, issues: 6, merge_requests: 7, operations: 8, followed_user_activity: 9 }
+  enum dashboard: {
+    projects: 0,
+    stars: 1,
+    member_projects: 11,
+    your_activity: 10,
+    project_activity: 2,
+    starred_project_activity: 3,
+    groups: 4,
+    todos: 5,
+    issues: 6,
+    merge_requests: 7,
+    operations: 8,
+    followed_user_activity: 9
+  }
 
   # User's Project preference
   enum project_view: { readme: 0, activity: 1, files: 2, wiki: 3 }
@@ -1086,6 +1101,10 @@ class User < ApplicationRecord
       exists?(username: username)
     end
 
+    def id_exists?(id)
+      exists?(id: id)
+    end
+
     def ends_with_reserved_file_extension?(username)
       Mime::EXTENSION_LOOKUP.keys.any? { |type| username.end_with?(".#{type}") }
     end
@@ -1119,6 +1138,10 @@ class User < ApplicationRecord
 
   def to_reference(_from = nil, target_container: nil, full: nil)
     "#{self.class.reference_prefix}#{username}"
+  end
+
+  def readable_by?(user)
+    id == user.id
   end
 
   def skip_confirmation=(bool)
@@ -2888,12 +2911,6 @@ class User < ApplicationRecord
 
   def prefix_for_feed_token
     FEED_TOKEN_PREFIX
-  end
-
-  def create_default_organization_user
-    return unless organizations.blank?
-
-    Organizations::OrganizationUser.create_default_organization_record_for(id, user_is_admin: admin?)
   end
 
   # method overridden in EE

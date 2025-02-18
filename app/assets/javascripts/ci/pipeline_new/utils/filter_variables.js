@@ -1,13 +1,16 @@
-// We need to filter out blank variables
-// and filter out variables that have no key
-// before sending to the API to create a pipeline.
+/**
+ * We need to filter out blank variables as well as variables that have no key
+ * and then format the variables to GraphQL
+ * before sending to the API to create a pipeline.
+ */
 
 export default (variables) => {
   return variables
     .filter(({ key }) => key !== '')
-    .map(({ variable_type, key, value }) => ({
-      variable_type,
+    .map(({ key, value, variable_type: variableType }) => ({
       key,
-      secret_value: value,
+      value,
+      // CiVariableType must be all caps
+      variableType: variableType.toUpperCase(),
     }));
 };

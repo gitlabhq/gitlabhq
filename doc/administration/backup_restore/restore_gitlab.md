@@ -2,13 +2,15 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Restore GitLab
 ---
 
-# Restore GitLab
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab provides a command-line interface to restore your entire installation,
 and is flexible enough to fit your needs.
@@ -34,15 +36,16 @@ You can only restore a backup to **exactly the same version and type (CE or EE)*
 of GitLab on which it was created. For example, CE 15.1.4.
 
 If your backup is a different version than the current installation, you must
-[downgrade](../../update/package/downgrade.md) or [upgrade](../../update/package/index.md#upgrade-to-a-specific-version) your GitLab installation
+[downgrade](../../update/package/downgrade.md) or [upgrade](../../update/package/_index.md#upgrade-to-a-specific-version) your GitLab installation
 before restoring the backup.
 
 ### GitLab secrets must be restored
 
 To restore a backup, **you must also restore the GitLab secrets**.
-These include the database encryption key, [CI/CD variables](../../ci/variables/index.md), and
+If you are migrating to a new GitLab instance, you must copy the GitLab secrets file from the old server.
+These include the database encryption key, [CI/CD variables](../../ci/variables/_index.md), and
 variables used for [two-factor authentication](../../user/profile/account/two_factor_authentication.md).
-Without the keys, [multiple issues occur](../../administration/backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost), including loss of access by users with [two-factor authentication enabled](../../user/profile/account/two_factor_authentication.md),
+Without the keys, [multiple issues occur](../backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost), including loss of access by users with [two-factor authentication enabled](../../user/profile/account/two_factor_authentication.md),
 and GitLab Runners cannot sign in.
 
 Restore:
@@ -106,8 +109,11 @@ after copying over the GitLab secrets file from the original installation.
 Next, restore the backup, specifying the ID of the backup you wish to
 restore:
 
-WARNING:
+{{< alert type="warning" >}}
+
 The following command overwrites the contents of your GitLab database!
+
+{{< /alert >}}
 
 ```shell
 # NOTE: "_gitlab_backup.tar" is omitted from the name
@@ -128,9 +134,12 @@ GitLab version mismatch:
 Install the [correct GitLab version](https://packages.gitlab.com/gitlab/),
 and then try again.
 
-WARNING:
+{{< alert type="warning" >}}
+
 The restore command requires [additional parameters](backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer) when
 your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
+
+{{< /alert >}}
 
 Next, restart and [check](../raketasks/maintenance.md#check-gitlab-configuration) GitLab:
 
@@ -294,9 +303,9 @@ restoring a single project or group, you can use a workaround by restoring
 your backup to a separate, temporary GitLab instance, and then export your
 project or group from there:
 
-1. [Install a new GitLab](../../install/index.md) instance at the same version as
+1. [Install a new GitLab](../../install/_index.md) instance at the same version as
    the backed-up instance from which you want to restore.
-1. [Restore the backup](#restore-gitlab) into this new instance, then
+1. Restore the backup into this new instance, then
    export your [project](../../user/project/settings/import_export.md)
    or [group](../../user/project/settings/import_export.md#migrate-groups-by-uploading-an-export-file-deprecated). For
    more information about what is and isn't exported, see the export feature's documentation.
@@ -376,12 +385,19 @@ To exclude specific tasks:
 
 ### Restore specific repository storages
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86896) in GitLab 15.0.
+{{< history >}}
 
-WARNING:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86896) in GitLab 15.0.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412) that can cause data loss. The problem affects
 repositories that have been forked and use GitLab [object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss, **only restore backups by using GitLab
 17.2 or later**.
+
+{{< /alert >}}
 
 When using [multiple repository storages](../repository_storage_paths.md),
 repositories from specific repository storages can be restored separately
@@ -404,12 +420,19 @@ For example:
 
 ### Restore specific repositories
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88094) in GitLab 15.1.
+{{< history >}}
 
-WARNING:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88094) in GitLab 15.1.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412) that can cause data loss. The problem affects
 repositories that have been forked and use GitLab [object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss, **only restore backups by using GitLab
 17.2 or later**.
+
+{{< /alert >}}
 
 You can restore specific repositories using the `REPOSITORIES_PATHS` and the `SKIP_REPOSITORIES_PATHS` options.
 Both options accept a comma-separated list of project and group paths. If you
@@ -417,10 +440,13 @@ specify a group path, all repositories in all projects in the group and
 descendent groups are included or skipped, depending on which option you used.
 Both the groups and projects must exist in the specified backup or on the target instance.
 
-NOTE:
+{{< alert type="note" >}}
+
 The `REPOSITORIES_PATHS` and `SKIP_REPOSITORIES_PATHS` options apply only to Git repositories.
 They do not apply to project or group database entries. If you created a repositories backup
 with `SKIP=db`, by itself it cannot be used to restore specific repositories to a new instance.
+
+{{< /alert >}}
 
 For example, to restore all repositories for all projects in **Group A** (`group-a`), the repository for **Project C** in **Group B** (`group-b/project-c`),
 and skip the **Project D** in **Group A** (`group-a/project-d`):

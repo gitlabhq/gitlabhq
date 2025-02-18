@@ -307,11 +307,7 @@ export default {
 
         <slot name="after-members-input"></slot>
 
-        <gl-form-group
-          class="gl-w-full sm:gl-w-1/2"
-          :label="$options.ACCESS_LEVEL"
-          :label-for="dropdownId"
-        >
+        <gl-form-group :label="$options.ACCESS_LEVEL" :label-for="dropdownId">
           <template #description>
             <gl-sprintf :message="$options.READ_MORE_TEXT">
               <template #link="{ content }">
@@ -327,15 +323,12 @@ export default {
             data-testid="access-level-dropdown"
             :roles="roleDropdownItems"
             :loading="isLoadingRoles"
+            class="gl-max-w-30"
             header-text=""
           />
         </gl-form-group>
 
-        <gl-form-group
-          class="gl-w-full sm:gl-w-1/2"
-          :label="$options.ACCESS_EXPIRE_DATE"
-          :label-for="datepickerId"
-        >
+        <gl-form-group :label="$options.ACCESS_EXPIRE_DATE" :label-for="datepickerId">
           <gl-datepicker
             v-model="selectedDate"
             :input-id="datepickerId"

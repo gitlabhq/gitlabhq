@@ -23,6 +23,7 @@ import {
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_EPIC,
   TOKEN_TYPE_WEIGHT,
+  TOKEN_TYPE_STATE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
@@ -274,9 +275,11 @@ const getOperatorFromUrlParamKey = (tokenType, urlParamKey) =>
     Object.values(filterObj).includes(urlParamKey),
   )[0];
 
-export const getFilterTokens = (locationSearch) =>
+export const getFilterTokens = (locationSearch, includeStateToken = false) =>
   Array.from(new URLSearchParams(locationSearch).entries())
-    .filter(([key]) => urlParamKeys.includes(key))
+    .filter(
+      ([key]) => urlParamKeys.includes(key) && (includeStateToken || key !== TOKEN_TYPE_STATE),
+    )
     .map(([key, data]) => {
       const type = getTokenTypeFromUrlParamKey(key);
       const operator = getOperatorFromUrlParamKey(type, key);

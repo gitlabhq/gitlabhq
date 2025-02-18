@@ -181,6 +181,7 @@ export default {
       return !this.disabled && this.list.listType !== ListType.closed;
     },
     workItemDrawerEnabled() {
+      if (gon.current_user_use_work_items_view) return true;
       return this.isEpicBoard ? this.glFeatures.epicsListDrawer : this.glFeatures.issuesListDrawer;
     },
   },
@@ -248,17 +249,20 @@ export default {
           v-if="item.confidential"
           v-gl-tooltip
           name="eye-slash"
+          data-testid="confidential-icon"
           :title="__('Confidential')"
-          class="confidential-icon gl-mr-2 gl-cursor-help gl-text-orange-500"
+          class="gl-mr-2 gl-cursor-help"
           :aria-label="__('Confidential')"
+          variant="warning"
         />
         <gl-icon
           v-if="item.hidden"
           v-gl-tooltip
           name="spam"
           :title="__('This issue is hidden because its author has been banned.')"
-          class="hidden-icon gl-mr-2 gl-cursor-help gl-text-orange-500"
+          class="hidden-icon gl-mr-2 gl-cursor-help"
           data-testid="hidden-icon"
+          variant="warning"
         />
         <a
           :href="item.path || item.webUrl || ''"

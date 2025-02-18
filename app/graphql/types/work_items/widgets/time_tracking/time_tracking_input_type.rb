@@ -11,7 +11,7 @@ module Types
             required: false,
             description: 'Time estimate for the work item in human readable format. For example: 1h 30m.'
 
-          argument :timelog, Types::WorkItems::Widgets::TimeTracking::TimelogInputType,
+          argument :timelog, ::Types::WorkItems::Widgets::TimeTracking::TimelogInputType,
             required: false,
             description: 'Timelog data for time spent on the work item.'
         end

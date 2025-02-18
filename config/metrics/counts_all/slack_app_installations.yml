@@ -8,9 +8,6 @@ status: active
 time_frame: [28d, 7d]
 data_source: database
 instrumentation_class: CountSlackAppInstallationsMetric
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

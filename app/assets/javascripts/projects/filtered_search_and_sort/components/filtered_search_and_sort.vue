@@ -162,7 +162,7 @@ export default {
 
 <template>
   <filtered-search-and-sort
-    class="gl-w-full"
+    class="gl-border-b gl-w-full"
     :filtered-search-namespace="$options.filteredSearch.namespace"
     :filtered-search-tokens="filteredSearchTokens"
     :filtered-search-term-key="$options.filteredSearch.searchTermKey"

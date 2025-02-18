@@ -11,9 +11,10 @@ RSpec.describe Gitlab::GitalyClient::Call, feature_category: :gitaly do
     let(:rpc) { :find_local_branches }
     let(:service) { :ref_service }
     let(:timeout) { client.long_timeout }
+    let(:gitaly_context) { { key: :value } }
 
     subject do
-      described_class.new(storage, service, rpc, request, remote_storage, timeout).call
+      described_class.new(storage, service, rpc, request, remote_storage, timeout, gitaly_context: gitaly_context).call
     end
 
     before do
@@ -32,6 +33,17 @@ RSpec.describe Gitlab::GitalyClient::Call, feature_category: :gitaly do
           rpc: rpc,
           backtrace: an_instance_of(Array)
         )
+    end
+
+    it 'proxy provided arguments to GitalyClient.execute' do
+      response = 'response'
+
+      expect(client).to receive(:execute).with(
+        storage, service, rpc, request,
+        remote_storage: remote_storage, timeout: timeout, gitaly_context: gitaly_context
+      ).and_return(response)
+
+      expect(subject).to eq(response)
     end
 
     context 'when the response is not an enumerator' do

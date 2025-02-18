@@ -46,6 +46,11 @@ export default {
       type: String,
       required: true,
     },
+    placement: {
+      type: String,
+      required: false,
+      default: 'top',
+    },
   },
   data() {
     return {
@@ -158,7 +163,7 @@ export default {
   <gl-popover
     :target="target"
     boundary="viewport"
-    placement="top"
+    :placement="placement"
     :css-classes="['gl-min-w-fit']"
     show
   >

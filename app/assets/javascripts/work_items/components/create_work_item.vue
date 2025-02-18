@@ -2,20 +2,31 @@
 import {
   GlButton,
   GlAlert,
+  GlLink,
   GlLoadingIcon,
   GlFormCheckbox,
   GlFormGroup,
   GlFormSelect,
+  GlSprintf,
+  GlIcon,
 } from '@gitlab/ui';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { getPreferredLocales, s__, sprintf } from '~/locale';
-import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { createAlert } from '~/alert';
+import { clearDraft } from '~/lib/utils/autosave';
+import { isMetaEnterKeyPair } from '~/lib/utils/common_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { fetchPolicies } from '~/lib/graphql';
+import { s__, sprintf } from '~/locale';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { findWidget } from '~/issues/list/utils';
-import { newWorkItemFullPath, getNewWorkItemAutoSaveKey } from '~/work_items/utils';
 import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
-import { clearDraft } from '~/lib/utils/autosave';
+import {
+  getDisplayReference,
+  getNewWorkItemAutoSaveKey,
+  newWorkItemFullPath,
+} from '~/work_items/utils';
+import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import {
   I18N_WORK_ITEM_CREATE_BUTTON_LABEL,
   I18N_WORK_ITEM_ERROR_CREATING,
@@ -38,12 +49,15 @@ import {
   WIDGET_TYPE_MILESTONE,
   DEFAULT_EPIC_COLORS,
   WIDGET_TYPE_HIERARCHY,
+  WORK_ITEM_TYPE_NAME_LOWERCASE_MAP,
+  WORK_ITEM_TYPE_NAME_MAP,
+  WORK_ITEM_TYPE_VALUE_MAP,
+  WORK_ITEM_TYPE_VALUE_INCIDENT,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
-import { isMetaEnterKeyPair } from '../../lib/utils/common_utils';
 import WorkItemProjectsListbox from './work_item_links/work_item_projects_listbox.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemDescription from './work_item_description.vue';
@@ -58,10 +72,13 @@ export default {
   components: {
     GlButton,
     GlAlert,
+    GlLink,
     GlLoadingIcon,
     GlFormGroup,
     GlFormCheckbox,
     GlFormSelect,
+    GlSprintf,
+    GlIcon,
     WorkItemDescription,
     WorkItemTitle,
     WorkItemAssignees,
@@ -86,8 +103,22 @@ export default {
     similarWorkItemHelpText: s__(
       'WorkItem|These existing items have a similar title and may represent potential duplicates.',
     ),
+    resolveOneThreadText: s__('WorkItem|Creating this %{workItemType} will resolve the thread in'),
+    resolveAllThreadsText: s__(
+      'WorkItem|Creating this %{workItemType} will resolve all threads in',
+    ),
   },
   props: {
+    allowedWorkItemTypes: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    alwaysShowWorkItemTypeSelect: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     description: {
       type: String,
       required: false,
@@ -131,7 +162,7 @@ export default {
     relatedItem: {
       type: Object,
       required: false,
-      validator: (i) => i.id && i.type && i.reference,
+      validator: (i) => i.id && i.type && i.reference && i.webUrl,
       default: null,
     },
     shouldDiscardDraft: {
@@ -154,6 +185,9 @@ export default {
       initialLoadingWorkItem: true,
       initialLoadingWorkItemTypes: true,
       showWorkItemTypeSelect: false,
+      discussionToResolve: getParameterByName('discussion_to_resolve'),
+      mergeRequestToResolveDiscussionsOf: getParameterByName('merge_request_id'),
+      numberOfDiscussionsResolved: '',
     };
   },
   apollo: {
@@ -194,7 +228,6 @@ export default {
       variables() {
         return {
           fullPath: this.fullPath,
-          name: this.workItemTypeName,
         };
       },
       update(data) {
@@ -205,26 +238,37 @@ export default {
         if (!this.workItemTypes?.length) {
           return;
         }
-        if (this.workItemTypes?.length === 1) {
-          const workItemType = this.workItemTypes[0];
+
+        let workItemDescription = '';
+        let workItemTitle = '';
+        if (this.mergeRequestToResolveDiscussionsOf) {
+          workItemTitle = document.querySelector(
+            '.follow_up_work_item .follow-up-title',
+          )?.textContent;
+          workItemDescription = document.querySelector(
+            '.follow_up_work_item .follow-up-description',
+          )?.textContent;
+        }
+
+        for await (const workItemType of this.workItemTypes) {
           await setNewWorkItemCache(
             this.fullPath,
             workItemType?.widgetDefinitions,
             workItemType.name,
             workItemType.id,
             workItemType.iconName,
+            workItemTitle,
+            workItemDescription,
           );
-          this.selectedWorkItemTypeId = workItemType?.id;
+        }
+
+        const selectedWorkItemType = this.workItemTypes?.find(
+          (workItemType) => WORK_ITEM_TYPE_VALUE_MAP[workItemType.name] === this.workItemTypeName,
+        );
+
+        if (selectedWorkItemType) {
+          this.selectedWorkItemTypeId = selectedWorkItemType?.id;
         } else {
-          this.workItemTypes.forEach(async (workItemType) => {
-            await setNewWorkItemCache(
-              this.fullPath,
-              workItemType?.widgetDefinitions,
-              workItemType.name,
-              workItemType.id,
-              workItemType.iconName,
-            );
-          });
           this.showWorkItemTypeSelect = true;
         }
       },
@@ -247,6 +291,12 @@ export default {
     },
     hasWidgets() {
       return this.workItem?.widgets?.length > 0;
+    },
+    relatedItemReference() {
+      return getDisplayReference(this.fullPath, this.relatedItem.reference);
+    },
+    relatedItemType() {
+      return WORK_ITEM_TYPE_NAME_LOWERCASE_MAP[this.relatedItem?.type];
     },
     workItemAssignees() {
       return findWidget(WIDGET_TYPE_ASSIGNEES, this.workItem);
@@ -272,16 +322,34 @@ export default {
     workItemHierarchy() {
       return findWidget(WIDGET_TYPE_HIERARCHY, this.workItem);
     },
+    showParentAttribute() {
+      // We use the work item create work flow for incidents although
+      // incidents haven't been migrated to work items and use the legacy
+      // detail view instead. Since the legacy view doesn't support setting a parent
+      // we need to hide this attribute here until the migration has been finished.
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/502823
+      if (this.selectedWorkItemTypeName === WORK_ITEM_TYPE_VALUE_INCIDENT) {
+        return false;
+      }
+
+      return Boolean(this.workItemHierarchy);
+    },
     workItemCrmContacts() {
       return findWidget(WIDGET_TYPE_CRM_CONTACTS, this.workItem);
     },
     workItemTypesForSelect() {
-      return this.workItemTypes
-        ? this.workItemTypes.map((node) => ({
-            value: node.id,
-            text: capitalizeFirstCharacter(node.name.toLocaleLowerCase(getPreferredLocales()[0])),
-          }))
-        : [];
+      let workItemTypes = this.workItemTypes ?? [];
+
+      if (this.allowedWorkItemTypes.length) {
+        workItemTypes = workItemTypes.filter((workItemType) =>
+          this.allowedWorkItemTypes.includes(workItemType.name),
+        );
+      }
+
+      return workItemTypes.map((workItemType) => ({
+        value: workItemType.id,
+        text: WORK_ITEM_TYPE_NAME_MAP[workItemType.name],
+      }));
     },
     selectedWorkItemType() {
       return this.workItemTypes?.find((item) => item.id === this.selectedWorkItemTypeId);
@@ -292,8 +360,15 @@ export default {
     selectedWorkItemTypeIconName() {
       return this.selectedWorkItemType?.iconName;
     },
+    selectedWorkItemTypeEnum() {
+      return WORK_ITEM_TYPE_VALUE_MAP[this.selectedWorkItemTypeName];
+    },
     formOptions() {
-      return [{ value: null, text: s__('WorkItem|Select type') }, ...this.workItemTypesForSelect];
+      const options = [...this.workItemTypesForSelect];
+      if (!this.workItemTypeName) {
+        options.unshift({ value: null, text: s__('WorkItem|Select type') });
+      }
+      return options;
     },
     createErrorText() {
       return sprintfWorkItem(I18N_WORK_ITEM_ERROR_CREATING, this.selectedWorkItemTypeName);
@@ -304,7 +379,7 @@ export default {
     makeConfidentialText() {
       return sprintfWorkItem(
         s__(
-          'WorkItem|This %{workItemType} is confidential and should only be visible to users having at least the Planner role.',
+          'WorkItem|This %{workItemType} is confidential and should only be visible to users having at least the Planner role',
         ),
         this.selectedWorkItemTypeName,
       );
@@ -372,18 +447,27 @@ export default {
     workItemIid() {
       return this.workItem?.iid;
     },
-    relatedItemText() {
-      return sprintf(s__('WorkItem|Relates to %{workItemType} %{workItemReference}'), {
-        workItemType: this.relatedItem.type,
-        workItemReference: this.relatedItem.reference,
-      });
-    },
     shouldIncludeRelatedItem() {
       return (
         this.isWidgetSupported(WIDGET_TYPE_LINKED_ITEMS) &&
         this.isRelatedToItem &&
         this.relatedItem?.id
       );
+    },
+    resolvingMRDiscussionLink() {
+      return document.querySelector('.follow_up_work_item_details span.note-link a')?.href || '';
+    },
+    resolvingMRDiscussionLinkText() {
+      return document.querySelector('.follow_up_work_item_details span.note-link a')?.text || '';
+    },
+    createWorkItemWarning() {
+      const warning =
+        this.numberOfDiscussionsResolved === '1'
+          ? this.$options.i18n.resolveOneThreadText
+          : this.$options.i18n.resolveAllThreadsText;
+      return sprintf(warning, {
+        workItemType: this.selectedWorkItemTypeName,
+      });
     },
     isFormFilled() {
       const isTitleFilled = Boolean(this.workItemTitle.trim());
@@ -431,6 +515,8 @@ export default {
     // updating widgets, the form may no be in focus and triggering
     // a keyboard event in the form won't get caught
     document.addEventListener('keydown', this.handleKeydown);
+
+    this.setNumberOfDiscussionsResolved();
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleKeydown);
@@ -455,6 +541,12 @@ export default {
     },
     validate(newValue) {
       this.isTitleValid = this.isTitleFilled(newValue);
+    },
+    setNumberOfDiscussionsResolved() {
+      if (this.discussionToResolve || this.mergeRequestToResolveDiscussionsOf) {
+        this.numberOfDiscussionsResolved =
+          this.discussionToResolve && this.mergeRequestToResolveDiscussionsOf ? '1' : 'all';
+      }
     },
     async updateDraftData(type, value) {
       if (type === 'title') {
@@ -495,6 +587,16 @@ export default {
           description: this.workItemDescription || '',
         },
       };
+
+      if (this.discussionToResolve || this.mergeRequestToResolveDiscussionsOf) {
+        workItemCreateInput.discussionsToResolve = {
+          discussionId: this.discussionToResolve,
+          noteableId: convertToGraphQLId(
+            TYPENAME_MERGE_REQUEST,
+            this.mergeRequestToResolveDiscussionsOf,
+          ),
+        };
+      }
 
       // TODO , we can move this to util, currently objectives with other widgets not being supported is causing issues
 
@@ -570,7 +672,7 @@ export default {
       }
 
       try {
-        const response = await this.$apollo.mutate({
+        const { data } = await this.$apollo.mutate({
           mutation: createWorkItemMutation,
           variables: {
             input: {
@@ -593,7 +695,21 @@ export default {
           },
         });
 
-        this.$emit('workItemCreated', response.data.workItemCreate.workItem);
+        // We can get user-facing errors here. Show them in page alert
+        // because if we're in a modal the modal closes after submission.
+        if (data.workItemCreate.errors.length) {
+          createAlert({
+            message: data.workItemCreate.errors.join(' '),
+            error: data.workItemCreate.errors,
+            captureError: true,
+          });
+        }
+
+        this.$emit('workItemCreated', {
+          workItem: data.workItemCreate.workItem,
+          numberOfDiscussionsResolved: this.numberOfDiscussionsResolved,
+        });
+
         const workItemTypeName = this.selectedWorkItemTypeName || this.workItemTypeName;
         const autosaveKey = getNewWorkItemAutoSaveKey(this.fullPath, workItemTypeName);
         clearDraft(autosaveKey);
@@ -658,7 +774,7 @@ export default {
 
         <gl-loading-icon v-if="$apollo.queries.workItemTypes.loading" size="lg" />
         <gl-form-group
-          v-else-if="showWorkItemTypeSelect"
+          v-else-if="showWorkItemTypeSelect || alwaysShowWorkItemTypeSelect"
           class="gl-max-w-26 gl-flex-grow"
           :label="__('Type')"
           label-for="work-item-type"
@@ -668,6 +784,7 @@ export default {
             v-model="selectedWorkItemTypeId"
             data-testid="work-item-types-select"
             :options="formOptions"
+            @change="$emit('changeType', selectedWorkItemTypeEnum)"
           />
         </gl-form-group>
       </div>
@@ -690,6 +807,7 @@ export default {
           <section>
             <work-item-description
               edit-mode
+              is-create-flow
               :autofocus="false"
               :description="description"
               :full-path="fullPath"
@@ -700,6 +818,13 @@ export default {
               @error="updateError = $event"
               @updateDraft="updateDraftData('description', $event)"
             />
+            <div v-if="numberOfDiscussionsResolved && resolvingMRDiscussionLink" class="gl-mb-4">
+              <gl-icon class="gl-mr-2" name="information-o" />
+              {{ createWorkItemWarning }}
+              <gl-link :href="resolvingMRDiscussionLink">{{
+                resolvingMRDiscussionLinkText
+              }}</gl-link>
+            </div>
             <gl-form-checkbox
               id="work-item-confidential"
               v-model="isConfidential"
@@ -715,7 +840,18 @@ export default {
               class="gl-mt-3"
               data-testid="relates-to-checkbox"
             >
-              {{ relatedItemText }}
+              <gl-sprintf
+                :message="
+                  s__('WorkItem|Mark this item as related to: %{workItemType} %{workItemReference}')
+                "
+              >
+                <template #workItemType>
+                  {{ relatedItemType }}
+                </template>
+                <template #workItemReference>
+                  <gl-link :href="relatedItem.webUrl">{{ relatedItemReference }}</gl-link>
+                </template>
+              </gl-sprintf>
             </gl-form-checkbox>
           </section>
           <aside
@@ -816,7 +952,7 @@ export default {
               @error="$emit('error', $event)"
             />
             <work-item-parent
-              v-if="workItemHierarchy"
+              v-if="showParentAttribute"
               class="work-item-attributes-item"
               :can-update="canUpdate"
               :work-item-id="workItemId"

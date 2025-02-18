@@ -2,13 +2,15 @@
 stage: Systems
 group: Cloud Connector
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: IP allowlist
 ---
 
-# IP allowlist
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab provides some [monitoring endpoints](health_check.md)
 that provide health check information when probed.
@@ -16,9 +18,9 @@ that provide health check information when probed.
 To control access to those endpoints through IP allowlisting, you can add single
 hosts or use IP ranges:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Open `/etc/gitlab/gitlab.rb` and add or uncomment the following:
 
@@ -28,7 +30,9 @@ hosts or use IP ranges:
 
 1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation) GitLab for the changes to take effect.
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 You can set the required IPs under the `gitlab.webservice.monitoring.ipWhitelist` key. For example:
 
@@ -41,7 +45,9 @@ gitlab:
          - 0.0.0.0/0 # Default
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `config/gitlab.yml`:
 
@@ -55,4 +61,6 @@ gitlab:
 
 1. Save the file and [restart](../restart_gitlab.md#self-compiled-installations) GitLab for the changes to take effect.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}

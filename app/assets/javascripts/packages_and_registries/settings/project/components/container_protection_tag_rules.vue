@@ -3,18 +3,23 @@ import {
   GlAlert,
   GlBadge,
   GlButton,
+  GlDrawer,
   GlLoadingIcon,
   GlModal,
   GlModalDirective,
   GlSprintf,
   GlTable,
   GlTooltipDirective,
+  GlSkeletonLoader,
 } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import ContainerProtectionTagRuleForm from '~/packages_and_registries/settings/project/components/container_protection_tag_rule_form.vue';
 import getContainerProtectionTagRulesQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql';
 import deleteContainerProtectionTagRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_tag_rule.mutation.graphql';
 import { __, s__ } from '~/locale';
-import { MinimumAccessLevelOptions } from '~/packages_and_registries/settings/project/constants';
+import { MinimumAccessLevelText } from '~/packages_and_registries/settings/project/constants';
+import { InternalEvents } from '~/tracking';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 const MAX_LIMIT = 5;
 const I18N_MINIMUM_ACCESS_LEVEL_TO_PUSH = s__('ContainerRegistry|Minimum access level to push');
@@ -22,12 +27,15 @@ const I18N_MINIMUM_ACCESS_LEVEL_TO_DELETE = s__('ContainerRegistry|Minimum acces
 
 export default {
   components: {
+    ContainerProtectionTagRuleForm,
     CrudComponent,
     GlAlert,
     GlBadge,
     GlButton,
+    GlDrawer,
     GlLoadingIcon,
     GlModal,
+    GlSkeletonLoader,
     GlSprintf,
     GlTable,
   },
@@ -35,6 +43,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [InternalEvents.mixin()],
   inject: ['projectPath'],
   apollo: {
     protectionRulesQueryPayload: {
@@ -54,20 +63,31 @@ export default {
       error(e) {
         this.alertErrorMessage = e.message;
       },
+      result() {
+        this.initialLoading = false;
+      },
     },
   },
   data() {
     return {
       alertErrorMessage: '',
+      initialLoading: true,
       protectionRuleMutationInProgress: false,
       protectionRuleMutationItem: null,
       protectionRulesQueryPayload: { nodes: [], pageInfo: {} },
       protectionRulesQueryPaginationParams: { first: MAX_LIMIT },
+      showDrawer: false,
+      showModal: false,
     };
   },
   computed: {
     containsTableItems() {
-      return this.protectionRulesQueryResult.length > 0;
+      return this.tagProtectionRulesCount > 0;
+    },
+    drawerTitle() {
+      return this.protectionRuleMutationItem
+        ? s__('ContainerRegistry|Edit protection rule')
+        : s__('ContainerRegistry|Add protection rule');
     },
     isLoadingProtectionRules() {
       return this.$apollo.queries.protectionRulesQueryPayload.loading;
@@ -75,8 +95,11 @@ export default {
     protectionRulesQueryResult() {
       return this.protectionRulesQueryPayload.nodes;
     },
-    showTopLevelLoadingIcon() {
-      return this.isLoadingProtectionRules && !this.containsTableItems;
+    rulesLimitReached() {
+      return this.tagProtectionRulesCount === MAX_LIMIT;
+    },
+    mutationItemTagNamePattern() {
+      return this.protectionRuleMutationItem?.tagNamePattern ?? '';
     },
     showTableLoading() {
       return this.protectionRuleMutationInProgress || this.isLoadingProtectionRules;
@@ -85,18 +108,33 @@ export default {
       return this.protectionRulesQueryResult.map((protectionRule) => {
         return {
           id: protectionRule.id,
-          minimumAccessLevelForPush:
-            MinimumAccessLevelOptions[protectionRule.minimumAccessLevelForPush],
-          minimumAccessLevelForDelete:
-            MinimumAccessLevelOptions[protectionRule.minimumAccessLevelForDelete],
+          minimumAccessLevelForPush: protectionRule.minimumAccessLevelForPush,
+          minimumAccessLevelForDelete: protectionRule.minimumAccessLevelForDelete,
           tagNamePattern: protectionRule.tagNamePattern,
         };
       });
+    },
+    tagProtectionRulesCount() {
+      return this.protectionRulesQueryResult.length;
+    },
+    toggleText() {
+      if (this.initialLoading || this.rulesLimitReached) {
+        return undefined;
+      }
+      return s__('ContainerRegistry|Add protection rule');
+    },
+    toastMessage() {
+      return this.protectionRuleMutationItem
+        ? s__('ContainerRegistry|Container protection rule updated.')
+        : s__('ContainerRegistry|Container protection rule created.');
     },
   },
   methods: {
     clearAlertMessage() {
       this.alertErrorMessage = '';
+    },
+    closeDrawer() {
+      this.showDrawer = false;
     },
     async deleteProtectionRule(protectionRule) {
       this.clearAlertMessage();
@@ -115,11 +153,29 @@ export default {
         }
         this.refetchProtectionRules();
         this.$toast.show(s__('ContainerRegistry|Container protection rule deleted.'));
+        this.trackEvent('container_protection_tag_rule_deleted');
       } catch (error) {
         this.alertErrorMessage = error.message;
+        Sentry.captureException(error);
       } finally {
         this.resetProtectionRuleMutation();
       }
+    },
+    formatAccessLevel(level) {
+      return MinimumAccessLevelText[level];
+    },
+    handleSubmit() {
+      this.$toast.show(this.toastMessage);
+      this.closeDrawer();
+      this.refetchProtectionRules();
+    },
+    openEditFormDrawer(item) {
+      this.protectionRuleMutationItem = item;
+      this.showDrawer = true;
+    },
+    openNewFormDrawer() {
+      this.protectionRuleMutationItem = null;
+      this.showDrawer = true;
     },
     refetchProtectionRules() {
       this.$apollo.queries.protectionRulesQueryPayload.refetch();
@@ -130,6 +186,7 @@ export default {
     },
     showProtectionRuleDeletionConfirmModal(protectionRule) {
       this.protectionRuleMutationItem = protectionRule;
+      this.showModal = true;
     },
   },
   fields: [
@@ -157,6 +214,7 @@ export default {
   ],
   i18n: {
     deleteIconButton: __('Delete'),
+    editIconButton: __('Edit'),
     title: s__('ContainerRegistry|Protected container image tags'),
     protectionRuleDeletionConfirmModal: {
       title: s__('ContainerRegistry|Delete protection rule'),
@@ -181,14 +239,17 @@ export default {
 
 <template>
   <crud-component
+    :collapsed="false"
     :title="$options.i18n.title"
+    :toggle-text="toggleText"
     data-testid="project-container-protection-tag-rules-settings"
+    @showForm="openNewFormDrawer"
   >
     <template v-if="containsTableItems" #count>
       <gl-badge>
         <gl-sprintf :message="s__('ContainerRegistry|%{count} of %{max}')">
           <template #count>
-            {{ protectionRulesQueryResult.length }}
+            {{ tagProtectionRulesCount }}
           </template>
           <template #max>
             {{ $options.MAX_LIMIT }}
@@ -196,6 +257,19 @@ export default {
         </gl-sprintf>
       </gl-badge>
     </template>
+
+    <template #actions>
+      <span
+        v-if="rulesLimitReached"
+        class="gl-text-base gl-font-bold gl-leading-normal"
+        data-testid="max-rules"
+        >{{ s__('ContainerRegistry|Maximum number of rules reached.') }}</span
+      >
+      <div v-if="initialLoading">
+        <gl-skeleton-loader :lines="1" :equal-width-lines="true" />
+      </div>
+    </template>
+
     <template #default>
       <p
         class="gl-pb-0 gl-text-subtle"
@@ -218,12 +292,7 @@ export default {
         {{ alertErrorMessage }}
       </gl-alert>
 
-      <gl-loading-icon
-        v-if="showTopLevelLoadingIcon"
-        size="sm"
-        class="gl-my-5"
-        data-testid="loading-icon"
-      />
+      <gl-loading-icon v-if="initialLoading" size="sm" class="gl-my-5" data-testid="loading-icon" />
       <gl-table
         v-else-if="containsTableItems"
         class="gl-border-t-1 gl-border-t-gray-100 gl-border-t-solid"
@@ -237,7 +306,27 @@ export default {
           <gl-loading-icon size="sm" class="gl-my-5" data-testid="table-loading-icon" />
         </template>
 
+        <template #cell(minimumAccessLevelForPush)="{ item }">
+          <span data-testid="minimum-access-level-push-value">
+            {{ formatAccessLevel(item.minimumAccessLevelForPush) }}
+          </span>
+        </template>
+
+        <template #cell(minimumAccessLevelForDelete)="{ item }">
+          <span data-testid="minimum-access-level-delete-value">
+            {{ formatAccessLevel(item.minimumAccessLevelForDelete) }}
+          </span>
+        </template>
+
         <template #cell(rowActions)="{ item }">
+          <gl-button
+            v-gl-tooltip
+            category="tertiary"
+            icon="pencil"
+            :title="$options.i18n.editIconButton"
+            :aria-label="$options.i18n.editIconButton"
+            @click="openEditFormDrawer(item)"
+          />
           <gl-button
             v-gl-tooltip
             v-gl-modal="$options.modal.id"
@@ -252,8 +341,24 @@ export default {
       <p v-else data-testid="empty-text" class="gl-text-subtle">
         {{ s__('ContainerRegistry|No container image tags are protected.') }}
       </p>
+
+      <gl-drawer :z-index="1039" :open="showDrawer" @close="closeDrawer">
+        <template #title>
+          <h2 class="gl-my-0 gl-text-size-h2 gl-leading-24">
+            {{ drawerTitle }}
+          </h2>
+        </template>
+        <template #default>
+          <container-protection-tag-rule-form
+            :rule="protectionRuleMutationItem"
+            @cancel="closeDrawer"
+            @submit="handleSubmit"
+          />
+        </template>
+      </gl-drawer>
+
       <gl-modal
-        v-if="protectionRuleMutationItem"
+        v-model="showModal"
         :modal-id="$options.modal.id"
         size="sm"
         :title="$options.i18n.protectionRuleDeletionConfirmModal.title"
@@ -264,7 +369,7 @@ export default {
         <p>
           <gl-sprintf :message="$options.i18n.protectionRuleDeletionConfirmModal.description">
             <template #tagNamePattern>
-              <strong>{{ protectionRuleMutationItem.tagNamePattern }}</strong>
+              <strong>{{ mutationItemTagNamePattern }}</strong>
             </template>
           </gl-sprintf>
         </p>

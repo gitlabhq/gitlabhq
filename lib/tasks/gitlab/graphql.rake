@@ -127,7 +127,7 @@ namespace :gitlab do
     task check_docs: [:environment, :enable_feature_flags] do
       renderer = Tooling::Graphql::Docs::Renderer.new(GitlabSchema, **render_options)
 
-      doc = File.read(Rails.root.join(OUTPUT_DIR, 'index.md'))
+      doc = File.read(Rails.root.join(OUTPUT_DIR, '_index.md'))
 
       if doc == renderer.contents
         puts "GraphQL documentation is up to date"

@@ -103,6 +103,12 @@ RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
           it { is_expected.to eq('http://unique-domain.example.com') }
         end
       end
+
+      context 'when the project path contains capitals' do
+        let(:full_path) { 'group/MyProject' }
+
+        it { is_expected.to eq('http://group.example.com/MyProject') }
+      end
     end
 
     context 'when namespace_in_path is true' do

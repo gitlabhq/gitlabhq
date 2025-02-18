@@ -2,15 +2,17 @@
 stage: Package
 group: Container Registry
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Dependency Proxy
 ---
-
-# Dependency Proxy
 
 The Dependency Proxy is a pull-through-cache for public registry images from DockerHub. This document describes how this
 feature is constructed in GitLab.
 
-NOTE:
+{{< alert type="note" >}}
+
 Support for private registry images is proposed in [issue 331741](https://gitlab.com/gitlab-org/gitlab/-/issues/331741).
+
+{{< /alert >}}
 
 ## Container registry
 
@@ -142,7 +144,7 @@ graph TD
 
 ### Workhorse for file handling
 
-Management of file uploads and caching happens in [Workhorse](../workhorse/index.md). This explains the additional
+Management of file uploads and caching happens in [Workhorse](../workhorse/_index.md). This explains the additional
 [`POST` routes](https://gitlab.com/gitlab-org/gitlab/-/blob/3f76455ac9cf90a927767e55c837d6b07af818df/config/routes/group.rb#L170-173)
 that we have for the Dependency Proxy.
 

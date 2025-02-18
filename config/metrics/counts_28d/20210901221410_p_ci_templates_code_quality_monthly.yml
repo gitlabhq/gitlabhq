@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_code_quality_monthly
 description: ''
-product_group: pipeline_authoring
+product_group: static_analysis
 value_type: number
 status: active
 milestone: '14.3'
@@ -10,9 +10,6 @@ time_frame: 28d
 data_source: redis_hll
 data_category: optional
 instrumentation_class: RedisHLLMetric
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

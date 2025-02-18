@@ -26,6 +26,7 @@ query getProjectMergeRequests(
   $deployedBefore: Time
   $deployedAfter: Time
   $environmentName: String
+  $subscribed: SubscriptionStatus
   $not: MergeRequestsResolverNegatedParams
   $beforeCursor: String
   $afterCursor: String
@@ -56,6 +57,7 @@ query getProjectMergeRequests(
       deployedBefore: $deployedBefore
       deployedAfter: $deployedAfter
       environmentName: $environmentName
+      subscribed: $subscribed
       not: $not
       before: $beforeCursor
       after: $afterCursor
@@ -67,6 +69,15 @@ query getProjectMergeRequests(
       }
       nodes {
         ...MergeRequestFragment
+        # This data gets loaded through the `mergeRequestApprovals` request,
+        # we are doing it this way to combat timeouts with the approval
+        # data causing the whole merge request list to not render
+        approved @client
+        approvedBy @client {
+          nodes {
+            id
+          }
+        }
       }
     }
   }

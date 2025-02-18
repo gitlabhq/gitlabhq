@@ -30,7 +30,9 @@ module Gitlab
           development: 'Development',
           crm_contacts: 'CRM contacts',
           email_participants: 'Email participants',
-          custom_status: 'Custom status'
+          custom_status: 'Custom status',
+          custom_fields: 'Custom fields',
+          error_tracking: 'Error tracking'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -39,10 +41,12 @@ module Gitlab
             :award_emoji,
             :crm_contacts,
             :current_user_todos,
+            :custom_fields,
             :description,
             :designs,
             :development,
             :email_participants,
+            :error_tracking,
             :health_status,
             :hierarchy,
             :iteration,
@@ -61,6 +65,7 @@ module Gitlab
             :award_emoji,
             :crm_contacts,
             :current_user_todos,
+            :custom_fields,
             :description,
             :development,
             :email_participants,
@@ -72,12 +77,12 @@ module Gitlab
             :notes,
             :notifications,
             :participants,
-            :start_and_due_date,
             :time_tracking
           ],
           test_case: [
             :award_emoji,
             :current_user_todos,
+            :custom_fields,
             :description,
             :linked_items,
             :notes,
@@ -88,6 +93,7 @@ module Gitlab
           requirement: [
             :award_emoji,
             :current_user_todos,
+            :custom_fields,
             :description,
             :linked_items,
             :notes,
@@ -103,6 +109,7 @@ module Gitlab
             :award_emoji,
             :crm_contacts,
             :current_user_todos,
+            :custom_fields,
             :description,
             :development,
             :hierarchy,
@@ -122,6 +129,7 @@ module Gitlab
             :assignees,
             :award_emoji,
             :current_user_todos,
+            :custom_fields,
             :description,
             :health_status,
             :hierarchy,
@@ -137,6 +145,7 @@ module Gitlab
             :assignees,
             :award_emoji,
             :current_user_todos,
+            :custom_fields,
             :description,
             :health_status,
             :hierarchy,
@@ -154,6 +163,7 @@ module Gitlab
             :color,
             :crm_contacts,
             :current_user_todos,
+            :custom_fields,
             :description,
             :health_status,
             :hierarchy,
@@ -172,6 +182,7 @@ module Gitlab
             :award_emoji,
             :crm_contacts,
             :current_user_todos,
+            :custom_fields,
             :description,
             :designs,
             :development,

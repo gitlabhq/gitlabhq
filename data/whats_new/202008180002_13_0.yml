@@ -21,7 +21,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/topics/autodevops/index.html#aws-ecs
+  documentation_link: https://docs.gitlab.com/ee/topics/autodevops/#aws-ecs
   image_url: https://docs.gitlab.com/ee/ci/img/ecs_dashboard_v12_9.png
   published_at: 2020-05-22
   release: 13.0

@@ -2,13 +2,15 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use AWS Cognito as an OAuth 2.0 authentication provider
 ---
 
-# Use AWS Cognito as an OAuth 2.0 authentication provider
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Amazon Web Services (AWS) Cognito lets you add user sign-up, sign-in, and access control to your GitLab instance.
 The following documentation enables AWS Cognito as an OAuth 2.0 provider.

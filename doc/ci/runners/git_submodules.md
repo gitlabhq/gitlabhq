@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Using Git submodules with GitLab CI/CD
 ---
 
-# Using Git submodules with GitLab CI/CD
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) to keep
 a Git repository as a subdirectory of another Git repository. You can clone another
@@ -21,7 +23,11 @@ You have multiple options to configure it to work in a GitLab CI/CD job.
 
 ### Using absolute URLs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3198) in GitLab Runner 15.11.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3198) in GitLab Runner 15.11.
+
+{{< /history >}}
 
 For example, your generated `.gitmodules` configuration might look like the following if:
 
@@ -52,9 +58,12 @@ You do not need to configure additional variables in this case, but you need to 
 
 ### Using relative URLs
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you use relative URLs, submodules may resolve incorrectly in forking workflows.
 Use absolute URLs instead if you expect your project to have forks.
+
+{{< /alert >}}
 
 When your submodule is on the same GitLab server, you can also use relative URLs in
 your `.gitmodules` file:

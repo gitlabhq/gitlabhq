@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GitLab utilities
 ---
-
-# GitLab utilities
 
 We have developed a number of utilities to help ease development:
 
@@ -284,6 +283,10 @@ end
 ## `ReactiveCaching`
 
 Read the documentation on [`ReactiveCaching`](reactive_caching.md).
+
+## `TokenAuthenticatable`
+
+Read the documentation on [`TokenAuthenticatable`](token_authenticatable.md).
 
 ## `CircuitBreaker`
 

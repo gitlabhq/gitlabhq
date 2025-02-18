@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Zero-downtime upgrades
 ---
 
-# Zero-downtime upgrades
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 With zero-downtime upgrades, it's possible to upgrade a live GitLab environment without having to
 take it offline. This guide will take you through the core process of performing
@@ -23,7 +25,7 @@ or management of third party services, such as AWS RDS, please refer to the resp
 ## Before you start
 
 Achieving _true_ zero downtime as part of an upgrade is notably difficult for any distributed application. The process detailed in
-this guide has been tested as given against our HA [Reference Architectures](../administration/reference_architectures/index.md)
+this guide has been tested as given against our HA [Reference Architectures](../administration/reference_architectures/_index.md)
 and was found to result in effectively no observable downtime, but please be aware your mileage may vary dependent on the specific system makeup.
 
 For additional confidence, some customers have found success with further techniques such as the
@@ -61,8 +63,11 @@ In addition to the above, please be aware of the following considerations:
 - Zero-downtime upgrades are supported for any GitLab components you've deployed with the GitLab Linux package. If you've deployed select components through a supported third party service, such as PostgreSQL in AWS RDS or Redis in GCP Memorystore, upgrades for those services will need to be performed separately as per their standard processes.
 - As a general guideline, the larger amount of data you have, the more time it will take for the upgrade to complete. In testing, any database smaller than 10 GB shouldn't generally take longer than an hour, but your mileage may vary.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you want to upgrade multiple releases or do not meet these requirements [upgrades with downtime](with_downtime.md) should be explored instead.
+
+{{< /alert >}}
 
 ## Upgrade order
 
@@ -100,7 +105,7 @@ Run through the following steps sequentially on each component's node to perform
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
 
-1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version).
+1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 
 1. Reconfigure and restart to get the latest code in place:
 
@@ -111,14 +116,17 @@ Run through the following steps sequentially on each component's node to perform
 
 ### Gitaly
 
-[Gitaly](../administration/gitaly/index.md) follows the same core process when it comes to upgrading but with a key difference
+[Gitaly](../administration/gitaly/_index.md) follows the same core process when it comes to upgrading but with a key difference
 that the Gitaly process itself is not restarted as it has a built-in process to gracefully reload
 at the earliest opportunity. Note that any other component will still need to be restarted.
 
-NOTE:
+{{< alert type="note" >}}
+
 The upgrade process attempts to do a graceful handover to a new Gitaly process.
 Existing long-running Git requests that were started before the upgrade may eventually be dropped as this handover occurs.
 In the future this functionality may be changed, [refer to this Epic](https://gitlab.com/groups/gitlab-org/-/epics/10328) for more information.
+
+{{< /alert >}}
 
 This process applies to both Gitaly Sharded and Cluster setups. Run through the following steps sequentially on each Gitaly node to perform the upgrade:
 
@@ -128,7 +136,7 @@ This process applies to both Gitaly Sharded and Cluster setups. Run through the 
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
 
-1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version).
+1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 1. Run the `reconfigure` command to get the latest code in place and to instruct Gitaly to gracefully reload at the next opportunity:
 
    ```shell
@@ -149,10 +157,13 @@ This process applies to both Gitaly Sharded and Cluster setups. Run through the 
 
 For Gitaly Cluster setups, you must deploy and upgrade Praefect in a similar way by using a graceful reload.
 
-NOTE:
+{{< alert type="note" >}}
+
 The upgrade process attempts to do a graceful handover to a new Praefect process.
 Existing long-running Git requests that were started before the upgrade may eventually be dropped as this handover occurs.
 In the future this functionality may be changed, [refer to this Epic](https://gitlab.com/groups/gitlab-org/-/epics/10328) for more information.
+
+{{< /alert >}}
 
 One additional step though for Praefect is that it will also need to run through its database migrations to upgrade its data.
 Migrations need to be run on only one Praefect node to avoid clashes. This is best done by selecting one of the
@@ -167,7 +178,7 @@ nodes to be a deploy node. This target node will be configured to run migrations
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version).
+   1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 
    1. Ensure that `praefect['auto_migrate'] = true` is set in `/etc/gitlab/gitlab.rb` so that database migrations run.
 
@@ -186,7 +197,7 @@ nodes to be a deploy node. This target node will be configured to run migrations
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version).
+   1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 
    1. Ensure that `praefect['auto_migrate'] = false` is set in `/etc/gitlab/gitlab.rb` to prevent
       `reconfigure` from automatically running database migrations.
@@ -210,7 +221,7 @@ nodes to be a deploy node. This target node will be configured to run migrations
 
 ### Rails
 
-Rails as a webserver consists primarily of [Puma](../administration/operations/puma.md), [Workhorse](../development/workhorse/index.md), and [NGINX](../development/architecture.md#nginx).
+Rails as a webserver consists primarily of [Puma](../administration/operations/puma.md), [Workhorse](../development/workhorse/_index.md), and [NGINX](../development/architecture.md#nginx).
 
 Each of these components have different behaviours when it comes to doing a live upgrade. While Puma can allow
 for a graceful reload, Workhorse doesn't. The best approach is to drain the node gracefully through other means,
@@ -243,7 +254,7 @@ In addition to the above, Rails is where the main database migrations need to be
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version).
+   1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 
    1. Configure regular migrations to by setting `gitlab_rails['auto_migrate'] = true` in the
       `/etc/gitlab/gitlab.rb` configuration file.
@@ -285,7 +296,7 @@ In addition to the above, Rails is where the main database migrations need to be
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version).
+   1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 
    1. Ensure that `gitlab_rails['auto_migrate'] = false` is set in `/etc/gitlab/gitlab.rb` to prevent
       `reconfigure` from automatically running database migrations.
@@ -324,7 +335,7 @@ In addition to the above, Rails is where the main database migrations need to be
 
 ### Sidekiq
 
-[Sidekiq](../administration/sidekiq/index.md) follows the same underlying process as others to upgrading without downtime.
+[Sidekiq](../administration/sidekiq/_index.md) follows the same underlying process as others to upgrading without downtime.
 
 Run through the following steps sequentially on each component node to perform the upgrade:
 
@@ -334,7 +345,7 @@ Run through the following steps sequentially on each component node to perform t
    sudo touch /etc/gitlab/skip-auto-reconfigure
    ```
 
-1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version).
+1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 
 1. Run the `reconfigure` command to get the latest code in place as well as restart:
 
@@ -345,9 +356,12 @@ Run through the following steps sequentially on each component node to perform t
 
 ## Multi-node / HA deployment with Geo
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This section describes the steps required to upgrade live GitLab environment
 deployment with Geo.
@@ -358,8 +372,11 @@ for each secondary site. The required order is upgrading the primary first, then
 the secondaries. You must also run any post-deployment migrations on the primary _after_
 all secondaries have been updated.
 
-NOTE:
+{{< alert type="note" >}}
+
 The same [requirements and consideration](#requirements-and-considerations) apply for upgrading a live GitLab environment with Geo.
+
+{{< /alert >}}
 
 ### Primary site
 
@@ -408,7 +425,7 @@ below:
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version).
+   1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 
    1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the primary site Rails node to the secondary site Rails node if they're different. The file must be the same on all of a site's nodes.
 
@@ -458,7 +475,7 @@ below:
       sudo touch /etc/gitlab/skip-auto-reconfigure
       ```
 
-   1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version).
+   1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 
    1. Ensure no migrations are configured to be run automatically by setting `gitlab_rails['auto_migrate'] = false` and `geo_secondary['auto_migrate'] = false` in the
       `/etc/gitlab/gitlab.rb` configuration file.

@@ -8,5 +8,7 @@ feature_categories:
 description: Stores routes per namespaces and projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7121
 milestone: '9.0'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces
 table_size: medium

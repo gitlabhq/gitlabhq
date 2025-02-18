@@ -175,7 +175,7 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction do
 
   # stubbing this method allows this spec file to use fast_spec_helper
   def fast_auto_devops_stages
-    auto_devops_template = YAML.safe_load( File.read('lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml') )
+    auto_devops_template = YAML.safe_load(File.read('lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml'))
     auto_devops_template['stages']
   end
 end

@@ -2,13 +2,15 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Customize the Help page message
 ---
 
-# Customize the Help page message
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 In large organizations, it is useful to have information about who to contact or where
 to go for help. You can customize and display this information on the GitLab `/help` page.
@@ -26,14 +28,21 @@ You can add a help message, which is shown at the top of the GitLab `/help` page
 
 You can now see the message on `/help`.
 
-NOTE:
+{{< alert type="note" >}}
+
 By default, `/help` is visible to unauthenticated users. However, if the
 [**Public** visibility level](visibility_and_access_controls.md#restrict-visibility-levels)
 is restricted, `/help` is visible only to authenticated users.
 
+{{< /alert >}}
+
 ## Add a help message to the sign-in page
 
-> - Additional text to show on the sign-in page [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/410885) in GitLab 17.0.
+{{< history >}}
+
+- Additional text to show on the sign-in page [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/410885) in GitLab 17.0.
+
+{{< /history >}}
 
 To add a help message to the sign-in page, [customize your sign-in and register pages](../appearance.md#customize-your-sign-in-and-register-pages).
 

@@ -1,0 +1,9 @@
+---
+name: process_auto_merge_on_load
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/505934
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180367
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517477
+milestone: '17.9'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

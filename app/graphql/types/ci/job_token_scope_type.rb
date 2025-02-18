@@ -25,14 +25,14 @@ module Types
         method: :outbound_projects
 
       field :inbound_allowlist,
-        Types::ProjectType.connection_type,
+        Types::Ci::JobTokenAccessibleProjectType.connection_type,
         null: false,
         description: "Allowlist of projects that can access the current project " \
           "by authenticating with a CI/CD job token.",
         method: :inbound_projects
 
       field :groups_allowlist,
-        Types::GroupType.connection_type,
+        Types::Ci::JobTokenAccessibleGroupType.connection_type,
         null: false,
         description: "Allowlist of groups that can access the current project " \
           "by authenticating with a CI/CD job token.",
@@ -53,6 +53,20 @@ module Types
           "by authenticating with a CI/CD job token. " \
           "The count does not include subgroups.",
         method: :groups_count
+
+      field :group_allowlist_autopopulated_ids,
+        [::Types::GlobalIDType[::Group]],
+        null: false,
+        description: 'List of IDs of groups which have been created by the  ' \
+          'autopopulation process.',
+        method: :autopopulated_group_ids
+
+      field :inbound_allowlist_autopopulated_ids,
+        [::Types::GlobalIDType[::Project]],
+        null: false,
+        description: 'List of IDs of projects which have been created by the  ' \
+          'autopopulation process.',
+        method: :autopopulated_inbound_project_ids
     end
   end
   # rubocop: enable Graphql/AuthorizeTypes

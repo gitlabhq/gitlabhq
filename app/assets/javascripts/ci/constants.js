@@ -21,9 +21,10 @@ export const ICONS = {
   SUCCESS: 'success',
 };
 
-export const SUCCESS_STATUS = 'SUCCESS';
+export const FAILED_STATUS = 'failed';
 export const PASSED_STATUS = 'passed';
 export const MANUAL_STATUS = 'manual';
+export const SUCCESS_STATUS = 'SUCCESS';
 
 export const PIPELINE_ID_KEY = 'id';
 export const PIPELINE_IID_KEY = 'iid';

@@ -174,6 +174,16 @@ Some best practices to consider when using a once-off keep:
    MRs. This allows reviewers to understand where this work comes from and can
    also help if they want to contribute improvements to an ongoing group of MRs.
 
+## Running Housekeeper automatically in CI
+
+GitLab Housekeeper is already being run in CI pipelines in different projects.
+Typically we have CI jobs which trigger a single keep with the desired
+settings. It is likely possible to expand our current CI pipelines to run new
+keeps periodically. Here are some places where it is being run today:
+
+1. In our [`engineering-productivity` team scheduled pipelines](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/edf362f52d81ecb8e4934c357cb567384af106a5/.gitlab-ci.yml#L68). This is the default place to add new keeps.
+1. In our [`database-testing` scheduled pipelines](https://gitlab.com/gitlab-org/database-team/gitlab-com-database-testing/-/blob/ebbd9a18547376d2a6e89cf95a6ce12c8d1f133d/db-testing.yml#L402). This is the place to add keeps which need to read from a production Postgres archive.
+
 ## Using Housekeeper in other projects
 
 Right now we do not publish housekeeper to RubyGems. We have published it once

@@ -13,7 +13,7 @@ module Tooling
         1. Ensure you're not logging sensitive or personal information.
         2. Consider if the logging should be gated behind the `expanded_ai_logging` feature flag - this means using `log_conditional_info` method.
 
-        For more information, see: https://docs.gitlab.com/ee/user/gitlab_duo/data_usage.html
+        For more information, see: https://docs.gitlab.com/user/gitlab_duo/data_usage/
       MSG
 
       AI_LOGGING_FILES_MESSAGE = <<~MSG

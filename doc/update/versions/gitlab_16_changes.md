@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab 16 changes
 ---
 
-# GitLab 16 changes
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This page contains upgrade information for minor and patch versions of GitLab 16.
 Ensure you review these instructions for:
@@ -20,10 +22,10 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 ## Issues to be aware of when upgrading from 15.11
 
-- [PostgreSQL 12 is not supported starting from GitLab 16](../../update/deprecations.md#postgresql-12-deprecated). Upgrade PostgreSQL to at least version 13.6 before upgrading to GitLab 16.0 or later.
+- [PostgreSQL 12 is not supported starting from GitLab 16](../deprecations.md#postgresql-12-deprecated). Upgrade PostgreSQL to at least version 13.6 before upgrading to GitLab 16.0 or later.
 - If your GitLab instance upgraded first to 15.11.0, 15.11.1, or 15.11.2 the database schema is incorrect.
   Perform the [workaround](#undefined-column-error-upgrading-to-162-or-later) before upgrading to 16.x.
-- Starting with 16.0, GitLab self-managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
+- Starting with 16.0, GitLab Self-Managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
   - This change applies to installation methods with Linux packages (Omnibus), GitLab Helm chart, GitLab Operator, GitLab Docker images, and self-compiled installations.
   - [The second database connection can be disabled](#disable-the-second-database-connection).
 - Most installations can skip 16.0, 16.1, and 16.2, as the first required stop on the upgrade path is 16.3.
@@ -115,7 +117,7 @@ see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/
 
 ### Geo installations
 
-- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/_index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
   See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
 
   **Affected releases**:
@@ -193,18 +195,18 @@ To workaround the problem:
 
 Linux package installations for GitLab 16.10 include an upgrade to a new major version of Patroni, from version 2.1.0 to version 3.0.1.
 
-If you're using one of the [reference architectures](../../administration/reference_architectures/index.md)
-that enables [High Availability (HA)](../../administration/reference_architectures/index.md#high-availability-ha)
+If you're using one of the [reference architectures](../../administration/reference_architectures/_index.md)
+that enables [High Availability (HA)](../../administration/reference_architectures/_index.md#high-availability-ha)
 (3k users or more), you're using
 [PostgreSQL replication and failover for Linux package installations](../../administration/postgresql/replication_and_failover.md), which uses Patroni.
 
-If this is your case, read [Multi-node upgrades with downtime](../../update/with_downtime.md) on how to upgrade your multi-node instance.
+If this is your case, read [Multi-node upgrades with downtime](../with_downtime.md) on how to upgrade your multi-node instance.
 
 For more information on the changes introduced between version 2.1.0 and version 3.0.1, see the [Patroni release notes](https://patroni.readthedocs.io/en/latest/releases.html).
 
 ### Geo installations
 
-- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/_index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
   See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
 
   **Affected releases**:
@@ -262,7 +264,7 @@ planned for release in 16.9.1.
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
-- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/_index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
   See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
 
   **Affected releases**:
@@ -340,7 +342,7 @@ planned for release in 16.9.1.
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
-- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/_index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
   See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
 
   **Affected releases**:
@@ -430,7 +432,7 @@ Specific information applies to Linux package installations:
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
-- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/_index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
   See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
 
   **Affected releases**:
@@ -519,7 +521,7 @@ Specific information applies to Linux package installations:
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
-- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/_index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
   See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
 
   **Affected releases**:
@@ -675,7 +677,7 @@ Specific information applies to installations using Geo:
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
-- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/_index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
   See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
 
   **Affected releases**:
@@ -869,7 +871,7 @@ Specific information applies to installations using Geo:
 
   - [Container registry](../../administration/packages/container_registry.md)
   - [Gitaly](../../administration/gitaly/tls_support.md)
-  - [GitLab Pages](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#manual-addition-of-ssltls-certificates)
+  - [GitLab Pages](../../user/project/pages/custom_domains_ssl_tls_certification/_index.md#manual-addition-of-ssltls-certificates)
   - [Workhorse](../../development/workhorse/configuration.md#tls-support)
 
   You should check the size of your RSA keys (`openssl rsa -in <your-key-file> -text -noout | grep "Key:"`)
@@ -1105,7 +1107,7 @@ You are not impacted:
 |-------------------------|-------------------------|----------|
 | 15.1 - 16.2             | All                     | 16.3 and later    |
 
-Workaround: A possible workaround is to [disable proxying](../../administration/geo/secondary_proxy/index.md#disable-secondary-site-http-proxying). Note that the secondary site fails to serve LFS files that have not been replicated at the time of cloning.
+Workaround: A possible workaround is to [disable proxying](../../administration/geo/secondary_proxy/_index.md#disable-secondary-site-http-proxying). Note that the secondary site fails to serve LFS files that have not been replicated at the time of cloning.
 
 ## 16.1.0
 
@@ -1154,9 +1156,12 @@ Workaround: A possible workaround is to [disable proxying](../../administration/
 
 ### Geo installations
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Specific information applies to installations using Geo:
 
@@ -1263,14 +1268,17 @@ Before this automatic expiry date is applied, you should do the following to min
 
 For more information, see the:
 
-- [Deprecations and removals documentation](../../update/deprecations.md#non-expiring-access-tokens).
+- [Deprecations and removals documentation](../deprecations.md#non-expiring-access-tokens).
 - [Deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
 
 ### Geo installations
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Specific information applies to installations using Geo:
 
@@ -1297,16 +1305,19 @@ configuration. Some `gitaly['..']` configuration options continue to be used by 
 - `consul_service_name`
 - `consul_service_meta`
 
-Migrate by moving your existing configuration under the new structure. `git_data_dirs` is supported [until GitLab 17.0](https://gitlab.com/gitlab-org/gitaly/-/issues/5133). The new structure is supported from GitLab 15.10.
+Migrate by moving your existing configuration under the new structure. `git_data_dirs` is supported [until GitLab 18.0](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8786). The new structure is supported from GitLab 15.10.
 
 **Migrate to the new structure**
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you are running Gitaly cluster, [migrate Praefect to the new configuration structure **first**](#praefect-configuration-structure-change).
 Once this change is tested, proceed with your Gitaly nodes.
 If Gitaly is misconfigured as part of the configuration structure change, [repository verification](../../administration/gitaly/praefect.md#repository-verification)
 will [delete metadata required for Gitaly cluster to work](https://gitlab.com/gitlab-org/gitaly/-/issues/5529).
 To protect against configuration mistakes, temporarily disable repository verification in Praefect.
+
+{{< /alert >}}
 
 1. If you're running Gitaly Cluster, ensure repository verification is disabled on all Praefect nodes.
    Configure `verification_interval: 0`, and apply with `gitlab-ctl reconfigure`.
@@ -1325,8 +1336,11 @@ To protect against configuration mistakes, temporarily disable repository verifi
 
 The new structure is documented below with the old keys described in a comment above the new keys.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Double check your update to `storage`. You must append `/repositories` to the value of `path`.
+
+{{< /alert >}}
 
 ```ruby
 gitaly['configuration'] = {
@@ -1487,12 +1501,15 @@ Migrate by moving your existing configuration under the new structure. The new s
 
 **Migrate to the new structure**
 
-WARNING:
+{{< alert type="warning" >}}
+
 Migrate Praefect to the new configuration structure **first**.
 Once this change is tested, [proceed with your Gitaly nodes](#gitaly-configuration-structure-change).
 If Gitaly is misconfigured as part of the configuration structure change, [repository verification](../../administration/gitaly/praefect.md#repository-verification)
 will [delete metadata required for Gitaly cluster to work](https://gitlab.com/gitlab-org/gitaly/-/issues/5529).
 To protect against configuration mistakes, temporarily disable repository verification in Praefect.
+
+{{< /alert >}}
 
 1. When applying the new structure to your configuration:
    - Replace the `...` with the value from the old key.
@@ -1650,9 +1667,9 @@ If you have PgBouncer deployed:
 
 Follow the instructions for your installation type to switch back to a single database connection:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package and Docker
+{{< tab title="Linux package and Docker" >}}
 
 1. Add this setting to `/etc/gitlab/gitlab.rb`:
 
@@ -1664,7 +1681,9 @@ Follow the instructions for your installation type to switch back to a single da
 
 In a multi-node environment, this setting should be updated on all Rails and Sidekiq nodes.
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 Set the `ci.enabled` key to `false`:
 
@@ -1675,11 +1694,15 @@ global:
       enabled: false
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 Remove the `ci:` section from `config/database.yml`.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Long-running user type data change
 
@@ -1776,9 +1799,9 @@ on the source instance.
 The commands in the following sections are for Linux package installations, and
 differ for other installation types:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Docker
+{{< tab title="Docker" >}}
 
 - Omit `sudo`
 - Shell into the GitLab container and run the same commands:
@@ -1787,19 +1810,25 @@ differ for other installation types:
   docker exec -it <container-id> bash
   ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 - Use `sudo -u git -H bundle exec rake RAILS_ENV=production` instead of `sudo gitlab-rake`
 - Run the SQL on [your PostgreSQL database console](../../administration/troubleshooting/postgresql.md#start-a-database-console)
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 - Omit `sudo`.
 - Shell into the `toolbox` pod to run the Rake commands: `gitlab-rake` is in `/usr/local/bin` if not in the `PATH`.
   - Refer to our [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) for details.
 - Run the SQL on [your PostgreSQL database console](../../administration/troubleshooting/postgresql.md#start-a-database-console)
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Workaround: instance created with 15.9 or earlier
 

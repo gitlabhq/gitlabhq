@@ -38,7 +38,11 @@ module IssuablesDescriptionTemplatesHelper
   end
 
   def selected_template_name(template_names)
-    template_names.find { |tmpl_name| tmpl_name == params[:issuable_template] }
+    template_param = params[:issuable_template]
+    return if template_param.blank?
+
+    decoded_param = CGI.unescape(template_param)
+    template_names.find { |name| name == decoded_param }
   end
 
   def default_template_name(template_names, issuable)

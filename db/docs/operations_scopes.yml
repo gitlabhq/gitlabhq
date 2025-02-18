@@ -17,5 +17,5 @@ desired_sharding_key:
         table: operations_strategies
         sharding_key: project_id
         belongs_to: strategy
-    awaiting_backfill_on_parent: true
 table_size: small
+desired_sharding_key_migration_job_name: BackfillOperationsScopesProjectId

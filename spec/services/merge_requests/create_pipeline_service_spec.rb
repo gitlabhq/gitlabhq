@@ -64,8 +64,18 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
       end
     end
 
+    context 'when ci_allow_fork_pipelines_to_run_in_parent_project is disabled' do
+      before do
+        project.update!(ci_allow_fork_pipelines_to_run_in_parent_project: false)
+      end
+
+      it 'uses a merge request ref' do
+        expect(response.payload.ref).to eq(merge_request.ref_path)
+      end
+    end
+
     context 'with fork merge request' do
-      let_it_be(:forked_project) { fork_project(project, nil, repository: true, target_project: create(:project, :private, :repository)) }
+      let_it_be(:forked_project) { fork_project(project, nil, repository: true) }
 
       let(:source_project) { forked_project }
 
@@ -76,27 +86,61 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
           expect(response.payload.project).to eq(project)
         end
 
-        context 'when the feature is disabled in CI/CD settings' do
+        it 'uses a merge request ref' do
+          expect(response.payload.ref).to eq(merge_request.ref_path)
+        end
+
+        context 'when setting ci_allow_fork_pipelines_to_run_in_parent_project is disabled' do
           before do
             project.update!(ci_allow_fork_pipelines_to_run_in_parent_project: false)
           end
 
           it 'creates a pipeline in the source project' do
             expect(response.payload.project).to eq(source_project)
+            expect(response.payload.ref).to eq(merge_request.source_branch)
+          end
+
+          context 'when FF allow_merge_request_pipelines_from_fork is disabled' do
+            before do
+              stub_feature_flags(allow_merge_request_pipelines_from_fork: false)
+            end
+
+            it 'creates a pipeline on the source_branch in the source_project' do
+              expect(response.payload.project).to eq(source_project)
+              expect(response.payload.ref).to eq(merge_request.source_branch)
+            end
           end
         end
 
         context 'when source branch is protected' do
           context 'when actor does not have permission to update the protected branch in target project' do
-            let!(:protected_branch) { create(:protected_branch, name: '*', project: project) }
+            let!(:protected_branch) { create(:protected_branch, name: merge_request.source_branch, project: merge_request.target_project) }
 
-            it 'creates a pipeline in the source project' do
-              expect(response.payload.project).to eq(source_project)
+            context 'when FF allow_merge_request_pipelines_from_fork is enabled' do
+              before do
+                stub_feature_flags(allow_merge_request_pipelines_from_fork: true)
+              end
+
+              it 'creates a detached pipeline in the target project' do
+                expect(response).to be_success
+                expect(response.payload.project).to eq(merge_request.target_project)
+              end
+            end
+
+            context 'when FF allow_merge_request_pipelines_from_fork is disabled' do
+              before do
+                stub_feature_flags(allow_merge_request_pipelines_from_fork: false)
+              end
+
+              it 'creates a pipeline on the source_branch in the source_project' do
+                expect(response.payload.project).to eq(source_project)
+                expect(response.payload.ref).to eq(merge_request.source_branch)
+              end
             end
           end
 
           context 'when actor has permission to update the protected branch in target project' do
-            let!(:protected_branch) { create(:protected_branch, :developers_can_merge, name: '*', project: project) }
+            let!(:protected_branch) { create(:protected_branch, :developers_can_merge, name: merge_request.source_branch, project: project) }
 
             it 'creates a pipeline in the target project' do
               expect(response.payload.project).to eq(project)

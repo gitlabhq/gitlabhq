@@ -1,5 +1,5 @@
 import { visitUrl, constructWebIDEPath } from '~/lib/utils/url_utility';
-import findAndFollowLink from '~/lib/utils/navigation_utility';
+import findAndFollowLink, { findAndFollowChildLink } from '~/lib/utils/navigation_utility';
 import {
   GO_TO_PROJECT_OVERVIEW,
   GO_TO_PROJECT_ACTIVITY_FEED,
@@ -41,7 +41,7 @@ export default class ShortcutsNavigation {
       [GO_TO_PROJECT_SNIPPETS, () => findAndFollowLink('.shortcuts-snippets')],
       [GO_TO_PROJECT_KUBERNETES, () => findAndFollowLink('.shortcuts-kubernetes')],
       [GO_TO_PROJECT_ENVIRONMENTS, () => findAndFollowLink('.shortcuts-environments')],
-      [PROJECT_FILES_GO_TO_COMPARE, () => findAndFollowLink('.shortcuts-compare')],
+      [PROJECT_FILES_GO_TO_COMPARE, () => findAndFollowChildLink('.shortcuts-compare')],
       [GO_TO_PROJECT_WEBIDE, ShortcutsNavigation.navigateToWebIDE],
       [NEW_ISSUE, () => findAndFollowLink('.shortcuts-new-issue')],
     ]);

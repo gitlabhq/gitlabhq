@@ -58,7 +58,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
     end
 
     it 'displays and ancestor_help_path' do
-      expect(subject[:ancestor_help_path]).to eq(help_page_path('user/group/clusters/index.md', anchor: 'cluster-precedence'))
+      expect(subject[:ancestor_help_path]).to eq(help_page_path('user/group/clusters/_index.md', anchor: 'cluster-precedence'))
     end
 
     it 'displays empty image path' do
@@ -218,6 +218,15 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
 
       it 'renders details tab' do
         expect(helper).to receive(:render).with('details', { expanded: expanded })
+        subject
+      end
+    end
+
+    context 'migrate' do
+      let(:tab) { 'migrate' }
+
+      it 'renders migrate tab' do
+        expect(helper).to receive(:render).with('migrate')
         subject
       end
     end

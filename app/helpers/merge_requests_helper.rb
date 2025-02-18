@@ -363,6 +363,10 @@ module MergeRequestsHelper
       show_new_mr_dashboard_banner?
   end
 
+  def merge_request_squash_option?(merge_request)
+    merge_request.persisted? ? merge_request.squash : merge_request.squash_enabled_by_default?
+  end
+
   private
 
   def review_requested_merge_requests_count
@@ -481,11 +485,11 @@ module MergeRequestsHelper
     { new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json }
   end
 
-  def merge_request_dashboard_data_v2
+  def merge_request_dashboard_data
     {
       tabs: [
         {
-          title: 'Active',
+          title: s_('MergeRequestsTab|Active'),
           key: '',
           lists: [
             [
@@ -541,7 +545,10 @@ module MergeRequestsHelper
                 ),
                 query: 'assignedMergeRequests',
                 variables: {
-                  reviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED]
+                  reviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED],
+                  not: {
+                    reviewStates: %w[REQUESTED_CHANGES REVIEWED]
+                  }
                 }
               },
               {
@@ -561,14 +568,17 @@ module MergeRequestsHelper
                 helpContent: _('Includes all merge requests you are assigned to and a reviewer has approved.'),
                 query: 'assignedMergeRequests',
                 variables: {
-                  reviewState: 'APPROVED'
+                  reviewState: 'APPROVED',
+                  not: {
+                    reviewStates: %w[REQUESTED_CHANGES REVIEWED UNREVIEWED REVIEW_STARTED UNAPPROVED]
+                  }
                 }
               }
             ]
           ]
         },
         {
-          title: 'Merged',
+          title: s_('MergeRequestsTab|Merged'),
           key: 'merged',
           lists: [
             [{
@@ -584,105 +594,6 @@ module MergeRequestsHelper
                 sort: 'MERGED_AT_DESC'
               }
             }]
-          ]
-        }
-      ]
-    }
-  end
-
-  def merge_request_dashboard_data
-    if ::Feature.enabled?(:merge_request_dashboard_new_lists, current_user, type: :wip)
-      return merge_request_dashboard_data_v2
-    end
-
-    {
-      tabs: [
-        {
-          title: _('Needs attention'),
-          key: '',
-          lists: [
-            [
-              {
-                id: 'returned_to_you',
-                title: _('Returned to you'),
-                helpContent: _('Reviewers left feedback, or requested changes from you, on these merge requests.'),
-                query: 'assignedMergeRequests',
-                variables: {
-                  reviewStates: %w[REVIEWED REQUESTED_CHANGES]
-                }
-              },
-              {
-                id: 'reviews_requested',
-                title: _('Reviews requested'),
-                helpContent: _('These merge requests need a review from you.'),
-                query: 'reviewRequestedMergeRequests',
-                variables: {
-                  reviewStates: %w[UNAPPROVED UNREVIEWED REVIEW_STARTED]
-                }
-              },
-              {
-                id: 'assigned_to_you',
-                title: _('Assigned to you'),
-                helpContent: _("You're assigned to these merge requests, but they don't have reviewers yet."),
-                query: 'assignedMergeRequests',
-                variables: {
-                  reviewerWildcardId: 'NONE'
-                }
-              }
-            ]
-          ]
-        },
-        {
-          title: _('Following'),
-          key: 'following',
-          lists: [
-            [
-              {
-                id: 'waikting_for_others',
-                title: _('Waiting for others'),
-                helpContent: _(
-                  'Your assigned merge requests that are waiting for approvals, ' \
-                    'and reviews you have requested changes for.'
-                ),
-                query: 'assigneeOrReviewerMergeRequests',
-                variables: {
-                  reviewerReviewStates: %w[REVIEWED REQUESTED_CHANGES],
-                  assignedReviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED]
-                }
-              },
-              {
-                id: 'approved_by_you',
-                title: _('Approved by you'),
-                helpContent: _("You've reviewed and approved these merge requests."),
-                query: 'reviewRequestedMergeRequests',
-                variables: {
-                  reviewState: 'APPROVED'
-                }
-              },
-              {
-                id: 'approved_by_others',
-                title: _('Approved by others'),
-                helpContent: _('Includes all merge requests you are assigned to and a reviewer has approved.'),
-                query: 'assignedMergeRequests',
-                variables: {
-                  reviewState: 'APPROVED'
-                }
-              },
-              {
-                id: 'merged_recently',
-                title: _('Merged recently'),
-                helpContent: _('These merge requests merged after %{date}. You were an assignee or a reviewer.') % {
-                  date: 2.weeks.ago.to_date.to_formatted_s(:long)
-                },
-                hideCount: true,
-                query: 'assigneeOrReviewerMergeRequests',
-                variables: {
-                  state: 'merged',
-                  mergedAfter: 2.weeks.ago.to_time.iso8601,
-                  sort: 'MERGED_AT_DESC'
-                }
-              }
-            ]
           ]
         }
       ]

@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Design and user interface changes
 ---
-
-# Design and user interface changes
 
 Follow these guidelines when contributing or reviewing design and user interface
 (UI) changes. Refer to our [code review guide](../code_review.md) for broader
@@ -42,7 +41,7 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
 ### Writing
 
 - Follow [Pajamas](https://design.gitlab.com/content/ui-text/) as the primary
-  guidelines for UI text and [documentation style guide](../documentation/styleguide/index.md)
+  guidelines for UI text and [documentation style guide](../documentation/styleguide/_index.md)
   as the secondary.
 - Use clear and consistent terminology.
 - Check grammar and spelling.
@@ -129,7 +128,7 @@ At any moment, but usually _during_ or _after_ the design's implementation:
 
 - Contribute [issues to Pajamas](https://design.gitlab.com/get-started/contributing#contribute-an-issue)
   for additions or enhancements to the design system.
-- Create issues with the [`~Deferred UX`](../labels/index.md#technical-debt-and-deferred-ux)
+- Create issues with the [`~Deferred UX`](../labels/_index.md#technical-debt-and-deferred-ux)
   label for intentional deviations from the agreed-upon UX requirements due to
   time or feasibility challenges, linking back to the corresponding issues or
   merge requests.

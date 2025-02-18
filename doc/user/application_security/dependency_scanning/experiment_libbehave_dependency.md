@@ -2,14 +2,16 @@
 stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Analyze dependency for behaviors
 ---
 
-# Analyze dependency for behaviors
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**Status:** Experiment
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Experiment
+
+{{< /details >}}
 
 Libbehave is an experimental feature that scans your dependencies during merge request pipelines to
 identify newly added libraries and their potentially risky behaviors. While traditional dependency
@@ -88,11 +90,11 @@ Prerequisites:
 - Pipeline is part of an active [merge request pipeline](../../../ci/pipelines/merge_request_pipelines.md) that has a defined source and target Git branch.
 - Project includes one of the [supported languages](#supported-languages-and-package-managers).
 - Project is adding new dependencies to the source or feature branch.
-- For merge request (MR) comments, ensure a Guest level [project access token](../../../user/project/settings/project_access_tokens.md),
+- For merge request (MR) comments, ensure a Guest level [project access token](../../project/settings/project_access_tokens.md),
   and the source branch is either a protected branch or the **Protect variable** CI/CD variable
-  [option is unchecked](../../../ci/variables/index.md#for-a-project).
+  [option is unchecked](../../../ci/variables/_index.md#for-a-project).
 
-Libbehave is exposed through [CI/CD components](../../../ci/components/index.md). To enable it, configure your project's
+Libbehave is exposed through [CI/CD components](../../../ci/components/_index.md). To enable it, configure your project's
 `.gitlab-ci.yml` file as follows:
 
 ```yaml
@@ -114,7 +116,7 @@ To configure MR comments for Libbehave:
      - Select the scope `api`.
 
    Copy the project access token to your clipboard. It's required in the next step.
-1. Add the token as a [project CI/CD variable](../../../ci/variables/index.md):
+1. Add the token as a [project CI/CD variable](../../../ci/variables/_index.md):
    - Set **Visibility** to "Masked".
    - Uncheck the "Protect variable" option under **Flags**, to allow access from non-protected branches.
    - Set the key variable name to `BEHAVE_TOKEN`.
@@ -161,7 +163,7 @@ The following flags are available, but are untested and should be left at their 
 As we have not tested all variables you may find some will work and others will not.
 If one does not work and you need it, we suggest
 [submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
-or [contributing to the code](../../../development/index.md) to enable it to be used.
+or [contributing to the code](../../../development/_index.md) to enable it to be used.
 
 ## Dependency detection and analysis
 
@@ -264,7 +266,7 @@ The https://mvnrepository.com/artifact/org.jmockit/jmockit package was found to 
 
 The MR Comment Summary output requires an access token with Guest level access be created for the
 project that the Libbehave component has been configured for. The access token should then be
-[configured for the project](../../../ci/variables/index.md#for-a-project). Because feature branches
+[configured for the project](../../../ci/variables/_index.md#for-a-project). Because feature branches
 are not protected by default, ensure the **Protect variable** setting is unchecked, otherwise the
 Libbehave job will not be able to read the access token's value.
 

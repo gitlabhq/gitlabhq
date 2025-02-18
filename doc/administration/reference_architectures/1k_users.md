@@ -2,26 +2,28 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Reference architecture: Up to 20 RPS or 1,000 users'
 ---
 
-# Reference architecture: Up to 20 RPS or 1,000 users
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This reference architecture targets a peak load of 20 requests per second (RPS). Based on real data, this load typically corresponds to up to 1,000 users, which includes both manual and automated interactions.
 
 For a full list of reference architectures, see
-[available reference architectures](index.md#available-reference-architectures).
+[available reference architectures](_index.md#available-reference-architectures).
 
 > - **Target Load:** API: 20 RPS, Web: 2 RPS, Git (Pull): 2 RPS, Git (Push): 1 RPS
 > - **High Availability:** No. For a high availability environment,
 >   follow a modified [3K reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
-> - **Cost calculator template:** For more information, see [cost calculator templates](index.md#cost-calculator-templates).
+> - **Cost calculator template:** For more information, see [cost calculator templates](_index.md#cost-calculator-templates).
 > - **Cloud Native Hybrid:** No. For a cloud native hybrid environment, you
 >   can follow a [modified hybrid reference architecture](#cloud-native-hybrid-reference-architecture-with-helm-charts).
-> - **Unsure which Reference Architecture to use?** For more information, see [deciding which architecture to start with](index.md#deciding-which-architecture-to-start-with).
+> - **Unsure which Reference Architecture to use?** For more information, see [deciding which architecture to start with](_index.md#deciding-which-architecture-to-start-with).
 
 | Users        | Configuration        | GCP            | AWS          | Azure    |
 |--------------|----------------------|----------------|--------------|----------|
@@ -74,17 +76,20 @@ monitor .[#7FFFD4,norank]--> redis
 
 ## Requirements
 
-Before starting, see the [requirements](index.md#requirements) for reference architectures.
+Before starting, see the [requirements](_index.md#requirements) for reference architectures.
 
-WARNING:
+{{< alert type="warning" >}}
+
 **The node's specifications are based on high percentiles of both usage patterns and repository sizes in good health.**
-**However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads), it might *significantly* impact the performance of the environment.**
-If this applies to you, [further adjustments might be required](index.md#scaling-an-environment). See the linked documentation and reach out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+**However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads), it might *significantly* impact the performance of the environment.**
+If this applies to you, [further adjustments might be required](_index.md#scaling-an-environment). See the linked documentation and reach out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+
+{{< /alert >}}
 
 ## Testing methodology
 
 The 1k architecture is designed to cover a large majority of workflows. It is regularly
-[smoke and performance tested](index.md#validation-and-test-results) by the Test Platform team
+[smoke and performance tested](_index.md#validation-and-test-results) by the Test Platform team
 against the following endpoint throughput targets:
 
 - API: 20 RPS
@@ -96,21 +101,24 @@ These targets are selected based on the real customer data of total environmenta
 including CI and other workloads.
 
 Testing is done regularly by using our [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) and its dataset, which is available for anyone to use.
-The results of this testing are [available publicly on the GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information on our testing strategy, see [validation and test results](index.md#validation-and-test-results).
+The results of this testing are [available publicly on the GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information on our testing strategy, see [validation and test results](_index.md#validation-and-test-results).
 
 ## Setup instructions
 
 To install GitLab for this default reference architecture, use the standard
-[installation instructions](../../install/index.md).
+[installation instructions](../../install/_index.md).
 
 You can also optionally configure GitLab to use an [external PostgreSQL service](../postgresql/external.md)
 or [external object storage service](../object_storage.md). It improves performance and reliability, but at an increased complexity cost.
 
 ## Configure advanced search
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can leverage Elasticsearch and [enable advanced search](../../integration/advanced_search/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.
@@ -134,5 +142,8 @@ For environments that serve fewer users or a lower RPS, you can lower the node s
 
 Now you have a fresh GitLab environment with core functionality configured accordingly. You might want to configure additional optional GitLab features depending on your requirements. See [Steps after installing GitLab](../../install/next_steps.md) for more information.
 
-NOTE:
+{{< alert type="note" >}}
+
 Depending on your environment and requirements, additional hardware requirements or adjustments may be required to set up additional features. See the individual pages for more information.
+
+{{< /alert >}}

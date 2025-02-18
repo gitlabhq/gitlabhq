@@ -14,9 +14,6 @@ events:
   - name: push_package_to_registry
     filter:
       property: guest
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

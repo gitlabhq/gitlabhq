@@ -192,7 +192,7 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
       it 'is configured with a result dir of /background_migrations' do
         runner = described_class.background_migrations
 
-        expect(runner.result_dir).to eq(described_class::BASE_RESULT_DIR.join( 'background_migrations'))
+        expect(runner.result_dir).to eq(described_class::BASE_RESULT_DIR.join('background_migrations'))
       end
     end
 

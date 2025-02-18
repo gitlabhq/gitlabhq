@@ -13,7 +13,7 @@ module DependencyProxy
     def perform
       enqueue_blob_cleanup_job if DependencyProxy::Blob.pending_destruction.any?
       enqueue_manifest_cleanup_job if DependencyProxy::Manifest.pending_destruction.any?
-      enqueue_vreg_packages_cached_response_cleanup_job
+      enqueue_vreg_packages_cache_entry_cleanup_job
     end
 
     private
@@ -26,10 +26,14 @@ module DependencyProxy
       DependencyProxy::CleanupManifestWorker.perform_with_capacity
     end
 
-    def enqueue_vreg_packages_cached_response_cleanup_job
-      [::VirtualRegistries::Packages::Maven::CachedResponse].each do |klass|
+    def enqueue_vreg_packages_cache_entry_cleanup_job
+      [::VirtualRegistries::Packages::Maven::Cache::Entry].each do |klass|
         if klass.pending_destruction.any?
-          ::VirtualRegistries::Packages::DestroyOrphanCachedResponsesWorker.perform_with_capacity(klass.name)
+          if Feature.enabled?(:virtual_registry_maven_cleanup_new_worker_class, Feature.current_request)
+            ::VirtualRegistries::Packages::Cache::DestroyOrphanEntriesWorker.perform_with_capacity(klass.name)
+          else
+            ::VirtualRegistries::Packages::DestroyOrphanCachedResponsesWorker.perform_with_capacity(klass.name)
+          end
         end
       end
     end

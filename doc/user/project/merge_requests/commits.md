@@ -2,16 +2,18 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Understand how to read the display of commits in a merge request."
+description: Understand how to read the display of commits in a merge request.
+title: Commits
 ---
 
-# Commits
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-A commit records and sends the source code changes to the [repository](../repository/index.md).
+{{< /details >}}
+
+A commit records and sends the source code changes to the [repository](../repository/_index.md).
 For more information, see [Recording Changes to the Repository](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository).
 
 ## Commit changes using the command line
@@ -26,12 +28,12 @@ You can add multiple commits before pushing your changes.
 
   - **Trigger a GitLab CI/CD pipeline:**
 
-    If the project is configured with [GitLab CI/CD](../../../ci/index.md),
+    If the project is configured with [GitLab CI/CD](../../../ci/_index.md),
     you trigger a pipeline per push, not per commit.
 
   - **Skip pipelines:**
 
-    Add the [`ci skip`](../../../ci/pipelines/index.md#skip-a-pipeline) keyword to
+    Add the [`ci skip`](../../../ci/pipelines/_index.md#skip-a-pipeline) keyword to
     your commit message to make GitLab CI/CD skip the pipeline.
 
   - **Cross-link issues and merge requests:**
@@ -43,17 +45,17 @@ You can add multiple commits before pushing your changes.
 
 - **Cherry-pick a commit:**
 
-  In GitLab, you can [cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-pick-a-single-commit)
+  In GitLab, you can [cherry-pick a commit](cherry_pick_changes.md#cherry-pick-a-single-commit)
   from the UI.
 
 - **Revert a commit:**
 
-  [Revert a commit](../merge_requests/revert_changes.md#revert-a-commit)
+  [Revert a commit](revert_changes.md#revert-a-commit)
   from the UI to a selected branch.
 
 - **Sign a commit:**
 
-  Add extra security by [signing your commits](../repository/signed_commits/index.md).
+  Add extra security by [signing your commits](../repository/signed_commits/_index.md).
 
 For additional information, see [Stage, commit, and push changes](../../../topics/git/commit.md).
 
@@ -73,7 +75,7 @@ To see the commits included in a merge request:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests**, then select your merge request.
 1. To show a list of the commits in the merge request, newest first, select **Commits** .
-   To read more about the commit, select **Toggle commit description** (**{ellipsis_h}**)
+   To read more about the commit, select **Toggle commit description** ({{< icon name="ellipsis_h" >}})
    on any commit.
 1. To view the changes in the commit, select the title of the commit link.
 1. To view other commits in the merge request, either:
@@ -109,9 +111,12 @@ the [API](../../../api/merge_request_context_commits.md).
 
 ### Add a comment to a commit
 
-WARNING:
+{{< alert type="warning" >}}
+
 Threads created this way are lost if the commit ID changes after a
 force push.
+
+{{< /alert >}}
 
 To add discussion to a specific commit:
 
@@ -120,7 +125,7 @@ To add discussion to a specific commit:
 1. Below the commits, in the **Comment** field, enter a comment.
 1. Save your comment as either a standalone comment, or a thread:
    - To add a comment, select **Comment**.
-   - To start a thread, select the down arrow (**{chevron-down}**), then select **Start thread**.
+   - To start a thread, select the down arrow ({{< icon name="chevron-down" >}}), then select **Start thread**.
 
 ### View diffs between commits
 
@@ -129,7 +134,7 @@ To view the changes between previously merged commits:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests**, then select your merge request.
 1. Select **Changes**.
-1. By **Compare** (**{file-tree}**), select the commits to compare:
+1. By **Compare** ({{< icon name="file-tree" >}}), select the commits to compare:
 
    ![Previously merged commits](img/previously_merged_commits_v16_0.png)
 

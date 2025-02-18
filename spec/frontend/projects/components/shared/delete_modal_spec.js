@@ -19,6 +19,7 @@ describe('DeleteModal', () => {
     forksCount: 3,
     starsCount: 4,
     confirmLoading: false,
+    nameWithNamespace: 'Foo / Bar',
   };
 
   const createComponent = (propsData) => {
@@ -167,6 +168,12 @@ describe('DeleteModal', () => {
     createComponent();
 
     expect(wrapper.findByTestId('modal-footer-slot').exists()).toBe(true);
+  });
+
+  it('renders aria-label', () => {
+    createComponent();
+
+    expect(findGlModal().props('ariaLabel')).toBe('Delete Foo / Bar');
   });
 
   it('when confirmLoading switches from true to false, emits `change event`', async () => {

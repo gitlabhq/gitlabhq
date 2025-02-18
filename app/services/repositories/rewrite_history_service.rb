@@ -19,7 +19,7 @@ module Repositories
       result = validate_input(blob_oids: blob_oids, redactions: redactions)
       return result if result.error?
 
-      Repositories::RewriteHistoryWorker.perform_async(
+      ::Repositories::RewriteHistoryWorker.perform_async(
         project_id: project.id,
         user_id: current_user.id,
         blob_oids: blob_oids,

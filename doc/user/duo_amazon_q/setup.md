@@ -2,20 +2,29 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Set up GitLab Duo with Amazon Q
 ---
 
-# Set up GitLab Duo with Amazon Q
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed
-**Status:** Preview/Beta
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
+- Status: Preview/Beta
 
-> - Introduced as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `amazon_q_integration`. Disabled by default.
-> - Feature flag `amazon_q_integration` removed in GitLab 17.8.
+{{< /details >}}
 
-NOTE:
+{{< history >}}
+
+- Introduced as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `amazon_q_integration`. Disabled by default.
+- Feature flag `amazon_q_integration` removed in GitLab 17.8.
+
+{{< /history >}}
+
+{{< alert type="note" >}}
+
 If you have a Duo Pro or Duo Enterprise add-on, this feature is not available.
+
+{{< /alert >}}
 
 To use GitLab Duo with Amazon Q, you can [request access to a lab environment](https://about.gitlab.com/partners/technology-partners/aws/#interest).
 
@@ -36,6 +45,7 @@ To set up GitLab Duo with Amazon Q, you must:
 
 - You must have GitLab Self-Managed:
   - On GitLab 17.8 or later.
+  - On an instance in AWS.
   - With an HTTPS URL that can be accessed by Amazon Q (the SSL certificate must not be self-signed).
     For more details about SSL, see [Configure SSL for a Linux package installation](https://docs.gitlab.com/omnibus/settings/ssl/).
   - With an Ultimate subscription that is synchronized with GitLab. (No trial access.)
@@ -69,8 +79,11 @@ Now, create an AWS identity provider:
 Next, you must create an IAM role that trusts the IAM identity provider and can
 access Amazon Q.
 
-NOTE:
+{{< alert type="note" >}}
+
 After you set up the IAM role, you cannot change the AWS account that's associated with the role.
+
+{{< /alert >}}
 
 1. In the AWS IAM console, select **Access Management > Roles > Create role**.
 1. Select **Web identity**.

@@ -19,6 +19,7 @@ import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, __, sprintf } from '~/locale';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import { updateText, repeatCodeBackticks } from '~/lib/utils/text_markdown';
+import ToolbarTableButton from '~/content_editor/components/toolbar_table_button.vue';
 import ToolbarButton from './toolbar_button.vue';
 import DrawioToolbarButton from './drawio_toolbar_button.vue';
 import CommentTemplatesModal from './comment_templates_modal.vue';
@@ -27,6 +28,7 @@ import HeaderDivider from './header_divider.vue';
 export default {
   components: {
     ToolbarButton,
+    ToolbarTableButton,
     GlPopover,
     GlButton,
     GlFormInput,
@@ -94,6 +96,11 @@ export default {
       required: false,
       default: '',
     },
+    newCommentTemplatePathsProp: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     drawioEnabled: {
       type: Boolean,
       required: false,
@@ -120,6 +127,11 @@ export default {
     };
   },
   computed: {
+    commentTemplatePaths() {
+      return this.newCommentTemplatePaths.length > 0
+        ? this.newCommentTemplatePaths
+        : this.newCommentTemplatePathsProp;
+    },
     mdTable() {
       const header = s__('MarkdownEditor|header');
       const divider = '-'.repeat(header.length);
@@ -232,6 +244,22 @@ export default {
         });
       }
     },
+    insertTable({ rows, cols }) {
+      const headerContent = s__('MarkdownEditor|header');
+      const dividerContent = '-'.repeat(headerContent.length);
+      const cellContent = ' '.repeat(headerContent.length);
+
+      const table = [
+        `|${` ${headerContent} |`.repeat(cols)}`,
+        `|${` ${dividerContent} |`.repeat(cols)}`,
+      ];
+      const createRow = (content, colCount) => `|${` ${content} |`.repeat(colCount)}`;
+      for (let i = 0; i < rows; i += 1) {
+        table.push(createRow(cellContent, cols));
+      }
+
+      this.insertIntoTextarea(table.join('\n'));
+    },
     replaceTextarea(text) {
       const { description, descriptionForSha } = this.$options.i18n;
       const headSha = document.getElementById('merge_request_diff_head_sha').value;
@@ -294,6 +322,7 @@ export default {
     ),
     hidePreview: __('Continue editing'),
     preview: __('Preview'),
+    editorToolbar: __('Editor toolbar'),
   },
 };
 </script>
@@ -308,7 +337,11 @@ export default {
         data-testid="md-header-toolbar"
         class="md-header-toolbar gl-flex gl-grow gl-items-start gl-gap-y-2 gl-py-3"
       >
-        <div class="gl-flex gl-flex-wrap gl-gap-y-2">
+        <div
+          class="gl-flex gl-flex-wrap gl-gap-y-2"
+          role="toolbar"
+          :aria-label="$options.i18n.editorToolbar"
+        >
           <gl-button
             v-if="enablePreview"
             data-testid="preview-toggle"
@@ -522,14 +555,10 @@ export default {
             />
             <header-divider v-if="!hideDividerBeforeTable" />
           </div>
-          <toolbar-button
-            v-if="!restrictedToolBarItems.includes('table')"
+          <toolbar-table-button
             v-show="!previewMarkdown"
-            :tag="mdTable"
-            :prepend="true"
-            :button-title="__('Add a table')"
-            icon="table"
-            tracking-property="table"
+            v-if="!restrictedToolBarItems.includes('table')"
+            @insert-table="insertTable"
           />
           <!--
             The attach file button's click behavior is added by
@@ -560,8 +589,8 @@ export default {
             tracking-property="quickAction"
           />
           <comment-templates-modal
-            v-if="!previewMarkdown && newCommentTemplatePaths.length"
-            :new-comment-template-paths="newCommentTemplatePaths"
+            v-if="!previewMarkdown && commentTemplatePaths.length"
+            :new-comment-template-paths="commentTemplatePaths"
             @select="insertSavedReply"
           />
           <template v-if="!previewMarkdown && canSummarizeChanges">

@@ -52,26 +52,27 @@ export const ICON_MAP = {
 };
 
 export const SUBITEMS_FILTER = {
-  issue: { order: 2, icon: 'issue-type-issue' },
-  task: { order: 3, icon: 'issue-type-task' },
-  objective: { order: 4, icon: 'issue-type-objective' },
-  key_result: { order: 1, icon: 'issue-type-keyresult' },
+  issue: { order: 1, icon: 'issue-type-issue', label: s__('GlobalSearch|Issues') },
+  epic: { order: 2, icon: 'issue-type-epic', label: s__('GlobalSearch|Epics') },
+  task: { order: 3, icon: 'issue-type-task', label: s__('GlobalSearch|Tasks') },
+  objective: { order: 4, icon: 'issue-type-objective', label: s__('GlobalSearch|Objectives') },
+  key_result: { order: 5, icon: 'issue-type-keyresult', label: s__('GlobalSearch|Key results') },
 };
 
 export const SCOPE_NAVIGATION_MAP = {
-  blobs: s__(`GlobalSearch|Code`),
+  blobs: s__('GlobalSearch|Code'),
   issues: window.gon?.features?.workItemScopeFrontend
-    ? s__(`GlobalSearch|Work items`)
-    : s__(`GlobalSearch|Issues`),
-  epics: s__(`GlobalSearch|'Epics`),
-  merge_requests: s__(`GlobalSearch|Merge request`),
-  commits: s__(`GlobalSearch|Commits`),
-  notes: s__(`GlobalSearch|Comments`),
-  milestones: s__(`GlobalSearch|Milestones`),
-  users: s__(`GlobalSearch|Users`),
-  projects: s__(`GlobalSearch|Projects`),
-  wiki_blobs: s__(`GlobalSearch|Wiki`),
-  snippet_titles: s__(`GlobalSearch|Snippets`),
+    ? s__('GlobalSearch|Work items')
+    : s__('GlobalSearch|Issues'),
+  epics: s__('GlobalSearch|Epics'),
+  merge_requests: s__('GlobalSearch|Merge request'),
+  commits: s__('GlobalSearch|Commits'),
+  notes: s__('GlobalSearch|Comments'),
+  milestones: s__('GlobalSearch|Milestones'),
+  users: s__('GlobalSearch|Users'),
+  projects: s__('GlobalSearch|Projects'),
+  wiki_blobs: s__('GlobalSearch|Wiki'),
+  snippet_titles: s__('GlobalSearch|Snippets'),
 };
 
 export const ZOEKT_SEARCH_TYPE = 'zoekt';

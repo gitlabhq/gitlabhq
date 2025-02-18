@@ -2,16 +2,22 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Feature flags API
 ---
 
-# Feature flags API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9566) in GitLab Premium 12.5.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to GitLab Free in 13.5.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9566) in GitLab Premium 12.5.
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to GitLab Free in 13.5.
+
+{{< /history >}}
 
 API for accessing resources of [GitLab feature flags](../operations/feature_flags.md).
 
@@ -20,7 +26,7 @@ Users with at least the Developer [role](../user/permissions.md) can access the 
 ## Feature flags pagination
 
 By default, `GET` requests return 20 results at a time because the API results
-are [paginated](rest/index.md#pagination).
+are [paginated](rest/_index.md#pagination).
 
 ## List feature flags for a project
 
@@ -32,7 +38,7 @@ GET /projects/:id/feature_flags
 
 | Attribute           | Type             | Required   | Description                                                                                                                 |
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).                                            |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                            |
 | `scope`             | string           | no         | The condition of feature flags, one of: `enabled`, `disabled`.                                                              |
 
 ```shell
@@ -132,7 +138,7 @@ GET /projects/:id/feature_flags/:feature_flag_name
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).       |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).       |
 | `feature_flag_name` | string           | yes        | The name of the feature flag.                                                          |
 
 ```shell
@@ -177,7 +183,7 @@ POST /projects/:id/feature_flags
 
 | Attribute           | Type             | Required   | Description                                                                                                                                                                                                                                                                              |
 | ------------------- | ---------------- | ---------- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).                                                                                                                                                                                                     |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                                                                                                                                                                                     |
 | `name`              | string           | yes        | The name of the feature flag.                                                                                                                                                                                                                                                            |
 | `version`           | string           | yes        | **Deprecated** The version of the feature flag. Must be `new_version_flag`. Omit to create a Legacy feature flag.                                                                                                                                                                        |
 | `description`       | string           | no         | The description of the feature flag.                                                                                                                                                                                                                                                     |
@@ -239,7 +245,7 @@ PUT /projects/:id/feature_flags/:feature_flag_name
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).   |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).   |
 | `feature_flag_name` | string           | yes        | The current name of the feature flag.                                                  |
 | `description`       | string           | no         | The description of the feature flag.                                                   |
 | `active`            | boolean          | no         | The active state of the flag.                                                          |
@@ -317,7 +323,7 @@ DELETE /projects/:id/feature_flags/:feature_flag_name
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).       |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).       |
 | `feature_flag_name` | string           | yes        | The name of the feature flag.                                                          |
 
 ```shell

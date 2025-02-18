@@ -24,7 +24,7 @@ module Gitlab
     end
 
     def oci_repository_path_regex_message
-      "can only include non-accented letters, digits, '_', '-' and '.'. It must not start with '-', end in '.', '.git', or '.atom'."
+      "can only include non-accented letters, digits, '_', '-' and '.'. It must not start with '-', '_', or '.', nor end with '-', '_', '.', '.git', or '.atom'."
     end
 
     def group_name_regex

@@ -2,13 +2,15 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Environments Dashboard
 ---
 
-# Environments Dashboard
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The Environments Dashboard provides a cross-project
 environment-based view that lets you see the big picture
@@ -45,7 +47,7 @@ To add a project to the dashboard:
 Once added, you can see a summary of each project's environment operational
 health, including the latest commit, pipeline status, and deployment time.
 
-The Environments and [Operations](../../user/operations_dashboard/index.md)
+The Environments and [Operations](../../user/operations_dashboard/_index.md)
 dashboards share the same list of projects. When you add or remove a
 project from one, GitLab adds or removes the project from the other.
 

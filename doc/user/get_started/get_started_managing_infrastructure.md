@@ -1,11 +1,10 @@
 ---
 stage: Deploy
 group: Environments
-description: Terraform and Kubernetes deployments.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Terraform and Kubernetes deployments.
+title: Get started managing your infrastructure
 ---
-
-# Get started managing your infrastructure
 
 With the rise of DevOps and SRE approaches, infrastructure management has become
 codified and automatable. You can now employ software development best practices
@@ -34,7 +33,7 @@ The various GitLab integrations help you:
 
 For more information, see:
 
-- [Infrastructure as Code](../infrastructure/iac/index.md)
+- [Infrastructure as Code](../infrastructure/iac/_index.md)
 
 ## Step 2: Interact with Kubernetes clusters
 
@@ -45,8 +44,8 @@ and non-production environments, and much more.
 
 For more information, see:
 
-- [Create Kubernetes clusters in the cloud](../clusters/create/index.md)
-- [Connect Kubernetes clusters with GitLab](../clusters/agent/index.md)
+- [Create Kubernetes clusters in the cloud](../clusters/create/_index.md)
+- [Connect Kubernetes clusters with GitLab](../clusters/agent/_index.md)
 
 ## Step 3: Document procedures with runbooks
 
@@ -61,4 +60,4 @@ to issues, merge requests, and other GitLab objects.
 
 For more information, see:
 
-- [How executable runbooks work in GitLab](../project/clusters/runbooks/index.md)
+- [How executable runbooks work in GitLab](../project/clusters/runbooks/_index.md)

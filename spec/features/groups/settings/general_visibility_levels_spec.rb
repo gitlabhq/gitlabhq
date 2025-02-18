@@ -169,6 +169,50 @@ RSpec.describe 'General settings visibility levels', :js, :aggregate_failures, f
     end
   end
 
+  context 'with public organization' do
+    let_it_be(:public_organization) { create(:organization, :public) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group, organization: public_organization, owners: user) }
+
+    it 'shows each visibility level in correct field state' do
+      visit edit_group_path(group)
+
+      expect(page).to have_content('Visibility level')
+
+      expect(page).to have_field("Private",  checked: false, disabled: false)
+      expect(page).to have_field("Internal", checked: false, disabled: false)
+      expect(page).to have_field("Public",   checked: true, disabled: false)
+    end
+  end
+
+  context 'with private organization' do
+    let_it_be(:private_organization) { create(:organization, :private) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group, :private, organization: private_organization, owners: user) }
+
+    it 'shows each visibility level in correct field state' do
+      visit edit_group_path(group)
+
+      expect(page).to have_content('Visibility level')
+
+      expect(page).to have_field("Private",  checked: true, disabled: false)
+      expect(page).to have_field("Internal", checked: false, disabled: true)
+      expect(page).to have_field("Public",   checked: false, disabled: true)
+
+      expect_no_popover_for_disallowed_visibility_level(visibility_level_label_text: 'Private')
+      expect_popover_for_disallowed_visibility_level(
+        visibility_level_label_text: 'Internal',
+        popover_content: 'This visibility level is not allowed ' \
+          'because the organization has a more restrictive visibility level.'
+      )
+      expect_popover_for_disallowed_visibility_level(
+        visibility_level_label_text: 'Public',
+        popover_content: 'This visibility level is not allowed ' \
+          'because the organization has a more restrictive visibility level.'
+      )
+    end
+  end
+
   def expect_popover_for_disallowed_visibility_level(visibility_level_label_text:, popover_content:)
     # Checking that a popover content is not visible before hovering
     expect(page).not_to have_content(popover_content)

@@ -5,12 +5,13 @@ module Ci
     class CreateService
       include Gitlab::Allowable
 
-      attr_reader :project, :current_user, :description
+      attr_reader :project, :current_user, :description, :expires_at
 
-      def initialize(project:, user:, description:)
+      def initialize(project:, user:, description:, expires_at: nil)
         @project = project
         @current_user = user
         @description = description
+        @expires_at = expires_at
       end
 
       def execute
@@ -40,7 +41,9 @@ module Ci
       private
 
       def create_params
-        { description: description, owner: current_user }
+        data = { description: description, owner: current_user }
+        data[:expires_at] = expires_at if Feature.enabled?(:trigger_token_expiration, project)
+        data
       end
     end
   end

@@ -357,6 +357,18 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       let(:current_user) { service_account }
 
       it { is_expected.to be_disallowed(:receive_notifications) }
+
+      context 'with custom email address starting with service account prefix' do
+        let(:current_user) { build(:user, :service_account, email: 'service_account@example.com') }
+
+        it { is_expected.to be_allowed(:receive_notifications) }
+      end
+
+      context 'with custom email address ending with no-reply domain' do
+        let(:current_user) { build(:user, :service_account, email: "bot@#{User::NOREPLY_EMAIL_DOMAIN}") }
+
+        it { is_expected.to be_allowed(:receive_notifications) }
+      end
     end
 
     context 'migration bot' do
@@ -727,6 +739,30 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       let(:current_user) { nil }
 
       it { is_expected.to be_disallowed(:create_organizatinon) }
+    end
+  end
+
+  describe 'admin pages' do
+    context 'with regular user' do
+      it { is_expected.to be_disallowed(:read_admin_cicd) }
+    end
+
+    context 'with an admin', :enable_admin_mode, :aggregate_failures do
+      let(:current_user) { admin_user }
+      let(:permissions) do
+        [
+          :read_admin_audit_log,
+          :read_admin_background_jobs,
+          :read_admin_background_migrations,
+          :read_admin_cicd,
+          :read_admin_gitaly_servers,
+          :read_admin_health_check,
+          :read_admin_metrics_dashboard,
+          :read_admin_system_information
+        ]
+      end
+
+      it { expect_allowed(*permissions) }
     end
   end
 end

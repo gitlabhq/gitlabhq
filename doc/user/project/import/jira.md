@@ -2,13 +2,15 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Import your Jira project issues to GitLab
 ---
 
-# Import your Jira project issues to GitLab
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Using GitLab Jira importer, you can import your Jira issues to GitLab.com or to
 GitLab Self-Managed.
@@ -37,26 +39,29 @@ iterations of the GitLab Jira importer.
 
 - To be able to import issues from a Jira project you must have read access on Jira
   issues and at least the Maintainer role for the GitLab project that you wish to import into.
-- This feature uses the existing GitLab [Jira issue integration](../../../integration/jira/index.md).
+- This feature uses the existing GitLab [Jira issue integration](../../../integration/jira/_index.md).
   Make sure you have the integration set up before trying to import Jira issues.
 
 ## Import Jira issues to GitLab
 
-NOTE:
+{{< alert type="note" >}}
+
 Importing Jira issues is done as an asynchronous background job, which
 may result in delays based on import queues load, system load, or other factors.
 Importing large projects may take several minutes depending on the size of the import.
 
+{{< /alert >}}
+
 To import Jira issues to a GitLab project:
 
-1. On the **{issues}** **Issues** page, select **Actions** (**{ellipsis_v}**) **> Import from Jira**.
+1. On the {{< icon name="issues" >}} **Issues** page, select **Actions** ({{< icon name="ellipsis_v" >}}) **> Import from Jira**.
 
    ![Import issues from Jira button](img/jira/import_issues_from_jira_button_v16_3.png)
 
    The **Import from Jira** option is only visible if you have the [correct permissions](#prerequisites).
 
    The following form appears.
-   If you've previously set up the [Jira issues integration](../../../integration/jira/index.md), you can now see
+   If you've previously set up the [Jira issues integration](../../../integration/jira/_index.md), you can now see
    the Jira projects that you have access to in the dropdown list.
 
    ![Import issues from Jira form](img/jira/import_issues_from_jira_form_v13_2.png)

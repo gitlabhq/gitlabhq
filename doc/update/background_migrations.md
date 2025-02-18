@@ -2,13 +2,15 @@
 stage: Data Access
 group: Database Frameworks
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Migrations for upgrades
 ---
 
-# Migrations for upgrades
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 When upgrading GitLab, there are two types of migrations to check:
 
@@ -19,8 +21,12 @@ Read below for detailed information about the two types of migrations.
 
 ## Database background migrations
 
-> - Feature [flag](../user/feature_flags.md) `execute_batched_migrations_on_schedule` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/329511) in GitLab 13.12.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](../development/database/batched_background_migrations.md#enable-or-disable-background-migrations).
+{{< history >}}
+
+- Feature [flag](../user/feature_flags.md) `execute_batched_migrations_on_schedule` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/329511) in GitLab 13.12.
+- For GitLab Self-Managed, administrators can opt to [disable it](../development/database/batched_background_migrations.md#enable-or-disable-background-migrations).
+
+{{< /history >}}
 
 Certain releases may require different migrations to be finished before you
 update to the newer version. Two kinds of migrations exist. They differ, and you
@@ -121,9 +127,12 @@ advanced users who understand the risks of doing so.
 
 ##### Pause batched background migrations
 
-WARNING:
+{{< alert type="warning" >}}
+
 There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to each feature's history for more details.
+
+{{< /alert >}}
 
 To pause an ongoing batched background migration,
 [disable the batched background migrations feature](../development/database/batched_background_migrations.md#enable-or-disable-background-migrations).
@@ -176,27 +185,44 @@ Use the following database queries to see the state of the current batched backg
 
 ##### Automatic batch size optimization
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60133) in GitLab 13.2 [with a flag](../administration/feature_flags.md) named `optimize_batched_migrations`. Enabled by default.
+{{< history >}}
 
-WARNING:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60133) in GitLab 13.2 [with a flag](../administration/feature_flags.md) named `optimize_batched_migrations`. Enabled by default.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's history for more details.
 
-FLAG:
+{{< /alert >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `optimize_batched_migrations`.
 On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+
+{{< /alert >}}
 
 To maximize throughput of batched background migrations (in terms of the number of tuples updated per time unit), batch sizes are automatically adjusted based on how long the previous batches took to complete.
 
 ##### Parallel execution
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104027) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `batched_migrations_parallel_execution`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/372316) in GitLab 15.11.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120808) in GitLab 16.1. Feature flag `batched_migrations_parallel_execution` removed.
+{{< history >}}
 
-WARNING:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104027) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `batched_migrations_parallel_execution`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/372316) in GitLab 15.11.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120808) in GitLab 16.1. Feature flag `batched_migrations_parallel_execution` removed.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's history for more details.
+
+{{< /alert >}}
 
 To speed up the execution of batched background migrations, two migrations are executed at the same time.
 
@@ -250,7 +276,7 @@ Prerequisites:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Monitoring > Background migrations**.
 1. Select the **Failed** tab. This displays a list of failed batched background migrations.
-1. Select a failed batched background migration to retry by clicking on the retry button (**{retry}**).
+1. Select a failed batched background migration to retry by clicking on the retry button ({{< icon name="retry" >}}).
 
 To monitor the retried batched background migrations, you can
 [check the status of batched background migrations](#check-the-status-of-batched-background-migrations)
@@ -261,9 +287,9 @@ on a regular interval.
 To manually finish a batched background migration that failed with an error,
 use the information in the failure error logs or the database:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle From the failure error logs
+{{< tab title="From the failure error logs" >}}
 
 1. [View the failure error logs](../development/database/batched_background_migrations.md#viewing-failure-error-logs)
    and look for an `An error has occurred, all later migrations canceled` error message, like this:
@@ -295,7 +321,9 @@ use the information in the failure error logs or the database:
    sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,push_event_payloads,event_id,'[["event_id"]\, ["event_id_convert_to_bigint"]]']
    ```
 
-:::TabTitle From the database
+{{< /tab >}}
+
+{{< tab title="From the database" >}}
 
   1. [Check the status](#check-the-status-of-batched-background-migrations) of the
      migration in the database.
@@ -323,14 +351,19 @@ use the information in the failure error logs or the database:
    sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,ci_builds,id,'[["id"\, "stage_id"]\,["id_convert_to_bigint"\,"stage_id_convert_to_bigint"]]']
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ##### Mark a failed migration finished
 
-WARNING:
+{{< alert type="warning" >}}
+
 [Contact GitLab Support](https://about.gitlab.com/support/#contact-support) before using
 these instructions. This action can cause data loss, and make your instance fail
 in ways that are difficult to recover from.
+
+{{< /alert >}}
 
 There can be cases where the background migration fails: when jumping too many version upgrades,
 or backward-incompatible database schema changes. (For an example, see [issue 393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216)).
@@ -338,8 +371,11 @@ Failed background migrations prevent further application upgrades.
 
 When the background migration is determined to be "safe" to skip, the migration can be manually marked finished:
 
-WARNING:
+{{< alert type="warning" >}}
+
 Make sure you create a backup before proceeding.
+
+{{< /alert >}}
 
 ```ruby
 # Start the rails console
@@ -375,16 +411,18 @@ used in GitLab 15.0.
 
 To check for pending non-batched background migrations:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
 sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
 sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.queued.count'
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 ```shell
 cd /home/git/gitlab
@@ -392,15 +430,17 @@ sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMi
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.queued.count'
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 #### Check for failed background migrations
 
 To check for non-batched background migrations that have failed:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 For GitLab versions 14.10 and later:
 
@@ -414,7 +454,9 @@ For GitLab versions 14.0-14.9:
 sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 For GitLab versions 14.10 and later:
 
@@ -430,13 +472,18 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Check for pending advanced search migrations
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This section is only applicable if you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md).
 Major releases require all [advanced search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations)
@@ -444,19 +491,23 @@ to be finished from the most recent minor release in your current version
 before the major version upgrade. You can find pending migrations by
 running the following command.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
 sudo gitlab-rake gitlab:elastic:list_pending_migrations
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 ```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}

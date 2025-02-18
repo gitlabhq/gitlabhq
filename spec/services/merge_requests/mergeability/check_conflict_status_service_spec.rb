@@ -3,40 +3,37 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequests::Mergeability::CheckConflictStatusService, feature_category: :code_review_workflow do
+  using RSpec::Parameterized::TableSyntax
+
   subject(:check_conflict_status) { described_class.new(merge_request: merge_request, params: {}) }
 
-  let(:merge_request) { build(:merge_request) }
+  let(:merge_request) { build(:merge_request, merge_status: merge_status) }
+  let(:merge_status) { :can_be_merged }
 
   it_behaves_like 'mergeability check service', :conflict, 'Checks whether the merge request has a conflict'
 
   describe '#execute' do
-    let(:result) { check_conflict_status.execute }
-
-    before do
-      allow(merge_request).to receive(:can_be_merged?).and_return(can_be_merged)
+    where(:merge_status, :expected) do
+      :preparing | Gitlab::MergeRequests::Mergeability::CheckResult::CHECKING_STATUS
+      :unchecked | Gitlab::MergeRequests::Mergeability::CheckResult::CHECKING_STATUS
+      :cannot_be_merged_recheck | Gitlab::MergeRequests::Mergeability::CheckResult::CHECKING_STATUS
+      :checking | Gitlab::MergeRequests::Mergeability::CheckResult::CHECKING_STATUS
+      :cannot_be_merged_rechecking | Gitlab::MergeRequests::Mergeability::CheckResult::CHECKING_STATUS
+      :can_be_merged | Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+      :cannot_be_merged | Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
     end
 
-    context 'when MergeRequest#can_be_merged is true' do
-      let(:can_be_merged) { true }
+    with_them do
+      let(:result) { check_conflict_status.execute }
 
-      it 'returns a check result with status success' do
-        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
-      end
-    end
-
-    context 'when MergeRequest#can_be_merged is false' do
-      let(:can_be_merged) { false }
-
-      it 'returns a check result with status failed' do
-        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+      it 'returns the expected status' do
+        expect(result.status).to eq expected
         expect(result.payload[:identifier]).to eq(:conflict)
       end
     end
   end
 
   describe '#skip?' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:skip_conflict_check, :expected) do
       nil   | false
       false | false

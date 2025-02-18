@@ -10,9 +10,6 @@ time_frame: none
 data_source: database
 data_category: standard
 instrumentation_class: UuidMetric
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

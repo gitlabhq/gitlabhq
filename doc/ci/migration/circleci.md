@@ -2,20 +2,22 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Migrating from CircleCI
 ---
 
-# Migrating from CircleCI
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-If you are currently using CircleCI, you can migrate your CI/CD pipelines to [GitLab CI/CD](../index.md),
+{{< /details >}}
+
+If you are currently using CircleCI, you can migrate your CI/CD pipelines to [GitLab CI/CD](../_index.md),
 and start making use of all its powerful features.
 
 We have collected several resources that you may find useful before starting to migrate.
 
-The [Quick Start Guide](../quick_start/index.md) is a good overview of how GitLab CI/CD works. You may also be interested in [Auto DevOps](../../topics/autodevops/index.md) which can be used to build, test, and deploy your applications with little to no configuration needed at all.
+The [Quick Start Guide](../quick_start/_index.md) is a good overview of how GitLab CI/CD works. You may also be interested in [Auto DevOps](../../topics/autodevops/_index.md) which can be used to build, test, and deploy your applications with little to no configuration needed at all.
 
 For advanced CI/CD teams, [custom project templates](../../administration/custom_project_templates.md) can enable the reuse of pipeline configurations.
 
@@ -27,7 +29,7 @@ CircleCI's `config.yml` configuration file defines scripts, jobs, and workflows 
 
 ### Jobs
 
-In CircleCI, jobs are a collection of steps to perform a specific task. In GitLab, [jobs](../jobs/index.md) are also a fundamental element in the configuration file. The `checkout` keyword is not necessary in GitLab CI/CD as the repository is automatically fetched.
+In CircleCI, jobs are a collection of steps to perform a specific task. In GitLab, [jobs](../jobs/_index.md) are also a fundamental element in the configuration file. The `checkout` keyword is not necessary in GitLab CI/CD as the repository is automatically fetched.
 
 CircleCI example job definition:
 
@@ -68,7 +70,7 @@ job1:
 
 ### Workflows
 
-CircleCI determines the run order for jobs with `workflows`. This is also used to determine concurrent, sequential, scheduled, or manual runs. The equivalent function in GitLab CI/CD is called [stages](../yaml/index.md#stages). Jobs on the same stage run in parallel, and only run after previous stages complete. Execution of the next stage is skipped when a job fails by default, but this can be allowed to continue even [after a failed job](../yaml/index.md#allow_failure).
+CircleCI determines the run order for jobs with `workflows`. This is also used to determine concurrent, sequential, scheduled, or manual runs. The equivalent function in GitLab CI/CD is called [stages](../yaml/_index.md#stages). Jobs on the same stage run in parallel, and only run after previous stages complete. Execution of the next stage is skipped when a job fails by default, but this can be allowed to continue even [after a failed job](../yaml/_index.md#allow_failure).
 
 See [the Pipeline Architecture Overview](../pipelines/pipeline_architectures.md) for guidance on different types of pipelines that you can use. Pipelines can be tailored to meet your needs, such as for a large complex project or a monorepo with independent defined components.
 
@@ -141,7 +143,7 @@ job4:
 
 #### Scheduled run
 
-GitLab CI/CD has an easy to use UI to [schedule pipelines](../pipelines/schedules.md). Also, [rules](../yaml/index.md#rules) can be used to determine if jobs should be included or excluded from a scheduled pipeline.
+GitLab CI/CD has an easy to use UI to [schedule pipelines](../pipelines/schedules.md). Also, [rules](../yaml/_index.md#rules) can be used to determine if jobs should be included or excluded from a scheduled pipeline.
 
 CircleCI example of a scheduled workflow:
 
@@ -160,7 +162,7 @@ scheduled-workflow:
     - build
 ```
 
-Example of the same scheduled pipeline using [`rules`](../yaml/index.md#rules) in GitLab CI/CD:
+Example of the same scheduled pipeline using [`rules`](../yaml/_index.md#rules) in GitLab CI/CD:
 
 ```yaml
 job1:
@@ -202,7 +204,7 @@ deploy_prod:
 
 ### Filter job by branch
 
-[Rules](../yaml/index.md#rules) are a mechanism to determine if the job runs for a specific branch.
+[Rules](../yaml/_index.md#rules) are a mechanism to determine if the job runs for a specific branch.
 
 CircleCI example of a job filtered by branch:
 
@@ -229,7 +231,7 @@ deploy:
 
 ### Caching
 
-GitLab provides a caching mechanism to speed up build times for your jobs by reusing previously downloaded dependencies. It's important to know the different between [cache and artifacts](../caching/index.md#how-cache-is-different-from-artifacts) to make the best use of these features.
+GitLab provides a caching mechanism to speed up build times for your jobs by reusing previously downloaded dependencies. It's important to know the different between [cache and artifacts](../caching/_index.md#how-cache-is-different-from-artifacts) to make the best use of these features.
 
 CircleCI example of a job using a cache:
 
@@ -264,7 +266,7 @@ test_async:
 
 ## Contexts and variables
 
-CircleCI provides [Contexts](https://circleci.com/docs/contexts/) to securely pass environment variables across project pipelines. In GitLab, a [Group](../../user/group/index.md) can be created to assemble related projects together. At the group level, [CI/CD variables](../variables/index.md#for-a-group) can be stored outside the individual projects, and securely passed into pipelines across multiple projects.
+CircleCI provides [Contexts](https://circleci.com/docs/contexts/) to securely pass environment variables across project pipelines. In GitLab, a [Group](../../user/group/_index.md) can be created to assemble related projects together. At the group level, [CI/CD variables](../variables/_index.md#for-a-group) can be stored outside the individual projects, and securely passed into pipelines across multiple projects.
 
 ## Orbs
 
@@ -293,7 +295,7 @@ GitLab.com instance runners:
 
 ### Machine and specific build environments
 
-[Tags](../yaml/index.md#tags) can be used to run jobs on different platforms, by telling GitLab which runners should run the jobs.
+[Tags](../yaml/_index.md#tags) can be used to run jobs on different platforms, by telling GitLab which runners should run the jobs.
 
 CircleCI example of a job running on a specific environment:
 

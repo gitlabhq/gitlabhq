@@ -7,6 +7,7 @@ module Sidebars
         override :configure_menu_items
         def configure_menu_items
           add_item(general_settings_menu_item)
+          add_item(search_menu_item)
           add_item(integrations_menu_item)
           add_item(repository_menu_item)
           add_item(ci_cd_menu_item)
@@ -48,6 +49,16 @@ module Sidebars
             active_routes: { path: 'admin/application_settings#general' },
             item_id: :general_settings,
             container_html_options: { 'data-testid': 'admin-settings-general-link' }
+          )
+        end
+
+        def search_menu_item
+          ::Sidebars::MenuItem.new(
+            title: _('Search'),
+            link: search_admin_application_settings_path,
+            active_routes: { path: 'admin/application_settings#search' },
+            item_id: :search,
+            container_html_options: { testid: 'admin-settings-search-link' }
           )
         end
 

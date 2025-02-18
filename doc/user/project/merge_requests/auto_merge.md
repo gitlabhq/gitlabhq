@@ -2,25 +2,31 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Set auto-merge on a merge request when you have reviewed its content, so it can merge without intervention when all merge checks pass."
+description: Set auto-merge on a merge request when you have reviewed its content, so it can merge without intervention when all merge checks pass.
+title: Auto-merge
 ---
 
-# Auto-merge
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409530) to **Auto-merge** in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `auto_merge_labels_mr_widget`. Enabled by default.
-> - Renamed auto-merge feature [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120922) in GitLab 16.0. Feature flag `auto_merge_labels_mr_widget` removed.
-> - Enhanced auto-merge features [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 16.5 [with two flags](../../../administration/feature_flags.md) named `merge_when_checks_pass` and `additional_merge_when_checks_ready`. Disabled by default.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) the flags `merge_when_checks_pass` and `additional_merge_when_checks_ready` on GitLab.com in GitLab 17.0.
-> - [Merged](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154366) the flag `additional_merge_when_checks_ready` with the flag `merge_when_checks_pass` in GitLab 17.1.
-> - Auto-merge for merge trains [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `merge_when_checks_pass_merge_train`. Disabled by default.
-> - Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) on GitLab.com in GitLab 17.2.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) the flag `merge_when_checks_pass` on self-managed by default in GitLab 17.4.
-> - Auto-merge for merge trains [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174357) in GitLab 17.7. Feature flag `merge_when_checks_pass_merge_train` removed.
-> - Auto-merge [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) in GitLab 17.7. Feature flag `merge_when_checks_pass` removed.
+{{< /details >}}
+
+{{< history >}}
+
+- **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409530) to **Auto-merge** in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `auto_merge_labels_mr_widget`. Enabled by default.
+- Renamed auto-merge feature [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120922) in GitLab 16.0. Feature flag `auto_merge_labels_mr_widget` removed.
+- Enhanced auto-merge features [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 16.5 [with two flags](../../../administration/feature_flags.md) named `merge_when_checks_pass` and `additional_merge_when_checks_ready`. Disabled by default.
+- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) the flags `merge_when_checks_pass` and `additional_merge_when_checks_ready` on GitLab.com in GitLab 17.0.
+- [Merged](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154366) the flag `additional_merge_when_checks_ready` with the flag `merge_when_checks_pass` in GitLab 17.1.
+- Auto-merge for merge trains [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `merge_when_checks_pass_merge_train`. Disabled by default.
+- Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) on GitLab.com in GitLab 17.2.
+- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) the flag `merge_when_checks_pass` on GitLab Self-Managed by default in GitLab 17.4.
+- Auto-merge for merge trains [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174357) in GitLab 17.7. Feature flag `merge_when_checks_pass_merge_train` removed.
+- Auto-merge [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) in GitLab 17.7. Feature flag `merge_when_checks_pass` removed.
+
+{{< /history >}}
 
 If the content of a merge request is ready to merge,
 you can select **Set to auto-merge**. The merge request auto-merges when all required checks complete
@@ -62,7 +68,7 @@ Prerequisites:
 
 - You must have at least the Developer role for the project.
 - If your project configuration requires it, all threads in the
-  merge request [must be resolved](index.md#resolve-a-thread).
+  merge request [must be resolved](_index.md#resolve-a-thread).
 - The merge request must have received all required approvals.
 
 To do this when pushing from the command line, use the `merge_request.merge_when_pipeline_succeeds`
@@ -126,7 +132,7 @@ You can configure your project to require a complete and successful pipeline bef
 merge. This configuration works for both:
 
 - GitLab CI/CD pipelines.
-- Pipelines run from an [external CI integration](../integrations/index.md#available-integrations).
+- Pipelines run from an [external CI integration](../integrations/_index.md#available-integrations).
 
 As a result, [disabling GitLab CI/CD pipelines](../../../ci/pipelines/settings.md#disable-gitlab-cicd-pipelines)
 does not disable this feature, but you can use pipelines from external
@@ -154,7 +160,7 @@ despite a newer but failed branch pipeline.
 ### Allow merge after skipped pipelines
 
 When you set **Pipelines must succeed** for a project,
-[skipped pipelines](../../../ci/pipelines/index.md#skip-a-pipeline) prevent
+[skipped pipelines](../../../ci/pipelines/_index.md#skip-a-pipeline) prevent
 merge requests from merging.
 
 Prerequisites:
@@ -172,7 +178,11 @@ To change this behavior:
 
 ## Prevent merge before a specific date
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14380) in GitLab 17.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14380) in GitLab 17.6.
+
+{{< /history >}}
 
 If your merge request should not merge before a specific date and time, set a **Merge after** date.
 This value sets when the merge (or merge train) can start. The exact time of merge can vary,
@@ -200,8 +210,8 @@ but be unable to merge a merge request with no failed pipelines. The setting req
 the existence of a successful pipeline, not the absence of failed pipelines. A merge request
 with no pipelines at all is not considered to have a successful pipeline, and cannot merge.
 
-When you enable this setting, use [`rules`](../../../ci/yaml/index.md#rules)
-or [`workflow:rules`](../../../ci/yaml/index.md#workflowrules) to ensure pipelines
+When you enable this setting, use [`rules`](../../../ci/yaml/_index.md#rules)
+or [`workflow:rules`](../../../ci/yaml/_index.md#workflowrules) to ensure pipelines
 run for every merge request.
 
 ### Merge request can still be merged despite a failed pipeline
@@ -215,7 +225,7 @@ merge request pipelines for success.
 
 Merge requests can have multiple pipelines if:
 
-- A [`rules`](../../../ci/yaml/index.md#rules) configuration that causes [duplicate pipelines](../../../ci/jobs/job_rules.md#avoid-duplicate-pipelines):
+- A [`rules`](../../../ci/yaml/_index.md#rules) configuration that causes [duplicate pipelines](../../../ci/jobs/job_rules.md#avoid-duplicate-pipelines):
   one merge request pipeline and one branch pipeline. In this case, the status of the
   latest _merge request_ pipeline determines if a merge request can merge, not the branch pipeline.
 - Pipelines triggered by external tools that target the same branch as the merge request.

@@ -10,8 +10,7 @@ module QA
       before do
         Flow::Login.sign_in
         add_ci_files
-        project.visit!
-        Flow::Pipeline.visit_latest_pipeline(status: 'Passed')
+        project.visit_latest_pipeline
       end
 
       after do
@@ -29,9 +28,9 @@ module QA
           expect(parent_pipeline).not_to have_child_pipeline
 
           parent_pipeline.click_job_action('trigger')
-          Support::Waiter.wait_until { parent_pipeline.has_child_pipeline? }
-          parent_pipeline.expand_child_pipeline
+          Support::Waiter.wait_until(max_duration: 240) { parent_pipeline.has_child_pipeline? }
 
+          parent_pipeline.expand_child_pipeline
           expect(parent_pipeline).to have_build('child_build', status: nil)
         end
       end
@@ -42,6 +41,8 @@ module QA
         create(:commit, project: project, commit_message: 'Add parent and child pipelines CI files.', actions: [
           child_ci_file, parent_ci_file
         ])
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: project, status: 'success')
       end
 
       def parent_ci_file

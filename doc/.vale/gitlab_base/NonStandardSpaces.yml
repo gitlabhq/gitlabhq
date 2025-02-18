@@ -1,0 +1,19 @@
+---
+# Warning: gitlab_base.NonStandardSpaces
+#
+# Use only standard spaces. Do not use:
+#
+# U+202F : NARROW NO-BREAK SPACE [NNBSP]
+# U+00A0 : NO-BREAK SPACE [NBSP]
+# U+200B : ZERO WIDTH SPACE [ZWSP]
+#
+# For a list of all options, see https://vale.sh/docs/topics/styles/
+extends: existence
+message: "Use standard spaces only. Do not use no-break or zero width spaces."
+vocab: false
+level: error
+ignorecase: true
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#punctuation
+scope: raw
+raw:
+  - '[  ​]'

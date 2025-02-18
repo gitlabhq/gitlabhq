@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: CI Lint API
 ---
 
-# CI Lint API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## Validate sample CI/CD configuration
 
@@ -65,8 +67,12 @@ Example responses:
 
 ## Validate a project's CI/CD configuration
 
-> - `sha` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369212) in GitLab 16.5.
-> - `sha` and `ref` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143098) to `content_ref` and `dry_run_ref` in GitLab 16.10.
+{{< history >}}
+
+- `sha` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369212) in GitLab 16.5.
+- `sha` and `ref` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143098) to `content_ref` and `dry_run_ref` in GitLab 16.10.
+
+{{< /history >}}
 
 Checks if a project's `.gitlab-ci.yml` configuration in a given ref (the
 `content_ref` parameter, by default `HEAD` of the project's default branch) is valid.
@@ -96,7 +102,7 @@ curl "https://gitlab.example.com/api/v4/projects/:id/ci/lint"
 
 Example responses:
 
-- Valid configuration, with `include.yml` as an [included file](../ci/yaml/index.md#include)
+- Valid configuration, with `include.yml` as an [included file](../ci/yaml/_index.md#include)
   and `include_jobs` set to `true`:
 
   ```json

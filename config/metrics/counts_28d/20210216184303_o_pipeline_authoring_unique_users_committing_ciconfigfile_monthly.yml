@@ -13,14 +13,12 @@ data_source: internal_events
 events:
   - name: commit_change_to_ciconfigfile
     unique: user.id
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium
 - ultimate
 performance_indicator_type:
 - customer_health_score
+- leading_indicator
 milestone: "<13.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54332

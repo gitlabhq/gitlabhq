@@ -17,6 +17,7 @@ module Gitlab
       # Postgresql OID reference - https://jdbc.postgresql.org/documentation/publicapi/org/postgresql/core/Oid.html
       PG_TYPE_MAP = {
         16 => 'Bool',
+        17 => 'String',
         20 => 'Int64',
         21 => 'Int8',
         23 => 'Int64',

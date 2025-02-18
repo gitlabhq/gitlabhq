@@ -2,24 +2,30 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Grant users Kubernetes access
 ---
 
-# Grant users Kubernetes access
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**Status:** Beta
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390769) in GitLab 16.1, with [flags](../../../administration/feature_flags.md) named `environment_settings_to_graphql`, `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents`. This feature is in [beta](../../../policy/development_stages_support.md#beta).
-> - Feature flag `environment_settings_to_graphql` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124177) in GitLab 16.2.
-> - Feature flags `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125835) in GitLab 16.2.
-> - The [limit of agent connection sharing was raised](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149844) from 100 to 500 in GitLab 17.0
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390769) in GitLab 16.1, with [flags](../../../administration/feature_flags.md) named `environment_settings_to_graphql`, `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents`. This feature is in [beta](../../../policy/development_stages_support.md#beta).
+- Feature flag `environment_settings_to_graphql` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124177) in GitLab 16.2.
+- Feature flags `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125835) in GitLab 16.2.
+- The [limit of agent connection sharing was raised](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149844) from 100 to 500 in GitLab 17.0
+
+{{< /history >}}
 
 As an administrator of Kubernetes clusters in an organization, you can grant Kubernetes access to members
 of a specific project or group.
 
-Granting access also activates the Dashboard for Kubernetes for a project or group.
+Granting access also activates [the Dashboard for Kubernetes](../../../ci/environments/kubernetes_dashboard.md) for a project or group.
 
 For self-managed instances, make sure you either:
 
@@ -64,9 +70,12 @@ user_access:
 
 ## Configure access with user impersonation
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can grant access to a Kubernetes cluster and transform
 requests into impersonation requests for authenticated users.
@@ -152,7 +161,11 @@ subjects:
 
 ## Access a cluster with the Kubernetes API
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131144) in GitLab 16.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131144) in GitLab 16.4.
+
+{{< /history >}}
 
 You can configure an agent to allow GitLab users to access a cluster with the Kubernetes API.
 
@@ -162,7 +175,7 @@ Prerequisites:
 
 ### Configure local access with the GitLab CLI (recommended)
 
-You can use the [GitLab CLI `glab`](../../../editor_extensions/gitlab_cli/index.md) to create or update
+You can use the [GitLab CLI `glab`](../../../editor_extensions/gitlab_cli/_index.md) to create or update
 a Kubernetes configuration file to access the agent Kubernetes API.
 
 Use `glab cluster agent` commands to manage cluster connections:

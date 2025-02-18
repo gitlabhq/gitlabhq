@@ -2,19 +2,24 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group clusters API (certificate-based) (deprecated)
 ---
 
-# Group clusters API (certificate-based) (deprecated)
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-WARNING:
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
-Similarly to [project-level](../user/project/clusters/index.md) and
-[instance-level](../user/instance/clusters/index.md) Kubernetes clusters,
+{{< /alert >}}
+
+Similarly to [project-level](../user/project/clusters/_index.md) and
+[instance-level](../user/instance/clusters/_index.md) Kubernetes clusters,
 group-level Kubernetes clusters allow you to connect a Kubernetes cluster to
 your group, enabling you to use the same cluster across multiple projects.
 
@@ -32,7 +37,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description                                                                   |
 | --------- | -------------- | -------- | ----------------------------------------------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 
 Example request:
 
@@ -101,7 +106,7 @@ Parameters:
 
 | Attribute    | Type           | Required | Description                                                                   |
 | ------------ | -------------- | -------- | ----------------------------------------------------------------------------- |
-| `id`         | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`         | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `cluster_id` | integer        | yes      | The ID of the cluster                                                         |
 
 Example request:
@@ -170,9 +175,9 @@ Parameters:
 
 | Attribute                                            | Type           | Required | Description                                                                                         |
 | ---------------------------------------------------- | -------------- | -------- | --------------------------------------------------------------------------------------------------- |
-| `id`                                                 | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths)                       |
+| `id`                                                 | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                       |
 | `name`                                               | string         | yes      | The name of the cluster                                                                             |
-| `domain`                                             | string         | no       | The [base domain](../user/group/clusters/index.md#base-domain) of the cluster                       |
+| `domain`                                             | string         | no       | The [base domain](../user/group/clusters/_index.md#base-domain) of the cluster                       |
 | `management_project_id`                              | integer        | no       | The ID of the [management project](../user/clusters/management_project.md) for the cluster          |
 | `enabled`                                            | boolean        | no       | Determines if cluster is active or not, defaults to `true`                                            |
 | `managed`                                            | boolean        | no       | Determines if GitLab manages namespaces and service accounts for this cluster. Defaults to `true` |
@@ -241,10 +246,10 @@ Parameters:
 
 | Attribute                                 | Type           | Required | Description                                                                                |
 | ----------------------------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------ |
-| `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths)              |
+| `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)              |
 | `cluster_id`                              | integer        | yes      | The ID of the cluster                                                                      |
 | `name`                                    | string         | no       | The name of the cluster                                                                    |
-| `domain`                                  | string         | no       | The [base domain](../user/group/clusters/index.md#base-domain) of the cluster              |
+| `domain`                                  | string         | no       | The [base domain](../user/group/clusters/_index.md#base-domain) of the cluster              |
 | `management_project_id`                   | integer        | no       | The ID of the [management project](../user/clusters/management_project.md) for the cluster |
 | `enabled`                                 | boolean        | no       | Determines if cluster is active or not                                                     |
 | `managed`                                 | boolean        | no       | Determines if GitLab manages namespaces and service accounts for this cluster          |
@@ -253,10 +258,13 @@ Parameters:
 | `platform_kubernetes_attributes[ca_cert]` | string         | no       | TLS certificate. Required if API is using a self-signed TLS certificate.                   |
 | `environment_scope`                       | string         | no       | The associated environment to the cluster. Premium and Ultimate only.                      |
 
-NOTE:
+{{< alert type="note" >}}
+
 `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
 through the ["Add existing Kubernetes cluster"](../user/project/clusters/add_existing_cluster.md) option or
 through the ["Add existing cluster to group"](#add-existing-cluster-to-group) endpoint.
+
+{{< /alert >}}
 
 Example request:
 
@@ -326,7 +334,7 @@ Parameters:
 
 | Attribute    | Type           | Required | Description                                                                   |
 | ------------ | -------------- | -------- | ----------------------------------------------------------------------------- |
-| `id`         | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`         | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `cluster_id` | integer        | yes      | The ID of the cluster                                                         |
 
 Example request:

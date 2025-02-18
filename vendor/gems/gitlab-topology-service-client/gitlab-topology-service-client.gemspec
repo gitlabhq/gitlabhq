@@ -16,8 +16,9 @@ Gem::Specification.new do |spec|
   spec.files = Dir["lib/**/*.rb"]
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "google-protobuf", "~> 3"
   spec.add_dependency "grpc"
-  spec.add_development_dependency "gitlab-styles", "~> 10.1.0"
+  spec.add_development_dependency "gitlab-styles", "~> 13.0.1"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rspec-parameterized", "~> 1.0.2"
   spec.add_development_dependency "rubocop", "~> 1.21"

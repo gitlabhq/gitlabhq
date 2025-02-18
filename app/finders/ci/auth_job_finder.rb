@@ -10,11 +10,11 @@ module Ci
       @token = token
     end
 
-    def execute!
+    def execute!(allow_canceling: false)
       find_job_by_token.tap do |job|
         next unless job
 
-        validate_job!(job)
+        validate_job!(job, allow_canceling)
 
         job.user.set_ci_job_token_scope!(job) if job.user
       end
@@ -48,8 +48,8 @@ module Ci
       ::Gitlab::Auth::Identity.fabricate(jwt.job.user)&.link!(jwt.scoped_user)
     end
 
-    def validate_job!(job)
-      validate_running_job!(job)
+    def validate_job!(job, allow_canceling)
+      validate_running_job!(job, allow_canceling)
       validate_job_not_erased!(job)
       validate_project_presence!(job)
 
@@ -58,8 +58,8 @@ module Ci
       true
     end
 
-    def validate_running_job!(job)
-      raise NotRunningJobError, 'Job is not running' unless job.running?
+    def validate_running_job!(job, allow_canceling)
+      raise NotRunningJobError, 'Job is not running' unless job.running? || (allow_canceling && job.canceling?)
     end
 
     def validate_job_not_erased!(job)

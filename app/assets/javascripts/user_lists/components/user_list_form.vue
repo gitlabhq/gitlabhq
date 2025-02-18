@@ -37,7 +37,7 @@ export default {
       'gl-border-t-solid',
       'gl-border-default',
       'gl-border-1',
-      'gl-bg-gray-10',
+      'gl-bg-subtle',
     ],
   },
   translations: {

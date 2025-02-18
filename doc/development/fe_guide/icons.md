@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Icons and SVG Illustrations
 ---
-
-# Icons and SVG Illustrations
 
 We manage our own icon and illustration library in the [`gitlab-svgs`](https://gitlab.com/gitlab-org/gitlab-svgs)
 repository. This repository is published on [npm](https://www.npmjs.com/package/@gitlab/svgs),

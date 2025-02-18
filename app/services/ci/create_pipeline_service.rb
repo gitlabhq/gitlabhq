@@ -27,6 +27,7 @@ module Ci
       Gitlab::Ci::Pipeline::Chain::Limit::ActiveJobs,
       Gitlab::Ci::Pipeline::Chain::Limit::Deployments,
       Gitlab::Ci::Pipeline::Chain::Validate::External,
+      Gitlab::Ci::Pipeline::Chain::SetBuildSources,
       Gitlab::Ci::Pipeline::Chain::Populate,
       Gitlab::Ci::Pipeline::Chain::PopulateMetadata,
       Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::ApplyPolicies,

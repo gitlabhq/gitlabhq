@@ -48,6 +48,7 @@ module API
         optional :prevent_sharing_groups_outside_hierarchy, type: Boolean, desc: 'Prevent sharing groups within this namespace with any groups outside the namespace. Only available on top-level groups.'
         optional :lock_math_rendering_limits_enabled, type: Boolean, desc: 'Indicates if math rendering limits are locked for all descendent groups.'
         optional :math_rendering_limits_enabled, type: Boolean, desc: 'Indicates if math rendering limits are used for this group.'
+        optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size for each job's artifacts"
       end
 
       params :optional_update_params_ee do

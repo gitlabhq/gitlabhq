@@ -7,9 +7,6 @@ identifiers:
 product_group: organizations
 milestone: "15.8"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108108
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

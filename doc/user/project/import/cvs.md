@@ -2,13 +2,15 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Migrating from CVS
 ---
 
-# Migrating from CVS
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 [CVS](https://savannah.nongnu.org/projects/cvs) is an old centralized version
 control system similar to [SVN](https://subversion.apache.org/).
@@ -44,7 +46,7 @@ The following list illustrates the main differences between CVS and Git:
   You can also ask the other developer to do the merge and resolve any conflicts
   themselves.
 - **Signed commits.** Git supports
-  [signing your commits](../repository/signed_commits/index.md) for additional
+  [signing your commits](../repository/signed_commits/_index.md) for additional
   security and verification that the commit indeed came from its original author.
   GitLab shows whether a signed commit is correctly verified.
 
@@ -60,7 +62,7 @@ with (`git bisect` for one) which makes for a more productive workflow.
 Migrating to Git/GitLab benefits you:
 
 - **Shorter learning curve**. Git has a big community and a vast number of
-  tutorials to get you started (see our [Git topic](../../../topics/git/index.md)).
+  tutorials to get you started (see our [Git topic](../../../topics/git/_index.md)).
 - **Integration with modern tools**. migrating to Git and GitLab you can have
   an open source end-to-end software development platform with built-in version
   control, issue tracking, code review, CI/CD, and more.

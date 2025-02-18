@@ -3,7 +3,7 @@
 RSpec.shared_examples 'rejects nuget packages access' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
-      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returning response status', status
@@ -21,7 +21,7 @@ end
 RSpec.shared_examples 'process nuget service index request' do |user_type, status, add_member = true, v2 = false|
   context "for user type #{user_type}" do
     before do
-      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returning response status', status
@@ -54,7 +54,7 @@ end
 RSpec.shared_examples 'process nuget v2 $metadata service request' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
-      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returning response status', status
@@ -92,12 +92,13 @@ end
 RSpec.shared_examples 'process nuget metadata request at package name level' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
-      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returning response status', status
 
-    it_behaves_like 'returning nuget metadata json response with json schema', 'public_api/v4/packages/nuget/packages_metadata'
+    it_behaves_like 'returning nuget metadata json response with json schema',
+      'public_api/v4/packages/nuget/packages_metadata'
 
     context 'with invalid format' do
       let(:url) { "/#{target_type}/#{target.id}/packages/nuget/metadata/#{package_name}/index.xls" }
@@ -110,20 +111,24 @@ RSpec.shared_examples 'process nuget metadata request at package name level' do 
 
       it_behaves_like 'returning response status', status
 
-      it_behaves_like 'returning nuget metadata json response with json schema', 'public_api/v4/packages/nuget/packages_metadata'
+      it_behaves_like 'returning nuget metadata json response with json schema',
+        'public_api/v4/packages/nuget/packages_metadata'
     end
   end
 end
 
-RSpec.shared_examples 'process nuget metadata request at package name and package version level' do |user_type, status, add_member = true|
+RSpec.shared_examples \
+  'process nuget metadata request at package name and package version level' \
+  do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
-      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returning response status', status
 
-    it_behaves_like 'returning nuget metadata json response with json schema', 'public_api/v4/packages/nuget/package_metadata'
+    it_behaves_like 'returning nuget metadata json response with json schema',
+      'public_api/v4/packages/nuget/package_metadata'
 
     context 'with invalid format' do
       let(:url) { "/#{target_type}/#{target.id}/packages/nuget/metadata/#{package_name}/#{package.version}.xls" }
@@ -136,7 +141,8 @@ RSpec.shared_examples 'process nuget metadata request at package name and packag
 
       it_behaves_like 'returning response status', status
 
-      it_behaves_like 'returning nuget metadata json response with json schema', 'public_api/v4/packages/nuget/package_metadata'
+      it_behaves_like 'returning nuget metadata json response with json schema',
+        'public_api/v4/packages/nuget/package_metadata'
     end
   end
 end
@@ -144,7 +150,7 @@ end
 RSpec.shared_examples 'process nuget workhorse authorization' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
-      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returning response status', status
@@ -172,10 +178,10 @@ RSpec.shared_examples 'process nuget workhorse authorization' do |user_type, sta
 end
 
 RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member = true, symbol_package = false|
-  shared_context 'stub nuspec extraction service' do
+  shared_context 'with nuspec extraction service stub' do
     before do
       Grape::Endpoint.before_each do |endpoint|
-        allow(endpoint).to receive(:nuspec_file_service).and_return(service_result)
+        allow(endpoint).to receive(:extracted_metadata).and_return(service_result)
       end
     end
 
@@ -190,7 +196,9 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
 
       before do
         allow_next_instance_of(::Packages::Nuget::ExtractRemoteMetadataFileService) do |service|
-          allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: fixture_file('packages/nuget/with_metadata.nuspec')))
+          allow(service).to receive(:execute).and_return(
+            ServiceResponse.success(payload: fixture_file('packages/nuget/with_metadata.nuspec'))
+          )
         end
       end
 
@@ -204,27 +212,10 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
         package_file = target.packages.last.package_files.reload.last
         expect(package_file.file_name).to eq('dummyproject.withmetadata.1.2.3.nupkg')
       end
-
-      context 'when create_nuget_packages_on_the_fly feature flag is disabled' do
-        before do
-          stub_feature_flags(create_nuget_packages_on_the_fly: false)
-        end
-
-        it 'calls the extraction worker' do
-          expect(::Packages::Nuget::ExtractionWorker).to receive(:perform_async).once
-          expect { subject }
-              .to change { target.packages.count }.by(1)
-              .and change { Packages::PackageFile.count }.by(1)
-          expect(response).to have_gitlab_http_status(status)
-
-          package_file = target.packages.last.package_files.reload.last
-          expect(package_file.file_name).to eq(file_name)
-        end
-      end
     end
 
     context 'when nuspec extraction fails' do
-      include_context 'stub nuspec extraction service' do
+      include_context 'with nuspec extraction service stub' do
         let(:service_result) { ServiceResponse.error(message: 'error', reason: :nuspec_extraction_failed) }
       end
 
@@ -241,12 +232,12 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
     end
 
     context 'when nuspec extraction fails with a different error', unless: symbol_package do
-      include_context 'stub nuspec extraction service' do
+      include_context 'with nuspec extraction service stub' do
         let(:service_result) { ServiceResponse.error(message: 'error', reason: :bad_request) }
       end
 
       it 'returns a bad request' do
-        expect { subject }.to change { target.packages.count }.by(0)
+        expect { subject }.not_to change { target.packages.count }
         expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
@@ -260,7 +251,7 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
       end
 
       it 'returns a bad request' do
-        expect { subject }.to change { target.packages.count }.by(0)
+        expect { subject }.not_to change { target.packages.count }
         expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
@@ -268,7 +259,7 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
 
   context "for user type #{user_type}" do
     before do
-      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     context 'with object storage disabled' do
@@ -296,7 +287,7 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
 
     context 'with object storage enabled' do
       let(:tmp_object) do
-        fog_connection.directories.new(key: 'packages').files.create( # rubocop:disable Rails/SaveBang
+        fog_connection.directories.new(key: 'packages').files.create( # rubocop:disable Rails/SaveBang -- not the AR method
           key: "tmp/uploads/#{file_name}",
           body: 'content'
         )
@@ -314,8 +305,10 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
 
         ['123123', '../../123123'].each do |remote_id|
           context "with invalid remote_id: #{remote_id}" do
-            include_context 'stub nuspec extraction service' do
-              let(:service_result) { ServiceResponse.success(payload: fixture_file('packages/nuget/with_metadata.nuspec')) }
+            include_context 'with nuspec extraction service stub' do
+              let(:service_result) do
+                ServiceResponse.success(payload: fixture_file('packages/nuget/with_metadata.nuspec'))
+              end
             end
 
             let(:params) do
@@ -336,7 +329,7 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
           let(:file_key) { :file }
 
           it 'does not create a package file' do
-            expect { subject }.to change { ::Packages::PackageFile.count }.by(0)
+            expect { subject }.not_to change { ::Packages::PackageFile.count }
           end
 
           it_behaves_like 'returning response status', :bad_request
@@ -368,7 +361,7 @@ RSpec.shared_examples 'process nuget download versions request' do |user_type, s
 
   context "for user type #{user_type}" do
     before do
-      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returning response status', status
@@ -394,7 +387,7 @@ end
 RSpec.shared_examples 'process nuget download content request' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
-      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returning response status', status
@@ -410,7 +403,10 @@ RSpec.shared_examples 'process nuget download content request' do |user_type, st
     end
 
     context 'with invalid format' do
-      let(:url) { "/#{target_type}/#{target.id}/packages/nuget/download/#{package.name}/#{package.version}/#{package.name}.#{package.version}.xls" }
+      let(:url) do
+        "/#{target_type}/#{target.id}/packages/nuget/download/" \
+          "#{package.name}/#{package.version}/#{package.name}.#{package.version}.xls"
+      end
 
       it_behaves_like 'rejects nuget packages access', :anonymous, :not_found
     end
@@ -474,7 +470,7 @@ RSpec.shared_examples 'process nuget search request' do |user_type, status, add_
 
   context "for user type #{user_type}" do
     before do
-      target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
     end
 
     it_behaves_like 'returns a valid json search response', status, 4, [1, 5, 5, 1]
@@ -515,7 +511,7 @@ end
 
 RSpec.shared_examples 'process empty nuget search request' do |user_type, status, add_member = true|
   before do
-    target.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+    target.send(:"add_#{user_type}", user) if add_member && user_type != :anonymous
   end
 
   it_behaves_like 'returning response status', status
@@ -537,7 +533,7 @@ RSpec.shared_examples 'rejects nuget access with invalid target id' do |not_foun
   context 'with a target id with invalid integers' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:target) { double(id: id) }
+    let(:target) { instance_double(Group, id:) }
 
     where(:id, :status) do
       '/../'       | :bad_request
@@ -545,7 +541,7 @@ RSpec.shared_examples 'rejects nuget access with invalid target id' do |not_foun
       '%20'        | :bad_request
       '%2e%2e%2f'  | :bad_request
       'NaN'        | :bad_request
-      00002345     | not_found_response
+      0o0002345    | not_found_response
       'anything25' | :bad_request
     end
 
@@ -557,7 +553,7 @@ end
 
 RSpec.shared_examples 'rejects nuget access with unknown target id' do |not_found_response: :unauthorized|
   context 'with an unknown target' do
-    let(:target) { double(id: non_existing_record_id) }
+    let(:target) { instance_double(Group, id: non_existing_record_id) }
 
     context 'as anonymous' do
       it_behaves_like 'rejects nuget packages access', :anonymous, not_found_response
@@ -642,7 +638,8 @@ RSpec.shared_examples 'nuget authorize upload endpoint' do
   it { is_expected.to have_request_urgency(:low) }
 
   context 'with valid project' do
-    where(:visibility_level, :user_role, :member, :user_token, :sent_through, :shared_examples_name, :expected_status) do
+    where(:visibility_level, :user_role, :member, :user_token, :sent_through, :shared_examples_name,
+      :expected_status) do
       'PUBLIC'  | :developer  | true  | true  | :basic_auth | 'process nuget workhorse authorization' | :success
       'PUBLIC'  | :guest      | true  | true  | :basic_auth | 'rejects nuget packages access'         | :forbidden
       'PUBLIC'  | :developer  | true  | false | :basic_auth | 'rejects nuget packages access'         | :unauthorized
@@ -740,7 +737,8 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
   it { is_expected.to have_request_urgency(:low) }
 
   context 'with valid project' do
-    where(:visibility_level, :user_role, :member, :user_token, :sent_through, :shared_examples_name, :expected_status) do
+    where(:visibility_level, :user_role, :member, :user_token, :sent_through, :shared_examples_name,
+      :expected_status) do
       'PUBLIC'  | :developer  | true  | true  | :basic_auth | 'process nuget upload'          | :created
       'PUBLIC'  | :guest      | true  | true  | :basic_auth | 'rejects nuget packages access' | :forbidden
       'PUBLIC'  | :developer  | true  | false | :basic_auth | 'rejects nuget packages access' | :unauthorized
@@ -805,7 +803,8 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
         update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
       end
 
-      it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member], symbol_package
+      it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member],
+        symbol_package
     end
   end
 
@@ -819,7 +818,7 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
 
   it_behaves_like 'rejects nuget access with invalid target id'
 
-  context 'file size above maximum limit' do
+  context 'when file size above maximum limit' do
     let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_headers) }
 
     before do
@@ -846,7 +845,10 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
   context 'when package duplicates are not allowed', unless: symbol_package do
     let(:params) { { package: fixture_file_upload('spec/fixtures/packages/nuget/package.nupkg') } }
     let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_headers) }
-    let!(:existing_package) { create(:nuget_package, project: project, name: 'DummyProject.DummyPackage', version: '1.0.0') }
+    let!(:existing_package) do
+      create(:nuget_package, project: project, name: 'DummyProject.DummyPackage', version: '1.0.0')
+    end
+
     let_it_be(:package_settings) do
       create(:namespace_package_setting, :group, namespace: project.namespace, nuget_duplicates_allowed: false)
     end
@@ -866,7 +868,7 @@ end
 RSpec.shared_examples 'process nuget delete request' do |user_type, status, auth|
   context "for user type #{user_type}" do
     before do
-      target.send("add_#{user_type}", user) if user_type
+      target.send(:"add_#{user_type}", user) if user_type
     end
 
     it_behaves_like 'returning response status', status
@@ -928,7 +930,7 @@ RSpec.shared_examples 'nuget symbol file endpoint' do
     end
 
     context 'when target does not exist' do
-      let(:target) { double(id: non_existing_record_id) }
+      let(:target) { instance_double(Group, id: non_existing_record_id) }
 
       it_behaves_like 'returning response status', :not_found
     end

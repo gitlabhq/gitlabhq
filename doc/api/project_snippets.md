@@ -2,17 +2,19 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Project snippets
 ---
 
-# Project snippets
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## Snippet visibility level
 
-[Snippets](../api/project_snippets.md) in GitLab can be either private, internal or public.
+[Snippets](project_snippets.md) in GitLab can be either private, internal or public.
 You can set it with the `visibility` field in the snippet.
 
 Constants for snippet visibility levels are:
@@ -21,11 +23,14 @@ Constants for snippet visibility levels are:
 - **Internal**: The snippet is visible for any authenticated user except [external users](../administration/external_users.md).
 - **Public**: The snippet can be accessed without any authentication.
 
-NOTE:
+{{< alert type="note" >}}
+
 From July 2019, the `Internal` visibility setting is disabled for new projects, groups,
 and snippets on GitLab.com. Existing projects, groups, and snippets using the `Internal`
 visibility setting keep this setting. You can read more about the change in the
 [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
+
+{{< /alert >}}
 
 ## List snippets
 
@@ -39,7 +44,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ## Single snippet
 
@@ -53,7 +58,7 @@ Parameters:
 
 | Attribute    | Type           | Required | Description |
 |--------------|----------------|----------|-------------|
-| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `snippet_id` | integer        | yes      | The ID of a project's snippet. |
 
 ```json
@@ -92,7 +97,7 @@ Parameters:
 
 | Attribute         | Type            | Required | Description |
 |:------------------|:----------------|:---------|:------------|
-| `id`              | integer or string         | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`              | integer or string         | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `files:content`   | string          | yes      | Content of the snippet file. |
 | `files:file_path` | string          | yes      | File path of the snippet file. |
 | `title`           | string          | yes      | Title of a snippet. |
@@ -141,7 +146,7 @@ Parameters:
 
 | Attribute             | Type            | Required | Description |
 |:----------------------|:----------------|:---------|:------------|
-| `id`                  | integer or string         | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                  | integer or string         | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `files:action`        | string          | yes      | Type of action to perform on the file. One of: `create`, `update`, `delete`, `move`. |
 | `snippet_id`          | integer         | yes      | The ID of a project's snippet. |
 | `content`             | string          | no       | Deprecated: Use `files` instead. Content of a snippet. |
@@ -192,7 +197,7 @@ Parameters:
 
 | Attribute    | Type           | Required | Description |
 |:-------------|:---------------|:---------|:------------|
-| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `snippet_id` | integer        | yes      | The ID of a project's snippet. |
 
 Example request:
@@ -214,7 +219,7 @@ Parameters:
 
 | Attribute    | Type           | Required | Description |
 |:-------------|:---------------|:---------|:----------------------------------------------------------------------------------------------------------------|
-| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `snippet_id` | integer        | yes      | The ID of a project's snippet. |
 
 Example request:
@@ -236,7 +241,7 @@ Parameters:
 
 | Attribute    | Type           | Required | Description |
 |:-------------|:---------------|:---------|:------------|
-| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `file_path`  | string         | yes      | The URL-encoded path to the file, for example, `snippet%2Erb`. |
 | `ref`        | string         | yes      | The name of a branch, tag or commit, for example, `main`. |
 | `snippet_id` | integer        | yes      | The ID of a project's snippet. |
@@ -258,7 +263,7 @@ GET /projects/:id/snippets/:snippet_id/user_agent_detail
 
 | Attribute    | Type           | Required | Description |
 |--------------|----------------|----------|-------------|
-| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `snippet_id` | Integer        | yes      | The ID of a snippet. |
 
 Example request:

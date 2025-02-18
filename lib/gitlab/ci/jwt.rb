@@ -58,7 +58,8 @@ module Gitlab
           ref_protected: build.protected.to_s
         }
 
-        if Feature.enabled?(:ci_jwt_groups_direct, project, type: :ops)
+        if Feature.enabled?(:ci_jwt_groups_direct, project, type: :ops) ||
+            Feature.enabled?(:ci_jwt_groups_direct, project.root_namespace, type: :ops)
           direct_groups = user&.first_group_paths
           fields[:groups_direct] = direct_groups if direct_groups
         end

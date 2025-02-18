@@ -88,7 +88,7 @@
   .timeline-entry:not(.draft-note):last-child::before {
     @apply gl-bg-default;
 
-    .modal-body & {
+    .modal-body, .work-item-drawer & {
       @apply gl-bg-overlap;
     }
   }

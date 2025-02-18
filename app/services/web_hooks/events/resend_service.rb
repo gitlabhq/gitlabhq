@@ -28,12 +28,12 @@ module WebHooks
       end
 
       def unauthorized_response
-        ServiceResponse.error(message: s_('WebHooks|The current user is not authorized to resend a hook event'))
+        ServiceResponse.error(message: s_('Webhooks|The current user is not authorized to resend a hook event.'))
       end
 
       def url_changed_response
         ServiceResponse.error(
-          message: _('The hook URL has changed, and this log entry cannot be retried')
+          message: _('The hook URL has changed. This log entry cannot be retried.')
         )
       end
 

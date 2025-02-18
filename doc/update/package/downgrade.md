@@ -2,13 +2,15 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Roll back to earlier GitLab versions
 ---
 
-# Roll back to earlier GitLab versions
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can roll back to earlier versions of GitLab instances that were installed by using the Linux package.
 
@@ -18,7 +20,7 @@ Because you must revert the database schema changes (migrations) that were made 
 must have:
 
 - At least a database backup created under the exact same version and edition you are rolling back to.
-- Ideally, a [full backup archive](../../administration/backup_restore/index.md) of that exact same version and edition
+- Ideally, a [full backup archive](../../administration/backup_restore/_index.md) of that exact same version and edition
   you are rolling back to.
 
 When rolling back to an earlier major versions, you must take into account version-specific changes that occurred when

@@ -8,7 +8,7 @@ module API
 
         before { authenticated_as_admin! }
 
-        feature_category :secrets_management
+        feature_category :ci_variables
 
         namespace 'admin' do
           namespace 'ci' do

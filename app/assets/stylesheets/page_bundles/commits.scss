@@ -1,11 +1,5 @@
 @import 'mixins_and_variables_and_functions';
 
-.commits-row {
-  + .commits-row {
-    border-top: 1px solid var(--gray-50, $gray-50);
-  }
-}
-
 .add-review-item {
   // stylelint-disable-next-line gitlab/no-gl-class
   .gl-tab-nav-item {

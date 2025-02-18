@@ -3,6 +3,10 @@
 module Gitlab
   module Metrics
     module GlobalSearchSlis
+      include Gitlab::Metrics::SliConfig
+
+      puma_enabled!
+
       class << self
         # The following targets are the 99.95th percentile of code searches
         # gathered on 25-10-2022

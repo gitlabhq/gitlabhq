@@ -2,17 +2,23 @@
 stage: Monitor
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Linked resources in incidents
 ---
 
-# Linked resources in incidents
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230852) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `incident_resource_links_widget`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364755) in GitLab 15.3.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/364755) in GitLab 15.5. Feature flag `incident_resource_links_widget` removed.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230852) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `incident_resource_links_widget`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364755) in GitLab 15.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/364755) in GitLab 15.5. Feature flag `incident_resource_links_widget` removed.
+
+{{< /history >}}
 
 To help your team members find the important links without having to search through many comments,
 you can add linked resources to an incident issue.
@@ -48,13 +54,17 @@ To add a linked resource:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Incidents**.
 1. Select an incident.
-1. In the **Linked resources** section, select the plus icon (**{plus-square}**).
+1. In the **Linked resources** section, select the plus icon ({{< icon name="plus-square" >}}).
 1. Complete the required fields.
 1. Select **Add**.
 
 ### Using a quick action
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374964) in GitLab 15.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374964) in GitLab 15.5.
+
+{{< /history >}}
 
 To add multiple links to an incident, use the `/link`
 [quick action](../../user/project/quick_actions.md):
@@ -72,7 +82,11 @@ The description shows instead of the URL in the **Linked resources** section of 
 
 ### Link Zoom meetings from an incident
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230853) in GitLab 15.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230853) in GitLab 15.4.
+
+{{< /history >}}
 
 Use the `/zoom` [quick action](../../user/project/quick_actions.md) to add multiple Zoom links to an incident:
 
@@ -99,4 +113,4 @@ To remove a linked resource:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Incidents**.
 1. Select an incident.
-1. In the **Linked resources** section, select **Remove** (**{close}**).
+1. In the **Linked resources** section, select **Remove** ({{< icon name="close" >}}).

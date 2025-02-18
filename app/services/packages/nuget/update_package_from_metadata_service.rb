@@ -67,8 +67,6 @@ module Packages
       end
 
       def duplicates_allowed?
-        return true if Feature.disabled?(:create_nuget_packages_on_the_fly, @package_file.project)
-
         ::Namespace::PackageSetting.duplicates_allowed?(existing_package)
       end
 

@@ -9,5 +9,5 @@ description: User preferences for receiving notifications related to various act
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/31b0e53015e38e51d9c02cca85c9279600b1bf85
 milestone: '8.7'
 gitlab_schema: gitlab_main_cell
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463411
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514596
 table_size: small

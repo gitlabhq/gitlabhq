@@ -16,7 +16,7 @@ import toast from '~/vue_shared/plugins/global_toast';
 import getStateQuery from './queries/get_state.query.graphql';
 import initCheckoutModal from './init_checkout_modal';
 
-export default function initMergeRequestShow(store) {
+export default function initMergeRequestShow(store, pinia) {
   new ZenMode(); // eslint-disable-line no-new
   initPipelineCountListener(document.querySelector('#commit-pipeline-table-view'));
   addShortcutsExtension(ShortcutsIssuable);
@@ -33,6 +33,7 @@ export default function initMergeRequestShow(store) {
   new Vue({
     el,
     name: 'MergeRequestHeaderRoot',
+    pinia,
     store,
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),

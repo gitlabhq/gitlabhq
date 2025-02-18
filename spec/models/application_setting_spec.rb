@@ -24,6 +24,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.repository_storages_weighted).to eq({}) }
     it { expect(setting.kroki_formats).to eq({}) }
     it { expect(setting.default_branch_protection_defaults).to eq({}) }
+    it { expect(setting.enforce_email_subaddress_restrictions).to be(false) }
     it { expect(setting.max_decompressed_archive_size).to eq(25600) }
     it { expect(setting.decompress_archive_file_timeout).to eq(210) }
     it { expect(setting.bulk_import_concurrent_pipeline_batch_limit).to eq(25) }
@@ -49,10 +50,23 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.user_projects_api_limit).to eq(300) }
     it { expect(setting.user_starred_projects_api_limit).to eq(100) }
     it { expect(setting.disable_password_authentication_for_users_with_sso_identities).to be(false) }
+    it { expect(setting.root_moved_permanently_redirection).to be(false) }
     it { expect(setting.resource_usage_limits).to eq({}) }
     it { expect(setting.resource_access_token_notify_inherited).to be(false) }
     it { expect(setting.lock_resource_access_token_notify_inherited).to be(false) }
     it { expect(setting.ropc_without_client_credentials).to be(true) }
+    it { expect(setting.global_search_issues_enabled).to be(true) }
+    it { expect(setting.global_search_merge_requests_enabled).to be(true) }
+    it { expect(setting.global_search_snippet_titles_enabled).to be(true) }
+    it { expect(setting.global_search_users_enabled).to be(true) }
+    it { expect(setting.vscode_extension_marketplace).to eq({}) }
+
+    it do
+      expect(setting.sign_in_restrictions).to eq({
+        'disable_password_authentication_for_users_with_sso_identities' => false,
+        'root_moved_permanently_redirection' => false
+      })
+    end
   end
 
   describe 'USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS' do
@@ -94,13 +108,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         }
       }
     end
-
-    it { expect(described_class).to validate_jsonb_schema(['resource_usage_limits']) }
-    it { expect(described_class).to validate_jsonb_schema(['application_setting_rate_limits']) }
-    it { expect(described_class).to validate_jsonb_schema(['application_setting_package_registry']) }
-    it { expect(described_class).to validate_jsonb_schema(['application_setting_service_ping_settings']) }
-    it { expect(described_class).to validate_jsonb_schema(['application_setting_sign_in_restrictions']) }
-    it { expect(described_class).to validate_jsonb_schema(['application_setting_transactional_emails']) }
 
     it { is_expected.to allow_value(nil).for(:home_page_url) }
     it { is_expected.to allow_value(http).for(:home_page_url) }
@@ -1312,8 +1319,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       let(:charset) { [*'a'..'z'] + [*0..9] }
       let(:value) { Array.new(byte_size) { charset.sample }.join }
 
-      it { expect(described_class).to validate_jsonb_schema(['default_branch_protection_defaults']) }
-
       context 'when json is more than 1kb' do
         let(:byte_size) { 1.1.kilobytes }
 
@@ -1356,6 +1361,20 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           .is_less_than_or_equal_to(1)
           .with_message("must be a value between 0 and 1")
       end
+    end
+
+    describe 'anti_abuse_settings' do
+      let(:valid_anti_abuse_settings_1) { { enforce_email_subaddress_restrictions: true } }
+      let(:valid_anti_abuse_settings_2) { { enforce_email_subaddress_restrictions: false } }
+      let(:invalid_anti_abuse_settings_1) { { enforce_email_subaddress_restrictions: "string value" } }
+      let(:invalid_anti_abuse_settings_2) { { enforce_email_subaddress_restrictions: nil } }
+      let(:invalid_anti_abuse_settings_3) { { enforce_email_subaddress_restrictions: 42 } }
+
+      it { is_expected.to allow_value(valid_anti_abuse_settings_1).for(:anti_abuse_settings) }
+      it { is_expected.to allow_value(valid_anti_abuse_settings_2).for(:anti_abuse_settings) }
+      it { is_expected.not_to allow_value(invalid_anti_abuse_settings_1).for(:anti_abuse_settings) }
+      it { is_expected.not_to allow_value(invalid_anti_abuse_settings_2).for(:anti_abuse_settings) }
+      it { is_expected.not_to allow_value(invalid_anti_abuse_settings_3).for(:anti_abuse_settings) }
     end
   end
 
@@ -1734,6 +1753,32 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       # invalid json
       it { is_expected.not_to allow_value({ foo: 'bar' }).for(:default_branch_protection_defaults) }
     end
+  end
+
+  describe 'vscode_extension_marketplace' do
+    let(:invalid_custom) { { enabled: false, preset: "custom", custom_values: {} } }
+    let(:valid_open_vsx) { { enabled: true, preset: "open_vsx" } }
+    let(:valid_custom) do
+      {
+        enabled: false,
+        preset: "custom",
+        custom_values: {
+          item_url: "https://example.com",
+          service_url: "https://example.com",
+          resource_url_template: "https://example.com"
+        }
+      }
+    end
+
+    # valid json
+    it { is_expected.to allow_value({}).for(:vscode_extension_marketplace) }
+    it { is_expected.to allow_value({ enabled: true, preset: "open_vsx" }).for(:vscode_extension_marketplace) }
+    it { is_expected.to allow_value(valid_custom).for(:vscode_extension_marketplace) }
+
+    # invalid json
+    it { is_expected.not_to allow_value({ enabled: false, preset: "foo" }).for(:vscode_extension_marketplace) }
+    it { is_expected.not_to allow_value({ enabled: true, preset: "custom" }).for(:vscode_extension_marketplace) }
+    it { is_expected.not_to allow_value(invalid_custom).for(:vscode_extension_marketplace) }
   end
 
   describe '#static_objects_external_storage_auth_token=', :aggregate_failures do

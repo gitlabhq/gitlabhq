@@ -2,27 +2,29 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "To speed up project creation in your group, build custom project templates and share them with your group."
+description: To speed up project creation in your group, build custom project templates and share them with your group.
+title: Custom group-level project templates
 ---
 
-# Custom group-level project templates
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-When you create a project, you can [choose from a list of templates](../project/index.md).
+{{< /details >}}
+
+When you create a project, you can [choose from a list of templates](../project/_index.md).
 These templates, for things like GitLab Pages or Ruby, populate the new project with a copy of the files contained in the
 template. This information is identical to the information used by [GitLab project import/export](../project/settings/import_export.md)
 and can help you start a new project more quickly.
 
-You can [customize the list](../project/index.md) of available templates, so
+You can [customize the list](../project/_index.md) of available templates, so
 that all projects in your group have the same list. To do this, you populate a subgroup with the projects you want to
 use as templates.
 
 You can also configure [custom templates for the instance](../../administration/custom_project_templates.md).
 
-## Set up group-level project templates
+## Set up project templates for a group
 
 Prerequisites:
 
@@ -31,8 +33,8 @@ Prerequisites:
 To set up custom project templates in a group, add the subgroup that contains the
 project templates to the group settings:
 
-1. In the group, create a [subgroup](subgroups/index.md).
-1. [Add projects to the new subgroup](index.md#add-projects-to-a-group) as your templates.
+1. In the group, create a [subgroup](subgroups/_index.md).
+1. [Add projects to the new subgroup](_index.md#add-projects-to-a-group) as your templates.
 1. In the left menu for the group, select **Settings > General**.
 1. Expand **Custom project templates** and select the subgroup.
 
@@ -43,12 +45,12 @@ Projects in nested subgroups are not included in the template list.
 ## Which projects are available as templates
 
 - Public and internal projects can be selected by any authenticated user as a template for a new project,
-  if all [project features](../project/settings/index.md#configure-project-features-and-permissions)
+  if all [project features](../project/settings/_index.md#configure-project-features-and-permissions)
   except for **GitLab Pages** and **Security and compliance** are set to **Everyone With Access**.
 - Private projects can be selected only by users who are members of the projects.
 
 There is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/295646):
-[Inherited members](../project/members/index.md#membership-types) can't select project templates,
+[Inherited members](../project/members/_index.md#membership-types) can't select project templates,
 unless the `project_templates_without_min_access` feature flag is enabled.
 This feature flag [is disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/425452)
 on GitLab.com, and so users must be granted direct membership of the template project.
@@ -80,7 +82,7 @@ gitlab.com/myorganization/
 
 ## What is copied from the templates
 
-The entire custom instance-level project templates repository is copied, including:
+The entire custom project templates repository configured for your instance is copied, including:
 
 - Branches
 - Commits
@@ -88,9 +90,9 @@ The entire custom instance-level project templates repository is copied, includi
 
 If the user:
 
-- Has the Owner role on the custom instance-level project templates project or is a GitLab administrator,
+- Has the Owner role on the project that contains the custom templates for the instance, or is a GitLab administrator:
   all project settings, including project members, are copied over to the new project.
-- Doesn't have the Owner role or is not a GitLab administrator,
+- Doesn't have the Owner role, or is not a GitLab administrator:
   project deploy keys and project webhooks aren't copied over because they contain sensitive data.
 
 To learn more about what is migrated, see
@@ -109,8 +111,8 @@ and tags. For example, if the template contains a protected branch:
 
 ## Troubleshooting
 
-### Administrator cannot see custom group-level project templates when creating a project
+### Administrator cannot see custom project templates for the group when creating a project
 
-Custom group-level project templates are only available to group members.
+Custom project templates for a group are available only to group members.
 If the administrator account you are using is not a member of a group,
 you can't access the templates.

@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe SourcegraphHelper do
   describe '#sourcegraph_url_message' do
     let(:sourcegraph_url) { 'http://sourcegraph.example.com' }
-    let(:feature_conditional) { false }
     let(:public_only) { false }
     let(:is_com) { true }
 
@@ -13,7 +12,6 @@ RSpec.describe SourcegraphHelper do
       allow(Gitlab::CurrentSettings).to receive(:sourcegraph_url).and_return(sourcegraph_url)
       allow(Gitlab::CurrentSettings).to receive(:sourcegraph_url_is_com?).and_return(is_com)
       allow(Gitlab::CurrentSettings).to receive(:sourcegraph_public_only).and_return(public_only)
-      allow(Gitlab::Sourcegraph).to receive(:feature_conditional?).and_return(feature_conditional)
     end
 
     subject { helper.sourcegraph_url_message }
@@ -30,12 +28,6 @@ RSpec.describe SourcegraphHelper do
 
     context 'when not limited by feature or public only' do
       it { is_expected.to eq 'Uses %{linkStart}Sourcegraph.com%{linkEnd}. This feature is experimental.' }
-    end
-
-    context 'when limited by feature' do
-      let(:feature_conditional) { true }
-
-      it { is_expected.to eq 'Uses %{linkStart}Sourcegraph.com%{linkEnd}. This feature is experimental and currently limited to certain projects.' }
     end
 
     context 'when limited by public only' do

@@ -2,15 +2,17 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use Auto DevOps to deploy an application to Google Kubernetes Engine
 ---
 
-# Use Auto DevOps to deploy an application to Google Kubernetes Engine
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-In this tutorial, we'll help you to get started with [Auto DevOps](../index.md)
+{{< /details >}}
+
+In this tutorial, we'll help you to get started with [Auto DevOps](../_index.md)
 through an example of how to deploy an application to Google Kubernetes Engine (GKE).
 
 You are using the GitLab native Kubernetes integration, so you don't need
@@ -18,7 +20,7 @@ to create a Kubernetes cluster manually using the Google Cloud Platform console.
 You are creating and deploying an application that you create from a GitLab template.
 
 These instructions also work for GitLab Self-Managed.
-Ensure your own [runners are configured](../../../ci/runners/index.md) and
+Ensure your own [runners are configured](../../../ci/runners/_index.md) and
 [Google OAuth is enabled](../../../integration/google.md).
 
 To deploy a project to Google Kubernetes Engine, follow the steps below:
@@ -44,12 +46,15 @@ or Google Drive, or create a new one.
 1. Ensure you've created a [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
    with Google Cloud Platform.
 
-NOTE:
+{{< alert type="note" >}}
+
 Every new Google Cloud Platform (GCP) account receives [$300 in credit](https://console.cloud.google.com/freetrial),
 and in partnership with Google, GitLab is able to offer an additional $200 for new
 GCP accounts to get started with the GitLab integration with Google Kubernetes Engine.
 [Follow this link](https://cloud.google.com/partners?pcn_code=0014M00001h35gDQAQ#contact-form)
 and apply for credit.
+
+{{< /alert >}}
 
 ## Create a Kubernetes cluster
 
@@ -63,10 +68,13 @@ This project is where configuration for GitLab agent resides.
 Use a GitLab project template to get started. As the name suggests,
 those projects provide a bare-bones application built on some well-known frameworks.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Create the application project in the group hierarchy at the same level or below the project for cluster management. Otherwise, it fails to [authorize the agent](../../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent).
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+{{< /alert >}}
+
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**.
 1. Select the **Ruby on Rails** template.
 1. Give your project a name, optionally a description, and make it public so that
@@ -81,7 +89,7 @@ Now you have an application project you are going to deploy to the GKE cluster.
 Now we need to configure the GitLab agent for Kubernetes for us to be able to use it to deploy the application project.
 
 1. Go to the project [we created to manage the cluster](#create-a-kubernetes-cluster).
-1. Go to the [agent configuration file](../../../user/clusters/agent/install/index.md#create-an-agent-configuration-file) (`.gitlab/agents/<agent-name>/config.yaml`) and edit it.
+1. Go to the [agent configuration file](../../../user/clusters/agent/install/_index.md#create-an-agent-configuration-file) (`.gitlab/agents/<agent-name>/config.yaml`) and edit it.
 1. Configure `ci_access:projects` attribute. Use application's project path as `id`:
 
 ```yaml
@@ -161,16 +169,16 @@ The commit should trigger a pipeline. In the next section, we explain what each 
 When your pipeline runs, what is it doing?
 
 To view the jobs in the pipeline, select the pipeline's status badge. The
-**{status_running}** icon displays when pipeline jobs are running, and updates
-without refreshing the page to **{status_success}** (for success) or
-**{status_failed}** (for failure) when the jobs complete.
+{{< icon name="status_running" >}} icon displays when pipeline jobs are running, and updates
+without refreshing the page to {{< icon name="status_success" >}} (for success) or
+{{< icon name="status_failed" >}} (for failure) when the jobs complete.
 
 The jobs are separated into stages:
 
 ![Pipeline stages](img/guide_pipeline_stages_v13_0.png)
 
 - **Build** - The application builds a Docker image and uploads it to your project's
-  [Container Registry](../../../user/packages/container_registry/index.md) ([Auto Build](../stages.md#auto-build)).
+  [Container Registry](../../../user/packages/container_registry/_index.md) ([Auto Build](../stages.md#auto-build)).
 - **Test** - GitLab runs various checks on the application, but all jobs except `test`
   are allowed to fail in the test stage:
 
@@ -188,7 +196,7 @@ The jobs are separated into stages:
   - The `secret-detection` job checks for leaked secrets and is allowed to fail ([Auto Secret Detection](../stages.md#auto-secret-detection))
 
 - **Review** - Pipelines on the default branch include this stage with a `dast_environment_deploy` job.
-  For more information, see [Dynamic Application Security Testing (DAST)](../../../user/application_security/dast/index.md).
+  For more information, see [Dynamic Application Security Testing (DAST)](../../../user/application_security/dast/_index.md).
 
 - **Production** - After the tests and checks finish, the application deploys in
   Kubernetes ([Auto Deploy](../stages.md#auto-deploy)).
@@ -211,17 +219,17 @@ you to common environment tasks:
 
 ![Environments](img/guide_environments_v12_3.png)
 
-- **Open live environment** (**{external-link}**) - Opens the URL of the application deployed in production
-- **Monitoring** (**{chart}**) - Opens the metrics page where Prometheus collects data
+- **Open live environment** ({{< icon name="external-link" >}}) - Opens the URL of the application deployed in production
+- **Monitoring** ({{< icon name="chart" >}}) - Opens the metrics page where Prometheus collects data
   about the Kubernetes cluster and how the application
   affects it in terms of memory usage, CPU usage, and latency
-- **Deploy to** (**{play}** **{chevron-lg-down}**) - Displays a list of environments you can deploy to
-- **Terminal** (**{terminal}**) - Opens a [web terminal](../../../ci/environments/index.md#web-terminals-deprecated)
+- **Deploy to** ({{< icon name="play" >}} {{< icon name="chevron-lg-down" >}}) - Displays a list of environments you can deploy to
+- **Terminal** ({{< icon name="terminal" >}}) - Opens a [web terminal](../../../ci/environments/_index.md#web-terminals-deprecated)
   session inside the container where the application is running
-- **Re-deploy to environment** (**{repeat}**) - For more information, see
+- **Re-deploy to environment** ({{< icon name="repeat" >}}) - For more information, see
   [Retrying and rolling back](../../../ci/environments/deployments.md#retry-or-roll-back-a-deployment)
-- **Stop environment** (**{stop}**) - For more information, see
-  [Stopping an environment](../../../ci/environments/index.md#stopping-an-environment)
+- **Stop environment** ({{< icon name="stop" >}}) - For more information, see
+  [Stopping an environment](../../../ci/environments/_index.md#stopping-an-environment)
 
 GitLab displays the [deploy board](../../../user/project/deploy_boards.md) below the
 environment's information, with squares representing pods in your
@@ -229,10 +237,13 @@ Kubernetes cluster, color-coded to show their status. Hovering over a square on
 the deploy board displays the state of the deployment, and selecting the square
 takes you to the pod's logs page.
 
-NOTE:
+{{< alert type="note" >}}
+
 The example shows only one pod hosting the application at the moment, but you can add
 more pods by defining the [`REPLICAS` CI/CD variable](../cicd_variables.md)
 in **Settings > CI/CD > Variables**.
+
+{{< /alert >}}
 
 ### Work with branches
 
@@ -240,7 +251,7 @@ Next, create a feature branch to add content to your application:
 
 1. In your project's repository, go to the following file: `app/views/welcome/index.html.erb`.
    This file should only contain a paragraph: `<p>You're on Rails!</p>`.
-1. Open the GitLab [Web IDE](../../../user/project/web_ide/index.md) to make the change.
+1. Open the GitLab [Web IDE](../../../user/project/web_ide/_index.md) to make the change.
 1. Edit the file so it contains:
 
    ```html
@@ -277,13 +288,13 @@ To fix the broken test:
 1. In the left-hand directory of files, find the `test/controllers/welcome_controller_test.rb`
    file, and select it to open it.
 1. Change line 7 to say `You're on Rails! Powered by GitLab Auto DevOps.`
-1. On the left sidebar, select **Source Control** (**{merge}**).
+1. On the left sidebar, select **Source Control** ({{< icon name="merge" >}}).
 1. Write a commit message, and select **Commit**.
 
 Return to the **Overview** page of your merge request, and you should not only
 see the test passing, but also the application deployed as a
 [review application](../stages.md#auto-review-apps). You can visit it by selecting
-the **View app** **{external-link}** button to see your changes deployed.
+the **View app** {{< icon name="external-link" >}} button to see your changes deployed.
 
 After merging the merge request, GitLab runs the pipeline on the default branch,
 and then deploys the application to production.
@@ -295,7 +306,7 @@ You started from building and testing, to deploying and monitoring an applicatio
 all in GitLab. Despite its automatic nature, Auto DevOps can also be configured
 and customized to fit your workflow. Here are some helpful resources for further reading:
 
-1. [Auto DevOps](../index.md)
+1. [Auto DevOps](../_index.md)
 1. [Multiple Kubernetes clusters](../multiple_clusters_auto_devops.md)
 1. [Incremental rollout to production](../cicd_variables.md#incremental-rollout-to-production)
 1. [Disable jobs you don't need with CI/CD variables](../cicd_variables.md)

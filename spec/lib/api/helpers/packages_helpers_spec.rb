@@ -6,7 +6,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
   let_it_be(:helper) { Class.new.include(API::Helpers).include(described_class).new }
   let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:package) { create(:package) }
+  let_it_be(:package) { create(:generic_package) }
 
   describe 'authorize_packages_access!' do
     subject { helper.authorize_packages_access!(project) }
@@ -61,7 +61,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
     where(:subject, :expected_class) do
       ref(:project) | ::Packages::Policies::Project
       ref(:group)   | ::Packages::Policies::Group
-      ref(:package) | ::Packages::Package
+      ref(:package) | ::Packages::Generic::Package
     end
 
     with_them do
@@ -161,7 +161,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
       let(:params) { super().merge(use_final_store_path: true) }
 
       it_behaves_like 'workhorse authorize' do
-        let(:workhorse_authorize_params) { { has_length: true, use_final_store_path: true, final_store_path_root_id: project.id } }
+        let(:workhorse_authorize_params) { { has_length: true, use_final_store_path: true, final_store_path_config: { root_hash: project.id } } }
       end
     end
   end
@@ -262,10 +262,8 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
             project.add_guest(user)
           end
 
-          it 'returns Forbidden' do
-            expect(helper).to receive(:render_api_error!).with('403 Forbidden', 403)
-
-            is_expected.to be_nil
+          it 'returns project' do
+            is_expected.to eq(project)
           end
         end
       end
@@ -390,6 +388,75 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
           project: project
         )
       end
+    end
+  end
+
+  describe '#protect_package!' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:project_developer) { create(:user, developer_of: project) }
+    let_it_be(:project_owner) { project.owner }
+    let_it_be(:project_deploy_token) { create(:deploy_token, :all_scopes, projects: [project]) }
+    let_it_be(:package) { create(:maven_package) }
+
+    let_it_be(:package_protection_rule_maven) do
+      create(:package_protection_rule,
+        project: project,
+        package_type: package.package_type,
+        package_name_pattern: "#{package.name}*",
+        minimum_access_level_for_push: :maintainer)
+    end
+
+    before do
+      allow(helper).to receive(:user_project).and_return(project)
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
+    subject { helper.protect_package!(package_name, package_type) }
+
+    shared_examples 'success response because package not protected' do
+      it { is_expected.to be_nil }
+
+      it 'does not render any error' do
+        expect(helper).not_to receive(:bad_request!)
+        expect(helper).not_to receive(:forbidden!)
+
+        subject
+      end
+    end
+
+    shared_examples 'forbidden response because package protected' do
+      it 'renders forbidden error' do
+        expect(helper).to receive(:forbidden!).with('Package protected.')
+
+        subject
+      end
+    end
+
+    shared_examples 'bad_request response' do
+      it 'renders bad_request error' do
+        expect(helper).to receive(:bad_request!)
+
+        subject
+      end
+    end
+
+    where(:package_name, :package_type, :current_user, :expected_shared_example) do
+      lazy { package.name } | :maven   | ref(:project_developer)    | 'forbidden response because package protected'
+      lazy { package.name } | :pypi    | ref(:project_developer)    | 'success response because package not protected'
+      lazy { package.name } | :maven   | ref(:project_owner)        | 'success response because package not protected'
+      lazy { package.name } | :pypi    | ref(:project_owner)        | 'success response because package not protected'
+      lazy { package.name } | :maven   | ref(:project_deploy_token) | 'forbidden response because package protected'
+      lazy { package.name } | :pypi    | ref(:project_deploy_token) | 'success response because package not protected'
+      lazy { package.name } | :maven   | nil                        | 'bad_request response'
+      ''                    | :maven   | ref(:project_developer)    | 'success response because package not protected'
+      nil                   | :maven   | ref(:project_developer)    | 'success response because package not protected'
+      nil                   | :no_type | ref(:project_developer)    | 'bad_request response'
+      nil                   | nil      | ref(:project_developer)    | 'bad_request response'
+    end
+
+    with_them do
+      it_behaves_like params[:expected_shared_example]
     end
   end
 end

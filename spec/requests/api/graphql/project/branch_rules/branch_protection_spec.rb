@@ -10,7 +10,7 @@ RSpec.describe 'getting branch protection for a branch rule', feature_category: 
   let_it_be(:project) { branch_rule.project }
 
   let(:branch_protection_data) do
-    graphql_data_at('project', 'branchRules', 'nodes', 0, 'branchProtection')
+    graphql_data_at('project', 'branchRules', 'nodes', 1, 'branchProtection')
   end
 
   let(:variables) { { path: project.full_path } }
@@ -21,7 +21,7 @@ RSpec.describe 'getting branch protection for a branch rule', feature_category: 
     <<~GQL
     query($path: ID!) {
       project(fullPath: $path) {
-        branchRules(first: 1) {
+        branchRules(first: 2) {
           nodes {
             branchProtection {
               #{fields}
@@ -33,28 +33,44 @@ RSpec.describe 'getting branch protection for a branch rule', feature_category: 
     GQL
   end
 
-  context 'when the user does not have read_protected_branch abilities' do
-    before do
-      project.add_guest(current_user)
-      post_graphql(query, current_user: current_user, variables: variables)
+  shared_examples_for 'branch protection graphql query' do
+    context 'when the user does not have read_protected_branch abilities' do
+      before do
+        project.add_guest(current_user)
+        post_graphql(query, current_user: current_user, variables: variables)
+      end
+
+      it_behaves_like 'a working graphql query'
+
+      it { expect(branch_protection_data).not_to be_present }
     end
 
-    it_behaves_like 'a working graphql query'
+    context 'when the user does have read_protected_branch abilities' do
+      before do
+        project.add_maintainer(current_user)
+        post_graphql(query, current_user: current_user, variables: variables)
+      end
 
-    it { expect(branch_protection_data).not_to be_present }
+      it_behaves_like 'a working graphql query'
+
+      it 'includes allow_force_push' do
+        expect(branch_protection_data['allowForcePush']).to be_in([true, false])
+        expect(branch_protection_data['allowForcePush']).to eq(branch_rule.allow_force_push)
+      end
+    end
   end
 
-  context 'when the user does have read_protected_branch abilities' do
+  it_behaves_like 'branch protection graphql query'
+
+  context 'when the branch_rule_squash_settings flag is not enabled' do
     before do
-      project.add_maintainer(current_user)
-      post_graphql(query, current_user: current_user, variables: variables)
+      stub_feature_flags(branch_rule_squash_settings: false)
     end
 
-    it_behaves_like 'a working graphql query'
-
-    it 'includes allow_force_push' do
-      expect(branch_protection_data['allowForcePush']).to be_in([true, false])
-      expect(branch_protection_data['allowForcePush']).to eq(branch_rule.allow_force_push)
+    it_behaves_like 'branch protection graphql query' do
+      let(:branch_protection_data) do
+        graphql_data_at('project', 'branchRules', 'nodes', 0, 'branchProtection')
+      end
     end
   end
 end

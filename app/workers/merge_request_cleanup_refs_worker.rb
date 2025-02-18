@@ -2,6 +2,7 @@
 
 class MergeRequestCleanupRefsWorker
   include ApplicationWorker
+  include CronjobChildWorker
   include LimitedCapacity::Worker
   include Gitlab::Utils::StrongMemoize
 

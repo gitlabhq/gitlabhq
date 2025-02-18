@@ -10,11 +10,11 @@ import {
 } from '@gitlab/ui';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import createProtectionRepositoryRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/create_container_protection_repository_rule.mutation.graphql';
-import { s__, __ } from '~/locale';
-
-const GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER = 'MAINTAINER';
-const GRAPHQL_ACCESS_LEVEL_VALUE_OWNER = 'OWNER';
-const GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN = 'ADMIN';
+import {
+  MinimumAccessLevelOptions,
+  GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
+} from '~/packages_and_registries/settings/project/constants';
+import { s__ } from '~/locale';
 
 export default {
   components: {
@@ -66,13 +66,6 @@ export default {
         minimumAccessLevelForPush: this.protectionRuleFormData.minimumAccessLevelForPush,
       };
     },
-    minimumAccessLevelOptions() {
-      return [
-        { value: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER, text: __('Maintainer') },
-        { value: GRAPHQL_ACCESS_LEVEL_VALUE_OWNER, text: __('Owner') },
-        { value: GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN, text: __('Admin') },
-      ];
-    },
   },
   methods: {
     submit() {
@@ -115,6 +108,7 @@ export default {
       this.$emit('cancel');
     },
   },
+  minimumAccessLevelOptions: MinimumAccessLevelOptions,
 };
 </script>
 
@@ -161,7 +155,7 @@ export default {
       <gl-form-select
         id="input-minimum-access-level-for-push"
         v-model="protectionRuleFormData.minimumAccessLevelForPush"
-        :options="minimumAccessLevelOptions"
+        :options="$options.minimumAccessLevelOptions"
         :disabled="isFieldDisabled"
       />
     </gl-form-group>

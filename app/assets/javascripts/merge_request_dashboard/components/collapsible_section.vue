@@ -12,7 +12,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['newListsEnabled'],
   props: {
     title: {
       type: String,
@@ -69,7 +68,7 @@ export default {
     is-collapsible
     :collapsed="!open"
     :toggle-aria-label="toggleButtonLabel"
-    :body-class="{ '!gl-mx-0 gl-mb-0': hasMergeRequests || newListsEnabled }"
+    body-class="!gl-mx-0 gl-mb-0"
   >
     <template #title>
       {{ title }}
@@ -87,7 +86,9 @@ export default {
     </template>
 
     <template v-if="!hasMergeRequests && !loading" #empty>
-      {{ __('No merge requests match this list.') }}
+      <p class="gl-pt-1 gl-text-center gl-text-subtle">
+        {{ __('No merge requests match this list.') }}
+      </p>
     </template>
 
     <template #default>

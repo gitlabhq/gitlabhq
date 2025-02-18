@@ -3,7 +3,7 @@ import { __ } from '~/locale';
 
 export default {
   i18n: {
-    headerText: __('Activity'),
+    headerText: __('Comments'),
   },
   name: 'WikiNotesActivityHeader',
 };

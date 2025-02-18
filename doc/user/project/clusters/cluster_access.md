@@ -2,18 +2,23 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Access controls with cluster certificates (RBAC or ABAC) (deprecated)
 ---
 
-# Access controls with cluster certificates (RBAC or ABAC) (deprecated)
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
 
-WARNING:
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-To connect your cluster to GitLab, use the [GitLab agent](../../clusters/agent/index.md)
+To connect your cluster to GitLab, use the [GitLab agent](../../clusters/agent/_index.md)
 instead.
+
+{{< /alert >}}
 
 When creating a cluster in GitLab, you are asked if you would like to create either:
 
@@ -74,7 +79,7 @@ GitLab creates the following resources for ABAC clusters.
 Runners have the [privileged mode](https://docs.gitlab.com/runner/executors/docker.html#the-privileged-mode)
 enabled by default, which allows them to execute special commands and run
 Docker in Docker. This functionality is needed to run some of the
-[Auto DevOps](../../../topics/autodevops/index.md)
+[Auto DevOps](../../../topics/autodevops/_index.md)
 jobs. This implies the containers are running in privileged mode and you should,
 therefore, be aware of some important details.
 

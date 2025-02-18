@@ -1,11 +1,10 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Introduction to Git rebase and force push, methods to resolve merge conflicts through the command line."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Introduction to Git rebase and force push, methods to resolve merge conflicts through the command line.
+title: Rebase and resolve merge conflicts
 ---
-
-# Rebase and resolve merge conflicts
 
 In Git, a rebase updates your branch with the contents of another branch.
 A rebase confirms that changes in your branch don't conflict with
@@ -26,12 +25,15 @@ While most rebases are performed against `main`, you can rebase against any othe
 branch. You can also specify a different remote repository.
 For example, `upstream` instead of `origin`.
 
-WARNING:
+{{< alert type="warning" >}}
+
 `git rebase` rewrites the commit history. It can cause conflicts in
 shared branches and complex merge conflicts.
 Instead of rebasing your branch against the default branch,
 consider using `git pull origin master`. Pulling has similar
 effects with less risk of compromising others' work.
+
+{{< /alert >}}
 
 ## Rebase
 
@@ -226,10 +228,13 @@ Prerequisites:
    git commit -m "Resolve merge conflicts"
    ```
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    You can run `git rebase --abort` to stop the process before this point.
    Git aborts the rebase and rolls back the branch to the state
    before running `git rebase`. After you run `git rebase --continue`, you cannot abort the rebase.
+
+   {{< /alert >}}
 
 1. Continue the rebase:
 

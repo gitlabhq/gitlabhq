@@ -14,9 +14,6 @@ additional_properties:
 product_group: pipeline_execution
 milestone: '16.9'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142356
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

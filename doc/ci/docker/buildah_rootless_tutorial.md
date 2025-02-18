@@ -2,13 +2,15 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Use Buildah in a rootless container with GitLab Runner Operator on OpenShift'
 ---
 
-# Tutorial: Use Buildah in a rootless container with GitLab Runner Operator on OpenShift
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This tutorial teaches you how to successfully build images using the `buildah` tool,
 with GitLab Runner deployed using [GitLab Runner Operator](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator)
@@ -56,7 +58,7 @@ We start by preparing a custom image based on the `quay.io/buildah/stable:v1.23.
    ```
 
 1. Build and push the Buildah image to a container registry. Let's push to the
-   [GitLab container registry](../../user/packages/container_registry/index.md):
+   [GitLab container registry](../../user/packages/container_registry/_index.md):
 
    ```shell
    docker build -f Containerfile-buildah -t registry.example.com/group/project/buildah:1.23.1 .

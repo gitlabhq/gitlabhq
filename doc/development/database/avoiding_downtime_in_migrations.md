@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Avoiding downtime in migrations
 ---
-
-# Avoiding downtime in migrations
 
 When working with a database certain operations may require downtime. As we
 cannot have downtime in migrations we need to use a set of steps to get the
@@ -24,7 +23,7 @@ The reason we spread this out across three releases is that dropping a column is
 a destructive operation that can't be rolled back easily.
 
 Following this procedure helps us to make sure there are no deployments to GitLab.com
-and upgrade processes for self-managed installations that lump together any of these steps.
+and upgrade processes for GitLab Self-Managed instances that lump together any of these steps.
 
 ### Ignoring the column (release M)
 
@@ -63,10 +62,13 @@ to ignore the column and subsequently remove the column ignore (which would resu
 
 In this example, the change to ignore the column went into release `12.5`.
 
-NOTE:
+{{< alert type="note" >}}
+
 Ignoring and dropping columns should not occur simultaneously in the same release. Dropping a column before proper ignoring it in the model can cause problems with zero-downtime migrations,
 where the running instances can fail trying to look up for the removed column until the Rails schema cache expires. This can be an issue for self-managed customers whom attempt to follow zero-downtime upgrades,
 forcing them to explicit restart all running GitLab instances to re-load the updated schema. To avoid this scenario, first, ignore the column (release M), then, drop it in the next release (release M+1).
+
+{{< /alert >}}
 
 ### Dropping the column (release M+1)
 
@@ -223,10 +225,10 @@ Same as when column is dropped, after the rename is completed, we need to [remov
 ## Changing column constraints
 
 Adding or removing a `NOT NULL` clause (or another constraint) can typically be
-done without requiring downtime. Adding a `NOT NULL` contraint requires that any application
+done without requiring downtime. Adding a `NOT NULL` constraint requires that any application
 changes are deployed _first_, so it should happen in a post-deployment migration.
-In contrary removing a `NOT NULL` contraint should be done in a regular migration.
-This way any code which insers `NULL` values can safely run for the column.
+In contrary removing a `NOT NULL` constraint should be done in a regular migration.
+This way any code which inserts `NULL` values can safely run for the column.
 
 Avoid using `change_column` as it produces an inefficient query because it re-defines
 the whole column type.
@@ -310,12 +312,15 @@ Example migration:
 Changing column defaults is difficult because of how Rails handles values
 that are equal to the default.
 
-NOTE:
+{{< alert type="note" >}}
+
 Rails ignores sending the default values to PostgreSQL when inserting records, if the [partial_inserts](https://gitlab.com/gitlab-org/gitlab/-/blob/55ac06c9083434e6c18e0a2aaf8be5f189ef34eb/config/application.rb#L40) config has been enabled. It leaves this task to
 the database. When migrations change the default values of the columns, the running application is unaware
 of this change due to the schema cache. The application is then under the risk of accidentally writing
 wrong data to the database, especially when deploying the new version of the code
 long after we run database migrations.
+
+{{< /alert >}}
 
 If running code ever explicitly writes the old default value of a column, you must follow a multi-step
 process to prevent Rails replacing the old default with the new default in INSERT queries that explicitly
@@ -409,7 +414,7 @@ If the table and the ActiveRecord model is not in use yet, removing the old
 table and creating a new one is the preferred way to "rename" the table.
 
 Renaming a table is possible without downtime by following our multi-release
-[rename table process](rename_database_tables.md#rename-table-without-downtime).
+[rename table process](rename_database_tables.md).
 
 ## Adding foreign keys
 

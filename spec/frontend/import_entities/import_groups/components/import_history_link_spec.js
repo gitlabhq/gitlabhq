@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlLink } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 
 import ImportHistoryLink from '~/import_entities/import_groups/components/import_history_link.vue';
 
@@ -17,7 +17,7 @@ describe('import history link', () => {
     });
   };
 
-  const findGlLink = () => wrapper.findComponent(GlLink);
+  const findButton = () => wrapper.findComponent(GlButton);
 
   it('renders link with href', () => {
     const mockId = 174;
@@ -28,7 +28,7 @@ describe('import history link', () => {
       },
     });
 
-    expect(findGlLink().text()).toBe('Migration details >');
-    expect(findGlLink().attributes('href')).toBe('/import/174/history');
+    expect(findButton().text()).toBe('Migration details');
+    expect(findButton().attributes('href')).toBe('/import/174/history');
   });
 });

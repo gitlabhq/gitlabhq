@@ -2,15 +2,21 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: External authorization control
 ---
 
-# External authorization control
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27056) from GitLab Premium to GitLab Free in 11.10.
+{{< /details >}}
+
+{{< history >}}
+
+- [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27056) from GitLab Premium to GitLab Free in 11.10.
+
+{{< /history >}}
 
 In highly controlled environments, it may be necessary for access policy to be
 controlled by an external service that permits access based on project
@@ -41,7 +47,7 @@ the [Linux package documentation](https://docs.gitlab.com/omnibus/settings/logs.
 When using TLS Authentication with a self signed certificate, the CA certificate
 needs to be trusted by the OpenSSL installation. When using GitLab installed
 using the Linux package, learn to install a custom CA in the
-[Linux package documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
+[Linux package documentation](https://docs.gitlab.com/omnibus/settings/ssl/).
 Alternatively, learn where to install custom certificates by using
 `openssl version -d`.
 
@@ -57,11 +63,15 @@ The external authorization service can be enabled by an administrator:
 
 ### Allow external authorization with deploy tokens and deploy keys
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386656) in GitLab 15.9.
-> - Deploy tokens no longer being able to access container or package registries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387721) in GitLab 16.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386656) in GitLab 15.9.
+- Deploy tokens no longer being able to access container or package registries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387721) in GitLab 16.0.
+
+{{< /history >}}
 
 You can set your instance to allow external authorization for Git operations with
-[deploy tokens](../../user/project/deploy_tokens/index.md) or [deploy keys](../../user/project/deploy_keys/index.md).
+[deploy tokens](../../user/project/deploy_tokens/_index.md) or [deploy keys](../../user/project/deploy_keys/_index.md).
 
 Prerequisites:
 
@@ -76,8 +86,11 @@ To allow authorization with deploy tokens and keys:
    - Select **Allow deploy tokens and deploy keys to be used with external authorization**.
 1. Select **Save changes**.
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you enable external authorization, deploy tokens cannot access container or package registries. If you use deploy tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use tokens with container or package registries.
+
+{{< /alert >}}
 
 ## How it works
 

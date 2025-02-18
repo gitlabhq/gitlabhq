@@ -2,14 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Cherry-pick a Git commit when you want to add a single commit from one branch to another."
+description: Cherry-pick a Git commit when you want to add a single commit from one branch to another.
+title: Cherry-pick changes with Git
 ---
 
-# Cherry-pick changes with Git
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use `git cherry-pick` to apply the changes from a specific commit to your current
 working branch. Use this command to:
@@ -21,9 +23,12 @@ working branch. Use this command to:
 You can also use the GitLab UI to cherry-pick. For more information,
 see [Cherry-pick changes](../../user/project/merge_requests/cherry_pick_changes.md).
 
-WARNING:
+{{< alert type="warning" >}}
+
 Use `git cherry-pick` carefully because it can create duplicate commits and potentially
 complicate your project history.
+
+{{< /alert >}}
 
 ## Cherry-pick a single commit
 

@@ -63,11 +63,11 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
     end
 
     where(:user_role, :token_type, :valid_token, :status) do
-      :guest     | :personal_access_token   | true  | :forbidden
+      :guest     | :personal_access_token   | true  | :not_found
       :guest     | :personal_access_token   | false | :unauthorized
       :guest     | :deploy_token            | true  | :not_found
       :guest     | :deploy_token            | false | :unauthorized
-      :guest     | :job_token               | true  | :forbidden
+      :guest     | :job_token               | true  | :not_found
       :guest     | :job_token               | false | :unauthorized
       :reporter  | :personal_access_token   | true  | :not_found
       :reporter  | :personal_access_token   | false | :unauthorized
@@ -139,7 +139,7 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
         :public  | :guest      | false | :personal_access_token | false | 'rejects rubygems packages access' | :unauthorized
         :public  | :anonymous  | false | :personal_access_token | true  | 'Rubygems gem download'            | :success
         :private | :developer  | true  | :personal_access_token | true  | 'Rubygems gem download'            | :success
-        :private | :guest      | true  | :personal_access_token | true  | 'rejects rubygems packages access' | :forbidden
+        :private | :guest      | true  | :personal_access_token | true  | 'Rubygems gem download'            | :success
         :private | :developer  | true  | :personal_access_token | false | 'rejects rubygems packages access' | :unauthorized
         :private | :guest      | true  | :personal_access_token | false | 'rejects rubygems packages access' | :unauthorized
         :private | :developer  | false | :personal_access_token | true  | 'rejects rubygems packages access' | :not_found
@@ -156,7 +156,7 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
         :public  | :developer  | false | :job_token             | false | 'rejects rubygems packages access' | :unauthorized
         :public  | :guest      | false | :job_token             | false | 'rejects rubygems packages access' | :unauthorized
         :private | :developer  | true  | :job_token             | true  | 'Rubygems gem download'            | :success
-        :private | :guest      | true  | :job_token             | true  | 'rejects rubygems packages access' | :forbidden
+        :private | :guest      | true  | :job_token             | true  | 'Rubygems gem download'            | :success
         :private | :developer  | true  | :job_token             | false | 'rejects rubygems packages access' | :unauthorized
         :private | :guest      | true  | :job_token             | false | 'rejects rubygems packages access' | :unauthorized
         :private | :developer  | false | :job_token             | true  | 'rejects rubygems packages access' | :not_found
@@ -406,7 +406,7 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
         :public  | :guest      | false | :personal_access_token | false | 'rejects rubygems packages access' | :unauthorized
         :public  | :anonymous  | false | :personal_access_token | true  | 'dependency endpoint success'      | :success
         :private | :developer  | true  | :personal_access_token | true  | 'dependency endpoint success'      | :success
-        :private | :guest      | true  | :personal_access_token | true  | 'rejects rubygems packages access' | :forbidden
+        :private | :guest      | true  | :personal_access_token | true  | 'dependency endpoint success'      | :success
         :private | :developer  | true  | :personal_access_token | false | 'rejects rubygems packages access' | :unauthorized
         :private | :guest      | true  | :personal_access_token | false | 'rejects rubygems packages access' | :unauthorized
         :private | :developer  | false | :personal_access_token | true  | 'rejects rubygems packages access' | :not_found
@@ -423,7 +423,7 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
         :public  | :developer  | false | :job_token             | false | 'rejects rubygems packages access' | :unauthorized
         :public  | :guest      | false | :job_token             | false | 'rejects rubygems packages access' | :unauthorized
         :private | :developer  | true  | :job_token             | true  | 'dependency endpoint success'      | :success
-        :private | :guest      | true  | :job_token             | true  | 'rejects rubygems packages access' | :forbidden
+        :private | :guest      | true  | :job_token             | true  | 'dependency endpoint success'      | :success
         :private | :developer  | true  | :job_token             | false | 'rejects rubygems packages access' | :unauthorized
         :private | :guest      | true  | :job_token             | false | 'rejects rubygems packages access' | :unauthorized
         :private | :developer  | false | :job_token             | true  | 'rejects rubygems packages access' | :not_found

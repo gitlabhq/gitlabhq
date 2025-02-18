@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedCiRunnerProjects, feature_category: :runner, migration: :gitlab_ci do
+RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedCiRunnerProjects, feature_category: :runner,
+  migration: :gitlab_ci, schema: 20250113153424 do
   let(:connection) { Ci::ApplicationRecord.connection }
   let(:runners) { table(:ci_runners, database: :ci, primary_key: :id) }
   let(:runner_projects) { table(:ci_runner_projects, database: :ci, primary_key: :id) }

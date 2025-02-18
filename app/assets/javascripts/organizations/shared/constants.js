@@ -1,5 +1,10 @@
 import { formValidators } from '@gitlab/ui/dist/utils';
 import { s__, __ } from '~/locale';
+import {
+  SORT_LABEL_NAME,
+  SORT_LABEL_CREATED,
+  SORT_LABEL_UPDATED,
+} from '~/groups_projects/constants';
 
 export const RESOURCE_TYPE_GROUPS = 'groups';
 export const RESOURCE_TYPE_PROJECTS = 'projects';
@@ -51,15 +56,15 @@ export const SORT_UPDATED_AT = 'updated_at';
 
 export const SORT_ITEM_NAME = {
   value: SORT_NAME,
-  text: __('Name'),
+  text: SORT_LABEL_NAME,
 };
 
 export const SORT_ITEM_CREATED_AT = {
   value: SORT_CREATED_AT,
-  text: __('Created'),
+  text: SORT_LABEL_CREATED,
 };
 
 export const SORT_ITEM_UPDATED_AT = {
   value: SORT_UPDATED_AT,
-  text: __('Updated'),
+  text: SORT_LABEL_UPDATED,
 };

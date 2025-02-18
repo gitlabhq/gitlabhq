@@ -23,6 +23,10 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', :freeze_time, f
       expect(execute.message).to eq 'runner registration disallowed'
       expect(execute.reason).to eq :runner_registration_disallowed
     end
+
+    it 'does not track runner creation' do
+      expect { execute }.not_to trigger_internal_events('create_ci_runner')
+    end
   end
 
   context 'when no token is provided' do
@@ -33,6 +37,10 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', :freeze_time, f
       expect(execute.message).to eq 'invalid token supplied'
       expect(execute.http_status).to eq :forbidden
     end
+
+    it 'does not track runner creation' do
+      expect { execute }.not_to trigger_internal_events('create_ci_runner')
+    end
   end
 
   context 'when invalid token is provided' do
@@ -42,6 +50,10 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', :freeze_time, f
       expect(execute).to be_error
       expect(execute.message).to eq 'invalid token supplied'
       expect(execute.http_status).to eq :forbidden
+    end
+
+    it 'does not track runner creation' do
+      expect { execute }.not_to trigger_internal_events('create_ci_runner')
     end
   end
 
@@ -59,6 +71,17 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', :freeze_time, f
         expect(runner.token).not_to eq(registration_token)
         expect(runner.token).not_to start_with(::Ci::Runner::CREATED_RUNNER_TOKEN_PREFIX)
         expect(runner).to be_instance_type
+      end
+
+      it 'tracks internal events', :clean_gitlab_redis_shared_state do
+        expect { execute }
+          .to trigger_internal_events('create_ci_runner')
+          .with(additional_properties: {
+            label: 'instance_type',
+            property: 'registration_token'
+          }).and increment_usage_metrics(
+            'counts.count_total_ci_runners_created_with_token'
+          )
       end
 
       context 'when registering instance runners is disallowed' do
@@ -160,6 +183,18 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', :freeze_time, f
         expect { execute }.not_to trigger_internal_events('set_runner_maintenance_note')
       end
 
+      it 'tracks internal events', :clean_gitlab_redis_shared_state do
+        expect { execute }
+          .to trigger_internal_events('create_ci_runner')
+          .with(project: project, additional_properties: {
+            label: 'project_type',
+            property: 'registration_token'
+          }).and increment_usage_metrics(
+            'redis_hll_counters.count_distinct_project_id_from_create_ci_runner_monthly',
+            'redis_hll_counters.count_distinct_project_id_from_create_ci_runner_weekly'
+          )
+      end
+
       context 'when maintenance note is specified' do
         let(:args) { { maintenance_note: 'a note' } }
 
@@ -257,6 +292,18 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', :freeze_time, f
 
       it 'does not track runner creation with maintenance note' do
         expect { execute }.not_to trigger_internal_events('set_runner_maintenance_note')
+      end
+
+      it 'tracks internal events', :clean_gitlab_redis_shared_state do
+        expect { execute }
+          .to trigger_internal_events('create_ci_runner')
+          .with(namespace: group, additional_properties: {
+            label: 'group_type',
+            property: 'registration_token'
+          }).and increment_usage_metrics(
+            'redis_hll_counters.count_distinct_namespace_id_from_create_ci_runner_monthly',
+            'redis_hll_counters.count_distinct_namespace_id_from_create_ci_runner_weekly'
+          )
       end
 
       context 'when maintenance note is specified' do

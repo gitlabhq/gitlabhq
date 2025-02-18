@@ -120,8 +120,12 @@ RSpec.describe AwardEmoji, feature_category: :team_planning do
   end
 
   describe 'scopes' do
-    let_it_be(:thumbsup) { create(:award_emoji, name: 'thumbsup') }
-    let_it_be(:thumbsdown) { create(:award_emoji, name: 'thumbsdown') }
+    let_it_be(:awardable1) { create(:issue) }
+    let_it_be(:awardable2) { create(:issue) }
+    let_it_be(:thumbsup) { create(:award_emoji, name: 'thumbsup', awardable: awardable1) }
+    let_it_be(:thumbsdown) { create(:award_emoji, name: 'thumbsdown', awardable: awardable2) }
+
+    let(:awardables) { [awardable1, awardable2] }
 
     describe '.upvotes' do
       it { expect(described_class.upvotes).to contain_exactly(thumbsup) }
@@ -139,6 +143,11 @@ RSpec.describe AwardEmoji, feature_category: :team_planning do
     describe '.awarded_by' do
       it { expect(described_class.awarded_by(thumbsup.user)).to contain_exactly(thumbsup) }
       it { expect(described_class.awarded_by([thumbsup.user, thumbsdown.user])).to contain_exactly(thumbsup, thumbsdown) }
+    end
+
+    describe '.by_awardable' do
+      it { expect(described_class.by_awardable('Issue', awardables)).to match_array([thumbsup, thumbsdown]) }
+      it { expect(described_class.by_awardable('Issue', awardables.map(&:id))).to match_array([thumbsup, thumbsdown]) }
     end
   end
 

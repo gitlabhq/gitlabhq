@@ -7,6 +7,7 @@ RSpec.describe Groups::BulkPlaceholderAssignmentsController, feature_category: :
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public, owners: user) }
+  let_it_be(:source_user) { create(:import_source_user, namespace: group) }
   let(:file) { fixture_file_upload('spec/fixtures/import/user_mapping/user_mapping_upload.csv') }
 
   describe 'GET /groups/*group_id/-/group_members/bulk_reassignment_file' do
@@ -88,6 +89,14 @@ RSpec.describe Groups::BulkPlaceholderAssignmentsController, feature_category: :
         sign_in(user)
       end
 
+      it 'executes the csv reassignment service' do
+        expect_next_instance_of(Import::SourceUsers::BulkReassignFromCsvService) do |service|
+          expect(service).to receive(:async_execute).and_call_original
+        end
+
+        request
+      end
+
       it 'responds with success' do
         request
 
@@ -111,6 +120,27 @@ RSpec.describe Groups::BulkPlaceholderAssignmentsController, feature_category: :
           request
 
           expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response).to eq({
+            'message' => s_('UserMapping|You must upload a CSV file with a .csv file extension.')
+          })
+        end
+      end
+
+      context 'and the file contents are invalid' do
+        before do
+          expect_next_instance_of(::Import::UserMapping::ReassignmentCsvValidator) do |service|
+            allow(service).to receive(:errors).and_return(['This is wrong.', 'That is wrong.'])
+          end
+        end
+
+        it 'returns unprocessable_entity' do
+          request
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response).to eq({
+            'message' => 'The following errors are preventing the sheet from ' \
+              'being processed: This is wrong. That is wrong.'
+          })
         end
       end
 

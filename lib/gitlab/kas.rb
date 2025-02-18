@@ -110,6 +110,10 @@ module Gitlab
         !!Gitlab.config['gitlab_kas']&.fetch('enabled', false)
       end
 
+      def client_timeout_seconds
+        Gitlab.config.gitlab_kas&.fetch('client_timeout_seconds', 5) || 5
+      end
+
       private
 
       def version_file_content

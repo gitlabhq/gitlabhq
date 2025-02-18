@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Metrics::RailsSlis, feature_category: :error_budgets do
     let(:api_uninitialized_labels) do
       [
         { endpoint_id: "DELETE /api/:version/admin/ci/variables/:key",
-          feature_category: :secrets_management,
+          feature_category: :ci_variables,
           request_urgency: :default }
       ]
     end

@@ -9,5 +9,6 @@ message: "Remove 's from %s."
 level: error
 ignorecase: true
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab
+vocab: false
 tokens:
   - GitLab's

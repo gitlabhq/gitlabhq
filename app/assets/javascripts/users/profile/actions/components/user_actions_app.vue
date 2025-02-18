@@ -88,6 +88,8 @@ export default {
       icon="ellipsis_v"
       category="tertiary"
       no-caret
+      text-sr-only
+      :toggle-text="__('More actions')"
       :items="dropdownItems"
     />
     <abuse-category-selector

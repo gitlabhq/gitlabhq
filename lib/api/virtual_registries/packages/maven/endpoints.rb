@@ -7,6 +7,7 @@ module API
         class Endpoints < ::API::Base
           include ::API::Helpers::Authentication
           include ::API::Concerns::VirtualRegistries::Packages::Endpoint
+          include ::API::APIGuard
 
           feature_category :virtual_registry
           urgency :low
@@ -25,6 +26,8 @@ module API
               :job_token_with_username
             ).sent_through(:http_basic_auth)
           end
+
+          allow_access_with_scope :read_virtual_registry
 
           helpers do
             include ::Gitlab::Utils::StrongMemoize
@@ -136,7 +139,7 @@ module API
               # coherence check
               not_found!('Upstream') unless upstream == GlobalID::Locator.locate(upstream_gid)
 
-              service_response = ::VirtualRegistries::Packages::Maven::CachedResponses::CreateOrUpdateService.new(
+              service_response = ::VirtualRegistries::Packages::Maven::Cache::Entries::CreateOrUpdateService.new(
                 upstream: upstream,
                 current_user: current_user,
                 params: declared_params.merge(etag: etag, content_type: content_type)

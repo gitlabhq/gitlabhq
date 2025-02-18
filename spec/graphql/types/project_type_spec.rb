@@ -47,7 +47,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       allows_multiple_merge_request_assignees allows_multiple_merge_request_reviewers is_forked
       protectable_branches available_deploy_keys explore_catalog_path
       container_protection_tag_rules allowed_custom_statuses
-      pages_force_https pages_use_unique_domain
+      pages_force_https pages_use_unique_domain ci_pipeline_creation_request
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -302,7 +302,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       it 'raises an error' do
         expect(subject['errors'][0]['message']).to eq(
           'You must <a target="_blank" rel="noopener noreferrer" ' \
-            'href="http://localhost/help/user/project/repository/index.md#' \
+            'href="http://localhost/help/user/project/repository/_index.md#' \
             'add-files-to-a-repository">add at least one file to the ' \
             'repository</a> before using Security features.'
         )
@@ -538,7 +538,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     subject { described_class.fields['pipelineAnalytics'] }
 
     it { is_expected.to have_graphql_type(Types::Ci::AnalyticsType) }
-    it { is_expected.to have_graphql_resolver(Resolvers::Ci::ProjectPipelineAnalyticsResolver) }
+    it { is_expected.to have_graphql_resolver(Resolvers::Ci::PipelineAnalyticsResolver) }
   end
 
   describe 'jobs field' do
@@ -895,8 +895,9 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       end
 
       it 'is present and correct' do
-        expect(branch_rules_data.count).to eq(1)
-        expect(branch_rules_data.first['name']).to eq(name)
+        expect(branch_rules_data.count).to eq(2)
+        expect(branch_rules_data.first['name']).to eq('All branches')
+        expect(branch_rules_data.last['name']).to eq(name)
       end
     end
 

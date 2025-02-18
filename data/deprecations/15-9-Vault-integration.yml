@@ -9,14 +9,14 @@
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366798  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    As part of our effort to improve the security of your CI workflows using JWT and OIDC, the native HashiCorp integration is also being updated in GitLab 16.0. Any projects that use the [`secrets:vault`](https://docs.gitlab.com/ee/ci/yaml/#secretsvault) keyword to retrieve secrets from Vault will need to be [configured to use the ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication). ID tokens were introduced in 15.7.
+    As part of our effort to improve the security of your CI workflows using JWT and OIDC, the native HashiCorp integration is also being updated in GitLab 16.0. Any projects that use the [`secrets:vault`](https://docs.gitlab.com/ci/yaml/#secretsvault) keyword to retrieve secrets from Vault will need to be [configured to use the ID tokens](https://docs.gitlab.com/ci/secrets/id_token_authentication/#configure-automatic-id-token-authentication). ID tokens were introduced in 15.7.
 
-    To prepare for this change, use the new [`id_tokens`](https://docs.gitlab.com/ee/ci/yaml/#id_tokens)
+    To prepare for this change, use the new [`id_tokens`](https://docs.gitlab.com/ci/yaml/#id_tokens)
     keyword and configure the `aud` claim. Ensure the bound audience is prefixed with `https://`.
 
-    In GitLab 15.9 to 15.11, you can [enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication)
+    In GitLab 15.9 to 15.11, you can [enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ci/secrets/id_token_authentication/#enable-automatic-id-token-authentication)
     setting, which prevents the old tokens from being exposed to any jobs and enables
-    [ID token authentication for the `secrets:vault` keyword](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication).
+    [ID token authentication for the `secrets:vault` keyword](https://docs.gitlab.com/ci/secrets/id_token_authentication/#configure-automatic-id-token-authentication).
 
     In GitLab 16.0 and later:
 

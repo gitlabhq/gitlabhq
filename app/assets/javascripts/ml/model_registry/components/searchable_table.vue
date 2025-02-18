@@ -62,11 +62,6 @@ export default {
       required: false,
       default: () => [],
     },
-    canWriteModelRegistry: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
   },
   data() {
     const query = queryToObject(window.location.search);
@@ -162,15 +157,9 @@ export default {
       <model-versions-table
         v-if="modelVersions.length"
         :items="modelVersions"
-        can-write-model-registry
         @model-versions-update="submitFilters"
       />
-      <models-table
-        v-else-if="models.length"
-        :items="models"
-        can-write-model-registry
-        @models-update="submitFilters"
-      />
+      <models-table v-else-if="models.length" :items="models" @models-update="submitFilters" />
       <candidates-table v-else-if="candidates.length" :items="candidates" />
       <slot v-else name="empty-state"></slot>
       <gl-keyset-pagination

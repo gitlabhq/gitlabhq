@@ -2,15 +2,17 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Geo with Single Sign On (SSO)
 ---
 
-# Geo with Single Sign On (SSO)
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-This documentation only discusses Geo-specific SSO considerations and configuration. For more information on general authentication, see [GitLab authentication and authorization](../../auth/index.md).
+{{< /details >}}
+
+This documentation only discusses Geo-specific SSO considerations and configuration. For more information on general authentication, see [GitLab authentication and authorization](../../auth/_index.md).
 
 ## Configuring instance-wide SAML
 
@@ -24,9 +26,9 @@ You only configure SAML on the primary site. Configuring `gitlab_rails['omniauth
 
 How you configure instance-wide SAML differs depending on your secondary site configuration. Determine if your secondary site uses a:
 
-- [Unified URL](../secondary_proxy/index.md#set-up-a-unified-url-for-geo-sites), meaning the `external_url` exactly matches the `external_url` of the primary site.
-- [Separate URL](../secondary_proxy/index.md#set-up-a-separate-url-for-a-secondary-geo-site) with proxying enabled. Proxying is enabled by default in GitLab 15.1 and later.
-- [Separate URL](../secondary_proxy/index.md#set-up-a-separate-url-for-a-secondary-geo-site) with proxying disabled.
+- [Unified URL](../secondary_proxy/_index.md#set-up-a-unified-url-for-geo-sites), meaning the `external_url` exactly matches the `external_url` of the primary site.
+- [Separate URL](../secondary_proxy/_index.md#set-up-a-separate-url-for-a-secondary-geo-site) with proxying enabled. Proxying is enabled by default in GitLab 15.1 and later.
+- [Separate URL](../secondary_proxy/_index.md#set-up-a-separate-url-for-a-secondary-geo-site) with proxying disabled.
 
 ### SAML with Unified URL
 
@@ -34,9 +36,12 @@ If you have configured SAML on the primary site correctly, then it should work o
 
 ### SAML with separate URL with proxying enabled
 
-NOTE:
+{{< alert type="note" >}}
+
 When proxying is enabled, SAML can only be used to sign in the secondary site if your SAML Identity Provider (IdP) allows an
 application to have multiple callback URLs configured. Check with your IdP provider support team to confirm if this is the case.
+
+{{< /alert >}}
 
 If a secondary site uses a different `external_url` to the primary site, then configure your SAML Identity Provider (IdP) to allow the secondary site's SAML callback URL. For example, to configure Okta:
 
@@ -132,7 +137,10 @@ in most cases, it should work without an issue:
 
 If you use LDAP on your **primary** site, you should also set up secondary LDAP servers on each **secondary** site. Otherwise, users cannot perform Git operations over HTTP(s) on the **secondary** site using HTTP basic authentication. However, users can still use Git with SSH and personal access tokens.
 
-NOTE:
-It is possible for all **secondary** sites to share an LDAP server, but additional latency can be an issue. Also, consider what LDAP server is available in a [disaster recovery](../disaster_recovery/index.md) scenario if a **secondary** site is promoted to be a **primary** site.
+{{< alert type="note" >}}
+
+It is possible for all **secondary** sites to share an LDAP server, but additional latency can be an issue. Also, consider what LDAP server is available in a [disaster recovery](../disaster_recovery/_index.md) scenario if a **secondary** site is promoted to be a **primary** site.
+
+{{< /alert >}}
 
 Check your LDAP service documentation for instructions on how to set up replication in your LDAP service. The process differs depending on the software or service used. For example, OpenLDAP provides this [replication documentation](https://www.openldap.org/doc/admin24/replication.html).

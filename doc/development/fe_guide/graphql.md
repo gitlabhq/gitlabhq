@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GraphQL
 ---
-
-# GraphQL
 
 ## Getting Started
 
@@ -80,7 +79,7 @@ the GraphQL extension, follow these steps:
 
 Our GraphQL API can be explored via GraphiQL at your instance's
 `/-/graphql-explorer` or at [GitLab.com](https://gitlab.com/-/graphql-explorer). Consult the
-[GitLab GraphQL API Reference documentation](../../api/graphql/reference/index.md)
+[GitLab GraphQL API Reference documentation](../../api/graphql/reference/_index.md)
 where needed.
 
 To check all existing queries and mutations, on the right side of GraphiQL, select **Documentation explorer**.
@@ -355,7 +354,7 @@ query workspaceAutocompleteUsersSearch(
 }
 ```
 
-**CAUTION** We have to be careful to make sure that we do not invalidate the existing GraphQL queries when we split queries. We should ensure to check the inspector that the same quries are not called multiple times when we split queries.
+**CAUTION** We have to be careful to make sure that we do not invalidate the existing GraphQL queries when we split queries. We should ensure to check the inspector that the same queries are not called multiple times when we split queries.
 
 ## Immutability and cache updates
 
@@ -646,7 +645,7 @@ query getAuthorData($authorNameEnabled: Boolean = false) {
 ```
 
 Then in the Vue (or JavaScript) call to the query we can pass in our feature flag. This feature
-flag needs to be already set up correctly. See the [feature flag documentation](../feature_flags/index.md)
+flag needs to be already set up correctly. See the [feature flag documentation](../feature_flags/_index.md)
 for the correct way to do this.
 
 ```javascript
@@ -1316,11 +1315,14 @@ bundle exec rake gitlab:graphql:schema:dump
 You should run this task after pulling from upstream, or when rebasing your
 branch. This is run automatically as part of `gdk update`.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you use the RubyMine IDE, and have marked the `tmp` directory as
 "Excluded", you should "Mark Directory As -> Not Excluded" for
 `gitlab/tmp/tests/graphql`. This will allow the **JS GraphQL** plugin to
 automatically find and index the schema.
+
+{{< /alert >}}
 
 #### Mocking Apollo Client
 

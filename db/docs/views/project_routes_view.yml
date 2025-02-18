@@ -1,0 +1,10 @@
+---
+view_name: project_routes_view
+classes: []
+feature_categories:
+  - backup_restore
+description: Project references and its related routes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179443
+milestone: '17.9'
+gitlab_schema: gitlab_main_cell
+table_size: small

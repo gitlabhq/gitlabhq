@@ -2,13 +2,15 @@
 stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Harbor
 ---
 
-# Harbor
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use Harbor as the container registry for your GitLab project.
 
@@ -59,7 +61,7 @@ the `username:password` combination. The following are suggestions for safe use:
 
 Malicious code pushed to your `.gitlab-ci.yml` file could compromise your variables, including
 `$HARBOR_PASSWORD`, and send them to a third-party server. For more details, see
-[CI/CD variable security](../../../ci/variables/index.md#cicd-variable-security).
+[CI/CD variable security](../../../ci/variables/_index.md#cicd-variable-security).
 
 ## Examples of Harbor variables in CI/CD
 

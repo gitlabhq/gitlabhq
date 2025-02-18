@@ -2,13 +2,15 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting common Geo errors
 ---
 
-# Troubleshooting common Geo errors
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 ## Basic troubleshooting
 
@@ -64,7 +66,11 @@ health check manually to get this information and a few more details.
 
 #### Health check Rake task
 
-> - The use of a custom NTP server was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105514) in GitLab 15.7.
+{{< history >}}
+
+- The use of a custom NTP server was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105514) in GitLab 15.7.
+
+{{< /history >}}
 
 This Rake task can be run on a **Rails** node in the **primary** or **secondary**
 Geo sites:
@@ -438,7 +444,7 @@ Geo finds the current Puma or Sidekiq node's Geo [site](../../glossary.md) name 
 1. Get the "Geo node name" (there is
    [an issue to rename the settings to "Geo site name"](https://gitlab.com/gitlab-org/gitlab/-/issues/335944)):
    - Linux package: get the `gitlab_rails['geo_node_name']` setting.
-   - GitLab Helm charts: get the `global.geo.nodeName` setting (see [Charts with GitLab Geo](https://docs.gitlab.com/charts/advanced/geo/index.html)).
+   - GitLab Helm charts: get the `global.geo.nodeName` setting (see [Charts with GitLab Geo](https://docs.gitlab.com/charts/advanced/geo/)).
 1. If that is not defined, then get the `external_url` setting.
 
 This name is used to look up the Geo site with the same **Name** in the **Geo Sites**
@@ -464,15 +470,15 @@ This machine's Geo node name matches a database record ... no
   You could add or update a Geo node database record, setting the name to "https://example.com/".
   Or you could set this machine's Geo node name to match the name of an existing database record: "London", "Shanghai"
   For more information see:
-  doc/administration/geo/replication/troubleshooting/index.md#can-geo-detect-the-current-node-correctly
+  doc/administration/geo/replication/troubleshooting/_index.md#can-geo-detect-the-current-node-correctly
 ```
 
 For more information about recommended site names in the description of the Name field, see
-[Geo **Admin** area Common Settings](../../../../administration/geo_sites.md#common-settings).
+[Geo **Admin** area Common Settings](../../../geo_sites.md#common-settings).
 
 ### Check OS locale data compatibility
 
-If at all possible, all Geo nodes across all sites should be deployed with the same method and operating system, as defined in the [requirements for running Geo](../../index.md#requirements-for-running-geo).
+If at all possible, all Geo nodes across all sites should be deployed with the same method and operating system, as defined in the [requirements for running Geo](../../_index.md#requirements-for-running-geo).
 
 If different operating systems or different operating system versions are deployed across Geo sites, you **must** perform a locale data compatibility check before setting up Geo. You must also check `glibc` when using a mixture of GitLab deployment methods. The locale might be different between a Linux package install, a GitLab Docker container, a Helm chart deployment, or external database services. See the [documentation on upgrading operating systems for PostgreSQL](../../../postgresql/upgrading_os.md), including how to check `glibc` version compatibility.
 
@@ -484,16 +490,6 @@ See the [PostgreSQL wiki for more details](https://wiki.postgresql.org/wiki/Loca
 ## Fixing common errors
 
 This section documents common error messages reported in the **Admin** area on the web interface, and how to fix them.
-
-### Geo database configuration file is missing
-
-GitLab cannot find or doesn't have permission to access the `database_geo.yml` configuration file.
-
-In a Linux package installation, the file should be in `/var/opt/gitlab/gitlab-rails/etc`.
-If it doesn't exist or inadvertent changes have been made to it, run `sudo gitlab-ctl reconfigure` to restore it to its correct state.
-
-If this path is mounted on a remote volume, ensure your volume configuration
-has the correct permissions.
 
 ### An existing tracking database cannot be reused
 
@@ -553,16 +549,16 @@ This error message indicates that the replica database in the **secondary** site
 To restore the database and resume replication, you can do one of the following:
 
 - [Reset the Geo secondary site replication](synchronization_verification.md#resetting-geo-secondary-site-replication).
-- [Set up a new Geo secondary using the Linux package](../../setup/index.md#using-linux-package-installations).
+- [Set up a new Geo secondary using the Linux package](../../setup/_index.md#using-linux-package-installations).
 
-If you set up a new secondary from scratch, you must also [remove the old site from the Geo cluster](../remove_geo_site.md#removing-secondary-geo-sites).
+If you set up a new secondary from scratch, you must also [remove the old site from the Geo cluster](../remove_geo_site.md).
 
 ### Geo site does not appear to be replicating the database from the primary site
 
 The most common problems that prevent the database from replicating correctly are:
 
 - **Secondary** sites cannot reach the **primary** site. Check credentials and
-  [firewall rules](../../index.md#firewall-rules).
+  [firewall rules](../../_index.md#firewall-rules).
 - SSL certificate problems. Make sure you copied `/etc/gitlab/gitlab-secrets.json` from the **primary** site.
 - Database storage disk is full.
 - Database replication slot is misconfigured.
@@ -680,9 +676,9 @@ Increasing the interval means that your Geo metrics are updated less frequently.
 
 The following example sets the job to run every 30 minutes. Adjust the cron schedule based on your needs.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Add or modify the following setting in `/etc/gitlab/gitlab.rb`:
 
@@ -696,7 +692,9 @@ The following example sets the job to run every 30 minutes. Adjust the cron sche
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -717,4 +715,6 @@ The following example sets the job to run every 30 minutes. Adjust the cron sche
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}

@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Add a foreign key constraint to an existing column
 ---
-
-# Add a foreign key constraint to an existing column
 
 Foreign keys ensure consistency between related database tables. The current database review process **always** encourages you to add [foreign keys](foreign_keys.md) when creating tables that reference records from other tables.
 
@@ -70,6 +69,8 @@ Migration file for adding `NOT VALID` foreign key:
 
 ```ruby
 class AddNotValidForeignKeyToEmailsUser < Gitlab::Database::Migration[2.1]
+  disable_ddl_transaction!
+
   def up
     add_concurrent_foreign_key :emails, :users, column: :user_id, on_delete: :cascade, validate: false
   end
@@ -84,10 +85,6 @@ Adding a foreign key without validating it is a fast operation. It only requires
 short lock on the table before being able to enforce the constraint on new data.
 We do still want to enable lock retries for high traffic and large tables.
 `add_concurrent_foreign_key` does this for us, and also checks if the foreign key already exists.
-
-WARNING:
-Avoid using `add_foreign_key` or `add_concurrent_foreign_key` constraints more than
-once per migration file, unless the source and target tables are identical.
 
 #### Data migration to fix existing records
 
@@ -125,8 +122,11 @@ end
 Validating the foreign key scans the whole table and makes sure that each relation is correct.
 Fortunately, this does not lock the source table (`users`) while running.
 
-NOTE:
+{{< alert type="note" >}}
+
 When using [batched background migrations](batched_background_migrations.md), foreign key validation should happen in the next GitLab release.
+
+{{< /alert >}}
 
 Migration file for validating the foreign key:
 
@@ -218,11 +218,14 @@ add the migration as expected for other installations. The below block
 demonstrates how to create the second migration for the previous
 asynchronous example.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Verify that the foreign key is valid in production before merging a second
 migration with `validate_foreign_key`. If the second migration is deployed
 before the validation has been executed, the foreign key is validated
 synchronously when the second migration executes.
+
+{{< /alert >}}
 
 ```ruby
 # in db/post_migrate/

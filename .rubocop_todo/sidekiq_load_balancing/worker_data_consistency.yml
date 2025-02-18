@@ -17,7 +17,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/ci/pipeline_artifacts/create_quality_report_worker.rb'
     - 'app/workers/ci/pipeline_artifacts/expire_artifacts_worker.rb'
     - 'app/workers/ci/pipeline_cleanup_ref_worker.rb'
-    - 'app/workers/ci/pipeline_success_unlock_artifacts_worker.rb'
     - 'app/workers/ci/ref_delete_unlock_artifacts_worker.rb'
     - 'app/workers/ci/refs/unlock_previous_pipelines_worker.rb'
     - 'app/workers/ci/resource_groups/assign_resource_from_resource_group_worker.rb'

@@ -2,13 +2,15 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Email from GitLab
 ---
 
-# Email from GitLab
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Administrators can email all users, or users of a chosen group or project.
 Users receive the email at their primary email address.
@@ -30,7 +32,7 @@ To send an email:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
-1. In the upper-right corner, select **Send email to users** (**{mail}**).
+1. In the upper-right corner, select **Send email to users** ({{< icon name="mail" >}}).
 1. Complete the fields. The email body supports only plain text and does not support HTML, Markdown, or other rich text formats.
 1. From the **Select group or project** dropdown list, select the recipient.
 1. Select **Send message**.

@@ -2,13 +2,15 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Environments API
 ---
 
-# Environments API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 > Parameter `auto_stop_setting` [added](https://gitlab.com/gitlab-org/gitlab/-/issues/428625) in GitLab 17.8.
 > Support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414549) in GitLab 16.2.
@@ -23,7 +25,7 @@ GET /projects/:id/environments
 
 | Attribute | Type           | Required | Description                                                                                                                                                   |
 |-----------|----------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded](rest/index.md#namespaced-paths) path of the project.                                                                          |
+| `id`      | integer/string | yes      | The ID or [URL-encoded](rest/_index.md#namespaced-paths) path of the project.                                                                          |
 | `name`    | string         | no       | Return the environment with this name. Mutually exclusive with `search`.                                                                                      |
 | `search`  | string         | no       | Return list of environments matching the search criteria. Mutually exclusive with `name`. Must be at least 3 characters long.                                 |
 | `states`  | string         | no       | List all environments that match a specific state. Accepted values: `available`, `stopping`, or `stopped`. If no state value given, returns all environments. |
@@ -65,7 +67,7 @@ GET /projects/:id/environments/:environment_id
 
 | Attribute        | Type           | Required | Description                                                                          |
 |------------------|----------------|----------|--------------------------------------------------------------------------------------|
-| `id`             | integer/string | yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the project. |
+| `id`             | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 | `environment_id` | integer        | yes      | The ID of the environment.                                                           |
 
 ```shell
@@ -205,7 +207,7 @@ POST /projects/:id/environments
 
 | Attribute              | Type           | Required | Description                                                                                                         |
 |------------------------|----------------|----------|---------------------------------------------------------------------------------------------------------------------|
-| `id`                   | integer/string | yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the project.                                |
+| `id`                   | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project.                                |
 | `name`                 | string         | yes      | The name of the environment.                                                                                        |
 | `description`          | string         | no       | The description of the environment.                                                                                        |
 | `external_url`         | string         | no       | Place to link to for this environment.                                                                              |
@@ -242,7 +244,11 @@ Example response:
 
 ## Update an existing environment
 
-> - Parameter `name` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 16.0.
+{{< history >}}
+
+- Parameter `name` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 16.0.
+
+{{< /history >}}
 
 Updates an existing environment's name and/or `external_url`.
 
@@ -254,7 +260,7 @@ PUT /projects/:id/environments/:environments_id
 
 | Attribute              | Type            | Required | Description                                                                                                         |
 |------------------------|-----------------|----------|---------------------------------------------------------------------------------------------------------------------|
-| `id`                   | integer/string  | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).                                |
+| `id`                   | integer/string  | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                |
 | `environment_id`       | integer         | yes      | The ID of the environment.                                                                                          |
 | `description`          | string          | no       | The description of the environment.                                                                                        |
 | `external_url`         | string          | no       | The new `external_url`.                                                                                             |
@@ -300,7 +306,7 @@ DELETE /projects/:id/environments/:environment_id
 
 | Attribute        | Type           | Required | Description                                                                          |
 |------------------|----------------|----------|--------------------------------------------------------------------------------------|
-| `id`             | integer/string | yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the project. |
+| `id`             | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 | `environment_id` | integer        | yes      | The ID of the environment.                                                           |
 
 ```shell
@@ -312,8 +318,8 @@ curl --request DELETE \
 ## Delete multiple stopped review apps
 
 It schedules for deletion multiple environments that have already been
-[stopped](../ci/environments/index.md#stopping-an-environment) and
-are [in the review app folder](../ci/review_apps/index.md).
+[stopped](../ci/environments/_index.md#stopping-an-environment) and
+are [in the review app folder](../ci/review_apps/_index.md).
 The actual deletion is performed after 1 week from the time of execution.
 By default, it only deletes environments 30 days or older. You can change this default using the `before` parameter.
 
@@ -323,7 +329,7 @@ DELETE /projects/:id/environments/review_apps
 
 | Attribute | Type           | Required | Description                                                                                                                                            |
 |-----------|----------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the project.                                                                   |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project.                                                                   |
 | `before`  | datetime       | no       | The date before which environments can be deleted. Defaults to 30 days ago. Expected in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`).                      |
 | `limit`   | integer        | no       | Maximum number of environments to delete. Defaults to 100.                                                                                             |
 | `dry_run` | boolean        | no       | Defaults to `true` for safety reasons. It performs a dry run where no actual deletion is performed. Set to `false` to actually delete the environment. |
@@ -366,7 +372,7 @@ POST /projects/:id/environments/:environment_id/stop
 
 | Attribute        | Type           | Required | Description                                                                          |
 |------------------|----------------|----------|--------------------------------------------------------------------------------------|
-| `id`             | integer/string | yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the project. |
+| `id`             | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 | `environment_id` | integer        | yes      | The ID of the environment.                                                           |
 | `force`          | boolean        | no       | Force environment to stop without executing `on_stop` actions.                       |
 
@@ -395,7 +401,7 @@ Example response:
 
 ## Stop stale environments
 
-Issue stop request to all environments that were last modified or deployed to before a specified date. Excludes protected environments. Returns `200` if stop request was successful and `400` if the before date is invalid. For details of exactly when the environment is stopped, see [Stop an environment](../ci/environments/index.md#stopping-an-environment).
+Issue stop request to all environments that were last modified or deployed to before a specified date. Excludes protected environments. Returns `200` if stop request was successful and `400` if the before date is invalid. For details of exactly when the environment is stopped, see [Stop an environment](../ci/environments/_index.md#stopping-an-environment).
 
 ```plaintext
 POST /projects/:id/environments/stop_stale
@@ -403,7 +409,7 @@ POST /projects/:id/environments/stop_stale
 
 | Attribute | Type           | Required | Description                                                                                                                                                                                    |
 |-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path](rest/index.md#namespaced-paths) of the project.                                                                                                           |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project.                                                                                                           |
 | `before`  | date           | yes      | Stop environments that have been modified or deployed to before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Valid inputs are between 10 years ago and 1 week ago |
 
 ```shell

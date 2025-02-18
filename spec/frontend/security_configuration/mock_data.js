@@ -3,7 +3,7 @@ import {
   SAST_SHORT_NAME,
   SAST_IAC_NAME,
   SAST_IAC_SHORT_NAME,
-  PRE_RECEIVE_SECRET_DETECTION,
+  SECRET_PUSH_PROTECTION,
 } from '~/security_configuration/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
@@ -19,15 +19,15 @@ export const testTrainingUrls = [
 ];
 
 const SAST_DESCRIPTION = 'Analyze your source code for known vulnerabilities.';
-const SAST_HELP_PATH = helpPagePath('user/application_security/sast/index');
-const SAST_CONFIG_HELP_PATH = helpPagePath('user/application_security/sast/index', {
+const SAST_HELP_PATH = helpPagePath('user/application_security/sast/_index');
+const SAST_CONFIG_HELP_PATH = helpPagePath('user/application_security/sast/_index', {
   anchor: 'configuration',
 });
 
 const SAST_IAC_DESCRIPTION =
   'Analyze your infrastructure as code configuration files for known vulnerabilities.';
-const SAST_IAC_HELP_PATH = helpPagePath('user/application_security/iac_scanning/index');
-const SAST_IAC_CONFIG_HELP_PATH = helpPagePath('user/application_security/iac_scanning/index', {
+const SAST_IAC_HELP_PATH = helpPagePath('user/application_security/iac_scanning/_index');
+const SAST_IAC_CONFIG_HELP_PATH = helpPagePath('user/application_security/iac_scanning/_index', {
   anchor: 'configuration',
 });
 
@@ -149,16 +149,16 @@ export const securityFeaturesMock = [
   },
 ];
 
-export const preReceiveSecretDetectionMock = {
+export const secretPushProtectionMock = {
   name: 'Secret push protection',
   description: `Block secrets such as keys and API tokens from being pushed to your repositories.
   'Secret push protection is triggered when commits are pushed to a repository. ' \
   'If any secrets are detected, the push is blocked.`,
   helpPath: SAST_HELP_PATH,
   configurationHelpPath: helpPagePath(
-    'user/application_security/secret_detection/secret_push_protection/index',
+    'user/application_security/secret_detection/secret_push_protection/_index',
   ),
-  type: PRE_RECEIVE_SECRET_DETECTION,
+  type: SECRET_PUSH_PROTECTION,
   available: true,
 };
 
@@ -167,5 +167,5 @@ export const provideMock = {
   autoDevopsHelpPagePath: '/autoDevopsHelpPagePath',
   autoDevopsPath: '/autoDevopsPath',
   projectFullPath: 'namespace/project',
-  vulnerabilityTrainingDocsPath: 'user/application_security/vulnerabilities/index',
+  vulnerabilityTrainingDocsPath: 'user/application_security/vulnerabilities/_index',
 };

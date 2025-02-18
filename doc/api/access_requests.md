@@ -1,14 +1,16 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group and project access requests API
 ---
 
-# Group and project access requests API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use this API to interact with access requests for group and projects.
 
@@ -37,13 +39,15 @@ GET /projects/:id/access_requests
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/access_requests"
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/access_requests"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+--url "https://gitlab.example.com/api/v4/groups/:id/access_requests"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+--url "https://gitlab.example.com/api/v4/projects/:id/access_requests"
 ```
 
 Example response:
@@ -84,13 +88,15 @@ POST /projects/:id/access_requests
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group or project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group or project](rest/_index.md#namespaced-paths) |
 
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/access_requests"
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/access_requests"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"  \
+--url "https://gitlab.example.com/api/v4/groups/:id/access_requests"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"  \
+--url "https://gitlab.example.com/api/v4/projects/:id/access_requests"
 ```
 
 Example response:
@@ -117,15 +123,17 @@ PUT /projects/:id/access_requests/:user_id/approve
 
 | Attribute      | Type           | Required | Description |
 |----------------|----------------|----------|-------------|
-| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `user_id`      | integer        | yes      | The user ID of the access requester |
 | `access_level` | integer        | no       | A valid access level (defaults: `30`, the Developer role) |
 
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/access_requests/:user_id/approve?access_level=20"
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/access_requests/:user_id/approve?access_level=20"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>"  \
+--url "https://gitlab.example.com/api/v4/groups/:id/access_requests/:user_id/approve?access_level=20"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>"  \
+--url "https://gitlab.example.com/api/v4/projects/:id/access_requests/:user_id/approve?access_level=20"
 ```
 
 Example response:
@@ -152,12 +160,14 @@ DELETE /projects/:id/access_requests/:user_id
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `user_id` | integer        | yes      | The user ID of the access requester |
 
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/access_requests/:user_id"
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/access_requests/:user_id"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>"  \
+--url "https://gitlab.example.com/api/v4/groups/:id/access_requests/:user_id"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+--url "https://gitlab.example.com/api/v4/projects/:id/access_requests/:user_id"
 ```

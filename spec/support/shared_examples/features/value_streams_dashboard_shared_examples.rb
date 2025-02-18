@@ -161,10 +161,9 @@ RSpec.shared_examples 'has value streams dashboard link' do
   it 'renders the value streams dashboard link' do
     dashboard_items = page.all(dashboard_list_item_testid)
 
-    first_dashboard = dashboard_items[0]
+    vsd_dashboard = dashboard_items[0]
 
-    expect(dashboard_items.length).to eq(1)
-    expect(first_dashboard).to have_content _('Value Streams Dashboard')
-    expect(first_dashboard).to have_selector dashboard_by_gitlab_testid
+    expect(vsd_dashboard).to have_content _('Value Streams Dashboard')
+    expect(vsd_dashboard).to have_selector dashboard_by_gitlab_testid
   end
 end

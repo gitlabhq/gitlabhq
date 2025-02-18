@@ -60,6 +60,14 @@ export default {
       required: false,
       default: false,
     },
+    useRouter: {
+      type: Boolean,
+      required: true,
+    },
+    workItemWebUrl: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -113,6 +121,12 @@ export default {
         query: this.$route.query,
       };
     },
+    nonRouterHref() {
+      return `${this.workItemWebUrl}/designs/${this.filename}`;
+    },
+    linkComponent() {
+      return this.useRouter ? 'router-link' : 'a';
+    },
   },
   methods: {
     onImageLoad() {
@@ -144,8 +158,10 @@ export default {
 </script>
 
 <template>
-  <router-link
+  <component
+    :is="linkComponent"
     :to="routerLinkProps"
+    :href="nonRouterHref"
     class="card js-design-list-item design-list-item gl-mb-0 gl-cursor-pointer gl-text-default hover:gl-text-default"
   >
     <div
@@ -168,7 +184,7 @@ export default {
         </span>
       </div>
       <gl-intersection-observer
-        class="gl-grow"
+        class="gl-flex gl-grow gl-justify-center"
         data-testid="design-image"
         :data-qa-filename="filename"
         @appear="onAppear"
@@ -206,5 +222,5 @@ export default {
         </span>
       </div>
     </div>
-  </router-link>
+  </component>
 </template>

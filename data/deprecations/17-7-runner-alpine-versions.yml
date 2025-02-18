@@ -41,7 +41,7 @@
     will be supported to its EOL date, at which point we will move to the most recent LTS release.
 
     When you upgrade an Alpine container, make sure your container image uses
-    [a supported named version](https://docs.gitlab.com/runner/install/support-policy.html),
+    [a supported named version](https://docs.gitlab.com/runner/install/support-policy/),
     `latest` (for GitLab Runner images), or `alpine-latest` (for GitLab Runner helper images).
 
 

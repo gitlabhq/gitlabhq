@@ -10,8 +10,6 @@ module SignUpHelpers
     fill_in 'new_user_email', with: new_user.email unless invite
     fill_in 'new_user_password', with: new_user.password
 
-    wait_for_all_requests
-
     expect_username_to_be_validated
 
     yield if block_given?

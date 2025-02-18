@@ -25,7 +25,8 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     it { is_expected.to have_many(:groups).through(:runner_namespaces) }
     it { is_expected.to have_one(:owner_runner_namespace).class_name('Ci::RunnerNamespace') }
 
-    it { is_expected.to have_many(:tag_links).class_name('Ci::RunnerTagging').inverse_of(:runner) }
+    it { is_expected.to have_many(:taggings).class_name('Ci::RunnerTagging').inverse_of(:runner) }
+    it { is_expected.to have_many(:tags).class_name('Ci::Tag') }
   end
 
   it_behaves_like 'having unique enum values'
@@ -112,41 +113,6 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
           runner.save!
 
           expect(described_class.tagged_with(tag_name)).to include(runner)
-        end
-      end
-
-      context 'when runner is not yet synced to partitioned table' do
-        let(:connection) { Ci::ApplicationRecord.connection }
-
-        before do
-          # Simulate legacy runners not present in sharded table (created when FK was not present)
-          runner
-
-          connection.execute(<<~SQL)
-            DELETE FROM ci_runners_e59bb2812d;
-          SQL
-        end
-
-        context 'tag does not exist' do
-          before do
-            runner.tag_list = [tag_name]
-          end
-
-          it 'creates a tag and syncs runner to partitioned table' do
-            expect { runner.save! }
-              .to change(Ci::Tag, :count).by(1)
-              .and change { partitioned_runner_exists?(runner) }.from(false).to(true)
-          end
-        end
-
-        private
-
-        def partitioned_runner_exists?(runner)
-          result = connection.execute(<<~SQL)
-            SELECT COUNT(*) FROM ci_runners_e59bb2812d WHERE id = #{runner.id};
-          SQL
-
-          result.first['count'].positive?
         end
       end
     end
@@ -569,19 +535,71 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     context 'with project runner' do
-      let(:runner) { create(:ci_runner, :project, projects: [other_project]) }
+      let_it_be_with_refind(:owner_project) { create(:project, group: group) }
+      let_it_be_with_reload(:fallback_owner_project) { create(:project, group: group) }
+
+      let(:associated_projects) { [owner_project, fallback_owner_project] }
+      let(:runner) { create(:ci_runner, :project, projects: associated_projects, tag_list: %w[tag1 tag2]) }
+      let(:runner_manager) { create(:ci_runner_machine, runner: runner) }
+      let(:runner_taggings) { runner.taggings }
 
       it 'assigns runner to project' do
         expect(assign_to).to be_truthy
 
         expect(runner).to be_project_type
-        expect(runner.runner_projects.pluck(:project_id)).to contain_exactly(project.id, other_project.id)
+        expect(runner.project_ids).to contain_exactly(project.id, owner_project.id, fallback_owner_project.id)
       end
 
       it 'does not change sharding_key_id or owner' do
         expect { assign_to }
-          .to not_change { runner.sharding_key_id }.from(other_project.id)
-          .and not_change { runner.owner }.from(other_project)
+          .to not_change { runner.reload.sharding_key_id }.from(owner_project.id)
+          .and not_change { runner.owner }.from(owner_project)
+          .and not_change { runner_manager.reload.sharding_key_id }.from(owner_project.id)
+          .and not_change { runner.taggings.pluck(:sharding_key_id).uniq }.from([owner_project.id])
+      end
+
+      context 'when sharding_key_id does not point to an existing project' do
+        subject(:assign_to) do
+          owner_project.destroy!
+
+          runner.assign_to(project)
+        end
+
+        it 'changes sharding_key_id and owner to fallback owner project' do
+          expect { assign_to }
+            .to change { runner.reload.sharding_key_id }.from(owner_project.id).to(fallback_owner_project.id)
+            .and change { runner.owner }.from(owner_project).to(fallback_owner_project)
+            .and change { runner_manager.reload.sharding_key_id }.to(fallback_owner_project.id)
+            .and change { runner.taggings.pluck(:sharding_key_id).uniq }.to([fallback_owner_project.id])
+        end
+
+        context 'and fallback does not exist' do
+          let(:associated_projects) { [owner_project] }
+
+          it 'does not change sharding_key_id or owner' do
+            expect { assign_to }
+              .to not_change { runner.reload.sharding_key_id }.from(owner_project.id)
+              .and not_change { runner.owner }.from(owner_project)
+              .and not_change { runner_manager.reload.sharding_key_id }.from(owner_project.id)
+              .and not_change { runner.taggings.pluck(:sharding_key_id).uniq }.from([owner_project.id])
+
+            expect(runner.errors[:assign_to]).to contain_exactly('Runner is orphaned and no fallback owner exists')
+          end
+        end
+      end
+
+      context 'when runner is not associated with any projects' do
+        let(:runner) { create(:ci_runner, :project, :without_projects, tag_list: %w[tag1 tag2]) }
+
+        it 'does not allow taking over project runner' do
+          expect { assign_to }
+            .to not_change { runner.reload.sharding_key_id }
+            .and not_change { runner.owner }
+            .and not_change { runner_manager.reload.sharding_key_id }
+            .and not_change { runner.taggings.pluck(:sharding_key_id).uniq }
+
+          expect(runner.errors[:assign_to]).to contain_exactly('Taking over an orphaned project runner is not allowed')
+        end
       end
     end
   end
@@ -1328,7 +1346,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
       expect(runner.tags.count).to eq(1)
       expect(runner.tags.first.name).to eq('tag')
-      expect(runner.tag_links.count).to eq(1)
+      expect(runner.taggings.count).to eq(1)
     end
 
     it 'strips tags' do

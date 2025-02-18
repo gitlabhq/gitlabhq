@@ -2,18 +2,24 @@
 stage: Secure
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Configure CodeClimate-based Code Quality scanning (deprecated)
 ---
 
 <!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
-# Configure CodeClimate-based Code Quality scanning (deprecated)
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-WARNING:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](../../update/deprecations.md#codeclimate-based-code-quality-scanning-will-be-removed) in GitLab 17.3 and is planned for removal in 18.0.
 [Integrate the results from a supported tool directly](code_quality.md#import-code-quality-results-from-a-cicd-job) instead. This change is a breaking change.
+
+{{< /alert >}}
 
 Code Quality includes a built-in CI/CD template, `Code-Quality.gitlab-ci.yaml`.
 This template runs a scan based on the open source CodeClimate scanning engine.
@@ -39,7 +45,7 @@ Prerequisites:
 
 To enable Code Quality, either:
 
-- Enable [Auto DevOps](../../topics/autodevops/index.md), which includes
+- Enable [Auto DevOps](../../topics/autodevops/_index.md), which includes
   [Auto Code Quality](../../topics/autodevops/stages.md#auto-code-quality).
 
 - Include the [Code Quality template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml) in your
@@ -54,21 +60,24 @@ To enable Code Quality, either:
 
   Code Quality now runs in pipelines.
 
-WARNING:
-On self-managed instances, if a malicious actor compromises the Code Quality job definition they
+{{< alert type="warning" >}}
+
+On GitLab Self-Managed, if a malicious actor compromises the Code Quality job definition they
 could execute privileged Docker commands on the runner host. Having proper access control policies
 mitigates this attack vector by allowing access only to trusted actors.
+
+{{< /alert >}}
 
 ## Disable CodeClimate-based scanning
 
 The `code_quality` job doesn't run if the `$CODE_QUALITY_DISABLED` CI/CD variable
 is present. For more information about how to define a variable, see
-[GitLab CI/CD variables](../variables/index.md).
+[GitLab CI/CD variables](../variables/_index.md).
 
 To disable Code Quality, create a custom CI/CD variable named `CODE_QUALITY_DISABLED`, for either:
 
-- [The whole project](../variables/index.md#for-a-project).
-- [A single pipeline](../pipelines/index.md#run-a-pipeline-manually).
+- [The whole project](../variables/_index.md#for-a-project).
+- [A single pipeline](../pipelines/_index.md#run-a-pipeline-manually).
 
 ## Configure CodeClimate analysis plugins
 
@@ -168,9 +177,12 @@ Both the JSON and HTML files are output as job artifacts. The HTML file is conta
 To download the Code Quality report in _only_ HTML format, set `REPORT_FORMAT` to `html`, overriding
 the default definition of the `code_quality` job.
 
-NOTE:
+{{< alert type="note" >}}
+
 This does not create a JSON format file, so Code Quality results are not shown in the merge request
 widget, pipeline report, or changes view.
+
+{{< /alert >}}
 
 ```yaml
 include:
@@ -191,7 +203,7 @@ The default Code Quality configuration does not allow the `code_quality` job to 
 [merge request pipelines](../pipelines/merge_request_pipelines.md).
 
 To enable Code Quality to run on merge request pipelines, overwrite the code quality `rules`,
-or [`workflow: rules`](../yaml/index.md#workflow), so that they match your current `rules`.
+or [`workflow: rules`](../yaml/_index.md#workflow), so that they match your current `rules`.
 
 For example:
 
@@ -220,7 +232,7 @@ You can use a Dependency Proxy to reduce the time taken to download dependencies
 
 Prerequisites:
 
-- [Dependency Proxy](../../user/packages/dependency_proxy/index.md) enabled in the project's
+- [Dependency Proxy](../../user/packages/dependency_proxy/_index.md) enabled in the project's
   group.
 
 To reference the Dependency Proxy, configure the following variables in the `.gitlab-ci.yml` file:
@@ -250,7 +262,7 @@ You can use Docker Hub as an alternate source of the Code Quality images.
 
 Prerequisites:
 
-- Add the username and password as [protected CI/CD variables](../variables/index.md#for-a-project) in the project.
+- Add the username and password as [protected CI/CD variables](../variables/_index.md#for-a-project) in the project.
 
 To use DockerHub, configure the following variables in the `.gitlab-ci.yml` file:
 
@@ -471,11 +483,11 @@ The same configuration is required if your goal is to [use rootless Podman to ru
 
 ### Configure Kubernetes or OpenShift runners
 
-You must set up Docker in a Docker container (Docker-in-Docker) to use Code Quality. The Kubernetes executor [supports Docker-in-Docker](https://docs.gitlab.com/runner/executors/kubernetes/index.html#using-dockerdind).
+You must set up Docker in a Docker container (Docker-in-Docker) to use Code Quality. The Kubernetes executor [supports Docker-in-Docker](https://docs.gitlab.com/runner/executors/kubernetes/#using-dockerdind).
 
 To ensure Code Quality jobs can run on a Kubernetes executor:
 
-- If you're using TLS to communicate with the Docker daemon, the executor [must be running in privileged mode](https://docs.gitlab.com/runner/executors/kubernetes/index.html#other-configtoml-settings). Additionally, the certificate directory must be [specified as a volume mount](../docker/using_docker_build.md#docker-in-docker-with-tls-enabled-in-kubernetes).
+- If you're using TLS to communicate with the Docker daemon, the executor [must be running in privileged mode](https://docs.gitlab.com/runner/executors/kubernetes/#other-configtoml-settings). Additionally, the certificate directory must be [specified as a volume mount](../docker/using_docker_build.md#docker-in-docker-with-tls-enabled-in-kubernetes).
 - It is possible that the DinD service doesn't start up fully before the Code Quality job starts. This is a limitation documented in
   [Troubleshooting the Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running). To resolve the issue, use `before_script` to wait for the Docker daemon to fully boot up. For an example, see the configuration in the `.gitlab-ci.yml` file below.
 
@@ -514,17 +526,20 @@ entrypoint = ["dockerd"]
 name = "docker:20.10.12-dind"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 If you use the [GitLab Runner Helm Chart](https://docs.gitlab.com/runner/install/kubernetes.html), you can use
 the above Kubernetes configuration in the [`config` field](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html)
 in the `values.yaml` file.
+
+{{< /alert >}}
 
 To ensure that you use the `overlay2` [storage driver](https://docs.docker.com/storage/storagedriver/select-storage-driver/), which offers the best overall performance:
 
 - Specify the `DOCKER_HOST` that the Docker CLI communicates with.
 - Set the `DOCKER_DRIVER` variable to empty.
 
-Use the `before_script` section to wait for the Docker daemon to fully boot up. Since GitLab Runner v16.9, this can also be done [by just setting the `HEALTHCHECK_TCP_PORT` variable](https://docs.gitlab.com/runner/executors/kubernetes/index.html#define-a-list-of-services).
+Use the `before_script` section to wait for the Docker daemon to fully boot up. Since GitLab Runner v16.9, this can also be done [by just setting the `HEALTHCHECK_TCP_PORT` variable](https://docs.gitlab.com/runner/executors/kubernetes/#define-a-list-of-services).
 
 ```yaml
 include:
@@ -545,10 +560,13 @@ For OpenShift, you should use the [GitLab Runner Operator](https://docs.gitlab.c
 To give the Docker daemon in the service container permissions to initialize its storage,
 you must mount the `/var/lib` directory as a volume mount.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you cannot to mount the `/var/lib` directory as a volume mount, you can set `--storage-driver` to `vfs` instead.
 If you opt for the `vfs` value, it might have a negative
 impact on [performance](https://docs.docker.com/storage/storagedriver/select-storage-driver/).
+
+{{< /alert >}}
 
 To configure permissions for the Docker daemon,
 
@@ -595,7 +613,7 @@ name = "docker:20.10.12-dind"
    oc adm policy add-scc-to-user -z dind-sa privileged
    ```
 
-1. Set the permissions in the [`[runners.kubernetes]` section](https://docs.gitlab.com/runner/executors/kubernetes/index.html#other-configtoml-settings).
+1. Set the permissions in the [`[runners.kubernetes]` section](https://docs.gitlab.com/runner/executors/kubernetes/#other-configtoml-settings).
 1. Set the job definition stays the same as in Kubernetes case:
 
    ```yaml

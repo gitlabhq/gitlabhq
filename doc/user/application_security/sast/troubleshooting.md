@@ -2,13 +2,15 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting SAST
 ---
 
-# Troubleshooting SAST
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The following troubleshooting scenarios have been collected from customer support cases. If you
 experience a problem not addressed here, or the information here does not fix your problem, see the
@@ -17,11 +19,11 @@ experience a problem not addressed here, or the information here does not fix yo
 ## Debug-level logging
 
 Debug-level logging can help when troubleshooting. For details, see
-[debug-level logging](../../application_security/troubleshooting_application_security.md#debug-level-logging).
+[debug-level logging](../troubleshooting_application_security.md#debug-level-logging).
 
 ## Changes in the CI/CD template
 
-The [GitLab-managed SAST CI/CD template](index.md#configure-sast-in-your-cicd-yaml) controls which [analyzer](analyzers.md) jobs run and how they're configured. While using the template, you might experience a job failure or other pipeline error. For example, you might:
+The [GitLab-managed SAST CI/CD template](_index.md#configure-sast-in-your-cicd-yaml) controls which [analyzer](analyzers.md) jobs run and how they're configured. While using the template, you might experience a job failure or other pipeline error. For example, you might:
 
 - See an error message like `'<your job>' needs 'spotbugs-sast' job, but 'spotbugs-sast' is not in any previous stage` when you view an affected pipeline.
 - Experience another type of unexpected issue with your CI/CD pipeline configuration.
@@ -35,14 +37,14 @@ include:
 
 If your GitLab instance has limited network connectivity, you can also download the file and host it elsewhere.
 
-You should only use this solution temporarily, returning to [the standard template](index.md#configure-sast-in-your-cicd-yaml) as soon as possible.
+You should only use this solution temporarily, returning to [the standard template](_index.md#configure-sast-in-your-cicd-yaml) as soon as possible.
 
 ## Errors in a specific analyzer job
 
 GitLab SAST [analyzers](analyzers.md) are released as container images.
-If you're seeing a new error that doesn't appear to be related to [the GitLab-managed SAST CI/CD template](index.md#configure-sast-in-your-cicd-yaml) or changes in your own project, you can try [pinning the affected analyzer to a specific older version](index.md#pinning-to-minor-image-version).
+If you're seeing a new error that doesn't appear to be related to [the GitLab-managed SAST CI/CD template](_index.md#configure-sast-in-your-cicd-yaml) or changes in your own project, you can try [pinning the affected analyzer to a specific older version](_index.md#pinning-to-minor-image-version).
 
-Each [analyzer project](analyzers.md#sast-analyzers) has a `CHANGELOG.md` file listing the changes made in each available version.
+Each [analyzer project](analyzers.md) has a `CHANGELOG.md` file listing the changes made in each available version.
 
 ## Job log messages
 
@@ -55,7 +57,7 @@ of the error messages and recommended actions.
 exec /bin/sh: exec format error` message in job log
 ```
 
-GitLab SAST analyzers [only support](index.md#requirements) running on the `amd64` CPU architecture.
+GitLab SAST analyzers [only support](_index.md#requirements) running on the `amd64` CPU architecture.
 This message indicates that the job is being run on a different architecture, such as `arm`.
 
 ### Docker error
@@ -83,7 +85,7 @@ For information on this, see the [general Application Security troubleshooting s
 sast is used for configuration only, and its script should not be executed
 ```
 
-For information on this, see the [GitLab Secure troubleshooting section](../../application_security/troubleshooting_application_security.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
+For information on this, see the [GitLab Secure troubleshooting section](../troubleshooting_application_security.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
 
 ## SAST jobs run unexpectedly
 
@@ -92,7 +94,7 @@ uses the `rules:exists` parameter. For performance reasons, a maximum number of 
 made against the given glob pattern. If the number of matches exceeds the maximum, the `rules:exists`
 parameter returns `true`. Depending on the number of files in your repository, a SAST job might be
 triggered even if the scanner doesn't support your project. For more details about this limitation,
-see the [`rules:exists` documentation](../../../ci/yaml/index.md#rulesexists).
+see the [`rules:exists` documentation](../../../ci/yaml/_index.md#rulesexists).
 
 ## SpotBugs errors
 
@@ -122,17 +124,26 @@ For Maven builds, add the following to your `pom.xml` file:
 
 ### Project couldn't be built
 
-If your job is failing at the build step with the message "Project couldn't be built", it's most likely because your job is asking SpotBugs to build with a tool that isn't part of its default tools. For a list of the SpotBugs default tools, see [SpotBugs' asdf dependencies](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/blob/master/config/.gl-tool-versions).
+If your `spotbugs-sast` job is failing at the build step with the message "Project couldn't be built", it's most likely because:
 
-The solution is to use [pre-compilation](index.md#pre-compilation). Pre-compilation ensures the images required by SpotBugs are available in the job's container.
+- Your project is asking SpotBugs to build with a tool that isn't part of its default tools. For a list of the SpotBugs default tools, see [SpotBugs' asdf dependencies](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/blob/master/config/.gl-tool-versions).
+- Your build needs custom configurations or additional dependencies that the analyzer's automatic build process can't accommodate.
+
+The SpotBugs-based analyzer is only used for scanning Groovy code, but it may trigger in other cases, such as [when all SAST jobs run unexpectedly](#sast-jobs-run-unexpectedly).
+
+The solution depends on whether you need to scan Groovy code:
+
+- If you don't have any Groovy code, or don't need to scan it, you should [disable the SpotBugs analyzer](analyzers.md#disable-specific-default-analyzers).
+- If you do need to scan Groovy code, you should use [pre-compilation](_index.md#pre-compilation).
+  Pre-compilation avoids these failures by scanning an artifact you've already built in your pipeline, rather than trying to compile it in the `spotbugs-sast` job.
 
 ### Java out of memory error
 
-When a SAST job is running you might get an error that states `java.lang.OutOfMemoryError`. This issue occurs when Java has run out of memory.
+When a `spotbugs-sast` job is running you might get an error that states `java.lang.OutOfMemoryError`. This issue occurs when Java has run out of memory while scanning.
 
 To try to resolve this issue you can:
 
-- Choose a lower [level of effort](index.md#security-scanner-configuration).
+- Choose a lower [level of effort](_index.md#security-scanner-configuration).
 - Set the CI/CD variable `JAVA_OPTS` to replace the default `-XX:MaxRAMPercentage=80`, e.g. `-XX:MaxRAMPercentage=90`.
 - [Tag a larger runner](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux---x86-64) in your `spotbugs-sast` job.
 
@@ -152,7 +163,7 @@ If, on the other hand, the class being analyzed is part of your project, conside
 
 ## Flawfinder encoding error
 
-This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, apply [their documented advice](https://github.com/david-a-wheeler/flawfinder#character-encoding-errors) to your entire repository, or only per job using the [`before_script`](../../../ci/yaml/index.md#before_script) feature.
+This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, apply [their documented advice](https://github.com/david-a-wheeler/flawfinder#character-encoding-errors) to your entire repository, or only per job using the [`before_script`](../../../ci/yaml/_index.md#before_script) feature.
 
 You can configure the `before_script` section in each `.gitlab-ci.yml` file, or use a [pipeline execution policy](../policies/pipeline_execution_policies.md) to install the encoder and run the converter command. For example, you can add a `before_script` section to the `flawfinder-sast` job generated from the security scanner template to convert all files with a `.cpp` extension.
 

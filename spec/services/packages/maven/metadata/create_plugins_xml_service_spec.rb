@@ -22,10 +22,12 @@ RSpec.describe ::Packages::Maven::Metadata::CreatePluginsXmlService, feature_cat
           name: "#{group_id}/#{plugin}",
           version: '1.0.0',
           project: package.project,
+          maven_metadatum: nil,
           maven_metadatum_attributes: {
             app_group: group_id.tr('/', '.'),
             app_name: plugin,
-            app_version: '1.0.0'
+            app_version: '1.0.0',
+            path: "#{group_id}/#{plugin}/1.0.0"
           }
         )
       end

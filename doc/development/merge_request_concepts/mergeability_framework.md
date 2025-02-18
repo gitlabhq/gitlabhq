@@ -2,10 +2,9 @@
 stage: Create
 group: Code Review
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-description: "Developer information explaining the process to add a new mergeability check"
+description: Developer information explaining the process to add a new mergeability check
+title: Mergeability framework
 ---
-
-# Mergeability framework
 
 The initial work started with the [better defined mergeability framework](https://gitlab.com/groups/gitlab-org/-/epics/5598)
 

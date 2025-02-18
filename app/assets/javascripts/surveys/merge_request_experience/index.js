@@ -5,7 +5,7 @@ const MR_SURVEY_WAIT_DURATION = 10000;
 const broadcastNotificationVisible = () => {
   // We don't want to clutter up the UI by displaying the survey when broadcast message(s)
   // are visible as well.
-  return Boolean(document.querySelector('.broadcast-notification-message'));
+  return Boolean(document.querySelector('.js-broadcast-notification-message'));
 };
 
 export const initMrExperienceSurvey = () => {

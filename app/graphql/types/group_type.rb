@@ -250,6 +250,11 @@ module Types
       null: false,
       description: 'Count of direct projects in this group.'
 
+    field :pipeline_analytics, Types::Ci::AnalyticsType,
+      null: true,
+      description: 'Pipeline analytics.',
+      resolver: Resolvers::Ci::PipelineAnalyticsResolver
+
     field :ci_variables,
       Types::Ci::GroupVariableType.connection_type,
       null: true,

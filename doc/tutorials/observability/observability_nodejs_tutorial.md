@@ -2,14 +2,16 @@
 stage: Monitor
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Use GitLab Observability with a NodeJS application'
 ---
 
-# Tutorial: Use GitLab Observability with a NodeJS application
+{{< alert type="flag" >}}
 
-FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history of the [**Distributed tracing** feature](../../development/tracing.md).
 <!-- Update this note when observability_features flag is removed -->
+
+{{< /alert >}}
 
 In this tutorial, you'll learn how to configure, instrument, and monitor a NodeJS application using GitLab Observability features.
 
@@ -17,7 +19,7 @@ In this tutorial, you'll learn how to configure, instrument, and monitor a NodeJ
 
 Take a moment and make sure you have the following:
 
-- A GitLab Ultimate subscription for GitLab.com or GitLab self-managed
+- A GitLab Ultimate subscription for GitLab.com or GitLab Self-Managed
 - A local installation of NodeJS
 - Basic knowledge of Git, NodeJS, JavaScript, and the core concepts of [OpenTelemetry](https://opentelemetry.io/)
 
@@ -26,7 +28,7 @@ Take a moment and make sure you have the following:
 First, create a new GitLab project and a corresponding access token.
 This tutorial uses the project name `nodejs-O11y-tutorial`.
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**.
 1. Select **Use template** for NodeJS Express.
 1. Enter the project details.
@@ -67,7 +69,7 @@ Next, we need to instrument the NodeJS application.
    ```
 
 1. Find your project ID:
-   1. On the `nodejs-O11y-tutorial` project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
+   1. On the `nodejs-O11y-tutorial` project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
    1. Select **Copy project ID**. Save the copied ID for later.
 
 1. Configure and run your project with instrumentation:
@@ -83,7 +85,7 @@ Next, we need to instrument the NodeJS application.
    ```
 
    Be sure to replace the `PROJECT_ID`, and `ACCESS_TOKEN` with the values you obtained earlier.
-   If using GitLab Self-Managed, replace `gitlab.com` with your self-managed instance hostname.
+   If using GitLab Self-Managed, replace `gitlab.com` with your GitLab Self-Managed instance hostname.
 
 ## View traces
 

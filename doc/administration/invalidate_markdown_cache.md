@@ -1,14 +1,16 @@
 ---
 stage: Plan
 group: Project Management
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Markdown cache
 ---
 
-# Markdown cache
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 For performance reasons, GitLab caches the HTML version of Markdown text in fields such as:
 
@@ -26,7 +28,7 @@ Pre-requisite:
 - You must be an administrator.
 
 To avoid problems caused by cached HTML versions, invalidate the existing cache by increasing the `local_markdown_version`
-setting in application settings [using the API](../api/settings.md#change-application-settings):
+setting in application settings [using the API](../api/settings.md#update-application-settings):
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings?local_markdown_version=<increased_number>"

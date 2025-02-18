@@ -1,0 +1,12 @@
+- if can_admin_cluster?(current_user, @cluster)
+  .settings.expanded.border-0.m-0
+    %p
+      = s_('ClusterIntegration|Migrate this cluster to use the GitLab agent for Kubernetes')
+    .settings-content#migrate-section
+      .sub-section.form-group
+        %h4
+          = s_('ClusterIntegration|Migrate to the GitLab agent for Kubernetes')
+        %p
+          = s_("ClusterIntegration|This cluster integration is deprecated. To continue using this Kubernetes cluster with GitLab, you must install the agent.")
+        = render Pajamas::ButtonComponent.new(method: :post, href: clusterable.create_cluster_migration_path(@cluster)) do
+          = s_('ClusterIntegration|Install agent')

@@ -125,7 +125,7 @@ exports[`MavenInstallation maven renders all the messages 1`] = `
   />
   For more information on the Maven registry,
   <gl-link-stub
-    href="/help/user/packages/maven_repository/index"
+    href="/help/user/packages/maven_repository/_index"
     target="_blank"
   >
     see the documentation

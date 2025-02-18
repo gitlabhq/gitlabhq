@@ -89,9 +89,9 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryPipeline, feature_cat
 
   describe '#after_run' do
     it 'executes housekeeping service after import' do
-      service = instance_double(Repositories::HousekeepingService)
+      service = instance_double(::Repositories::HousekeepingService)
 
-      expect(Repositories::HousekeepingService).to receive(:new).with(context.portable, :gc).and_return(service)
+      expect(::Repositories::HousekeepingService).to receive(:new).with(context.portable, :gc).and_return(service)
       expect(service).to receive(:execute)
 
       pipeline.after_run(context)

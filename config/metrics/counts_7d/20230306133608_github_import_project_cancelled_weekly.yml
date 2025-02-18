@@ -16,9 +16,6 @@ options:
   events:
     - github_import_project_cancelled
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

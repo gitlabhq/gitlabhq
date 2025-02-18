@@ -11,9 +11,6 @@ time_frame: all
 data_source: internal_events
 events:
 - name: create_merge_request_note
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -10,8 +10,8 @@ RSpec.describe 'Destroying multiple packages', feature_category: :package_regist
   let_it_be(:project1) { create(:project) }
   let_it_be(:project2) { create(:project) }
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:packages1) { create_list(:package, 3, project: project1) }
-  let_it_be_with_reload(:packages2) { create_list(:package, 2, project: project2) }
+  let_it_be_with_reload(:packages1) { create_list(:generic_package, 3, project: project1) }
+  let_it_be_with_reload(:packages2) { create_list(:generic_package, 2, project: project2) }
 
   let(:ids) { packages1.append(packages2).flatten.map(&:to_global_id).map(&:to_s) }
 

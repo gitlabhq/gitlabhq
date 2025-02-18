@@ -287,7 +287,7 @@ export default {
 </script>
 
 <template>
-  <div class="info-well gl-flex-col sm:gl-flex">
+  <div class="info-well gl-mt-5 gl-flex-col sm:gl-flex">
     <div class="well-segment gl-flex gl-w-full gl-p-5">
       <gl-icon name="fork" :size="16" class="gl-m-4 gl-block gl-text-center" />
       <div class="gl-flex gl-grow gl-items-center gl-justify-between">

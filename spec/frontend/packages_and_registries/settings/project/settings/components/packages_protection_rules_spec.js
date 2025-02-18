@@ -1,4 +1,4 @@
-import { GlLoadingIcon, GlKeysetPagination, GlModal } from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination, GlModal, GlTable } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -114,7 +114,7 @@ describe('Packages protection rules project settings', () => {
     });
     await waitForPromises();
 
-    expect(findTable().exists()).toBe(false);
+    expect(wrapper.findComponent(GlTable).exists()).toBe(false);
     expect(findEmptyText().exists()).toBe(true);
   });
 
@@ -328,11 +328,11 @@ describe('Packages protection rules project settings', () => {
           await waitForPromises();
 
           expect(findComboboxInTableRow(0).props('value')).toBe(accessLevelValueMaintainer);
-          await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+          await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
           expect(findComboboxInTableRow(0).props('value')).toBe(accessLevelValueOwner);
 
           expect(findComboboxInTableRow(1).props('value')).toBe(accessLevelValueMaintainer);
-          await findComboboxInTableRow(1).setValue(accessLevelValueAdmin);
+          await findComboboxInTableRow(1).findAll('option').at(2).setSelected();
           expect(findComboboxInTableRow(1).props('value')).toBe(accessLevelValueAdmin);
 
           expect(findComboboxInTableRow(0).props('value')).toBe(accessLevelValueOwner);
@@ -347,7 +347,7 @@ describe('Packages protection rules project settings', () => {
 
           await waitForPromises();
 
-          await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+          await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
 
           expect(updatePackagesProtectionRuleMutationResolver).toHaveBeenCalledTimes(1);
           expect(updatePackagesProtectionRuleMutationResolver).toHaveBeenCalledWith({
@@ -363,7 +363,7 @@ describe('Packages protection rules project settings', () => {
 
           await waitForPromises();
 
-          await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+          await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
 
           expect(findComboboxInTableRow(0).props('disabled')).toBe(true);
           expect(findComboboxInTableRow(1).props('disabled')).toBe(false);
@@ -379,7 +379,7 @@ describe('Packages protection rules project settings', () => {
 
           await waitForPromises();
 
-          await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+          await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
 
           expect(findComboboxInTableRow(0).props('disabled')).toBe(true);
           expect(findTableRowButtonDelete(0).props('disabled')).toBe(true);
@@ -399,7 +399,7 @@ describe('Packages protection rules project settings', () => {
 
           await waitForPromises();
 
-          await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+          await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
 
           await waitForPromises();
 
@@ -420,7 +420,7 @@ describe('Packages protection rules project settings', () => {
 
           await waitForPromises();
 
-          await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+          await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
 
           await waitForPromises();
 
@@ -433,7 +433,7 @@ describe('Packages protection rules project settings', () => {
 
           await waitForPromises();
 
-          await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+          await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
 
           await waitForPromises();
 

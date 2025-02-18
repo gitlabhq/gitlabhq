@@ -14,9 +14,9 @@
   resolution_role: Maintainer  # Can be one of: [Admin, Owner, Maintainer, Developer]
   manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: |  # (required) Don't change this line.
-    The [`workflow:rules`](https://docs.gitlab.com/ee/ci/yaml/workflow.html#workflowrules-templates) templates are deprecated and no longer recommended for use. Using these templates greatly limits the flexibility of your pipelines and makes it hard to use new `workflow` features.
+    The [`workflow:rules`](https://docs.gitlab.com/ci/yaml/workflow/#workflowrules-templates) templates are deprecated and no longer recommended for use. Using these templates greatly limits the flexibility of your pipelines and makes it hard to use new `workflow` features.
 
-    This is one small step towards moving away from CI/CD templates in preference of [CI/CD components](https://docs.gitlab.com/ee/ci/components/). You can search the [CI/CD Catalog](https://docs.gitlab.com/ee/ci/components/#cicd-catalog) for a replacement, or [add `workflow:rules`](https://docs.gitlab.com/ee/ci/yaml/workflow.html) to your pipeline explicitly.
+    This is one small step towards moving away from CI/CD templates in preference of [CI/CD components](https://docs.gitlab.com/ci/components/). You can search the [CI/CD Catalog](https://docs.gitlab.com/ci/components/#cicd-catalog) for a replacement, or [add `workflow:rules`](https://docs.gitlab.com/ci/yaml/workflow/) to your pipeline explicitly.
 
 # ==============================
 # OPTIONAL END-OF-SUPPORT FIELDS

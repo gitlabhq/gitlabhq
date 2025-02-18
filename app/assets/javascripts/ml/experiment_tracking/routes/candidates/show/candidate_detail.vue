@@ -47,7 +47,8 @@ export default {
       return !isEmpty(this.candidate.metrics);
     },
     metricsTableFields() {
-      const maxStep = maxBy(this.candidate.metrics, 'step').step;
+      const maxMetric = maxBy(this.candidate.metrics, 'step');
+      const maxStep = maxMetric ? maxMetric.step : 0;
       const rowClass = '!gl-p-3';
 
       const cssClasses = { thClass: rowClass, tdClass: rowClass };

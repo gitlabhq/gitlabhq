@@ -6,8 +6,10 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import {
+  TIMESTAMP_TYPES,
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
+  TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
 } from '~/vue_shared/components/resource_lists/constants';
 import ListItemDescription from './list_item_description.vue';
 
@@ -15,6 +17,7 @@ export default {
   i18n: {
     [TIMESTAMP_TYPE_CREATED_AT]: __('Created'),
     [TIMESTAMP_TYPE_UPDATED_AT]: __('Updated'),
+    [TIMESTAMP_TYPE_LAST_ACTIVITY_AT]: __('Updated'),
   },
   components: {
     GlAvatarLabeled,
@@ -59,8 +62,13 @@ export default {
       required: false,
       default: TIMESTAMP_TYPE_CREATED_AT,
       validator(value) {
-        return [TIMESTAMP_TYPE_CREATED_AT, TIMESTAMP_TYPE_UPDATED_AT].includes(value);
+        return TIMESTAMP_TYPES.includes(value);
       },
+    },
+    contentTestid: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   computed: {
@@ -86,11 +94,12 @@ export default {
 <template>
   <li class="gl-border-b gl-flex gl-items-start gl-py-4">
     <div class="gl-grow gl-items-start md:gl-flex">
-      <div class="gl-flex gl-grow">
+      <div class="gl-flex gl-grow" :data-testid="contentTestid">
         <div v-if="showIcon" class="gl-mr-3 gl-flex gl-h-7 gl-shrink-0 gl-items-center">
           <gl-icon variant="subtle" :name="iconName" />
         </div>
         <gl-avatar-labeled
+          class="gl-break-anywhere"
           :entity-id="resource.id"
           :entity-name="resource.avatarLabel"
           :label="resource.avatarLabel"
@@ -115,7 +124,7 @@ export default {
         </gl-avatar-labeled>
       </div>
       <div
-        class="gl-mt-3 gl-shrink-0 gl-flex-col gl-items-end md:gl-mt-0 md:gl-flex md:gl-pl-0"
+        class="gl-mt-3 gl-shrink-0 gl-flex-col gl-items-end md:gl-mt-0 md:gl-flex md:gl-pl-3"
         :class="statsPadding"
       >
         <div class="gl-flex gl-items-center gl-gap-x-3 md:gl-h-5">

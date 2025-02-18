@@ -2,10 +2,11 @@
 - breadcrumb_title @integration.title
 - page_title @integration.title, _('Integrations')
 
-.gl-flex.gl-items-center.gl-gap-3.gl-mt-5
-  = render Pajamas::AvatarComponent.new(@integration, size: 64, alt: '')
-  %h2.gl-m-0
-    = @integration.title
+= render ::Layouts::PageHeadingComponent.new(@integration.title) do |c|
+  - c.with_heading do
+    .gl-flex.gl-items-center.gl-gap-4
+      = render Pajamas::AvatarComponent.new(@integration, size: 48, alt: @integration.title, class: 'integration-logo')
+      = @integration.title
 
 = render 'shared/integrations/tabs', integration: @integration, active_tab: 'edit' do
   = render 'shared/integration_settings', integration: @integration

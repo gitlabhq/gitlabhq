@@ -43,6 +43,7 @@ class GroupsController < Groups::ApplicationController
     push_frontend_feature_flag(:issues_grid_view)
     push_frontend_feature_flag(:issues_list_drawer, group)
     push_force_frontend_feature_flag(:namespace_level_work_items, group.namespace_work_items_enabled?)
+    push_frontend_feature_flag(:work_item_description_templates, group)
   end
 
   before_action only: :merge_requests do
@@ -60,7 +61,7 @@ class GroupsController < Groups::ApplicationController
 
   feature_category :groups_and_projects, [
     :index, :new, :create, :show, :edit, :update,
-    :destroy, :details, :transfer, :activity, :projects
+    :destroy, :details, :transfer, :activity
   ]
   feature_category :team_planning, [:issues, :issues_calendar, :preview_markdown]
   feature_category :code_review_workflow, [:merge_requests, :unfoldered_environment_names]
@@ -71,7 +72,7 @@ class GroupsController < Groups::ApplicationController
 
   urgency :low, [:issues, :issues_calendar, :preview_markdown]
   # TODO: Set #show to higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/334795
-  urgency :low, [:merge_requests, :show, :create, :new, :update, :projects, :destroy, :edit, :activity]
+  urgency :low, [:merge_requests, :show, :create, :new, :update, :destroy, :edit, :activity]
 
   def index
     redirect_to(current_user ? dashboard_groups_path : explore_groups_path)
@@ -152,6 +153,12 @@ class GroupsController < Groups::ApplicationController
 
   def edit
     @badge_api_endpoint = expose_path(api_v4_groups_badges_path(id: @group.id))
+  end
+
+  def merge_requests
+    return if ::Feature.enabled?(:vue_merge_request_list, current_user)
+
+    render_merge_requests
   end
 
   def projects

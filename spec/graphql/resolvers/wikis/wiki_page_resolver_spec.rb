@@ -9,7 +9,7 @@ RSpec.describe Resolvers::Wikis::WikiPageResolver, feature_category: :wiki do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :private, developers: user) }
 
-    let(:slug) { wiki_page_meta.slugs.first.slug }
+    let(:slug) { wiki_page_meta.canonical_slug }
 
     context 'for project wikis' do
       let_it_be(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
@@ -24,6 +24,14 @@ RSpec.describe Resolvers::Wikis::WikiPageResolver, feature_category: :wiki do
         let(:slug) { 'foobar' }
 
         it { is_expected.to be_nil }
+      end
+
+      context 'when page exists, but does not have a meta record' do
+        it 'creates a new WikiPage::Meta record' do
+          wiki_page_meta.delete
+
+          expect { resolved_wiki_page }.to change { WikiPage::Meta.count }.by(1)
+        end
       end
     end
 

@@ -1,6 +1,15 @@
 import { map } from 'lodash';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
-import { WIDGET_TYPE_LINKED_ITEMS, NEW_WORK_ITEM_IID, STATE_CLOSED } from '~/work_items/constants';
+import {
+  WIDGET_TYPE_LINKED_ITEMS,
+  NEW_WORK_ITEM_IID,
+  STATE_CLOSED,
+  WIDGET_TYPE_CUSTOM_FIELDS,
+  CUSTOM_FIELDS_TYPE_NUMBER,
+  CUSTOM_FIELDS_TYPE_TEXT,
+  CUSTOM_FIELDS_TYPE_SINGLE_SELECT,
+  CUSTOM_FIELDS_TYPE_MULTI_SELECT,
+} from '~/work_items/constants';
 
 export const mockAssignees = [
   {
@@ -198,6 +207,7 @@ export const workItemQueryResponse = {
         id: '1',
         fullPath: 'test-project-path',
         name: 'Project name',
+        fullName: 'Group name',
       },
       workItemType: {
         __typename: 'WorkItemType',
@@ -213,6 +223,7 @@ export const workItemQueryResponse = {
         createNote: false,
         adminWorkItemLink: true,
         markNoteAsInternal: true,
+        reportSpam: false,
         __typename: 'WorkItemPermissions',
       },
       widgets: [
@@ -319,6 +330,7 @@ export const updateWorkItemMutationResponse = {
           id: '1',
           fullPath: 'test-project-path',
           name: 'Project name',
+          fullName: 'Group name',
         },
         workItemType: {
           __typename: 'WorkItemType',
@@ -334,6 +346,7 @@ export const updateWorkItemMutationResponse = {
           createNote: false,
           adminWorkItemLink: true,
           markNoteAsInternal: true,
+          reportSpam: false,
           __typename: 'WorkItemPermissions',
         },
         reference: 'test-project-path#1',
@@ -454,6 +467,7 @@ export const convertWorkItemMutationResponse = {
           id: '1',
           fullPath: 'test-project-path',
           name: 'Project name',
+          fullName: 'Group name',
         },
         workItemType: {
           __typename: 'WorkItemType',
@@ -469,6 +483,7 @@ export const convertWorkItemMutationResponse = {
           createNote: false,
           adminWorkItemLink: true,
           markNoteAsInternal: true,
+          reportSpam: false,
           __typename: 'WorkItemPermissions',
         },
         reference: 'gitlab-org/gitlab-test#1',
@@ -615,6 +630,7 @@ export const mockBlockingLinkedItem = {
       {
         linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/8',
         linkType: 'blocks',
+        workItemState: 'OPEN',
         workItem: {
           id: 'gid://gitlab/WorkItem/675',
           iid: '83',
@@ -654,6 +670,7 @@ export const mockBlockedByLinkedItem = {
       {
         linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/8',
         linkType: 'is_blocked_by',
+        workItemState: 'OPEN',
         workItem: {
           id: 'gid://gitlab/WorkItem/675',
           iid: '83',
@@ -683,6 +700,7 @@ export const mockBlockedByLinkedItem = {
       {
         linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/8',
         linkType: 'is_blocked_by',
+        workItemState: 'OPEN',
         workItem: {
           id: 'gid://gitlab/WorkItem/676',
           iid: '84',
@@ -729,6 +747,7 @@ export const mockLinkedItems = {
       {
         linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/8',
         linkType: 'relates_to',
+        workItemState: 'OPEN',
         workItem: {
           id: 'gid://gitlab/WorkItem/675',
           iid: '83',
@@ -758,6 +777,7 @@ export const mockLinkedItems = {
       {
         linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/9',
         linkType: 'is_blocked_by',
+        workItemState: 'OPEN',
         workItem: {
           id: 'gid://gitlab/WorkItem/646',
           iid: '55',
@@ -787,6 +807,7 @@ export const mockLinkedItems = {
       {
         linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/10',
         linkType: 'blocks',
+        workItemState: 'OPEN',
         workItem: {
           id: 'gid://gitlab/WorkItem/647',
           iid: '56',
@@ -871,6 +892,7 @@ export const workItemSingleLinkedItemResponse = {
                 {
                   linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/8',
                   linkType: 'is_blocked_by',
+                  workItemState: 'OPEN',
                   workItem: {
                     id: 'gid://gitlab/WorkItem/675',
                     iid: '83',
@@ -1319,6 +1341,7 @@ export const workItemResponseFactory = ({
   canDelete = false,
   canCreateNote = false,
   adminParentLink = false,
+  reportSpam = false,
   canAdminWorkItemLink = true,
   canMarkNoteAsInternal = true,
   notificationsWidgetPresent = true,
@@ -1338,6 +1361,7 @@ export const workItemResponseFactory = ({
   notesWidgetPresent = true,
   designWidgetPresent = true,
   confidential = false,
+  hasChildren = true,
   discussionLocked = false,
   canInviteMembers = false,
   labelsWidgetPresent = true,
@@ -1372,6 +1396,8 @@ export const workItemResponseFactory = ({
   descriptionText = 'some **great** text',
   descriptionHtml = '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
   developmentWidgetPresent = false,
+  customFieldsWidgetPresent = true,
+  customFieldValues = null,
 } = {}) => ({
   data: {
     workItem: {
@@ -1397,6 +1423,7 @@ export const workItemResponseFactory = ({
         id: '1',
         fullPath: 'test-project-path',
         name: 'Project name',
+        fullName: 'Group name',
       },
       workItemType,
       userPermissions: {
@@ -1407,6 +1434,7 @@ export const workItemResponseFactory = ({
         adminWorkItemLink: canAdminWorkItemLink,
         createNote: canCreateNote,
         markNoteAsInternal: canMarkNoteAsInternal,
+        reportSpam,
         __typename: 'WorkItemPermissions',
       },
       reference: 'test-project-path#1',
@@ -1472,14 +1500,11 @@ export const workItemResponseFactory = ({
               __typename: 'WorkItemWidgetIteration',
               type: 'ITERATION',
               iteration: {
-                description: null,
                 id: 'gid://gitlab/Iteration/1215',
-                iid: '182',
                 title: 'Iteration default title',
                 startDate: '2022-09-22',
                 dueDate: '2022-09-30',
                 webUrl: 'http://127.0.0.1:3000/groups/flightjs/-/iterations/23205',
-                updatedAt: '2022-09-30',
                 iterationCadence: {
                   id: 'gid://gitlab/Iterations::Cadence/5852',
                   title: 'A dolores assumenda harum non facilis similique delectus quod.',
@@ -1586,7 +1611,7 @@ export const workItemResponseFactory = ({
           ? {
               __typename: 'WorkItemWidgetHierarchy',
               type: 'HIERARCHY',
-              hasChildren: true,
+              hasChildren,
               rolledUpCountsByType: mockRolledUpCountsByType,
               hasParent,
               children: {
@@ -1699,6 +1724,98 @@ export const workItemResponseFactory = ({
               __typename: 'WorkItemWidgetDevelopment',
             }
           : { type: 'MOCK TYPE' },
+        customFieldsWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetCustomFields',
+              type: WIDGET_TYPE_CUSTOM_FIELDS,
+              customFieldValues: customFieldValues ?? [
+                {
+                  id: 'gid://gitlab/CustomFieldValue/1',
+                  customField: {
+                    id: '1-number',
+                    fieldType: CUSTOM_FIELDS_TYPE_NUMBER,
+                    name: 'Number custom field label',
+                    selectOptions: null,
+                  },
+                  value: 5,
+                  __typename: 'WorkItemNumberFieldValue',
+                },
+                {
+                  id: 'gid://gitlab/CustomFieldValue/2',
+                  customField: {
+                    id: '1-text',
+                    fieldType: CUSTOM_FIELDS_TYPE_TEXT,
+                    name: 'Text custom field label',
+                    selectOptions: null,
+                  },
+                  value: 'Sample text',
+                  __typename: 'WorkItemTextFieldValue',
+                },
+                {
+                  id: 'gid://gitlab/CustomFieldValue/3',
+                  customField: {
+                    id: '1-select',
+                    fieldType: CUSTOM_FIELDS_TYPE_SINGLE_SELECT,
+                    name: 'Single select custom field label',
+                    selectOptions: [
+                      {
+                        id: 'select-1',
+                        value: 'Option 1',
+                      },
+                      {
+                        id: 'select-2',
+                        value: 'Option 2',
+                      },
+                      {
+                        id: 'select-3',
+                        value: 'Option 3',
+                      },
+                    ],
+                  },
+                  selectedOptions: [
+                    {
+                      id: 'select-1',
+                      value: 'Option 1 ',
+                    },
+                  ],
+                  __typename: 'WorkItemSelectFieldValue',
+                },
+                {
+                  id: 'gid://gitlab/CustomFieldValue/4',
+                  customField: {
+                    id: '1-multi-select',
+                    fieldType: CUSTOM_FIELDS_TYPE_MULTI_SELECT,
+                    name: 'Multi select custom field label',
+                    selectOptions: [
+                      {
+                        id: 'select-1',
+                        value: 'Option 1',
+                      },
+                      {
+                        id: 'select-2',
+                        value: 'Option 2',
+                      },
+                      {
+                        id: 'select-3',
+                        value: 'Option 3',
+                      },
+                    ],
+                  },
+                  selectedOptions: [
+                    {
+                      id: 'select-1',
+                      value: 'Option 1',
+                    },
+                    {
+                      id: 'select-2',
+                      value: 'Option 2',
+                    },
+                  ],
+                  __typename: 'WorkItemSelectFieldValue',
+                },
+              ],
+            }
+          : { type: 'MOCK TYPE' },
       ],
     },
   },
@@ -1764,6 +1881,7 @@ export const createWorkItemMutationResponse = {
           id: '1',
           fullPath: 'test-project-path',
           name: 'Project name',
+          fullName: 'Group name',
         },
         workItemType: {
           __typename: 'WorkItemType',
@@ -1779,6 +1897,7 @@ export const createWorkItemMutationResponse = {
           createNote: false,
           adminWorkItemLink: true,
           markNoteAsInternal: true,
+          reportSpam: false,
           __typename: 'WorkItemPermissions',
         },
         reference: 'test-project-path#1',
@@ -1852,6 +1971,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
         createNote: false,
         adminWorkItemLink: true,
         markNoteAsInternal: true,
+        reportSpam: false,
         __typename: 'WorkItemPermissions',
       },
       namespace: {
@@ -1868,6 +1988,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
           type: 'HIERARCHY',
           parent: null,
           hasChildren: true,
+          hasParent: false,
           depthLimitReachedByType: [],
           rolledUpCountsByType: [],
           children: {
@@ -2017,12 +2138,6 @@ export const workItemChangeTypeWidgets = {
     },
     totalTimeSpent: 10800,
     __typename: 'WorkItemWidgetTimeTracking',
-  },
-  PROGRESS: {
-    type: 'PROGRESS',
-    progress: 33,
-    updatedAt: '2024-12-05T16:24:56Z',
-    __typename: 'WorkItemWidgetProgress',
   },
 };
 
@@ -2287,6 +2402,7 @@ export const workItemHierarchyResponse = {
           createNote: true,
           adminWorkItemLink: true,
           markNoteAsInternal: true,
+          reportSpam: false,
           __typename: 'WorkItemPermissions',
         },
         author: {
@@ -2312,6 +2428,7 @@ export const workItemHierarchyResponse = {
             type: 'HIERARCHY',
             parent: null,
             hasChildren: true,
+            hasParent: false,
             rolledUpCountsByType: [],
             children: {
               nodes: childrenWorkItems,
@@ -2342,6 +2459,7 @@ export const workItemObjectiveWithChild = {
     id: '1',
     fullPath: 'test-project-path',
     name: 'Project name',
+    fullName: 'Group name',
   },
   userPermissions: {
     deleteWorkItem: true,
@@ -2351,6 +2469,7 @@ export const workItemObjectiveWithChild = {
     createNote: true,
     adminWorkItemLink: true,
     markNoteAsInternal: true,
+    reportSpam: false,
     __typename: 'WorkItemPermissions',
   },
   author: {
@@ -2431,6 +2550,7 @@ export const workItemObjectiveWithoutChild = {
     id: '1',
     fullPath: 'test-project-path',
     name: 'Project name',
+    fullName: 'Group name',
   },
   userPermissions: {
     deleteWorkItem: true,
@@ -2440,6 +2560,7 @@ export const workItemObjectiveWithoutChild = {
     createNote: true,
     adminWorkItemLink: true,
     markNoteAsInternal: true,
+    reportSpam: false,
     __typename: 'WorkItemPermissions',
   },
   author: {
@@ -2493,6 +2614,7 @@ export const workItemHierarchyTreeEmptyResponse = {
         createNote: true,
         adminWorkItemLink: true,
         markNoteAsInternal: true,
+        reportSpam: false,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,
@@ -2513,6 +2635,7 @@ export const workItemHierarchyTreeEmptyResponse = {
           type: 'HIERARCHY',
           parent: null,
           hasChildren: true,
+          hasParent: false,
           depthLimitReachedByType: [],
           rolledUpCountsByType: [],
           children: {
@@ -2586,6 +2709,7 @@ export const mockHierarchyWidget = {
   type: 'HIERARCHY',
   parent: null,
   hasChildren: true,
+  hasParent: false,
   depthLimitReachedByType: mockDepthLimitReachedByType,
   rolledUpCountsByType: mockRolledUpCountsByType,
   children: {
@@ -2756,6 +2880,7 @@ export const workItemHierarchyTreeResponse = {
         createNote: true,
         adminWorkItemLink: true,
         markNoteAsInternal: true,
+        reportSpam: false,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,
@@ -2800,6 +2925,7 @@ export const workItemHierarchyTreeSingleClosedItemResponse = {
         createNote: true,
         adminWorkItemLink: true,
         markNoteAsInternal: true,
+        reportSpam: false,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,
@@ -2820,6 +2946,7 @@ export const workItemHierarchyTreeSingleClosedItemResponse = {
           type: 'HIERARCHY',
           parent: null,
           hasChildren: true,
+          hasParent: false,
           depthLimitReachedByType: mockDepthLimitReachedByType,
           rolledUpCountsByType: mockRolledUpCountsByType,
           children: {
@@ -2937,6 +3064,7 @@ export const workItemObjectiveWithClosedChild = {
     createNote: true,
     adminWorkItemLink: true,
     markNoteAsInternal: true,
+    reportSpam: false,
     __typename: 'WorkItemPermissions',
   },
   author: {
@@ -3003,6 +3131,7 @@ export const changeWorkItemParentMutationResponse = {
           createNote: true,
           adminWorkItemLink: true,
           markNoteAsInternal: true,
+          reportSpam: false,
           __typename: 'WorkItemPermissions',
         },
         description: null,
@@ -3028,6 +3157,7 @@ export const changeWorkItemParentMutationResponse = {
           id: '1',
           fullPath: 'test-project-path',
           name: 'Project name',
+          fullName: 'Group name',
         },
         reference: 'test-project-path#2',
         createNoteEmail:
@@ -5293,19 +5423,43 @@ export const allowedParentTypesResponse = {
     workItem: {
       id: 'gid://gitlab/WorkItem/1',
       workItemType: {
-        id: 'gid://gitlab/WorkItems::Type/6',
-        name: 'Objective',
+        id: 'gid://gitlab/WorkItems::Type/1',
+        name: 'Issue',
         widgetDefinitions: [
           {
             type: 'HIERARCHY',
             allowedParentTypes: {
               nodes: [
                 {
-                  id: 'gid://gitlab/WorkItems::Type/6',
-                  name: 'Objective',
+                  id: 'gid://gitlab/WorkItems::Type/8',
+                  name: 'Epic',
                   __typename: 'WorkItemType',
                 },
               ],
+              __typename: 'WorkItemTypeConnection',
+            },
+            __typename: 'WorkItemWidgetDefinitionHierarchy',
+          },
+        ],
+        __typename: 'WorkItemType',
+      },
+      __typename: 'WorkItem',
+    },
+  },
+};
+
+export const allowedParentTypesEmptyResponse = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/1',
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/1',
+        name: 'Issue',
+        widgetDefinitions: [
+          {
+            type: 'HIERARCHY',
+            allowedParentTypes: {
+              nodes: [],
               __typename: 'WorkItemTypeConnection',
             },
             __typename: 'WorkItemWidgetDefinitionHierarchy',
@@ -5452,6 +5606,7 @@ export const createWorkItemQueryResponse = {
           id: 'full-path-epic-id',
           fullPath: 'full-path',
           name: 'Gitlab Org',
+          fullName: 'Group name',
           __typename: 'Namespace',
         },
         author: {
@@ -5478,6 +5633,7 @@ export const createWorkItemQueryResponse = {
           createNote: true,
           adminWorkItemLink: true,
           markNoteAsInternal: true,
+          reportSpam: false,
           __typename: 'WorkItemPermissions',
         },
         widgets: [
@@ -5767,6 +5923,7 @@ const mockUserPermissions = {
   createNote: true,
   adminWorkItemLink: true,
   markNoteAsInternal: true,
+  reportSpam: false,
   __typename: 'WorkItemPermissions',
 };
 
@@ -5803,12 +5960,16 @@ export const mockUserPreferences = (useWorkItemsView = true) => ({
   },
 });
 
-export const mockProjectPermissionsQueryResponse = ({ createDesign = true } = {}) => ({
+export const mockProjectPermissionsQueryResponse = ({
+  createDesign = true,
+  moveDesign = true,
+} = {}) => ({
   data: {
     workspace: {
       id: 'gid://gitlab/Project/1',
       userPermissions: {
         createDesign,
+        moveDesign,
         __typename: 'ProjectPermissions',
       },
       __typename: 'Project',
@@ -5924,6 +6085,7 @@ export const workItemHierarchyNoChildrenTreeResponse = {
         createNote: true,
         adminWorkItemLink: true,
         markNoteAsInternal: true,
+        reportSpam: false,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,

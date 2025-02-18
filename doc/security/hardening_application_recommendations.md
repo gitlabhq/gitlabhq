@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Hardening - Application Recommendations
 ---
-
-# Hardening - Application Recommendations
 
 For general hardening guidelines, see the [main hardening documentation](hardening.md).
 
@@ -52,8 +51,8 @@ Public deploy keys at are used to give read or read/write access to
 **all** projects on the instance, and are intended for remote automation to access
 projects. Public deploy keys should not be used in a hardened environment. If you
 must use deploy keys, use project deploy keys instead. For more information, refer to
-the documentation on [deploy keys](../user/project/deploy_keys/index.md) and
-[project deploy keys](../user/project/deploy_keys/index.md#create-a-project-deploy-key).
+the documentation on [deploy keys](../user/project/deploy_keys/_index.md) and
+[project deploy keys](../user/project/deploy_keys/_index.md#create-a-project-deploy-key).
 
 ## General
 
@@ -118,7 +117,7 @@ to specifically allow only those addresses.
 
 For more details on **Visibility and access control**, see [visibility and access controls](../administration/settings/visibility_and_access_controls.md).
 For information on SSH settings, see
-[SSH keys restrictions](../security/ssh_keys_restrictions.md).
+[SSH keys restrictions](ssh_keys_restrictions.md).
 
 ### Account and limit
 
@@ -199,7 +198,7 @@ The main focus for hardening is **Usage statistics**:
   restrict data gathering and statistics reporting to a software vendor, you may have
   to disable the **Enable service ping** feature. For more information on what data is collected to
   help you make an informed decision, see
-  [service ping](../development/internal_analytics/service_ping/index.md).
+  [service ping](../development/internal_analytics/service_ping/_index.md).
 
 ## Network
 

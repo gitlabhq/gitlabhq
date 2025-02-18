@@ -26,7 +26,7 @@ import DesignUploadButton from '~/work_items/components//design_management/uploa
 import WorkItemCreateBranchMergeRequestSplitButton from '~/work_items/components/work_item_development/work_item_create_branch_merge_request_split_button.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import uploadDesignMutation from '~/work_items/components/design_management/graphql/upload_design.mutation.graphql';
-import { i18n, STATE_CLOSED } from '~/work_items/constants';
+import { i18n, STATE_CLOSED, WIDGET_TYPE_MILESTONE } from '~/work_items/constants';
 import workItemByIdQuery from '~/work_items/graphql/work_item_by_id.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -88,7 +88,9 @@ describe('WorkItemDetail component', () => {
     .mockResolvedValue(mockProjectPermissionsQueryResponse());
   const workspacePermissionsNotAllowedHandler = jest
     .fn()
-    .mockResolvedValue(mockProjectPermissionsQueryResponse({ createDesign: false }));
+    .mockResolvedValue(
+      mockProjectPermissionsQueryResponse({ createDesign: false, moveDesign: false }),
+    );
   const uploadSuccessDesignMutationHandler = jest
     .fn()
     .mockResolvedValue(mockUploadDesignMutationResponse);
@@ -130,6 +132,7 @@ describe('WorkItemDetail component', () => {
   const findCreateMergeRequestSplitButton = () =>
     wrapper.findComponent(WorkItemCreateBranchMergeRequestSplitButton);
   const findDesignDropzone = () => wrapper.findComponent(DesignDropzone);
+  const findWorkItemDetailInfo = () => wrapper.findByTestId('info-alert');
 
   const mockDragEvent = ({ types = ['Files'], files = [], items = [] }) => {
     return { dataTransfer: { types, files, items } };
@@ -146,7 +149,6 @@ describe('WorkItemDetail component', () => {
     mutationHandler,
     error = undefined,
     workItemsAlphaEnabled = false,
-    namespaceLevelWorkItems = true,
     hasSubepicsFeature = true,
     router = true,
     modalIsGroup = null,
@@ -182,7 +184,6 @@ describe('WorkItemDetail component', () => {
       provide: {
         glFeatures: {
           workItemsAlpha: workItemsAlphaEnabled,
-          namespaceLevelWorkItems,
         },
         hasSubepicsFeature,
         fullPath: 'group/project',
@@ -268,6 +269,14 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
 
       expect(allowedChildrenTypesHandler).toHaveBeenCalled();
+    });
+
+    it('passes `parentMilestone` prop to work item tree', () => {
+      const { milestone } = workItemByIidQueryResponse.data.workspace.workItem.widgets.find(
+        (widget) => widget.type === WIDGET_TYPE_MILESTONE,
+      );
+
+      expect(findHierarchyTree().props('parentMilestone')).toEqual(milestone);
     });
   });
 
@@ -417,17 +426,6 @@ describe('WorkItemDetail component', () => {
 
       await waitForPromises();
       expect(findWorkItemType().classes()).toEqual(['sm:!gl-block', 'gl-w-full']);
-    });
-
-    describe('`namespace_level_work_items` is disabled', () => {
-      it('does not show ancestors widget and shows title in the header', async () => {
-        createComponent({ namespaceLevelWorkItems: false });
-
-        await waitForPromises();
-
-        expect(findAncestors().exists()).toBe(false);
-        expect(findWorkItemType().classes()).toEqual(['sm:!gl-block', 'gl-w-full']);
-      });
     });
 
     describe('`subepics` is unavailable', () => {
@@ -599,6 +597,13 @@ describe('WorkItemDetail component', () => {
         confidential: true,
       });
       const objectiveHandler = jest.fn().mockResolvedValue(objectiveWorkItem);
+      const objectiveNoChildrenHandler = jest.fn().mockResolvedValue(
+        workItemByIidResponseFactory({
+          workItemType: objectiveType,
+          confidential: true,
+          hasChildren: false,
+        }),
+      );
 
       const epicWorkItem = workItemByIidResponseFactory({
         workItemType: epicType,
@@ -616,15 +621,17 @@ describe('WorkItemDetail component', () => {
         expect(findHierarchyTree().exists()).toBe(true);
       });
 
-      it.each([true, false])(
-        'passes hasChildren %s to WorkItemActions when `WorkItemTree` emits `childrenLoaded` %s',
-        async (hasChildren) => {
-          createComponent({ handler: objectiveHandler });
+      it.each`
+        context             | handler                       | result
+        ${'no child items'} | ${objectiveNoChildrenHandler} | ${false}
+        ${'child items'}    | ${objectiveHandler}           | ${true}
+      `(
+        'sets the prop `hasChildren` to $result for WorkItemActions when there are $context',
+        async ({ handler, result }) => {
+          createComponent({ handler });
           await waitForPromises();
 
-          await findHierarchyTree().vm.$emit('childrenLoaded', hasChildren);
-
-          expect(findWorkItemActions().props('hasChildren')).toBe(hasChildren);
+          expect(findWorkItemActions().props('hasChildren')).toBe(result);
         },
       );
 
@@ -1158,6 +1165,26 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
 
       expect(findNotesWidget().props('parentId')).toBe(parentId);
+    });
+  });
+
+  describe('displays flash message when resolves a discussion', () => {
+    it('when it resolves one discussion', async () => {
+      setWindowLocation('?resolves_discussion=1');
+
+      createComponent();
+      await waitForPromises();
+
+      expect(findWorkItemDetailInfo().text()).toBe('Resolved 1 discussion.');
+    });
+
+    it('when it resolves all discussions', async () => {
+      setWindowLocation('?resolves_discussion=all');
+
+      createComponent();
+      await waitForPromises();
+
+      expect(findWorkItemDetailInfo().text()).toBe('Resolved all discussions.');
     });
   });
 });

@@ -169,7 +169,7 @@ module API
         return handle_job_token_failure!(project)
       end
 
-      return forbidden!(job_token_policies_unauthorized_message(project)) unless job_token_policies_authorized?(project)
+      authorize_job_token_policies!(project) && return
 
       if project_moved?(id, project)
         return not_allowed!('Non GET methods are not allowed for moved projects') unless request.get?
@@ -178,6 +178,10 @@ module API
       end
 
       project
+    end
+
+    def authorize_job_token_policies!(project)
+      forbidden!(job_token_policies_unauthorized_message(project)) unless job_token_policies_authorized?(project)
     end
 
     def read_project_ability
@@ -371,6 +375,10 @@ module API
       forbidden! unless current_user.can_admin_all_resources?
     end
 
+    def authorize_read_application_statistics!
+      authenticated_as_admin!
+    end
+
     def authorize!(action, subject = :global, reason = nil)
       forbidden!(reason) unless can?(current_user, action, subject)
     end
@@ -391,8 +399,12 @@ module API
       authorize! :admin_project, user_project
     end
 
-    def authorize_admin_integrations
+    def authorize_admin_project_integrations
       authorize! :admin_integrations, user_project
+    end
+
+    def authorize_admin_group_integrations
+      authorize! :admin_integrations, user_group
     end
 
     def authorize_admin_group
@@ -936,6 +948,14 @@ module API
       body ''
     end
 
+    def send_git_diff(repository, diff_refs)
+      header(*Gitlab::Workhorse.send_git_diff(repository, diff_refs))
+
+      headers['Content-Disposition'] = 'inline'
+
+      body ''
+    end
+
     def send_git_archive(repository, **kwargs)
       header(*Gitlab::Workhorse.send_git_archive(repository, **kwargs))
 
@@ -1016,7 +1036,8 @@ module API
 
     def job_token_policies_authorized?(project)
       return true unless current_user&.from_ci_job_token?
-      return true unless Feature.enabled?(:enforce_job_token_policies, current_user)
+      return true unless Feature.enabled?(:add_policies_to_ci_job_token, project)
+      return true if skip_job_token_policies?
 
       current_user.ci_job_token_scope.policies_allowed?(project, job_token_policies)
     end
@@ -1041,6 +1062,12 @@ module API
       return [] unless respond_to?(:route_setting)
 
       Array(route_setting(:authorization).try(:fetch, :job_token_policies, nil))
+    end
+
+    def skip_job_token_policies?
+      return false unless respond_to?(:route_setting)
+
+      route_setting(:authorization).try(:fetch, :skip_job_token_policies, false)
     end
   end
 end

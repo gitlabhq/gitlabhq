@@ -18,7 +18,13 @@ class RootController < Dashboard::ProjectsController
   # from the #index action.
   skip_before_action :projects
 
+  CACHE_CONTROL_HEADER = 'no-store'
+
   def index
+    # When your_work_projects_vue FF is enabled we load the projects via GraphQL query
+    # so we don't want to preload the projects at the controller level to avoid duplicate queries.
+    return if Feature.enabled?(:your_work_projects_vue, current_user)
+
     # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/40260
     Gitlab::GitalyClient.allow_n_plus_1_calls do
       projects
@@ -29,11 +35,15 @@ class RootController < Dashboard::ProjectsController
   private
 
   def redirect_unlogged_user
-    if redirect_to_home_page_url?
-      redirect_to(Gitlab::CurrentSettings.home_page_url)
-    else
-      redirect_to(new_user_session_path)
-    end
+    redirect_path = redirect_to_home_page_url? ? Gitlab::CurrentSettings.home_page_url : new_user_session_path
+    status = root_redirect_enabled? ? :moved_permanently : :found
+
+    response.headers['Cache-Control'] = CACHE_CONTROL_HEADER if root_redirect_enabled?
+    redirect_to(redirect_path, status: status)
+  end
+
+  def root_redirect_enabled?
+    Gitlab::CurrentSettings.current_application_settings.root_moved_permanently_redirection
   end
 
   def redirect_logged_user
@@ -41,6 +51,11 @@ class RootController < Dashboard::ProjectsController
     when 'stars'
       flash.keep
       redirect_to(starred_dashboard_projects_path)
+    when 'member_projects'
+      if Feature.enabled?(:your_work_projects_vue, current_user)
+        flash.keep
+        redirect_to(member_dashboard_projects_path)
+      end
     when 'your_activity'
       redirect_to(activity_dashboard_path)
     when 'project_activity'

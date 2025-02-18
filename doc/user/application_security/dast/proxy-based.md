@@ -1,16 +1,18 @@
 ---
+redirect_to: proxy_based_to_browser_based_migration_guide.md
+remove_date: "2025-02-15"
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-remove_date: '2025-02-15'
-redirect_to: 'proxy_based_to_browser_based_migration_guide.md'
+title: DAST proxy-based analyzer (removed)
 ---
 
-# DAST proxy-based analyzer (removed)
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.9
 and removed in 17.3. Use [DAST version 5](proxy_based_to_browser_based_migration_guide.md) instead.

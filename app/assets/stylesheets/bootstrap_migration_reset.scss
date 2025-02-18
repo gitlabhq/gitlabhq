@@ -9,7 +9,7 @@ body {
 }
 
 legend {
-  border-bottom: 1px solid $border-color;
+  @apply gl-border-b;
   margin-bottom: 20px;
 }
 

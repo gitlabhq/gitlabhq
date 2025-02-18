@@ -18,6 +18,7 @@ RSpec.describe GitlabSchema.types['Subscription'], feature_category: :subscripti
       merge_request_diff_generated
       work_item_updated
       issuable_todo_updated
+      user_merge_request_updated
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

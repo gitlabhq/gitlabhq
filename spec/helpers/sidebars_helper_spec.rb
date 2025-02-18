@@ -207,16 +207,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       })
     end
 
-    context 'when todos_vue_application is disabled' do
-      it 'returns the legacy todo dashboard path' do
-        stub_feature_flags(todos_vue_application: false)
-
-        expect(subject).to include({
-          todos_dashboard_path: dashboard_todos_path
-        })
-      end
-    end
-
     it 'returns sidebar values for work item context with group id', :use_clean_rails_memory_store_caching do
       expect(context_with_group_id).to include({
         work_items: {
@@ -696,9 +686,9 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
 
       describe 'admin user' do
-        it 'returns Admin Panel for admin nav', :aggregate_failures do
-          allow(user).to receive(:can_admin_all_resources?).and_return(true)
+        let(:user) { build(:admin) }
 
+        it 'returns Admin Panel for admin nav', :enable_admin_mode do
           expect(helper.super_sidebar_nav_panel(nav: 'admin', user: user)).to be_a(Sidebars::Admin::Panel)
         end
       end

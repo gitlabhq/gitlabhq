@@ -34,11 +34,7 @@ module TreeHelper
   def tree_edit_branch(project = @project, ref = @ref)
     return unless can_edit_tree?(project, ref)
 
-    if user_access(project).can_push_to_branch?(ref)
-      ref
-    else
-      patch_branch_name(ref)
-    end
+    patch_branch_name(ref)
   end
 
   # Generate a patch branch name that should look like:

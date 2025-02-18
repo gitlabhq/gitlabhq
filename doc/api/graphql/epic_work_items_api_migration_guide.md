@@ -2,25 +2,31 @@
 stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Migrate epic APIs to work items
 ---
 
-# Migrate epic APIs to work items
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**Status:** Beta
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `work_item_epics`. Disabled by default. Your administrator must have [enabled the new look for epics](../../user/group/epics/epic_work_items.md). This feature is in [beta](../../policy/development_stages_support.md#beta).
-> - Listing epics using the [GraphQL API](reference/index.md) [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12852) in GitLab 17.4.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/470685) in GitLab 17.6.
-> - [Enabled by default on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 17.7.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `work_item_epics`. Disabled by default. Your administrator must have [enabled the new look for epics](../../user/group/epics/epic_work_items.md). This feature is in [beta](../../policy/development_stages_support.md#beta).
+- Listing epics using the [GraphQL API](reference/_index.md) [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12852) in GitLab 17.4.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/470685) in GitLab 17.6.
+- [Enabled by default on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 17.7.
+
+{{< /history >}}
 
 In GitLab 17.2, we introduced [epics as work items](../../user/group/epics/epic_work_items.md).
 
 To ensure that your integrations continue working:
 
-- If you use the [Epic GraphQL API](reference/index.md#epic), migrate to the Work Item API before GitLab 18.0, when the Epic GraphQL API is removed.
+- If you use the [Epic GraphQL API](reference/_index.md#epic), migrate to the Work Item API before GitLab 18.0, when the Epic GraphQL API is removed.
 - If you use the [REST API](../epics.md), you can continue using it, but you should migrate to future-proof your integrations.
 - For new features (such as assignees, health status, linked items with other types), you must
   use the `WorkItem` GraphQL API.
@@ -45,7 +51,7 @@ The `WorkItem` GraphQL API:
 - Will be [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500620) before GitLab 18.0
 - Is planned to exit [experimental status](https://gitlab.com/gitlab-org/gitlab/-/issues/500620) before GitLab 18.0.
 
-The [Epic GraphQL API](reference/index.md#epic) is planned for removal in GitLab 18.0.
+The [Epic GraphQL API](reference/_index.md#epic) is planned for removal in GitLab 18.0.
 
 ## Migrate to the Work Item API
 
@@ -66,9 +72,12 @@ around with existing queries:
 
 ### Query epics
 
-NOTE:
+{{< alert type="note" >}}
+
 Epic IDs are different from work item IDs, but the IID (ID incremented for each group) remains the same.
 For example, an epic at `/gitlab-org/-/epics/123` has the same IID `123` as a work item.
+
+{{< /alert >}}
 
 **Before (Epic API):**
 
@@ -277,7 +286,7 @@ The following example demonstrates how to query an epic's:
 - Health status
 - Start and due dates
 
-For all available widgets, see [Work Item widget reference](reference/index.md#workitemwidget).
+For all available widgets, see [Work Item widget reference](reference/_index.md#workitemwidget).
 
 To query epics with widgets:
 

@@ -7,7 +7,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/yaml/index.html#reference-tags
+  documentation_link: https://docs.gitlab.com/ee/ci/yaml/#reference-tags
   image_url: https://about.gitlab.com/images/13_9/reference.png
   published_at: 2021-02-22
   release: 13.9
@@ -31,7 +31,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/index.html
+  documentation_link: https://docs.gitlab.com/ee/ci/examples/authenticating-with-hashicorp-vault/
   image_url: https://about.gitlab.com/images/icons/get-a-license.svg
   published_at: 2021-02-22
   release: 13.9
@@ -74,14 +74,14 @@
   description: |
     Systems administrators occasionally perform maintenance operations on their GitLab instance to keep it performing optimally. Administrators want to offer the highest level of access to their users while these operations are taking place. For example, you may want to perform a [failover test to a secondary site](https://docs.gitlab.com/ee/administration/geo/disaster_recovery/planned_failover.html) as part of the company's business continuity plan. Prior to the failover, you want to pause changes for a short period to ensure the secondary is fully synchronized. Until GitLab 13.8, you could [restrict users from logging in](https://docs.gitlab.com/omnibus/maintenance/#restrict-users-from-logging-into-gitlab), but this would block the entire UI and would render GitLab inaccessible to users.
 
-    GitLab 13.9 introduces [maintenance mode](https://docs.gitlab.com/ee/administration/maintenance_mode/index.html), where write operations are disabled at the application level. This means that GitLab is effectively in a read-only state for all non-administrative users (administrators are still able to edit application settings and [background jobs continue](https://docs.gitlab.com/ee/administration/maintenance_mode/index.html#background-jobs)). Regular users are able to log in to GitLab, view the interface and perform other read-only operations, such as `git clone` or `git pull`. Using maintenance mode, systems administrators can perform maintenance operations, such as failing over to a secondary site, with minimal disruption to regular users.
+    GitLab 13.9 introduces [maintenance mode](https://docs.gitlab.com/ee/administration/maintenance_mode/), where write operations are disabled at the application level. This means that GitLab is effectively in a read-only state for all non-administrative users (administrators are still able to edit application settings and [background jobs continue](https://docs.gitlab.com/ee/administration/maintenance_mode/#background-jobs)). Regular users are able to log in to GitLab, view the interface and perform other read-only operations, such as `git clone` or `git pull`. Using maintenance mode, systems administrators can perform maintenance operations, such as failing over to a secondary site, with minimal disruption to regular users.
 
     Note that GitLab already [supports zero-downtime updates](https://docs.gitlab.com/omnibus/update/#zero-downtime-updates) and enabling maintenance mode is not required to keep your instance up-to-date.
   stage: Enablement
   self-managed: true
   gitlab-com: false
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/administration/maintenance_mode/index.html
+  documentation_link: https://docs.gitlab.com/ee/administration/maintenance_mode/
   image_url: https://about.gitlab.com/images/13_9/maintenance_mode.png
   published_at: 2021-02-22
   release: 13.9

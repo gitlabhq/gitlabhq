@@ -102,7 +102,7 @@
   .timeline-entry:last-child,
   .create-timeline-event {
     .timeline-event-bottom-border {
-      border-bottom: solid $gl-border-size-1 $border-color;
+      @apply gl-border-b;
       padding-top: $gl-spacing-scale-5;
     }
   }

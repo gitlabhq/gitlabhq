@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Migration ordering
 ---
-
-# Migration ordering
 
 Starting with GitLab 17.1, migrations are executed using
 a custom ordering scheme that conforms to the GitLab release cadence. This change

@@ -1,0 +1,10 @@
+---
+name: markdown_paste_url
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/233393
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178942
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517295
+milestone: '17.9'
+group: group::knowledge
+type: gitlab_com_derisk
+default_enabled: false
+

@@ -1,4 +1,4 @@
-import { GlSprintf, GlToggle, GlFormCheckbox } from '@gitlab/ui';
+import { GlCard, GlSprintf, GlToggle, GlFormCheckbox } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import ProjectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
 import CiCatalogSettings from '~/pages/projects/shared/permissions/components/ci_catalog_settings.vue';
@@ -44,6 +44,7 @@ const defaultProps = {
     packagesEnabled: true,
     showDefaultAwardEmojis: true,
     warnAboutPotentiallyUnwantedCharacters: true,
+    extendedPratExpiryWebhooksExecute: false,
   },
   isGitlabCom: true,
   canAddCatalogResource: false,
@@ -52,7 +53,7 @@ const defaultProps = {
   allowedVisibilityOptions: [0, 10, 20],
   visibilityHelpPath: '/help/public_access/public_access',
   registryAvailable: false,
-  registryHelpPath: '/help/user/packages/container_registry/index',
+  registryHelpPath: '/help/user/packages/container_registry/_index',
   lfsAvailable: true,
   lfsHelpPath: '/help/topics/git/lfs/index',
   lfsObjectsExist: false,
@@ -62,7 +63,7 @@ const defaultProps = {
   pagesAccessControlForced: false,
   pagesHelpPath: '/help/user/project/pages/introduction#gitlab-pages-access-control',
   packagesAvailable: false,
-  packagesHelpPath: '/help/user/packages/index',
+  packagesHelpPath: '/help/user/packages/_index',
   requestCveAvailable: true,
   confirmationPhrase: 'my-fake-project',
   showVisibilityConfirmModal: false,
@@ -82,7 +83,7 @@ describe('Settings Panel', () => {
       currentSettings = {},
       glFeatures = {},
       cascadingSettingsData = {},
-      stubs = {},
+      stubs = { GlCard },
       ...customProps
     } = {},
     mountFn = shallowMountExtended,
@@ -151,6 +152,10 @@ describe('Settings Panel', () => {
     wrapper.find(
       'input[name="project[project_setting_attributes][warn_about_potentially_unwanted_characters]"]',
     );
+  const findExtendedPratExpiryWebhooksExecute = () =>
+    wrapper.find(
+      'input[name="project[project_setting_attributes][extended_prat_expiry_webhooks_execute]"]',
+    );
   const findConfirmDangerButton = () => wrapper.findComponent(ConfirmDanger);
   const findEnvironmentsSettings = () => wrapper.findComponent({ ref: 'environments-settings' });
   const findFeatureFlagsSettings = () => wrapper.findComponent({ ref: 'feature-flags-settings' });
@@ -216,7 +221,7 @@ describe('Settings Panel', () => {
     );
 
     it('should set the visibility level description based upon the selected visibility level', () => {
-      wrapper = mountComponent({ stubs: { GlSprintf } });
+      wrapper = mountComponent({ stubs: { GlSprintf, GlCard } });
 
       setProjectVisibilityLevel(VISIBILITY_LEVEL_INTERNAL_INTEGER);
 
@@ -819,6 +824,24 @@ describe('Settings Panel', () => {
     });
   });
 
+  describe('Setting to allow webhook execution for extended intervals', () => {
+    it('should have a "Extended Project Access Tokens Expiry Webhook execution" input when feature is enabled', () => {
+      wrapper = mountComponent({
+        glFeatures: { extendedExpiryWebhookExecutionSetting: true },
+      });
+
+      expect(findExtendedPratExpiryWebhooksExecute().exists()).toBe(true);
+    });
+
+    it('should not have a "Extended Project Access Tokens Expiry Webhook execution" input when feature is disabled', () => {
+      wrapper = mountComponent({
+        glFeatures: { extendedExpiryWebhookExecutionSetting: false },
+      });
+
+      expect(findExtendedPratExpiryWebhooksExecute().exists()).toBe(false);
+    });
+  });
+
   describe('Analytics', () => {
     it('should show the analytics toggle', () => {
       wrapper = mountComponent();
@@ -959,7 +982,7 @@ describe('Settings Panel', () => {
 
       expect(findDuoSettings().exists()).toBe(true);
       expect(findDuoSettings().props()).toEqual({
-        helpPath: '/help/user/duo_amazon_q/index.md',
+        helpPath: '/help/user/duo_amazon_q/_index.md',
         helpText: 'This project can use Amazon Q.',
         label: 'Amazon Q',
         locked: false,

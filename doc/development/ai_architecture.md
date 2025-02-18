@@ -2,9 +2,8 @@
 stage: AI-powered
 group: AI Framework
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: AI Architecture
 ---
-
-# AI Architecture
 
 This document describes architecture shared by the GitLab Duo AI features. For historical motivation and goals of this architecture, see the [AI gateway Architecture design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/).
 
@@ -45,7 +44,7 @@ AIGW -down-> Models : prompts
 @enduml
 ```
 
-- **AI Abstraction layer** - Every GitLab instance (Self-Managed, GitLab.com, ..) contains an [AI Abstraction layer](ai_features/index.md) which provides a framework for implementing new AI features in the monolith. This layer adds contextual information to the request and does request pre/post processing.
+- **AI Abstraction layer** - Every GitLab instance (Self-Managed, GitLab.com, ..) contains an [AI Abstraction layer](ai_features/_index.md) which provides a framework for implementing new AI features in the monolith. This layer adds contextual information to the request and does request pre/post processing.
 
 ### Systems
 
@@ -78,7 +77,7 @@ There are two primary reasons for this: the best AI models are cloud-based as th
 The AI gateway (formerly the [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)) is a standalone-service that will give access to AI features to all users of GitLab, no matter which instance they are using: self-managed, dedicated or GitLab.com. The SaaS-based AI abstraction layer will transition to connecting to this gateway, rather than accessing cloud-based providers directly.
 
 Calls to the AI-gateway from GitLab-rails can be made using the
-[Abstraction Layer](ai_features/index.md#feature-development-abstraction-layer).
+[Abstraction Layer](ai_features/_index.md#feature-development-abstraction-layer).
 By default, these actions are performed asynchronously via a Sidekiq
 job to prevent long-running requests in Puma. It should be used for
 non-latency sensitive actions due to the added latency by Sidekiq.
@@ -106,7 +105,7 @@ It is possible to utilize other models or technologies, however they will need t
 The following models have been approved for use:
 
 - Google's [Vertex AI](https://cloud.google.com/vertex-ai) and [model garden](https://cloud.google.com/model-garden)
-- [Anthropic models](https://docs.anthropic.com/claude/docs/models-overview)
+- [Anthropic models](https://docs.anthropic.com/en/docs/about-claude/models)
 - [Suggested reviewer](https://gitlab.com/gitlab-org/modelops/applied-ml/applied-ml-updates/-/issues/10)
 
 ### Embeddings
@@ -122,7 +121,7 @@ The following table documents functionality that Code Suggestions offers today, 
 | Topic              | Details                                                                                                                                                                       | Where this happens today                                                                                                                                              | Where this will happen going forward                         |
 |--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|
 | Request processing |                                                                                                                                                                               |                                                                                                                                                                       |                                                              |
-|                    | Receives requests from IDEs (VS Code, GitLab WebIDE, MS Visual Studio 2022 for Windows, IntelliJ, JetBrains, VIM, Emacs, Sublime), including code before and after the cursor | GitLab Rails                                                                                                                                                          | GitLab Rails                                                 |
+|                    | Receives requests from IDEs (VS Code, GitLab Web IDE, MS Visual Studio 2022 for Windows, IntelliJ, JetBrains, VIM, Emacs, Sublime), including code before and after the cursor | GitLab Rails                                                                                                                                                          | GitLab Rails                                                 |
 |                    | Authenticates the current user, verifies they are authorized to use Code Suggestions for this project                                                                         | GitLab Rails + AI gateway                                                                                                                                             | GitLab Rails + AI gateway                                    |
 |                    | Preprocesses the request to add context, such as including imports via TreeSitter                                                                                             | AI gateway                                                                                                                                                            | Undecided                                                    |
 |                    | Routes the request to the AI Provider                                                                                                                                         | AI gateway                                                                                                                                                            | AI gateway                                                   |
@@ -142,7 +141,7 @@ The following table documents functionality that Code Suggestions offers today, 
 
 ### Self-managed support
 
-Code Suggestions for self-managed users was introduced as part of the [Cloud Connector MVC](https://gitlab.com/groups/gitlab-org/-/epics/10516).
+Code Suggestions for GitLab Self-Managed was introduced as part of the [Cloud Connector MVC](https://gitlab.com/groups/gitlab-org/-/epics/10516).
 
 For more information on the technical solution for this project see the [Cloud Connector architecture documentation](cloud_connector/architecture.md).
 

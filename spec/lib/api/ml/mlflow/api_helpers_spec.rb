@@ -123,4 +123,52 @@ RSpec.describe API::Ml::Mlflow::ApiHelpers, feature_category: :mlops do
       end
     end
   end
+
+  describe '#icandidate_version?' do
+    describe 'when version is nil' do
+      let(:version) { nil }
+
+      it 'returns false' do
+        expect(candidate_version?(version)).to be false
+      end
+    end
+
+    describe 'when version has candidate prefix' do
+      let(:version) { 'candidate:1' }
+
+      it 'returns true' do
+        expect(candidate_version?(version)).to be true
+      end
+    end
+
+    describe 'when version does not have candidate prefix' do
+      let(:version) { '1' }
+
+      it 'returns false' do
+        expect(candidate_version?(version)).to be false
+      end
+    end
+  end
+
+  describe '#find_run_artifact' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:candidate) { create(:ml_candidates, :with_ml_model, project: project) }
+    let_it_be(:candidate_package_file) { create(:package_file, :ml_model, package: candidate.package) }
+
+    it 'returns list of files' do
+      expect(find_run_artifact(project, candidate.iid, candidate_package_file.file_name)).to eq candidate_package_file
+    end
+  end
+
+  describe '#list_run_artifacts' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:candidate) { create(:ml_candidates, :with_ml_model, project: project) }
+    let_it_be(:candidate_package_file) { create(:package_file, :ml_model, package: candidate.package) }
+    let_it_be(:candidate_package_file_2) { create(:package_file, :ml_model, package: candidate.package) }
+
+    it 'returns list of files' do
+      expect(list_run_artifacts(project,
+        candidate.iid)).to match_array [candidate_package_file, candidate_package_file_2]
+    end
+  end
 end

@@ -91,12 +91,12 @@ module GroupsHelper
     end
   end
 
-  def group_confirm_modal_data(group:, remove_form_id: nil, permanently_remove: false, button_text: nil)
+  def group_confirm_modal_data(group:, remove_form_id: nil, permanently_remove: false, button_text: nil, has_security_policy_project: false)
     {
       remove_form_id: remove_form_id,
       button_text: button_text.nil? ? _('Delete group') : button_text,
       button_testid: 'remove-group-button',
-      disabled: group.linked_to_subscription?.to_s,
+      disabled: (group.linked_to_subscription? || has_security_policy_project).to_s,
       confirm_danger_message: remove_group_message(group, permanently_remove),
       phrase: group.full_path,
       html_confirmation_message: 'true'

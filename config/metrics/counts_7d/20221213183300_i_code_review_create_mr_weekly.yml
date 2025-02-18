@@ -14,9 +14,6 @@ data_category: operational
 performance_indicator_type: []
 events:
   - name: i_code_review_user_create_mr
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

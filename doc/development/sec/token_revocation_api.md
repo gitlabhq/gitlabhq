@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Token Revocation API
 ---
-
-# Token Revocation API
 
 The Token Revocation API is an externally-deployed HTTP API that interfaces with GitLab
 to receive and revoke API tokens and other secrets detected by GitLab Secret Detection.
@@ -12,12 +11,12 @@ See the [high-level architecture](../../user/application_security/secret_detecti
 to understand the Secret Detection post-processing and revocation flow.
 
 GitLab.com uses the internally-maintained [Secret Revocation Service](https://gitlab.com/gitlab-com/gl-security/engineering-and-research/automation-team/secret-revocation-service)
-(team-members only) as its Token Revocation API. For GitLab self-managed, you can create
+(team-members only) as its Token Revocation API. For GitLab Self-Managed, you can create
 your own API and configure GitLab to use it.
 
 ## Implement a Token Revocation API for self-managed
 
-GitLab self-managed instances interested in using the revocation capabilities must:
+GitLab Self-Managed instances interested in using the revocation capabilities must:
 
 - Implement and deploy your own Token Revocation API.
 - Configure the GitLab instance to use the Token Revocation API.
@@ -44,11 +43,14 @@ All endpoints may return these responses:
 
 Returns the valid `type` values for use in the `revoke_tokens` endpoint.
 
-NOTE:
-These values match the concatenation of [the `secrets` analyzer's](../../user/application_security/secret_detection/pipeline/index.md)
+{{< alert type="note" >}}
+
+These values match the concatenation of [the `secrets` analyzer's](../../user/application_security/secret_detection/pipeline/_index.md)
 [primary identifier](../integrations/secure.md#identifiers) by means
 of concatenating the `primary_identifier.type` and `primary_identifier.value`.
 For example, the value `gitleaks_rule_id_gitlab_personal_access_token` matches the following finding identifier:
+
+{{< /alert >}}
 
 ```json
 {"type": "gitleaks_rule_id", "name": "Gitleaks rule ID GitLab Personal Access Token", "value": "GitLab Personal Access Token"}

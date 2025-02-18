@@ -77,7 +77,7 @@ module API
         def authenticate_delete_runner!(runner)
           return if current_user.can_admin_all_resources?
 
-          forbidden!("Runner associated with more than one project") if runner.runner_projects.count > 1
+          forbidden!("Runner associated with more than one project") if runner.belongs_to_more_than_one_project?
           forbidden!("No access granted") unless can?(current_user, :delete_runner, runner)
         end
 
@@ -282,7 +282,8 @@ module API
           runner = get_runner(params[:id])
           authenticate_update_runner!(runner)
 
-          runner.reset_token!
+          ::Ci::Runners::ResetAuthenticationTokenService.new(runner: runner, current_user: current_user).execute!
+
           present runner.token_with_expiration, with: Entities::Ci::ResetTokenResult
         end
       end
@@ -317,8 +318,8 @@ module API
           present paginate(runners), with: Entities::Ci::Runner
         end
 
-        desc 'Enable a runner in project' do
-          detail "Enable an available project runner in the project."
+        desc 'Assign a runner to project' do
+          detail "Assign an available project runner to the project."
           success Entities::Ci::Runner
           failure [[400, 'Bad Request'],
                    [403, 'No access granted'], [403, 'Runner is a group runner'], [403, 'Runner is locked'],
@@ -342,32 +343,30 @@ module API
           end
         end
 
-        desc "Disable project's runner" do
-          summary "Disable a project runner from the project"
-          detail "It works only if the project isn't the only project associated with the specified runner. " \
+        desc "Unassign a runner from project" do
+          summary "Unassign a project runner from the project"
+          detail "It is not possible to unassign a runner from the owner project. " \
                  "If so, an error is returned. Use the call to delete a runner instead."
           success Entities::Ci::Runner
           failure [[400, 'Bad Request'],
-                   [403, 'Only one project associated with the runner. Please remove the runner instead'],
+                   [403, 'You cannot unassign a runner from the owner project. Delete the runner instead'],
                    [404, 'Runner not found'], [412, 'Precondition Failed']]
           tags %w[runners projects]
         end
         params do
           requires :runner_id, type: Integer, desc: 'The ID of a runner'
         end
-        # rubocop: disable CodeReuse/ActiveRecord
         delete ':id/runners/:runner_id' do
           authorize! :admin_project_runners, user_project
 
-          runner_project = user_project.runner_projects.find_by(runner_id: params[:runner_id])
+          runner_project = user_project.runner_projects.find_by_runner_id(params[:runner_id])
           not_found!('Runner') unless runner_project
 
-          runner = runner_project.runner
-          forbidden!("Only one project associated with the runner. Please remove the runner instead") if runner.runner_projects.count == 1
-
-          destroy_conditionally!(runner_project)
+          destroy_conditionally!(runner_project) do
+            response = ::Ci::Runners::UnassignRunnerService.new(runner_project, current_user).execute
+            forbidden!(response.message) if response.error?
+          end
         end
-        # rubocop: enable CodeReuse/ActiveRecord
       end
 
       params do

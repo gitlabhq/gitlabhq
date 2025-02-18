@@ -8,8 +8,13 @@ import { initOverviewTabCounter } from '~/mr_notes/init_count';
 import { getDerivedMergeRequestInformation } from '~/diffs/utils/merge_request';
 import { getReviewsForMergeRequest } from '~/diffs/utils/file_reviews';
 import { DIFF_VIEW_COOKIE_NAME, INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useBatchComments } from '~/batch_comments/store';
+import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
+import { pinia } from '~/pinia/instance';
 
-function setupMrNotesState(store, notesDataset, diffsDataset) {
+function setupMrNotesState(store, notesDataset, diffsDataset = {}) {
   const noteableData = JSON.parse(notesDataset.noteableData);
   noteableData.noteableType = notesDataset.noteableType;
   noteableData.targetType = notesDataset.targetType;
@@ -44,7 +49,13 @@ function setupMrNotesState(store, notesDataset, diffsDataset) {
   });
 }
 
-export function initMrStateLazyLoad(store = mrNotes, { reviewBarParams } = {}) {
+export function initMrStateLazyLoad(store = mrNotes) {
+  // Pinia stores must be initialized manually during migration, otherwise they won't sync with Vuex
+  useNotes(pinia);
+  useLegacyDiffs(pinia);
+  useBatchComments(pinia).$patch({ isMergeRequest: true });
+  useMrNotes(pinia);
+
   store.dispatch('setActiveTab', window.mrTabs.getCurrentAction());
   window.mrTabs.eventHub.$on('MergeRequestTabChange', (value) =>
     store.dispatch('setActiveTab', value),
@@ -57,7 +68,7 @@ export function initMrStateLazyLoad(store = mrNotes, { reviewBarParams } = {}) {
   stop = store.watch(
     (state) => state.page.activeTab,
     (activeTab) => {
-      setupMrNotesState(store, discussionsEl.dataset, diffsEl.dataset);
+      setupMrNotesState(store, discussionsEl.dataset, diffsEl?.dataset);
 
       // prevent loading MR state on commits and pipelines pages
       // this is due to them having a shared controller with the Overview page
@@ -65,7 +76,7 @@ export function initMrStateLazyLoad(store = mrNotes, { reviewBarParams } = {}) {
         eventHub.$once('fetchNotesData', () => store.dispatch('fetchNotes'));
 
         requestIdleCallback(() => {
-          initReviewBar(reviewBarParams);
+          initReviewBar();
           initOverviewTabCounter();
           initDiscussionCounter();
         });

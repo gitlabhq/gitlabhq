@@ -272,7 +272,7 @@ RSpec.describe BlobPresenter do
   end
 
   describe '#code_owners' do
-    it { expect(presenter.code_owners).to match_array([]) }
+    it { expect(presenter.code_owners).to be_empty }
   end
 
   describe '#ide_edit_path' do

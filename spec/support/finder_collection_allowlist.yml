@@ -65,6 +65,7 @@
 - Security::PipelineExecutionPoliciesFinder
 - Security::VulnerabilityManagementPoliciesFinder
 - Security::SecurityPoliciesFinder
+- Security::SecurityProjectGroupFinder
 - SentryIssueFinder
 - ServerlessDomainFinder
 - TagsFinder
@@ -73,3 +74,4 @@
 - UserGroupNotificationSettingsFinder
 - UserGroupsCounter
 - Ai::FeatureSettings::FeatureSettingFinder
+- Autocomplete::VulnerabilitiesAutocompleteFinder

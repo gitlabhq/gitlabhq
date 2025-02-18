@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Model and services spam protection and CAPTCHA support
 ---
-
-# Model and services spam protection and CAPTCHA support
 
 Before adding any spam or CAPTCHA support to the REST API, GraphQL API, or Web UI, you must
 first add the necessary support to:
@@ -76,9 +75,12 @@ to a controller. This controller allows administrators to manage spam for the as
    end
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 There may be other changes needed to controllers, depending on how the feature is
 implemented. See [Web UI](web_ui.md) for more details.
+
+{{< /alert >}}
 
 ## Add a call to `check_for_spam` to the execute method of services
 

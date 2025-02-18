@@ -2,17 +2,16 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
-description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
+description: Writing styles, markup, formatting, and other standards for GitLab Documentation.
+title: Recommended word list
 ---
-
-# Recommended word list
 
 To help ensure consistency in the documentation, the Technical Writing team
 recommends these word choices. In addition:
 
 - The GitLab handbook contains a list of
   [top misused terms](https://handbook.gitlab.com/handbook/communication/top-misused-terms/).
-- The documentation [style guide](../styleguide/index.md#language) includes details
+- The documentation [style guide](../styleguide/_index.md#language) includes details
   about language and capitalization.
 - The GitLab handbook provides guidance on the [use of third-party trademarks](https://handbook.gitlab.com/handbook/legal/policies/product-third-party-trademarks-guidelines/#process-for-adding-third-party-trademarks-to-gitlab).
 
@@ -42,7 +41,7 @@ Do not use Latin abbreviations. Use **and** instead, unless you are documenting 
 ## `@mention`
 
 Try to avoid **`@mention`**. Say **mention** instead, and consider linking to the
-[mentions topic](../../../user/discussions/index.md#mentions).
+[mentions topic](../../../user/discussions/_index.md#mentions).
 Don't use backticks.
 
 ## 2FA, two-factor authentication
@@ -392,7 +391,7 @@ Instead of:
 
 Use **cannot** instead of **can not**.
 
-See also [contractions](index.md#contractions).
+See also [contractions](_index.md#contractions).
 
 ## card
 
@@ -438,6 +437,10 @@ Use **check out** as a verb. For the Git command, use `checkout`.
 
 - Use `git checkout` to check out a branch locally.
 - Check out the files you want to edit.
+
+## cherry-pick, cherry pick
+
+Use the hyphenated version of **cherry-pick**. Do not use **cherry pick**.
 
 ## CI, CD
 
@@ -532,6 +535,24 @@ Examples:
 
 - Use code generation to create code based on your comments.
 - Adjust your code generation results by adding code comments to your file.
+
+## Code Owner, code owner, `CODEOWNER`
+
+Use **Code Owners** to refer to the feature name or concept. For example:
+
+- Use the Code Owners approval rules to protect your code.
+
+Use **code owner** or **code owners**, lowercase, to refer to a person or group with code ownership responsibilities.
+For example:
+
+- Assign a code owner to the project.
+- Contact the code owner for a review.
+
+Do not use **codeowner**, **CodeOwner**, or **code-owner**.
+
+Use `CODEOWNERS`, uppercase and in backticks, to refer to the filename. For example:
+
+- Edit the `CODEOWNERS` file to define the code ownership rules.
 
 ## Code Review Summary
 
@@ -799,7 +820,7 @@ Use **drawer** to describe a [drawer UI component](../drawers.md) that:
 
 To see examples of drawers:
 
-- Go to the [Technical Writing Pipeline Editor](https://gitlab.com/gitlab-org/technical-writing/-/ci/editor?branch_name=main) and select **Help** (**{information-o}**).
+- Go to the [Technical Writing Pipeline Editor](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/ci/editor?branch_name=main) and select **Help** ({{< icon name="information-o" >}}).
 - Open GitLab Duo Chat.
 
 Before using this term, confirm whether **drawer** or [**dialog**](#dialog) is
@@ -995,7 +1016,7 @@ of the fields at once. For example:
 1. Expand **General pipelines**.
 1. Complete the fields.
 
-Learn more about [documenting multiple fields at once](index.md#documenting-multiple-fields-at-once).
+Learn more about [documenting multiple fields at once](_index.md#documenting-multiple-fields-at-once).
 
 ## filename
 
@@ -1109,12 +1130,13 @@ the following are the names of GitLab Duo features:
 - GitLab Duo Merge Request Summary
 - GitLab Duo Product Analytics
 - GitLab Duo Root Cause Analysis
-- GitLab Duo Self-Hosted Models
+- GitLab Duo Self-Hosted
 - GitLab Duo Test Generation
 - GitLab Duo Vulnerability Explanation
 - GitLab Duo Vulnerability Resolution
 
-After the first use, use the feature name without **GitLab Duo**.
+Excluding GitLab Duo Self-Hosted, after the first use, use the feature name
+without **GitLab Duo**.
 
 ## GitLab Duo Enterprise
 
@@ -1130,11 +1152,19 @@ Always use **GitLab Duo Pro** for the add-on. Do not use **Duo Pro** unless appr
 You can use **the GitLab Duo Pro add-on** (with this capitalization) but you do not need to use **add-on**
 and should leave it off when you can.
 
+## GitLab Duo Self-Hosted
+
+When referring to the feature, always write **GitLab Duo Self-Hosted** in full
+and in title case, unless you are
+[referring to a language model that's hosted by a customer, rather than GitLab](#self-hosted-model).
+
+Do not use **Self-Hosted** by itself.
+
 ## GitLab Duo Workflow
 
-Use **GitLab Duo Workflow**. After first use, use **Duo Workflow**.
+Use **GitLab Duo Workflow**. After first use, use **Workflow**.
 
-Do not use **Workflow** by itself.
+Do not use **Duo Workflow** by itself.
 
 ## GitLab Flavored Markdown
 
@@ -1154,7 +1184,7 @@ Do not use **the `gitlab` chart**, **the GitLab Chart**, or **the cloud-native c
 You use the **GitLab Helm chart** to deploy **cloud-native GitLab** in a Kubernetes cluster.
 
 If you use it in a context of describing the
-[different installation methods](index.md#how-to-document-different-installation-methods)
+[different installation methods](_index.md#how-to-document-different-installation-methods)
 use `Helm chart (Kubernetes)`.
 
 ## GitLab Pages
@@ -1262,7 +1292,7 @@ Do not use **handy**. If the user doesn't find the feature or process to be hand
 
 ## high availability, HA
 
-Do not use **high availability** or **HA**, except in the GitLab [reference architectures](../../../administration/reference_architectures/index.md#high-availability-ha). Instead, direct readers to the reference architectures for more information about configuring GitLab for handling greater amounts of users.
+Do not use **high availability** or **HA**, except in the GitLab [reference architectures](../../../administration/reference_architectures/_index.md#high-availability-ha). Instead, direct readers to the reference architectures for more information about configuring GitLab for handling greater amounts of users.
 
 Do not use phrases like **high availability setup** to mean a multiple node environment. Instead, use **multi-node setup** or similar.
 
@@ -1323,7 +1353,7 @@ Instead of:
 - For installations from source...
 
 For more information, see the
-[different installation methods](index.md#how-to-document-different-installation-methods).
+[different installation methods](_index.md#how-to-document-different-installation-methods).
 
 ## -ing words
 
@@ -1767,7 +1797,7 @@ Instead of:
 - For installations that use Omnibus GitLab...
 
 For more information, see the
-[different installation methods](index.md#how-to-document-different-installation-methods).
+[different installation methods](_index.md#how-to-document-different-installation-methods).
 
 ## on
 
@@ -1949,6 +1979,10 @@ Use **press** when talking about keyboard keys. For example:
 
 Do not use profanity. Doing so may negatively affect other users and contributors, which is contrary to the GitLab value of [Diversity, Inclusion, and Belonging](https://handbook.gitlab.com/handbook/values/#diversity-inclusion).
 
+## project
+
+See [repository, project](#repository-project).
+
 ## project access token
 
 Use sentence case for **project access token**.
@@ -1988,7 +2022,7 @@ we would talk to a colleague, and to avoid differentiation between `we` and `the
 - Set the variable. (It's required.)
 - You can set the variable. (It's optional.)
 
-See also [recommended steps](index.md#recommended-steps).
+See also [recommended steps](_index.md#recommended-steps).
 
 ## register
 
@@ -2016,6 +2050,12 @@ When writing about the Reporter role:
 Do not use bold.
 
 Do not use **Reporter permissions**. A user who is assigned the Reporter role has a set of associated permissions.
+
+## repository, project
+
+A GitLab project contains, among other things, a Git repository. Use **repository** when referring to the
+Git repository. Use **project** to refer to the GitLab user interface for managing and configuring the
+Git repository, wiki, and other features.
 
 ## Repository Mirroring
 
@@ -2161,7 +2201,7 @@ Do not use **sanity check**. Use **check for completeness** instead. ([Vale](../
 
 Do not use **scalability** when talking about increasing GitLab performance for additional users. The words scale or scaling
 are sometimes acceptable, but references to increasing GitLab performance for additional users should direct readers
-to the GitLab [reference architectures](../../../administration/reference_architectures/index.md) page.
+to the GitLab [reference architectures](../../../administration/reference_architectures/_index.md) page.
 
 ## search
 
@@ -2175,7 +2215,7 @@ Searching is different from [filtering](#filter).
 When referring to the subscription billing model:
 
 - For GitLab.com, use **seats**. Customers purchase seats. Users occupy seats when they are invited
-  to a group, with some [exceptions](../../../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined).
+  to a group, with some [exceptions](../../../subscriptions/gitlab_com/_index.md#how-seat-usage-is-determined).
 - For GitLab Self-Managed, use **users**. Customers purchase subscriptions for a specified number of **users**.
 
 ## section
@@ -2207,15 +2247,14 @@ Use **self-hosted model** (lowercase) to refer to a language model that's hosted
 
 The language model might be an LLM (large language model), but it might not be.
 
-## Self-Hosted Models
+## Self-Hosted
 
-Use title case for the **GitLab Duo Self-Hosted Models** feature.
+To avoid confusion with [**GitLab Self-Managed**](#gitlab-self-managed),
+when referring to the [**GitLab Duo Self-Hosted** feature](#gitlab-duo-self-hosted),
+do not use **Self-Hosted** by itself.
 
-On first mention on a page, use **GitLab Duo Self-Hosted Models**.
-Thereafter, use **Self-Hosted Models** by itself.
-
-This phrase applies when specifically referring to the feature name only.
-If you're writing about [self-hosted models](#self-hosted-model), no need to use title case.
+Always write **GitLab Duo Self-Hosted** in full and in title case, unless you are
+[referring to a language model that's hosted by a customer, rather than GitLab](#self-hosted-model).
 
 ## self-managed
 
@@ -2427,7 +2466,7 @@ Always follow these words with a noun. For example:
 ## to which, of which
 
 Try to avoid **to which** and **of which**, and let the preposition dangle at the end of the sentence instead.
-For examples, see [Prepositions](index.md#prepositions).
+For examples, see [Prepositions](_index.md#prepositions).
 
 ## to-do item
 
@@ -2452,6 +2491,14 @@ Do not use **root group**.
 ## TFA, two-factor authentication
 
 Use [**2FA** and **two-factor authentication**](#2fa-two-factor-authentication) instead.
+
+## turn on, turn off
+
+Use **turn on** and **turn off** instead of **enable** or **disable**.
+
+For details, see [the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/t/turn-on-turn-off).
+
+See also [enable](#enable) and [disable](#disable).
 
 ## type
 
@@ -2652,7 +2699,7 @@ Sometimes you might need to use **yet** when writing a task. If you use
 **yet**, ensure the surrounding phrases are written
 in present tense, active voice.
 
-[View guidance about how to write about future features](index.md#promising-features-in-future-versions).
+[View guidance about how to write about future features](_index.md#promising-features-in-future-versions).
 
 ## you, your, yours
 

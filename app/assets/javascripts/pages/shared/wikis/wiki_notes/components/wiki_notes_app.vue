@@ -4,8 +4,6 @@ import { cloneDeep } from 'lodash';
 import { __ } from '~/locale';
 import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
 import SkeletonNote from '~/vue_shared/components/notes/skeleton_note.vue';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_PROJECT, TYPENAME_GROUP } from '~/graphql_shared/constants';
 import eventHub, { EVENT_EDIT_WIKI_DONE, EVENT_EDIT_WIKI_START } from '../../event_hub';
 import OrderedLayout from './ordered_layout.vue';
 import PlaceholderNote from './placeholder_note.vue';
@@ -30,28 +28,12 @@ export default {
     SkeletonNote,
     PlaceholderNote,
   },
-  inject: ['pageInfo', 'containerId', 'containerType', 'noteCount'],
+  inject: ['containerId', 'noteCount', 'queryVariables'],
   apollo: {
     wikiPage: {
       query: wikiPageQuery,
       variables() {
-        const {
-          pageInfo: { slug },
-          containerId,
-          containerType,
-        } = this;
-
-        const wikiArgs = {
-          slug,
-        };
-
-        if (containerType === 'project') {
-          wikiArgs.projectId = convertToGraphQLId(TYPENAME_PROJECT, containerId);
-        } else if (containerType === 'group') {
-          wikiArgs.namespaceId = convertToGraphQLId(TYPENAME_GROUP, containerId);
-        }
-
-        return wikiArgs;
+        return this.queryVariables;
       },
       update(data) {
         return data?.wikiPage?.discussions?.nodes || [];
@@ -83,6 +65,9 @@ export default {
   computed: {
     wikiPageData() {
       return this.$apollo.queries.wikiPage;
+    },
+    isLoading() {
+      return this.$apollo.queries.wikiPage.loading;
     },
   },
   mounted() {
@@ -144,8 +129,9 @@ export default {
     <ordered-layout :slot-keys="slotKeys">
       <template #form>
         <wiki-comment-form
+          v-if="!isLoading"
           :noteable-id="noteableId"
-          :note-id="containerId"
+          :note-id="noteableId"
           @creating-note:start="setPlaceHolderNote"
           @creating-note:done="removePlaceholder"
           @creating-note:success="updateDiscussions"

@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Gotchas
 ---
-
-# Gotchas
 
 The purpose of this guide is to document potential "gotchas" that contributors
 might encounter or should avoid during development of GitLab CE and EE.

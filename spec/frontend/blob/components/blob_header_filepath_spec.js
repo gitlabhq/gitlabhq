@@ -22,15 +22,9 @@ describe('Blob Header Filepath', () => {
     });
   }
 
-  const getById = (id) => wrapper.findByTestId(id);
   const findBadge = () => wrapper.findComponent(GlBadge);
 
   describe('rendering', () => {
-    it('matches the snapshot', () => {
-      createComponent();
-      expect(wrapper.element).toMatchSnapshot();
-    });
-
     it('renders regular name', () => {
       createComponent();
       expect(wrapper.find('.js-blob-header-filepath').text().trim()).toBe(MockBlob.path);
@@ -42,11 +36,19 @@ describe('Blob Header Filepath', () => {
       expect(wrapper.find('.js-blob-header-filepath').exists()).toBe(false);
     });
 
-    it('renders copy-to-clipboard icon that copies path of the Blob', () => {
-      createComponent();
-      const btn = wrapper.findComponent(ClipboardButton);
-      expect(btn.exists()).toBe(true);
-      expect(btn.vm.text).toBe(MockBlob.path);
+    describe('copy-to-clipboard icon button', () => {
+      it.each`
+        description                                      | flagValue
+        ${'renders button that copies path of the blob'} | ${false}
+        ${'does not render button'}                      | ${true}
+      `('when flag is $flagValue, $description', ({ flagValue }) => {
+        createComponent({}, { provide: { glFeatures: { blobOverflowMenu: flagValue } } });
+        const btn = wrapper.findComponent(ClipboardButton);
+        expect(btn.exists()).toBe(!flagValue);
+        if (!flagValue) {
+          expect(btn.vm.text).toBe(MockBlob.path);
+        }
+      });
     });
 
     it('renders filesize in a human-friendly format', () => {
@@ -58,20 +60,6 @@ describe('Blob Header Filepath', () => {
     it('should not show blob size', () => {
       createComponent({}, {}, { showBlobSize: false });
       expect(wrapper.find('small').exists()).toBe(false);
-    });
-
-    it('should have classes by default', () => {
-      createComponent();
-      expect(getById('file-title-content').attributes('class')).toEqual(
-        'file-title-name mr-1 js-blob-header-filepath gl-break-all gl-font-bold',
-      );
-    });
-
-    it('should have classes when shown as a link', () => {
-      createComponent({}, {}, { showAsLink: true });
-      expect(getById('file-title-content').attributes('class')).toEqual(
-        'file-title-name mr-1 js-blob-header-filepath gl-break-all gl-font-bold !gl-text-blue-700 hover:gl-cursor-pointer',
-      );
     });
 
     it('renders LFS badge if LFS if enabled', () => {

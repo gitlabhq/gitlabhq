@@ -1,8 +1,15 @@
 # frozen_string_literal: true
 
-require "active_context"
+require 'active_context'
+require 'active_support/all'
 require 'logger'
 require 'elasticsearch'
+require 'opensearch'
+require 'aws-sdk-core'
+require 'redis'
+require 'byebug'
+
+Dir[File.join(__dir__, 'support/**/*.rb')].each { |f| require f }
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

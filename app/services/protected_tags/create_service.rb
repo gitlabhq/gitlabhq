@@ -5,7 +5,7 @@ module ProtectedTags
     attr_reader :protected_tag
 
     def execute
-      raise Gitlab::Access::AccessDeniedError unless can?(current_user, :admin_project, project)
+      raise Gitlab::Access::AccessDeniedError unless can?(current_user, :create_protected_tags, project)
 
       project.protected_tags.create(params)
     end

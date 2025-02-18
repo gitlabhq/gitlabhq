@@ -2,19 +2,25 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: User tokens API
 ---
 
-# User tokens API
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use this API to interact with personal access tokens and impersonation tokens. For more information, see [personal access tokens](../user/profile/personal_access_tokens.md) and [impersonation tokens](rest/authentication.md#impersonation-tokens).
 
 ## Create a personal access token for a user
 
-> - The `expires_at` attribute default was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120213) in GitLab 16.0.
+{{< history >}}
+
+- The `expires_at` attribute default was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120213) in GitLab 16.0.
+
+{{< /history >}}
 
 Creates a personal access token for a given user.
 
@@ -66,7 +72,11 @@ Example response:
 
 ## Create a personal access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131923) in GitLab 16.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131923) in GitLab 16.5.
+
+{{< /history >}}
 
 Creates a personal access token for your account. For security purposes, the token:
 
@@ -122,7 +132,7 @@ Example response:
 
 Lists all impersonation tokens for a given user.
 
-Use the `page` and `per_page` [pagination parameters](rest/index.md#offset-based-pagination) to filter the results.
+Use the `page` and `per_page` [pagination parameters](rest/_index.md#offset-based-pagination) to filter the results.
 
 Prerequisites:
 

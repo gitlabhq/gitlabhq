@@ -2,15 +2,21 @@
 stage: Secure
 group: Composition analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Operational container scanning
 ---
 
-# Operational container scanning
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/368828) the starboard directive in GitLab 15.4. The starboard directive is scheduled for removal in GitLab 16.0.
+{{< /details >}}
+
+{{< history >}}
+
+- [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/368828) the starboard directive in GitLab 15.4. The starboard directive is scheduled for removal in GitLab 16.0.
+
+{{< /history >}}
 
 ## Supported architectures
 
@@ -24,8 +30,11 @@ Before GitLab 16.9, OCS directly used the [Trivy](https://github.com/aquasecurit
 
 OCS can be configured to run on a cadence by using `agent config` or a project's scan execution policy.
 
-NOTE:
+{{< alert type="note" >}}
+
 If both `agent config` and `scan execution policies` are configured, the configuration from `scan execution policy` takes precedence.
+
+{{< /alert >}}
 
 ### Enable via agent configuration
 
@@ -42,11 +51,16 @@ The `cadence` field is required. GitLab supports the following types of CRON syn
 - A daily cadence of once per hour at a specified hour, for example: `0 18 * * *`
 - A weekly cadence of once per week on a specified day and at a specified hour, for example: `0 13 * * 0`
 
-NOTE:
+{{< alert type="note" >}}
+
 Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 The CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod.
+{{< /alert >}}
 
 By default, operational container scanning does not scan any workloads for vulnerabilities.
 You can set the `vulnerability_report` block with the `namespaces`
@@ -62,7 +76,7 @@ container_scanning:
       - kube-system
 ```
 
-For every target namespace, all images in the following workload resources are scanned:
+For every target namespace, all images in the following workload resources are scanned by default:
 
 - Pod
 - ReplicaSet
@@ -72,17 +86,24 @@ For every target namespace, all images in the following workload resources are s
 - CronJob
 - Job
 
+This can be customized by [configuring the Trivy Kubernetes Resource Detection](#configure-trivy-kubernetes-resource-detection).
+
 ### Enable via scan execution policies
 
 To enable scanning of images in your Kubernetes cluster by using scan execution policies, use the
 [scan execution policy editor](../../application_security/policies/scan_execution_policies.md#scan-execution-policy-editor)
 to create a new schedule rule.
 
-NOTE:
+{{< alert type="note" >}}
+
 The Kubernetes agent must be running in your cluster to scan running container images
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 Operational Container Scanning operates independently of GitLab pipelines. It is fully automated and managed by the Kubernetes Agent, which initiates new scans at the scheduled time configured in the Scan Execution Policy. The agent creates a dedicated Job within your cluster to perform the scan and report findings back to GitLab.
+{{< /alert >}}
 
 Here is an example of a policy which enables operational container scanning within the cluster the Kubernetes agent is attached to:
 
@@ -107,11 +128,16 @@ The keys for a schedule rule are:
 - `agents:<agent-name>` (required): The name of the agent to use for scanning
 - `agents:<agent-name>:namespaces` (required): The Kubernetes namespaces to scan.
 
-NOTE:
+{{< alert type="note" >}}
+
 Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 The CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod.
+{{< /alert >}}
 
 You can view the complete schema within the [scan execution policy documentation](../../application_security/policies/scan_execution_policies.md#scan-execution-policies-schema).
 
@@ -155,10 +181,12 @@ container_scanning:
 
 When using a fractional value for CPU, format the value as a string.
 
-NOTE:
+{{< alert type="note" >}}
 
 - Resource requirements can only be set by using the agent configuration. If you enabled Operational Container Scanning through scan execution policies and need to configure resource requirements, you should do so via the agent configuration file.
 - When using Google Kubernetes Engine (GKE) for Kubernetes orchestration, [the ephemeral storage limit value will always be set to equal the request value](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits). This is enforced by GKE.
+
+{{< /alert >}}
 
 ## Custom repository for Trivy K8s Wrapper
 
@@ -174,7 +202,11 @@ container_scanning:
 
 ## Configure scan timeout
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/497460) in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/497460) in GitLab 17.7.
+
+{{< /history >}}
 
 By default, the Trivy scan times out after five minutes. The agent itself provides an extra 15 minutes to read the chained configmaps and transmit the vulnerabilities.
 
@@ -191,7 +223,11 @@ container_scanning:
 
 ## Configure Trivy report size
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/497460) in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/497460) in GitLab 17.7.
+
+{{< /history >}}
 
 By default, the Trivy report is limited to 100 MB, which is sufficient for most scans. However, if you have a lot of workloads, you might need to increase the limit.
 
@@ -206,6 +242,61 @@ container_scanning:
   report_max_size: "300000000" # 300MB
 ```
 
+## Configure Trivy Kubernetes resource detection
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431707) in GitLab 17.9.
+
+{{< /history >}}
+
+By default, Trivy looks for the following Kubernetes resource types to discover scannable images:
+
+- Pod
+- ReplicaSet
+- ReplicationController
+- StatefulSet
+- DaemonSet
+- CronJob
+- Job
+- Deployment
+
+You can limit the Kubernetes resource types that Trivy discovers, for example to only scan "active" images.
+
+To do this:
+
+- Specify the resource types with the `resource_types` field:
+
+  ```yaml
+  container_scanning:
+    vulnerability_report:
+      resource_types:
+        - Deployment
+        - Pod
+        - Job
+  ```
+
+## Configure Trivy report artifact deletion
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480845) in GitLab 17.9.
+
+{{< /history >}}
+
+By default, the GitLab agent deletes the Trivy report artifact after a scan has completed.
+
+You can configure the GitLab agent to preserve the report artifact, so you can view the report in its raw state.
+
+To do this:
+
+- Set `delete_report_artifact` to `false`:
+
+  ```yaml
+  container_scanning:
+    delete_report_artifact: false
+  ```
+
 ## View cluster vulnerabilities
 
 To view vulnerability information in GitLab:
@@ -217,14 +308,21 @@ To view vulnerability information in GitLab:
 
 ![Cluster agent security tab UI](../img/cluster_agent_security_tab_v14_8.png)
 
-This information can also be found under [operational vulnerabilities](../../../user/application_security/vulnerability_report/index.md#operational-vulnerabilities).
+This information can also be found under [operational vulnerabilities](../../application_security/vulnerability_report/_index.md#operational-vulnerabilities).
 
-NOTE:
+{{< alert type="note" >}}
+
 You must have at least the Developer role.
+
+{{< /alert >}}
 
 ## Scanning private images
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415451) in GitLab 16.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415451) in GitLab 16.4.
+
+{{< /history >}}
 
 To scan private images, the scanner relies on the image pull secrets (direct references and from the service account) to pull the image.
 
@@ -233,7 +331,7 @@ To scan private images, the scanner relies on the image pull secrets (direct ref
 In GitLab agent 16.9 and later, operational container scanning:
 
 - Handles Trivy reports of up to 100 MB. For previous releases, this limit is 10 MB.
-- Is [disabled](../../../development/fips_compliance.md#unsupported-features-in-fips-mode) when the GitLab agent runs in `fips` mode.
+- Is [disabled](../../../development/fips_gitlab.md#unsupported-features-in-fips-mode) when the GitLab agent runs in `fips` mode.
 
 ## Troubleshooting
 

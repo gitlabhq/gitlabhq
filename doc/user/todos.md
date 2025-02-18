@@ -2,13 +2,15 @@
 stage: Foundations
 group: Personal Productivity
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: To-Do List
 ---
 
-# To-Do List
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Your *To-Do List* is a chronological list of items waiting for your input.
 The items are known as *to-do items*.
@@ -21,7 +23,7 @@ needed, a to-do item appears in your To-Do List.
 
 To access your To-Do List:
 
-On the left sidebar, at the top, select **To-Do List** (**{task-done}**).
+On the left sidebar, at the top, select **To-Do List** ({{< icon name="task-done" >}}).
 
 ### Search the To-Do List
 
@@ -33,21 +35,28 @@ Also, you can sort them by [**Label priority**](project/labels.md#set-label-prio
 
 ## Actions that create to-do items
 
-> - Multiple to-do items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 13.8 [with a flag](../administration/feature_flags.md) named `multiple_todos`. Disabled by default.
-> - Member access request notifications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374725) in GitLab 15.8.
-> - Multiple to-do items [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 16.2.
-> - Multiple to-do items [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 17.8. Feature flag `multiple_todos` enabled by default.
+{{< history >}}
 
-FLAG:
+- Multiple to-do items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 13.8 [with a flag](../administration/feature_flags.md) named `multiple_todos`. Disabled by default.
+- Member access request notifications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374725) in GitLab 15.8.
+- Multiple to-do items [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 16.2.
+- Multiple to-do items [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 17.8. Feature flag `multiple_todos` enabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
+
+{{< /alert >}}
 
 Many to-do items are created automatically.
 Some of the actions that add a to-do item to your To-Do List:
 
 - An issue or merge request is assigned to you.
-- A [merge request review](project/merge_requests/reviews/index.md) is requested.
-- You're [mentioned](discussions/index.md#mentions) in the description or
+- A [merge request review](project/merge_requests/reviews/_index.md) is requested.
+- You're [mentioned](discussions/_index.md#mentions) in the description or
   comment of an issue, merge request, or epic.
 - You're mentioned in a comment on a commit or design.
 - The CI/CD pipeline for your merge request fails.
@@ -70,21 +79,25 @@ selected, you get a to-do item when you are eligible to approve a merge request.
 
 ## Create a to-do item
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390549) in objectives, key results, and tasks in GitLab 16.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390549) in objectives, key results, and tasks in GitLab 16.0.
+
+{{< /history >}}
 
 You can manually add an item to your To-Do List.
 
 1. Go to your:
 
-   - [Issue](project/issues/index.md)
-   - [Merge request](project/merge_requests/index.md)
-   - [Epic](group/epics/index.md)
+   - [Issue](project/issues/_index.md)
+   - [Merge request](project/merge_requests/_index.md)
+   - [Epic](group/epics/_index.md)
    - [Design](project/issues/design_management.md)
    - [Incident](../operations/incident_management/incidents.md)
-   - [Objective or key result](../user/okrs.md)
+   - [Objective or key result](okrs.md)
    - [Task](tasks.md)
 
-1. In the upper-right corner, select **Add a to-do item** (**{todo-add}**).
+1. In the upper-right corner, select **Add a to-do item** ({{< icon name="todo-add" >}}).
 
 ### Create a to-do item by mentioning someone
 
@@ -110,10 +123,10 @@ Hi, please message @frank :incoming_envelope:
 
 If you marked a to-do item as done by mistake, you can re-add it from the **Done** tab:
 
-1. On the left sidebar, at the top, select **To-Do List** (**{task-done}**).
+1. On the left sidebar, at the top, select **To-Do List** ({{< icon name="task-done" >}}).
 1. At the top, select **Done**.
 1. [Find the to-do item](#search-the-to-do-list) you want to re-add.
-1. Next to this to-do item, select **Re-add this to-do item** **{redo}**.
+1. Next to this to-do item, select **Re-add this to-do item** {{< icon name="redo" >}}.
 
 The to-do item is now visible in the **To Do** tab of the To-Do List.
 
@@ -151,14 +164,44 @@ You can manually mark a to-do item as done.
 
 There are two ways to do this:
 
-- In the To-Do List, to the right of the to-do item, select **Mark as done** (**{check}**).
-- In the upper-right corner of the resource (for example, issue or merge request), select **Mark as done** (**{todo-done}**).
+- In the To-Do List, to the right of the to-do item, select **Mark as done** ({{< icon name="check" >}}).
+- In the upper-right corner of the resource (for example, issue or merge request), select **Mark as done** ({{< icon name="todo-done" >}}).
 
 ### Mark all to-do items as done
 
 You can mark all your to-do items as done at the same time.
 
 In the To-Do List, in the upper-right corner, select **Mark all as done**.
+
+## Snooze to-do items
+
+You can snooze to-do items to temporarily hide them from your main To-Do List. This allows you to focus on more urgent tasks and return to snoozed items later.
+
+To snooze a to-do item:
+
+1. In your To-Do List, next to the to-do item you want to snooze, select Snooze ({{< icon name="clock" >}}).
+1. If you wish to snooze the to-do item until a specific time and date, select the
+   `Until a specific time and date` option. Otherwise, choose one of the preset snooze durations:
+   - For one hour
+   - Until later today (4 hours later)
+   - Until tomorrow (tomorrow at 8 AM local time)
+
+Snoozed to-do items are removed from your main To-Do List and appear in a separate **Snoozed** tab.
+
+When the snooze period ends, the to-do item automatically returns to your main To-Do List. It appears with an indicator showing when it was originally created.
+
+## View snoozed to-do items
+
+To view or manage your snoozed to-do items:
+
+1. Go to your To-Do List.
+1. At the top of the list, select the Snoozed tab.
+
+From the Snoozed tab, you can:
+
+- View when a snoozed to-do is scheduled to return to your main list.
+- Remove the snooze to immediately return an item to your main To-Do List.
+- Mark a snoozed to-do as done.
 
 ## How a user's To-Do List is affected when their access changes
 

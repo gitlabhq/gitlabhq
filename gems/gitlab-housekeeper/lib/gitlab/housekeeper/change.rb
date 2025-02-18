@@ -25,6 +25,7 @@ module Gitlab
         @reviewers = []
         @non_housekeeper_changes = []
         @push_options = PushOptions.new
+        @aborted = false
       end
 
       def assignees=(assignees)
@@ -33,6 +34,14 @@ module Gitlab
 
       def reviewers=(reviewers)
         @reviewers = Array(reviewers)
+      end
+
+      def abort!
+        @aborted = true
+      end
+
+      def aborted?
+        @aborted
       end
 
       def mr_description
@@ -57,14 +66,6 @@ module Gitlab
         Changelog: #{changelog_type || 'other'}
         #{changelog_ee ? "EE: true\n" : ''}
         MARKDOWN
-      end
-
-      def matches_filters?(filters)
-        filters.all? do |filter|
-          identifiers.any? do |identifier|
-            identifier.match?(filter)
-          end
-        end
       end
 
       def update_required?(category)

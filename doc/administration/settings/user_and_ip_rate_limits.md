@@ -2,13 +2,15 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: User and IP rate limits
 ---
 
-# User and IP rate limits
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Rate limiting is a common technique used to improve the security and durability
 of a web application. For more details, see
@@ -21,13 +23,18 @@ The following limits are disabled by default:
 - [Authenticated API requests (per user)](#enable-authenticated-api-request-rate-limit).
 - [Authenticated web requests (per user)](#enable-authenticated-web-request-rate-limit).
 
-NOTE:
+{{< alert type="note" >}}
+
 By default, all Git operations are first tried unauthenticated. Because of this, HTTP Git operations
 may trigger the rate limits configured for unauthenticated requests.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 The rate limits for API requests don't affect requests made by the frontend, as these are always
 counted as web traffic.
+{{< /alert >}}
 
 ## Enable unauthenticated API request rate limit
 
@@ -100,7 +107,11 @@ To use a custom response:
 
 ## Maximum authenticated requests to `project/:id/jobs` per minute
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129319) in GitLab 16.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129319) in GitLab 16.5.
+
+{{< /history >}}
 
 To reduce timeouts, the `project/:id/jobs` endpoint has a default [rate limit](../../security/rate_limits.md#project-jobs-api-endpoint) of 600 calls per authenticated user.
 
@@ -158,7 +169,7 @@ The bypass works only if the header is set to `1`.
 
 Requests that bypassed the rate limiter because of the bypass header
 are marked with `"throttle_safelist":"throttle_bypass_header"` in
-[`production_json.log`](../logs/index.md#production_jsonlog).
+[`production_json.log`](../logs/_index.md#production_jsonlog).
 
 To disable the bypass mechanism, make sure the environment variable
 `GITLAB_THROTTLE_BYPASS_HEADER` is unset or empty.
@@ -182,9 +193,9 @@ the allowlist configuration would be `1,53,217`.
 
 Requests that bypassed the rate limiter because of the user allowlist
 are marked with `"throttle_safelist":"throttle_user_allowlist"` in
-[`production_json.log`](../logs/index.md#production_jsonlog).
+[`production_json.log`](../logs/_index.md#production_jsonlog).
 
-At application startup, the allowlist is logged in [`auth.log`](../logs/index.md#authlog).
+At application startup, the allowlist is logged in [`auth.log`](../logs/_index.md#authlog).
 
 ## Try out throttling settings before enforcing them
 
@@ -218,7 +229,7 @@ non-protected paths can be done by setting
 To enable dry run mode for all throttles, the variable can be set to `*`.
 
 Setting a throttle to dry run mode logs a message to the
-[`auth.log`](../logs/index.md#authlog) when it would hit the limit, while letting the
+[`auth.log`](../logs/_index.md#authlog) when it would hit the limit, while letting the
 request continue. The log message contains an `env` field set to `track`. The `matched`
 field contains the name of throttle that was hit.
 

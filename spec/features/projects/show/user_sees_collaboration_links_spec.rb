@@ -18,6 +18,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
 
   context 'with developer user' do
     before_all do
+      stub_feature_flags(blob_overflow_menu: false)
       project.add_developer(user)
     end
 
@@ -38,8 +39,8 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
       end
 
       # The dropdown above the tree
-      page.within('.repo-breadcrumb') do
-        find_by_testid('add-to-tree').click
+      page.within('.tree-controls') do
+        find('.add-to-tree').click
 
         aggregate_failures 'dropdown links above the repo tree' do
           expect(page).to have_link('New file')

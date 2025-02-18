@@ -2,11 +2,10 @@
 stage: Verify
 group: Pipeline Authoring
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Documenting the `.gitlab-ci.yml` keywords
 ---
 
-# Documenting the `.gitlab-ci.yml` keywords
-
-The [CI/CD YAML syntax reference](../../ci/yaml/index.md) uses a standard style to make it easier to use and update.
+The [CI/CD YAML syntax reference](../../ci/yaml/_index.md) uses a standard style to make it easier to use and update.
 
 The reference information should be kept as simple as possible, and expanded details
 and examples should be documented on other pages.
@@ -166,9 +165,9 @@ For example:
 ```markdown
 **Related topics**:
 
-- You can specify a [fallback cache key](../caching/index.md#use-a-fallback-cache-key)
+- You can specify a [fallback cache key](../caching/_index.md#use-a-fallback-cache-key)
   to use if the specified `cache:key` is not found.
-- You can [use multiple cache keys](../caching/index.md#use-multiple-caches) in a single job.
-- See the [common `cache` use cases](../caching/index.md#common-use-cases-for-caches) for more
+- You can [use multiple cache keys](../caching/_index.md#use-multiple-caches) in a single job.
+- See the [common `cache` use cases](../caching/_index.md#common-use-cases-for-caches) for more
   `cache:key` examples.
 ```

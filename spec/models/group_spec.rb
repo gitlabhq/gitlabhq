@@ -262,6 +262,9 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe 'validations' do
+    let_it_be(:private_organization) { create(:organization, :private) }
+    let_it_be(:public_organization) { create(:organization, :public) }
+
     it { is_expected.to validate_presence_of :name }
     it { is_expected.not_to allow_value('colon:in:path').for(:path) } # This is to validate that a specially crafted name cannot bypass a pattern match. See !72555
     it { is_expected.to allow_value('group test_4').for(:name) }
@@ -522,6 +525,81 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         end
       end
     end
+
+    describe '#visibility_level_allowed_by_organization?' do
+      let(:group) { build(:group) }
+
+      subject(:visibility_level_allowed_by_organization) { group.visibility_level_allowed_by_organization? }
+
+      context 'without an organization' do
+        before do
+          group.organization = nil
+        end
+
+        it 'return true but the record is invalid' do
+          expect(group.visibility_level_allowed_by_organization?).to eq(true)
+          expect(group.valid?).to eq(false)
+        end
+      end
+
+      context 'with different visibilities' do
+        where(:organization, :group_visibility, :visibility_level_allowed_by_organization) do
+          lazy { private_organization } | Gitlab::VisibilityLevel::PRIVATE  | true
+          lazy { private_organization } | Gitlab::VisibilityLevel::INTERNAL | false
+          lazy { private_organization } | Gitlab::VisibilityLevel::PUBLIC   | false
+          lazy { public_organization }  | Gitlab::VisibilityLevel::PRIVATE  | true
+          lazy { public_organization }  | Gitlab::VisibilityLevel::INTERNAL | true
+          lazy { public_organization }  | Gitlab::VisibilityLevel::PUBLIC   | true
+        end
+
+        with_them do
+          let(:group) { build(:group, organization: organization, visibility_level: group_visibility) }
+
+          it { is_expected.to eq(visibility_level_allowed_by_organization) }
+        end
+      end
+    end
+
+    describe '#visibility_level_allowed_by_organization' do
+      it 'validates visibility level with visibility changes' do
+        group = create(:group)
+
+        group.visibility_level = Gitlab::VisibilityLevel::PRIVATE
+
+        expect(group).to receive(:visibility_level_allowed_by_organization)
+
+        group.valid?
+      end
+
+      it 'validates visibility level for new records' do
+        group = build(:group)
+
+        expect(group).to receive(:visibility_level_allowed_by_organization)
+
+        group.valid?
+      end
+
+      context 'with different organization and group visibilities' do
+        where(:organization, :group_visibility, :valid?) do
+          lazy { private_organization } | :private  | true
+          lazy { private_organization } | :internal | false
+          lazy { private_organization } | :public   | false
+          lazy { public_organization }  | :private  | true
+          lazy { public_organization }  | :internal | true
+          lazy { public_organization }  | :public   | true
+        end
+
+        with_them do
+          let(:group) { build(:group, group_visibility, organization: organization) }
+          let(:error) { "#{group_visibility} is not allowed since the organization has a private visibility." }
+
+          it 'returns the visibility error' do
+            expect(group.valid?).to eq(valid?)
+            expect(group.errors[:visibility_level]).to include(error) unless valid?
+          end
+        end
+      end
+    end
   end
 
   it_behaves_like 'a BulkUsersByEmailLoad model'
@@ -533,6 +611,32 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   context 'after initialized' do
     it 'has a group_feature' do
       expect(described_class.new.group_feature).to be_present
+    end
+  end
+
+  context 'on create' do
+    let!(:root) { create(:group) }
+    let!(:parent) { create(:group, parent: root) }
+    let(:group) { build(:group, parent: parent) }
+
+    subject { group.save! }
+
+    it 'locks self and ancestors', :lock_recorder do
+      expect { subject }.to lock_rows(
+        root => 'FOR SHARE',
+        parent => 'FOR SHARE',
+        group => 'FOR NO KEY UPDATE'
+      )
+    end
+
+    context 'when shared_namespace_locks is disabled' do
+      before do
+        stub_feature_flags(shared_namespace_locks: false)
+      end
+
+      it 'locks root ancestor', :lock_recorder do
+        expect { subject }.to lock_rows(root => 'FOR NO KEY UPDATE')
+      end
     end
   end
 
@@ -638,19 +742,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         let!(:old_parent) { create(:group, parent: root) }
         let!(:new_parent) { create(:group, parent: root) }
 
-        context 'with FOR NO KEY UPDATE lock' do
-          before do
-            subject
-          end
+        it 'updates traversal_ids' do
+          subject
 
-          it 'updates traversal_ids' do
-            expect(group.traversal_ids).to eq [root.id, new_parent.id, group.id]
-          end
+          expect(group.traversal_ids).to eq [root.id, new_parent.id, group.id]
+        end
 
-          it_behaves_like 'hierarchy with traversal_ids'
-          it_behaves_like 'locked row' do
-            let(:row) { root }
-          end
+        it_behaves_like 'hierarchy with traversal_ids'
+
+        it 'locks root ancestor', :lock_recorder do
+          expect { subject }.to lock_rows(root => 'FOR NO KEY UPDATE')
         end
       end
 
@@ -659,16 +760,17 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         let!(:new_parent) { create(:group) }
         let!(:group) { create(:group, parent: old_parent) }
 
-        before do
-          subject
-        end
-
         it 'updates traversal_ids' do
+          subject
+
           expect(group.traversal_ids).to eq [new_parent.id, group.id]
         end
 
-        it_behaves_like 'locked rows' do
-          let(:rows) { [old_parent, new_parent] }
+        it 'locks both root ancestors', :lock_recorder do
+          expect { subject }.to lock_rows(
+            old_parent => 'FOR NO KEY UPDATE',
+            new_parent => 'FOR NO KEY UPDATE'
+          )
         end
 
         context 'old hierarchy' do
@@ -688,16 +790,17 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         let!(:old_parent) { nil }
         let!(:new_parent) { create(:group) }
 
-        before do
-          subject
-        end
-
         it 'updates traversal_ids' do
+          subject
+
           expect(group.traversal_ids).to eq [new_parent.id, group.id]
         end
 
-        it_behaves_like 'locked rows' do
-          let(:rows) { [group, new_parent] }
+        it 'locks rows', :lock_recorder do
+          expect { subject }.to lock_rows(
+            group => 'FOR NO KEY UPDATE',
+            new_parent => 'FOR NO KEY UPDATE'
+          )
         end
 
         it_behaves_like 'hierarchy with traversal_ids' do
@@ -709,20 +812,25 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         let!(:old_parent) { create(:group) }
         let!(:new_parent) { nil }
 
-        before do
-          subject
-        end
-
         it 'updates traversal_ids' do
+          subject
+
           expect(group.traversal_ids).to eq [group.id]
         end
 
-        it_behaves_like 'locked rows' do
-          let(:rows) { [old_parent, group] }
+        it 'locks rows', :lock_recorder do
+          expect { subject }.to lock_rows(
+            group => 'FOR NO KEY UPDATE',
+            old_parent => 'FOR NO KEY UPDATE'
+          )
         end
 
         it_behaves_like 'hierarchy with traversal_ids' do
           let(:root) { group }
+
+          before do
+            subject
+          end
         end
       end
     end
@@ -3325,7 +3433,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     subject { group.has_project_with_service_desk_enabled? }
 
     before do
-      allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(true)
+      allow(::ServiceDesk).to receive(:supported?).and_return(true)
     end
 
     context 'when service desk is enabled' do
@@ -3336,7 +3444,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
         context 'when service desk is not supported' do
           before do
-            allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(false)
+            allow(::ServiceDesk).to receive(:supported?).and_return(false)
           end
 
           it { is_expected.to eq(false) }
@@ -3955,17 +4063,17 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#continue_indented_text_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :continue_indented_text }
+      let(:feature_flag_method) { :continue_indented_text_feature_flag_enabled? }
+    end
+  end
+
   describe '#glql_integration_feature_flag_enabled?' do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :glql_integration }
       let(:feature_flag_method) { :glql_integration_feature_flag_enabled? }
-    end
-  end
-
-  describe '#wiki_comments_feature_flag_enabled?' do
-    it_behaves_like 'checks self and root ancestor feature flag' do
-      let(:feature_flag) { :wiki_comments }
-      let(:feature_flag_method) { :wiki_comments_feature_flag_enabled? }
     end
   end
 

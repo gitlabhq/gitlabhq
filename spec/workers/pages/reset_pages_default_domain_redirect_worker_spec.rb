@@ -4,12 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Pages::ResetPagesDefaultDomainRedirectWorker, feature_category: :pages do
   let_it_be_with_reload(:project) { create(:project) }
+  let_it_be(:primary_domain_url_with_scheme) { 'https://primary.domain.com' }
   let_it_be(:primary_domain_url) { 'primary.domain.com' }
   let_it_be(:non_primary_domain_url) { 'non-primary.domain.com' }
   let_it_be(:primary_domain) { create(:pages_domain, project: project, domain: primary_domain_url) }
   let_it_be(:non_primary_domain) { create(:pages_domain, project: project, domain: non_primary_domain_url) }
   let_it_be(:project_setting) do
-    create(:project_setting, project: project, pages_primary_domain: primary_domain_url)
+    create(:project_setting, project: project, pages_primary_domain: primary_domain_url_with_scheme)
   end
 
   let(:event) do
@@ -33,7 +34,7 @@ RSpec.describe Pages::ResetPagesDefaultDomainRedirectWorker, feature_category: :
 
       expect { use_event }
         .to change { project.reload.project_setting.pages_primary_domain }
-              .from(primary_domain_url).to(nil)
+              .from(primary_domain_url_with_scheme).to(nil)
     end
   end
 

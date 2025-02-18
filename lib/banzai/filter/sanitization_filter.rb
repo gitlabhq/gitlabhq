@@ -18,6 +18,9 @@ module Banzai
         allowlist[:attributes]['td'] = %w[style]
         allowlist[:css] = { properties: ['text-align'] }
 
+        # Allow json table attributes
+        allowlist[:attributes]['table'] = %w[data-table-fields data-table-filter data-table-markdown]
+
         # Allow the 'data-sourcepos' from CommonMark on all elements
         allowlist[:attributes][:all].push('data-sourcepos')
         allowlist[:attributes][:all].push('data-escaped-char')

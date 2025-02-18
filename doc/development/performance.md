@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Performance Guidelines
 ---
-
-# Performance Guidelines
 
 This document describes various guidelines to ensure good and consistent performance of GitLab.
 
@@ -18,22 +17,22 @@ This document describes various guidelines to ensure good and consistent perform
   - [Tooling](#tooling)
   - Database:
     - [Query performance guidelines](database/query_performance.md)
-    - [Pagination performance guidelines](../development/database/pagination_performance_guidelines.md)
-    - [Keyset pagination performance](../development/database/keyset_pagination.md#performance)
+    - [Pagination performance guidelines](database/pagination_performance_guidelines.md)
+    - [Keyset pagination performance](database/keyset_pagination.md#performance)
   - [Troubleshooting import/export performance issues](../user/project/settings/import_export_troubleshooting.md#troubleshooting-performance-issues)
   - [Pipelines performance in the `gitlab` project](pipelines/performance.md)
 - Frontend:
-  - [Performance guidelines and monitoring](../development/fe_guide/performance.md)
+  - [Performance guidelines and monitoring](fe_guide/performance.md)
   - [Browser performance testing guidelines](../ci/testing/browser_performance_testing.md)
   - [`gdk measure` and `gdk measure-workflow`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/gdk_commands.md#measure-performance)
 - QA:
   - [Load performance testing](../ci/testing/load_performance_testing.md)
   - [GitLab Performance Tool project](https://gitlab.com/gitlab-org/quality/performance)
-  - [Review apps performance metrics](../development/testing_guide/review_apps.md#performance-metrics)
+  - [Review apps performance metrics](testing_guide/review_apps.md#performance-metrics)
 - Monitoring & Overview:
-  - [GitLab performance monitoring](../administration/monitoring/performance/index.md)
+  - [GitLab performance monitoring](../administration/monitoring/performance/_index.md)
   - [Development department performance indicators](https://handbook.gitlab.com/handbook/engineering/development/performance-indicators/)
-  - [Service measurement](../development/service_measurement.md)
+  - [Service measurement](service_measurement.md)
 - Self-managed administration and customer-focused:
   - [File system performance benchmarking](../administration/operations/filesystem_benchmarking.md)
   - [Sidekiq performance troubleshooting](../administration/sidekiq/sidekiq_troubleshooting.md)
@@ -72,7 +71,7 @@ GitLab provides built-in tools to help improve performance and availability:
 
 - [Profiling](profiling.md).
 - [Distributed Tracing](distributed_tracing.md)
-- [GitLab Performance Monitoring](../administration/monitoring/performance/index.md).
+- [GitLab Performance Monitoring](../administration/monitoring/performance/_index.md).
 - [QueryRecoder](database/query_recorder.md) for preventing `N+1` regressions.
 - [Chaos endpoints](chaos_endpoints.md) for testing failure scenarios. Intended mainly for testing availability.
 - [Service measurement](service_measurement.md) for measuring and logging service execution.
@@ -257,10 +256,13 @@ Currently supported profiling targets are:
 - Puma worker
 - Sidekiq
 
-NOTE:
+{{< alert type="note" >}}
+
 The Puma master process is not supported.
 Sending SIGUSR2 to it triggers restarts. In the case of Puma,
 take care to only send the signal to Puma workers.
+
+{{< /alert >}}
 
 This can be done via `pkill -USR2 puma:`. The `:` distinguishes between `puma
 4.3.3.gitlab.2 ...` (the master process) from `puma: cluster worker 0: ...` (the
@@ -954,7 +956,7 @@ Assuming you are working with ActiveRecord models, you might also find these lin
 
 ### Examples
 
-You may find some useful examples in [this snippet](https://gitlab.com/gitlab-org/gitlab-foss/snippets/33946).
+You may find some useful examples in [this snippet](https://gitlab.com/gitlab-org/gitlab-foss/-/snippets/33946).
 
 ## ExclusiveLease
 

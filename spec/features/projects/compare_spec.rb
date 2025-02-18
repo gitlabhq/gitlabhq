@@ -114,7 +114,9 @@ RSpec.describe "Compare", :js, feature_category: :groups_and_projects do
         click_button('Compare')
 
         within_testid('too-many-changes-alert') do
-          expect(page).to have_text("Some changes are not shown. For a faster browsing experience, only 3 of 3+ files are shown. Download one of the files below to see all changes.")
+          expect(page).to have_text("Some changes are not shown. For a faster browsing experience, only 3 of 3+ files are shown.")
+          expect(page).not_to have_link("Plain diff")
+          expect(page).not_to have_link("Patches")
         end
       end
     end

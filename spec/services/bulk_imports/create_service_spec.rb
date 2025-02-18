@@ -112,7 +112,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
              .to receive(:execute)
              .and_return(instance_double(GraphQL::Client::Response, original_hash: {
                'data' => { 'group' => { 'id' => 'gid://gitlab/Group/165' } }
-             } ))
+             }))
 
             allow(client).to receive(:parse)
           end
@@ -142,7 +142,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
              .to receive(:execute)
              .and_return(instance_double(GraphQL::Client::Response, original_hash: {
                'data' => { 'group' => { 'id' => 'gid://gitlab/Group/165' } }
-             } ))
+             }))
 
             allow(client).to receive(:parse)
           end
@@ -174,7 +174,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
              .to receive(:execute)
              .and_return(instance_double(GraphQL::Client::Response, original_hash: {
                'data' => { 'group' => { 'id' => 'gid://gitlab/Group/165' } }
-             } ))
+             }))
 
             allow(client).to receive(:parse)
           end
@@ -391,7 +391,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
              .to receive(:execute)
              .and_return(instance_double(GraphQL::Client::Response, original_hash: {
                'data' => { 'group' => { 'id' => 'gid://gitlab/Group/165' } }
-             } ))
+             }))
 
             allow(client).to receive(:parse)
           end
@@ -407,7 +407,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             .to receive(:execute)
             .and_return(instance_double(GraphQL::Client::Response, original_hash: {
               'data' => { 'group' => { 'id' => 'gid://gitlab/Group/165' } }
-            } ))
+            }))
 
           allow(client).to receive(:parse)
         end
@@ -542,7 +542,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
 
       describe '#user-role' do
         context 'when there is a parent_namespace and the user is a member' do
-          let(:group2) { create(:group, path: 'destination200', source_id: parent_group.id ) }
+          let(:group2) { create(:group, path: 'destination200', source_id: parent_group.id) }
           let(:params) do
             [
               {
@@ -843,7 +843,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
               .to eq(
                 "Import failed. Destination URL " \
                 "can only include non-accented letters, digits, '_', '-' and '.'. " \
-                "It must not start with '-', end in '.', '.git', or '.atom'."
+                "It must not start with '-', '_', or '.', nor end with '-', '_', '.', '.git', or '.atom'."
               )
           end
         end
@@ -856,8 +856,8 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
 
         context 'when the source_type is a group' do
           context 'when the provided destination_slug already exists in the destination_namespace' do
-            let_it_be(:existing_subgroup) { create(:group, path: 'existing-subgroup', parent_id: parent_group.id ) }
-            let_it_be(:existing_subgroup_2) { create(:group, path: 'existing-subgroup_2', parent_id: parent_group.id ) }
+            let_it_be(:existing_subgroup) { create(:group, path: 'existing-subgroup', parent_id: parent_group.id) }
+            let_it_be(:existing_subgroup_2) { create(:group, path: 'existing-subgroup_2', parent_id: parent_group.id) }
             let(:params) do
               [
                 {
@@ -937,8 +937,8 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
 
         context 'when the source_type is a project' do
           context 'when the provided destination_slug already exists in the destination_namespace' do
-            let_it_be(:existing_group) { create(:group, path: 'existing-group' ) }
-            let_it_be(:existing_project) { create(:project, path: 'existing-project', parent_id: existing_group.id ) }
+            let_it_be(:existing_group) { create(:group, path: 'existing-group') }
+            let_it_be(:existing_project) { create(:project, path: 'existing-project', parent_id: existing_group.id) }
             let(:params) do
               [
                 {
@@ -968,7 +968,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           end
 
           context 'when the destination_slug does not conflict with an existing project' do
-            let_it_be(:existing_group) { create(:group, path: 'existing-group' ) }
+            let_it_be(:existing_group) { create(:group, path: 'existing-group') }
             let(:params) do
               [
                 {

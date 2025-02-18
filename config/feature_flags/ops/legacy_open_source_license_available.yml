@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79855
 rollout_issue_url:
 milestone: '14.8'
 type: ops
-group: 'group::tenant scale'
+group: 'group::organizations'
 default_enabled: true

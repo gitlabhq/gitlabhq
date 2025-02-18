@@ -6,6 +6,7 @@ module Gitlab
       SMALL = 10.gigabytes
       MEDIUM = 50.gigabytes
       LARGE = 100.gigabytes
+      ALERT = 25.gigabytes
 
       CLASSIFICATION = {
         small: 0...SMALL,
@@ -21,6 +22,7 @@ module Gitlab
       scope :medium, -> { where(size_in_bytes: CLASSIFICATION[:medium]) }
       scope :large, -> { where(size_in_bytes: CLASSIFICATION[:large]) }
       scope :over_limit, -> { where(size_in_bytes: CLASSIFICATION[:over_limit]) }
+      scope :alerting, -> { where(size_in_bytes: ALERT...) }
 
       def self.by_table_name(table_name)
         where(table_name: table_name).first
@@ -37,6 +39,30 @@ module Gitlab
         when CLASSIFICATION[:over_limit]
           'over_limit'
         end
+      end
+
+      def feature_categories
+        database_entries.find_by_table_name(table_name)&.feature_categories
+      end
+
+      def alert_report_hash
+        {
+          identifier: identifier,
+          schema_name: schema_name,
+          table_name: table_name,
+          total_size: total_size,
+          table_size: table_size,
+          index_size: index_size,
+          size_in_bytes: size_in_bytes,
+          classification: size_classification,
+          feature_categories: feature_categories
+        }
+      end
+
+      private
+
+      def database_entries
+        @database_entries ||= Gitlab::Database::Dictionary.entries
       end
     end
   end

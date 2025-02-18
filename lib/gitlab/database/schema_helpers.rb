@@ -34,7 +34,7 @@ module Gitlab
         SQL
       end
 
-      def trigger_exists?(table_name, name)
+      def trigger_exists?(table_name, name, schema = nil)
         result = connection.select_value(<<~SQL.squish)
           SELECT true
           FROM pg_catalog.pg_trigger trgr
@@ -42,7 +42,7 @@ module Gitlab
               ON trgr.tgrelid = rel.oid
             INNER JOIN pg_catalog.pg_namespace nsp
               ON nsp.oid = rel.relnamespace
-          WHERE nsp.nspname = #{connection.quote(current_schema)}
+          WHERE nsp.nspname = #{connection.quote(schema || connection.current_schema)}
             AND rel.relname = #{connection.quote(table_name)}
             AND trgr.tgname = #{connection.quote(name)}
         SQL

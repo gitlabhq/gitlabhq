@@ -2,20 +2,22 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting Jira issues integration
 ---
 
-# Troubleshooting Jira issues integration
+{{< details >}}
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When working with the [Jira issues integration](configure.md), you might encounter the following issues.
 
 ## GitLab cannot link to a Jira issue
 
 When you mention a Jira issue ID in GitLab, the issue link might be missing.
-[`sidekiq.log`](../../administration/logs/index.md#sidekiq-logs) might contain the following exception:
+[`sidekiq.log`](../../administration/logs/_index.md#sidekiq-logs) might contain the following exception:
 
 ```plaintext
 No Link Issue Permission for issue 'JIRA-1234'
@@ -30,10 +32,10 @@ If GitLab cannot comment on a Jira issue, ensure the Jira user you created for t
 - Post comments on a Jira issue.
 - Transition the Jira issue.
 
-When the [GitLab issue tracker](../../integration/external-issue-tracker.md) is disabled, Jira issue references and comments do not work.
-If you [restrict IP addresses for Jira access](https://support.atlassian.com/security-and-access-policies/docs/specify-ip-addresses-for-product-access/), ensure you add your self-managed IP addresses or [GitLab IP addresses](../../user/gitlab_com/index.md#ip-range) to the allowlist in Jira.
+When the [GitLab issue tracker](../external-issue-tracker.md) is disabled, Jira issue references and comments do not work.
+If you [restrict IP addresses for Jira access](https://support.atlassian.com/security-and-access-policies/docs/specify-ip-addresses-for-product-access/), ensure you add your GitLab Self-Managed IP addresses or [GitLab IP addresses](../../user/gitlab_com/_index.md#ip-range) to the allowlist in Jira.
 
-For the root cause, check the [`integrations_json.log`](../../administration/logs/index.md#integrations_jsonlog) file. When GitLab tries to comment on a Jira issue, an `Error sending message` log entry might appear.
+For the root cause, check the [`integrations_json.log`](../../administration/logs/_index.md#integrations_jsonlog) file. When GitLab tries to comment on a Jira issue, an `Error sending message` log entry might appear.
 
 In GitLab 16.1 and later, when an error occurs, the `integrations_json.log` file contains `client_*` keys in the outgoing API request to Jira.
 You can use the `client_*` keys to check the [Atlassian API documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-group-issues) for why the error has occurred.
@@ -70,8 +72,11 @@ If the user can access the issue, Jira responds with a `200 OK` and the returned
 
 ### Verify GitLab can post a comment to a Jira issue
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 To help troubleshoot your Jira issues integration, you can check whether
 GitLab can post a comment to a Jira issue using the project's Jira
@@ -138,7 +143,7 @@ When you test the Jira issues integration settings, you might get the following 
 Connection failed. Check your integration settings. SSL_connect returned=1 errno=0 peeraddr=<jira.example.com> state=error: certificate verify failed (unable to get local issuer certificate)
 ```
 
-This error might also appear in the [`integrations_json.log`](../../administration/logs/index.md#integrations_jsonlog) file:
+This error might also appear in the [`integrations_json.log`](../../administration/logs/_index.md#integrations_jsonlog) file:
 
 ```json
 {
@@ -158,8 +163,11 @@ To resolve this issue, see
 
 ## Change all Jira projects to instance-level or group-level values
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 ### Change all projects on an instance
 
@@ -235,8 +243,11 @@ To change all Jira projects in a group (and its subgroups) to use group-level in
 
 ## Update the integration password for all projects
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 To reset the Jira user's password for all projects with active Jira issues integrations,
 run the following in a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):
@@ -256,7 +267,7 @@ When [viewing Jira issues](configure.md#view-jira-issues) in GitLab, you might e
 ### Error: `500 We're sorry`
 
 When you access a Jira issue in GitLab, you might get a `500 We're sorry. Something went wrong on our end` error.
-Check [`production.log`](../../administration/logs/index.md#productionlog) to see if the file contains the following exception:
+Check [`production.log`](../../administration/logs/_index.md#productionlog) to see if the file contains the following exception:
 
 ```plaintext
 :NoMethodError (undefined method 'duedate' for #<JIRA::Resource::Issue:0x00007f406d7b3180>)

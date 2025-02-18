@@ -2,14 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Configure merge request approvals for your GitLab instance."
+description: Configure merge request approvals for your GitLab instance.
+title: Merge request approvals
 ---
 
-# Merge request approvals
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Merge request approval rules prevent users from overriding certain settings for the project.
 When enabled for the entire instance, these settings
@@ -40,5 +42,5 @@ Merge request approval settings that can be set for the instance are:
 
 The following are also affected by rules for the entire instance:
 
-- [Project merge request approval rules](../user/project/merge_requests/approvals/index.md).
+- [Project merge request approval rules](../user/project/merge_requests/approvals/_index.md).
 - [Group merge request approval settings](../user/group/manage.md#group-merge-request-approval-settings).

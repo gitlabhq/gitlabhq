@@ -10,7 +10,7 @@ RSpec.describe Todo, feature_category: :notifications do
     it { is_expected.to belong_to(:note) }
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:group) }
-    it { is_expected.to belong_to(:target).touch(true) }
+    it { is_expected.to belong_to(:target).touch(false) }
     it { is_expected.to belong_to(:user) }
   end
 
@@ -300,6 +300,27 @@ RSpec.describe Todo, feature_category: :notifications do
 
         it 'returns the issue web path with an anchor to the note' do
           is_expected.to eq("http://localhost/#{project.full_path}/-/merge_requests/#{merge_request.iid}/pipelines")
+        end
+      end
+    end
+
+    context 'when the todo is coming from a wiki page' do
+      let_it_be(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, project: project) }
+
+      context 'when coming from the wiki page itself' do
+        let_it_be(:todo) { create(:todo, project: project, user: current_user, target: wiki_page_meta) }
+
+        it 'returns the wiki page web path' do
+          is_expected.to eq("http://localhost/#{project.full_path}/-/wikis/#{wiki_page_meta.canonical_slug}")
+        end
+      end
+
+      context 'when coming from a note on the wiki page' do
+        let_it_be(:note) { create(:note, project: project, noteable: wiki_page_meta) }
+        let_it_be(:todo) { create(:todo, project: project, user: current_user, note: note, target: wiki_page_meta) }
+
+        it 'returns the wiki page web path with an anchor to the note' do
+          is_expected.to eq("http://localhost/#{project.full_path}/-/wikis/#{wiki_page_meta.canonical_slug}#note_#{note.id}")
         end
       end
     end
@@ -662,6 +683,24 @@ RSpec.describe Todo, feature_category: :notifications do
 
         expect(Todo.where(id: ids).map(&:updated_at)).to all(be_like_time(expected_update_date))
       end
+    end
+  end
+
+  describe '.sort_by_snoozed_and_creation_dates' do
+    let_it_be(:todo1) { create(:todo) }
+    let_it_be(:todo2) { create(:todo, created_at: 3.hours.ago) }
+    let_it_be(:todo3) { create(:todo, snoozed_until: 1.hour.ago) }
+
+    context 'when sorting by ascending date' do
+      subject { described_class.sort_by_snoozed_and_creation_dates(direction: :asc) }
+
+      it { is_expected.to eq([todo2, todo3, todo1]) }
+    end
+
+    context 'when sorting by descending date' do
+      subject { described_class.sort_by_snoozed_and_creation_dates }
+
+      it { is_expected.to eq([todo1, todo3, todo2]) }
     end
   end
 

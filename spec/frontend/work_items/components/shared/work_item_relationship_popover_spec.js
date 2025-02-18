@@ -40,6 +40,37 @@ describe('WorkItemRelationshipPopover', () => {
       __typename: 'LinkedWorkItemType',
     },
   ];
+  const closedChildLinkItem = {
+    linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/11',
+    linkType: 'blocks',
+    workItemState: 'CLOSED',
+    workItem: {
+      id: 'gid://gitlab/WorkItem/649',
+      iid: '59',
+      confidential: true,
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/8',
+        name: 'Objective',
+        iconName: 'issue-type-objective',
+        __typename: 'WorkItemType',
+      },
+      namespace: {
+        id: 'gid://gitlab/Group/1',
+        fullPath: 'test-project-path',
+        __typename: 'Namespace',
+      },
+      reference: 'test-project-path#57',
+      title: 'Multilevel Objective 4',
+      state: 'CLOSED',
+      createdAt: '2023-03-28T10:50:16Z',
+      closedAt: null,
+      webUrl: '/gitlab-org/gitlab-test/-/work_items/57',
+      widgets: [],
+      __typename: 'WorkItem',
+    },
+    __typename: 'LinkedWorkItemType',
+  };
+  const linkedItemsWithClosedItem = [closedChildLinkItem, ...mockLinkedItems.linkedItems.nodes];
   const target = 'blocking-icon';
   const workItemWebUrl = '/gitlab-org/gitlab-test/-/work_items/1';
 
@@ -83,6 +114,11 @@ describe('WorkItemRelationshipPopover', () => {
     linkedItems.forEach((item) => {
       expect(findPopover().text()).toContain(item.workItem.title);
     });
+  });
+
+  it('does not display closed linked items within the popover', () => {
+    createComponent({ linkedWorkItems: linkedItemsWithClosedItem });
+    expect(findPopover().text()).not.toContain(closedChildLinkItem.workItem.title);
   });
 
   it('truncates linked items if the default display limit of 3 is exceeded', () => {

@@ -2,13 +2,15 @@
 stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Set up dependency scanning'
 ---
 
-# Tutorial: Set up dependency scanning
+{{< details >}}
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com
+- Tier: Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 Dependency Scanning can automatically find security vulnerabilities in your software dependencies
 while you're developing and testing your applications. For example, dependency scanning lets you

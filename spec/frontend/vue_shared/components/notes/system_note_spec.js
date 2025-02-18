@@ -62,7 +62,15 @@ describe('system note component', () => {
   });
 
   it('should render svg icon only for certain icons', () => {
-    const ALLOWED_ICONS = ['check', 'merge', 'merge-request-close', 'issue-close'];
+    const ALLOWED_ICONS = [
+      'check',
+      'merge',
+      'merge-request-close',
+      'issue-close',
+      'issues',
+      'error',
+      'review-warning',
+    ];
     createComponent(props);
 
     expect(vm.find('[data-testid="timeline-icon"]').exists()).toBe(false);

@@ -2,9 +2,8 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab remote URL format
 ---
-
-# GitLab remote URL format
 
 In VS Code, you can clone Git repositories, or browse them
 in read-only mode.

@@ -232,10 +232,7 @@ module API
       end
       get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :user_profile, urgency: :default do
         if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit!(
-            :user_status,
-            scope: request.ip
-          )
+          check_rate_limit_by_user_or_ip!(:user_status)
         end
 
         user = find_user(params[:user_id])
@@ -300,10 +297,7 @@ module API
 
         unless current_user.can_read_all_resources?
           if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-            check_rate_limit!(
-              :user_following,
-              scope: request.ip
-            )
+            check_rate_limit_by_user_or_ip!(:user_following)
           end
         end
 
@@ -325,10 +319,7 @@ module API
 
         unless current_user.can_read_all_resources?
           if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-            check_rate_limit!(
-              :user_followers,
-              scope: request.ip
-            )
+            check_rate_limit_by_user_or_ip!(:user_followers)
           end
         end
 
@@ -542,10 +533,7 @@ module API
       end
       get ':user_id/keys', requirements: API::USER_REQUIREMENTS, feature_category: :system_access do
         if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit!(
-            :user_keys,
-            scope: request.ip
-          )
+          check_rate_limit_by_user_or_ip!(:user_keys)
         end
 
         user = find_user(params[:user_id])
@@ -564,10 +552,7 @@ module API
       end
       get ':id/keys/:key_id', requirements: API::USER_REQUIREMENTS, feature_category: :system_access do
         if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit!(
-            :user_specific_key,
-            scope: request.ip
-          )
+          check_rate_limit_by_user_or_ip!(:user_specific_key)
         end
 
         user = find_user(params[:id])
@@ -639,10 +624,7 @@ module API
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/gpg_keys', feature_category: :system_access do
         if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit!(
-            :user_gpg_keys,
-            scope: request.ip
-          )
+          check_rate_limit_by_user_or_ip!(:user_gpg_keys)
         end
 
         user = User.find_by(id: params[:id])
@@ -663,10 +645,7 @@ module API
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/gpg_keys/:key_id', feature_category: :system_access do
         if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit!(
-            :user_specific_gpg_key,
-            scope: request.ip
-          )
+          check_rate_limit_by_user_or_ip!(:user_specific_gpg_key)
         end
 
         user = User.find_by(id: params[:id])

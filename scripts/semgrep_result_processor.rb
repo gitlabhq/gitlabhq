@@ -102,8 +102,6 @@ class SemgrepResultProcessor
     existing_comments = get_existing_comments || []
 
     existing_headers = existing_comments.filter_map do |comment|
-      next unless comment['author']['id'].to_s == ENV['BOT_USER_ID'].to_s
-
       comment["body"].match(/<!-- (.*?) -->/)&.captures&.first
     end
     existing_fingerprints = existing_headers.map do |message|

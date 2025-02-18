@@ -19,10 +19,8 @@ class LfsObjectsProject < ApplicationRecord
   scope :project_id_in, ->(ids) { where(project_id: ids) }
   scope :lfs_object_in, ->(lfs_objects) { where(lfs_object: lfs_objects) }
 
-  def self.link_to_project!(lfs_object, project)
-    # We can't use an upsert here because there is no uniqueness constraint:
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/347466
-    self.safe_find_or_create_by!(lfs_object_id: lfs_object.id, project_id: project.id) # rubocop:disable Performance/ActiveRecordSubtransactionMethods
+  def self.link_to_project!(lfs_object, project, repository_type)
+    safe_find_or_create_by!(lfs_object_id: lfs_object.id, project_id: project.id, repository_type: repository_type) # rubocop:disable Performance/ActiveRecordSubtransactionMethods -- We can't use an upsert here because there is no uniqueness constraint: https://gitlab.com/gitlab-org/gitlab/-/issues/347466
   end
 
   def self.update_statistics_for_project_id(project_id)

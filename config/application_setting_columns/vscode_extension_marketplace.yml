@@ -1,0 +1,13 @@
+---
+api_type: hash
+attr: vscode_extension_marketplace
+clusterwide: false
+column: vscode_extension_marketplace
+db_type: jsonb
+default: "'{}'::jsonb"
+description: Settings for VS Code Extension Marketplace. Used by [Web IDE](../user/project/web_ide/_index.md)
+  and [Workspaces](../user/workspace/_index.md).
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

@@ -118,6 +118,7 @@ export async function mountIssuesListApp() {
     wiIssuesListPath,
     wiLabelsManagePath,
     wiReportAbusePath,
+    wiNewCommentTemplatePaths,
     hasLinkedItemsEpicsFeature,
   } = el.dataset;
 
@@ -204,6 +205,7 @@ export async function mountIssuesListApp() {
       reportAbusePath: wiReportAbusePath,
       hasSubepicsFeature: false,
       hasLinkedItemsEpicsFeature: parseBoolean(hasLinkedItemsEpicsFeature),
+      commentTemplatePaths: JSON.parse(wiNewCommentTemplatePaths),
     },
     render: (createComponent) => createComponent(IssuesListApp),
   });

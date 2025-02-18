@@ -15,9 +15,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
      { key: 'second', secret_value: 'second_world' }]
   end
 
+  let(:source) { :push }
+
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(
-      source: :push,
+      source: source,
       origin_ref: 'master',
       checkout_sha: project.commit.id,
       after_sha: nil,
@@ -50,6 +52,15 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
       step.perform!
 
       expect(step.break?).to be false
+    end
+  end
+
+  shared_examples 'assigns variables_attributes' do
+    specify do
+      step.perform!
+
+      expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
+        .to eq variables_attributes.map(&:with_indifferent_access)
     end
   end
 
@@ -113,22 +124,25 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
           expect(pipeline.variables).to be_empty
         end
       end
-    end
 
-    context 'when user is maintainer' do
-      before do
-        project.add_maintainer(user)
-      end
+      context 'when source is :ondemand_dast_validation' do
+        let(:source) { :ondemand_dast_validation }
 
-      it_behaves_like 'does not break the chain'
+        it_behaves_like 'does not break the chain'
 
-      it 'assigns variables_attributes' do
-        step.perform!
-
-        expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
-          .to eq variables_attributes.map(&:with_indifferent_access)
+        it_behaves_like 'assigns variables_attributes'
       end
     end
+  end
+
+  context 'when user is maintainer' do
+    before do
+      project.add_maintainer(user)
+    end
+
+    it_behaves_like 'does not break the chain'
+
+    it_behaves_like 'assigns variables_attributes'
   end
 
   context 'with duplicate pipeline variables' do
