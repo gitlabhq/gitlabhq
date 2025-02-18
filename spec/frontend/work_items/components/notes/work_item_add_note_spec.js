@@ -63,6 +63,7 @@ describe('Work item add note', () => {
     isResolving = false,
     isWorkItemConfidential = false,
     parentId = null,
+    hideFullscreenMarkdownButton = false,
   } = {}) => {
     const workItemResponse = workItemByIidResponseFactory({
       canCreateNote,
@@ -94,6 +95,7 @@ describe('Work item add note', () => {
         isResolving,
         isWorkItemConfidential,
         parentId,
+        hideFullscreenMarkdownButton,
       },
     });
 
@@ -428,5 +430,11 @@ describe('Work item add note', () => {
     await createComponent({ parentId: 'example-id' });
 
     expect(findCommentForm().props('parentId')).toBe('example-id');
+  });
+
+  it('passes hideFullscreenMarkdownButton to comment form', async () => {
+    await createComponent({ hideFullscreenMarkdownButton: true });
+
+    expect(findCommentForm().props('hideFullscreenMarkdownButton')).toBe(true);
   });
 });

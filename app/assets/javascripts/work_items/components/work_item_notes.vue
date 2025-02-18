@@ -115,6 +115,11 @@ export default {
       default: false,
       required: false,
     },
+    hideFullscreenMarkdownButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -458,6 +463,7 @@ export default {
         <ul class="notes notes-form timeline">
           <work-item-add-note
             v-bind="workItemCommentFormProps"
+            :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
             @startEditing="$emit('startEditing')"
             @stopEditing="$emit('stopEditing')"
             @error="$emit('error', $event)"
@@ -489,6 +495,7 @@ export default {
               :is-discussion-locked="isDiscussionLocked"
               :is-work-item-confidential="isWorkItemConfidential"
               :is-expanded-on-load="isDiscussionExpandedOnLoad(discussion)"
+              :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
               @deleteNote="showDeleteNoteModal($event, discussion)"
               @reportAbuse="reportAbuse(true, $event)"
               @error="$emit('error', $event)"
@@ -508,6 +515,7 @@ export default {
         <ul class="notes notes-form timeline">
           <work-item-add-note
             v-bind="workItemCommentFormProps"
+            :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
             @startEditing="$emit('startEditing')"
             @stopEditing="$emit('stopEditing')"
             @error="$emit('error', $event)"

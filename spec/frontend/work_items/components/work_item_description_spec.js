@@ -77,6 +77,7 @@ describe('WorkItemDescription', () => {
     descriptionTemplateHandler = successfulTemplateHandler,
     routeName = '',
     routeQuery = {},
+    hideFullscreenMarkdownButton = false,
   } = {}) => {
     router = {
       replace: jest.fn(),
@@ -97,6 +98,7 @@ describe('WorkItemDescription', () => {
         editMode,
         showButtonsBelowField,
         isCreateFlow,
+        hideFullscreenMarkdownButton,
       },
       provide: {
         isGroup,
@@ -697,6 +699,14 @@ describe('WorkItemDescription', () => {
 
         expect(findEditedAt().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('when hideFullscreenMarkdownButton is true', () => {
+    it('does not show full screen button on markdown editor', async () => {
+      await createComponent({ hideFullscreenMarkdownButton: true, isEditing: true });
+
+      expect(findMarkdownEditor().props('restrictedToolBarItems')).toEqual(['full-screen']);
     });
   });
 });

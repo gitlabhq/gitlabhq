@@ -211,6 +211,21 @@ describe('WorkItemDetail component', () => {
     setWindowLocation('');
   });
 
+  it.each`
+    isDrawer | expected
+    ${true}  | ${true}
+    ${false} | ${false}
+  `(
+    'when isDrawer=$isDrawer, passes hideFullscreenMarkdownButton=$expected to workItemDescription and workItemNotes',
+    async ({ isDrawer, expected }) => {
+      createComponent({ isDrawer });
+      await waitForPromises();
+
+      expect(findWorkItemDescription().props('hideFullscreenMarkdownButton')).toBe(expected);
+      expect(findNotesWidget().props('hideFullscreenMarkdownButton')).toBe(expected);
+    },
+  );
+
   describe('when there is no `workItemIid` prop', () => {
     beforeEach(async () => {
       createComponent({ workItemIid: null });

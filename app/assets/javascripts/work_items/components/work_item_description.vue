@@ -99,6 +99,11 @@ export default {
       required: false,
       default: false,
     },
+    hideFullscreenMarkdownButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
@@ -218,6 +223,12 @@ export default {
     },
     isNewWorkItemRoute() {
       return this.$route?.name === ROUTES.new;
+    },
+    restrictedToolBarItems() {
+      if (this.hideFullscreenMarkdownButton) {
+        return ['full-screen'];
+      }
+      return [];
     },
   },
   watch: {
@@ -479,6 +490,7 @@ export default {
           :form-field-props="formFieldProps"
           :quick-actions-docs-path="$options.quickActionsDocsPath"
           :autocomplete-data-sources="autocompleteDataSources"
+          :restricted-tool-bar-items="restrictedToolBarItems"
           enable-autocomplete
           supports-quick-actions
           :autofocus="autofocus"

@@ -171,6 +171,11 @@ export default {
       required: false,
       default: null,
     },
+    hideFullscreenMarkdownButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -234,6 +239,12 @@ export default {
     },
     currentUserId() {
       return window.gon.current_user_id;
+    },
+    restrictedToolBarItems() {
+      if (this.hideFullscreenMarkdownButton) {
+        return ['full-screen'];
+      }
+      return [];
     },
   },
   apollo: {
@@ -360,6 +371,7 @@ export default {
             use-bottom-toolbar
             supports-quick-actions
             :autofocus="autofocus"
+            :restricted-tool-bar-items="restrictedToolBarItems"
             @input="setCommentText"
             @keydown.meta.enter="submitForm()"
             @keydown.ctrl.enter="submitForm()"

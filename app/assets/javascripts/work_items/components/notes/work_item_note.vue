@@ -111,6 +111,11 @@ export default {
       required: false,
       default: false,
     },
+    hideFullscreenMarkdownButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -416,6 +421,7 @@ export default {
             :is-discussion-resolvable="isDiscussionResolvable"
             :has-replies="hasReplies"
             :full-path="fullPath"
+            :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
             class="gl-mt-3"
             @cancelEditing="cancelEditing"
             @toggleResolveDiscussion="$emit('resolve')"

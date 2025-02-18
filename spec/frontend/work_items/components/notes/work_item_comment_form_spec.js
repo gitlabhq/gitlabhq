@@ -75,6 +75,7 @@ describe('Work item comment form component', () => {
     canUpdate = true,
     emailParticipantsResponseHandler = emailParticipantsSuccessHandler,
     parentId = null,
+    hideFullscreenMarkdownButton,
   } = {}) => {
     workItemResponse = workItemByIidResponseFactory({
       canMarkNoteAsInternal,
@@ -106,6 +107,7 @@ describe('Work item comment form component', () => {
         hasReplies,
         hasEmailParticipantsWidget,
         parentId,
+        hideFullscreenMarkdownButton,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -130,6 +132,12 @@ describe('Work item comment form component', () => {
       name: 'work-item-add-or-edit-comment',
       placeholder: 'Write a comment or drag your files here…',
     });
+  });
+
+  it('hides full screen button in markdown toolbar when hideFullscreenMarkdownButton is true', () => {
+    createComponent({ hideFullscreenMarkdownButton: true });
+
+    expect(findMarkdownEditor().props('restrictedToolBarItems')).toEqual(['full-screen']);
   });
 
   it('passes correct props to CommentFieldLayout component', () => {

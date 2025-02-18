@@ -88,6 +88,11 @@ export default {
       required: false,
       default: false,
     },
+    hideFullscreenMarkdownButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -242,6 +247,7 @@ export default {
     :work-item-id="workItemId"
     :work-item-iid="workItemIid"
     :is-resolving="isResolving"
+    :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
     @startEditing="$emit('startEditing')"
     @resolve="resolveDiscussion"
     @startReplying="showReplyForm"
@@ -276,6 +282,7 @@ export default {
                   :is-discussion-resolved="isDiscussionResolved"
                   :is-discussion-resolvable="isDiscussionResolvable"
                   :is-resolving="isResolving"
+                  :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
                   @startReplying="showReplyForm"
                   @startEditing="$emit('startEditing')"
                   @deleteNote="$emit('deleteNote', note)"
@@ -310,6 +317,7 @@ export default {
                         :is-discussion-resolved="isDiscussionResolved"
                         :is-discussion-resolvable="isDiscussionResolvable"
                         :is-resolving="isResolving"
+                        :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
                         @startReplying="showReplyForm"
                         @deleteNote="$emit('deleteNote', reply)"
                         @reportAbuse="$emit('reportAbuse', reply)"
@@ -344,6 +352,7 @@ export default {
                       :is-discussion-resolvable="isDiscussionResolvable"
                       :is-resolving="isResolving"
                       :has-replies="hasReplies"
+                      :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
                       @startReplying="showReplyForm"
                       @cancelEditing="hideReplyForm"
                       @replied="onReplied"

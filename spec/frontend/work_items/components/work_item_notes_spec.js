@@ -109,6 +109,7 @@ describe('WorkItemNotes component', () => {
     isModal = false,
     isWorkItemConfidential = false,
     parentId = null,
+    propsData = {},
   } = {}) => {
     wrapper = shallowMount(WorkItemNotes, {
       apolloProvider: createMockApollo([
@@ -131,6 +132,7 @@ describe('WorkItemNotes component', () => {
         isModal,
         isWorkItemConfidential,
         parentId,
+        ...propsData,
       },
       stubs: {
         GlModal: stubComponent(GlModal, { methods: { show: showModal } }),
@@ -542,5 +544,22 @@ describe('WorkItemNotes component', () => {
     await waitForPromises();
 
     expect(findWorkItemAddNote().props('parentId')).toBe('example-id');
+  });
+
+  describe('when hideFullscreenMarkdownButton prop is true', () => {
+    beforeEach(async () => {
+      createComponent({
+        defaultWorkItemNotesQueryHandler: workItemNotesWithCommentsQueryHandler,
+        propsData: { hideFullscreenMarkdownButton: true },
+      });
+      await waitForPromises();
+    });
+
+    it('passes prop to work-item-add-note', () => {
+      expect(findWorkItemAddNote().props('hideFullscreenMarkdownButton')).toBe(true);
+    });
+    it('passes prop to work-item-discussion', () => {
+      expect(findAllWorkItemCommentNotes().at(0).props('hideFullscreenMarkdownButton')).toBe(true);
+    });
   });
 });
