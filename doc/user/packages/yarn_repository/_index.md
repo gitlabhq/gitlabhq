@@ -231,14 +231,46 @@ npmScopes:
 Skip this step if your package is public not private.
 
 ```yaml
-  npmRegistries:
-    //<your_domain_name>/api/v4/packages/npm:
-      npmAlwaysAuth: true
-      npmAuthToken: "<your_token>"
+npmRegistries:
+  //<your_domain_name>/api/v4/packages/npm:
+    npmAlwaysAuth: true
+    npmAuthToken: "<your_token>"
 ```
 
 - Replace `<your_domain_name>` with your domain name, for example, `gitlab.com`.
 - Replace `<your_token>` with a deployment token (recommended), group access token, project access token, or personal access token.
+
+### Install from the group level
+
+Use these steps for global configuration in the `.yarnrc.yml` file:
+
+1. [Configure group scope](#configure-group-scope)
+1. [Set the registry](#set-the-registry-group-level)
+
+#### Configure group scope
+
+```yaml
+npmScopes:
+  <my-org>:
+    npmRegistryServer: "https://<your_domain_name>/api/v4/groups/<your_group_id>/-/packages/npm"
+```
+
+- Replace `<my-org>` with the root level group of the project you're installing to the package from excluding the `@` symbol.
+- Replace `<your_domain_name>` with your domain name, for example, `gitlab.com`.
+- Replace `<your_group_id>` with your group ID, found on the [group overview page](../../group#access-a-group-by-using-the-group-id).
+
+#### Set the registry (group level)
+
+```yaml
+npmRegistries:
+  //<your_domain_name>/api/v4/groups/<your_group_id>/-/packages/npm:
+    npmAlwaysAuth: true
+    npmAuthToken: "<your_token>"
+```
+
+- Replace `<my-org>` with the root level group of the project you're installing to the package from excluding the `@` symbol.
+- Replace `<your_domain_name>` with your domain name, for example, `gitlab.com`.
+- Replace `<your_group_id>` with your group ID, found on the [group overview page](../../group#access-a-group-by-using-the-group-id).
 
 ### Install from the project level
 
@@ -249,10 +281,10 @@ Use these steps for each project in the `.yarnrc.yml` file:
 
 #### Configure project scope
 
-  ```yaml
-  npmScopes:
-    <my-org>:
-      npmRegistryServer: "https://<your_domain_name>/api/v4/projects/<your_project_id>/packages/npm"
+```yaml
+npmScopes:
+  <my-org>:
+    npmRegistryServer: "https://<your_domain_name>/api/v4/projects/<your_project_id>/packages/npm"
 ```
 
 - Replace `<my-org>` with the root level group of the project you're installing to the package from excluding the `@` symbol.
@@ -292,9 +324,19 @@ The Yarn Classic setup, requires both `.npmrc` and `.yarnrc` files as
 
 ```shell
 # .npmrc
+## Instance level
+//<your_domain_name>/api/v4/packages/npm/:_authToken="<your_token>"
+## Group level
+//<your_domain_name>/api/v4/groups/<your_group_id>/-/packages/npm/:_authToken="<your_token>"
+## Project level
 //<your_domain_name>/api/v4/projects/<your_project_id>/packages/npm/:_authToken="<your_token>"
 
 # .yarnrc
+## Instance level
+"@scope:registry" "https://<your_domain_name>/api/v4/packages/npm/"
+## Group level
+"@scope:registry" "https://<your_domain_name>/api/v4/groups/<your_group_id>/-/packages/npm/"
+## Project level
 "@scope:registry" "https://<your_domain_name>/api/v4/projects/<your_project_id>/packages/npm/"
 ```
 

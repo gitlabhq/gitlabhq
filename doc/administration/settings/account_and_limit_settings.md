@@ -577,8 +577,7 @@ GitLab administrators can prevent this behavior:
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
-- Status: Experiment
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -588,14 +587,6 @@ GitLab administrators can prevent this behavior:
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/427400) in GitLab 17.9. Feature flag `disallow_private_profiles` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 By default, users can make their profiles private.
 GitLab administrators can disable this setting to require all user profiles to be public.

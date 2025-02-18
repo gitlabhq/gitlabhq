@@ -12,24 +12,24 @@ title: Description templates
 
 {{< /details >}}
 
-You can define templates to use as descriptions
-for your [issues](issues/_index.md) and [merge requests](merge_requests/_index.md).
+Description templates standardize and automate how issues and merge requests are created in GitLab.
+Description templates:
 
-You can define these templates in a project, group, or instance. Projects
-inherit the templates defined at a higher level.
+- Create consistent layouts for issues and merge requests across projects.
+- Provide specialized templates for different workflow stages and purposes.
+- Support custom templates for projects, groups, and the entire instance.
+- Auto-populate fields with variables and quick actions.
+- Ensure proper tracking of bugs, features, and other work items.
+- Format [Service Desk email responses](service_desk/configure.md#use-a-custom-template-for-service-desk-tickets).
 
-You might want to use these templates:
+You can define templates to use as descriptions for your [issues](issues/_index.md) and [merge requests](merge_requests/_index.md).
+Projects inherit templates from their group and instance.
 
-- For different stages of your workflow, for example, feature proposal, feature improvement, or a bug report.
-- For every issue or merge request for a specific project, so the layout is consistent.
-- For a [Service Desk email template](service_desk/configure.md#use-a-custom-template-for-service-desk-tickets).
-
-For description templates to work, they must be:
+Templates must be:
 
 - Saved with the `.md` extension.
-- Stored in your project's repository in the `.gitlab/issue_templates`
-  or `.gitlab/merge_request_templates` directory.
-- Be present on the default branch.
+- Stored in your project's repository in the `.gitlab/issue_templates` or `.gitlab/merge_request_templates` directory.
+- Present on the default branch.
 
 ## Create an issue template
 

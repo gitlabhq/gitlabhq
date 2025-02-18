@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Layout/LineEndStringConcatenationIndentation:
   Exclude:
-    - 'app/helpers/visibility_level_helper.rb'
     - 'app/models/abuse_report.rb'
     - 'app/models/bulk_imports/entity.rb'
     - 'app/models/clusters/agent.rb'

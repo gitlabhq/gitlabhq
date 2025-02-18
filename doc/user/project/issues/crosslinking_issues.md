@@ -12,10 +12,21 @@ title: Crosslinking issues
 
 {{< /details >}}
 
-There are several ways to mention an issue or make [issues](_index.md) appear in each other's
-[Linked issues](related_issues.md) section.
+Crosslinking creates relationships between issues in GitLab.
+Crosslinking:
 
-For more information on GitLab Issues, read the [issues documentation](_index.md).
+- Connects related issues for better tracking and visibility.
+- Links issues to their related commits and merge requests.
+- Creates references through commit messages, branch names, and descriptions.
+- Works across projects and groups.
+- Shows relationships in each issue's **Linked items** section.
+
+You can create crosslinks through:
+
+- [Commit messages](#from-commit-messages)
+- [Linked issues](#from-linked-issues)
+- [Merge requests](#from-merge-requests)
+- [Branch names](#from-branch-names)
 
 ## From commit messages
 

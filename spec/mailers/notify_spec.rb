@@ -639,33 +639,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       )
     end
 
-    describe 'project invitation accepted' do
-      let(:invited_user) { create(:user, name: 'invited user') }
-      let(:recipient) { create(:user, maintainer_of: project) }
-      let(:project_member) do
-        invitee = invite_to_project(project, inviter: recipient)
-        invitee.accept_invite!(invited_user)
-        invitee
-      end
-
-      subject { described_class.member_invite_accepted_email('project', project_member.id) }
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'an email sent to a user'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-
-      it 'contains all the useful information' do
-        is_expected.to have_subject 'Invitation accepted'
-        is_expected.to have_body_text project.full_name
-        is_expected.to have_body_text project.web_url
-        is_expected.to have_body_text project_member.invite_email
-        is_expected.to have_body_text invited_user.name
-      end
-    end
-
     context 'items that are noteable, the email for a note' do
       let(:note_author) { create(:user, name: 'author_name') }
       let(:note) { create(:note, project: project, author: note_author) }
@@ -1660,32 +1633,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         user: user,
         created_by: inviter
       )
-    end
-
-    describe 'group invitation accepted' do
-      let(:invited_user) { create(:user, name: 'invited user') }
-      let(:owner) { create(:user, owner_of: group) }
-      let(:group_member) do
-        invitee = invite_to_group(group, inviter: owner)
-        invitee.accept_invite!(invited_user)
-        invitee
-      end
-
-      subject { described_class.member_invite_accepted_email('group', group_member.id) }
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-
-      it 'contains all the useful information' do
-        is_expected.to have_subject 'Invitation accepted'
-        is_expected.to have_body_text group.name
-        is_expected.to have_body_text group.web_url
-        is_expected.to have_body_text group_member.invite_email
-        is_expected.to have_body_text invited_user.name
-      end
     end
 
     describe 'group expiration date updated' do

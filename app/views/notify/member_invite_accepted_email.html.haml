@@ -1,7 +1,0 @@
-%tr
-  %td.text-content
-    %p
-      = s_('Notify|%{invite_email}, now known as %{user_name}, has accepted your invitation to join the %{target_name} %{target_model_name}.').html_safe % { invite_email: content_tag(:span, member.invite_email, class: :highlight),
-        user_name: link_to(member.user.name, user_url(member.user)),
-        target_name: link_to(member_source.human_name, member_source.web_url, class: :highlight),
-        target_model_name: member_source.model_name.singular }

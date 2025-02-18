@@ -48,6 +48,10 @@ module Gitlab
         Process.setproctitle(process_title)
       end
 
+      def self.root
+        Pathname.new(File.expand_path(File.join(__dir__, '../../../')))
+      end
+
       def self.rails_environment!
         require File.join(GITLAB_PATH, 'config/application')
 

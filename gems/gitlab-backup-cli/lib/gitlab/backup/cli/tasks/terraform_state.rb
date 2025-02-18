@@ -7,7 +7,7 @@ module Gitlab
         class TerraformState < Task
           def self.id = 'terraform_state'
 
-          def human_name = _('terraform states')
+          def human_name = 'Terraform States'
 
           def destination_path = 'terraform_state.tar.gz'
 

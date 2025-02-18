@@ -21,7 +21,7 @@ PATH
       grpc (= 1.63.0)
       json (~> 2.7.2)
       jwt (~> 2.5)
-      logger (~> 1.5.3)
+      logger (~> 1.5)
       minitest (~> 5.11.0)
       parallel (~> 1.19)
       pg (~> 1.5.6)

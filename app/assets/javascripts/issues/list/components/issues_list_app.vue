@@ -208,6 +208,11 @@ export default {
       required: false,
       default: () => [],
     },
+    searchedByEpic: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -303,6 +308,7 @@ export default {
         ...this.apiFilterParams,
         search: isIidSearch ? undefined : this.searchQuery,
         types: this.apiFilterParams.types || this.defaultWorkItemTypes,
+        searchedByEpic: this.searchedByEpic,
       };
     },
     namespace() {
@@ -724,6 +730,9 @@ export default {
     },
     handleFilter(tokens) {
       this.filterTokens = tokens;
+      if (this.apiFilterParams) {
+        this.$emit('updateFilterParams', this.apiFilterParams);
+      }
       this.pageParams = getInitialPageParams(this.pageSize);
 
       this.$router.push({ query: this.urlParams });
@@ -846,6 +855,10 @@ export default {
 
       const tokens = getFilterTokens(window.location.search);
       this.filterTokens = groupMultiSelectFilterTokens(tokens, this.searchTokens);
+
+      if (this.apiFilterParams) {
+        this.$emit('updateFilterParams', this.apiFilterParams);
+      }
 
       this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       this.pageParams = getInitialPageParams(

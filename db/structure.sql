@@ -10396,6 +10396,12 @@ CREATE SEQUENCE ci_group_variables_id_seq
 
 ALTER SEQUENCE ci_group_variables_id_seq OWNED BY ci_group_variables.id;
 
+CREATE TABLE ci_hosted_runners (
+    runner_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
 CREATE TABLE ci_instance_runner_monthly_usages (
     id bigint NOT NULL,
     runner_id bigint,
@@ -23478,7 +23484,8 @@ CREATE TABLE vulnerability_merge_request_links (
     merge_request_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_341035683b CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE vulnerability_merge_request_links_id_seq
@@ -27330,6 +27337,9 @@ ALTER TABLE ONLY ci_gitlab_hosted_runner_monthly_usages
 
 ALTER TABLE ONLY ci_group_variables
     ADD CONSTRAINT ci_group_variables_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_hosted_runners
+    ADD CONSTRAINT ci_hosted_runners_pkey PRIMARY KEY (runner_id);
 
 ALTER TABLE ONLY ci_instance_runner_monthly_usages
     ADD CONSTRAINT ci_instance_runner_monthly_usages_pkey PRIMARY KEY (id);
@@ -42139,6 +42149,9 @@ ALTER TABLE ONLY boards_epic_board_recent_visits
 
 ALTER TABLE p_ci_job_artifacts
     ADD CONSTRAINT fk_rails_c5137cb2c1_p FOREIGN KEY (partition_id, job_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_hosted_runners
+    ADD CONSTRAINT fk_rails_c550bc493e FOREIGN KEY (runner_id) REFERENCES instance_type_ci_runners_e59bb2812d(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY organization_settings
     ADD CONSTRAINT fk_rails_c56e4690c0 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

@@ -12,17 +12,25 @@ title: GitLab quick actions
 
 {{< /details >}}
 
-Quick actions are text-based shortcuts for common actions that are usually done
-by selecting buttons or dropdowns in the GitLab user interface. You can enter
-these commands in the descriptions or comments of issues, epics, merge requests,
-and commits. Quick actions are executed from both new comments and description, and when you edit
-existing ones.
+Quick actions provide text-based shortcuts for common actions in GitLab.
+Quick actions:
 
-Many quick actions are context-aware, requiring certain conditions be met. For example, to remove
-an issue due date with `/remove_due_date`, the issue must have a due date set.
+- Execute common actions without using the user interface.
+- Support working with issues, merge requests, epics, and commits.
+- Run automatically when you save descriptions or comments.
+- Respond to specific contexts and conditions.
+- Process multiple commands when entered on separate lines.
 
-Be sure to enter each quick action on a separate line to allow GitLab to
-properly detect and execute the commands.
+For example, you can use quick actions to:
+
+- Assign users.
+- Add labels.
+- Set due dates.
+- Change status.
+- Set other attributes.
+
+Each command starts with a forward slash (`/`) and must be entered on a separate line.
+Many quick actions accept parameters, which you can enter with quotation marks (`"`) or specific formatting.
 
 ## Parameters
 

@@ -19,7 +19,7 @@ export default {
     [TYPE_EPIC]: TYPENAME_EPIC,
   },
   referenceFormatter: {
-    [TYPE_ISSUE]: (r) => r.split('/')[1],
+    [TYPE_ISSUE]: (r) => r.split('/').pop(),
   },
   defaultDisplayLimit: 3,
   textTruncateWidth: 80,

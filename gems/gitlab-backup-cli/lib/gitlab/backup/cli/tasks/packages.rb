@@ -7,7 +7,7 @@ module Gitlab
         class Packages < Task
           def self.id = 'packages'
 
-          def human_name = _('packages')
+          def human_name = 'Packages'
 
           def destination_path = 'packages.tar.gz'
 

@@ -1214,17 +1214,17 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
 
     context 'when after accepting invite' do
-      include NotificationHelpers
-
       let_it_be(:group) { create(:group, require_two_factor_authentication: true) }
       let_it_be(:member, reload: true) { create(:group_member, :invited, source: group) }
       let_it_be(:email) { member.invite_email }
       let(:user) { build(:user, email: email) }
 
-      it 'enqueues an email to user' do
-        member.accept_invite!(user)
+      it 'enqueues an invite accepted email' do
+        allow(Members::InviteAcceptedMailer).to receive(:email).with(member: member).and_call_original
 
-        expect_enqueud_email(member.real_source_type, member.id, mail: 'member_invite_accepted_email')
+        expect do
+          member.accept_invite!(user)
+        end.to have_enqueued_mail(Members::InviteAcceptedMailer, :email)
       end
 
       it 'calls updates the two factor requirement' do

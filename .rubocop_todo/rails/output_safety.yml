@@ -32,7 +32,6 @@ Rails/OutputSafety:
     - 'app/helpers/tags_helper.rb'
     - 'app/helpers/timeboxes_helper.rb'
     - 'app/helpers/version_check_helper.rb'
-    - 'app/helpers/visibility_level_helper.rb'
     - 'app/mailers/notify.rb'
     - 'app/models/concerns/restricted_signup.rb'
     - 'app/presenters/ci/pipeline_presenter.rb'

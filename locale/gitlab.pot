@@ -23181,9 +23181,6 @@ msgstr ""
 msgid "Error creating label."
 msgstr ""
 
-msgid "Error creating new directory. Please try again."
-msgstr ""
-
 msgid "Error creating new iteration"
 msgstr ""
 
@@ -24212,9 +24209,6 @@ msgid "Failed to clone this issue: wrong parameters."
 msgstr ""
 
 msgid "Failed to create a branch for this issue. Please try again."
-msgstr ""
-
-msgid "Failed to create a new directory. See exception details for more information."
 msgstr ""
 
 msgid "Failed to create a to-do item for the design."
@@ -63698,7 +63692,7 @@ msgstr ""
 msgid "VisibilityLevel|The group and its projects can only be viewed by members."
 msgstr ""
 
-msgid "VisibilityLevel|The group, any public projects, and any of their members, issues, and merge requests can be viewed without authentication. Public groups and projects will be indexed by search engines. Read more about %{free_user_limit_doc_link_start}free user limits%{link_end}, or %{group_billings_link_start}upgrade to a paid tier%{link_end}."
+msgid "VisibilityLevel|The group, any public projects, and any of their members, issues, and merge requests can be viewed without authentication. Public groups and projects will be indexed by search engines. Read more about %{help_link_start}free user limits%{help_link_end}, or %{billing_link_start}upgrade to a paid tier%{billing_link_end}."
 msgstr ""
 
 msgid "VisibilityLevel|The project can be accessed by any logged in user except external users."

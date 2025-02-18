@@ -3,7 +3,7 @@
 module Gitlab
   module Backup
     module Cli
-      module Targets
+      module Services
         class GitalyBackup
           # Backup and restores repositories using gitaly-backup
           #

@@ -9,7 +9,7 @@ module Gitlab
 
           def enabled = Gitlab.config.registry.enabled
 
-          def human_name = _('container registry images')
+          def human_name = 'Container Registry Images'
 
           def destination_path = 'registry.tar.gz'
 

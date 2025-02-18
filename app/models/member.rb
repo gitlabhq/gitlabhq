@@ -714,9 +714,7 @@ class Member < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def after_accept_invite
-    run_after_commit_or_now do
-      notification_service.accept_invite(self)
-    end
+    run_after_commit_or_now { Members::InviteAcceptedMailer.with(member: self).email.deliver_later }
 
     update_two_factor_requirement
 

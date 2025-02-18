@@ -177,8 +177,21 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
               allow_next_instance_of(Gitlab::Kas::Client) do |kas_client|
                 allow(kas_client).to receive_messages(get_environment_template: double,
                   render_environment_template: double)
+
+                template = double
+                allow(kas_client).to receive(:get_environment_template)
+                  .with(agent: cluster_agent, template_name: 'default')
+                  .and_return(template)
+
+                rendered_template = double
+                allow(kas_client).to receive(:render_environment_template)
+                  .with(template: template, environment: environment, build: build)
+                  .and_return(rendered_template)
+
                 success_response = Gitlab::Agent::ManagedResources::Rpc::EnsureEnvironmentResponse.new(errors: [])
-                allow(kas_client).to receive(:ensure_environment).and_return(success_response)
+                allow(kas_client).to receive(:ensure_environment)
+                  .with(template: rendered_template, environment: environment, build: build)
+                  .and_return(success_response)
               end
             end
 

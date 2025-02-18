@@ -35,18 +35,6 @@ module Emails
         subject: subject("Access to the #{member_source.human_name} #{member_source.model_name.singular} was granted"))
     end
 
-    def member_invite_accepted_email(member_source_type, member_id)
-      @member_source_type = member_source_type
-      @member_id = member_id
-
-      return unless member_exists?
-      return unless member.created_by
-
-      email_with_layout(
-        to: member.created_by.notification_email_for(notification_group),
-        subject: subject('Invitation accepted'))
-    end
-
     def member_expiration_date_updated_email(member_source_type, member_id)
       @member_source_type = member_source_type
       @member_id = member_id

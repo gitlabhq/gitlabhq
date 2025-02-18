@@ -13,17 +13,14 @@ title: Web Editor
 
 {{< /details >}}
 
-You can use the Web Editor directly in the GitLab UI without
-cloning repositories locally or using the command line.
+The Web Editor is a browser-based tool for making changes to your GitLab repositories without
+local setup. You can:
 
-Use the Web Editor to:
-
-- Edit single files without a local development environment.
-- Create or upload new files.
-- Replace a file with another file.
-- Create new directories.
-- Create a branch or tag.
-- [Lock a file or a directory](../file_lock.md#lock-a-file-or-a-directory).
+- Edit single files and view live Markdown previews.
+- Create new files and directories.
+- Upload and replace files.
+- Create branches and tags for version control.
+- [Lock files](../file_lock.md#lock-a-file-or-a-directory) to prevent concurrent editing conflicts.
 - Contribute to projects without setting up Git locally.
 
 GitLab uses your [primary email address](../../profile/_index.md#change-the-email-displayed-on-your-commits)

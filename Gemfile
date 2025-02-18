@@ -76,7 +76,7 @@ gem 'rugged', '~> 1.6', feature_category: :gitaly
 gem 'faraday', '~> 2', feature_category: :shared
 gem 'faraday-retry', '~> 2', feature_category: :shared
 # Logger is a dependency of Faraday, but Logger 1.6.0 does not work with Chef.
-gem 'logger', '~> 1.5.3', feature_category: :shared
+gem 'logger', '~> 1.6.0', feature_category: :shared
 
 gem 'marginalia', '~> 1.11.1', feature_category: :database
 

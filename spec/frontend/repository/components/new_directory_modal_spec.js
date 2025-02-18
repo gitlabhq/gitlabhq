@@ -3,10 +3,8 @@ import { nextTick } from 'vue';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/alert';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import * as urlUtility from '~/lib/utils/url_utility';
-import { logError } from '~/lib/logger';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import NewDirectoryModal from '~/repository/components/new_directory_modal.vue';
 
@@ -153,20 +151,28 @@ describe('NewDirectoryModal', () => {
         expect(findCommitChangesModal().props('valid')).toBe(false);
       });
 
-      it('creates an alert error and logs the error', async () => {
-        mock.onPost(initialProps.path).timeout();
-        const mockError = new Error('timeout of 0ms exceeded');
+      describe('error handling', () => {
+        const errorMessage = 'Custom error message';
 
-        await fillForm('foo');
-        await submitForm();
+        const submitWithError = async () => {
+          mock
+            .onPost('/create_dir')
+            .replyOnce(HTTP_STATUS_UNPROCESSABLE_ENTITY, { error: errorMessage });
+          await fillForm('foo');
+          return submitForm();
+        };
 
-        expect(createAlert).toHaveBeenCalledWith({
-          message: NewDirectoryModal.i18n.ERROR_MESSAGE,
+        beforeEach(() => submitWithError());
+
+        it('shows error message in modal when request fails', () => {
+          expect(findCommitChangesModal().props('error')).toBe(errorMessage);
         });
-        expect(logError).toHaveBeenCalledWith(
-          'Failed to create a new directory. See exception details for more information.',
-          mockError,
-        );
+
+        it('clears error on successful submission', async () => {
+          await submitForm();
+
+          expect(findCommitChangesModal().props('error')).toBeNull();
+        });
       });
     });
   });

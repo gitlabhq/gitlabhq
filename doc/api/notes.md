@@ -12,16 +12,25 @@ title: Notes API
 
 {{< /details >}}
 
-Notes are comments on:
+The Notes API manages comments and system records attached to GitLab content.
+The Notes API:
 
-- [Commits](../user/project/repository/_index.md#commit-changes-to-a-repository)
-- [Epics](../user/group/epics/_index.md)
-- [Issues](../user/project/issues/_index.md)
-- [Merge requests](../user/project/merge_requests/_index.md)
-- [Snippets](../user/snippets.md)
+- Creates and modifies comments on issues, merge requests, epics, snippets, and commits.
+- Retrieves [system-generated notes](../user/project/system_notes.md) about object changes.
+- Provides options for sorting and pagination.
+- Controls visibility through confidential and internal flags.
+- Supports rate limiting to prevent abuse.
 
-This includes system notes, which are notes about changes to the object (for example, when an
-assignee changes, GitLab posts a system note).
+Some system-generated notes are tracked as separate resource events:
+
+- [Resource label events](resource_label_events.md)
+- [Resource state events](resource_state_events.md)
+- [Resource milestone events](resource_milestone_events.md)
+- [Resource weight events](resource_weight_events.md)
+- [Resource iteration events](resource_iteration_events.md)
+
+By default, `GET` requests return 20 results at a time, because the API results are paginated.
+For more information, see [Pagination](rest/_index.md#pagination).
 
 ## Resource events
 

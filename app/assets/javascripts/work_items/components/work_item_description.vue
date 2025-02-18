@@ -184,11 +184,17 @@ export default {
       return this.workItem?.namespace?.id || '';
     },
     markdownPreviewPath() {
+      const isNewWorkItemInGroup = this.isGroup && this.workItemIid === NEW_WORK_ITEM_IID;
       const {
         fullPath,
         workItem: { iid },
       } = this;
-      return markdownPreviewPath({ fullPath, iid, isGroup: this.isGroupWorkItem });
+
+      return markdownPreviewPath({
+        fullPath,
+        iid,
+        isGroup: this.isGroupWorkItem || isNewWorkItemInGroup,
+      });
     },
     autocompleteDataSources() {
       const isNewWorkItemInGroup = this.isGroup && this.workItemIid === NEW_WORK_ITEM_IID;

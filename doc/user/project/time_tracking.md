@@ -20,30 +20,28 @@ title: Time tracking
 
 {{< /history >}}
 
-You can estimate and track the time you spend on an item, such as:
+Time tracking helps record and manage time invested in GitLab work items.
+Time tracking:
 
-- [Epic](../group/epics/_index.md). Your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
-- [Issue](issues/_index.md).
-- [Task](../tasks.md).
-- [Merge request](merge_requests/_index.md).
+- Records actual time spent on issues, merge requests, epics [with the new look](../group/epics/epic_work_items.md), and tasks.
+- Estimates total time needed for completion.
+- Provides detailed reports of time entries.
+- Calculates totals using standardized time units.
+- Tracks history through quick actions and the UI.
 
-Then you can [view a report](#view-an-items-time-tracking-report) that shows totals over time.
-
-Use time tracking for these tasks:
-
-- Record the time spent working on an item.
-- Add or update an estimate of the total time to complete an item.
-- View a breakdown of time spent working on an item.
-
-You don't have to indicate an estimate to enter the time spent, and vice versa.
-
-To enter and remove time tracking data, you must use [quick actions](quick_actions.md).
-Type all quick actions on their own lines.
-If you use any quick action more than once in a single comment, only its last occurrence is applied.
-
-You can see the data about time tracking on the right sidebar:
+You can see time tracking information in the right sidebar of your work items:
 
 ![Time tracking in the sidebar](img/time_tracking_sidebar_v13_12.png)
+
+Different time tracking features are available based on your role:
+
+- To add, edit, and remove estimates, you need at least the Planner role for issues and tasks, or the Developer role for merge requests.
+- To add and edit time spent, you need at least the Planner role for the project.
+- To delete a time entry, you must be the author or have at least the Maintainer role.
+
+Enter and remove time tracking data using [quick actions](quick_actions.md) or the user interface.
+Type quick actions on their own lines.
+If you use any quick action more than once in a single comment, only its last occurrence is applied.
 
 ## Estimates
 

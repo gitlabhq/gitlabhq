@@ -55,6 +55,13 @@ RSpec.describe Gitlab::Backup::Cli::Services::Database do
         expect(database.connection_params).to include(expected)
       end
     end
+
+    describe '#connection_name' do
+      it 'returns a connection name string' do
+        expect(database.connection_name).to be_a(String)
+        expect(database.connection_name).to eq('main')
+      end
+    end
   end
 
   context 'with test connection' do

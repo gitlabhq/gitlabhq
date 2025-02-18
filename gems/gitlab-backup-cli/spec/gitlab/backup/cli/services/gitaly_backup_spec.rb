@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'open3'
 
-RSpec.describe Gitlab::Backup::Cli::Targets::GitalyBackup do
+RSpec.describe Gitlab::Backup::Cli::Services::GitalyBackup do
   let(:context) { Gitlab::Backup::Cli::Context.build }
   let(:gitaly_backup) { described_class.new(context) }
 

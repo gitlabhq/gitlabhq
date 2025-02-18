@@ -3,7 +3,7 @@
 module Gitlab
   module Backup
     module Cli
-      module Targets
+      module Services
         class GitalyClient
           attr_reader :storages, :gitaly_token
 

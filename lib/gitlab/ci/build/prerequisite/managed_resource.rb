@@ -43,7 +43,7 @@ module Gitlab
 
           def ensure_environment
             template = begin
-              kas_client.get_environment_template(environment: environment, template_name: DEFAULT_TEMPLATE_NAME)
+              get_custom_environment_template
             rescue GRPC::NotFound
               kas_client.get_default_environment_template
             end
@@ -57,6 +57,10 @@ module Gitlab
               template: rendered_template,
               environment: environment,
               build: build)
+          end
+
+          def get_custom_environment_template
+            kas_client.get_environment_template(agent: environment.cluster_agent, template_name: DEFAULT_TEMPLATE_NAME)
           end
 
           def valid_for_managed_resources?(environment:, build:)

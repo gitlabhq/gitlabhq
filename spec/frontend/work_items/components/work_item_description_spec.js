@@ -16,7 +16,7 @@ import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutati
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemDescriptionTemplateQuery from '~/work_items/graphql/work_item_description_template.query.graphql';
 import { autocompleteDataSources, markdownPreviewPath, newWorkItemId } from '~/work_items/utils';
-import { ROUTES } from '~/work_items/constants';
+import { ROUTES, NEW_WORK_ITEM_IID, NEW_WORK_ITEM_GID } from '~/work_items/constants';
 import {
   updateWorkItemMutationResponse,
   workItemByIidResponseFactory,
@@ -77,6 +77,7 @@ describe('WorkItemDescription', () => {
     descriptionTemplateHandler = successfulTemplateHandler,
     routeName = '',
     routeQuery = {},
+    fullPath = 'test-project-path',
     hideFullscreenMarkdownButton = false,
   } = {}) => {
     router = {
@@ -90,7 +91,7 @@ describe('WorkItemDescription', () => {
         [workItemDescriptionTemplateQuery, descriptionTemplateHandler],
       ]),
       propsData: {
-        fullPath: 'test-project-path',
+        fullPath,
         workItemId,
         workItemIid,
         workItemTypeId,
@@ -181,6 +182,61 @@ describe('WorkItemDescription', () => {
           fullPath,
           iid,
           isGroup: true,
+        }),
+      });
+    });
+
+    it('passes correct autocompletion data sources when it is a new group work item', async () => {
+      const workItemResponse = workItemByIidResponseFactory({
+        iid: NEW_WORK_ITEM_IID,
+        id: NEW_WORK_ITEM_GID,
+      });
+
+      const newGroupWorkItem = {
+        data: {
+          workspace: {
+            __typename: 'Group',
+            id: 'gid://gitlab/Group/24',
+            workItem: {
+              ...workItemResponse.data.workspace.workItem,
+              namespace: {
+                id: 'gid://gitlab/Group/24',
+                fullPath: 'gitlab-org',
+                name: 'Gitlab Org',
+                fullName: 'Gitlab Org',
+                __typename: 'Namespace',
+              },
+            },
+          },
+        },
+      };
+
+      const {
+        namespace: { fullPath },
+      } = newGroupWorkItem.data.workspace.workItem;
+
+      createComponent({
+        isEditing: true,
+        isGroup: true,
+        workItemResponse: newGroupWorkItem,
+        workItemIid: NEW_WORK_ITEM_IID,
+        fullPath,
+      });
+
+      await waitForPromises();
+
+      expect(findMarkdownEditor().props()).toMatchObject({
+        supportsQuickActions: true,
+        renderMarkdownPath: markdownPreviewPath({
+          fullPath,
+          iid: NEW_WORK_ITEM_IID,
+          isGroup: true,
+        }),
+        autocompleteDataSources: autocompleteDataSources({
+          fullPath,
+          iid: NEW_WORK_ITEM_IID,
+          isGroup: true,
+          workItemTypeId: 'gid://gitlab/WorkItems::Type/5',
         }),
       });
     });

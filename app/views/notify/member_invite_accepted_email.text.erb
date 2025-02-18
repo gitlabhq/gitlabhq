@@ -1,8 +1,0 @@
-<%= s_('Notify|%{invite_email}, now known as %{user_name}, has accepted your invitation to join the %{target_name} %{target_model_name}.') % {
-  invite_email: member.invite_email,
-  user_name: member.user.name,
-  target_name: member_source.human_name,
-  target_model_name: member_source.model_name.singular }
-%>
-
-<%= member_source.web_url %>

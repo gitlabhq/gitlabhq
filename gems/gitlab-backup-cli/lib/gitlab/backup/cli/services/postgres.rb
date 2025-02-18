@@ -34,8 +34,20 @@ module Gitlab
             end
           end
 
+          # @return [Database]
+          def main_database
+            each do |database|
+              return database if database.connection_name == 'main'
+            end
+
+            raise Gitlab::Backup::Cli::Errors::DatabaseMissingConnectionError, 'main'
+          end
+
           private
 
+          # Return ActiveRecord parsed database configurations object
+          #
+          # @return [ActiveRecord::DatabaseConfigurations]
           def database_configurations
             return @database_configurations if defined?(@database_configurations)
 

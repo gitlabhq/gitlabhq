@@ -47,6 +47,12 @@ RSpec.describe Gitlab::Backup::Cli do
     end
   end
 
+  describe '.root' do
+    it 'returns a Pathname' do
+      expect(cli.root).to be_a_kind_of(Pathname)
+    end
+  end
+
   def get_process_title
     ps = `ps -p #{Process.pid} -o command`
     ps.split("\n").last.strip

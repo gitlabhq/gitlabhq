@@ -20,20 +20,20 @@ title: Issue boards
 
 {{< /history >}}
 
-The issue board is a tool used to plan, organize, and visualize workflows for a product release, a team, or a project.
+Issue boards provide a visual way to manage and track work in GitLab.
+Issue boards:
 
-Issue boards pair issue tracking and project management, keeping everything together,
-so you can organize your workflow on a single platform.
+- Display issues as cards in customizable lists based on labels, milestones, or assignees.
+- Track issues through different stages of your workflow.
+- Support agile methodologies like Kanban and Scrum.
+- Organize multiple boards for different teams and projects.
+- Visualize workload and progress across your entire process.
 
 Your issues appear as cards in vertical lists, organized by their assigned
 [labels](labels.md), [milestones](#milestone-lists), [iterations](#iteration-lists), or [assignees](#assignee-lists).
 
-Issue boards help you to visualize and manage your entire process in GitLab.
 Add metadata to your issues, then create the corresponding list for your existing issues.
 When you're ready, you can drag your issue cards from one list to another.
-
-An issue board can show you the issues your team is working on, who is assigned to each,
-and where the issues are in the workflow.
 
 Issue boards can power common frameworks like [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)) and
 [Scrum](https://en.wikipedia.org/wiki/Scrum_(software_development)).
@@ -57,8 +57,8 @@ Read more about [GitLab Enterprise features for issue boards](#gitlab-enterprise
 ![GitLab issue board - Premium](img/issue_boards_premium_v17_1.png)
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-Watch a [video presentation](https://youtu.be/vjccjHI7aGI) (April 2020) of
-the issue board feature.
+Watch a [video presentation](https://youtu.be/vjccjHI7aGI) of the issue board feature.
+<!-- Video published on 2020-04-02 -->
 
 ## Multiple issue boards
 

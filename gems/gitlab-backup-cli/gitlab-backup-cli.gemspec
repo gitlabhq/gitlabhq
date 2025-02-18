@@ -41,7 +41,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "grpc", "= 1.63.0"
   spec.add_dependency "json", "~> 2.7.2"
   spec.add_dependency "jwt", "~> 2.5"
-  spec.add_dependency "logger", "~> 1.5.3"
+  spec.add_dependency "logger", "~> 1.5"
   spec.add_dependency "minitest", "~> 5.11.0"
   spec.add_dependency "parallel", "~> 1.19"
   spec.add_dependency "rack", "~> 2.2.9"

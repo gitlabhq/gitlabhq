@@ -527,12 +527,6 @@ class NotificationService
     mailer.member_access_granted_email(member.real_source_type, member.id).deliver_later
   end
 
-  def accept_invite(member)
-    return true if member.source.is_a?(Project) && !member.notifiable?(:subscription)
-
-    mailer.member_invite_accepted_email(member.real_source_type, member.id).deliver_later
-  end
-
   def updated_member_access_level(member)
     return true unless member.notifiable?(:mention)
 

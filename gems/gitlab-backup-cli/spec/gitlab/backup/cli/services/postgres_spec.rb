@@ -29,4 +29,22 @@ RSpec.describe Gitlab::Backup::Cli::Services::Postgres do
       expect { |b| postgres.each(&b) }.to yield_successive_args(*postgres.entries)
     end
   end
+
+  describe '#main_database' do
+    it 'returns a Database object for the main configuration entry' do
+      main_database = postgres.entries.find { |e| e.connection_name == 'main' }
+
+      expect(postgres.main_database).to be_an(Gitlab::Backup::Cli::Services::Database)
+      expect(postgres.main_database).to eq(main_database)
+    end
+
+    context 'with database configuration missing main entry' do
+      it 'raises an error' do
+        database_fixture_path = fixtures_path.join('config/database-different-connection-names.yml')
+        allow(context).to receive(:database_config_file_path).and_return(database_fixture_path)
+
+        expect { postgres.main_database }.to raise_error(Gitlab::Backup::Cli::Errors::DatabaseMissingConnectionError)
+      end
+    end
+  end
 end

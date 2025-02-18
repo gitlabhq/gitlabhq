@@ -7,7 +7,7 @@ module Gitlab
         class Lfs < Task
           def self.id = 'lfs'
 
-          def human_name = _('lfs objects')
+          def human_name = 'LFS Objects'
 
           def destination_path = 'lfs.tar.gz'
 

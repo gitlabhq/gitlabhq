@@ -1,0 +1,8 @@
+%tr
+  %td.text-content
+    %p
+      = safe_format(body_text,
+        invite_email: content_tag(:span, member.invite_email, class: :highlight),
+        user_name: link_to(user.name, user_url(user)),
+        target_name: link_to(member_source.human_name, member_source.web_url, class: :highlight),
+        target_model_name: target_model_name)

@@ -310,7 +310,6 @@ Style/InlineDisableAnnotation:
     - 'app/helpers/sidebars_helper.rb'
     - 'app/helpers/sorting_helper.rb'
     - 'app/helpers/users_helper.rb'
-    - 'app/helpers/visibility_level_helper.rb'
     - 'app/mailers/emails/issues.rb'
     - 'app/mailers/emails/members.rb'
     - 'app/mailers/emails/merge_requests.rb'

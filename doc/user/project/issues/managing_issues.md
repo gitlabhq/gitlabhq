@@ -12,7 +12,14 @@ title: Manage issues
 
 {{< /details >}}
 
-After you create an issue, you can start working with it.
+GitLab issues help you track work and collaborate with your team.
+You can manage issues to:
+
+- Edit details like title, description, assignees, and metadata.
+- Move issues between projects while maintaining their context and history.
+- Close completed issues and reopen them if needed.
+- Use bulk editing to update multiple issues efficiently.
+- Track issue health status to monitor progress and identify risks.
 
 ## Edit an issue
 

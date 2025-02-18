@@ -12,15 +12,14 @@ title: Issues
 
 {{< /details >}}
 
-Use issues to collaborate on ideas, solve problems, and plan work.
-Share and discuss proposals with your team and with outside collaborators.
+Issues help you collaborate with your team to plan, track, and deliver work in GitLab.
+Issues:
 
-You can use issues for many purposes, customized to your needs and workflow.
-
-- Discuss the implementation of an idea.
-- Track tasks and work status.
-- Accept feature proposals, questions, support requests, or bug reports.
-- Elaborate on code implementations.
+- Track feature proposals, tasks, support requests, and bug reports.
+- Organize and prioritize work with assignees, due dates, and health status.
+- Facilitate team discussion and decision-making through comments and threaded discussions.
+- Support custom workflows through templates, labels, epics, and boards.
+- Integrate with external tools like Zoom, Jira, and email services.
 
 For more information about issues, see the GitLab blog post:
 [Always start a discussion with an issue](https://about.gitlab.com/blog/2016/03/03/start-with-an-issue/).
@@ -34,11 +33,13 @@ projects in a group, you can view all of the projects' issues at once.
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/Mt1EzlKToig" frameborder="0" allowfullscreen> </iframe>
 </figure>
+<!-- Video published on 2023-10-30 -->
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 To learn how the GitLab Strategic Marketing department uses GitLab issues with [labels](../labels.md) and
 [issue boards](../issue_board.md), see the video on
 [Managing Commitments with Issues](https://www.youtube.com/watch?v=cuIHNintg1o&t=3).
+<!-- Video published on 2020-04-10 -->
 
 ## Related topics
 

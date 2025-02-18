@@ -7,7 +7,7 @@ module Gitlab
         class Artifacts < Task
           def self.id = 'artifacts'
 
-          def human_name = _('artifacts')
+          def human_name = 'Artifacts'
 
           def destination_path = 'artifacts.tar.gz'
 

@@ -124,14 +124,6 @@ The output includes the project ID and the project name. For example:
 => #<Project id:16 it/supportteam/ticketsystem>
 ```
 
-To look up a project's name using the `config` file in the `*.git` directory:
-
-1. Locate the `*.git` directory. This directory is located in `/var/opt/gitlab/git-data/repositories/@hashed/`, where the first four
-   characters of the hash are the first two directories in the path under `@hashed/`. For example, on a default Linux package installation the
-   `*.git` directory of the hash `b17eb17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9` would be
-   `/var/opt/gitlab/git-data/repositories/@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git`.
-1. Open the `config` file and locate the `fullpath=` key under `[gitlab]`.
-
 ### Hashed object pools
 
 Object pools are repositories used to deduplicate [forks of public and internal projects](../user/project/repository/forking_workflow.md) and

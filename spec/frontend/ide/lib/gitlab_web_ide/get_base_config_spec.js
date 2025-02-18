@@ -15,7 +15,10 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
     const actual = getBaseConfig();
 
     expect(actual).toEqual({
-      baseUrl: `${TEST_HOST}/${TEST_GITLAB_WEB_IDE_PUBLIC_PATH}`,
+      workbenchBaseUrl: `${TEST_HOST}/${TEST_GITLAB_WEB_IDE_PUBLIC_PATH}`,
+      embedderOriginUrl: TEST_HOST,
+      extensionsHostBaseUrl:
+        'https://{{uuid}}.cdn.web-ide.gitlab-static.net/web-ide-vscode/{{quality}}/{{commit}}',
       gitlabUrl: TEST_HOST,
     });
   });
@@ -26,7 +29,10 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
     const actual = getBaseConfig();
 
     expect(actual).toEqual({
-      baseUrl: `${TEST_HOST}${TEST_RELATIVE_URL_ROOT}/${TEST_GITLAB_WEB_IDE_PUBLIC_PATH}`,
+      workbenchBaseUrl: `${TEST_HOST}${TEST_RELATIVE_URL_ROOT}/${TEST_GITLAB_WEB_IDE_PUBLIC_PATH}`,
+      embedderOriginUrl: `${TEST_HOST}${TEST_RELATIVE_URL_ROOT}`,
+      extensionsHostBaseUrl:
+        'https://{{uuid}}.cdn.web-ide.gitlab-static.net/web-ide-vscode/{{quality}}/{{commit}}',
       gitlabUrl: `${TEST_HOST}${TEST_RELATIVE_URL_ROOT}`,
     });
   });

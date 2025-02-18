@@ -12,7 +12,14 @@ title: Issues API
 
 {{< /details >}}
 
-Interact with [GitLab Issues](../user/project/issues/_index.md) using the REST API.
+Use the Issues API to programmatically read and manage [GitLab issues](../user/project/issues/_index.md).
+The Issues API:
+
+- Creates, updates, and deletes issues across projects and groups.
+- Manages issue metadata like assignees, labels, milestones, and time tracking.
+- Supports cross-referencing between issues and merge requests.
+- Tracks issue movement and promotion between projects and epics.
+- Controls access and visibility through authorization checks.
 
 If a user is not a member of a private project, a `GET`
 request on that project results in a `404` status code.
