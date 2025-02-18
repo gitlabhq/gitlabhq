@@ -8,6 +8,7 @@ describe('add request form', () => {
 
   const findGlFormInput = () => wrapper.findComponent(GlFormInput);
   const findGlButton = () => wrapper.findComponent(GlButton);
+  const findGlSubmit = () => wrapper.findComponent('[type=submit]');
 
   beforeEach(() => {
     wrapper = mount(AddRequest);
@@ -15,6 +16,7 @@ describe('add request form', () => {
 
   it('hides the input on load', () => {
     expect(findGlFormInput().exists()).toBe(false);
+    expect(findGlSubmit().exists()).toBe(false);
   });
 
   describe('when clicking the button', () => {
@@ -25,6 +27,7 @@ describe('add request form', () => {
 
     it('shows the form', () => {
       expect(findGlFormInput().exists()).toBe(true);
+      expect(findGlSubmit().exists()).toBe(true);
     });
 
     describe('when pressing escape', () => {
@@ -35,6 +38,7 @@ describe('add request form', () => {
 
       it('hides the input', () => {
         expect(findGlFormInput().exists()).toBe(false);
+        expect(findGlSubmit().exists()).toBe(false);
       });
     });
 
@@ -42,7 +46,7 @@ describe('add request form', () => {
       beforeEach(async () => {
         findGlFormInput().setValue('http://gitlab.example.com/users/root/calendar.json');
         await nextTick();
-        findGlFormInput().trigger('keyup.enter');
+        findGlSubmit().trigger('submit');
         await nextTick();
       });
 
@@ -55,6 +59,7 @@ describe('add request form', () => {
 
       it('hides the input', () => {
         expect(findGlFormInput().exists()).toBe(false);
+        expect(findGlSubmit().exists()).toBe(false);
       });
 
       it('clears the value for next time', async () => {

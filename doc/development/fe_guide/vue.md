@@ -21,6 +21,12 @@ Sometimes, HAML page is enough to satisfy requirements. This statement is correc
 
 To better explain this, let's imagine the page that has one toggle, and toggling it sends an API request. This case does not involve any state we want to maintain, we send the request and switch the toggle. However, if we add one more toggle that should always be the opposite to the first one, we need a _state_: one toggle should be "aware" about the state of another one. When written in plain JavaScript, this logic usually involves listening to DOM event and reacting with modifying DOM. Cases like this are much easier to handle with Vue.js so we should create a Vue application here.
 
+## How to add a Vue application to a page
+
+1. Create a new folder in `app/assets/javascripts` for your Vue application.
+1. Add [page-specific JavaScript](performance.md#page-specific-javascript) to load your application.
+1. You can use the [`initSimpleApp helper](#the-initsimpleapp-helper) to simplify [passing data from HAML to JS](#providing-data-from-haml-to-javascript).
+
 ### What are some flags signaling that you might need Vue application?
 
 - when you need to define complex conditionals based on multiple factors and update them on user interaction;
