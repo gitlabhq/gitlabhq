@@ -235,6 +235,8 @@ Include in the MR description:
 - New tables must be seeded by a file in `db/fixtures/development/`. These fixtures are also used
   to ensure that [upgrades complete successfully](database/dbmigrate_multi_version_upgrade_job.md),
   so it's important that new tables are always populated.
+- Ensure that you do not use database tables to store
+  [static data](cells/_index.md#static-data).
 - New tables and columns are not necessarily risky, but over time some access patterns are inherently
   difficult to scale. To identify these risky patterns in advance, we must document expectations for
   access and size. Include in the MR description answers to these questions:

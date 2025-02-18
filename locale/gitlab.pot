@@ -19529,10 +19529,10 @@ msgid_plural "Dependencies|%{projectCount} projects"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Dependencies|%{remainingLicensesCount} more"
+msgid "Dependencies|(top level)"
 msgstr ""
 
-msgid "Dependencies|(top level)"
+msgid "Dependencies|+%{remainingLicensesCount} more"
 msgstr ""
 
 msgid "Dependencies|All"
@@ -33989,6 +33989,11 @@ msgstr ""
 msgid "Licenses|The file could not be uploaded."
 msgstr ""
 
+msgid "Licenses|This package also includes a license which was not identified by the scanner."
+msgid_plural "Licenses|This package also includes %{count} licenses which were not identified by the scanner."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Limit display of time tracking units to hours."
 msgstr ""
 
@@ -46037,6 +46042,9 @@ msgstr ""
 msgid "ProjectsNew|Experimental settings"
 msgstr ""
 
+msgid "ProjectsNew|FogBugz URL"
+msgstr ""
+
 msgid "ProjectsNew|Get started with one of our popular project templates."
 msgstr ""
 
@@ -46050,6 +46058,9 @@ msgid "ProjectsNew|Import"
 msgstr ""
 
 msgid "ProjectsNew|Import project"
+msgstr ""
+
+msgid "ProjectsNew|Import projects from FogBugz"
 msgstr ""
 
 msgid "ProjectsNew|Import projects from Gitea"
@@ -46140,6 +46151,9 @@ msgid "ProjectsNew|You've reached your limit of %{limit} projects created. Conta
 msgstr ""
 
 msgid "ProjectsNew|Your project will be created at:"
+msgstr ""
+
+msgid "ProjectsNew|https://mycompany.fogbugz.com"
 msgstr ""
 
 msgid "Projects|An error occurred deleting the project. Please refresh the page to try again."
@@ -67442,6 +67456,9 @@ msgid "Your device is not compatible with GitLab. Please try another device"
 msgstr ""
 
 msgid "Your device was successfully set up! Give it a name and register it with the GitLab server."
+msgstr ""
+
+msgid "Your email"
 msgstr ""
 
 msgid "Your feedback is important to us 👋"

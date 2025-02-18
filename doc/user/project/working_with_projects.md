@@ -549,7 +549,8 @@ Prerequisites:
 
 {{< alert type="note" >}}
 
-When you change the repository path, users may experience issues if they push to, or pull from, the old URL. For more information, see
+When you change the repository path, users may experience issues if they push to, or pull from, the old URL.
+For more information on redirect duration and its side-effects, see
 [redirects when renaming repositories](repository/_index.md#repository-path-changes).
 
 {{< /alert >}}

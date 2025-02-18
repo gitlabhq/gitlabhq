@@ -1,6 +1,6 @@
 <script>
 import { kebabCase } from 'lodash';
-import { GlCollapse, GlIcon } from '@gitlab/ui';
+import { GlCollapse, GlIcon, GlAnimatedChevronRightDownIcon } from '@gitlab/ui';
 import { NAV_ITEM_LINK_ACTIVE_CLASS } from '../constants';
 import NavItem from './nav_item.vue';
 import FlyoutMenu from './flyout_menu.vue';
@@ -10,6 +10,7 @@ export default {
   components: {
     GlCollapse,
     GlIcon,
+    GlAnimatedChevronRightDownIcon,
     NavItem,
     FlyoutMenu,
   },
@@ -59,12 +60,6 @@ export default {
         'aria-expanded': String(this.isExpanded),
         'data-qa-menu-item': this.item.title,
       };
-    },
-    collapseIcon() {
-      if (this.hasFlyout) {
-        return this.isExpanded ? 'chevron-down' : 'chevron-right';
-      }
-      return this.isExpanded ? 'chevron-up' : 'chevron-down';
     },
     computedLinkClasses() {
       return {
@@ -145,8 +140,8 @@ export default {
         {{ item.title }}
       </span>
 
-      <span class="gl-text-right">
-        <gl-icon class="super-sidebar-mix-blend-mode" :name="collapseIcon" variant="subtle" />
+      <span class="gl-text-right gl-text-subtle">
+        <gl-animated-chevron-right-down-icon :is-on="isExpanded" />
       </span>
     </button>
 

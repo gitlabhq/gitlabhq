@@ -111,6 +111,14 @@ RSpec.describe Gitlab::Gfm::ReferenceRewriter, feature_category: :team_planning 
         )
       end
     end
+
+    context 'when referable has no html content' do
+      it 'does not raise an error' do
+        rewriter = described_class.new(note.note, nil, old_project, user)
+
+        expect { rewriter.rewrite(new_project) }.not_to raise_error
+      end
+    end
   end
 
   describe '#rewrite with table syntax' do

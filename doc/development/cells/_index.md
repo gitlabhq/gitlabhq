@@ -21,6 +21,8 @@ The replication strategy will likely be different for each case, but will involv
 The application may also need to be modified to restrict writes to prevent conflicts.
 We may also ask teams to update tables from `gitlab_main_clusterwide` to `gitlab_main_cell` as required, which also might require adding sharding keys to these tables.
 
+Do not use cluster-wide database tables to store [static data](#static-data).
+
 To understand how existing tables are classified, you can use [this dashboard](https://manojmj.gitlab.io/tenant-scale-schema-progress/).
 
 After a schema has been assigned, the merge request pipeline might fail due to one or more of the following reasons, which can be rectified by following the linked guidelines:
@@ -250,3 +252,55 @@ Exempted tables must not have foreign key, or loose foreign key references, as
 this may cause the target cell's database to have foreign key violations when data is
 moved.
 See [#471182](https://gitlab.com/gitlab-org/gitlab/-/issues/471182) for examples and possible solutions.
+
+## Static data
+
+Problem: A clusterwide database table is used to store static data.
+But, the primary key of the table is used as a global reference.
+This primary key is not globally consistent which creates problems.
+
+Example: The `plans` table on a given Cell has the following data:
+
+```shell
+ id |             name             |              title
+----+------------------------------+----------------------------------
+  1 | default                      | Default
+  2 | bronze                       | Bronze
+  3 | silver                       | Silver
+  5 | gold                         | Gold
+  7 | ultimate_trial               | Ultimate Trial
+  8 | premium_trial                | Premium Trial
+  9 | opensource                   | Opensource
+  4 | premium                      | Premium
+  6 | ultimate                     | Ultimate
+ 10 | ultimate_trial_paid_customer | Ultimate Trial for Paid Customer
+(10 rows)
+```
+
+On another cell, the `plans` table has differing ids for the same `name`:
+
+```shell
+ id |             name             |            title
+----+------------------------------+------------------------------
+  1 | default                      | Default
+  2 | bronze                       | Bronze
+  3 | silver                       | Silver
+  4 | premium                      | Premium
+  5 | gold                         | Gold
+  6 | ultimate                     | Ultimate
+  7 | ultimate_trial               | Ultimate Trial
+  8 | ultimate_trial_paid_customer | Ultimate Trial Paid Customer
+  9 | premium_trial                | Premium Trial
+ 10 | opensource                   | Opensource
+ ```
+
+This `plans.id` column is then used in the `gitlab_subscriptions` table.
+
+Solution: Use globally unique references, not a database sequence.
+If possible, hard-code static data in application code, instead of using the
+database.
+
+Examples of hard-coding static data include:
+
+- [VisibilityLevel](https://gitlab.com/gitlab-org/gitlab/-/blob/5ae43dface737373c50798ccd909174bcdd9b664/lib/gitlab/visibility_level.rb#L25-27)
+- [Static defaults for work item statuses](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178180)
