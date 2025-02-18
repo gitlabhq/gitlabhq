@@ -2909,6 +2909,9 @@ msgstr ""
 msgid "AccessTokens|Access tokens"
 msgstr ""
 
+msgid "AccessTokens|Active"
+msgstr ""
+
 msgid "AccessTokens|Add a %{type}"
 msgstr ""
 
@@ -2945,6 +2948,21 @@ msgstr ""
 msgid "AccessTokens|Created"
 msgstr ""
 
+msgid "AccessTokens|Created date"
+msgstr ""
+
+msgid "AccessTokens|Expiration date"
+msgstr ""
+
+msgid "AccessTokens|Expired"
+msgstr ""
+
+msgid "AccessTokens|Expires"
+msgstr ""
+
+msgid "AccessTokens|Expiring"
+msgstr ""
+
 msgid "AccessTokens|Failed to revoke token"
 msgstr ""
 
@@ -2955,6 +2973,14 @@ msgid "AccessTokens|For example, the application using the token or the purpose 
 msgstr ""
 
 msgid "AccessTokens|For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members."
+msgstr ""
+
+msgid "AccessTokens|IP: %{ips}"
+msgid_plural "AccessTokens|IPs: %{ips}"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "AccessTokens|Inactive"
 msgstr ""
 
 msgid "AccessTokens|Incoming email token"
@@ -2972,6 +2998,24 @@ msgstr ""
 msgid "AccessTokens|Keep this token secret. Anyone who has it can read activity and issue RSS feeds or your calendar feed as if they were you. If that happens, %{linkStart}reset this token%{linkEnd}."
 msgstr ""
 
+msgid "AccessTokens|Last used date"
+msgstr ""
+
+msgid "AccessTokens|Last used:"
+msgstr ""
+
+msgid "AccessTokens|Lifetime"
+msgstr ""
+
+msgid "AccessTokens|Name"
+msgstr ""
+
+msgid "AccessTokens|Never until revoked"
+msgstr ""
+
+msgid "AccessTokens|No access tokens"
+msgstr ""
+
 msgid "AccessTokens|Not eligible to rotate token with access level higher than the user"
 msgstr ""
 
@@ -2984,10 +3028,19 @@ msgstr ""
 msgid "AccessTokens|Revoke"
 msgstr ""
 
+msgid "AccessTokens|Revoked"
+msgstr ""
+
 msgid "AccessTokens|Rotate"
 msgstr ""
 
+msgid "AccessTokens|Scopes"
+msgstr ""
+
 msgid "AccessTokens|Scopes set the permission levels granted to the token."
+msgstr ""
+
+msgid "AccessTokens|Search or filter access tokens..."
 msgstr ""
 
 msgid "AccessTokens|Select a role"
@@ -2996,7 +3049,13 @@ msgstr ""
 msgid "AccessTokens|Select scopes"
 msgstr ""
 
+msgid "AccessTokens|State"
+msgstr ""
+
 msgid "AccessTokens|Static object token"
+msgstr ""
+
+msgid "AccessTokens|Status"
 msgstr ""
 
 msgid "AccessTokens|The last five distinct IP addresses from where the token was used"
@@ -3014,7 +3073,16 @@ msgstr ""
 msgid "AccessTokens|Token description"
 msgstr ""
 
+msgid "AccessTokens|Token expires in less than two weeks."
+msgstr ""
+
 msgid "AccessTokens|Token name"
+msgstr ""
+
+msgid "AccessTokens|Usage"
+msgstr ""
+
+msgid "AccessTokens|View token usage information"
 msgstr ""
 
 msgid "AccessTokens|When enabled, a user will be required to enter in an expiration date when creating an access token. Changes will not affect existing token expiration dates. This setting overrides the group-level %{link_start}service account token expiration%{link_end} setting."

@@ -191,6 +191,9 @@
   }
 
   .suggestion-added-input {
+    @apply gl-border-1;
+    @apply gl-border-section;
+
     > code {
       display: block;
       margin-left: 120px;

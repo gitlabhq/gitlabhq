@@ -6,7 +6,9 @@ feature_categories:
 - code_review_workflow
 description: Temporary table for partitioning the main merge_request_diff_files table
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149181
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179313
 milestone: '17.0'
+removed_in_milestone: '17.9'
 gitlab_schema: gitlab_main_cell
 desired_sharding_key:
   project_id:
@@ -18,3 +20,4 @@ desired_sharding_key:
         sharding_key: project_id
         belongs_to: merge_request_diff
 table_size: over_limit
+

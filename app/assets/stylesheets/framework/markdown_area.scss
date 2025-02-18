@@ -109,8 +109,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: $gray-10;
+  @apply gl-bg-section;
   @apply gl-border;
+  @apply gl-border-section;
   border-radius: $gl-border-radius-base $gl-border-radius-base 0 0;
 }
 

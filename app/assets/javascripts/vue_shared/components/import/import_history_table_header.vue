@@ -1,4 +1,5 @@
 <script>
+import { BASE_IMPORT_TABLE_ROW_GRID_CLASSES } from './constants';
 /**
  * Basic formatting component for import history table header.
  *
@@ -18,7 +19,7 @@ export default {
   },
   computed: {
     appliedGridClasses() {
-      return this.gridClasses || 'gl-grid-cols-[repeat(2,1fr),200px,200px]';
+      return this.gridClasses || BASE_IMPORT_TABLE_ROW_GRID_CLASSES;
     },
   },
   defaultClasses: 'gl-flex gl-flex-grow gl-items-center gl-gap-3  gl-font-bold',

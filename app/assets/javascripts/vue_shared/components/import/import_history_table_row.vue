@@ -1,5 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
+import { v4 as uuidv4 } from 'uuid';
+import { BASE_IMPORT_TABLE_ROW_GRID_CLASSES } from './constants';
 
 /**
  * Basic formatting component for import history table rows.
@@ -35,11 +37,15 @@ export default {
   data() {
     return {
       expanded: false,
+      uid: uuidv4(),
     };
   },
   computed: {
     appliedGridClasses() {
-      return this.gridClasses || 'md:gl-grid-cols-[repeat(2,1fr),200px,200px]';
+      return this.gridClasses || BASE_IMPORT_TABLE_ROW_GRID_CLASSES;
+    },
+    uniqueExpandedId() {
+      return `expanded-section-${this.uid}`;
     },
   },
   methods: {
@@ -65,8 +71,11 @@ export default {
         <gl-button
           v-if="showToggle"
           size="small"
+          category="tertiary"
           :aria-label="expanded ? __('Collapse') : __('Expand')"
           :icon="expanded ? 'chevron-down' : 'chevron-right'"
+          :aria-expanded="expanded"
+          :aria-controls="uniqueExpandedId"
           @click="toggleExpand"
         />
         <div
@@ -100,7 +109,7 @@ export default {
         </div>
       </div>
     </div>
-    <div class="gl-pt-5">
+    <div :id="uniqueExpandedId" class="gl-pt-5">
       <div v-if="expanded" data-testid="import-history-table-row-expanded">
         <!-- @slot Optionally provide a nested row -->
         <slot name="nested-row"></slot>
