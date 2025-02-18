@@ -59,7 +59,7 @@ Updating any of these settings, except `enabled`, does not affect existing works
 | [`max_active_hours_before_stop`](#max_active_hours_before_stop)                           | Maximum number of hours a workspace can be active before it is stopped.                       | Integer                                                     | `36`                                    | No       |
 | [`max_stopped_hours_before_termination`](#max_stopped_hours_before_termination)           | Maximum number of hours a workspace can be stopped before it is terminated.                   | Integer                                                     | `744`                                   | No       |
 
-## `enabled`
+### `enabled`
 
 Use this setting to define whether:
 

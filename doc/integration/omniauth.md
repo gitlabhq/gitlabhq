@@ -512,10 +512,6 @@ When authenticating using LDAP, the user's name and email are always synced.
 
 With certain OmniAuth providers, users can sign in without using two-factor authentication (2FA).
 
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/196131) users must
-[set up 2FA](../user/profile/account/two_factor_authentication.md#enable-two-factor-authentication) on their GitLab
-account to bypass 2FA. Otherwise, they are prompted to set up 2FA when they sign in to GitLab.
-
 To bypass 2FA, you can either:
 
 - Define the allowed providers using an array (for example, `['saml', 'google_oauth2']`).

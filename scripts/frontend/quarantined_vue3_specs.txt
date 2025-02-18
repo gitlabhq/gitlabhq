@@ -100,7 +100,6 @@ ee/spec/frontend/vulnerabilities/generic_report/report_item_graphql_spec.js
 ee/spec/frontend/vulnerabilities/related_issues_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/access_tokens/index_spec.js
-spec/frontend/add_context_commits_modal/components/add_context_commits_modal_spec.js
 spec/frontend/admin/abuse_report/components/reported_content_spec.js
 spec/frontend/admin/abuse_reports/components/abuse_reports_filtered_search_bar_spec.js
 spec/frontend/admin/broadcast_messages/components/base_spec.js
@@ -176,10 +175,6 @@ spec/frontend/issues/service_desk/components/service_desk_list_app_spec.js
 spec/frontend/issues/show/components/app_spec.js
 spec/frontend/issues/show/components/fields/description_spec.js
 spec/frontend/issues/show/components/header_actions_spec.js
-spec/frontend/issues/show/components/incidents/create_timeline_events_form_spec.js
-spec/frontend/issues/show/components/incidents/edit_timeline_event_spec.js
-spec/frontend/issues/show/components/incidents/timeline_events_form_spec.js
-spec/frontend/issues/show/components/incidents/timeline_events_tab_spec.js
 spec/frontend/jira_import/components/jira_import_form_spec.js
 spec/frontend/lib/utils/breadcrumbs_spec.js
 spec/frontend/lib/utils/confirm_via_gl_modal/confirm_action_spec.js
@@ -188,7 +183,6 @@ spec/frontend/members/components/modals/leave_modal_spec.js
 spec/frontend/members/components/table/max_role_spec.js
 spec/frontend/members/components/table/members_pagination_spec.js
 spec/frontend/members/components/table/members_table_spec.js
-spec/frontend/merge_request_dashboard/components/assigned_users_spec.js
 spec/frontend/milestones/components/milestone_combobox_spec.js
 spec/frontend/ml/model_registry/apps/show_ml_model_spec.js
 spec/frontend/ml/model_registry/components/candidate_detail_spec.js
@@ -198,7 +192,6 @@ spec/frontend/notebook/cells/markdown_spec.js
 spec/frontend/notebook/cells/output/html_spec.js
 spec/frontend/notes/components/discussion_notes_spec.js
 spec/frontend/notes/components/notes_app_spec.js
-spec/frontend/organizations/shared/components/new_edit_form_spec.js
 spec/frontend/packages_and_registries/container_registry/explorer/components/list_page/image_list_row_spec.js
 spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
 spec/frontend/packages_and_registries/infrastructure_registry/components/details/components/app_spec.js
@@ -219,7 +212,6 @@ spec/frontend/profile/preferences/components/profile_preferences_spec.js
 spec/frontend/projects/commit/components/form_modal_spec.js
 spec/frontend/projects/commits/components/author_select_spec.js
 spec/frontend/projects/compare/components/revision_dropdown_spec.js
-spec/frontend/projects/components/new_edit_form_spec.js
 spec/frontend/projects/new/components/new_project_url_select_spec.js
 spec/frontend/projects/report_abuse/components/report_abuse_dropdown_item_spec.js
 spec/frontend/projects/settings/components/branch_rule_modal_spec.js
@@ -267,9 +259,7 @@ spec/frontend/vue_shared/components/design_management/design_note_pin_spec.js
 spec/frontend/vue_shared/components/diff_stats_dropdown_spec.js
 spec/frontend/vue_shared/components/file_finder/index_spec.js
 spec/frontend/vue_shared/components/file_tree_spec.js
-spec/frontend/vue_shared/components/filtered_search_bar/filtered_search_bar_root_spec.js
 spec/frontend/vue_shared/components/filtered_search_bar/tokens/date_token_spec.js
-spec/frontend/vue_shared/components/markdown/header_spec.js
 spec/frontend/vue_shared/components/markdown/markdown_editor_spec.js
 spec/frontend/vue_shared/components/metric_images/metric_image_details_modal_spec.js
 spec/frontend/vue_shared/components/page_heading_spec.js

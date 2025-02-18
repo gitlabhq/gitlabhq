@@ -243,7 +243,6 @@ Layout/ClassStructure:
     - 'ee/lib/gitlab/geo/git_ssh_proxy.rb'
     - 'ee/lib/gitlab/license_scanning/base_scanner.rb'
     - 'ee/lib/gitlab/license_scanning/package_licenses.rb'
-    - 'ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb'
     - 'ee/lib/gitlab/llm/chain/tools/tool.rb'
     - 'ee/lib/gitlab/llm/chat_storage.rb'
     - 'ee/lib/gitlab/llm/vertex_ai/configuration.rb'

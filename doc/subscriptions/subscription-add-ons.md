@@ -45,7 +45,7 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > GitLab Duo**.
 1. By **Seat utilization**, select **Assign seats**.
-1. Select **Add seats**.
+1. Select **Purchase seats**.
 1. In the Customers Portal, in the **Add additional seats** field, enter the number of seats. The amount
    cannot be higher than the number of seats in the subscription associated with your group namespace.
 1. In the **Billing information** section, select the payment method from the dropdown list.

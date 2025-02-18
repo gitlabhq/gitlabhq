@@ -1,0 +1,13 @@
+---
+table_name: ai_active_context_connections
+classes:
+- Ai::ActiveContext::Connection
+feature_categories:
+- global_search
+description: Stores connection configurations for AI active context integrations.
+  Each connection represents a unique integration point with specific adapter settings and options.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181400
+milestone: '17.10'
+gitlab_schema: gitlab_main_cell
+exempt_from_sharding: true
+table_size: small

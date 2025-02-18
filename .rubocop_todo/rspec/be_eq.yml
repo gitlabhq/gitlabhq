@@ -156,7 +156,6 @@ RSpec/BeEq:
     - 'ee/spec/lib/gitlab/insights/project_insights_config_spec.rb'
     - 'ee/spec/lib/gitlab/licenses/submit_license_usage_data_banner_spec.rb'
     - 'ee/spec/lib/gitlab/llm/ai_gateway/docs_client_spec.rb'
-    - 'ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_spec.rb'
     - 'ee/spec/lib/gitlab/llm/chain/answer_spec.rb'
     - 'ee/spec/lib/gitlab/llm/chain/requests/ai_gateway_spec.rb'
     - 'ee/spec/lib/gitlab/llm/chain/tools/gitlab_documentation/executor_spec.rb'

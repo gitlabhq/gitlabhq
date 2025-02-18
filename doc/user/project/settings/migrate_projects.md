@@ -34,10 +34,10 @@ A project transfer includes:
   - Membership invitations
 
    {{< alert type="note" >}}
-
-Members who inherited their access from the original group lose access
-   unless they are also members of the target group. The project inherits
-   new member permissions from the group you transfer it to.
+   
+   Members with [inherited membership](../members/_index.md#membership-types) 
+   in the project lose access unless they are also members of the target group.
+   The project inherits new member permissions from the group you transfer it to.
 
    {{< /alert >}}
 

@@ -431,6 +431,8 @@ you want to either:
 
 - [Renew for fewer seats](#renew-for-fewer-seats).
 - Increase or decrease the quantities of products being renewed.
+- Remove add-on products no longer needed for the renewed subscription term.
+- Upgrade the subscription tier.
 
 Before your subscription renewal date, you should review your account.
 
@@ -467,8 +469,7 @@ If you want to renew with fewer seats, you can do either of the following:
 
 - [Manually renew your subscription](#renew-subscription-manually).
 - [Cancel your subscription](#enable-or-disable-automatic-subscription-renewal)
-  and contact the [Sales team](https://customers.gitlab.com/contact_us) to specify how many seats you need in your subscription
-  going forward.
+  and contact the [Sales team](https://customers.gitlab.com/contact_us) to specify how many seats you need in your subscription going forward.
 
 ### Renew subscription manually
 
@@ -505,7 +506,8 @@ To manually renew your subscription:
 
    In the **Users over license** text box, enter the number of
    [users over subscription](#users-over-subscription) for the user overage incurred.
-1. Optional. If renewing additional products, review and update the desired quantity.
+1. Optional. If renewing add-on products, review and update the desired quantity. You can also remove products.
+1. Optional. If upgrading the subscription tier, select the desired option.
 1. Review your renewal details and select **Renew subscription** to complete the
    payment process.
 1. On the [Subscriptions & purchases](https://customers.gitlab.com/subscriptions)
@@ -513,7 +515,7 @@ To manually renew your subscription:
    a copy of the renewal term activation code.
 1. [Add the activation code](../../administration/license.md) to your instance.
 
-To add or remove products from your subscription, or to upgrade your subscription tier, please [contact the sales team](https://customers.gitlab.com/contact_us).
+To add products to your subscription, please [contact the sales team](https://customers.gitlab.com/contact_us).
 
 ### Automatic subscription renewal
 

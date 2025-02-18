@@ -6,9 +6,9 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Use a relative link instead of a URL, and ensure the file name ends in .md and not .html."
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/#links
+link: https://docs.gitlab.com/development/documentation/styleguide/#links
 vocab: false
 level: error
 scope: raw
 raw:
-  - '\[[^\]]+\]\(https?:\/\/docs\.gitlab\.com\/[ce]e.*?\)'
+  - '\[[^\]]+\]\(https?:\/\/docs\.gitlab\.com\/(?!runner|archives|omnibus|charts|operator|\))[^\)]*\)'

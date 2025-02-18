@@ -761,49 +761,6 @@ rspec-ee:predictive:trigger single-db-ci-connection:
   variables:
     PIPELINE_NAME: 'rspec-ee:predictive single-db-ci-connection'
 
-.rspec-ee-base-gitlab-duo:
-  extends:
-    - .rspec-ee-base-pg14
-  when: manual
-  variables:
-    REAL_AI_REQUEST: "true"
-    AI_GATEWAY_URL: http://ai-gateway:5052
-
-rspec-ee unit gitlab-duo-chat-zeroshot pg14:
-  extends:
-    - .rspec-ee-base-gitlab-duo
-    - .rails:rules:ee-gitlab-duo-chat-optional
-  script:
-    - !reference [.base-script, script]
-    - rspec_parallelized_job "--tag zeroshot_executor"
-
-rspec-ee unit gitlab-duo-chat-qa-fast pg14:
-  extends:
-    - .rspec-ee-base-gitlab-duo
-    - .rails:rules:ee-gitlab-duo-chat-always
-  script:
-    - !reference [.base-script, script]
-    - rspec_parallelized_job "--tag fast_chat_qa_evaluation"
-
-rspec-ee unit gitlab-duo-chat-qa pg14:
-  variables:
-    QA_EVAL_REPORT_FILENAME: "qa_evaluation_report.md"
-    RSPEC_RETRY_RETRY_COUNT: 0
-  extends:
-    - .rspec-ee-base-gitlab-duo
-    - .rails:rules:ee-gitlab-duo-chat-qa-full
-  script:
-    - !reference [.base-script, script]
-    - source ./scripts/utils.sh
-    - install_gitlab_gem
-    - bundle exec rspec -Ispec -rspec_helper --failure-exit-code 0 --color --tag chat_qa_evaluation -- ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb
-    - ./scripts/duo_chat/reporter.rb
-  artifacts:
-    expire_in: 5d
-    paths:
-      - tmp/duo_chat/qa*.json
-      - "${QA_EVAL_REPORT_FILENAME}"
-
 rspec-ee migration pg14:
   extends:
     - .rspec-ee-base-pg14

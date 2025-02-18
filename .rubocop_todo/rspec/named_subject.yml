@@ -395,7 +395,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/llm/ai_message_spec.rb'
     - 'ee/spec/lib/gitlab/llm/anthropic/response_modifiers/tanuki_bot_spec.rb'
     - 'ee/spec/lib/gitlab/llm/base_response_modifier_spec.rb'
-    - 'ee/spec/lib/gitlab/llm/chain/agents/zero_shot/prompts/anthropic_spec.rb'
     - 'ee/spec/lib/gitlab/llm/chain/parsers/output_parser_spec.rb'
     - 'ee/spec/lib/gitlab/llm/chain/response_modifier_spec.rb'
     - 'ee/spec/lib/gitlab/llm/chain/tools/tool_spec.rb'

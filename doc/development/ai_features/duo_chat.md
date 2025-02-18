@@ -90,15 +90,11 @@ that Chat sends to assist troubleshooting.
 From the code perspective, Chat is implemented in the similar fashion as other
 AI features. Read more about GitLab [AI Abstraction layer](_index.md#feature-development-abstraction-layer).
 
-The Chat feature uses a [zero-shot agent](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb)
-that includes a system prompt explaining how the large language model should
-interpret the question and provide an answer. The system prompt defines
-available tools that can be used to gather information to answer the user's
-question.
+The Chat feature uses a [zero-shot agent](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/duo/chat/react_executor.rb)
+that sends user question and relevant context to the [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)
+which construct a prompt and sends the request to the large language model.
 
-The zero-shot agent receives the user's question and decides which tools to use
-to gather information to answer it. It then makes a request to the large
-language model, which decides if it can answer directly or if it needs to use
+Large language model decides if it can answer directly or if it needs to use
 one of the defined tools.
 
 The tools each have their own prompt that provides instructions to the large
@@ -576,7 +572,7 @@ flow of how we construct a Chat prompt:
 1. `Gitlab::Llm::Chain::Agents::SingleActionExecutor#execute` calls
    `execute_streamed_request`, which calls `request`, a method defined in the
    `AiDependent` concern
-   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/d539f64ce6c5bed72ab65294da3bcebdc43f68c6/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb#L85))
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/7ac19f75bd0ba4db5cfe7030e56c3672e2ccdc88/ee/lib/gitlab/llm/chain/concerns/ai_dependent.rb#L14))
 1. The `SingleActionExecutor#prompt_options` method assembles all prompt parameters for the AI gateway request
    ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/chain/agents/single_action_executor.rb#L120-120))
 1. `ai_request` is defined in `Llm::Completions::Chat` and evaluates to

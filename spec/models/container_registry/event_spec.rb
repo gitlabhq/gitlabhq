@@ -137,6 +137,16 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
       end
     end
 
+    shared_examples 'tracking an internal event' do
+      it 'sends a tracking event' do
+        event_name = "i_container_registry_#{event}_deploy_token"
+        expect { subject }
+          .to trigger_internal_events(event_name)
+          .with(additional_properties: { property: originator.id.to_s })
+          .exactly(count).time
+      end
+    end
+
     shared_examples 'event originator is fetched based on ID' do |originator_class|
       it 'fetches the event originator based on id' do
         count.times do
@@ -147,7 +157,7 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
       end
     end
 
-    context 'with a respository target' do
+    context 'with a repository target' do
       let(:target) do
         {
           'mediaType' => ContainerRegistry::Client::DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE,
@@ -199,13 +209,9 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
     context 'with a deploy token as the actor' do
       let!(:originator) { create(:deploy_token, username: 'username', id: 3) }
 
-      shared_examples 'no tracking of a deploy token is sent to HLLRedisCounter' do
-        it 'does not send a tracking event to HLLRedisCounter' do
-          expect(DeployToken).not_to receive(:find)
-          expect(DeployToken).not_to receive(:find_by_username)
-          expect(::Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
-
-          expect { subject }.not_to raise_error
+      shared_examples 'no tracking of a deploy token is sent' do
+        it 'does not send a tracking event' do
+          expect { subject }.not_to trigger_internal_events
         end
       end
 
@@ -218,13 +224,13 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
           }
         end
 
-        it_behaves_like 'no tracking of a deploy token is sent to HLLRedisCounter'
+        it_behaves_like 'no tracking of a deploy token is sent'
       end
 
       context 'when no username or deploy_token_id is given' do
         let(:raw_event) { { 'action' => 'push', 'target' => {}, 'actor' => { 'user_type' => 'deploy_token' } } }
 
-        it_behaves_like 'no tracking of a deploy token is sent to HLLRedisCounter'
+        it_behaves_like 'no tracking of a deploy token is sent'
       end
 
       context 'when deploy_token_id is given' do
@@ -255,12 +261,19 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
           { 'tag' => 'latest' }          | 'delete'   | 'delete_tag'         |  1
           { 'repository' => 'foo/bar' }  | 'push'     | 'create_repository'  |  1
           { 'repository' => 'foo/bar' }  | 'delete'   | 'delete_repository'  |  1
-          { 'tag' => 'latest' }          | 'copy'     | ''                   |  0
         end
 
         with_them do
           it_behaves_like 'event originator is fetched based on ID', DeployToken
-          it_behaves_like 'tracking event is sent to HLLRedisCounter with event and originator ID', :deploy_token
+
+          it_behaves_like 'tracking an internal event'
+        end
+
+        context 'when the event is not a valid trackable event' do
+          let(:action) { 'copy' }
+          let(:target) { { 'tag' => 'latest' } }
+
+          it_behaves_like 'no tracking of a deploy token is sent'
         end
 
         context "when there are errors" do
@@ -273,7 +286,7 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
               allow(File).to receive(:read).with(key_file.path).and_raise(Errno::ENOENT)
             end
 
-            it_behaves_like 'no tracking of a deploy token is sent to HLLRedisCounter'
+            it_behaves_like 'no tracking of a deploy token is sent'
           end
 
           [JWT::VerificationError, JWT::DecodeError, JWT::ExpiredSignature, JWT::ImmatureSignature].each do |error|
@@ -284,7 +297,7 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
                 .and_raise(error)
               end
 
-              it_behaves_like 'no tracking of a deploy token is sent to HLLRedisCounter'
+              it_behaves_like 'no tracking of a deploy token is sent'
             end
           end
         end

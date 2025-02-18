@@ -1,0 +1,15 @@
+---
+description: Tracks when a tag in container registry is pushed using a deploy token
+internal_events: true
+action: i_container_registry_push_tag_deploy_token
+identifiers:
+product_group: container_registry
+milestone: '17.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179408
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  property:
+    description: Id of the deploy token used for authorization

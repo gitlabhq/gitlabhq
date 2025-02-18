@@ -166,6 +166,35 @@ delete_resources: never
 delete_resources: on_stop
 ```
 
+### Managed resource labels and annotations
+
+The resources created by GitLab use a series of labels and annotations for tracking and troubleshooting purposes.
+
+The following labels are defined on every resource created by GitLab. The values are intentionally left empty:
+
+- `agent.gitlab.com/id-<agent_id>: ""`
+- `agent.gitlab.com/project_id-<project_id>: ""`
+- `agent.gitlab.com/env-<kubernetes_namespace>: ""`
+- `agent.gitlab.com/environment_slug-<gitlab_environment_slug>: ""`
+
+On every resource created by GitLab, an `agent.gitlab.com/env-<kubernetes_namespace>` annotation is defined. The value of the annotation is a JSON object with the following keys:
+
+| Key | Description |
+|-----|-------------|
+| `environment_id` | The GitLab environment ID. |
+| `environment_name` | The GitLab environment name. |
+| `environment_slug` | The GitLab environment slug. |
+| `environment_page_url` | The link to the GitLab environment page. |
+| `environment_tier` | The GitLab environment deployment tier. |
+| `agent_id` | The agent ID. |
+| `agent_name` | The agent name. |
+| `agent_url` | The agent URL in the agent registration project. |
+| `project_id` | The GitLab project ID. |
+| `project_slug` | The GitLab project slug. |
+| `project_path` | The full GitLab project path. |
+| `project_url` | The link to the GitLab project. |
+| `template_name` | The name of the template used. |
+
 ### Use managed resources in CI/CD pipelines
 
 To use managed Kubernetes resources in your CI/CD pipelines, specify the agent and optionally the template name in your environment configuration:

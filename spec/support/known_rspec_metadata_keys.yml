@@ -10,7 +10,6 @@
 - :block
 - :broken_storage
 - :capybara_ignore_server_errors
-- :chat_qa_evaluation
 - :ci_config_validation
 - :clean_gitlab_redis_buffered_counter
 - :clean_gitlab_redis_cache
@@ -54,7 +53,6 @@
 - :experiment
 - :factory_default
 - :fails_if_sidekiq_not_configured
-- :fast_chat_qa_evaluation
 - :feature
 - :feature_category
 - :features
@@ -168,6 +166,5 @@
 - :with_sidekiq_context
 - :without_license
 - :yaml_processor_feature_flag_corectness
-- :zeroshot_executor
 - :zoekt
 - :zoekt_settings_enabled

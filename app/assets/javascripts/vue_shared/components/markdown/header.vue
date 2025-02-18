@@ -164,7 +164,7 @@ export default {
           this.restrictedToolBarItems.includes('attach-file') &&
           !this.drawioEnabled &&
           !this.supportsQuickActions &&
-          !this.newCommentTemplatePath)
+          !this.commentTemplatePaths.length)
       );
     },
     showFindAndReplaceButton() {

@@ -46,7 +46,6 @@ describe('Merge request dashboard assigned users component', () => {
     createComponent();
 
     expect(findAllUsers()).toHaveLength(2);
-    expect(wrapper.html()).toMatchSnapshot();
   });
 
   describe('current user avatar', () => {
