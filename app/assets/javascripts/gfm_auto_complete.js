@@ -700,8 +700,8 @@ class GfmAutoComplete {
               // Do not match if there are two consecutive `~` characters (strikethrough) before the cursor
               return null;
             }
-            const lastCandidate = subtext.split(flag).pop();
-            if (labels.find((label) => label.title.startsWith(lastCandidate))) {
+            const lastCandidate = subtext.split(flag).pop().toLowerCase();
+            if (labels.find((label) => label.title.toLowerCase().startsWith(lastCandidate))) {
               return lastCandidate;
             }
           }

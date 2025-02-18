@@ -5,6 +5,7 @@ import localRules from 'eslint-plugin-local-rules';
 import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
 import * as graphqlEslint from '@graphql-eslint/eslint-plugin';
+import * as todoLists from './.eslint_todo/index.mjs'
 
 const { dirname } = import.meta;
 const compat = new FlatCompat({
@@ -396,6 +397,17 @@ export default [
     },
   },
   {
+    files: ['**/*.vue'],
+    rules: {
+      'vue/no-unused-properties': [
+        'error',
+        {
+          groups: ['props', 'data', 'computed', 'methods'],
+        },
+      ],
+    },
+  },
+  {
     files: ['{,ee/,jh/}spec/frontend*/**/*'],
 
     rules: {
@@ -719,4 +731,5 @@ export default [
     },
   },
   ...jhConfigs,
+  ...Object.values(todoLists),
 ];

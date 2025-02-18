@@ -300,7 +300,7 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
       end
 
       it 'allows spaces when autocompleting multi-word labels' do
-        fill_in 'Comment', with: '~Accepting merge'
+        fill_in 'Comment', with: '~accepting merge'
 
         wait_for_requests
 

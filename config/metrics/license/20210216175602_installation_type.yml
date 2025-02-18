@@ -2,7 +2,7 @@
 data_category: optional
 key_path: installation_type
 description: The installation method used to install GitLab (Omnibus, Helm, etc)
-product_group: distribution_deploy
+product_group: self_managed
 product_categories:
 - build
 value_type: string

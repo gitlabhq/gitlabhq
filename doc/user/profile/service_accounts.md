@@ -71,7 +71,8 @@ Prerequisites:
 
 1. [Create a service account](../../api/group_service_accounts.md#create-a-service-account-user).
 
-   This service account is associated only with your top-level group.
+   This service account is associated only with your top-level group, but is not a member of any
+   specific groups or projects.
 
 1. [List all service account users](../../api/group_service_accounts.md#list-all-service-account-users).
 
@@ -101,8 +102,8 @@ Prerequisites:
 
 1. [Create a service account](../../api/user_service_accounts.md#create-a-service-account-user).
 
-   This service account is associated with the entire instance, not a specific group
-   or project in the instance.
+   This service account is associated with the entire instance, but is not a member of any
+   specific groups or projects.
 
 1. [List all service account users](../../api/user_service_accounts.md#list-all-service-account-users).
 

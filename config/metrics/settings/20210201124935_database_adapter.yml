@@ -4,7 +4,7 @@ key_path: database.adapter
 description: This metric only returns a value of PostgreSQL in supported versions
   of GitLab. It could be removed from the usage ping. Historically MySQL was also
   supported.
-product_group: distribution_deploy
+product_group: self_managed
 product_categories:
 - build
 value_type: string

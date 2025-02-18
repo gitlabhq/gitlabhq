@@ -46,7 +46,15 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 |-------------|----------------|----------|-------------|
 | `id`        | integer or string | yes   | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `file_path` | string         | yes      | URL encoded full path to new file, such as `lib%2Fclass%2Erb`. |
-| `ref`       | string         | yes      | The name of branch, tag or commit. |
+| `ref`       | string         | yes      | The name of branch, tag or commit. Use `HEAD` to automatically use the default branch. |
+
+If you don't know the branch name or want to use the default branch, you can use `HEAD` as the
+`ref` value. For example:
+
+```shell
+curl --header "PRIVATE-TOKEN: " \
+  --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=HEAD"
+```
 
 ### Response
 
@@ -116,7 +124,7 @@ GET /projects/:id/repository/files/:file_path/blame
 | `id`            | integer or string | yes   | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `range[end]`    | integer           | yes   | The last line of the range to blame. |
 | `range[start]`  | integer           | yes   | The first line of the range to blame. |
-| `ref`           | string            | yes   | The name of branch, tag or commit. |
+| `ref`           | string            | yes   | The name of branch, tag or commit. Use `HEAD` to automatically use the default branch. |
 | `range`         | hash              | no    | Blame range. |
 
 ```shell

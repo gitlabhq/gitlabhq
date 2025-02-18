@@ -248,7 +248,7 @@ To integrate Microsoft Azure AD, you:
 ### GitLab settings to Azure AD fields
 
 | GitLab setting | Azure field                                |
-| ============== | ========================================== |
+| -------------- | ------------------------------------------ |
 | Tenant ID      | Directory (tenant) ID                      |
 | Client ID      | Application (client) ID                    |
 | Client Secret  | Value (on **Certificates & secrets** page) |
