@@ -15385,6 +15385,30 @@ The edge type for [`EpicList`](#epiclist).
 | <a id="epiclistedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="epiclistedgenode"></a>`node` | [`EpicList`](#epiclist) | The item at the end of the edge. |
 
+#### `ErrorTrackingStackTraceConnection`
+
+The connection type for [`ErrorTrackingStackTrace`](#errortrackingstacktrace).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="errortrackingstacktraceconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="errortrackingstacktraceconnectionedges"></a>`edges` | [`[ErrorTrackingStackTraceEdge]`](#errortrackingstacktraceedge) | A list of edges. |
+| <a id="errortrackingstacktraceconnectionnodes"></a>`nodes` | [`[ErrorTrackingStackTrace]`](#errortrackingstacktrace) | A list of nodes. |
+| <a id="errortrackingstacktraceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ErrorTrackingStackTraceEdge`
+
+The edge type for [`ErrorTrackingStackTrace`](#errortrackingstacktrace).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="errortrackingstacktraceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="errortrackingstacktraceedgenode"></a>`node` | [`ErrorTrackingStackTrace`](#errortrackingstacktrace) | The item at the end of the edge. |
+
 #### `EscalationPolicyTypeConnection`
 
 The connection type for [`EscalationPolicyType`](#escalationpolicytype).
@@ -25462,6 +25486,21 @@ Check permissions for the current user on an epic.
 | <a id="epicpermissionsreadepic"></a>`readEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_epic` on this resource. |
 | <a id="epicpermissionsreadepiciid"></a>`readEpicIid` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_epic_iid` on this resource. |
 | <a id="epicpermissionsupdateepic"></a>`updateEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_epic` on this resource. |
+
+### `ErrorTrackingStackTrace`
+
+Represents a stack trace.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="errortrackingstacktraceabsolutepath"></a>`absolutePath` | [`String`](#string) | Absolute path of the stack trace. |
+| <a id="errortrackingstacktracecolumnnumber"></a>`columnNumber` | [`Int`](#int) | Column number of the stack trace. |
+| <a id="errortrackingstacktracecontext"></a>`context` | [`[WorkItemWidgetErrorTrackingStackTraceContext!]`](#workitemwidgeterrortrackingstacktracecontext) | Context of the stack trace. |
+| <a id="errortrackingstacktracefilename"></a>`filename` | [`String`](#string) | Filename of the stack trace. |
+| <a id="errortrackingstacktracefunction"></a>`function` | [`String`](#string) | Name of the function where the error occured. |
+| <a id="errortrackingstacktracelinenumber"></a>`lineNumber` | [`Int`](#int) | Line number of the stack trace. |
 
 ### `EscalationPolicyType`
 
@@ -39651,8 +39690,21 @@ Represents the error tracking widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgeterrortrackingidentifier"></a>`identifier` | [`BigInt`](#bigint) | Error tracking issue id. |
+| <a id="workitemwidgeterrortrackingidentifier"></a>`identifier` | [`BigInt`](#bigint) | Error tracking issue id.This field can only be resolved for one work item in any single request. |
+| <a id="workitemwidgeterrortrackingstacktrace"></a>`stackTrace` | [`ErrorTrackingStackTraceConnection`](#errortrackingstacktraceconnection) | Stack trace details of the error.This field can only be resolved for one work item in any single request. (see [Connections](#connections)) |
+| <a id="workitemwidgeterrortrackingstatus"></a>`status` | [`ErrorTrackingStatus`](#errortrackingstatus) | Response status of error service.This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgeterrortrackingtype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
+### `WorkItemWidgetErrorTrackingStackTraceContext`
+
+Represents details about a line of code of the stack trace.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgeterrortrackingstacktracecontextline"></a>`line` | [`String`](#string) | Line of code. |
+| <a id="workitemwidgeterrortrackingstacktracecontextlinenumber"></a>`lineNumber` | [`Int`](#int) | Line number of code. |
 
 ### `WorkItemWidgetHealthStatus`
 
@@ -41401,6 +41453,17 @@ Epic ID wildcard values.
 | ----- | ----------- |
 | <a id="epicwildcardidany"></a>`ANY` | Any epic is assigned. |
 | <a id="epicwildcardidnone"></a>`NONE` | No epic is assigned. |
+
+### `ErrorTrackingStatus`
+
+Status of the error tracking service.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="errortrackingstatuserror"></a>`ERROR` | Error tracking service respond with an error. |
+| <a id="errortrackingstatusnot_found"></a>`NOT_FOUND` | Sentry issue not found. |
+| <a id="errortrackingstatusretry"></a>`RETRY` | Error tracking service is not ready. |
+| <a id="errortrackingstatussuccess"></a>`SUCCESS` | Successfuly fetch the stack trace. |
 
 ### `EscalationRuleStatus`
 

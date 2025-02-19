@@ -63,7 +63,6 @@ module PersonalAccessTokens
     end
 
     def last_used_ip_needs_update?
-      return false unless Feature.enabled?(:pat_ip, @personal_access_token.user)
       return false unless Gitlab::IpAddressState.current
       return true if @personal_access_token.last_used_at.nil?
 

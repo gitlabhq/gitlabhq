@@ -557,3 +557,8 @@
   @apply gl-line-clamp-2 gl-whitespace-normal;
   margin-bottom: 0;
 }
+
+// stylelint-disable-next-line gitlab/no-gl-class
+.project-destination-select .gl-button-text {
+  flex-grow: 1;
+}

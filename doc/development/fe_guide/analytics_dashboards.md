@@ -66,6 +66,7 @@ Dashboards support the following filters:
 
 - **Date range**: Date selector to filter data by date.
 - **Anonymous users**: Toggle to include or exclude anonymous users from the dataset.
+- **Project**: Dropdown list to filter data by project.
 
 #### Dashboard status
 
@@ -131,6 +132,8 @@ To create a built-in analytics dashboard:
      excludeAnonymousUsers:
        enabled: true
      dateRange:
+       enabled: true
+     projects: 
        enabled: true
    ```
 

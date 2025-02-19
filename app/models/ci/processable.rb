@@ -15,11 +15,10 @@ module Ci
 
     has_one :resource, class_name: 'Ci::Resource', foreign_key: 'build_id', inverse_of: :processable
     has_one :sourced_pipeline, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id, inverse_of: :source_job
+    has_one :trigger, through: :pipeline
 
     belongs_to :trigger_request
     belongs_to :resource_group, class_name: 'Ci::ResourceGroup', inverse_of: :processables
-
-    delegate :trigger_short_token, to: :trigger_request, allow_nil: true
 
     accepts_nested_attributes_for :needs
 
@@ -266,6 +265,14 @@ module Ci
 
     def manual_confirmation_message
       options[:manual_confirmation] if manual_job?
+    end
+
+    def trigger_short_token
+      if ::Feature.enabled?(:ci_read_trigger_from_ci_pipeline, project)
+        trigger&.short_token
+      else
+        trigger_request&.trigger_short_token
+      end
     end
 
     private

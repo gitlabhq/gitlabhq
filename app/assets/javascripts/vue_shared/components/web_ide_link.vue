@@ -10,6 +10,7 @@ import Tracking from '~/tracking';
 import ConfirmForkModal from '~/vue_shared/components/web_ide/confirm_fork_modal.vue';
 import { keysFor, GO_TO_PROJECT_WEBIDE } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { KEY_EDIT, KEY_WEB_IDE, KEY_GITPOD, KEY_PIPELINE_EDITOR } from './constants';
 
 export const i18n = {
@@ -32,7 +33,7 @@ export default {
     ConfirmForkModal,
   },
   i18n,
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
   props: {
     isFork: {
       type: Boolean,
@@ -141,13 +142,15 @@ export default {
     };
   },
   computed: {
+    hideIDEActionsInDirectoryView() {
+      return this.glFeatures.directoryCodeDropdownUpdates && !this.isBlob;
+    },
     actions() {
-      return [
-        this.pipelineEditorAction,
-        this.webIdeAction,
-        this.editAction,
-        this.gitpodAction,
-      ].filter((action) => action);
+      return this.hideIDEActionsInDirectoryView
+        ? [this.pipelineEditorAction, this.editAction].filter(Boolean)
+        : [this.pipelineEditorAction, this.webIdeAction, this.editAction, this.gitpodAction].filter(
+            Boolean,
+          );
     },
     hasActions() {
       return this.actions.length > 0;

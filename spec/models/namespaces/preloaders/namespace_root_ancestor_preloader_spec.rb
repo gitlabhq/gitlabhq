@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Preloaders::NamespaceRootAncestorPreloader, feature_category: :groups_and_projects do
+RSpec.describe Namespaces::Preloaders::NamespaceRootAncestorPreloader, feature_category: :groups_and_projects do
   let_it_be(:parent_public_group) { create(:group) }
   let_it_be(:parent_private_group) { create(:group, :private) }
   let_it_be(:project_namespace) { create(:project_namespace, parent: parent_public_group) }

@@ -947,23 +947,28 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe '#project_title' do
-    subject { helper.project_title(project) }
+  describe '#push_project_breadcrumbs' do
+    subject { helper.push_project_breadcrumbs(project) }
 
-    it 'enqueues the elements in the breadcrumb schema list' do
-      expect(helper).to receive(:push_to_schema_breadcrumb).with(project.namespace.name, user_path(project.owner))
-      expect(helper).to receive(:push_to_schema_breadcrumb).with(project.name, project_path(project), nil)
+    it 'enqueues the elements in the breadcrumb schema list in the correct order' do
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(project.namespace.name, user_path(project.owner)).ordered
+      expect(helper).to receive(:push_to_schema_breadcrumb).with(project.name, project_path(project), nil).ordered
 
       subject
     end
 
     context 'with malicious owner name' do
+      let(:malicious_owner_name) { 'a<a class="fixed-top" href=/api/v4' }
+
       before do
-        allow_any_instance_of(User).to receive(:name).and_return('a<a class="fixed-top" href=/api/v4')
+        allow_any_instance_of(User).to receive(:name).and_return(malicious_owner_name)
       end
 
       it 'escapes the malicious owner name' do
-        expect(subject).not_to include('<a class="fixed-top" href="/api/v4"></a>')
+        expect(helper).not_to receive(:push_to_schema_breadcrumb).with(malicious_owner_name, user_path(project.owner))
+        expect(helper).to receive(:push_to_schema_breadcrumb).with('a', user_path(project.owner))
+
+        subject
       end
     end
   end

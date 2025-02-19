@@ -59,6 +59,10 @@ FactoryBot.define do
       status { :created }
     end
 
+    trait :triggered do
+      trigger { association :ci_trigger, project_id: project_id }
+    end
+
     factory :ci_pipeline do
       trait :invalid do
         status { :failed }

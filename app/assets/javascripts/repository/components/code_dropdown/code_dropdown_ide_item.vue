@@ -1,5 +1,7 @@
 <script>
 import { GlButton, GlButtonGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { InternalEvents } from '~/tracking';
 
 export default {
   components: {
@@ -7,15 +9,25 @@ export default {
     GlButtonGroup,
     GlDisclosureDropdownItem,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     ideItem: {
       type: Object,
       required: true,
     },
   },
+  computed: {
+    shortcutsDisabled() {
+      return shouldDisableShortcuts();
+    },
+  },
   methods: {
     closeDropdown() {
       this.$emit('close-dropdown');
+    },
+    trackAndClose({ action, label }) {
+      this.trackEvent(action, { label });
+      this.closeDropdown();
     },
   },
 };
@@ -41,5 +53,16 @@ export default {
       </gl-button>
     </gl-button-group>
   </gl-disclosure-dropdown-item>
-  <gl-disclosure-dropdown-item v-else-if="ideItem.href" :item="ideItem" @action="closeDropdown" />
+  <gl-disclosure-dropdown-item
+    v-else-if="ideItem.href"
+    :item="ideItem"
+    @action="trackAndClose(ideItem.tracking)"
+  >
+    <template #list-item>
+      <span class="gl-mb-2 gl-flex gl-items-center gl-justify-between">
+        <span>{{ ideItem.text }}</span>
+        <kbd v-if="ideItem.shortcut && !shortcutsDisabled" class="flat">{{ ideItem.shortcut }}</kbd>
+      </span>
+    </template>
+  </gl-disclosure-dropdown-item>
 </template>

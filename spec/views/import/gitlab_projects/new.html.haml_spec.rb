@@ -9,6 +9,7 @@ RSpec.describe 'import/gitlab_projects/new.html.haml' do
   let(:user) { build_stubbed(:user, namespace: namespace) }
 
   before do
+    stub_feature_flags(new_project_creation_form: false)
     allow(view).to receive(:current_user).and_return(user)
   end
 

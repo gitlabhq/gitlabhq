@@ -323,8 +323,12 @@ export default {
               :http-url="httpUrl"
               :kerberos-url="kerberosUrl"
               :xcode-url="xcodeUrl"
+              :web-ide-url="webIDEUrl"
+              :gitpod-url="gitpodUrl"
               :current-path="currentPath"
               :directory-download-links="downloadLinks"
+              :show-web-ide-button="showWebIdeButton"
+              :show-gitpod-button="showGitpodButton"
             />
             <repository-overflow-menu v-if="comparePath" />
           </div>

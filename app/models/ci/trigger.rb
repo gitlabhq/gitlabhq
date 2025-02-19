@@ -37,12 +37,12 @@ module Ci
       self.token = "#{TRIGGER_TOKEN_PREFIX}#{SecureRandom.hex(20)}" if self.token.blank?
     end
 
-    def last_trigger_request
-      trigger_requests.last
-    end
-
     def last_used
-      last_trigger_request.try(:created_at)
+      if ::Feature.enabled?(:ci_read_trigger_from_ci_pipeline, project)
+        pipelines.last&.created_at
+      else
+        trigger_requests.last&.created_at
+      end
     end
 
     def short_token

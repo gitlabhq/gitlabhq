@@ -21399,6 +21399,9 @@ msgstr ""
 msgid "Drop or %{linkStart}upload%{linkEnd} files to attach"
 msgstr ""
 
+msgid "Drop or upload file to attach"
+msgstr ""
+
 msgid "Drop your designs to start your upload."
 msgstr ""
 
@@ -26441,6 +26444,9 @@ msgstr ""
 msgid "GitLabPages|Your project is configured for GitLab Pages and the pipeline is running..."
 msgstr ""
 
+msgid "GitPod"
+msgstr ""
+
 msgid "Gitaly servers"
 msgstr ""
 
@@ -30989,6 +30995,9 @@ msgid "Integrations|can't exceed %{recipients_limit}"
 msgstr ""
 
 msgid "Integration|Branches for which notifications are to be sent"
+msgstr ""
+
+msgid "IntelliJ IDEA"
 msgstr ""
 
 msgid "IntelliJ IDEA (HTTPS)"
@@ -46060,6 +46069,9 @@ msgstr ""
 msgid "ProjectsNew|Get started with one of our popular project templates."
 msgstr ""
 
+msgid "ProjectsNew|GitLab project export"
+msgstr ""
+
 msgid "ProjectsNew|Gitea host URL"
 msgstr ""
 
@@ -46099,6 +46111,9 @@ msgstr ""
 msgid "ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces."
 msgstr ""
 
+msgid "ProjectsNew|My awesome project"
+msgstr ""
+
 msgid "ProjectsNew|New project"
 msgstr ""
 
@@ -46117,6 +46132,15 @@ msgstr ""
 msgid "ProjectsNew|Please enter a valid personal access token."
 msgstr ""
 
+msgid "ProjectsNew|Please enter a valid project name."
+msgstr ""
+
+msgid "ProjectsNew|Please enter a valid project slug."
+msgstr ""
+
+msgid "ProjectsNew|Please upload a valid GitLab project export file."
+msgstr ""
+
 msgid "ProjectsNew|Project Configuration"
 msgstr ""
 
@@ -46124,6 +46148,9 @@ msgid "ProjectsNew|Project description %{tag_start}(optional)%{tag_end}"
 msgstr ""
 
 msgid "ProjectsNew|Project name"
+msgstr ""
+
+msgid "ProjectsNew|Project slug"
 msgstr ""
 
 msgid "ProjectsNew|Projects"
@@ -46142,6 +46169,9 @@ msgid "ProjectsNew|Select"
 msgstr ""
 
 msgid "ProjectsNew|Select a template"
+msgstr ""
+
+msgid "ProjectsNew|To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
 msgstr ""
 
 msgid "ProjectsNew|Unable to suggest a path. Please refresh and try again."
@@ -46166,6 +46196,9 @@ msgid "ProjectsNew|Your project will be created at:"
 msgstr ""
 
 msgid "ProjectsNew|https://mycompany.fogbugz.com"
+msgstr ""
+
+msgid "ProjectsNew|my-awesome-project"
 msgstr ""
 
 msgid "Projects|An error occurred deleting the project. Please refresh the page to try again."
@@ -54436,9 +54469,6 @@ msgid "Show all %{issuable_type}."
 msgstr ""
 
 msgid "Show all activity"
-msgstr ""
-
-msgid "Show all breadcrumbs"
 msgstr ""
 
 msgid "Show all comments"
@@ -63738,6 +63768,9 @@ msgid "VisibilityLevel|Unknown"
 msgstr ""
 
 msgid "Visit new homepage"
+msgstr ""
+
+msgid "Visual Studio Code"
 msgstr ""
 
 msgid "Visual Studio Code (HTTPS)"

@@ -1,6 +1,6 @@
 - page_title       @project.full_name
 - page_description @project.description_html unless page_description
-- header_title     project_title(@project)   unless header_title
+- push_project_breadcrumbs(@project)
 - nav              "project"
 - page_itemtype    'http://schema.org/SoftwareSourceCode'
 - display_subscription_banner!

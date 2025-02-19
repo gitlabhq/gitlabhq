@@ -6,6 +6,7 @@ RSpec.describe Ci::JobToken::Jwt, feature_category: :secrets_management do
   let_it_be(:rsa_key) { OpenSSL::PKey::RSA.generate(2048) }
   let_it_be(:user) { create(:user) }
   let_it_be(:job) { create(:ci_build, user: user) }
+  let(:cell_id) { 1 }
 
   before do
     allow(Gitlab::CurrentSettings)
@@ -61,10 +62,37 @@ RSpec.describe Ci::JobToken::Jwt, feature_category: :secrets_management do
 
     subject(:decoded_token) { described_class.decode(encoded_token) }
 
+    before do
+      allow(Gitlab.config.cell).to receive(:id).and_return(cell_id)
+    end
+
     context 'with a valid token' do
+      let(:decoded_payload) { decoded_token.instance_variable_get(:@jwt).payload }
+      let(:expected_payload) do
+        {
+          "c" => cell_id.to_s(36),
+          "o" => job.project.organization_id.to_s(36),
+          "u" => user.id.to_s(36),
+          "p" => job.project_id.to_s(36)
+        }
+      end
+
       it 'successfully decodes the token with subject' do
         expect(decoded_token).to be_present
         expect(decoded_token.job).to eq(job)
+      end
+
+      it 'successfully decodes the token with routable payload' do
+        expect(decoded_payload).to match(a_hash_including(expected_payload))
+      end
+
+      context 'when project belongs to a group' do
+        let_it_be(:job) { create(:ci_build, user: user, project: create(:project, :in_group)) }
+
+        it 'includes group id in routable payload' do
+          expect(decoded_payload)
+            .to match(a_hash_including(expected_payload.merge("g" => job.project.group.id.to_s(36))))
+        end
       end
     end
 
@@ -184,17 +212,58 @@ RSpec.describe Ci::JobToken::Jwt, feature_category: :secrets_management do
     let(:encoded_token) { described_class.encode(job) }
     let(:decoded_token) { described_class.decode(encoded_token) }
 
+    before do
+      allow(Gitlab.config.cell).to receive(:id).and_return(cell_id)
+    end
+
     it 'encodes the cell_id in the JWT payload' do
-      expect(decoded_token.cell_id).to eq(Gitlab.config.cell.id)
+      expect(decoded_token.cell_id).to eq(cell_id)
     end
   end
 
-  describe '#organization' do
+  describe '#organization_id' do
     let(:encoded_token) { described_class.encode(job) }
     let(:decoded_token) { described_class.decode(encoded_token) }
 
-    it 'encodes the organization in the JWT payload' do
-      expect(decoded_token.organization).to eq(job.project.organization)
+    it 'encodes the organization_id in the JWT payload' do
+      expect(decoded_token.organization_id).to eq(job.project.organization_id)
+    end
+  end
+
+  describe '#project_id' do
+    let(:encoded_token) { described_class.encode(job) }
+    let(:decoded_token) { described_class.decode(encoded_token) }
+
+    it 'encodes the project_id in the JWT payload' do
+      expect(decoded_token.project_id).to eq(job.project_id)
+    end
+  end
+
+  describe '#user_id' do
+    let(:encoded_token) { described_class.encode(job) }
+    let(:decoded_token) { described_class.decode(encoded_token) }
+
+    it 'encodes the user_id in the JWT payload' do
+      expect(decoded_token.user_id).to eq(job.user_id)
+    end
+  end
+
+  describe '#group_id' do
+    let(:encoded_token) { described_class.encode(job) }
+    let(:decoded_token) { described_class.decode(encoded_token) }
+
+    context 'when project belongs to a group' do
+      let_it_be(:job) { create(:ci_build, user: user, project: create(:project, :in_group)) }
+
+      it 'encodes the group_id in the JWT payload' do
+        expect(decoded_token.group_id).to eq(job.project.group.id)
+      end
+    end
+
+    context 'when project belongs to a personal namespace' do
+      it 'does not encode the group_id in the JWT payload' do
+        expect(decoded_token.group_id).to be_nil
+      end
     end
   end
 

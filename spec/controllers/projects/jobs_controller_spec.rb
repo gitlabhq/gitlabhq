@@ -536,9 +536,10 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     end
 
     context 'when requesting triggered job JSON' do
-      let(:trigger) { create(:ci_trigger, project: project) }
-      let(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
-      let(:job) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request) }
+      let_it_be(:trigger) { create(:ci_trigger, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project, trigger: trigger) }
+      let_it_be(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
+      let_it_be(:job) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request) }
       let(:user) { developer }
 
       before do

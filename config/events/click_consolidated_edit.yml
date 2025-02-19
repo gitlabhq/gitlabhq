@@ -1,6 +1,6 @@
 ---
 description: "Selects an editor in the Edit dropdown menu"
-category: default
+internal_events: true
 action: click_consolidated_edit
 extra_properties:
 identifiers:
@@ -14,4 +14,3 @@ tiers:
 additional_properties:
   label:
     description: "The editor selected in the Edit dropdown menu"
-

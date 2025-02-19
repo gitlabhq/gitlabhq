@@ -25,22 +25,29 @@ module Gitlab
       def wrap_mentions_in_backticks(text)
         return text unless text.present?
 
-        if MENTION_REGEX.match?(text)
-          text = MENTION_REGEX.replace_gsub(text) do |match|
-            case match[0]
-            when /^`/
-              match[0]
-            when /^ /
-              " `#{match[0].lstrip}`"
-            when /^\(/
-              "(`#{match[0].sub(/^./, '')}`"
-            else
-              "`#{match[0]}`"
+        resultant_array = []
+
+        split_array = text.split("\n")
+        split_array.each do |line|
+          if MENTION_REGEX.match?(line)
+            line = MENTION_REGEX.replace_gsub(line) do |match|
+              case match[0]
+              when /^`/
+                match[0]
+              when /^ /
+                " `#{match[0].lstrip}`"
+              when /^\(/
+                "(`#{match[0].sub(/^./, '')}`"
+              else
+                "`#{match[0]}`"
+              end
             end
           end
+
+          resultant_array << line
         end
 
-        text
+        resultant_array.join("\n")
       end
     end
   end

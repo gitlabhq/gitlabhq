@@ -50,7 +50,7 @@ module API
         group_projects = projects_for_group_preload(projects_relation)
         groups = group_projects.map(&:namespace)
 
-        Preloaders::GroupRootAncestorPreloader.new(groups).execute
+        ::Namespaces::Preloaders::GroupRootAncestorPreloader.new(groups).execute
 
         group_projects.each do |project|
           project.group = project.namespace

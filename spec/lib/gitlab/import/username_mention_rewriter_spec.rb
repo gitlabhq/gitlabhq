@@ -93,4 +93,13 @@ RSpec.describe Gitlab::Import::UsernameMentionRewriter, feature_category: :impor
       end
     end
   end
+
+  context 'when the text contains username in the new line' do
+    let(:original_text) { "Hello,\n@username is mentioned here.\nThis is the next line." }
+    let(:expected_text) { "Hello,\n`@username` is mentioned here.\nThis is the next line." }
+
+    it 'wraps the username in backticks and it should be properly formatted in the new line' do
+      expect(instance.wrap_mentions_in_backticks(original_text)).to eq(expected_text)
+    end
+  end
 end

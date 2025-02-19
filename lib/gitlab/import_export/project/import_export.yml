@@ -1021,6 +1021,7 @@ excluded_attributes:
     - :pipeline_schedule_id
     - :merge_request_id
     - :external_pull_request_id
+    - :trigger_id
     - :ci_ref_id
     - :locked
   pipeline_metadata:

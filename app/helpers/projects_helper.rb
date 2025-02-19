@@ -103,14 +103,18 @@ module ProjectsHelper
     end
   end
 
-  def project_title(project)
-    namespace_link = build_namespace_breadcrumb_link(project)
-    project_link = build_project_breadcrumb_link(project)
+  def push_project_breadcrumbs(project)
+    if project.group
+      push_group_breadcrumbs(project.group)
+    else
+      owner = project.namespace.owner
+      name = sanitize(owner.name, tags: [])
+      url = user_path(owner)
 
-    namespace_link = breadcrumb_list_item(namespace_link) unless project.group
-    project_link = breadcrumb_list_item project_link
+      push_to_schema_breadcrumb(name, url)
+    end
 
-    "#{namespace_link} #{project_link}".html_safe
+    push_to_schema_breadcrumb(simple_sanitize(project.name), project_path(project), project.try(:avatar_url))
   end
 
   def remove_project_message(project)
@@ -1069,38 +1073,6 @@ module ProjectsHelper
       html_confirmation_message: true.to_s,
       show_visibility_confirm_modal: show_visibility_confirm_modal?(project).to_s
     }
-  end
-
-  def build_project_breadcrumb_link(project)
-    project_name = simple_sanitize(project.name)
-
-    push_to_schema_breadcrumb(project_name, project_path(project), project.try(:avatar_url))
-
-    link_to project_path(project), class: '!gl-inline-flex' do
-      if project.avatar_url && !Rails.env.test?
-        icon = render Pajamas::AvatarComponent.new(
-          project,
-          alt: project.name,
-          size: 16,
-          class: 'avatar-tile'
-        )
-      end
-
-      [icon, content_tag("span", project_name, class: "js-breadcrumb-item-text")].join.html_safe
-    end
-  end
-
-  def build_namespace_breadcrumb_link(project)
-    if project.group
-      group_title(project.group)
-    else
-      owner = project.namespace.owner
-      name = sanitize(owner.name, tags: [])
-      url = user_path(owner)
-
-      push_to_schema_breadcrumb(name, url)
-      link_to(name, url)
-    end
   end
 
   def delete_inactive_projects?

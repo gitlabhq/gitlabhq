@@ -2,27 +2,40 @@
 - header_title _("New project"), new_project_path
 - add_to_breadcrumbs s_('ProjectsNew|Import project'), new_project_path(anchor: 'import_project')
 
-= render ::Layouts::PageHeadingComponent.new('') do |c|
-  - c.with_heading do
-    %span.gl-inline-flex.gl-items-center.gl-gap-3
-      = sprite_icon('tanuki', size: 32)
-      = _('Import an exported GitLab project')
+- if Feature.enabled?(:new_project_creation_form, @user)
+  - add_page_specific_style 'page_bundles/projects'
+  - namespace_id = namespace_id_from(params)
+  #js-import-gitlab-project-root{ data: {
+    back_button_path: new_project_path(anchor: 'import_project'),
+    namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path || current_user.namespace.full_path,
+    namespace_id: namespace_id_from(params) || @current_user_group&.id,
+    import_gitlab_project_path: import_gitlab_project_path,
+    root_path: root_path,
+    user_namespace_id: current_user.namespace_id,
+    can_create_project: current_user.can_create_project?.to_s,
+    root_url: root_url,
+  } }
+- else
+  = render ::Layouts::PageHeadingComponent.new('') do |c|
+    - c.with_heading do
+      %span.gl-inline-flex.gl-items-center.gl-gap-3
+        = sprite_icon('tanuki', size: 32)
+        = _('Import an exported GitLab project')
 
-= form_tag import_gitlab_project_path, class: 'new_project', multipart: true do
-  = render 'import/shared/new_project_form'
+  = form_tag import_gitlab_project_path, class: 'new_project', multipart: true do
+    = render 'import/shared/new_project_form'
 
-  .row
-    .form-group.col-md-12
-      = _("To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here.")
-  .row
-    .form-group.col-sm-12
-      = label_tag :file, _('GitLab project export'), class: 'label-bold'
-      .form-group
-        = file_field_tag :file, class: ''
-  .row
-    .col-sm-12.gl-mt-5
-      = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { class: 'gl-mr-2', data: { testid: 'import-project-button' }}) do
-        = _('Import project')
-      = render Pajamas::ButtonComponent.new(href: new_project_path) do
-        = _('Cancel')
-
+    .row
+      .form-group.col-md-12
+        = _("To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here.")
+    .row
+      .form-group.col-sm-12
+        = label_tag :file, _('GitLab project export'), class: 'label-bold'
+        .form-group
+          = file_field_tag :file, class: ''
+    .row
+      .col-sm-12.gl-mt-5
+        = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { class: 'gl-mr-2', data: { testid: 'import-project-button' }}) do
+          = _('Import project')
+        = render Pajamas::ButtonComponent.new(href: new_project_path) do
+          = _('Cancel')

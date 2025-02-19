@@ -73,7 +73,7 @@ module API
           authenticate!
           authorize! :admin_build, user_project
 
-          triggers = user_project.triggers.includes(:trigger_requests)
+          triggers = user_project.triggers.includes(:trigger_requests, :pipelines)
 
           present paginate(triggers), with: Entities::Trigger, current_user: current_user
         end

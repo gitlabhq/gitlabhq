@@ -8,7 +8,7 @@ title: Supported GitLab Duo Self-Hosted models and hardware requirements
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Ultimate with GitLab Duo Enterprise - [Start a GitLab Duo Enterprise trial on a paid Ultimate subscription](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 - Offering: GitLab Self-Managed
 
 {{< /details >}}

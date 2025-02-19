@@ -62,9 +62,6 @@ describe('~/access_tokens/components/access_token_table_app', () => {
         initialActiveAccessTokens: defaultActiveAccessTokens,
         noActiveTokensMessage,
         showRole,
-        glFeatures: {
-          patIp: true,
-        },
         ...props,
       },
     });

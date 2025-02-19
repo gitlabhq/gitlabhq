@@ -2,6 +2,10 @@ import { s__ } from '~/locale';
 
 export const BASE_IMPORT_TABLE_ROW_GRID_CLASSES = 'gl-grid-cols-[repeat(2,1fr),200px,200px]';
 
+export const SOURCE_TYPE_GROUP = 'group';
+export const SOURCE_TYPE_PROJECT = 'project';
+export const SOURCE_TYPE_FILE = 'file';
+
 export const IMPORT_HISTORY_TABLE_STATUS = {
   inProgress: 'started',
   complete: 'finished',

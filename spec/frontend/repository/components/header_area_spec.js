@@ -183,6 +183,10 @@ describe('HeaderArea', () => {
         httpUrl: headerAppInjected.httpUrl,
         kerberosUrl: headerAppInjected.kerberosUrl,
         xcodeUrl: headerAppInjected.xcodeUrl,
+        webIdeUrl: headerAppInjected.webIdeUrl,
+        gitpodUrl: headerAppInjected.gitpodUrl,
+        showWebIdeButton: headerAppInjected.showWebIdeButton,
+        showGitpodButton: headerAppInjected.showGitpodButton,
         currentPath: defaultMockRoute.params.path,
         directoryDownloadLinks: headerAppInjected.downloadLinks,
       });

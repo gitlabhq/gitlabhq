@@ -25,20 +25,22 @@ export default () => {
   const $projectPath = document.querySelector('.js-path-name');
   const { name, path } = prepareParameters();
 
-  // get the project name from the URL and set it as input value
-  $projectName.value = name;
+  if ($projectName || $projectPath) {
+    // get the project name from the URL and set it as input value
+    $projectName.value = name;
 
-  // get the path url and append it in the input
-  $projectPath.value = path;
+    // get the path url and append it in the input
+    $projectPath.value = path;
 
-  // generate slug when project name changes
-  $projectName.addEventListener('keyup', () => {
-    projectNew.onProjectNameChange($projectName, $projectPath);
-    hasUserDefinedProjectName = $projectName.value.trim().length > 0;
-  });
+    // generate slug when project name changes
+    $projectName.addEventListener('keyup', () => {
+      projectNew.onProjectNameChange($projectName, $projectPath);
+      hasUserDefinedProjectName = $projectName.value.trim().length > 0;
+    });
 
-  // generate project name from the slug if one isn't set
-  $projectPath.addEventListener('keyup', () =>
-    projectNew.onProjectPathChange($projectName, $projectPath, hasUserDefinedProjectName),
-  );
+    // generate project name from the slug if one isn't set
+    $projectPath.addEventListener('keyup', () =>
+      projectNew.onProjectPathChange($projectName, $projectPath, hasUserDefinedProjectName),
+    );
+  }
 };

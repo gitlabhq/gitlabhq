@@ -170,20 +170,6 @@ module Ci
       )
     end
 
-    scope :eager_load_everything, -> do
-      includes(
-        [
-          { pipeline: [:project, :user] },
-          :job_artifacts_archive,
-          :metadata,
-          :trigger_request,
-          :project,
-          :user,
-          :tags
-        ]
-      )
-    end
-
     scope :with_exposed_artifacts, -> do
       joins(:metadata).merge(Ci::BuildMetadata.with_exposed_artifacts)
         .includes(:metadata, :job_artifacts_metadata)

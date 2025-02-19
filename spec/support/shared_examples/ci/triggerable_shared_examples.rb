@@ -19,6 +19,7 @@ RSpec.shared_examples 'a triggerable processable' do |factory|
 
       before do
         described_instance.trigger_request = trigger_request
+        described_instance.trigger = trigger
       end
 
       it { is_expected.to include(*predefined_trigger_variables) }

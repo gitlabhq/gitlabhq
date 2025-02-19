@@ -45,29 +45,37 @@ RSpec.describe 'IDE', :js, :with_current_organization, feature_category: :web_id
     end
   end
 
-  describe 'with sub-groups' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:subgroup) { create(:group, parent: group) }
-    let_it_be(:subgroup_project) { create(:project, :repository, namespace: subgroup) }
-
-    let(:project) { subgroup_project }
-
-    before do
-      stub_feature_flags(vscode_web_ide: true)
-
-      ide_visit(project)
-    end
-
-    it_behaves_like 'new Web IDE'
+  where(:directory_code_dropdown_updates) do
+    [true, false]
   end
 
-  describe 'with vscode feature flag off' do
-    before do
-      stub_feature_flags(vscode_web_ide: false)
+  with_them do
+    describe 'with sub-groups' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be(:subgroup_project) { create(:project, :repository, namespace: subgroup) }
 
-      ide_visit(project)
+      let(:project) { subgroup_project }
+
+      before do
+        stub_feature_flags(vscode_web_ide: true)
+        stub_feature_flags(directory_code_dropdown_updates: directory_code_dropdown_updates)
+
+        ide_visit(project)
+      end
+
+      it_behaves_like 'new Web IDE'
     end
 
-    it_behaves_like 'legacy Web IDE'
+    describe 'with vscode feature flag off' do
+      before do
+        stub_feature_flags(vscode_web_ide: false)
+        stub_feature_flags(directory_code_dropdown_updates: directory_code_dropdown_updates)
+
+        ide_visit(project)
+      end
+
+      it_behaves_like 'legacy Web IDE'
+    end
   end
 end

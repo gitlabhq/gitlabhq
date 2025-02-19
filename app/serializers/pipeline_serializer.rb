@@ -39,6 +39,7 @@ class PipelineSerializer < BaseSerializer
       :cancelable_statuses,
       :retryable_builds,
       :stages,
+      :trigger,
       :trigger_requests,
       :user,
       (:latest_statuses if preload_statuses),

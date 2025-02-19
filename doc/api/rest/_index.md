@@ -30,10 +30,10 @@ A REST API request must start with the root endpoint and the path.
 - The path must start with `/api/v4` (`v4` represents the API version).
 
 In the following example, the API request retrieves the list of all projects on GitLab host
-`example.com`:
+`gitlab.example.com`:
 
 ```shell
-curl "https://example.com/api/v4/projects"
+curl "https://gitlab.example.com/api/v4/projects"
 ```
 
 Access to some endpoints require authentication. For more information, see
@@ -69,14 +69,14 @@ send the payload body:
 - Query string:
 
   ```shell
-  curl --request POST "https://example.com/api/v4/projects?name=<example-name>&description=<example-description>"
+  curl --request POST "https://gitlab.example.com/api/v4/projects?name=<example-name>&description=<example-description>"
   ```
 
 - Request payload (JSON):
 
   ```shell
   curl --request POST --header "Content-Type: application/json" \
-       --data '{"name":"<example-name>", "description":"<example-description>"}' "https://example.com/api/v4/projects"
+       --data '{"name":"<example-name>", "description":"<example-description>"}' "https://gitlab.example.com/api/v4/projects"
   ```
 
 URL encoded query strings have a length limitation. Requests that are too large

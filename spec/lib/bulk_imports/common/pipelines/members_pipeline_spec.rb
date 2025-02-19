@@ -75,6 +75,31 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
         )
       end
 
+      it 'creates member only once when source_xid and entity_type are the same' do
+        member = extracted_data(
+          email: member_user1.email,
+          id: member_user1.id
+        )
+
+        extracted = BulkImports::Pipeline::ExtractedData.new(
+          data: member.data,
+          page_info: { 'has_next_page' => false }
+        )
+
+        allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
+          allow(extractor).to receive(:extract).and_return(extracted)
+        end
+
+        expect { pipeline.run }.to change(portable.members, :count).by(1)
+
+        # Run again with exact same configuration
+        allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
+          allow(extractor).to receive(:extract).and_return(extracted)
+        end
+
+        expect { pipeline.run }.not_to change(portable.members, :count)
+      end
+
       context 'when importer_user_mapping is enabled' do
         let!(:import_source_user) do
           create(:import_source_user,
@@ -200,6 +225,15 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
         expect(NotificationService).not_to receive(:new)
 
         subject.load(context, member_data)
+      end
+
+      it 'removes source_xid and entity_type from data before creating member' do
+        data = member_data.merge('source_xid' => '123', 'entity_type' => 'group')
+
+        expect { pipeline.load(context, data) }.to change(portable.members, :count).by(1)
+
+        created_member = portable.members.last
+        expect(created_member.attributes).not_to include('source_xid', 'entity_type')
       end
 
       context 'when user_id is current user id' do

@@ -683,6 +683,171 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     end
   end
 
+  context 'with error tracking widget' do
+    context "when we call the widget for many work items" do
+      let(:fields) do
+        <<~QUERY
+          nodes {
+            id
+            widgets {
+             type
+              ... on WorkItemWidgetErrorTracking {
+                identifier
+                status
+                stackTrace {
+                  nodes {
+                    filename
+                  }
+                }
+              }
+            }
+          }
+        QUERY
+      end
+
+      it 'returns the stack trace', :aggregate_failures do
+        post_graphql(query, current_user: current_user)
+
+        expect_graphql_errors_to_include(
+          "\"identifier\" field can be requested only for 1 WorkItemWidgetErrorTracking(s) at a time."
+        )
+        expect_graphql_errors_to_include(
+          "\"status\" field can be requested only for 1 WorkItemWidgetErrorTracking(s) at a time."
+        )
+        expect_graphql_errors_to_include(
+          "\"stackTrace\" field can be requested only for 1 WorkItemWidgetErrorTracking(s) at a time."
+        )
+      end
+    end
+
+    context "when we call the widget for one work item" do
+      let(:widget_data) { graphql_data['workItem']['widgets'].find { |widget| widget['type'] == 'ERROR_TRACKING' } }
+
+      let(:latest_event) do
+        instance_double(Gitlab::ErrorTracking::ErrorEvent,
+          issue_id: sentry_issue.sentry_issue_identifier,
+          date_received: 1.day.ago,
+          stack_trace_entries: [
+            {
+              "filename" => "test.rb",
+              "lineNo" => 54,
+              "absPath" => "test.rb",
+              "function" => "<main>",
+              "colNo" => nil,
+              "context" => [[51, "  end\n"], [52, "end\n"], [53, "\n"], [54, "yes"], [55, ""], [56, ""], [57, ""]]
+            }
+          ]
+        )
+      end
+
+      let(:expected_response) do
+        {
+          "absolutePath" => "test.rb",
+          "columnNumber" => nil,
+          "context" => [
+            { "line" => "<span id=\"LC1\" class=\"line\" lang=\"ruby\">  <span class=\"k\">end</span></span>",
+              "lineNumber" => 51 },
+            { "line" => "<span id=\"LC1\" class=\"line\" lang=\"ruby\"><span class=\"k\">end</span></span>",
+              "lineNumber" => 52 },
+            { "line" => "<span id=\"LC1\" class=\"line\" lang=\"ruby\"></span>", "lineNumber" => 53 },
+            { "line" => "<span id=\"LC1\" class=\"line\" lang=\"ruby\"><span class=\"n\">yes</span></span>",
+              "lineNumber" => 54 },
+            { "line" => "", "lineNumber" => 55 },
+            { "line" => "", "lineNumber" => 56 },
+            { "line" => "", "lineNumber" => 57 }
+          ],
+          "filename" => "test.rb",
+          "function" => "<main>",
+          "lineNumber" => 54
+        }
+      end
+
+      let(:fields) do
+        <<~QUERY
+        id
+        widgets {
+          type
+          ... on WorkItemWidgetErrorTracking {
+            identifier
+            status
+            stackTrace {
+              nodes {
+                filename
+                columnNumber
+                function
+                lineNumber
+                absolutePath
+                context {
+                  line
+                  lineNumber
+                }
+              }
+            }
+          }
+        }
+        QUERY
+      end
+
+      let(:query) do
+        graphql_query_for(
+          'work_item',
+          { 'id' => item1.to_global_id.to_s },
+          fields
+        )
+      end
+
+      context "when sentry issue does not exist" do
+        let_it_be(:sentry_issue) { nil }
+
+        it 'returns not_found status and empty stack trace' do
+          post_graphql(query, current_user: current_user)
+          expect(widget_data.fetch("status")).to eq("NOT_FOUND")
+          expect(widget_data["stackTrace"]["nodes"]).to be_empty
+        end
+      end
+
+      context "when sentry issue exists and the service is beings called" do
+        let_it_be(:sentry_issue) { create(:sentry_issue, issue: item1) }
+
+        before do
+          allow_next_instance_of(ErrorTracking::IssueLatestEventService) do |instance|
+            allow(instance).to receive(:execute).and_return(service_response)
+          end
+        end
+
+        context "when service reply with success" do
+          let(:service_response) { { status: :success, latest_event: latest_event } }
+
+          it 'returns the stack trace' do
+            post_graphql(query, current_user: current_user)
+            expect(widget_data.fetch("status")).to eq("SUCCESS")
+            expect(widget_data["stackTrace"]["nodes"].first).to match_array(expected_response)
+          end
+        end
+
+        context "when service reply with error with bad request" do
+          let(:service_response) { { status: :error, http_status: :bad_request } }
+
+          it 'returns error status and empty stack trace' do
+            post_graphql(query, current_user: current_user)
+            expect(widget_data.fetch("status")).to eq("ERROR")
+            expect(widget_data["stackTrace"]["nodes"]).to be_empty
+          end
+        end
+
+        context "when service reply with error with no content" do
+          let(:service_response) { { status: :error, http_status: :no_content } }
+
+          it 'returns retry status and empty stack trace' do
+            post_graphql(query, current_user: current_user)
+            expect(widget_data.fetch("status")).to eq("RETRY")
+            expect(widget_data["stackTrace"]["nodes"]).to be_empty
+          end
+        end
+      end
+    end
+  end
+
   describe 'filters' do
     before_all do
       project.add_developer(current_user)

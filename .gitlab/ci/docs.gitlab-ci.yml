@@ -6,70 +6,29 @@
   stage: review
   needs: []
   variables:
-    # We're cloning the repo instead of downloading the script for now
-    # because some repos are private and CI_JOB_TOKEN cannot access files.
-    # See https://gitlab.com/gitlab-org/gitlab/issues/191273
     GIT_DEPTH: 1
-    # By default, deploy the Review App using the `main` branch of the `gitlab-org/gitlab-docs` project
+    # By default, deploy the Review App using the `main` branch of the `gitlab-org/technical-writing/docs-gitlab-com` project
     DOCS_BRANCH: main
   environment:
     name: review-docs/mr-${CI_MERGE_REQUEST_IID}
-    # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are CI variables
-    # Discussion: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14236/diffs#note_40140693
     auto_stop_in: 2 weeks
-    url: http://${DOCS_BRANCH}-${DOCS_GITLAB_REPO_SUFFIX}-${CI_MERGE_REQUEST_IID}.${DOCS_REVIEW_APPS_DOMAIN}/${DOCS_GITLAB_REPO_SUFFIX}
+    url: https://docs.gitlab.com/upstream-review-mr-${DOCS_GITLAB_REPO_SUFFIX}-${CI_MERGE_REQUEST_IID}
     on_stop: review-docs-cleanup
   before_script:
     - source ./scripts/utils.sh
     - install_gitlab_gem
 
-# Always trigger a docs build in gitlab-docs only on docs-only branches.
-# Useful to preview the docs changes live.
+# Deploy documentation review app by using GitLab Docs project (gitlab-org/technical-writing/docs-gitlab-com)
 review-docs-deploy:
   extends: .review-docs
-  script:
-    - ./scripts/trigger-build.rb docs deploy
-
-# Cleanup remote environment of gitlab-docs
-review-docs-cleanup:
-  extends: .review-docs
-  environment:
-    name: review-docs/mr-${CI_MERGE_REQUEST_IID}
-    action: stop
-  script:
-    - ./scripts/trigger-build.rb docs cleanup
-
-.review-docs-hugo:
-  extends:
-    - .default-retry
-    - .docs:rules:review-docs
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
-  stage: review
-  needs: []
-  variables:
-    GIT_DEPTH: 1
-    # By default, deploy the Review App using the `main` branch of the `gitlab-org/technical-writing/docs-gitlab-com` project
-    DOCS_BRANCH: main
-  environment:
-    name: review-docs/mr-${CI_MERGE_REQUEST_IID}-hugo
-    auto_stop_in: 2 weeks
-    url: https://new.docs.gitlab.com/upstream-review-mr-${DOCS_GITLAB_REPO_SUFFIX}-${CI_MERGE_REQUEST_IID}
-    on_stop: review-docs-hugo-cleanup
-  before_script:
-    - source ./scripts/utils.sh
-    - install_gitlab_gem
-
-# Deploy documentation review app by using GitLab Docs Hugo project (gitlab-org/technical-writing/docs-gitlab-com)
-review-docs-hugo-deploy:
-  extends: .review-docs-hugo
   script:
     - ./scripts/trigger-build.rb docs-hugo deploy
 
 # Cleanup remote environment of gitlab-org/technical-writing/docs-gitlab-com
-review-docs-hugo-cleanup:
-  extends: .review-docs-hugo
+review-docs-cleanup:
+  extends: .review-docs
   environment:
-    name: review-docs/mr-${CI_MERGE_REQUEST_IID}-hugo
+    name: review-docs/mr-${CI_MERGE_REQUEST_IID}
     action: stop
   script:
     - ./scripts/trigger-build.rb docs-hugo cleanup

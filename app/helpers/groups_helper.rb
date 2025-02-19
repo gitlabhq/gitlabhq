@@ -41,29 +41,12 @@ module GroupsHelper
     group.try(:avatar_url) || ActionController::Base.helpers.image_path('no_group_avatar.png')
   end
 
-  def group_title(group)
-    @has_group_title = true
-    full_title = []
-
-    sorted_ancestors(group).with_route.reverse_each.with_index do |parent, index|
-      if index > 0
-        add_to_breadcrumb_collapsed_links(
-          { text: simple_sanitize(parent.name), href: group_path(parent), avatar_url: parent.try(:avatar_url) },
-          location: :before
-        )
-      else
-        full_title << breadcrumb_list_item(group_title_link(parent, hidable: false))
-      end
-
+  def push_group_breadcrumbs(group)
+    sorted_ancestors(group).with_route.reverse_each do |parent|
       push_to_schema_breadcrumb(simple_sanitize(parent.name), group_path(parent), parent.try(:avatar_url))
     end
 
-    full_title << render("layouts/nav/breadcrumbs/collapsed_inline_list", location: :before, title: _("Show all breadcrumbs"))
-
-    full_title << breadcrumb_list_item(group_title_link(group))
     push_to_schema_breadcrumb(simple_sanitize(group.name), group_path(group), group.try(:avatar_url))
-
-    full_title.join.html_safe
   end
 
   def projects_lfs_status(group)
