@@ -8,11 +8,11 @@ module API
 
       helpers ::API::Helpers::ProjectStatsRefreshConflictsHelpers
 
-      before { authenticate! }
-
       allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+        before { authenticate! }
+
         params do
           requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
         end
@@ -231,6 +231,13 @@ module API
       end
 
       resource :job do
+        before do
+          # Use primary for both main and ci database as authenticating in the scope of runners will load
+          # Ci::Build model and other standard authn related models like License, Project and User.
+          ::Gitlab::Database::LoadBalancing::SessionMap
+            .with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord]).use_primary { authenticate! }
+        end
+
         desc 'Get current job using job token' do
           success code: 200, model: Entities::Ci::Job
           failure [
