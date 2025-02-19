@@ -41,11 +41,6 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.'
   }.freeze
 
-  TROUBLESHOOTING_DOC = {
-    environment_creation_failure: { path: 'ci/environments/_index', anchor: 'a-deployment-job-failed-with-this-job-could-not-be-executed-because-it-would-create-an-environment-with-an-invalid-parameter-error' },
-    failed_outdated_deployment_job: { path: 'ci/environments/deployment_safety', anchor: 'prevent-outdated-deployment-jobs' }
-  }.freeze
-
   private_constant :CALLOUT_FAILURE_MESSAGES
 
   presents ::CommitStatus
@@ -57,8 +52,8 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
   def callout_failure_message
     message = self.class.callout_failure_messages.fetch(failure_reason.to_sym)
 
-    if doc = TROUBLESHOOTING_DOC[failure_reason.to_sym]
-      message += " #{help_page_link(doc[:path], doc[:anchor])}"
+    if doc_link = troubleshooting_doc[failure_reason.to_sym]
+      message += " #{help_page_link(doc_link)}"
     end
 
     message
@@ -66,7 +61,14 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
 
   private
 
-  def help_page_link(path, anchor)
-    ActionController::Base.helpers.link_to('How do I fix it?', help_page_path(path, anchor: anchor))
+  def troubleshooting_doc
+    {
+      environment_creation_failure: help_page_path('ci/environments/_index.md', anchor: 'error-job-would-create-an-environment-with-an-invalid-parameter'),
+      failed_outdated_deployment_job: help_page_path('ci/environments/deployment_safety.md', anchor: 'prevent-outdated-deployment-jobs')
+    }.freeze
+  end
+
+  def help_page_link(doc_link)
+    ActionController::Base.helpers.link_to('How do I fix it?', doc_link)
   end
 end

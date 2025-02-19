@@ -53008,6 +53008,9 @@ msgstr ""
 msgid "SecurityReports|Attach to existing issue"
 msgstr ""
 
+msgid "SecurityReports|Attach to new issue"
+msgstr ""
+
 msgid "SecurityReports|CVSS v%{version}:"
 msgstr ""
 
@@ -53051,6 +53054,9 @@ msgid "SecurityReports|Container scanning for registry scans the latest tag of e
 msgstr ""
 
 msgid "SecurityReports|Create Jira issue"
+msgstr ""
+
+msgid "SecurityReports|Create issue"
 msgstr ""
 
 msgid "SecurityReports|Detected in external sources such as running containers and URLs. These vulnerabilities are not necessarily associated with your GitLab project."

@@ -21818,7 +21818,8 @@ CREATE TABLE status_check_responses (
     status smallint DEFAULT 0 NOT NULL,
     retried_at timestamp with time zone,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_29114cce9c CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE status_check_responses_id_seq
@@ -23321,6 +23322,7 @@ CREATE TABLE vulnerability_finding_links (
     name text,
     url text NOT NULL,
     project_id bigint,
+    CONSTRAINT check_3dd0293472 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_55f0a95439 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_b7fe886df6 CHECK ((char_length(url) <= 2048))
 );
@@ -27230,9 +27232,6 @@ ALTER TABLE ONLY chat_names
 ALTER TABLE ONLY chat_teams
     ADD CONSTRAINT chat_teams_pkey PRIMARY KEY (id);
 
-ALTER TABLE status_check_responses
-    ADD CONSTRAINT check_29114cce9c CHECK ((project_id IS NOT NULL)) NOT VALID;
-
 ALTER TABLE draft_notes
     ADD CONSTRAINT check_2a752d05fe CHECK ((project_id IS NOT NULL)) NOT VALID;
 
@@ -27244,9 +27243,6 @@ ALTER TABLE security_scans
 
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
-
-ALTER TABLE vulnerability_finding_links
-    ADD CONSTRAINT check_3dd0293472 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY instance_type_ci_runners_e59bb2812d
     ADD CONSTRAINT check_5c34a3c1db UNIQUE (id);

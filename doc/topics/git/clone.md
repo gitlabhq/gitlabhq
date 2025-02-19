@@ -5,9 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Clone a Git repository to your local computer
 ---
 
-When you clone a repository, a connection is created with a server and the files from the remote repository are downloaded to your computer.
+You can clone a Git repository to your local computer. This action creates a copy of the repository and
+establishes a connection that synchronizes changes between your computer and the GitLab server.
+This connection requires you to add credentials.
+You can either [clone with SSH](#clone-with-ssh) or [clone with HTTPS](#clone-with-https).
+SSH is the recommended authentication method.
 
-This connection requires you to add credentials. You can either use SSH or HTTPS. SSH is recommended.
+Cloning a repository:
+
+- Downloads all project files, history, and metadata to your local machine.
+- Creates a working directory with the latest version of the files.
+- Sets up remote tracking to synchronize future changes.
+- Provides offline access to the complete codebase.
+- Establishes the foundation for contributing code back to the project.
 
 ## Clone with SSH
 

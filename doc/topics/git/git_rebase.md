@@ -6,12 +6,14 @@ description: Introduction to Git rebase and force push, methods to resolve merge
 title: Rebase and resolve merge conflicts
 ---
 
-In Git, a rebase updates your branch with the contents of another branch.
-A rebase confirms that changes in your branch don't conflict with
-changes in the target branch.
+Git rebase combines changes from one branch into another by moving your commits to the
+tip of the target branch. This action:
 
-If you have a [merge conflict](../../user/project/merge_requests/conflicts.md),
-you can rebase to fix it.
+- Updates branches with the latest code from the target branch.
+- Maintains a clean, linear commit history for easier debugging and code reviews.
+- Resolves [merge conflicts](../../user/project/merge_requests/conflicts.md) at the commit level
+  for conflict resolution.
+- Preserves the chronological order of code changes.
 
 When you rebase:
 

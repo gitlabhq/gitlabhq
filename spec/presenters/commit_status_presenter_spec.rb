@@ -26,10 +26,8 @@ RSpec.describe CommitStatusPresenter do
       end
 
       it 'appends the troubleshooting link' do
-        doc = described_class::TROUBLESHOOTING_DOC[failure_reason]
-
         expect(subject).to eq("#{described_class.callout_failure_messages[failure_reason]} " \
-                              "<a href=\"#{presenter.help_page_path(doc[:path], anchor: doc[:anchor])}\">How do I fix it?</a>")
+                              "<a href=\"#{help_page_path('ci/environments/_index.md', anchor: 'error-job-would-create-an-environment-with-an-invalid-parameter')}\">How do I fix it?</a>")
       end
     end
   end

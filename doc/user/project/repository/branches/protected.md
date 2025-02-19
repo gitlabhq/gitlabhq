@@ -13,21 +13,23 @@ title: Protected branches
 
 {{< /details >}}
 
-In GitLab, [permissions](../../../permissions.md) are fundamentally defined around the
-idea of having read or write permission to the repository and branches. To impose
-further restrictions on certain branches, they can be protected.
+Protected branches enforce specific [permissions](../../../permissions.md) on branches in GitLab
+to ensure code stability and quality. Protected branches:
 
-A protected branch controls:
+- Control which users can merge and push code changes.
+- Prevent accidental deletion of critical branches.
+- Enforce code review and approval processes.
+- Manage [Code Owner](#require-code-owner-approval-on-a-protected-branch) approval
+  and `CODEOWNERS` file restrictions.
+- Regulate force push permissions to maintain commit history.
+- Control access through both the UI and the
+  [Protected branches API](../../../../api/protected_branches.md).
 
-- Which users can merge into the branch.
-- Which users can push to the branch.
-- If users can force push to the branch.
-- If changes to files listed in the CODEOWNERS file can be pushed directly to the branch.
-- Which users, groups, or access levels can unprotect the branch using the
-  [Protected branches API](../../../../api/protected_branches.md#update-a-protected-branch).
-- Which users can modify the branch with the [Commits API](../../../../api/commits.md).
+{{< alert type="note" >}}
 
 The [default branch](default.md) for your repository is protected by default.
+
+{{< /alert >}}
 
 ## Who can modify a protected branch
 
@@ -493,6 +495,8 @@ third-party Git clients.
 - [Protected branches API](../../../../api/protected_branches.md)
 - [Branches](_index.md)
 - [Branches API](../../../../api/branches.md)
+- [Commits API](../../../../api/commits.md)
+- [Code Owners](../../codeowners/_index.md#code-owners-and-protected-branches)
 
 ## Troubleshooting
 

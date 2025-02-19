@@ -12,18 +12,25 @@ title: Log system
 
 {{< /details >}}
 
-GitLab has an advanced log system where everything is logged, so you can analyze your instance using various system log
-files. The log system is similar to [audit events](../audit_event_reports.md).
+The log system in GitLab provides comprehensive logging and monitoring capabilities for analyzing your GitLab instance.
+You can use logs to identify system issues, investigate security events, and analyze application performance.
+A log entry exists for every action, so when issues occur, these logs provide the data needed to quickly diagnose and resolve problems.
+
+The log system:
+
+- Tracks all application activity across GitLab components in structured log files.
+- Records performance metrics, errors, and security events in standardized formats.
+- Integrates with log analysis tools like Elasticsearch and Splunk through JSON logging.
+- Maintains separate log files for different GitLab services and components.
+- Includes correlation IDs to trace requests across the entire system.
 
 System log files are typically plain text in a standard log file format.
-This guide talks about how to read and use these system log files.
 
-Read more about the log system and using the logs:
+The log system is similar to [audit events](../audit_event_reports.md).
+For more information, see also:
 
-- [Customize logging on Linux package installations](https://docs.gitlab.com/omnibus/settings/logs.html)
-  including adjusting log retention, log forwarding,
-  switching logs from JSON to plain text logging, and more.
-- [How to parse and analyze JSON logs](../logs/log_parsing.md).
+- [Customizing logging on Linux package installations](https://docs.gitlab.com/omnibus/settings/logs.html)
+- [Parsing and analyzing GitLab logs in JSON format](../logs/log_parsing.md)
 
 ## Log Levels
 
