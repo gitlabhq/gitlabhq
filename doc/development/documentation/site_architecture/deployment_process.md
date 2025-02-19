@@ -13,11 +13,11 @@ The website hosts documentation only for the [currently supported](../../../poli
 
 ## Parts of release process
 
-The documentation [release process](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/releases.md)
+The documentation [release process](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/releases.md)
 involves:
 
 - Merge requests, to make changes to the `main` and relevant stable branches.
-- Pipelines, to build and deploy Docker images to the [`gitlab-docs` container registry](https://gitlab.com/gitlab-org/gitlab-docs/container_registry)
+- Pipelines, to build and deploy Docker images to the [`docs-gitlab-com` container registry](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/container_registry)
   for the relevant stable branches.
 - Docker images used to build and deploy all the online documentation, including stable versions and the latest documentation.
 

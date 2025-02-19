@@ -391,6 +391,14 @@ module.exports = {
         loader: 'babel-loader',
       },
       {
+        test: /(@sentry|@sentry-internal)\/.*\.m?js$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          plugins: ['@babel/plugin-transform-optional-chaining'],
+        },
+      },
+      {
         test: /swagger-ui-dist\/.*\.js?$/,
         include: /node_modules/,
         loader: 'babel-loader',

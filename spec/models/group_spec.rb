@@ -4077,6 +4077,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#glql_load_on_click_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :glql_load_on_click }
+      let(:feature_flag_method) { :glql_load_on_click_feature_flag_enabled? }
+    end
+  end
+
   describe '#supports_lock_on_merge?' do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :enforce_locked_labels_on_merge }

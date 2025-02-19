@@ -245,6 +245,7 @@ export default {
           data-testid="apply-button"
           category="tertiary"
           size="small"
+          class="gl-flex-shrink-0"
           :disabled="isUpdating"
           @click="collapseWidget"
           >{{ __('Apply') }}</gl-button

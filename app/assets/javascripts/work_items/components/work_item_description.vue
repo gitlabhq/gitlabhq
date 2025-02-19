@@ -216,9 +216,6 @@ export default {
     showEditedAt() {
       return (this.taskCompletionStatus || this.lastEditedAt) && !this.editMode;
     },
-    canShowDescriptionTemplateSelector() {
-      return this.glFeatures.workItemDescriptionTemplates;
-    },
     descriptionTemplateContent() {
       return this.descriptionTemplate || '';
     },
@@ -452,10 +449,8 @@ export default {
         :class="formGroupClass"
         :label="__('Description')"
         label-for="work-item-description"
-        :label-sr-only="!canShowDescriptionTemplateSelector"
       >
         <work-item-description-template-listbox
-          v-if="canShowDescriptionTemplateSelector"
           :full-path="fullPath"
           :template="selectedTemplate"
           @selectTemplate="handleSelectTemplate"
@@ -500,7 +495,7 @@ export default {
           enable-autocomplete
           supports-quick-actions
           :autofocus="autofocus"
-          :class="{ 'gl-mt-3': canShowDescriptionTemplateSelector }"
+          class="gl-mt-3"
           @input="setDescriptionText"
           @keydown.meta.enter="updateWorkItem"
           @keydown.ctrl.enter="updateWorkItem"

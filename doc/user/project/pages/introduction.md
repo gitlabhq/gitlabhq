@@ -12,15 +12,18 @@ title: GitLab Pages settings
 
 {{< /details >}}
 
-This document is a user guide to explore the options and settings
-GitLab Pages offers.
+GitLab Pages offers configuration options to customize your static site's deployment and presentation.
+With Pages settings, you can:
 
-To familiarize yourself with GitLab Pages first:
+- Serve custom error pages for 403 and 404 responses.
+- Configure URL redirects through `_redirects` files.
+- Deploy pages from any branch using CI/CD rules.
+- Serve pre-compressed assets for faster page loads.
+- Customize the folder from which your site is published.
+- Generate and manage unique domains for your sites.
 
-- Read an [introduction to GitLab Pages](_index.md).
-- Learn [how to get started with Pages](_index.md#getting-started).
-- Learn how to enable GitLab Pages
-  across your GitLab instance on the [administrator documentation](../../../administration/pages/_index.md).
+This guide explains the settings and configuration options available for your GitLab Pages sites.
+For an introduction to Pages, see [GitLab Pages](_index.md).
 
 ## GitLab Pages requirements
 

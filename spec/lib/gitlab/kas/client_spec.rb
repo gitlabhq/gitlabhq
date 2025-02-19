@@ -310,9 +310,10 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
     end
 
     describe '#render_environment_template' do
-      let_it_be(:environment) { create(:environment, project: project, cluster_agent: agent) }
+      let_it_be(:deployment_project) { create(:project) }
+      let_it_be(:environment) { create(:environment, project: deployment_project, cluster_agent: agent) }
       let_it_be(:user) { create(:user) }
-      let_it_be(:build) { create(:ci_build, user: user) }
+      let_it_be(:build) { create(:ci_build, project: deployment_project, user: user) }
       let(:stub) { instance_double(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub) }
       let(:request) { instance_double(Gitlab::Agent::ManagedResources::Rpc::RenderEnvironmentTemplateRequest) }
       let(:template) { double("templates", name: "test-template", data: "{}") }
@@ -330,7 +331,12 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
             template: Gitlab::Agent::ManagedResources::EnvironmentTemplate.new(
               name: template.name,
               data: template.data),
-            info: instance_of(Gitlab::Agent::ManagedResources::TemplatingInfo))
+            info: an_object_having_attributes(
+              class: Gitlab::Agent::ManagedResources::TemplatingInfo,
+              agent: Gitlab::Agent::ManagedResources::Agent.new(
+                id: agent.id,
+                name: agent.name,
+                url: Gitlab::Routing.url_helpers.project_cluster_agent_url(project, agent.name))))
           .and_return(request)
 
         expect(stub).to receive(:render_environment_template)
@@ -342,9 +348,10 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
     end
 
     describe '#ensure_environment' do
-      let_it_be(:environment) { create(:environment, project: project, cluster_agent: agent) }
+      let_it_be(:deployment_project) { create(:project) }
+      let_it_be(:environment) { create(:environment, project: deployment_project, cluster_agent: agent) }
       let_it_be(:user) { create(:user) }
-      let_it_be(:build) { create(:ci_build, user: user) }
+      let_it_be(:build) { create(:ci_build, project: deployment_project, user: user) }
       let(:stub) { instance_double(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub) }
       let(:request) { instance_double(Gitlab::Agent::ManagedResources::Rpc::EnsureEnvironmentRequest) }
       let(:template) { double("templates", name: "test-template", data: "{}") }
@@ -362,7 +369,12 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
             template: Gitlab::Agent::ManagedResources::RenderedEnvironmentTemplate.new(
               name: template.name,
               data: template.data),
-            info: instance_of(Gitlab::Agent::ManagedResources::TemplatingInfo))
+            info: an_object_having_attributes(
+              class: Gitlab::Agent::ManagedResources::TemplatingInfo,
+              agent: Gitlab::Agent::ManagedResources::Agent.new(
+                id: agent.id,
+                name: agent.name,
+                url: Gitlab::Routing.url_helpers.project_cluster_agent_url(project, agent.name))))
           .and_return(request)
 
         expect(stub).to receive(:ensure_environment)

@@ -43,7 +43,6 @@ class GroupsController < Groups::ApplicationController
     push_frontend_feature_flag(:issues_grid_view)
     push_frontend_feature_flag(:issues_list_drawer, group)
     push_force_frontend_feature_flag(:namespace_level_work_items, group.namespace_work_items_enabled?)
-    push_frontend_feature_flag(:work_item_description_templates, group)
   end
 
   before_action only: :merge_requests do

@@ -1,3 +1,4 @@
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import ListPresenter from '~/glql/components/presenters/list.vue';
@@ -60,6 +61,15 @@ describe('ListPresenter', () => {
     createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } });
 
     expect(wrapper.find('ul')).toBeDefined();
+  });
+
+  it('renders skeleton loader if isPreview is true', () => {
+    createWrapper(
+      { data: MOCK_ISSUES, config: { fields: MOCK_FIELDS }, isPreview: true },
+      mountExtended,
+    );
+
+    expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(5);
   });
 
   it('renders a footer text', () => {

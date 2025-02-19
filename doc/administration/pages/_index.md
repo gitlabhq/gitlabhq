@@ -12,8 +12,19 @@ title: GitLab Pages administration
 
 {{< /details >}}
 
-GitLab Pages allows for hosting of static sites. It must be configured by an
-administrator. Separate [user documentation](../../user/project/pages/_index.md) is available.
+GitLab Pages provides static site hosting for GitLab projects and groups.
+Server administrators must configure Pages before users can access this feature.
+With GitLab Pages, administrators:
+
+- Host static websites securely with custom domains and SSL/TLS certificates.
+- Enable authentication to control access to Pages sites through GitLab permissions.
+- Scale deployments using object storage or network storage in multi-node environments.
+- Monitor and manage traffic with rate limiting and custom headers.
+- Support IPv4 and IPv6 addresses for all Pages sites.
+
+The GitLab Pages daemon runs as a separate process and can be configured either on the same server
+as GitLab or on its own dedicated infrastructure.
+For user documentation, see [GitLab Pages](../../user/project/pages/_index.md).
 
 {{< alert type="note" >}}
 

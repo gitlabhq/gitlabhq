@@ -12,7 +12,14 @@ title: Description templates
 
 {{< /details >}}
 
+{{< history >}}
+
+- [Work item support](https://gitlab.com/gitlab-org/gitlab/-/issues/512208) introduced in GitLab 17.10.
+
+{{< /history >}}
+
 Description templates standardize and automate how issues and merge requests are created in GitLab.
+
 Description templates:
 
 - Create consistent layouts for issues and merge requests across projects.
@@ -22,7 +29,14 @@ Description templates:
 - Ensure proper tracking of bugs, features, and other work items.
 - Format [Service Desk email responses](service_desk/configure.md#use-a-custom-template-for-service-desk-tickets).
 
-You can define templates to use as descriptions for your [issues](issues/_index.md) and [merge requests](merge_requests/_index.md).
+You can define templates to use as descriptions
+for your:
+
+- [issues](issues/_index.md)
+- [epics](../group/epics/epic_work_items.md)
+- [tasks](../tasks.md)
+- [merge requests](merge_requests/_index.md)
+
 Projects inherit templates from their group and instance.
 
 Templates must be:
@@ -35,6 +49,12 @@ Templates must be:
 
 Create a new Markdown (`.md`) file inside the `.gitlab/issue_templates/`
 directory in your repository.
+
+{{< alert type="note" >}}
+
+Issue templates are supported in all types of Work item including issues, epics, tasks, objectives and key results.
+
+{{< /alert >}}
 
 To create an issue description template:
 
@@ -75,7 +95,7 @@ When you create or edit an issue or a merge request, it shows in the **Choose a 
 
 To apply a template:
 
-1. Create or edit an issue or a merge request.
+1. Create or edit an issue, work item, or a merge request.
 1. Select the **Choose a template** dropdown list.
 1. If the **Description** text box hasn't been empty, to confirm, select **Apply template**.
 1. Select **Save changes**.
@@ -84,7 +104,7 @@ When you select a description template, its content is copied to the description
 
 To discard any changes to the description you've made after selecting the template: expand the **Choose a template** dropdown list and select **Reset template**.
 
-![Choosing a description template in an issue](img/description_templates_v14_7.png)
+![Choosing a description template in an issue](img/description_templates_v17-10.png)
 
 {{< alert type="note" >}}
 

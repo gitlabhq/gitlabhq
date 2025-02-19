@@ -523,9 +523,7 @@ The order of the items in `stages` defines the execution order for jobs:
 - Jobs in the next stage run after the jobs from the previous stage complete successfully.
 
 If a pipeline contains only jobs in the `.pre` or `.post` stages, it does not run.
-There must be at least one other job in a different stage. `.pre` and `.post` stages
-can be used in [required pipeline configuration](../../administration/settings/continuous_integration.md#required-pipeline-configuration)
-to define compliance jobs that must run before or after project pipeline jobs.
+There must be at least one other job in a different stage.
 
 **Keyword type**: Global keyword.
 

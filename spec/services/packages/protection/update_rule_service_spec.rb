@@ -14,7 +14,8 @@ RSpec.describe Packages::Protection::UpdateRuleService, '#execute', feature_cate
       :package_protection_rule,
       package_name_pattern: "#{package_protection_rule.package_name_pattern}-updated",
       package_type: 'npm',
-      minimum_access_level_for_push: 'owner'
+      minimum_access_level_for_push: 'owner',
+      minimum_access_level_for_delete: 'owner'
     )
   end
 

@@ -5,8 +5,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Ask GitLab Duo Chat
 ---
 
-GitLab Duo Chat can help with a variety of questions. The following examples
-represent some of the areas where GitLab Duo Chat can be the most helpful.
+As part of GitLab Duo's AI-powered features, GitLab Duo Chat helps you:
+
+- Get explanations of code, errors, and GitLab features.
+- Generate or refactor code, write tests, and fix issues.
+- Create CI/CD configurations and troubleshoot job failures.
+- Summarize issues, epics, and merge requests.
+- Resolve security vulnerabilities.
+
+The following examples provide more information on Duo Chat capabilities.
 
 For additional practical examples, see the [GitLab Duo use cases](../gitlab_duo/use_cases.md).
 

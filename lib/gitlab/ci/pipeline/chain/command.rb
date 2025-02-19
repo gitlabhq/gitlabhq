@@ -10,7 +10,7 @@ module Gitlab
           :trigger_request, :schedule, :merge_request, :external_pull_request,
           :ignore_skip_ci, :save_incompleted,
           :seeds_block, :variables_attributes, :push_options,
-          :chat_data, :allow_mirror_update, :bridge, :content, :dry_run, :logger, :pipeline_policy_context,
+          :chat_data, :allow_mirror_update, :bridge, :content, :dry_run, :linting, :logger, :pipeline_policy_context,
           # These attributes are set by Chains during processing:
           :config_content, :yaml_processor_result, :workflow_rules_result, :pipeline_seed,
           :pipeline_config, :partition_id,
@@ -18,8 +18,16 @@ module Gitlab
         ) do
           include Gitlab::Utils::StrongMemoize
 
+          def readonly?
+            dry_run? || linting?
+          end
+
           def dry_run?
             dry_run
+          end
+
+          def linting?
+            linting
           end
 
           def branch_exists?

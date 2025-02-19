@@ -6,7 +6,7 @@ column: max_yaml_depth
 db_type: integer
 default: '100'
 description: 'The maximum depth of nested CI/CD configuration added with the [`include`
-  keyword](../ci/yaml/index.md#include). Default: `100`.'
+  keyword](../ci/yaml/_index.md#include). Default: `100`.'
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

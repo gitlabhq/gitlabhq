@@ -1,4 +1,5 @@
 import { nextTick } from 'vue';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ThResizable from '~/glql/components/common/th_resizable.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
@@ -31,6 +32,16 @@ describe('TablePresenter', () => {
     const headerCells = wrapper.findAllComponents(ThResizable).wrappers.map((th) => th.text());
 
     expect(headerCells).toEqual(['Title', 'Author', 'State', 'Description']);
+  });
+
+  it('renders skeleton loader if isPreview is true', () => {
+    createWrapper(
+      { data: MOCK_ISSUES, config: { fields: MOCK_FIELDS }, isPreview: true },
+      mountExtended,
+    );
+
+    // 5 rows of 4 columns each
+    expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(20);
   });
 
   it('renders a footer text', () => {

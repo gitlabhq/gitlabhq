@@ -12,8 +12,17 @@ title: GitLab Pages default domain names and URLs
 
 {{< /details >}}
 
-On this document, learn how to name your project for GitLab Pages
-according to your intended website's URL.
+GitLab Pages provides default domain names based on your namespace and project name.
+These domains:
+
+- Generate predictable URLs for project sites, user sites, and group sites.
+- Support hierarchical paths that reflect your GitLab organizational structure.
+- Create unique domain names with automatic redirects when enabled.
+- Work seamlessly with custom domain names and SSL/TLS certificates.
+- Scale across user, group, and subgroup projects.
+
+This guide explains how GitLab Pages assigns domain names and URLs to your websites, and how to
+configure your static site generator accordingly.
 
 ## GitLab Pages default domain names
 

@@ -56,7 +56,6 @@ ee/spec/frontend/metrics/details/filter_bar/groupby_filter_spec.js
 ee/spec/frontend/metrics/details/metrics_details_spec.js
 ee/spec/frontend/metrics/details/related_traces_spec.js
 ee/spec/frontend/ml/ai_agents/views/edit_agent_spec.js
-ee/spec/frontend/notes/components/notes_app_spec.js
 ee/spec/frontend/on_demand_scans_form/components/scan_schedule_spec.js
 ee/spec/frontend/oncall_schedule/schedule/components/preset_days/days_header_sub_item_spec.js
 ee/spec/frontend/pages/admin/application_settings/general/components/allowed_integrations_spec.js
@@ -191,7 +190,6 @@ spec/frontend/ml/model_registry/components/model_version_create_spec.js
 spec/frontend/notebook/cells/markdown_spec.js
 spec/frontend/notebook/cells/output/html_spec.js
 spec/frontend/notes/components/discussion_notes_spec.js
-spec/frontend/notes/components/notes_app_spec.js
 spec/frontend/packages_and_registries/container_registry/explorer/components/list_page/image_list_row_spec.js
 spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
 spec/frontend/packages_and_registries/infrastructure_registry/components/details/components/app_spec.js

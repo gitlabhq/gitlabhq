@@ -31,3 +31,21 @@ global-components:
     attributes:
     - aria-*
     - toggle-text: aria-label
+  gl-form-group:
+    element: label
+    attributes:
+    - aria-*
+    - label-for: for
+    - label: <text>
+  gl-form-input:
+    element: input
+    attributes:
+    - aria-*
+  gl-form-textarea:
+    element: textarea
+    attributes:
+    - aria-*
+  gl-form-select:
+    element: select
+    attributes:
+    - aria-*

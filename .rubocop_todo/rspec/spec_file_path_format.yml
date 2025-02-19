@@ -53,6 +53,7 @@ RSpec/SpecFilePathFormat:
     - 'spec/services/ci/create_pipeline_service/rules_spec.rb'
     - 'spec/services/ci/create_pipeline_service/run_spec.rb'
     - 'spec/services/ci/create_pipeline_service/scripts_spec.rb'
+    - 'spec/services/ci/create_pipeline_service/stop_linting_spec.rb'
     - 'spec/services/ci/create_pipeline_service/tags_spec.rb'
     - 'spec/services/ci/create_pipeline_service/variables_spec.rb'
     - 'spec/services/ci/create_pipeline_service/workflow_auto_cancel_spec.rb'

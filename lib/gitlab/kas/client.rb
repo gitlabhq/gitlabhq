@@ -203,7 +203,7 @@ module Gitlab
           agent: Gitlab::Agent::ManagedResources::Agent.new(
             id: agent.id,
             name: agent.name,
-            url: agent_url(project, agent.name)),
+            url: agent_url(agent.project, agent.name)),
           environment: Gitlab::Agent::ManagedResources::Environment.new(
             id: environment.id,
             name: environment.name,

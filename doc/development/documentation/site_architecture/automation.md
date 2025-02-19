@@ -57,7 +57,7 @@ that are coded across multiple repositories.
 
 If you want to automate a page on the docs site:
 
-1. Review [issue 823](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/823)
+1. Review [issue 246](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/246)
    and consider adding feedback there.
 1. If that issue does not describe what you need, contact
    [the DRI for the docs site backend](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects).

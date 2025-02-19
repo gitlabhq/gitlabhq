@@ -39,17 +39,16 @@ as helpful as **Get started with runners**.
 
 ## Add a navigation entry
 
-The global nav is stored in the `gitlab-org/gitlab-docs` project, in the file
-`content/_data/navigation.yaml`. The `gitlab-docs` project contains code that assembles documentation
-content from several projects (including `charts`, `gitlab`, `gitlab-runner`, and `omnibus-gitlab`)
-and then builds the `docs.gitlab.com` website from that content.
+The global nav is stored in the `gitlab-org/technical-writing/docs-gitlab-com` project, in the
+`data/navigation.yaml` file. The documentation website at `docs.gitlab.com` is built using Hugo and assembles documentation
+content from several projects (including `charts`, `gitlab`, `gitlab-runner`, and `omnibus-gitlab`).
 
 **Do not** add items to the global nav without
 the consent of one of the technical writers.
 
 To add a topic to the global navigation:
 
-1. In the [`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml)
+1. In the [`navigation.yaml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/navigation.yaml)
    file, add the item.
 1. Assign the MR to a technical writer for review and merge.
 
@@ -117,7 +116,7 @@ The global nav has five levels:
       - Doc
         - Doc
 
-You can view this structure in [the `navigation.yml` file](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/navigation.yaml).
+You can view this structure in the [`navigation.yml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/navigation.yaml?ref_type=heads) file.
 
 ### Use GitLab section
 
@@ -149,7 +148,7 @@ the data among the nav in containers properly [styled](#css-classes).
 ### Data file
 
 The data file describes the structure of the navigation for the applicable project.
-It is stored at <https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml>
+It is stored at <https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/navigation.yaml>
 and comprises of three main components:
 
 - Sections
@@ -167,11 +166,11 @@ sections:
     section_url: 'link'
 ```
 
-The section can stand alone or contain categories within.
+The section can stand alone or contain categories.
 
 #### Categories
 
-Each category within a section composes the second level of the nav.
+Each category in a section composes the second level of the nav.
 It includes the category title and link. It can stand alone in the nav or contain
 a third level of sub-items.
 
@@ -296,7 +295,7 @@ The [layout](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/layouts/global_
 is fed by the [data file](#data-file), builds the global nav, and is rendered by the
 [default](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/layouts/default.html) layout.
 
-The global nav contains links from all [four upstream projects](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/architecture.md).
+The global nav contains links from all [four upstream projects](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/architecture.md).
 The [global nav URL](#urls) has a different prefix depending on the documentation file you change.
 
 | Repository                                                     | Link prefix | Final URL                          |

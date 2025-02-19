@@ -5,8 +5,8 @@ clusterwide: true
 column: anti_abuse_settings
 db_type: jsonb
 default: "'{}'::jsonb"
-description: Configuration settings related to anti-abuse features
+description:
 encrypted: false
-gitlab_com_different_than_default: true
+gitlab_com_different_than_default: false
 jihu: false
 not_null: true

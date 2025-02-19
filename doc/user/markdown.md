@@ -12,10 +12,18 @@ title: GitLab Flavored Markdown (GLFM)
 
 {{< /details >}}
 
-When you enter text in the GitLab UI, GitLab assumes the text is in the Markdown language.
-The text is rendered with a set of styles. These styles are called *GitLab Flavored Markdown*.
+GitLab Flavored Markdown (GLFM) is a powerful markup language that formats text in the GitLab user interface.
+GLFM:
 
-You can use GitLab Flavored Markdown in the following areas:
+- Creates rich content with support for code, diagrams, math equations, and multimedia.
+- Links issues, merge requests, and other GitLab content with cross-references.
+- Organizes information with task lists, tables, and collapsible sections.
+- Supports syntax highlighting for over 100 programming languages.
+- Ensures accessibility with semantic heading structures and image descriptions.
+
+When you enter text in the GitLab UI, GitLab assumes the text is in GitLab Flavored Markdown. 
+
+You can use GitLab Flavored Markdown in:
 
 - Comments
 - Issues

@@ -18,6 +18,7 @@ module Ci
       Gitlab::Ci::Pipeline::Chain::Skip,
       Gitlab::Ci::Pipeline::Chain::Config::Content,
       Gitlab::Ci::Pipeline::Chain::Config::Process,
+      Gitlab::Ci::Pipeline::Chain::StopLinting,
       Gitlab::Ci::Pipeline::Chain::Validate::AfterConfig,
       Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs,
       Gitlab::Ci::Pipeline::Chain::SeedBlock,
@@ -94,8 +95,7 @@ module Ci
         partition_id: params[:partition_id],
         **extra_options(**options))
 
-      # Ensure we never persist the pipeline when dry_run: true
-      @pipeline.readonly! if command.dry_run?
+      @pipeline.readonly! if command.readonly?
 
       Gitlab::Ci::Pipeline::Chain::Sequence
         .new(pipeline, command, SEQUENCE)
@@ -154,8 +154,8 @@ module Ci
     # :nocov:
     # rubocop:enable Gitlab/NoCodeCoverageComment
 
-    def extra_options(content: nil, dry_run: false)
-      { content: content, dry_run: dry_run }
+    def extra_options(content: nil, dry_run: false, linting: false)
+      { content: content, dry_run: dry_run, linting: linting }
     end
 
     def build_logger

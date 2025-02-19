@@ -12,17 +12,23 @@ title: Wiki
 
 {{< /details >}}
 
-If you don't want to keep your documentation in your repository, but you want
-to keep it in the same project as your code, you can use the wiki GitLab provides
-in each GitLab project. Every wiki is a separate Git repository, so you can create
-wiki pages in the web interface, or [locally using Git](#create-or-edit-wiki-pages-locally).
+Wiki provides project and group documentation in a familiar format.
+Wiki pages:
 
-GitLab wikis support Markdown, RDoc, AsciiDoc, and Org for content.
-Wiki pages written in Markdown support all [Markdown features](../../markdown.md),
-and also provide some [wiki-specific behavior](../../markdown.md#wiki-specific-markdown)
-for links.
+- Generate technical documentation, guides, and knowledge bases in Markdown, RDoc, AsciiDoc, or Org formats.
+- Create collaborative documents that integrate directly with GitLab projects and groups.
+- Store documentation in Git repositories for version control and collaboration.
+- Support custom navigation and organization through sidebar customization.
+- Export content as PDF files for offline access and sharing.
+- Maintain your content separately from your codebase while keeping them in the same project.
 
-Wiki pages also display a [sidebar](#sidebar), which [you can customize](#customize-sidebar).
+Each wiki is a separate Git repository.
+You can create and edit wiki pages through the GitLab web interface or
+[locally using Git](#create-or-edit-wiki-pages-locally).
+Wiki pages written in Markdown support all [Markdown features](../../markdown.md) and provide
+[wiki-specific behavior](../../markdown.md#wiki-specific-markdown) for links.
+
+Wiki pages display a [sidebar](#sidebar), which you can customize.
 
 ## View a project wiki
 

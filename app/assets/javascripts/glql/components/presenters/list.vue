@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlIntersperse, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlIcon, GlIntersperse, GlLink, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
 
@@ -10,6 +10,7 @@ export default {
     GlIntersperse,
     GlLink,
     GlSprintf,
+    GlSkeletonLoader,
   },
   inject: ['presenter'],
   props: {
@@ -28,6 +29,11 @@ export default {
       type: String,
       default: 'ul',
       validator: (value) => ['ul', 'ol'].includes(value),
+    },
+    isPreview: {
+      required: false,
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
@@ -49,18 +55,25 @@ export default {
 <template>
   <div class="gl-mb-4">
     <component :is="listType" class="!gl-mb-1" data-testid="list">
-      <li
-        v-for="(item, itemIndex) in items"
-        :key="itemIndex"
-        :data-testid="`list-item-${itemIndex}`"
-      >
-        <gl-intersperse separator=" · ">
-          <span v-for="field in fields" :key="field.key">
-            <component :is="presenter.forField(item, field.key)" />
-          </span>
-        </gl-intersperse>
-      </li>
-      <div v-if="!items.length" :dismissible="false" variant="tip" class="!gl-my-2">
+      <template v-if="isPreview">
+        <li v-for="i in 5" :key="i">
+          <gl-skeleton-loader :width="400" :lines="1" />
+        </li>
+      </template>
+      <template v-else-if="items.length">
+        <li
+          v-for="(item, itemIndex) in items"
+          :key="itemIndex"
+          :data-testid="`list-item-${itemIndex}`"
+        >
+          <gl-intersperse separator=" · ">
+            <span v-for="field in fields" :key="field.key">
+              <component :is="presenter.forField(item, field.key)" />
+            </span>
+          </gl-intersperse>
+        </li>
+      </template>
+      <div v-else-if="!items.length" :dismissible="false" variant="tip" class="!gl-my-2">
         {{ __('No data found for this query') }}
       </div>
     </component>

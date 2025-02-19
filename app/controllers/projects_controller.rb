@@ -56,7 +56,6 @@ class ProjectsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_alpha, @project&.work_items_alpha_feature_flag_enabled?)
     # FF to enable setting to allow webhook execution on 30D and 60D notification delivery too
     push_frontend_feature_flag(:extended_expiry_webhook_execution_setting, @project&.namespace)
-    push_frontend_feature_flag(:work_item_description_templates, @project&.group)
   end
 
   layout :determine_layout

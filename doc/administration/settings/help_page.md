@@ -86,13 +86,15 @@ sourced from the [`doc` directory](https://gitlab.com/gitlab-org/gitlab/-/tree/m
 
 When redirecting `/help`, GitLab:
 
-- Redirects requests to the specified URL.
-- Appends `ee` and the documentation path, which includes the version number, to the URL.
-- Appends `.html` to the URL, and removes `.md` if necessary.
+- Uses the specified URL as the base URL for the redirect.
+- Constructs the full URL by:
+  - Adding the version number (`${VERSION}`).
+  - Adding the documentation path.
+  - Removing any `.md` file extensions.
 
 For example, if the URL is set to `https://docs.gitlab.com`, requests for
 `/help/administration/settings/help_page.md` redirect to:
-`https://docs.gitlab.com/${VERSION}/ee/administration/settings/help_page.html`.
+`https://docs.gitlab.com/${VERSION}/administration/settings/help_page`.
 
 <!-- ## Troubleshooting
 

@@ -1825,7 +1825,8 @@ For example:
   [configuration edits guide](#how-to-document-different-installation-methods))
 - `15.1 and earlier`, `15.2 and later`
 
-Until we implement automated testing for broken links to tabs ([Issue 1355](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/1355)), do not link directly to a single tab, even though they do have unique URL parameters.
+Until we implement automated testing for broken links to tabs, do not link directly to a single tab.
+For more information, see [issue 225](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/225).
 
 See [Pajamas](https://design.gitlab.com/components/tabs/#guidelines) for more
 details on tabs.

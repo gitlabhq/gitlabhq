@@ -207,38 +207,6 @@ You can use [Generic packages](../../packages/generic_packages/_index.md) to hos
 For a complete example, see the [Release assets as Generic packages](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs/examples/release-assets-as-generic-package/)
 project.
 
-Here's how to create a release with packaged assets:
-
-1. Build the package files in the pipeline
-1. Upload the package files to the [generic package repository](../../packages/generic_packages/_index.md):
-
-     ```yaml
-     Upload Package:
-       stage: deploy
-     script:
-       - |
-         curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
-          --upload-file path/to/your/file \
-          ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${PACKAGE_NAME}/${VERSION}/filename
-     ```
-
-1. Create release with `release-cli` job:
-
-      ```yaml
-      Create Release:
-        stage: release
-        iamge: registry.gitlab.com/gitlab-org/release-cli:latest
-        rules:
-          - if: $CI_COMMIT_TAG
-        script:
-          - |
-            release-cli create \
-            --name "Release ${VERSION}" \
-            --tag-name $CI_COMMIT_TAG \
-            --description "Your release notes here" \
-            --assets-link "{\"name\":\"Asset Name\",\"url\":\"${PACKAGE_REGISTRY_URL}/filename\"}"
-      ```
-
 To create a release with packaged assets:
 
 1. From a CI/CD pipeline, build your package files.

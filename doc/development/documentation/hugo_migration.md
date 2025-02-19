@@ -256,7 +256,7 @@ For February 2025, run the checks for broken external links and `start_remove` c
 
 {{< alert type="note" >}}
 
-This does not impact the release post [structural check](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#structural-check) or [monthly documentation release](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/releases.md) tasks. The assigned Technical Writer should continue to do these tasks as previously scheduled.
+This does not impact the release post [structural check](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#structural-check) or [monthly documentation release](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/releases.md) tasks. The assigned Technical Writer should continue to do these tasks as previously scheduled.
 
 {{< /alert >}}
 

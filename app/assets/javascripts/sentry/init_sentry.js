@@ -33,7 +33,6 @@ const initSentry = () => {
     ],
 
     // Browser tracing configuration
-    enableTracing: true,
     tracePropagationTargets: [/^\//], // only trace internal requests
     tracesSampleRate: gon.sentry_clientside_traces_sample_rate || 0,
     integrations: [

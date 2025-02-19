@@ -32,6 +32,14 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
           .with_prefix(:minimum_access_level_for_push)
       )
     }
+
+    it {
+      is_expected.to(
+        define_enum_for(:minimum_access_level_for_delete)
+          .with_values(owner: Gitlab::Access::OWNER, admin: Gitlab::Access::ADMIN)
+          .with_prefix(:minimum_access_level_for_delete)
+      )
+    }
   end
 
   describe 'validations' do
@@ -93,8 +101,32 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
       it { is_expected.to validate_presence_of(:package_type) }
     end
 
-    describe '#minimum_access_level_for_push' do
-      it { is_expected.to validate_presence_of(:minimum_access_level_for_push) }
+    describe '#at_least_one_minimum_access_level_must_be_present' do
+      where(:minimum_access_level_for_delete, :minimum_access_level_for_push, :valid) do
+        :owner | :maintainer | true
+        :owner | nil         | true
+        nil    | :maintainer | true
+        nil    | nil         | false
+      end
+
+      with_them do
+        subject(:package_protection_rule) do
+          build(:package_protection_rule,
+            minimum_access_level_for_delete: minimum_access_level_for_delete,
+            minimum_access_level_for_push: minimum_access_level_for_push
+          )
+        end
+
+        if params[:valid]
+          it { is_expected.to be_valid }
+        else
+          it 'is invalid' do
+            expect(package_protection_rule).not_to be_valid
+            expect(package_protection_rule.errors[:base])
+              .to include('A rule must have at least a minimum access role for push or delete.')
+          end
+        end
+      end
     end
   end
 
@@ -209,7 +241,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     end
   end
 
-  describe '.for_push_exists?' do
+  describe '.for_action_exists?' do
     let_it_be(:project_with_ppr) { create(:project) }
     let_it_be(:project_without_ppr) { create(:project) }
 
@@ -218,6 +250,19 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
         package_name_pattern: '@my-scope/my-package-stage*',
         project: project_with_ppr,
         package_type: :npm,
+        minimum_access_level_for_delete: :owner,
+        minimum_access_level_for_push: :maintainer
+      )
+    end
+
+    # Creating an identical package protection rule for the same project
+    # to ensure that overlapping rules are considered properly
+    let_it_be(:ppr_2_for_developer) do
+      create(:package_protection_rule,
+        package_name_pattern: '@my-scope/my-package-*',
+        project: project_with_ppr,
+        package_type: :npm,
+        minimum_access_level_for_delete: :owner,
         minimum_access_level_for_push: :maintainer
       )
     end
@@ -227,85 +272,130 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
         package_name_pattern: '@my-scope/my-package-prod*',
         project: project_with_ppr,
         package_type: :npm,
+        minimum_access_level_for_delete: :owner,
         minimum_access_level_for_push: :owner
       )
     end
 
-    let_it_be(:ppr_owner) do
+    let_it_be(:ppr_for_owner) do
       create(:package_protection_rule,
         package_name_pattern: '@my-scope/my-package-release*',
         project: project_with_ppr,
         package_type: :npm,
+        minimum_access_level_for_delete: :admin,
         minimum_access_level_for_push: :admin
       )
     end
 
-    let_it_be(:ppr_2_for_developer) do
+    let_it_be(:ppr_only_deletion_protection) do
       create(:package_protection_rule,
-        package_name_pattern: '@my-scope/my-package-*',
+        package_name_pattern: '@my-scope/only_delete-protected-package*',
         project: project_with_ppr,
         package_type: :npm,
-        minimum_access_level_for_push: :maintainer
+        minimum_access_level_for_delete: :admin,
+        minimum_access_level_for_push: nil
+      )
+    end
+
+    let_it_be(:ppr_only_push_protection) do
+      create(:package_protection_rule,
+        package_name_pattern: '@my-scope/only-push-protected-package*',
+        project: project_with_ppr,
+        package_type: :npm,
+        minimum_access_level_for_delete: nil,
+        minimum_access_level_for_push: :admin
       )
     end
 
     subject do
       project
         .package_protection_rules
-        .for_push_exists?(
+        .for_action_exists?(
+          action: action,
           access_level: access_level,
           package_name: package_name,
           package_type: package_type
         )
     end
 
-    describe 'with different users and protection levels' do
-      where(:project, :access_level, :package_name, :package_type, :push_protected) do
-        ref(:project_with_ppr)    | Gitlab::Access::REPORTER   | '@my-scope/my-package-stage-sha-1234' | :npm   | true
-        ref(:project_with_ppr)    | Gitlab::Access::DEVELOPER  | '@my-scope/my-package-stage-sha-1234' | :npm   | true
-        ref(:project_with_ppr)    | Gitlab::Access::MAINTAINER | '@my-scope/my-package-stage-sha-1234' | :npm   | false
-        ref(:project_with_ppr)    | Gitlab::Access::MAINTAINER | '@my-scope/my-package-stage-sha-1234' | :npm   | false
-        ref(:project_with_ppr)    | Gitlab::Access::OWNER      | '@my-scope/my-package-stage-sha-1234' | :npm   | false
-        ref(:project_with_ppr)    | Gitlab::Access::ADMIN      | '@my-scope/my-package-stage-sha-1234' | :npm   | false
+    # rubocop:disable Layout/LineLength -- Avoid formatting to ensure one-line table syntax
+    where(:project, :action, :access_level, :package_name, :package_type, :protected?) do
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::REPORTER   | '@my-scope/my-package-stage-sha-1234'     | :npm   | true
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::DEVELOPER  | '@my-scope/my-package-stage-sha-1234'     | :npm   | true
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::MAINTAINER | '@my-scope/my-package-stage-sha-1234'     | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::OWNER      | '@my-scope/my-package-stage-sha-1234'     | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::ADMIN      | '@my-scope/my-package-stage-sha-1234'     | :npm   | false
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::REPORTER   | '@my-scope/my-package-stage-sha-1234'     | :npm   | true
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::DEVELOPER  | '@my-scope/my-package-stage-sha-1234'     | :npm   | true
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::MAINTAINER | '@my-scope/my-package-stage-sha-1234'     | :npm   | true
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::OWNER      | '@my-scope/my-package-stage-sha-1234'     | :npm   | false
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::ADMIN      | '@my-scope/my-package-stage-sha-1234'     | :npm   | false
 
-        ref(:project_with_ppr)    | Gitlab::Access::DEVELOPER  | '@my-scope/my-package-prod-sha-1234'  | :npm   | true
-        ref(:project_with_ppr)    | Gitlab::Access::MAINTAINER | '@my-scope/my-package-prod-sha-1234'  | :npm   | true
-        ref(:project_with_ppr)    | Gitlab::Access::OWNER      | '@my-scope/my-package-prod-sha-1234'  | :npm   | false
-        ref(:project_with_ppr)    | Gitlab::Access::ADMIN      | '@my-scope/my-package-prod-sha-1234'  | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::MAINTAINER | '@my-scope/my-package-prod-sha-1234'      | :npm   | true
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::OWNER      | '@my-scope/my-package-prod-sha-1234'      | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::ADMIN      | '@my-scope/my-package-prod-sha-1234'      | :npm   | false
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::MAINTAINER | '@my-scope/my-package-prod-sha-1234'      | :npm   | true
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::OWNER      | '@my-scope/my-package-prod-sha-1234'      | :npm   | false
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::ADMIN      | '@my-scope/my-package-prod-sha-1234'      | :npm   | false
 
-        ref(:project_with_ppr)    | Gitlab::Access::DEVELOPER  | '@my-scope/my-package-release-v1'     | :npm   | true
-        ref(:project_with_ppr)    | Gitlab::Access::OWNER      | '@my-scope/my-package-release-v1'     | :npm   | true
-        ref(:project_with_ppr)    | Gitlab::Access::ADMIN      | '@my-scope/my-package-release-v1'     | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::MAINTAINER | '@my-scope/my-package-release-v1'         | :npm   | true
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::OWNER      | '@my-scope/my-package-release-v1'         | :npm   | true
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::ADMIN      | '@my-scope/my-package-release-v1'         | :npm   | false
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::MAINTAINER | '@my-scope/my-package-release-v1'         | :npm   | true
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::OWNER      | '@my-scope/my-package-release-v1'         | :npm   | true
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::ADMIN      | '@my-scope/my-package-release-v1'         | :npm   | false
 
-        ref(:project_with_ppr)    | Gitlab::Access::DEVELOPER  | '@my-scope/my-package-any-suffix'     | :npm   | true
-        ref(:project_with_ppr)    | Gitlab::Access::MAINTAINER | '@my-scope/my-package-any-suffix'     | :npm   | false
-        ref(:project_with_ppr)    | Gitlab::Access::OWNER      | '@my-scope/my-package-any-suffix'     | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::DEVELOPER  | '@my-scope/my-package-any-suffix'         | :npm   | true
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::MAINTAINER | '@my-scope/my-package-any-suffix'         | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::OWNER      | '@my-scope/my-package-any-suffix'         | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::ADMIN      | '@my-scope/my-package-any-suffix'         | :npm   | false
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::DEVELOPER  | '@my-scope/my-package-any-suffix'         | :npm   | true
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::MAINTAINER | '@my-scope/my-package-any-suffix'         | :npm   | true
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::OWNER      | '@my-scope/my-package-any-suffix'         | :npm   | false
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::ADMIN      | '@my-scope/my-package-any-suffix'         | :npm   | false
 
-        # For non-matching package_name
-        ref(:project_with_ppr)    | Gitlab::Access::DEVELOPER  | '@my-scope/non-matching-package'      | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::DEVELOPER  | '@my-scope/only_delete-protected-package' | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::MAINTAINER | '@my-scope/only_delete-protected-package' | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::OWNER      | '@my-scope/only_delete-protected-package' | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::ADMIN      | '@my-scope/only_delete-protected-package' | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::DEVELOPER  | '@my-scope/only-push-protected-package'   | :npm   | true
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::MAINTAINER | '@my-scope/only-push-protected-package'   | :npm   | true
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::OWNER      | '@my-scope/only-push-protected-package'   | :npm   | true
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::ADMIN      | '@my-scope/only-push-protected-package'   | :npm   | false
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::DEVELOPER  | '@my-scope/only_delete-protected-package' | :npm   | true
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::MAINTAINER | '@my-scope/only_delete-protected-package' | :npm   | true
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::OWNER      | '@my-scope/only_delete-protected-package' | :npm   | true
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::ADMIN      | '@my-scope/only_delete-protected-package' | :npm   | false
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::DEVELOPER  | '@my-scope/only-push-protected-package'   | :npm   | false
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::MAINTAINER | '@my-scope/only-push-protected-package'   | :npm   | false
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::OWNER      | '@my-scope/only-push-protected-package'   | :npm   | false
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::ADMIN      | '@my-scope/only-push-protected-package'   | :npm   | false
 
-        # For non-matching package_type
-        ref(:project_with_ppr)    | Gitlab::Access::DEVELOPER  | '@my-scope/my-package-any-suffix'     | :conan | false
+      # For non-matching packages
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::DEVELOPER  | '@my-scope/non-matching-package'          | :npm   | false
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::DEVELOPER  | '@my-scope/non-matching-package'          | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::DEVELOPER  | '@my-scope/my-package-any-suffix'         | :conan | false
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::DEVELOPER  | '@my-scope/my-package-any-suffix'         | :conan | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::NO_ACCESS  | '@my-scope/my-package-prod'               | :npm   | true
+      ref(:project_with_ppr)    | :delete | Gitlab::Access::NO_ACCESS  | '@my-scope/my-package-prod'               | :npm   | true
 
-        # For no access level
-        ref(:project_with_ppr)    | Gitlab::Access::NO_ACCESS  | '@my-scope/my-package-prod'           | :npm   | true
+      # Edge cases
+      ref(:project_with_ppr)    | :push   | nil                        | '@my-scope/my-package-stage-sha-1234'     | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::DEVELOPER  | nil                                       | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::DEVELOPER  | ''                                        | :npm   | false
+      ref(:project_with_ppr)    | :push   | Gitlab::Access::DEVELOPER  | '@my-scope/my-package-stage-sha-1234'     | nil    | false
+      ref(:project_with_ppr)    | :push   | nil                        | nil                                       | nil    | false
 
-        # Edge cases
-        ref(:project_with_ppr)    | nil                        | '@my-scope/my-package-stage-sha-1234' | :npm   | false
-        ref(:project_with_ppr)    | Gitlab::Access::DEVELOPER  | nil                                   | :npm   | false
-        ref(:project_with_ppr)    | Gitlab::Access::DEVELOPER  | ''                                    | :npm   | false
-        ref(:project_with_ppr)    | Gitlab::Access::DEVELOPER  | '@my-scope/my-package-stage-sha-1234' | nil    | false
-        ref(:project_with_ppr)    | nil                        | nil                                   | nil    | false
+      # For projects that have no package protection rules
+      ref(:project_without_ppr) | :push   | Gitlab::Access::DEVELOPER  | '@my-scope/my-package-prod'               | :npm   | false
+      ref(:project_without_ppr) | :push   | Gitlab::Access::OWNER      | '@my-scope/my-package-prod'               | :npm   | false
+      ref(:project_without_ppr) | :delete | Gitlab::Access::DEVELOPER  | '@my-scope/my-package-prod'               | :npm   | false
+      ref(:project_without_ppr) | :delete | Gitlab::Access::OWNER      | '@my-scope/my-package-prod'               | :npm   | false
+    end
+    # rubocop:enable Layout/LineLength
 
-        # For projects that have no package protection rules
-        ref(:project_without_ppr) | Gitlab::Access::DEVELOPER  | '@my-scope/my-package-prod'           | :npm   | false
-        ref(:project_without_ppr) | Gitlab::Access::MAINTAINER | '@my-scope/my-package-prod'           | :npm   | false
-        ref(:project_without_ppr) | Gitlab::Access::OWNER      | '@my-scope/my-package-prod'           | :npm   | false
-      end
-
-      with_them do
-        it { is_expected.to eq push_protected }
-      end
+    with_them do
+      it { is_expected.to eq protected? }
     end
   end
 

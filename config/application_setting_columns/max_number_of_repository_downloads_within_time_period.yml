@@ -7,7 +7,7 @@ db_type: integer
 default: '0'
 description: 'Reporting time period (in seconds). Default: 0, Maximum: 864000 seconds
   (10 days). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87980)
-  in GitLab 15.1. Self-managed, Ultimate only.'
+  in GitLab 15.1. GitLab Self-Managed, Ultimate only.'
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

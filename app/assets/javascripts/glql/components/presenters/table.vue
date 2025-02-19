@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlIcon, GlLink, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
 import Sorter from '../../core/sorter';
@@ -11,6 +11,7 @@ export default {
     GlIcon,
     GlLink,
     GlSprintf,
+    GlSkeletonLoader,
     ThResizable,
   },
   inject: ['presenter'],
@@ -24,6 +25,11 @@ export default {
       required: true,
       type: Object,
       validator: ({ fields }) => Array.isArray(fields) && fields.length > 0,
+    },
+    isPreview: {
+      required: false,
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -73,16 +79,25 @@ export default {
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="(item, itemIndex) in items"
-          :key="item.id"
-          :data-testid="`table-row-${itemIndex}`"
-        >
-          <td v-for="field in fields" :key="field.key">
-            <component :is="presenter.forField(item, field.key)" />
-          </td>
-        </tr>
-        <tr v-if="!items.length">
+        <template v-if="isPreview">
+          <tr v-for="i in 5" :key="i">
+            <td v-for="field in fields" :key="field.key">
+              <gl-skeleton-loader :width="120" :lines="1" />
+            </td>
+          </tr>
+        </template>
+        <template v-else-if="items.length">
+          <tr
+            v-for="(item, itemIndex) in items"
+            :key="item.id"
+            :data-testid="`table-row-${itemIndex}`"
+          >
+            <td v-for="field in fields" :key="field.key">
+              <component :is="presenter.forField(item, field.key)" />
+            </td>
+          </tr>
+        </template>
+        <tr v-else-if="!items.length">
           <td :colspan="fields.length" class="gl-text-center">
             {{ __('No data found for this query') }}
           </td>

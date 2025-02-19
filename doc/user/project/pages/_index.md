@@ -13,32 +13,29 @@ title: GitLab Pages
 
 {{< /details >}}
 
-With GitLab Pages, you can publish static websites directly from a repository
-in GitLab.
+GitLab Pages publishes static websites directly from a repository in GitLab.
 
 <div class="row">
 <div class="col-md-9">
 <p style="margin-top: 18px;">
-<ul>
-<li>Use for any personal or business website.</li>
-<li>Use any Static Site Generator (SSG) or plain HTML.</li>
-<li>Create websites for your projects, groups, or user account.</li>
-<li>Host your site on your own GitLab instance or on GitLab.com for free.</li>
-<li>Connect your custom domains and TLS certificates.</li>
-<li>Attribute any license to your content.</li>
-</ul>
+These websites:
+
+- Deploy automatically with GitLab CI/CD pipelines.
+- Support any static site generator (like Hugo, Jekyll, or Gatsby) or plain HTML, CSS, and JavaScript.
+- Run on GitLab-provided infrastructure at no additional cost.
+- Connect with custom domains and SSL/TLS certificates.
+- Control access through built-in authentication.
+- Scale reliably for personal, business, or project documentation sites.
+
 </p>
 </div>
 <div class="col-md-3"><img src="img/ssgs_pages_v11_3.png" alt="Examples of SSGs supported by Pages" class="middle display-block"></div>
 </div>
 
-To publish a website with Pages, you can use any static site generator,
-like Gatsby, Jekyll, Hugo, Middleman, Harp, Hexo, or Brunch. You can also
-publish any website written directly in plain HTML, CSS, and JavaScript.
-
-Pages does not support dynamic server-side processing, for instance, as `.php` and `.asp` requires.
-For more information, see
-[Static vs dynamic websites](https://about.gitlab.com/blog/2016/06/03/ssg-overview-gitlab-pages-part-1-dynamic-x-static/).
+To publish a website with Pages, use any static site generator like Gatsby, Jekyll, Hugo, Middleman, Harp, Hexo, or Brunch.
+Pages also supports websites written directly in plain HTML, CSS, and JavaScript.
+Dynamic server-side processing (like `.php` and `.asp`) is not supported.
+For more information, see [Static vs dynamic websites](https://about.gitlab.com/blog/2016/06/03/ssg-overview-gitlab-pages-part-1-dynamic-x-static/).
 
 ## Getting started
 

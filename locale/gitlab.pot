@@ -6412,7 +6412,7 @@ msgstr ""
 msgid "An error occurred previewing the blob"
 msgstr ""
 
-msgid "An error occurred when trying to display this GLQL block:"
+msgid "An error occurred when trying to display this GLQL view:"
 msgstr ""
 
 msgid "An error occurred when updating the title"
@@ -34188,6 +34188,9 @@ msgstr ""
 msgid "List your Gitea repositories"
 msgstr ""
 
+msgid "Load GLQL view"
+msgstr ""
+
 msgid "Load more"
 msgstr ""
 
@@ -39994,7 +39997,7 @@ msgstr ""
 msgid "Online license"
 msgstr ""
 
-msgid "Only %{n} GLQL blocks can be automatically displayed on a page. Click the button below to manually display this block."
+msgid "Only %{n} GLQL views can be automatically displayed on a page. Click the button below to manually display this block."
 msgstr ""
 
 msgid "Only %{workspaceType} members with %{permissions} can view or be notified about this %{issuableType}."

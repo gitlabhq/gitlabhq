@@ -103,9 +103,6 @@ describe('WorkItemDescription', () => {
       },
       provide: {
         isGroup,
-        glFeatures: {
-          workItemDescriptionTemplates: true,
-        },
       },
       mocks: {
         $route: {

@@ -76,7 +76,7 @@ place for it.
 Do not include the same information in multiple places.
 Link to a single source of truth instead.
 
-For example, if you have code in a repository other than the [primary repositories](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/architecture.md),
+For example, if you have code in a repository other than the [primary repositories](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/architecture.md),
 and documentation in the same repository, you can keep the documentation in that repository.
 
 Then you can either:

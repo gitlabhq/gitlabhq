@@ -114,7 +114,7 @@ export default class Presenter {
   }
 }
 
-export const present = (data, config, ...props) => {
+export const present = (data, config, props) => {
   const presenter = new Presenter().init({ data, config, ...props });
   return presenter.component;
 };
