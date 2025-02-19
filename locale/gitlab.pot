@@ -5874,6 +5874,9 @@ msgstr ""
 msgid "All child items must be confidential in order to turn on confidentiality."
 msgstr ""
 
+msgid "All child items will also be moved to the selected location."
+msgstr ""
+
 msgid "All environments"
 msgstr ""
 
@@ -16735,6 +16738,9 @@ msgid "Could not apply iteration command. There are multiple cadences but no cad
 msgstr ""
 
 msgid "Could not authorize chat nickname. Try again!"
+msgstr ""
+
+msgid "Could not be moved. Select another project or try again."
 msgstr ""
 
 msgid "Could not change HEAD: branch '%{branch}' does not exist"
@@ -38265,6 +38271,9 @@ msgid "No prioritized labels with such name or description"
 msgstr ""
 
 msgid "No prioritized labels yet!"
+msgstr ""
+
+msgid "No project found"
 msgstr ""
 
 msgid "No project selected"
@@ -65643,6 +65652,9 @@ msgid "WorkItem|Mint green"
 msgstr ""
 
 msgid "WorkItem|More actions"
+msgstr ""
+
+msgid "WorkItem|Move"
 msgstr ""
 
 msgid "WorkItem|Multi select"

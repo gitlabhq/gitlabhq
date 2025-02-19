@@ -34,6 +34,7 @@ fragment WorkItem on WorkItem {
   userPermissions {
     deleteWorkItem
     updateWorkItem
+    moveWorkItem
     adminParentLink
     setWorkItemMetadata
     createNote

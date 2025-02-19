@@ -9,7 +9,7 @@ message: "Try to replace ('%s') with more precise language, unless this content 
 ignorecase: true
 vocab: false
 level: suggestion
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#ability-able
+link: https://docs.gitlab.com/development/documentation/styleguide/word_list/#ability-able
 tokens:
   - ability to
   - ability

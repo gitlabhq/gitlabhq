@@ -9,6 +9,6 @@ message: "Remove '%s'. The documentation reflects the current state of the produ
 vocab: false
 level: warning
 ignorecase: true
-link: https://docs.gitlab.com/ee/development/documentation/versions.html#promising-features-in-future-versions
+link: https://docs.gitlab.com/development/documentation/styleguide/#promising-features-in-future-versions
 tokens:
   - currently

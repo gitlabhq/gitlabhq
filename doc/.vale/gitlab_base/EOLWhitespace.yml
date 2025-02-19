@@ -6,7 +6,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Remove whitespace characters from the end of the line."
-link: https://docs.gitlab.com/ee/development/documentation/versions.html
+link: https://docs.gitlab.com/development/documentation/styleguide/
 vocab: false
 level: warning
 scope: raw

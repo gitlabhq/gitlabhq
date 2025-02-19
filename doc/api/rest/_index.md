@@ -69,14 +69,14 @@ send the payload body:
 - Query string:
 
   ```shell
-  curl --request POST "https://gitlab/api/v4/projects?name=<example-name>&description=<example-description>"
+  curl --request POST "https://example.com/api/v4/projects?name=<example-name>&description=<example-description>"
   ```
 
 - Request payload (JSON):
 
   ```shell
   curl --request POST --header "Content-Type: application/json" \
-       --data '{"name":"<example-name>", "description":"<example-description>"}' "https://gitlab/api/v4/projects"
+       --data '{"name":"<example-name>", "description":"<example-description>"}' "https://example.com/api/v4/projects"
   ```
 
 URL encoded query strings have a length limitation. Requests that are too large

@@ -3,7 +3,7 @@ const { forEachLine, getLineMetadata } = require(`markdownlint-rule-helpers`);
 module.exports = {
   names: ['tabs-title-markup'],
   description: 'Incorrect number of colon characters for tag',
-  information: new URL('https://docs.gitlab.com/ee/development/documentation/styleguide/#tabs'),
+  information: new URL('https://docs.gitlab.com/development/documentation/styleguide/#tabs'),
   tags: ['gitlab-docs', 'tabs'],
   function: (params, onError) => {
     // Note the correct number of colons in each tab tag type.

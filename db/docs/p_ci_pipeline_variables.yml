@@ -8,15 +8,6 @@ description: Routing table for ci_pipeline_variables
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141270
 milestone: '16.9'
 gitlab_schema: gitlab_ci
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: pipeline_id
-        table: p_ci_pipelines
-        sharding_key: project_id
-        belongs_to: pipeline
-        foreign_key_name: fk_f29c5f4380_p
-desired_sharding_key_migration_job_name: BackfillPCiPipelineVariablesProjectId
 table_size: small
+sharding_key:
+  project_id: projects

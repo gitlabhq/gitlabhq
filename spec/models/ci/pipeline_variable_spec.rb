@@ -30,13 +30,28 @@ RSpec.describe Ci::PipelineVariable, feature_category: :continuous_integration d
   end
 
   describe '#ensure_project_id' do
-    it 'sets the project_id before validation' do
+    it 'sets the project_id before validation on create if it is nil' do
       variable = build(:ci_pipeline_variable)
       variable.pipeline.project_id = variable.pipeline.project.id
+      expect do
+        variable.save!
+      end.to change { variable.project_id }.from(nil).to(variable.pipeline.project.id)
+    end
+
+    it 'sets the project_id before validation on update if it is nil' do
+      variable = create(:ci_pipeline_variable)
+      variable.project_id = nil
+      expect do
+        variable.save!
+      end.to change { variable.project_id }.from(nil).to(variable.pipeline.project.id)
+    end
+
+    it 'does not set the project_id before validation if it is already set' do
+      variable = create(:ci_pipeline_variable)
 
       expect do
-        variable.validate!
-      end.to change { variable.project_id }.from(nil).to(variable.pipeline.project.id)
+        variable.save!
+      end.not_to change { variable.project_id }
     end
 
     it 'does not override the project_id if set' do

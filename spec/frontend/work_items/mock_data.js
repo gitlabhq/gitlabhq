@@ -218,6 +218,7 @@ export const workItemQueryResponse = {
       userPermissions: {
         deleteWorkItem: false,
         updateWorkItem: false,
+        moveWorkItem: false,
         setWorkItemMetadata: false,
         adminParentLink: false,
         createNote: false,
@@ -341,6 +342,7 @@ export const updateWorkItemMutationResponse = {
         userPermissions: {
           deleteWorkItem: false,
           updateWorkItem: false,
+          moveWorkItem: false,
           setWorkItemMetadata: false,
           adminParentLink: false,
           createNote: false,
@@ -478,6 +480,7 @@ export const convertWorkItemMutationResponse = {
         userPermissions: {
           deleteWorkItem: false,
           updateWorkItem: false,
+          moveWorkItem: false,
           setWorkItemMetadata: false,
           adminParentLink: false,
           createNote: false,
@@ -1340,6 +1343,7 @@ export const workItemResponseFactory = ({
   canUpdate = false,
   canDelete = false,
   canCreateNote = false,
+  canMove = false,
   adminParentLink = false,
   reportSpam = false,
   canAdminWorkItemLink = true,
@@ -1429,6 +1433,7 @@ export const workItemResponseFactory = ({
       userPermissions: {
         deleteWorkItem: canDelete,
         updateWorkItem: canUpdate,
+        moveWorkItem: canMove,
         setWorkItemMetadata: canUpdate,
         adminParentLink,
         adminWorkItemLink: canAdminWorkItemLink,
@@ -1892,6 +1897,7 @@ export const createWorkItemMutationResponse = {
         userPermissions: {
           deleteWorkItem: false,
           updateWorkItem: false,
+          moveWorkItem: false,
           setWorkItemMetadata: false,
           adminParentLink: false,
           createNote: false,
@@ -1966,6 +1972,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
       userPermissions: {
         deleteWorkItem: false,
         updateWorkItem: false,
+        moveWorkItem: false,
         setWorkItemMetadata: false,
         adminParentLink: false,
         createNote: false,
@@ -2397,6 +2404,7 @@ export const workItemHierarchyResponse = {
         userPermissions: {
           deleteWorkItem: true,
           updateWorkItem: true,
+          moveWorkItem: true,
           setWorkItemMetadata: true,
           adminParentLink: true,
           createNote: true,
@@ -2464,6 +2472,7 @@ export const workItemObjectiveWithChild = {
   userPermissions: {
     deleteWorkItem: true,
     updateWorkItem: true,
+    moveWorkItem: true,
     setWorkItemMetadata: true,
     adminParentLink: true,
     createNote: true,
@@ -2555,6 +2564,7 @@ export const workItemObjectiveWithoutChild = {
   userPermissions: {
     deleteWorkItem: true,
     updateWorkItem: true,
+    moveWorkItem: true,
     setWorkItemMetadata: true,
     adminParentLink: true,
     createNote: true,
@@ -2609,6 +2619,7 @@ export const workItemHierarchyTreeEmptyResponse = {
       userPermissions: {
         deleteWorkItem: true,
         updateWorkItem: true,
+        moveWorkItem: true,
         setWorkItemMetadata: true,
         adminParentLink: true,
         createNote: true,
@@ -2875,6 +2886,7 @@ export const workItemHierarchyTreeResponse = {
       userPermissions: {
         deleteWorkItem: true,
         updateWorkItem: true,
+        moveWorkItem: true,
         setWorkItemMetadata: true,
         adminParentLink: true,
         createNote: true,
@@ -2920,6 +2932,7 @@ export const workItemHierarchyTreeSingleClosedItemResponse = {
       userPermissions: {
         deleteWorkItem: true,
         updateWorkItem: true,
+        moveWorkItem: true,
         setWorkItemMetadata: true,
         adminParentLink: true,
         createNote: true,
@@ -3059,6 +3072,7 @@ export const workItemObjectiveWithClosedChild = {
   userPermissions: {
     deleteWorkItem: true,
     updateWorkItem: true,
+    moveWorkItem: true,
     setWorkItemMetadata: true,
     adminParentLink: true,
     createNote: true,
@@ -3126,6 +3140,7 @@ export const changeWorkItemParentMutationResponse = {
         userPermissions: {
           deleteWorkItem: true,
           updateWorkItem: true,
+          moveWorkItem: true,
           setWorkItemMetadata: true,
           adminParentLink: true,
           createNote: true,
@@ -5628,6 +5643,7 @@ export const createWorkItemQueryResponse = {
         userPermissions: {
           deleteWorkItem: true,
           updateWorkItem: true,
+          moveWorkItem: true,
           adminParentLink: true,
           setWorkItemMetadata: true,
           createNote: true,
@@ -5918,6 +5934,7 @@ export const mockToggleResolveDiscussionResponse = {
 const mockUserPermissions = {
   deleteWorkItem: true,
   updateWorkItem: true,
+  moveWorkItem: true,
   adminParentLin: true,
   setWorkItemMetadata: true,
   createNote: true,
@@ -6080,6 +6097,7 @@ export const workItemHierarchyNoChildrenTreeResponse = {
       userPermissions: {
         deleteWorkItem: true,
         updateWorkItem: true,
+        moveWorkItem: true,
         setWorkItemMetadata: true,
         adminParentLink: true,
         createNote: true,

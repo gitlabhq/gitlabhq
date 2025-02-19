@@ -13,7 +13,7 @@ vocab: false
 level: error
 ignorecase: true
 nonword: true
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/#links
+link: https://docs.gitlab.com/development/documentation/styleguide/#links
 scope: raw
 tokens:
   - ^#+ .*\[.+\]\(\S+\).*$

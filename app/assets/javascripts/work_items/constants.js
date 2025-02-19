@@ -289,6 +289,7 @@ export const TEST_ID_NOTIFICATIONS_TOGGLE_FORM = 'notifications-toggle-form';
 export const TEST_ID_DELETE_ACTION = 'delete-action';
 export const TEST_ID_PROMOTE_ACTION = 'promote-action';
 export const TEST_ID_CHANGE_TYPE_ACTION = 'change-type-action';
+export const TEST_ID_MOVE_ACTION = 'move-action';
 export const TEST_ID_LOCK_ACTION = 'lock-action';
 export const TEST_ID_COPY_REFERENCE_ACTION = 'copy-reference-action';
 export const TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION = 'copy-create-note-email-action';

@@ -6,7 +6,7 @@ module Ci
     include Ci::HasVariable
     include Ci::RawVariable
 
-    before_validation :ensure_project_id, on: :create
+    before_validation :ensure_project_id
 
     belongs_to :pipeline,
       ->(pipeline_variable) { in_partition(pipeline_variable) },
@@ -23,7 +23,7 @@ module Ci
     alias_attribute :secret_value, :value
 
     validates :key, :pipeline, presence: true
-    validates :project_id, presence: true, on: :create
+    validates :project_id, presence: true
 
     def hook_attrs
       { key: key, value: value }

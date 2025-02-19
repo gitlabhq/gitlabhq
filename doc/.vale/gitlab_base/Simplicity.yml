@@ -9,7 +9,7 @@ message: "Remove '%s'. Be precise instead of subjective."
 vocab: false
 level: warning
 ignorecase: true
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
+link: https://docs.gitlab.com/development/documentation/styleguide/word_list/
 tokens:
   - easy
   - easily

@@ -3,7 +3,7 @@ const { forEachLine, getLineMetadata, isBlankLine } = require(`markdownlint-rule
 module.exports = {
   names: ['tabs-title-text'],
   description: 'Tab without title text',
-  information: new URL('https://docs.gitlab.com/ee/development/documentation/styleguide/#tabs'),
+  information: new URL('https://docs.gitlab.com/development/documentation/styleguide/#tabs'),
   tags: ['gitlab-docs', 'tabs'],
   function: (params, onError) => {
     forEachLine(getLineMetadata(params), (line, lineIndex) => {

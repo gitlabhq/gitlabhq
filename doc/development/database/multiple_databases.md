@@ -129,13 +129,10 @@ To configure GDK to use a single database:
 To switch back to using multiple databases, set `gitlab.rails.databases.ci.enabled` to `true` and run `gdk reconfigure`.
 
 <!--
-{{< alert type="note" >}}
-
 The `validate_cross_joins!` method in `spec/support/database/prevent_cross_joins.rb` references
-      the following heading in the code, so if you make a change to this heading, make sure to update
-      the corresponding documentation URL used in `spec/support/database/prevent_cross_joins.rb`.
+the following heading in the code, so if you make a change to this heading, make sure to update
+the corresponding documentation URL used in `spec/support/database/prevent_cross_joins.rb`.
 -->
-{{< /alert >}}
 
 ### Removing joins between `ci` and non `ci` tables
 

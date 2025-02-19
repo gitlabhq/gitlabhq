@@ -1,7 +1,6 @@
 import { GlDisclosureDropdown, GlModal, GlToggle, GlDisclosureDropdownItem } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-
 import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/namespace_work_item_types.query.graphql.json';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -17,6 +16,7 @@ import WorkItemAbuseModal from '~/work_items/components/work_item_abuse_modal.vu
 import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_change_type_modal.vue';
+import MoveWorkItemModal from '~/work_items/components/move_work_item_modal.vue';
 import {
   STATE_OPEN,
   TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
@@ -35,6 +35,7 @@ import {
   WORK_ITEM_TYPE_VALUE_KEY_RESULT,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORK_ITEM_TYPE_VALUE_TASK,
+  TEST_ID_MOVE_ACTION,
 } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '~/work_items/graphql/update_work_item_notifications.mutation.graphql';
@@ -50,6 +51,7 @@ import {
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/vue_shared/plugins/global_toast');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('WorkItemActions component', () => {
   Vue.use(VueApollo);
@@ -91,6 +93,8 @@ describe('WorkItemActions component', () => {
       };
     });
   const findNotificationsToggle = () => wrapper.findComponent(GlToggle);
+  const findMoveButton = () => wrapper.findByTestId(TEST_ID_MOVE_ACTION);
+  const findMoveModal = () => wrapper.findComponent(MoveWorkItemModal);
 
   const modalShowSpy = jest.fn();
   const $toast = {
@@ -123,6 +127,7 @@ describe('WorkItemActions component', () => {
     canUpdateMetadata = true,
     canDelete = true,
     canReportSpam = true,
+    canMove = true,
     hasOkrsFeature = true,
     isConfidential = false,
     isDiscussionLocked = false,
@@ -141,6 +146,7 @@ describe('WorkItemActions component', () => {
     canCreateRelatedItem = true,
     workItemsBeta = true,
     parentId = null,
+    workItemsAlpha = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemActions, {
       isLoggedIn: isLoggedIn(),
@@ -164,6 +170,7 @@ describe('WorkItemActions component', () => {
         canUpdateMetadata,
         canDelete,
         canReportSpam,
+        canMove,
         isConfidential,
         isDiscussionLocked,
         subscribed,
@@ -175,6 +182,7 @@ describe('WorkItemActions component', () => {
         hasChildren,
         canCreateRelatedItem,
         parentId,
+        projectId: 'gid://gitlab/Project/1',
       },
       mocks: {
         $toast,
@@ -183,6 +191,7 @@ describe('WorkItemActions component', () => {
         glFeatures: {
           okrsMvc,
           workItemsBeta,
+          workItemsAlpha,
         },
         hasOkrsFeature,
       },
@@ -217,8 +226,10 @@ describe('WorkItemActions component', () => {
     expect(findModal().props('visible')).toBe(false);
   });
 
-  it('renders dropdown actions', () => {
-    createComponent();
+  it('renders dropdown actions', async () => {
+    createComponent({ workItemType: 'Issue' });
+
+    await waitForPromises();
 
     expect(findDropdownItemsActual()).toEqual([
       {
@@ -236,9 +247,14 @@ describe('WorkItemActions component', () => {
         testId: TEST_ID_NEW_RELATED_WORK_ITEM,
         text: 'New related item',
       },
+
       {
         testId: TEST_ID_CHANGE_TYPE_ACTION,
         text: 'Change type',
+      },
+      {
+        testId: TEST_ID_MOVE_ACTION,
+        text: 'Move',
       },
       {
         testId: TEST_ID_LOCK_ACTION,
@@ -254,7 +270,7 @@ describe('WorkItemActions component', () => {
       },
       {
         testId: TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
-        text: 'Copy task email address',
+        text: 'Copy issue email address',
       },
       {
         divider: true,
@@ -269,7 +285,7 @@ describe('WorkItemActions component', () => {
       },
       {
         testId: TEST_ID_DELETE_ACTION,
-        text: 'Delete task',
+        text: 'Delete issue',
       },
     ]);
   });
@@ -710,5 +726,107 @@ describe('WorkItemActions component', () => {
     createComponent({ parentId: 'example-id' });
 
     expect(findWorkItemToggleOption().props('parentId')).toBe('example-id');
+  });
+
+  describe('move issue button', () => {
+    it('shows move button when workItemType is issue and `moveWorkItem` is true', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+      });
+      await waitForPromises();
+
+      expect(findMoveButton().exists()).toBe(true);
+    });
+
+    it('renders with text "Move"', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+      });
+
+      await waitForPromises();
+
+      expect(findMoveButton().text()).toBe('Move');
+    });
+
+    it('hides move button when `canMove` is false', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        canMove: false,
+      });
+      await waitForPromises();
+
+      expect(findMoveButton().exists()).toBe(false);
+    });
+
+    it('hides move button when `workItemsAlpha` is disabled', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        workItemsAlpha: false,
+      });
+
+      await waitForPromises();
+
+      expect(findMoveButton().exists()).toBe(false);
+    });
+
+    it('hides move button when workItemType is not issue', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_TASK,
+      });
+
+      await waitForPromises();
+
+      expect(findMoveButton().exists()).toBe(false);
+    });
+  });
+
+  describe('move modal', () => {
+    it('renders move modal when move button is clicked', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+      });
+
+      await waitForPromises();
+
+      findMoveButton().vm.$emit('action');
+      await nextTick();
+
+      expect(findMoveModal().exists()).toBe(true);
+      expect(findMoveModal().props('visible')).toBe(true);
+    });
+
+    it('passes correct props to move modal', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+      });
+
+      await waitForPromises();
+
+      findMoveButton().vm.$emit('action');
+      await nextTick();
+
+      expect(findMoveModal().props()).toMatchObject({
+        visible: true,
+        workItemIid: '1',
+        fullPath: 'gitlab-org/gitlab-test',
+        projectId: 'gid://gitlab/Project/1',
+      });
+    });
+
+    it('closes modal when hideModal event is emitted', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+      });
+
+      await waitForPromises();
+
+      findMoveButton().vm.$emit('action');
+      await nextTick();
+
+      findMoveModal().vm.$emit('hideModal');
+      await nextTick();
+
+      expect(findMoveModal().props('visible')).toBe(false);
+    });
   });
 });

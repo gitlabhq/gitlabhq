@@ -313,6 +313,9 @@ export default {
     canDelete() {
       return this.workItem.userPermissions?.deleteWorkItem;
     },
+    canMove() {
+      return this.workItem.userPermissions?.moveWorkItem;
+    },
     canReportSpam() {
       return this.workItem.userPermissions?.reportSpam;
     },
@@ -898,10 +901,12 @@ export default {
                 :work-item-type="workItemType"
                 :work-item-type-id="workItemTypeId"
                 :work-item-iid="iid"
+                :project-id="workItemProjectId"
                 :can-delete="canDelete"
                 :can-report-spam="canReportSpam"
                 :can-update="canUpdate"
                 :can-update-metadata="canUpdateMetadata"
+                :can-move="canMove"
                 :is-confidential="workItem.confidential"
                 :is-discussion-locked="isDiscussionLocked"
                 :is-parent-confidential="parentWorkItemConfidentiality"

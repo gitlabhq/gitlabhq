@@ -1,7 +1,7 @@
 module.exports = {
   names: ['tabs-wrapper-tags'],
   description: 'Unequal number of tab start and end tags',
-  information: new URL('https://docs.gitlab.com/ee/development/documentation/styleguide/#tabs'),
+  information: new URL('https://docs.gitlab.com/development/documentation/styleguide/#tabs'),
   tags: ['gitlab-docs', 'tabs'],
   function: function rule(params, onError) {
     const tabStarts = params.lines.filter((line) => line === '::Tabs');

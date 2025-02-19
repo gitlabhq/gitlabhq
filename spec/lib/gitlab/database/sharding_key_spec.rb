@@ -10,7 +10,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   let(:allowed_to_be_missing_sharding_key) do
     [
       'merge_request_diff_commits_b5377a7a34', # has a desired sharding key instead
-      'p_ci_pipeline_variables', # has a desired sharding key instead
       'web_hook_logs_daily' # temporary copy of web_hook_logs
     ]
   end
@@ -58,6 +57,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'ci_job_artifacts.project_id',
       'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
       'ci_pipeline_chat_data.project_id',
+      'p_ci_pipeline_variables.project_id',
       'ci_pipeline_messages.project_id',
       'p_ci_job_annotations.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'p_ci_pipelines_config.project_id', # LFK already present on p_ci_pipelines and cascade delete all ci resources

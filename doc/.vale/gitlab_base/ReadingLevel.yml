@@ -8,7 +8,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: metric
 message: "The grade level is %s. Aim for 8th grade or lower by using shorter sentences and words."
-link: https://docs.gitlab.com/ee/development/documentation/testing/vale.html#readability-score
+link: https://docs.gitlab.com/development/documentation/testing/vale/#readability-score
 level: suggestion
 formula: |
   (0.39 * (words / sentences)) + (11.8 * (syllables / words)) - 15.59

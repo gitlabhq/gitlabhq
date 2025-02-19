@@ -6,7 +6,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Avoid using 'level' when referring to groups, instances, or projects: '%s'"
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#level
+link: https://docs.gitlab.com/development/documentation/styleguide/word_list/#level
 vocab: false
 level: suggestion
 ignorecase: true

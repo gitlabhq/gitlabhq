@@ -163,21 +163,26 @@ Add a migration (not a post-deployment migration) that uses `sidekiq_remove_jobs
 
    ```ruby
    class RemoveMyDeprecatedWorkersJobInstances < Gitlab::Database::Migration[2.1]
+     # Always use `disable_ddl_transaction!` while using the `sidekiq_remove_jobs` method,
+     # as we had multiple production incidents due to `idle-in-transaction` timeout.
+     disable_ddl_transaction!
+
      DEPRECATED_JOB_CLASSES = %w[
        MyDeprecatedWorkerOne
        MyDeprecatedWorkerTwo
      ]
-     # Always use `disable_ddl_transaction!` while using the `sidekiq_remove_jobs` method, as we had multiple production incidents due to `idle-in-transaction` timeout.
-     disable_ddl_transaction!
+
      def up
-       # If the job has been scheduled via `sidekiq-cron`, we must also remove
-       # it from the scheduled worker set using the key used to define the cron
-       # schedule in config/initializers/1_settings.rb.
-       job_to_remove = Sidekiq::Cron::Job.find('my_deprecated_worker')
-       # The job may be removed entirely:
-       job_to_remove.destroy if job_to_remove
-       # The job may be disabled:
-       job_to_remove.disable! if job_to_remove
+       Gitlab::SidekiqSharding::Validator.allow_unrouted_sidekiq_calls do
+         # If the job has been scheduled via `sidekiq-cron`, we must also remove
+         # it from the scheduled worker set using the key used to define the cron
+         # schedule in config/initializers/1_settings.rb.
+         job_to_remove = Sidekiq::Cron::Job.find('my_deprecated_worker')
+         # The job may be removed entirely:
+         job_to_remove.destroy if job_to_remove
+         # The job may be disabled:
+         job_to_remove.disable! if job_to_remove
+       end
 
        # Removes scheduled instances from Sidekiq queues
        sidekiq_remove_jobs(job_klasses: DEPRECATED_JOB_CLASSES)

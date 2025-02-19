@@ -21,10 +21,15 @@ title: Container Scanning
 
 {{< /history >}}
 
-Your application's Docker image may itself be based on Docker images that contain known
-vulnerabilities. By including an extra Container Scanning job in your pipeline that scans for those
-vulnerabilities and displays them in a merge request, you can use GitLab to audit your Docker-based
-apps.
+Container Scanning searches for known vulnerabilities in container images in your GitLab projects.
+
+Container Scanning:
+
+- Detects known vulnerabilities in container base images and operating system packages.
+- Generates a CycloneDX software bill of materials (SBOM) for scanned images.
+- Scans images in private registries and offline environments.
+- Reports vulnerability findings with clear fix status and resolution details.
+- Provides automated remediations to fix vulnerable dependencies (for some vulnerabilities).
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
   For an overview, see [Container Scanning](https://www.youtube.com/watch?v=C0jn2eN5MAs).

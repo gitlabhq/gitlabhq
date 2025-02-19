@@ -598,6 +598,7 @@ export const setNewWorkItemCache = async (
           userPermissions: {
             deleteWorkItem: true,
             updateWorkItem: true,
+            moveWorkItem: true,
             adminParentLink: true,
             setWorkItemMetadata: true,
             createNote: true,
@@ -618,6 +619,7 @@ export const setNewWorkItemCache = async (
 export const optimisticUserPermissions = {
   deleteWorkItem: false,
   updateWorkItem: false,
+  moveWorkItem: false,
   adminParentLink: false,
   setWorkItemMetadata: false,
   createNote: false,

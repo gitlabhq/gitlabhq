@@ -30,6 +30,7 @@ import {
   TEST_ID_DELETE_ACTION,
   TEST_ID_PROMOTE_ACTION,
   TEST_ID_CHANGE_TYPE_ACTION,
+  TEST_ID_MOVE_ACTION,
   TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
   TEST_ID_COPY_REFERENCE_ACTION,
   TEST_ID_TOGGLE_ACTION,
@@ -46,6 +47,7 @@ import {
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_VALUE_EPIC,
   WORK_ITEM_TYPE_VALUE_MAP,
+  WORK_ITEM_TYPE_VALUE_ISSUE,
 } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '../graphql/update_work_item_notifications.mutation.graphql';
@@ -53,6 +55,7 @@ import convertWorkItemMutation from '../graphql/work_item_convert.mutation.graph
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import WorkItemStateToggle from './work_item_state_toggle.vue';
 import CreateWorkItemModal from './create_work_item_modal.vue';
+import MoveWorkItemModal from './move_work_item_modal.vue';
 
 export default {
   i18n: {
@@ -84,6 +87,7 @@ export default {
     WorkItemStateToggle,
     CreateWorkItemModal,
     WorkItemChangeTypeModal,
+    MoveWorkItemModal,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -98,6 +102,7 @@ export default {
   deleteActionTestId: TEST_ID_DELETE_ACTION,
   promoteActionTestId: TEST_ID_PROMOTE_ACTION,
   changeTypeTestId: TEST_ID_CHANGE_TYPE_ACTION,
+  moveTestId: TEST_ID_MOVE_ACTION,
   lockDiscussionTestId: TEST_ID_LOCK_ACTION,
   stateToggleTestId: TEST_ID_TOGGLE_ACTION,
   reportAbuseActionTestId: TEST_ID_REPORT_ABUSE,
@@ -133,6 +138,10 @@ export default {
       required: false,
       default: null,
     },
+    projectId: {
+      type: String,
+      required: true,
+    },
     canUpdate: {
       type: Boolean,
       required: false,
@@ -144,6 +153,11 @@ export default {
       default: false,
     },
     canDelete: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canMove: {
       type: Boolean,
       required: false,
       default: false,
@@ -248,6 +262,7 @@ export default {
       isLockDiscussionUpdating: false,
       isDropdownVisible: false,
       isCreateWorkItemModalVisible: false,
+      isMoveWorkItemModalVisible: false,
       workItemTypes: [],
     };
   },
@@ -360,6 +375,13 @@ export default {
     },
     workItemTypeNameEnum() {
       return WORK_ITEM_TYPE_VALUE_MAP[this.workItemType];
+    },
+    showMoveButton() {
+      return (
+        this.workItemType === WORK_ITEM_TYPE_VALUE_ISSUE &&
+        this.canMove &&
+        this.glFeatures.workItemsAlpha
+      );
     },
   },
   methods: {
@@ -574,6 +596,14 @@ export default {
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
+        v-if="showMoveButton"
+        :data-testid="$options.moveTestId"
+        @action="isMoveWorkItemModalVisible = true"
+      >
+        <template #list-item>{{ __('Move') }}</template>
+      </gl-disclosure-dropdown-item>
+
+      <gl-disclosure-dropdown-item
         v-if="canUpdateMetadata"
         :data-testid="$options.lockDiscussionTestId"
         @action="toggleDiscussionLock"
@@ -677,6 +707,14 @@ export default {
       :namespace-full-name="namespaceFullName"
       @workItemTypeChanged="$emit('workItemTypeChanged')"
       @error="$emit('error', $event)"
+    />
+    <move-work-item-modal
+      :visible="isMoveWorkItemModalVisible"
+      :work-item-id="workItemId"
+      :work-item-iid="workItemIid"
+      :full-path="fullPath"
+      :project-id="projectId"
+      @hideModal="isMoveWorkItemModalVisible = false"
     />
   </div>
 </template>

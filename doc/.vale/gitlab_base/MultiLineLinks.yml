@@ -6,7 +6,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Put the full link on one line, even if the link is very long."
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/#links
+link: https://docs.gitlab.com/development/documentation/styleguide/#links
 vocab: false
 level: error
 scope: raw

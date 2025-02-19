@@ -4159,7 +4159,8 @@ CREATE TABLE p_ci_pipeline_variables (
     raw boolean DEFAULT false NOT NULL,
     id bigint NOT NULL,
     pipeline_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_6e932dbabf CHECK ((project_id IS NOT NULL))
 )
 PARTITION BY LIST (partition_id);
 
@@ -10803,7 +10804,8 @@ CREATE TABLE ci_pipeline_variables (
     raw boolean DEFAULT false NOT NULL,
     id bigint NOT NULL,
     pipeline_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_6e932dbabf CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ci_pipeline_variables_id_seq
@@ -27250,9 +27252,6 @@ ALTER TABLE ONLY instance_type_ci_runners_e59bb2812d
 
 ALTER TABLE ONLY project_type_ci_runners_e59bb2812d
     ADD CONSTRAINT check_619c71f3a2 UNIQUE (id);
-
-ALTER TABLE p_ci_pipeline_variables
-    ADD CONSTRAINT check_6e932dbabf CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY group_type_ci_runners_e59bb2812d
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);

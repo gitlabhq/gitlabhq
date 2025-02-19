@@ -1,6 +1,6 @@
 extends: script
 message: "Front matter must have valid 'title' and be closed."
-link: https://docs.gitlab.com/ee/development/documentation/metadata/
+link: https://docs.gitlab.com/development/documentation/metadata/
 level: error
 scope: raw
 script: |

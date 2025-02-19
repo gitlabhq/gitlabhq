@@ -216,7 +216,7 @@ For example, your pipeline can start automatically, but require a manual action 
 [deploy to production](../environments/deployments.md#configure-manual-deployments).
 In the example below, the `production` stage has a job with a manual action:
 
-![Pipelines example](img/manual_job_v17_9.png)
+![Pipeline graph that shows four stages: build, test, canary, and production. First three stages show completed jobs with green checkmarks, while production stage shows a pending deploy job.](img/manual_job_v17_9.png)
 
 #### Start all manual jobs in a stage
 
