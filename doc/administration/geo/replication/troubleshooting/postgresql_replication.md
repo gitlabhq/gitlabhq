@@ -30,7 +30,7 @@ If the secondary site is not able to reconnect, use the following steps to remov
 
    {{< alert type="note" >}}
 
-Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
+   Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
 
    {{< /alert >}}
 

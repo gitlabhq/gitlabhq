@@ -133,7 +133,7 @@ a copy of your repository, and download it.
 
    {{< alert type="note" >}}
 
-This step fails for [protected branches](../../user/project/repository/branches/protected.md) and
+   This step fails for [protected branches](../../user/project/repository/branches/protected.md) and
    [protected tags](../../user/project/protected_tags.md). To proceed, temporarily remove protections.
 
    {{< /alert >}}

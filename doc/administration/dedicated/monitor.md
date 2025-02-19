@@ -19,7 +19,7 @@ To gain read only access to the S3 bucket with your application logs:
 
    {{< alert type="note" >}}
 
-Specify the full ARN path without wildcards (`*`). Wildcard characters are not supported. GitLab team members can read more about the proposed feature to add wildcard support in this confidential issue: [7010](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/7010).
+   Specify the full ARN path without wildcards (`*`). Wildcard characters are not supported. GitLab team members can read more about the proposed feature to add wildcard support in this confidential issue: [7010](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/7010).
 
    {{< /alert >}}
 

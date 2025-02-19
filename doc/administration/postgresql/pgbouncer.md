@@ -50,7 +50,7 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 
    {{< alert type="note" >}}
 
-If the database was already running, it needs to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
+   If the database was already running, it needs to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
 
    {{< /alert >}}
 

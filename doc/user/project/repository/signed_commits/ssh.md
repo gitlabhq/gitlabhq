@@ -45,7 +45,7 @@ Prerequisites:
 
   {{< alert type="note" >}}
 
-OpenSSH 8.7 has broken signing functionality. If you are on OpenSSH 8.7, upgrade to OpenSSH 8.8.
+  OpenSSH 8.7 has broken signing functionality. If you are on OpenSSH 8.7, upgrade to OpenSSH 8.8.
 
   {{< /alert >}}
 

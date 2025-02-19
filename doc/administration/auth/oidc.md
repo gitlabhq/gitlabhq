@@ -112,7 +112,7 @@ The OpenID Connect provider provides you with a client's details and secret for 
 
    {{< alert type="note" >}}
 
-For more information on using multiple identity providers with OIDC, see [issue 5992](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5992).
+   For more information on using multiple identity providers with OIDC, see [issue 5992](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5992).
 
    {{< /alert >}}
 
@@ -143,7 +143,7 @@ For more information on using multiple identity providers with OIDC, see [issue 
 
    {{< alert type="note" >}}
 
-For more information on each configuration option, refer to the [OmniAuth OpenID Connect usage documentation](https://github.com/omniauth/omniauth_openid_connect#usage) and [OpenID Connect Core 1.0 specification](https://openid.net/specs/openid-connect-core-1_0.html).
+   For more information on each configuration option, refer to the [OmniAuth OpenID Connect usage documentation](https://github.com/omniauth/omniauth_openid_connect#usage) and [OpenID Connect Core 1.0 specification](https://openid.net/specs/openid-connect-core-1_0.html).
 
    {{< /alert >}}
 

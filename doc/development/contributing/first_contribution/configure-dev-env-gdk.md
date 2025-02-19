@@ -61,7 +61,7 @@ To install the GDK:
 
    {{< alert type="note" >}}
 
-If you're using another version manager for those dependencies, refer to the [troubleshooting section](#error-no-version-is-set-for-command) to avoid conflicts.
+   If you're using another version manager for those dependencies, refer to the [troubleshooting section](#error-no-version-is-set-for-command) to avoid conflicts.
 
    {{< /alert >}}
 

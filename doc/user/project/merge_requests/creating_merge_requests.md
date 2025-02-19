@@ -211,7 +211,7 @@ You can create a merge request from your fork to contribute back to the main pro
 
    {{< alert type="note" >}}
 
-If your fork's visibility is more restricted than the parent repository, the target branch defaults
+   If your fork's visibility is more restricted than the parent repository, the target branch defaults
    to your fork's default branch. This prevents potential exposure of private information in your fork.
 
    {{< /alert >}}

@@ -50,7 +50,7 @@ Prerequisites:
 
    {{< alert type="note" >}}
 
-In GitLab Premium and Ultimate, you can also add groups or individual users
+   In GitLab Premium and Ultimate, you can also add groups or individual users
    to **Allowed to create**.
 
    {{< /alert >}}

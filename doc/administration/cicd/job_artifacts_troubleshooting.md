@@ -109,7 +109,7 @@ You can check the database to confirm if your instance has artifacts with the `u
    sudo -u git -H psql -d gitlabhq_production
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

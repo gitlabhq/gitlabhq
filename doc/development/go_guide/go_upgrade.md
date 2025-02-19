@@ -90,7 +90,7 @@ if you need help finding the correct person or labels:
 
    {{< alert type="note" >}}
 
-Some overlap exists between project dependencies. When creating an issue for a
+   Some overlap exists between project dependencies. When creating an issue for a
    dependency that is part of a larger product, note the relationship in the issue
    body. For example: Projects built in the context of Omnibus GitLab have their
    runtime Go version managed by Omnibus, but "support" and compatibility should
@@ -101,7 +101,7 @@ Some overlap exists between project dependencies. When creating an issue for a
 
    {{< alert type="note" >}}
 
-The upgrade issues must include [upgrade validation items](#upgrade-validation)
+   The upgrade issues must include [upgrade validation items](#upgrade-validation)
    in their definition of done. Creating a second [performance testing issue](#upgrade-validation)
    titled `Validate operation and performance at scale with Go <VERSION_NUMBER>`
    is strongly recommended to help with scheduling tasks and managing workloads.
@@ -117,7 +117,7 @@ The upgrade issues must include [upgrade validation items](#upgrade-validation)
 
    {{< alert type="note" >}}
 
-Updates to these Security analyzers should not block upgrades to Charts or Omnibus since
+   Updates to these Security analyzers should not block upgrades to Charts or Omnibus since
    the analyzers are built independently as separate container images.
 
    {{< /alert >}}
@@ -145,7 +145,7 @@ Updates to these Security analyzers should not block upgrades to Charts or Omnib
 
    {{< alert type="note" >}}
 
-If the component is not automatically upgraded for [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues)
+   If the component is not automatically upgraded for [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues)
    and [Cloud Native GitLab](https://gitlab.com/gitlab-org/charts/gitlab/-/issues),
    issues should be opened in their respective trackers titled `Updated bundled version of COMPONENT_NAME`
    and set as blocked by the component's upgrade issue.

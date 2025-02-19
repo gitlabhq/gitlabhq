@@ -118,7 +118,7 @@ To add a large file into your Git repository and track it with Git LFS:
 
    {{< alert type="note" >}}
 
-Ensure the files you're changing are not listed in a `.gitignore` file.
+   Ensure the files you're changing are not listed in a `.gitignore` file.
    If they are, Git commits the change locally but doesn't push it to your upstream repository.
 
    {{< /alert >}}
@@ -237,11 +237,11 @@ To configure file locks for a specific file type:
 
 1. Push the `.gitattributes` file to the remote repository for the changes to take effect.
 
-   {{< alert type="note" >}}
+{{< alert type="note" >}}
 
 After a file type is registered as lockable, it is automatically marked as read-only.
 
-   {{< /alert >}}
+{{< /alert >}}
 
 #### Configure file locks without LFS
 
@@ -294,7 +294,7 @@ To lock or unlock a file with exclusive file locking:
    git lfs unlock --id=123 --force
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

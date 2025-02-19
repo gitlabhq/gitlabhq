@@ -160,7 +160,7 @@ they add an extra layer of security.
 
    {{< alert type="note" >}}
 
-The naming and source directory decide the order of processing, which is
+   The naming and source directory decide the order of processing, which is
    important because the last parameter processed might override earlier ones.
 
    {{< /alert >}}

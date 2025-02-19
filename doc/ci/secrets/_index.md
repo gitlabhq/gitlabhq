@@ -129,7 +129,7 @@ To configure your Vault server:
 
    {{< alert type="note" >}}
 
-Support for providing these values in the user interface [is tracked in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218677).
+   Support for providing these values in the user interface [is tracked in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218677).
 
    {{< /alert >}}
 

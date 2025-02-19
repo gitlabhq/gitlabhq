@@ -307,7 +307,7 @@ There are two ways to remove a Conan package from the GitLab package registry.
 
   {{< alert type="note" >}}
 
-This command removes all recipe and binary package files from the
+  This command removes all recipe and binary package files from the
   package registry.
 
   {{< /alert >}}

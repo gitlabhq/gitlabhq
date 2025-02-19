@@ -254,7 +254,7 @@ The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https:/
 
    {{< alert type="note" >}}
 
-It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the following variables.
+   It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the following variables.
 
    {{< /alert >}}
 
@@ -439,7 +439,7 @@ In order to push images to this location:
 
    {{< alert type="note" >}}
 
-It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the `SEC_REGISTRY_PASSWORD` variable.
+   It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the `SEC_REGISTRY_PASSWORD` variable.
 
    {{< /alert >}}
 

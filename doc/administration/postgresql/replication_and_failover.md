@@ -1006,7 +1006,7 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
 
    {{< alert type="note" >}}
 
-On a Geo secondary site, the Patroni leader node is called `standby leader`.
+   On a Geo secondary site, the Patroni leader node is called `standby leader`.
 
    {{< /alert >}}
 
@@ -1031,7 +1031,7 @@ On a Geo secondary site, the Patroni leader node is called `standby leader`.
 
    {{< alert type="note" >}}
 
-`gitlab-ctl pg-upgrade` tries to detect the role of the node. If for any reason the auto-detection
+   `gitlab-ctl pg-upgrade` tries to detect the role of the node. If for any reason the auto-detection
    does not work or you believe it did not detect the role correctly, you can use the `--leader` or
    `--replica` arguments to manually override it. Use `gitlab-ctl pg-upgrade --help` for more details on available options.
 

@@ -19,11 +19,11 @@ To use GitLab Duo on a self-managed instance, you can do either of the following
 - [Use LLMs from the supported list and self-host the AI gateway and LLMs](../../administration/gitlab_duo_self_hosted/_index.md).
   This option provides full control over your data and security.
 
-  {{< alert type="note" >}}
+{{< alert type="note" >}}
 
 You must have an Ultimate license with GitLab Duo Enterprise add-on to use GitLab Duo Self-Hosted.
 
-  {{< /alert >}}
+{{< /alert >}}
 
 This page focuses on how to configure a self-managed instance if you're using the default, GitLab-hosted option.
 

@@ -29,7 +29,7 @@ Rails application:
 
    {{< alert type="note" >}}
 
-This can be done as a separate merge request, or in a merge request
+   This can be done as a separate merge request, or in a merge request
    that uses the latest GitLab Shell changes.
 
    {{< /alert >}}

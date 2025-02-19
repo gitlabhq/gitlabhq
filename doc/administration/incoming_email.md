@@ -225,7 +225,7 @@ Reply by email should now be working.
 
    {{< alert type="note" >}}
 
-This step is necessary to avoid thread deadlocks and to support the latest MailRoom features. See
+   This step is necessary to avoid thread deadlocks and to support the latest MailRoom features. See
    [this explanation](../development/emails.md#mailroom-gem-updates) for more details.
 
    {{< /alert >}}

@@ -160,7 +160,7 @@ To set up a mirror from GitLab to AWS CodeCommit:
 
    {{< alert type="note" >}}
 
-This Git user ID and password is specific to communicating with CodeCommit. Do
+   This Git user ID and password is specific to communicating with CodeCommit. Do
    not confuse it with the IAM user ID or AWS keys of this user.
 
    {{< /alert >}}

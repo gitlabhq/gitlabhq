@@ -185,7 +185,7 @@ For Linux package installations:
 
    {{< alert type="note" >}}
 
-Assign a value to at least one of the following variables:
+   Assign a value to at least one of the following variables:
    `gitlab_rails['smartcard_client_certificate_required_host']` or
    `gitlab_rails['smartcard_client_certificate_required_port']`.
 
@@ -282,7 +282,7 @@ For self-compiled installations:
 
    {{< alert type="note" >}}
 
-Assign a value to at least one of the following variables:
+   Assign a value to at least one of the following variables:
    `client_certificate_required_host` or `client_certificate_required_port`.
 
    {{< /alert >}}

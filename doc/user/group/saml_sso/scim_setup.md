@@ -103,7 +103,7 @@ Under the **Mappings** section, first provision the groups:
 
    {{< alert type="note" >}}
 
-Even when **Provision Microsoft Entra ID Groups** is disabled, the mappings section may display "Enabled: Yes". This behavior is a display bug that you can safely ignore.
+   Even when **Provision Microsoft Entra ID Groups** is disabled, the mappings section may display "Enabled: Yes". This behavior is a display bug that you can safely ignore.
 
    {{< /alert >}}
 

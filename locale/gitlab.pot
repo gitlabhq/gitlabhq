@@ -11151,7 +11151,13 @@ msgstr ""
 msgid "CICD|Add an existing project to the scope"
 msgstr ""
 
+msgid "CICD|Add log entries and compact the allowlist"
+msgstr ""
+
 msgid "CICD|Added from log."
+msgstr ""
+
+msgid "CICD|Adding all entries from the authentication log would exceed this limit. GitLab can compact the allowlist with common groups until the entries are within the limit. %{linkStart}What is the compaction algorithm?%{linkEnd}"
 msgstr ""
 
 msgid "CICD|Additional permissions"
@@ -11295,6 +11301,9 @@ msgstr ""
 msgid "CICD|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr ""
 
+msgid "CICD|The allowlist can contain a maximum of %{projectAllowlistLimit} groups and projects."
+msgstr ""
+
 msgid "CICD|The process to add entries could take a moment to complete with large logs or allowlists."
 msgstr ""
 
@@ -11305,6 +11314,9 @@ msgid "CICD|There are too many entries to display. Download the CSV file to view
 msgstr ""
 
 msgid "CICD|There was a problem fetching authentication logs."
+msgstr ""
+
+msgid "CICD|There was a problem fetching authorization logs count."
 msgstr ""
 
 msgid "CICD|Unprotected branches will not have access to the cache from protected branches."

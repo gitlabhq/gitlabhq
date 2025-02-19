@@ -171,7 +171,7 @@ install, and upgrade your Docker-based GitLab installation:
 
    {{< alert type="note" >}}
 
-Read the [Pre-configure Docker container](configuration.md#pre-configure-docker-container) section
+   Read the [Pre-configure Docker container](configuration.md#pre-configure-docker-container) section
    to see how the `GITLAB_OMNIBUS_CONFIG` variable works.
 
    {{< /alert >}}

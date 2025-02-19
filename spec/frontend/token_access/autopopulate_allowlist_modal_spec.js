@@ -1,4 +1,4 @@
-import { GlAlert, GlModal } from '@gitlab/ui';
+import { GlAlert, GlLink, GlModal, GlSprintf } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { createMockDirective } from 'helpers/vue_mock_directive';
@@ -22,6 +22,7 @@ describe('AutopopulateAllowlistModal component', () => {
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findModal = () => wrapper.findComponent(GlModal);
+  const findLink = () => wrapper.findComponent(GlLink);
 
   const createComponent = ({ props } = {}) => {
     const handlers = [[AutopopulateAllowlistMutation, mockAutopopulateMutation]];
@@ -39,9 +40,14 @@ describe('AutopopulateAllowlistModal component', () => {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
       propsData: {
+        authLogExceedsLimit: false,
+        projectAllowlistLimit: 4,
         projectName,
         showModal: true,
         ...props,
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   };
@@ -55,8 +61,37 @@ describe('AutopopulateAllowlistModal component', () => {
       createComponent();
     });
 
-    it('does not render alert by default', () => {
+    it('does not render alert or help link by default', () => {
       expect(findAlert().exists()).toBe(false);
+      expect(findLink().exists()).toBe(false);
+    });
+
+    it('renders the default title', () => {
+      expect(findModal().props('title')).toBe(
+        'Add all authentication log entries to the allowlist',
+      );
+    });
+
+    describe('when autopopulating will exceed the allowlist limit', () => {
+      beforeEach(() => {
+        createComponent({ props: { authLogExceedsLimit: true } });
+      });
+
+      it('renders the correct title', () => {
+        expect(findModal().props('title')).toBe('Add log entries and compact the allowlist');
+      });
+
+      it('renders warning alert', () => {
+        expect(findAlert().text()).toBe(
+          'The allowlist can contain a maximum of 4 groups and projects.',
+        );
+      });
+
+      // TODO: Test for help link
+      // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181294
+      it('renders help link', () => {
+        expect(findLink().text()).toBe('What is the compaction algorithm?');
+      });
     });
   });
 

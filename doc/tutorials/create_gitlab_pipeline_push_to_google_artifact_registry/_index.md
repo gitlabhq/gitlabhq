@@ -18,7 +18,7 @@ Learn how to connect GitLab to Google Cloud and create a GitLab pipeline using r
 
    {{< alert type="note" >}}
 
-If you don't plan to keep the resources that you create in this procedure, then create a new Google Cloud project instead of selecting an existing project. After you finish these steps, you can delete the project, removing all resources associated with the project.
+   If you don't plan to keep the resources that you create in this procedure, then create a new Google Cloud project instead of selecting an existing project. After you finish these steps, you can delete the project, removing all resources associated with the project.
 
    {{< /alert >}}
 

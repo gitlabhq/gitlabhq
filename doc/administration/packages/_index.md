@@ -260,7 +260,7 @@ The processing is done in a background worker and requires **no downtime**.
    RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:packages:migrate
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 
@@ -291,7 +291,7 @@ The processing is done in a background worker and requires **no downtime**.
    RAILS_ENV=production sudo -u git -H psql -d gitlabhq_production
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 
@@ -324,6 +324,6 @@ The processing is done in a background worker and requires **no downtime**.
    sudo -u git find /home/git/gitlab/shared/packages -type f | grep -v tmp | wc -l
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}

@@ -652,7 +652,7 @@ you can pull from the container registry, but you cannot push.
 
    {{< alert type="note" >}}
 
-If you have a lot of data, you may be able to improve performance by
+   If you have a lot of data, you may be able to improve performance by
    [running parallel sync operations](https://repost.aws/knowledge-center/s3-improve-transfer-sync-command).
 
    {{< /alert >}}

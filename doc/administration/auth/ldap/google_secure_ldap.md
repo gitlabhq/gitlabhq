@@ -41,7 +41,7 @@ Secure LDAP is only available on specific Google Workspace editions. For more in
 
    {{< alert type="note" >}}
 
-If you plan to use GitLab [LDAP Group Sync](ldap_synchronization.md#group-sync)
+   If you plan to use GitLab [LDAP Group Sync](ldap_synchronization.md#group-sync)
    , turn on `Read group information`.
 
    {{< /alert >}}

@@ -231,7 +231,7 @@ processing is done in a background worker and requires **no downtime**.
    sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 
@@ -307,7 +307,7 @@ processing is done in a background worker and requires **no downtime**.
    sudo find /home/git/gitlab/shared/artifacts -type f | grep -v tmp | wc -l
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

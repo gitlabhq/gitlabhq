@@ -31,6 +31,7 @@ For each of the vulnerabilities listed in this document, AppSec aims to have a S
 | [Archive operations](#working-with-archive-files) (Go) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/go/go_insecure_archive_operations.yml)  | ✅ |
 | [URL spoofing](#url-spoofing) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_url_spoofing.yml)  | ✅ |
 | [Request Parameter Typing](#request-parameter-typing) | `StrongParams` RuboCop | ✅ |
+| [Paid tiers for vulnerability mitigation](#paid-tiers-for-vulnerability-mitigation) | N/A <!-- This cannot be validated programmatically //--> | |
 
 ## Process for creating new guidelines and accompanying rules
 
@@ -1940,6 +1941,59 @@ This class of issue applies to more than just email; other examples might includ
 - [Watch a walkthrough video](https://www.youtube.com/watch?v=ydg95R2QKwM) for an instance of this issue causing vulnerability CVE-2023-7028.
   The video covers what happened, how it worked, and what you need to know for the future.
 - Rails documentation for [ActionController::StrongParameters](https://api.rubyonrails.org/classes/ActionController/StrongParameters.html) and [ActionController::Parameters](https://api.rubyonrails.org/classes/ActionController/Parameters.html)
+
+## Paid tiers for vulnerability mitigation
+
+Secure code must not rely on subscription tiers (Premium/Ultimate) or
+separate SKUs as a control to mitigate security vulnerabilities.
+
+While requiring paid tiers can create friction for potential attackers,
+it does not provide meaningful security protection since adversaries
+can bypass licensing restrictions through various means like free
+trials or fraudulent payment.
+
+Requiring payment is a valid strategy for anti-abuse when the cost to
+the attacker exceeds the cost to GitLab. An example is limiting the
+abuse of CI minutes. Here, the important thing to note is that use of
+CI itself is not a security vulnerability.
+
+### Impact
+
+Relying on licensing tiers as a security control can:
+
+- Lead to patches which can be bypassed by attackers with the ability to
+  pay.
+- Create a false sense of security, leading to new vulnerabilities being
+  introduced.
+
+### Examples
+
+The following example shows an insecure implementation that relies on
+licensing tiers. The service reads files from disk and attempts to use
+the Ultimate subscription tier to prevent unauthorized access:
+
+```ruby
+class InsecureFileReadService
+  def execute
+    return unless License.feature_available?(:insecure_file_read_service)
+
+    return File.read(params[:unsafe_user_path])
+  end
+end
+```
+
+If the above code made it to production, an attacker could create a free
+trial, or pay for one with a stolen credit card. The resulting
+vulnerability would be a critical (severity 1) incident.
+
+### Mitigations
+
+- Instead of relying on licensing tiers, resolve the vulnerability in
+  all tiers.
+- Follow secure coding best practices specific to the feature's
+  functionality.
+- If licensing tiers are used as part of a defense-in-depth strategy,
+  combine it with other effective security controls.
 
 ## Who to contact if you have questions
 

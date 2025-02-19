@@ -1767,7 +1767,7 @@ list.
       sudo service gitlab restart
       ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 
@@ -3403,7 +3403,7 @@ To implement signing:
       sudo service gitlab restart
       ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

@@ -12233,6 +12233,7 @@ Input type: `WorkItemCreateInput`
 | <a id="mutationworkitemcreateconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
 | <a id="mutationworkitemcreatecreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the work item was created. Available only for admins and project owners. |
 | <a id="mutationworkitemcreatecrmcontactswidget"></a>`crmContactsWidget` | [`WorkItemWidgetCrmContactsCreateInput`](#workitemwidgetcrmcontactscreateinput) | Input for CRM contacts widget. |
+| <a id="mutationworkitemcreatecustomfieldswidget"></a>`customFieldsWidget` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldValueInputType!]`](#workitemwidgetcustomfieldvalueinputtype) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
 | <a id="mutationworkitemcreatedescription"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** use description widget instead. Deprecated in GitLab 16.9. |
 | <a id="mutationworkitemcreatedescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
 | <a id="mutationworkitemcreatediscussionstoresolve"></a>`discussionsToResolve` | [`WorkItemResolveDiscussionsInput`](#workitemresolvediscussionsinput) | Information required to resolve discussions in a noteable, when the work item is created. |
@@ -12437,6 +12438,7 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdateconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
 | <a id="mutationworkitemupdatecrmcontactswidget"></a>`crmContactsWidget` | [`WorkItemWidgetCrmContactsUpdateInput`](#workitemwidgetcrmcontactsupdateinput) | Input for CRM contacts widget. |
 | <a id="mutationworkitemupdatecurrentusertodoswidget"></a>`currentUserTodosWidget` | [`WorkItemWidgetCurrentUserTodosInput`](#workitemwidgetcurrentusertodosinput) | Input for to-dos widget. |
+| <a id="mutationworkitemupdatecustomfieldswidget"></a>`customFieldsWidget` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldValueInputType!]`](#workitemwidgetcustomfieldvalueinputtype) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
 | <a id="mutationworkitemupdatedescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
 | <a id="mutationworkitemupdatehealthstatuswidget"></a>`healthStatusWidget` | [`WorkItemWidgetHealthStatusInput`](#workitemwidgethealthstatusinput) | Input for health status widget. |
 | <a id="mutationworkitemupdatehierarchywidget"></a>`hierarchyWidget` | [`WorkItemWidgetHierarchyUpdateInput`](#workitemwidgethierarchyupdateinput) | Input for hierarchy widget. |
@@ -47196,6 +47198,17 @@ Attributes for value stream stage.
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetcurrentusertodosinputaction"></a>`action` | [`WorkItemTodoUpdateAction!`](#workitemtodoupdateaction) | Action for the update. |
 | <a id="workitemwidgetcurrentusertodosinputtodoid"></a>`todoId` | [`TodoID`](#todoid) | Global ID of the to-do. If not present, all to-dos of the work item will be updated. |
+
+### `WorkItemWidgetCustomFieldValueInputType`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetcustomfieldvalueinputtypecustomfieldid"></a>`customFieldId` | [`IssuablesCustomFieldID!`](#issuablescustomfieldid) | Global ID of the custom field. |
+| <a id="workitemwidgetcustomfieldvalueinputtypenumbervalue"></a>`numberValue` | [`Float`](#float) | Value for custom fields with number type. |
+| <a id="workitemwidgetcustomfieldvalueinputtypeselectedoptionids"></a>`selectedOptionIds` | [`[IssuablesCustomFieldSelectOptionID!]`](#issuablescustomfieldselectoptionid) | Global IDs of the selected options for custom fields with select type. |
+| <a id="workitemwidgetcustomfieldvalueinputtypetextvalue"></a>`textValue` | [`String`](#string) | Value for custom fields with text type. |
 
 ### `WorkItemWidgetDescriptionInput`
 

@@ -212,7 +212,7 @@ processing is done in the background and requires **no downtime**.
    sudo -u git -H bundle exec rake gitlab:lfs:migrate RAILS_ENV=production
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 
@@ -288,7 +288,7 @@ processing is done in the background and requires **no downtime**.
    sudo find /home/git/gitlab/shared/lfs-objects -type f | grep -v tmp | wc -l
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

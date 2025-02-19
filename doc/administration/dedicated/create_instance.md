@@ -209,7 +209,7 @@ To access and configure your GitLab Dedicated instance:
 
    {{< alert type="note" >}}
 
-For security, you can retrieve the temporary root credentials from Switchboard only once. Be sure to store these credentials securely (for example, in a password manager) before leaving Switchboard.
+   For security, you can retrieve the temporary root credentials from Switchboard only once. Be sure to store these credentials securely (for example, in a password manager) before leaving Switchboard.
 
    {{< /alert >}}
 

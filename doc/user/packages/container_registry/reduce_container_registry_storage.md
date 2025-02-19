@@ -216,7 +216,7 @@ To create a cleanup policy in the UI:
 
    {{< alert type="note" >}}
 
-Both keep and remove regex patterns are automatically surrounded with `\A` and `\Z` anchors, so you do not need to include them. However, make sure to take this into account when choosing and testing your regex patterns.
+   Both keep and remove regex patterns are automatically surrounded with `\A` and `\Z` anchors, so you do not need to include them. However, make sure to take this into account when choosing and testing your regex patterns.
 
    {{< /alert >}}
 
@@ -456,7 +456,7 @@ the tags. To create the list and delete the tags:
    sed -i .bak '/_v3$/d' list_o_tags.out
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

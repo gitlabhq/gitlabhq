@@ -1,0 +1,8 @@
+query getAuthLogCount($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    ciJobTokenAuthLogs {
+      count
+    }
+  }
+}

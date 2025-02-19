@@ -148,10 +148,10 @@ participant "Audit::EventQueue" as B #LightBlue
 participant "Interacted Class" as C
 participant "AuditEvent" as D
 
-A->A1: audit <b>{ block }
+A->A1: audit <b>{ block }</b>
 activate A1
 A1->B: begin!
-A1->C: <b>block.call
+A1->C: <b>block.call</b>
 activate A1 #FFBBBB
 activate C
 C-->B: push [ message ]

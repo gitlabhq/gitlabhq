@@ -1079,7 +1079,7 @@ due to large volumes of data being indexed:
 
    {{< alert type="note" >}}
 
-This step is optional but may help significantly speed up large indexing operations.
+   This step is optional but may help significantly speed up large indexing operations.
 
    {{< /alert >}}
 
@@ -1132,7 +1132,7 @@ This step is optional but may help significantly speed up large indexing operati
 
    {{< alert type="note" >}}
 
-Sometimes the project indexing jobs queued by `gitlab:elastic:index_projects`
+   Sometimes the project indexing jobs queued by `gitlab:elastic:index_projects`
    can get interrupted. This may happen for many reasons, but it's always safe
    to run the indexing task again.
 

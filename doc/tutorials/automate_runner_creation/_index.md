@@ -181,7 +181,7 @@ REST endpoint to create a runner:
      --header "PRIVATE-TOKEN: <personal_access_token>"
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

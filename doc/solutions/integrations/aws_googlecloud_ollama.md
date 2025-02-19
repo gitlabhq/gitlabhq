@@ -213,7 +213,7 @@ During the initial setup and testing phase, you can set AIGW_AUTH__BYPASS_EXTERN
 
    {{< alert type="note" >}}
 
-Replace the IP address with your actual server's internal IP address.
+   Replace the IP address with your actual server's internal IP address.
 
    {{< /alert >}}
 

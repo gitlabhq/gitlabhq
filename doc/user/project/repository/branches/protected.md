@@ -118,7 +118,7 @@ To protect a branch:
 
    {{< alert type="note" >}}
 
-In GitLab Premium and Ultimate, you can also add groups or individual users
+   In GitLab Premium and Ultimate, you can also add groups or individual users
    to **Allowed to merge** and **Allowed to push and merge**.
 
    {{< /alert >}}

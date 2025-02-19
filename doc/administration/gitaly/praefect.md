@@ -668,7 +668,7 @@ Updates to example must be made at:
 
    {{< alert type="note" >}}
 
-When adding additional Gitaly nodes to a virtual storage, all storage names
+   When adding additional Gitaly nodes to a virtual storage, all storage names
    in that virtual storage must be unique. Additionally, all Gitaly node
    addresses referenced in the Praefect configuration must be unique.
 

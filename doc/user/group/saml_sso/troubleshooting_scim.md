@@ -88,10 +88,11 @@ To change the identifier values to match, you can do one of the following:
   {{< alert type="warning" >}}
 
   This resets all users' roles in the top-level group and subgroups to the [configured default membership role](_index.md#configure-gitlab).
-- Use the [SAML API](../../../api/saml.md) or [SCIM API](../../../api/scim.md) to manually correct the `extern_uid` stored for users to match the SAML
-  `NameId` or SCIM `externalId`.
 
   {{< /alert >}}
+
+- Use the [SAML API](../../../api/saml.md) or [SCIM API](../../../api/scim.md) to manually correct the `extern_uid` stored for users to match the SAML
+  `NameId` or SCIM `externalId`.
 
 You must not:
 

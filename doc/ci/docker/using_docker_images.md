@@ -309,7 +309,7 @@ Use one of the following methods to determine the value for `DOCKER_AUTH_CONFIG`
 
   {{< alert type="note" >}}
 
-If your username includes special characters like `@`, you must escape them with a backslash (<code>&#92;</code>) to prevent authentication problems.
+  If your username includes special characters like `@`, you must escape them with a backslash (<code>&#92;</code>) to prevent authentication problems.
 
   {{< /alert >}}
 

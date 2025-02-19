@@ -68,11 +68,11 @@ See the section above for situations that might require adjustment to the comman
     gitlab/gitlab-ee:nightly
    ```
 
-  {{< alert type="note" >}}
+   {{< alert type="note" >}}
 
-If you are on a Mac with [Apple Silicon](https://support.apple.com/en-us/HT211814), you will also need to add: `--platform=linux/amd64`
+   If you are on a Mac with [Apple Silicon](https://support.apple.com/en-us/HT211814), you will also need to add: `--platform=linux/amd64`
 
-  {{< /alert >}}
+   {{< /alert >}}
 
 1. Once GitLab is up and accessible on `http://127.0.0.1`, in another shell tab, navigate to the `qa` directory of the checkout of the GitLab repository on your computer and run the following commands.
 
@@ -100,7 +100,7 @@ If you are on a Mac with [Apple Silicon](https://support.apple.com/en-us/HT21181
 
    {{< alert type="note" >}}
 
-Be aware that [Docker Desktop must be set to use Linux containers](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-10-linux#run-your-first-linux-container).
+   Be aware that [Docker Desktop must be set to use Linux containers](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-10-linux#run-your-first-linux-container).
 
    {{< /alert >}}
 

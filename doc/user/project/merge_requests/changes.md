@@ -238,7 +238,7 @@ To change how a merge request shows changed lines:
 
    ![side-by-side changes](img/changes-sidebyside_v14_8.png)
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

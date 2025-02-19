@@ -219,7 +219,7 @@ To configure the provider:
       sudo service gitlab restart
       ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

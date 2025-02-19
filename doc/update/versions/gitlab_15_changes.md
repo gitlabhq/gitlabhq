@@ -1076,7 +1076,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 
   {{< alert type="note" >}}
 
-It is mandatory to restart PostgreSQL when underlying version changes, to avoid
+  It is mandatory to restart PostgreSQL when underlying version changes, to avoid
   errors like the [one related to loading necessary libraries](https://docs.gitlab.com/omnibus/settings/database.html#could-not-load-library-plpgsqlso)
   that can cause downtime. So, if you skip the automatic restarts using the above
   method, ensure that you restart the services manually before upgrading to GitLab

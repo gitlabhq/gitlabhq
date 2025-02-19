@@ -61,7 +61,7 @@ you can also do the following:
              --skip [CHECK]         Skip specific check (options: access_data, token, license, host, features, end_to_end)
       ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

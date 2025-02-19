@@ -78,7 +78,7 @@ The following procedure uses these sample project names:
 
    {{< alert type="note" >}}
 
-Use either a [personal access token](../../profile/personal_access_tokens.md) or a
+   Use either a [personal access token](../../profile/personal_access_tokens.md) or a
    [deploy token](../../project/deploy_tokens/_index.md) to authenticate your user account.
 
    {{< /alert >}}

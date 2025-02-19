@@ -736,7 +736,7 @@ Before doing any migration work, you should first:
 
   {{< alert type="note" >}}
 
-The JenkinsFile Wrapper is not packaged with GitLab and falls outside of the scope of support.
+  The JenkinsFile Wrapper is not packaged with GitLab and falls outside of the scope of support.
   For more information, see the [Statement of Support](https://about.gitlab.com/support/statement-of-support/).
 
   {{< /alert >}}

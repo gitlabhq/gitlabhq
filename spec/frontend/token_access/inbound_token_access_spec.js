@@ -17,6 +17,7 @@ import inboundRemoveProjectCIJobTokenScopeMutation from '~/token_access/graphql/
 import inboundUpdateCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
 import inboundGetCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
 import inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_groups_and_projects_with_ci_job_token_scope.query.graphql';
+import getAuthLogCountQuery from '~/token_access/graphql/queries/get_auth_log_count.query.graphql';
 import getCiJobTokenScopeAllowlistQuery from '~/token_access/graphql/queries/get_ci_job_token_scope_allowlist.query.graphql';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ConfirmActionModal from '~/vue_shared/components/confirm_action_modal.vue';
@@ -29,6 +30,7 @@ import {
   inboundGroupsAndProjectsWithScopeResponse,
   inboundRemoveNamespaceSuccess,
   inboundUpdateScopeSuccessResponse,
+  mockAuthLogsCountResponse,
 } from './mock_data';
 
 const projectPath = 'root/my-repo';
@@ -42,6 +44,7 @@ jest.mock('~/alert');
 describe('TokenAccess component', () => {
   let wrapper;
 
+  const authLogCountResponseHandler = jest.fn().mockResolvedValue(mockAuthLogsCountResponse(4));
   const inboundJobTokenScopeEnabledResponseHandler = jest
     .fn()
     .mockResolvedValue(inboundJobTokenScopeEnabledResponse);
@@ -83,6 +86,7 @@ describe('TokenAccess component', () => {
       addPoliciesToCiJobToken = false,
       authenticationLogsMigrationForAllowlist = false,
       enforceAllowlist = false,
+      projectAllowlistLimit = 2,
       stubs = {},
     } = {},
   ) => {
@@ -90,6 +94,7 @@ describe('TokenAccess component', () => {
       provide: {
         fullPath: projectPath,
         enforceAllowlist,
+        projectAllowlistLimit,
         glFeatures: { addPoliciesToCiJobToken, authenticationLogsMigrationForAllowlist },
       },
       apolloProvider: createMockApollo(requestHandlers),
@@ -123,6 +128,60 @@ describe('TokenAccess component', () => {
       await waitForPromises();
 
       expect(findLoadingIcon().exists()).toBe(false);
+    });
+  });
+
+  describe('setting allowlist limit', () => {
+    // in the following tests, group count is 1, project count is 1, and auth log count is 4.
+    describe('when fetching auth log count is successful', () => {
+      const createComponentWithAllowlistLimit = async (projectAllowlistLimit) => {
+        await createComponent(
+          [
+            [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
+            [
+              inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+              inboundGroupsAndProjectsWithScopeResponseHandler,
+            ],
+            [getAuthLogCountQuery, authLogCountResponseHandler],
+          ],
+          { projectAllowlistLimit },
+        );
+      };
+
+      it('calls the query with the expected variables', async () => {
+        await createComponentWithAllowlistLimit(5);
+
+        expect(authLogCountResponseHandler).toHaveBeenCalledWith({ fullPath: 'root/my-repo' });
+      });
+
+      it('passes the correct limit values to the autopopulation modal when allowlist limit is not exceeded', async () => {
+        await createComponentWithAllowlistLimit(5);
+
+        expect(findAutopopulateAllowlistModal().props('authLogExceedsLimit')).toBe(true);
+        expect(findAutopopulateAllowlistModal().props('projectAllowlistLimit')).toBe(5);
+      });
+
+      it('passes the correct limit values to the autopopulation modal when allowlist limit is exceeded', async () => {
+        await createComponentWithAllowlistLimit(10);
+
+        expect(findAutopopulateAllowlistModal().props('authLogExceedsLimit')).toBe(false);
+        expect(findAutopopulateAllowlistModal().props('projectAllowlistLimit')).toBe(10);
+      });
+    });
+
+    it('handles fetches auth log count error correctly', async () => {
+      await createComponent([
+        [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
+        [
+          inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+          inboundGroupsAndProjectsWithScopeResponseHandler,
+        ],
+        [getAuthLogCountQuery, failureHandler],
+      ]);
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'There was a problem fetching authorization logs count.',
+      });
     });
   });
 

@@ -23,6 +23,7 @@ import inboundUpdateCIJobTokenScopeMutation from '../graphql/mutations/inbound_u
 import inboundGetCIJobTokenScopeQuery from '../graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
 import inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery from '../graphql/queries/inbound_get_groups_and_projects_with_ci_job_token_scope.query.graphql';
 import getCiJobTokenScopeAllowlistQuery from '../graphql/queries/get_ci_job_token_scope_allowlist.query.graphql';
+import getAuthLogCountQuery from '../graphql/queries/get_auth_log_count.query.graphql';
 import {
   JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT,
   JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG,
@@ -94,8 +95,24 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['enforceAllowlist', 'fullPath'],
+  inject: ['enforceAllowlist', 'fullPath', 'projectAllowlistLimit'],
   apollo: {
+    authLogCount: {
+      query: getAuthLogCountQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+        };
+      },
+      update({ project }) {
+        return project.ciJobTokenAuthLogs?.count;
+      },
+      error() {
+        createAlert({
+          message: s__('CICD|There was a problem fetching authorization logs count.'),
+        });
+      },
+    },
     inboundJobTokenScopeEnabled: {
       query: inboundGetCIJobTokenScopeQuery,
       variables() {
@@ -152,6 +169,7 @@ export default {
   },
   data() {
     return {
+      authLogCount: 0,
       inboundJobTokenScopeEnabled: null,
       isUpdating: false,
       groupsAndProjectsWithAccess: { groups: [], projects: [] },
@@ -162,6 +180,9 @@ export default {
     };
   },
   computed: {
+    authLogExceedsLimit() {
+      return this.projectCount + this.groupCount + this.authLogCount > this.projectAllowlistLimit;
+    },
     isJobTokenPoliciesEnabled() {
       return this.glFeatures.addPoliciesToCiJobToken;
     },
@@ -300,6 +321,8 @@ export default {
 <template>
   <div class="gl-mt-5">
     <autopopulate-allowlist-modal
+      :auth-log-exceeds-limit="authLogExceedsLimit"
+      :project-allowlist-limit="projectAllowlistLimit"
       :project-name="projectName"
       :show-modal="showAutopopulateModal"
       @hide="hideSelectedAction"

@@ -112,7 +112,7 @@ To configure the GitLab for Jira Cloud app:
 
    {{< alert type="note" >}}
 
-[Enterprise users](../../user/enterprise_user/_index.md) with [disabled password authentication for their group](../../user/group/saml_sso/_index.md#disable-password-authentication-for-enterprise-users)
+   [Enterprise users](../../user/enterprise_user/_index.md) with [disabled password authentication for their group](../../user/group/saml_sso/_index.md#disable-password-authentication-for-enterprise-users)
    must first sign in to GitLab with their group's single sign-on URL.
 
    {{< /alert >}}

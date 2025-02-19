@@ -97,7 +97,7 @@ To set up your project to communicate to GCP and the GitLab API:
    base64 /path/to/sa-key.json | tr -d \\n
    ```
 
-      {{< /tab >}}
+   {{< /tab >}}
 
    {{< /tabs >}}
 

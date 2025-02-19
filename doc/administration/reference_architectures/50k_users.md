@@ -1432,7 +1432,7 @@ To configure the Praefect nodes, on each one:
 
    {{< alert type="note" >}}
 
-You can't remove the `default` entry from `virtual_storages` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
+   You can't remove the `default` entry from `virtual_storages` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
 
    {{< /alert >}}
 

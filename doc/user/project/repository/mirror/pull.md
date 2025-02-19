@@ -85,7 +85,7 @@ Prerequisites:
 
    {{< alert type="note" >}}
 
-To mirror the `gitlab` repository, use `gitlab.com:gitlab-org/gitlab.git`
+   To mirror the `gitlab` repository, use `gitlab.com:gitlab-org/gitlab.git`
    or `https://gitlab.com/gitlab-org/gitlab.git`.
 
    {{< /alert >}}
