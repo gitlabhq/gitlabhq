@@ -1809,7 +1809,8 @@
     - <<: *if-merge-request
       changes: *dependency-patterns
       variables:
-        OMNIBUS_GITLAB_BUILD_ON_ALL_OS: 'true'
+        OMNIBUS_GITLAB_BUILD_ON_ALL_OS: "true"
+        DEPENDENCY_UPDATE: "true"
     - <<: *if-merge-request
       changes: *code-qa-patterns
       when: manual

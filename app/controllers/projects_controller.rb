@@ -598,9 +598,9 @@ class ProjectsController < Projects::ApplicationController
   def check_export_rate_limit!
     prefixed_action = "project_#{params[:action]}".to_sym
 
-    group_scope = params[:action] == 'download_export' ? @project.namespace : nil
+    project_scope = params[:action] == 'download_export' ? @project : nil
 
-    check_rate_limit!(prefixed_action, scope: [current_user, group_scope].compact)
+    check_rate_limit!(prefixed_action, scope: [current_user, project_scope].compact)
   end
 
   def render_edit

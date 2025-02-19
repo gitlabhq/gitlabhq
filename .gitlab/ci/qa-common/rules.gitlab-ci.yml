@@ -105,6 +105,15 @@ include:
       variables:
         QA_RSPEC_TAGS: "--tag ~smoke --tag ~orchestrated --tag ~skip_live_env"
 
+.rules:test:dependency-update:
+  rules:
+    - if: '$DEPENDENCY_UPDATE == "true"'
+
+.rules:test:dependency-update-never:
+  rules:
+    - if: '$DEPENDENCY_UPDATE == "true"'
+      when: never
+
 # ------------------------------------------
 # Report
 # ------------------------------------------

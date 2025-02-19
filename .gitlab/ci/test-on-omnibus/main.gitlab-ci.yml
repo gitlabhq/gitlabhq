@@ -6,6 +6,9 @@ include:
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/omnibus.gitlab-ci.yml
 
+variables:
+  QA_PARALLEL_PROCESSES: 6
+
 # ==========================================
 # Prepare stage
 # ==========================================
@@ -28,7 +31,6 @@ check-release-set:
 _quarantine:
   extends:
     - .qa
-    - .rules:test:manual-except-default-branch
   stage: test
   variables:
     QA_RSPEC_TAGS: --tag quarantine
@@ -39,10 +41,24 @@ _quarantine:
     expire_in: 1 day
     paths:
       - gitlab-qa-run-*/**/test-metrics-*.json
+  rules:
+    - !reference [.rules:test:dependency-update-never, rules]
+    - !reference [.rules:test:manual-except-default-branch, rules]
 
 # ------------------------------------------
 # Test jobs
 # ------------------------------------------
+
+# Execute smallest test suite to validate omnibus package in dependency update merge request pipelines
+health-check:
+  extends:
+    - .qa
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    QA_RUN_IN_PARALLEL: true
+    QA_RSPEC_TAGS: --tag health_check
+  rules:
+    - !reference [.rules:test:dependency-update, rules]
 
 # ========== instance ===========
 instance:
@@ -52,8 +68,8 @@ instance:
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RUN_IN_PARALLEL: true
-    QA_PARALLEL_PROCESSES: 6
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - !reference [.rules:test:smoke-for-omnibus-mr, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
@@ -68,6 +84,7 @@ praefect:
     QA_CAN_TEST_PRAEFECT: "true"
     QA_GITALY_TRANSACTIONS_ENABLED: "false"
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - !reference [.rules:test:smoke-for-omnibus-mr, rules]
     - if: $QA_SUITES =~ /Test::Instance::Create/
 
@@ -84,8 +101,8 @@ gitaly-transactions:
     QA_CAN_TEST_PRAEFECT: "true"
     QA_GITALY_TRANSACTIONS_ENABLED: "true"
     QA_RUN_IN_PARALLEL: true
-    QA_PARALLEL_PROCESSES: 6
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Instance::Create/
 
 # ========== gitaly reftables backend ===========
@@ -103,6 +120,7 @@ gitaly-reftables-backend:
     QA_CAN_TEST_PRAEFECT: "true"
     QA_FEATURE_FLAGS: "gitaly_new_repo_reftable_backend=enabled"
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Instance::Create/
 
 # ========== git sha256 enabled ===========
@@ -117,6 +135,7 @@ git-sha256-repositories:
     QA_USE_SHA256_REPOSITORY_OBJECT_STORAGE: true
     GITLAB_QA_OPTS: "--enable-feature support_sha256_repositories"
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
 gitaly-cluster:
@@ -124,6 +143,7 @@ gitaly-cluster:
   variables:
     QA_SCENARIO: Test::Integration::GitalyCluster
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::GitalyCluster/
 
 group-saml:
@@ -143,6 +163,7 @@ oauth:
     QA_RSPEC_TAGS: --tag oauth
     GITLAB_QA_OPTS: --omnibus-config github_oauth
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::OAuth/
 
 instance-saml:
@@ -150,6 +171,7 @@ instance-saml:
   variables:
     QA_SCENARIO: Test::Integration::InstanceSAML
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::InstanceSAML/
 
 jira:
@@ -158,6 +180,7 @@ jira:
   variables:
     QA_SCENARIO: Test::Integration::Jira
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::Jira/
 
 integrations:
@@ -165,6 +188,7 @@ integrations:
   variables:
     QA_SCENARIO: Test::Integration::Integrations
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::Integrations/
 
 ldap-no-server:
@@ -172,6 +196,7 @@ ldap-no-server:
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoServer
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::LDAPNoServer/
 
 ldap-tls:
@@ -179,6 +204,7 @@ ldap-tls:
   variables:
     QA_SCENARIO: Test::Integration::LDAPTLS
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::LDAPTLS/
 
 ldap-no-tls:
@@ -186,6 +212,7 @@ ldap-no-tls:
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoTLS
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::LDAPNoTLS/
 
 mtls:
@@ -193,6 +220,7 @@ mtls:
   variables:
     QA_SCENARIO: Test::Integration::MTLS
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::Mtls/
 
 mattermost:
@@ -201,6 +229,7 @@ mattermost:
   variables:
     QA_SCENARIO: Test::Integration::Mattermost
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::Mattermost/
 
 registry:
@@ -209,6 +238,7 @@ registry:
   variables:
     QA_SCENARIO: Test::Integration::Registry
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::Registry/
 
 repository-storage:
@@ -217,6 +247,7 @@ repository-storage:
   variables:
     QA_SCENARIO: Test::Instance::RepositoryStorage
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Instance::RepositoryStorage/
 
 service-ping-disabled:
@@ -226,6 +257,7 @@ service-ping-disabled:
   variables:
     QA_SCENARIO: Test::Integration::ServicePingDisabled
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::ServicePingDisabled/
 
 smtp:
@@ -234,6 +266,7 @@ smtp:
   variables:
     QA_SCENARIO: Test::Integration::SMTP
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::SMTP/
 
 cloud-activation:
@@ -243,6 +276,7 @@ cloud-activation:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag cloud_activation
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Instance::CloudActivation/
 
 metrics:
@@ -250,6 +284,7 @@ metrics:
   variables:
     QA_SCENARIO: Test::Integration::Metrics
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::Metrics/
 
 elasticsearch:
@@ -260,6 +295,7 @@ elasticsearch:
   before_script:
     - !reference [.qa, before_script]
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - !reference [.rules:test:ee-only, rules]
     - if: $QA_SUITES =~ /Test::Integration::Elasticsearch/
 
@@ -270,6 +306,7 @@ importers:
     QA_SCENARIO: Test::Integration::Import
     QA_MOCK_GITHUB: "true"
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::Import/
 
 import-with-smtp:
@@ -279,6 +316,7 @@ import-with-smtp:
   variables:
     QA_SCENARIO: Test::Integration::ImportWithSMTP
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::ImportWithSMTP/
 
 # ========== ai-gateway ===========
@@ -288,6 +326,7 @@ ai-gateway:
   variables:
     QA_SCENARIO: Test::Integration::AiGateway
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGateway/
 
 ai-gateway-no-seat-assigned:
@@ -296,6 +335,7 @@ ai-gateway-no-seat-assigned:
   variables:
     QA_SCENARIO: Test::Integration::AiGatewayNoSeatAssigned
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoSeatAssigned/
 
 ai-gateway-no-add-on:
@@ -307,6 +347,7 @@ ai-gateway-no-add-on:
     - export QA_EE_ACTIVATION_CODE=$QA_EE_ACTIVATION_CODE_NO_ADD_ON
     - !reference [.qa, before_script]
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoAddOn/
 
 ai-gateway-no-license:
@@ -318,6 +359,7 @@ ai-gateway-no-license:
     - unset QA_EE_LICENSE
     - !reference [.qa, before_script]
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoLicense/
 
 # ========== continuous-vulnerability-scanning ===========
@@ -329,6 +371,7 @@ continuous-vulnerabiity-scanning:
     QA_SCENARIO: Test::Integration::ContinuousVulnerabilityScanning
     QA_MOCK_GITHUB: "true"
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - !reference [.rules:test:ee-only, rules]
     - if: $QA_SUITES =~ /Test::Integration::ContinuousVulnerabilityScanning/
 
@@ -343,6 +386,7 @@ update-minor:
     UPDATE_TYPE: minor
     QA_RSPEC_TAGS: --tag health_check
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - !reference [.rules:test:update, rules]
 
 update-major:
@@ -353,6 +397,7 @@ update-major:
     UPDATE_TYPE: major
     QA_RSPEC_TAGS: --tag health_check
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - !reference [.rules:test:update, rules]
 
 update-ee-to-ce:
@@ -364,6 +409,7 @@ update-ee-to-ce:
     UPDATE_FROM_EDITION: ee
     QA_RSPEC_TAGS: --tag health_check
   rules:
+    - !reference [.rules:test:dependency-update-never, rules]
     - !reference [.rules:test:ce-only, rules]
     - !reference [.rules:test:update, rules]
 

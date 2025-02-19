@@ -320,7 +320,7 @@ To help avoid abuse, by default, users are rate limited to:
 | Request type    | Limit                           |
 |:----------------|:--------------------------------|
 | Export          | 6 projects per minute           |
-| Download export | 1 download per group per minute |
+| Download export | 1 download per project per minute |
 | Import          | 6 projects per minute           |
 
 ## Migrate groups by uploading an export file (deprecated)

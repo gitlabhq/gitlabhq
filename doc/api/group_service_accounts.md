@@ -56,12 +56,14 @@ Example response:
   {
     "id": 57,
     "username": "service_account_group_345_<random_hash>",
-    "name": "Service account user"
+    "name": "Service account user",
+    "email": "service_account_group_345_<random_hash>@noreply.gitlab.example.com"
   },
   {
     "id": 58,
     "username": "service_account_group_346_<random_hash>",
-    "name": "Service account user"
+    "name": "Service account user",
+    "email": "service_account_group_346_<random_hash>@noreply.gitlab.example.com"
   }
 ]
 ```
@@ -70,8 +72,9 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
-- Specify a service account user username or name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144841) in GitLab 16.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
+> - Specify a service account user username or name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144841) in GitLab 16.10.
+> - Specify a service account user email address was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181456) in GitLab 17.9 [with a flag](../administration/feature_flags.md) named `group_service_account_custom_email`.
 
 {{< /history >}}
 
@@ -89,16 +92,17 @@ POST /groups/:id/service_accounts
 
 Supported attributes:
 
-| Attribute  | Type           | Required | Description                                                                   |
-|:-----------|:---------------|:---------|:------------------------------------------------------------------------------|
-| `id`       | integer/string | yes | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group.     |
-| `name`     | string         | no  | User account name. If not specified, uses `Service account user`.                  |
-| `username` | string         | no  | User account username. If not specified, generates a name prepended with `service_account_`. |
+| Attribute  | Type           | Required | Description                                                                                                                                                                                                                                                                                   |
+|:-----------|:---------------|:---------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`       | integer/string | yes | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group.                                                                                                                                                                                                               |
+| `name`     | string         | no  | User account name. If not specified, uses `Service account user`.                                                                                                                                                                                                                             |
+| `username` | string         | no  | User account username. If not specified, generates a name prepended with `service_account_group_`.                                                                                                                                                                                            |
+| `email`    | string         | no  | User account email. If not specified, generates an email prepended with `service_account_group_`. Custom email addresses require confirmation before the account is active, unless the group has a matching [verified domain](../user/enterprise_user/_index.md#verified-domains-for-groups). |
 
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts" --data "email=custom_email@example.com"
 ```
 
 Example response:
@@ -107,7 +111,8 @@ Example response:
 {
   "id": 57,
   "username": "service_account_group_345_6018816a18e515214e0c34c2b33523fc",
-  "name": "Service account user"
+  "name": "Service account user",
+  "email": "custom_email@example.com"
 }
 ```
 

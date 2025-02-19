@@ -484,6 +484,12 @@ stop_review:
       when: manual
 ```
 
+{{< alert type="note" >}}
+
+When using this functionality together with merge trains, the `stop` job triggers only if [duplicate pipelines are avoided](../jobs/job_rules.md#avoid-duplicate-pipelines).
+
+{{< /alert >}}
+
 ### Stop an environment after a certain time period
 
 You can set an environment to stop automatically after a certain time period.

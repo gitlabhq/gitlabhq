@@ -44,7 +44,7 @@ module API
           produces %w[application/octet-stream application/json]
         end
         get ':id/export/download' do
-          check_rate_limit! :project_download_export, scope: [current_user, user_project.namespace]
+          check_rate_limit! :project_download_export, scope: [current_user, user_project]
 
           if user_project.export_file_exists?(current_user)
             if user_project.export_archive_exists?(current_user)

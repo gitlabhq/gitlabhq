@@ -9,16 +9,7 @@ Review apps are deployed using the `start-review-app-pipeline` job which trigger
 
 ![start-review-app-pipeline job](img/review-app-parent-pipeline_v14_4.png)
 
-For any of the following scenarios, the `start-review-app-pipeline` job would be automatically started (only when the merge request is approved):
-
-- for merge requests with CI configuration changes
-- for merge requests with frontend changes
-- for merge requests with changes to `{,ee/,jh/}{app/controllers}/**/*`
-- for merge requests with changes to `{,ee/,jh/}{app/models}/**/*`
-- for merge requests with changes to `{,ee/,jh/}lib/{,ee/,jh/}gitlab/**/*`
-- for merge requests with QA changes
-- for scheduled pipelines
-- the MR has the `pipeline:run-review-app` label set
+To start a review-app, add the `pipeline:run-review-app` label on your merge request, and trigger a new CI/CD pipeline.
 
 ## Bypass failed review app deployment to merge a broken `master` fix
 

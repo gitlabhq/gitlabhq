@@ -25,7 +25,11 @@ If no issues match your problem, [create a new issue](https://gitlab.com/gitlab-
 
 1. In the menu bar of your IDE, select **Window**.
 1. Expand **Show View**, then select **Error Log**.
-1. Search for errors referencing the `gitlab-eclipse-plugin` or `gitlab-language-server` plugins.
+1. Search for errors referencing the `gitlab-eclipse-plugin` plugins.
+
+## Locate the Workspace Log file
+
+The Workspace log file, named `.log` is located in the directory `<your-eclipse-workspace>/.metadata`.
 
 ## Enable GitLab Language Server debug logs
 
@@ -35,6 +39,11 @@ To enable GitLab Language Server debug logs:
 1. On the left sidebar, select **GitLab**.
 1. In **Language Server Log Level**, enter `debug`.
 1. Select **Apply and Close**.
+
+The debug logs are available in the `language_server.log` file. To view this file, either:
+
+- Go to the directory `/Users/<user>/eclipse/<eclipse-version>/Eclipse.app/Contents/MacOS/.gitlab_plugin`, replacing `<user>` and `<eclipse-version>` with the appropriate values.
+- Open the [Error logs](#review-the-error-log). Search for the log `Language server logs saved to: <file>.` where `<file>` is the absolute path to the `language_server.log` file.
 
 ## Certificate errors
 

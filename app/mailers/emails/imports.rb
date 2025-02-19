@@ -70,6 +70,17 @@ module Emails
       )
     end
 
+    def csv_placeholder_reassignment_failed(user_id, group_id)
+      user = User.find(user_id)
+      @group = Group.find(group_id)
+      @title = s_('BulkImport|Bulk reassignment failed')
+
+      email_with_layout(
+        to: user.notification_email_or_default,
+        subject: subject(@title)
+      )
+    end
+
     def import_source_user_reassign(source_user_id)
       @source_user = Import::SourceUser.find(source_user_id)
       @reassign_to_user = @source_user.reassign_to_user

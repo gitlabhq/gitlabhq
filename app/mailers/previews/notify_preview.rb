@@ -398,6 +398,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.bulk_import_csv_user_mapping(user.id, group.id, 71249, 824)
   end
 
+  def csv_placeholder_reassignment_failed
+    Notify.csv_placeholder_reassignment_failed(user.id, group.id)
+  end
+
   def import_source_user_reassign
     source_user = Import::SourceUser.last
 

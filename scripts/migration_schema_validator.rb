@@ -106,7 +106,7 @@ class MigrationSchemaValidator
       next unless File.exist?(model_file_path)
 
       model_content = File.read(model_file_path)
-      next if model_content.match?(/\s(ignore_column|ignore_columns)\s(:|%i\[)\s*#{column}/)
+      next if model_content.match?(/\s(ignore_column|ignore_columns)\s(:|%i\[).*?#{column}\b/m)
 
       @models_missing_ignore[model_name.to_s] << column
     end

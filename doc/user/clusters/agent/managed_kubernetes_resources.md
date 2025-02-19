@@ -107,8 +107,8 @@ objects:
   - apiVersion: rbac.authorization.k8s.io/v1
     kind: RoleBinding
     metadata:
-      name: bind-{{ .agent.id }}-{{ .project.id }}-{{ .environment.slug }}
-      namespace: {{ .project.slug }}-{{ .project.id }}-{{ .environment.slug }}
+      name: bind-{{ .environment.slug }}-{{ .project.id }}-{{ .agent.id }}
+      namespace: '{{ .environment.slug }}-{{ .project.id }}-{{ .agent.id }}'
     subjects:
       - kind: Group
         apiGroup: rbac.authorization.k8s.io

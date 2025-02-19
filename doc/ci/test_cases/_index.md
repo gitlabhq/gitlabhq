@@ -31,15 +31,6 @@ while integrating with your development workflows, see
 [Streamline Software Development: Integrating Requirements, Testing, and Development Workflows](https://www.youtube.com/watch?v=wbfWM4y2VmM).
 <!-- Video published on 2024-02-21 -->
 
-{{< alert type="note" >}}
-
-[Requirements](../../user/project/requirements/_index.md) and test cases are being
-[migrated to work items](https://gitlab.com/groups/gitlab-org/-/epics/5171).
-[Issue 323790](https://gitlab.com/gitlab-org/gitlab/-/issues/323790) proposes to link requirements to test cases.
-For more information, see [Product Stage Direction - Plan](https://about.gitlab.com/direction/plan/).
-
-{{< /alert >}}
-
 ## Create a test case
 
 {{< history >}}

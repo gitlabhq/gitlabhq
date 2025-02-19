@@ -10783,6 +10783,9 @@ msgstr ""
 msgid "BulkImport|Because of settings on the source GitLab instance or group, you can't import projects with this group. To permit importing projects with this group, reconfigure the source GitLab instance or group. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
+msgid "BulkImport|Bulk reassignment failed"
+msgstr ""
+
 msgid "BulkImport|Check that the source instance base URL and the personal access token meet the necessary requirements."
 msgstr ""
 
@@ -10951,6 +10954,9 @@ msgstr ""
 msgid "BulkImport|This %{importable} was imported from another instance."
 msgstr ""
 
+msgid "BulkImport|Unable to process the CSV file for %{strong_open}%{group}%{strong_close} to reassign placeholders. Try to upload the file again."
+msgstr ""
+
 msgid "BulkImport|Unsupported GitLab version. Minimum supported version is '%{version}'."
 msgstr ""
 
@@ -10961,6 +10967,9 @@ msgid "BulkImport|View import history"
 msgstr ""
 
 msgid "BulkImport|View import results"
+msgstr ""
+
+msgid "BulkImport|View placeholders"
 msgstr ""
 
 msgid "BulkImport|Your imported groups and projects will appear here."
