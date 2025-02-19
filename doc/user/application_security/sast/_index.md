@@ -49,16 +49,16 @@ table.no-vertical-table-lines tr {
 
 {{< /details >}}
 
-If you're using [GitLab CI/CD](../../../ci/_index.md), you can use Static Application Security
-Testing (SAST) to check your source code for known vulnerabilities. You can run SAST analyzers in
-any GitLab tier. The analyzers output JSON-formatted reports as job artifacts.
+Static Application Security Testing (SAST) finds known vulnerabilities in your application source
+code. SAST runs in your CI/CD pipeline and performs analysis without requiring compilation.
 
-With GitLab Ultimate, SAST results are also processed so you can:
+SAST:
 
-- Use them in approval workflows.
-- Review them in the security dashboard.
-
-For more information, see [Features](#features).
+- Detects vulnerabilities across multiple programming languages and frameworks.
+- Identifies security issues early in the development lifecycle.
+- Generates reports with detailed vulnerability information.
+- Integrates vulnerability findings into merge request workflows.
+- Supports custom ruleset configuration to control scanning behavior.
 
 ## Features
 

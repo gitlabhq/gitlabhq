@@ -79,7 +79,11 @@ and [view your pipeline status](https://marketplace.visualstudio.com/items?itemN
 
 ### Run a pipeline manually
 
-> - **Run pipeline** name [updated](https://gitlab.com/gitlab-org/gitlab/-/issues/482718) to **New pipeline** in GitLab 17.7.
+{{< history >}}
+
+- **Run pipeline** name [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/482718) to **New pipeline** in GitLab 17.7.
+
+{{< /history >}}
 
 Pipelines can be manually executed, with predefined or manually-specified [variables](../variables/_index.md).
 

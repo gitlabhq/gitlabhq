@@ -201,6 +201,7 @@ RSpec.configure do |config|
   config.include IdempotentWorkerHelper, type: :worker
   config.include RailsHelpers
   config.include SidekiqMiddleware
+  config.include SidekiqJSONMatcher
   config.include StubActionCableConnection, type: :channel
   config.include StubMemberAccessLevel
   config.include SnowplowHelpers

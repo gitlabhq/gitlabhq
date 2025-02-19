@@ -135,6 +135,14 @@ export default {
     jobConfirmationMessage() {
       return this.job.status?.action?.confirmation_message;
     },
+    jobFailed() {
+      const failedGroups = ['failed', 'failed-with-warnings'];
+
+      return failedGroups.includes(this.job.status.group);
+    },
+    displayStickyFooter() {
+      return this.jobFailed && this.glAbilities.troubleshootJobWithAi;
+    },
   },
   watch: {
     // Once the job log is loaded,
@@ -317,11 +325,22 @@ export default {
 
           <log :search-results="searchResults" />
 
-          <root-cause-analysis-button
-            :job-id="job.id"
-            :job-status-group="job.status.group"
-            :can-troubleshoot-job="glAbilities.troubleshootJobWithAi"
-          />
+          <nav
+            v-if="displayStickyFooter"
+            class="rca-bar-component gl-fixed gl-left-0 gl-flex gl-w-full gl-items-center"
+            data-testid="rca-bar-component"
+          >
+            <div
+              class="rca-bar-content gl-flex gl-w-full gl-justify-end"
+              data-testid="rca-bar-content"
+            >
+              <root-cause-analysis-button
+                :job-id="job.id"
+                :job-status-group="job.status.group"
+                :can-troubleshoot-job="glAbilities.troubleshootJobWithAi"
+              />
+            </div>
+          </nav>
         </div>
         <!-- EO job log -->
 

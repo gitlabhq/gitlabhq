@@ -12,9 +12,16 @@ title: Code Quality
 
 {{< /details >}}
 
-Code Quality helps code authors find and fix problems faster, and frees up time for code reviewers to focus their attention on more nuanced suggestions or comments.
+Code Quality automatically detects maintainability and complexity issues across your codebase,
+making code easier to understand and less costly to change over time.
 
-When you use Code Quality in your CI/CD pipelines, you can avoid merging changes that would degrade your code's quality or deviate from your organization's standards.
+Code Quality:
+
+- Identifies maintainability problems before they enter production.
+- Catches code duplication and complexity automatically.
+- Surfaces code style and formatting issues consistently.
+- Analyzes multiple programming languages in the same pipeline.
+- Integrates findings directly into merge request workflows.
 
 ## Features per tier
 

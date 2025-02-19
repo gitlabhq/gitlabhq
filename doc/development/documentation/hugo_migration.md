@@ -77,14 +77,14 @@ Don't delete your gitlabs!
 And after:
 
 ```markdown
-{{< alert type="warning" >}}
+{{</* alert type="warning" */>}}
 
 Don't delete your gitlabs!
 
-{{< /alert >}}
+{{</* /alert */>}}
 ```
 
-See the [Shortcodes reference](https://new.docs.gitlab.com/shortcodes) for syntax and examples.
+See the [Shortcodes reference](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/shortcodes.md) for syntax and examples.
 
 **Why:** Shortcodes are the standard Hugo method for creating custom templated
 bits of content.

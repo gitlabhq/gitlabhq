@@ -42,23 +42,23 @@ describe('Job App', () => {
     subscriptionsMoreMinutesUrl: 'https://customers.gitlab.com/buy_pipeline_minutes',
   };
 
-  const createComponent = () => {
+  const createComponent = (abilities = {}) => {
     wrapper = shallowMountExtended(JobApp, {
       propsData: { ...props },
       store,
       provide: {
-        glAbilities: { troubleshootJobWithAi: false },
+        glAbilities: { troubleshootJobWithAi: false, ...abilities },
       },
     });
   };
 
-  const setupAndMount = async ({ jobData = {}, jobLogData = {} } = {}) => {
+  const setupAndMount = async ({ jobData = {}, jobLogData = {}, abilities = {} } = {}) => {
     mock.onGet(initSettings.jobEndpoint).replyOnce(HTTP_STATUS_OK, { ...job, ...jobData });
     mock.onGet(initSettings.logEndpoint).reply(HTTP_STATUS_OK, jobLogData);
 
     const asyncInit = store.dispatch('init', initSettings);
 
-    createComponent();
+    createComponent(abilities);
 
     await asyncInit;
     jest.runOnlyPendingTimers();
@@ -78,6 +78,7 @@ describe('Job App', () => {
 
   const findJobContent = () => wrapper.findByTestId('job-content');
   const findArchivedJob = () => wrapper.findByTestId('archived-job');
+  const findStickyFooter = () => wrapper.findByTestId('rca-bar-component');
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
@@ -188,6 +189,45 @@ describe('Job App', () => {
           },
         }).then(() => {
           expect(findFailedJobComponent().exists()).toBe(true);
+        }));
+    });
+
+    describe('sticky footer', () => {
+      it('does not display the sticky footer if troubleshootJobWithAi is false', () =>
+        setupAndMount({
+          jobData: {
+            status: {
+              group: 'failed',
+              icon: 'status_failed',
+            },
+            has_trace: true,
+            runners: {
+              available: true,
+            },
+            tags: [],
+          },
+        }).then(() => {
+          expect(findStickyFooter().exists()).toBe(false);
+        }));
+
+      it('displays the sticky footer if troubleshootJobWithAi is true', () =>
+        setupAndMount({
+          jobData: {
+            status: {
+              group: 'failed',
+              icon: 'status_failed',
+            },
+            has_trace: true,
+            runners: {
+              available: true,
+            },
+            tags: [],
+          },
+          abilities: {
+            troubleshootJobWithAi: true,
+          },
+        }).then(() => {
+          expect(findStickyFooter().exists()).toBe(true);
         }));
     });
 

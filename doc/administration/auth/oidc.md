@@ -155,6 +155,15 @@ For more information on each configuration option, refer to the [OmniAuth OpenID
      Icons for the major social login platforms are built into GitLab,
      but you can override these icons by specifying this parameter. GitLab accepts both
      local paths and absolute URLs.
+     GitLab includes icons for most major social login platforms,
+     but you can override these icons by specifying an external URL or 
+     an absolute or relative path to your own icon file.
+     - For local absolute paths, configure the provider settings as `icon: <path>/<to>/<your-icon>`.
+       - Store the icon file in `/opt/gitlab/embedded/service/gitlab-rails/public/<path>/<to>/<your-icon>`.
+       - Access the icon file at `https://gitlab.example/<path>/<to>/<your-icon>`.
+     - For local relative paths, configure the provider settings as `icon: <your-icon>`.
+       - Store the icon file in `/opt/gitlab/embedded/service/gitlab-rails/public/images/<your-icon>`.
+       - Access the icon file at `https://gitlab.example.com/images/<your-icon>`.
    - `<your_oidc_url>` (optional) is the URL that points to the OpenID Connect
      provider (for example, `https://example.com/auth/realms/your-realm`).
      If this value is not provided, the URL is constructed from `client_options`

@@ -805,8 +805,6 @@
   - 1
 - - search_zoekt_index_marked_as_to_delete_event
   - 1
-- - search_zoekt_index_over_watermark_event
-  - 1
 - - search_zoekt_index_to_evict_event
   - 1
 - - search_zoekt_index_watermark_changed_event

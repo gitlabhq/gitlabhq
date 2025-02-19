@@ -13,8 +13,10 @@ module BulkImports
     def execute
       start_batch!
 
-      export_service.export_batch(relation_batch_ids)
-      ensure_export_file_exists!
+      batch_ids = relation_batch_ids
+      return if batch_ids.blank?
+
+      export_service.export_batch(batch_ids)
       compress_exported_relation
       upload_compressed_file
       export.touch
@@ -56,7 +58,16 @@ module BulkImports
     end
 
     def relation_batch_ids
-      Gitlab::Cache::Import::Caching.values_from_set(cache_key).map(&:to_i)
+      cache_values = Gitlab::Cache::Import::Caching.values_from_set(cache_key)
+
+      if cache_values.blank?
+        error_message = "Batched relation export cache key missing or expired."
+        batch.update!(status_event: 'fail_op', error: error_message)
+        Gitlab::ErrorTracking.track_exception(BulkImports::Error.new(error_message))
+        return []
+      end
+
+      cache_values.map(&:to_i)
     end
 
     def cache_key
@@ -73,12 +84,6 @@ module BulkImports
 
     def exported_filepath
       File.join(export_path, exported_filename)
-    end
-
-    # Create empty file on disk
-    # if relation is empty and nothing was exported
-    def ensure_export_file_exists!
-      FileUtils.touch(exported_filepath)
     end
   end
 end
