@@ -15273,7 +15273,8 @@ CREATE TABLE issue_links (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     link_type smallint DEFAULT 0 NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_c32f659c75 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE issue_links_id_seq
@@ -27261,9 +27262,6 @@ ALTER TABLE approval_merge_request_rules
 
 ALTER TABLE approvals
     ADD CONSTRAINT check_9da7c942dc CHECK ((project_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE issue_links
-    ADD CONSTRAINT check_c32f659c75 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;

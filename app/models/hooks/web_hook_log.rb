@@ -6,6 +6,12 @@ class WebHookLog < ApplicationRecord
   include CreatedAtFilterable
   include PartitionedTable
 
+  ROUTING_FEATURE_FLAG = 'web_hook_logs_daily_enabled'
+  self.define_singleton_method(:routing_table_name) { 'web_hook_logs_daily' }
+  self.define_singleton_method(:routing_table_name_flag) { ROUTING_FEATURE_FLAG }
+
+  include ::Ci::Partitionable::Switch # rubocop:disable Layout/ClassStructure -- required to be loaded after constant
+
   OVERSIZE_REQUEST_DATA = { 'oversize' => true }.freeze
   MAX_RECENT_DAYS = 7
 

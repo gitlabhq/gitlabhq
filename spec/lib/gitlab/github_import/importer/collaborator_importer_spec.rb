@@ -45,10 +45,10 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
     }.stringify_keys
   end
 
+  let(:member_finder_relations) { ::Import::ReassignPlaceholderUserRecordsService::PROJECT_FINDER_MEMBER_RELATIONS }
+
   describe '#execute' do
     before do
-      # We don't import collaborators/members if the user mapping feature is enabled
-      stub_feature_flags(github_user_mapping: false)
       allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
         allow(finder).to receive(:find).with(github_user_id, user.username).and_return(user.id)
       end
@@ -112,6 +112,26 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
         expect { importer.execute }.to raise_exception(
           ::Gitlab::GithubImport::ObjectImporter::NotRetriableError
         ).with_message("Unknown GitHub role: #{github_role_name}")
+      end
+    end
+
+    context 'when finding existing memberships' do
+      let(:github_role_name) { 'admin' }
+
+      before do
+        create(:group_member, group: group, user: user, access_level: Gitlab::Access::DEVELOPER)
+      end
+
+      it 'passes the correct member finder relations to the members finder' do
+        source_user.accept!
+        expect_next_instance_of(MembersFinder) do |members_finder|
+          expect(members_finder)
+            .to receive(:execute)
+            .with(include_relations: member_finder_relations)
+            .and_call_original
+        end
+
+        importer.execute
       end
     end
 

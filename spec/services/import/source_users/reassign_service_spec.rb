@@ -12,7 +12,7 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
   describe '#execute' do
     context 'when reassignment is successful' do
       it 'returns success' do
-        expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_now)
+        expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_later)
 
         result = service.execute
 
@@ -104,7 +104,7 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
         let(:assignee_user) { create(:user, :admin) }
 
         it 'assigns the user' do
-          expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_now)
+          expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_later)
 
           expect(service.execute).to be_success
         end

@@ -3,6 +3,7 @@
 ENV["RAILS_ENV"] = "test"
 
 require "active_record/gitlab_patches"
+require "active_record/fixed_items_model"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

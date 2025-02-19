@@ -23,7 +23,7 @@ module Import
       end
 
       def send_user_reassign_email
-        Notify.import_source_user_reassign(import_source_user.id).deliver_now
+        Notify.import_source_user_reassign(import_source_user.id).deliver_later
       end
     end
   end

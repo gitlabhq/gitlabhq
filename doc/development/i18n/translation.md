@@ -43,21 +43,6 @@ Remember to **Save** each translation.
 
 ### Context
 
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
-
-{{< alert type="warning" >}}
-
-This feature is in [beta](../../policy/development_stages_support.md#beta).
-You might get a string similar to the one you want to translate,
-so be sure to select the correct string and line of code.
-If you cannot find a string with code search, post a comment in Crowdin with that string.
-
-{{< /alert >}}
-
 In Crowdin, each string contains a link that shows all instances of the string in the entire GitLab codebase.
 When you translate a string, you can go to the relevant commit or merge request to get more context.
 

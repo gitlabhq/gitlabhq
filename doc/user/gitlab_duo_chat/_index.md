@@ -24,8 +24,14 @@ title: GitLab Duo Chat
 
 {{< /history >}}
 
-GitLab Duo Chat is your personal AI-powered assistant for boosting productivity.
-It can assist various tasks of your daily work with the AI-generated content.
+GitLab Duo Chat is an AI-powered assistant that accelerates development with
+contextual, conversational AI. Duo Chat:
+
+- Explains code and suggests improvements directly in your development environment.
+- Analyzes code, merge requests, issues, and other GitLab artifacts.
+- Generates code, tests, and documentation based on your requirements and codebase.
+- Integrates directly in the GitLab UI, Web IDE, VS Code, JetBrains IDEs, and Visual Studio.
+- Can include information from your repositories and projects to deliver targeted improvements.
 
 ## Supported editor extensions
 

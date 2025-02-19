@@ -98,6 +98,9 @@ module AccessTokensActions
     resource.members.load
 
     @scopes = Gitlab::Auth.available_scopes_for(resource)
+
+    @scopes = ::VirtualRegistries.filter_token_scopes(@scopes, current_user)
+
     @active_access_tokens, @active_access_tokens_size = active_access_tokens
     @inactive_access_tokens_size = inactive_access_tokens.size
   end

@@ -389,6 +389,28 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       end
     end
 
+    context 'with peek' do
+      let(:scope) { [user, project] }
+      let(:start_time) { Time.current.beginning_of_hour }
+      let(:kwargs) { { scope: scope, resource_key: resource_key, threshold: threshold, interval: interval } }
+
+      it 'allows peeking at the current resource usage without changing its value' do
+        travel_to(start_time) do
+          # increment usage up to threshold
+          expect(subject.resource_usage_throttled?(:test_action, **kwargs)).to eq(false)
+
+          # peeking at current usage returns false because the value is still the same as threshold
+          expect(subject.resource_usage_throttled?(:test_action, peek: true, **kwargs)).to eq(false)
+
+          # increment again, current usage is now > threshold
+          expect(subject.resource_usage_throttled?(:test_action, **kwargs)).to eq(true)
+
+          # peeking again
+          expect(subject.resource_usage_throttled?(:test_action, peek: true, **kwargs)).to eq(true)
+        end
+      end
+    end
+
     context 'when tracking resource usage throttles' do
       let(:histogram_double) { instance_double(Prometheus::Client::Histogram) }
 

@@ -14,6 +14,12 @@ module Gitlab
       end
     end
 
+    def exceeded_limits?
+      limits.filter.any? do |limit|
+        throttled?(limit, peek: true)
+      end
+    end
+
     private
 
     def limits
@@ -22,7 +28,7 @@ module Gitlab
       Gitlab::SidekiqLimits.limits_for(@params[:worker_name])
     end
 
-    def throttled?(limit)
+    def throttled?(limit, peek: false)
       # Return false as some scopes are missing avoid inflating another limit's count
       scope = limit.scopes.filter_map { |sk| @params[sk.to_sym] }
       return false if scope.size != limit.scopes.size
@@ -32,7 +38,8 @@ module Gitlab
         resource_key: limit.resource_key,
         scope: scope,
         threshold: limit.threshold,
-        interval: limit.interval
+        interval: limit.interval,
+        peek: peek
       )
     end
   end

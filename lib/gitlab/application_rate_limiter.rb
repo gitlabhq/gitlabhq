@@ -142,10 +142,10 @@ module Gitlab
       #     one registered in `.rate_limits`
       #
       # @return [Boolean] Whether or not a request should be throttled
-      def resource_usage_throttled?(key, scope:, resource_key:, threshold:, interval:)
+      def resource_usage_throttled?(key, scope:, resource_key:, threshold:, interval:, peek: false)
         strategy = IncrementResourceUsagePerAction.new(resource_key)
 
-        _throttled?(key, scope: scope, strategy: strategy, threshold: threshold, interval: interval)
+        _throttled?(key, scope: scope, strategy: strategy, threshold: threshold, interval: interval, peek: peek)
       end
 
       # Similar to #throttled? above but checks for the bypass header in the request and logs the request when it is over the rate limit

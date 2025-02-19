@@ -290,4 +290,22 @@ RSpec.describe WebHookLog, feature_category: :webhooks do
       end
     end
   end
+
+  describe 'routing table switch' do
+    context 'with ff enabled' do
+      it 'returns daily partitioned table' do
+        expect(described_class.table_name).to eq('web_hook_logs_daily')
+      end
+    end
+
+    context 'with ff disabled' do
+      before do
+        stub_feature_flags(web_hook_logs_daily_enabled: false)
+      end
+
+      it 'returns monthly partitioned table' do
+        expect(described_class.table_name).to eq('web_hook_logs')
+      end
+    end
+  end
 end

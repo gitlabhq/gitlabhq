@@ -141,5 +141,32 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
     it 'sets available scopes' do
       expect(assigns(:scopes)).to eq(Gitlab::Auth.available_scopes_for(access_token_user))
     end
+
+    context 'with feature flags virtual_registry_maven and dependency_proxy_read_write_scopes disabled' do
+      before do
+        stub_feature_flags(virtual_registry_maven: false, dependency_proxy_read_write_scopes: false)
+        stub_config(dependency_proxy: { enabled: true })
+
+        get :index
+      end
+
+      it 'does not include the virtual registry scopes' do
+        expect(assigns(:scopes)).not_to include(Gitlab::Auth::READ_VIRTUAL_REGISTRY_SCOPE)
+        expect(assigns(:scopes)).not_to include(Gitlab::Auth::WRITE_VIRTUAL_REGISTRY_SCOPE)
+      end
+
+      %i[virtual_registry_maven dependency_proxy_read_write_scopes].each do |feature_flag|
+        context "with feature flag #{feature_flag} enabled" do
+          before do
+            stub_feature_flags(feature_flag => true)
+          end
+
+          it 'includes the virtual registry scopes' do
+            expect(assigns(:scopes)).not_to include(::Gitlab::Auth::READ_VIRTUAL_REGISTRY_SCOPE)
+            expect(assigns(:scopes)).not_to include(::Gitlab::Auth::WRITE_VIRTUAL_REGISTRY_SCOPE)
+          end
+        end
+      end
+    end
   end
 end
