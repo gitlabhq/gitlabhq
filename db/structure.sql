@@ -19812,7 +19812,8 @@ CREATE TABLE project_relation_exports (
     project_id bigint,
     CONSTRAINT check_15e644d856 CHECK ((char_length(jid) <= 255)),
     CONSTRAINT check_4b5880b795 CHECK ((char_length(relation) <= 255)),
-    CONSTRAINT check_dbd1cf73d0 CHECK ((char_length(export_error) <= 300))
+    CONSTRAINT check_dbd1cf73d0 CHECK ((char_length(export_error) <= 300)),
+    CONSTRAINT check_f461e3537f CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE project_relation_exports_id_seq
@@ -23430,7 +23431,8 @@ CREATE TABLE vulnerability_issue_links (
     link_type smallint DEFAULT 1 NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_55acc7b923 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE vulnerability_issue_links_id_seq
@@ -27251,14 +27253,14 @@ ALTER TABLE sprints
 ALTER TABLE web_hook_logs
     ADD CONSTRAINT check_df72cb58f5 CHECK ((char_length(url_hash) <= 44)) NOT VALID;
 
-ALTER TABLE project_relation_exports
-    ADD CONSTRAINT check_f461e3537f CHECK ((project_id IS NOT NULL)) NOT VALID;
-
 ALTER TABLE merge_request_blocks
     ADD CONSTRAINT check_f8034ca45e CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE projects
     ADD CONSTRAINT check_fa75869cb1 CHECK ((project_namespace_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE merge_request_reviewers
+    ADD CONSTRAINT check_fb72c99774 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY ci_build_needs
     ADD CONSTRAINT ci_build_needs_pkey PRIMARY KEY (id);

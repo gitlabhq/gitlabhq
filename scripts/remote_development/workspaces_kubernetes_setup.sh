@@ -55,7 +55,7 @@ helm upgrade --install \
   ingress-nginx ingress-nginx/ingress-nginx \
   --namespace ingress-nginx \
   --create-namespace \
-  --version 4.11.1 \
+  --version 4.12.0 \
   --timeout=600s --wait --wait-for-jobs
 
 kubectl wait pod \
@@ -133,7 +133,7 @@ helm --namespace gitlab-workspaces uninstall gitlab-workspaces-proxy --ignore-no
 
 helm upgrade --install gitlab-workspaces-proxy \
   gitlab-workspaces-proxy/gitlab-workspaces-proxy \
-  --version=0.1.16 \
+  --version=0.1.17 \
   --namespace="gitlab-workspaces" \
   --set="ingress.enabled=true" \
   --set="ingress.hosts[0].host=${GITLAB_WORKSPACES_PROXY_DOMAIN}" \

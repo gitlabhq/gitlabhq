@@ -16,8 +16,6 @@ import {
 import { s__ } from '~/locale';
 import PerformanceGraph from '~/ml/experiment_tracking/components/performance_graph.vue';
 
-import * as translations from './translations';
-
 const routes = [
   {
     path: '/',
@@ -103,9 +101,11 @@ export default {
     deleteButtonInfo() {
       return {
         deletePath: this.experiment.path,
-        deleteConfirmationText: translations.DELETE_EXPERIMENT_CONFIRMATION_MESSAGE,
-        actionPrimaryText: translations.DELETE_EXPERIMENT_PRIMARY_ACTION_LABEL,
-        modalTitle: translations.DELETE_EXPERIMENT_MODAL_TITLE,
+        deleteConfirmationText: s__(
+          'MlExperimentTracking|Deleting this experiment will also delete its runs and their associated metadata.',
+        ),
+        actionPrimaryText: s__('MlExperimentTracking|Delete experiment'),
+        modalTitle: s__('MLExperimentTracking|Delete experiment?'),
       };
     },
     tabIndex() {
@@ -135,8 +135,8 @@ export default {
     },
   },
   i18n: {
-    ...translations,
-    PERFORMANCE_LABEL: s__('ExperimentTracking|Performance'),
+    downloadAsCsvLabel: s__('MlExperimentTracking|Download as CSV'),
+    performanceLabel: s__('ExperimentTracking|Performance'),
     tabs: {
       metadata: s__('MlExperimentTracking|Overview'),
       candidates: s__('MlExperimentTracking|Runs'),
@@ -173,7 +173,7 @@ export default {
       </template>
       <template #right-actions>
         <gl-button class="gl-mr-3" @click="downloadCsv">{{
-          $options.i18n.DOWNLOAD_AS_CSV_LABEL
+          $options.i18n.downloadAsCsvLabel
         }}</gl-button>
         <delete-button v-if="showDeleteButton" v-bind="deleteButtonInfo" />
       </template>
@@ -186,7 +186,7 @@ export default {
           <gl-badge class="gl-tab-counter-badge">{{ candidatesCount }}</gl-badge>
         </template>
       </gl-tab>
-      <gl-tab :title="$options.i18n.PERFORMANCE_LABEL" @click="goTo($options.ROUTE_PERFORMANCE)" />
+      <gl-tab :title="$options.i18n.performanceLabel" @click="goTo($options.ROUTE_PERFORMANCE)" />
     </gl-tabs>
 
     <router-view

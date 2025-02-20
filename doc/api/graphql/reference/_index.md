@@ -7644,7 +7644,7 @@ Input type: `MemberRoleAdminCreateInput`
 | <a id="mutationmemberroleadmincreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmemberroleadmincreatedescription"></a>`description` | [`String`](#string) | Description of the member role. |
 | <a id="mutationmemberroleadmincreatename"></a>`name` | [`String`](#string) | Name of the member role. |
-| <a id="mutationmemberroleadmincreatepermissions"></a>`permissions` | [`[MemberRoleAdminPermission!]!`](#memberroleadminpermission) | List of all customizable admin permissions. |
+| <a id="mutationmemberroleadmincreatepermissions"></a>`permissions` | [`[MemberRoleAdminPermission!]`](#memberroleadminpermission) | List of all customizable admin permissions. |
 
 #### Fields
 
@@ -7652,7 +7652,34 @@ Input type: `MemberRoleAdminCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmemberroleadmincreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmemberroleadmincreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmemberroleadmincreatememberrole"></a>`memberRole` | [`AdminMemberRole`](#adminmemberrole) | Created member role. |
+| <a id="mutationmemberroleadmincreatememberrole"></a>`memberRole` | [`AdminMemberRole`](#adminmemberrole) | Member role. |
+
+### `Mutation.memberRoleAdminUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 17.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `MemberRoleAdminUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmemberroleadminupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmemberroleadminupdatedescription"></a>`description` | [`String`](#string) | Description of the member role. |
+| <a id="mutationmemberroleadminupdateid"></a>`id` | [`MemberRoleID!`](#memberroleid) | ID of the member role to mutate. |
+| <a id="mutationmemberroleadminupdatename"></a>`name` | [`String`](#string) | Name of the member role. |
+| <a id="mutationmemberroleadminupdatepermissions"></a>`permissions` | [`[MemberRoleAdminPermission!]`](#memberroleadminpermission) | List of all customizable admin permissions. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmemberroleadminupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmemberroleadminupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmemberroleadminupdatememberrole"></a>`memberRole` | [`AdminMemberRole`](#adminmemberrole) | Member role. |
 
 ### `Mutation.memberRoleCreate`
 
@@ -7680,7 +7707,7 @@ Input type: `MemberRoleCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmemberrolecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmemberrolecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmemberrolecreatememberrole"></a>`memberRole` | [`MemberRole`](#memberrole) | Updated member role. |
+| <a id="mutationmemberrolecreatememberrole"></a>`memberRole` | [`MemberRole`](#memberrole) | Member role. |
 
 ### `Mutation.memberRoleDelete`
 
@@ -7751,7 +7778,7 @@ Input type: `MemberRoleUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationmemberroleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmemberroleupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmemberroleupdatememberrole"></a>`memberRole` | [`MemberRole`](#memberrole) | Updated member role. |
+| <a id="mutationmemberroleupdatememberrole"></a>`memberRole` | [`MemberRole`](#memberrole) | Member role. |
 
 ### `Mutation.mergeRequestAccept`
 

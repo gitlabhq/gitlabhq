@@ -241,7 +241,7 @@ To integrate its output:
    - By default, the formatter reads your CI/CD configuration and infers the filename where it should save the report.
      If the formatter can't infer the filename you used in your artifact declaration, set the CI/CD variable `ESLINT_CODE_QUALITY_REPORT` to the filename specified for your artifact, such as `gl-code-quality-report.json`.
 
-You can also use or adapt the [ESLint CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+You can also use or adapt the [ESLint CI/CD component](https://gitlab.com/explore/catalog/components/code-quality-oss/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
 
 #### Stylelint
 
@@ -272,7 +272,7 @@ To integrate its output:
 
 1. Declare a [`codequality` report artifact](../yaml/artifacts_reports.md#artifactsreportscodequality) that points to the location of the report file.
 
-You can also use or adapt the [MyPy CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+You can also use or adapt the [MyPy CI/CD component](https://gitlab.com/explore/catalog/components/code-quality-oss/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
 
 #### Flake8
 
@@ -283,7 +283,7 @@ To integrate its output:
 1. Add the arguments `--format gl-codeclimate --output-file gl-code-quality-report.json` to the command you use to run Flake8.
 1. Declare a [`codequality` report artifact](../yaml/artifacts_reports.md#artifactsreportscodequality) that points to the location of the report file.
 
-You can also use or adapt the [Flake8 CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+You can also use or adapt the [Flake8 CI/CD component](https://gitlab.com/explore/catalog/components/code-quality-oss/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
 
 #### Pylint
 
@@ -295,7 +295,7 @@ To integrate its output:
 1. Change your `pylint` command to send its output to a file.
 1. Declare a [`codequality` report artifact](../yaml/artifacts_reports.md#artifactsreportscodequality) that points to the location of the report file.
 
-You can also use or adapt the [Pylint CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+You can also use or adapt the [Pylint CI/CD component](https://gitlab.com/explore/catalog/components/code-quality-oss/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
 
 #### Ruff
 
@@ -316,31 +316,31 @@ To integrate its output:
 1. Add the arguments `--out-format code-climate:gl-code-quality-report.json,line-number` to the command you use to run golangci-lint.
 1. Declare a [`codequality` report artifact](../yaml/artifacts_reports.md#artifactsreportscodequality) that points to the location of the report file.
 
-You can also use or adapt the [golangci-lint CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+You can also use or adapt the [golangci-lint CI/CD component](https://gitlab.com/explore/catalog/components/code-quality-oss/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
 
 #### PMD Copy/Paste Detector
 
 The [PMD Copy/Paste Detector (CPD)](https://pmd.github.io/pmd/pmd_userdocs_cpd.html) requires additional configuration because its default output doesn't conform to the required format.
 
-You can use or adapt the [PMD CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+You can use or adapt the [PMD CI/CD component](https://gitlab.com/explore/catalog/components/code-quality-oss/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
 
 #### SwiftLint
 
 Using [SwiftLint](https://realm.github.io/SwiftLint/) requires additional configuration because its default output doesn't conform to the required format.
 
-You can use or adapt the [Swiftlint CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+You can use or adapt the [Swiftlint CI/CD component](https://gitlab.com/explore/catalog/components/code-quality-oss/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
 
 #### RuboCop
 
 Using [RuboCop](https://rubocop.org/) requires additional configuration because its default output doesn't conform to the required format.
 
-You can use or adapt the [RuboCop CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+You can use or adapt the [RuboCop CI/CD component](https://gitlab.com/explore/catalog/components/code-quality-oss/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
 
 #### Roslynator
 
 Using [Roslynator](https://josefpihrt.github.io/docs/roslynator/) requires additional configuration because its default output doesn't conform to the required format.
 
-You can use or adapt the [Roslynator CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+You can use or adapt the [Roslynator CI/CD component](https://gitlab.com/explore/catalog/components/code-quality-oss/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
 
 ### Documentation scanning tools
 

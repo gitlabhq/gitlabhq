@@ -40,8 +40,8 @@ module CycleAnalyticsHelpers
 
     within last_stage do
       find('[name*="custom-stage-name-"]').fill_in with: "Cool custom label stage - name #{index}"
-      select_dropdown_option_by_value "custom-stage-start-event-", 'Issue label was added'
-      select_dropdown_option_by_value "custom-stage-end-event-", 'Issue label was removed'
+      select_dropdown_option_by_value "custom-stage-start-event-", 'Issue label added'
+      select_dropdown_option_by_value "custom-stage-end-event-", 'Issue label removed'
 
       select_event_label("[data-testid*='custom-stage-start-event-label-']")
       select_event_label("[data-testid*='custom-stage-end-event-label-']")

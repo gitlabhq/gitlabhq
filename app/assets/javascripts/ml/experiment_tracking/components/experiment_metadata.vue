@@ -1,7 +1,6 @@
 <script>
 import { isEmpty } from 'lodash';
 import { GlTableLite } from '@gitlab/ui';
-import * as translations from '~/ml/experiment_tracking/routes/experiments/show/translations';
 import { s__ } from '~/locale';
 
 export default {
@@ -32,14 +31,17 @@ export default {
       tdClass: 'gl-content-center',
     },
   ],
-  i18n: translations,
+  i18n: {
+    metadataLabel: s__('MlExperimentTracking|Experiment metadata'),
+    noMetadataMessage: s__('MlExperimentTracking|No logged experiment metadata'),
+  },
 };
 </script>
 
 <template>
   <section>
     <div class="experiment-metadata">
-      <h3 class="gl-heading-3" data-testid="metadata-header">{{ $options.i18n.METADATA_LABEL }}</h3>
+      <h3 class="gl-heading-3" data-testid="metadata-header">{{ $options.i18n.metadataLabel }}</h3>
 
       <gl-table-lite
         v-if="hasMetadata"
@@ -51,7 +53,7 @@ export default {
         <template #cell(value)="{ item: { value } }">{{ value }}</template>
       </gl-table-lite>
       <div v-else class="gl-text-subtle" data-testid="metadata-empty-state">
-        {{ $options.i18n.NO_METADATA_MESSAGE }}
+        {{ $options.i18n.noMetadataMessage }}
       </div>
     </div>
   </section>

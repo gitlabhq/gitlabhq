@@ -990,7 +990,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/controllers/admin/push_rules_controller.rb'
     - 'ee/app/controllers/concerns/credentials_inventory_actions.rb'
     - 'ee/app/controllers/concerns/iteration_cadences_actions.rb'
-    - 'ee/app/controllers/concerns/microsoft_application_actions.rb'
     - 'ee/app/controllers/ee/admin/application_controller.rb'
     - 'ee/app/controllers/ee/admin/application_settings_controller.rb'
     - 'ee/app/controllers/ee/admin/dashboard_controller.rb'

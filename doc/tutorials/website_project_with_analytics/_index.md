@@ -111,7 +111,7 @@ To get started, create a value stream in the `My website` project:
 1. Select **Create from default template**.
 1. To add a custom stage, select **Add a stage**.
    - Enter a name for the stage, for example `Labeled MRs merged`.
-   - From the **Start event** dropdown list, select **Merge request label was added**, then the `feature request` label.
+   - From the **Start event** dropdown list, select **Merge request label added**, then the `feature request` label.
    - From the **Stop event** dropdown list, select **Merge request merged**.
 1. Select **Create value stream**.
 

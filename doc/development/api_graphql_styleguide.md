@@ -67,6 +67,11 @@ If you are asked to review a merge request that modifies any GraphQL files or ad
 See the [Reading GraphQL logs](graphql_guide/monitoring.md) guide for tips on how to inspect logs
 of GraphQL requests and monitor the performance of your GraphQL queries.
 
+That page has tips like how to:
+
+- See usage of deprecated fields.
+- Identify is a query has come from our frontend or not.
+
 ## Authentication
 
 Authentication happens through the `GraphqlController`, right now this
@@ -752,7 +757,7 @@ See also:
 
 - [Aliasing and deprecating mutations](#aliasing-and-deprecating-mutations).
 - [Marking schema items as experiments](#mark-schema-items-as-experiments).
-- [How to filter Kibana for queries that used deprecated fields](graphql_guide/monitoring.md#queries-that-used-a-deprecated-field).
+- [How to filter Kibana for queries that used deprecated fields](graphql_guide/monitoring.md#see-field-usage).
 
 ### Create a deprecation issue
 

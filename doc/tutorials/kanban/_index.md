@@ -79,8 +79,8 @@ To visualize flow:
 1. Select the **Value stream** drop down in the top-left of the page, then select **New Value Stream**.
 1. Enter the desired name for the VSA report, then select the **Create from a template** option.
 1. Enter **To do** for the stage name.
-1. For the start event, select **Issue label was added**, then select the **status::to do** label.
-1. For the end event, select **Issue label was removed**, then select the **status::to do** label.
+1. For the start event, select **Issue label added**, then select the **status::to do** label.
+1. For the end event, select **Issue label removed**, then select the **status::to do** label.
 1. Next, select **Add a stage**.
 1. Repeat this same process to create stages for **status::in progress** and **status::done**.
 1. When all three stages have been added, select **New value stream**.
