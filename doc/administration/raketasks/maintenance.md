@@ -477,6 +477,21 @@ You should not use the task for routine checks as database inconsistencies might
 gitlab-rake gitlab:db:schema_checker:run
 ```
 
+## Check the database for deduplicate CI/CD tags
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/518698) in GitLab 17.10.
+
+This Rake task checks the `ci` database for duplicate tags in the `tags` table.
+This issue might affect instances that have undergone multiple major upgrades over an extended period.
+Run the following command to search duplicate tags, then rewrite any tag assignments that
+reference duplicate tags to use the original tag instead.
+
+```shell
+sudo gitlab-rake gitlab:db:deduplicate_tags
+```
+
+To run this command in dry-run mode, set the environment variable `DRY_RUN=true`.
+
 ## Troubleshooting
 
 ### Advisory lock connection information

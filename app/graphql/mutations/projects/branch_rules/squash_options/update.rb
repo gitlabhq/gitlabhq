@@ -8,7 +8,7 @@ module Mutations
           graphql_name 'BranchRuleSquashOptionUpdate'
           description 'Update a squash option for a branch rule'
 
-          authorize :update_branch_rule
+          authorize :update_squash_option
           argument :branch_rule_id, ::Types::GlobalIDType[::Projects::BranchRule],
             required: true,
             description: 'Global ID of the branch rule.'

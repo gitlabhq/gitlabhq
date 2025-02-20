@@ -6630,7 +6630,6 @@
 - './spec/requests/api/graphql/mutations/ci/pipeline_cancel_spec.rb'
 - './spec/requests/api/graphql/mutations/ci/pipeline_destroy_spec.rb'
 - './spec/requests/api/graphql/mutations/ci/pipeline_retry_spec.rb'
-- './spec/requests/api/graphql/mutations/ci/project_ci_cd_settings_update_spec.rb'
 - './spec/requests/api/graphql/mutations/ci/runners_registration_token/reset_spec.rb'
 - './spec/requests/api/graphql/mutations/clusters/agents/create_spec.rb'
 - './spec/requests/api/graphql/mutations/clusters/agents/delete_spec.rb'

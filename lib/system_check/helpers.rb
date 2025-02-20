@@ -20,16 +20,6 @@ module SystemCheck
       end
     end
 
-    # Construct a help page based on the instance's external_url
-    #
-    # @param <String> path of the documentation page
-    # @param <String> anchor to the specific docs heading
-    #
-    # @return <String> URL of the help page
-    def construct_help_page_url(path, anchor = nil)
-      Rails.application.routes.url_helpers.help_page_url(path, anchor)
-    end
-
     def see_installation_guide_section(section)
       "doc/install/installation.md in section \"#{section}\""
     end

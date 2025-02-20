@@ -14646,6 +14646,12 @@ msgstr ""
 msgid "ComplianceFrameworksReport|Default"
 msgstr ""
 
+msgid "ComplianceFrameworksReport|Default framework removed successfully"
+msgstr ""
+
+msgid "ComplianceFrameworksReport|Default framework set successfully"
+msgstr ""
+
 msgid "ComplianceFrameworksReport|Description"
 msgstr ""
 
@@ -14655,10 +14661,22 @@ msgstr ""
 msgid "ComplianceFrameworksReport|Failed to export framework"
 msgstr ""
 
+msgid "ComplianceFrameworksReport|Failed to remove default framework"
+msgstr ""
+
+msgid "ComplianceFrameworksReport|Failed to set default framework"
+msgstr ""
+
 msgid "ComplianceFrameworksReport|Framework ID copied to clipboard."
 msgstr ""
 
 msgid "ComplianceFrameworksReport|Policies"
+msgstr ""
+
+msgid "ComplianceFrameworksReport|Remove as default framework"
+msgstr ""
+
+msgid "ComplianceFrameworksReport|Set as default framework"
 msgstr ""
 
 msgid "ComplianceFrameworksReport|Use the compliance framework ID in configuration or API requests."
@@ -21340,6 +21358,9 @@ msgid "Download CSV"
 msgstr ""
 
 msgid "Download PDF"
+msgstr ""
+
+msgid "Download all"
 msgstr ""
 
 msgid "Download artifacts"
@@ -47772,6 +47793,9 @@ msgstr ""
 msgid "Remove approvers?"
 msgstr ""
 
+msgid "Remove as default"
+msgstr ""
+
 msgid "Remove asset link"
 msgstr ""
 
@@ -51539,6 +51563,11 @@ msgstr ""
 msgid "SecurityConfiguration|%{scanType} configuration code snippet"
 msgstr ""
 
+msgid "SecurityConfiguration|1 vulnerability"
+msgid_plural "SecurityConfiguration|%d vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SecurityConfiguration|An error occurred while creating the merge request."
 msgstr ""
 
@@ -51588,6 +51617,9 @@ msgid "SecurityConfiguration|High-level vulnerability statistics across projects
 msgstr ""
 
 msgid "SecurityConfiguration|Immediately begin risk analysis and remediation with application security features. Start with SAST and Secret Detection, available to all plans. Upgrade to Ultimate to get all features, including:"
+msgstr ""
+
+msgid "SecurityConfiguration|Learn more about our vulnerability data retention policies"
 msgstr ""
 
 msgid "SecurityConfiguration|Learn more about vulnerability training"
@@ -51653,7 +51685,13 @@ msgstr ""
 msgid "SecurityConfiguration|Using custom settings. You won't receive automatic updates on this variable. %{anchorStart}Restore to default%{anchorEnd}"
 msgstr ""
 
+msgid "SecurityConfiguration|Vulnerabilities are retained in the database for one year after the last update. After one year of inactivity, vulnerabilities are archived on the first of each month. Archives are removed after five years."
+msgstr ""
+
 msgid "SecurityConfiguration|Vulnerability Management"
+msgstr ""
+
+msgid "SecurityConfiguration|Vulnerability archives"
 msgstr ""
 
 msgid "SecurityConfiguration|Vulnerability details and statistics in the merge request"
@@ -54169,6 +54207,9 @@ msgid "Set a group, access level or users who are required to deploy."
 msgstr ""
 
 msgid "Set a password on your account to pull or push via %{protocol}."
+msgstr ""
+
+msgid "Set as default"
 msgstr ""
 
 msgid "Set due date"

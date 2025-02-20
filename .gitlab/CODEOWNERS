@@ -1709,10 +1709,11 @@ ee/lib/ee/api/entities/project.rb
 /ee/app/models/concerns/audit_events/
 /config/audit_events/types/type_schema.json
 
-[Duo Chat] @gitlab-org/ai-powered/duo-chat
-ee/lib/gitlab/llm/chain/agents/zero_shot/
-ee/lib/gitlab/llm/chain/agents/single_action_executor.rb
-ee/lib/gitlab/llm/chain/streamed_zero_shot_answer.rb
+[Category:Duo Chat] @gitlab-org/ai-powered/duo-chat
+ee/lib/gitlab/duo/chat/
+ee/lib/gitlab/llm/chain/tools/
+ee/lib/gitlab/llm/chain/utils/chat_authorizer.rb
+ee/lib/gitlab/llm/chain/utils/chat_conversation.rb
 ee/lib/gitlab/llm/completions/chat.rb
 
 [Category:Code Suggestions] @jprovaznik @ck3g @acook.gitlab @partiaga @lma-git @missy-gitlab @tgao3701908 @emeraldjayde @squadri

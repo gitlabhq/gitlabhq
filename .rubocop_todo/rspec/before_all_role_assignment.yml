@@ -1041,7 +1041,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/requests/api/graphql/issue_status_counts_spec.rb'
     - 'spec/requests/api/graphql/merge_request/merge_request_spec.rb'
     - 'spec/requests/api/graphql/mutations/award_emojis/add_spec.rb'
-    - 'spec/requests/api/graphql/mutations/ci/project_ci_cd_settings_update_spec.rb'
     - 'spec/requests/api/graphql/mutations/commits/create_spec.rb'
     - 'spec/requests/api/graphql/mutations/custom_emoji/create_spec.rb'
     - 'spec/requests/api/graphql/mutations/custom_emoji/destroy_spec.rb'

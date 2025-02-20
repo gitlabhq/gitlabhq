@@ -6,6 +6,7 @@ import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser
 import SectionLayout from '~/vue_shared/security_configuration/components/section_layout.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT } from '~/tracking/constants';
 import { REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY } from '~/vue_shared/security_reports/constants';
 import {
@@ -43,8 +44,11 @@ export default {
         'ee_component/security_configuration/components/container_scanning_for_registry_feature_card.vue'
       ),
     PageHeading,
+    VulnerabilityArchives: () =>
+      import('ee_component/security_configuration/components/vulnerability_archives.vue'),
   },
   directives: { SafeHtml },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['projectFullPath', 'vulnerabilityTrainingDocsPath'],
   props: {
     augmentedSecurityFeatures: {
@@ -102,6 +106,9 @@ export default {
         this.autoDevopsEnabled &&
         !this.autoDevopsEnabledAlertDismissedProjects.includes(this.projectFullPath)
       );
+    },
+    shouldShowVulnerabilityArchives() {
+      return this.glFeatures?.vulnerabilityArchival;
     },
   },
   methods: {
@@ -244,6 +251,7 @@ export default {
             <training-provider-list :security-training-enabled="securityTrainingEnabled" />
           </template>
         </section-layout>
+        <vulnerability-archives v-if="shouldShowVulnerabilityArchives" />
       </gl-tab>
     </gl-tabs>
   </article>

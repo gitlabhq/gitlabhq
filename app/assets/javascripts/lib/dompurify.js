@@ -3,6 +3,13 @@ import { getNormalizedURL, getBaseURL, relativePathToAbsolute } from '~/lib/util
 
 const { sanitize: dompurifySanitize, addHook, isValidAttribute } = DOMPurify;
 
+const isValidCssColor = (color) => {
+  const s = new Option().style;
+  s.color = color;
+  // If the browser accepts it, it will return a non-empty string.
+  return s.color !== '';
+};
+
 export const defaultConfig = {
   // Safely allow SVG <use> tags
   ADD_TAGS: ['use', 'gl-emoji', 'copy-code'],
@@ -97,13 +104,28 @@ addHook('afterSanitizeAttributes', (node) => {
 
 const TEMPORARY_ATTRIBUTE = 'data-temp-href-target';
 
-addHook('beforeSanitizeAttributes', (node) => {
+addHook('beforeSanitizeAttributes', (node, _, config) => {
   if (node.tagName === 'A' && node.hasAttribute('target')) {
     node.setAttribute(TEMPORARY_ATTRIBUTE, node.getAttribute('target'));
   }
+
+  // Preserve background-color on GlLabel when style tags are forbidden..
+  if (
+    config.FORBID_TAGS.includes('style') &&
+    node.classList?.contains('gl-label-text') &&
+    node.style?.backgroundColor
+  ) {
+    const bgColor = node.style.backgroundColor;
+    // Only preserve the background color if it's valid.
+    if (isValidCssColor(bgColor)) {
+      // eslint-disable-next-line no-param-reassign
+      node.dataset.tempBg = bgColor;
+    }
+    node.removeAttribute('style');
+  }
 });
 
-addHook('afterSanitizeAttributes', (node) => {
+addHook('afterSanitizeAttributes', (node, _, config) => {
   if (node.tagName === 'A' && node.hasAttribute(TEMPORARY_ATTRIBUTE)) {
     node.setAttribute('target', node.getAttribute(TEMPORARY_ATTRIBUTE));
     node.removeAttribute(TEMPORARY_ATTRIBUTE);
@@ -111,6 +133,19 @@ addHook('afterSanitizeAttributes', (node) => {
       const rel = node.getAttribute('rel');
       node.setAttribute('rel', appendSecureRelValue(rel));
     }
+  }
+
+  // Restore background-color on GlLabel when style tags are forbidden.
+  if (
+    config.FORBID_TAGS.includes('style') &&
+    node.classList?.contains('gl-label-text') &&
+    node.dataset.tempBg &&
+    isValidCssColor(node.dataset.tempBg)
+  ) {
+    // eslint-disable-next-line no-param-reassign
+    node.style.backgroundColor = node.dataset.tempBg;
+    // eslint-disable-next-line no-param-reassign
+    delete node.dataset.tempBg;
   }
 });
 

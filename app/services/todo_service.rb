@@ -323,9 +323,6 @@ class TodoService
     todos = bulk_insert_todos(users, attributes)
     users.each { |user| track_todo_creation(user, issue_type, namespace, project) }
 
-    # replicate `keep_around_commit` after_save callback
-    todos.select { |todo| todo.commit_id.present? }.each(&:keep_around_commit)
-
     Users::UpdateTodoCountCacheService.new(users.map(&:id)).execute
 
     todos

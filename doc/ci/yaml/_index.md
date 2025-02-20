@@ -1195,8 +1195,10 @@ Scripts you specify in `after_script` execute in a new shell, separate from any
   immediately becomes invalid if the job is canceled. See [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/473376)
   for more details.
 
-If a job times out, the `after_script` commands do not execute.
-[An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/15603) to add support for executing `after_script` commands for timed-out jobs.
+For jobs that time out:
+
+- `after_script` commands do not execute by default.
+- You can [configure timeout values](../runners/configure_runners.md#ensuring-after_script-execution) to ensure `after_script` runs by setting appropriate `RUNNER_SCRIPT_TIMEOUT` and `RUNNER_AFTER_SCRIPT_TIMEOUT` values that don't exceed the job's timeout.
 
 **Related topics**:
 

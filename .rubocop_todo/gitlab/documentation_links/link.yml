@@ -1,9 +1,0 @@
----
-# Cop supports --autocorrect.
-Gitlab/DocumentationLinks/Link:
-  Exclude:
-    - 'ee/lib/ee/gitlab/namespace_storage_size_error_message.rb'
-    - 'ee/lib/gitlab/checks/secrets_check.rb'
-    - 'ee/spec/support/shared_contexts/secrets_check_shared_contexts.rb'
-    - 'lib/backup/tasks/database.rb'
-    - 'lib/system_check/helpers.rb'

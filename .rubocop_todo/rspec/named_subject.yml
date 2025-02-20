@@ -87,7 +87,6 @@ RSpec/NamedSubject:
     - 'ee/spec/graphql/ee/mutations/boards/issues/issue_move_list_spec.rb'
     - 'ee/spec/graphql/ee/mutations/boards/lists/create_spec.rb'
     - 'ee/spec/graphql/ee/mutations/ci/job_token_scope/add_project_spec.rb'
-    - 'ee/spec/graphql/ee/mutations/ci/project_ci_cd_settings_update_spec.rb'
     - 'ee/spec/graphql/ee/types/group_type_spec.rb'
     - 'ee/spec/graphql/ee/types/namespace_type_spec.rb'
     - 'ee/spec/graphql/graphql_triggers_spec.rb'

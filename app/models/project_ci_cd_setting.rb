@@ -80,6 +80,19 @@ class ProjectCiCdSetting < ApplicationRecord
     role_access_level >= role_project_minimum_access_level
   end
 
+  def pipeline_variables_minimum_override_role=(value)
+    return if value.nil?
+
+    self.restrict_user_defined_variables = true
+    self[:pipeline_variables_minimum_override_role] = value
+  end
+
+  def pipeline_variables_minimum_override_role
+    return 'developer' unless restrict_user_defined_variables
+
+    self[:pipeline_variables_minimum_override_role]
+  end
+
   private
 
   def set_pipeline_variables_secure_defaults

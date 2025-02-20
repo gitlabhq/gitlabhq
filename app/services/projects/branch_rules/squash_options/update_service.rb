@@ -52,7 +52,7 @@ module Projects
         end
 
         def authorized?
-          Ability.allowed?(current_user, :update_branch_rule, branch_rule)
+          Ability.allowed?(current_user, :update_squash_option, branch_rule)
         end
       end
     end

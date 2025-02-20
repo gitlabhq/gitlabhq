@@ -101,6 +101,21 @@ describe('~/lib/dompurify', () => {
     expect(sanitize('<form method="post" action="path"></form>')).toBe('');
   });
 
+  describe('handles style attributes correctly', () => {
+    it('does remove all styles when style is forbidden', () => {
+      const htmlStyle = '<span style="background-color: red; color: green; width: 100%;">hello</a>';
+      expect(sanitize(htmlStyle, { FORBID_ATTR: ['style'] })).toBe('<span>hello</span>');
+    });
+
+    it("doesn't remove background-color from GlLabel style when style is forbidden", () => {
+      const htmlStyle =
+        '<span class="gl-label-text" style="background-color: red; color: green; width: 100%;">hello</a>';
+      expect(sanitize(htmlStyle, { FORBID_ATTR: ['style'] })).toBe(
+        '<span class="gl-label-text" style="background-color: red;">hello</span>',
+      );
+    });
+  });
+
   describe.each`
     type          | gon
     ${'root'}     | ${rootGon}

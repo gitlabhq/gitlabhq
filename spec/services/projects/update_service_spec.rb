@@ -41,11 +41,12 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         :maintainer | :developer  | true  | false | :success
         :maintainer | :maintainer | true  | false | :success
         :maintainer | :owner      | true  | false | :api_error
-        :maintainer | :owner      | false | true  | :api_error
+        :maintainer | :owner      | false | true  | :success
         :maintainer | :owner      | true  | true  | :success
         :developer  | :owner      | true  | false | :api_error
         :developer  | :developer  | true  | false | :api_error
         :developer  | :maintainer | true  | false | :api_error
+        :developer  | :maintainer | false | true  | :api_error
       end
 
       with_them do
@@ -57,8 +58,8 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
           project.add_owner(owner)
 
           ci_cd_settings = project.ci_cd_settings
-          ci_cd_settings.pipeline_variables_minimum_override_role = project_minimum_role
-          ci_cd_settings.restrict_user_defined_variables = from_value
+          ci_cd_settings[:pipeline_variables_minimum_override_role] = project_minimum_role
+          ci_cd_settings[:restrict_user_defined_variables] = from_value
           ci_cd_settings.save!
         end
 
@@ -82,7 +83,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         :maintainer | true  | :developer  | :maintainer | :success
         :maintainer | true  | :maintainer | :owner      | :api_error
         :owner      | false | :owner      | :maintainer | :success
-        :maintainer | false | :owner      | :developer  | :api_error
+        :maintainer | false | :owner      | :developer  | :success
         :maintainer | false | :maintainer | :owner      | :api_error
       end
 
@@ -95,8 +96,8 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
           project.add_owner(owner)
 
           ci_cd_settings = project.ci_cd_settings
-          ci_cd_settings.pipeline_variables_minimum_override_role = from_value
-          ci_cd_settings.restrict_user_defined_variables = restrict_user_defined_variables
+          ci_cd_settings[:pipeline_variables_minimum_override_role] = from_value
+          ci_cd_settings[:restrict_user_defined_variables] = restrict_user_defined_variables
           ci_cd_settings.save!
         end
 

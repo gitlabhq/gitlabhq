@@ -1055,8 +1055,8 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
         before do
           ci_cd_settings = project.ci_cd_settings
-          ci_cd_settings.restrict_user_defined_variables = restrict_variables
           ci_cd_settings.pipeline_variables_minimum_override_role = minimum_role
+          ci_cd_settings.restrict_user_defined_variables = restrict_variables
           ci_cd_settings.save!
         end
 

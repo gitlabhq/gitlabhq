@@ -139,6 +139,32 @@ job-artifact-upload-on-timeout:
     when: on_failure # on_failure because script termination after a timeout is treated as a failure
 ```
 
+### Ensuring `after_script` execution
+
+For `after_script` to run successfully, the total of `RUNNER_SCRIPT_TIMEOUT` +
+`RUNNER_AFTER_SCRIPT_TIMEOUT` must not exceed the job's configured timeout.
+
+The following example shows how to configure timeouts to ensure `after_script` runs even when the main script times out:
+
+```yaml
+job-with-script-timeouts:
+  timeout: 5m
+  variables:
+    RUNNER_SCRIPT_TIMEOUT: 1m
+    RUNNER_AFTER_SCRIPT_TIMEOUT: 1m
+  script:
+    - echo "Starting build..."
+    - sleep 120 # Wait 2 minutes to trigger timeout. Script aborts after 1 minute due to RUNNER_SCRIPT_TIMEOUT.
+    - echo "Build finished."
+  after_script:
+    - echo "Starting Clean-up..."
+    - sleep 15 # Wait just a few seconds. Runs successfully because it's within RUNNER_AFTER_SCRIPT_TIMEOUT.
+    - echo "Clean-up finished."
+```
+
+The `script` is canceled by `RUNNER_SCRIPT_TIMEOUT`, but the `after_script` runs successfully because it takes 15 seconds,
+which is less than both `RUNNER_AFTER_SCRIPT_TIMEOUT` and the job's `timeout` value.
+
 ## Protecting sensitive information
 
 The security risks are greater when using instance runners as they are available by default to all groups and projects in a GitLab instance.

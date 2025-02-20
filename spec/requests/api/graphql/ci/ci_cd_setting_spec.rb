@@ -51,11 +51,27 @@ RSpec.describe 'Getting Ci Cd Setting', feature_category: :continuous_integratio
         project.ci_cd_settings.inbound_job_token_scope_enabled?)
       expect(settings_data['pushRepositoryForJobTokenAllowed']).to eql(
         project.ci_cd_settings.push_repository_for_job_token_allowed?)
+      expect(settings_data['pipelineVariablesMinimumOverrideRole']).to eql(
+        project.ci_pipeline_variables_minimum_override_role)
 
       if Gitlab.ee?
         expect(settings_data['mergeTrainsEnabled']).to eql project.ci_cd_settings.merge_trains_enabled?
       else
         expect(settings_data['mergeTrainsEnabled']).to be_nil
+      end
+    end
+
+    describe '#pipelineVariablesMinimumOverrideRole' do
+      before do
+        project.ci_pipeline_variables_minimum_override_role = :no_one_allowed
+        project.restrict_user_defined_variables = false
+        project.save!
+      end
+
+      context 'when restrict_user_defined_variables is disabled' do
+        it 'fetches according translation layer' do
+          expect(settings_data['pipelineVariablesMinimumOverrideRole']).to eql('developer')
+        end
       end
     end
   end

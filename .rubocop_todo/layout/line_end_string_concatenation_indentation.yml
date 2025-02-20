@@ -50,7 +50,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/app/controllers/concerns/insights_actions.rb'
     - 'ee/app/controllers/ee/ldap/omniauth_callbacks_controller.rb'
     - 'ee/app/finders/geo/framework_registry_finder.rb'
-    - 'ee/app/graphql/ee/mutations/ci/project_ci_cd_settings_update.rb'
     - 'ee/app/graphql/ee/mutations/issues/create.rb'
     - 'ee/app/graphql/ee/mutations/merge_requests/update.rb'
     - 'ee/app/graphql/ee/resolvers/ci/all_jobs_resolver.rb'
