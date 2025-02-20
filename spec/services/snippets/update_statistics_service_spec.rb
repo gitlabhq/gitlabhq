@@ -50,6 +50,7 @@ RSpec.describe Snippets::UpdateStatisticsService, feature_category: :source_code
         it 'returns an error response' do
           expect(snippet).to receive(:repository_exists?).and_return(false)
 
+          expect(subject.reason).to eq(Snippets::UpdateStatisticsService::REPOSITORY_NOT_FOUND)
           expect(subject).to be_error
         end
       end

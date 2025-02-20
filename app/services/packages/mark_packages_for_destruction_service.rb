@@ -33,7 +33,7 @@ module Packages
       min_batch_size = [batch_size, BATCH_SIZE].min
       package_ids = []
 
-      @packages.each_batch(of: min_batch_size) do |batched_packages|
+      packages.each_batch(of: min_batch_size) do |batched_packages|
         loaded_packages = batched_packages.including_project_route.to_a
         package_ids = loaded_packages.map(&:id)
 
@@ -42,9 +42,7 @@ module Packages
         ::Packages::Package.id_in(package_ids)
                            .update_all(status: :pending_destruction)
 
-        sync_maven_metadata(loaded_packages)
-        sync_npm_metadata(loaded_packages)
-        mark_package_files_for_destruction(loaded_packages)
+        after_marked_for_destruction(loaded_packages)
       end
 
       return UNAUTHORIZED_RESPONSE if no_access
@@ -57,11 +55,19 @@ module Packages
 
     private
 
+    attr_reader :packages, :current_user
+
+    def after_marked_for_destruction(packages)
+      sync_maven_metadata(packages)
+      sync_npm_metadata(packages)
+      mark_package_files_for_destruction(packages)
+    end
+
     def mark_package_files_for_destruction(packages)
       ::Packages::MarkPackageFilesForDestructionWorker.bulk_perform_async_with_contexts(
         packages,
         arguments_proc: ->(package) { package.id },
-        context_proc: ->(package) { { project: package.project, user: @current_user } }
+        context_proc: ->(package) { { project: package.project, user: current_user } }
       )
     end
 
@@ -69,8 +75,8 @@ module Packages
       maven_packages_with_version = packages.select { |pkg| pkg.maven? && pkg.version? }
       ::Packages::Maven::Metadata::SyncWorker.bulk_perform_async_with_contexts(
         maven_packages_with_version,
-        arguments_proc: ->(package) { [@current_user.id, package.project_id, package.name] },
-        context_proc: ->(package) { { project: package.project, user: @current_user } }
+        arguments_proc: ->(package) { [current_user.id, package.project_id, package.name] },
+        context_proc: ->(package) { { project: package.project, user: current_user } }
       )
     end
 
@@ -79,13 +85,13 @@ module Packages
       ::Packages::Npm::CreateMetadataCacheWorker.bulk_perform_async_with_contexts(
         npm_packages,
         arguments_proc: ->(package) { [package.project_id, package.name] },
-        context_proc: ->(package) { { project: package.project, user: @current_user } }
+        context_proc: ->(package) { { project: package.project, user: current_user } }
       )
     end
 
     def can_destroy_packages?(packages)
       packages.all? do |package|
-        can?(@current_user, :destroy_package, package)
+        can?(current_user, :destroy_package, package)
       end
     end
 
@@ -94,3 +100,5 @@ module Packages
     end
   end
 end
+
+Packages::MarkPackagesForDestructionService.prepend_mod

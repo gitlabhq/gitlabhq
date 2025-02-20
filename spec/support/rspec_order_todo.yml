@@ -1193,7 +1193,6 @@
 - './ee/spec/models/compliance_management/framework_spec.rb'
 - './ee/spec/models/concerns/approval_rule_like_spec.rb'
 - './ee/spec/models/concerns/approver_migrate_hook_spec.rb'
-- './ee/spec/models/concerns/auditable_spec.rb'
 - './ee/spec/models/concerns/ee/issuable_spec.rb'
 - './ee/spec/models/concerns/ee/mentionable_spec.rb'
 - './ee/spec/models/concerns/ee/milestoneable_spec.rb'

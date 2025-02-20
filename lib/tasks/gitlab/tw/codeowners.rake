@@ -79,7 +79,7 @@ namespace :tw do
       CodeOwnerRule.new('Security Policies', '@rlehmann1'),
       CodeOwnerRule.new('Secret Detection', '@phillipwells'),
       CodeOwnerRule.new('Security Insights', '@rlehmann1'),
-      CodeOwnerRule.new('Solutions Architecture', '@jfullam @brianwald @Darwinjs'),
+      CodeOwnerRule.new('Solutions Architecture', '@jfullam @Darwinjs @sbrightwell'),
       CodeOwnerRule.new('Source Code', '@brendan777'),
       CodeOwnerRule.new('Static Analysis', '@rdickenson'),
       # CodeOwnerRule.new('Subscription Management', ''),

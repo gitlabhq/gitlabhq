@@ -51,7 +51,7 @@ The following standard claims are included in each ID token:
 | Field                                                              | Description |
 |--------------------------------------------------------------------|-------------|
 | [`iss`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.1) | Issuer of the token, which is the domain of the GitLab instance ("issuer" claim). |
-| [`sub`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.2) | `project_path:{group}/{project}:ref_type:{type}:ref:{branch_name}` ("subject" claim). |
+| [`sub`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.2) | Subject of the token ("subject" claim). Defaults to `project_path:{group}/{project}:ref_type:{type}:ref:{branch_name}`. Can be configured for the project with the [projects API](../../api/projects.md#edit-a-project). |
 | [`aud`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.3) | Intended audience for the token ("audience" claim). Specified in the [ID tokens](../yaml/_index.md#id_tokens) configuration. The domain of the GitLab instance by default. |
 | [`exp`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.4) | The expiration time ("expiration time" claim). |
 | [`nbf`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.5) | The time after which the token becomes valid ("not before" claim). |

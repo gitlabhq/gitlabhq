@@ -8,13 +8,12 @@ import CandidateList from '~/ml/experiment_tracking/components/candidate_list.vu
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import ExperimentMetadata from '~/ml/experiment_tracking/components/experiment_metadata.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
-import {
-  ROUTE_DETAILS,
-  ROUTE_CANDIDATES,
-  ROUTE_PERFORMANCE,
-} from '~/ml/experiment_tracking/constants';
 import { s__ } from '~/locale';
 import PerformanceGraph from '~/ml/experiment_tracking/components/performance_graph.vue';
+
+const ROUTE_DETAILS = 'details';
+const ROUTE_CANDIDATES = 'candidates';
+const ROUTE_PERFORMANCE = 'performance';
 
 const routes = [
   {

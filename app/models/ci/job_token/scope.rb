@@ -104,8 +104,7 @@ module Ci
         return true if scope.default_permissions?
         return false if policies.empty?
 
-        allowed_policies = scope.job_token_policies.map(&:to_sym)
-        (policies - allowed_policies).empty?
+        (policies - scope.expanded_job_token_policies).empty?
       end
 
       def nearest_scope(accessed_project)

@@ -715,24 +715,26 @@ export default {
               <ul class="mr-widget-merge-details gl-mb-3 gl-w-full gl-pl-6 gl-text-subtle">
                 <template v-if="sourceHasDivergedFromTarget">
                   <li>
-                    <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
-                      <template #link>
-                        <gl-link :href="mr.targetBranchPath">{{
-                          $options.i18n.divergedCommits(mr.divergedCommitsCount)
-                        }}</gl-link>
-                      </template>
-                    </gl-sprintf>
-                    <gl-button
-                      v-if="canRebase"
-                      size="small"
-                      variant="link"
-                      data-testid="rebase-button"
-                      :loading="isRebaseInProgress"
-                      :aria-label="__('Rebase source branch')"
-                      @click="handleRebaseClick"
-                    >
-                      {{ __('Rebase source branch') }}
-                    </gl-button>
+                    <div class="gl-gap-2 md:gl-flex">
+                      <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
+                        <template #link>
+                          <gl-link :href="mr.targetBranchPath">{{
+                            $options.i18n.divergedCommits(mr.divergedCommitsCount)
+                          }}</gl-link>
+                        </template>
+                      </gl-sprintf>
+                      <gl-button
+                        v-if="canRebase"
+                        size="small"
+                        variant="link"
+                        data-testid="rebase-button"
+                        :loading="isRebaseInProgress"
+                        :aria-label="__('Rebase source branch')"
+                        @click="handleRebaseClick"
+                      >
+                        {{ __('Rebase source branch') }}
+                      </gl-button>
+                    </div>
                   </li>
                 </template>
                 <li>

@@ -571,6 +571,7 @@ lib/gitlab/checks/**
 /doc/administration/auth/ @idurham
 /doc/administration/backup_restore/ @axil
 /doc/administration/broadcast_messages.md @sselhorn
+/doc/administration/cells.md @emily.sahlani
 /doc/administration/cicd/ @lyspin
 /doc/administration/cicd/job_logs.md @rsarangadharan
 /doc/administration/clusters/ @phillipwells
@@ -721,6 +722,7 @@ lib/gitlab/checks/**
 /doc/api/bulk_imports.md @ashrafkhamis
 /doc/api/chat.md @jglassman1
 /doc/api/cluster_agents.md @phillipwells
+/doc/api/cluster_discovery.md @phillipwells
 /doc/api/code_suggestions.md @jglassman1
 /doc/api/commits.md @brendan777
 /doc/api/container_registry.md @lyspin
@@ -741,7 +743,6 @@ lib/gitlab/checks/**
 /doc/api/epic_links.md @msedlakjakubowski
 /doc/api/epics.md @msedlakjakubowski
 /doc/api/error_tracking.md @lciutacu
-/doc/api/events.md @eread
 /doc/api/feature_flag_user_lists.md @phillipwells
 /doc/api/feature_flags.md @phillipwells
 /doc/api/features.md @phillipwells
@@ -968,7 +969,7 @@ lib/gitlab/checks/**
 /doc/development/distribution/ @gitlab-org/distribution
 /doc/development/documentation/ @fneill
 /doc/development/duo_workflow/ @gitlab-org/ai-powered
-/doc/development/fe_guide/customizable_dashboards.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/doc/development/fe_guide/analytics_dashboards.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/fe_guide/keyboard_shortcuts.md @gitlab-org/foundations/engineering
 /doc/development/git_object_deduplication.md @proglottis @toon
 /doc/development/gitaly.md @proglottis @toon
@@ -1025,8 +1026,8 @@ lib/gitlab/checks/**
 /doc/raketasks/x509_signatures.md @brendan777
 /doc/security/ @idurham
 /doc/security/hardening_nist_800_53.md @emily.sahlani
-/doc/solutions/ @jfullam @brianwald @Darwinjs
-/doc/solutions/integrations/index.md @jfullam @brianwald @Darwinjs
+/doc/solutions/ @jfullam @Darwinjs @sbrightwell
+/doc/solutions/integrations/index.md @jfullam @Darwinjs @sbrightwell
 /doc/solutions/integrations/servicenow.md @ashrafkhamis
 /doc/subscriptions/ @lciutacu
 /doc/subscriptions/gitlab_com/ @lyspin
@@ -1039,6 +1040,7 @@ lib/gitlab/checks/**
 /doc/topics/offline/ @axil
 /doc/topics/runner_fleet_design_guides/ @rsarangadharan
 /doc/tutorials/ @kpaizee
+/doc/tutorials/boards_for_standups/ @msedlakjakubowski
 /doc/tutorials/boards_for_teams/ @msedlakjakubowski
 /doc/tutorials/compliance_pipeline/ @eread
 /doc/tutorials/configure_gitlab_runner_to_use_gke/ @rsarangadharan

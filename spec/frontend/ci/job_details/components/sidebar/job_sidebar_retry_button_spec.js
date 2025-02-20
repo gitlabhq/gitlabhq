@@ -16,6 +16,8 @@ describe('Job Sidebar Retry Button', () => {
   const forwardDeploymentFailure = 'forward_deployment_failure';
   const findRetryButton = () => wrapper.findByTestId('retry-job-button');
   const findRetryLink = () => wrapper.findByTestId('retry-job-link');
+  const findManualRetryButton = () => wrapper.findByTestId('manual-run-again-btn');
+  const findManualRunEditButton = () => wrapper.findByTestId('manual-run-edit-btn');
 
   const createWrapper = ({ props = {} } = {}) => {
     store = createStore();
@@ -93,8 +95,7 @@ describe('Job Sidebar Retry Button', () => {
     it('should render confirmation modal if confirmation message is presented', async () => {
       createWrapperWithConfirmation();
 
-      const itemElements = wrapper.findAll('.gl-new-dropdown-item-content');
-      await itemElements.at(0).trigger('click');
+      await findManualRetryButton().trigger('click');
 
       expect(confirmAction).toHaveBeenCalledWith(
         null,
@@ -106,13 +107,19 @@ describe('Job Sidebar Retry Button', () => {
       );
     });
 
+    it('emit `updateVariablesClicked` when update button is clicked', async () => {
+      createWrapperWithConfirmation();
+
+      await findManualRunEditButton().trigger('click');
+      expect(wrapper.emitted('updateVariablesClicked')).toEqual([[]]);
+    });
+
     it('should retry job if click on confirm', async () => {
       const mock = new MockAdapter(axios);
       createWrapperWithConfirmation();
       confirmAction.mockResolvedValueOnce(true);
 
-      const itemElements = wrapper.findAll('.gl-new-dropdown-item-content');
-      await itemElements.at(0).trigger('click');
+      await findManualRetryButton().trigger('click');
       await waitForPromises();
 
       expect(mock.history.post[0].url).toBe(job.retry_path);

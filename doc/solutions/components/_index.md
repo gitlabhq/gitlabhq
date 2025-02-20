@@ -5,12 +5,14 @@ info: This page is owned by the Solutions Architecture team.
 title: Solution Components
 ---
 
-This documentation section covers a variety of Solution Components developed and provided by GitLab.
-To download and run these solution components, request your account team for invitation code.
+This documentation section covers a variety of Solution components developed and provided by GitLab.
+To download and run these solution components, request your account team for invitation code. 
+
+The use of any Solution component is subject to the [GitLab Subscription Agreement](https://handbook.gitlab.com/handbook/legal/subscription-agreement/) (the "Agreement") and constitutes Free Software as defined within the Agreement. 
 
 ## DevSecOps Workflow
 
-GitLab Solution to provide end to end DevSecOps workflow. 
+GitLab Solution to provide end to end DevSecOps workflow.
 
 [Cloud-native apps]
 
@@ -30,7 +32,7 @@ GitLab Solution to provide end to end DevSecOps workflow.
 
 ## Integrated DevSecOps
 
-GitLab Solution to provide an integrated end to end DevSecOps workflow. 
+GitLab Solution to provide an integrated end to end DevSecOps workflow.
 
 [Secure Software Development Workflow: VeraCode SAST]
 
@@ -48,13 +50,13 @@ GitLab Solution to provide an integrated end to end DevSecOps workflow.
 
 [Software Assurance: SonarQube]
 
-[CI/CD Workflow: Replace Octopus Depoloy]
+[CI/CD Workflow: Replace Octopus Deploy]
 
 [DevOps Pipeline: Overlay to Jenkins]
 
 ## Metrics and KPIs
 
-GitLab Solution to provide metrics and dashboard. 
+GitLab Solution to provide metrics and dashboard.
 
 [GitLab Usage Report]
 
@@ -62,7 +64,7 @@ GitLab Solution to provide metrics and dashboard.
 
 ## Sectors
 
-GitLab Solution to provide industry specific turn-key solution. 
+GitLab Solution to provide industry specific turn-key solution.
 
 [Regulated Industry SDLC Compliance Solution](regulatedindustry_sdlc.md)
 
@@ -74,7 +76,7 @@ GitLab Solution to provide industry specific turn-key solution.
 
 ## GenAI and Data Science
 
-GitLab AI Solution. 
+GitLab AI Solution.
 
 [AI Gateway Solution: Self hosted extension](ai_gatewaysolution.md)
 

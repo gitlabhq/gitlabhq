@@ -45,6 +45,10 @@ To manage your own email notification preferences:
 
 You will see an alert confirming that your notification preferences have been updated.
 
+## Reset a Switchboard user password
+
+To reset your Switchboard password, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). The support team will help you regain access to your account.
+
 ## SMTP email service
 
 You can configure an [SMTP](../../../subscriptions/gitlab_dedicated/_index.md#email-service) email service for your GitLab Dedicated instance.

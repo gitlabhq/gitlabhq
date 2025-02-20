@@ -34,28 +34,29 @@ GET /projects/:id/merge_requests/:merge_request_iid/draft_notes
 | `merge_request_iid` | integer           | yes      | The IID of a project merge request |
 
 ```json
-[{
-  id: 5,
-  author_id: 23,
-  merge_request_id: 11,
-  resolve_discussion: false,
-  discussion_id: nil,
-  note: "Example title",
-  commit_id: nil,
-  line_code: nil,
-  position:
+[
   {
-    base_sha: nil,
-    start_sha: nil,
-    head_sha: nil,
-    old_path: nil,
-    new_path: nil,
-    position_type: "text",
-    old_line: nil,
-    new_line: nil,
-    line_range: nil
+    "id": 5,
+    "author_id": 23,
+    "merge_request_id": 11,
+    "resolve_discussion": false,
+    "discussion_id": null,
+    "note": "Example title",
+    "commit_id": null,
+    "line_code": null,
+    "position": {
+      "base_sha": null,
+      "start_sha": null,
+      "head_sha": null,
+      "old_path": null,
+      "new_path": null,
+      "position_type": "text",
+      "old_line": null,
+      "new_line": null,
+      "line_range": null
+    }
   }
-}]
+]
 ```
 
 ```shell
@@ -78,28 +79,29 @@ GET /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
 | `merge_request_iid` | integer           | yes      | The IID of a project merge request. |
 
 ```json
-{
-  id: 5,
-  author_id: 23,
-  merge_request_id: 11,
-  resolve_discussion: false,
-  discussion_id: nil,
-  note: "Example title",
-  commit_id: nil,
-  line_code: nil,
-  position:
+[
   {
-    base_sha: nil,
-    start_sha: nil,
-    head_sha: nil,
-    old_path: nil,
-    new_path: nil,
-    position_type: "text",
-    old_line: nil,
-    new_line: nil,
-    line_range: nil
+    "id": 5,
+    "author_id": 23,
+    "merge_request_id": 11,
+    "resolve_discussion": false,
+    "discussion_id": null,
+    "note": "Example title",
+    "commit_id": null,
+    "line_code": null,
+    "position": {
+      "base_sha": null,
+      "start_sha": null,
+      "head_sha": null,
+      "old_path": null,
+      "new_path": null,
+      "position_type": "text",
+      "old_line": null,
+      "new_line": null,
+      "line_range": null
+    }
   }
-}
+]
 ```
 
 ```shell
@@ -115,28 +117,28 @@ Create a draft note for a given merge request.
 POST /projects/:id/merge_requests/:merge_request_iid/draft_notes
 ```
 
-| Attribute                                | Type              | Required    | Description           |
-| ---------------------------------------- | ----------------- | ----------- | --------------------- |
-| `id`                                     | integer or string | yes         | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `merge_request_iid`                      | integer           | yes         | The IID of a project merge request. |
-| `note`                                   | string            | yes         | The content of a note. |
-| `commit_id`                              | string            | no          | The SHA of a commit to associate the draft note to. |
-| `in_reply_to_discussion_id`              | string            | no          | The ID of a discussion the draft note replies to. |
-| `resolve_discussion`                     | boolean           | no          | The associated discussion should be resolved. |
-| `position[base_sha]`                     | string            | yes         | Base commit SHA in the source branch. |
-| `position[head_sha]`                     | string            | yes         | SHA referencing HEAD of this merge request. |
-| `position[start_sha]`                    | string            | yes         | SHA referencing commit in target branch. |
-| `position[new_path]`                     | string            | yes (if the position type is `text`) | File path after change. |
-| `position[old_path]`                     | string            | yes (if the position type is `text`) | File path before change. |
-| `position[position_type]`                | string            | yes         | Type of the position reference. Allowed values: `text`, `image`, or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
-| `position`                               | hash              | no          | Position when creating a diff note. |
-| `position[new_line]`                     | integer           | no          | For `text` diff notes, the line number after change. |
-| `position[old_line]`                     | integer           | no          | For `text` diff notes, the line number before change. |
-| `position[line_range]`                   | hash              | no          | Line range for a multi-line diff note. |
-| `position[width]`                        | integer           | no          | For `image` diff notes, width of the image. |
-| `position[height]`                       | integer           | no          | For `image` diff notes, height of the image. |
-| `position[x]`                            | float             | no          | For `image` diff notes, X coordinate. |
-| `position[y]`                            | float             | no          | For `image` diff notes, Y coordinate. |
+| Attribute                   | Type              | Required    | Description           |
+| ----------------------------| ----------------- | ----------- | --------------------- |
+| `id`                        | integer or string | yes         | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `merge_request_iid`         | integer           | yes         | The IID of a project merge request. |
+| `note`                      | string            | yes         | The content of a note. |
+| `commit_id`                 | string            | no          | The SHA of a commit to associate the draft note to. |
+| `in_reply_to_discussion_id` | string            | no          | The ID of a discussion the draft note replies to. |
+| `resolve_discussion`        | boolean           | no          | The associated discussion should be resolved. |
+| `position[base_sha]`        | string            | yes         | Base commit SHA in the source branch. |
+| `position[head_sha]`        | string            | yes         | SHA referencing HEAD of this merge request. |
+| `position[start_sha]`       | string            | yes         | SHA referencing commit in target branch. |
+| `position[new_path]`        | string            | yes (if the position type is `text`) | File path after change. |
+| `position[old_path]`        | string            | yes (if the position type is `text`) | File path before change. |
+| `position[position_type]`   | string            | yes         | Type of the position reference. Allowed values: `text`, `image`, or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
+| `position`                  | hash              | no          | Position when creating a diff note. |
+| `position[new_line]`        | integer           | no          | For `text` diff notes, the line number after change. |
+| `position[old_line]`        | integer           | no          | For `text` diff notes, the line number before change. |
+| `position[line_range]`      | hash              | no          | Line range for a multi-line diff note. |
+| `position[width]`           | integer           | no          | For `image` diff notes, width of the image. |
+| `position[height]`          | integer           | no          | For `image` diff notes, height of the image. |
+| `position[x]`               | float             | no          | For `image` diff notes, X coordinate. |
+| `position[y]`               | float             | no          | For `image` diff notes, Y coordinate. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -151,26 +153,26 @@ Modify a draft note for a given merge request.
 PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
 ```
 
-| Attribute                                | Type              | Required    | Description           |
-| -------------------                      | ----------------- | ----------- | --------------------- |
-| `id`                                     | integer or string | yes         | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `draft_note_id`                          | integer           | yes         | The ID of a draft note. |
-| `merge_request_iid`                      | integer           | yes         | The IID of a project merge request. |
-| `note`                                   | string            | no          | The content of a note. |
-| `position[base_sha]`                     | string            | yes         | Base commit SHA in the source branch. |
-| `position[head_sha]`                     | string            | yes         | SHA referencing HEAD of this merge request. |
-| `position[start_sha]`                    | string            | yes         | SHA referencing commit in target branch. |
-| `position[new_path]`                     | string            | yes (if the position type is `text`) | File path after change. |
-| `position[old_path]`                     | string            | yes (if the position type is `text`) | File path before change. |
-| `position[position_type]`                | string            | yes         | Type of the position reference. Allowed values: `text`, `image` or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
-| `position`                               | hash              | no          | Position when creating a diff note. |
-| `position[new_line]`                     | integer           | no          | For `text` diff notes, the line number after change. |
-| `position[old_line]`                     | integer           | no          | For `text` diff notes, the line number before change. |
-| `position[line_range]`                   | hash              | no          | Line range for a multi-line diff note. |
-| `position[width]`                        | integer           | no          | For `image` diff notes, width of the image. |
-| `position[height]`                       | integer           | no          | For `image` diff notes, height of the image. |
-| `position[x]`                            | float             | no          | For `image` diff notes, X coordinate. |
-| `position[y]`                            | float             | no          | For `image` diff notes, Y coordinate. |
+| Attribute                 | Type              | Required | Description |
+| ------------------------- | ----------------- | -------- | ----------- |
+| `id`                      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `draft_note_id`           | integer           | yes      | The ID of a draft note. |
+| `merge_request_iid`       | integer           | yes      | The IID of a project merge request. |
+| `note`                    | string            | no       | The content of a note. |
+| `position[base_sha]`      | string            | yes      | Base commit SHA in the source branch. |
+| `position[head_sha]`      | string            | yes      | SHA referencing HEAD of this merge request. |
+| `position[start_sha]`     | string            | yes      | SHA referencing commit in target branch. |
+| `position[new_path]`      | string            | yes (if the position type is `text`) | File path after change. |
+| `position[old_path]`      | string            | yes (if the position type is `text`) | File path before change. |
+| `position[position_type]` | string            | yes      | Type of the position reference. Allowed values: `text`, `image` or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
+| `position`                | hash              | no       | Position when creating a diff note. |
+| `position[new_line]`      | integer           | no       | For `text` diff notes, the line number after change. |
+| `position[old_line]`      | integer           | no       | For `text` diff notes, the line number before change. |
+| `position[line_range]`    | hash              | no       | Line range for a multi-line diff note. |
+| `position[width]`         | integer           | no       | For `image` diff notes, width of the image. |
+| `position[height]`        | integer           | no       | For `image` diff notes, height of the image. |
+| `position[x]`             | float             | no       | For `image` diff notes, X coordinate. |
+| `position[y]`             | float             | no       | For `image` diff notes, Y coordinate. |
 
 ```shell
 curl --request PUT \
@@ -186,11 +188,11 @@ Deletes an existing draft note for a given merge request.
 DELETE /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
 ```
 
-| Attribute           | Type             | Required    | Description           |
-| ------------------- | ---------------- | ----------- | --------------------- |
-| `draft_note_id`     | integer           | yes        | The ID of a draft note. |
-| `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `merge_request_iid` | integer           | yes        | The IID of a project merge request. |
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `draft_note_id`     | integer           | yes      | The ID of a draft note. |
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `merge_request_iid` | integer           | yes      | The IID of a project merge request. |
 
 ```shell
 curl --request DELETE \
@@ -206,11 +208,11 @@ Publishes an existing draft note for a given merge request.
 PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id/publish
 ```
 
-| Attribute           | Type             | Required    | Description           |
-| ------------------- | ---------------- | ----------- | --------------------- |
-| `draft_note_id`     | integer           | yes        | The ID of a draft note. |
-| `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `merge_request_iid` | integer           | yes        | The IID of a project merge request. |
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `draft_note_id`     | integer           | yes      | The ID of a draft note. |
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `merge_request_iid` | integer           | yes      | The IID of a project merge request. |
 
 ```shell
 curl --request PUT \

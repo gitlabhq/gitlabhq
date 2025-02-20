@@ -248,6 +248,15 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
 
       it { is_expected.to be(true) }
 
+      context 'when an admin policy is defined in the scope' do
+        let_it_be(:allowed_policy) { 'admin_jobs' }
+        let_it_be(:policies) { [:admin_jobs, :read_jobs] }
+
+        it 'allows both the admin policy and the read policy' do
+          is_expected.to be(true)
+        end
+      end
+
       context 'when the accessed project is not inbound accessible' do
         let(:accessed_project) { create(:project) }
 

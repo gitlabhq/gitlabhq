@@ -3,9 +3,11 @@ import { GlEmptyState, GlButton } from '@gitlab/ui';
 import emptySvgUrl from '@gitlab/svgs/dist/illustrations/status/status-new-md.svg';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __, sprintf } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import getExperimentCandidates from '~/ml/experiment_tracking/graphql/queries/get_experiment_candidates.query.graphql';
 import SearchableTable from '~/ml/model_registry/components/searchable_table.vue';
-import { GRAPHQL_PAGE_SIZE, CANDIDATES_DOCS_PATH } from '../constants';
+
+const GRAPHQL_PAGE_SIZE = 30;
 
 export default {
   name: 'MlCandidateList',
@@ -82,8 +84,10 @@ export default {
       'MlExperimentTracking|Use candidates to track performance, parameters, and metadata',
     ),
   },
-  emptySvgPath: emptySvgUrl,
-  CANDIDATES_DOCS_PATH,
+  CANDIDATES_DOCS_PATH: helpPagePath('user/project/ml/experiment_tracking/mlflow_client.md', {
+    anchor: 'logging-runs-to-a-model',
+  }),
+  EMPTY_SVG_PATH: emptySvgUrl,
 };
 </script>
 <template>
@@ -98,7 +102,7 @@ export default {
     <template #empty-state>
       <gl-empty-state
         :title="$options.i18n.emptyStateLabel"
-        :svg-path="$options.emptySvgPath"
+        :svg-path="$options.EMPTY_SVG_PATH"
         class="gl-py-8"
         :description="$options.i18n.emptyStateDescription"
       >

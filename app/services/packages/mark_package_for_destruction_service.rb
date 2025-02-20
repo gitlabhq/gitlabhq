@@ -42,3 +42,5 @@ module Packages
     end
   end
 end
+
+Packages::MarkPackageForDestructionService.prepend_mod

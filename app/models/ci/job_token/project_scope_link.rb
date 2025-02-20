@@ -7,6 +7,7 @@ module Ci
   module JobToken
     class ProjectScopeLink < Ci::ApplicationRecord
       include BulkInsertSafe
+      include ExpandedJobTokenPolicies
 
       self.table_name = 'ci_job_token_project_scope_links'
 

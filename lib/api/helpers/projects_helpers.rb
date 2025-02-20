@@ -158,6 +158,7 @@ module API
           :ci_config_path,
           :ci_default_git_depth,
           :ci_allow_fork_pipelines_to_run_in_parent_project,
+          :ci_id_token_sub_claim_components,
           :ci_forward_deployment_enabled,
           :ci_forward_deployment_rollback_allowed,
           :ci_separated_caches,

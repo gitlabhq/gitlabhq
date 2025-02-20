@@ -178,6 +178,8 @@ export const apiItems = [
         correlation_id_value: 'dfcf583058ed4508e4c7c617bd7f0edd',
         source_url: 'https://github.com/name/project.git',
         source_title: 'some title',
+        raw: `ENOENT: No such file or directory`,
+        link_text: 'See documentation',
       },
     ],
   },

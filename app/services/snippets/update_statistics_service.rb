@@ -2,6 +2,8 @@
 
 module Snippets
   class UpdateStatisticsService
+    REPOSITORY_NOT_FOUND = :repository_not_found
+
     attr_reader :snippet
 
     def initialize(snippet)
@@ -10,7 +12,10 @@ module Snippets
 
     def execute
       unless snippet.repository_exists?
-        return ServiceResponse.error(message: 'Invalid snippet repository', http_status: 400)
+        return ServiceResponse.error(
+          message: 'Invalid snippet repository',
+          reason: REPOSITORY_NOT_FOUND
+        )
       end
 
       snippet.repository.expire_statistics_caches

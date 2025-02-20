@@ -8,7 +8,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import CandidateList from '~/ml/experiment_tracking/components/candidate_list.vue';
 import SearchableTable from '~/ml/model_registry/components/searchable_table.vue';
 import getExperimentCandidates from '~/ml/experiment_tracking/graphql/queries/get_experiment_candidates.query.graphql';
-import { GRAPHQL_PAGE_SIZE } from '~/ml/experiment_tracking/constants';
 import {
   emptyCandidateQuery,
   experimentCandidatesQuery,
@@ -132,7 +131,7 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
 
       expect(resolver).toHaveBeenLastCalledWith({
         after: graphqlPageInfo.endCursor,
-        first: GRAPHQL_PAGE_SIZE,
+        first: 30,
         id: 'gid://gitlab/Ml::Model/2',
       });
     });

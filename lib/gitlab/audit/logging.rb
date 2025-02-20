@@ -13,7 +13,9 @@ module Gitlab
       def log_to_new_tables(events, audit_operation)
         return if events.blank?
 
-        events.each { |event| log_event(event) }
+        events.group_by(&:entity_type).each do |entity_type, entity_events|
+          log_events(entity_type, entity_events)
+        end
       rescue ActiveRecord::RecordInvalid => e
         ::Gitlab::ErrorTracking.track_exception(e, audit_operation: audit_operation)
 
@@ -22,9 +24,15 @@ module Gitlab
 
       private
 
-      def log_event(event)
-        event_class = ENTITY_TYPE_TO_CLASS[event.entity_type.to_s]
-        event_class.create!(build_event_attributes(event))
+      def log_events(entity_type, entity_events)
+        event_class = ENTITY_TYPE_TO_CLASS[entity_type.to_s]
+        if entity_events.one?
+          event_class.create!(build_event_attributes(entity_events.first))
+        else
+          entity_events.map { |event| event_class.new(build_event_attributes(event)) }.then do |events|
+            event_class.bulk_insert!(events)
+          end
+        end
       end
 
       def build_event_attributes(event)

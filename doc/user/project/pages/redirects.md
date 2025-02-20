@@ -196,24 +196,34 @@ Splats also match empty strings, so the previous rule redirects
 
 ### Rewrite all requests to a root `index.html`
 
-{{< alert type="note" >}}
-
-If you are using [GitLab Pages integration with Let's Encrypt](custom_domains_ssl_tls_certification/lets_encrypt_integration.md),
-you must enable it before adding this rule. Otherwise, the redirection breaks the Let's Encrypt
-integration. For more details, see
-[GitLab Pages issue 649](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/649).
-
-{{< /alert >}}
-
 Single page applications (SPAs) often perform their own routing using
-client-side routes. For these applications, it's important that _all_ requests
-are rewritten to the root `index.html` so that the routing logic can be handled
-by the JavaScript application. You can do this with a `_redirects`
-rule like:
+client-side routes. For these applications, rewrite all requests
+to the root `index.html` so the routing logic can be handled
+by the JavaScript application.
 
-```plaintext
-/* /index.html 200
-```
+Prerequisites:
+
+- If you use [GitLab Pages integration with Let's Encrypt](custom_domains_ssl_tls_certification/lets_encrypt_integration.md),
+  you must enable it before you add this rule. Otherwise, the redirection breaks the Let's Encrypt
+  integration. For more details, see
+  [GitLab Pages issue 649](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/649).
+
+To rewrite requests to `index.html`:
+
+1. Add this `_redirects` rule:
+
+   ```plaintext
+   /* /index.html 200
+   ```
+
+1. To make your single-page application work with parallel deployments, edit the redirect rule to
+   include the path prefix:
+
+   ```plaintext
+   /project/base/<prefix>/* /project/base/<prefix>/index.html 200
+   ```
+
+   Replace `<prefix>` with your path prefix value.
 
 ## Placeholders
 

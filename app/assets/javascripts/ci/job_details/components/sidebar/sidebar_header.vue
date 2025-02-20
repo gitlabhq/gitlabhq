@@ -142,8 +142,7 @@ export default {
           <job-sidebar-retry-button
             v-if="canShowJobRetryButton"
             v-gl-tooltip.bottom
-            :title="buttonTitle"
-            :aria-label="buttonTitle"
+            :retry-button-title="buttonTitle"
             :is-manual-job="isManualJob"
             :category="retryButtonCategory"
             :href="restJob.retry_path"

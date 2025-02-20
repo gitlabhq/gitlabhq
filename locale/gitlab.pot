@@ -24556,6 +24556,9 @@ msgstr ""
 msgid "Failure"
 msgstr ""
 
+msgid "Failures details"
+msgstr ""
+
 msgid "False"
 msgstr ""
 
@@ -29956,6 +29959,9 @@ msgstr ""
 msgid "Import|An error occurred while fetching import details."
 msgstr ""
 
+msgid "Import|Close details"
+msgstr ""
+
 msgid "Import|Complete"
 msgstr ""
 
@@ -29975,6 +29981,9 @@ msgid "Import|Import from %{hostname} completed"
 msgstr ""
 
 msgid "Import|Import source user has an invalid status for this operation"
+msgstr ""
+
+msgid "Import|Importing"
 msgstr ""
 
 msgid "Import|In progress"
@@ -30010,7 +30019,13 @@ msgstr ""
 msgid "Import|Not started"
 msgstr ""
 
+msgid "Import|Open details"
+msgstr ""
+
 msgid "Import|Partially completed"
+msgstr ""
+
+msgid "Import|Pending"
 msgstr ""
 
 msgid "Import|Placeholder user record reassignment complete"
@@ -36543,9 +36558,6 @@ msgid "MlExperimentTracking|Key"
 msgstr ""
 
 msgid "MlExperimentTracking|Last activity"
-msgstr ""
-
-msgid "MlExperimentTracking|Machine learning experiment tracking"
 msgstr ""
 
 msgid "MlExperimentTracking|Model experiments"
@@ -58625,6 +58637,9 @@ msgid "There was an error retrieving LDAP groups. Please try again."
 msgstr ""
 
 msgid "There was an error retrieving the Jira users."
+msgstr ""
+
+msgid "There was an error retrying the job."
 msgstr ""
 
 msgid "There was an error running the job. Please try again."
