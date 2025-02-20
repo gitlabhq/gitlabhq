@@ -72,6 +72,32 @@ RSpec.describe ActiveContext::Config do
     end
   end
 
+  describe '.collection_model' do
+    before do
+      stub_const('Ai::ActiveContext::Collection', Class.new)
+    end
+
+    context 'when collection_model is not set' do
+      it 'returns the default model' do
+        expect(described_class.collection_model).to eq(::Ai::ActiveContext::Collection)
+      end
+    end
+
+    context 'when collection_model is set' do
+      let(:custom_model) { Class.new }
+
+      before do
+        described_class.configure do |config|
+          config.collection_model = custom_model
+        end
+      end
+
+      it 'returns the configured collection model' do
+        expect(described_class.collection_model).to eq(custom_model)
+      end
+    end
+  end
+
   describe '.logger' do
     context 'when logger is not set' do
       it 'returns a default stdout logger' do

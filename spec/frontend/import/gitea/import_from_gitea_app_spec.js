@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 import { GlFormInput } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import ImportFromGiteaRoot from '~/import/gitea/import_from_gitea_root.vue';
+import ImportFromGiteaApp from '~/import/gitea/import_from_gitea_app.vue';
 import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
@@ -16,7 +16,7 @@ describe('Import from Gitea app', () => {
   };
 
   const createComponent = () => {
-    wrapper = shallowMountExtended(ImportFromGiteaRoot, {
+    wrapper = shallowMountExtended(ImportFromGiteaApp, {
       propsData: {
         ...defaultProps,
       },

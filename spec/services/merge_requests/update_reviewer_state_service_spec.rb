@@ -153,6 +153,17 @@ RSpec.describe MergeRequests::UpdateReviewerStateService, feature_category: :cod
           expect(result[:message]).to eq "Failed to remove approval"
         end
       end
+
+      context 'when reviewer state is "reviewed"' do
+        let(:state) { 'reviewed' }
+
+        it 'calls SystemNoteService.reviewed' do
+          expect(SystemNoteService).to receive(:reviewed)
+            .with(merge_request, current_user)
+
+          expect(result[:status]).to eq :success
+        end
+      end
     end
   end
 end

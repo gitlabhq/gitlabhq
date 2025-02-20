@@ -359,8 +359,16 @@
   }
 }
 
+.diff-file-row {
+  transition: color 0.2s ease-in-out;
+}
+
 .diff-file-row.is-active {
   background-color: var(--gray-50, $gray-50);
+}
+
+.diff-file-row.is-loading {
+  color: var(--gl-text-color-disabled);
 }
 
 .mr-info-list {

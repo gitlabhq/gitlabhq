@@ -70,6 +70,7 @@ describe('system note component', () => {
       'issues',
       'error',
       'review-warning',
+      'comment-lines',
     ];
     createComponent(props);
 

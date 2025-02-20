@@ -2,7 +2,15 @@
 
 module ActiveContext
   class Config
-    Cfg = Struct.new(:enabled, :databases, :logger, :indexing_enabled, :re_enqueue_indexing_workers, :migrations_path)
+    Cfg = Struct.new(
+      :enabled,
+      :databases,
+      :logger,
+      :indexing_enabled,
+      :re_enqueue_indexing_workers,
+      :migrations_path,
+      :collection_model
+    )
 
     class << self
       def configure(&block)
@@ -23,6 +31,10 @@ module ActiveContext
 
       def migrations_path
         current.migrations_path || Rails.root.join('ee/db/active_context/migrate')
+      end
+
+      def collection_model
+        current.collection_model || ::Ai::ActiveContext::Collection
       end
 
       def logger

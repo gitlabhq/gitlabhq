@@ -119,7 +119,9 @@ module Gitlab
     # name - The name of the feature flag, e.g. `my_feature`.
     # enabled - Boolean to be pushed directly to the frontend. Should be fetched by checking a feature flag.
     def push_force_frontend_feature_flag(name, enabled)
-      push_to_gon_attributes(:features, name, !!enabled)
+      raise ArgumentError, 'enabled flag must be a Boolean' unless enabled.in?([true, false])
+
+      push_to_gon_attributes(:features, name, enabled)
     end
 
     def push_namespace_setting(key, object)

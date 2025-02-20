@@ -110,10 +110,25 @@ module Issues
     attr_reader :perform_spam_check
 
     override :after_update
-    def after_update(issue, _old_associations)
+    def after_update(issue, old_associations)
       super
 
       GraphqlTriggers.work_item_updated(issue)
+      publish_event(issue, old_associations)
+    end
+
+    def publish_event(work_item, old_associations)
+      event = WorkItems::WorkItemUpdatedEvent.new(data: {
+        id: work_item.id,
+        namespace_id: work_item.namespace_id,
+        previous_work_item_parent_id: old_associations[:work_item_parent_id],
+        updated_attributes: work_item.previous_changes&.keys&.map(&:to_s),
+        updated_widgets: @widget_params&.keys&.map(&:to_s)
+      }.tap(&:compact_blank!))
+
+      work_item.run_after_commit_or_now do
+        Gitlab::EventStore.publish(event)
+      end
     end
 
     def handle_date_changes(issue)

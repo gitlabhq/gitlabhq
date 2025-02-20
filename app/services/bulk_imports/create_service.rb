@@ -51,7 +51,7 @@ module BulkImports
         self.class.name,
         'create',
         label: 'bulk_import_group',
-        extra: { source_equals_destination: source_equals_destination? }
+        extra: { source_equals_destination: bulk_import.source_equals_destination? }
       )
 
       if Feature.enabled?(:importer_user_mapping, current_user) &&
@@ -159,10 +159,6 @@ module BulkImports
         user: current_user,
         extra: { user_role: user_role(entity_params[:destination_namespace]), import_type: 'bulk_import_group' }
       )
-    end
-
-    def source_equals_destination?
-      credentials[:url].starts_with?(Settings.gitlab.base_url)
     end
 
     def validate_destination_namespace(entity_params)

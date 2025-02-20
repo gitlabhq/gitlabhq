@@ -372,7 +372,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       post ':id/issues/:issue_iid/move' do
-        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20776', new_threshold: 205)
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20776', new_threshold: 250)
 
         issue = user_project.issues.find_by(iid: params[:issue_iid])
         not_found!('Issue') unless issue

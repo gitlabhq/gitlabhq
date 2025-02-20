@@ -145,7 +145,7 @@ export default {
       return this.$apollo.queries.modelWithModelVersion.loading;
     },
     title() {
-      return `${this.modelName} / ${this.versionName}`;
+      return `${this.modelName} / ${this.$options.i18n.versionLabelText} ${this.versionName}`;
     },
     queryVariables() {
       return {
@@ -240,6 +240,7 @@ export default {
       performance: s__('MlModelRegistry|Performance'),
     },
     noneText: __('None'),
+    versionLabelText: s__('MlModelRegistry|version'),
   },
   ROUTE_DETAILS,
   ROUTE_ARTIFACTS,

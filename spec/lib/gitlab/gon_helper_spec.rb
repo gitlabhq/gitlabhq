@@ -169,7 +169,7 @@ RSpec.describe Gitlab::GonHelper, feature_category: :shared do
         .and_return(gon)
     end
 
-    it 'pushes a feature flag to the frontend with the provided value' do
+    it 'pushes a feature flag to the frontend with a true value' do
       expect(gon)
         .to receive(:push)
         .with({ features: { 'myFeatureFlag' => true } }, true)
@@ -177,12 +177,16 @@ RSpec.describe Gitlab::GonHelper, feature_category: :shared do
       helper.push_force_frontend_feature_flag(:my_feature_flag, true)
     end
 
-    it 'pushes a disabled feature flag if provided value is nil' do
+    it 'pushes a feature flag to the frontend with a false value' do
       expect(gon)
         .to receive(:push)
         .with({ features: { 'myFeatureFlag' => false } }, true)
 
-      helper.push_force_frontend_feature_flag(:my_feature_flag, nil)
+      helper.push_force_frontend_feature_flag(:my_feature_flag, false)
+    end
+
+    it 'raises an ArgumentError if argument is not a boolean' do
+      expect { helper.push_force_frontend_feature_flag(:my_feature_flag, Object.new) }.to raise_error ArgumentError
     end
   end
 

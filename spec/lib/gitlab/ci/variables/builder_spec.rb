@@ -313,6 +313,41 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         end
       end
     end
+
+    context 'when pipeline disables all except yaml variables' do
+      before do
+        pipeline.source = :duo_workflow
+      end
+
+      it 'only includes the YAML defined variables' do
+        expect(subject).to contain_exactly(
+          Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'YAML_VARIABLE', value: 'value' })
+        )
+      end
+    end
+  end
+
+  describe '#unprotected_scoped_variables' do
+    let(:expose_project_variables) { true }
+    let(:expose_group_variables) { true }
+    let(:environment_name) { job.expanded_environment_name }
+    let(:dependencies) { true }
+
+    subject { builder.unprotected_scoped_variables(job, expose_project_variables: expose_project_variables, expose_group_variables: expose_group_variables, environment: environment_name, dependencies: dependencies) }
+
+    it { is_expected.to be_instance_of(Gitlab::Ci::Variables::Collection) }
+
+    context 'when pipeline disables all except yaml variables' do
+      before do
+        pipeline.source = :duo_workflow
+      end
+
+      it 'only includes the YAML defined variables' do
+        expect(subject).to contain_exactly(
+          Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'YAML_VARIABLE', value: 'value' })
+        )
+      end
+    end
   end
 
   describe '#scoped_variables_for_pipeline_seed' do
@@ -556,6 +591,18 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
           expect(subject.to_hash).to include('CI_ENVIRONMENT_TIER' => 'testing')
           expect(subject.to_hash).to include('CI_ENVIRONMENT_URL' => 'https://hello.test')
         end
+      end
+    end
+
+    context 'when pipeline disables all except yaml variables' do
+      before do
+        pipeline.source = :duo_workflow
+      end
+
+      it 'only includes the YAML defined variables' do
+        expect(subject).to contain_exactly(
+          Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'YAML_VARIABLE', value: 'value' })
+        )
       end
     end
   end

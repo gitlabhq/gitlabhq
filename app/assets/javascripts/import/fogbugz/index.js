@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import App from './app.vue';
+import ImportFromFogBugzApp from './import_from_fogbugz_app.vue';
 
 export function initFogbugzImportProjectForm() {
   const el = document.getElementById('js-vue-import-fogbugz-project-app');
@@ -14,8 +14,9 @@ export function initFogbugzImportProjectForm() {
 
   return new Vue({
     el,
+    name: 'ImportFromFogBugzRoot',
     render(createElement) {
-      return createElement(App, { props });
+      return createElement(ImportFromFogBugzApp, { props });
     },
   });
 }

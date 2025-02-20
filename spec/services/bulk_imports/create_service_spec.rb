@@ -249,7 +249,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
         end
 
         context 'when a destination_namespace is provided' do
-          it 'uses the organization of the provided namespace for the bulk import entites' do
+          it 'uses the organization of the provided namespace for the bulk import entities' do
             expect { subject.execute }.to change { BulkImports::Entity.count }
 
             last_bulk_import = BulkImports::Entity.last
@@ -271,7 +271,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             ]
           end
 
-          it 'uses the fallback_organization for the bulk import entites' do
+          it 'uses the fallback_organization for the bulk import entities' do
             expect { subject.execute }.to change { BulkImports::Entity.count }
 
             last_bulk_import = BulkImports::Entity.last
@@ -288,7 +288,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
 
         context 'on the same instance' do
           before do
-            allow(Settings.gitlab).to receive(:base_url).and_return('http://gitlab.example')
+            allow(Settings.gitlab).to receive(:host).and_return('gitlab.example')
           end
 
           it 'tracks the same instance migration' do
@@ -490,7 +490,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
 
       context 'on the same instance' do
         before do
-          allow(Settings.gitlab).to receive(:base_url).and_return('http://gitlab.example')
+          allow(Settings.gitlab).to receive(:host).and_return('gitlab.example')
         end
 
         it 'tracks the same instance migration' do

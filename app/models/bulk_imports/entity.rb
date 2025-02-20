@@ -268,6 +268,8 @@ class BulkImports::Entity < ApplicationRecord
   end
 
   def validate_destination_namespace_ascendency
+    return unless bulk_import&.source_equals_destination?
+
     source = Group.find_by_full_path(source_full_path)
 
     return unless source

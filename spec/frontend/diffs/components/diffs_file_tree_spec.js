@@ -13,10 +13,11 @@ describe('DiffsFileTree', () => {
 
   let wrapper;
 
-  const createComponent = ({ visible = true } = {}) => {
+  const createComponent = ({ visible = true, ...rest } = {}) => {
     wrapper = shallowMount(DiffsFileTree, {
       propsData: {
         visible,
+        ...rest,
       },
     });
   };
@@ -130,5 +131,11 @@ describe('DiffsFileTree', () => {
         expect(getCookie(TREE_LIST_WIDTH_STORAGE_KEY)).toBe('350');
       });
     });
+  });
+
+  it('passes down loadedFiles table to tree list', () => {
+    const loadedFiles = { foo: true };
+    createComponent({ loadedFiles });
+    expect(wrapper.findComponent(TreeList).props('loadedFiles')).toBe(loadedFiles);
   });
 });

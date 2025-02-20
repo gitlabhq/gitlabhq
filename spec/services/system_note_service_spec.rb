@@ -846,4 +846,18 @@ RSpec.describe SystemNoteService, feature_category: :shared do
       expect { described_class.approve_mr(noteable, author) }.to change { Note.count }.by(1)
     end
   end
+
+  describe '.reviewed' do
+    it 'calls MergeRequestsService' do
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:reviewed)
+      end
+
+      described_class.reviewed(noteable, author)
+    end
+
+    it 'creates system note' do
+      expect { described_class.reviewed(noteable, author) }.to change { Note.count }.by(1)
+    end
+  end
 end

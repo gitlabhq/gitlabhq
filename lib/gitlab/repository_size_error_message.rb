@@ -19,20 +19,16 @@ module Gitlab
       "This merge request cannot be merged, #{base_message}"
     end
 
-    def push_error(change_size = 0)
-      "Your push has been rejected, #{base_message(change_size)}. #{more_info_message}"
+    def push_error
+      "Your push to this repository cannot be completed #{base_message}. #{more_info_message}"
     end
 
     def new_changes_error
-      if additional_repo_storage_available?
-        "Your push to this repository has been rejected because it would exceed storage limits. #{more_info_message}"
-      else
-        "Your push to this repository would cause it to exceed the size limit of #{formatted(limit)} so it has been rejected. #{more_info_message}"
-      end
+      "Your push to this repository cannot be completed as it would exceed the allocated storage for your project. #{more_info_message}"
     end
 
     def more_info_message
-      'Please contact your GitLab administrator for more information.'
+      'Contact your GitLab administrator for more information.'
     end
 
     def above_size_limit_message
@@ -41,8 +37,8 @@ module Gitlab
 
     private
 
-    def base_message(change_size = 0)
-      "because this repository has exceeded its size limit of #{formatted(limit)} by #{formatted(exceeded_size(change_size))}"
+    def base_message
+      "because this repository has exceeded the allocated storage for your project"
     end
 
     def formatted(number)

@@ -49,7 +49,7 @@ Using the `:latest` tag is **not recommended** as it can cause incompatibility i
     -e AIGW_GITLAB_URL=<your_gitlab_instance> \
     -e AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/ \
     registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:<ai-gateway-tag> \
-    ```
+   ```
 
    Replace `<ai-gateway-tag>` with the version that matches your GitLab instance. For example, if your GitLab version is `v17.9.0`, use `self-hosted-v17.9.0-ee`.
    From the container host, accessing `http://localhost:5052/docs` should open the AI gateway API documentation.
@@ -281,3 +281,37 @@ The AI gateway is available in multiple regions globally to ensure optimal perfo
 - Data sovereignty requirements compliance.
 
 You should locate your AI gateway in the same geographic region as your GitLab instance to help provide a frictionless developer experience, particularly for latency-sensitive features like Code Suggestions.
+
+## Troubleshooting
+
+### OpenShift Permission Issues
+
+When deploying the AI gateway on OpenShift, you might encounter permission errors due to OpenShift's security model.
+
+By default, the AI Gateway uses `/home/aigateway/.hf` for caching HuggingFace models, which may not be writable in OpenShift's
+security-restricted environment. This can result in permission errors like:
+
+```shell
+[Errno 13] Permission denied: '/home/aigateway/.hf/...'
+```
+
+To resolve this, set the `HF_HOME` environment variable to a writable location. You can use `/var/tmp/huggingface` or any other directory that is writable by the container.
+
+You can configure this in either of the following ways:
+
+- Add to your `values.yaml`:
+
+  ```yaml
+  extraEnvironmentVariables:
+    - name: HF_HOME
+      value: /var/tmp/huggingface  # Use any writable directory
+  ```
+
+- Or include in your Helm upgrade command:
+
+  ```shell
+  --set "extraEnvironmentVariables[0].name=HF_HOME" \
+  --set "extraEnvironmentVariables[0].value=/var/tmp/huggingface"  # Use any writable directory
+  ```
+
+This configuration ensures the AI Gateway can properly cache HuggingFace models while respecting OpenShift's security constraints. The exact directory you choose may depend on your specific OpenShift configuration and security policies.

@@ -1117,6 +1117,7 @@ Gitlab.ee do
 
   Settings.duo_workflow.reverse_merge!(
     secure: true,
+    debug: false,
     executor_binary_url: "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/duo-workflow-executor.tar.gz",
     executor_binary_urls: executor_binary_urls,
     executor_version: executor_version

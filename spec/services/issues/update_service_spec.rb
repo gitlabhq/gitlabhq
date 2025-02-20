@@ -105,6 +105,15 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
         expect(issue.issue_customer_relations_contacts.last.contact).to eq contact
       end
 
+      it 'publishes created event' do
+        expect { update_issue(opts) }
+          .to publish_event(::WorkItems::WorkItemUpdatedEvent).with(
+            id: issue.id,
+            namespace_id: issue.namespace_id,
+            updated_attributes: %w[title updated_at description milestone_id updated_by_id due_date lock_version title_html description_html last_edited_at last_edited_by_id discussion_locked]
+          )
+      end
+
       context 'with lock_version' do
         let(:opts) do
           {

@@ -1,12 +1,12 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import App from '~/import/fogbugz/app.vue';
+import ImportFromFogbugzApp from '~/import/fogbugz/import_from_fogbugz_app.vue';
 import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 
 describe('Import from FugBugz app', () => {
   let wrapper;
 
   const createComponent = () => {
-    wrapper = shallowMountExtended(App, {
+    wrapper = shallowMountExtended(ImportFromFogbugzApp, {
       propsData: {
         backButtonPath: '/projects/new#import_project',
         formPath: '/import/fogbugz/callback',

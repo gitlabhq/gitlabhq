@@ -10,6 +10,10 @@ module ActiveContext
           ActiveContext::Tracker.track!(objects, collection: self)
         end
 
+        def collection_name
+          raise NotImplementedError
+        end
+
         def queue
           raise NotImplementedError
         end
@@ -27,6 +31,10 @@ module ActiveContext
         def reference_klass
           nil
         end
+
+        def collection_record
+          ActiveContext::CollectionCache.fetch(collection_name)
+        end
       end
 
       attr_reader :object
@@ -38,9 +46,10 @@ module ActiveContext
       def references
         reference_klasses = Array.wrap(self.class.reference_klasses)
         routing = self.class.routing(object)
+        collection_id = self.class.collection_record.id
 
         reference_klasses.map do |reference_klass|
-          reference_klass.serialize(object, routing)
+          reference_klass.serialize(collection_id, routing, object)
         end
       end
     end

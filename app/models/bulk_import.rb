@@ -126,4 +126,12 @@ class BulkImport < ApplicationRecord
   def source_url
     configuration&.url
   end
+
+  def source_equals_destination?
+    return false unless configuration
+
+    source_uri = URI.parse(configuration.url.to_s)
+
+    source_uri.host == Settings.gitlab.host
+  end
 end

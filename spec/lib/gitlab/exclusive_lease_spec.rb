@@ -42,6 +42,20 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store,
             expect { lease_attempt }.to raise_error(Gitlab::ExclusiveLease::LeaseWithinTransactionError)
           end
         end
+
+        it 'allows the operation if lock thread is set' do
+          described_class.skipping_transaction_check do
+            thread = Thread.new do
+              Thread.current.abort_on_exception = true
+
+              ApplicationRecord.transaction do
+                expect { lease_attempt }.not_to raise_error
+              end
+            end
+
+            thread.join
+          end
+        end
       end
 
       context 'in production environment' do

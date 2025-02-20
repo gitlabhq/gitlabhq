@@ -49,7 +49,8 @@ module SystemNoteHelper
     'relate_to_parent' => 'link',
     'unrelate_from_parent' => 'link',
     'requested_changes' => 'error',
-    'override' => 'review-warning'
+    'override' => 'review-warning',
+    'reviewed' => 'comment-lines'
   }.freeze
 
   def system_note_icon_name(note)

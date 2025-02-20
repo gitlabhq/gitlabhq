@@ -145,7 +145,7 @@ module Gitlab
         #
         # @return [Boolean]
         def cluster_exists?
-          execute_shell(%w[kind get clusters]).include?(name)
+          execute_shell(%w[kind get clusters]).split("\n").any? { |line| line.strip == name }
         end
 
         # Create kind config file and return it's path

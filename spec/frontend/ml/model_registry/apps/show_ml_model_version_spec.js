@@ -135,7 +135,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
   it('renders the title', () => {
     createWrapper();
 
-    expect(findTitleArea().props('title')).toBe('blah / 1.2.3');
+    expect(findTitleArea().props('title')).toBe('blah / version 1.2.3');
   });
 
   describe('Model version edit button', () => {

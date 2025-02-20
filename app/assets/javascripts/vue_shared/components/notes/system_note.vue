@@ -38,6 +38,7 @@ const ICON_COLORS = {
   issues: 'system-note-icon-success',
   error: 'system-note-icon-danger',
   'review-warning': 'system-note-icon-warning',
+  'comment-lines': 'system-note-icon-info',
 };
 
 export default {

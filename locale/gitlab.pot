@@ -36653,7 +36653,7 @@ msgstr ""
 msgid "MlModelRegistry|Create your machine learning using GitLab directly or using the MLflow client"
 msgstr ""
 
-msgid "MlModelRegistry|Create/Import"
+msgid "MlModelRegistry|Create/Import model"
 msgstr ""
 
 msgid "MlModelRegistry|Creating a model"
@@ -36744,6 +36744,9 @@ msgid "MlModelRegistry|Failed to load model versions with error: %{message}"
 msgstr ""
 
 msgid "MlModelRegistry|Failed to load model with error: %{message}"
+msgstr ""
+
+msgid "MlModelRegistry|Failed to load models with error: %{message}"
 msgstr ""
 
 msgid "MlModelRegistry|File \"%{name}\" is %{size}. It is larger than max allowed size of %{maxAllowedFileSize}"
@@ -36911,9 +36914,6 @@ msgstr ""
 msgid "MlModelRegistry|Subfolder cannot contain spaces"
 msgstr ""
 
-msgid "MlModelRegistry|This model has no runs"
-msgstr ""
-
 msgid "MlModelRegistry|Total versions"
 msgstr ""
 
@@ -36951,6 +36951,9 @@ msgid "MlModelRegistry|Versions"
 msgstr ""
 
 msgid "MlModelRegistry|folder name"
+msgstr ""
+
+msgid "MlModelRegistry|version"
 msgstr ""
 
 msgid "Mock an external CI integration."

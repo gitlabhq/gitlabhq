@@ -387,6 +387,10 @@ module SystemNoteService
     merge_requests_service(noteable, noteable.project, user).requested_changes
   end
 
+  def reviewed(noteable, user)
+    merge_requests_service(noteable, noteable.project, user).reviewed
+  end
+
   def change_alert_status(alert, author, reason = nil)
     ::SystemNotes::AlertManagementService.new(noteable: alert, container: alert.project, author: author).change_alert_status(reason)
   end

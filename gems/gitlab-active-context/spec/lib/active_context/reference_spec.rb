@@ -23,9 +23,8 @@ RSpec.describe ActiveContext::Reference do
         stub_const('Search::Elastic::Reference', Class.new)
       end
 
-      it 'falls back to Search::Elastic::Reference.deserialize' do
-        expect(Search::Elastic::Reference).to receive(:deserialize).with('test|string')
-        described_class.deserialize('test|string')
+      it 'returns nil' do
+        expect(described_class.deserialize('test|string')).to be_nil
       end
     end
   end
@@ -42,12 +41,6 @@ RSpec.describe ActiveContext::Reference do
 
     it 'returns nil when the class does not exist' do
       expect(described_class.ref_klass('ActiveContext::References::NonExistantReference|some|data')).to be_nil
-    end
-  end
-
-  describe '#klass' do
-    it 'returns the demodulized class name' do
-      expect(described_class.new.klass).to eq('Reference')
     end
   end
 

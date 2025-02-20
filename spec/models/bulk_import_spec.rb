@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe BulkImport, type: :model, feature_category: :importers do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:created_bulk_import) { create(:bulk_import, :created, updated_at: 2.hours.ago) }
   let_it_be(:started_bulk_import) { create(:bulk_import, :started, updated_at: 3.hours.ago) }
   let_it_be(:finished_bulk_import) { create(:bulk_import, :finished, updated_at: 1.hour.ago) }
@@ -225,6 +227,34 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
 
         expect(import.source_url).to be_nil
       end
+    end
+  end
+
+  describe '#source_equals_destination?' do
+    subject(:bulk_import) do
+      build_stubbed(:bulk_import,
+        configuration: build_stubbed(:bulk_import_configuration, url: source_url)
+      )
+    end
+
+    before do
+      allow(Settings.gitlab).to receive(:host).and_return('gitlab.example')
+    end
+
+    where(:source_url, :value) do
+      'https://gitlab.example' | true
+      'https://gitlab.example:443' | true
+      'https://gitlab.example/' | true
+      'https://gitlab.example/dir' | true
+      'http://gitlab.example' | true
+      'https://gitlab.example2' | false
+      'https://subdomain.example' | false
+      'https://subdomain.gitlab.example' | false
+      'http://192.168.1.1' | false
+    end
+
+    with_them do
+      it { expect(bulk_import.source_equals_destination?).to eq(value) }
     end
   end
 

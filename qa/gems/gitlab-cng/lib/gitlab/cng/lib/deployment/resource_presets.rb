@@ -46,7 +46,7 @@ module Gitlab
                   },
                   kas: {
                     minReplicas: 1,
-                    resources: resources("10m", "45Mi")
+                    resources: resources("100m", "256Mi")
                   },
                   gitlab_shell: {
                     minReplicas: 1,
@@ -84,7 +84,7 @@ module Gitlab
                   },
                   kas: {
                     minReplicas: 1,
-                    resources: resources("40m", "64Mi"),
+                    resources: resources("100m", "256Mi"),
                     hpa: cpu_utilization
                   },
                   gitlab_shell: {

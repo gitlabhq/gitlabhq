@@ -30,18 +30,6 @@ RSpec.describe ActiveContext::Tracker do
       expect(mock_queue).to contain_exactly(['test_string'])
     end
 
-    it 'serializes ActiveContext::Reference objects' do
-      reference_class = Class.new(ActiveContext::Reference) do
-        def serialize
-          'serialized_reference'
-        end
-      end
-      reference = reference_class.new
-
-      expect(described_class.track!(reference, collection: mock_collection)).to eq(1)
-      expect(mock_queue).to contain_exactly(['serialized_reference'])
-    end
-
     it 'uses collection.references for other objects' do
       obj = double('SomeObject')
       collection_instance = instance_double('CollectionInstance')

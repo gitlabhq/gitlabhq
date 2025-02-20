@@ -130,7 +130,7 @@ describe('ml/model_registry/apps/index_ml_models', () => {
 
     it('error message is displayed', () => {
       expect(findSearchableTable().props('errorMessage')).toBe(
-        'Failed to load model with error: Failure!',
+        'Failed to load models with error: Failure!',
       );
     });
 

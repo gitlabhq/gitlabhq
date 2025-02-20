@@ -6,15 +6,15 @@ module Groups
 
     before_action do
       push_frontend_feature_flag(:notifications_todos_buttons)
-      push_force_frontend_feature_flag(:work_items, group&.work_items_feature_flag_enabled?)
-      push_force_frontend_feature_flag(:work_items_beta, group&.work_items_beta_feature_flag_enabled?)
-      push_force_frontend_feature_flag(:work_items_alpha, group&.work_items_alpha_feature_flag_enabled?)
+      push_force_frontend_feature_flag(:work_items, !!group&.work_items_feature_flag_enabled?)
+      push_force_frontend_feature_flag(:work_items_beta, !!group&.work_items_beta_feature_flag_enabled?)
+      push_force_frontend_feature_flag(:work_items_alpha, !!group&.work_items_alpha_feature_flag_enabled?)
       push_force_frontend_feature_flag(:namespace_level_work_items, namespace_work_items_enabled?)
       push_force_frontend_feature_flag(:create_group_level_work_items,
-        group&.create_group_level_work_items_feature_flag_enabled?)
-      push_force_frontend_feature_flag(:glql_integration, group&.glql_integration_feature_flag_enabled?)
-      push_force_frontend_feature_flag(:glql_load_on_click, group&.glql_load_on_click_feature_flag_enabled?)
-      push_force_frontend_feature_flag(:continue_indented_text, group&.continue_indented_text_feature_flag_enabled?)
+        !!group&.create_group_level_work_items_feature_flag_enabled?)
+      push_force_frontend_feature_flag(:glql_integration, !!group&.glql_integration_feature_flag_enabled?)
+      push_force_frontend_feature_flag(:glql_load_on_click, !!group&.glql_load_on_click_feature_flag_enabled?)
+      push_force_frontend_feature_flag(:continue_indented_text, !!group&.continue_indented_text_feature_flag_enabled?)
       push_frontend_feature_flag(:issues_list_drawer, group)
     end
     before_action :handle_new_work_item_path, only: [:show]
@@ -33,7 +33,7 @@ module Groups
     private
 
     def namespace_work_items_enabled?
-      group&.namespace_work_items_enabled?
+      !!group&.namespace_work_items_enabled?
     end
 
     # The work_items/:iid route renders a Vue app that takes care of the show and new pages.

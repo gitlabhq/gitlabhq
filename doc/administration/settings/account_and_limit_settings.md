@@ -677,7 +677,7 @@ To increase the max attachment size to 200 MB in a
 If you receive intermittent push errors in your [Rails exceptions log](../logs/_index.md#exceptions_jsonlog), like this:
 
 ```plaintext
-Your push has been rejected, because this repository has exceeded its size limit.
+Your push to this repository cannot be completed because this repository has exceeded the allocated storage for your project.
 ```
 
 [Housekeeping](../housekeeping.md) tasks may be causing your repository size to grow.

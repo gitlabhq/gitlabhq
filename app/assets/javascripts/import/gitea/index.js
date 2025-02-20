@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import ImportFromGiteaRoot from './import_from_gitea_root.vue';
+import ImportFromGiteaApp from './import_from_gitea_app.vue';
 
 export function initGiteaImportProjectForm() {
   const el = document.getElementById('js-vue-import-gitea-project-root');
@@ -16,7 +16,7 @@ export function initGiteaImportProjectForm() {
     el,
     name: 'ImportFromGiteaRoot',
     render(h) {
-      return h(ImportFromGiteaRoot, { props });
+      return h(ImportFromGiteaApp, { props });
     },
   });
 }

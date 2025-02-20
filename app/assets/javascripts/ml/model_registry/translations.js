@@ -1,9 +1,4 @@
-import { __, s__, n__, sprintf } from '~/locale';
-
-export const TITLE_LABEL = s__('MlModelRegistry|Model registry');
-
-export const modelsCountLabel = (modelCount) =>
-  n__('MlModelRegistry|%d model', 'MlModelRegistry|%d models', modelCount);
+import { __, s__, sprintf } from '~/locale';
 
 export const DESCRIPTION_LABEL = __('Description');
 export const NO_DESCRIPTION_PROVIDED_LABEL = s__('MlModelRegistry|No description provided');
@@ -38,17 +33,6 @@ export const NAME_LABEL = __('Name');
 
 export const makeLoadVersionsErrorMessage = (message) =>
   sprintf(s__('MlModelRegistry|Failed to load model versions with error: %{message}'), {
-    message,
-  });
-
-export const makeLoadModelErrorMessage = (message) =>
-  sprintf(s__('MlModelRegistry|Failed to load model with error: %{message}'), {
-    message,
-  });
-
-export const NO_CANDIDATES_LABEL = s__('MlModelRegistry|This model has no runs');
-export const makeLoadCandidatesErrorMessage = (message) =>
-  sprintf(s__('MlModelRegistry|Failed to load model runs with error: %{message}'), {
     message,
   });
 

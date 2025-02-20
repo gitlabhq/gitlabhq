@@ -20,6 +20,11 @@ module Gitlab
         # - scoped_variables_for_pipeline_seed
         def scoped_variables(job, environment:, dependencies:)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
+            if pipeline.disable_all_except_yaml_variables?
+              variables.concat(job.yaml_variables)
+              next
+            end
+
             variables.concat(predefined_variables(job, environment))
             variables.concat(project.predefined_variables)
             variables.concat(pipeline_variables_builder.predefined_variables)
@@ -39,6 +44,11 @@ module Gitlab
 
         def unprotected_scoped_variables(job, expose_project_variables:, expose_group_variables:, environment:, dependencies:)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
+            if pipeline.disable_all_except_yaml_variables?
+              variables.concat(job.yaml_variables)
+              next
+            end
+
             variables.concat(predefined_variables(job, environment))
             variables.concat(project.predefined_variables)
             variables.concat(pipeline_variables_builder.predefined_variables)
@@ -58,6 +68,11 @@ module Gitlab
 
         def scoped_variables_for_pipeline_seed(job_attr, environment:, kubernetes_namespace:, user:, trigger_request:)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
+            if pipeline.disable_all_except_yaml_variables?
+              variables.concat(job_attr[:yaml_variables])
+              next
+            end
+
             variables.concat(predefined_variables_from_job_attr(job_attr, environment, trigger_request))
             variables.concat(project.predefined_variables)
             variables.concat(pipeline_variables_builder.predefined_variables)
@@ -78,6 +93,7 @@ module Gitlab
         def config_variables
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
             break variables unless project
+            next if pipeline.disable_all_except_yaml_variables?
 
             variables.concat(project.predefined_variables)
             variables.concat(pipeline_variables_builder.predefined_variables)
