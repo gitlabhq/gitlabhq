@@ -45,7 +45,7 @@ module Mutations
       private
 
       def find_work_item_type!(gid)
-        work_item_type = ::WorkItems::Type.find_by_correct_id_with_fallback(gid.model_id)
+        work_item_type = ::WorkItems::Type.find_by_id_with_fallback(gid.model_id)
 
         return work_item_type if work_item_type.present?
 

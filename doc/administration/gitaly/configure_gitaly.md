@@ -623,6 +623,38 @@ Disable Gitaly on a GitLab server in one of two ways:
 
 {{< /tabs >}}
 
+## Change the Gitaly listening interface
+
+You can change the interface that Gitaly listens on. You might change the listening interface when you have an external service that must communicate with Gitaly. For example,
+[exact code search](../../integration/exact_code_search/zoekt.md) that uses Zoekt when exact code search is enabled but the actual service is running on another server.
+
+The `gitaly_token` must be a secret string because `gitaly_token` is used for authentication with the Gitaly service.
+This secret can be generated with `openssl rand -base64 24` to generate a random 32 character string.
+
+For example, to change the Gitaly listening interface to `0.0.0.0:8075`:
+
+```ruby
+# in /etc/gitlab/gitlab.rb
+gitlab_rails['gitaly_token'] = 'enter-secret-token-here'
+
+gitlab_rails['repositories_storages'] = {
+  'default'  => { 'gitaly_address' => 'tcp://gitlab.example.com:8075' },
+}
+
+gitaly['configuration'] = {
+  listen_addr: '0.0.0.0:8075',
+  auth: {
+    token: 'enter-secret-token-here',
+  },
+  storage: [
+    {
+      name: 'default',
+      path: '/var/opt/gitlab/git-data/repositories',
+    },
+  ]
+}
+```
+
 ## Control groups
 
 {{< alert type="warning" >}}

@@ -169,14 +169,14 @@ Finally, push to GitLab and let the tests begin!
 
 ### Test against different PHP versions in Shell builds
 
-The [phpenv](https://github.com/phpenv/phpenv) project allows you to easily manage different versions of PHP
+The [phpenv](https://github.com/phpenv/phpenv) project allows you to manage different versions of PHP
 each with its own configuration. This is especially useful when testing PHP projects
 with the Shell executor.
 
 You have to install it on your build machine under the `gitlab-runner`
 user following [the upstream installation guide](https://github.com/phpenv/phpenv#installation).
 
-Using phpenv also allows to easily configure the PHP environment with:
+Using phpenv also allows you to configure the PHP environment with:
 
 ```shell
 phpenv config-add my_config.ini

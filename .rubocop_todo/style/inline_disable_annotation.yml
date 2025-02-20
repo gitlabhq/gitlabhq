@@ -1093,8 +1093,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/graphql/types/deployments/approval_type.rb'
     - 'ee/app/graphql/types/dora/performance_score_connection_type.rb'
     - 'ee/app/graphql/types/dora/performance_score_count_type.rb'
-    - 'ee/app/graphql/types/dora_metric_type.rb'
-    - 'ee/app/graphql/types/dora_type.rb'
     - 'ee/app/graphql/types/epic_descendant_count_type.rb'
     - 'ee/app/graphql/types/epic_descendant_weight_sum_type.rb'
     - 'ee/app/graphql/types/epic_health_status_type.rb'

@@ -9,7 +9,6 @@ module WorkItems
       belongs_to :namespace
       belongs_to :work_item_type,
         class_name: 'WorkItems::Type',
-        primary_key: :correct_id,
         inverse_of: :user_preferences,
         optional: true
     end

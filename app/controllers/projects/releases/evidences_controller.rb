@@ -25,15 +25,15 @@ module Projects
       end
 
       def release
-        @release ||= project.releases.find_by_tag!(sanitized_tag_name)
+        @release ||= project.releases.find_by_tag!(tag_name)
       end
 
       def evidence
         release.evidences.find(params[:id])
       end
 
-      def sanitized_tag_name
-        CGI.unescape(params[:tag])
+      def tag_name
+        params[:tag]
       end
     end
   end

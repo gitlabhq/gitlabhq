@@ -6,6 +6,7 @@ module Admin
     urgency :low
 
     around_action :support_multiple_databases
+    authorize! :read_admin_background_migrations, only: [:index, :show]
 
     def index
       @relations_by_tab = {

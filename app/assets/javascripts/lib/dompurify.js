@@ -28,8 +28,19 @@ const getAllowedIconUrls = (gon = window.gon) =>
     .filter(Boolean)
     .map((path) => relativePathToAbsolute(path, getBaseURL()));
 
-const isUrlAllowed = (url) =>
-  getAllowedIconUrls().some((allowedUrl) => getNormalizedURL(url).startsWith(allowedUrl));
+const isUrlAllowed = (url) => {
+  try {
+    const normalizedUrl = new URL(getNormalizedURL(url));
+    return getAllowedIconUrls().some((allowedUrlString) => {
+      const allowedUrl = new URL(allowedUrlString);
+      return (
+        allowedUrl.origin === normalizedUrl.origin && normalizedUrl.pathname === allowedUrl.pathname
+      );
+    });
+  } catch {
+    return false;
+  }
+};
 
 const isHrefSafe = (url) => url.match(/^#/) || isUrlAllowed(url);
 

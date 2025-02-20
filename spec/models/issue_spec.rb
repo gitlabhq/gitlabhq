@@ -18,7 +18,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   # TODO: Remove when issues.work_item_type_id cleanup is complete
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/499911
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/519796
   describe 'database triggers' do
     let_it_be(:type1) { create(:work_item_type, :non_default).tap { |type| type.update!(id: -type.id) } }
     let_it_be(:type2) { create(:work_item_type, :non_default).tap { |type| type.update!(id: -type.id) } }
@@ -563,12 +563,12 @@ RSpec.describe Issue, feature_category: :team_planning do
           .to contain_exactly(issue, incident)
       end
 
-      it 'joins the work_item_types table for filtering with issues.correct_work_item_type_id column' do
+      it 'joins the work_item_types table for filtering with issues.work_item_type_id column' do
         expect do
           described_class.with_issue_type([:issue, :incident]).to_a
         end.to make_queries_matching(
           %r{
-            INNER\sJOIN\s"work_item_types"\sON\s"work_item_types"\."correct_id"\s=\s"issues"\."correct_work_item_type_id"
+            INNER\sJOIN\s"work_item_types"\sON\s"work_item_types"\."id"\s=\s"issues"\."work_item_type_id"
             \sWHERE\s"work_item_types"\."base_type"\sIN\s\(0,\s1\)
           }x
         )
@@ -576,13 +576,13 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     context 'when a single issue_type is provided' do
-      it 'uses an optimized query for a single work item type using issues.correct_work_item_type_id column' do
+      it 'uses an optimized query for a single work item type using issues.work_item_type_id column' do
         expect do
           described_class.with_issue_type([:incident]).to_a
         end.to make_queries_matching(
           %r{
-            WHERE\s\("issues"\."correct_work_item_type_id"\s=
-            \s\(SELECT\s"work_item_types"\."correct_id"\sFROM\s"work_item_types"
+            WHERE\s\("issues"\."work_item_type_id"\s=
+            \s\(SELECT\s"work_item_types"\."id"\sFROM\s"work_item_types"
             \sWHERE\s"work_item_types"\."base_type"\s=\s1
             \sLIMIT\s1\)\)
           }x
@@ -612,12 +612,12 @@ RSpec.describe Issue, feature_category: :team_planning do
         .to contain_exactly(task)
     end
 
-    it 'uses the work_item_types table and issues.correct_work_item_type_id for filtering' do
+    it 'uses the work_item_types table and issues.work_item_type_id for filtering' do
       expect do
         described_class.without_issue_type(:issue).to_a
       end.to make_queries_matching(
         %r{
-          INNER\sJOIN\s"work_item_types"\sON\s"work_item_types"\."correct_id"\s=\s"issues"\."correct_work_item_type_id"
+          INNER\sJOIN\s"work_item_types"\sON\s"work_item_types"\."id"\s=\s"issues"\."work_item_type_id"
           \sWHERE\s"work_item_types"\."base_type"\s!=\s0
         }x
       )
@@ -2597,103 +2597,21 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
-  describe '#work_item_type' do
-    let_it_be_with_reload(:issue) { create(:issue, project: reusable_project) }
-
-    it 'uses the correct_work_item_type_id column to fetch the associated type' do
-      expect do
-        issue.work_item_type
-      end.to make_queries_matching(/FROM "work_item_types" WHERE "work_item_types"\."correct_id" =/)
-    end
-  end
-
-  describe '#work_item_type_id' do
-    let_it_be(:work_item_type1) { create(:work_item_type, :non_default) }
-    let_it_be(:work_item_type2) { create(:work_item_type, :non_default) }
-    let_it_be(:issue) { create(:issue, project: reusable_project) }
-
-    it 'returns the correct work_item_types.id value even if the value in the column is wrong' do
-      issue.update_columns(
-        work_item_type_id: work_item_type2.id,
-        correct_work_item_type_id: work_item_type1.correct_id
-      )
-
-      expect(issue.work_item_type_id).to eq(work_item_type1.id)
-    end
-  end
-
   describe '#work_item_type_id=', :aggregate_failures do
     let_it_be(:type1) do
       create(:work_item_type, :non_default).tap do |type|
-        type.update!(old_id: type.id, id: -type.id, correct_id: type.id * 1000)
+        type.update!(old_id: type.id, id: type.id * 1000)
       end
-    end
-
-    it 'assigns correct values if a correct_id is passed' do
-      issue = build(:issue, project: reusable_project, work_item_type: nil)
-
-      expect(issue.work_item_type_id).to be_nil
-      expect(issue.correct_work_item_type_id).to be_nil
-
-      issue.work_item_type_id = type1.correct_id
-
-      expect(issue.work_item_type_id).to eq(type1.id)
-      expect(issue.correct_work_item_type_id).to eq(type1.correct_id)
     end
 
     it 'fallbacks to work_item_types.old_id if passed' do
       issue = build(:issue, project: reusable_project, work_item_type: nil)
 
       expect(issue.work_item_type_id).to be_nil
-      expect(issue.correct_work_item_type_id).to be_nil
 
       issue.work_item_type_id = type1.old_id
 
       expect(issue.work_item_type_id).to eq(type1.id)
-      expect(issue.correct_work_item_type_id).to eq(type1.correct_id)
-    end
-
-    it 'does not assign default type when only setting the correct_work_item_type_id column' do
-      issue = build(:issue, project: reusable_project, work_item_type: nil)
-
-      expect(issue.work_item_type_id).to be_nil
-      expect(issue.correct_work_item_type_id).to be_nil
-
-      issue.work_item_type_id = type1.correct_id
-      issue.save!
-      issue.reload
-
-      expect(issue.work_item_type_id).to eq(type1.id)
-      expect(issue.correct_work_item_type_id).to eq(type1.correct_id)
-    end
-
-    context 'when work_item_type_id does not exist in the DB' do
-      it 'does not set type id values' do
-        issue = build(:issue, project: reusable_project, work_item_type: nil)
-
-        expect(issue.work_item_type_id).to be_nil
-        expect(issue.correct_work_item_type_id).to be_nil
-
-        issue.work_item_type_id = non_existing_record_id
-
-        expect(issue.work_item_type_id).to be_nil
-        expect(issue.correct_work_item_type_id).to be_nil
-      end
-    end
-  end
-
-  describe '#work_item_type=' do
-    it 'also sets correct_work_item_type', :aggregate_failures do
-      issue = build(:issue, project: reusable_project, work_item_type: nil)
-      work_item_type = create(:work_item_type, :non_default)
-
-      expect(issue.work_item_type).to be_nil
-      expect(issue.correct_work_item_type).to be_nil
-
-      issue.work_item_type = work_item_type
-
-      expect(issue.work_item_type).to eq(work_item_type)
-      expect(issue.correct_work_item_type).to eq(work_item_type)
     end
   end
 end

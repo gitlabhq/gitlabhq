@@ -79,9 +79,6 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         before do
           task_type = WorkItems::Type.default_by_type(:task)
           work_item.update_columns(work_item_type_id: task_type.id)
-          # reload necessary temporarily as correct_work_item_type_id is updated with a DB trigger
-          # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
-          work_item.reload
         end
 
         it 'does not apply the quick action' do

@@ -28,7 +28,7 @@ class WorkItem < Issue
     foreign_key: :work_item_id, source: :work_item
 
   scope :inc_relations_for_permission_check, -> {
-    includes(:author, ::Gitlab::Issues::TypeAssociationGetter.call, project: :project_feature)
+    includes(:author, :work_item_type, project: :project_feature)
   }
 
   class << self
@@ -274,17 +274,16 @@ class WorkItem < Issue
   end
 
   def hierarchy(options = {})
-    type_column_name = :"#{::Gitlab::Issues::TypeAssociationGetter.call}_id"
     base = self.class.where(id: id)
-    base = base.where(type_column_name => attributes[type_column_name.to_s]) if options[:same_type]
-    base = base.where(type_column_name => options[:different_type_id]) if options[:different_type_id]
+    base = base.where(work_item_type_id: work_item_type_id) if options[:same_type]
+    base = base.where(work_item_type_id: options[:different_type_id]) if options[:different_type_id]
 
     ::Gitlab::WorkItems::WorkItemHierarchy.new(base, options: options)
   end
 
   override :allowed_work_item_type_change
   def allowed_work_item_type_change
-    return unless correct_work_item_type_id_changed?
+    return unless work_item_type_id_changed?
 
     child_links = WorkItems::ParentLink.for_parents(id)
     parent_link = ::WorkItems::ParentLink.find_by(work_item: self)
@@ -314,9 +313,7 @@ class WorkItem < Issue
   def validate_child_restrictions(child_links)
     return if child_links.empty?
 
-    type_id_column = :"#{::Gitlab::Issues::TypeAssociationGetter.call}_id"
-
-    child_type_ids = child_links.joins(:work_item).select(self.class.arel_table[type_id_column]).distinct
+    child_type_ids = child_links.joins(:work_item).select(self.class.arel_table[:work_item_type_id]).distinct
     restrictions = ::WorkItems::HierarchyRestriction.where(
       parent_type_id: work_item_type_id,
       child_type_id: child_type_ids
@@ -339,7 +336,7 @@ class WorkItem < Issue
     return unless restriction&.maximum_depth
 
     children_with_new_type = self.class.where(id: child_links.select(:work_item_id))
-      .where(correct_work_item_type_id: correct_work_item_type_id)
+      .where(work_item_type_id: work_item_type_id)
     max_child_depth = ::Gitlab::WorkItems::WorkItemHierarchy.new(children_with_new_type).max_descendants_depth.to_i
 
     ancestor_depth =

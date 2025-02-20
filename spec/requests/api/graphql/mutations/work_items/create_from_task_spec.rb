@@ -47,7 +47,7 @@ RSpec.describe "Create a work item from a task in a work item's description", fe
     let(:current_user) { developer }
 
     it 'creates the work item' do
-      expect(task_type.to_gid.model_id.to_i).to eq(task_type.correct_id)
+      expect(task_type.to_gid.model_id.to_i).to eq(task_type.id)
 
       expect do
         post_graphql_mutation(mutation, current_user: current_user)
@@ -69,7 +69,7 @@ RSpec.describe "Create a work item from a task in a work item's description", fe
       let(:task_gid) { ::Gitlab::GlobalId.build(task_type, id: task_type.old_id).to_s }
 
       it 'creates the work item' do
-        expect(task_type.old_id).not_to eq(task_type.correct_id)
+        expect(task_type.old_id).not_to eq(task_type.id)
 
         expect do
           post_graphql_mutation(mutation, current_user: current_user)

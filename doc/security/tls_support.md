@@ -90,3 +90,17 @@ GitLab 17.7 and later use OpenSSL version 3. All components that are shipped
 with the Linux package are compatible with OpenSSL 3. However, before upgrading
 to GitLab 17.7, use the [OpenSSL 3 guide](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html)
 to identify and assess the compatibility of your external integrations.
+
+## Bypassing OpenSSL 3's requirement for close_notify
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181759) in GitLab 17.10.
+
+[Per RFC 52460](https://www.rfc-editor.org/rfc/rfc5246#section-7.2.1), a
+SSL connection should be terminated with a close_notify message. OpenSSL
+3 now enforces this as a security measure. Some services, such as third-party S3 providers,
+may report an `unexpected eof while reading` error because of this enforcement.
+
+This requirement may be disabled by setting the
+`SSL_IGNORE_UNEXPECTED_EOF` [environment variable](../administration/environment_variables.md) to `true`. This is only
+intended as temporary workaround. Disabling this may introduce a security
+vulnerability to truncation attacks.

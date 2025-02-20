@@ -32,6 +32,10 @@ const unsafeUrls = [
   `${rootGon.sprite_file_icons}/../../evil/path`,
   `${absoluteGon.sprite_icons}/../evil/path`,
   `${absoluteGon.sprite_file_icons}/../../https://evil.url`,
+  `${rootGon.sprite_icons}/-/raw/main/test.svg#main`,
+  `${rootGon.sprite_file_icons}/-/raw/main/test.svg#main`,
+  `${absoluteGon.sprite_icons}/-/raw/main/test.svg#main`,
+  `${absoluteGon.sprite_file_icons}/-/raw/main/test.svg#main`,
 ];
 
 /* eslint-disable no-script-url */

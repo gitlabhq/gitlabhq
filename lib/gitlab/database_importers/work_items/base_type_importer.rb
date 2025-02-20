@@ -169,6 +169,7 @@ module Gitlab
             :hierarchy,
             :labels,
             :linked_items,
+            :milestone,
             :notes,
             :notifications,
             :participants,

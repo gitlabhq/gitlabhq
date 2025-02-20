@@ -12,9 +12,9 @@ module WorkItems
 
     def preloads
       {
-        work_item_type: ::Gitlab::Issues::TypeAssociationGetter.call,
+        work_item_type: :work_item_type,
         web_url: { namespace: :route, project: [:project_namespace, { namespace: :route }] },
-        widgets: { ::Gitlab::Issues::TypeAssociationGetter.call => :enabled_widget_definitions },
+        widgets: { work_item_type: :enabled_widget_definitions },
         archived: :project
       }
     end
@@ -54,7 +54,7 @@ module WorkItems
           project: [:project_feature, :group]
         },
         :author,
-        ::Gitlab::Issues::TypeAssociationGetter.call,
+        :work_item_type,
         *super
       ]
     end

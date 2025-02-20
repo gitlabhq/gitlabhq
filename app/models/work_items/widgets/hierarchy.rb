@@ -57,11 +57,11 @@ module WorkItems
 
       def counts_by_state(work_item_type)
         open_count = counts_by_type_and_state.fetch(
-          [work_item_type.attributes['correct_id'], WorkItem.available_states[:opened]],
+          [work_item_type.id, WorkItem.available_states[:opened]],
           0
         )
         closed_count = counts_by_type_and_state.fetch(
-          [work_item_type.attributes['correct_id'], WorkItem.available_states[:closed]],
+          [work_item_type.id, WorkItem.available_states[:closed]],
           0
         )
 
@@ -73,9 +73,7 @@ module WorkItems
       end
 
       def counts_by_type_and_state
-        work_item.descendants
-          .group(:"#{::Gitlab::Issues::TypeAssociationGetter.call}_id", :state_id)
-          .count
+        work_item.descendants.group(:work_item_type_id, :state_id).count
       end
       strong_memoize_attr :counts_by_type_and_state
     end
