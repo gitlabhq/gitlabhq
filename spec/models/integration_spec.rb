@@ -1687,8 +1687,6 @@ RSpec.describe Integration, feature_category: :integrations do
 
   describe '#async_execute' do
     let(:integration) { build(:jenkins_integration, id: 123) }
-    let(:data) { { object_kind: 'build' } }
-    let(:serialized_data) { data.deep_stringify_keys }
     let(:supported_events) { %w[push build] }
 
     subject(:async_execute) { integration.async_execute(data) }
@@ -1697,13 +1695,25 @@ RSpec.describe Integration, feature_category: :integrations do
       allow(integration).to receive(:supported_events).and_return(supported_events)
     end
 
-    it 'queues a Integrations::ExecuteWorker' do
-      expect(Integrations::ExecuteWorker).to receive(:perform_async).with(integration.id, serialized_data)
+    where(:data) do
+      [
+        { object_kind: 'build' },
+        { object_kind: :build },
+        { 'object_kind' => 'build' },
+        { 'object_kind' => :build }
+      ]
+    end
 
-      async_execute
+    with_them do
+      it 'queues a Integrations::ExecuteWorker' do
+        expect(Integrations::ExecuteWorker).to receive(:perform_async).with(integration.id, data.deep_stringify_keys)
+
+        async_execute
+      end
     end
 
     context 'when the event is not supported' do
+      let(:data) { { object_kind: 'build' } }
       let(:supported_events) { %w[issue] }
 
       it 'does not queue a worker' do
@@ -1725,7 +1735,19 @@ RSpec.describe Integration, feature_category: :integrations do
       end
     end
 
+    context 'when object_kind is missing from data' do
+      let(:data) { {} }
+
+      it 'does not queue a worker' do
+        expect(Integrations::ExecuteWorker).not_to receive(:perform_async)
+
+        async_execute
+      end
+    end
+
     context 'when the Gitlab::SilentMode is enabled' do
+      let(:data) { { object_kind: 'build' } }
+
       before do
         allow(Gitlab::SilentMode).to receive(:enabled?).and_return(true)
       end
@@ -1738,6 +1760,8 @@ RSpec.describe Integration, feature_category: :integrations do
     end
 
     context 'when integration is not active' do
+      let(:data) { { object_kind: 'build' } }
+
       before do
         integration.active = false
       end

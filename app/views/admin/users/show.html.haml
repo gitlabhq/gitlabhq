@@ -151,6 +151,22 @@
             .gl-col-span-2
               %strong= @user.email_reset_offered_at || _('never')
 
+          %li{ class: list_item_classes }
+            %span.gl-text-subtle= s_("Profiles|Support Pin:")
+            .gl-col-span-2
+              %strong
+                = @user.support_pin || _('None')
+
+          %li{ class: list_item_classes }
+            %span.gl-text-subtle= s_("Profiles|Support Pin expires at:")
+            .gl-col-span-2
+              %strong
+                - if @user.support_pin_expires_at
+                  = @user.support_pin_expires_at.to_fs(:medium)
+                - else
+                  = _('None')
+
+
           = render_if_exists 'admin/users/using_license_seat', user: @user
 
           - if @user.ldap_user?

@@ -764,9 +764,11 @@ module Integrations
         return if ::Gitlab::SilentMode.enabled?
         return unless active?
 
+        data = data.with_indifferent_access
+
         # Temporarily log when we return within this method to gather data for
         # https://gitlab.com/gitlab-org/gitlab/-/issues/382999
-        unless supported_events.include?(data[:object_kind])
+        unless supported_events.include?(data[:object_kind].to_s)
           log_info(
             'async_execute did nothing due to event not being supported',
             event: data[:object_kind]

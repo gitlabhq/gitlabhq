@@ -42,7 +42,13 @@ With GitLab Duo Self-Hosted, you can:
 
 This setup ensures enterprise-level privacy and flexibility, allowing seamless integration of your LLMs with GitLab Duo features.
 
-### Supported GitLab Duo Chat features
+### Supported GitLab Duo features
+
+#### Supported Code Suggestions features
+
+For GitLab Duo Code Suggestions, you can use both [code generation and code completion](../../user/project/repository/code_suggestions/_index.md#code-completion-and-generation) with GitLab Duo Self-Hosted.
+
+#### Supported Duo Chat features
 
 You can use the following GitLab Duo Chat features with GitLab Duo Self-Hosted:
 

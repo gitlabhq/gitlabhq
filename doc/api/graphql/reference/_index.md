@@ -5255,6 +5255,29 @@ Input type: `DestroyComplianceRequirementInput`
 | <a id="mutationdestroycompliancerequirementclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdestroycompliancerequirementerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.destroyComplianceRequirementsControl`
+
+{{< details >}}
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `DestroyComplianceRequirementsControlInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdestroycompliancerequirementscontrolclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdestroycompliancerequirementscontrolid"></a>`id` | [`ComplianceManagementComplianceFrameworkComplianceRequirementsControlID!`](#compliancemanagementcomplianceframeworkcompliancerequirementscontrolid) | Global ID of the compliance requirement control to destroy. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdestroycompliancerequirementscontrolclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdestroycompliancerequirementscontrolerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.destroyContainerRepository`
 
 Input type: `DestroyContainerRepositoryInput`

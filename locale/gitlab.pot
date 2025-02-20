@@ -9547,6 +9547,9 @@ msgstr ""
 msgid "Billing|Awaiting member signup"
 msgstr ""
 
+msgid "Billing|Cannot remove the last owner."
+msgstr ""
+
 msgid "Billing|Cannot remove user"
 msgstr ""
 
@@ -14620,6 +14623,9 @@ msgid "Compliance framework settings have moved."
 msgstr ""
 
 msgid "Compliance frameworks"
+msgstr ""
+
+msgid "Compliance requirement control successfully deleted"
 msgstr ""
 
 msgid "Compliance requirement successfully deleted"
@@ -23973,6 +23979,9 @@ msgstr ""
 msgid "Expires %{preposition} %{expires_at}"
 msgstr ""
 
+msgid "Expires at"
+msgstr ""
+
 msgid "Expiring soon"
 msgstr ""
 
@@ -24287,6 +24296,9 @@ msgid "Failed to deploy to"
 msgstr ""
 
 msgid "Failed to destroy compliance requirement"
+msgstr ""
+
+msgid "Failed to destroy compliance requirement control"
 msgstr ""
 
 msgid "Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later."
@@ -38024,6 +38036,9 @@ msgstr ""
 msgid "No access"
 msgstr ""
 
+msgid "No active Support PIN."
+msgstr ""
+
 msgid "No activities found"
 msgstr ""
 
@@ -38471,6 +38486,9 @@ msgid "Not permitted to destroy framework"
 msgstr ""
 
 msgid "Not permitted to destroy requirement"
+msgstr ""
+
+msgid "Not permitted to destroy requirement control"
 msgstr ""
 
 msgid "Not permitted to reset user feed token"
@@ -44330,13 +44348,22 @@ msgstr ""
 msgid "Profiles|Expires"
 msgstr ""
 
+msgid "Profiles|Failed to generate new Support PIN."
+msgstr ""
+
 msgid "Profiles|Feed token could not be reset"
 msgstr ""
 
 msgid "Profiles|Feed token was successfully reset"
 msgstr ""
 
+msgid "Profiles|For some actions you request, the Support team may ask you to authenticate your request by generating a Support PIN."
+msgstr ""
+
 msgid "Profiles|Full name"
+msgstr ""
+
+msgid "Profiles|Generate New PIN"
 msgstr ""
 
 msgid "Profiles|GitLab is unable to verify your identity automatically. For security purposes, you must set a password by %{openingTag}resetting your password%{closingTag} to delete your account."
@@ -44388,6 +44415,9 @@ msgid "Profiles|Main settings"
 msgstr ""
 
 msgid "Profiles|Manage two-factor authentication"
+msgstr ""
+
+msgid "Profiles|New Support PIN generated successfully."
 msgstr ""
 
 msgid "Profiles|No \"&lt;\" or \"&gt;\" characters, please."
@@ -44466,6 +44496,15 @@ msgid "Profiles|Some options are unavailable for LDAP accounts"
 msgstr ""
 
 msgid "Profiles|Static object token was successfully reset"
+msgstr ""
+
+msgid "Profiles|Support PIN"
+msgstr ""
+
+msgid "Profiles|Support Pin expires at:"
+msgstr ""
+
+msgid "Profiles|Support Pin:"
 msgstr ""
 
 msgid "Profiles|Tell us about yourself in fewer than 250 characters."
