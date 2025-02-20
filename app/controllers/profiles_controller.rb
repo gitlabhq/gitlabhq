@@ -3,6 +3,7 @@
 class ProfilesController < Profiles::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   include Gitlab::Tracking
+  include SafeFormatHelper
 
   before_action :user
   before_action :authorize_change_username!, only: :update_username
@@ -54,7 +55,7 @@ class ProfilesController < Profiles::ApplicationController
         format.html { redirect_back_or_default(default: user_settings_profile_path, options: { notice: message }) }
         format.json { render json: { message: message }, status: :ok }
       else
-        message = s_("Profiles|Username change failed - %{message}") % { message: result[:message] }
+        message = safe_format(s_("Profiles|Username change failed - %{message}"), message: result[:message])
 
         format.html { redirect_back_or_default(default: user_settings_profile_path, options: { alert: message }) }
         format.json { render json: { message: message }, status: :unprocessable_entity }

@@ -213,6 +213,12 @@ domains:
       - code_review_workflow
       - insider_threat
 
+  Notifications:
+    description: Messaging and notifications in the app.
+    feature_categories:
+      - notifications
+      - acquisition
+
   Observability:
     description:
     feature_categories:

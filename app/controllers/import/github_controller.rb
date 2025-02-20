@@ -245,7 +245,7 @@ class Import::GithubController < Import::BaseController
     reset_time = Time.zone.at(exception.response_headers['x-ratelimit-reset'].to_i)
     session[access_token_key] = nil
     redirect_to new_import_url,
-      alert: _("GitHub API rate limit exceeded. Try again after %{reset_time}") % { reset_time: reset_time }
+      alert: safe_format(_("GitHub API rate limit exceeded. Try again after %{reset_time}"), reset_time: reset_time)
   end
 
   def provider_forbidden

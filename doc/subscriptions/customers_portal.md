@@ -221,3 +221,8 @@ After your subscription order is processed, you will receive several emails:
 
 - A "Welcome to the Customers Portal" email, including instructions on how to sign in.
 - A purchase confirmation email with instructions on how to provision access.
+
+## Get support
+
+If you encounter issues or have questions about your GitLab subscription, visit the [Contact us](https://customers.gitlab.com/contact_us) page.
+This page lists resources, services, and contact options of the sales, billing, and support teams, ensuring quick access to the right help.

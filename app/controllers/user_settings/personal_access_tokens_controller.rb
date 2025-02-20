@@ -91,6 +91,23 @@ module UserSettings
       end
     end
 
+    def toggle_dpop
+      unless Feature.enabled?(:dpop_authentication, current_user)
+        redirect_to user_settings_personal_access_tokens_path
+        return
+      end
+
+      result = UserPreferences::UpdateService.new(current_user, dpop_params).execute
+
+      if result.success?
+        flash[:notice] = _('DPoP preference updated.')
+      else
+        flash[:warning] = _('Unable to update DPoP preference.')
+      end
+
+      redirect_to user_settings_personal_access_tokens_path
+    end
+
     private
 
     def finder(options = {})
@@ -99,6 +116,10 @@ module UserSettings
 
     def personal_access_token_params
       params.require(:personal_access_token).permit(:name, :expires_at, :description, scopes: [])
+    end
+
+    def dpop_params
+      params.require(:user).permit(:dpop_enabled)
     end
 
     def set_index_vars

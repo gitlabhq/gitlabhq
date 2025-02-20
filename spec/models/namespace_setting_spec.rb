@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :model do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup, refind: true) { create(:group, parent: group) }
   let(:namespace_settings) { group.namespace_settings }
@@ -438,6 +440,33 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
       end
 
       it { is_expected.to eq('maintainer') }
+    end
+  end
+
+  describe '#jwt_ci_cd_job_token_enabled?' do
+    let(:settings) { described_class.new }
+
+    subject(:jwt_ci_cd_job_token_enabled?) { settings.jwt_ci_cd_job_token_enabled? }
+
+    where(:jwt_ci_cd_job_token_enabled, :feature_flag_enabled?, :jwt_ci_cd_job_token_opted_out, :jwt_enabled?) do
+      false | false | false | false
+      false | false | true  | false
+      false | true  | false | true
+      true  | false | false | true
+      false | true  | true  | false
+      true  | false | true  | true
+      true  | true  | false | true
+      true  | true  | true  | true
+    end
+
+    with_them do
+      before do
+        settings.jwt_ci_cd_job_token_enabled = jwt_ci_cd_job_token_enabled
+        settings.jwt_ci_cd_job_token_opted_out = jwt_ci_cd_job_token_opted_out
+        stub_feature_flags(ci_job_token_jwt: feature_flag_enabled?)
+      end
+
+      it { is_expected.to be(jwt_enabled?) }
     end
   end
 end

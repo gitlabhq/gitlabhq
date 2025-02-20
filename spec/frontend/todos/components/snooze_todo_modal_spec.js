@@ -3,12 +3,9 @@ import VueApollo from 'vue-apollo';
 import { GlModal, GlFormInput, GlFormFields, GlFormDate } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { TODO_STATE_PENDING } from '~/todos/constants';
-import createMockApollo from 'helpers/mock_apollo_helper';
-import snoozeTodoMutation from '~/todos/components/mutations/snooze_todo.mutation.graphql';
 import { useFakeDate } from 'helpers/fake_date';
 import SnoozeTodoModal from '~/todos/components/snooze_todo_modal.vue';
 import { stubComponent } from 'helpers/stub_component';
-import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
 
 Vue.use(VueApollo);
@@ -23,22 +20,9 @@ describe('SnoozeTodoModal', () => {
 
   useFakeDate(mockCurrentTime);
 
-  const snoozeTodoMutationSuccessHandler = jest.fn().mockResolvedValue({
-    data: {
-      todoSnooze: {
-        todo: {
-          ...mockTodo,
-          snoozedUntil: mockCurrentTime,
-        },
-        errors: [],
-      },
-    },
-  });
-
   const findTimeInput = () => wrapper.findByTestId('time-input');
   const findDateInput = () => wrapper.findByTestId('date-input');
   const findDatetimeInPastError = () => wrapper.findByTestId('datetime-in-past-error');
-  const findSnoozeErrorAlert = () => wrapper.findByTestId('snooze-error');
 
   const setTime = (time) => {
     findTimeInput().findComponent(GlFormInput).vm.$emit('input', time);
@@ -55,17 +39,8 @@ describe('SnoozeTodoModal', () => {
     return nextTick();
   };
 
-  const createComponent = ({
-    mountFn = shallowMountExtended,
-    props = {},
-    snoozeTodoMutationHandler = snoozeTodoMutationSuccessHandler,
-  } = {}) => {
-    const mockApollo = createMockApollo();
-
-    mockApollo.defaultClient.setRequestHandler(snoozeTodoMutation, snoozeTodoMutationHandler);
-
+  const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) => {
     wrapper = mountFn(SnoozeTodoModal, {
-      apolloProvider: mockApollo,
       propsData: {
         todo: mockTodo,
         ...props,
@@ -146,54 +121,19 @@ describe('SnoozeTodoModal', () => {
     const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
     const time = '15:00';
     const date = '2025-01-01';
+    const expectedTimestamp = `${date}T${time}:00.000Z`;
     await setTime(time);
     await setDate(date);
     submitForm();
 
-    expect(snoozeTodoMutationSuccessHandler).toHaveBeenCalledWith({
-      snoozeUntil: new Date(`${date}T${time}`),
-      todoId: mockTodo.id,
-    });
+    expect(wrapper.emitted().submit[0]).toEqual([new Date(expectedTimestamp)]);
     expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_todo_item_action', {
       label: 'snooze_until_a_specific_date_and_time',
       extra: {
-        snooze_until: '2025-01-01T15:00:00.000Z',
+        snooze_until: expectedTimestamp,
       },
     });
 
     unmockTracking();
-  });
-
-  it('shows an error when the to snooze mutation returns some errors', async () => {
-    createComponent({
-      snoozeTodoMutationHandler: jest.fn().mockResolvedValue({
-        data: {
-          todoSnooze: {
-            todo: mockTodo,
-            errors: ['Could not snooze todo-item.'],
-          },
-        },
-      }),
-    });
-    await setTime('15:00');
-    await setDate('2025-01-01');
-    wrapper.findComponent(GlFormFields).vm.$emit('submit');
-    await waitForPromises();
-
-    expect(findSnoozeErrorAlert().exists()).toBe(true);
-    expect(findSnoozeErrorAlert().text()).toBe('Failed to snooze todo. Try again later.');
-  });
-
-  it('shows an error when the to snooze mutation fails', async () => {
-    createComponent({
-      snoozeTodoMutationHandler: jest.fn().mockRejectedValue(),
-    });
-    await setTime('15:00');
-    await setDate('2025-01-01');
-    wrapper.findComponent(GlFormFields).vm.$emit('submit');
-    await waitForPromises();
-
-    expect(findSnoozeErrorAlert().exists()).toBe(true);
-    expect(findSnoozeErrorAlert().text()).toBe('Failed to snooze todo. Try again later.');
   });
 });

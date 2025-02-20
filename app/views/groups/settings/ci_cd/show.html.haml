@@ -9,7 +9,7 @@
 
 -# Given we only have one field in this form which is also admin-only,
 -# we don't want to show an empty section to non-admin users,
-- if can?(current_user, :update_max_artifacts_size, @group)
+- if can?(current_user, :update_max_artifacts_size, @group) || @group.root?
   = render ::Layouts::SettingsBlockComponent.new(_("General pipelines"),
     id: 'js-general-pipeline-settings',
     expanded: general_expanded) do |c|

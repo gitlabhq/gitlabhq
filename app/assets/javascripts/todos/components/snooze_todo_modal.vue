@@ -1,12 +1,10 @@
 <script>
-import { GlModal, GlForm, GlFormFields, GlFormDate, GlAlert } from '@gitlab/ui';
+import { GlModal, GlForm, GlFormFields, GlFormDate } from '@gitlab/ui';
 import { formValidators } from '@gitlab/ui/dist/utils';
 import { s__, __ } from '~/locale';
 import { isInPast, fallsBefore } from '~/lib/utils/datetime_utility';
-import { reportToSentry } from '~/ci/utils';
 import Tracking from '~/tracking';
 import { INSTRUMENT_TODO_ITEM_CLICK } from '~/todos/constants';
-import { snoozeTodo } from '../utils';
 
 const FORM_ID = 'custom-snooze-form';
 const FORM_GROUPS_CLASSES = 'sm:gl-w-1/3';
@@ -19,15 +17,8 @@ export default {
     GlForm,
     GlFormFields,
     GlFormDate,
-    GlAlert,
   },
   mixins: [Tracking.mixin()],
-  props: {
-    todo: {
-      type: Object,
-      required: true,
-    },
-  },
   data() {
     return {
       fields: {
@@ -59,8 +50,6 @@ export default {
         time: DEFAULT_TIME,
         date: '',
       },
-      isLoading: false,
-      hasError: false,
     };
   },
   computed: {
@@ -71,7 +60,6 @@ export default {
           type: 'submit',
           variant: 'confirm',
           form: FORM_ID,
-          loading: this.isLoading,
           class: MODAL_ACTION_CLASSES,
         },
       };
@@ -98,11 +86,10 @@ export default {
       validator();
     },
     async handleSubmit() {
-      this.hasError = false;
       if (this.datetimeIsInPast) {
         return;
       }
-      this.$emit('submit');
+      this.$emit('submit', this.datetime);
 
       this.track(INSTRUMENT_TODO_ITEM_CLICK, {
         label: 'snooze_until_a_specific_date_and_time',
@@ -110,22 +97,6 @@ export default {
           snooze_until: this.datetime.toISOString(),
         },
       });
-
-      this.isLoading = true;
-      try {
-        const { data } = await snoozeTodo(this.$apollo, this.todo, this.datetime);
-
-        if (data.errors?.length) {
-          throw new Error(data.errors.join(', '));
-        } else {
-          this.$emit('snoozed');
-        }
-      } catch (error) {
-        reportToSentry(this.$options.name, error);
-        this.hasError = true;
-      } finally {
-        this.isLoading = false;
-      }
     },
   },
   FORM_ID,
@@ -158,9 +129,6 @@ export default {
     :action-secondary="$options.actionSecondary"
     @primary.prevent="$emit('primary')"
   >
-    <gl-alert v-if="hasError" data-testid="snooze-error" variant="danger" :dismissible="false">{{
-      $options.i18n.snoozeError
-    }}</gl-alert>
     <gl-form :id="$options.FORM_ID" @submit.prevent>
       <gl-form-fields
         v-model="formValues"

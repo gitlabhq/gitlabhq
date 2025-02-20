@@ -2,6 +2,7 @@
 table_name: integrations
 classes:
 - Integration
+- Integrations::AmazonQ
 - Integrations::AppleAppStore
 - Integrations::Asana
 - Integrations::Assembla

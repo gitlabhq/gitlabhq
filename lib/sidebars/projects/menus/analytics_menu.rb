@@ -91,7 +91,7 @@ module Sidebars
               link: project_cycle_analytics_path(context.project),
               super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu,
               container_html_options: { class: 'shortcuts-project-cycle-analytics' },
-              active_routes: { path: 'cycle_analytics#show' },
+              active_routes: { path: ['cycle_analytics#show', 'value_streams#new', 'value_streams#edit'] },
               item_id: :cycle_analytics
             )
           end

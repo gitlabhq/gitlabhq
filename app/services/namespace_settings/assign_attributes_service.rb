@@ -43,6 +43,7 @@ module NamespaceSettings
       handle_default_branch_name
       handle_default_branch_protection unless settings_params[:default_branch_protection].blank?
       handle_early_access_program_participation
+      handle_jwt_ci_cd_job_token_enabled
 
       if group.namespace_settings
         group.namespace_settings.attributes = settings_params
@@ -81,6 +82,19 @@ module NamespaceSettings
 
       not_participant = !group.namespace_settings&.early_access_program_participant
       settings_params[:early_access_program_joined_by_id] = current_user.id if not_participant
+    end
+
+    def handle_jwt_ci_cd_job_token_enabled
+      return if settings_params[:jwt_ci_cd_job_token_enabled].nil?
+
+      unless group.root?
+        settings_params.delete(:jwt_ci_cd_job_token_enabled)
+        group.namespace_settings.errors.add(:jwt_ci_cd_job_token_enabled, _('only available on top-level groups.'))
+        return
+      end
+
+      jwt_enabled = Gitlab::Utils.to_boolean(settings_params[:jwt_ci_cd_job_token_enabled])
+      settings_params[:jwt_ci_cd_job_token_opted_out] = !jwt_enabled
     end
 
     def validate_resource_access_token_creation_allowed_param

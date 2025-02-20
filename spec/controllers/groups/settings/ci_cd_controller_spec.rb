@@ -166,6 +166,15 @@ RSpec.describe Groups::Settings::CiCdController, feature_category: :continuous_i
           end
         end
       end
+
+      context 'when updating jwt_ci_cd_job_token_enabled' do
+        let(:params) { { group_id: group, group: { jwt_ci_cd_job_token_enabled: true } } }
+
+        it 'can update jwt_ci_cd_job_token_enabled' do
+          expect { perform_request }.to change { group.reload.namespace_settings.jwt_ci_cd_job_token_enabled }
+            .from(false).to(true)
+        end
+      end
     end
 
     context 'when user is a group maintainer' do
@@ -176,6 +185,16 @@ RSpec.describe Groups::Settings::CiCdController, feature_category: :continuous_i
 
         it 'cannot update allow_runner_registration_token?' do
           expect { perform_request }.not_to change { group.reload.allow_runner_registration_token? }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when updating jwt_ci_cd_job_token_enabled' do
+        let(:params) { { group_id: group, group: { jwt_ci_cd_job_token_enabled: true } } }
+
+        it 'cannot update jwt_ci_cd_job_token_enabled' do
+          expect { perform_request }.not_to change { group.reload.namespace_settings.jwt_ci_cd_job_token_enabled }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -197,6 +216,15 @@ RSpec.describe Groups::Settings::CiCdController, feature_category: :continuous_i
 
           it 'can update allow_runner_registration_token' do
             expect { perform_request }.to change { group.reload.allow_runner_registration_token? }.from(true).to(false)
+          end
+        end
+
+        context 'when updating jwt_ci_cd_job_token_enabled' do
+          let(:params) { { group_id: group, group: { jwt_ci_cd_job_token_enabled: true } } }
+
+          it 'can update jwt_ci_cd_job_token_enabled' do
+            expect { perform_request }.to change { group.reload.namespace_settings.jwt_ci_cd_job_token_enabled }
+              .from(false).to(true)
           end
         end
       end

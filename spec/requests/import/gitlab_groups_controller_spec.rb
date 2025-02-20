@@ -129,7 +129,7 @@ RSpec.describe Import::GitlabGroupsController, :with_current_organization, featu
         expect { import_request }.not_to change { Group.count }
 
         expect(flash[:alert])
-          .to include('Group could not be imported', "Name can't be blank", 'Group URL is too short')
+          .to include('Group could not be imported', "Name can&#39;t be blank", 'Group URL is too short')
       end
     end
 

@@ -1207,7 +1207,7 @@ module Ci
     end
 
     def token
-      return encoded_jwt if user&.has_composite_identity? || Feature.enabled?(:ci_job_token_jwt, user)
+      return encoded_jwt if user&.has_composite_identity? || use_jwt_for_ci_cd_job_token?
 
       super
     end
@@ -1221,6 +1221,10 @@ module Ci
     end
 
     private
+
+    def use_jwt_for_ci_cd_job_token?
+      namespace&.root_ancestor&.namespace_settings&.jwt_ci_cd_job_token_enabled?
+    end
 
     def encoded_jwt
       ::Ci::JobToken::Jwt.encode(self)

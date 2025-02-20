@@ -3,6 +3,8 @@
 class Import::FogbugzController < Import::BaseController
   extend ::Gitlab::Utils::Override
 
+  include SafeFormatHelper
+
   before_action :verify_fogbugz_import_enabled
   before_action -> { check_rate_limit!(:fogbugz_import, scope: current_user, redirect_back: true) }, only: :callback
 
@@ -133,7 +135,9 @@ class Import::FogbugzController < Import::BaseController
       outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
     )
   rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
-    redirect_to new_import_fogbugz_url, alert: _('Specified URL cannot be used: "%{reason}"') % { reason: e.message }
+    redirect_to new_import_fogbugz_url, alert: safe_format(
+      _('Specified URL cannot be used: "%{reason}"'), reason: e.message
+    )
   end
 
   def allow_local_requests?

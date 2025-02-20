@@ -6244,25 +6244,21 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     before do
       allow(::Ci::JobToken::Jwt).to receive(:encode).with(build).and_return(jwt_token)
+      build.set_token(database_token)
+      allow(build).to receive_message_chain(:user, :has_composite_identity?).and_return(composite_identity?)
+      allow(build).to receive_message_chain(:namespace, :root_ancestor, :namespace_settings, :jwt_ci_cd_job_token_enabled?)
+        .and_return(jwt_enabled?)
     end
 
-    it { is_expected.to eq(jwt_token) }
+    where(:composite_identity?, :jwt_enabled?, :expected_token) do
+      true  | true  | ref(:jwt_token)
+      true  | false | ref(:jwt_token)
+      false | true  | ref(:jwt_token)
+      false | false | ref(:database_token)
+    end
 
-    context 'when ci_job_token_jwt feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_job_token_jwt: false)
-        build.set_token(database_token)
-      end
-
-      it { is_expected.to eq(database_token) }
-
-      context 'when job user requires composite identity' do
-        before do
-          allow(build).to receive_message_chain(:user, :has_composite_identity?).and_return(true)
-        end
-
-        it { is_expected.to eq(jwt_token) }
-      end
+    with_them do
+      it { is_expected.to eq(expected_token) }
     end
   end
 

@@ -2951,6 +2951,9 @@ msgstr ""
 msgid "AccessTokens|Created date"
 msgstr ""
 
+msgid "AccessTokens|Enable DPoP"
+msgstr ""
+
 msgid "AccessTokens|Expiration date"
 msgstr ""
 
@@ -2973,6 +2976,9 @@ msgid "AccessTokens|For example, the application using the token or the purpose 
 msgstr ""
 
 msgid "AccessTokens|For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members."
+msgstr ""
+
+msgid "AccessTokens|How do I use DPoP headers?"
 msgstr ""
 
 msgid "AccessTokens|IP: %{ips}"
@@ -3023,6 +3029,12 @@ msgid "AccessTokens|Personal / project / group access token expiration"
 msgstr ""
 
 msgid "AccessTokens|Personal access tokens"
+msgstr ""
+
+msgid "AccessTokens|Require DPoP headers to access the REST or GraphQL API with a personal access token."
+msgstr ""
+
+msgid "AccessTokens|Require Demonstrating Proof of Possession (DPoP) headers"
 msgstr ""
 
 msgid "AccessTokens|Revoke"
@@ -6115,6 +6127,9 @@ msgstr ""
 msgid "AmazonQ|Always off"
 msgstr ""
 
+msgid "AmazonQ|Amazon Q"
+msgstr ""
+
 msgid "AmazonQ|Amazon Q Configuration"
 msgstr ""
 
@@ -6289,7 +6304,13 @@ msgstr ""
 msgid "AmazonQ|Use Amazon Q to automate workflows, create a merge request from an issue, upgrade Java, and improve your code with AI-powered reviews."
 msgstr ""
 
+msgid "AmazonQ|Use GitLab Duo with Amazon Q to create and review merge requests and upgrade Java."
+msgstr ""
+
 msgid "AmazonQ|Use GitLab Duo with Amazon Q to create and review merge requests and upgrade Java. %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "AmazonQ|Use GitLab Duo with Amazon Q to create and review merge requests and upgrade Java. GitLab Duo with Amazon Q is separate from GitLab Duo Pro and Enterprise."
 msgstr ""
 
 msgid "AmazonQ|Use GitLab Duo with Amazon Q to create and review merge requests and upgrade Java. GitLab Duo with Amazon Q is separate from GitLab Duo Pro and Enterprise. %{linkStart}Learn more%{linkEnd}."
@@ -11764,6 +11785,9 @@ msgid "Change reviewers."
 msgstr ""
 
 msgid "Change role"
+msgstr ""
+
+msgid "Change severity"
 msgstr ""
 
 msgid "Change status"
@@ -17286,9 +17310,6 @@ msgstr ""
 msgid "CreateValueStreamForm|Name is required"
 msgstr ""
 
-msgid "CreateValueStreamForm|New Value Stream"
-msgstr ""
-
 msgid "CreateValueStreamForm|New stage"
 msgstr ""
 
@@ -17912,7 +17933,7 @@ msgstr ""
 msgid "CycleAnalytics|Median duration"
 msgstr ""
 
-msgid "CycleAnalytics|New value stream…"
+msgid "CycleAnalytics|New value stream"
 msgstr ""
 
 msgid "CycleAnalytics|No data"
@@ -18240,6 +18261,9 @@ msgid "DORA4Metrics|Total projects (%{count}) with DORA metrics"
 msgstr ""
 
 msgid "DORA4Metrics|You have insufficient permissions to view"
+msgstr ""
+
+msgid "DPoP preference updated."
 msgstr ""
 
 msgid "DSN"
@@ -28211,6 +28235,12 @@ msgid "GroupSettings|Disable personal access tokens"
 msgstr ""
 
 msgid "GroupSettings|Emails are not encrypted. Concerned administrators may want to disable diff previews."
+msgstr ""
+
+msgid "GroupSettings|Enable JWT format for CI/CD job tokens"
+msgstr ""
+
+msgid "GroupSettings|Enable JWT format for the CI_JOB_TOKEN variable. When disabled, it uses the legacy database format."
 msgstr ""
 
 msgid "GroupSettings|Enable caching of hierarchical objects (subgroups and projects) to improve the performance of group-level features within a large group."
@@ -50388,9 +50418,6 @@ msgstr ""
 msgid "Save application"
 msgstr ""
 
-msgid "Save change"
-msgstr ""
-
 msgid "Save changes"
 msgstr ""
 
@@ -61488,6 +61515,9 @@ msgid "Unable to sign in to group with SAML: \"%{reason}\""
 msgstr ""
 
 msgid "Unable to suggest a path. Please refresh and try again."
+msgstr ""
+
+msgid "Unable to update DPoP preference."
 msgstr ""
 
 msgid "Unable to update label prioritization at this time"

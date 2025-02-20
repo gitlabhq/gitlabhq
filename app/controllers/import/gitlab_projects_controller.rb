@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Import::GitlabProjectsController < Import::BaseController
+  include SafeFormatHelper
   include WorkhorseAuthorization
 
   before_action :disable_query_limiting, only: [:create]
@@ -27,7 +28,7 @@ class Import::GitlabProjectsController < Import::BaseController
     if @project.saved?
       redirect_to(
         project_path(@project),
-        notice: _("Project '%{project_name}' is being imported.") % { project_name: @project.name }
+        notice: safe_format(_("Project '%{project_name}' is being imported."), project_name: @project.name)
       )
     else
       redirect_back_or_default(

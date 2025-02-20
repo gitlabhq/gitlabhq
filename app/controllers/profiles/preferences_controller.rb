@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Profiles::PreferencesController < Profiles::ApplicationController
+  include SafeFormatHelper
+
   before_action :user
 
   feature_category :user_profile
@@ -21,7 +23,7 @@ class Profiles::PreferencesController < Profiles::ApplicationController
     end
   rescue ArgumentError => e
     # Raised when `dashboard` is given an invalid value.
-    message = _("Failed to save preferences (%{error_message}).") % { error_message: e.message }
+    message = safe_format(_("Failed to save preferences (%{error_message})."), error_message: e.message)
     render status: :bad_request, json: { type: :alert, message: message }
   end
 

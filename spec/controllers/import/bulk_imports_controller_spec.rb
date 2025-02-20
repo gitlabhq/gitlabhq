@@ -224,7 +224,7 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
           it 'denies network request' do
             get :status
             expect(controller).to redirect_to(new_group_path(anchor: 'import-group-pane'))
-            expect(flash[:alert]).to eq("Specified URL cannot be used: \"#{expected_error}\"")
+            expect(flash[:alert]).to eq("Specified URL cannot be used: &quot;#{expected_error}&quot;")
           end
         end
 

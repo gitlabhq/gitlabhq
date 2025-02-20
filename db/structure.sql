@@ -16964,6 +16964,8 @@ CREATE TABLE namespace_settings (
     pipeline_variables_default_role smallint DEFAULT 2 NOT NULL,
     force_pages_access_control boolean DEFAULT false NOT NULL,
     extended_grat_expiry_webhooks_execute boolean DEFAULT false NOT NULL,
+    jwt_ci_cd_job_token_enabled boolean DEFAULT false NOT NULL,
+    jwt_ci_cd_job_token_opted_out boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))
@@ -22260,6 +22262,57 @@ CREATE SEQUENCE target_branch_rules_id_seq
 
 ALTER SEQUENCE target_branch_rules_id_seq OWNED BY target_branch_rules.id;
 
+CREATE TABLE targeted_message_dismissals (
+    id bigint NOT NULL,
+    targeted_message_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE targeted_message_dismissals_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE targeted_message_dismissals_id_seq OWNED BY targeted_message_dismissals.id;
+
+CREATE TABLE targeted_message_namespaces (
+    id bigint NOT NULL,
+    targeted_message_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE targeted_message_namespaces_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE targeted_message_namespaces_id_seq OWNED BY targeted_message_namespaces.id;
+
+CREATE TABLE targeted_messages (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    target_type smallint DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE targeted_messages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE targeted_messages_id_seq OWNED BY targeted_messages.id;
+
 CREATE TABLE term_agreements (
     id bigint NOT NULL,
     term_id bigint NOT NULL,
@@ -26095,6 +26148,12 @@ ALTER TABLE ONLY tags ALTER COLUMN id SET DEFAULT nextval('tags_id_seq'::regclas
 
 ALTER TABLE ONLY target_branch_rules ALTER COLUMN id SET DEFAULT nextval('target_branch_rules_id_seq'::regclass);
 
+ALTER TABLE ONLY targeted_message_dismissals ALTER COLUMN id SET DEFAULT nextval('targeted_message_dismissals_id_seq'::regclass);
+
+ALTER TABLE ONLY targeted_message_namespaces ALTER COLUMN id SET DEFAULT nextval('targeted_message_namespaces_id_seq'::regclass);
+
+ALTER TABLE ONLY targeted_messages ALTER COLUMN id SET DEFAULT nextval('targeted_messages_id_seq'::regclass);
+
 ALTER TABLE ONLY term_agreements ALTER COLUMN id SET DEFAULT nextval('term_agreements_id_seq'::regclass);
 
 ALTER TABLE ONLY terraform_state_versions ALTER COLUMN id SET DEFAULT nextval('terraform_state_versions_id_seq'::regclass);
@@ -29044,6 +29103,15 @@ ALTER TABLE ONLY tags
 
 ALTER TABLE ONLY target_branch_rules
     ADD CONSTRAINT target_branch_rules_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY targeted_message_dismissals
+    ADD CONSTRAINT targeted_message_dismissals_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY targeted_message_namespaces
+    ADD CONSTRAINT targeted_message_namespaces_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY targeted_messages
+    ADD CONSTRAINT targeted_messages_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY term_agreements
     ADD CONSTRAINT term_agreements_pkey PRIMARY KEY (id);
@@ -35123,6 +35191,16 @@ CREATE INDEX index_tags_on_name_trigram ON tags USING gin (name gin_trgm_ops);
 
 CREATE INDEX index_target_branch_rules_on_project_id ON target_branch_rules USING btree (project_id);
 
+CREATE UNIQUE INDEX index_targeted_message_dismissals_on_message_user_in_namespace ON targeted_message_dismissals USING btree (targeted_message_id, user_id, namespace_id);
+
+CREATE INDEX index_targeted_message_dismissals_on_namespace_id ON targeted_message_dismissals USING btree (namespace_id);
+
+CREATE INDEX index_targeted_message_dismissals_on_user_id ON targeted_message_dismissals USING btree (user_id);
+
+CREATE UNIQUE INDEX index_targeted_message_namespaces_on_message_and_namespace ON targeted_message_namespaces USING btree (targeted_message_id, namespace_id);
+
+CREATE INDEX index_targeted_message_namespaces_on_namespace_id ON targeted_message_namespaces USING btree (namespace_id);
+
 CREATE INDEX index_term_agreements_on_term_id ON term_agreements USING btree (term_id);
 
 CREATE INDEX index_term_agreements_on_user_id ON term_agreements USING btree (user_id);
@@ -38661,6 +38739,9 @@ ALTER TABLE ONLY merge_request_assignees
 ALTER TABLE ONLY observability_traces_issues_connections
     ADD CONSTRAINT fk_08c2664321 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY targeted_message_dismissals
+    ADD CONSTRAINT fk_08c30af7ff FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY merge_request_assignment_events
     ADD CONSTRAINT fk_08f7602bfd FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -39651,6 +39732,9 @@ ALTER TABLE ONLY protected_branch_merge_access_levels
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT fk_8a4948b668 FOREIGN KEY (start_date_sourcing_work_item_id) REFERENCES issues(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY targeted_message_namespaces
+    ADD CONSTRAINT fk_8ba73cd32a FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY bulk_import_failures
     ADD CONSTRAINT fk_8c0911e763 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
@@ -40103,6 +40187,9 @@ ALTER TABLE ONLY sbom_occurrences
 
 ALTER TABLE ONLY user_group_callouts
     ADD CONSTRAINT fk_c366e12ec3 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY targeted_message_dismissals
+    ADD CONSTRAINT fk_c3ccbe51e2 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY timelogs
     ADD CONSTRAINT fk_c49c83dd77 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -41306,6 +41393,9 @@ ALTER TABLE ONLY merge_request_approval_metrics
 
 ALTER TABLE ONLY ci_stages
     ADD CONSTRAINT fk_rails_5d4d96d44b_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY targeted_message_namespaces
+    ADD CONSTRAINT fk_rails_5d78dba870 FOREIGN KEY (targeted_message_id) REFERENCES targeted_messages(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY epic_issues
     ADD CONSTRAINT fk_rails_5d942936b4 FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;
@@ -42521,6 +42611,9 @@ ALTER TABLE p_ci_job_artifact_reports
 
 ALTER TABLE ONLY banned_users
     ADD CONSTRAINT fk_rails_fa5bb598e5 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY targeted_message_dismissals
+    ADD CONSTRAINT fk_rails_fa9d2df3f9 FOREIGN KEY (targeted_message_id) REFERENCES targeted_messages(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY operations_feature_flags_issues
     ADD CONSTRAINT fk_rails_fb4d2a7cb1 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

@@ -48,8 +48,16 @@ const mockScanExecutionPolicyProperties = {
       description: 'Specifies the type of policy to be enforced.',
       enum: 'scan_execution_policy',
     },
-    foo: 'bar',
+    scan_execution_policy: { items: { properties: { foo: 'bar' } } },
+    approval_policy: { items: { properties: { fizz: 'buzz' } } },
+    reused_policy: { $ref: '#/$defs/reused_policy' },
   },
+};
+
+const types = {
+  scan_execution_policy: { items: { properties: { foo: 'bar' } } },
+  approval_policy: { items: { properties: { fizz: 'buzz' } } },
+  reused_policy: { $ref: '#/$defs/reused_policy' },
 };
 
 const mockCommonExtendedSchema = (policyType) => ({
@@ -62,9 +70,7 @@ const mockCommonExtendedSchema = (policyType) => ({
       description: 'Specifies the type of policy to be enforced.',
       enum: policyType,
     },
-    scan_execution_policy: { items: { properties: { foo: 'bar' } } },
-    approval_policy: { items: { properties: { fizz: 'buzz' } } },
-    reused_policy: { $ref: '#/$defs/reused_policy' },
+    ...types,
   },
   $defs,
 });
@@ -77,7 +83,7 @@ const mockApprovalPolicyProperties = {
       description: 'Specifies the type of policy to be enforced.',
       enum: 'approval_policy',
     },
-    fizz: 'buzz',
+    ...types,
   },
 };
 
@@ -89,7 +95,7 @@ const mockReusedPolicyProperties = {
       description: 'Specifies the type of policy to be enforced.',
       enum: 'reused_policy',
     },
-    flam: 'jam',
+    ...types,
   },
 };
 
@@ -101,6 +107,7 @@ const mockNonExistentPolicyProperties = {
       description: 'Specifies the type of policy to be enforced.',
       enum: 'non_existent_policy',
     },
+    ...types,
   },
 };
 
@@ -184,9 +191,6 @@ describe('getSinglePolicySchema', () => {
     'returns schema with policy type wrapper when ff is enabled for $policyType',
     async ({ policyType }) => {
       mock.onGet().reply(HTTP_STATUS_OK, mockSchema);
-      window.gon.features = {
-        securityPoliciesNewYamlFormat: true,
-      };
 
       await expect(
         getSinglePolicySchema({

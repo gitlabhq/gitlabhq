@@ -2,21 +2,6 @@
 # Cop supports --autocorrect.
 Style/FormatString:
   Exclude:
-    - 'app/components/diffs/overflow_warning_component.rb'
-    - 'app/controllers/import/bitbucket_server_controller.rb'
-    - 'app/controllers/import/bulk_imports_controller.rb'
-    - 'app/controllers/import/fogbugz_controller.rb'
-    - 'app/controllers/import/gitea_controller.rb'
-    - 'app/controllers/import/github_controller.rb'
-    - 'app/controllers/import/gitlab_groups_controller.rb'
-    - 'app/controllers/import/gitlab_projects_controller.rb'
-    - 'app/controllers/invites_controller.rb'
-    - 'app/controllers/omniauth_callbacks_controller.rb'
-    - 'app/controllers/profiles/chat_names_controller.rb'
-    - 'app/controllers/profiles/emails_controller.rb'
-    - 'app/controllers/profiles/preferences_controller.rb'
-    - 'app/controllers/profiles/two_factor_auths_controller.rb'
-    - 'app/controllers/profiles_controller.rb'
     - 'app/controllers/projects/google_cloud/deployments_controller.rb'
     - 'app/controllers/projects/google_cloud/service_accounts_controller.rb'
     - 'app/controllers/projects/issues_controller.rb'

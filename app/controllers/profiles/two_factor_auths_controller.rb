@@ -222,7 +222,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   def groups_notification(groups)
     group_links = groups.map { |group| view_context.link_to group.full_name, group_path(group) }.to_sentence
     leave_group_links = groups.map do |group|
-      view_context.link_to (s_("leave %{group_name}") % { group_name: group.full_name }),
+      view_context.link_to safe_format(s_("leave %{group_name}"), group_name: group.full_name),
         leave_group_members_path(group),
         remote: false, method: :delete
     end.to_sentence

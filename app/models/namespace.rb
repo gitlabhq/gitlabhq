@@ -198,6 +198,7 @@ class Namespace < ApplicationRecord
     :resource_access_token_notify_inherited_locked_by_ancestor?,
     :resource_access_token_notify_inherited_locked_by_application_setting?,
     to: :namespace_settings
+  delegate :jwt_ci_cd_job_token_enabled?, to: :namespace_settings
 
   before_create :sync_share_with_group_lock_with_parent
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?

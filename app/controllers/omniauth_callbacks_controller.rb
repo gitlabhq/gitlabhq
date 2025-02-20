@@ -203,7 +203,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def redirect_identity_link_failed(error_message)
     redirect_to profile_account_path,
-      notice: _("Authentication failed: %{error_message}") % { error_message: error_message }
+      notice: safe_format(_("Authentication failed: %{error_message}"), error_message: error_message)
   end
 
   def redirect_identity_linked
@@ -288,10 +288,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     label = Gitlab::Auth::OAuth::Provider.label_for(oauth['provider'])
     simple_url = Settings.gitlab.url.sub(%r{^https?://(www\.)?}i, '')
     message = [
-      _('Signing in using your %{label} account without a pre-existing ' \
-        'account in %{simple_url} is not allowed.') % {
-          label: label, simple_url: simple_url
-        }
+      safe_format(_('Signing in using your %{label} account without a pre-existing ' \
+        'account in %{simple_url} is not allowed.'), label: label, simple_url: simple_url)
     ]
 
     if Gitlab::CurrentSettings.allow_signup?
@@ -349,7 +347,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def handle_identity_with_untrusted_extern_uid
     label = Gitlab::Auth::OAuth::Provider.label_for(oauth['provider'])
-    flash[:alert] = format(
+    flash[:alert] = safe_format(
       _('Signing in using your %{label} account has been disabled for security reasons. ' \
         'Please sign in to your GitLab account using another authentication method and ' \
         'reconnect to your %{label} account.'
@@ -362,7 +360,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def handle_disabled_provider
     label = Gitlab::Auth::OAuth::Provider.label_for(oauth['provider'])
-    flash[:alert] = _("Signing in using %{label} has been disabled") % { label: label }
+    flash[:alert] = safe_format(_("Signing in using %{label} has been disabled"), label: label)
 
     redirect_to new_user_session_path
   end
