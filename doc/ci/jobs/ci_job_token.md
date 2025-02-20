@@ -136,6 +136,133 @@ To add a group or project to the allowlist:
 
 You can also add a group or project to the allowlist [with the API](../../api/graphql/reference/_index.md#mutationcijobtokenscopeaddgrouporproject).
 
+### Auto-populate a project's allowlist
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/478540) in GitLab 17.10. [Deployed behind the `:authentication_logs_migration_for_allowlist` feature flag](../../user/feature_flags.md), disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+You can populate a project's allowlist using the data from the [job token authentication log](#job-token-authentication-log)
+with the UI or a Rake task.
+
+In either case, GitLab uses the authentication log to determine which projects or groups to add to the allowlist
+and adds those entries for you.
+
+This process creates at most 200 entries in the project's allowlist. If more than 200 entries exist in the authentication log,
+it [compacts the allowlist](#allowlist-compaction) to stay under the 200 entry limit.
+
+#### With the UI
+
+To auto-populate the allowlist through the UI:
+
+1. On the left sidebar, select **Search or go** to and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Job token permissions**.
+1. Select **Add** and choose **All projects in authentication log** from the dropdown list.
+1. A dialog asks you to confirm the action, select **Add entries**.
+
+After the process completes, the allowlist contains the entries from the authentication log.
+If not already set, the **Authorized groups and projects** is set to **Only this project and any groups and projects in the allowlist**.
+
+#### With a Rake task
+
+GitLab administrators with [rails console access](../../administration/operations/rails_console.md)
+can run a Rake task to auto-populate the allowlist for all or a subset of projects on an instance.
+This task also sets the **Authorized groups and projects** setting to **Only this project and any groups and projects in the allowlist**.
+
+The `ci:job_tokens:allowlist:autopopulate_and_enforce` Rake task has the following configuration options:
+
+- `PREVIEW`: Do a dry run and output the steps that would have been taken, but do not change any data.
+- `ONLY_PROJECT_IDS`: Do the migration for only the supplied project IDs (maximum of 1000 IDs).
+- `EXCLUDE_PROJECT_IDS`: Do the migration for all projects on the instance, except
+  for the supplied project IDs (maximum of 1000 IDs).
+
+`ONLY_PROJECT_IDS` and `EXCLUDE_PROJECT_IDS` cannot be used at the same time.
+
+For example:
+
+- `ci:job_tokens:allowlist:autopopulate_and_enforce PREVIEW=true`
+- `ci:job_tokens:allowlist:autopopulate_and_enforce PREVIEW=true ONLY_PROJECT_IDS=2,3`
+- `ci:job_tokens:allowlist:autopopulate_and_enforce PREVIEW=true EXCLUDE_PROJECT_IDS=2,3`
+- `ci:job_tokens:allowlist:autopopulate_and_enforce`
+- `ci:job_tokens:allowlist:autopopulate_and_enforce ONLY_PROJECT_IDS=2,3`
+- `ci:job_tokens:allowlist:autopopulate_and_enforce EXCLUDE_PROJECT_IDS=2,3`
+
+To run the Rake task for:
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+```shell
+sudo gitlab-rake ci:job_tokens:allowlist:autopopulate_and_enforce
+```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo -u git -H bundle exec rake ci:job_tokens:allowlist:autopopulate_and_enforce
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+#### Allowlist compaction
+
+The allowlist compaction algorithm:
+
+1. Scans the authorization log to identify the nearest common groups for projects.
+1. Consolidates multiple project-level entries into single group-level entries.
+1. Updates the allowlist with these consolidated entries.
+
+For example, with an allowlist similar to:
+
+```plaintext
+group1/group2/group3/project1
+group1/group2/group3/project2
+group1/group2/group4/project3
+group1/group2/group4/project4
+group1/group5/group6/project5
+```
+
+The compaction algorithm:
+
+1. Compacts the list to:
+
+   ```plaintext
+   group1/group2/group3
+   group1/group2/group4
+   group1/group2/group6
+   ```
+
+1. If the allowlist is over the 200 entry limit, the algorithm compacts again:
+
+   ```plaintext
+   group1/group2
+   group1/group5
+   ```
+
+1. If the allowlist is still over the 200 entry limit, the algorithm continues:
+
+   ```plaintext
+   group1
+   ```
+
+This process is performed until the number of allowlist entries is 200 or fewer.
+
 ### Limit job token scope for public or internal projects
 
 {{< history >}}

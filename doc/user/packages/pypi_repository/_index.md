@@ -27,6 +27,17 @@ clients use, see the [PyPI API documentation](../../../api/packages/pypi.md).
 
 Learn how to [build a PyPI package](../workflows/build_packages.md#pypi).
 
+## Package request forwarding security notice
+
+When using the GitLab PyPI package registry, package requests that cannot be found in the GitLab registry are automatically forwarded to pypi.org. This behavior can result in packages being downloaded from pypi.org, even when using the `--index-url` flag.
+
+For maximum security when working with private packages:
+
+- Turn off package forwarding in your group settings:
+  - Instance administrators can disable forwarding in the [**Continuous Integration** section](../../../administration/settings/continuous_integration.md#package-registry-configuration) of the **Admin** area.
+  - Group owners can disable forwarding in the **Packages and Registries** section of the group settings.
+- Use both [`--index-url` and `--no-index`](#security-implications) flags when installing packages.
+
 ## Authenticate with the GitLab package registry
 
 Before you interact with the GitLab package registry, you must authenticate with it.
@@ -176,9 +187,13 @@ more than once, a `400 Bad Request` error occurs.
 
 ## Install a PyPI package
 
-When a PyPI package is not found in the package registry, the request is forwarded to [pypi.org](https://pypi.org/).
+By default, when a PyPI package is not found in the GitLab package registry, the request is forwarded to [pypi.org](https://pypi.org/). This behavior:
 
-Administrators can disable this behavior in the [Continuous Integration settings](../../../administration/settings/continuous_integration.md).
+- Is enabled by default for all GitLab instances
+- Can be configured in the group's *Packages and registries* settings
+- Applies even when using the `--index-url` flag
+
+Administrators can disable this behavior globally in the [Continuous Integration settings](../../../administration/settings/continuous_integration.md#package-registry-configuration). Group Owners can disable this behavior for specific groups in the **Packages and registries** section of the group settings.
 
 {{< alert type="note" >}}
 
@@ -253,15 +268,20 @@ the three characters, such as `my-package`, `my_package`, and `my....package`.
 ### Security implications
 
 The security implications of using `--extra-index-url` versus `--index-url` when installing PyPI
-packages are significant and worth understanding in detail. If you use:
+packages are significant and worth understanding in detail:
 
-- `--index-url`: This option replaces the default [PyPI index](https://pypi.org)
-  with the specified URL. It's more secure because it only checks the specified index for packages.
-  Use this option when you want to ensure packages are only installed from a trusted, private source
-  (like the GitLab PyPI registry).
+- `--index-url`: This option replaces the default PyPI index URL with the specified URL. The GitLab package forwarding setting, which is turned on by default, might still download packages not found in the package registry from PyPI. To ensure packages are only installed from GitLab, either:
+  - Disable package forwarding in group settings
+  - Use both `--index-url` and `--no-index` flags together
 - `--extra-index-url`: This option adds an additional index to search, alongside the default PyPI index.
   It's less secure and more open to dependency confusion attacks, because it checks both the default PyPI
   and the additional index for packages.
+
+When using private packages, keep in mind the following best practices:
+
+- Check your group's package forwarding settings.
+- Use `--no-index` and `--index-url` flags together when installing private packages.
+- Regularly audit your package sources using `pip debug`.
 
 ## Using `requirements.txt`
 
@@ -354,3 +374,11 @@ tokens, `pip` may not be able to find your packages. This problem is due to how 
 To workaround this issue, you can use a [group deploy token](../../project/deploy_tokens/_index.md) with the
 scope `read_package_registry` from a common parent group for all projects or groups targeted by the
 `index-url` and `extra-index-url` values.
+
+### Unexpected package sources
+
+If packages are being installed from PyPI when you intended to use only the GitLab registry:
+
+- Check your group's package forwarding settings.
+- Use `--no-index` and `--index-url` flags together to prevent PyPI fallback.
+- Regularly audit your package sources using `pip debug`.
