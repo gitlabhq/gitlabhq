@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.8.3 (2025-02-21)
+
+### Fixed (2 changes)
+
+- [Use primary DB when authenticating via job token in jobs API](https://gitlab.com/gitlab-org/gitlab/-/commit/6eee5c6811cac82981252280f1b08316ae8c1fd5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181872))
+- [Revert stricter workhorse route regexes](https://gitlab.com/gitlab-org/gitlab/-/commit/aba07e94e0587dd378dccbdf18dfe839f09078bf) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181358))
+
 ## 17.8.2 (2025-02-11)
 
 ### Fixed (3 changes)
