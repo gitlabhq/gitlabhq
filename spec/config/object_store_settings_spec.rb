@@ -331,8 +331,8 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
 
       expect(settings['enabled']).to be false
       expect(settings['direct_upload']).to be true
-      expect(settings['remote_directory']).to be nil
-      expect(settings['bucket_prefix']).to be nil
+      expect(settings['remote_directory']).to be_nil
+      expect(settings['bucket_prefix']).to be_nil
     end
 
     it 'respects original values' do
@@ -346,7 +346,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
       expect(settings['enabled']).to be true
       expect(settings['direct_upload']).to be true
       expect(settings['remote_directory']).to eq 'artifacts'
-      expect(settings['bucket_prefix']).to be nil
+      expect(settings['bucket_prefix']).to be_nil
     end
 
     it 'supports bucket prefixes' do

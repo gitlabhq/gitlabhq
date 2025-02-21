@@ -38,7 +38,7 @@ RSpec.describe UploaderFinder, feature_category: :shared do
         end
 
         it 'returns nil' do
-          expect(subject).to be(nil)
+          expect(subject).to be_nil
         end
       end
 

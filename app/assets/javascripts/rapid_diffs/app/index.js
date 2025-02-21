@@ -3,7 +3,7 @@ import { initViewSettings } from '~/rapid_diffs/app/view_settings';
 import { DiffFile } from '~/rapid_diffs/diff_file';
 import { DiffFileMounted } from '~/rapid_diffs/diff_file_mounted';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
-import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
+import { initFileBrowser } from '~/rapid_diffs/app/init_file_browser';
 
 // This facade interface joins together all the bits and pieces of Rapid Diffs: DiffFile, Settings, File browser, etc.
 // It's a unified entrypoint for Rapid Diffs and all external communications should happen through this interface.

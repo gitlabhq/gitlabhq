@@ -88,7 +88,7 @@ RSpec.describe Resolvers::ContainerRepositoriesResolver do
     end
 
     context 'with unauthorized user' do
-      it { is_expected.to be nil }
+      it { is_expected.to be_nil }
     end
   end
 end

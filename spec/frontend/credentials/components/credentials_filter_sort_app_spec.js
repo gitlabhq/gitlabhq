@@ -1,8 +1,10 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import { GlFilteredSearch } from '@gitlab/ui';
-import CredentialsFilterApp from '~/credentials/components/credentials_filter_app.vue';
+import { GlFilteredSearch, GlSorting } from '@gitlab/ui';
+import CredentialsFilterSortApp from '~/credentials/components/credentials_filter_sort_app.vue';
 import { visitUrl, getBaseURL } from '~/lib/utils/url_utility';
+import setWindowLocation from 'helpers/set_window_location_helper';
+import { SORT_KEY_NAME } from '~/credentials/constants';
 
 const mockFilters = [
   'dummy',
@@ -35,15 +37,28 @@ jest.mock('~/lib/utils/url_utility', () => {
   };
 });
 
-describe('CredentialsFilterApp', () => {
+describe('CredentialsFilterSortApp', () => {
   let wrapper;
+  const URL_HOST = 'https://localhost/';
 
   const createComponent = () => {
-    wrapper = shallowMount(CredentialsFilterApp);
+    wrapper = mount(CredentialsFilterSortApp, {
+      stubs: {
+        GlFilteredSearch: true,
+      },
+    });
   };
+
+  beforeEach(() => {
+    setWindowLocation(URL_HOST);
+  });
 
   const findFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
   const findAvailableTokens = () => findFilteredSearch().props('availableTokens');
+  const findSortingComponent = () => wrapper.findComponent(GlSorting);
+  const findSortDirectionToggle = () =>
+    findSortingComponent().find('button[title^="Sort direction"]');
+  const findDropdownToggle = () => findSortingComponent().find('button[aria-haspopup="listbox"]');
 
   describe('Mounts GlFilteredSearch with corresponding filters', () => {
     it.each`
@@ -124,6 +139,94 @@ describe('CredentialsFilterApp', () => {
       expect(visitUrl).toHaveBeenCalledWith(
         `${getBaseURL()}/?search=dummy&created_before=2025-01-01&expires_before=2025-01-01&last_used_after=2025-01-01&state=inactive`,
       );
+    });
+  });
+  describe('renders CredentialsSortApp component', () => {
+    it('when url has filter param with value personal_access_tokens', async () => {
+      setWindowLocation('?filter=personal_access_tokens');
+      createComponent();
+      await nextTick();
+
+      expect(findSortingComponent().exists()).toBe(true);
+    });
+    it('when url has no filter param', async () => {
+      createComponent();
+      await nextTick();
+
+      expect(findSortingComponent().exists()).toBe(true);
+    });
+  });
+
+  describe('sort dropdown', () => {
+    it('defaults to sorting by "Created date" in ascending order', async () => {
+      createComponent();
+      await nextTick();
+      expect(findSortingComponent().props('isAscending')).toBe(true);
+      expect(findDropdownToggle().text()).toBe('Expiration date');
+    });
+
+    it('sets the sort label correctly', () => {
+      setWindowLocation('?sort=name_asc');
+
+      createComponent();
+
+      expect(findDropdownToggle().text()).toBe('Name');
+    });
+
+    describe('new sort option is selected', () => {
+      beforeEach(async () => {
+        visitUrl.mockImplementation(() => {});
+        createComponent();
+
+        findSortingComponent().vm.$emit('sortByChange', SORT_KEY_NAME);
+        await nextTick();
+      });
+
+      it('sorts by new option', () => {
+        expect(visitUrl).toHaveBeenCalledWith(`${URL_HOST}?sort=name_asc`);
+      });
+    });
+  });
+
+  describe('sort direction toggle', () => {
+    beforeEach(() => {
+      visitUrl.mockImplementation(() => {});
+    });
+
+    describe('when current sort direction is ascending', () => {
+      beforeEach(() => {
+        setWindowLocation('?sort=name_asc');
+
+        createComponent();
+      });
+
+      describe('when sort direction toggle is clicked', () => {
+        beforeEach(() => {
+          findSortDirectionToggle().trigger('click');
+        });
+
+        it('sorts in descending order', () => {
+          expect(visitUrl).toHaveBeenCalledWith(`${URL_HOST}?sort=name_desc`);
+        });
+      });
+    });
+
+    describe('when current sort direction is descending', () => {
+      beforeEach(() => {
+        setWindowLocation('?sort=name_desc');
+
+        createComponent();
+      });
+
+      describe('when sort direction toggle is clicked', () => {
+        beforeEach(() => {
+          findSortDirectionToggle().trigger('click');
+        });
+
+        it('sorts in ascending order', () => {
+          expect(visitUrl).toHaveBeenCalledWith(`${URL_HOST}?sort=name_asc`);
+        });
+      });
     });
   });
 });

@@ -1,5 +1,5 @@
 import initConfirmModal from '~/confirm_modal';
-import { initCredentialsFilterApp } from '~/credentials';
+import { initCredentialsFilterSortApp } from '~/credentials';
 
 initConfirmModal();
-initCredentialsFilterApp();
+initCredentialsFilterSortApp();

@@ -9693,9 +9693,6 @@ msgstr ""
 msgid "Billing|User successfully scheduled for removal. This process might take some time. Refresh the page to see the changes."
 msgstr ""
 
-msgid "Billing|User was successfully removed"
-msgstr ""
-
 msgid "Billing|You are about to remove user %{username} from your subscription. If you continue, the user will be removed from the %{namespace} group and all its subgroups and projects. This action can't be undone."
 msgstr ""
 
@@ -19742,6 +19739,9 @@ msgstr ""
 msgid "Dependency list"
 msgstr ""
 
+msgid "DependencyListExport|License Identifiers"
+msgstr ""
+
 msgid "DependencyListExport|Location"
 msgstr ""
 
@@ -19751,7 +19751,16 @@ msgstr ""
 msgid "DependencyListExport|Packager"
 msgstr ""
 
+msgid "DependencyListExport|Project"
+msgstr ""
+
 msgid "DependencyListExport|Version"
+msgstr ""
+
+msgid "DependencyListExport|Vulnerabilities Detected"
+msgstr ""
+
+msgid "DependencyListExport|Vulnerability IDs"
 msgstr ""
 
 msgid "DependencyProxy|%{docLinkStart}See the documentation%{docLinkEnd} for other ways to store Docker images in Dependency Proxy cache."
@@ -64399,7 +64408,7 @@ msgstr ""
 msgid "Vulnerability|The CVSS (Common Vulnerability Scoring System) is a standardized framework for assessing and communicating the severity of security vulnerabilities in software. It provides a numerical score (ranging from 0.0 to 10.0) to indicate the severity risk of the vulnerability."
 msgstr ""
 
-msgid "Vulnerability|The Exploit Prediction Scoring System model produces a probability score between 0 and 1 indicating the likelihood that a vulnerability will be exploited in the next 30 days."
+msgid "Vulnerability|The Exploit Prediction Scoring System model produces a percentage value between 0 and 100 that represents the likelihood that a vulnerability will be exploited in the next 30 days."
 msgstr ""
 
 msgid "Vulnerability|The scanner determined this vulnerability to be a false positive. Verify the evaluation before changing its status. %{linkStart}Learn more about false positive detection.%{linkEnd}"

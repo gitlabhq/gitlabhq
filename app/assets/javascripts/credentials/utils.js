@@ -1,9 +1,9 @@
-import { queryToObject } from '~/lib/utils/url_utility';
+import { queryToObject, setUrlParams } from '~/lib/utils/url_utility';
 import {
   OPERATORS_BEFORE,
   OPERATORS_AFTER,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import { TOKENS } from './constants';
+import { TOKENS, SORT_OPTIONS, DEFAULT_SORT } from './constants';
 
 /**
  * @typedef {{type: string, value: {data: string, operator: string}}} Token
@@ -16,9 +16,10 @@ import { TOKENS } from './constants';
  * @returns {Array<string|Token>}
  */
 export function initializeValuesFromQuery(query = document.location.search) {
-  const tokens = [];
+  const tokens = /** @type {Array<string|Token>} */ ([]);
+  const sorting = DEFAULT_SORT;
 
-  const { search, ...terms } = queryToObject(query);
+  const { search, sort, ...terms } = queryToObject(query);
 
   for (const [key, value] of Object.entries(terms)) {
     const isBefore = key.endsWith('_before');
@@ -54,5 +55,18 @@ export function initializeValuesFromQuery(query = document.location.search) {
     tokens.push(search);
   }
 
-  return tokens;
+  const sortOption = SORT_OPTIONS.find((item) => [item.sort.desc, item.sort.asc].includes(sort));
+  if (sort && sortOption) {
+    sorting.value = sortOption.value;
+    sorting.isAsc = sortOption.sort.asc === sort;
+  }
+
+  return { tokens, sorting };
+}
+
+export function buildSortedUrl(value, isAsc) {
+  const sortedOption = SORT_OPTIONS.find((sortOption) => sortOption.value === value);
+  const sort = isAsc ? sortedOption.sort.asc : sortedOption.sort.desc;
+  const newUrl = setUrlParams({ sort });
+  return newUrl;
 }

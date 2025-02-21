@@ -1,5 +1,6 @@
 import { DiffFile } from '~/rapid_diffs/diff_file';
 import IS from '~/rapid_diffs/intersection_observer';
+import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
 
 // We have to use var here because jest hoists mock calls, so let would be uninitialized at this point
 // eslint-disable-next-line no-var
@@ -61,19 +62,36 @@ describe('DiffFile Web Component', () => {
       invisible: jest.fn(),
       mounted: jest.fn(),
     });
-    getWebComponentElement().mount();
   });
 
   it('observes diff element', () => {
+    getWebComponentElement().mount();
     expect(IS.prototype.observe).toHaveBeenCalledWith(getWebComponentElement());
   });
 
   it('triggers mounted event', () => {
+    let emitted = false;
+    document.addEventListener(DIFF_FILE_MOUNTED, () => {
+      emitted = true;
+    });
+    getWebComponentElement().mount();
     expect(adapter.mounted).toHaveBeenCalled();
     expect(adapter.mounted.mock.instances[0]).toStrictEqual(getContext());
+    expect(emitted).toBe(true);
+  });
+
+  it('#selectFile', () => {
+    getWebComponentElement().mount();
+    const spy = jest.spyOn(getWebComponentElement(), 'scrollIntoView');
+    getWebComponentElement().selectFile();
+    expect(spy).toHaveBeenCalled();
   });
 
   describe('when visible', () => {
+    beforeEach(() => {
+      getWebComponentElement().mount();
+    });
+
     it('handles all clicks', () => {
       triggerVisibility(true);
       getDiffElement().click();
@@ -102,11 +120,11 @@ describe('DiffFile Web Component', () => {
   });
 
   describe('static methods', () => {
-    it('findByFileHash', () => {
+    it('#findByFileHash', () => {
       expect(DiffFile.findByFileHash('fileHash')).toBeInstanceOf(DiffFile);
     });
 
-    it('getAll', () => {
+    it('#getAll', () => {
       document.body.innerHTML = `<diff-file></diff-file><diff-file></diff-file>`;
       const instances = DiffFile.getAll();
       expect(instances.length).toBe(2);

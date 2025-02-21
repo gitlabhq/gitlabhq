@@ -57,7 +57,7 @@ RSpec.describe Resolvers::PaginatedTreeResolver, feature_category: :source_code_
       end
 
       it 'returns nil' do
-        is_expected.to be(nil)
+        is_expected.to be_nil
       end
     end
 
@@ -67,7 +67,7 @@ RSpec.describe Resolvers::PaginatedTreeResolver, feature_category: :source_code_
       end
 
       it 'returns nil' do
-        is_expected.to be(nil)
+        is_expected.to be_nil
       end
     end
 

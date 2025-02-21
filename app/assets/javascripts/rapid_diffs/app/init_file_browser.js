@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import store from '~/mr_notes/stores';
-import DiffFileTree from '~/diffs/components/diffs_file_tree.vue';
+import { pinia } from '~/pinia/instance';
+import { DiffFile } from '~/rapid_diffs/diff_file';
+import FileBrowser from './file_browser.vue';
 
 export async function initFileBrowser() {
   const el = document.querySelector('[data-file-browser]');
@@ -9,21 +11,21 @@ export async function initFileBrowser() {
   store.state.diffs.endpointMetadata = metadataEndpoint;
   await store.dispatch('diffs/fetchDiffFilesMeta');
 
+  const loadedFiles = Object.fromEntries(DiffFile.getAll().map((file) => [file.id, true]));
+
   // eslint-disable-next-line no-new
   new Vue({
     el,
-    data() {
-      return {
-        visible: true,
-      };
-    },
     store,
+    pinia,
     render(h) {
-      return h(DiffFileTree, {
-        props: { visible: this.visible },
+      return h(FileBrowser, {
+        props: {
+          loadedFiles,
+        },
         on: {
-          toggled: () => {
-            this.visible = !this.visible;
+          clickFile(file) {
+            DiffFile.findByFileHash(file.fileHash).selectFile();
           },
         },
       });

@@ -186,6 +186,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       WHERE c.column_name = 'organization_id'
         AND (fk.referenced_table_name = 'organizations' OR fk.referenced_table_name IS NULL)
         AND (c.column_default IS NOT NULL OR c.is_nullable::boolean OR fk.name IS NULL OR NOT fk.is_valid)
+        AND (c.table_schema = 'public')
       ORDER BY c.table_name;
     SQL
 
@@ -202,7 +203,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       "oauth_openid_requests" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_device_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "bulk_import_trackers" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517823"
+      "bulk_import_trackers" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517823",
+      "ai_duo_chat_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/516140"
     }
 
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }

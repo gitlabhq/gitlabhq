@@ -30,7 +30,7 @@ RSpec.describe Resolvers::TreeResolver do
 
         result = resolve_repository({ ref: "master" })
 
-        expect(result).to be(nil)
+        expect(result).to be_nil
       end
     end
   end

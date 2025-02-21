@@ -775,7 +775,7 @@ RSpec.describe ApplicationController, feature_category: :shared do
     it 'sets stream headers', :aggregate_failures do
       subject
 
-      expect(response.headers['Content-Length']).to be nil
+      expect(response.headers['Content-Length']).to be_nil
       expect(response.headers['X-Accel-Buffering']).to eq 'no'
       expect(response.headers['Last-Modified']).to eq '0'
     end

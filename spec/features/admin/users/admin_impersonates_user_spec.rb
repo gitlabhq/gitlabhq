@@ -135,7 +135,7 @@ RSpec.describe 'Admin impersonates user', feature_category: :user_management do
           subject
 
           icon = first('[data-testid="incognito-icon"]')
-          expect(icon).not_to be nil
+          expect(icon).not_to be_nil
         end
 
         context 'when viewing the confirm email warning', :js do

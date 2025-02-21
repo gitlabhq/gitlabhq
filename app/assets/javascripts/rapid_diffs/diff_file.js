@@ -1,3 +1,4 @@
+import { DIFF_FILE_MOUNTED } from './dom_events';
 import { VIEWER_ADAPTERS } from './adapters';
 // required for easier mocking in tests
 import IntersectionObserver from './intersection_observer';
@@ -24,11 +25,11 @@ export class DiffFile extends HTMLElement {
   adapterConfig = VIEWER_ADAPTERS;
 
   static findByFileHash(hash) {
-    return document.querySelector(`diff-file#${hash}`);
+    return document.querySelector(`diff-file[id="${hash}"]`);
   }
 
   static getAll() {
-    return document.querySelectorAll('diff-file');
+    return Array.from(document.querySelectorAll('diff-file'));
   }
 
   mount() {
@@ -38,6 +39,7 @@ export class DiffFile extends HTMLElement {
     this.observeVisibility();
     this.diffElement.addEventListener('click', this.onClick.bind(this));
     this.trigger(events.MOUNTED);
+    this.dispatchEvent(new CustomEvent(DIFF_FILE_MOUNTED, { bubbles: true }));
   }
 
   trigger(event, ...args) {
@@ -71,6 +73,11 @@ export class DiffFile extends HTMLElement {
       );
     }
     this.trigger(events.CLICK, event);
+  }
+
+  selectFile() {
+    this.scrollIntoView();
+    // TODO: add outline for active file
   }
 
   get data() {

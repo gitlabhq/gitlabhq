@@ -6,10 +6,10 @@ import { DiffFile } from '~/rapid_diffs/diff_file';
 import { DiffFileMounted } from '~/rapid_diffs/diff_file_mounted';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { pinia } from '~/pinia/instance';
-import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
+import { initFileBrowser } from '~/rapid_diffs/app/init_file_browser';
 
 jest.mock('~/rapid_diffs/app/view_settings');
-jest.mock('~/rapid_diffs/app/file_browser');
+jest.mock('~/rapid_diffs/app/init_file_browser');
 
 describe('Rapid Diffs App', () => {
   let app;

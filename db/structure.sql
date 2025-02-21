@@ -3973,6 +3973,7 @@ CREATE TABLE ai_duo_chat_events (
     event smallint NOT NULL,
     namespace_path text,
     payload jsonb,
+    organization_id bigint,
     CONSTRAINT check_628cdfbf3f CHECK ((char_length(namespace_path) <= 255))
 )
 PARTITION BY RANGE ("timestamp");
@@ -13114,6 +13115,7 @@ CREATE TABLE draft_notes (
     internal boolean DEFAULT false NOT NULL,
     note_type smallint,
     project_id bigint,
+    CONSTRAINT check_2a752d05fe CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_c497a94a0e CHECK ((char_length(line_code) <= 255))
 );
 
@@ -27268,9 +27270,6 @@ ALTER TABLE ONLY chat_names
 ALTER TABLE ONLY chat_teams
     ADD CONSTRAINT chat_teams_pkey PRIMARY KEY (id);
 
-ALTER TABLE draft_notes
-    ADD CONSTRAINT check_2a752d05fe CHECK ((project_id IS NOT NULL)) NOT VALID;
-
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
 
@@ -31511,6 +31510,8 @@ CREATE INDEX index_ai_conversation_threads_on_organization_id ON ai_conversation
 
 CREATE INDEX index_ai_conversation_threads_on_user_id_and_last_updated_at ON ai_conversation_threads USING btree (user_id, last_updated_at);
 
+CREATE INDEX index_ai_duo_chat_events_on_organization_id ON ONLY ai_duo_chat_events USING btree (organization_id);
+
 CREATE INDEX index_ai_duo_chat_events_on_personal_namespace_id ON ONLY ai_duo_chat_events USING btree (personal_namespace_id);
 
 CREATE INDEX index_ai_duo_chat_events_on_user_id ON ONLY ai_duo_chat_events USING btree (user_id);
@@ -33958,6 +33959,8 @@ CREATE INDEX index_notes_on_line_code ON notes USING btree (line_code);
 CREATE INDEX index_notes_on_namespace_id ON notes USING btree (namespace_id);
 
 CREATE INDEX index_notes_on_noteable_id_and_noteable_type_and_system ON notes USING btree (noteable_id, noteable_type, system);
+
+CREATE INDEX index_notes_on_noteable_id_noteable_type_and_id ON notes USING btree (noteable_id, noteable_type, id);
 
 CREATE INDEX index_notes_on_project_id_and_id_and_system_false ON notes USING btree (project_id, id) WHERE (NOT system);
 

@@ -10,7 +10,7 @@ module RapidDiffs
     end
 
     def id
-      @diff_file.file_identifier_hash
+      @diff_file.file_hash
     end
 
     def server_data

@@ -6,6 +6,10 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import DateToken from '~/vue_shared/components/filtered_search_bar/tokens/date_token.vue';
 
+export const SORT_KEY_NAME = 'name';
+export const SORT_KEY_CREATED = 'created';
+export const SORT_KEY_EXPIRES = 'expires';
+
 export const TOKENS = [
   {
     icon: 'key',
@@ -73,3 +77,34 @@ export const TOKENS = [
     unique: true,
   },
 ];
+
+export const SORT_OPTIONS = [
+  {
+    text: __('Name'),
+    value: SORT_KEY_NAME,
+    sort: {
+      asc: 'name_asc',
+      desc: 'name_desc',
+    },
+  },
+  {
+    text: __('Created date'),
+    value: SORT_KEY_CREATED,
+    sort: {
+      asc: 'created_asc',
+      desc: 'created_desc',
+    },
+  },
+  {
+    text: __('Expiration date'),
+    value: SORT_KEY_EXPIRES,
+    sort: {
+      asc: 'expires_at_asc_id_desc',
+    },
+  },
+];
+
+export const DEFAULT_SORT = {
+  value: SORT_KEY_EXPIRES,
+  isAsc: true,
+};

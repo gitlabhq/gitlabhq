@@ -21,7 +21,7 @@ class ProcessCommitWorker
   loggable_arguments 2, 3
   deduplicate :until_executed, feature_flag: :deduplicate_process_commit_worker
 
-  concurrency_limit -> { 1000 if Feature.enabled?(:concurrency_limit_process_commit_worker, Feature.current_request) }
+  concurrency_limit -> { 1000 }
 
   # project_id - The ID of the project this commit belongs to.
   # user_id - The ID of the user that pushed the commit.

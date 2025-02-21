@@ -639,15 +639,12 @@ export default {
 
       Mousetrap.bind(keysFor(MR_PREVIOUS_FILE_IN_DIFF), () => this.jumpToFile(-1));
       Mousetrap.bind(keysFor(MR_NEXT_FILE_IN_DIFF), () => this.jumpToFile(+1));
-
-      if (this.commit) {
-        Mousetrap.bind(keysFor(MR_COMMITS_NEXT_COMMIT), () =>
-          this.moveToNeighboringCommit({ direction: 'next' }),
-        );
-        Mousetrap.bind(keysFor(MR_COMMITS_PREVIOUS_COMMIT), () =>
-          this.moveToNeighboringCommit({ direction: 'previous' }),
-        );
-      }
+      Mousetrap.bind(keysFor(MR_COMMITS_NEXT_COMMIT), () =>
+        this.moveToNeighboringCommit({ direction: 'next' }),
+      );
+      Mousetrap.bind(keysFor(MR_COMMITS_PREVIOUS_COMMIT), () =>
+        this.moveToNeighboringCommit({ direction: 'previous' }),
+      );
 
       Mousetrap.bind(['mod+f', 'mod+g'], () => {
         this.keydownTime = new Date().getTime();

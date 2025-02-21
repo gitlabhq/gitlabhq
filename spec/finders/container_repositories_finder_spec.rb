@@ -102,7 +102,7 @@ RSpec.describe ContainerRepositoriesFinder do
             project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)
           end
 
-          it { is_expected.to be nil }
+          it { is_expected.to be_nil }
         end
       end
 
@@ -119,13 +119,13 @@ RSpec.describe ContainerRepositoriesFinder do
       context 'when subject_type is group' do
         let(:subject_type) { group }
 
-        it { is_expected.to be nil }
+        it { is_expected.to be_nil }
       end
 
       context 'when subject_type is project' do
         let(:subject_type) { project }
 
-        it { is_expected.to be nil }
+        it { is_expected.to be_nil }
       end
     end
   end

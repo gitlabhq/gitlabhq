@@ -92,7 +92,7 @@ We provide two debugging scripts to help administrators verify their self-hosted
      ```
 
      For a `mixtral` model running on vLLM:
-   
+
      ```shell
      poetry run troubleshoot \
        --model-family=mixtral \
@@ -113,6 +113,14 @@ Verify the output of the commands, and fix accordingly.
 
 If both commands are successful, but GitLab Duo Code Suggestions is still not working,
 raise an issue on the issue tracker.
+
+## GitLab Duo health check is not working
+
+When you [run a health check for GitLab Duo](../../user/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo), you might get an error like a `401 response from the AI gateway`.
+
+To resolve, first check if GitLab Duo features are functioning correctly. For example, send a message to Duo Chat.
+
+If this does not work, the error might be because of a known issue with GitLab Duo health check. For more information, see [issue 517097](https://gitlab.com/gitlab-org/gitlab/-/issues/517097).
 
 ## Check if GitLab can make a request to the model
 
