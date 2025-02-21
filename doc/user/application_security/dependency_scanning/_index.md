@@ -1043,7 +1043,11 @@ For more details of the dependency scanning report, see:
 
 ### CycloneDX Software Bill of Materials
 
-> - Generally available in GitLab 15.7.
+{{< history >}}
+
+- Generally available in GitLab 15.7.
+
+{{< /history >}}
 
 Dependency Scanning outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM)
 for each supported lock or build file it detects.

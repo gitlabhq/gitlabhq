@@ -213,7 +213,6 @@ See [Recommended process for adding a new document type](#recommended-process-fo
 
 ### Create the index
 
-NOTE
 All new indexes must have:
 
 - `project_id` and `namespace_id` fields (if available). One of the fields must be used for routing.

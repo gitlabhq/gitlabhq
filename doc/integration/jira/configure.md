@@ -12,7 +12,11 @@ title: Jira issues integration
 
 {{< /details >}}
 
-> - Name [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166555) to Jira issues integration in GitLab 17.6.
+{{< history >}}
+
+- Name [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166555) to Jira issues integration in GitLab 17.6.
+
+{{< /history >}}
 
 The Jira issues integration connects one or more GitLab projects to a Jira instance.
 You can host the Jira instance yourself or in [Jira Cloud](https://www.atlassian.com/migration/assess/why-cloud).
@@ -233,7 +237,11 @@ To copy the API token, select **Copy**.
 
 ## Migrate from Jira Server to Jira Cloud
 
-> - Integration name [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166555) to **Jira issues** in GitLab 17.6.
+{{< history >}}
+
+- Integration name [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166555) to **Jira issues** in GitLab 17.6.
+
+{{< /history >}}
 
 To migrate from Jira Server to Jira Cloud in GitLab and maintain your Jira issues integration:
 

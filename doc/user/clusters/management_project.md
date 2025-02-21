@@ -12,7 +12,11 @@ title: Cluster management project (deprecated)
 
 {{< /details >}}
 
-> - [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
+{{< history >}}
+
+- [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
+
+{{< /history >}}
 
 {{< alert type="warning" >}}
 

@@ -498,11 +498,13 @@ class BackfillMergeRequestMetricsForBigintConversion < Gitlab::Database::Migrati
 end
 ```
 
-NOTES:
+{{< alert type="note" >}}
 
 - With [Issue#438124](https://gitlab.com/gitlab-org/gitlab/-/issues/438124) new instances have all ID columns in bigint.
   The list of IDs yet to be converted to bigint in old instances (includes `Gitlab.com` SaaS) is maintained in `db/integer_ids_not_yet_initialized_to_bigint.yml`.
 - Since the schema file already has all IDs in `bigint`, don't push any changes to `db/structure.sql`.
+
+{{< /alert >}}
 
 ### Monitor the background migration
 

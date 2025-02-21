@@ -740,7 +740,11 @@ To delete an environment:
 
 ## Access an environment for preparation or verification purposes
 
-> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/437133) to reset `auto_stop_in` for `prepare` and `access` actions in GitLab 17.7.
+{{< history >}}
+
+- [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/437133) to reset `auto_stop_in` for `prepare` and `access` actions in GitLab 17.7.
+
+{{< /history >}}
 
 You can define a job that accesses an environment for various purposes, such as verification or preparation. This
 effectively bypasses deployment creation, so that you can adjust your CD workflow more accurately.

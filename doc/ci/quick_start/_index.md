@@ -44,6 +44,8 @@ The job results [are displayed in a pipeline](#view-the-status-of-your-pipeline-
 
 In GitLab, runners are agents that run your CI/CD jobs.
 
+If you're using GitLab.com, you can skip this step. GitLab.com provides instance runners for you.
+
 To view available runners:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -52,6 +54,8 @@ To view available runners:
 
 As long as you have at least one runner that's active, with a green circle next to it,
 you have a runner available to process your jobs.
+
+If you don't have access to these settings, contact your GitLab administrator.
 
 ### If you don't have a runner
 

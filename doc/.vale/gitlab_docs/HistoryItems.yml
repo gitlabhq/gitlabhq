@@ -4,12 +4,12 @@
 # Ensures history items are properly formatted.
 #
 extends: existence
-message: "History items must always start with '> -', one item per line, even if there is only one item."
+message: "History items must always use Hugo shortcodes and be a list with each line starting with '-', one item per line, even if there is only one item."
 link: https://docs.gitlab.com/development/documentation/feature_flags/#add-history-text
 vocab: false
 level: error
 nonword: true
 scope: raw
 tokens:
-  - '(?<=^#+[^\n]*\n\n)> [^-]'
-  - '^> - [^\n]*\n[^\n>`]'
+  - '\{\{< history >\}\}\n\n[^-]'
+  - '(^#+[^\n]*|\{\{< /details >\}\})\n\n> -'

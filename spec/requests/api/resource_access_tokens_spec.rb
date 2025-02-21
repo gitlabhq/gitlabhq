@@ -11,7 +11,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
       subject(:get_tokens) { get api("/#{source_type}s/#{resource_id}/access_tokens", user) }
 
       context "when the user has valid permissions" do
-        let_it_be(:project_bot) { create(:user, :project_bot) }
+        let_it_be(:project_bot) { create(:user, :project_bot, bot_namespace: namespace) }
         let_it_be(:active_access_tokens) { create_list(:personal_access_token, 5, user: project_bot) }
         let_it_be(:expired_token) { create(:personal_access_token, :expired, user: project_bot) }
         let_it_be(:revoked_token) { create(:personal_access_token, :revoked, user: project_bot) }
@@ -49,8 +49,12 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
           if source_type == 'project'
             expect(api_get_token["access_level"]).to eq(resource.team.max_member_access(token.user.id))
+            expect(api_get_token["resource_type"]).to eq('project')
+            expect(api_get_token["resource_id"]).to eq(namespace.project.id)
           else
             expect(api_get_token["access_level"]).to eq(resource.max_member_access_for_user(token.user))
+            expect(api_get_token["resource_type"]).to eq('group')
+            expect(api_get_token["resource_id"]).to eq(namespace.id)
           end
 
           expect(api_get_token["expires_at"]).to eq(token.expires_at.to_date.iso8601)
@@ -71,7 +75,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
         end
 
         context "when tokens belong to a different #{source_type}" do
-          let_it_be(:bot) { create(:user, :project_bot) }
+          let_it_be(:bot) { create(:user, :project_bot, bot_namespace: other_resource_namespace) }
           let_it_be(:token) { create(:personal_access_token, user: bot) }
 
           before do
@@ -151,7 +155,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
       context "when the user does not have valid permissions" do
         let_it_be(:user) { user_non_priviledged }
-        let_it_be(:project_bot) { create(:user, :project_bot) }
+        let_it_be(:project_bot) { create(:user, :project_bot, bot_namespace: namespace) }
         let_it_be(:access_tokens) { create_list(:personal_access_token, 3, user: project_bot) }
         let_it_be(:resource_id) { resource.id }
 
@@ -170,7 +174,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
     context "GET #{source_type}s/:id/access_tokens/:token_id" do
       subject(:get_token) { get api("/#{source_type}s/#{resource_id}/access_tokens/#{token_id}", user) }
 
-      let_it_be(:project_bot) { create(:user, :project_bot) }
+      let_it_be(:project_bot) { create(:user, :project_bot, bot_namespace: namespace) }
       let_it_be(:token) { create(:personal_access_token, user: project_bot) }
       let_it_be(:resource_id) { resource.id }
       let_it_be(:token_id) { token.id }
@@ -195,15 +199,19 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
           if source_type == 'project'
             expect(json_response["access_level"]).to eq(resource.team.max_member_access(token.user.id))
+            expect(json_response["resource_type"]).to eq('project')
+            expect(json_response["resource_id"]).to eq(namespace.project.id)
           else
             expect(json_response["access_level"]).to eq(resource.max_member_access_for_user(token.user))
+            expect(json_response["resource_type"]).to eq('group')
+            expect(json_response["resource_id"]).to eq(namespace.id)
           end
 
           expect(json_response["expires_at"]).to eq(token.expires_at.to_date.iso8601)
         end
 
         context "when using #{source_type} access token to GET other #{source_type} access token" do
-          let_it_be(:other_project_bot) { create(:user, :project_bot) }
+          let_it_be(:other_project_bot) { create(:user, :project_bot, bot_namespace: namespace) }
           let_it_be(:other_token) { create(:personal_access_token, user: other_project_bot) }
           let_it_be(:token_id) { other_token.id }
 
@@ -222,8 +230,12 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
             if source_type == 'project'
               expect(json_response["access_level"]).to eq(resource.team.max_member_access(other_token.user.id))
+              expect(json_response["resource_type"]).to eq('project')
+              expect(json_response["resource_id"]).to eq(namespace.project.id)
             else
               expect(json_response["access_level"]).to eq(resource.max_member_access_for_user(other_token.user))
+              expect(json_response["resource_type"]).to eq('group')
+              expect(json_response["resource_id"]).to eq(namespace.id)
             end
 
             expect(json_response["expires_at"]).to eq(other_token.expires_at.to_date.iso8601)
@@ -267,7 +279,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
     context "DELETE #{source_type}s/:id/access_tokens/:token_id", :sidekiq_inline do
       subject(:delete_token) { delete api("/#{source_type}s/#{resource_id}/access_tokens/#{token_id}", user) }
 
-      let_it_be(:project_bot) { create(:user, :project_bot) }
+      let_it_be(:project_bot) { create(:user, :project_bot, bot_namespace: namespace) }
       let_it_be(:token) { create(:personal_access_token, user: project_bot) }
       let_it_be(:resource_id) { resource.id }
       let_it_be(:token_id) { token.id }
@@ -286,7 +298,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
         end
 
         context "when using #{source_type} access token to DELETE other #{source_type} access token" do
-          let_it_be(:other_project_bot) { create(:user, :project_bot) }
+          let_it_be(:other_project_bot) { create(:user, :project_bot, bot_namespace: namespace) }
           let_it_be(:other_token) { create(:personal_access_token, user: other_project_bot) }
           let_it_be(:token_id) { other_token.id }
 
@@ -482,7 +494,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
         end
 
         context "when a #{source_type} access token tries to create another #{source_type} access token" do
-          let_it_be(:project_bot) { create(:user, :project_bot) }
+          let_it_be(:project_bot) { create(:user, :project_bot, bot_namespace: namespace) }
           let_it_be(:user) { project_bot }
 
           before do
@@ -504,7 +516,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
     end
 
     context "POST #{source_type}s/:id/access_tokens/:token_id/rotate" do
-      let_it_be(:project_bot) { create(:user, :project_bot) }
+      let_it_be(:project_bot) { create(:user, :project_bot, bot_namespace: namespace) }
       let_it_be(:token) { create(:personal_access_token, user: project_bot) }
       let_it_be(:resource_id) { resource.id }
       let_it_be(:token_id) { token.id }
@@ -667,7 +679,9 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
   context 'when the resource is a project' do
     let_it_be(:resource) { create(:project, group: create(:group)) }
+    let_it_be(:namespace) { resource.project_namespace }
     let_it_be(:other_resource) { create(:project) }
+    let_it_be(:other_resource_namespace) { other_resource.project_namespace }
     let_it_be(:unknown_resource) { create(:project) }
 
     before_all do
@@ -681,7 +695,9 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
   context 'when the resource is a group' do
     let_it_be(:resource) { create(:group) }
+    let_it_be(:namespace) { resource }
     let_it_be(:other_resource) { create(:group) }
+    let_it_be(:other_resource_namespace) { other_resource }
     let_it_be(:unknown_resource) { create(:project) }
 
     before_all do

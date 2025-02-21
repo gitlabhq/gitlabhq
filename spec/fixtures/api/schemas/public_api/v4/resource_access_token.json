@@ -11,7 +11,9 @@
     "revoked",
     "access_level",
     "scopes",
-    "last_used_at"
+    "last_used_at",
+    "resource_type",
+    "resource_id"
   ],
   "properties": {
     "id": {
@@ -61,6 +63,12 @@
         "null"
       ],
       "format": "date-time"
+    },
+    "resource_type": {
+      "type": "string"
+    },
+    "resource_id": {
+      "type": "integer"
     }
   },
   "additionalProperties": false

@@ -392,7 +392,11 @@ You can now create personal access tokens for a service account user with no exp
 
 {{< /details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181053) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `dpop_authentication`. Disabled by default.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181053) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `dpop_authentication`. Disabled by default.
+
+{{< /history >}}
 
 {{< alert type="flag" >}}
 

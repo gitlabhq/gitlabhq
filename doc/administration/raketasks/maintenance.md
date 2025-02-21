@@ -479,7 +479,11 @@ gitlab-rake gitlab:db:schema_checker:run
 
 ## Check the database for deduplicate CI/CD tags
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/518698) in GitLab 17.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/518698) in GitLab 17.10.
+
+{{< /history >}}
 
 This Rake task checks the `ci` database for duplicate tags in the `tags` table.
 This issue might affect instances that have undergone multiple major upgrades over an extended period.

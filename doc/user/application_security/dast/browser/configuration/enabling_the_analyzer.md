@@ -18,9 +18,13 @@ and crawls the site using an embedded browser.
 
 ## Create a DAST CI/CD job
 
-> - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87183) to DAST_VERSION: 3 in GitLab 15.0.
-> - This template was updated to DAST_VERSION: 4 in GitLab 16.0.
-> - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151910) to DAST_VERSION: 5 in GitLab 17.0.
+{{< history >}}
+
+- This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87183) to DAST_VERSION: 3 in GitLab 15.0.
+- This template was updated to DAST_VERSION: 4 in GitLab 16.0.
+- This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151910) to DAST_VERSION: 5 in GitLab 17.0.
+
+{{< /history >}}
 
 To add DAST scanning to your application, use the DAST job defined
 in the GitLab DAST CI/CD template file. Updates to the template are provided with GitLab

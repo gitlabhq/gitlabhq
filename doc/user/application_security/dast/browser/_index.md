@@ -13,7 +13,11 @@ title: DAST browser-based analyzer
 
 {{< /details >}}
 
-> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/9023) in GitLab 15.7 (GitLab DAST v3.0.50).
+{{< history >}}
+
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/9023) in GitLab 15.7 (GitLab DAST v3.0.50).
+
+{{< /history >}}
 
 {{< alert type="warning" >}}
 

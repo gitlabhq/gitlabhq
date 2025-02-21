@@ -151,12 +151,14 @@ For GitLab instances with domain verification enabled, if the domain cannot be v
 
 {{< /alert >}}
 
-> **Notes:**
->
-> - Domain verification is **required for GitLab.com users** to be marked as enterprise users.
-> - [DNS propagation can take up to 24 hours](https://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/complete-guide-to-dns-records/), although it's usually a couple of minutes to complete. Until it completes, the domain shows as unverified.
-> - Once your domain has been verified, leave the verification record in place. Your domain is periodically reverified, and may be disabled if the record is removed.
-> - A valid certificate is not required for domain verification.
+{{< alert type="note" >}}
+
+- Domain verification is **required for GitLab.com users** to be marked as enterprise users.
+- [DNS propagation can take up to 24 hours](https://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/complete-guide-to-dns-records/), although it's usually a couple of minutes to complete. Until it completes, the domain shows as unverified.
+- Once your domain has been verified, leave the verification record in place. Your domain is periodically reverified, and may be disabled if the record is removed.
+- A valid certificate is not required for domain verification.
+
+{{< /alert >}}
 
 ### View domains in group
 

@@ -1194,7 +1194,11 @@ end
 
 {{< /details >}}
 
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
+{{< history >}}
+
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
+
+{{< /history >}}
 
 The metadata database enables many new registry features, including
 online garbage collection, and increases the efficiency of many registry operations.

@@ -1800,7 +1800,11 @@ $example = array(
 
 ## Includes
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195798) in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195798) in GitLab 17.7.
+
+{{< /history >}}
 
 Use includes, or include directives, to add the content of a document inside another document.
 

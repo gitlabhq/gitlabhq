@@ -13,7 +13,11 @@ title: Debian packages in the package registry
 
 {{< /details >}}
 
-> - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
+{{< history >}}
+
+- [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
+
+{{< /history >}}
 
 {{< alert type="warning" >}}
 

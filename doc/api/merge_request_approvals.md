@@ -277,7 +277,7 @@ Example response:
 
 ## Project approval rules
 
-> - Use the [project approval rules](#get-all-approval-rules-for-project) to access this information.
+Use the [project approval rules](#get-all-approval-rules-for-project) to access this information.
 
 You can request information about a project's approval configuration using the
 following endpoint:

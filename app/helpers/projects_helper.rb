@@ -444,7 +444,6 @@ module ProjectsHelper
   end
 
   def show_lfs_misconfiguration_banner?(project)
-    return false unless Feature.enabled?(:lfs_misconfiguration_banner, project)
     return false unless project.repository && project.lfs_enabled?
 
     Rails.cache.fetch("show_lfs_misconfiguration_banner_#{project.id}", expires_in: 5.minutes) do

@@ -907,14 +907,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
             it { is_expected.to be_falsey }
           end
-
-          context 'when lfs_misconfiguration_banner feature flag is disabled' do
-            before do
-              stub_feature_flags(lfs_misconfiguration_banner: false)
-            end
-
-            it { is_expected.to be_falsey }
-          end
         end
       end
 

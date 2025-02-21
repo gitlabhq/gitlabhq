@@ -11,4 +11,4 @@ level: error
 nonword: true
 scope: raw
 tokens:
-  - '^\>[^\n]*\n\nDETAILS'
+  - '\{\{< /history >\}\}\n\n?\{\{< details >\}\}'

@@ -480,7 +480,11 @@ In this example, if the `INCLUDE_BUILDS` variable is:
 
 #### `include:integrity`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178593) in GitLab 17.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178593) in GitLab 17.9.
+
+{{< /history >}}
 
 Use `integrity` with `include:remote` to specifiy a SHA256 hash of the included remote file.
 If `integrity` does not match the actual content, the remote file is not processed
