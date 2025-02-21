@@ -206,7 +206,6 @@ describe('Pipelines Table', () => {
 
         it('passes the expected props', () => {
           expect(findPipelineFailureWidget().props()).toStrictEqual({
-            isPipelineActive: firstPipeline.active,
             pipelineIid: firstPipeline.iid,
             pipelinePath: firstPipeline.path,
             // Make sure the forward slash was removed
