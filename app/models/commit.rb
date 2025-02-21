@@ -413,7 +413,11 @@ class Commit
     message_body = ["(cherry picked from commit #{sha})"]
 
     if merged_merge_request?(user)
-      commits_in_merge_request = merged_merge_request(user).commits
+      commits_in_merge_request = if Feature.enabled?(:optimized_commit_storage, project)
+                                   merged_merge_request(user).commits(load_from_gitaly: true)
+                                 else
+                                   merged_merge_request(user).commits
+                                 end
 
       if commits_in_merge_request.present?
         message_body << ""

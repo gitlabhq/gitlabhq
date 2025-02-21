@@ -345,11 +345,19 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def first_commit
-    commits.last
+    if Feature.enabled?(:optimized_commit_storage, project)
+      commits(load_from_gitaly: true).last
+    else
+      commits.last
+    end
   end
 
   def last_commit
-    commits.first
+    if Feature.enabled?(:optimized_commit_storage, project)
+      commits(load_from_gitaly: true).first
+    else
+      commits.first
+    end
   end
 
   def base_commit
@@ -847,7 +855,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def save_commits
-    MergeRequestDiffCommit.create_bulk(self.id, compare.commits.reverse)
+    MergeRequestDiffCommit.create_bulk(self.id, compare.commits.reverse, skip_commit_data: Feature.enabled?(:optimized_commit_storage, project))
     self.class.uncached { merge_request_diff_commits.reset }
   end
 

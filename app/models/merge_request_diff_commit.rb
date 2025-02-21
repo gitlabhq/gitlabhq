@@ -39,7 +39,7 @@ class MergeRequestDiffCommit < ApplicationRecord
 
   # Deprecated; use `bulk_insert!` from `BulkInsertSafe` mixin instead.
   # cf. https://gitlab.com/gitlab-org/gitlab/issues/207989 for progress
-  def self.create_bulk(merge_request_diff_id, commits)
+  def self.create_bulk(merge_request_diff_id, commits, skip_commit_data: false)
     commit_hashes, user_tuples = prepare_commits_for_bulk_insert(commits)
     users = MergeRequest::DiffCommitUser.bulk_find_or_create(user_tuples)
 
@@ -59,7 +59,7 @@ class MergeRequestDiffCommit < ApplicationRecord
       commit_hash = commit_hash
         .except(:author_name, :author_email, :committer_name, :committer_email, :extended_trailers)
 
-      commit_hash.merge(
+      commit_hash = commit_hash.merge(
         commit_author_id: author.id,
         committer_id: committer.id,
         merge_request_diff_id: merge_request_diff_id,
@@ -69,6 +69,12 @@ class MergeRequestDiffCommit < ApplicationRecord
         committed_date: Gitlab::Database.sanitize_timestamp(commit_hash[:committed_date]),
         trailers: Gitlab::Json.dump(commit_hash.fetch(:trailers, {}))
       )
+
+      if skip_commit_data
+        commit_hash.merge(message: '')
+      else
+        commit_hash
+      end
     end
 
     ApplicationRecord.legacy_bulk_insert(self.table_name, rows) # rubocop:disable Gitlab/BulkInsert

@@ -18,12 +18,6 @@ title: GitLab-managed Kubernetes resources
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
-
 Use GitLab-managed Kubernetes resources to provision Kubernetes resources with environment templates. An environment template can:
 
 - Create namespaces and service accounts automatically for new environments

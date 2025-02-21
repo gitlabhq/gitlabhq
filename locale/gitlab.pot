@@ -60260,6 +60260,9 @@ msgstr ""
 msgid "Todos|For one hour"
 msgstr ""
 
+msgid "Todos|Getting started with GitLab Duo"
+msgstr ""
+
 msgid "Todos|Give yourself a pat on the back!"
 msgstr ""
 
@@ -60469,6 +60472,12 @@ msgid "Todos|Work item"
 msgstr ""
 
 msgid "Todos|You"
+msgstr ""
+
+msgid "Todos|You now have access to AI-powered features. Boost your productivity with Code Suggestions and GitLab Duo Chat"
+msgstr ""
+
+msgid "Todos|You now have access to AI-powered features. Boost your productivity with Code Suggestions, GitLab Duo Chat, Vulnerability Explanation, and more"
 msgstr ""
 
 msgid "Todos|Your SSH key has expired"

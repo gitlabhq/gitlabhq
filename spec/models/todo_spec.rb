@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Todo, feature_category: :notifications do
   let(:issue) { create(:issue) }
+  let_it_be(:user) { create(:user) }
 
   describe 'relationships' do
     it { is_expected.to belong_to(:author).class_name("User") }
@@ -25,6 +26,41 @@ RSpec.describe Todo, feature_category: :notifications do
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:author) }
 
+    context "for project and/or group" do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project) }
+
+      subject { described_class.new(project: project, group: group) }
+
+      where(:project?, :group?) do
+        true | true
+        true | false
+        false | true
+      end
+
+      with_them do
+        it "are valid" do
+          subject.project = project? ? project : nil
+          subject.group = group? ? group : nil
+          subject.validate
+
+          expect(subject.errors[:project]).to be_empty
+          expect(subject.errors[:group]).to be_empty
+        end
+      end
+
+      it "are both are missing" do
+        subject.project = nil
+        subject.group = nil
+        subject.validate
+
+        expect(subject.errors.messages[:project].first).to eq("can't be blank")
+        expect(subject.errors.messages[:group].first).to eq("can't be blank")
+      end
+    end
+
     context 'for commits' do
       subject { described_class.new(target_type: 'Commit') }
 
@@ -37,6 +73,24 @@ RSpec.describe Todo, feature_category: :notifications do
 
       it { is_expected.to validate_presence_of(:target_id) }
       it { is_expected.not_to validate_presence_of(:commit_id) }
+    end
+
+    context 'for parentless types' do
+      where(:action_type) do
+        [
+          [Todo::DUO_PRO_ACCESS_GRANTED],
+          [Todo::SSH_KEY_EXPIRED]
+        ]
+      end
+
+      with_them do
+        context "for #{params[:action_type]} should not require a target" do
+          subject { described_class.new(target: user, action: action_type) }
+
+          it { is_expected.not_to validate_presence_of(:project) }
+          it { is_expected.not_to validate_presence_of(:group) }
+        end
+      end
     end
   end
 

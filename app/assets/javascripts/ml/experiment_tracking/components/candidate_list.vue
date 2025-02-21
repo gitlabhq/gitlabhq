@@ -1,6 +1,6 @@
 <script>
 import { GlEmptyState, GlButton } from '@gitlab/ui';
-import emptySvgUrl from '@gitlab/svgs/dist/illustrations/status/status-new-md.svg';
+import EMPTY_SVG_PATH from '@gitlab/svgs/dist/illustrations/status/status-new-md.svg';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -87,7 +87,7 @@ export default {
   CANDIDATES_DOCS_PATH: helpPagePath('user/project/ml/experiment_tracking/mlflow_client.md', {
     anchor: 'logging-runs-to-a-model',
   }),
-  EMPTY_SVG_PATH: emptySvgUrl,
+  EMPTY_SVG_PATH,
 };
 </script>
 <template>

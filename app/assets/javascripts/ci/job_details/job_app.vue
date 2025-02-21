@@ -330,10 +330,7 @@ export default {
             class="rca-bar-component gl-fixed gl-left-0 gl-flex gl-w-full gl-items-center"
             data-testid="rca-bar-component"
           >
-            <div
-              class="rca-bar-content gl-flex gl-w-full gl-justify-end"
-              data-testid="rca-bar-content"
-            >
+            <div class="rca-bar-content gl-flex gl-w-full" data-testid="rca-bar-content">
               <root-cause-analysis-button
                 :job-id="job.id"
                 :job-status-group="job.status.group"

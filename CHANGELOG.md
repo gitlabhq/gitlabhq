@@ -1083,6 +1083,13 @@ entry.
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/c932e35efdc0e3c6f316a3c2d37045e115ce8cd5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176452))
 - [Finalize migration BackfillRemoteDevelopmentAgentConfigsProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/da4c63d7aab3685c3fbe9d1e48f68ba2162a0b5e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172769))
 
+## 17.8.3 (2025-02-21)
+
+### Fixed (2 changes)
+
+- [Use primary DB when authenticating via job token in jobs API](https://gitlab.com/gitlab-org/gitlab/-/commit/6eee5c6811cac82981252280f1b08316ae8c1fd5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181872))
+- [Revert stricter workhorse route regexes](https://gitlab.com/gitlab-org/gitlab/-/commit/aba07e94e0587dd378dccbdf18dfe839f09078bf) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181358))
+
 ## 17.8.2 (2025-02-11)
 
 ### Fixed (3 changes)
@@ -1566,6 +1573,12 @@ entry.
 - [Remove feature flag `ai_custom_model`](https://gitlab.com/gitlab-org/gitlab/-/commit/790adc35614aa08ea66a4a3b66233e9320cf9dce) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175687))
 - [Remove default on `group_saved_replies_flag feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/75d49fe13646e1e0d3b68233ac4a965c86853917) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175647))
 - [Remove use_actual_plan_in_license_check flag](https://gitlab.com/gitlab-org/gitlab/-/commit/b8c3fe16aedb69c82ff52d1c695d72e933c4b946) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175649))
+
+## 17.7.5 (2025-02-21)
+
+### Fixed (1 change)
+
+- [Revert stricter workhorse route regexes](https://gitlab.com/gitlab-org/gitlab/-/commit/9f1a05217022094de570ca4e4afd5b96b9b68c56) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181359))
 
 ## 17.7.4 (2025-02-11)
 

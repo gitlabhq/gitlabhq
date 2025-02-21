@@ -57,6 +57,20 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     it { expect(subject.start_commit_sha).to eq('0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
     it { expect(subject.patch_id_sha).to eq('f14ae956369247901117b8b7d237c9dc605898c5') }
 
+    it 'creates commits with empty messages' do
+      expect(subject.commits).to all(have_attributes(message: ''))
+    end
+
+    context 'when feature flag "optimized_commit_storage" is disabled' do
+      before do
+        stub_feature_flags(optimized_commit_storage: false)
+      end
+
+      it 'creates commits with messages' do
+        expect(subject.commits).to all(have_attributes(message: be_present))
+      end
+    end
+
     it 'calls GraphqlTriggers.merge_request_diff_generated' do
       merge_request = create(:merge_request, :skip_diff_creation)
 
@@ -1244,11 +1258,31 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     it 'returns first commit' do
       expect(diff_with_commits.first_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.last.sha)
     end
+
+    context 'when "optimized_commit_storage" feature flag is disabled' do
+      before do
+        stub_feature_flags(optimized_commit_storage: false)
+      end
+
+      it 'returns first commit' do
+        expect(diff_with_commits.first_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.last.sha)
+      end
+    end
   end
 
   describe '#last_commit' do
     it 'returns last commit' do
       expect(diff_with_commits.last_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.first.sha)
+    end
+
+    context 'when "optimized_commit_storage" feature flag is disabled' do
+      before do
+        stub_feature_flags(optimized_commit_storage: false)
+      end
+
+      it 'returns last commit' do
+        expect(diff_with_commits.last_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.first.sha)
+      end
     end
   end
 

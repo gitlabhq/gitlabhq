@@ -387,20 +387,20 @@ class TodoService
   end
 
   def create_assignment_todo(target, author, old_assignees = [])
-    if target.assignees.any?
-      project = target.project
-      assignees = target.assignees - old_assignees
-      attributes = attributes_for_todo(project, target, author, Todo::ASSIGNED)
+    return unless target.assignees.any?
 
-      create_todos(assignees, attributes, target_namespace(target), project)
-    end
+    project = target.project
+    assignees = target.assignees - old_assignees
+    attributes = attributes_for_todo(project, target, author, ::Todo::ASSIGNED)
+
+    create_todos(assignees, attributes, target_namespace(target), project)
   end
 
   def create_reviewer_todo(target, author, old_reviewers = [])
-    if target.reviewers.any?
-      reviewers = target.reviewers - old_reviewers
-      create_request_review_todo(target, author, reviewers)
-    end
+    return unless target.reviewers.any?
+
+    reviewers = target.reviewers - old_reviewers
+    create_request_review_todo(target, author, reviewers)
   end
 
   def create_mention_todos(parent, target, author, note = nil, skip_users = [])

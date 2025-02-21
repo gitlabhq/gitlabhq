@@ -131,6 +131,36 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
           end
         end
 
+        context 'for classify action by SESSION_PREFIX' do
+          let(:headers) do
+            {
+              'X-Gitlab-Http-Router-Rule-Action' => 'classify',
+              'X-Gitlab-Http-Router-Rule-Type' => 'SESSION_PREFIX'
+            }
+          end
+
+          it 'increments the counter with labels' do
+            expect { perform_request }.to change {
+              http_router_rule_counter.get(rule_action: 'classify', rule_type: 'SESSION_PREFIX')
+            }.by(1)
+          end
+        end
+
+        context 'for classify action by CELL_ID' do
+          let(:headers) do
+            {
+              'X-Gitlab-Http-Router-Rule-Action' => 'classify',
+              'X-Gitlab-Http-Router-Rule-Type' => 'CELL_ID'
+            }
+          end
+
+          it 'increments the counter with labels' do
+            expect { perform_request }.to change {
+              http_router_rule_counter.get(rule_action: 'classify', rule_type: 'CELL_ID')
+            }.by(1)
+          end
+        end
+
         context 'for proxy action' do
           let(:headers) do
             {

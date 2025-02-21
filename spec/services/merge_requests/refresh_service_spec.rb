@@ -890,10 +890,10 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           target_project: @project
         )
 
-        commits = draft_merge_request.commits
+        commits = draft_merge_request.commits(load_from_gitaly: true)
         oldrev = commits.last.id
         newrev = commits.first.id
-        draft_commit = draft_merge_request.commits.find(&:draft?)
+        draft_commit = commits.find(&:draft?)
 
         refresh_service.execute(oldrev, newrev, 'refs/heads/wip')
 

@@ -26,6 +26,8 @@ class Todo < ApplicationRecord
   ADDED_APPROVER = 13 # This is an EE-only feature,
   SSH_KEY_EXPIRED = 14
   SSH_KEY_EXPIRING_SOON = 15
+  DUO_PRO_ACCESS_GRANTED = 16 # This is an EE-only feature,
+  DUO_ENTERPRISE_ACCESS_GRANTED = 17 # This is an EE-only feature,
 
   ACTION_NAMES = {
     ASSIGNED => :assigned,
@@ -42,10 +44,19 @@ class Todo < ApplicationRecord
     OKR_CHECKIN_REQUESTED => :okr_checkin_requested,
     ADDED_APPROVER => :added_approver,
     SSH_KEY_EXPIRED => :ssh_key_expired,
-    SSH_KEY_EXPIRING_SOON => :ssh_key_expiring_soon
+    SSH_KEY_EXPIRING_SOON => :ssh_key_expiring_soon,
+    DUO_PRO_ACCESS_GRANTED => :duo_pro_access_granted,
+    DUO_ENTERPRISE_ACCESS_GRANTED => :duo_enterprise_access_granted
   }.freeze
 
   ACTIONS_MULTIPLE_ALLOWED = [Todo::MENTIONED, Todo::DIRECTLY_ADDRESSED, Todo::MEMBER_ACCESS_REQUESTED].freeze
+
+  PARENTLESS_ACTION_TYPES = [
+    DUO_PRO_ACCESS_GRANTED,
+    DUO_ENTERPRISE_ACCESS_GRANTED,
+    SSH_KEY_EXPIRED,
+    SSH_KEY_EXPIRING_SOON
+  ].freeze
 
   belongs_to :author, class_name: "User"
   belongs_to :note
@@ -68,8 +79,8 @@ class Todo < ApplicationRecord
   validates :author, presence: true
   validates :target_id, presence: true, unless: :for_commit?
   validates :commit_id, presence: true, if: :for_commit?
-  validates :project, presence: true, unless: -> { group_id || for_ssh_key? }
-  validates :group, presence: true, unless: -> { project_id || for_ssh_key? }
+  validates :project, presence: true, unless: -> { group_id || parentless_type? }
+  validates :group, presence: true, unless: -> { project_id || parentless_type? }
 
   scope :pending, -> { with_state(:pending) }
   scope :snoozed, -> { where(arel_table[:snoozed_until].gt(Time.current)) }
@@ -353,6 +364,14 @@ class Todo < ApplicationRecord
     target_type == Key.name
   end
 
+  def for_duo_access_granted?
+    action == DUO_PRO_ACCESS_GRANTED || action == DUO_ENTERPRISE_ACCESS_GRANTED
+  end
+
+  def parentless_type?
+    PARENTLESS_ACTION_TYPES.include?(action)
+  end
+
   # override to return commits, which are not active record
   def target
     if for_commit?
@@ -378,6 +397,8 @@ class Todo < ApplicationRecord
 
   def target_url
     return if target.nil?
+
+    return build_duo_getting_started_url if for_duo_access_granted?
 
     case target
     when WorkItem
@@ -412,6 +433,10 @@ class Todo < ApplicationRecord
   end
 
   private
+
+  def build_duo_getting_started_url
+    ::Gitlab::Routing.url_helpers.help_page_path('user/get_started/getting_started_gitlab_duo.md')
+  end
 
   def build_work_item_target_url
     ::Gitlab::UrlBuilder.build(

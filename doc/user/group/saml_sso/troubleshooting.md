@@ -317,7 +317,7 @@ Here are possible causes and solutions:
 
 | Cause                                                                                                                                    | Solution                                                                 |
 | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| When a user account with the email address already exists in GitLab, but the user does not have the SAML identity tied to their account. | The user needs to [link their account](_index.md#user-access-and-management). |
+| If a GitLab user account exists with the same email address, but the account is not associated with a SAML identity. | On GitLab.com, the user needs to [link their account](_index.md#user-access-and-management). On GitLab Self-Managed, administrators can configure the instance to [automatically link the SAML identity with the GitLab user account](../../../integration/saml.md#link-saml-identity-for-an-existing-user) when they first sign in.  |
 
 User accounts are created in one of the following ways:
 

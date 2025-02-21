@@ -22,6 +22,7 @@ function createSuggestionPlugin({
   return Suggestion({
     editor,
     char,
+    allowSpaces: true,
     pluginKey: new PluginKey(uniqueId('suggestions')),
 
     command: ({ editor: tiptapEditor, range, props }) => {

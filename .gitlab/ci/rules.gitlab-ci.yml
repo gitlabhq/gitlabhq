@@ -265,6 +265,14 @@
   - "GITALY_SERVER_VERSION"
   - "lib/gitlab/setup_helper.rb"
 
+# versions of all these components can affect cloud native deployment
+.cng-dependency-patterns: &cng-dependency-patterns
+  - GITLAB_WORKHORSE_VERSION
+  - GITLAB_SHELL_VERSION
+  - GITLAB_KAS_VERSION
+  - GITLAB_PAGES_VERSION
+  - GITALY_SERVER_VERSION
+
 .workhorse-patterns: &workhorse-patterns
   - ".gitlab/ci/version.yml"
   - ".gitlab/ci/workhorse.gitlab-ci.yml"
@@ -1318,6 +1326,8 @@
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-merge-request
       changes: *qa-patterns
+    - <<: *if-merge-request
+      changes: *cng-dependency-patterns
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-default-refs
@@ -1887,14 +1897,14 @@
       when: never
     - <<: *if-security-schedule
       when: never
+    - <<: *if-merge-request
+      changes: *cng-dependency-patterns
     - !reference [".qa:rules:e2e-blocking-base-before", rules]
     - !reference [".prevent-tier-2-and-below", rules]
     - !reference [".qa:rules:e2e-blocking-base-after", rules]
     - !reference [".qa:rules:e2e-schedule-nightly", rules]
     - <<: *if-dot-com-gitlab-org-schedule
-      variables:
-        <<: *qa-e2e-test-schedule-variables
-        QA_RUN_IN_PARALLEL: "true"
+      variables: *qa-e2e-test-schedule-variables
 
 .qa:rules:test-on-omnibus-nightly:
   rules:

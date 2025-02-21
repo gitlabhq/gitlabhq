@@ -2,6 +2,7 @@
 import { GlIcon } from '@gitlab/ui';
 import StatusBadge from '~/issuable/components/status_badge.vue';
 import { STATUS_OPEN, TYPE_ALERT, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
+import { s__ } from '~/locale';
 import {
   TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED,
   TODO_TARGET_TYPE_ALERT,
@@ -11,6 +12,8 @@ import {
   TODO_TARGET_TYPE_MERGE_REQUEST,
   TODO_TARGET_TYPE_PIPELINE,
   TODO_TARGET_TYPE_SSH_KEY,
+  TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED,
+  TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED,
 } from '../constants';
 
 export default {
@@ -39,6 +42,12 @@ export default {
     },
     isMemberAccessRequestAction() {
       return this.todo.action === TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED;
+    },
+    isDuoActionType() {
+      return (
+        this.todo.action === TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED ||
+        this.todo.action === TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED
+      );
     },
     issuableType() {
       if (this.isMergeRequest) {
@@ -79,6 +88,8 @@ export default {
      * Full title line of the todo title + full reference, joined by a middot
      */
     todoTitle() {
+      if (this.isDuoActionType) return s__('Todos|Getting started with GitLab Duo');
+
       return [this.targetName, this.targetFullReference].filter(Boolean).join(' · ');
     },
     /**
@@ -130,6 +141,8 @@ export default {
       return '';
     },
     icon() {
+      if (this.isDuoActionType) return 'book';
+
       switch (this.todo.targetType) {
         case TODO_TARGET_TYPE_ISSUE:
           return 'issues';
