@@ -661,7 +661,14 @@ class ApplicationSetting < ApplicationRecord
       :user_contributed_projects_api_limit,
       :user_projects_api_limit,
       :user_starred_projects_api_limit,
-      :users_get_by_id_limit
+      :users_get_by_id_limit,
+      :users_api_limit_followers,
+      :users_api_limit_following,
+      :users_api_limit_status,
+      :users_api_limit_ssh_keys,
+      :users_api_limit_ssh_key,
+      :users_api_limit_gpg_keys,
+      :users_api_limit_gpg_key
   end
 
   attribute :resource_usage_limits, ::Gitlab::Database::Type::IndifferentJsonb.new, default: -> { {} }
@@ -685,7 +692,14 @@ class ApplicationSetting < ApplicationRecord
     projects_api_limit: [:integer, { default: 2000 }],
     user_contributed_projects_api_limit: [:integer, { default: 100 }],
     user_projects_api_limit: [:integer, { default: 300 }],
-    user_starred_projects_api_limit: [:integer, { default: 100 }]
+    user_starred_projects_api_limit: [:integer, { default: 100 }],
+    users_api_limit_followers: [:integer, { default: 100 }],
+    users_api_limit_following: [:integer, { default: 100 }],
+    users_api_limit_status: [:integer, { default: 240 }],
+    users_api_limit_ssh_keys: [:integer, { default: 120 }],
+    users_api_limit_ssh_key: [:integer, { default: 120 }],
+    users_api_limit_gpg_keys: [:integer, { default: 120 }],
+    users_api_limit_gpg_key: [:integer, { default: 120 }]
 
   jsonb_accessor :service_ping_settings,
     gitlab_environment_toolkit_instance: [:boolean, { default: false }]

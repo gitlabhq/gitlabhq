@@ -2595,7 +2595,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         end
 
         context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_keys do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_keys do
             def request
               get api(path, current_user)
             end
@@ -2605,7 +2605,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         context 'when user is unauthenticated' do
           let(:current_user) { nil }
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_keys do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_keys do
             def request
               get api(path, current_user)
             end
@@ -2643,7 +2643,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     context 'when the rate limit has been reached' do
       it 'returns status 429 Too Many Requests', :aggregate_failures do
         ip = '1.2.3.4'
-        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_keys, scope: ip).and_return(true)
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_ssh_keys, scope: ip).and_return(true)
 
         get api(path), env: { REMOTE_ADDR: ip }
 
@@ -2690,7 +2690,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         end
 
         context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_specific_key do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_key do
             def request
               get api(path, current_user)
             end
@@ -2700,7 +2700,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         context 'when user is unauthenticated' do
           let(:current_user) { nil }
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_specific_key do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_key do
             def request
               get api(path, current_user)
             end
@@ -2871,7 +2871,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         end
 
         context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_specific_gpg_key do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_key do
             def request
               get api(path, current_user)
             end
@@ -2881,7 +2881,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         context 'when user is unauthenticated' do
           let(:current_user) { nil }
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_specific_gpg_key do
+          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_key do
             def request
               get api(path, current_user)
             end

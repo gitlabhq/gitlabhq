@@ -339,6 +339,13 @@ Example response:
   "jira_connect_proxy_url": "http://gitlab.example.com",
   "user_defaults_to_private_profile": true,
   "projects_api_rate_limit_unauthenticated": 400,
+  "users_api_limit_followers": 100,
+  "users_api_limit_following": 100,
+  "users_api_limit_status": 240,
+  "users_api_limit_ssh_keys": 120,
+  "users_api_limit_ssh_key": 120,
+  "users_api_limit_gpg_keys": 120,
+  "users_api_limit_gpg_key": 120,
   "silent_mode_enabled": false,
   "security_policy_global_group_approvers_enabled": true,
   "security_approval_policies_limit": 5,
@@ -635,6 +642,13 @@ to configure other related settings. These requirements are
 | `project_export_enabled`                 | boolean          | no                                   | Enable project export. |
 | `project_jobs_api_rate_limit`            | integer          | no                                   | Maximum authenticated requests to `/project/:id/jobs` per minute. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129319) in GitLab 16.5. Default: 600. |
 | `projects_api_rate_limit_unauthenticated` | integer         | no                                   | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112283) in GitLab 15.10. Max number of requests per 10 minutes per IP address for unauthenticated requests to the [list all projects API](projects.md#list-all-projects). Default: 400. To disable throttling set to 0.|
+| `users_api_limit_following` | integer |    no    | Max number of requests per minute, per user or IP address. Default: 100. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.  |
+| `users_api_limit_followers` | integer |    no    | Max number of requests per minute, per user or IP address. Default: 100. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.  |
+| `users_api_limit_status`    | integer |    no    | Max number of requests per minute, per user or IP address. Default: 240. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.  |
+| `users_api_limit_keys`      | integer |    no    | Max number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.  |
+| `users_api_limit_key`       | integer |    no    | Max number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.  |
+| `users_api_limit_gpg_keys`  | integer |    no    | Max number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.  |
+| `users_api_limit_gpg_key`   | integer |    no    | Max number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.  |
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable Prometheus metrics. |
 | `protected_ci_variables`                 | boolean          | no                                   | CI/CD variables are protected by default. |
 | `disable_overriding_approvers_per_merge_request` | boolean  | no                                   | Prevent editing approval rules in projects and merge requests |

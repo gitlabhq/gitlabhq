@@ -23891,6 +23891,9 @@ msgstr ""
 msgid "Exceptions"
 msgstr ""
 
+msgid "Excluded users"
+msgstr ""
+
 msgid "Excluding %d project with no DORA metrics."
 msgid_plural "Excluding %d projects with no DORA metrics."
 msgstr[0] ""
@@ -34260,6 +34263,9 @@ msgstr ""
 msgid "List of suitable GCP locations"
 msgstr ""
 
+msgid "List of users allowed to exceed the rate limit. Example: username1, username2"
+msgstr ""
+
 msgid "List of users who are allowed to exceed the rate limit. Example: username1, username2"
 msgstr ""
 
@@ -35056,9 +35062,6 @@ msgid "Maximum push size"
 msgstr ""
 
 msgid "Maximum push size (MiB)"
-msgstr ""
-
-msgid "Maximum requests per 10 minutes per user"
 msgstr ""
 
 msgid "Maximum requests per minute"
@@ -54341,7 +54344,7 @@ msgstr ""
 msgid "Set the per-user and per-IP address rate limits for the requests to Projects API."
 msgstr ""
 
-msgid "Set the per-user rate limit for getting a user by ID via the API."
+msgid "Set the per-user and per-IP address rate limits for the requests to Users API."
 msgstr ""
 
 msgid "Set the per-user rate limit for notes created by web or API requests."
@@ -54366,6 +54369,9 @@ msgid "Set time estimate to %{time_estimate}."
 msgstr ""
 
 msgid "Set to 0 for no size limit."
+msgstr ""
+
+msgid "Set to 0 to disable rate limits."
 msgstr ""
 
 msgid "Set to 0 to disable the limit."

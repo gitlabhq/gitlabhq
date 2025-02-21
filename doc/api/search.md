@@ -437,8 +437,6 @@ Example response:
 
 {{< /details >}}
 
-**Tier:** Premium, Ultimate
-
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
 
 ```shell

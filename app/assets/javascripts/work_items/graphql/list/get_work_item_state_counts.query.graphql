@@ -1,6 +1,7 @@
 query getWorkItemStateCounts(
   $includeDescendants: Boolean = true
   $fullPath: ID!
+  $search: String
   $sort: WorkItemSort
   $state: IssuableState
   $assigneeWildcardId: AssigneeWildcardId
@@ -12,6 +13,7 @@ query getWorkItemStateCounts(
   $milestoneWildcardId: MilestoneWildcardId
   $myReactionEmoji: String
   $types: [IssueType!]
+  $in: [IssuableSearchableField!]
   $not: NegatedWorkItemFilterInput
   $or: UnionedWorkItemFilterInput
   $isGroup: Boolean = true
@@ -20,6 +22,7 @@ query getWorkItemStateCounts(
     id
     workItemStateCounts(
       includeDescendants: $includeDescendants
+      search: $search
       sort: $sort
       state: $state
       assigneeUsernames: $assigneeUsernames
@@ -31,6 +34,7 @@ query getWorkItemStateCounts(
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
       types: $types
+      in: $in
       not: $not
       or: $or
     ) {
@@ -42,6 +46,7 @@ query getWorkItemStateCounts(
   project(fullPath: $fullPath) @skip(if: $isGroup) {
     id
     workItemStateCounts(
+      search: $search
       sort: $sort
       state: $state
       assigneeUsernames: $assigneeUsernames
@@ -53,6 +58,7 @@ query getWorkItemStateCounts(
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
       types: $types
+      in: $in
       not: $not
       or: $or
     ) {

@@ -385,24 +385,33 @@ You can now create personal access tokens for a service account user with no exp
 
 ## Require DPoP headers with personal access tokens
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181053) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `dpop_authentication`. Disabled by default.
 
-FLAG:
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 Demonstrating Proof of Possession (DPoP) enhances the security of your personal access tokens,
 and minimizes the effects of unintended token leaks. When you enable this feature on your
 account, all REST and GraphQL API requests containing a PAT must also provide a signed DPoP header. Creating a
 signed DPoP header requires your corresponding private SSH key.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you enable this feature, all REST and GraphQL API requests without a valid DPoP header fail with a `DpopValidationError`.
+
+{{< /alert >}}
 
 Prerequisites:
 

@@ -1,21 +1,16 @@
 ---
 # Error: gitlab_docs.AlertBoxStyle
 #
-# Makes sure alert boxes are used with block quotes. Checks for 3 formatting issues:
-#
-# - Alert boxes inside a block quote ('>')
-# - Alert boxes with the note text on the same line
-# - Alert boxes using words other than 'NOTE' or 'WARNING'
+# Makes sure alert boxes use Hugo shortcodes
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: "Update the format of the '%s' alert box. View the style guide for details."
+message: "Alert boxes are defined with hugo shortcodes. View the style guide for details."
 link: https://docs.gitlab.com/development/documentation/styleguide/#alert-boxes
 vocab: false
+ignorecase: true
 level: error
 nonword: true
 scope: raw
 tokens:
-  - '^ *> *(NOTE|WARNING)'
-  - '(?<=\n\n)(NOTE|WARNING):[^\n]+\n'
-  - '(?<=\n\n) *(> )?\**([Nn]ote|TIP|[Tt]ip|CAUTION|[Cc]aution|DANGER|[Dd]anger|[Ww]arning):.*'
+  - '^ *(> )?\**(note|tip|caution|danger|warning|flag|disclaimer|details|history)\**:\**$'

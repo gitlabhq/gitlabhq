@@ -12,25 +12,49 @@ title: Rate limits on Users API
 
 {{< /details >}}
 
-You can configure the per user rate limit for requests to [Users API](../../api/users.md).
+> - Rate limits for Users API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/452349) in GitLab 17.1 with a [flag](../feature_flags.md) named `rate_limiting_user_endpoints`. Disabled by default.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) customizable rate limits in GitLab 17.10.
+
+You can configure the per minute rate limit per IP address and per user for requests to the following [Users API](../../api/users.md).
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+| Limit                                                           | Default |
+|-----------------------------------------------------------------|---------|
+| [GET /users/:id/followers](../../api/user_follow_unfollow.md#list-all-accounts-that-follow-a-user) | 100     |
+| [GET /users/:id/following](../../api/user_follow_unfollow.md#list-all-accounts-followed-by-a-user) | 100     |
+| [GET /users/:id/status](../../api/users.md#get-the-status-of-a-user)       | 240     |
+| [GET /users/:id/keys](../../api/user_keys.md#list-all-ssh-keys-for-a-user)           | 120     |
+| [GET /users/:id/gpg_keys](../../api/user_keys.md#list-all-gpg-keys-for-a-user)   | 120     |
+| [GET /users/:id/gpg_keys/:key_id](../../api/user_keys.md#get-a-gpg-key-for-a-user) | 120     |
 
 To change the rate limit:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Network**.
 1. Expand **Users API rate limit**.
-1. In the **Maximum requests per 10 minutes** text box, enter the new value.
-1. Optional. In the **Users to exclude from the rate limit** box, list users allowed to exceed the limit.
+1. Set values for any available rate limit. The rate limits are per minute, per user for authenticated requests and per IP address for unauthenticated requests. Enter `0` to disable a rate limit.
 1. Select **Save changes**.
 
-This limit is:
+Each rate limit:
 
-- Applied independently per user.
-- Not applied per IP address.
+- Applies per user if the request is authenticated.
+- Applies per IP address if the request is unauthenticated.
+- Can be set to `0` to disable rate limits.
 
-The default value is `300`.
+Logs:
 
-Requests over the rate limit are logged into the `auth.log` file.
+- Requests that exceed the rate limit are logged to the `auth.log` file.
+- Rate limit modifications are logged to the `audit_json.log` file.
 
-For example, if you set a limit of 300, requests to the `GET /users/:id` API endpoint
-exceeding a rate of 300 per 10 minutes are blocked. Access to the endpoint is allowed after ten minutes have elapsed.
+Example:
+
+If you set a rate limit of 150 for `GET /users/:id/followers` and send 155 requests in a minute, the
+final five requests are blocked. After a minute, you could continue sending requests until you
+exceed the rate limit again.

@@ -25,6 +25,8 @@ The contribution calendar only displays contributions from the last 12 months, b
 
 {{< /alert >}}
 
+For a comprehensive view of all group members' contribution events, you can use [contribution analytics](../group/contribution_analytics/_index.md).
+
 ## User contribution events
 
 GitLab tracks the following contribution events:

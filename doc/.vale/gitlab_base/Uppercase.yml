@@ -137,6 +137,7 @@ exceptions:
   - LDAPS
   - LESS
   - LFS
+  - LLM
   - LRU
   - LSIF
   - LTM

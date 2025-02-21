@@ -855,20 +855,6 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(current_settings.pipeline_limit_per_project_user_sha).to eq(10)
       end
 
-      it 'changes Users API rate limits settings' do
-        visit network_admin_application_settings_path
-
-        within_testid('users-api-limits-settings') do
-          fill_in 'Maximum requests per 10 minutes per user', with: 0
-          fill_in 'Users to exclude from the rate limit', with: 'someone, someone_else'
-          click_button 'Save changes'
-        end
-
-        expect(page).to have_content 'Application settings saved successfully'
-        expect(current_settings.users_get_by_id_limit).to eq(0)
-        expect(current_settings.users_get_by_id_limit_allowlist).to eq(%w[someone someone_else])
-      end
-
       it 'changes gitlab shell operation limits settings' do
         visit network_admin_application_settings_path
 
@@ -893,6 +879,103 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
           expect(page).to have_content 'Application settings saved successfully'
           expect(current_settings[application_setting_key]).to eq(new_rate_limit)
+        end
+      end
+
+      describe 'users API rate limits' do
+        let_it_be(:network_settings_section) { 'users-api-limits-settings' }
+
+        context 'for GET /users:id API requests', :aggregate_failures do
+          let(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user'), api_name: 'GET /users/:id', timeframe: '10 minutes')
+          end
+
+          let(:application_setting_key) { :users_get_by_id_limit }
+
+          it 'changes Users API rate limits settings', :aggregate_failures do
+            visit network_admin_application_settings_path
+
+            new_rate_limit = 0
+            within_testid('users-api-limits-settings') do
+              fill_in rate_limit_field, with: new_rate_limit
+              fill_in 'Excluded users', with: 'someone, someone_else'
+              click_button 'Save changes'
+            end
+
+            expect(page).to have_content 'Application settings saved successfully'
+            expect(current_settings[application_setting_key]).to eq(new_rate_limit)
+            expect(current_settings.users_get_by_id_limit_allowlist).to eq(%w[someone someone_else])
+          end
+        end
+
+        context 'for GET /users/:id/followers API requests' do
+          let(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:id/followers', timeframe: 'minute')
+          end
+
+          let(:application_setting_key) { :users_api_limit_followers }
+
+          it_behaves_like 'API rate limit setting'
+        end
+
+        context 'for GET /users/:id/following API requests' do
+          let(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:id/following', timeframe: 'minute')
+          end
+
+          let(:application_setting_key) { :users_api_limit_following }
+
+          it_behaves_like 'API rate limit setting'
+        end
+
+        context 'for GET /users/:user_id/status API requests' do
+          let(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:user_id/status', timeframe: 'minute')
+          end
+
+          let(:application_setting_key) { :users_api_limit_status }
+
+          it_behaves_like 'API rate limit setting'
+        end
+
+        context 'for GET /users/:user_id/keys API requests' do
+          let(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:user_id/keys', timeframe: 'minute')
+          end
+
+          let(:application_setting_key) { :users_api_limit_ssh_keys }
+
+          it_behaves_like 'API rate limit setting'
+        end
+
+        context 'for GET /users/:id/keys/:key_id API requests' do
+          let(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:id/keys/:key_id', timeframe: 'minute')
+          end
+
+          let(:application_setting_key) { :users_api_limit_ssh_key }
+
+          it_behaves_like 'API rate limit setting'
+        end
+
+        context 'for GET /users/:id/gpg_keys API requests' do
+          let(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:id/gpg_keys', timeframe: 'minute')
+          end
+
+          let(:application_setting_key) { :users_api_limit_gpg_keys }
+
+          it_behaves_like 'API rate limit setting'
+        end
+
+        context 'for GET /users/:id/gpg_keys/:key_id API requests' do
+          let(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:id/gpg_keys/:key_id', timeframe: 'minute')
+          end
+
+          let(:application_setting_key) { :users_api_limit_gpg_key }
+
+          it_behaves_like 'API rate limit setting'
         end
       end
 

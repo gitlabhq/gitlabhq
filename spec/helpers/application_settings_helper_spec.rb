@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationSettingsHelper do
+RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
   include Devise::Test::ControllerHelpers
 
   let_it_be(:current_user) { build_stubbed(:admin) }
@@ -77,6 +77,8 @@ RSpec.describe ApplicationSettingsHelper do
           members_delete_limit downstream_pipeline_trigger_limit_per_project_user_sha
           group_api_limit group_projects_api_limit groups_api_limit project_api_limit projects_api_limit
           user_contributed_projects_api_limit user_projects_api_limit user_starred_projects_api_limit
+          users_api_limit_followers users_api_limit_following users_api_limit_status users_api_limit_ssh_keys
+          users_api_limit_ssh_key users_api_limit_gpg_keys users_api_limit_gpg_key
           group_shared_groups_api_limit
           group_invited_groups_api_limit
           project_invited_groups_api_limit

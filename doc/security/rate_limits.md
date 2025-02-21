@@ -61,6 +61,7 @@ You can set these rate limits in the **Admin** area of your instance:
 - [Incident management rate limits](../administration/settings/incident_management_rate_limits.md)
 - [Projects API rate limits](../administration/settings/rate_limit_on_projects_api.md)
 - [Groups API rate limits](../administration/settings/rate_limit_on_groups_api.md)
+- [Users API rate limits](../administration/settings/rate_limit_on_users_api.md)
 - [Organizations API rate limits](../administration/settings/rate_limit_on_organizations_api.md)
 
 You can set these rate limits using the Rails console:
@@ -96,20 +97,6 @@ For configuration information, see
 
 ## Non-configurable limits
 
-{{< history >}}
-
-- Rate limit on the `:user_id/status`, `:id/following`, `:id/followers`, `:user_id/keys`, `id/keys/:key_id`, `:id/gpg_keys`, and `:id/gpg_keys/:key_id` endpoints [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/452349) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `rate_limiting_user_endpoints`. Disabled by default.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of multiple endpoints in this feature is controlled by a feature flag.
-For more information, see the history.
-These endpoints are available for testing, but not ready for production use.
-
-{{< /alert >}}
-
 ### Repository archives
 
 A rate limit for [downloading repository archives](../api/repositories.md#get-file-archive) is
@@ -130,48 +117,6 @@ There is a rate limit per IP address on the `/users/sign_up` endpoint. This is t
 discover usernames or email addresses in use.
 
 The **rate limit** is 20 calls per minute per IP address.
-
-### User status
-
-There is a rate limit per IP address on the `:user_id/status` endpoint. This is to mitigate attempts to misuse the endpoint.
-
-The **rate limit** is 240 calls per minute per IP address.
-
-### User following
-
-There is a rate limit per IP address on the `:id/following` endpoint. This is to mitigate attempts to misuse the endpoint.
-
-The **rate limit** is 100 calls per minute per IP address.
-
-### User followers
-
-There is a rate limit per IP address on the `:id/followers` endpoint. This is to mitigate attempts to misuse the endpoint.
-
-The **rate limit** is 100 calls per minute per IP address.
-
-### User keys
-
-There is a rate limit per IP address on the `:user_id/keys` endpoint. This is to mitigate attempts to misuse the endpoint.
-
-The **rate limit** is 120 calls per minute per IP address.
-
-### User specific key
-
-There is a rate limit per IP address on the `id/keys/:key_id` endpoint. This is to mitigate attempts to misuse the endpoint.
-
-The **rate limit** is 120 calls per minute per IP address.
-
-### User GPG keys
-
-There is a rate limit per IP address on the `:id/gpg_keys` endpoint. This is to mitigate attempts to misuse the endpoint.
-
-The **rate limit** is 120 calls per minute per IP address.
-
-### User specific GPG keys
-
-There is a rate limit per IP address on the `:id/gpg_keys/:key_id` endpoint. This is to mitigate attempts to misuse the endpoint.
-
-The **rate limit** is 120 calls per minute per IP address.
 
 ### Update username
 

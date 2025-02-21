@@ -49,6 +49,13 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.user_contributed_projects_api_limit).to eq(100) }
     it { expect(setting.user_projects_api_limit).to eq(300) }
     it { expect(setting.user_starred_projects_api_limit).to eq(100) }
+    it { expect(setting.users_api_limit_followers).to eq(100) }
+    it { expect(setting.users_api_limit_following).to eq(100) }
+    it { expect(setting.users_api_limit_status).to eq(240) }
+    it { expect(setting.users_api_limit_ssh_keys).to eq(120) }
+    it { expect(setting.users_api_limit_ssh_key).to eq(120) }
+    it { expect(setting.users_api_limit_gpg_keys).to eq(120) }
+    it { expect(setting.users_api_limit_gpg_key).to eq(120) }
     it { expect(setting.disable_password_authentication_for_users_with_sso_identities).to be(false) }
     it { expect(setting.root_moved_permanently_redirection).to be(false) }
     it { expect(setting.resource_usage_limits).to eq({}) }
@@ -294,6 +301,13 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           user_projects_api_limit
           user_starred_projects_api_limit
           users_get_by_id_limit
+          users_api_limit_followers
+          users_api_limit_following
+          users_api_limit_status
+          users_api_limit_ssh_keys
+          users_api_limit_ssh_key
+          users_api_limit_gpg_keys
+          users_api_limit_gpg_key
         ]
       end
 

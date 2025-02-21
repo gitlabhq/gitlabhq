@@ -21,6 +21,29 @@ RSpec.describe 'admin/application_settings/network.html.haml', feature_category:
     end
   end
 
+  context 'for Users API rate limits' do
+    it 'renders the reset disclaimer' do
+      render
+
+      expect(rendered).to have_content('Set to 0 to disable the limits.')
+    end
+
+    it 'renders the users rate limit fields', :aggregate_failures do
+      render
+
+      expect(rendered).to have_field('application_setting_users_api_limit_followers')
+      expect(rendered).to have_field('application_setting_users_api_limit_following')
+      expect(rendered).to have_field('application_setting_users_api_limit_status')
+      expect(rendered).to have_field('application_setting_users_api_limit_ssh_keys')
+      expect(rendered).to have_field('application_setting_users_api_limit_ssh_key')
+      expect(rendered).to have_field('application_setting_users_api_limit_gpg_keys')
+      expect(rendered).to have_field('application_setting_users_api_limit_gpg_key')
+
+      expect(rendered).to have_field('application_setting_users_get_by_id_limit')
+      expect(rendered).to have_field('application_setting_users_get_by_id_limit_allowlist_raw')
+    end
+  end
+
   context 'for Projects API rate limits' do
     it 'renders the project rate limit fields' do
       render

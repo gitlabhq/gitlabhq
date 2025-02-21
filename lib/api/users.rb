@@ -533,7 +533,7 @@ module API
       end
       get ':user_id/keys', requirements: API::USER_REQUIREMENTS, feature_category: :system_access do
         if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit_by_user_or_ip!(:user_keys)
+          check_rate_limit_by_user_or_ip!(:user_ssh_keys)
         end
 
         user = find_user(params[:user_id])
@@ -552,7 +552,7 @@ module API
       end
       get ':id/keys/:key_id', requirements: API::USER_REQUIREMENTS, feature_category: :system_access do
         if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit_by_user_or_ip!(:user_specific_key)
+          check_rate_limit_by_user_or_ip!(:user_ssh_key)
         end
 
         user = find_user(params[:id])
@@ -645,7 +645,7 @@ module API
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/gpg_keys/:key_id', feature_category: :system_access do
         if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit_by_user_or_ip!(:user_specific_gpg_key)
+          check_rate_limit_by_user_or_ip!(:user_gpg_key)
         end
 
         user = User.find_by(id: params[:id])

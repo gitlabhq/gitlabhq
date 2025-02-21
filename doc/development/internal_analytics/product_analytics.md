@@ -145,7 +145,11 @@ If you need different providers for different projects, you can define additiona
 
 ### Instance-level settings
 
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Prerequisites:
 

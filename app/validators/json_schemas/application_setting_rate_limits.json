@@ -93,6 +93,41 @@
       "type": "integer",
       "minimum": 0,
       "description": "Maximum number of downstream pipelines that can be triggered per minute (for a given project, user, and commit)."
+    },
+    "users_api_limit_followers": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /users/:id/followers API."
+    },
+    "users_api_limit_following": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /users/:id/following API."
+    },
+    "users_api_limit_status": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /users/:user_id/status API."
+    },
+    "users_api_limit_ssh_keys": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /users/:user_id/keys API."
+    },
+    "users_api_limit_ssh_key": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /users/:id/keys/:key_id API."
+    },
+    "users_api_limit_gpg_keys": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /users/:id/gpg_keys API."
+    },
+    "users_api_limit_gpg_key": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /users/:id/gpg_keys/:key_id API."
     }
   }
 }

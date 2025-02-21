@@ -6,7 +6,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "If possible, remove the reference to '%s'."
-link: https://docs.gitlab.com/development/documentation/styleguide/deprecations_and_removals/
+link: https://docs.gitlab.com/development/documentation/styleguide/availability_details/#removing-versions
 vocab: false
 level: suggestion
 nonword: true
