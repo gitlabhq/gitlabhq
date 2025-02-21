@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.7.5 (2025-02-21)
+
+### Fixed (1 change)
+
+- [Revert stricter workhorse route regexes](https://gitlab.com/gitlab-org/gitlab/-/commit/9f1a05217022094de570ca4e4afd5b96b9b68c56) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181359))
+
 ## 17.7.4 (2025-02-11)
 
 ### Security (8 changes)
