@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Ci::ArtifactFileReader, feature_category: :pipeline_compo
 
         context 'when artifact archive size is greater than the limit' do
           context "when limits are given to the invocation of the reader" do
-            let(:max_archive_size) { 1.kilobytes }
+            let(:max_archive_size) { 1.kilobyte }
             let(:expected_error) do
               "Artifacts archive for job `#{job.name}` is too large: " \
                 "#{ActiveSupport::NumberHelper.number_to_human_size(105.kilobytes)} exceeds maximum of 1 KiB"

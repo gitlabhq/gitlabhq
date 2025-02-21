@@ -747,7 +747,7 @@
 {"name":"traces","version":"0.15.2","platform":"ruby","checksum":"d2547834b7248bb8c8f4f6532c6b9ba80ef8e2d6068ce16e7873575d7b802d81"},
 {"name":"trailblazer-option","version":"0.1.2","platform":"ruby","checksum":"20e4f12ea4e1f718c8007e7944ca21a329eee4eed9e0fa5dde6e8ad8ac4344a3"},
 {"name":"train-core","version":"3.10.8","platform":"ruby","checksum":"8493da02015fbe9b11840d22ba879ef18a0aa2633cb0c04eac3f07dd9b87223b"},
-{"name":"truncato","version":"0.7.12","platform":"ruby","checksum":"fed9e8a04fa35fd1a64506cd2089761bae4adfe47e756c3ce98a5c43856c9c4c"},
+{"name":"truncato","version":"0.7.13","platform":"ruby","checksum":"34621943c067eb892389d356d1312822b81b574e8d7dec2b61955fef0e91e380"},
 {"name":"tty-color","version":"0.6.0","platform":"ruby","checksum":"6f9c37ca3a4e2367fb2e6d09722762647d6f455c111f05b59f35730eeb24332a"},
 {"name":"tty-command","version":"0.10.1","platform":"ruby","checksum":"0c6c471fcb932d55518734eb4e2e07e9efdd2918713cc39bb7393ba862471192"},
 {"name":"tty-cursor","version":"0.7.1","platform":"ruby","checksum":"79534185e6a777888d88628b14b6a1fdf5154a603f285f80b1753e1908e0bf48"},

@@ -25,6 +25,7 @@ Use CI/CD pipelines to automatically build, test, and deploy your code.
 | [Using Buildah in a rootless container with GitLab Runner Operator on OpenShift](../ci/docker/buildah_rootless_tutorial.md)  | Learn how to set up GitLab Runner Operator on OpenShift to build Docker images with Buildah in a rootless container | |
 | [Automatically build and publish packages with CI/CD](../user/packages/pypi_repository/auto_publish_tutorial.md) | Learn how to automatically build, test, and publish a PyPI package to the package registry. | |
 | [Set up CI/CD steps](setup_steps/_index.md)  | Learn how to set up the steps component and configure a CI/CD pipeline to use the step in a job. | |
+| [Build and sign Python packages with GitLab CI/CD](../user/packages/package_registry/pypi_cosign_tutorial.md)  | Learn how to build a secure pipeline for Python packages using GitLab CI/CD and Sigstore Cosign. | |
 
 ## Configure GitLab Runner
 

@@ -1876,7 +1876,7 @@ GEM
       mixlib-shellout (>= 2.0, < 4.0)
       net-scp (>= 1.2, < 5.0)
       net-ssh (>= 2.9, < 8.0)
-    truncato (0.7.12)
+    truncato (0.7.13)
       htmlentities (~> 4.3.1)
       nokogiri (>= 1.7.0, <= 2.0)
     tty-color (0.6.0)

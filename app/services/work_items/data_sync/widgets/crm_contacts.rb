@@ -4,7 +4,7 @@ module WorkItems
   module DataSync
     module Widgets
       class CrmContacts < Base
-        def after_save_commit
+        def after_create
           return unless target_work_item.get_widget(:crm_contacts)
 
           if work_item.namespace.crm_group == target_work_item.namespace.crm_group

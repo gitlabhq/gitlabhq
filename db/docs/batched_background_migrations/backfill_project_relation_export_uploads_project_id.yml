@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillProjectRelationExportUploadsProjectId
+description: Backfills sharding key `project_relation_export_uploads.project_id` from `project_relation_exports`.
+feature_category: importers
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182116
+milestone: '17.10'
+queued_migration_version: 20250220130531
+finalized_by: # version of the migration that finalized this BBM

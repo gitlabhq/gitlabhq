@@ -145,7 +145,7 @@ RSpec.describe Ci::JobToken::AuthorizationsCompactor, feature_category: :secrets
   end
 
   context 'with exiting project scope links' do
-    describe 'when a single project exists' do
+    describe 'when a single project link exists' do
       before do
         create(:ci_job_token_project_scope_link, source_project: accessed_project, direction: :inbound,
           target_project: pns8.project)
@@ -159,7 +159,7 @@ RSpec.describe Ci::JobToken::AuthorizationsCompactor, feature_category: :secrets
       end
     end
 
-    describe 'when multiple projects exist' do
+    describe 'when multiple project links exist' do
       before do
         create(:ci_job_token_project_scope_link, source_project: accessed_project, direction: :inbound,
           target_project: pns8.project)
@@ -170,8 +170,8 @@ RSpec.describe Ci::JobToken::AuthorizationsCompactor, feature_category: :secrets
       it 'removes them from the compaction process' do
         compactor.compact(6)
 
-        expect(compactor.allowlist_groups).to match_array([ns2, ns4])
-        expect(compactor.allowlist_projects).to match_array([pns1.project])
+        expect(compactor.allowlist_groups).to match_array([ns2])
+        expect(compactor.allowlist_projects).to match_array([pns1.project, pns6.project, pns7.project])
       end
     end
   end

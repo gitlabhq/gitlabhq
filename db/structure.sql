@@ -2414,6 +2414,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_7a6d75e9eecd() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "project_relation_exports"
+  WHERE "project_relation_exports"."id" = NEW."project_relation_export_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_7a8b08eed782() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2564,6 +2580,22 @@ IF NEW."namespace_id" IS NULL THEN
   INTO NEW."namespace_id"
   FROM "issues"
   WHERE "issues"."id" = NEW."issue_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_8a11b103857c() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."group_id" IS NULL THEN
+  SELECT "group_id"
+  INTO NEW."group_id"
+  FROM "packages_debian_group_components"
+  WHERE "packages_debian_group_components"."id" = NEW."component_id";
 END IF;
 
 RETURN NEW;
@@ -17811,6 +17843,7 @@ CREATE TABLE packages_debian_group_component_files (
     file_store smallint DEFAULT 1 NOT NULL,
     file text NOT NULL,
     file_sha256 bytea NOT NULL,
+    group_id bigint,
     CONSTRAINT check_839e1685bc CHECK ((char_length(file) <= 255))
 );
 
@@ -19791,6 +19824,7 @@ CREATE TABLE project_relation_export_uploads (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     export_file text NOT NULL,
+    project_id bigint,
     CONSTRAINT check_d8ee243e9e CHECK ((char_length(export_file) <= 255))
 );
 
@@ -34193,6 +34227,8 @@ CREATE INDEX index_packages_debian_group_architectures_on_group_id ON packages_d
 
 CREATE INDEX index_packages_debian_group_component_files_on_component_id ON packages_debian_group_component_files USING btree (component_id);
 
+CREATE INDEX index_packages_debian_group_component_files_on_group_id ON packages_debian_group_component_files USING btree (group_id);
+
 CREATE INDEX index_packages_debian_group_components_on_group_id ON packages_debian_group_components USING btree (group_id);
 
 CREATE INDEX index_packages_debian_group_distribution_keys_on_group_id ON packages_debian_group_distribution_keys USING btree (group_id);
@@ -34532,6 +34568,8 @@ CREATE INDEX index_project_pages_metadata_on_pages_deployment_id ON project_page
 CREATE INDEX index_project_pages_metadata_on_project_id_and_deployed_is_true ON project_pages_metadata USING btree (project_id) WHERE (deployed = true);
 
 CREATE INDEX index_project_relation_export_upload_id ON project_relation_export_uploads USING btree (project_relation_export_id);
+
+CREATE INDEX index_project_relation_export_uploads_on_project_id ON project_relation_export_uploads USING btree (project_id);
 
 CREATE INDEX index_project_relation_exports_on_project_id ON project_relation_exports USING btree (project_id);
 
@@ -38427,6 +38465,8 @@ CREATE TRIGGER trigger_78c85ddc4031 BEFORE INSERT OR UPDATE ON issue_emails FOR 
 
 CREATE TRIGGER trigger_7943cb549289 BEFORE INSERT OR UPDATE ON issuable_metric_images FOR EACH ROW EXECUTE FUNCTION trigger_7943cb549289();
 
+CREATE TRIGGER trigger_7a6d75e9eecd BEFORE INSERT OR UPDATE ON project_relation_export_uploads FOR EACH ROW EXECUTE FUNCTION trigger_7a6d75e9eecd();
+
 CREATE TRIGGER trigger_7a8b08eed782 BEFORE INSERT OR UPDATE ON boards_epic_board_positions FOR EACH ROW EXECUTE FUNCTION trigger_7a8b08eed782();
 
 CREATE TRIGGER trigger_7b21c87a1f91 BEFORE INSERT OR UPDATE ON bulk_import_failures FOR EACH ROW EXECUTE FUNCTION trigger_7b21c87a1f91();
@@ -38452,6 +38492,8 @@ CREATE TRIGGER trigger_84d67ad63e93 BEFORE INSERT OR UPDATE ON wiki_page_slugs F
 CREATE TRIGGER trigger_85d89f0f11db BEFORE INSERT OR UPDATE ON issue_metrics FOR EACH ROW EXECUTE FUNCTION trigger_85d89f0f11db();
 
 CREATE TRIGGER trigger_897f35481f9a BEFORE UPDATE OF pre_receive_secret_detection_enabled ON project_security_settings FOR EACH ROW EXECUTE FUNCTION function_for_trigger_897f35481f9a();
+
+CREATE TRIGGER trigger_8a11b103857c BEFORE INSERT OR UPDATE ON packages_debian_group_component_files FOR EACH ROW EXECUTE FUNCTION trigger_8a11b103857c();
 
 CREATE TRIGGER trigger_8a38ce2327de BEFORE INSERT OR UPDATE ON boards_epic_user_preferences FOR EACH ROW EXECUTE FUNCTION trigger_8a38ce2327de();
 
@@ -38798,6 +38840,9 @@ ALTER TABLE ONLY security_policy_project_links
 
 ALTER TABLE ONLY deployment_approvals
     ADD CONSTRAINT fk_0f58311058 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_relation_export_uploads
+    ADD CONSTRAINT fk_0f7fad01a3 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_pages_metadata
     ADD CONSTRAINT fk_0fd5b22688 FOREIGN KEY (pages_deployment_id) REFERENCES pages_deployments(id) ON DELETE SET NULL;
@@ -39824,6 +39869,9 @@ ALTER TABLE ONLY notes
 
 ALTER TABLE ONLY approval_group_rules_users
     ADD CONSTRAINT fk_9a4b673183 FOREIGN KEY (approval_group_rule_id) REFERENCES approval_group_rules(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_debian_group_component_files
+    ADD CONSTRAINT fk_9a816f378c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT fk_9a9b9ba21c FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

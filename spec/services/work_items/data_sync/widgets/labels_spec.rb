@@ -21,7 +21,7 @@ RSpec.describe WorkItems::DataSync::Widgets::Labels, feature_category: :team_pla
     )
   end
 
-  describe '#after_save_commit' do
+  describe '#after_create' do
     context 'when target work item does not have labels widget' do
       before do
         allow(target_work_item).to receive(:get_widget).with(:labels).and_return(false)
@@ -31,7 +31,7 @@ RSpec.describe WorkItems::DataSync::Widgets::Labels, feature_category: :team_pla
         expect(callback).not_to receive(:new_work_item_label_links)
         expect(::LabelLink).not_to receive(:insert_all)
 
-        expect { callback.after_save_commit }.not_to change { ::ResourceLabelEvent.count }
+        expect { callback.after_create }.not_to change { ::ResourceLabelEvent.count }
 
         expect(target_work_item.reload.labels).to be_empty
       end
@@ -44,7 +44,7 @@ RSpec.describe WorkItems::DataSync::Widgets::Labels, feature_category: :team_pla
 
         # adds an event about project level label being removed,
         # because it is a project level label that is not found in the new project.
-        expect { callback.after_save_commit }.to change { ::ResourceLabelEvent.count }.by(1)
+        expect { callback.after_create }.to change { ::ResourceLabelEvent.count }.by(1)
 
         expect(target_work_item.reload.labels).to match_array([group_label])
       end

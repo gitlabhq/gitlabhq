@@ -23,6 +23,11 @@ module AntiAbuse
     LimitExceededError = Class.new(StandardError)
 
     def perform
+      # Auto deletion should not be enabled while the hide_projects_of_banned_users feature flag exists.
+      # Hiding projects is a safeguard that should be in place before projects are permanently deleted
+      # When this feature flag is removed a constant should be added to ensure that no deletions are queued
+      # Until 60 days after the hide_projects_of_banned_users feature flag is removed.
+      return if Feature::Definition.get(:hide_projects_of_banned_users)
       return unless Feature.enabled?(:delete_banned_user_projects, :instance, type: :gitlab_com_derisk)
 
       @start_time ||= ::Gitlab::Metrics::System.monotonic_time

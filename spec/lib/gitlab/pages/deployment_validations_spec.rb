@@ -128,7 +128,7 @@ RSpec.describe Gitlab::Pages::DeploymentValidations, :aggregate_failures, featur
       instance_double(
         ::Gitlab::Ci::Build::Artifacts::Metadata::Entry,
         entries: [],
-        total_size: 50.megabyte
+        total_size: 50.megabytes
       )
     end
 
@@ -169,7 +169,7 @@ RSpec.describe Gitlab::Pages::DeploymentValidations, :aggregate_failures, featur
 
       context "and size is above the limit" do
         before do
-          allow(metadata_entry).to receive(:total_size).and_return(101.megabyte)
+          allow(metadata_entry).to receive(:total_size).and_return(101.megabytes)
           allow(metadata_entry).to receive(:entries).and_return([])
         end
 

@@ -361,7 +361,7 @@ You can modify rules predefined in the [default ruleset](../detected_secrets.md)
 
 Modifying rules can help you adapt pipeline secret detection to an existing workflow or tool. For example you may want to override the severity of a detected secret or disable a rule from being detected at all.
 
-You can also use a ruleset configuration file stored remotely (that is, a remote Git repository or website) to modify predefined rules.
+You can also use a ruleset configuration file stored remotely (that is, a remote Git repository or website) to modify predefined rules. New rules must use the [custom rule format](custom_rulesets_schema.md#custom-rule-format).
 
 ##### Disable a rule
 
@@ -597,7 +597,7 @@ For more information on the passthrough syntax to use, see [Schema](../pipeline/
 
 #### Extend the default ruleset
 
-You can also extend the [default ruleset](../detected_secrets.md) configuration with additional rules as appropriate. This can be helpful when you would still like to benefit from the high-confidence predefined rules maintained by GitLab in the default ruleset, but also want to add rules for types of secrets that may be used in your own projects and namespaces.
+You can also extend the [default ruleset](../detected_secrets.md) configuration with additional rules as appropriate. This can be helpful when you would still like to benefit from the high-confidence predefined rules maintained by GitLab in the default ruleset, but also want to add rules for types of secrets that may be used in your own projects and namespaces. New rules must follow the [custom rule format](custom_rulesets_schema.md#custom-rule-format).
 
 ##### With a local ruleset
 
@@ -626,10 +626,12 @@ In the example below, we add a couple of new `[[rules]]` sections that define a 
 path = "/gitleaks.toml"
 
 [[rules]]
+  id = "example_api_key"
   description = "Example Service API Key"
   regex = '''example_api_key'''
 
 [[rules]]
+  id = "example_api_secret"
   description = "Example Service API Secret"
   regex = '''example_api_secret'''
 ```
@@ -667,10 +669,12 @@ To extend the default ruleset, the `gitleaks.toml` file should use `[extend]` di
 path = "/gitleaks.toml"
 
 [[rules]]
+  id = "example_api_key"
   description = "Example Service API Key"
   regex = '''example_api_key'''
 
 [[rules]]
+  id = "example_api_secret"
   description = "Example Service API Secret"
   regex = '''example_api_secret'''
 ```

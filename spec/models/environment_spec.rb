@@ -1642,7 +1642,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     subject { environment.calculate_reactive_cache }
 
     it 'overrides default reactive_cache_hard_limit to 10 Mb' do
-      expect(described_class.reactive_cache_hard_limit).to eq(10.megabyte)
+      expect(described_class.reactive_cache_hard_limit).to eq(10.megabytes)
     end
 
     it 'returns cache data from the deployment platform' do

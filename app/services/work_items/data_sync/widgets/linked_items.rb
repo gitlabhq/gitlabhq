@@ -4,7 +4,7 @@ module WorkItems
   module DataSync
     module Widgets
       class LinkedItems < Base
-        def after_save_commit
+        def after_create
           return unless params[:operation] == :move
           return unless target_work_item.get_widget(:linked_items)
 

@@ -2168,30 +2168,55 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
   end
 
-  describe '#gitlab_hosted?' do
-    using RSpec::Parameterized::TableSyntax
+  describe '#dot_com_gitlab_hosted?' do
+    subject(:dot_com_gitlab_hosted) { runner.dot_com_gitlab_hosted? }
 
-    subject(:runner) { build_stubbed(:ci_runner) }
+    let(:runner) { build(:ci_runner, **runner_factory_params) }
+    let(:runner_type) { :instance_type }
 
-    where(:saas, :runner_type, :expected_value) do
-      true  | :instance_type | true
-      true  | :group_type    | false
-      true  | :project_type  | false
-      false | :instance_type | false
-      false | :group_type    | false
-      false | :project_type  | false
+    before do
+      allow(Gitlab).to receive(:com?).and_return(is_gitlab_com)
     end
 
-    with_them do
-      before do
-        allow(Gitlab).to receive(:com?).and_return(saas)
-        runner.runner_type = runner_type
+    context 'when on gitlab.com' do
+      let(:is_gitlab_com) { true }
+
+      context 'with an instance runner' do
+        let(:runner_factory_params) { { runner_type: :instance_type } }
+
+        it { is_expected.to be true }
       end
 
-      it 'returns the correct value based on saas and runner type' do
-        expect(runner.gitlab_hosted?).to eq(expected_value)
+      context 'with a group runner' do
+        let(:runner_factory_params) { { groups: [group], runner_type: :group_type } }
+
+        it { is_expected.to be false }
+      end
+
+      context 'with a project runner' do
+        let(:runner_factory_params) { { projects: [project], runner_type: :project_type } }
+
+        it { is_expected.to be false }
       end
     end
+
+    context 'when not on gitlab.com' do
+      let(:is_gitlab_com) { false }
+
+      context 'with an instance runner' do
+        let(:runner_factory_params) { { runner_type: :instance_type } }
+
+        it { is_expected.to be false }
+      end
+    end
+  end
+
+  describe '#dedicated_gitlab_hosted?' do
+    let(:runner) { create(:ci_runner) }
+
+    subject(:is_hosted) { runner.dedicated_gitlab_hosted? }
+
+    specify { expect(is_hosted).to be false }
   end
 
   describe 'status scopes', :freeze_time do

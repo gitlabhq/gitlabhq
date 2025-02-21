@@ -540,8 +540,16 @@ module Ci
         !runner_managers.any?
     end
 
-    def gitlab_hosted?
+    # CI_JOB_JWT_V2 that uses this method is deprecated
+    #
+    # On .com all instance runners are hosted so instance_type is used to distingish hosted from non-hosted
+    def dot_com_gitlab_hosted?
       Gitlab.com? && instance_type?
+    end
+
+    # false in FOSS
+    def dedicated_gitlab_hosted?
+      false
     end
 
     private

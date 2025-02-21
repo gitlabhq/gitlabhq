@@ -17,7 +17,7 @@ RSpec.describe WorkItems::DataSync::Widgets::CrmContacts, feature_category: :tea
     )
   end
 
-  describe '#after_save_commit' do
+  describe '#after_create' do
     context 'when target work item has crm_contacts widget' do
       before do
         allow(target_work_item).to receive(:get_widget).with(:crm_contacts).and_return(true)
@@ -27,7 +27,7 @@ RSpec.describe WorkItems::DataSync::Widgets::CrmContacts, feature_category: :tea
         it 'copies the contacts from work_item to target_work_item' do
           crm_contacts = work_item.customer_relations_contacts
 
-          callback.after_save_commit
+          callback.after_create
 
           expect(target_work_item.reload.customer_relations_contacts).to match_array(crm_contacts)
         end
@@ -36,7 +36,7 @@ RSpec.describe WorkItems::DataSync::Widgets::CrmContacts, feature_category: :tea
           let(:params) { { operation: :move } }
 
           it "keeps the created_at and updated_at values of the issue_customer_relations_contacts" do
-            callback.after_save_commit
+            callback.after_create
 
             target_work_item.issue_customer_relations_contacts.each do |target_issue_contact|
               word_item_contact = work_item.issue_customer_relations_contacts
@@ -54,7 +54,7 @@ RSpec.describe WorkItems::DataSync::Widgets::CrmContacts, feature_category: :tea
           it "clones the crm contacts" do
             crm_contacts = work_item.customer_relations_contacts
 
-            callback.after_save_commit
+            callback.after_create
 
             expect(target_work_item.reload.customer_relations_contacts).to match_array(crm_contacts)
           end
@@ -67,7 +67,7 @@ RSpec.describe WorkItems::DataSync::Widgets::CrmContacts, feature_category: :tea
         it 'does not copy crm_contacts' do
           expect(work_item.customer_relations_contacts).not_to be_empty
 
-          callback.after_save_commit
+          callback.after_create
 
           expect(target_work_item.reload.customer_relations_contacts).to be_empty
         end
@@ -75,7 +75,7 @@ RSpec.describe WorkItems::DataSync::Widgets::CrmContacts, feature_category: :tea
         it "creates a note with removed contacts quote", :aggregate_failures do
           expect(target_work_item.reload.notes).to be_empty
 
-          callback.after_save_commit
+          callback.after_create
 
           note = target_work_item.notes.first.note
 
@@ -93,7 +93,7 @@ RSpec.describe WorkItems::DataSync::Widgets::CrmContacts, feature_category: :tea
       it 'does not copy crm_contacts' do
         expect(work_item.customer_relations_contacts).not_to be_empty
 
-        callback.after_save_commit
+        callback.after_create
 
         expect(target_work_item.reload.customer_relations_contacts).to be_empty
       end

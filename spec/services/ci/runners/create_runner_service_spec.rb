@@ -154,6 +154,29 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
     end
   end
 
+  shared_examples 'runner creation transaction behavior' do
+    context 'when runner save fails' do
+      before do
+        allow_next_instance_of(Ci::Runner) do |r|
+          r.errors.add(:base, "Runner validation failed")
+          allow(r).to receive(:save!).and_raise(ActiveRecord::RecordInvalid.new(r))
+        end
+      end
+
+      it 'returns error response with runner validation messages' do
+        response = execute
+
+        expect(response).to be_error
+        expect(response.reason).to eq(:save_error)
+        expect(response.message).to include("Runner validation failed")
+      end
+
+      it 'does not create any records', :aggregate_failures do
+        expect { execute }.not_to change { Ci::Runner.count }
+      end
+    end
+  end
+
   context 'with :runner_type param set to instance_type' do
     let(:expected_type) { 'instance_type' }
     let(:params) { { runner_type: 'instance_type' } }
@@ -178,6 +201,7 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
       context 'when admin mode is enabled', :enable_admin_mode do
         it_behaves_like 'it can create a runner'
         it_behaves_like 'it can return an error'
+        it_behaves_like 'runner creation transaction behavior'
 
         it 'tracks internal events', :clean_gitlab_redis_shared_state do
           expect { execute }
@@ -245,6 +269,7 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
       let(:current_user) { group_owner }
 
       it_behaves_like 'it can create a runner'
+      it_behaves_like 'runner creation transaction behavior'
 
       it 'tracks internal events', :clean_gitlab_redis_shared_state do
         expect { execute }
@@ -309,6 +334,7 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
       let(:current_user) { group_owner }
 
       it_behaves_like 'it can create a runner'
+      it_behaves_like 'runner creation transaction behavior'
 
       it 'populates sharding_key_id correctly' do
         expect(runner.sharding_key_id).to eq(project.id)

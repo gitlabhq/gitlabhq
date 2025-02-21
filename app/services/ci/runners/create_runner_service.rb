@@ -28,15 +28,10 @@ module Ci
           return ServiceResponse.error(message: _('Insufficient permissions'), reason: :forbidden)
         end
 
+        should_mark_hosted = params.delete(:hosted_runner)
         runner = ::Ci::Runner.new(params)
 
-        if runner.save
-          track_runner_events(runner)
-
-          return ServiceResponse.success(payload: { runner: runner })
-        end
-
-        ServiceResponse.error(message: runner.errors.full_messages, reason: :save_error)
+        create_runner(runner, should_mark_hosted)
       end
 
       def normalize_params
@@ -50,6 +45,22 @@ module Ci
       private
 
       attr_reader :user, :scope, :params, :strategy
+
+      def create_runner(runner, should_mark_hosted)
+        ApplicationRecord.transaction do
+          runner.save!
+          create_hosted_runner!(runner, should_mark_hosted)
+        end
+
+        track_runner_events(runner)
+
+        ServiceResponse.success(payload: { runner: runner })
+      rescue ActiveRecord::RecordInvalid => e
+        ServiceResponse.error(message: e.record.errors.full_messages, reason: :save_error)
+      end
+
+      # CE implementation - no-op
+      def create_hosted_runner!(runner, should_mark_hosted); end
 
       def track_runner_events(runner)
         kwargs = { user: user }

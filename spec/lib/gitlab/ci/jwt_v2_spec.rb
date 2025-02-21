@@ -152,7 +152,7 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
       describe 'runner_environment' do
         context 'when runner is gitlab-hosted' do
           before do
-            allow(runner).to receive(:gitlab_hosted?).and_return(true)
+            allow(runner).to receive(:dot_com_gitlab_hosted?).and_return(true)
           end
 
           it "is #{described_class::GITLAB_HOSTED_RUNNER}" do
@@ -162,7 +162,7 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
 
         context 'when runner is self-hosted' do
           before do
-            allow(runner).to receive(:gitlab_hosted?).and_return(false)
+            allow(runner).to receive(:dot_com_gitlab_hosted?).and_return(false)
           end
 
           it "is #{described_class::SELF_HOSTED_RUNNER}" do

@@ -2,9 +2,8 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Build and sign Python packages with GitLab CI/CD'
 ---
-
-# Tutorial: Building and signing Python packages with GitLab CI/CD
 
 This tutorial shows you how to implement a secure pipeline for Python packages. The pipeline includes stages that cryptographically sign and verify Python packages using GitLab CI/CD and [Sigstore Cosign](https://docs.sigstore.dev/).
 
@@ -12,7 +11,7 @@ By the end, you'll learn how to:
 
 - Build and sign Python packages using GitLab CI/CD.
 - Store and manage package signatures using the generic package registry.
-- Verify package signatures as an end user. 
+- Verify package signatures as an end user.
 
 ## What are the benefits of package signing?
 
@@ -20,7 +19,7 @@ Package signing provides several crucial security benefits:
 
 - **Authenticity**: Users can verify that packages come from trusted sources.
 - **Data integrity**: If a package is tampered with during distribution, it will be detected.
-- **Non-repudiation**: The origin of a package can be cryptographically proven. 
+- **Non-repudiation**: The origin of a package can be cryptographically proven.
 - **Supply chain security**: Package signing protects against supply chain attacks and compromised repositories.
 
 ## Before you begin
@@ -149,7 +148,7 @@ This base configuration:
 
 ### Configure the build stage
 
-The build stage builds Python distribution packages. 
+The build stage builds Python distribution packages.
 
 In your `.gitlab-ci.yml` file, add the following configuration:
 
@@ -165,16 +164,16 @@ build:
     - git config --global user.name "CI"
     - git add .
     - git commit -m "Initial commit"
-    
+
     # Update package name, version, and homepage URL in pyproject.toml
     - sed -i "s/name = \".*\"/name = \"${NORMALIZED_NAME}\"/" pyproject.toml
     - sed -i "s/version = \".*\"/version = \"${PACKAGE_VERSION}\"/" pyproject.toml
     - sed -i "s|\"Homepage\" = \".*\"|\"Homepage\" = \"https://gitlab.com/${CI_PROJECT_PATH}\"|" pyproject.toml
-    
+
     # Debug: show updated file
     - echo "Updated pyproject.toml contents:"
     - cat pyproject.toml
-    
+
     # Build package
     - python -m build
   artifacts:
@@ -209,7 +208,7 @@ sign:
       for file in dist/*.whl dist/*.tar.gz; do
         if [ -f "$file" ]; then
           filename=$(basename "$file")
-          
+
           cosign sign-blob --yes \
             --fulcio-url=${FULCIO_URL} \
             --rekor-url=${REKOR_URL} \
@@ -218,7 +217,7 @@ sign:
             --output-signature "dist/${filename}.sig" \
             --output-certificate "dist/${filename}.crt" \
             "$file"
-            
+
           # Debug: Verify files were created
           echo "Checking generated signature and certificate:"
           ls -l "dist/${filename}.sig" "dist/${filename}.crt"
@@ -239,7 +238,7 @@ The sign stage configuration:
 
 ### Configure the verify stage
 
-The verify stage validates signatures locally. 
+The verify stage validates signatures locally.
 
 In your `.gitlab-ci.yml` file, add the following configuration:
 
@@ -250,15 +249,15 @@ verify:
   script:
     - |
       failed=0
-      
+
       for file in dist/*.whl dist/*.tar.gz; do
         if [ -f "$file" ]; then
           filename=$(basename "$file")
-          
+
           echo "Verifying file: $file"
           echo "Using signature: dist/${filename}.sig"
           echo "Using certificate: dist/${filename}.crt"
-          
+
           if ! cosign verify-blob \
             --signature "dist/${filename}.sig" \
             --certificate "dist/${filename}.crt" \
@@ -270,7 +269,7 @@ verify:
           fi
         fi
       done
-      
+
       if [ $failed -eq 1 ]; then
         exit 1
       fi
@@ -286,7 +285,7 @@ The verify stage configuration:
 
 ### Configure the publish stage
 
-The publish stage uploads packages to the GitLab PyPI package registry. 
+The publish stage uploads packages to the GitLab PyPI package registry.
 
 In your `.gitlab-ci.yml` file, add the following configuration:
 
@@ -305,7 +304,7 @@ publish:
       username = gitlab-ci-token
       password = ${CI_JOB_TOKEN}
       EOF
-      
+
       # Upload packages using twine
       TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token \
         twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi \
@@ -331,22 +330,22 @@ publish_signatures:
   extends: .python+cosign-job
   stage: publish_signatures
   script:
-    - |  
+    - |
       for file in dist/*.whl dist/*.tar.gz; do
         if [ -f "$file" ]; then
           filename=$(basename "$file")
-          
+
           ls -l "dist/${filename}.sig" "dist/${filename}.crt"
-          
+
           echo "Publishing signatures for $filename"
           echo "Publishing to: ${GENERIC_PACKAGE_BASE_URL}/${filename}.sig"
-          
+
           # Upload signature and certificate
           curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
                --fail \
                --upload-file "dist/${filename}.sig" \
                "${GENERIC_PACKAGE_BASE_URL}/${filename}.sig"
-          
+
           curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
                --fail \
                --upload-file "dist/${filename}.crt" \
@@ -355,7 +354,7 @@ publish_signatures:
       done
 ```
 
-The publish signatures stage configuration: 
+The publish signatures stage configuration:
 
 - Stores signatures in the generic package registry
 - Maintains signature-to-package mapping
@@ -378,19 +377,19 @@ consumer_verification:
       # Initialize git repo for setuptools_scm
       git init
       git config --global init.defaultBranch main
-      
+
       # Create directory for downloading packages
       mkdir -p pkg signatures
-      
+
       # Download the specific wheel version
       pip download --index-url "https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple" \
           "${NORMALIZED_NAME}==${PACKAGE_VERSION}" --no-deps -d ./pkg --verbose
-      
+
       # Download the specific source distribution version
       pip download --no-binary :all: \
           --index-url "https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple" \
           "${NORMALIZED_NAME}==${PACKAGE_VERSION}" --no-deps -d ./pkg --verbose
-      
+
       failed=0
       for file in pkg/*.whl pkg/*.tar.gz; do
         if [ -f "$file" ]; then
@@ -398,22 +397,22 @@ consumer_verification:
 
           sig_url="${GENERIC_PACKAGE_BASE_URL}/${filename}.sig"
           cert_url="${GENERIC_PACKAGE_BASE_URL}/${filename}.crt"
-          
+
           echo "Downloading signatures for $filename"
           echo "Signature URL: $sig_url"
           echo "Certificate URL: $cert_url"
-          
+
           # Download signatures
           curl --fail --silent --show-error \
                --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
                --output "signatures/${filename}.sig" \
                "$sig_url"
-          
+
           curl --fail --silent --show-error \
                --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
                --output "signatures/${filename}.crt" \
                "$cert_url"
-          
+
           # Verify signature
           if ! cosign verify-blob \
             --signature "signatures/${filename}.sig" \
@@ -426,7 +425,7 @@ consumer_verification:
           fi
         fi
       done
-      
+
       if [ $failed -eq 1 ]; then
         echo "Verification failed for one or more packages"
         exit 1
@@ -458,13 +457,13 @@ As an end user, you can verify package signatures with the following steps:
 
    ```shell
    # You can find your PROJECT_ID in your GitLab project's home page under the project name
-   
+
    # Download the specific version of the package
    pip download your-package-name==1.0.0 --no-deps
-   
+
    # The FILENAME will be the output from the pip download command
    # For example: your-package-name-1.0.0.tar.gz or your-package-name-1.0.0-py3-none-any.whl
-   
+
    # Download signatures from GitLab's generic package registry
    # Replace these values with your project's details:
    # GITLAB_URL: Your GitLab instance URL (e.g., https://gitlab.com)
@@ -513,7 +512,7 @@ When verifying packages as an end user:
 - Make sure the certificate identity exactly matches what was used to sign the package.
 - Check that all URL components are correctly set. For example, the `GITLAB_URL` or `PROJECT_ID`.
 - Check that package filenames match exactly what was uploaded to the registry.
-- Use the `COSIGN_EXPERIMENTAL=1` feature flag for keyless verification. This flag is required. 
+- Use the `COSIGN_EXPERIMENTAL=1` feature flag for keyless verification. This flag is required.
 - Understand that failed verifications might indicate tampering or incorrect certificate and signature pairs.
 - Keep track of the certificate identity and issuer values from your project's pipeline.
 
