@@ -207,6 +207,28 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         pipeline.succeed!
       end
     end
+
+    describe 'to completed' do
+      # need pre-created object to avoid another InternalEvent being triggers in the models create hook
+      let!(:pipeline) { create(:ci_empty_pipeline, user: user, project: project) }
+
+      {
+        succeed!: 'success',
+        drop!: 'failed',
+        skip!: 'skipped',
+        cancel!: 'canceled'
+      }.each do |pipeline_event, status|
+        context "when transitioning to #{status}" do
+          it_behaves_like 'internal event tracking' do
+            let(:event) { 'completed_pipeline_execution' }
+            let(:additional_properties) { { label: status } }
+            let(:category) { described_class.name }
+
+            subject(:completed_pipeline) { pipeline.public_send(pipeline_event) }
+          end
+        end
+      end
+    end
   end
 
   describe 'callbacks' do

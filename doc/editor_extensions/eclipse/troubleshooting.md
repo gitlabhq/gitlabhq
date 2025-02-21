@@ -47,8 +47,11 @@ The debug logs are available in the `language_server.log` file. To view this fil
 
 ## Certificate errors
 
-WARNING:
+{{< alert type="warning" >}}
+
 You may experience errors connecting to GitLab if you connect to GitLab through a proxy or using custom certificates.
 [Support for HTTP proxies](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues/35)
 and [support for custom certificates](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues/36)
 are proposed for a future release.
+
+{{< /alert >}}

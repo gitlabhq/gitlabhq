@@ -106,7 +106,8 @@ Documentation of model changes is crucial for tracking the impact of migrations 
 - Add the new model to our [available models list](https://gitlab.com/gitlab-org/gitlab/-/blob/32fa9eaa3c8589ee7f448ae683710ec7bd82f36c/ee/lib/gitlab/llm/concerns/available_models.rb#L5-10).
 - Change the default model in our [AI-Gateway client](https://gitlab.com/gitlab-org/gitlab/-/blob/41361629b302f2c55e35701d2c0a73cff32f9013/ee/lib/gitlab/llm/chain/requests/ai_gateway.rb#L63-67). Please place the change around a feature flag. We may need to quickly rollback the change.
 - Update the model definitions in AI gateway following the [prompt definition guidelines](actions.md#2-create-a-prompt-definition-in-the-ai-gateway)
-Note: While we're moving toward AI gateway holding the prompts, feature flag implementation still requires a GitLab release.
+
+While we're moving toward AI gateway holding the prompts, feature flag implementation still requires a GitLab release.
 
 ### Migration Tasks for Vertex Models
 

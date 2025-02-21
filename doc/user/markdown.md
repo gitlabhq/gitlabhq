@@ -1609,11 +1609,13 @@ or
 - Merge requests.
 - Epics.
 
-NOTE:
+{{< alert type="note" >}}
+
 A table of contents renders also when you use the TOC code in single square brackets, regardless of
-being on its own line or not.
-This behavior is unintended.
+being on its own line or not. This behavior is unintended.
 For more information, see [issue 359077](https://gitlab.com/gitlab-org/gitlab/-/issues/359077).
+
+{{< /alert >}}
 
 ```markdown
 This sentence introduces my wiki page.

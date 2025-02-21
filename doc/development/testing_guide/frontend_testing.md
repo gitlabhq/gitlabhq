@@ -909,9 +909,13 @@ The more challenging part are mocks, which can be used for functions or even dep
 Manual mocks are used to mock modules across the entire Jest environment. This is a very powerful testing tool that helps simplify
 unit testing by mocking out modules that cannot be easily consumed in our test environment.
 
-> **WARNING:** Do not use manual mocks if a mock should not be consistently applied in every spec (that is, it's only needed by a few specs).
-> Instead, consider using [`jest.mock(..)`](https://jestjs.io/docs/jest-object#jestmockmodulename-factory-options)
-> (or a similar mocking function) in the relevant spec file.
+{{< alert type="warning" >}}
+
+Do not use manual mocks if a mock should not be consistently applied in every spec (that is, it's only needed by a few specs).
+Instead, consider using [`jest.mock(..)`](https://jestjs.io/docs/jest-object#jestmockmodulename-factory-options)
+(or a similar mocking function) in the relevant spec file.
+
+{{< /alert >}}
 
 #### Where should you put manual mocks?
 

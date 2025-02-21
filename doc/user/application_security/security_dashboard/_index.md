@@ -45,9 +45,12 @@ To view the Security Dashboards, the following is required:
 - A successful security scan performed on the [default branch](../../project/repository/branches/default.md) of your project.
 - At least 1 detected vulnerability in the project.
 
-**Note**:
+{{< alert type="note" >}}
+
 The Security Dashboards show results of scans from the most recent completed pipeline on the
 [default branch](../../project/repository/branches/default.md). Dashboards are updated with the result of completed pipelines run on the default branch; they do not include vulnerabilities discovered in pipelines from other un-merged branches.
+
+{{< /alert >}}
 
 ## Viewing the Security Dashboard
 

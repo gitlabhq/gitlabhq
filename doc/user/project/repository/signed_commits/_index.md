@@ -24,9 +24,12 @@ You can then configure [push rules](../push_rules.md) for your project to:
 - Reject individual unsigned commits.
 - Reject all commits from unverified users.
 
-NOTE:
+{{< alert type="note" >}}
+
 The committer and author fields are distinct in Git. The author writes the commit, and the committer
 applies it. Commit signing verifies only the committer's identity.
+
+{{< /alert >}}
 
 Sign commits with your:
 

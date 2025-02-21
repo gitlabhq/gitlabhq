@@ -1087,9 +1087,12 @@ SAML can automatically identify a user as an
 [external user](../administration/external_users.md), based on the `external_groups`
 setting.
 
-**NOTE**:
+{{< alert type="note" >}}
+
 If the attribute specified in `groups_attribute` is incorrect or missing then the user will
 access as a standard user.
+
+{{< /alert >}}
 
 Example configuration:
 

@@ -516,7 +516,7 @@ The format supported is the following:
 $[[ input.input-id | <function1> | <function2> | ... <functionN> ]]
 ```
 
-Details:
+With functions:
 
 - Only [predefined interpolation functions](#predefined-interpolation-functions) are permitted.
 - A maximum of 3 functions may be specified in a single interpolation block.

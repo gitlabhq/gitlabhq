@@ -34,8 +34,12 @@ Be sure to include the `feature_flag` tag so that the test can be skipped on the
 - When `scope` is set to any other value (such as `:project`, `:group` or `:user`), or if no `scope` is specified, the test will only be **skipped on canary, production, and pre-production**.
   This is due to the fact that administrator access is not available there.
 
-**WARNING:** You are strongly advised to first try and [enable feature flags only for a group, project, user](../../../feature_flags/_index.md#feature-actors),
+{{< alert type="warning" >}}
+
+You are strongly advised to first try and [enable feature flags only for a group, project, user](../../../feature_flags/_index.md#feature-actors),
 or [feature group](../../../feature_flags/_index.md#feature-groups).
+
+{{< /alert >}}
 
 - If a global feature flag must be used, it is strongly recommended to apply `scope: :global` to the `feature_flag` metadata. This is, however, left up to the SET's discretion to determine the level of risk.
   - For example, a test uses a global feature flag that only affects a small area of the application and is also needed to check for critical issues on live environments.

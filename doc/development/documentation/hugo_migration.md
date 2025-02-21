@@ -67,19 +67,12 @@ Our custom elements are:
 - GitLab SVG icons
 - Tabs
 
-For example, before:
-
-```markdown
-WARNING:
-Don't delete your gitlabs!
-```
-
-And after:
+For example:
 
 ```markdown
 {{</* alert type="warning" */>}}
 
-Don't delete your gitlabs!
+Don't delete your docs!
 
 {{</* /alert */>}}
 ```

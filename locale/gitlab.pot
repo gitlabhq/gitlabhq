@@ -2942,6 +2942,9 @@ msgstr ""
 msgid "AccessTokens|Copy static object token"
 msgstr ""
 
+msgid "AccessTokens|Copy token"
+msgstr ""
+
 msgid "AccessTokens|Create %{type}"
 msgstr ""
 
@@ -3011,6 +3014,9 @@ msgid "AccessTokens|Last used:"
 msgstr ""
 
 msgid "AccessTokens|Lifetime"
+msgstr ""
+
+msgid "AccessTokens|Make sure you save it - you won't be able to access it again."
 msgstr ""
 
 msgid "AccessTokens|Name"
@@ -3116,6 +3122,9 @@ msgid "AccessTokens|Your incoming email token authenticates you when you create 
 msgstr ""
 
 msgid "AccessTokens|Your static object token authenticates you when repository static objects (such as archives or blobs) are served from an external storage."
+msgstr ""
+
+msgid "AccessTokens|Your token"
 msgstr ""
 
 msgid "Accessibility"

@@ -355,8 +355,11 @@ To provide users with read-only access to GitLab during the OS upgrade (partial 
 1. Route users to the promoted site instead of the old primary site.
 1. Set up the old primary site as a new secondary site.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Even though the secondary site already has a read-replica of the database, you cannot upgrade
 its operating system prior to promotion. If you were to attempt that, then the secondary site may
 miss replication of some Git repositories or files, due to the corrupted indexes.
 See [Streaming replication](#streaming-replication).
+
+{{< /alert >}}

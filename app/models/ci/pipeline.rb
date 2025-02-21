@@ -18,6 +18,7 @@ module Ci
     include UpdatedAtFilterable
     include EachBatch
     include FastDestroyAll::Helpers
+    include Gitlab::InternalEventsTracking
 
     self.table_name = :p_ci_pipelines
     self.primary_key = :id
@@ -361,6 +362,15 @@ module Ci
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
           ::Ci::JobArtifacts::TrackArtifactReportWorker.perform_async(pipeline.id)
+
+          track_internal_event(
+            'completed_pipeline_execution',
+            project: pipeline.project,
+            user: pipeline.user,
+            additional_properties: {
+              label: pipeline.status
+            }
+          )
         end
       end
 

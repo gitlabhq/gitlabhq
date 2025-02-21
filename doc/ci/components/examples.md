@@ -395,7 +395,7 @@ The CI/CD template migration involves the following steps:
      ```
 
    - Create a `main.go` file with a main function, printing `Hello, CI/CD component` for example.
-     Tip: Use code comments to generate Go code using [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/_index.md).
+     You can use code comments to generate Go code using [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/_index.md).
 
      ```go
      // Specify the package, import required packages

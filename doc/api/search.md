@@ -423,12 +423,20 @@ Example response:
 ]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+
+{{< /alert >}}
 
 ### Scope: `notes`
 
-DETAILS:
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
 **Tier:** Premium, Ultimate
 
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
@@ -582,8 +590,11 @@ Example response:
 ]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+{{< /alert >}}
 
 ### Scope: `merge_requests`
 
@@ -712,8 +723,11 @@ Example response:
 
 ### Scope: `wiki_blobs`
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
 
@@ -740,13 +754,19 @@ Example response:
 ]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+
+{{< /alert >}}
 
 ### Scope: `commits`
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
 
@@ -781,8 +801,11 @@ Example response:
 
 ### Scope: `blobs`
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#enable-advanced-search).
 
@@ -1225,13 +1248,19 @@ Example response:
 ]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+
+{{< /alert >}}
 
 ### Scope: `notes`
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=notes&search=maxime"

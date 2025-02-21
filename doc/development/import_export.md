@@ -359,5 +359,8 @@ tree
     └── 4352.json
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 When updating these fixtures, ensure you update both `json` files and `tree` folder, as the tests apply to both.
+
+{{< /alert >}}

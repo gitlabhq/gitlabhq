@@ -568,10 +568,13 @@ migration as expected for other installations. The below block
 demonstrates how to create the second migration for the previous
 asynchronous example.
 
-**WARNING:**
+{{< alert type="warning" >}}
+
 Verify that the index exists in production before merging a second migration with `add_concurrent_index`.
 If the second migration is deployed before the index has been created,
 the index is created synchronously when the second migration executes.
+
+{{< /alert >}}
 
 ```ruby
 # in db/post_migrate/
@@ -696,10 +699,13 @@ The synchronous migration results in a no-op on GitLab.com, but you should still
 migration as expected for other installations. For example, to
 create the second migration for the previous asynchronous example:
 
-**WARNING:**
+{{< alert type="warning" >}}
+
 Verify that the index no longer exists in production before merging a second migration with `remove_concurrent_index_by_name`.
 If the second migration is deployed before the index has been destroyed,
 the index is destroyed synchronously when the second migration executes.
+
+{{< /alert >}}
 
 ```ruby
 # in db/post_migrate/
