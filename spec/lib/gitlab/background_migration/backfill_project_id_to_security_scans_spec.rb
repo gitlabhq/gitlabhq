@@ -27,6 +27,13 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProjectIdToSecurityScans, fe
 
   subject(:perform_migration) { described_class.new(**args).perform }
 
+  before do
+    # This test shares the db connection to establish it's fixtures, resulting in
+    # incorrect connection usage, so we're skipping it.
+    # Consult https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180764 for more info.
+    skip_if_multiple_databases_are_setup(:sec)
+  end
+
   context 'when security_scan.build_id does not exist' do
     let!(:scan) do
       security_scans.create!(

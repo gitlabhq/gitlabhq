@@ -27,6 +27,13 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProjectIdToDependencyListExp
 
   subject(:perform_migration) { described_class.new(**args).perform }
 
+  before do
+    # This test shares the db connection to establish it's fixtures, resulting in
+    # incorrect connection usage, so we're skipping it.
+    # Consult https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180764 for more info.
+    skip_if_multiple_databases_are_setup(:sec)
+  end
+
   context 'when export is missing project_id' do
     let!(:export) { dependency_list_exports.create!(pipeline_id: pipeline.id) }
     let!(:other_pipeline) { create_ci_pipeline('pipeline-2') }

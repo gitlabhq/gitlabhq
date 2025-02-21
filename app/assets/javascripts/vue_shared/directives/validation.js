@@ -28,7 +28,7 @@ const getFeedbackForElement = (feedbackMap, el) => {
     elMessage = el.getAttribute('validation-message');
   }
 
-  return field?.message || elMessage || el.validationMessage;
+  return elMessage || field?.message || el.validationMessage;
 };
 
 const focusFirstInvalidInput = (e) => {

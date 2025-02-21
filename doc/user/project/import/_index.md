@@ -228,8 +228,7 @@ Placeholder users are created per [import source](#supported-import-sources) and
 - If you import the same project twice, but to a different top-level group on the destination instance, the second import
   creates new placeholder users under that top-level group.
 
-If importing to GitLab.com, placeholder users are limited per top-level group on the destination instance. The limits
-differ depending on your plan and seat count. Placeholder users do not count towards license limits.
+If importing to GitLab.com, placeholder users are limited per top-level group on the destination instance. The limits differ depending on your plan and seat count. Placeholder users do not count towards license limits.
 
 | GitLab.com plan          | Number of seats | Placeholder user limit on top-level group |
 |:-------------------------|:----------------|:------------------------------------------|
@@ -245,10 +244,29 @@ differ depending on your plan and seat count. Placeholder users do not count tow
 
 Customers on legacy Bronze, Silver, or Gold plans have the corresponding Free, Premium, or Ultimate limits.
 For Premium customers trying out Ultimate (Ultimate trial paid customer plan), Premium limits apply.
-
 If these limits are not sufficient for your import, [contact GitLab Support](https://about.gitlab.com/support/).
 
-The above limits are for GitLab.com. GitLab Self-Managed has no placeholder limits by default. A self-managed instance administrator can [set a placeholder limit](../../../administration/instance_limits.md#import-placeholder-user-limits) for their installation.
+For GitLab Self-Managed and GitLab Dedicated, no placeholder limits apply by default.
+A GitLab administrator can [set a placeholder limit](../../../administration/instance_limits.md#import-placeholder-user-limits) on their instance.
+
+For imports to GitLab.com, some contributions might not be created
+because these contributions are mapped to the same user.
+For example, if multiple merge request approvers are mapped to the same user,
+only the first approval is added and the others are ignored.
+These contributions include:
+
+- Memberships
+- Merge request approvals, assignees, and reviewers
+- Issue assignees
+- Emoji
+- Push, merge request, and deploy access levels
+- Approval rules
+
+You cannot determine the number of placeholder users you need in advance.
+When the placeholder user limit is reached, the import does not fail.
+Instead, all contributions are assigned to a bot user called `Import User`.
+
+Every change creates a system note, which is not affected by the placeholder user limit.
 
 ### Reassign contributions and memberships
 

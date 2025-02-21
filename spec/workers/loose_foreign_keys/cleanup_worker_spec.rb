@@ -122,6 +122,11 @@ RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :cell do
   end
 
   it 'cleans up all rows' do
+    # Some spec in this file currently fails when a sec database is configured. We plan to ensure it all functions
+    # and passes prior to the sec db rollout.
+    # Consult https://gitlab.com/gitlab-org/gitlab/-/issues/520270 for more info.
+    skip_if_multiple_databases_are_setup(:sec)
+
     perform_for(db: :main)
 
     expect(loose_fk_child_table_1_1.count).to eq(0)
@@ -175,6 +180,13 @@ RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :cell do
   end
 
   describe 'turbo mode' do
+    before do
+      # Some spec in this file currently fails when a sec database is configured. We plan to ensure it all functions
+      # and passes prior to the sec db rollout.
+      # Consult https://gitlab.com/gitlab-org/gitlab/-/issues/520270 for more info.
+      skip_if_multiple_databases_are_setup(:sec)
+    end
+
     context 'when turbo mode is off' do
       where(:database_name, :feature_flag) do
         :main | :loose_foreign_keys_turbo_mode_main

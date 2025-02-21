@@ -1,7 +1,6 @@
 <script>
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { makeLoadVersionsErrorMessage } from '~/ml/model_registry/translations';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import getModelVersionsQuery from '../graphql/queries/get_model_versions.query.graphql';
 import {
   GRAPHQL_PAGE_SIZE,
@@ -81,7 +80,13 @@ export default {
       this.$apollo.queries.modelVersions.fetchMore({});
     },
     handleError(error) {
-      this.errorMessage = makeLoadVersionsErrorMessage(error.message);
+      this.errorMessage = sprintf(
+        s__('MlModelRegistry|Failed to load model versions with error: %{message}'),
+        {
+          message: error.message,
+        },
+      );
+
       Sentry.captureException(error);
     },
   },

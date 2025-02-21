@@ -292,7 +292,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
     await waitForPromises();
 
     expect(findLoadOrErrorOrShow().props('errorMessage')).toBe(
-      'Failed to load model versions with error: Failure!',
+      'Failed to load model version with error: Failure!',
     );
     expect(Sentry.captureException).toHaveBeenCalled();
   });

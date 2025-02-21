@@ -2,7 +2,7 @@
 
 class DropInvalidVulnerabilitiesGdk < Gitlab::Database::Migration[2.2]
   disable_ddl_transaction!
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_sec
   milestone '16.10'
 
   class Vulnerability < MigrationRecord

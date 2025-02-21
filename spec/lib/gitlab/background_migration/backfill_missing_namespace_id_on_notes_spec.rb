@@ -46,6 +46,13 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillMissingNamespaceIdOnNotes, f
 
   let!(:user_1) { users_table.create!(name: 'bob', email: 'bob@example.com', projects_limit: 1) }
 
+  before do
+    # This test shares the db connection to establish it's fixtures, resulting in
+    # incorrect connection usage, so we're skipping it.
+    # Consult https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180764 for more info.
+    skip_if_multiple_databases_are_setup(:sec)
+  end
+
   context "when namespace_id is derived from note.project_id" do
     let(:alert_management_alert_note) do
       notes_table.create!(project_id: project_1.id, noteable_type: "AlertManagement::Alert")

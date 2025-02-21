@@ -6993,8 +6993,13 @@ msgstr ""
 msgid "Analytics|Data table"
 msgstr ""
 
-msgid "Analytics|Dates and times are displayed in the UTC timezone"
+msgid "Analytics|Dates and times are displayed in the UTC timezone."
 msgstr ""
+
+msgid "Analytics|Dates and times are displayed in the UTC timezone. Date range is limited to %d day."
+msgid_plural "Analytics|Dates and times are displayed in the UTC timezone. Date range is limited to %d days."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Analytics|Default date range '%{defaultOption}' is not included in the list of dateRange options"
 msgstr ""
@@ -19098,11 +19103,6 @@ msgstr ""
 
 msgid "Date range filter validation"
 msgstr ""
-
-msgid "Date range limited to %d day"
-msgid_plural "Date range limited to %d days"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "Date range limited to %{number} days"
 msgstr ""
@@ -36674,9 +36674,6 @@ msgstr ""
 msgid "MlModelRegistry|All artifact uploads failed or were canceled."
 msgstr ""
 
-msgid "MlModelRegistry|An error has occurred when saving the model."
-msgstr ""
-
 msgid "MlModelRegistry|Are you sure you want to delete this model version?"
 msgstr ""
 
@@ -36735,9 +36732,6 @@ msgid "MlModelRegistry|Creating a model"
 msgstr ""
 
 msgid "MlModelRegistry|Creating a model version"
-msgstr ""
-
-msgid "MlModelRegistry|Creating models is also possible through the MLflow client. %{linkStart}Follow the documentation to learn more.%{linkEnd}"
 msgstr ""
 
 msgid "MlModelRegistry|Creating models, model versions and runs is also possible using the MLflow client:"
@@ -36815,6 +36809,9 @@ msgstr ""
 msgid "MlModelRegistry|Failed to load model runs with error: %{message}"
 msgstr ""
 
+msgid "MlModelRegistry|Failed to load model version with error: %{message}"
+msgstr ""
+
 msgid "MlModelRegistry|Failed to load model versions with error: %{message}"
 msgstr ""
 
@@ -36830,16 +36827,10 @@ msgstr ""
 msgid "MlModelRegistry|For example 1.0.0"
 msgstr ""
 
-msgid "MlModelRegistry|ID"
-msgstr ""
-
 msgid "MlModelRegistry|Import model using MLflow"
 msgstr ""
 
 msgid "MlModelRegistry|Import your machine learning models"
-msgstr ""
-
-msgid "MlModelRegistry|Info"
 msgstr ""
 
 msgid "MlModelRegistry|Latest version"
@@ -36899,9 +36890,6 @@ msgstr ""
 msgid "MlModelRegistry|Must be unique. May not contain spaces."
 msgstr ""
 
-msgid "MlModelRegistry|New model"
-msgstr ""
-
 msgid "MlModelRegistry|New version"
 msgstr ""
 
@@ -36909,9 +36897,6 @@ msgid "MlModelRegistry|No description available. To add a description, click \"E
 msgstr ""
 
 msgid "MlModelRegistry|No description available. To add a description, click \"Edit model\" above."
-msgstr ""
-
-msgid "MlModelRegistry|No description provided"
 msgstr ""
 
 msgid "MlModelRegistry|No logged artifacts."
@@ -36975,9 +36960,6 @@ msgid "MlModelRegistry|Setting up the client"
 msgstr ""
 
 msgid "MlModelRegistry|Something went wrong while trying to delete the model version. Please try again later."
-msgstr ""
-
-msgid "MlModelRegistry|Status"
 msgstr ""
 
 msgid "MlModelRegistry|Step %{step}"
@@ -46117,6 +46099,9 @@ msgstr ""
 msgid "ProjectsNew|Available only for projects within groups"
 msgstr ""
 
+msgid "ProjectsNew|Bitbucket Server URL"
+msgstr ""
+
 msgid "ProjectsNew|Choose a group"
 msgstr ""
 
@@ -46186,6 +46171,9 @@ msgstr ""
 msgid "ProjectsNew|Import projects from Gitea"
 msgstr ""
 
+msgid "ProjectsNew|Import repositories from Bitbucket Server"
+msgstr ""
+
 msgid "ProjectsNew|Include a Getting Started README"
 msgstr ""
 
@@ -46216,10 +46204,16 @@ msgstr ""
 msgid "ProjectsNew|No import options available"
 msgstr ""
 
+msgid "ProjectsNew|Password/Personal access token"
+msgstr ""
+
 msgid "ProjectsNew|Pick a group or namespace"
 msgstr ""
 
 msgid "ProjectsNew|Pick a group or namespace where you want to create this project."
+msgstr ""
+
+msgid "ProjectsNew|Please enter a valid Bitbucket Server URL."
 msgstr ""
 
 msgid "ProjectsNew|Please enter a valid Gitea host URL."
@@ -46232,6 +46226,12 @@ msgid "ProjectsNew|Please enter a valid project name."
 msgstr ""
 
 msgid "ProjectsNew|Please enter a valid project slug."
+msgstr ""
+
+msgid "ProjectsNew|Please enter a valid token."
+msgstr ""
+
+msgid "ProjectsNew|Please enter a valid username."
 msgstr ""
 
 msgid "ProjectsNew|Please upload a valid GitLab project export file."
@@ -53124,6 +53124,9 @@ msgstr ""
 msgid "SecurityReports|Attach to new issue"
 msgstr ""
 
+msgid "SecurityReports|Auto-resolve vulnerabilities that are no longer detected"
+msgstr ""
+
 msgid "SecurityReports|CVSS v%{version}:"
 msgstr ""
 
@@ -53251,6 +53254,9 @@ msgid "SecurityReports|Failed updating vulnerabilities with the following IDs: %
 msgstr ""
 
 msgid "SecurityReports|GitLab Duo (AI)"
+msgstr ""
+
+msgid "SecurityReports|Go to policies"
 msgstr ""
 
 msgid "SecurityReports|Group your vulnerabilities by one of the provided categories. Leave feedback or suggestions in %{feedbackIssueStart}this issue%{feedbackIssueEnd}."
@@ -53475,6 +53481,9 @@ msgid "SecurityReports|This project is reaching the maximum number of vulnerabil
 msgstr ""
 
 msgid "SecurityReports|This selection is required."
+msgstr ""
+
+msgid "SecurityReports|To automatically resolve vulnerabilities when they are no longer detected by automated scanning, use the new auto-resolve option in your vulnerability management policies. From the %{boldStart}Policies%{boldEnd} page, configure a policy by applying the %{boldStart}Auto-resolve%{boldEnd} option and make sure the policy is linked to the appropriate projects. You can also configure the policy to auto-resolve only the vulnerabilities of a specific severity or from specific security scanners. See the %{linkStart}release post%{linkEnd} for details."
 msgstr ""
 
 msgid "SecurityReports|To widen your search, change or remove filters above"

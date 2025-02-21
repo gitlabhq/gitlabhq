@@ -242,7 +242,7 @@ variables:
   RETRY_FAILED_TESTS_IN_NEW_PROCESS: "true"
   # Run with decomposed databases by default
   DECOMPOSED_DB: "true"
-  SEC_DECOMPOSED_DB: "false"
+  SEC_DECOMPOSED_DB: "true"
 
   DOCS_REVIEW_APPS_DOMAIN: "docs.gitlab-review.app"
   DOCS_GITLAB_REPO_SUFFIX: "ee"

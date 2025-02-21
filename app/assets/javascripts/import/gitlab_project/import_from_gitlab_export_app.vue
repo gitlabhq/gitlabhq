@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlFormGroup, GlFormInput, GlAnimatedUploadIcon } from '@gitlab/ui';
 import { kebabCase } from 'lodash';
+import { s__ } from '~/locale';
 import validation from '~/vue_shared/directives/validation';
 import csrf from '~/lib/utils/csrf';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
@@ -12,6 +13,7 @@ import NewProjectDestinationSelect from '~/projects/new_v2/components/project_de
 const feedbackMap = {
   valueMissing: {
     isInvalid: (el) => el.validity?.valueMissing,
+    message: s__('ProjectsNew|Please enter a valid project name.'),
   },
   nameStartPattern: {
     isInvalid: (el) => el.validity?.patternMismatch && !START_RULE.reg.test(el.value),
@@ -167,7 +169,6 @@ export default {
             id="name"
             v-model="form.fields.name.value"
             v-validation:[form.showValidation]
-            :validation-message="s__('ProjectsNew|Please enter a valid project name.')"
             :state="form.fields.name.state"
             :pattern="$options.projectNamePattern"
             name="name"
