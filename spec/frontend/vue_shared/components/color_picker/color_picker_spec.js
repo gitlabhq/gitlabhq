@@ -69,7 +69,7 @@ describe('ColorPicker', () => {
       createComponent();
 
       expect(colorPreview().attributes('style')).toBe(undefined);
-      expect(colorPicker().attributes('value')).toBe(undefined);
+      expect(colorPicker().props('value')).toBe('');
       expect(colorTextInput().props('value')).toBe('');
       expect(colorPreview().attributes('class')).toContain('gl-shadow-inner-1-gray-400');
     });

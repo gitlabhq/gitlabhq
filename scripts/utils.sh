@@ -581,8 +581,8 @@ function find_custom_exit_code() {
   if grep -i -q \
     -e "Failed to connect to 127.0.0.1" \
     -e "Failed to open TCP connection to" \
-    -e "connection reset by peer" "$trace_file"; then
-
+    -e "connection reset by peer" \
+    -e "OpenSSL::SSL::SSLError" "$trace_file"; then
     echoerr "Detected network connection error. Changing exit code to 110."
     exit_code=110
     alert_job_in_slack "$exit_code" "Network connection error"

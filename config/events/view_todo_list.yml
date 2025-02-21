@@ -1,0 +1,15 @@
+---
+description: User views the To-Do List
+internal_events: true
+action: view_todo_list
+identifiers:
+- user
+product_group: personal_productivity
+product_categories:
+- notifications
+milestone: '17.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182178
+tiers:
+- free
+- premium
+- ultimate

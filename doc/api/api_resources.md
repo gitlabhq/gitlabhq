@@ -12,16 +12,14 @@ title: REST API resources
 
 {{< /details >}}
 
-Available resources for the [GitLab REST API](_index.md) can be grouped in the following contexts:
+The GitLab REST API provides HTTP endpoints to control and interact
+with GitLab resources and features programmatically.
+The REST API resources are organized into:
 
-- [Projects](#project-resources)
-- [Groups](#group-resources)
-- [Standalone](#standalone-resources)
-
-See also:
-
-- Adding [deploy keys for multiple projects](deploy_keys.md#add-deploy-keys-to-multiple-projects)
-- [API Resources for various templates](#templates-api-resources)
+- [Project endpoints](#project-resources)
+- [Group endpoints](#group-resources)
+- [Standalone endpoints](#standalone-resources)
+- [Template endpoints](#template-resources)
 
 ## Project resources
 
@@ -212,7 +210,7 @@ The following API resources are available outside of project and group contexts 
 | [Web commits](web_commits.md)                                                                | `/web_commits/public_key` |
 | [Version](version.md)                                                                        | `/version` |
 
-## Templates API resources
+## Template resources
 
 Endpoints are available for:
 

@@ -220,10 +220,10 @@ When you delete or block an enterprise user account, their personal access token
 
 {{< /history >}}
 
-Token usage information is updated every 10 minutes. GitLab considers a token used when the token is used to:
+Token usage information updates periodically. The time the token was last used updates every 10 minutes, and the most recently used IP address updates every minute. GitLab considers a token used when the token:
 
-- Authenticate with the [REST](../../api/rest/_index.md) or [GraphQL](../../api/graphql/_index.md) APIs.
-- Perform a Git operation.
+- Authenticates with the [REST](../../api/rest/_index.md) or [GraphQL](../../api/graphql/_index.md) APIs.
+- Performs a Git operation.
 
 To view the last time a token was used, and the IP addresses from where the token was used:
 

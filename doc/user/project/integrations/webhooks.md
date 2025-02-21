@@ -13,16 +13,13 @@ title: Webhooks
 
 {{< /details >}}
 
-Webhooks are custom HTTP callbacks that send JSON data about events in GitLab to a configured URI.
+Webhooks are custom HTTP callbacks that send JSON data about GitLab events to a configured URL.
+Webhooks:
 
-You can use webhooks to:
-
-- Trigger CI/CD jobs.
-- Update external issue trackers.
-- Deploy to your production server.
-- [Integrate with Twilio to receive SMS alerts](https://www.datadoghq.com/blog/send-alerts-sms-customizable-webhooks-twilio/)
-  every time an issue is created for a project or group in GitLab.
-- [Assign labels to merge requests automatically](https://about.gitlab.com/blog/2016/08/19/applying-gitlab-labels-automatically/).
+- Send real-time notifications about merge requests, issues, and other GitLab events.
+- Update external issue trackers and deployment tools.
+- Trigger CI/CD pipelines.
+- Support custom headers, payload templates, and mutual TLS.
 
 ## Webhook events
 
@@ -593,3 +590,6 @@ GitLab does not rewrite image URLs when:
 - [Group webhooks API](../../../api/group_webhooks.md)
 - [System hooks API](../../../api/system_hooks.md)
 - [Troubleshooting](webhooks_troubleshooting.md)
+- [Webhook developer guide](../../../development/webhooks.md)
+- [Send SMS alerts with webhooks and Twilio](https://www.datadoghq.com/blog/send-alerts-sms-customizable-webhooks-twilio/)
+- [Applying GitLab labels automatically](https://about.gitlab.com/blog/2016/08/19/applying-gitlab-labels-automatically/)

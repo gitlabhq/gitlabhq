@@ -21,5 +21,13 @@ RSpec.describe Dashboard::TodosController, feature_category: :notifications do
 
       it_behaves_like 'disabled when using an external authorization service'
     end
+
+    it_behaves_like 'internal event tracking' do
+      subject { get :index }
+
+      let(:event) { 'view_todo_list' }
+      let(:category) { described_class.name }
+      let(:user) { create(:user) }
+    end
   end
 end

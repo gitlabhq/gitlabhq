@@ -257,6 +257,12 @@ dependency-scanning:
       exists:
         - '**/{$ANALYZER_SUPPORTED_FILES,$ADDITIONAL_SUPPORTED_FILES}'
 
+    # Support DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN
+    - if: $DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN &&
+          $DS_ENFORCE_NEW_ANALYZER == 'true' &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+
     ## Otherwise, run the job only if the project has files supported by the new DS analyzer and not already supported by
     ## any gemnasium job and ensure to exclude the files already covered by the gemnasium jobs from the analysis.
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
@@ -281,6 +287,12 @@ dependency-scanning:
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists:
         - '**/{$ANALYZER_SUPPORTED_FILES,$ADDITIONAL_SUPPORTED_FILES}'
+
+    # Support DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN
+    - if: $DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN &&
+          $DS_ENFORCE_NEW_ANALYZER == 'true' &&
+          $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
 
     ## Otherwise, run the job only if the project has files supported by the new DS analyzer and not already supported by
     ## any gemnasium job and ensure to exclude the files already covered by the gemnasium jobs from the analysis.
