@@ -231,6 +231,7 @@ class Namespace < ApplicationRecord
   scope :by_name, ->(name) { where('name LIKE ?', "#{sanitize_sql_like(name)}%") }
   scope :ordered_by_name, -> { order(:name) }
   scope :top_level, -> { by_parent(nil) }
+  scope :with_project_statistics, -> { includes(projects: :statistics) }
 
   scope :with_statistics, -> do
     namespace_statistic_columns = STATISTICS_COLUMNS.map { |column| sum_project_statistics_column(column) }

@@ -842,6 +842,9 @@ Gitlab.ee do
   Settings.cron_jobs['search_zoekt_scheduling_worker'] ||= {}
   Settings.cron_jobs['search_zoekt_scheduling_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['search_zoekt_scheduling_worker']['job_class'] ||= 'Search::Zoekt::SchedulingWorker'
+  Settings.cron_jobs['search_zoekt_rollout_worker'] ||= {}
+  Settings.cron_jobs['search_zoekt_rollout_worker']['cron'] ||= '*/10 * * * *'
+  Settings.cron_jobs['search_zoekt_rollout_worker']['job_class'] ||= 'Search::Zoekt::RolloutWorker'
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker'] ||= {}
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker']['job_class'] ||= 'Search::Elastic::MetricsUpdateCronWorker'

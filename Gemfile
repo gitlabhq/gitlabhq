@@ -30,7 +30,7 @@ gem 'bundler-checksum', '~> 0.1.0', path: 'vendor/gems/bundler-checksum', requir
 # See https://docs.gitlab.com/ee/development/gemfile.html#upgrade-rails for guidelines when upgrading Rails
 
 if next?
-  gem 'rails', '~> 7.1.5', feature_category: :shared
+  gem 'rails', '~> 7.1.5.1', feature_category: :shared
 else
   gem 'rails', '~> 7.0.8.7', feature_category: :shared
 end
@@ -562,7 +562,7 @@ group :development, :test, :coverage do
   gem 'simplecov', '~> 0.22', require: false, feature_category: :tooling
   gem 'simplecov-lcov', '~> 0.8.0', require: false, feature_category: :tooling
   gem 'simplecov-cobertura', '~> 2.1.0', require: false, feature_category: :tooling
-  gem 'undercover', '~> 0.5.0', require: false, feature_category: :tooling
+  gem 'undercover', '~> 0.6.0', require: false, feature_category: :tooling
 end
 
 # Gems required in omnibus-gitlab pipeline
