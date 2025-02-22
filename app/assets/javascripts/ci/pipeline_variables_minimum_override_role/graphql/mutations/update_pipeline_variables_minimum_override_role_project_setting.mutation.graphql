@@ -1,0 +1,13 @@
+mutation updatePipelineVariablesMinimumOverrideRoleProjectSetting(
+  $fullPath: ID!
+  $pipelineVariablesMinimumOverrideRole: String!
+) {
+  projectCiCdSettingsUpdate(
+    input: {
+      fullPath: $fullPath
+      pipelineVariablesMinimumOverrideRole: $pipelineVariablesMinimumOverrideRole
+    }
+  ) {
+    errors
+  }
+}

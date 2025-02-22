@@ -12478,7 +12478,16 @@ msgstr ""
 msgid "CiVariables|Maximum number of variables reached."
 msgstr ""
 
+msgid "CiVariables|Minimum role to use pipeline variables"
+msgstr ""
+
 msgid "CiVariables|No matching values"
+msgstr ""
+
+msgid "CiVariables|Pipeline variable minimum override role successfully updated."
+msgstr ""
+
+msgid "CiVariables|Pipeline variables cannot be used."
 msgstr ""
 
 msgid "CiVariables|Protect variable"
@@ -12503,6 +12512,9 @@ msgid "CiVariables|Scope"
 msgstr ""
 
 msgid "CiVariables|Search values"
+msgstr ""
+
+msgid "CiVariables|Select the minimum role that is allowed to run a new pipeline with pipeline variables."
 msgstr ""
 
 msgid "CiVariables|Set the visibility level for the variable's value. The %{linkStart}Masked and hidden%{linkEnd} option is only available for new variables. You cannot update an existing variable to be hidden."
@@ -12572,6 +12584,9 @@ msgid "CiVariables|Variables store information that you can use in job scripts. 
 msgstr ""
 
 msgid "CiVariables|Visible"
+msgstr ""
+
+msgid "CiVariables|What are pipeline variables?"
 msgstr ""
 
 msgid "CiVariables|You can use CI/CD variables with the same name in different places, but the variables might overwrite each other. %{linkStart}What is the order of precedence for variables?%{linkEnd}"
@@ -38318,6 +38333,9 @@ msgstr ""
 msgid "No more than %{max_work_items} work items can be updated at the same time"
 msgstr ""
 
+msgid "No one allowed"
+msgstr ""
+
 msgid "No open merge requests"
 msgstr ""
 
@@ -44904,6 +44922,9 @@ msgid "Project slug"
 msgstr ""
 
 msgid "Project uploads"
+msgstr ""
+
+msgid "Project variables"
 msgstr ""
 
 msgid "Project visibility level is less restrictive than the group settings."
@@ -58591,6 +58612,9 @@ msgstr ""
 msgid "There was a problem fetching the keep latest artifacts setting."
 msgstr ""
 
+msgid "There was a problem fetching the latest minimum override role."
+msgstr ""
+
 msgid "There was a problem fetching the pipeline summary."
 msgstr ""
 
@@ -58607,6 +58631,9 @@ msgid "There was a problem sending the confirmation email"
 msgstr ""
 
 msgid "There was a problem updating the keep latest artifacts setting."
+msgstr ""
+
+msgid "There was a problem updating the minimum override setting."
 msgstr ""
 
 msgid "There was an error fetching configuration for charts"

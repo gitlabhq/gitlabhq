@@ -2,6 +2,11 @@
 - is_group = !@group.nil?
 - is_project = !@project.nil?
 
+- if is_project
+  #js-ci-variables-minimum-override-role-app{ data: { full_path: @project.full_path } }
+  %h5
+    = _('Project variables')
+
 = render 'ci/variables/attributes'
 
 #js-ci-variables{ data: { endpoint: save_endpoint,

@@ -170,6 +170,7 @@ A site profile contains:
 - **Site type**: The type of target to be scanned, either website or API scan.
 - **Target URL**: The URL that DAST runs against.
 - **Excluded URLs**: A comma-separated list of URLs to exclude from the scan.
+  You can use [RE2-style regex](https://github.com/google/re2/wiki/Syntax). The regex can't include the question mark (`?`) character, because it is a valid URL character.
 - **Request headers**: A comma-separated list of HTTP request headers, including names and values. These headers are added to every request made by DAST.
 - **Authentication**:
   - **Authenticated URL**: The URL of the page containing the sign-in HTML form on the target website. The username and password are submitted with the login form to create an authenticated scan.
