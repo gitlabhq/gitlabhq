@@ -661,6 +661,28 @@ describe('init markdown', () => {
         );
       });
 
+      it.each([{ prefix: '> ' }, { prefix: '  >' }, { prefix: '>' }])(
+        "removes quote tag from selection with prefix '$prefix'",
+        ({ prefix }) => {
+          const tag = '> ';
+          const initialValue = `${prefix}${text}`;
+          textArea.value = initialValue;
+          textArea.setSelectionRange(0, initialValue.length);
+
+          insertMarkdownText({
+            textArea,
+            text: textArea.value,
+            tag,
+            blockTag: null,
+            selected: initialValue,
+            wrap: false,
+          });
+
+          expect(textArea.value).toEqual(text);
+          expect(textArea.selectionStart).toBe(text.length);
+        },
+      );
+
       it('replaces the placeholder in the tag', () => {
         insertMarkdownText({
           textArea,
@@ -718,6 +740,51 @@ describe('init markdown', () => {
 
           expect(textArea.value).toEqual(text);
         });
+      });
+
+      describe('in multiple lines', () => {
+        it('indents quote further', () => {
+          const initialValue = '> aaa\nbbb\nccc';
+          textArea.value = initialValue;
+          textArea.setSelectionRange(0, initialValue.length);
+          const tag = '> ';
+
+          insertMarkdownText({
+            textArea,
+            text: textArea.value,
+            tag,
+            blockTag: null,
+            selected: initialValue,
+            wrap: false,
+          });
+
+          const expectedText = '> > aaa\n> bbb\n> ccc';
+
+          expect(textArea.value).toEqual(expectedText);
+        });
+
+        it.each([{ linePrefix: '> ' }, { linePrefix: '  >' }, { linePrefix: '>' }])(
+          "removes quotes correctly when line prefix '$linePrefix'",
+          ({ linePrefix }) => {
+            const initialValue = `${linePrefix}> aaa\n${linePrefix}bbb\n${linePrefix}ccc`;
+            textArea.value = initialValue;
+            textArea.setSelectionRange(0, initialValue.length);
+            const tag = '> ';
+
+            insertMarkdownText({
+              textArea,
+              text: textArea.value,
+              tag,
+              blockTag: null,
+              selected: initialValue,
+              wrap: false,
+            });
+
+            const expectedText = '> aaa\nbbb\nccc';
+
+            expect(textArea.value).toEqual(expectedText);
+          },
+        );
       });
 
       describe('and text to be selected', () => {
