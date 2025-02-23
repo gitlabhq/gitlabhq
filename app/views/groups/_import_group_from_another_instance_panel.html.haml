@@ -1,4 +1,4 @@
-- bulk_imports_enabled = Gitlab::CurrentSettings.bulk_import_enabled?
+- bulk_imports_enabled = Gitlab::CurrentSettings.bulk_import_enabled? || Feature.enabled?(:override_bulk_import_disabled, current_user, type: :ops)
 
 .gl-flex.gl-flex-col.gl-gap-5
   - if !bulk_imports_enabled
