@@ -61,6 +61,7 @@ module Gitlab
           mutually_dependent_settings:,
           default_setting_names:
         )
+          # No blank line here (satisfies Layout/EmptyLinesAroundMethodBody)
 
           if (mutually_dependent_settings - default_setting_names).any?
             raise "Unknown mutually dependent setting(s): " \
