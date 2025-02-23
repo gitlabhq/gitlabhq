@@ -1,6 +1,5 @@
 <script>
 import WorkItemActivitySortFilter from '~/work_items/components/notes/work_item_activity_sort_filter.vue';
-import { s__ } from '~/locale';
 import { ASC } from '~/notes/constants';
 import {
   WORK_ITEM_NOTES_FILTER_ALL_NOTES,
@@ -11,13 +10,17 @@ import {
 } from '~/work_items/constants';
 
 export default {
-  i18n: {
-    activityLabel: s__('WorkItem|Activity'),
-  },
   components: {
+    AiSummarizeNotes: () =>
+      import('ee_component/notes/components/note_actions/ai_summarize_notes.vue'),
     WorkItemActivitySortFilter,
   },
   props: {
+    canSummarizeComments: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     disableActivityFilterSort: {
       type: Boolean,
       required: true,
@@ -26,6 +29,10 @@ export default {
       type: String,
       default: ASC,
       required: false,
+    },
+    workItemId: {
+      type: String,
+      required: true,
     },
     workItemType: {
       type: String,
@@ -70,10 +77,17 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-flex-wrap gl-items-center gl-justify-between gl-pb-3">
-    <component :is="useH2 ? 'h2' : 'h3'" :class="headerClasses">{{
-      $options.i18n.activityLabel
-    }}</component>
+  <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-3 gl-pb-3">
+    <div class="gl-flex gl-grow gl-items-center gl-justify-between gl-gap-3">
+      <component :is="useH2 ? 'h2' : 'h3'" :class="headerClasses">
+        {{ s__('WorkItem|Activity') }}
+      </component>
+      <ai-summarize-notes
+        v-if="canSummarizeComments"
+        :resource-global-id="workItemId"
+        size="small"
+      />
+    </div>
     <div class="gl-flex gl-gap-3">
       <work-item-activity-sort-filter
         :work-item-type="workItemType"

@@ -32,15 +32,16 @@ fragment WorkItem on WorkItem {
     iconName
   }
   userPermissions {
-    deleteWorkItem
-    updateWorkItem
-    moveWorkItem
     adminParentLink
-    setWorkItemMetadata
-    createNote
     adminWorkItemLink
+    createNote
+    deleteWorkItem
     markNoteAsInternal
+    moveWorkItem
     reportSpam
+    setWorkItemMetadata
+    summarizeComments
+    updateWorkItem
   }
   widgets {
     ...WorkItemWidgets

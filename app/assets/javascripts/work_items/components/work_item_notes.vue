@@ -81,6 +81,11 @@ export default {
       required: false,
       default: false,
     },
+    canSummarizeComments: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     reportAbusePath: {
       type: String,
       required: true,
@@ -129,6 +134,7 @@ export default {
       discussionFilter: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
       workItemNamespace: null,
       previewNote: null,
+      workItemNotes: [],
     };
   },
   computed: {
@@ -286,7 +292,6 @@ export default {
         Sentry.captureException(error);
       },
     },
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workItemNotes: {
       query: workItemNotesByIidQuery,
       variables() {
@@ -448,8 +453,10 @@ export default {
 <template>
   <div class="work-item-notes">
     <work-item-notes-activity-header
+      :can-summarize-comments="canSummarizeComments"
       :sort-order="sortOrder"
       :disable-activity-filter-sort="disableActivityFilterSort"
+      :work-item-id="workItemId"
       :work-item-type="workItemType"
       :discussion-filter="discussionFilter"
       :use-h2="useH2"

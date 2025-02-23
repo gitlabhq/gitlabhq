@@ -272,14 +272,16 @@ describe('work items graphql cache utils', () => {
             },
             userPermissions: {
               __typename: 'WorkItemPermissions',
-              deleteWorkItem: true,
-              updateWorkItem: true,
-              moveWorkItem: true,
               adminParentLink: true,
-              setWorkItemMetadata: true,
-              createNote: true,
               adminWorkItemLink: true,
+              createNote: true,
+              deleteWorkItem: true,
               markNoteAsInternal: true,
+              moveWorkItem: true,
+              reportSpam: true,
+              setWorkItemMetadata: true,
+              summarizeComments: true,
+              updateWorkItem: true,
             },
             widgets: [
               {

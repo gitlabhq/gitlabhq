@@ -1,12 +1,9 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
 import { ASC } from '~/notes/constants';
-import {
-  WORK_ITEM_NOTES_FILTER_ALL_NOTES,
-  WORK_ITEM_NOTES_FILTER_ONLY_HISTORY,
-} from '~/work_items/constants';
+import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
+import { WORK_ITEM_NOTES_FILTER_ONLY_HISTORY } from '~/work_items/constants';
 
-describe('Work Item Note Activity Header', () => {
+describe('WorkItemNotesActivityHeader component', () => {
   let wrapper;
 
   const findActivityLabelH2Heading = () => wrapper.find('h2');
@@ -14,53 +11,53 @@ describe('Work Item Note Activity Header', () => {
   const findActivityFilterDropdown = () => wrapper.findByTestId('work-item-filter');
   const findActivitySortDropdown = () => wrapper.findByTestId('work-item-sort');
 
-  const createComponent = ({
-    disableActivityFilterSort = false,
-    sortOrder = ASC,
-    workItemType = 'Task',
-    discussionFilter = WORK_ITEM_NOTES_FILTER_ALL_NOTES,
-    useH2 = false,
-  } = {}) => {
+  const createComponent = ({ useH2 = false } = {}) => {
     wrapper = shallowMountExtended(WorkItemNotesActivityHeader, {
       propsData: {
-        disableActivityFilterSort,
-        sortOrder,
-        workItemType,
-        discussionFilter,
+        disableActivityFilterSort: false,
         useH2,
+        workItemId: 'gid://gitlab/WorkItem/123',
+        workItemType: 'Task',
       },
     });
   };
 
-  beforeEach(() => {
+  it('renders Activity heading', () => {
     createComponent();
+
+    expect(findActivityLabelH3Heading().text()).toBe('Activity');
   });
 
-  it('Should have the Activity label', () => {
-    expect(findActivityLabelH3Heading().text()).toBe(
-      WorkItemNotesActivityHeader.i18n.activityLabel,
-    );
-  });
-
-  it('Should render an H2 instead of an H3 if useH2 is true', () => {
+  it('renders an h3 heading by default', () => {
     createComponent();
+
     expect(findActivityLabelH3Heading().exists()).toBe(true);
     expect(findActivityLabelH2Heading().exists()).toBe(false);
+  });
+
+  it('renders an h2 heading when useH2=true', () => {
     createComponent({ useH2: true });
+
     expect(findActivityLabelH2Heading().exists()).toBe(true);
     expect(findActivityLabelH3Heading().exists()).toBe(false);
   });
 
   it('Should have Activity filtering dropdown', () => {
+    createComponent();
+
     expect(findActivityFilterDropdown().exists()).toBe(true);
   });
 
   it('Should have Activity sorting dropdown', () => {
+    createComponent();
+
     expect(findActivitySortDropdown().exists()).toBe(true);
   });
 
   describe('Activity Filter', () => {
     it('emits `changeFilter` when filtering discussions', () => {
+      createComponent();
+
       findActivityFilterDropdown().vm.$emit('changeFilter', WORK_ITEM_NOTES_FILTER_ONLY_HISTORY);
 
       expect(wrapper.emitted('changeFilter')).toEqual([[WORK_ITEM_NOTES_FILTER_ONLY_HISTORY]]);
@@ -69,6 +66,8 @@ describe('Work Item Note Activity Header', () => {
 
   describe('Activity Sorting', () => {
     it('emits `changeSort` when sorting discussions/activity', () => {
+      createComponent();
+
       findActivitySortDropdown().vm.$emit('changeSort', ASC);
 
       expect(wrapper.emitted('changeSort')).toEqual([[ASC]]);

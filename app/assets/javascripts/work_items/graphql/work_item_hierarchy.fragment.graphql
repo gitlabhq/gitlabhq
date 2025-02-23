@@ -11,14 +11,16 @@ fragment WorkItemHierarchy on WorkItem {
   title
   confidential
   userPermissions {
-    deleteWorkItem
-    updateWorkItem
-    moveWorkItem
     adminParentLink
-    setWorkItemMetadata
-    createNote
     adminWorkItemLink
+    createNote
+    deleteWorkItem
     markNoteAsInternal
+    moveWorkItem
+    reportSpam
+    setWorkItemMetadata
+    summarizeComments
+    updateWorkItem
   }
   widgets {
     type

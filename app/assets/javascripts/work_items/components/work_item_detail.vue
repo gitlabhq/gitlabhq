@@ -328,6 +328,9 @@ export default {
     canAssignUnassignUser() {
       return this.workItemAssignees && this.canUpdateMetadata;
     },
+    canSummarizeComments() {
+      return this.workItem.userPermissions?.summarizeComments;
+    },
     isDiscussionLocked() {
       return this.workItemNotes?.discussionLocked;
     },
@@ -1112,6 +1115,7 @@ export default {
               :is-modal="isModal"
               :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
               :can-set-work-item-metadata="canAssignUnassignUser"
+              :can-summarize-comments="canSummarizeComments"
               :report-abuse-path="reportAbusePath"
               :is-discussion-locked="isDiscussionLocked"
               :is-work-item-confidential="workItem.confidential"

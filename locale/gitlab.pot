@@ -17480,9 +17480,6 @@ msgstr ""
 msgid "Creates a reminder to-do item after the specified time period."
 msgstr ""
 
-msgid "Creates a summary of all comments"
-msgstr ""
-
 msgid "Creates branch '%{branch_name}' and a merge request to resolve this issue."
 msgstr ""
 
@@ -56814,9 +56811,6 @@ msgid "Suite"
 msgstr ""
 
 msgid "Summarize code changes"
-msgstr ""
-
-msgid "Summarize comments"
 msgstr ""
 
 msgid "Summarize the comments in the current issue."

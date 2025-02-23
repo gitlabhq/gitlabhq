@@ -596,15 +596,16 @@ export const setNewWorkItemCache = async (
             __typename: 'WorkItemType',
           },
           userPermissions: {
-            deleteWorkItem: true,
-            updateWorkItem: true,
-            moveWorkItem: true,
             adminParentLink: true,
-            setWorkItemMetadata: true,
-            createNote: true,
             adminWorkItemLink: true,
+            createNote: true,
+            deleteWorkItem: true,
             markNoteAsInternal: true,
+            moveWorkItem: true,
             reportSpam: true,
+            setWorkItemMetadata: true,
+            summarizeComments: true,
+            updateWorkItem: true,
             __typename: 'WorkItemPermissions',
           },
           widgets,
@@ -617,15 +618,16 @@ export const setNewWorkItemCache = async (
 };
 
 export const optimisticUserPermissions = {
-  deleteWorkItem: false,
-  updateWorkItem: false,
-  moveWorkItem: false,
   adminParentLink: false,
-  setWorkItemMetadata: false,
-  createNote: false,
   adminWorkItemLink: false,
+  createNote: false,
+  deleteWorkItem: false,
   markNoteAsInternal: false,
+  moveWorkItem: false,
   reportSpam: false,
+  setWorkItemMetadata: false,
+  summarizeComments: false,
+  updateWorkItem: false,
   __typename: 'WorkItemPermissions',
 };
 
