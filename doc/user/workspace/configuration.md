@@ -138,6 +138,7 @@ To configure sudo access for a workspace with Sysbox:
    - Set [`default_runtime_class`](settings.md#default_runtime_class) to the runtime class
      of Sysbox (for example, `sysbox-runc`).
    - Set [`allow_privilege_escalation`](settings.md#allow_privilege_escalation) to `true`.
+   - Set [`annotations`](settings.md#annotations) to `{"io.kubernetes.cri-o.userns-mode": "auto:size=65536"}`.
 
 ### With Kata Containers
 

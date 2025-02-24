@@ -243,13 +243,13 @@ RSpec.describe SystemHook, feature_category: :webhooks do
   end
 
   describe '#pluralized_name' do
-    subject { build(:no_sti_system_hook).pluralized_name }
+    subject { build(:system_hook).pluralized_name }
 
     it { is_expected.to eq('System hooks') }
   end
 
   describe '#help_path' do
-    subject { build(:no_sti_system_hook).help_path }
+    subject { build(:system_hook).help_path }
 
     it { is_expected.to eq('administration/system_hooks') }
   end

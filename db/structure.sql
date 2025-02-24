@@ -7121,6 +7121,7 @@ CREATE TABLE ai_active_context_collections (
     number_of_partitions integer DEFAULT 1 NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
+    connection_id bigint NOT NULL,
     CONSTRAINT check_fe84a77f95 CHECK ((char_length(name) <= 255))
 );
 
@@ -17526,6 +17527,24 @@ CREATE SEQUENCE operations_user_lists_id_seq
 
 ALTER SEQUENCE operations_user_lists_id_seq OWNED BY operations_user_lists.id;
 
+CREATE TABLE organization_cluster_agent_mappings (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    cluster_agent_id bigint NOT NULL,
+    creator_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE organization_cluster_agent_mappings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE organization_cluster_agent_mappings_id_seq OWNED BY organization_cluster_agent_mappings.id;
+
 CREATE TABLE organization_details (
     organization_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -22154,46 +22173,6 @@ CREATE SEQUENCE system_access_microsoft_graph_access_tokens_id_seq
 
 ALTER SEQUENCE system_access_microsoft_graph_access_tokens_id_seq OWNED BY system_access_microsoft_graph_access_tokens.id;
 
-CREATE TABLE system_hooks (
-    id bigint NOT NULL,
-    created_at timestamp(6) without time zone,
-    updated_at timestamp(6) without time zone,
-    disabled_until timestamp with time zone,
-    recent_failures smallint DEFAULT 0 NOT NULL,
-    backoff_count smallint DEFAULT 0 NOT NULL,
-    branch_filter_strategy smallint DEFAULT 0 NOT NULL,
-    push_events boolean DEFAULT true NOT NULL,
-    merge_requests_events boolean DEFAULT false NOT NULL,
-    tag_push_events boolean DEFAULT false,
-    enable_ssl_verification boolean DEFAULT true,
-    repository_update_events boolean DEFAULT false NOT NULL,
-    push_events_branch_filter text,
-    name text,
-    description text,
-    custom_webhook_template text,
-    encrypted_token bytea,
-    encrypted_token_iv bytea,
-    encrypted_url bytea,
-    encrypted_url_iv bytea,
-    encrypted_url_variables bytea,
-    encrypted_url_variables_iv bytea,
-    encrypted_custom_headers bytea,
-    encrypted_custom_headers_iv bytea,
-    CONSTRAINT check_32d89afab7 CHECK ((char_length(push_events_branch_filter) <= 5000)),
-    CONSTRAINT check_6439bc2682 CHECK ((char_length(name) <= 255)),
-    CONSTRAINT check_6e64a69bc5 CHECK ((char_length(custom_webhook_template) <= 4096)),
-    CONSTRAINT check_f6fffb36bd CHECK ((char_length(description) <= 2048))
-);
-
-CREATE SEQUENCE system_hooks_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE system_hooks_id_seq OWNED BY system_hooks.id;
-
 CREATE TABLE system_note_metadata (
     commit_count integer,
     action character varying,
@@ -25785,6 +25764,8 @@ ALTER TABLE ONLY operations_strategies_user_lists ALTER COLUMN id SET DEFAULT ne
 
 ALTER TABLE ONLY operations_user_lists ALTER COLUMN id SET DEFAULT nextval('operations_user_lists_id_seq'::regclass);
 
+ALTER TABLE ONLY organization_cluster_agent_mappings ALTER COLUMN id SET DEFAULT nextval('organization_cluster_agent_mappings_id_seq'::regclass);
+
 ALTER TABLE ONLY organization_users ALTER COLUMN id SET DEFAULT nextval('organization_users_id_seq'::regclass);
 
 ALTER TABLE ONLY organizations ALTER COLUMN id SET DEFAULT nextval('organizations_id_seq'::regclass);
@@ -26142,8 +26123,6 @@ ALTER TABLE ONLY system_access_instance_microsoft_graph_access_tokens ALTER COLU
 ALTER TABLE ONLY system_access_microsoft_applications ALTER COLUMN id SET DEFAULT nextval('system_access_microsoft_applications_id_seq'::regclass);
 
 ALTER TABLE ONLY system_access_microsoft_graph_access_tokens ALTER COLUMN id SET DEFAULT nextval('system_access_microsoft_graph_access_tokens_id_seq'::regclass);
-
-ALTER TABLE ONLY system_hooks ALTER COLUMN id SET DEFAULT nextval('system_hooks_id_seq'::regclass);
 
 ALTER TABLE ONLY system_note_metadata ALTER COLUMN id SET DEFAULT nextval('system_note_metadata_id_seq'::regclass);
 
@@ -28410,6 +28389,9 @@ ALTER TABLE ONLY operations_strategies_user_lists
 ALTER TABLE ONLY operations_user_lists
     ADD CONSTRAINT operations_user_lists_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY organization_cluster_agent_mappings
+    ADD CONSTRAINT organization_cluster_agent_mappings_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY organization_details
     ADD CONSTRAINT organization_details_pkey PRIMARY KEY (organization_id);
 
@@ -29087,9 +29069,6 @@ ALTER TABLE ONLY system_access_microsoft_applications
 
 ALTER TABLE ONLY system_access_microsoft_graph_access_tokens
     ADD CONSTRAINT system_access_microsoft_graph_access_tokens_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY system_hooks
-    ADD CONSTRAINT system_hooks_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY system_note_metadata
     ADD CONSTRAINT system_note_metadata_pkey PRIMARY KEY (id);
@@ -30927,6 +30906,12 @@ CREATE INDEX i_gitlab_subscription_histories_on_namespace_change_type_plan ON gi
 CREATE INDEX i_namespace_cluster_agent_mappings_on_cluster_agent_id ON remote_development_namespace_cluster_agent_mappings USING btree (cluster_agent_id);
 
 CREATE INDEX i_namespace_cluster_agent_mappings_on_creator_id ON remote_development_namespace_cluster_agent_mappings USING btree (creator_id);
+
+CREATE INDEX i_organization_cluster_agent_mappings_on_creator_id ON organization_cluster_agent_mappings USING btree (creator_id);
+
+CREATE INDEX i_organization_cluster_agent_mappings_on_organization_id ON organization_cluster_agent_mappings USING btree (organization_id);
+
+CREATE UNIQUE INDEX i_organization_cluster_agent_mappings_unique_cluster_agent_id ON organization_cluster_agent_mappings USING btree (cluster_agent_id);
 
 CREATE UNIQUE INDEX i_packages_unique_project_id_package_type_package_name_pattern ON packages_protection_rules USING btree (project_id, package_type, package_name_pattern);
 
@@ -36100,6 +36085,8 @@ CREATE UNIQUE INDEX uniq_compliance_statuses_control_project_id ON project_contr
 
 CREATE UNIQUE INDEX uniq_google_cloud_logging_configuration_namespace_id_and_name ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, name);
 
+CREATE UNIQUE INDEX uniq_idx_ai_active_context_collections_on_connection_id_name ON ai_active_context_collections USING btree (connection_id, name);
+
 CREATE UNIQUE INDEX uniq_idx_audit_events_aws_configs_stream_dests ON audit_events_amazon_s3_configurations USING btree (stream_destination_id) WHERE (stream_destination_id IS NOT NULL);
 
 CREATE UNIQUE INDEX uniq_idx_audit_events_ext_audit_event_stream_dests ON audit_events_external_audit_event_destinations USING btree (stream_destination_id) WHERE (stream_destination_id IS NOT NULL);
@@ -38675,6 +38662,9 @@ CREATE TRIGGER vulnerabilities_loose_fk_trigger AFTER DELETE ON vulnerabilities 
 ALTER TABLE ONLY ai_conversation_threads
     ADD CONSTRAINT fk_00234c7444 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_active_context_collections
+    ADD CONSTRAINT fk_008426fce1 FOREIGN KEY (connection_id) REFERENCES ai_active_context_connections(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY deployments
     ADD CONSTRAINT fk_009fd21147 FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;
 
@@ -39146,6 +39136,9 @@ ALTER TABLE ONLY operations_feature_flags_issues
 ALTER TABLE ONLY push_event_payloads
     ADD CONSTRAINT fk_36c74129da FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY organization_cluster_agent_mappings
+    ADD CONSTRAINT fk_3727f3f4ec FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY protected_branch_merge_access_levels
     ADD CONSTRAINT fk_37ab3dd3ba FOREIGN KEY (protected_branch_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -39500,6 +39493,9 @@ ALTER TABLE ONLY projects
 ALTER TABLE ONLY compliance_framework_security_policies
     ADD CONSTRAINT fk_6d3bd0c9f1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY organization_cluster_agent_mappings
+    ADD CONSTRAINT fk_6d8bfa275e FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY audit_events_streaming_instance_namespace_filters
     ADD CONSTRAINT fk_6e0be28087 FOREIGN KEY (external_streaming_destination_id) REFERENCES audit_events_instance_external_streaming_destinations(id) ON DELETE CASCADE;
 
@@ -39634,6 +39630,9 @@ ALTER TABLE ONLY catalog_resource_versions
 
 ALTER TABLE ONLY merge_requests_approval_rules
     ADD CONSTRAINT fk_7af76dbd21 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY organization_cluster_agent_mappings
+    ADD CONSTRAINT fk_7b441007e5 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY issue_customer_relations_contacts
     ADD CONSTRAINT fk_7b92f835bb FOREIGN KEY (contact_id) REFERENCES customer_relations_contacts(id) ON DELETE CASCADE;

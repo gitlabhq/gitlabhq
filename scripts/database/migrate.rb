@@ -83,9 +83,13 @@ def prompt(list, prompt:, multi: false, reverse: false)
 end
 
 def get_changed_files(branch_name:)
-  set = `git diff --name-only --diff-filter=d $(git merge-base #{branch_name} HEAD)..HEAD #{MIGRATIONS_DIR}`
-    .split("\n").to_set
-  set += `git diff --diff-filter=d --merge-base --name-only #{branch_name} #{MIGRATIONS_DIR}`.split("\n")
+  set = Set.new
+
+  [MIGRATIONS_DIR, POST_DEPLOY_MIGRATIONS_DIR].each do |dir|
+    set += `git diff --name-only --diff-filter=d $(git merge-base #{branch_name} HEAD)..HEAD #{dir}`
+      .split("\n").to_set
+    set += `git diff --diff-filter=d --merge-base --name-only #{branch_name} #{dir}`.split("\n")
+  end
 
   set
 end

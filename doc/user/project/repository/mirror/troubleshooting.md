@@ -297,3 +297,39 @@ To resolve this, you can do either of the following:
 
 - Migrate the source repository to a "smart" server.
 - Mirror the repository using the [SSH protocol](_index.md#ssh-authentication) (requires authentication).
+
+## Error: `File directory conflict`
+
+You might get an error that states something similar to the following:
+
+```plaintext
+13:preparing reference update: file directory conflict
+```
+
+This error occurs when a tag or branch name conflict exists between the source and
+mirror repositories. For example:
+
+- A tag or branch named `x/y` exists in the mirror repository.
+- A tag or branch named `x` exists in the source repository.
+
+To resolve this issue, delete the conflicting tag or branch.
+If you cannot identify the conflicting tag or branch, delete all tags from your mirror repository.
+An alternative option is to [overwrite diverged branches](pull.md#overwrite-diverged-branches).
+
+{{< alert type="note" >}}
+
+Deleting tags could be destructive for any work done in the mirror repository.
+
+{{< /alert >}}
+
+To delete and remove all tags from the mirror repository:
+
+1. On a local copy of your mirrored repository, run:
+
+   ```shell
+   git tag -l | xargs -n 1 git push --delete origin
+   ```
+
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Mirroring repositories**.
+1. Select **Update now** ({{< icon name="retry" >}}).

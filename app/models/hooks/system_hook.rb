@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# This model is being migrated to the NoStiSystemHook model temporarily.
-# Please ensure all changes here are reflected in the new model.
-# More info here: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175729
 class SystemHook < WebHook
   extend ::Gitlab::Utils::Override
   include TriggerableHooks

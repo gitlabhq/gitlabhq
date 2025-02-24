@@ -395,7 +395,7 @@ omniauth:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505575) `job_title` and `organization` attributes in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505575) `job_title` and `organization` attributes in GitLab 17.9.
 
 {{< /history >}}
 

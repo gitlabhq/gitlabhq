@@ -4341,6 +4341,9 @@ msgstr ""
 msgid "AdminSettings|Enable product analytics"
 msgstr ""
 
+msgid "AdminSettings|Enable product usage tracking"
+msgstr ""
+
 msgid "AdminSettings|Enable smartcn custom analyzer: Indexing"
 msgstr ""
 
@@ -16569,6 +16572,9 @@ msgid "Control + M"
 msgstr ""
 
 msgid "Control + Shift + M"
+msgstr ""
+
+msgid "Control whether events are sent to GitLab."
 msgstr ""
 
 msgid "Control whether to display customer experience improvement content and third-party offers in GitLab."
@@ -43899,6 +43905,9 @@ msgid "Product Analytics"
 msgstr ""
 
 msgid "Product analytics"
+msgstr ""
+
+msgid "Product usage data tracking"
 msgstr ""
 
 msgid "ProductAnalytics|1. Add the NPM package to your package.json using your preferred package manager"

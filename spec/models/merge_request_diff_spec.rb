@@ -63,6 +63,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
     context 'when feature flag "optimized_commit_storage" is disabled' do
       before do
+        stub_feature_flags(disable_message_attribute_on_mr_diff_commits: false)
         stub_feature_flags(optimized_commit_storage: false)
       end
 

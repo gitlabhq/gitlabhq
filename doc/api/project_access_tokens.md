@@ -58,6 +58,7 @@ curl --request GET \
       "id" : 42,
       "active" : true,
       "created_at" : "2021-01-20T22:11:48.151Z",
+      "description": "Test Token description",
       "last_used_at" : null,
       "revoked" : false,
       "access_level" : 40
@@ -72,6 +73,7 @@ curl --request GET \
       "id" : 43,
       "active" : false,
       "created_at" : "2021-01-21T12:12:38.123Z",
+      "description": "Test Token description",
       "revoked" : true,
       "last_used_at" : "2021-02-13T10:34:57.178Z",
       "access_level" : 40
@@ -109,6 +111,7 @@ curl --request GET \
    "id" : 42,
    "active" : true,
    "created_at" : "2021-01-20T22:11:48.151Z",
+   "description": "Test Token description",
    "revoked" : false,
    "access_level": 40,
    "last_used_at": "2022-03-15T11:05:42.437Z"
@@ -133,6 +136,7 @@ POST projects/:id/access_tokens
 | -------------- | ----------------- | -------- | ----------- |
 | `id`           | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a project. |
 | `name`         | string            | yes      | Name of the token. |
+| `description`  | string            | no       | Description of the project access token. |
 | `scopes`       | `Array[String]`   | yes      | List of [scopes](../user/project/settings/project_access_tokens.md#scopes-for-a-project-access-token) available to the token. |
 | `access_level` | integer           | no       | [Access level](../development/permissions/predefined_roles.md#members) for the token. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). Default value: `40`. |
 | `expires_at`   | date              | yes      | Expiration date of the token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
@@ -155,6 +159,7 @@ curl --request POST \
    "name" : "test",
    "revoked" : false,
    "created_at" : "2021-01-21T19:35:37.921Z",
+   "description": "Test Token description",
    "user_id" : 166,
    "id" : 58,
    "expires_at" : "2021-01-31",

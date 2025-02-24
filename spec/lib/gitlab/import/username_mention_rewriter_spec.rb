@@ -57,17 +57,33 @@ RSpec.describe Gitlab::Import::UsernameMentionRewriter, feature_category: :impor
 
     context 'when the text contains code-formatted text' do
       let(:original_text) do
-        "I said to @sam the code should be ``find @bob and return`` " \
-          "and he said no it's ```find @bob and play```. " \
-          "What do you think @alice? " \
-          "Another alternative is `forward to the @goonsquad!`"
+        <<~CODE_BLOCK
+        I said to @sam the code should be
+
+        ```
+        find @bob and return
+        ```
+        and he said no it's ```find @bob and play```.
+
+        What do you think @alice?
+
+        Another alternative is `forward to the @goonsquad!`
+        CODE_BLOCK
       end
 
       let(:expected_text) do
-        "I said to `@sam` the code should be ``find @bob and return`` " \
-          "and he said no it's ```find @bob and play```. " \
-          "What do you think `@alice`? " \
-          "Another alternative is `forward to the @goonsquad!`"
+        <<~CODE_BLOCK
+        I said to `@sam` the code should be
+
+        ```
+        find @bob and return
+        ```
+        and he said no it's ```find @bob and play```.
+
+        What do you think `@alice`?
+
+        Another alternative is `forward to the @goonsquad!`
+        CODE_BLOCK
       end
 
       it 'wraps username mentions only if they are outside code-formatted text' do
@@ -91,15 +107,6 @@ RSpec.describe Gitlab::Import::UsernameMentionRewriter, feature_category: :impor
       it 'does not insert backticks before @ characters' do
         expect(instance.wrap_mentions_in_backticks(original_text)).to eq(expected_text)
       end
-    end
-  end
-
-  context 'when the text contains username in the new line' do
-    let(:original_text) { "Hello,\n@username is mentioned here.\nThis is the next line." }
-    let(:expected_text) { "Hello,\n`@username` is mentioned here.\nThis is the next line." }
-
-    it 'wraps the username in backticks and it should be properly formatted in the new line' do
-      expect(instance.wrap_mentions_in_backticks(original_text)).to eq(expected_text)
     end
   end
 end

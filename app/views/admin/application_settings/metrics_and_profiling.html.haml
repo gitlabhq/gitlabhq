@@ -42,6 +42,16 @@
   - c.with_body do
     = render 'usage'
 
+- if Feature.enabled?(:product_usage_data, :instance)
+  = render ::Layouts::SettingsBlockComponent.new(_('Product usage data tracking'),
+    id: 'js-product-usage-data-settings',
+    testid: 'product-usage-data-settings-content',
+    expanded: expanded_by_default?) do |c|
+    - c.with_description do
+      = _('Control whether events are sent to GitLab.')
+    - c.with_body do
+      = render 'product_usage_data'
+
 = render ::Layouts::SettingsBlockComponent.new(_('Sentry'),
   id: 'js-sentry-settings',
   expanded: expanded_by_default?) do |c|

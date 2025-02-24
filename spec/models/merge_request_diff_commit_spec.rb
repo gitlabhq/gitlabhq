@@ -24,11 +24,45 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
   describe '#to_hash' do
     subject { merge_request.commits.first }
 
-    it 'returns the same results as Commit#to_hash, except for parent_ids' do
-      commit_from_repo = project.repository.commit(subject.sha)
-      commit_from_repo_hash = commit_from_repo.to_hash.merge(parent_ids: [], message: '')
+    context 'when disable_message_attribute_on_mr_diff_commits is false' do
+      # Both these feature flags are can interact to suppress display of the message
+      #   attribute. Without disabling both feature flags, we can not prove the
+      #  isolated case of disable_message_attribute_on_mr_diff_commits.
+      #
+      before do
+        stub_feature_flags(disable_message_attribute_on_mr_diff_commits: false)
+        stub_feature_flags(optimized_commit_storage: false)
+      end
 
-      expect(subject.to_hash).to eq(commit_from_repo_hash)
+      it 'returns the same results as Commit#to_hash, except for parent_ids' do
+        commit_from_repo = project.repository.commit(subject.sha)
+        commit_from_repo_hash = commit_from_repo.to_hash.merge(parent_ids: [])
+
+        expect(subject.to_hash).to eq(commit_from_repo_hash)
+      end
+    end
+
+    context 'when disable_message_attribute_on_mr_diff_commits is true' do
+      before do
+        # Strictly speaking, we don't need to set this flag to `true` but let's
+        #   be explicit.
+        #
+        stub_feature_flags(disable_message_attribute_on_mr_diff_commits: true)
+        stub_feature_flags(optimized_commit_storage: false)
+      end
+
+      it 'returns the same results as Commit#to_hash, except for parent_ids and message' do
+        commit_from_repo = project.repository.commit(subject.sha)
+        commit_from_repo_hash = commit_from_repo.to_hash.merge(parent_ids: [], message: "")
+
+        expect(subject.to_hash).to eq(commit_from_repo_hash)
+      end
+    end
+
+    it 'logs the event with the expected info' do
+      expect(Gitlab::AppLogger).to receive(:info).at_least(:once)
+
+      subject.to_hash
     end
   end
 

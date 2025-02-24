@@ -8,3 +8,5 @@ description: Webhooks data for system hooks. NoStiSystemHook is a temporary mode
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175729
 milestone: '17.9'
 gitlab_schema: gitlab_main_clusterwide
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182115
+removed_in_milestone: '17.10'

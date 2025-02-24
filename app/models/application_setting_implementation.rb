@@ -151,6 +151,7 @@ module ApplicationSettingImplementation
         personal_access_token_prefix: 'glpat-',
         plantuml_enabled: false,
         plantuml_url: nil,
+        product_usage_data_enabled: true, # TODO : this setting should come from instance instalation, see https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8897
         diagramsnet_enabled: true,
         diagramsnet_url: 'https://embed.diagrams.net',
         polling_interval_multiplier: 1,
