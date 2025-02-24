@@ -25,14 +25,10 @@ module Members
     end
 
     def remaining_work_count(*_args)
-      return 0 unless ::Feature.enabled?(:limited_capacity_member_destruction) # rubocop: disable Gitlab/FeatureFlagWithoutActor -- not required
-
       Members::DeletionSchedule.limit(max_running_jobs + 1).count
     end
 
     def max_running_jobs
-      return 0 unless ::Feature.enabled?(:limited_capacity_member_destruction) # rubocop: disable Gitlab/FeatureFlagWithoutActor -- not required
-
       MAX_RUNNING_JOBS
     end
 

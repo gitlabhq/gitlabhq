@@ -7773,9 +7773,6 @@ msgstr ""
 msgid "ApprovalSettings|Prevent editing approval rules in projects and merge requests"
 msgstr ""
 
-msgid "ApprovalSettings|Prevent editing approval rules in projects and merge requests."
-msgstr ""
-
 msgid "ApprovalSettings|Remove all approvals"
 msgstr ""
 

@@ -1,7 +1,6 @@
 ---
 table_name: taggings
-classes:
-- Gitlab::Database::DeduplicateCiTags::Tagging
+classes: []
 feature_categories:
 - continuous_integration
 - runner

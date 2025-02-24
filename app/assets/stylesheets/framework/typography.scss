@@ -522,9 +522,11 @@
   h4,
   h5,
   h6 {
+    $anchor-offset: 20px;
+    
     a.anchor {
       float: left;
-      margin-left: -20px;
+      margin-left: calc(-1 * $anchor-offset);
       text-decoration: none;
       outline: none;
 
@@ -537,11 +539,15 @@
 
     &:hover > a.anchor::after {
       visibility: visible;
+      position: absolute;
+      width: $anchor-offset;
     }
 
     > a.anchor:focus::after {
       visibility: visible;
       outline: auto;
+      position: absolute;
+      width: $anchor-offset;
     }
   }
 

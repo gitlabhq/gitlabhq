@@ -42,12 +42,6 @@ module Gitlab
 
       attr_reader :logger, :dry_run
 
-      class Tagging < ::Ci::ApplicationRecord
-        include EachBatch
-
-        self.table_name = :taggings
-      end
-
       def deduplicate_ci_tags(bad_tag_ids, tag_remap)
         ::Ci::PendingBuild.each_batch do |batch|
           changes = batch
@@ -84,7 +78,7 @@ module Gitlab
       end
 
       def deduplicate_ci_taggings(bad_tag_ids, tag_remap)
-        tagging_models = [Tagging, ::Ci::BuildTag, ::Ci::RunnerTagging]
+        tagging_models = [::Ci::BuildTag, ::Ci::RunnerTagging]
 
         tagging_models.each do |tagging_model|
           tagging_model.include EachBatch

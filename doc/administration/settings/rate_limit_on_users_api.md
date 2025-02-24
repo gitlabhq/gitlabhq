@@ -31,12 +31,13 @@ This feature is available for testing, but not ready for production use.
 
 | Limit                                                           | Default |
 |-----------------------------------------------------------------|---------|
-| [GET /users/:id/followers](../../api/user_follow_unfollow.md#list-all-accounts-that-follow-a-user) | 100     |
-| [GET /users/:id/following](../../api/user_follow_unfollow.md#list-all-accounts-followed-by-a-user) | 100     |
-| [GET /users/:id/status](../../api/users.md#get-the-status-of-a-user)       | 240     |
-| [GET /users/:id/keys](../../api/user_keys.md#list-all-ssh-keys-for-a-user)           | 120     |
-| [GET /users/:id/gpg_keys](../../api/user_keys.md#list-all-gpg-keys-for-a-user)   | 120     |
-| [GET /users/:id/gpg_keys/:key_id](../../api/user_keys.md#get-a-gpg-key-for-a-user) | 120     |
+| [GET /users/:id/followers](../../api/user_follow_unfollow.md#list-all-accounts-that-follow-a-user) | 100 every minute |
+| [GET /users/:id/following](../../api/user_follow_unfollow.md#list-all-accounts-followed-by-a-user) | 100 every minute |
+| [GET /users/:id/status](../../api/users.md#get-the-status-of-a-user)                               | 240 every minute |
+| [GET /users/:id/keys](../../api/user_keys.md#list-all-ssh-keys-for-a-user)                         | 120 every minute |
+| [GET /users/:id/keys/:key_id](../../api/user_keys.md#get-an-ssh-key)                               | 120 every minute |
+| [GET /users/:id/gpg_keys](../../api/user_keys.md#list-all-gpg-keys-for-a-user)                     | 120 every minute |
+| [GET /users/:id/gpg_keys/:key_id](../../api/user_keys.md#get-a-gpg-key-for-a-user)                 | 120 every minute |
 
 To change the rate limit:
 

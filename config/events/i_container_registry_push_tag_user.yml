@@ -1,0 +1,13 @@
+---
+description: Tracks when a tag in container registry is pushed by a user
+internal_events: true
+action: i_container_registry_push_tag_user
+identifiers:
+- user
+product_group: container_registry
+milestone: '17.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181275
+tiers:
+- free
+- premium
+- ultimate

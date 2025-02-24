@@ -165,7 +165,7 @@ and your registry contains a relatively small amount of data.
      'port' => 5432,
      'user' => 'registry-database-user',
      'password' => 'registry-database-password',
-     'dbname' => 'registry-database-name'
+     'dbname' => 'registry-database-name',
      'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
      'sslcert' => '/path/to/cert.pem',
      'sslkey' => '/path/to/private.key',
@@ -274,7 +274,7 @@ If you must halt the operation, you have to restart this step.
      'port' => 5432,
      'user' => 'registry-database-user',
      'password' => 'registry-database-password',
-     'dbname' => 'registry-database-name'
+     'dbname' => 'registry-database-name',
      'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
      'sslcert' => '/path/to/cert.pem',
      'sslkey' => '/path/to/private.key',

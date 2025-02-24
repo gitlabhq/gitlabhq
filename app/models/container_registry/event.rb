@@ -10,7 +10,6 @@ module ContainerRegistry
     DELETE_ACTION = 'delete'
     EVENT_TRACKING_CATEGORY = 'container_registry:notification'
     EVENT_PREFIX = 'i_container_registry'
-    INTERNAL_EVENTS_ORIGINATORS = %w[deploy_token].freeze
 
     ALLOWED_ACTOR_TYPES = %w[
       personal_access_token
@@ -56,11 +55,13 @@ module ContainerRegistry
         event = usage_data_event_for(tracking_action)
         return unless event
 
-        if originator_suffix.in? INTERNAL_EVENTS_ORIGINATORS
-          track_internal_event(event, additional_properties: { property: originator.id.to_s })
-        else
-          ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event, values: originator.id)
-        end
+        event_attributes = if origin_class == DeployToken
+                             { additional_properties: { property: originator.id.to_s } }
+                           elsif origin_class == User
+                             { user: originator }
+                           end
+
+        track_internal_event(event, event_attributes)
       end
     end
 

@@ -1,0 +1,40 @@
+# frozen_string_literal: true
+
+CODE_SUGGESTIONS_CATEGORY_LABEL = "Category:Code Suggestions"
+
+CODE_SUGGESTIONS_DANGER_MESSAGE = <<~MSG
+## Code Suggestions
+
+This merge request includes changes to ~"Category:Code Suggestions" files that may affect the
+[Code Suggestions API](https://docs.gitlab.com/api/code_suggestions/).
+
+Please make sure that the E2E tests for Code Suggestions have run successfully.
+You can do this by running the E2E test on the MR pipeline or on your local machine.
+
+**To run the E2E test on the MR pipeline:**
+
+_Note: this will run all the QA tests._
+
+- Option 1: trigger the `e2e:package-and-test-ee` child pipeline in the `qa` stage
+- Option 2: apply the ~pipeline:run-all-e2e label and run a new pipeline.
+
+**To run the Code Suggestions E2E test on your local machine:**
+
+Refer to the Handbook instructions on [running end-to-end tests locally](https://handbook.gitlab.com/handbook/engineering/development/dev/create/code-creation/code-suggestions-guide/testing_guide/#running-end-to-end-tests-locally).
+
+Some E2E tests are run specifically against the GitLab-operated AI Gateway instances in `staging` or `production`. In order to capture failures in these tests early,
+[run an E2E test on your local machine against the staging environment](https://handbook.gitlab.com/handbook/engineering/development/dev/create/code-creation/code-suggestions-guide/testing_guide/#using-staginggitlabcom).
+MSG
+
+# These are paths to files that may cause a change in the Code Suggestions API
+CODE_SUGGESTIONS_LIB_PATH = %r{^ee/lib/code_suggestions/}
+CODE_SUGGESTIONS_API_PATH = "ee/lib/api/code_suggestions.rb"
+
+# Check for changes in files that may cause a change in the Code Suggestions API
+def possible_code_suggestions_api_change?(files)
+  files.any? do |file|
+    file == CODE_SUGGESTIONS_API_PATH || file.match?(CODE_SUGGESTIONS_LIB_PATH)
+  end
+end
+
+warn CODE_SUGGESTIONS_DANGER_MESSAGE if possible_code_suggestions_api_change?(helper.all_changed_files)
