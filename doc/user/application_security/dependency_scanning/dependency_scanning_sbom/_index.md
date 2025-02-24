@@ -373,8 +373,50 @@ build:
 
 ## Customizing analyzer behavior
 
-The analyzer can be customized by configuring the CI/CD component's
-[inputs](https://gitlab.com/explore/catalog/components/dependency-scanning).
+How to customize the analyzer varies depending on the enablement solution.
+
+{{< alert type="warning" >}}
+
+Test all customization of GitLab analyzers in a merge request before merging these changes to the
+default branch. Failure to do so can give unexpected results, including a large number of false
+positives.
+
+{{< /alert >}}
+
+### Customizing behavior with the CI/CD template
+
+When using the `latest` Dependency Scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml` or [Scan Execution Policies](../../policies/scan_execution_policies.md) please use [CI/CD variables](#available-cicd-variables).
+
+#### Available CI/CD variables
+
+The following variables allow configuration of global dependency scanning settings.
+
+| CI/CD variables             | Description |
+| ----------------------------|------------ |
+| `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from Dependency Scanning. |
+| `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. This is a pre-filter which is applied _before_ the scan is executed. Default: `"spec, test, tests, tmp"`. |
+| `DS_MAX_DEPTH`              | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`. |
+| `DS_INCLUDE_DEV_DEPENDENCIES` | When set to `"false"`, development dependencies are not reported. Only projects using Composer, Conda, Gradle, Maven, npm, pnpm, Pipenv, Poetry, or uv are supported. Default: `"true"` |
+| `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN`   | Defines which requirement files to process using glob pattern matching (for example, `requirements*.txt` or `*-requirements.txt`). The pattern should match filenames only, not directory paths. See [glob pattern documentation](https://github.com/bmatcuk/doublestar/tree/v1?tab=readme-ov-file#patterns) for syntax details. |
+| `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). |
+
+#### Overriding dependency scanning jobs
+
+To override a job definition declare a new job with the same name as the one to override.
+Place this new job after the template inclusion and specify any additional keys under it.
+For example, this configures the  `dependencies: []` attribute for the dependency-scanning job:
+
+```yaml
+include:
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+
+dependency-scanning:
+  dependencies: ["build"]
+```
+
+### Customizing behavior with the CI/CD component
+
+When using the Dependency Scanning CI/CD component, the analyzer can be customized by configuring the [inputs](https://gitlab.com/explore/catalog/components/dependency-scanning).
 
 ## Output
 

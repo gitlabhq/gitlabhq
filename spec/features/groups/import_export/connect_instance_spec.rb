@@ -89,10 +89,11 @@ RSpec.describe 'Import/Export - Connect to another instance', :js, feature_categ
         open_import_group
       end
 
-      it 'renders fields and button disabled' do
-        expect(page).to have_field('GitLab source instance base URL', disabled: true)
-        expect(page).to have_field('Personal access token', disabled: true)
-        expect(page).to have_button('Connect instance', disabled: true)
+      it 'does not render direct transfer section' do
+        expect(page).not_to have_content('Import groups by direct transfer')
+        expect(page).not_to have_field('GitLab source instance base URL')
+        expect(page).not_to have_field('Personal access token')
+        expect(page).not_to have_button('Connect instance')
       end
     end
 
@@ -103,7 +104,8 @@ RSpec.describe 'Import/Export - Connect to another instance', :js, feature_categ
         open_import_group
       end
 
-      it 'renders fields and button enabled' do
+      it 'renders direct transfer section with fields and button enabled' do
+        expect(page).to have_content('Import groups by direct transfer')
         expect(page).to have_field('GitLab source instance base URL', disabled: false)
         expect(page).to have_field('Personal access token', disabled: false)
         expect(page).to have_button('Connect instance', disabled: false)

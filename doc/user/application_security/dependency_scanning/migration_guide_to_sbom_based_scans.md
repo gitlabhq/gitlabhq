@@ -468,7 +468,6 @@ Unless these are also used to configure other security analyzers (for example, `
 Remove the following CI/CD variables from your CI/CD configuration:
 
 - `ADDITIONAL_CA_CERT_BUNDLE`
-- `DS_EXCLUDED_ANALYZERS`
 - `DS_GRADLE_RESOLUTION_POLICY`
 - `DS_IMAGE_SUFFIX`
 - `DS_JAVA_VERSION`
@@ -496,6 +495,7 @@ Remove the following CI/CD variables from your CI/CD configuration:
 
 Keep the following CI/CD variables as they are applicable to the new Dependency Scanning analyzer:
 
+- `DS_EXCLUDED_ANALYZERS`*
 - `DS_EXCLUDED_PATHS`
 - `DS_INCLUDE_DEV_DEPENDENCIES`
 - `DS_MAX_DEPTH`
@@ -504,6 +504,8 @@ Keep the following CI/CD variables as they are applicable to the new Dependency 
 {{< alert type="note" >}}
 
 The `PIP_REQUIREMENTS_FILE` is replaced with `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN` in the new Dependency Scanning analyzer.
+
+The `DS_EXCLUDED_ANALYZERS` can now contain a new value `dependency-scanning` to prevent the new Dependency Scanning analyzer job from running.
 
 {{< /alert >}}
 
