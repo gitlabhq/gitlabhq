@@ -190,7 +190,7 @@ exercises the troublesome code path, then run it using the `bin/rspec-stackprof`
 helper, for example:
 
 ```shell
-$ LIMIT=10 bin/rspec-stackprof spec/policies/project_policy_spec.rb
+$ bin/rspec-stackprof --limit=10 spec/policies/project_policy_spec.rb
 
 8/8 |====== 100 ======>| Time: 00:00:18
 
@@ -294,7 +294,7 @@ qcachegrind project_policy_spec.callgrind # Mac
 ```
 
 You can also generate and view the resultant flame graph. To view a flame graph that
-`bin/rspec-stackprof` creates, you must set the `RAW` environment variable to `true` when running
+`bin/rspec-stackprof` creates, you must add the `--raw=true` option when running
 `bin/rspec-stackprof`.
 
 It might take a while to generate based on the output file size:

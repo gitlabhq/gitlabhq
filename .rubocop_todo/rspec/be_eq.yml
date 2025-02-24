@@ -269,7 +269,6 @@ RSpec/BeEq:
     - 'ee/spec/models/onboarding/progress_spec.rb'
     - 'ee/spec/models/onboarding_spec.rb'
     - 'ee/spec/models/product_analytics/funnel_spec.rb'
-    - 'ee/spec/models/project_feature_spec.rb'
     - 'ee/spec/models/projects/all_protected_branches_rule_spec.rb'
     - 'ee/spec/models/push_rule_spec.rb'
     - 'ee/spec/models/requirements_management/requirement_spec.rb'

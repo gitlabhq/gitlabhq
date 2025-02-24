@@ -173,6 +173,7 @@ exceptions:
   - PHP
   - PID
   - PKCS
+  - PMD
   - PNG
   - POSIX
   - POST

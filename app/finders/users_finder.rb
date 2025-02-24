@@ -67,7 +67,7 @@ class UsersFinder
     if group
       raise Gitlab::Access::AccessDeniedError unless user_can_read_group?(group)
 
-      scope = ::Autocomplete::GroupUsersFinder.new(group: group).execute # rubocop: disable CodeReuse/Finder -- For SQL optimization sake we need to scope out group members first see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137647#note_1664081899
+      scope = ::Autocomplete::GroupUsersFinder.new(group: group, current_user: current_user).execute # rubocop: disable CodeReuse/Finder -- For SQL optimization sake we need to scope out group members first see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137647#note_1664081899
     else
       scope = current_user&.can_admin_all_resources? ? User.all : User.without_forbidden_states
     end

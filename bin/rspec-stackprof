@@ -16,12 +16,12 @@ defaults = {
 }
 
 options = {
-  mode: ENV.fetch('MODE', defaults[:mode]) || defaults[:mode],
-  interval: ENV['INTERVAL'],
-  limit: ENV.fetch('LIMIT', nil) || defaults[:limit],
-  raw: ENV.fetch('RAW', false) === 'true' || defaults[:raw],
-  output: ENV.fetch('OUTPUT', nil),
-  speedscope: ENV.fetch('SPEEDSCOPE', false) === 'true' || defaults[:speedscope]
+  mode: defaults[:mode],
+  interval: nil,
+  limit: defaults[:limit],
+  raw: defaults[:raw],
+  output: nil,
+  speedscope: defaults[:speedscope]
 }
 
 OptionParser.new do |opt|

@@ -12,8 +12,11 @@ module Autocomplete
   class GroupUsersFinder
     include Gitlab::Utils::StrongMemoize
 
-    def initialize(group:)
+    attr_reader :group, :current_user
+
+    def initialize(group:, current_user:)
       @group = group
+      @current_user = current_user
     end
 
     def execute
@@ -67,7 +70,7 @@ module Autocomplete
     end
 
     def group_hierarchy_cte
-      Gitlab::SQL::CTE.new(:group_hierarchy, @group.self_and_hierarchy.select(:id))
+      Gitlab::SQL::CTE.new(:group_hierarchy, group.self_and_hierarchy.select(:id))
     end
     strong_memoize_attr :group_hierarchy_cte
 
@@ -76,7 +79,7 @@ module Autocomplete
     end
 
     def descendant_projects_cte
-      Gitlab::SQL::CTE.new(:descendant_projects, @group.all_projects.select(:id))
+      Gitlab::SQL::CTE.new(:descendant_projects, group.all_projects.select(:id))
     end
     strong_memoize_attr :descendant_projects_cte
 
@@ -85,3 +88,5 @@ module Autocomplete
     end
   end
 end
+
+Autocomplete::GroupUsersFinder.prepend_mod_with('Autocomplete::GroupUsersFinder')
