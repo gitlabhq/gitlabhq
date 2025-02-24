@@ -67,9 +67,7 @@ describe('LabelActions', () => {
     expect(deleteItem).toMatchObject({
       text: 'Delete',
       action: expect.any(Function),
-      extraAttrs: {
-        class: '!gl-text-red-500',
-      },
+      variant: 'danger',
     });
   });
 

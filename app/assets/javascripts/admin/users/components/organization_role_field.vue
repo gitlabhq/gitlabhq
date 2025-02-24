@@ -41,11 +41,12 @@ export default {
 </script>
 
 <template>
-  <gl-form-group :label="$options.i18n.label">
+  <gl-form-group id="organization-role-field" :label="$options.i18n.label">
     <gl-collapsible-listbox
       v-model="accessLevel"
       block
       toggle-class="gl-form-input-xl"
+      toggle-aria-labelled-by="organization-role-field"
       :items="$options.roleListboxItems"
     />
     <input :id="$options.inputId" :name="inputName" :value="accessLevel" type="hidden" />

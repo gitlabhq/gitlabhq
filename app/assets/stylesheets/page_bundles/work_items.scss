@@ -344,3 +344,12 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     overflow-y: scroll !important;
   }
 }
+
+.design-list-item {
+  height: 160px;
+  text-decoration: none;
+
+  &:hover {
+    border-color: var(--gray-400, $gray-400);
+  }
+}

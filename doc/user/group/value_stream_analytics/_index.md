@@ -12,7 +12,7 @@ title: Value stream analytics
 
 {{< /details >}}
 
-Value stream analytics measures the time it takes to go from an idea to production.
+Value stream analytics measures the time it takes to go from an idea to production by tracking merge request or issue events.
 
 A **value stream** is the entire work process that delivers value to customers. For example,
 the [DevOps lifecycle](https://about.gitlab.com/stages-devops-lifecycle/) is a value stream that starts
@@ -30,7 +30,7 @@ Value stream analytics helps businesses:
 
 - Visualize their end-to-end DevSecOps workstreams.
 - Identify and solve inefficiencies.
-- Optimize their workstreams to deliver more value, faster.
+- Optimize their workstreams to deliver more value, faster (for example, [reducing merge request review time](https://about.gitlab.com/blog/2025/02/20/how-we-reduced-mr-review-time-with-value-stream-management/)).
 
 Value stream analytics is available for projects and groups.
 
@@ -118,6 +118,8 @@ The following stage events are available:
 These events play a key role in the duration calculation, which is calculated by the formula: duration = end event time - start event time.
 
 To learn what start and end events can be paired, see [Validating start and end events](../../../development/value_stream_analytics.md#validating-start-and-end-events).
+
+You can share your ideas or feedback about stage events in [issue 520962](https://gitlab.com/gitlab-org/gitlab/-/issues/520962).
 
 ### How value stream analytics aggregates data
 

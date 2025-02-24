@@ -259,7 +259,6 @@ Lint/UnusedMethodArgument:
     - 'lib/api/helpers.rb'
     - 'lib/api/helpers/notes_helpers.rb'
     - 'lib/api/merge_requests.rb'
-    - 'lib/api/projects_relation_builder.rb'
     - 'lib/atlassian/jira_connect/client.rb'
     - 'lib/banzai/filter/playable_link_filter.rb'
     - 'lib/banzai/filter/references/abstract_reference_filter.rb'

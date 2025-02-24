@@ -5,25 +5,25 @@
   description: page_description,
   options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_health_check_pageload' } } )
 
-.form-group
-  = label_tag :health_check_access_token, s_('HealthCheck|Access token')
-  .gl-flex.gl-gap-3
-    = text_field_tag :health_check_access_token, Gitlab::CurrentSettings.health_check_access_token, class: "form-control gl-w-28", readonly: true, data: { testid: 'health_check_token' }
-    = render Pajamas::ButtonComponent.new(href: reset_health_check_token_admin_application_settings_path, method: :put, button_options: { data: { confirm: _('Are you sure you want to reset the health check token?') } }) do
-      = _("Reset token")
+- if can?(current_user, :admin_all_resources)
+  .form-group
+    = label_tag :health_check_access_token, s_('HealthCheck|Access token')
+    .gl-flex.gl-gap-3
+      = text_field_tag :health_check_access_token, Gitlab::CurrentSettings.health_check_access_token, class: "form-control gl-w-28", readonly: true, data: { testid: 'health_check_token' }
+      = render Pajamas::ButtonComponent.new(href: reset_health_check_token_admin_application_settings_path, method: :put, button_options: { data: { confirm: _('Are you sure you want to reset the health check token?') } }) do
+        = _("Reset token")
 
-
-- help_url = help_page_path('administration/monitoring/health_check.md')
-- help_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_url }
-%p.gl-mb-1= html_escape(s_('HealthCheck|Health information can be retrieved from the following endpoints. More information is available in the %{linkStart}health check documentation%{linkEnd}.')) % { linkStart: help_start, linkEnd: '</a>'.html_safe }
-%ul.gl-mb-6
-  %li.gl-mb-1
-    %code= readiness_url(token: Gitlab::CurrentSettings.health_check_access_token)
-  %li.gl-mb-1
-    %code= liveness_url(token: Gitlab::CurrentSettings.health_check_access_token)
-  %li.gl-mb-1
-    %code= metrics_url(token: Gitlab::CurrentSettings.health_check_access_token)
-  = render_if_exists 'admin/health_check/health_check_url'
+  - help_url = help_page_path('administration/monitoring/health_check.md')
+  - help_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_url }
+  %p.gl-mb-1= html_escape(s_('HealthCheck|Health information can be retrieved from the following endpoints. More information is available in the %{linkStart}health check documentation%{linkEnd}.')) % { linkStart: help_start, linkEnd: '</a>'.html_safe }
+  %ul.gl-mb-6
+    %li.gl-mb-1
+      %code= readiness_url(token: Gitlab::CurrentSettings.health_check_access_token)
+    %li.gl-mb-1
+      %code= liveness_url(token: Gitlab::CurrentSettings.health_check_access_token)
+    %li.gl-mb-1
+      %code= metrics_url(token: Gitlab::CurrentSettings.health_check_access_token)
+    = render_if_exists 'admin/health_check/health_check_url'
 
 - status_icon = no_errors ? 'check' : 'warning-solid'
 - status_text = no_errors ? s_('HealthCheck|Healthy') : s_('HealthCheck|Unhealthy')

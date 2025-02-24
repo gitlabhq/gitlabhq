@@ -100,7 +100,7 @@ first in the list of changed files. To copy a merge request link that shows your
 1. Below the merge request title, select **Changes**.
 1. Find the file you want to show first. Right-click the name of the file to copy the link to it.
 1. When you visit that link, your chosen file is shown at the top of the list. The file browser
-   shows a link icon ({{< icon name="link" >}}) next to the file name:
+   shows a link icon ({{< icon name="link" >}}) next to the filename:
 
    ![A merge request showing a YAML file at the top of the list.](img/linked_file_v17_4.png)
 
@@ -230,13 +230,13 @@ To change how a merge request shows changed lines:
 
    {{< tab title="Inline changes" >}}
 
-   ![inline changes](img/changes-inline_v14_8.png)
+   ![inline changes](img/changes-inline_v17_10.png)
 
    {{< /tab >}}
 
    {{< tab title="Side-by-side changes" >}}
 
-   ![side-by-side changes](img/changes-sidebyside_v14_8.png)
+   ![side-by-side changes](img/changes-sidebyside_v17_10.png)
 
    {{< /tab >}}
 
@@ -303,7 +303,7 @@ When reviewing code changes, you can hide inline comments:
 1. Select **Code > Merge requests** and find your merge request.
 1. Below the title, select **Changes**.
 1. Scroll to the file that contains the comments you want to hide.
-1. Scroll to the line the comment is attached to, and select **Collapse** ({{< icon name="collapse" >}}):
+1. Scroll to the line the comment is attached to. In the gutter margin, select **Collapse** ({{< icon name="collapse" >}}):
    ![collapse a comment](img/collapse-comment_v17_1.png)
 
 To expand inline comments and show them again:
@@ -312,8 +312,8 @@ To expand inline comments and show them again:
 1. Select **Code > Merge requests** and find your merge request.
 1. Below the title, select **Changes**.
 1. Scroll to the file that contains the collapsed comments you want to show.
-1. Scroll to the line the comment is attached to, and select the user avatar:
-   ![expand a comment](img/expand-comment_v14_8.png)
+1. Scroll to the line the comment is attached to. In the gutter margin, select the user avatar:
+   ![expand a comment](img/expand-comment_v17_10.png)
 
 ## Ignore whitespace changes
 
@@ -326,12 +326,12 @@ a merge request. You can choose to hide or show whitespace changes:
 1. Before the list of changed files, select **Preferences** ({{< icon name="preferences" >}}).
 1. Select or clear **Show whitespace changes**:
 
-   ![MR diff](img/merge_request_diff_v14_2.png)
+   ![A merge request diff with the Preferences menu expanded](img/merge_request_diff_v17_10.png)
 
 ## Mark files as viewed
 
 When reviewing a merge request with many files multiple times, you can ignore files
-you've already reviewed. To hide files that haven't changed since your last review:
+you've already reviewed. To hide files that haven't changed after your last review:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.

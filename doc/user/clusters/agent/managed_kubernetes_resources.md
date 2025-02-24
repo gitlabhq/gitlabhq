@@ -122,23 +122,25 @@ delete_resources: on_stop    # Resources are removed when environment is stopped
 Environment templates support limited variable substitution.
 The following variables are available:
 
-| Category | Variable | Description |
-|----------|----------|-------------|
-| Agent | `{{ .agent.id }}` | The agent identifier. |
-| Agent | `{{ .agent.name }}` | The agent name. |
-| Agent | `{{ .agent.url }}` | The agent URL. |
-| Environment | `{{ .environment.name }}` | The environment name. |
-| Environment | `{{ .environment.slug }}` | The environment slug. |
-| Environment | `{{ .environment.url }}` | The environment URL. |
-| Environment | `{{ .environment.tier }}` | The environment tier. |
-| Project | `{{ .project.id }}` | The project identifier. |
-| Project | `{{ .project.slug }}` | The project slug. |
-| Project | `{{ .project.path }}` | The project path. |
-| Project | `{{ .project.url }}` | The project URL. |
-| CI Pipeline | `{{ .ci_pipeline.id }}` | The pipeline identifier. |
-| CI Job | `{{ .ci_job.id }}` | The CI/CD job identifier. |
-| User | `{{ .user.id }}` | The user identifier. |
-| User | `{{ .user.username }}` | The username. |
+| Category       | Variable                      | Description               | Type    | Default value when not set |
+|----------------|-------------------------------|---------------------------|---------|----------------------------|
+| Agent          | `{{ .agent.id }}`             | The agent ID.             | Integer | N/A                       |
+| Agent          | `{{ .agent.name }}`           | The agent name.           | String  | N/A                       |
+| Agent          | `{{ .agent.url }}`            | The agent URL.            | String  | N/A                       |
+| Environment    | `{{ .environment.id }}`       | The environment ID.       | Integer | N/A                       |
+| Environment    | `{{ .environment.name }}`     | The environment name.     | String  | N/A                       |
+| Environment    | `{{ .environment.slug }}`     | The environment slug.     | String  | N/A                       |
+| Environment    | `{{ .environment.url }}`      | The environment URL.      | String  | Empty string               |
+| Environment    | `{{ .environment.page_url }}` | The environment page URL. | String  | N/A                       |
+| Environment    | `{{ .environment.tier }}`     | The environment tier.     | String  | N/A                       |
+| Project        | `{{ .project.id }}`           | The project ID.           | Integer | N/A                       |
+| Project        | `{{ .project.slug }}`         | The project slug.         | String  | N/A                       |
+| Project        | `{{ .project.path }}`         | The project path.         | String  | N/A                       |
+| Project        | `{{ .project.url }}`          | The project URL.          | String  | N/A                       |
+| CI/CD Pipeline | `{{ .ci_pipeline.id }}`       | The pipeline ID.          | Integer | Zero                       |
+| CI/CD Job      | `{{ .ci_job.id }}`            | The CI/CD job ID.         | Integer | Zero                       |
+| User           | `{{ .user.id }}`              | The user ID.              | Integer | N/A                       |
+| User           | `{{ .user.username }}`        | The username.             | String  | N/A                       |
 
 All variables should be referenced using the double curly brace syntax, for example: `{{ .project.id }}`.
 See [`text/template`](https://pkg.go.dev/text/template) documentation for more information on the templating system used.
@@ -151,26 +153,28 @@ The following labels are defined on every resource created by GitLab. The values
 
 - `agent.gitlab.com/id-<agent_id>: ""`
 - `agent.gitlab.com/project_id-<project_id>: ""`
-- `agent.gitlab.com/env-<kubernetes_namespace>: ""`
+- `agent.gitlab.com/env-<gitlab_environment_slug>-<project_id>-<agent_id>: ""`
 - `agent.gitlab.com/environment_slug-<gitlab_environment_slug>: ""`
 
-On every resource created by GitLab, an `agent.gitlab.com/env-<kubernetes_namespace>` annotation is defined. The value of the annotation is a JSON object with the following keys:
+On every resource created by GitLab, an `agent.gitlab.com/env-<gitlab_environment_slug>-<project_id>-<agent_id>` annotation is defined.
+The value of the annotation is a JSON object with the following keys:
 
-| Key | Description |
-|-----|-------------|
-| `environment_id` | The GitLab environment ID. |
-| `environment_name` | The GitLab environment name. |
-| `environment_slug` | The GitLab environment slug. |
-| `environment_page_url` | The link to the GitLab environment page. |
-| `environment_tier` | The GitLab environment deployment tier. |
-| `agent_id` | The agent ID. |
-| `agent_name` | The agent name. |
+| Key | Description                                      |
+|-----|--------------------------------------------------|
+| `environment_id` | The GitLab environment ID.                       |
+| `environment_name` | The GitLab environment name.                     |
+| `environment_slug` | The GitLab environment slug.                     |
+| `environment_url` | The link to the environment. Optional.           |
+| `environment_page_url` | The link to the GitLab environment page.         |
+| `environment_tier` | The GitLab environment deployment tier.          |
+| `agent_id` | The agent ID.                                    |
+| `agent_name` | The agent name.                                  |
 | `agent_url` | The agent URL in the agent registration project. |
-| `project_id` | The GitLab project ID. |
-| `project_slug` | The GitLab project slug. |
-| `project_path` | The full GitLab project path. |
-| `project_url` | The link to the GitLab project. |
-| `template_name` | The name of the template used. |
+| `project_id` | The GitLab project ID.                           |
+| `project_slug` | The GitLab project slug.                         |
+| `project_path` | The full GitLab project path.                    |
+| `project_url` | The link to the GitLab project.                  |
+| `template_name` | The name of the template used.                   |
 
 ## Troubleshooting
 

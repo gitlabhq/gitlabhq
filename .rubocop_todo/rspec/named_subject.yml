@@ -194,7 +194,6 @@ RSpec/NamedSubject:
     - 'ee/spec/helpers/kerberos_helper_spec.rb'
     - 'ee/spec/helpers/license_helper_spec.rb'
     - 'ee/spec/helpers/projects/security/dast_profiles_helper_spec.rb'
-    - 'ee/spec/helpers/projects_helper_spec.rb'
     - 'ee/spec/helpers/secrets_helper_spec.rb'
     - 'ee/spec/helpers/users_helper_spec.rb'
     - 'ee/spec/helpers/vulnerabilities_helper_spec.rb'

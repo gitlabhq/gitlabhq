@@ -29305,6 +29305,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestsourceprojectid"></a>`sourceProjectId` | [`Int`](#int) | ID of the merge request source project. |
 | <a id="mergerequestsquash"></a>`squash` | [`Boolean!`](#boolean) | Indicates if the merge request is set to be squashed when merged. [Project settings](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html#configure-squash-options-for-a-project) may override this value. Use `squash_on_merge` instead to take project squash options into account. |
 | <a id="mergerequestsquashonmerge"></a>`squashOnMerge` | [`Boolean!`](#boolean) | Indicates if the merge request will be squashed when merged. |
+| <a id="mergerequestsquashreadonly"></a>`squashReadOnly` | [`Boolean!`](#boolean) | Indicates if `squashReadOnly` is enabled. |
 | <a id="mergerequeststate"></a>`state` | [`MergeRequestState!`](#mergerequeststate) | State of the merge request. |
 | <a id="mergerequestsubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Indicates if the currently logged in user is subscribed to this merge request. |
 | <a id="mergerequestsuggestedreviewers"></a>`suggestedReviewers` | [`SuggestedReviewersType`](#suggestedreviewerstype) | Suggested reviewers for merge request. |

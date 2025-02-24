@@ -668,7 +668,7 @@ export default {
         optimisticResponse: designUploadOptimisticResponse(this.filesToBeSaved),
         variables: {
           files: this.filesToBeSaved,
-          projectPath: this.fullPath,
+          projectPath: this.workItemFullPath,
           iid: this.iid,
         },
         context: {
@@ -682,7 +682,7 @@ export default {
       return this.$apollo
         .mutate(mutationPayload)
         .then((res) => this.onUploadDesignDone(res))
-        .catch(() => this.onUploadDesignError());
+        .catch((error) => this.onUploadDesignError(error));
     },
     afterUploadDesign(store, { data: { designManagementUpload } }) {
       updateStoreAfterUploadDesign(store, designManagementUpload, this.designCollectionQueryBody);
@@ -702,7 +702,8 @@ export default {
       // reset state
       this.resetFilesToBeSaved();
     },
-    onUploadDesignError() {
+    onUploadDesignError(error) {
+      Sentry.captureException(error);
       this.resetFilesToBeSaved();
       this.designUploadError = UPLOAD_DESIGN_ERROR_MESSAGE;
     },

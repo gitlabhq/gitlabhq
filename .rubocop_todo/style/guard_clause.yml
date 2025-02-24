@@ -220,7 +220,6 @@ Style/GuardClause:
     - 'ee/app/helpers/ee/auth_helper.rb'
     - 'ee/app/helpers/ee/nav/new_dropdown_helper.rb'
     - 'ee/app/helpers/ee/projects/pipeline_helper.rb'
-    - 'ee/app/helpers/ee/projects_helper.rb'
     - 'ee/app/models/allowed_email_domain.rb'
     - 'ee/app/models/app_sec/fuzzing/coverage/corpus.rb'
     - 'ee/app/models/approval_merge_request_rule_source.rb'

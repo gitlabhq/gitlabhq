@@ -266,6 +266,10 @@ module Types
       HEREDOC
     field :squash_on_merge, GraphQL::Types::Boolean, null: false, method: :squash_on_merge?,
       description: 'Indicates if the merge request will be squashed when merged.'
+    field :squash_read_only, GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates if `squashReadOnly` is enabled.',
+      method: :squash_readonly?
     field :timelogs, Types::TimelogType.connection_type, null: false,
       description: 'Timelogs on the merge request.'
 

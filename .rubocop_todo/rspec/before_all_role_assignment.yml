@@ -252,7 +252,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/helpers/gitlab_subscriptions/upcoming_reconciliation_helper_spec.rb'
     - 'ee/spec/helpers/projects/on_demand_scans_helper_spec.rb'
     - 'ee/spec/helpers/projects/project_members_helper_spec.rb'
-    - 'ee/spec/helpers/projects_helper_spec.rb'
     - 'ee/spec/helpers/subscriptions_helper_spec.rb'
     - 'ee/spec/helpers/timeboxes_helper_spec.rb'
     - 'ee/spec/helpers/tree_helper_spec.rb'

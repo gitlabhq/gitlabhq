@@ -53837,6 +53837,9 @@ msgstr ""
 msgid "Selected commits"
 msgstr ""
 
+msgid "Selected database"
+msgstr ""
+
 msgid "Selected for all items."
 msgstr ""
 

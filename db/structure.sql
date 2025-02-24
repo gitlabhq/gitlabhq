@@ -7157,6 +7157,33 @@ CREATE SEQUENCE ai_active_context_connections_id_seq
 
 ALTER SEQUENCE ai_active_context_connections_id_seq OWNED BY ai_active_context_connections.id;
 
+CREATE TABLE ai_active_context_migrations (
+    id bigint NOT NULL,
+    connection_id bigint NOT NULL,
+    started_at timestamp with time zone,
+    completed_at timestamp with time zone,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    retries_left smallint NOT NULL,
+    version text NOT NULL,
+    metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
+    error_message text,
+    CONSTRAINT c_ai_active_context_migrations_on_retries_left CHECK (((retries_left > 0) OR ((retries_left = 0) AND (status = 255)))),
+    CONSTRAINT c_ai_active_context_migrations_version_format CHECK ((version ~ '^[0-9]{14}$'::text)),
+    CONSTRAINT check_184ab3430e CHECK ((char_length(error_message) <= 1024)),
+    CONSTRAINT check_b2e8a34818 CHECK ((char_length(version) <= 255))
+);
+
+CREATE SEQUENCE ai_active_context_migrations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_active_context_migrations_id_seq OWNED BY ai_active_context_migrations.id;
+
 CREATE TABLE ai_agent_version_attachments (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -24978,6 +25005,8 @@ ALTER TABLE ONLY ai_active_context_collections ALTER COLUMN id SET DEFAULT nextv
 
 ALTER TABLE ONLY ai_active_context_connections ALTER COLUMN id SET DEFAULT nextval('ai_active_context_connections_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_active_context_migrations ALTER COLUMN id SET DEFAULT nextval('ai_active_context_migrations_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_agent_version_attachments ALTER COLUMN id SET DEFAULT nextval('ai_agent_version_attachments_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_agent_versions ALTER COLUMN id SET DEFAULT nextval('ai_agent_versions_id_seq'::regclass);
@@ -26918,6 +26947,9 @@ ALTER TABLE ONLY ai_active_context_collections
 
 ALTER TABLE ONLY ai_active_context_connections
     ADD CONSTRAINT ai_active_context_connections_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_active_context_migrations
+    ADD CONSTRAINT ai_active_context_migrations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_agent_version_attachments
     ADD CONSTRAINT ai_agent_version_attachments_pkey PRIMARY KEY (id);
@@ -31464,6 +31496,10 @@ CREATE INDEX index_agent_user_access_on_group_id ON agent_user_access_group_auth
 CREATE INDEX index_agent_user_access_on_project_id ON agent_user_access_project_authorizations USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ai_active_context_connections_on_name ON ai_active_context_connections USING btree (name);
+
+CREATE INDEX index_ai_active_context_migrations_on_connection_and_status ON ai_active_context_migrations USING btree (connection_id, status);
+
+CREATE UNIQUE INDEX index_ai_active_context_migrations_on_connection_and_version ON ai_active_context_migrations USING btree (connection_id, version);
 
 CREATE INDEX index_ai_agent_version_attachments_on_ai_agent_version_id ON ai_agent_version_attachments USING btree (ai_agent_version_id);
 
@@ -41319,6 +41355,9 @@ ALTER TABLE ONLY ml_candidate_metadata
 
 ALTER TABLE ONLY merge_request_merge_schedules
     ADD CONSTRAINT fk_rails_5294434bc3 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_active_context_migrations
+    ADD CONSTRAINT fk_rails_52b6529477 FOREIGN KEY (connection_id) REFERENCES ai_active_context_connections(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY elastic_group_index_statuses
     ADD CONSTRAINT fk_rails_52b9969b12 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
