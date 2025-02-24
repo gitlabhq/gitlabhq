@@ -68,10 +68,6 @@ class ApplicationController < BaseActionController
     :git_import_enabled?, :gitlab_project_import_enabled?,
     :manifest_import_enabled?, :masked_page_url
 
-  def self.endpoint_id_for_action(action_name)
-    "#{name}##{action_name}"
-  end
-
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
     render "errors/encoding", layout: "errors", status: :internal_server_error

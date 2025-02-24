@@ -378,6 +378,31 @@ As we are [moving towards using `sidekiq-cluster` in Free](https://gitlab.com/gi
 workers do not need to have weights specified. They can use the
 default weight, which is 1.
 
+## Job parameters
+
+Based on [Sidekiq's recommended best practices](https://github.com/sidekiq/sidekiq/wiki/Best-Practices#1-make-your-job-parameters-small-and-simple), parameters should be small and simple.
+
+For a hash passed as a worker parameter, the keys should be strings and the values
+should be of native JSON types. If these expectations are not met in Sidekiq versions 7.0 and later,
+[exceptions are raised](https://github.com/sidekiq/sidekiq/blob/main/docs/7.0-Upgrade.md#strict-arguments).
+We have disabled these exceptions
+[and only display warnings](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161262)
+in development and test mode, to enable us to upgrade to this version.
+
+Going forward, developers should ensure that the keys and values in worker parameters are of native JSON types.
+
+You are encouraged to add a test for code generating worker parameters. For example, this custom
+RSpec matcher `param_containing_valid_native_json_types` (defined in `SidekiqJSONMatcher`)
+tests the parameter expected to be an array of hashes:
+
+```ruby
+ it 'passes a valid JSON parameter to MyWorker#perform_async' do
+  expect(MyWorker).to receive(:perform_async).with(param_containing_valid_native_json_types)
+
+  method_calling_worker_perform_sync
+end
+```
+
 ## Tests
 
 Each Sidekiq worker must be tested using RSpec, just like any other class. These

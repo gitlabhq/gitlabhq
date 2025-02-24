@@ -23,6 +23,6 @@ The CSV file format is not fully standardized. Other characters can be used as c
 Fields may or may not be surrounded to escape special characters.
 
 When added to a repository, files with a `.csv` extension are rendered as a table when viewed in
-GitLab.
+GitLab:
 
-![CSV file rendered as a table](img/csv_file_rendered_as_table_v14_1.png)
+![CSV file rendered as a table](img/csv_as_table_v17_10.png)

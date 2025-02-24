@@ -60,7 +60,7 @@ Metrics:
 
 * [ ] Assign an engineering counterpart from your group to add instrumentation to the code
 * [ ] Explore instrumented data with the help of our [data discovery guide]( https://docs.gitlab.com/ee/development/internal_analytics/#data-discovery). You can also [reach out to product data insights team](https://gitlab.com/gitlab-data/product-analytics/-/issues/new?issuable_template=PI%20Chart%20Help) for help with generating Tableau reports/dashboards.
-* [ ] Your feedback is valuable to us. Please leave us feedback in the comment section of this issue and tag @tjayaramaraju or @basti
+* [ ] Your feedback is valuable to us. Please leave us feedback in the comment section of this issue and tag @tjayaramaraju.
 
 # Important links
 

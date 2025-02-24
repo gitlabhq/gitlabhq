@@ -37,7 +37,11 @@ const sensitiveDataPatterns = () => {
     },
     {
       name: 'GitLab Runner Token',
-      regex: 'glrt-[0-9a-zA-Z_-]{20}',
+      regex: '(?<registration_type>glrt-)?(?<runner_type>t\\d_)[0-9a-zA-Z_-]{20}',
+    },
+    {
+      name: 'GitLab Runner Token (routable)',
+      regex: `(?<registration_type>glrt-)?(?<runner_type>t\\d_)(?<base64_payload>[0-9a-zA-Z_-]{27,300})\\.(?<base64_payload_length>[0-9a-z]{2})(?<crc32>[0-9a-z]{7})`,
     },
     {
       name: 'GitLab Incoming Mail Token',

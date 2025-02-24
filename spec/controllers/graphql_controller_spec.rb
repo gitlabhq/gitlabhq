@@ -885,7 +885,7 @@ RSpec.describe GraphqlController, feature_category: :integrations do
 
       let(:expected_glql_logs) do
         expected_logs.map do |q|
-          q.merge(operation_name: "GLQL")
+          q.merge(glql_referer: 'path', operation_name: "GLQL")
         end
       end
 
@@ -898,7 +898,6 @@ RSpec.describe GraphqlController, feature_category: :integrations do
 
         expect(controller).to have_received(:append_info_to_payload)
         expect(log_payload.dig(:metadata, :graphql)).to match_array(expected_glql_logs)
-        expect(log_payload.dig(:metadata, :referer)).to eq('path')
       end
     end
 

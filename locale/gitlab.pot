@@ -5385,9 +5385,6 @@ msgstr ""
 msgid "AiPowered|Assign seats"
 msgstr ""
 
-msgid "AiPowered|Beta self-hosted models"
-msgstr ""
-
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr ""
 
@@ -5478,6 +5475,9 @@ msgstr ""
 msgid "AiPowered|Self-hosted AI models"
 msgstr ""
 
+msgid "AiPowered|Self-hosted models"
+msgstr ""
+
 msgid "AiPowered|Setting unavailable"
 msgstr ""
 
@@ -5493,7 +5493,7 @@ msgstr ""
 msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
 msgstr ""
 
-msgid "AiPowered|Use beta self-hosted models features"
+msgid "AiPowered|Use self-hosted models features"
 msgstr ""
 
 msgid "AiPowered|View GitLab Duo settings"
@@ -34374,6 +34374,9 @@ msgstr ""
 msgid "Lock discussion"
 msgstr ""
 
+msgid "Lock file"
+msgstr ""
+
 msgid "Lock file?"
 msgstr ""
 
@@ -61772,6 +61775,9 @@ msgid "Unlock account"
 msgstr ""
 
 msgid "Unlock discussion"
+msgstr ""
+
+msgid "Unlock file"
 msgstr ""
 
 msgid "Unlock file?"

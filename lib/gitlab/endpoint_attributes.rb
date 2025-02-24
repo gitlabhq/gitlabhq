@@ -8,6 +8,10 @@ module Gitlab
     DEFAULT_URGENCY = Config::REQUEST_URGENCIES.fetch(:default)
 
     class_methods do
+      def endpoint_id_for_action(action_name)
+        "#{name}##{action_name}"
+      end
+
       def feature_category(category, actions = [])
         endpoint_attributes.set(actions, feature_category: category)
       end

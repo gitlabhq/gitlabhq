@@ -317,16 +317,19 @@ class GraphqlController < ApplicationController
 
     # Merging to :metadata will ensure these are logged as top level keys
     payload[:metadata] ||= {}
-
     payload[:metadata][:graphql] = logs
-
-    payload[:metadata][:referer] = request.headers['Referer'] if logs.any? { |log| log[:operation_name] == 'GLQL' }
 
     payload[:exception_object] = @exception_object if @exception_object
   end
 
   def logs
-    RequestStore.store[:graphql_logs].to_a
+    graphql_logs = RequestStore.store[:graphql_logs]
+
+    Array(graphql_logs).map do |log|
+      next log unless log[:operation_name] == 'GLQL'
+
+      log.merge(glql_referer: request.headers["Referer"])
+    end
   end
 
   def execute_introspection_query

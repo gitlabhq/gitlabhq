@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
+  include ::Gitlab::EndpointAttributes
+
+  feature_category :system_access
+
   def keys
     expires_in 24.hours, public: true, must_revalidate: true, 'no-transform': true
 

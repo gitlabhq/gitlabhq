@@ -102,8 +102,8 @@ export default {
     deleteItem() {
       return {
         text: this.$options.i18n.delete,
+        variant: 'danger',
         extraAttrs: {
-          class: '!gl-text-red-500',
           'data-testid': 'milestone-delete-item',
         },
       };

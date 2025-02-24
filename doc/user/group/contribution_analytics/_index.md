@@ -25,6 +25,16 @@ Use contribution analytics data visualizations for:
 - Training opportunities: Identify areas where team members may benefit from mentorship or training, such as low merge request approval or issue resolution rates.
 - Retrospective evaluation: Incorporate contribution analytics into retrospectives to assess how effectively the team met objectives and where adjustments may be needed.
 
+### Tracking
+
+Contribution analytics are based on push events, because they provide a more reliable view of contributions than unique commits.
+Counting unique commits may lead to duplication when commits are pushed across multiple branches.
+By tracking push events instead, GitLab ensures that every contribution is counted accurately.
+
+For example, a user pushes three commits to branch A in one push.
+Later, the user pushes two of those commits from branch A to branch B.
+GitLab records five commits, though the user made three unique commits.
+
 ## View contribution analytics
 
 To view contribution analytics:
@@ -46,7 +56,10 @@ To retrieve metrics for user contributions, you can also use the [GraphQL API](.
 
 You can view the number of events associated with a specific group member.
 
-To do this, hover over the bar with the member's name.
+To view a member's contributions:
+
+1. On the **Contribution analytics** bar charts, hover over the bar with the member's name.
+1. To view individual contributions, in the **Contributions per group member** table, select the member's name. The member's GitLab profile is displayed, and you can explore their [contributions calendar](../../../user/profile/contributions_calendar.md).
 
 ### Zoom in on a chart
 

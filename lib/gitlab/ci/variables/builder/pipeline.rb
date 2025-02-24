@@ -84,9 +84,7 @@ module Gitlab
           strong_memoize_attr :predefined_commit_tag_variables
 
           def predefined_merge_request_variables
-            if ::Feature.enabled?(:ci_merge_request_variables_preload, pipeline.project)
-              Preloader::MergeRequest.new(pipeline.merge_request).preload
-            end
+            Preloader::MergeRequest.new(pipeline.merge_request).preload
 
             Gitlab::Ci::Variables::Collection.new.tap do |variables|
               variables.append(key: 'CI_MERGE_REQUEST_EVENT_TYPE', value: pipeline.merge_request_event_type.to_s)

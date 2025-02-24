@@ -85,6 +85,14 @@ module TokenAuthenticatableMatchers
     Gitlab::CryptoHelper.sha256(token)
   end
 
+  def encrypted_token(token)
+    Authn::TokenField::EncryptionHelper.encrypt_token(token)
+  end
+
+  def decrypted_token(ciphertext)
+    Authn::TokenField::EncryptionHelper.decrypt_token(ciphertext)
+  end
+
   matcher :be_a_token do
     match do |actual_token|
       @expected_token =
@@ -114,12 +122,13 @@ module TokenAuthenticatableMatchers
     end
 
     failure_message do |actual_token|
-      expectation_msg = "Expected token:\n#{@expected_token}\n"
+      expectation_msg = "Expected token:\n#{@expected_token}\ngot\n#{actual_token}\n\n"
+
       expectation_msg << if @routing_payload
                            "Expected routing payload\n#{@routing_payload}\n" \
                              "got\n#{decoded_routing_payload(actual_token)}"
                          else
-                           "Expected payload\n#{@routing_payload}\n" \
+                           "Expected payload\n#{@payload}\n" \
                              "got\n#{actual_token.delete_prefix(@prefix.to_s)}"
                          end
     end
@@ -155,6 +164,48 @@ module TokenAuthenticatableMatchers
 
     failure_message do |actual_token_digest|
       "Expected token digest:\n#{digested_token(@expected_token)}\ngot\n#{actual_token_digest}."
+    end
+  end
+
+  matcher :be_an_encrypted_token do
+    match do |actual_encrypted_token|
+      @expected_token =
+        if @routing_payload
+          generate_routable_token(@routing_payload, random_bytes: @random_bytes.to_s, prefix: @prefix.to_s)
+        else
+          full_token(@payload, prefix: @prefix.to_s)
+        end
+
+      actual_encrypted_token == encrypted_token(@expected_token)
+    end
+
+    chain :with_payload do |payload|
+      @payload = payload
+    end
+
+    chain :with_routing_payload do |routing_payload|
+      @routing_payload = routing_payload
+    end
+
+    chain :and_random_bytes do |random_bytes|
+      @random_bytes = random_bytes
+    end
+
+    chain :and_prefix do |prefix|
+      @prefix = prefix
+    end
+
+    failure_message do |actual_encrypted_token|
+      expectation_msg = "Expected encrypted token:\n#{encrypted_token(@expected_token)}\n" \
+        "got\n#{actual_encrypted_token}.\n\n"
+
+      expectation_msg << if @routing_payload
+                           "Expected routing payload\n#{@routing_payload}\n" \
+                             "got\n#{decoded_routing_payload(decrypted_token(actual_encrypted_token))}"
+                         else
+                           "Expected payload\n#{@payload}\n" \
+                             "got\n#{decrypted_token(actual_encrypted_token).delete_prefix(@prefix.to_s)}"
+                         end
     end
   end
 

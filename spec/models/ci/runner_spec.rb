@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_category: :runner do
   include StubGitlabCalls
+  include ::TokenAuthenticatableMatchers
 
   let_it_be(:organization, freeze: true) { create_default(:organization) }
   let_it_be(:group) { create(:group) }
@@ -1271,6 +1272,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         context 'and owner project is deleted' do
           before do
             owner_project.destroy!
+            project_runner.clear_memoization(:owner)
           end
 
           it { is_expected.to eq other_project }
@@ -1824,51 +1826,129 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
   end
 
-  describe '#token' do
-    subject(:token) { runner.token }
+  it_behaves_like 'TokenAuthenticatable' do
+    let(:token_field) { :token }
+  end
 
-    let(:runner_type) { :instance_type }
+  describe '#token' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:creator) { create(:user) }
     let(:attrs) { {} }
-    let(:runner) { create(:ci_runner, runner_type, registration_type: registration_type, **attrs) }
+    let(:token_owner_record) do
+      create(:ci_runner, runner_type: runner_type, registration_type: registration_type, creator: creator, **attrs)
+    end
+
+    subject(:token) { token_owner_record.token }
+
+    include_context 'with token authenticatable routable token context'
+
+    shared_examples 'an encrypted non-routable token' do |prefix|
+      context 'when :routable_runner_token feature flag is disabled' do
+        before do
+          stub_feature_flags(routable_runner_token: false)
+        end
+
+        it_behaves_like 'an encrypted token' do
+          let(:expected_token) { token }
+          let(:expected_token_payload) { devise_token }
+          let(:expected_token_prefix) { prefix }
+          let(:expected_encrypted_token) { token_owner_record.token_encrypted }
+        end
+      end
+    end
+
+    shared_examples 'an encrypted routable token for resource' do |prefix|
+      let(:expected_routing_payload) do
+        if resource.is_a?(Group)
+          "c:1\ng:#{resource.id.to_s(36)}\no:#{resource.organization_id.to_s(36)}\nu:#{creator.id.to_s(36)}"
+        else
+          "c:1\no:#{resource.organization_id.to_s(36)}\np:#{resource.id.to_s(36)}\nu:#{creator.id.to_s(36)}"
+        end
+      end
+
+      context 'when :routable_runner_token feature flag is enabled for the resource' do
+        before do
+          stub_feature_flags(routable_runner_token: resource)
+        end
+
+        it_behaves_like 'an encrypted routable token' do
+          let(:expected_token) { token }
+          let(:expected_random_bytes) { random_bytes }
+          let(:expected_token_prefix) { prefix }
+          let(:expected_encrypted_token) { token_owner_record.token_encrypted }
+        end
+      end
+
+      it_behaves_like 'an encrypted routable token' do
+        let(:expected_token) { token }
+        let(:expected_random_bytes) { random_bytes }
+        let(:expected_token_prefix) { prefix }
+        let(:expected_encrypted_token) { token_owner_record.token_encrypted }
+      end
+    end
+
+    shared_examples 'an instance runner encrypted token' do |prefix|
+      let(:runner_type) { :instance_type }
+
+      it_behaves_like 'an encrypted non-routable token', prefix
+
+      it_behaves_like 'an encrypted token' do
+        let(:expected_token) { token }
+        let(:expected_token_payload) { devise_token }
+        let(:expected_token_prefix) { prefix }
+        let(:expected_encrypted_token) { token_owner_record.token_encrypted }
+      end
+    end
+
+    shared_examples 'a group runner encrypted token' do |prefix|
+      let(:runner_type) { :group_type }
+      let(:attrs) { { groups: [group], sharding_key_id: group.id } }
+
+      it_behaves_like 'an encrypted non-routable token', prefix
+      it_behaves_like 'an encrypted routable token for resource', prefix do
+        let(:resource) { group }
+      end
+    end
+
+    shared_examples 'a project runner encrypted token' do |prefix|
+      let(:runner_type) { :project_type }
+      let(:attrs) { { projects: [project], sharding_key_id: project.id } }
+
+      it_behaves_like 'an encrypted non-routable token', prefix
+      it_behaves_like 'an encrypted routable token for resource', prefix do
+        let(:resource) { project }
+      end
+    end
 
     context 'when runner is registered' do
       let(:registration_type) { :registration_token }
 
-      it { is_expected.not_to start_with('glrt-') }
-      it { is_expected.to start_with('t1_') }
+      context 'when runner is instance type' do
+        it_behaves_like 'an instance runner encrypted token', 't1_'
+      end
 
       context 'when runner is group type' do
-        let(:runner_type) { :group_type }
-        let(:attrs) { { groups: [group] } }
-
-        it { is_expected.to start_with('t2_') }
+        it_behaves_like 'a group runner encrypted token', 't2_'
       end
 
       context 'when runner is project type' do
-        let(:runner_type) { :project_type }
-        let(:attrs) { { projects: [project] } }
-
-        it { is_expected.to start_with('t3_') }
+        it_behaves_like 'a project runner encrypted token', 't3_'
       end
     end
 
     context 'when runner is created via UI' do
       let(:registration_type) { :authenticated_user }
 
-      it { is_expected.to start_with('glrt-t1_') }
+      context 'when runner is instance type' do
+        it_behaves_like 'an instance runner encrypted token', 'glrt-t1_'
+      end
 
       context 'when runner is group type' do
-        let(:runner_type) { :group_type }
-        let(:attrs) { { groups: [group] } }
-
-        it { is_expected.to start_with('glrt-t2_') }
+        it_behaves_like 'a group runner encrypted token', 'glrt-t2_'
       end
 
       context 'when runner is project type' do
-        let(:runner_type) { :project_type }
-        let(:attrs) { { projects: [project] } }
-
-        it { is_expected.to start_with('glrt-t3_') }
+        it_behaves_like 'a project runner encrypted token', 'glrt-t3_'
       end
     end
   end

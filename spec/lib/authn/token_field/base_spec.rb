@@ -172,7 +172,7 @@ RSpec.describe Authn::TokenField::Base, feature_category: :system_access do
       let(:routable_token_payload) { { payload: { o: ->(_) { 'foo' } } } }
 
       shared_examples 'a routable token' do
-        it 'delegates to RoutableTokenGenerator#generate_token' do
+        it 'delegates to Generator::RoutableToken#generate_token' do
           generator = instance_double(Authn::TokenField::Generator::RoutableToken)
           expect(Authn::TokenField::Generator::RoutableToken)
             .to receive(:new).with(

@@ -32,6 +32,12 @@ keywords = ["glrt"]
 regex = "\\bglrt-[0-9a-zA-Z_\\-]{20}\\b"
 tags = ["gitlab", "gitlab_blocking"]
 [[rules]]
+description = "GitLab Runner Authentication Token (routable)"
+id = "gitlab_runner_auth_token_routable"
+keywords = ["glrt"]
+regex = "\\b(?<registration_type>glrt-)?(?<runner_type>t\\d_)(?<base64_payload>[0-9a-zA-Z_\\-]{27,300})\\.(?<base64_payload_length>[0-9a-z]{2})(?<crc32>[0-9a-z]{7})\\b"
+tags = ["gitlab", "gitlab_blocking"]
+[[rules]]
 description = "GitLab OAuth Application Secrets"
 id = "gitlab_oauth_app_secret"
 keywords = ["gloas"]

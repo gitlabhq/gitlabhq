@@ -161,7 +161,7 @@ job:
   artifacts:
     name: "$CI_COMMIT_REF_NAME"
     paths:
-      - binaries/${CI_PROJECT_NAME}/"
+      - binaries/${CI_PROJECT_NAME}/
 ```
 
 When your branch name contains forward slashes (for example, `feature/my-feature`),

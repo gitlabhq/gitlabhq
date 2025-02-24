@@ -31,7 +31,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Cache::Entries, :aggrega
           cache_entry
             .as_json
             .merge('id' => Base64.urlsafe_encode64("#{upstream.id} #{cache_entry.relative_path}"))
-            .except('object_storage_key', 'file_store', 'status', 'file_final_path')
+            .except('object_storage_key', 'file', 'file_store', 'status', 'file_final_path')
         )
       end
     end
