@@ -15932,7 +15932,8 @@ CREATE TABLE merge_request_blocks (
     blocked_merge_request_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_f8034ca45e CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE merge_request_blocks_id_seq
@@ -16373,7 +16374,8 @@ CREATE TABLE merge_requests_closing_issues (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     from_mr_description boolean DEFAULT true NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_8532dd8dc4 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE merge_requests_closing_issues_id_seq
@@ -27311,9 +27313,6 @@ ALTER TABLE sprints
 
 ALTER TABLE web_hook_logs
     ADD CONSTRAINT check_df72cb58f5 CHECK ((char_length(url_hash) <= 44)) NOT VALID;
-
-ALTER TABLE merge_request_blocks
-    ADD CONSTRAINT check_f8034ca45e CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE projects
     ADD CONSTRAINT check_fa75869cb1 CHECK ((project_namespace_id IS NOT NULL)) NOT VALID;

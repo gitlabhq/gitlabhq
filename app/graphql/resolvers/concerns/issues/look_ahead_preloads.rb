@@ -22,6 +22,7 @@ module Issues
 
     def preloads
       {
+        reference: { namespace: [{ parent: :route }, :route] },
         alert_management_alert: [:alert_management_alert],
         assignees: [:assignees],
         participants: Issue.participant_includes,

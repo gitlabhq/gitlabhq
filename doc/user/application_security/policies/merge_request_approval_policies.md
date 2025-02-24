@@ -257,6 +257,7 @@ the defined policy.
 - [Added](https://gitlab.com/groups/gitlab-org/-/epics/12319) support for up to five separate `require_approval` actions in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `multiple_approval_actions`.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505374) in GitLab 17.8. Feature flag `multiple_approval_actions` removed.
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13550) support to specify custom roles as `role_approvers` in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `security_policy_custom_roles`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505742) in GitLab 17.10. Feature flag `security_policy_custom_roles` removed.
 
 {{< /history >}}
 

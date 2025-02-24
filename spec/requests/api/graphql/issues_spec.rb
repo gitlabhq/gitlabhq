@@ -213,6 +213,15 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
   end
 
   context 'when fetching issues from multiple projects' do
+    let(:fields) do
+      <<~QUERY
+        nodes {
+          id
+          reference
+        }
+      QUERY
+    end
+
     it 'avoids N+1 queries', :use_sql_query_cache do
       post_query # warm-up
 

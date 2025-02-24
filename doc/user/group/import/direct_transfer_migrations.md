@@ -14,14 +14,15 @@ title: Migrate groups and projects by using direct transfer
 
 To migrate GitLab groups and projects by using direct transfer, you:
 
-1. Fulfill the prerequisites.
-1. Connect the source GitLab instance.
-1. Select groups and projects to migrate and begin the migration.
-1. Review the results of the import.
+1. Fulfill the [prerequisites](#prerequisites).
+1. Review [user contribution and membership mapping](#user-contribution-and-membership-mapping) and [configure users on the destination instance](#configure-users-on-destination-instance)
+1. [Connect the source GitLab instance](#connect-the-source-gitlab-instance).
+1. [Select groups and projects to import](#select-the-groups-and-projects-to-import) and begin the migration.
+1. [Review the results of the import](#review-results-of-the-import).
 
 If there are any problems, you can:
 
-1. Cancel or retry the migration.
+1. [Cancel](#cancel-a-running-migration) or [retry](#retry-failed-or-partially-successful-migrations) the migration.
 1. Check the [troubleshooting information](troubleshooting.md).
 
 ## Prerequisites
@@ -181,6 +182,25 @@ Importing groups with projects is in [beta](../../../policy/development_stages_s
 
 {{< /alert >}}
 
+## Review results of the import
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429109) in GitLab 16.6 [with a flag](../../feature_flags.md) named `bulk_import_details_page`. Enabled by default.
+- Feature flag `bulk_import_details_page` removed in GitLab 16.8.
+- Details for partially completed and completed imports [added](https://gitlab.com/gitlab-org/gitlab/-/issues/437874) in GitLab 16.9.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443492) in GitLab 17.0, an **Imported** badge to indicate that designs, epics, issues, merge requests, notes (system notes and comments), snippets, and user profile activity were imported.
+
+{{< /history >}}
+
+To review the results of an import:
+
+1. Go to the [Group import history page](#group-import-history).
+1. To see the details of a failed import, select the **Show errors** link on any import with a **Failed** or **Partially completed** status.
+1. If the import has a **Partially completed** or **Complete** status, to see which items were and were not imported, select **View details**.
+
+You can also see that an item was imported when you see an **Imported** badge on some items in the GitLab UI.
+
 ## Group import history
 
 {{< history >}}
@@ -204,25 +224,6 @@ To view group import history:
 1. Select **Import group**.
 1. In the upper-right corner, select **History**.
 1. If there are any errors for a particular import, select **Show errors** to see their details.
-
-## Review results of the import
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429109) in GitLab 16.6 [with a flag](../../feature_flags.md) named `bulk_import_details_page`. Enabled by default.
-- Feature flag `bulk_import_details_page` removed in GitLab 16.8.
-- Details for partially completed and completed imports [added](https://gitlab.com/gitlab-org/gitlab/-/issues/437874) in GitLab 16.9.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443492) in GitLab 17.0, an **Imported** badge to indicate that designs, epics, issues, merge requests, notes (system notes and comments), snippets, and user profile activity were imported.
-
-{{< /history >}}
-
-To review the results of an import:
-
-1. Go to the [Group import history page](#group-import-history).
-1. To see the details of a failed import, select the **Show errors** link on any import with a **Failed** or **Partially completed** status.
-1. If the import has a **Partially completed** or **Complete** status, to see which items were and were not imported, select **View details**.
-
-You can also see that an item was imported when you see an **Imported** badge on some items in the GitLab UI.
 
 ## Cancel a running migration
 
