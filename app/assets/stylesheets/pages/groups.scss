@@ -28,16 +28,6 @@
   @apply gl-text-subtle;
 }
 
-.card {
-  .shared_runners_limit_under_quota {
-    @apply gl-text-success;
-  }
-
-  .shared_runners_limit_over_quota {
-    @apply gl-text-danger;
-  }
-}
-
 .group-list-tree {
   .folder-toggle-wrap {
     font-size: 0;

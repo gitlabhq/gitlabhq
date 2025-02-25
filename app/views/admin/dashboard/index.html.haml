@@ -33,7 +33,7 @@
         %h3.gl-self-center.gl-text-base.gl-inline-flex.gl-gap-2.gl-items-center.gl-m-0
           - approximate_projects_count = approximate_count_with_delimiters(@counts, Project)
           = s_('AdminArea|Projects')
-          = render Pajamas::BadgeComponent.new(approximate_projects_count, variant: :muted)
+          = render Pajamas::BadgeComponent.new(approximate_projects_count, variant: :muted, aria: { hidden: "true" })
         - if current_user.can_admin_all_resources?
           = render Pajamas::ButtonComponent.new(href: new_project_path, size: :small) do
             = s_('AdminArea|New project')
@@ -53,7 +53,7 @@
       - c.with_header do
         %h3.gl-self-center.gl-text-base.gl-inline-flex.gl-gap-2.gl-items-center.gl-m-0
           = s_('AdminArea|Total Users')
-          = render Pajamas::BadgeComponent.new(approximate_count_with_delimiters(@counts, User), variant: :muted)
+          = render Pajamas::BadgeComponent.new(approximate_count_with_delimiters(@counts, User), variant: :muted, aria: { hidden: "true" })
         = render Pajamas::ButtonComponent.new(href: new_admin_user_path, size: :small) do
           = s_('AdminArea|New user')
       - c.with_body do
@@ -76,7 +76,7 @@
         %h3.gl-self-center.gl-text-base.gl-inline-flex.gl-gap-2.gl-items-center.gl-m-0
           - approximate_groups_count = approximate_count_with_delimiters(@counts, Group)
           = s_('AdminArea|Groups')
-          = render Pajamas::BadgeComponent.new(approximate_groups_count, variant: :muted)
+          = render Pajamas::BadgeComponent.new(approximate_groups_count, variant: :muted, aria: { hidden: "true" })
         = render Pajamas::ButtonComponent.new(href: new_admin_group_path, size: :small) do
           = s_('AdminArea|New group')
       - c.with_body do

@@ -14951,9 +14951,6 @@ msgstr ""
 msgid "ComplianceFrameworks|Summary"
 msgstr ""
 
-msgid "ComplianceFrameworks|The compliance framework must be edited in top-level group %{linkStart}namespace%{linkEnd}"
-msgstr ""
-
 msgid "ComplianceFrameworks|The default framework can't be deleted"
 msgstr ""
 
@@ -14975,7 +14972,13 @@ msgstr ""
 msgid "ComplianceFrameworks|You can create a maximum of %{maxControlsNumber} controls"
 msgstr ""
 
-msgid "ComplianceFrameworks|You can only create the compliance framework in top-level group %{linkStart}namespace%{linkEnd}"
+msgid "ComplianceFrameworks|You must create compliance frameworks in top-level group %{linkStart}namespace%{linkEnd}"
+msgstr ""
+
+msgid "ComplianceFrameworks|You must edit the compliance framework in top-level group %{linkStart}namespace%{linkEnd}"
+msgstr ""
+
+msgid "ComplianceFrameworks|You must have the Owner role for the top-level group %{strongStart}namespace%{strongEnd}"
 msgstr ""
 
 msgid "ComplianceFrameworks|Your Compliance Project Frameworks CSV export for the group \"%{group_name}\" has been attached to this email."

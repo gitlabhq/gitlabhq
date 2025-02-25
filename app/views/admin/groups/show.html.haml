@@ -51,8 +51,8 @@
               %strong
                 = group_lfs_status(@group)
                 = link_to sprite_icon('question-o', css_class: 'gl-fill-icon-info'), help_page_path('topics/git/lfs/_index.md')
-          = render_if_exists 'namespaces/shared_runner_status', namespace: @group
-          = render_if_exists 'namespaces/additional_minutes_status', namespace: @group
+          = render_if_exists 'namespaces/shared_runner_status', namespace: @group, list_item_classes: list_item_classes
+          = render_if_exists 'namespaces/additional_minutes_status', namespace: @group, list_item_classes: list_item_classes
 
     = render ::Layouts::CrudComponent.new(_('Projects'),
       icon: 'project',

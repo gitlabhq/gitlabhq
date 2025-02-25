@@ -789,49 +789,6 @@ RETURN NULL;
 END
 $$;
 
-CREATE FUNCTION table_sync_function_0992e728d3() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-IF (TG_OP = 'DELETE') THEN
-  DELETE FROM merge_request_diff_commits_b5377a7a34 where merge_request_diff_id = OLD.merge_request_diff_id AND relative_order = OLD.relative_order;
-ELSIF (TG_OP = 'UPDATE') THEN
-  UPDATE merge_request_diff_commits_b5377a7a34
-  SET authored_date = NEW.authored_date,
-    committed_date = NEW.committed_date,
-    sha = NEW.sha,
-    message = NEW.message,
-    trailers = NEW.trailers,
-    commit_author_id = NEW.commit_author_id,
-    committer_id = NEW.committer_id
-  WHERE merge_request_diff_commits_b5377a7a34.merge_request_diff_id = NEW.merge_request_diff_id AND merge_request_diff_commits_b5377a7a34.relative_order = NEW.relative_order;
-ELSIF (TG_OP = 'INSERT') THEN
-  INSERT INTO merge_request_diff_commits_b5377a7a34 (authored_date,
-    committed_date,
-    sha,
-    message,
-    trailers,
-    commit_author_id,
-    committer_id,
-    merge_request_diff_id,
-    relative_order)
-  VALUES (NEW.authored_date,
-    NEW.committed_date,
-    NEW.sha,
-    NEW.message,
-    NEW.trailers,
-    NEW.commit_author_id,
-    NEW.committer_id,
-    NEW.merge_request_diff_id,
-    NEW.relative_order);
-END IF;
-RETURN NULL;
-
-END
-$$;
-
-COMMENT ON FUNCTION table_sync_function_0992e728d3() IS 'Partitioning migration: table sync for merge_request_diff_commits table';
-
 CREATE FUNCTION table_sync_function_29bc99d6db() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -38276,8 +38233,6 @@ CREATE TRIGGER prevent_delete_of_default_organization_before_destroy BEFORE DELE
 CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
-
-CREATE TRIGGER table_sync_trigger_57c8465cd7 AFTER INSERT OR DELETE OR UPDATE ON merge_request_diff_commits FOR EACH ROW EXECUTE FUNCTION table_sync_function_0992e728d3();
 
 CREATE TRIGGER table_sync_trigger_61879721b5 AFTER INSERT OR DELETE OR UPDATE ON ci_runners FOR EACH ROW EXECUTE FUNCTION table_sync_function_686d6c7993();
 

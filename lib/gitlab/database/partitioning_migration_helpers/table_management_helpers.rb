@@ -379,6 +379,10 @@ module Gitlab
           create_sync_trigger(source_table_name, trigger_name, function_name)
         end
 
+        def drop_trigger_to_sync_tables(source_table_name)
+          drop_sync_trigger(source_table_name)
+        end
+
         def prepare_constraint_for_list_partitioning(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:, async: false)
           validate_not_in_transaction!(:prepare_constraint_for_list_partitioning)
 

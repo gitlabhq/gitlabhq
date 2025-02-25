@@ -36,8 +36,8 @@ Secret push protection takes place in the pre-receive hook. When you push change
 push protection checks each [file or commit](#coverage) for secrets. By default, if a secret is detected,
 the push is blocked.
 
-<!-- To edit, import the SVG with draw.io -->
-![A flowchart showing how secret protection can block a push](img/spp_workflow_v17_9.svg)
+<!-- To edit the diagram, use either Draw.io or the VS Code extension "Draw.io Integration" -->
+![A flowchart showing how secret protection can block a push](img/spp_workflow_v17_9.drawio.svg)
 
 When a push is blocked, GitLab prompts a message that includes:
 

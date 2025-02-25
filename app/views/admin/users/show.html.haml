@@ -181,7 +181,7 @@
               .gl-col-span-2
                 %strong= link_to @user.created_by.name, [:admin, @user.created_by]
 
-          = render_if_exists 'namespaces/shared_runner_status', namespace: @user.namespace
+          = render_if_exists 'namespaces/shared_runner_status', namespace: @user.namespace, list_item_classes: list_item_classes
 
     = render_if_exists 'admin/users/credit_card_info', user: @user, link_to_match_page: true
 
