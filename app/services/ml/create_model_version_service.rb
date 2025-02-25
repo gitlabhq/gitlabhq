@@ -25,8 +25,9 @@ module Ml
 
         error(@model_version.errors.full_messages) unless @model_version.persisted?
 
-        package = find_or_create_candidate
-        package ||= find_or_create_package(@model.name, @version)
+        candidate = find_or_create_candidate
+        package = candidate.package || find_or_create_package(@model.name, @version)
+
         error(_("Can't create model version package")) unless package
 
         @model_version.update! package: package
@@ -61,17 +62,13 @@ module Ml
 
         package = candidate.package
         package.update!(name: @model_version.name, version: @model_version.version) if package
+        candidate
       else
-        candidate = ::Ml::CreateCandidateService.new(
+        ::Ml::CreateCandidateService.new(
           @model.default_experiment,
           { model_version: @model_version }
         ).execute
-        error(_("Version must be semantic version")) unless candidate
-
-        package = @package
       end
-
-      package
     end
 
     def find_or_create_package(model_name, model_version)

@@ -139,6 +139,11 @@ export default {
       required: false,
       default: () => [],
     },
+    eeSearchTokens: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -403,6 +408,10 @@ export default {
             { value: STATUS_CLOSED, title: __('Closed') },
           ],
         });
+      }
+
+      if (this.eeSearchTokens.length) {
+        tokens.push(...this.eeSearchTokens);
       }
 
       tokens.sort((a, b) => a.title.localeCompare(b.title));

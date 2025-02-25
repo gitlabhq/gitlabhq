@@ -116,6 +116,33 @@ RSpec.describe API::Discussions, feature_category: :team_planning do
     it_behaves_like 'diff discussions API', 'projects', 'merge_requests', 'iid'
     it_behaves_like 'resolvable discussions API', 'projects', 'merge_requests', 'iid'
 
+    context "when creating a note for multiple lines" do
+      it "creates a new diff multiline note" do
+        line_range = {
+          "start" => {
+            "line_code" => Gitlab::Git.diff_line_code(diff_note.position.file_path, 1, 1),
+            "type" => diff_note.position.type,
+            "new_line" => 1
+          },
+          "end" => {
+            "line_code" => Gitlab::Git.diff_line_code(diff_note.position.file_path, 3, 3),
+            "type" => diff_note.position.type,
+            "new_line" => 3
+          }
+        }
+
+        position = diff_note.position.to_h.merge({ line_range: line_range }).except(:ignore_whitespace_change)
+
+        post api("/projects/#{parent.id}/merge_requests/#{noteable['iid']}/discussions", user),
+          params: { body: 'hi!', position: position }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['notes'].first['body']).to eq('hi!')
+        expect(json_response['notes'].first['type']).to eq('DiffNote')
+        expect(json_response['notes'].first['position']).to eq(position.stringify_keys)
+      end
+    end
+
     context "when position_type is file" do
       it "creates a new diff note" do
         position = diff_note.position.to_h.merge({ position_type: 'file' }).except(:ignore_whitespace_change)

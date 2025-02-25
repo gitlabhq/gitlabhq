@@ -342,6 +342,45 @@ describeSkipVue3(skipReason, () => {
     });
   });
 
+  describe('custom field tokens', () => {
+    it('combines eeSearchTokens with default search tokens', async () => {
+      const customToken = {
+        type: `custom`,
+        title: 'Custom Field',
+        token: () => {},
+      };
+
+      mountComponent({
+        props: {
+          eeSearchTokens: [customToken],
+        },
+      });
+
+      await waitForPromises();
+
+      const searchTokens = findIssuableList().props('searchTokens');
+
+      expect(searchTokens).toContainEqual(
+        expect.objectContaining({
+          type: customToken.type,
+          title: customToken.title,
+        }),
+      );
+
+      // Other tokens are still included
+      expect(searchTokens).toContainEqual(
+        expect.objectContaining({
+          type: TOKEN_TYPE_ASSIGNEE,
+        }),
+      );
+      expect(searchTokens).toContainEqual(
+        expect.objectContaining({
+          type: TOKEN_TYPE_LABEL,
+        }),
+      );
+    });
+  });
+
   describe('events', () => {
     describe('when "click-tab" event is emitted by IssuableList', () => {
       beforeEach(async () => {
