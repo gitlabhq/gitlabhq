@@ -16,6 +16,15 @@ RSpec.shared_examples Integrations::Base::HangoutsChat do
   let(:webhook_url_regex) { /\A#{webhook_url}.*/ }
   let(:query_params) { { messageReplyOption: Integrations::HangoutsChat::REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD } }
 
+  describe '.help' do
+    it 'links to help page correctly' do
+      expect(described_class.help).to include(
+        'user/project/integrations/hangouts_chat.md',
+        'How do I set up a Google Chat webhook?'
+      )
+    end
+  end
+
   describe "#execute" do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :repository, :wiki_repo) }

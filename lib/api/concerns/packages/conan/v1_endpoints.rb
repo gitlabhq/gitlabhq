@@ -110,7 +110,8 @@ module API
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-              route_setting :authorization, job_token_policies: :read_packages
+              route_setting :authorization, job_token_policies: :read_packages,
+                allow_public_access_for_enabled_project_features: :package_registry
 
               get 'packages/:conan_package_reference', urgency: :low do
                 authorize_read_package!(project)
@@ -137,7 +138,8 @@ module API
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-              route_setting :authorization, job_token_policies: :read_packages
+              route_setting :authorization, job_token_policies: :read_packages,
+                allow_public_access_for_enabled_project_features: :package_registry
 
               get urgency: :low do
                 authorize_read_package!(project)
@@ -168,7 +170,8 @@ module API
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-              route_setting :authorization, job_token_policies: :read_packages
+              route_setting :authorization, job_token_policies: :read_packages,
+                allow_public_access_for_enabled_project_features: :package_registry
 
               get 'packages/:conan_package_reference/digest', urgency: :low do
                 present_package_download_urls
@@ -186,7 +189,8 @@ module API
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-              route_setting :authorization, job_token_policies: :read_packages
+              route_setting :authorization, job_token_policies: :read_packages,
+                allow_public_access_for_enabled_project_features: :package_registry
 
               get 'digest', urgency: :low do
                 present_recipe_download_urls
@@ -215,7 +219,8 @@ module API
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-              route_setting :authorization, job_token_policies: :read_packages
+              route_setting :authorization, job_token_policies: :read_packages,
+                allow_public_access_for_enabled_project_features: :package_registry
 
               get 'packages/:conan_package_reference/download_urls', urgency: :low do
                 present_package_download_urls
@@ -233,7 +238,8 @@ module API
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-              route_setting :authorization, job_token_policies: :read_packages
+              route_setting :authorization, job_token_policies: :read_packages,
+                allow_public_access_for_enabled_project_features: :package_registry
 
               get 'download_urls', urgency: :low do
                 present_recipe_download_urls
@@ -263,7 +269,8 @@ module API
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-              route_setting :authorization, job_token_policies: :read_packages
+              route_setting :authorization, job_token_policies: :read_packages,
+                allow_public_access_for_enabled_project_features: :package_registry
 
               post 'packages/:conan_package_reference/upload_urls', urgency: :low do
                 authorize_read_package!(project)
@@ -284,7 +291,8 @@ module API
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-              route_setting :authorization, job_token_policies: :read_packages
+              route_setting :authorization, job_token_policies: :read_packages,
+                allow_public_access_for_enabled_project_features: :package_registry
 
               post 'upload_urls', urgency: :low do
                 authorize_read_package!(project)
@@ -358,7 +366,8 @@ module API
                 end
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-                route_setting :authorization, job_token_policies: :read_packages
+                route_setting :authorization, job_token_policies: :read_packages,
+                  allow_public_access_for_enabled_project_features: :package_registry
 
                 get urgency: :low do
                   download_package_file(:recipe_file)
@@ -430,7 +439,8 @@ module API
                 end
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-                route_setting :authorization, job_token_policies: :read_packages
+                route_setting :authorization, job_token_policies: :read_packages,
+                  allow_public_access_for_enabled_project_features: :package_registry
 
                 get urgency: :low do
                   download_package_file(:package_file)

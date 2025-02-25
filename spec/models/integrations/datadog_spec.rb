@@ -152,11 +152,10 @@ RSpec.describe Integrations::Datadog, feature_category: :integrations do
     end
   end
 
-  describe '#help' do
-    subject { instance.help }
-
-    it { is_expected.to be_a(String) }
-    it { is_expected.not_to be_empty }
+  describe '.help' do
+    it 'links to the help page correctly' do
+      expect(described_class.help).to include('help/integration/datadog.md', 'How do I set up this integration?')
+    end
   end
 
   describe 'upgrade from previous version' do

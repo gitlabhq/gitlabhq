@@ -59,7 +59,8 @@ module API
                         tags %w[conan_packages]
                       end
                       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-                      route_setting :authorization, job_token_policies: :read_packages
+                      route_setting :authorization, job_token_policies: :read_packages,
+                        allow_public_access_for_enabled_project_features: :package_registry
                       get urgency: :low do
                         download_package_file(:recipe_file)
                       end

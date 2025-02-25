@@ -521,7 +521,7 @@ To set the maximum file size:
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9
 and was removed in 17.0. From 17.4, it is available only behind the feature flag `required_pipelines`, disabled by default.
-Use [compliance pipelines](../../user/group/compliance_pipelines.md) instead. This change is a breaking change.
+Use [compliance pipelines](../../user/compliance/compliance_pipelines.md) instead. This change is a breaking change.
 
 {{< /alert >}}
 

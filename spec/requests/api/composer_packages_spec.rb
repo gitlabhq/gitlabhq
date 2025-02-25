@@ -595,7 +595,8 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
         let(:branch) { project.repository.find_branch('master') }
         let(:sha) { branch.target }
 
-        it_behaves_like 'enforcing job token policies', :read_packages do
+        it_behaves_like 'enforcing job token policies', :read_packages,
+          allow_public_access_for_enabled_project_features: :package_registry do
           before_all do
             project.add_developer(user)
           end

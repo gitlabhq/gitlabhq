@@ -102,7 +102,8 @@ module API
       use :path_and_file_name
     end
     route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true, basic_auth_personal_access_token: true
-    route_setting :authorization, job_token_policies: :read_packages
+    route_setting :authorization, job_token_policies: :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry
     get 'packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
       # return a similar failure to authorize_read_package!(project)
 
@@ -158,7 +159,8 @@ module API
         use :path_and_file_name
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true, basic_auth_personal_access_token: true
-      route_setting :authorization, job_token_policies: :read_packages
+      route_setting :authorization, job_token_policies: :read_packages,
+        allow_public_access_for_enabled_project_features: :package_registry
       get ':id/-/packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
         # return a similar failure to group = find_group(params[:id])
         group = find_authorized_group!(action: :read_package_within_public_registries)
@@ -200,7 +202,8 @@ module API
         use :path_and_file_name
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true, basic_auth_personal_access_token: true
-      route_setting :authorization, job_token_policies: :read_packages
+      route_setting :authorization, job_token_policies: :read_packages,
+        allow_public_access_for_enabled_project_features: :package_registry
       get ':id/packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
         project = authorized_user_project(action: :read_package)
 

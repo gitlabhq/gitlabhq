@@ -43,6 +43,11 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
     it_behaves_like 'project not found by project id'
 
+    it_behaves_like 'enforcing job token policies', :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry do
+      let(:headers) { job_basic_auth_header(target_job) }
+    end
+
     context 'when feature flag is disabled' do
       before do
         stub_feature_flags(conan_package_revisions_support: false)

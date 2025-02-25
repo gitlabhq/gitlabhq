@@ -78,6 +78,34 @@ To delete a compliance framework from the compliance frameworks report:
 1. Hover over framework and select **Edit the framework**.
 1. Select the **Delete framework** to delete compliance framework.
 
+## Set and remove a compliance framework as default
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181500) in GitLab 17.10.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To set a compliance framework as [default](../compliance_frameworks.md#default-compliance-frameworks)] from the compliance frameworks report:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. On the page, select the **Frameworks** tab.
+1. Next to the compliance framework you want to set as default, select {{< icon name="pencil" >}} action.
+1. Select the **Set as default** to set as default.
+
+To remove a compliance framework as default from the compliance frameworks report:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. On the page, select the **Frameworks** tab.
+1. Next to the compliance framework that is default, select {{< icon name="pencil" >}} action.
+1. Select the **Remove as default** to remove as default.
+
 ## Export a report of compliance frameworks in a group
 
 {{< history >}}

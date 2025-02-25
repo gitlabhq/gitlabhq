@@ -788,14 +788,9 @@ module Ci
       return unless project
       return if user&.blocked?
 
-      if Feature.enabled?(:ci_async_build_hooks_execution, project)
-        return unless project.has_active_hooks?(:job_hooks) || project.has_active_integrations?(:job_hooks)
+      return unless project.has_active_hooks?(:job_hooks) || project.has_active_integrations?(:job_hooks)
 
-        Ci::ExecuteBuildHooksWorker.perform_async(project.id, build_data)
-      else
-        project.execute_hooks(build_data.dup, :job_hooks) if project.has_active_hooks?(:job_hooks)
-        project.execute_integrations(build_data.dup, :job_hooks) if project.has_active_integrations?(:job_hooks)
-      end
+      Ci::ExecuteBuildHooksWorker.perform_async(project.id, build_data)
     end
 
     def browsable_artifacts?

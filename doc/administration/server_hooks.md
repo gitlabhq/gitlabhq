@@ -43,15 +43,15 @@ If you don't have access to the `gitaly` command, alternatives to server hooks i
 
 ## Set server hooks for a repository
 
-{{< tabs >}}
-
-{{< tab title="GitLab 15.11 and later" >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access. Existing Git hooks don't need migrating for the `hooks set` command.
 
 {{< /history >}}
+
+{{< tabs >}}
+
+{{< tab title="GitLab 15.11 and later" >}}
 
 Prerequisites:
 
@@ -181,15 +181,15 @@ subdirectories.
 
 ## Remove server hooks for a repository
 
-{{< tabs >}}
-
-{{< tab title="GitLab 15.11 and later" >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access.
 
 {{< /history >}}
+
+{{< tabs >}}
+
+{{< tab title="GitLab 15.11 and later" >}}
 
 Prerequisites:
 

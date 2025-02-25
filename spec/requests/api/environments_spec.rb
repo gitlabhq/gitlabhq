@@ -124,7 +124,8 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
       end
     end
 
-    it_behaves_like 'enforcing job token policies', :read_environments do
+    it_behaves_like 'enforcing job token policies', :read_environments,
+      allow_public_access_for_enabled_project_features: [:repository, :builds, :environments] do
       let(:request) do
         get api("/projects/#{source_project.id}/environments"), params: { job_token: target_job.token }
       end
@@ -646,7 +647,8 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
     let_it_be(:bridge_job) { create(:ci_bridge, :running, project: project, user: user) }
     let_it_be(:build_job) { create(:ci_build, :running, project: project, user: user) }
 
-    it_behaves_like 'enforcing job token policies', :read_environments do
+    it_behaves_like 'enforcing job token policies', :read_environments,
+      allow_public_access_for_enabled_project_features: [:repository, :builds, :environments] do
       let(:request) do
         get api("/projects/#{source_project.id}/environments/#{environment.id}"),
           params: { job_token: target_job.token }

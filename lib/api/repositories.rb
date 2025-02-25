@@ -293,7 +293,8 @@ module API
           desc: "The file path to the configuration file as stored in the project's Git repository. Defaults to '.gitlab/changelog_config.yml'"
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_releases
+      route_setting :authorization, job_token_policies: :read_releases,
+        allow_public_access_for_enabled_project_features: :repository
       get ':id/repository/changelog' do
         check_rate_limit!(:project_repositories_changelog, scope: [current_user, user_project]) do
           render_api_error!({ error: 'This changelog has been requested too many times. Try again later.' }, 429)

@@ -506,10 +506,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
     it_behaves_like 'enforcing job token policies', :read_jobs do
       before do
         stub_licensed_features(cross_project_pipelines: true)
-      end
-
-      around do |example|
-        Sidekiq::Testing.inline! { example.run }
+        pipeline.update!(status: :success)
       end
 
       let(:request) do
@@ -700,6 +697,19 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
             expect(json_response).to have_key('message')
             expect(response.headers.to_h)
               .not_to include('Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+          end
+
+          it_behaves_like 'enforcing job token policies', :read_jobs,
+            allow_public_access_for_enabled_project_features: [:repository, :builds] do
+            before do
+              stub_licensed_features(cross_project_pipelines: true)
+              pipeline.update!(status: :success)
+            end
+
+            let(:request) do
+              get api("/projects/#{source_project.id}/jobs/artifacts/#{pipeline.ref}/raw/#{artifact}"),
+                params: { job: job.name, job_token: target_job.token }
+            end
           end
         end
       end

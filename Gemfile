@@ -303,7 +303,7 @@ gem 'gitlab-sidekiq-fetcher',
 gem 'fugit', '~> 1.11.1', feature_category: :continuous_integration
 
 # HTTP requests
-gem 'httparty', '~> 0.21.0', feature_category: :shared
+gem 'httparty', '~> 0.22.0', feature_category: :shared
 
 # Colored output to console
 gem 'rainbow', '~> 3.0', feature_category: :shared

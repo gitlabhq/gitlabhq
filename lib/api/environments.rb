@@ -39,7 +39,8 @@ module API
         mutually_exclusive :name, :search, message: 'cannot be used together'
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_environments
+      route_setting :authorization, job_token_policies: :read_environments,
+        allow_public_access_for_enabled_project_features: [:repository, :builds, :environments]
       get ':id/environments' do
         authorize! :read_environment, user_project
 
@@ -271,7 +272,8 @@ module API
         requires :environment_id, type: Integer, desc: 'The ID of the environment'
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_environments
+      route_setting :authorization, job_token_policies: :read_environments,
+        allow_public_access_for_enabled_project_features: [:repository, :builds, :environments]
       get ':id/environments/:environment_id' do
         authorize! :read_environment, user_project
 

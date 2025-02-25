@@ -855,7 +855,8 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
   end
 
   describe 'GET /projects/:id/repository/changelog' do
-    it_behaves_like 'enforcing job token policies', :read_releases do
+    it_behaves_like 'enforcing job token policies', :read_releases,
+      allow_public_access_for_enabled_project_features: :repository do
       before do
         allow(Repositories::ChangelogService).to receive(:new)
           .and_return(instance_spy(Repositories::ChangelogService))

@@ -1082,7 +1082,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             expect(response).to have_gitlab_http_status(:forbidden)
           end
 
-          it_behaves_like 'enforcing job token policies', :read_jobs do
+          it_behaves_like 'enforcing job token policies', :read_jobs,
+            allow_public_access_for_enabled_project_features: [:repository, :builds] do
             let(:token) { target_job.token }
             let(:request) { download_artifact }
           end

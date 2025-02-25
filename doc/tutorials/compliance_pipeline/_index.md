@@ -18,13 +18,13 @@ title: 'Tutorial: Create a compliance pipeline (deprecated)'
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159841) in GitLab 17.3
 and is planned for removal in 18.0. Use [pipeline execution policy type](../../user/application_security/policies/pipeline_execution_policies.md) instead.
-This change is a breaking change. For more information, see the [migration guide](../../user/group/compliance_pipelines.md#pipeline-execution-policies-migration).
+This change is a breaking change. For more information, see the [migration guide](../../user/compliance/compliance_pipelines.md#pipeline-execution-policies-migration).
 
 {{< /alert >}}
 
-You can use [compliance pipelines](../../user/group/compliance_pipelines.md) to ensure specific
+You can use [compliance pipelines](../../user/compliance/compliance_pipelines.md) to ensure specific
 compliance-related jobs are run on pipelines for all projects in a group. Compliance pipelines are applied
-to projects through [compliance frameworks](../../user/group/compliance_frameworks.md).
+to projects through [compliance frameworks](../../user/compliance/compliance_frameworks.md).
 
 In this tutorial, you:
 
@@ -57,7 +57,7 @@ To create the new group:
 ## Create a new compliance pipeline project
 
 Now you're ready to create a compliance pipeline project. This project contains the
-[compliance pipeline configuration](../../user/group/compliance_pipelines.md#example-configuration) to apply to all
+[compliance pipeline configuration](../../user/compliance/compliance_pipelines.md#example-configuration) to apply to all
 projects with the compliance framework applied.
 
 To create the compliance pipeline project:
@@ -191,6 +191,6 @@ Notice the pipeline runs two jobs in a **test** stage:
 
 Congratulations, you've created and configured a compliance pipeline!
 
-See more [example compliance pipeline configurations](../../user/group/compliance_pipelines.md#example-configuration).
+See more [example compliance pipeline configurations](../../user/compliance/compliance_pipelines.md#example-configuration).
 
 <!--- end_remove -->

@@ -69,7 +69,8 @@ module API
       end
 
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_deployments
+      route_setting :authorization, job_token_policies: :read_deployments,
+        allow_public_access_for_enabled_project_features: [:repository, :builds, :environments]
       get ':id/deployments' do
         authorize! :read_deployment, user_project
 
@@ -95,7 +96,8 @@ module API
         requires :deployment_id, type: Integer, desc: 'The ID of the deployment'
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_deployments
+      route_setting :authorization, job_token_policies: :read_deployments,
+        allow_public_access_for_enabled_project_features: [:repository, :builds, :environments]
       get ':id/deployments/:deployment_id' do
         authorize! :read_deployment, user_project
 
@@ -251,7 +253,8 @@ module API
         use :merge_requests_base_params
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_deployments
+      route_setting :authorization, job_token_policies: :read_deployments,
+        allow_public_access_for_enabled_project_features: [:repository, :builds, :environments]
       get ':id/deployments/:deployment_id/merge_requests' do
         authorize! :read_deployment, user_project
 

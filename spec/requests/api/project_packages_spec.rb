@@ -22,7 +22,8 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
 
     subject(:request) { get api(url), params: params }
 
-    it_behaves_like 'enforcing job token policies', :read_packages do
+    it_behaves_like 'enforcing job token policies', :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry do
       let(:params) { { job_token: target_job.token } }
     end
 
@@ -231,7 +232,8 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
 
     subject { get api(package_url, user) }
 
-    it_behaves_like 'enforcing job token policies', :read_packages do
+    it_behaves_like 'enforcing job token policies', :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry do
       let(:request) { get api(package_url), params: { job_token: target_job.token } }
     end
 
@@ -421,7 +423,8 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
       end
     end
 
-    it_behaves_like 'enforcing job token policies', :read_packages do
+    it_behaves_like 'enforcing job token policies', :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry do
       let(:request) { get api(package_pipelines_url), params: { job_token: target_job.token } }
     end
 

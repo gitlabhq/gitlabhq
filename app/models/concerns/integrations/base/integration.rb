@@ -424,7 +424,7 @@ module Integrations
           @field_storage || :properties
         end
 
-        def build_help_page_url(url_path, help_text, link_text = _("Learn More"), options = {})
+        def build_help_page_url(url_path, help_text, options = {}, link_text: _("Learn More"))
           docs_link = ActionController::Base.helpers.link_to(
             '',
             Rails.application.routes.url_helpers.help_page_url(url_path, **options), # rubocop:disable Gitlab/DocumentationLinks/Link: -- existing code moved as is

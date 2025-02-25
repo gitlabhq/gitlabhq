@@ -1038,6 +1038,7 @@ module API
       return true unless current_user&.from_ci_job_token?
       return true unless Feature.enabled?(:add_policies_to_ci_job_token, project)
       return true if skip_job_token_policies?
+      return true if publicly_accessible_feature?(project)
 
       current_user.ci_job_token_scope.policies_allowed?(project, job_token_policies)
     end
@@ -1068,6 +1069,19 @@ module API
       return false unless respond_to?(:route_setting)
 
       route_setting(:authorization).try(:fetch, :skip_job_token_policies, false)
+    end
+
+    def publicly_accessible_feature?(project)
+      return false unless respond_to?(:route_setting)
+      return false unless project.public? || project.internal?
+      return false unless project&.project_feature
+
+      project_features = Array(route_setting(:authorization).try(:fetch, :allow_public_access_for_enabled_project_features, nil))
+      return false if project_features.empty?
+
+      project_features.all? do |project_feature|
+        project.project_feature.access_level(project_feature) >= ProjectFeature::ENABLED
+      end
     end
   end
 end

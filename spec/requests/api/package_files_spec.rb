@@ -23,7 +23,8 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
       project.add_developer(user)
     end
 
-    it_behaves_like 'enforcing job token policies', :read_packages do
+    it_behaves_like 'enforcing job token policies', :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry do
       let(:request) { get api(url), params: { job_token: target_job.token } }
     end
 

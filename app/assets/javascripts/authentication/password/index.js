@@ -20,9 +20,11 @@ export const initPasswordInput = () => {
       required,
       autocomplete,
       name,
+      disabled,
     } = el.dataset;
 
     const requiredAttr = required ? parseBoolean(required) : true;
+    const disabledAttr = disabled ? parseBoolean(disabled) : false;
 
     // eslint-disable-next-line no-new
     new Vue({
@@ -39,6 +41,7 @@ export const initPasswordInput = () => {
             autocomplete,
             name,
             required: requiredAttr,
+            disabled: disabledAttr,
           },
         });
       },

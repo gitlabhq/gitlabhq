@@ -204,7 +204,8 @@ module API
           requires :package_name, type: String, file_path: true, desc: 'The Composer package name', documentation: { example: 'my-composer-package' }
         end
         route_setting :authentication, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true, deploy_token_allowed: true
-        route_setting :authorization, job_token_policies: :read_packages
+        route_setting :authorization, job_token_policies: :read_packages,
+          allow_public_access_for_enabled_project_features: :package_registry
         get 'archives/*package_name', urgency: :default do
           project = authorized_user_project(action: :read_package)
           authorize_job_token_policies!(project)

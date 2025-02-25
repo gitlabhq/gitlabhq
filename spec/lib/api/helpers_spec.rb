@@ -334,6 +334,16 @@ RSpec.describe API::Helpers, feature_category: :shared do
 
             it { is_expected.to eq project }
           end
+
+          context 'when the project feature is publicly accessible' do
+            let_it_be(:project) { create(:project, :public, :builds_enabled) }
+
+            before do
+              allow(helper).to receive(:route_setting).with(:authorization).and_return(allow_public_access_for_enabled_project_features: :builds)
+            end
+
+            it { is_expected.to eq project }
+          end
         end
 
         context 'when no policy is given' do

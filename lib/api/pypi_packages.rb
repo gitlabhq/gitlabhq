@@ -131,7 +131,8 @@ module API
         end
 
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
-        route_setting :authorization, job_token_policies: :read_packages
+        route_setting :authorization, job_token_policies: :read_packages,
+          allow_public_access_for_enabled_project_features: :package_registry
         get 'files/:sha256/*file_identifier' do
           group = find_authorized_group!
           authorize_read_package!(group)
@@ -212,7 +213,8 @@ module API
         end
 
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
-        route_setting :authorization, job_token_policies: :read_packages
+        route_setting :authorization, job_token_policies: :read_packages,
+          allow_public_access_for_enabled_project_features: :package_registry
         get 'files/:sha256/*file_identifier' do
           project = project!
           authorize_job_token_policies!(project)
@@ -240,7 +242,8 @@ module API
         # An API entry point but returns an HTML file instead of JSON.
         # PyPi simple API returns a list of packages as a simple HTML file.
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
-        route_setting :authorization, job_token_policies: :read_packages
+        route_setting :authorization, job_token_policies: :read_packages,
+          allow_public_access_for_enabled_project_features: :package_registry
         get 'simple', format: :txt do
           project = project!
           authorize_job_token_policies!(project)
@@ -265,7 +268,8 @@ module API
         # An API entry point but returns an HTML file instead of JSON.
         # PyPi simple API returns the package descriptor as a simple HTML file.
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
-        route_setting :authorization, job_token_policies: :read_packages
+        route_setting :authorization, job_token_policies: :read_packages,
+          allow_public_access_for_enabled_project_features: :package_registry
         get 'simple/*package_name', format: :txt do
           project = project!
           authorize_job_token_policies!(project)

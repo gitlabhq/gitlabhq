@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'activesupport', '~> 7'
   spec.add_runtime_dependency 'concurrent-ruby', '~> 1.2'
-  spec.add_runtime_dependency 'httparty', '~> 0.21.0'
+  spec.add_runtime_dependency 'httparty', '~> 0.21'
   spec.add_runtime_dependency 'ipaddress', '~> 0.8.3'
   spec.add_runtime_dependency "railties", "~> 7"
   # See lib/net_http/connect_patch.rb

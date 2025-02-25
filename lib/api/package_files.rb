@@ -31,7 +31,8 @@ module API
         use :pagination
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_packages
+      route_setting :authorization, job_token_policies: :read_packages,
+        allow_public_access_for_enabled_project_features: :package_registry
       get ':id/packages/:package_id/package_files' do
         package = ::Packages::PackageFinder
           .new(user_project, params[:package_id]).execute

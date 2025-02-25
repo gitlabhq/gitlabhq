@@ -24,6 +24,73 @@ RSpec.describe Ci::ExecuteBuildHooksWorker, feature_category: :pipeline_composit
   describe '#perform' do
     subject(:perform) { described_class.new.perform(project.id, build_data) }
 
+    context 'when build_data has string keys' do
+      let(:string_build_data) do
+        {
+          'object_kind' => 'build',
+          'ref' => 'main',
+          'build_id' => build.id,
+          'build_name' => build.name,
+          'build_stage' => build.stage_name,
+          'build_status' => build.status,
+          'project_id' => project.id,
+          'project_name' => project.full_name
+        }
+      end
+
+      it 'converts data to indifferent access' do
+        allow_next_instance_of(Project) do |project|
+          expect(project).to receive(:execute_hooks).with(
+            kind_of(ActiveSupport::HashWithIndifferentAccess),
+            :job_hooks
+          )
+        end
+
+        described_class.new.perform(project.id, string_build_data)
+      end
+
+      it 'allows both string and symbol access to build data' do
+        allow_next_instance_of(Project) do |project|
+          allow(project).to receive(:has_active_hooks?).and_return(true)
+          expect(project).to receive(:execute_hooks) do |data, _hook_type|
+            expect(data[:object_kind]).to eq('build')
+            expect(data['object_kind']).to eq('build')
+            expect(data[:build_name]).to eq(build.name)
+            expect(data['build_name']).to eq(build.name)
+          end
+        end
+
+        described_class.new.perform(project.id, string_build_data)
+      end
+    end
+
+    context 'when build_data has symbol keys' do
+      it 'converts data to indifferent access' do
+        allow_next_instance_of(Project) do |project|
+          expect(project).to receive(:execute_hooks).with(
+            kind_of(ActiveSupport::HashWithIndifferentAccess),
+            :job_hooks
+          )
+        end
+
+        perform
+      end
+
+      it 'allows both string and symbol access to build data' do
+        allow_next_instance_of(Project) do |project|
+          allow(project).to receive(:has_active_hooks?).and_return(true)
+          expect(project).to receive(:execute_hooks) do |data, _hook_type|
+            expect(data[:object_kind]).to eq('build')
+            expect(data['object_kind']).to eq('build')
+            expect(data[:build_name]).to eq(build.name)
+            expect(data['build_name']).to eq(build.name)
+          end
+        end
+
+        perform
+      end
+    end
+
     context 'when project exists' do
       context 'with project services' do
         let!(:integration) { create(:integration, active: true, job_events: true, project: project) }

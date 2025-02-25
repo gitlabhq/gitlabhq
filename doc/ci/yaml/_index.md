@@ -554,7 +554,7 @@ start. Jobs in the current stage are not stopped and continue to run.
 
 - If a job does not specify a [`stage`](#stage), the job is assigned the `test` stage.
 - If a stage is defined but no jobs use it, the stage is not visible in the pipeline,
-  which can help [compliance pipeline configurations](../../user/group/compliance_pipelines.md):
+  which can help [compliance pipeline configurations](../../user/compliance/compliance_pipelines.md):
   - Stages can be defined in the compliance configuration but remain hidden if not used.
   - The defined stages become visible when developers use them in job definitions.
 
@@ -4651,7 +4651,7 @@ In this example:
   section. The project containing the `include` section can be different than the project
   running the pipeline when using:
   - [Nested includes](includes.md#use-nested-includes).
-  - [Compliance pipelines](../../user/group/compliance_pipelines.md).
+  - [Compliance pipelines](../../user/compliance/compliance_pipelines.md).
 - `rules:exists` cannot search for the presence of [artifacts](../jobs/job_artifacts.md),
   because `rules` evaluation happens before jobs run and artifacts are fetched.
 

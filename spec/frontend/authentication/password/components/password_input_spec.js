@@ -40,6 +40,7 @@ describe('PasswordInput', () => {
     expect(passwordInput.attributes('data-testid')).toBe(propsData.testid);
     expect(passwordInput.attributes('title')).toBe(propsData.title);
     expect(passwordInput.attributes('required')).toBe('true');
+    expect(passwordInput.attributes('disabled')).toBeUndefined();
   });
 
   describe('when password input is not required', () => {
@@ -71,6 +72,15 @@ describe('PasswordInput', () => {
         expect(findToggleButton().attributes('icon')).toBe('eye');
         expect(findToggleButton().attributes('aria-label')).toBe(SHOW_PASSWORD);
       });
+    });
+  });
+
+  describe('when password input is disabled', () => {
+    it('disables the input field and the toggle button', () => {
+      wrapper = createComponent({ disabled: true });
+
+      expect(findPasswordInput().attributes('disabled')).toBeDefined();
+      expect(findToggleButton().attributes('disabled')).toBeDefined();
     });
   });
 });
