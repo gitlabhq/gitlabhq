@@ -1,7 +1,8 @@
 import Vue, { nextTick } from 'vue';
 import { GlTokenSelector, GlAlert } from '@gitlab/ui';
+import { escape } from 'lodash';
 import VueApollo from 'vue-apollo';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemTokenInput from '~/work_items/components/shared/work_item_token_input.vue';
@@ -158,6 +159,15 @@ describe('WorkItemTokenInput', () => {
     confidential: false,
     __typename: 'WorkItem',
   };
+
+  const mockWorkItemWithHTMLInput = {
+    id: 'gid://gitlab/WorkItem/459',
+    iid: 'Task 2 <svg><use href=#/></svg>',
+    title: 'Task 2 <svg><use href=#/></svg>',
+    confidential: false,
+    __typename: 'WorkItem',
+  };
+
   const groupSearchedWorkItemResolver = jest.fn().mockResolvedValue(
     searchWorkItemsResponse({
       workItems: [mockWorkItem],
@@ -176,6 +186,7 @@ describe('WorkItemTokenInput', () => {
   const workItemAncestorsQueryHandler = jest.fn().mockResolvedValue(workItemAncestorsQueryResponse);
 
   const createComponent = async ({
+    mountFn = shallowMountExtended,
     workItemsToAdd = [],
     parentConfidential = false,
     parentWorkItemId = WORK_ITEM_ID,
@@ -185,7 +196,7 @@ describe('WorkItemTokenInput', () => {
     workItemsResolver = searchWorkItemTextResolver,
     isGroup = false,
   } = {}) => {
-    wrapper = shallowMountExtended(WorkItemTokenInput, {
+    wrapper = mountFn(WorkItemTokenInput, {
       apolloProvider: createMockApollo([
         [projectWorkItemsQuery, workItemsResolver],
         [groupWorkItemsQuery, groupSearchedWorkItemResolver],
@@ -256,6 +267,24 @@ describe('WorkItemTokenInput', () => {
     });
 
     expect(findTokenSelector().props('containerClass')).toBe('!gl-shadow-inner-1-red-500');
+  });
+
+  it('renders the escaped dropdown items', async () => {
+    createComponent({
+      mountFn: mountExtended,
+      workItemsResolver: jest.fn().mockResolvedValue(
+        searchWorkItemsResponse({
+          workItems: [mockWorkItemWithHTMLInput],
+        }),
+      ),
+    });
+    findTokenSelector().vm.$emit('focus');
+    await waitForPromises();
+
+    const renderedContent = findTokenSelector().html();
+
+    expect(renderedContent).toContain(escape(mockWorkItemWithHTMLInput.title));
+    expect(renderedContent).toContain(escape(mockWorkItemWithHTMLInput.id));
   });
 
   describe('when input data is provided', () => {
