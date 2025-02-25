@@ -4,6 +4,21 @@ group: Duo Workflow
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Risks in GitLab Duo Workflow
 ---
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com
+- Status: Experiment
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
+This feature is considered [experimental](../../policy/development_stages_support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
+
+{{< /alert >}}
+
 Workflow is an experimental product and users should consider their
 circumstances before using this tool. Workflow is an AI Agent that is given
 some ability to perform actions on the users behalf. AI tools based on LLMs are

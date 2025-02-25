@@ -9,6 +9,8 @@
 - <%= safe_format(s_('BulkImport|%{count} placeholder users matched to users.'), count: @success_count) %>
 <% if @has_errors %>
 - <%= safe_format(s_('BulkImport|%{count} placeholder users not matched to users.'), count: @failed_count) %>
+
+<%= s_('BulkImport|A CSV file containing a list of placeholder reassignment errors has been attached to this email.') %>
 <% end %>
 
 <% extra_params = @has_errors ? { status: 'failed' } : {} %>

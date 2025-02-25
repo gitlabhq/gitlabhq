@@ -52,7 +52,7 @@ module Emails
       )
     end
 
-    def bulk_import_csv_user_mapping(user_id, group_id, success_count, failed_count = 0)
+    def bulk_import_csv_user_mapping(user_id, group_id, success_count:, failed_count: 0, failures_csv_data: nil)
       user = User.find(user_id)
       @group = Group.find(group_id)
       @success_count = success_count
@@ -63,6 +63,11 @@ module Emails
                else
                  s_('BulkImport|Placeholder reassignments completed successfully')
                end
+
+      if @has_errors
+        filename = "reassignment_failures_#{Time.zone.today.iso8601}.csv"
+        attachments[filename] = { content: failures_csv_data, mime_type: 'text/csv' }
+      end
 
       email_with_layout(
         to: user.notification_email_or_default,

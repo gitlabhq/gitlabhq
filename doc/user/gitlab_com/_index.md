@@ -184,7 +184,7 @@ Some settings for [GitLab Pages](../project/pages/_index.md) differ from the
 | Support for custom domains                        | {{< icon name="check-circle" >}} Yes |
 | Support for TLS certificates                      | {{< icon name="check-circle" >}} Yes |
 | Maximum site size                                 | 1 GB                   |
-| Number of custom domains per GitLab Pages website | 150                    |
+| Number of custom domains for each GitLab Pages website | 150                    |
 
 The maximum size of your Pages site depends on the maximum artifact size,
 which is part of [GitLab CI/CD](#gitlab-cicd).
@@ -225,13 +225,13 @@ the related documentation.
 | Maximum CI/CD subscriptions to a project                                         | `2`                                                                                                        | See [Number of CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project). |
 | Maximum number of pipeline triggers in a project                                 | `25000`                                                                                                    | See [Limit the number of pipeline triggers](../../administration/instance_limits.md#limit-the-number-of-pipeline-triggers). |
 | Maximum pipeline schedules in projects                                           | `10` for Free tier, `50` for all paid tiers                                                                | See [Number of pipeline schedules](../../administration/instance_limits.md#number-of-pipeline-schedules). |
-| Maximum pipelines per schedule                                                   | `24` for Free tier, `288` for all paid tiers                                                               | See [Limit the number of pipelines created by a pipeline schedule per day](../../administration/instance_limits.md#limit-the-number-of-pipelines-created-by-a-pipeline-schedule-per-day). |
+| Maximum pipelines for each schedule                                                   | `24` for Free tier, `288` for all paid tiers                                                               | See [Limit the number of pipelines created by a pipeline schedule each day](../../administration/instance_limits.md#limit-the-number-of-pipelines-created-by-a-pipeline-schedule-each-day). |
 | Maximum number of schedule rules defined for each security policy project        | Unlimited for all paid tiers                                                                               | See [Number of schedule rules defined for each security policy project](../../administration/instance_limits.md#limit-the-number-of-schedule-rules-defined-for-security-policy-project). |
 | Scheduled job archiving                                                          | 3 months                                                                                                   | Never. Jobs created before June 22, 2020 were archived after September 22, 2020. |
-| Maximum test cases per [unit test report](../../ci/testing/unit_test_reports.md) | `500000`                                                                                                   | Unlimited.             |
-| Maximum registered runners                                                       | Free tier: `50` per group and `50` per project<br/>All paid tiers: `1000` per group and `1000` per project | See [Number of registered runners per scope](../../administration/instance_limits.md#number-of-registered-runners-per-scope). |
+| Maximum test cases for each [unit test report](../../ci/testing/unit_test_reports.md) | `500000`                                                                                                   | Unlimited.             |
+| Maximum registered runners                                                       | Free tier: `50` for each group and `50`for each project<br/>All paid tiers: `1000` for each group and `1000` for each project | See [Number of registered runners for each scope](../../administration/instance_limits.md#number-of-registered-runners-for-each-scope). |
 | Limit of dotenv variables                                                        | Free tier: `50`<br>Premium tier: `100`<br>Ultimate tier: `150`                                             | See [Limit dotenv variables](../../administration/instance_limits.md#limit-dotenv-variables). |
-| Maximum downstream pipeline trigger rate (for a given project, user, and commit) | `350` per minute                                                                                           | See [Maximum downstream pipeline trigger rate](../../administration/settings/continuous_integration.md#maximum-downstream-pipeline-trigger-rate). |
+| Maximum downstream pipeline trigger rate (for a given project, user, and commit) | `350` each minute                                                                                           | See [Maximum downstream pipeline trigger rate](../../administration/settings/continuous_integration.md#maximum-downstream-pipeline-trigger-rate). |
 
 ## Package registry limits
 
@@ -274,7 +274,7 @@ If you are near or over the repository size limit, you can either:
 
 {{< alert type="note" >}}
 
-`git push` and GitLab project imports are limited to 5 GiB per request through
+`git push` and GitLab project imports are limited to 5 GiB for each request through
 Cloudflare. Imports other than a file upload are not affected by
 this limit. Repository limits apply to both public and private projects.
 
@@ -291,7 +291,7 @@ which GitLab you use:
 
 ## Import placeholder user limits
 
-The number of [placeholder users](../project/import/_index.md#placeholder-users) created during an import on GitLab.com is limited per top-level namespace. The limits
+The number of [placeholder users](../project/import/_index.md#placeholder-users) created during an import on GitLab.com is limited for each top-level namespace. The limits
 differ depending on your plan and seat count.
 For more information, see the [table of placeholder user limits for GitLab.com](../project/import/_index.md#placeholder-user-limits).
 
@@ -330,7 +330,7 @@ The following limits apply for [webhooks](../project/integrations/webhooks.md).
 
 ### Rate limits
 
-The number of times a webhook can be called per minute, per top-level namespace.
+For each top-level namespace, the number of times each minute that a webhook can be called.
 The limit varies depending on your plan and the number of seats in your subscription.
 
 | Plan              | Default for GitLab.com  |
@@ -343,7 +343,7 @@ The limit varies depending on your plan and the number of seats in your subscrip
 
 | Setting                                                        | Default for GitLab.com |
 |:---------------------------------------------------------------|:-----------------------|
-| Number of webhooks                                             | 100 per project, 50 per group (subgroup webhooks are not counted towards parent group limits ) |
+| Number of webhooks                                             | 100 for each project, 50 for each group (subgroup webhooks are not counted towards parent group limits ) |
 | Maximum payload size                                           | 25 MB                  |
 | Timeout                                                        | 10 seconds             |
 | [Multiple Pages deployments](../project/pages/_index.md#limits) | 100 extra deployments (Premium tier), 500 extra deployments (Ultimate tier) |
@@ -397,41 +397,41 @@ The following table describes the rate limits for GitLab.com:
 
 | Rate limit                                                       | Setting                       |
 |:-----------------------------------------------------------------|:------------------------------|
-| Protected paths for an IP address                                | 10 requests per minute        |
-| Raw endpoint traffic for a project, commit, or file path         | 300 requests per minute       |
-| Unauthenticated traffic from an IP address                       | 500 requests per minute       |
-| Authenticated API traffic for a user                             | 2,000 requests per minute     |
-| Authenticated non-API HTTP traffic for a user                    | 1,000 requests per minute     |
-| All traffic from an IP address                                   | 2,000 requests per minute     |
-| Issue creation                                                   | 200 requests per minute       |
-| Note creation on issues and merge requests                       | 60 requests per minute        |
-| Advanced, project, or group search API for an IP address         | 10 requests per minute        |
-| GitLab Pages requests for an IP address                          | 1,000 requests per 50 seconds |
-| GitLab Pages requests for a GitLab Pages domain                  | 5,000 requests per 10 seconds |
-| GitLab Pages TLS connections for an IP address                   | 1,000 requests per 50 seconds |
-| GitLab Pages TLS connections for a GitLab Pages domain           | 400 requests per 10 seconds   |
-| Pipeline creation requests for a project, user, or commit        | 25 requests per minute        |
-| Alert integration endpoint requests for a project                | 3,600 requests per hour       |
-| GitLab Duo `aiAction`  requests                                  | 160 requests per 8 hours      |
+| Protected paths for an IP address                                | 10 requests each minute        |
+| Raw endpoint traffic for a project, commit, or file path         | 300 requests each minute       |
+| Unauthenticated traffic from an IP address                       | 500 requests each minute       |
+| Authenticated API traffic for a user                             | 2,000 requests each minute     |
+| Authenticated non-API HTTP traffic for a user                    | 1,000 requests each minute     |
+| All traffic from an IP address                                   | 2,000 requests each minute     |
+| Issue creation                                                   | 200 requests each minute       |
+| Note creation on issues and merge requests                       | 60 requests each minute        |
+| Advanced, project, or group search API for an IP address         | 10 requests each minute        |
+| GitLab Pages requests for an IP address                          | 1,000 requests every 50 seconds |
+| GitLab Pages requests for a GitLab Pages domain                  | 5,000 requests every 10 seconds |
+| GitLab Pages TLS connections for an IP address                   | 1,000 requests every 50 seconds |
+| GitLab Pages TLS connections for a GitLab Pages domain           | 400 requests every 10 seconds   |
+| Pipeline creation requests for a project, user, or commit        | 25 requests each minute        |
+| Alert integration endpoint requests for a project                | 3,600 requests every hour       |
+| GitLab Duo `aiAction`  requests                                  | 160 requests every 8 hours      |
 | [Pull mirroring](../project/repository/mirror/pull.md) intervals | 5 minutes                     |
-| API requests from a user to `/api/v4/users/:id`                  | 300 requests per 10 minutes   |
-| GitLab package cloud requests for an IP address ([introduced](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/24083) in GitLab 16.11) | 3,000 requests per minute |
-| GitLab repository files | 500 requests per minute |
-| User followers requests (`/api/v4/users/:id/followers`)            | 100 requests per minute       |
-| User following requests (`/api/v4/users/:id/following`)            | 100 requests per minute       |
-| User status requests (`/api/v4/users/:user_id/status`)             | 240 requests per minute       |
-| User SSH keys requests (`/api/v4/users/:user_id/keys`)             | 120 requests per minute       |
-| Single SSH key requests (`/api/v4/users/:id/keys/:key_id`)         | 120 requests per minute       |
-| User GPG keys requests (`/api/v4/users/:id/gpg_keys`)              | 120 requests per minute       |
-| Single GPG key requests (`/api/v4/users/:id/gpg_keys/:key_id`)     | 120 requests per minute       |
-| User projects requests (`/api/v4/users/:user_id/projects`)         | 300 requests per minute       |
-| User contributed projects requests (`/api/v4/users/:user_id/contributed_projects`) | 100 requests per minute |
-| User starred projects requests (`/api/v4/users/:user_id/starred_projects`) | 100 requests per minute      |
-| Projects list requests (`/api/v4/projects`)                        | 2,000 requests per 10 minutes |
-| Group projects requests (`/api/v4/groups/:id/projects`)            | 600 requests per minute       |
-| Single project requests (`/api/v4/projects/:id`)                   | 400 requests per minute       |
-| Groups list requests (`/api/v4/groups`)                            | 200 requests per minute       |
-| Single group requests (`/api/v4/groups/:id`)                       | 400 requests per minute       |
+| API requests from a user to `/api/v4/users/:id`                  | 300 requests every 10 minutes   |
+| GitLab package cloud requests for an IP address ([introduced](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/24083) in GitLab 16.11) | 3,000 requests each minute |
+| GitLab repository files | 500 requests each minute |
+| User followers requests (`/api/v4/users/:id/followers`)            | 100 requests each minute       |
+| User following requests (`/api/v4/users/:id/following`)            | 100 requests each minute       |
+| User status requests (`/api/v4/users/:user_id/status`)             | 240 requests each minute       |
+| User SSH keys requests (`/api/v4/users/:user_id/keys`)             | 120 requests each minute       |
+| Single SSH key requests (`/api/v4/users/:id/keys/:key_id`)         | 120 requests each minute       |
+| User GPG keys requests (`/api/v4/users/:id/gpg_keys`)              | 120 requests each minute       |
+| Single GPG key requests (`/api/v4/users/:id/gpg_keys/:key_id`)     | 120 requests each minute       |
+| User projects requests (`/api/v4/users/:user_id/projects`)         | 300 requests each minute       |
+| User contributed projects requests (`/api/v4/users/:user_id/contributed_projects`) | 100 requests each minute |
+| User starred projects requests (`/api/v4/users/:user_id/starred_projects`) | 100 requests each minute      |
+| Projects list requests (`/api/v4/projects`)                        | 2,000 requests every 10 minutes |
+| Group projects requests (`/api/v4/groups/:id/projects`)            | 600 requests each minute       |
+| Single project requests (`/api/v4/projects/:id`)                   | 400 requests each minute       |
+| Groups list requests (`/api/v4/groups`)                            | 200 requests each minute       |
+| Single group requests (`/api/v4/groups/:id`)                       | 400 requests each minute       |
 
 More details are available on the rate limits for
 [protected paths](#protected-paths-throttle) and
@@ -439,7 +439,7 @@ More details are available on the rate limits for
 
 GitLab can rate-limit requests at several layers. The rate limits listed here
 are configured in the application. These limits are the most
-restrictive per IP address. For more information about the rate limits
+restrictive for each IP address. For more information about the rate limits
 for GitLab.com, see
 [the documentation in the handbook](https://handbook.gitlab.com/handbook/engineering/infrastructure/rate-limiting).
 
@@ -452,8 +452,7 @@ For information on rate limiting responses, see:
 
 ### Protected paths throttle
 
-GitLab.com responds with HTTP status code `429` to POST requests at protected
-paths that exceed 10 requests per **minute** per IP address.
+If the same IP address sends more than 10 POST requests in a minute to protected paths, GitLab.com returns a `429` HTTP status code.
 
 See the source below for which paths are protected. This includes user creation,
 user confirmation, user sign in, and password reset.

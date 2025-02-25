@@ -68,14 +68,13 @@ To configure a self-hosted model:
    - **Endpoint**: Enter the URL where the model is hosted.
      - For more information about configuring the endpoint for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#endpoint-configuration).
    - **API key**: Optional. Add an API key if you need one to access the model.
-   - **Model identifier**: This is a required field if your deployment method is vLLM, Bedrock or Azure. The value of this field is based on your deployment method, and should match the following structure:
+   - **Model identifier**: This is a required field. The value of this field is based on your deployment method, and should match the following structure:
 
      | Deployment method | Format | Example |
      |-------------|---------|---------|
      | vLLM | `custom_openai/<name of the model served through vLLM>` | `custom_openai/Mixtral-8x7B-Instruct-v0.1` |
      | Bedrock | `bedrock/<model ID of the model>` | `bedrock/mistral.mixtral-8x7b-instruct-v0:1` |
      | Azure OpenAI | `azure/<model ID of the model>` | `azure/gpt-35-turbo` |
-     | Others | The field is optional |  |
 
      For more information about configuring the model identifier for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#finding-the-model-name).
 

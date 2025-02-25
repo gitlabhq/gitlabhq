@@ -1001,31 +1001,15 @@ describe('init markdown', () => {
         describe('contains a URL', () => {
           const url = 'http://example.com';
 
-          describe('markdown_paste_url flag enabled', () => {
-            beforeEach(() => {
-              gon.features = { ...gon.features, markdownPasteUrl: true };
-            });
-            it.each`
-              textSpec              | pastedValue | beforeSystemPaste             | preventDefault | afterSystemPaste
-              ${'_link_'}           | ${`${url}`} | ${`[link](${url})`}           | ${true}        | ${`[link](${url})`}
-              ${'[_text_](url)'}    | ${`${url}`} | ${'[text](url)'}              | ${false}       | ${`[${url}](url)`}
-              ${'[text](_url_)'}    | ${`${url}`} | ${'[text](url)'}              | ${false}       | ${`[text](${url})`}
-              ${'[s_ubtext_](url)'} | ${`${url}`} | ${`[s[ubtext](${url})](url)`} | ${true}        | ${`[s[ubtext](${url})](url)`}
-            `('uses selected text as markdown link text', pasteMatchesExpectation);
-          });
-          describe('markdown_paste_url flag disabled', () => {
-            beforeEach(() => {
-              gon.features = { ...gon.features, markdownPasteUrl: false };
-            });
-            it.each`
-              textSpec              | pastedValue | beforeSystemPaste   | preventDefault | afterSystemPaste
-              ${'_link_'}           | ${`${url}`} | ${'link'}           | ${false}       | ${`${url}`}
-              ${'[_text_](url)'}    | ${`${url}`} | ${'[text](url)'}    | ${false}       | ${`[${url}](url)`}
-              ${'[text](_url_)'}    | ${`${url}`} | ${'[text](url)'}    | ${false}       | ${`[text](${url})`}
-              ${'[s_ubtext_](url)'} | ${`${url}`} | ${'[subtext](url)'} | ${false}       | ${`[s${url}](url)`}
-            `('handlePaste inserts nothing, and does not prevent default', pasteMatchesExpectation);
-          });
+          it.each`
+            textSpec              | pastedValue | beforeSystemPaste             | preventDefault | afterSystemPaste
+            ${'_link_'}           | ${`${url}`} | ${`[link](${url})`}           | ${true}        | ${`[link](${url})`}
+            ${'[_text_](url)'}    | ${`${url}`} | ${'[text](url)'}              | ${false}       | ${`[${url}](url)`}
+            ${'[text](_url_)'}    | ${`${url}`} | ${'[text](url)'}              | ${false}       | ${`[text](${url})`}
+            ${'[s_ubtext_](url)'} | ${`${url}`} | ${`[s[ubtext](${url})](url)`} | ${true}        | ${`[s[ubtext](${url})](url)`}
+          `('uses selected text as markdown link text', pasteMatchesExpectation);
         });
+
         describe('does not contain a URL', () => {
           it.each`
             textSpec              | pastedValue    | beforeSystemPaste   | preventDefault | afterSystemPaste

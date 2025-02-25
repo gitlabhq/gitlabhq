@@ -63,10 +63,8 @@ export class CopyAsGFM {
     if (!gfm && !gfmHtml) return;
 
     e.preventDefault();
-    if (gon?.features?.markdownPasteUrl) {
-      // See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178942#note_2325656736
-      e.stopImmediatePropagation();
-    }
+    // See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178942#note_2325656736
+    e.stopImmediatePropagation();
 
     // We have the original selection already converted to gfm
     if (gfm) {

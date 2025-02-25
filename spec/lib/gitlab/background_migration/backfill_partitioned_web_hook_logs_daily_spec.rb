@@ -24,11 +24,20 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedWebHookLogsDaily,
 
   before do
     connection.transaction do
+      from = 1.month.ago.beginning_of_month
+      to = 1.month.ago.end_of_month
+      suffix = from.strftime('%Y%m')
+      partition_name = "gitlab_partitions_dynamic.web_hook_logs_#{suffix}"
+
       connection.execute <<~SQL
         ALTER TABLE web_hook_logs DISABLE TRIGGER ALL; -- Don't sync records to partitioned table
+
+        CREATE TABLE IF NOT EXISTS #{partition_name}
+        PARTITION OF public.web_hook_logs
+        FOR VALUES FROM (#{connection.quote(from)}) TO (#{connection.quote(to)});
       SQL
 
-      create_web_hook_logs(created_at: 1.month.ago.beginning_of_month)
+      create_web_hook_logs(created_at: from)
       create_web_hook_logs(created_at: 1.day.ago)
 
       connection.execute <<~SQL

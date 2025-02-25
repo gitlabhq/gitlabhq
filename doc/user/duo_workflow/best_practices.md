@@ -5,6 +5,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Best practices for GitLab Duo Workflow
 ---
 
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com
+- Status: Experiment
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
+This feature is considered [experimental](../../policy/development_stages_support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
+
+{{< /alert >}}
+
 Follow these best practices to get the most value from GitLab Duo Workflow.
 
 ## Create focused prompts

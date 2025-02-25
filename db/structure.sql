@@ -13762,7 +13762,6 @@ ALTER SEQUENCE geo_cache_invalidation_events_id_seq OWNED BY geo_cache_invalidat
 CREATE TABLE geo_event_log (
     id bigint NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    repositories_changed_event_id bigint,
     cache_invalidation_event_id bigint,
     geo_event_id bigint
 );
@@ -32985,8 +32984,6 @@ CREATE UNIQUE INDEX index_fork_networks_on_root_project_id ON fork_networks USIN
 CREATE INDEX index_geo_event_log_on_cache_invalidation_event_id ON geo_event_log USING btree (cache_invalidation_event_id) WHERE (cache_invalidation_event_id IS NOT NULL);
 
 CREATE INDEX index_geo_event_log_on_geo_event_id ON geo_event_log USING btree (geo_event_id) WHERE (geo_event_id IS NOT NULL);
-
-CREATE INDEX index_geo_event_log_on_repositories_changed_event_id ON geo_event_log USING btree (repositories_changed_event_id) WHERE (repositories_changed_event_id IS NOT NULL);
 
 CREATE INDEX index_geo_node_namespace_links_on_geo_node_id ON geo_node_namespace_links USING btree (geo_node_id);
 

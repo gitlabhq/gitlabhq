@@ -626,7 +626,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
         expect(kword_args[:metadata][:deadline_type]).to eq("limited")
       end
 
-      it 'does not limit calls in sidekiq' do
+      it 'does not limit calls in sidekiq', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/465260' do
         expect(Sidekiq).to receive(:server?).and_return(true)
 
         kword_args = described_class.request_kwargs('default', timeout: 6.hours.to_i)

@@ -55,6 +55,8 @@ describe('CopyAsGFM', () => {
           },
         },
         preventDefault() {},
+        stopPropagation() {},
+        stopImmediatePropagation() {},
         target,
       };
 
@@ -112,6 +114,7 @@ describe('CopyAsGFM', () => {
         },
         preventDefault() {},
         stopPropagation() {},
+        stopImmediatePropagation() {},
       };
       CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformGFMSelection);
 

@@ -43,6 +43,21 @@ RSpec.describe Import::UserMapping::AssignmentFromCsvWorker, feature_category: :
     end
   end
 
+  before do
+    allow_next_instance_of(Import::SourceUsers::BulkReassignFromCsvService) do |service|
+      allow(service).to receive(:execute).and_return(ServiceResponse.success(
+        payload: {
+          stats: {
+            matched: 2,
+            failed: 1,
+            skipped: 10
+          },
+          failures_csv_data: "A,B\n1,2\n"
+        }
+      ))
+    end
+  end
+
   it 'calls the reassignment service' do
     expect(Import::SourceUsers::BulkReassignFromCsvService).to receive(:new)
       .with(current_user, group, upload)
@@ -51,7 +66,17 @@ RSpec.describe Import::UserMapping::AssignmentFromCsvWorker, feature_category: :
     perform
   end
 
-  it 'sends an email summary' # https://gitlab.com/gitlab-org/gitlab/-/issues/458841
+  it 'sends an email summary' do
+    expect(Notify).to receive(:bulk_import_csv_user_mapping).with(
+      current_user.id,
+      group.id,
+      success_count: 2,
+      failed_count: 1,
+      failures_csv_data: "A,B\n1,2\n"
+    ).and_call_original
+
+    perform
+  end
 
   it 'clears the upload' do
     expect { perform }

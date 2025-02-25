@@ -164,7 +164,7 @@ RSpec.describe Tooling::Danger::MasterPipelineStatus, feature_category: :tooling
         let(:expected_output) do
           <<~MSG
             Failed to parse JSON for #{expected_status_url}. Ignoring. Full error:
-            unexpected token at '{'
+            expected object key, got '
           MSG
         end
 

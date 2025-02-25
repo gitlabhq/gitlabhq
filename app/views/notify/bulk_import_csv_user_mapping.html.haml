@@ -21,6 +21,10 @@
     %li{ style: error_style }
       %strong= safe_format(s_('BulkImport|%{count} placeholder users not matched to users.'), count: @failed_count)
 
+- if @has_errors
+  %p{ style: text_style }
+    = s_('BulkImport|A CSV file containing a list of placeholder reassignment errors has been attached to this email.')
+
 %p{ style: text_style }
   - extra_params = @has_errors ? { status: 'failed' } : {}
   = link_to group_group_members_url(@group, tab: 'placeholders', **extra_params), target: '_blank', rel: 'noopener noreferrer' do

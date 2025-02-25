@@ -154,6 +154,56 @@ RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :ag
       expect(json_response.size).to eq(2)
     end
 
+    context 'when the operation name is GLQL' do
+      before do
+        allow_next_instance_of(::GraphQL::Query) do |instance|
+          allow(instance).to receive(:operation_name).and_return('GLQL')
+        end
+      end
+
+      it 'tracks SLI metrics for each glql query' do
+        expect(Gitlab::Metrics::GlqlSlis).to receive(:record_apdex).with({
+          labels: unknown_query_labels,
+          success: be_in([true, false])
+        })
+
+        expect(Gitlab::Metrics::GlqlSlis).to receive(:record_error).with({
+          labels: unknown_query_labels,
+          error: false
+        })
+
+        post_graphql(graphql_query_for('echo', { 'text' => 'test' }, []))
+      end
+
+      it 'does not track apdex for failed queries' do
+        expect(Gitlab::Metrics::GlqlSlis).not_to receive(:record_apdex)
+
+        post_graphql(graphql_query_for('brokenQuery', {}, []))
+      end
+
+      it 'tracks errors for failed queries' do
+        queries = [
+          { query: graphql_query_for('brokenQuery', {}, []),
+            variables: { test: 'hello world' } },
+          { query: graphql_query_for('currentUser', {}, ['username']) }
+        ]
+
+        expect(Gitlab::Metrics::GlqlSlis).to receive(:record_error).with({
+          labels: unknown_query_labels,
+          error: false
+        })
+
+        expect(Gitlab::Metrics::GlqlSlis).to receive(:record_error).with({
+          labels: unknown_query_labels,
+          error: true
+        })
+
+        post_multiplex(queries, current_user: user)
+
+        expect(json_response.size).to eq(2)
+      end
+    end
+
     context 'with IGNORED_ERRORS' do
       before do
         stub_const('Gitlab::Graphql::Tracers::InstrumentationTracer::IGNORED_ERRORS', [

@@ -35,12 +35,16 @@ module Gitlab
 
         def export_query_info(query:, duration_s:, exception:)
           operation = ::Gitlab::Graphql::KnownOperations.default.from_query(query)
-
           error_type = error_type(query: query, exception: exception)
 
           ::Gitlab::ApplicationContext.with_context(caller_id: operation.to_caller_id) do
             log_execute_query(query: query, duration_s: duration_s, exception: exception)
-            increment_query_sli(operation: operation, duration_s: duration_s, error_type: error_type)
+
+            if query.operation_name == 'GLQL'
+              increment_glql_sli(operation: operation, duration_s: duration_s, error_type: error_type)
+            else
+              increment_query_sli(operation: operation, duration_s: duration_s, error_type: error_type)
+            end
           end
         end
 
@@ -60,6 +64,27 @@ module Gitlab
           return if error_type
 
           Gitlab::Metrics::RailsSlis.graphql_query_apdex.increment(
+            labels: labels,
+            success: duration_s <= query_urgency.duration
+          )
+        end
+
+        def increment_glql_sli(operation:, duration_s:, error_type:)
+          query_urgency = operation.query_urgency
+          labels = {
+            endpoint_id: operation.to_caller_id,
+            feature_category: ::Gitlab::ApplicationContext.current_context_attribute(:feature_category),
+            query_urgency: query_urgency.name
+          }
+
+          Gitlab::Metrics::GlqlSlis.record_error(
+            labels: labels,
+            error: error_type == :error
+          )
+
+          return if error_type
+
+          Gitlab::Metrics::GlqlSlis.record_apdex(
             labels: labels,
             success: duration_s <= query_urgency.duration
           )

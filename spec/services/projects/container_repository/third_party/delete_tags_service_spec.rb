@@ -14,7 +14,7 @@ RSpec.describe Projects::ContainerRepository::ThirdParty::DeleteTagsService, fea
 
     context 'with tags to delete' do
       it 'deletes the tags by name' do
-        stub_upload('sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3')
+        stub_upload('sha256:627025e22fcdc17810e8edb86c703b2359c5b27f72289013793049a92ab735bf')
 
         tags.each { |tag| stub_put_manifest_request(tag) }
 
@@ -24,7 +24,7 @@ RSpec.describe Projects::ContainerRepository::ThirdParty::DeleteTagsService, fea
       end
 
       it 'succeeds when tag delete returns 404' do
-        stub_upload('sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3')
+        stub_upload('sha256:627025e22fcdc17810e8edb86c703b2359c5b27f72289013793049a92ab735bf')
 
         stub_put_manifest_request('A')
         stub_put_manifest_request('Ba')
@@ -38,7 +38,7 @@ RSpec.describe Projects::ContainerRepository::ThirdParty::DeleteTagsService, fea
       context 'with failures' do
         context 'when the dummy manifest generation fails' do
           before do
-            stub_upload('sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3', success: false)
+            stub_upload('sha256:627025e22fcdc17810e8edb86c703b2359c5b27f72289013793049a92ab735bf', success: false)
           end
 
           it { is_expected.to eq(status: :error, message: 'could not generate manifest') }
@@ -46,9 +46,9 @@ RSpec.describe Projects::ContainerRepository::ThirdParty::DeleteTagsService, fea
 
         context 'when updating tags fails' do
           before do
-            stub_upload('sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3')
+            stub_upload('sha256:627025e22fcdc17810e8edb86c703b2359c5b27f72289013793049a92ab735bf')
 
-            stub_request(:delete, "http://registry.gitlab/v2/#{repository.path}/manifests/sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3")
+            stub_request(:delete, "http://registry.gitlab/v2/#{repository.path}/manifests/sha256:627025e22fcdc17810e8edb86c703b2359c5b27f72289013793049a92ab735bf")
               .to_return(status: 200, body: '', headers: {})
           end
 

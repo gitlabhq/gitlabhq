@@ -560,7 +560,7 @@ To set this limit for a GitLab Self-Managed instance, run the following in the
 Plan.default.actual_limits.update!(ci_pipeline_schedules: 100)
 ```
 
-### Limit the number of pipelines created by a pipeline schedule per day
+### Limit the number of pipelines created by a pipeline schedule each day
 
 You can limit the number of pipelines that pipeline schedules can trigger per day.
 
@@ -731,7 +731,7 @@ To set a limit on your instance, use the
 When using [parallel Pages deployments](../user/project/pages/_index.md#parallel-deployments), the total number
 of parallel Pages deployments permitted for a top-level namespace is 1000.
 
-### Number of registered runners per scope
+### Number of registered runners for each scope
 
 {{< history >}}
 

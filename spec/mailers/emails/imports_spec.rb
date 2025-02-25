@@ -55,7 +55,9 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     let(:group) { build_stubbed(:group) }
     let(:failed_count) { 0 }
 
-    subject { Notify.bulk_import_csv_user_mapping('user_id', 'group_id', 689, failed_count) }
+    subject do
+      Notify.bulk_import_csv_user_mapping('user_id', 'group_id', success_count: 689, failed_count: failed_count)
+    end
 
     before do
       allow(User).to receive(:find).and_return(user)

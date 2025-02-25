@@ -14,6 +14,15 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
   end
 
   describe '#execute' do
+    let(:expected_log) do
+      {
+        message: described_class::MISSING_ABILITIES_MESSAGE,
+        username: user.username,
+        user_id: user.id,
+        authentication_abilities: authentication_abilities
+      }
+    end
+
     subject { service.execute(authentication_abilities: authentication_abilities) }
 
     shared_examples 'returning' do |status:, message:|
@@ -30,6 +39,22 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
 
         decoded_token = decode(token)
         expect(decoded_token[field]).not_to be_nil
+      end
+    end
+
+    shared_examples 'logs missing authentication abilities' do
+      specify do
+        expect(::Gitlab::AuthLogger).to receive(:warn).with(expected_log)
+
+        subject
+      end
+    end
+
+    shared_examples 'does not log missing authentication abilities' do
+      specify do
+        expect(::Gitlab::AuthLogger).not_to receive(:warn).with(expected_log)
+
+        subject
       end
     end
 
@@ -88,6 +113,16 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
       let_it_be(:params) { { raw_token: token.token } }
 
       it_behaves_like 'returning a token with an encoded field', 'personal_access_token'
+
+      context 'with insufficient authentication abilities' do
+        it_behaves_like 'logs missing authentication abilities'
+      end
+
+      context 'with sufficient authentication abilities' do
+        let_it_be(:authentication_abilities) { Auth::DependencyProxyAuthenticationService::REQUIRED_ABILITIES }
+
+        it_behaves_like 'does not log missing authentication abilities'
+      end
     end
 
     context 'with a group access token' do
@@ -109,6 +144,7 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
           end
 
           it_behaves_like 'returning a token with an encoded field', 'group_access_token'
+          it_behaves_like 'logs missing authentication abilities'
         end
       end
 
@@ -119,6 +155,7 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
         subject { service.execute(authentication_abilities: authentication_abilities) }
 
         it_behaves_like 'returning a token with an encoded field', 'group_access_token'
+        it_behaves_like 'does not log missing authentication abilities'
 
         context 'revoked' do
           before do

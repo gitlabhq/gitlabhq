@@ -391,11 +391,21 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def bulk_import_csv_user_mapping_success
-    Notify.bulk_import_csv_user_mapping(user.id, group.id, 94125, 0)
+    Notify.bulk_import_csv_user_mapping(
+      user.id,
+      group.id,
+      success_count: 94125,
+      failed_count: 0
+    )
   end
 
   def bulk_import_csv_user_mapping_failed
-    Notify.bulk_import_csv_user_mapping(user.id, group.id, 71249, 824)
+    Notify.bulk_import_csv_user_mapping(
+      user.id,
+      group.id,
+      success_count: 71249,
+      failed_count: 824
+    )
   end
 
   def csv_placeholder_reassignment_failed

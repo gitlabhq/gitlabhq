@@ -38,7 +38,7 @@ Dark mode makes elements on the GitLab UI stand out on a dark background.
 
 - To turn on Dark mode, Select **Preferences > Color theme > Dark Mode**.
 
-Dark mode works only with the **Dark** Syntax highlighting theme. You can report and view issues, send feedback, and track progress in [epic 2092](https://gitlab.com/groups/gitlab-org/-/epics/2902).
+You can use dark mode with any syntax highlighting theme. You can report and view issues, send feedback, and track progress in [epic 2092](https://gitlab.com/groups/gitlab-org/-/epics/2902).
 
 ## Change the syntax highlighting theme
 

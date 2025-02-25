@@ -4128,9 +4128,6 @@ msgstr ""
 msgid "AdminSelfHostedModels|Model identifier"
 msgstr ""
 
-msgid "AdminSelfHostedModels|Model identifier (optional)"
-msgstr ""
-
 msgid "AdminSelfHostedModels|Model identifier must be less than 255 characters."
 msgstr ""
 
@@ -10825,6 +10822,9 @@ msgid "BulkImport|%{count} placeholder users not matched to users."
 msgstr ""
 
 msgid "BulkImport|%{feature} (require v%{version})"
+msgstr ""
+
+msgid "BulkImport|A CSV file containing a list of placeholder reassignment errors has been attached to this email."
 msgstr ""
 
 msgid "BulkImport|All items assigned to placeholder users were reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file."

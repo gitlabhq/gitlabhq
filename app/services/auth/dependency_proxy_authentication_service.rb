@@ -7,9 +7,15 @@ module Auth
     DEFAULT_EXPIRE_TIME = 1.minute
     REQUIRED_ABILITIES = %i[read_container_image create_container_image].freeze
 
+    MISSING_ABILITIES_MESSAGE = 'Dependency proxy missing authentication abilities'
+
     def execute(authentication_abilities:)
       return error('dependency proxy not enabled', 404) unless ::Gitlab.config.dependency_proxy.enabled
       return error('access forbidden', 403) unless valid_user_actor?(authentication_abilities)
+
+      unless deploy_token || has_required_abilities?(authentication_abilities)
+        log_missing_authentication_abilities(authentication_abilities)
+      end
 
       { token: authorized_token.encoded }
     end
@@ -87,6 +93,17 @@ module Auth
 
     def personal_access_token_user?
       raw_token && current_user && (current_user.human? || current_user.service_account?)
+    end
+
+    def log_missing_authentication_abilities(authentication_abilities)
+      log_info = {
+        message: MISSING_ABILITIES_MESSAGE,
+        authentication_abilities: authentication_abilities,
+        username: current_user&.username,
+        user_id: current_user&.id
+      }.compact
+
+      Gitlab::AuthLogger.warn(log_info)
     end
   end
 end

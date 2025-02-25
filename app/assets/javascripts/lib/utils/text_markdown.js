@@ -226,26 +226,6 @@ function setNewSelectionRange(
   textArea.setSelectionRange(newStart, newEnd);
 }
 
-function isURL(text) {
-  // Extracted as part of markdown_paste_url feature. Retaining
-  // old behavior for Add a link if flag is disabled. Replace
-  // isURL call sites with isValidURL when removing the flag
-  if (gon.features?.markdownPasteUrl) {
-    return isValidURL(text);
-  }
-  if (URL) {
-    try {
-      const url = new URL(text);
-      if (url.origin !== 'null' || url.origin === null) {
-        return true;
-      }
-    } catch (e) {
-      // ignore - no valid url
-    }
-  }
-  return false;
-}
-
 function convertMonacoSelectionToAceFormat(sel) {
   return {
     start: {
@@ -456,7 +436,7 @@ export function insertMarkdownText({
   // check for link pattern and selected text is an URL
   // if so fill in the url part instead of the text part of the pattern.
   if (tag === LINK_TAG_PATTERN) {
-    if (isURL(selected)) {
+    if (isValidURL(selected)) {
       tag = '[text]({text})';
       select = 'text';
     }
@@ -914,7 +894,7 @@ function handleMarkdownPasteUrl(e) {
   let pastedText = e.clipboardData.getData('text');
   if (!pastedText) return;
   pastedText = pastedText.trim();
-  if (isURL(pastedText)) {
+  if (isValidURL(pastedText)) {
     e.preventDefault();
     e.stopImmediatePropagation();
     const selected = selectedText(text, textArea);
@@ -926,7 +906,6 @@ function handleMarkdownPasteUrl(e) {
 }
 
 export function handlePasteModifications(e) {
-  if (!gon.features?.markdownPasteUrl) return;
   // Transparently unwrap event in case we're bound through jQuery.
   // Need the original event to access the clipboard.
   const event = e?.originalEvent ? e.originalEvent : e;

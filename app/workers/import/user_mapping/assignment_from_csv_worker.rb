@@ -52,9 +52,18 @@ module Import
 
       attr_reader :current_user, :group
 
-      def send_results_email(_results)
-        # Not implemented yet. To be resolved by:
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/458841
+      def send_results_email(results)
+        stats = results.payload[:stats]
+        successes = stats[:matched]
+        failures = stats[:failed]
+
+        Notify.bulk_import_csv_user_mapping(
+          current_user.id,
+          group.id,
+          success_count: successes,
+          failed_count: failures,
+          failures_csv_data: results.payload[:failures_csv_data]
+        ).deliver_later
       end
 
       def send_failure_email

@@ -90,13 +90,13 @@ RSpec.describe Import::SourceUsers::BulkReassignFromCsvService, feature_category
         let(:username) { '' }
         let(:email) { '' }
 
-        it 'does not match the source user' do
+        it 'counts the skipped row' do
           result = nil
           expect { result = execute_service }
             .to not_change { source_user.reload.reassign_to_user }
 
-          errors = result.payload[:errors]
-          expect(errors['alice_1']).to eq(s_('UserMapping|No matching user for provided information.'))
+          stats = result.payload[:stats]
+          expect(stats[:skipped]).to eq(1)
         end
       end
 
@@ -108,8 +108,25 @@ RSpec.describe Import::SourceUsers::BulkReassignFromCsvService, feature_category
           expect { result = execute_service }
             .to not_change { source_user.reload.reassign_to_user }
 
-          errors = result.payload[:errors]
-          expect(errors['alice_1']).to eq(s_('UserMapping|No matching user for provided information.'))
+          errors = result.payload[:failures_csv_data]
+          expect(errors).to match(/alice_1,.*,No matching user for provided information./)
+        end
+      end
+
+      context 'when the reassignment service returns an error' do
+        before do
+          allow_next_instance_of(::Import::SourceUsers::ReassignService) do |reassign_service|
+            allow(reassign_service).to receive(:execute).and_return(ServiceResponse.error(message: 'Test error'))
+          end
+        end
+
+        let(:username) { 'alice-gl' }
+
+        it 'is reflected in the results CSV' do
+          result = execute_service
+
+          errors = result.payload[:failures_csv_data]
+          expect(errors).to match(/alice_1,.*,Test error/)
         end
       end
 
@@ -125,8 +142,8 @@ RSpec.describe Import::SourceUsers::BulkReassignFromCsvService, feature_category
           expect { result = execute_service }
             .to not_change { source_user.reload.reassign_to_user }
 
-          errors = result.payload[:errors]
-          expect(errors['alice_1']).to eq(s_('UserMapping|No matching user for provided information.'))
+          errors = result.payload[:failures_csv_data]
+          expect(errors).to match(/alice_1,.*,No matching user for provided information./)
         end
 
         context 'and the author is an admin' do

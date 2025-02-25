@@ -199,11 +199,8 @@ RSpec.describe Gitlab::Json do
           "more": {
             "test": true
           },
-          "multi_line_empty_array": [
-
-          ],
-          "multi_line_empty_obj": {
-          }
+          "multi_line_empty_array": [],
+          "multi_line_empty_obj": {}
         }
       STR
 
@@ -230,11 +227,8 @@ RSpec.describe Gitlab::Json do
           "more" : {
             "test" : true
           },
-          "multi_line_empty_array" : [
-
-          ],
-          "multi_line_empty_obj" : {
-          }
+          "multi_line_empty_array" : [],
+          "multi_line_empty_obj" : {}
         }
       STR
 

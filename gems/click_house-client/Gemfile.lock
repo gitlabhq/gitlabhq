@@ -4,7 +4,7 @@ PATH
     click_house-client (0.1.0)
       activesupport (< 8)
       addressable (~> 2.8)
-      json (~> 2.7.2)
+      json (~> 2.7)
 
 GEM
   remote: https://rubygems.org/
@@ -28,7 +28,7 @@ GEM
       rubocop-rspec (~> 2.27.1)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
-    json (2.7.2)
+    json (2.10.1)
     language_server-protocol (3.17.0.3)
     minitest (5.18.1)
     parallel (1.23.0)

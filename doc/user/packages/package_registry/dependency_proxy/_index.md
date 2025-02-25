@@ -67,26 +67,15 @@ Advanced caching support depends on how the upstream package registry
 responds to dependency proxy requests, and on
 which package format you use.
 
-{{< tabs >}}
+For Maven packages:
 
-{{< tab title="Maven" >}}
-
-| Package registry                                                                                                                         | Advanced caching supported? |
-|------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------|
-
-| [GitLab](../../maven_repository/_index.md)                                                                                                | {{< icon name="check-circle" >}} Yes      |
-
-| [Maven Central](https://mvnrepository.com/repos/central)                                                                                 | {{< icon name="check-circle" >}} Yes      |
-
-| [Artifactory](https://jfrog.com/integration/maven-repository/)                                                                           | {{< icon name="check-circle" >}} Yes      |
-
-| [Sonatype Nexus](https://help.sonatype.com/en/maven-repositories.html)                                                                   | {{< icon name="check-circle" >}} Yes      |
-
-| [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry)    | {{< icon name="dotted-circle" >}} No      |
-
-{{< /tab >}}
-
-{{< /tabs >}}
+| Package registry                                                                                                                      | Advanced caching supported? |
+|---------------------------------------------------------------------------------------------------------------------------------------|-----------------------------|
+| [GitLab](../../maven_repository/_index.md)                                                                                            | {{< icon name="check-circle" >}} Yes |
+| [Maven Central](https://mvnrepository.com/repos/central)                                                                              | {{< icon name="check-circle" >}} Yes |
+| [Artifactory](https://jfrog.com/integration/maven-repository/)                                                                        | {{< icon name="check-circle" >}} Yes |
+| [Sonatype Nexus](https://help.sonatype.com/en/maven-repositories.html)                                                                | {{< icon name="check-circle" >}} Yes |
+| [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) | {{< icon name="dotted-circle" >}} No |
 
 ### Permissions
 
