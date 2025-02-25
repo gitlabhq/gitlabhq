@@ -7,7 +7,7 @@ import {
 } from '../serialization_helpers';
 import { renderHTMLNode } from './html_node';
 
-const blockquote = preserveUnchanged((state, node) => {
+export const renderBlockquote = (state, node) => {
   if (state.options.skipEmptyNodes) {
     if (!node.childCount || containsEmptyParagraph(node)) return;
   }
@@ -40,6 +40,7 @@ const blockquote = preserveUnchanged((state, node) => {
     state.wrapBlock('> ', null, node, () => state.renderContent(node));
     setIsInBlockquote(false);
   }
-});
+};
 
+const blockquote = preserveUnchanged(renderBlockquote);
 export default blockquote;

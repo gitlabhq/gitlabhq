@@ -308,6 +308,12 @@
       padding-right: $gl-spacing-scale-2;
     }
   }
+
+  .markdown-alert {
+    > *:last-child *:only-child {
+      @apply gl-mb-0;
+    }
+  }
 }
 
 // Fixes a problem with the layout shifting

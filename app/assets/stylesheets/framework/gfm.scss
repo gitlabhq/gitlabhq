@@ -50,3 +50,61 @@
     @apply gl-border-1 gl-border-solid gl-border-alpha-dark-24;
   }
 }
+
+/*
+ * MARKDOWN ALERTS - These are completely separate from our Alert component.
+ * These are user-generated content, formatted like:
+ * > [!note]
+ * > Highlights information that users should take into account, even when skimming.
+ */
+.md .markdown-alert {
+  @apply gl-border-0 gl-border-l-4 gl-border-l-solid gl-pl-4 gl-py-2 gl-my-5 gl-mx-0;
+
+  .markdown-alert-title {
+    @apply gl-heading-4 gl-mb-2;
+  }
+
+  > *:last-child {
+    @apply gl-mb-0;
+  }
+
+  &.markdown-alert-note {
+    border-color: var(--gl-feedback-info-icon-color);
+
+    .markdown-alert-title {
+      color: var(--gl-feedback-info-text-color);
+    }
+  }
+
+  &.markdown-alert-tip {
+    border-color: var(--gl-feedback-success-icon-color);
+
+    .markdown-alert-title {
+      color: var(--gl-feedback-success-text-color);
+    }
+  }
+
+  &.markdown-alert-important {
+    @apply gl-border-purple-600;
+
+    .markdown-alert-title {
+      @apply gl-text-purple-700;
+    }
+  }
+
+  &.markdown-alert-warning {
+    border-color: var(--gl-feedback-danger-icon-color);
+
+    .markdown-alert-title {
+      color: var(--gl-feedback-danger-text-color);
+    }
+  }
+
+  &.markdown-alert-caution {
+    border-color: var(--gl-feedback-warning-icon-color);
+
+    .markdown-alert-title {
+      color: var(--gl-feedback-warning-text-color);
+    }
+  }
+}

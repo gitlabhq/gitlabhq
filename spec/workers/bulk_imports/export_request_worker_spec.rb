@@ -37,10 +37,9 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
 
           before do
             graphql_client = instance_double(BulkImports::Clients::Graphql)
-            response = double(original_hash: { 'data' => { entity.entity_type => { 'id' => entity_source_id } } })
+            response = { 'data' => { entity.entity_type => { 'id' => entity_source_id } } }
 
             allow(BulkImports::Clients::Graphql).to receive(:new).and_return(graphql_client)
-            allow(graphql_client).to receive(:parse)
             allow(graphql_client).to receive(:execute).and_return(response)
           end
 

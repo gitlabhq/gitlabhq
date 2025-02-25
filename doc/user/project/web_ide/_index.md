@@ -191,6 +191,15 @@ In the keyboard shortcuts editor, you can search for:
 Keybindings are based on your keyboard layout.
 If you change your keyboard layout, existing keybindings are updated automatically.
 
+### Use Vim keybindings
+
+Use Vim keybindings to navigate and edit text using keyboard shortcuts from the Vim text editor.
+With the [Extensions Marketplace](#extension-marketplace), you can add Vim keybindings to
+the Web IDE.
+
+To enable Vim keybindings, install the [Vim](https://open-vsx.org/extension/vscodevim/vim)
+extension. For more information, see [install an extension](#install-an-extension).
+
 ## Change the color theme
 
 You can choose between different color themes for the Web IDE.
@@ -242,9 +251,8 @@ To view any notification you might have missed:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
-- Feature flag `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) in GitLab 17.4.
-- Feature flag `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
-- Feature flag `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
+- Feature flags `web_ide_oauth` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) on GitLab.com, GitLab Self-Managed, and GitLab Dedicated, and `web_ide_extensions_marketplace` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) on GitLab.com in GitLab 17.4.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5. Feature flag `web_ide_oauth` removed.
 
 {{< /history >}}
 

@@ -8,6 +8,8 @@
 <% end %>
 <% def humanize(feature_category) %>
 <%   case feature_category %>
+<%   when 'duo_workflow' %>
+<%     "GitLab Duo Workflow" %>
 <%   when 'mlops' %>
 <%     "MLOps" %>
 <%   when 'not_owned' %>

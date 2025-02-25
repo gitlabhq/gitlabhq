@@ -160,9 +160,8 @@ RSpec.describe API::BulkImports, feature_category: :importers do
       end
 
       allow_next_instance_of(BulkImports::Clients::Graphql) do |client|
-        allow(client).to receive(:parse)
         allow(client).to receive(:execute).and_return(
-          instance_double(GraphQL::Client::Response, original_hash: { 'data' => { 'group' => { 'id' => "gid://gitlab/Group/#{source_entity_identifier}" } } })
+          { 'data' => { 'group' => { 'id' => "gid://gitlab/Group/#{source_entity_identifier}" } } }
         )
       end
 
@@ -434,10 +433,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
       before do
         allow_next_instance_of(BulkImports::Clients::Graphql) do |client|
-          allow(client).to receive(:parse)
-          allow(client).to receive(:execute).and_return(
-            instance_double(GraphQL::Client::Response, original_hash: { 'data' => { 'group' => nil } })
-          )
+          allow(client).to receive(:execute).and_return({ 'data' => { 'group' => nil } })
         end
       end
 

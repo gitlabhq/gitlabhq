@@ -168,7 +168,7 @@ class TodosFinder
   # We only need to surface snoozed to-dos when querying pending items. The special sort order is
   # unnecessary in the `Done` and `All` tabs where we can simply sort by ID (= creation date).
   def use_snooze_custom_sort?
-    Feature.enabled?(:snoozed_todos_sort_order, current_user) && filter_pending_only?
+    filter_pending_only?
   end
 
   def by_action(items)

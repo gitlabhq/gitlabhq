@@ -14,6 +14,7 @@ import { ALERT_EVENT, TIPTAP_AUTOFOCUS_OPTIONS } from '../constants';
 import ContentEditorAlert from './content_editor_alert.vue';
 import ContentEditorProvider from './content_editor_provider.vue';
 import EditorStateObserver from './editor_state_observer.vue';
+import AlertBubbleMenu from './bubble_menus/alert_bubble_menu.vue';
 import CodeBlockBubbleMenu from './bubble_menus/code_block_bubble_menu.vue';
 import LinkBubbleMenu from './bubble_menus/link_bubble_menu.vue';
 import MediaBubbleMenu from './bubble_menus/media_bubble_menu.vue';
@@ -29,6 +30,7 @@ export default {
     ContentEditorProvider,
     TiptapEditorContent,
     FormattingToolbar,
+    AlertBubbleMenu,
     CodeBlockBubbleMenu,
     LinkBubbleMenu,
     MediaBubbleMenu,
@@ -287,6 +289,7 @@ export default {
         />
         <loading-indicator v-if="isLoading" />
 
+        <alert-bubble-menu />
         <code-block-bubble-menu />
         <link-bubble-menu />
         <media-bubble-menu />

@@ -35,9 +35,11 @@ module Banzai
         allowlist[:attributes]['li'] = %w[id]
         allowlist[:transformers].push(self.class.remove_id_attributes)
 
-        # Remove any `class` property not required for `a`
+        # Remove any `class` property not required for `a`, `div`, or `p`
         allowlist[:attributes]['a'].push('class')
-        allowlist[:transformers].push(self.class.remove_unsafe_link_class)
+        allowlist[:attributes]['div'] = %w[class]
+        allowlist[:attributes]['p'] = %w[class]
+        allowlist[:transformers].push(self.class.remove_unsafe_classes)
 
         # Allow section elements with data-footnotes attribute
         allowlist[:elements].push('section')
@@ -63,21 +65,37 @@ module Banzai
           end
         end
 
-        def remove_unsafe_link_class
+        def remove_unsafe_classes
           ->(env) do
             node = env[:node]
 
-            return unless node.name == 'a'
             return unless node.has_attribute?('class')
 
-            node.remove_attribute('class') if remove_link_class?(node)
+            case node.name
+            when 'a'
+              node.remove_attribute('class') if remove_link_class?(node)
+            when 'div'
+              node.remove_attribute('class') if remove_div_class?(node)
+            when 'p'
+              node.remove_attribute('class') if remove_p_class?(node)
+            end
           end
         end
 
         def remove_link_class?(node)
-          return if node['class'] == 'anchor'
+          node['class'] != 'anchor'
+        end
 
-          true
+        def remove_div_class?(node)
+          node['class'] != 'markdown-alert markdown-alert-note' &&
+            node['class'] != 'markdown-alert markdown-alert-tip' &&
+            node['class'] != 'markdown-alert markdown-alert-important' &&
+            node['class'] != 'markdown-alert markdown-alert-warning' &&
+            node['class'] != 'markdown-alert markdown-alert-caution'
+        end
+
+        def remove_p_class?(node)
+          node['class'] != 'markdown-alert-title'
         end
 
         def remove_id_attributes

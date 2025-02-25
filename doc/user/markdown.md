@@ -21,7 +21,7 @@ GLFM:
 - Supports syntax highlighting for over 100 programming languages.
 - Ensures accessibility with semantic heading structures and image descriptions.
 
-When you enter text in the GitLab UI, GitLab assumes the text is in GitLab Flavored Markdown. 
+When you enter text in the GitLab UI, GitLab assumes the text is in GitLab Flavored Markdown.
 
 You can use GitLab Flavored Markdown in:
 
@@ -67,6 +67,7 @@ functionality is extended with additional features, without affecting the standa
 
 The following features are not found in standard Markdown:
 
+- [Alerts](#alerts)
 - [Color chips written in `HEX`, `RGB` or `HSL`](#colors)
 - [Description lists](#description-lists)
 - [Diagrams and flowcharts](#diagrams-and-flowcharts)
@@ -1632,6 +1633,78 @@ Second section content.
 ```
 
 ![Preview of an auto-generated table of contents in a Wiki](img/markdown_toc_preview_v12_9.png)
+
+## Alerts
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24482) in GitLab 17.10.
+
+{{< /history >}}
+
+Alerts can be used to highlight or call attention to something. The alert syntax
+uses the Markdown blockquote syntax followed by the type of alert.
+You can use alerts in any text box that supports Markdown.
+
+There are 5 alert types:
+
+- Note: Calls attention to information that may be useful to the user:
+
+  ```markdown
+  > [!note]
+  > The following information is useful.
+  ```
+
+- Tip: Advice that may be useful:
+
+  ```markdown
+  > [!tip]
+  > Tip of the day.
+  ```
+
+- Important: Information that is important to know:
+
+  ```markdown
+  > [!important]
+  > This is something important you should know.
+  ```
+
+- Caution: There are possible negative consequences:
+
+  ```markdown
+  > [!caution]
+  > You need to be very careful about the following.
+  ```
+
+- Warning: Something is potentially dangerous or risky:
+
+  ```markdown
+  > [!warning]
+  > The following would be dangerous.
+  ```
+
+The title text shown for an alert defaults to the name of the alert. For example,
+`> [!warning]` alert will have the title `Warning`.
+
+To override an alert block's title, enter any text on the same line.
+For example, to use the warning color but have `Data deletion` as the title:
+
+```markdown
+> [!warning] Data deletion
+> The following instructions will make your data unrecoverable.
+```
+
+[Multiline blockquotes](#multiline-blockquote) also support the alert syntax. This
+allows you to wrap large and more complex text in an alert.
+
+```markdown
+>>> [!note] Things to consider
+You should consider the following ramifications:
+
+1. consideration 1
+1. consideration 2
+>>>
+```
 
 ## Colors
 

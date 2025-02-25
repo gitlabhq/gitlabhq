@@ -1510,7 +1510,7 @@ GEM
     pyu-ruby-sasl (0.0.3.3)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (2.2.10)
+    rack (2.2.11)
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-attack (6.7.0)
@@ -2136,7 +2136,7 @@ DEPENDENCIES
   gitlab-duo-workflow-service-client (~> 0.1)!
   gitlab-experiment (~> 0.9.1)
   gitlab-fog-azure-rm (~> 2.2.0)
-  gitlab-glfm-markdown (~> 0.0.21)
+  gitlab-glfm-markdown (~> 0.0.27)
   gitlab-housekeeper!
   gitlab-http!
   gitlab-kas-grpc (~> 17.9.0.pre.rc2)

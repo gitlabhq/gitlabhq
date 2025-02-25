@@ -119,9 +119,9 @@ module BulkImports
       gql_query = query_type(entity_type)
 
       response = graphql_client.execute(
-        graphql_client.parse(gql_query.to_s),
-        { full_path: source_full_path }
-      ).original_hash
+        query: gql_query.to_s,
+        variables: { full_path: source_full_path }
+      )
 
       self.source_entity_identifier = ::GlobalID.parse(response.dig(*gql_query.data_path, 'id'))&.model_id
 

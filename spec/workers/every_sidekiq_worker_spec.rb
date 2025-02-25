@@ -445,6 +445,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'RunPipelineScheduleWorker' => 3,
         'ScanSecurityReportSecretsWorker' => 17,
         'Search::ElasticGroupAssociationDeletionWorker' => 3,
+        'Search::Elastic::CommitIndexerWorker' => 2,
         'Search::Elastic::DeleteWorker' => 3,
         'Search::Zoekt::AdjustIndicesReservedStorageBytesEventWorker' => 1,
         'Search::Zoekt::DeleteProjectEventWorker' => 1,

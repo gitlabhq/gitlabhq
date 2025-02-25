@@ -198,7 +198,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/services/security/vulnerability_counting_service_spec.rb'
     - 'ee/spec/services/users/abuse/git_abuse/application_throttle_service_spec.rb'
     - 'ee/spec/services/users/abuse/git_abuse/namespace_throttle_service_spec.rb'
-    - 'ee/spec/support/shared_contexts/services/gitlab_subscriptions/trials/create_service_shared_examples.rb'
     - 'ee/spec/support/shared_examples/graphql/mutations/members/bulk_update_shared_examples.rb'
     - 'ee/spec/support/shared_examples/models/concerns/externally_streamable_shared_examples.rb'
     - 'ee/spec/support/shared_examples/models/concerns/health_status_shared_examples.rb'

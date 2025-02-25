@@ -69,9 +69,9 @@ module BulkImports
 
     def entity_source_xid
       response = graphql_client.execute(
-        graphql_client.parse(entity_query.to_s),
-        { full_path: entity.source_full_path }
-      ).original_hash
+        query: entity_query.to_s,
+        variables: { full_path: entity.source_full_path }
+      )
 
       ::GlobalID.parse(response.dig(*entity_query.data_path, 'id')).model_id
     rescue StandardError => e

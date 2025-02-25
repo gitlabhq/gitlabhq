@@ -63,7 +63,7 @@ module Import
             # Make subsequent API calls if the API is configured with a max
             # page size smaller than the default value
             while has_next_page
-              response = graphql_client.execute(parsed_query, ids: ids, after: next_page).original_hash
+              response = graphql_client.execute(query: query, variables: { ids: ids, after: next_page })
 
               data = response.dig('data', 'users')
               next_page = data.dig('pageInfo', 'next_page')
@@ -115,8 +115,8 @@ module Import
           bulk_import_id: bulk_import.id, importer: Import::SOURCE_DIRECT_TRANSFER)
       end
 
-      def parsed_query
-        @parsed_query ||= graphql_client.parse(Common::Graphql::GetUsersQuery.new.to_s)
+      def query
+        @query ||= Common::Graphql::GetUsersQuery.new.to_s
       end
 
       def logger

@@ -273,7 +273,7 @@ Audit event types belong to the following product categories.
 | [`cluster_agent_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112036) | A user creates a cluster agent token | {{< icon name="check-circle" >}} Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/382133) | Project |
 | [`cluster_agent_token_revoked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112036) | A user revokes a cluster agent token | {{< icon name="check-circle" >}} Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/382133) | Project |
 
-### Duo workflow
+### GitLab Duo Workflow
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|

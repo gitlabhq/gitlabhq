@@ -31,7 +31,6 @@ ee/spec/frontend/boards/components/epics_swimlanes_spec.js
 ee/spec/frontend/ci/pipeline_details/header/pipeline_header_spec.js
 ee/spec/frontend/ci/runner/components/runner_usage_spec.js
 ee/spec/frontend/ci/secrets/components/secrets_breadcrumbs_spec.js
-ee/spec/frontend/ci/secrets/router_spec.js
 ee/spec/frontend/compliance_dashboard/components/frameworks_report/edit_framework/components/policies_section_spec.js
 ee/spec/frontend/compliance_dashboard/components/frameworks_report/report_spec.js
 ee/spec/frontend/dependencies/components/app_spec.js

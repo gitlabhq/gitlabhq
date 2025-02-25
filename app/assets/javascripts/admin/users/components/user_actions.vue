@@ -150,5 +150,6 @@ export default {
         </gl-disclosure-dropdown-group>
       </gl-disclosure-dropdown>
     </div>
+    <div v-else class="gl-w-8"></div>
   </div>
 </template>

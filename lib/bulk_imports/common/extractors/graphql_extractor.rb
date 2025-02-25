@@ -13,9 +13,9 @@ module BulkImports
           query = query_klass.new(context: context)
 
           response = client.execute(
-            client.parse(query.to_s),
-            query.variables
-          ).original_hash.deep_dup
+            query: query.to_s,
+            variables: query.variables
+          ).deep_dup
 
           BulkImports::Pipeline::ExtractedData.new(
             data: response.dig(*query.data_path),

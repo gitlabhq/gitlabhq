@@ -1,3 +1,5 @@
+export { default as Alert } from './alert';
+export { default as AlertTitle } from './alert_title';
 export { default as Attachment } from './attachment';
 export { default as Audio } from './audio';
 export { default as Blockquote } from './blockquote';

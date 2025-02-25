@@ -308,6 +308,16 @@ wrapper.findComponent(GlKeysetNavigation).vm.$emit('push');
 await waitForPromises()
 ```
 
+#### Navigation guards
+
+Navigation guards must call their third argument `next` exactly once in any given pass through the navigation guard. This is necessary in both `vue-router@3` and `vue-router@4`, but is more important in `vue-router@4` as all navigations are asynchronous and must be awaited.
+
+Failing to call `next` can produce [hard to debug errors](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181946#note_2355522500), e.g.:
+
+```shell
+Timeout - Async callback was not invoked within the 5000 ms timeout specified by jest.setTimeout
+```
+
 #### Debugging
 
 More often than not you will find yourself running into cryptic errors like the one below.

@@ -787,6 +787,8 @@
   - 1
 - - sbom_sync_project_traversal_ids
   - 1
+- - search_elastic_commit_indexer
+  - 1
 - - search_elastic_default_branch_changed
   - 1
 - - search_elastic_delete

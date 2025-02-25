@@ -10,6 +10,7 @@ module Banzai
     module MarkdownEngines
       class GlfmMarkdown < Base
         OPTIONS = {
+          alerts: true,
           autolink: true,
           description_lists: true,
           escaped_char_spans: true,

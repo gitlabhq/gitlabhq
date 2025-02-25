@@ -22,7 +22,7 @@ RSpec.describe BulkImports::Clients::Graphql, feature_category: :importers do
         let(:response_double) { instance_double(HTTParty::Response, body: 'invalid', success?: true) }
 
         it 'raises network error' do
-          expect { subject.execute('test') }.to raise_error(BulkImports::NetworkError, /unexpected character/)
+          expect { subject.execute(query: 'test') }.to raise_error(BulkImports::NetworkError, /unexpected character/)
         end
       end
 
@@ -32,7 +32,7 @@ RSpec.describe BulkImports::Clients::Graphql, feature_category: :importers do
         it 'raises network error' do
           allow(response_double).to receive_message_chain(:request, :path, :path).and_return('foo/bar')
 
-          expect { subject.execute('test') }.to raise_error(BulkImports::NetworkError, 'Unsuccessful response 503 from foo/bar')
+          expect { subject.execute(query: 'test') }.to raise_error(BulkImports::NetworkError, 'Unsuccessful response 503 from foo/bar')
         end
       end
     end

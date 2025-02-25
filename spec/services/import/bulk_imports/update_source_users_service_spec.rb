@@ -73,31 +73,30 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
   end
 
   def graphql_response(nodes = [], has_next_page = false, next_page = '')
-    instance_double(
-      GraphQL::Client::Response,
-      original_hash: {
-        'data' => {
-          'users' => {
-            'pageInfo' => {
-              'next_page' => next_page,
-              'has_next_page' => has_next_page
-            },
-            'nodes' => nodes
-          }
+    {
+      'data' => {
+        'users' => {
+          'pageInfo' => {
+            'next_page' => next_page,
+            'has_next_page' => has_next_page
+          },
+          'nodes' => nodes
         }
       }
-    )
+    }
   end
 
   describe '#execute' do
     subject(:service) { described_class.new(**service_args) }
 
     it 'updates missing source user details' do
-      expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
-        expect(client).to receive(:parse).and_return('query')
+      allow_next_instance_of(::Import::BulkImports::Common::Graphql::GetUsersQuery) do |query|
+        allow(query).to receive(:to_s).and_return('query')
+      end
 
+      expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
         expect(client).to receive(:execute)
-          .with('query', ids: source_user_identifiers, after: nil)
+          .with(query: 'query', variables: { ids: source_user_identifiers, after: nil })
           .and_return(graphql_response([node_0]))
       end
 
@@ -116,10 +115,13 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
       it 'removes the trailing slash' do
         allow(bulk_import.configuration).to receive(:url).and_return("#{source_hostname}/")
 
-        expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
-          expect(client).to receive(:parse).and_return('query')
+        allow_next_instance_of(::Import::BulkImports::Common::Graphql::GetUsersQuery) do |query|
+          allow(query).to receive(:to_s).and_return('query')
+        end
 
-          expect(client).to receive(:execute).with('query', ids: source_user_identifiers, after: nil)
+        expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
+          expect(client).to receive(:execute)
+            .with(query: 'query', variables: { ids: source_user_identifiers, after: nil })
             .and_return(graphql_response([node_0]))
         end
 
@@ -134,11 +136,13 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
     subject(:fetch_users_data) { described_class.new(**service_args).send(:fetch_users_data) }
 
     it 'requests user details for the source users with missing details' do
-      expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
-        expect(client).to receive(:parse).and_return('query')
+      allow_next_instance_of(::Import::BulkImports::Common::Graphql::GetUsersQuery) do |query|
+        allow(query).to receive(:to_s).and_return('query')
+      end
 
+      expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
         expect(client).to receive(:execute)
-          .with('query', ids: match_array(source_user_identifiers), after: nil)
+          .with(query: 'query', variables: { ids: match_array(source_user_identifiers), after: nil })
           .and_return(graphql_response([node_0, node_1, node_2]))
       end
 
@@ -147,9 +151,11 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
 
     context 'when response does not contain users' do
       it 'returns no data' do
-        expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
-          expect(client).to receive(:parse).and_return('query')
+        allow_next_instance_of(::Import::BulkImports::Common::Graphql::GetUsersQuery) do |query|
+          allow(query).to receive(:to_s).and_return('query')
+        end
 
+        expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
           expect(client).to receive(:execute).and_return(graphql_response([]))
         end
 
@@ -166,16 +172,18 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
 
     context 'when response is paginated' do
       it 'fetches the next pages' do
-        expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
-          expect(client).to receive(:parse).and_return('query')
+        allow_next_instance_of(::Import::BulkImports::Common::Graphql::GetUsersQuery) do |query|
+          allow(query).to receive(:to_s).and_return('query')
+        end
 
+        expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
           expect(client).to receive(:execute)
-            .with('query', ids: source_user_identifiers, after: nil)
+            .with(query: 'query', variables: { ids: source_user_identifiers, after: nil })
             .and_return(graphql_response([node_0, node_1], true, 'next_page'))
             .ordered
 
           expect(client).to receive(:execute)
-            .with('query', ids: source_user_identifiers, after: 'next_page')
+            .with(query: 'query', variables: { ids: source_user_identifiers, after: 'next_page' })
             .and_return(graphql_response([node_2], false))
             .ordered
         end
@@ -188,16 +196,20 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
       it 'makes a request for each batch in descending order' do
         stub_const("#{described_class.name}::BATCH_SIZE", 2)
 
-        expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
-          expect(client).to receive(:parse).and_return('query').ordered
+        allow_next_instance_of(::Import::BulkImports::Common::Graphql::GetUsersQuery) do |query|
+          allow(query).to receive(:to_s).and_return('query')
+        end
 
+        expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
           expect(client).to receive(:execute)
-            .with('query', ids: [source_user_identifiers[1], source_user_identifiers[2]], after: nil)
+            .with(
+              query: 'query', variables: { ids: [source_user_identifiers[1], source_user_identifiers[2]], after: nil }
+            )
             .and_return(graphql_response([node_1, node_2]))
             .ordered
 
           expect(client).to receive(:execute)
-            .with('query', ids: [source_user_identifiers[0]], after: nil)
+            .with(query: 'query', variables: { ids: [source_user_identifiers[0]], after: nil })
             .and_return(graphql_response([node_0]))
             .ordered
         end

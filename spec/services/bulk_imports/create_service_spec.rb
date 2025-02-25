@@ -86,9 +86,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
             expect(client)
              .to receive(:execute)
-             .and_return(instance_double(GraphQL::Client::Response, original_hash: { 'data' => { 'group' => nil } }))
-
-            expect(client).to receive(:parse)
+             .and_return({ 'data' => { 'group' => nil } })
           end
 
           result = subject.execute
@@ -110,11 +108,9 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           allow_next_instance_of(BulkImports::Clients::Graphql) do |client|
             allow(client)
              .to receive(:execute)
-             .and_return(instance_double(GraphQL::Client::Response, original_hash: {
+             .and_return({
                'data' => { 'group' => { 'id' => 'gid://gitlab/Group/165' } }
-             }))
-
-            allow(client).to receive(:parse)
+             })
           end
         end
 
@@ -140,11 +136,9 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           allow_next_instance_of(BulkImports::Clients::Graphql) do |client|
             allow(client)
              .to receive(:execute)
-             .and_return(instance_double(GraphQL::Client::Response, original_hash: {
+             .and_return({
                'data' => { 'group' => { 'id' => 'gid://gitlab/Group/165' } }
-             }))
-
-            allow(client).to receive(:parse)
+             })
           end
 
           stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/165/export_relations/status?page=1&per_page=30&private_token=token")
@@ -172,11 +166,9 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           allow_next_instance_of(BulkImports::Clients::Graphql) do |client|
             allow(client)
              .to receive(:execute)
-             .and_return(instance_double(GraphQL::Client::Response, original_hash: {
+             .and_return({
                'data' => { 'group' => { 'id' => 'gid://gitlab/Group/165' } }
-             }))
-
-            allow(client).to receive(:parse)
+             })
           end
 
           stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/165/export_relations/status?page=1&per_page=30&private_token=token")
@@ -389,27 +381,15 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           allow_next_instance_of(BulkImports::Clients::Graphql) do |client|
             allow(client)
              .to receive(:execute)
-             .and_return(instance_double(GraphQL::Client::Response, original_hash: {
+             .and_return({
                'data' => { 'group' => { 'id' => 'gid://gitlab/Group/165' } }
-             }))
-
-            allow(client).to receive(:parse)
+             })
           end
 
           stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/165/export_relations/status?page=1&per_page=30&private_token=token")
             .to_return(
               status: 200
             )
-        end
-
-        allow_next_instance_of(BulkImports::Clients::Graphql) do |client|
-          allow(client)
-            .to receive(:execute)
-            .and_return(instance_double(GraphQL::Client::Response, original_hash: {
-              'data' => { 'group' => { 'id' => 'gid://gitlab/Group/165' } }
-            }))
-
-          allow(client).to receive(:parse)
         end
 
         stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/#{source_entity_identifier}/export_relations/status?page=1&per_page=30&private_token=token")
@@ -652,10 +632,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
         context 'when the source_type is a group' do
           context 'when the source_full_path contains only integer characters' do
             let(:query_string) { BulkImports::Groups::Graphql::GetGroupQuery.new(context: nil).to_s }
-            let(:graphql_response) do
-              instance_double(GraphQL::Client::Response,
-                original_hash: { 'data' => { 'group' => { 'id' => entity_source_id } } })
-            end
+            let(:graphql_response) { { 'data' => { 'group' => { 'id' => entity_source_id } } } }
 
             let(:params) do
               [
@@ -669,7 +646,6 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             end
 
             before do
-              allow(graphql_client).to receive(:parse).with(query_string)
               allow(graphql_client).to receive(:execute).and_return(graphql_response)
 
               allow(http_client).to receive(:get)
@@ -681,7 +657,6 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             end
 
             it 'makes a graphql request using the group full path and an http request with the correct id' do
-              expect(graphql_client).to receive(:parse).with(query_string)
               expect(graphql_client).to receive(:execute).and_return(graphql_response)
 
               expect(http_client).to receive(:get).with("/groups/12345/export_relations/status")
@@ -694,10 +669,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
         context 'when the source_type is a project' do
           context 'when the source_full_path contains only integer characters' do
             let(:query_string) { BulkImports::Projects::Graphql::GetProjectQuery.new(context: nil).to_s }
-            let(:graphql_response) do
-              instance_double(GraphQL::Client::Response,
-                original_hash: { 'data' => { 'project' => { 'id' => entity_source_id } } })
-            end
+            let(:graphql_response) { { 'data' => { 'project' => { 'id' => entity_source_id } } } }
 
             let(:params) do
               [
@@ -711,7 +683,6 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             end
 
             before do
-              allow(graphql_client).to receive(:parse).with(query_string)
               allow(graphql_client).to receive(:execute).and_return(graphql_response)
 
               allow(http_client).to receive(:get)
@@ -723,7 +694,6 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             end
 
             it 'makes a graphql request using the group full path and an http request with the correct id' do
-              expect(graphql_client).to receive(:parse).with(query_string)
               expect(graphql_client).to receive(:execute).and_return(graphql_response)
 
               expect(http_client).to receive(:get).with("/projects/12345/export_relations/status")

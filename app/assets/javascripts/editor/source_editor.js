@@ -136,7 +136,6 @@ export default class SourceEditor {
       monacoEditor[createEditorFn].call(this, el, {
         ...this.options,
         ariaLabel: getAriaLabel(blobPath),
-        dataTestId: 'editor-content',
         ...instanceOptions,
       }),
       this.extensionsStore,

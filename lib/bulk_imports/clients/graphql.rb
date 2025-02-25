@@ -3,59 +3,45 @@
 module BulkImports
   module Clients
     class Graphql
-      class HTTP < Graphlient::Adapters::HTTP::Adapter
-        REQUEST_TIMEOUT = 60
+      REQUEST_TIMEOUT = 60
 
-        def execute(document:, operation_name: nil, variables: {}, context: {})
-          response = ::Gitlab::HTTP.post(
-            url,
-            headers: headers,
-            follow_redirects: false,
-            timeout: REQUEST_TIMEOUT,
-            body: {
-              query: document.to_query_string,
-              operationName: operation_name,
-              variables: variables
-            }.to_json
-          )
-
-          unless response.success?
-            raise ::BulkImports::NetworkError.new(
-              "Unsuccessful response #{response.code} from #{response.request.path.path}",
-              response: response
-            )
-          end
-
-          ::Gitlab::Json.parse(response.body)
-        rescue *Gitlab::HTTP::HTTP_ERRORS, JSON::ParserError => e
-          raise ::BulkImports::NetworkError, e
-        end
-      end
-      private_constant :HTTP
-
-      attr_reader :client
-
-      delegate :query, :parse, to: :client
+      attr_reader :url
 
       def initialize(url: Gitlab::Saas.com_url, token: nil)
         @url = Gitlab::Utils.append_path(url, '/api/graphql')
         @token = token
-        @client = Graphlient::Client.new(@url, options(http: HTTP))
       end
 
-      def execute(...)
-        client.execute(...)
+      def execute(query:, variables: {})
+        response = ::Gitlab::HTTP.post(
+          url,
+          headers: headers,
+          follow_redirects: false,
+          timeout: REQUEST_TIMEOUT,
+          body: {
+            query: query,
+            operationName: nil,
+            variables: variables
+          }.to_json
+        )
+
+        unless response.success?
+          raise ::BulkImports::NetworkError.new(
+            "Unsuccessful response #{response.code} from #{response.request.path.path}",
+            response: response
+          )
+        end
+
+        ::Gitlab::Json.parse(response.body)
+      rescue *Gitlab::HTTP::HTTP_ERRORS, JSON::ParserError => e
+        raise ::BulkImports::NetworkError, e
       end
 
-      def options(extra = {})
-        return extra unless @token
-
+      def headers
         {
-          headers: {
-            'Content-Type' => 'application/json',
-            'Authorization' => "Bearer #{@token}"
-          }
-        }.merge(extra)
+          'Content-Type' => 'application/json',
+          'Authorization' => "Bearer #{@token}"
+        }
       end
     end
   end

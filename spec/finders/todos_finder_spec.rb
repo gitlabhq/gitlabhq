@@ -317,24 +317,6 @@ RSpec.describe TodosFinder, feature_category: :notifications do
             it { is_expected.to eq([todo3, todo2, todo1]) }
           end
         end
-
-        context 'when the snoozed_todos_sort_order feature flag is disabled' do
-          before do
-            stub_feature_flags(snoozed_todos_sort_order: false)
-          end
-
-          context 'when sorting by ascending date' do
-            subject { finder.new(user, { sort: :created_asc }).execute }
-
-            it { is_expected.to eq([todo1, todo2, todo3]) }
-          end
-
-          context 'when sorting by descending date' do
-            subject { finder.new(user, { sort: :created_desc }).execute }
-
-            it { is_expected.to eq([todo3, todo2, todo1]) }
-          end
-        end
       end
 
       it "sorts by priority" do

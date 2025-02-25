@@ -16,6 +16,12 @@ module Types
       resolver: Resolvers::Users::RecentlyViewedIssuesResolver,
       description: 'Most-recently viewed issues for the current user.',
       experiment: { milestone: '17.9' }
+
+    field :work_items,
+      null: true,
+      resolver: Resolvers::WorkItems::UserWorkItemsResolver,
+      description: 'Find work items visible to the current user.',
+      experiment: { milestone: '17.10' }
   end
   # rubocop:enable Graphql/AuthorizeTypes
 end

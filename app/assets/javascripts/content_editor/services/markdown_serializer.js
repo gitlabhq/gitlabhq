@@ -1,5 +1,7 @@
 import { MarkdownSerializer as ProseMirrorMarkdownSerializer } from '~/lib/prosemirror_markdown_serializer';
 import * as extensions from '../extensions';
+import alert from './serializer/alert';
+import alertTitle from './serializer/alert_title';
 import codeSuggestion from './serializer/code_suggestion';
 import code from './serializer/code';
 import bold from './serializer/bold';
@@ -68,6 +70,8 @@ const defaultSerializerConfig = {
   },
 
   nodes: {
+    [extensions.Alert.name]: alert,
+    [extensions.AlertTitle.name]: alertTitle,
     [extensions.Audio.name]: audio,
     [extensions.Blockquote.name]: blockquote,
     [extensions.BulletList.name]: bulletList,

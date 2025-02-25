@@ -5538,6 +5538,9 @@ msgstr ""
 msgid "Alert"
 msgstr ""
 
+msgid "Alert type:"
+msgstr ""
+
 msgid "AlertManagement|Acknowledged"
 msgstr ""
 
@@ -47886,6 +47889,9 @@ msgstr ""
 msgid "Remove access"
 msgstr ""
 
+msgid "Remove alert"
+msgstr ""
+
 msgid "Remove all or specific assignees"
 msgstr ""
 
@@ -53160,6 +53166,9 @@ msgstr ""
 msgid "SecurityReports|All projects"
 msgstr ""
 
+msgid "SecurityReports|All report types"
+msgstr ""
+
 msgid "SecurityReports|All scanners"
 msgstr ""
 
@@ -53422,6 +53431,9 @@ msgid "SecurityReports|Projects added"
 msgstr ""
 
 msgid "SecurityReports|Remove project from dashboard"
+msgstr ""
+
+msgid "SecurityReports|Report Type"
 msgstr ""
 
 msgid "SecurityReports|Report has expired"
