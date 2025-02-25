@@ -22,7 +22,11 @@ module Gitlab
       attr_reader :root, :context, :source_ref_path, :source, :logger, :inject_edge_stages, :pipeline_policy_context
 
       # rubocop: disable Metrics/ParameterLists
-      def initialize(config, project: nil, pipeline: nil, sha: nil, ref: nil, user: nil, parent_pipeline: nil, source: nil, pipeline_config: nil, logger: nil, inject_edge_stages: true, pipeline_policy_context: nil)
+      def initialize(
+        config,
+        project: nil, pipeline: nil, sha: nil, ref: nil, user: nil, parent_pipeline: nil, source: nil,
+        pipeline_config: nil, logger: nil, inject_edge_stages: true, pipeline_policy_context: nil, inputs: {}
+      )
         @logger = logger || ::Gitlab::Ci::Pipeline::Logger.new(project: project)
         @source_ref_path = pipeline&.source_ref_path
         @project = project
@@ -41,7 +45,7 @@ module Gitlab
 
         Gitlab::Ci::Config::FeatureFlags.with_actor(project) do
           @config = self.logger.instrument(:config_expand, once: true) do
-            expand_config(config)
+            expand_config(config, inputs)
           end
 
           @root = self.logger.instrument(:config_root, once: true) do
@@ -148,8 +152,8 @@ module Gitlab
 
       private
 
-      def expand_config(config)
-        build_config(config)
+      def expand_config(config, inputs)
+        build_config(config, inputs)
 
       rescue Gitlab::Config::Loader::Yaml::DataTooLargeError => e
         track_and_raise_for_dev_exception(e)
@@ -158,11 +162,18 @@ module Gitlab
       rescue Gitlab::Ci::Config::External::Context::TimeoutError => e
         track_and_raise_for_dev_exception(e)
         raise Config::ConfigError, TIMEOUT_MESSAGE
+
+      rescue Gitlab::Ci::Config::Yaml::LoadError => e
+        raise Config::ConfigError, e.message
       end
 
-      def build_config(config)
+      def build_config(config, inputs)
         initial_config = logger.instrument(:config_yaml_load, once: true) do
-          Config::Yaml.load!(config)
+          if inputs.present?
+            Config::Yaml.load_with_inputs!(config, inputs, @context.variables)
+          else
+            Config::Yaml.load!(config)
+          end
         end
 
         initial_config = logger.instrument(:config_external_process, once: true) do

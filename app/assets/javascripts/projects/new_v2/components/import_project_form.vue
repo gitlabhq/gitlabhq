@@ -18,14 +18,24 @@ export default {
 </script>
 
 <template>
-  <multi-step-form-template :title="option.title" :current-step="2">
+  <multi-step-form-template :title="option.title" :current-step="2" :steps-total="2">
     <template #next>
-      <gl-button category="primary" variant="confirm" :disabled="true">
+      <gl-button
+        category="primary"
+        variant="confirm"
+        :disabled="true"
+        data-testid="import-project-next-button"
+      >
         {{ __('Next step') }}
       </gl-button>
     </template>
     <template #back>
-      <gl-button category="primary" variant="default" @click="$emit('back')">
+      <gl-button
+        category="primary"
+        variant="default"
+        data-testid="import-project-back-button"
+        @click="$emit('back')"
+      >
         {{ __('Go back') }}
       </gl-button>
     </template>

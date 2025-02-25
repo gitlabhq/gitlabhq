@@ -51,7 +51,8 @@ module Gitlab
                 user: current_user,
                 parent_pipeline: parent_pipeline,
                 pipeline_config: @command.pipeline_config,
-                logger: logger
+                logger: logger,
+                inputs: @command.pipeline_config.inputs_for_pipeline_creation
               }
             end
 

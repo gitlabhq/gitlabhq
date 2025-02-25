@@ -153,11 +153,13 @@ export default {
     </gl-alert>
     <gl-form-group
       :label="__('Name')"
+      label-for="comment-template-name-input"
       :state="isNameValid"
       :invalid-feedback="__('Please enter a name for the comment template.')"
       data-testid="comment-template-name-form-group"
     >
       <gl-form-input
+        id="comment-template-name-input"
         v-model="updateCommentTemplate.name"
         :placeholder="__('Enter a name for your comment template')"
         data-testid="comment-template-name-input"

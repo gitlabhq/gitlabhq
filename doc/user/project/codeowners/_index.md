@@ -105,7 +105,7 @@ Prerequisites:
 The `CODEOWNERS` file defines who is responsible for code in a GitLab project.
 Its purpose is to:
 
-- Automatically assign reviewers to merge requests based on the files changed.
+- Define Code Owners for specific files and directories.
 - Enforce approval requirements for protected branches.
 - Communicate code ownership in a project.
 

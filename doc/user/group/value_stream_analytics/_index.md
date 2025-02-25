@@ -710,7 +710,7 @@ group(fullPath: "your-group-path") {
 Similarly, to request metrics for a project, run:
 
 ```graphl
-project(fullPath: "your-group-path") {
+project(fullPath: "your-project-path") {
   valueStreams {
     nodes {
       id

@@ -63,7 +63,12 @@ module Ci
     #
     # @return [Ci::Pipeline]                                  The created Ci::Pipeline object.
     # rubocop: disable Metrics/ParameterLists, Metrics/AbcSize
-    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, merge_request: nil, external_pull_request: nil, bridge: nil, **options, &block)
+    def execute(
+      source,
+      ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, merge_request: nil,
+      external_pull_request: nil, bridge: nil, inputs: {},
+      **options, &block
+    )
       @logger = build_logger
       @command_logger = Gitlab::Ci::Pipeline::CommandLogger.new
       @pipeline = Ci::Pipeline.new
@@ -93,6 +98,7 @@ module Ci
         bridge: bridge,
         logger: @logger,
         partition_id: params[:partition_id],
+        inputs: ::Feature.enabled?(:ci_inputs_for_pipelines, project) ? inputs : {},
         **extra_options(**options))
 
       @pipeline.readonly! if command.readonly?

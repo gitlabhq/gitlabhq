@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Ci::EnqueueJobService, '#execute', feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
-  let(:user) { create(:user, developer_of: project) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
-  let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project, created_at: 1.day.ago) }
+  let_it_be_with_reload(:build) { create(:ci_build, :manual, pipeline: pipeline) }
 
   let(:service) do
     described_class.new(build, current_user: user)
@@ -105,6 +105,30 @@ RSpec.describe Ci::EnqueueJobService, '#execute', feature_category: :continuous_
       expect(called).to be true # ensure we actually entered the failure path
       expect(build.user).to eq(user)
       expect(build.job_variables.map(&:key)).to contain_exactly('third', 'fourth')
+    end
+  end
+
+  context 'when the pipeline is archived' do
+    before do
+      stub_application_setting(archive_builds_in_seconds: 3600)
+    end
+
+    it 'responds with forbidden' do
+      response = execute
+
+      expect(response).to be_error
+      expect(response.reason).to eq(:forbidden)
+    end
+  end
+
+  context 'when user is not authorized' do
+    let_it_be(:user) { create(:user, developer_of: project) }
+
+    it 'responds with forbidden' do
+      response = execute
+
+      expect(response).to be_error
+      expect(response.reason).to eq(:forbidden)
     end
   end
 end

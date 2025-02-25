@@ -5,18 +5,13 @@ import SingleChoiceSelector from '~/vue_shared/components/single_choice_selector
 describe('SingleChoice', () => {
   let wrapper;
 
-  const defaultPropsData = {
-    checked: 'option',
-  };
-
-  function createComponent({ propsData = {} } = {}) {
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(SingleChoiceSelector, {
       propsData: {
-        ...defaultPropsData,
-        ...propsData,
+        ...props,
       },
     });
-  }
+  };
 
   const findRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
 
@@ -24,5 +19,11 @@ describe('SingleChoice', () => {
     createComponent();
 
     expect(findRadioGroup().exists()).toBe(true);
+  });
+
+  it('passes the checked prop to GlFormRadioGroup', () => {
+    const checkedValue = 'test-option';
+    createComponent({ checked: checkedValue });
+    expect(findRadioGroup().attributes('checked')).toBe(checkedValue);
   });
 });

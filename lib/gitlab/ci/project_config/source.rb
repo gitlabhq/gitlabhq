@@ -8,7 +8,7 @@ module Gitlab
 
         def initialize(
           project:, sha:, custom_content: nil, pipeline_source: nil, pipeline_source_bridge: nil,
-          triggered_for_branch: false, ref: nil)
+          triggered_for_branch: false, ref: nil, inputs: {})
           @project = project
           @sha = sha
           @custom_content = custom_content
@@ -16,6 +16,7 @@ module Gitlab
           @pipeline_source_bridge = pipeline_source_bridge
           @triggered_for_branch = triggered_for_branch
           @ref = ref
+          @inputs = inputs
         end
 
         def exists?
@@ -41,13 +42,26 @@ module Gitlab
           nil
         end
 
+        def inputs_for_pipeline_creation
+          # For internal_include_prepended?, we already pass the inputs to the `include` statement.
+          internal_include_prepended? ? {} : inputs
+        end
+
         private
 
         attr_reader :project, :sha, :custom_content, :pipeline_source, :pipeline_source_bridge, :triggered_for_branch,
-          :ref
+          :ref, :inputs
 
         def ci_config_path
           @ci_config_path ||= project.ci_config_path_or_default
+        end
+
+        def ci_yaml_include(config)
+          YAML.dump('include' => [config.merge(include_inputs)])
+        end
+
+        def include_inputs
+          { 'inputs' => inputs }.compact_blank
         end
       end
     end

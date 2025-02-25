@@ -40,6 +40,7 @@ RSpec/SpecFilePathFormat:
     - 'spec/services/ci/create_pipeline_service/environment_spec.rb'
     - 'spec/services/ci/create_pipeline_service/evaluate_runner_tags_spec.rb'
     - 'spec/services/ci/create_pipeline_service/include_spec.rb'
+    - 'spec/services/ci/create_pipeline_service/inputs_spec.rb'
     - 'spec/services/ci/create_pipeline_service/limit_active_jobs_spec.rb'
     - 'spec/services/ci/create_pipeline_service/logger_spec.rb'
     - 'spec/services/ci/create_pipeline_service/merge_requests_spec.rb'

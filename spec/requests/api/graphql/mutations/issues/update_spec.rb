@@ -67,6 +67,10 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
     end
 
     context 'setting labels' do
+      before do
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(102)
+      end
+
       let(:mutation) do
         graphql_mutation(:update_issue, input_params) do
           <<~QL

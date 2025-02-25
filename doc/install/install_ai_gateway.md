@@ -315,3 +315,12 @@ You can configure this in either of the following ways:
   ```
 
 This configuration ensures the AI Gateway can properly cache HuggingFace models while respecting OpenShift's security constraints. The exact directory you choose may depend on your specific OpenShift configuration and security policies.
+
+### Self-signed certificate error
+
+A `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain` error is logged by the AI gateway
+when the gateway tries to connect to a GitLab instance using either a certificate signed by a custom certificate authority (CA), or a self-signed certificate:
+
+- The use of custom CA certificates in the Helm chart configuration when deploying the AI gateway is not supported. For more information, see [issue 3](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/issues/3). Use the [workaround](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/issues/3#workaround) detailed in this issue.
+
+- The use of a self-signed certificate by the GitLab instance is not supported. For more information, see [issue 799](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/799).

@@ -7,13 +7,14 @@ RSpec.describe Gitlab::Ci::ProjectConfig::ProjectSetting, feature_category: :pip
   let(:sha) { project.repository.head_commit.sha }
   let(:files) { { 'README.md' => 'hello' } }
   let(:config_path) { nil }
+  let(:inputs) { nil }
 
   before do
     project.ci_config_path = config_path
   end
 
   subject(:config) do
-    described_class.new(project: project, sha: sha)
+    described_class.new(project: project, sha: sha, inputs: inputs)
   end
 
   describe '#content' do
@@ -31,6 +32,21 @@ RSpec.describe Gitlab::Ci::ProjectConfig::ProjectSetting, feature_category: :pip
       let(:files) { { '.gitlab-ci.yml' => 'content' } }
 
       it { is_expected.to eq(config_content_result) }
+
+      context 'when passing inputs' do
+        let(:inputs) { { 'foo' => 'bar' } }
+        let(:config_content_result) do
+          <<~CICONFIG
+          ---
+          include:
+          - local: ".gitlab-ci.yml"
+            inputs:
+              foo: bar
+          CICONFIG
+        end
+
+        it { is_expected.to eq(config_content_result) }
+      end
     end
 
     context 'with external config' do
@@ -46,6 +62,22 @@ RSpec.describe Gitlab::Ci::ProjectConfig::ProjectSetting, feature_category: :pip
       end
 
       it { is_expected.to eq(config_content_result) }
+
+      context 'when passing inputs' do
+        let(:inputs) { { 'foo' => 'bar' } }
+        let(:config_content_result) do
+          <<~CICONFIG
+          ---
+          include:
+          - project: another-group/another-project
+            file: path/to/.gitlab-ci.yml
+            inputs:
+              foo: bar
+          CICONFIG
+        end
+
+        it { is_expected.to eq(config_content_result) }
+      end
     end
 
     context 'with remote config' do
@@ -59,6 +91,21 @@ RSpec.describe Gitlab::Ci::ProjectConfig::ProjectSetting, feature_category: :pip
       end
 
       it { is_expected.to eq(config_content_result) }
+
+      context 'when passing inputs' do
+        let(:inputs) { { 'foo' => 'bar' } }
+        let(:config_content_result) do
+          <<~CICONFIG
+          ---
+          include:
+          - remote: #{config_path}
+            inputs:
+              foo: bar
+          CICONFIG
+        end
+
+        it { is_expected.to eq(config_content_result) }
+      end
     end
 
     context 'when file is not in repository' do
@@ -102,5 +149,13 @@ RSpec.describe Gitlab::Ci::ProjectConfig::ProjectSetting, feature_category: :pip
     subject { config.internal_include_prepended? }
 
     it { is_expected.to eq(true) }
+  end
+
+  describe '#inputs_for_pipeline_creation' do
+    let(:inputs) { { 'foo' => 'bar' } }
+
+    subject(:inputs_for_pipeline_creation) { config.inputs_for_pipeline_creation }
+
+    it { is_expected.to eq({}) }
   end
 end

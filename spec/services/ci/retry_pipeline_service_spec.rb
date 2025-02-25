@@ -392,6 +392,22 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
         expect(pipeline.reload).not_to be_running
       end
     end
+
+    context 'when the pipeline is archived' do
+      let(:pipeline) { create(:ci_pipeline, project: project, created_at: 1.day.ago) }
+
+      before do
+        stub_application_setting(archive_builds_in_seconds: 3600)
+      end
+
+      it 'returns an error' do
+        response = service.execute(pipeline)
+
+        expect(response.http_status).to eq(:forbidden)
+        expect(response.errors).to include('403 Forbidden')
+        expect(pipeline.reload).not_to be_running
+      end
+    end
   end
 
   context 'when user is not allowed to retry pipeline' do

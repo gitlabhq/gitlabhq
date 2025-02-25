@@ -316,7 +316,7 @@ administrators can allow top-level group Owners to create service accounts.
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -330,6 +330,7 @@ administrators can allow top-level group Owners to create service accounts.
 
 The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
 For more information, see the history.
+The feature flag is not available on GitLab Dedicated.
 
 {{< /alert >}}
 
@@ -359,6 +360,7 @@ After a lifetime for SSH keys is set, GitLab:
 - Requires users to set an expiration date that is no later than the allowed lifetime on new SSH keys. The maximum allowed lifetime is:
   - 365 days by default.
   - 400 days, if you enable the `buffered_token_expiration_limit` feature flag.
+    This extended limit is not available on GitLab Dedicated.
 - Applies the lifetime restriction to existing SSH keys. Keys with no expiry or a lifetime
   greater than the maximum immediately become invalid.
 
@@ -373,7 +375,7 @@ When a user's SSH key becomes invalid they can delete and re-add the same key ag
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -387,6 +389,7 @@ When a user's SSH key becomes invalid they can delete and re-add the same key ag
 
 The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
 For more information, see the history.
+The feature flag is not available on GitLab Dedicated.
 
 {{< /alert >}}
 
@@ -397,11 +400,13 @@ This lifetime is not a requirement, and can be set to any value greater than 0 a
 
 - 365 days by default.
 - 400 days, if you enable the `buffered_token_expiration_limit` feature flag.
+  This extended limit is not available on GitLab Dedicated.
 
 If this setting is left blank, the default allowable lifetime of access tokens is:
 
 - 365 days by default.
 - 400 days, if you enable the `buffered_token_expiration_limit` feature flag.
+  This extended limit is not available on GitLab Dedicated.
 
 Access tokens are the only tokens needed for programmatic access to GitLab.
 However, organizations with security requirements may want to enforce more protection by

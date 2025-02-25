@@ -4278,20 +4278,6 @@ CREATE TABLE loose_foreign_keys_deleted_records (
 )
 PARTITION BY LIST (partition);
 
-CREATE TABLE merge_request_diff_commits_b5377a7a34 (
-    authored_date timestamp without time zone,
-    committed_date timestamp without time zone,
-    sha bytea NOT NULL,
-    message text,
-    trailers jsonb DEFAULT '{}'::jsonb NOT NULL,
-    commit_author_id bigint,
-    committer_id bigint,
-    merge_request_diff_id bigint NOT NULL,
-    relative_order integer NOT NULL,
-    project_id bigint
-)
-PARTITION BY RANGE (merge_request_diff_id);
-
 CREATE TABLE p_batched_git_ref_updates_deletions (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -16025,6 +16011,20 @@ CREATE TABLE merge_request_diff_commits (
     commit_author_id bigint,
     committer_id bigint
 );
+
+CREATE TABLE merge_request_diff_commits_b5377a7a34 (
+    authored_date timestamp without time zone,
+    committed_date timestamp without time zone,
+    sha bytea NOT NULL,
+    message text,
+    trailers jsonb DEFAULT '{}'::jsonb NOT NULL,
+    commit_author_id bigint,
+    committer_id bigint,
+    merge_request_diff_id bigint NOT NULL,
+    relative_order integer NOT NULL,
+    project_id bigint
+)
+PARTITION BY RANGE (merge_request_diff_id);
 
 CREATE TABLE merge_request_diff_details (
     merge_request_diff_id bigint NOT NULL,

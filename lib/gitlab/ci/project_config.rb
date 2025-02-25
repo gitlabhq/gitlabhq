@@ -24,9 +24,9 @@ module Gitlab
 
       FALLBACK_POLICY_SOURCE = ProjectConfig::SecurityPolicyDefault
 
-      def initialize(
+      def initialize( # rubocop:disable Metrics/ParameterLists -- we need all these parameters
         project:, sha:, custom_content: nil, pipeline_source: nil, pipeline_source_bridge: nil,
-        triggered_for_branch: nil, ref: nil, pipeline_policy_context: nil)
+        triggered_for_branch: nil, ref: nil, pipeline_policy_context: nil, inputs: nil)
 
         unless pipeline_policy_context&.applying_config_override?
           @config = find_source(project: project,
@@ -35,7 +35,8 @@ module Gitlab
             pipeline_source: pipeline_source,
             pipeline_source_bridge: pipeline_source_bridge,
             triggered_for_branch: triggered_for_branch,
-            ref: ref
+            ref: ref,
+            inputs: inputs
           )
 
           return if @config
@@ -52,7 +53,7 @@ module Gitlab
         @config = fallback_config if fallback_config.exists?
       end
 
-      delegate :content, :source, :url, to: :@config, allow_nil: true
+      delegate :content, :source, :url, :inputs_for_pipeline_creation, to: :@config, allow_nil: true
       delegate :internal_include_prepended?, to: :@config
 
       def exists?
@@ -62,7 +63,8 @@ module Gitlab
       private
 
       def find_source(
-        project:, sha:, custom_content:, pipeline_source:, pipeline_source_bridge:, triggered_for_branch:, ref:)
+        project:, sha:, custom_content:, pipeline_source:, pipeline_source_bridge:, triggered_for_branch:, ref:,
+        inputs:)
         STANDARD_SOURCES.each do |source|
           source_config = source.new(project: project,
             sha: sha,
@@ -70,7 +72,8 @@ module Gitlab
             pipeline_source: pipeline_source,
             pipeline_source_bridge: pipeline_source_bridge,
             triggered_for_branch: triggered_for_branch,
-            ref: ref
+            ref: ref,
+            inputs: inputs
           )
 
           return source_config if source_config.exists?

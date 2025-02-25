@@ -235,7 +235,7 @@ To create a Jira Cloud API token:
 
 To copy the API token, select **Copy**.
 
-## Migrate from Jira Server to Jira Cloud
+## Migrate from one Jira site to another
 
 {{< history >}}
 
@@ -243,17 +243,10 @@ To copy the API token, select **Copy**.
 
 {{< /history >}}
 
-To migrate from Jira Server to Jira Cloud in GitLab and maintain your Jira issues integration:
+To migrate from one Jira site to another in GitLab and maintain your Jira issues integration:
 
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
-1. Select **Jira issues**.
-1. In **Web URL**, enter the new Jira site URL (for example, `https://myjirasite.atlassian.net`).
-1. In **Email or username**, enter the email registered on your Jira profile.
-1. [Create a Jira Cloud API token](#create-a-jira-cloud-api-token), and copy the token value.
-1. In **API token or password**, paste the API token value.
-1. Optional. Select **Test settings**.
-1. Select **Save changes**.
+1. Follow the steps in [configure the integration](#configure-the-integration).
+1. Enter the new Jira site URL (for example, `https://myjirasite.atlassian.net`). 
 
 To update existing Jira issue references in GitLab to use the new Jira site URL, you must
 [invalidate the Markdown cache](../../administration/invalidate_markdown_cache.md#invalidate-the-cache).

@@ -7,7 +7,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
   let(:pipeline) { build(:ci_pipeline, project: project) }
   let(:content) { nil }
   let(:source) { :push }
-  let(:command) { Gitlab::Ci::Pipeline::Chain::Command.new(project: project, content: content, source: source) }
+  let(:inputs) { {} }
+  let(:command) do
+    Gitlab::Ci::Pipeline::Chain::Command.new(project: project, content: content, source: source, inputs: inputs)
+  end
 
   subject { described_class.new(pipeline, command) }
 
@@ -145,6 +148,28 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
         expect(command.config_content).to eq(config_content_result)
         expect(command.pipeline_config.internal_include_prepended?).to eq(true)
       end
+
+      context 'when passing inputs' do
+        let(:inputs) { { 'foo' => 'bar' } }
+        let(:config_content_result) do
+          <<~CICONFIG
+            ---
+            include:
+            - local: ".gitlab-ci.yml"
+              inputs:
+                foo: bar
+          CICONFIG
+        end
+
+        it 'builds the config with the inputs' do
+          subject.perform!
+
+          expect(pipeline.config_source).to eq 'repository_source'
+          expect(pipeline.pipeline_config.content).to eq(config_content_result)
+          expect(command.config_content).to eq(config_content_result)
+          expect(command.pipeline_config.internal_include_prepended?).to eq(true)
+        end
+      end
     end
 
     context 'when config is the Auto-Devops template' do
@@ -189,6 +214,19 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
         expect(pipeline.pipeline_config.content).to eq(content)
         expect(command.config_content).to eq(content)
         expect(command.pipeline_config.internal_include_prepended?).to eq(false)
+      end
+
+      context 'when passing inputs' do
+        let(:inputs) { { 'foo' => 'bar' } }
+
+        it 'uses the parameter content with inputs' do
+          subject.perform!
+
+          expect(pipeline.config_source).to eq 'parameter_source'
+          expect(pipeline.pipeline_config.content).to eq(content)
+          expect(command.config_content).to eq(content)
+          expect(command.pipeline_config.internal_include_prepended?).to eq(false)
+        end
       end
     end
 
