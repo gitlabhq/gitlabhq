@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillMissingNamespaceIdOnNotes, feature_category: :code_review_workflow do
+RSpec.describe Gitlab::BackgroundMigration::BackfillMissingNamespaceIdOnNotes,
+  :migration_with_transaction, feature_category: :code_review_workflow do
   let(:namespaces_table) { table(:namespaces) }
   let(:notes_table) { table(:notes) }
   let(:projects_table) { table(:projects) }
@@ -156,11 +157,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillMissingNamespaceIdOnNotes, f
     end
 
     let!(:work_items_type) do
-      work_item_types_table.create!(
-        id: Random.random_number(4000),
-        name: 'User Story',
-        correct_id: Random.random_number(4000)
-      )
+      work_item_types_table.find_by(name: 'Issue')
     end
 
     let!(:issue) do
