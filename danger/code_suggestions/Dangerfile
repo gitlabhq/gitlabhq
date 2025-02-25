@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-CODE_SUGGESTIONS_CATEGORY_LABEL = "Category:Code Suggestions"
-
 CODE_SUGGESTIONS_DANGER_MESSAGE = <<~MSG
 ## Code Suggestions
 

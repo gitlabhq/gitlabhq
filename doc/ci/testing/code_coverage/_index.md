@@ -65,7 +65,7 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 
 | Tool       | Language | Command        | Regex pattern |
 |------------|----------|----------------|---------------|
-| pytest-cov | Python   | `pytest --cov` | `/TOTAL.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/` |
+| pytest-cov | Python   | `pytest --cov` | `/TOTAL.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
 | Simplecov  | Ruby     | `rspec spec`   | `/\(\d+.\d+\%\) covered/` |
 
 {{< /tab >}}

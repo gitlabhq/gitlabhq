@@ -218,7 +218,7 @@ To fix this, make sure that the authorization headers being sent with the regist
 
 To replicate a container image, Sidekiq uses JWT to authenticate itself towards the container registry. Geo replication takes it as a prerequisite that the [container registry configuration](../../packages/container_registry.md) has been done correctly.
 
-Make sure that both sites share a single signing key pair, as instructed under [Configure secondary site](#configure-secondary-site), and that both container registries, plus primary and secondary sites are [all configured to use the same token issuer](../../packages/container_registry.md#configure-gitlab-and-registry-to-run-on-separate-nodes-linux-package-installations).
+Make sure that both sites share a single signing key pair, as instructed under [Configure secondary site](#configure-secondary-site), and that both container registries, plus primary and secondary sites are [all configured to use the same token issuer](../../packages/container_registry.md#configure-gitlab-and-registry-on-separate-nodes-linux-package-installations).
 
 On multinode deployments, make sure that the issuer configured on the Sidekiq node matches the value configured on the registries.
 

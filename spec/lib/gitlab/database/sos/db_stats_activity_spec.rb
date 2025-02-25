@@ -50,6 +50,8 @@ RSpec.describe Gitlab::Database::Sos::DbStatsActivity, feature_category: :databa
           expect(result.fields).to eq %w[job_class_name table_name column_name job_arguments]
         when :platform_info
           expect(result.fields).to eq %w[key value]
+        when :collation_check
+          expect(result.fields).to eq %w[collation_name version actual_version]
         end
       end
     end

@@ -2376,7 +2376,7 @@ DEPENDENCIES
   thrift (>= 0.16.0)
   timfel-krb5-auth (~> 0.8)
   toml-rb (~> 2.2.0)
-  truncato (~> 0.7.12)
+  truncato (~> 0.7.13)
   tty-prompt (~> 0.23)
   typhoeus (~> 1.4.0)
   undercover (~> 0.6.0)

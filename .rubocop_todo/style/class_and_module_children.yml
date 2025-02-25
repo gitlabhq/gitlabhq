@@ -389,7 +389,6 @@ Style/ClassAndModuleChildren:
     - 'ee/app/controllers/projects/insights_controller.rb'
     - 'ee/app/controllers/projects/iteration_cadences_controller.rb'
     - 'ee/app/controllers/projects/iterations_controller.rb'
-    - 'ee/app/controllers/projects/path_locks_controller.rb'
     - 'ee/app/controllers/projects/protected_environments_controller.rb'
     - 'ee/app/controllers/projects/push_rules_controller.rb'
     - 'ee/app/controllers/projects/quality/test_cases_controller.rb'

@@ -25040,6 +25040,9 @@ msgstr ""
 msgid "Filter by test cases that are currently open."
 msgstr ""
 
+msgid "Filter list for %{title}"
+msgstr ""
+
 msgid "Filter parameters are not valid. Make sure that the end date is after the start date."
 msgstr ""
 
