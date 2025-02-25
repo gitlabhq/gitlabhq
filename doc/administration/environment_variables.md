@@ -45,6 +45,7 @@ You can use the following environment variables to override certain values:
 | `GITLAB_DISABLE_MARKDOWN_TIMEOUT`          | string  | If set to `true`, `1`, or `yes`, Markdown rendering on the backend does not time out. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163662) in 17.4. |
 | `GITLAB_LFS_MAX_OID_TO_FETCH`              | integer | Sets the maximum number of LFS objects to link. Default is `100,000`. |
 | `SIDEKIQ_SEMI_RELIABLE_FETCH_TIMEOUT`      | integer | Sets the timeout for Sidekiq semi-reliable fetch. Default is `5`. [Before GitLab 16.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139583), default was `3`. If you experience high Redis CPU consumption on GitLab 16.6 and earlier, or if you have customized this variable, you should update this variable to `5`. |
+| `SSL_IGNORE_UNEXPECTED_EOF`                | string  | OpenSSL 3.0 requires servers to send a close_notify before shutting down an SSL connection. Setting this to `true` will disable this. See the [OpenSSL documentation](https://docs.openssl.org/3.0/man3/SSL_CTX_set_options/#notes) for more details. Default is `false`. |
 
 ## Adding more variables
 
