@@ -29,8 +29,20 @@ module Gitlab
           return Gitlab::SlashCommands::Presenters::Access.new.not_found
         end
 
-        new_issue = ::Issues::MoveService.new(container: project, current_user: current_user)
-                      .execute(old_issue, target_project)
+        new_issue = if Feature.enabled?(:work_item_move_and_clone, project)
+                      response = ::WorkItems::DataSync::MoveService.new(
+                        work_item: old_issue, current_user: current_user,
+                        target_namespace: target_project.project_namespace
+                      ).execute
+
+                      return presenter(old_issue).display_move_error(response.message) if response.error?
+
+                      response[:work_item]
+                    else
+                      ::Issues::MoveService.new(
+                        container: project, current_user: current_user
+                      ).execute(old_issue, target_project)
+                    end
 
         presenter(new_issue).present(old_issue)
       rescue ::Issues::MoveService::MoveError => e

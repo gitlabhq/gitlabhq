@@ -56,6 +56,10 @@ module Types
       null: true,
       description: 'Package settings for the namespace.'
 
+    field :avatar_url, GraphQL::Types::String,
+      null: true,
+      description: 'URL to avatar image file of the namespace.'
+
     field :ci_cd_settings,
       Types::Ci::NamespaceSettingsType,
       null: true,

@@ -22,7 +22,7 @@
 review-docs-deploy:
   extends: .review-docs
   script:
-    - ./scripts/trigger-build.rb docs-hugo deploy
+    - ./scripts/trigger-build.rb docs deploy
 
 # Cleanup remote environment of gitlab-org/technical-writing/docs-gitlab-com
 review-docs-cleanup:
@@ -31,7 +31,7 @@ review-docs-cleanup:
     name: review-docs/mr-${CI_MERGE_REQUEST_IID}
     action: stop
   script:
-    - ./scripts/trigger-build.rb docs-hugo cleanup
+    - ./scripts/trigger-build.rb docs cleanup
 
 .docs-markdown-lint-image:
   # When updating the image version here, update it in /scripts/lint-doc.sh too.

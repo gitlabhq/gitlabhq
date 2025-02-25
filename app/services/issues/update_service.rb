@@ -102,7 +102,16 @@ module Issues
         target_project != issue.project
 
       update(issue)
-      Issues::MoveService.new(container: project, current_user: current_user).execute(issue, target_project)
+
+      if Feature.enabled?(:work_item_move_and_clone, project)
+        ::WorkItems::DataSync::MoveService.new(
+          work_item: issue, current_user: current_user, target_namespace: target_project.project_namespace
+        ).execute[:work_item]
+      else
+        ::Issues::MoveService.new(
+          container: project, current_user: current_user
+        ).execute(issue, target_project)
+      end
     end
 
     private

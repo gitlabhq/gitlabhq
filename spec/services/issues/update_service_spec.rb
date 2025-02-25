@@ -1429,21 +1429,43 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
     end
 
     context 'move issue to another project' do
-      let(:target_project) { create(:project) }
+      shared_examples 'move issue to another project' do
+        let_it_be(:target_project) { create(:project) }
 
-      context 'valid project' do
-        before do
-          target_project.add_maintainer(user)
+        context 'valid project' do
+          before do
+            target_project.add_maintainer(user)
+          end
+
+          it 'calls the move service with the proper issue and project' do
+            expect_next_instance_of(move_service_class) do |service|
+              expect(service).to receive(:execute).and_call_original
+            end
+
+            new_issue = update_issue(target_project: target_project)
+
+            expect(new_issue.project).to eq(target_project)
+          end
         end
+      end
 
-        it 'calls the move service with the proper issue and project' do
-          move_stub = instance_double(Issues::MoveService)
-          allow(Issues::MoveService).to receive(:new).and_return(move_stub)
-          allow(move_stub).to receive(:execute).with(issue, target_project).and_return(issue)
+      context 'with work_item_move_and_clone disabled' do
+        it_behaves_like 'move issue to another project' do
+          let(:move_service_class) { Issues::MoveService }
 
-          expect(move_stub).to receive(:execute).with(issue, target_project)
+          before do
+            stub_feature_flags(work_item_move_and_clone: false)
+          end
+        end
+      end
 
-          update_issue(target_project: target_project)
+      context 'with work_item_move_and_clone enabled' do
+        it_behaves_like 'move issue to another project' do
+          let(:move_service_class) { ::WorkItems::DataSync::MoveService }
+
+          before do
+            stub_feature_flags(work_item_move_and_clone: true)
+          end
         end
       end
     end
@@ -1488,7 +1510,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
       end
     end
 
-    context 'when moving an issue ' do
+    context 'when changing relative position of an issue ' do
       it 'raises an error for invalid move ids' do
         opts = { move_between_ids: [9000, non_existing_record_id] }
 

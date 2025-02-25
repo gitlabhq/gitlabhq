@@ -478,44 +478,62 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
   end
 
   describe 'POST #move' do
-    before do
-      sign_in(user)
-      project.add_developer(user)
+    shared_examples 'move issue request' do
+      before do
+        sign_in(user)
+        project.add_developer(user)
+      end
+
+      context 'when moving issue to another private project' do
+        let_it_be(:another_project) { create(:project, :private) }
+
+        context 'when user has access to move issue' do
+          before do
+            another_project.add_reporter(user)
+          end
+
+          it 'moves issue to another project' do
+            move_issue
+
+            expect(response).to have_gitlab_http_status :ok
+            expect(another_project.issues).not_to be_empty
+          end
+        end
+
+        context 'when user does not have access to move issue' do
+          it 'responds with 404' do
+            move_issue
+
+            expect(response).to have_gitlab_http_status :not_found
+          end
+        end
+
+        def move_issue
+          post :move,
+            params: {
+              namespace_id: project.namespace.to_param,
+              project_id: project,
+              id: issue.iid,
+              move_to_project_id: another_project.id
+            },
+            format: :json
+        end
+      end
     end
 
-    context 'when moving issue to another private project' do
-      let_it_be(:another_project) { create(:project, :private) }
-
-      context 'when user has access to move issue' do
+    context 'with work_item_move_and_clone disabled' do
+      it_behaves_like 'move issue request' do
         before do
-          another_project.add_reporter(user)
-        end
-
-        it 'moves issue to another project' do
-          move_issue
-
-          expect(response).to have_gitlab_http_status :ok
-          expect(another_project.issues).not_to be_empty
+          stub_feature_flags(work_item_move_and_clone: false)
         end
       end
+    end
 
-      context 'when user does not have access to move issue' do
-        it 'responds with 404' do
-          move_issue
-
-          expect(response).to have_gitlab_http_status :not_found
+    context 'with work_item_move_and_clone enabled' do
+      it_behaves_like 'move issue request' do
+        before do
+          stub_feature_flags(work_item_move_and_clone: true)
         end
-      end
-
-      def move_issue
-        post :move,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            id: issue.iid,
-            move_to_project_id: another_project.id
-          },
-          format: :json
       end
     end
   end

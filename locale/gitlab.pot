@@ -64333,6 +64333,9 @@ msgstr ""
 msgid "Vulnerability|Create a merge request to implement this solution, or download and apply the patch manually."
 msgstr ""
 
+msgid "Vulnerability|Dependency paths"
+msgstr ""
+
 msgid "Vulnerability|Description"
 msgstr ""
 
@@ -64481,6 +64484,9 @@ msgid "Vulnerability|Use AI to understand a vulnerability and suggest a fix"
 msgstr ""
 
 msgid "Vulnerability|View code flow"
+msgstr ""
+
+msgid "Vulnerability|View dependency paths"
 msgstr ""
 
 msgid "Vulnerability|View training"

@@ -80,12 +80,12 @@ export default {
       <img alt="" class="gl-max-w-full" :src="illustrationPath" />
     </div>
     <div class="gl-empty-state-content gl-m-auto gl-mx-auto gl-my-0 gl-p-5">
-      <h1
+      <h2
         class="gl-mb-0 gl-mt-0 gl-text-size-h-display gl-leading-36"
         data-testid="job-empty-state-title"
       >
         {{ title }}
-      </h1>
+      </h2>
       <p v-if="content" class="gl-mb-0 gl-mt-4" data-testid="job-empty-state-content">
         {{ content }}
       </p>

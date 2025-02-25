@@ -227,7 +227,7 @@ To create a release with packaged assets:
    ```yaml
    Create Release:
      stage: release
-     iamge: registry.gitlab.com/gitlab-org/release-cli:latest
+     image: registry.gitlab.com/gitlab-org/release-cli:latest
      rules:
        - if: $CI_COMMIT_TAG
      script:

@@ -11,7 +11,8 @@ module WorkItems
       # target_namespace - ProjectNamespace, Group or Project
       # current_user - user performing the move/clone action
       def initialize(work_item:, target_namespace:, current_user: nil, params: {})
-        @work_item = work_item
+        # this helps reuse this service with Issue instances in legacy code, as well as WorkItem instances
+        @work_item = ensure_work_item(work_item)
         @target_namespace = target_namespace
 
         super(container: work_item.namespace, current_user: current_user, params: params)
@@ -31,6 +32,12 @@ module WorkItems
       def verify_work_item_action_permission!; end
 
       def data_sync_action; end
+
+      def ensure_work_item(work_item)
+        return work_item if work_item.is_a?(WorkItem)
+
+        WorkItem.find_by_id(work_item) if work_item.is_a?(Issue)
+      end
     end
   end
 end

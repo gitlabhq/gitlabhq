@@ -67,6 +67,7 @@ Dashboards support the following filters:
 - **Date range**: Date selector to filter data by date.
 - **Anonymous users**: Toggle to include or exclude anonymous users from the dataset.
 - **Project**: Dropdown list to filter data by project.
+- **Filtered search**: Filter bar to filter data by selected attributes.
 
 #### Dashboard status
 
@@ -133,8 +134,16 @@ To create a built-in analytics dashboard:
        enabled: true
      dateRange:
        enabled: true
-     projects: 
+     projects:
        enabled: true
+     filteredSearch:
+       enabled: true
+       # Use `options` to define an array of tokens to override the default ones
+       options:
+         - token: assignee
+           unique: false
+         - token: label
+           maxSuggestions: 10
    ```
 
    Refer to the `DashboardFilters` type in the [`ee/app/validators/json_schemas/analytics_dashboard.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_dashboard.json) for a list of supported filters.

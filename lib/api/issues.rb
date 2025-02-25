@@ -381,7 +381,20 @@ module API
         not_found!('Project') unless new_project
 
         begin
-          issue = ::Issues::MoveService.new(container: user_project, current_user: current_user).execute(issue, new_project)
+          issue = if Feature.enabled?(:work_item_move_and_clone, user_project)
+                    response = ::WorkItems::DataSync::MoveService.new(
+                      work_item: issue, current_user: current_user, target_namespace: new_project.project_namespace
+                    ).execute
+
+                    render_api_error!(response.message, 400) if response.error?
+
+                    response.payload[:work_item]
+                  else
+                    ::Issues::MoveService.new(
+                      container: user_project, current_user: current_user
+                    ).execute(issue, new_project)
+                  end
+
           present issue, with: Entities::Issue, current_user: current_user, project: user_project
         rescue ::Issues::MoveService::MoveError => error
           render_api_error!(error.message, 400)

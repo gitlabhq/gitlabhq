@@ -240,11 +240,7 @@ module Trigger
     end
   end
 
-  # This is used in:
-  # - https://gitlab.com/gitlab-org/gitlab-runner/-/blob/ddaf90761c917a42ed4aab60541b6bc33871fe68/.gitlab/ci/docs.gitlab-ci.yml#L1-47
-  # - https://gitlab.com/gitlab-org/charts/gitlab/-/blob/fa348e709e901196803051669b4874b657b4ea91/.gitlab-ci.yml#L497-543
-  # - https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/b44483f05c5e22628ba3b49ec4c7f8761c688af0/gitlab-ci-config/gitlab-com.yml#L199-224
-  # - https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/b44483f05c5e22628ba3b49ec4c7f8761c688af0/gitlab-ci-config/gitlab-com.yml#L356-380
+  # For GitLab documentation review apps
   class Docs < Base
     def access_token
       ENV['DOCS_PROJECT_API_TOKEN'] || super
@@ -284,26 +280,23 @@ module Trigger
     private
 
     def downstream_environment
-      "review/#{ref}#{review_slug}"
+      "upstream-review/mr-${CI_MERGE_REQUEST_IID}"
     end
 
-    # We prepend the `-` here because we cannot use variable substitution in `environment.name`/`environment.url`
-    # Some projects (e.g. `omnibus-gitlab`) use this script for branch pipelines, so we fallback to using `CI_COMMIT_REF_SLUG` for those cases.
     def review_slug
       identifier = ENV['CI_MERGE_REQUEST_IID'] || ENV['CI_COMMIT_REF_SLUG']
 
-      "-#{project_slug}-#{identifier}"
+      "#{project_slug}-#{identifier}"
     end
 
     def downstream_project_path
-      ENV.fetch('DOCS_PROJECT_PATH', 'gitlab-org/gitlab-docs')
+      ENV.fetch('DOCS_PROJECT_PATH', 'gitlab-org/technical-writing/docs-gitlab-com')
     end
 
     def ref_param_name
       'DOCS_BRANCH'
     end
 
-    # `gitlab-org/gitlab-docs` pipeline trigger "Triggered from gitlab-org/gitlab 'review-docs-deploy' job"
     def trigger_token
       ENV['DOCS_TRIGGER_TOKEN']
     end
@@ -333,10 +326,8 @@ module Trigger
       end
     end
 
-    # app_url is the URL of the `gitlab-docs` Review App URL defined in
-    # https://gitlab.com/gitlab-org/gitlab-docs/-/blob/b38038132cf82a24271bbb294dead7c2f529e275/.gitlab-ci.yml#L383
     def app_url
-      "http://#{ref}#{review_slug}.#{ENV['DOCS_REVIEW_APPS_DOMAIN']}/#{project_slug}"
+      "https://docs.gitlab.com/upstream-review-mr-#{review_slug}/"
     end
 
     def display_success_message
@@ -344,35 +335,12 @@ module Trigger
     end
   end
 
-  class DocsHugo < Docs
-    def access_token
-      ENV['DOCS_HUGO_PROJECT_API_TOKEN'] || super
-    end
-
-    private
-
-    def downstream_environment
-      "upstream-review/mr-${CI_MERGE_REQUEST_IID}"
-    end
-
-    def review_slug
-      identifier = ENV['CI_MERGE_REQUEST_IID'] || ENV['CI_COMMIT_REF_SLUG']
-
-      "#{project_slug}-#{identifier}"
-    end
-
-    def downstream_project_path
-      ENV.fetch('DOCS_PROJECT_PATH', 'gitlab-org/technical-writing/docs-gitlab-com')
-    end
-
-    def trigger_token
-      ENV['DOCS_HUGO_TRIGGER_TOKEN']
-    end
-
-    def app_url
-      "https://new.docs.gitlab.com/upstream-review-mr-#{review_slug}/"
-    end
-  end
+  # Alias DocsHugo to Docs until callers to DocsHugo are updated:
+  # - https://gitlab.com/gitlab-org/gitlab-runner/-/blob/d1bee4412f473208d5c96a6a40103e7198a04e69/.gitlab/ci/docs.gitlab-ci.yml
+  # - https://gitlab.com/gitlab-org/charts/gitlab/-/blob/7eeea87621ed4661b66d4fd1c561bab3a53baecf/.gitlab-ci.yml
+  # - https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/4732915e79f16465ff5a669540b36d29dca22028/gitlab-ci-config/gitlab-com.yml
+  # - https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/b254c9982dd2c26cdf70e038a033600a28007c68/.gitlab-ci.yml
+  DocsHugo = Docs
 
   class DatabaseTesting < Base
     IDENTIFIABLE_NOTE_TAG = 'gitlab-org/database-team/gitlab-com-database-testing:identifiable-note'

@@ -469,87 +469,111 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
   end
 
   describe '/projects/:id/issues/:issue_iid/move' do
-    let!(:target_project) { create(:project, creator_id: user.id, namespace: user.namespace) }
-    let!(:target_project2) { create(:project, creator_id: non_member.id, namespace: non_member.namespace) }
-    let(:path) { "/projects/#{project.id}/issues/#{issue.iid}/move" }
+    shared_examples 'move work item api requests' do
+      let_it_be(:target_project) { create(:project, creator_id: user.id, namespace: user.namespace) }
+      let_it_be(:target_project2) { create(:project, creator_id: non_member.id, namespace: non_member.namespace) }
+      let(:path) { "/projects/#{project.id}/issues/#{issue.iid}/move" }
 
-    it_behaves_like 'POST request permissions for admin mode' do
-      let(:params) { { to_project_id: target_project2.id } }
-      let(:failed_status_code) { 400 }
-    end
-
-    it 'moves an issue' do
-      post api(path, user),
-        params: { to_project_id: target_project.id }
-
-      expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['project_id']).to eq(target_project.id)
-    end
-
-    context 'when source and target projects are the same' do
-      it 'returns 400 when trying to move an issue' do
-        post api(path, user),
-          params: { to_project_id: project.id }
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']).to eq(s_('MoveIssue|Cannot move issue to project it originates from!'))
+      it_behaves_like 'POST request permissions for admin mode' do
+        let(:params) { { to_project_id: target_project2.id } }
+        let(:failed_status_code) { 400 }
       end
-    end
 
-    context 'when the user does not have the permission to move issues' do
-      it 'returns 400 when trying to move an issue' do
+      it 'moves an issue' do
         post api(path, user),
+          params: { to_project_id: target_project.id }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['project_id']).to eq(target_project.id)
+      end
+
+      context 'when source and target projects are the same' do
+        it 'returns 400 when trying to move an issue' do
+          post api(path, user),
+            params: { to_project_id: project.id }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq(error1)
+        end
+      end
+
+      context 'when the user does not have the permission to move issues' do
+        it 'returns 400 when trying to move an issue' do
+          post api(path, user),
+            params: { to_project_id: target_project2.id }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq(error2)
+        end
+      end
+
+      it 'moves the issue to another namespace if I am admin' do
+        post api(path, admin, admin_mode: true),
           params: { to_project_id: target_project2.id }
 
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']).to eq(s_('MoveIssue|Cannot move issue due to insufficient permissions!'))
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['project_id']).to eq(target_project2.id)
+      end
+
+      context 'when using the issue ID instead of iid' do
+        it 'returns 404 when trying to move an issue', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/341520' do
+          post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
+            params: { to_project_id: target_project.id }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq('404 Issue Not Found')
+        end
+      end
+
+      context 'when issue does not exist' do
+        it 'returns 404 when trying to move an issue' do
+          post api("/projects/#{project.id}/issues/123/move", user),
+            params: { to_project_id: target_project.id }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq('404 Issue Not Found')
+        end
+      end
+
+      context 'when source project does not exist' do
+        it 'returns 404 when trying to move an issue' do
+          post api("/projects/0/issues/#{issue.iid}/move", user),
+            params: { to_project_id: target_project.id }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq('404 Project Not Found')
+        end
+      end
+
+      context 'when target project does not exist' do
+        it 'returns 404 when trying to move an issue' do
+          post api(path, user),
+            params: { to_project_id: 0 }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 
-    it 'moves the issue to another namespace if I am admin' do
-      post api(path, admin, admin_mode: true),
-        params: { to_project_id: target_project2.id }
+    context 'with work_item_move_and_clone disabled' do
+      it_behaves_like 'move work item api requests' do
+        let(:error1) { "Cannot move issue to project it originates from!" }
+        let(:error2) { "Cannot move issue due to insufficient permissions!" }
 
-      expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['project_id']).to eq(target_project2.id)
-    end
-
-    context 'when using the issue ID instead of iid' do
-      it 'returns 404 when trying to move an issue', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/341520' do
-        post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
-          params: { to_project_id: target_project.id }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['message']).to eq('404 Issue Not Found')
+        before do
+          stub_feature_flags(work_item_move_and_clone: false)
+        end
       end
     end
 
-    context 'when issue does not exist' do
-      it 'returns 404 when trying to move an issue' do
-        post api("/projects/#{project.id}/issues/123/move", user),
-          params: { to_project_id: target_project.id }
+    context 'with work_item_move_and_clone enabled' do
+      it_behaves_like 'move work item api requests' do
+        let(:error1) { "Cannot move work item to same project or group it originates from." }
+        let(:error2) { "Cannot move work item due to insufficient permissions." }
 
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['message']).to eq('404 Issue Not Found')
-      end
-    end
-
-    context 'when source project does not exist' do
-      it 'returns 404 when trying to move an issue' do
-        post api("/projects/0/issues/#{issue.iid}/move", user),
-          params: { to_project_id: target_project.id }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['message']).to eq('404 Project Not Found')
-      end
-    end
-
-    context 'when target project does not exist' do
-      it 'returns 404 when trying to move an issue' do
-        post api(path, user),
-          params: { to_project_id: 0 }
-
-        expect(response).to have_gitlab_http_status(:not_found)
+        before do
+          stub_feature_flags(work_item_move_and_clone: true)
+        end
       end
     end
   end
