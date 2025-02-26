@@ -1179,6 +1179,10 @@ class Project < ApplicationRecord
           pages_unique_domain: domain
         })
     end
+
+    def project_namespace_for(id:)
+      find_by(id: id)&.project_namespace
+    end
   end
 
   def initialize(attributes = nil)

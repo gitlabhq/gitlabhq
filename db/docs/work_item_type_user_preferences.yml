@@ -1,7 +1,7 @@
 ---
 table_name: work_item_type_user_preferences
 classes:
-  - WorkItems::Types::UserPreference
+  - WorkItems::UserPreference
 feature_categories:
   - team_planning
 description: User preferences per work item type and namespace

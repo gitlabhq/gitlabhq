@@ -22,6 +22,12 @@ module Types
       resolver: Resolvers::WorkItems::UserWorkItemsResolver,
       description: 'Find work items visible to the current user.',
       experiment: { milestone: '17.10' }
+
+    field :work_item_preferences, # rubocop:disable GraphQL/ExtractType -- fields with different contexts
+      resolver: ::Resolvers::WorkItems::UserPreferenceResolver,
+      null: true,
+      experiment: { milestone: '17.10' },
+      description: 'User preferences for the given work item type and namespace.'
   end
   # rubocop:enable Graphql/AuthorizeTypes
 end

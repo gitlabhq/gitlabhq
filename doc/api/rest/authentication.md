@@ -188,7 +188,7 @@ authenticated as an administrator with an OAuth or personal access token that ha
 The API requests are executed with the permissions of the impersonated user.
 
 As an [administrator](../../user/permissions.md), pass the `sudo` parameter either by using query
-string or a header with an ID or username (case insensitive) of the user you want to perform the
+string or a header with an ID or username (case-insensitive) of the user you want to perform the
 operation as. If passed as a header, the header name must be `Sudo`.
 
 If a non administrative access token is provided, GitLab returns an error message with a status code

@@ -1013,6 +1013,8 @@
   - 1
 - - work_items_update_parent_objectives_progress
   - 1
+- - work_items_user_preferences_destroy
+  - 1
 - - work_items_validate_epic_work_item_sync
   - 1
 - - x509_certificate_revoke

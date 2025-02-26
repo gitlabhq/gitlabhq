@@ -107,7 +107,7 @@ To be able to replicate new container images, the container registry must send n
    {{< alert type="note" >}}
 
    Replace `<example.com>` with the `external_url` defined in your primary site's `/etc/gitlab/gitlab.rb` file, and
-   replace `<replace_with_a_secret_token>` with a case sensitive alphanumeric string
+   replace `<replace_with_a_secret_token>` with a case-sensitive alphanumeric string
    that starts with a letter. You can generate one with `< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32 | sed "s/^[0-9]*//"; echo`
 
    {{< /alert >}}
@@ -218,16 +218,16 @@ To fix this, make sure that the authorization headers being sent with the regist
 
 When replicating container images in Geo, you might see the error `token from untrusted issuer: "<token>"`.
 
-This issue occurs when the container registry configuration is incorrect, causing Sidekiq's JWT 
+This issue occurs when the container registry configuration is incorrect, causing Sidekiq's JWT
 authentication to fail.
 
 To resolve this issue:
 
 1. Ensure both sites share a single signing key pair, as described in [configure secondary site](#configure-secondary-site).
-1. Verify that both container registries and both primary and secondary sites are configured 
-   to use the same token issuer. For more information, see 
+1. Verify that both container registries and both primary and secondary sites are configured
+   to use the same token issuer. For more information, see
    [configure GitLab and registry on separate nodes](../../packages/container_registry.md#configure-gitlab-and-registry-on-separate-nodes-linux-package-installations).
-1. For multi-node deployments, confirm that the issuer configured on the Sidekiq node matches 
+1. For multi-node deployments, confirm that the issuer configured on the Sidekiq node matches
    the value configured on the registries.
 
 ### Manually trigger a container registry sync event

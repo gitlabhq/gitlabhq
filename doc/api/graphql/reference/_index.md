@@ -12516,6 +12516,34 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationworkitemupdateworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
 
+### `Mutation.workItemUserPreferenceUpdate`
+
+Create or Update user preferences for a work item type and namespace.
+
+{{< details >}}
+**Introduced** in GitLab 17.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `WorkItemUserPreferenceUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemuserpreferenceupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemuserpreferenceupdatenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the namespace on which the preference is set. |
+| <a id="mutationworkitemuserpreferenceupdatesort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort order for work item lists. |
+| <a id="mutationworkitemuserpreferenceupdateworkitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID`](#workitemstypeid) | Global ID of a work item type. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemuserpreferenceupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemuserpreferenceupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationworkitemuserpreferenceupdateuserpreferences"></a>`userPreferences` | [`WorkItemTypesUserPreference`](#workitemtypesuserpreference) | User preferences. |
+
 ### `Mutation.workItemsHierarchyReorder`
 
 Reorder a work item in the hierarchy tree.
@@ -23694,6 +23722,24 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="currentuseruserachievementsincludehidden"></a>`includeHidden` | [`Boolean`](#boolean) | Indicates whether or not achievements hidden from the profile should be included in the result. |
+
+##### `CurrentUser.workItemPreferences`
+
+User preferences for the given work item type and namespace.
+
+{{< details >}}
+**Introduced** in GitLab 17.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`WorkItemTypesUserPreference`](#workitemtypesuserpreference).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="currentuserworkitempreferencesnamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the namespace the work item is created in. |
+| <a id="currentuserworkitempreferencesworkitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID`](#workitemstypeid) | Global ID of a work item type. |
 
 ##### `CurrentUser.workItems`
 
@@ -39573,6 +39619,16 @@ Represents Depth limit reached for the allowed work item type.
 | ---- | ---- | ----------- |
 | <a id="workitemtypedepthlimitreachedbytypedepthlimitreached"></a>`depthLimitReached` | [`Boolean!`](#boolean) | Indicates if maximum allowed depth has been reached for the descendant type. |
 | <a id="workitemtypedepthlimitreachedbytypeworkitemtype"></a>`workItemType` | [`WorkItemType!`](#workitemtype) | Work item type. |
+
+### `WorkItemTypesUserPreference`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemtypesuserpreferencenamespace"></a>`namespace` | [`Namespace!`](#namespace) | Namespace for the user preference. |
+| <a id="workitemtypesuserpreferencesort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort order for work item lists. |
+| <a id="workitemtypesuserpreferenceworkitemtype"></a>`workItemType` | [`WorkItemType`](#workitemtype) | Type assigned to the work item. |
 
 ### `WorkItemWidgetAssignees`
 

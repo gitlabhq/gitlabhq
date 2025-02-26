@@ -279,7 +279,7 @@ to you after the import is complete.
 When importing requirements from a CSV file, it must be formatted in a certain way:
 
 - **Header row:** CSV files must include the following headers:
-  `title` and `description`. The headers are case insensitive.
+  `title` and `description`. The headers are case-insensitive.
 - **Columns:** data from columns other than `title` and `description` is not imported.
 - **Separators:** the column separator is automatically detected from the header row.
   Supported separator characters are: commas (`,`), semicolons (`;`), and tabs (`\t`).

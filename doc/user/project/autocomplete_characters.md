@@ -16,7 +16,7 @@ title: Autocomplete characters
 The autocomplete characters provide a quick way of entering field values into
 Markdown fields. When you start typing a word in a Markdown field with one of
 the following characters, GitLab progressively autocompletes against a set of
-matching values. The string matching is not case sensitive.
+matching values. The string matching is not case-sensitive.
 
 | Character | Autocompletes | Relevant matches shown |
 | :-------- | :------------ | :---- |

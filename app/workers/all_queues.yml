@@ -4888,6 +4888,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: work_items_user_preferences_destroy
+  :worker_name: WorkItems::UserPreferences::DestroyWorker
+  :feature_category: :seat_cost_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: x509_certificate_revoke
   :worker_name: X509CertificateRevokeWorker
   :feature_category: :source_code_management

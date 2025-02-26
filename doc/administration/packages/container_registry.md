@@ -1046,7 +1046,7 @@ To configure a notification endpoint for a Linux package installation:
 
   {{< alert type="note" >}}
 
-  Replace `AUTHORIZATION_EXAMPLE_TOKEN` with a case sensitive alphanumeric string
+  Replace `AUTHORIZATION_EXAMPLE_TOKEN` with a case-sensitive alphanumeric string
   that starts with a letter. You can generate one with `< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32 | sed "s/^[0-9]*//"; echo`
 
   {{< /alert >}}

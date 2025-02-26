@@ -17,6 +17,9 @@ fragment BaseProject on Project {
   createdAt
   updatedAt
   lastActivityAt
+  group {
+    id
+  }
   mergeRequestsAccessLevel {
     stringValue
   }

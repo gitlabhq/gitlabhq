@@ -70398,6 +70398,12 @@ msgstr ""
 msgid "v%{version} published %{timeAgo}"
 msgstr ""
 
+msgid "value \"%{sort}\" is not available on %{namespace}"
+msgstr ""
+
+msgid "value \"%{sort}\" is not available on %{namespace} for work items type %{wit}"
+msgstr ""
+
 msgid "value at %{data_pointer} should use only one of: %{requirements}"
 msgstr ""
 

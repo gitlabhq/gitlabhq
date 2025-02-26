@@ -38,6 +38,7 @@ describe('formatGraphQLProjects', () => {
       },
       availableActions: ['edit', 'delete'],
       customProperty: firstMockProject.nameWithNamespace,
+      isPersonal: false,
     });
 
     expect(formattedProjects.length).toBe(projects.length);

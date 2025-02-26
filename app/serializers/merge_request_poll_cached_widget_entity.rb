@@ -29,7 +29,11 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
   end
 
   expose :commits_without_merge_commits, using: MergeRequestWidgetCommitEntity do |merge_request|
-    merge_request.recent_commits.without_merge_commits
+    if Feature.enabled?(:disable_widget_responses, merge_request.target_project)
+      []
+    else
+      merge_request.recent_commits.without_merge_commits
+    end
   end
 
   expose :diff_head_sha do |merge_request|

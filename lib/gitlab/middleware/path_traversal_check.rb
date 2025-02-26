@@ -3,7 +3,7 @@
 module Gitlab
   module Middleware
     class PathTraversalCheck
-      PATH_TRAVERSAL_MESSAGE = 'Potential path traversal attempt detected.'
+      PATH_TRAVERSAL_MESSAGE = 'Potential path traversal attempt detected. Feedback issue: https://gitlab.com/gitlab-org/gitlab/-/issues/520714.'
       # Query param names known to have string parts detected as path traversal even though
       # they are valid genuine requests
       EXCLUDED_QUERY_PARAM_NAMES = %w[

@@ -97,7 +97,7 @@ GET /users?username=jack_smith
 
 {{< alert type="note" >}}
 
-Username search is case insensitive.
+Username search is case-insensitive.
 
 {{< /alert >}}
 

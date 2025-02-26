@@ -200,7 +200,7 @@ Prerequisites:
 
 To set a default description template for merge requests, either:
 
-- [Create a merge request template](#create-a-merge-request-template) named `Default.md` (case insensitive)
+- [Create a merge request template](#create-a-merge-request-template) named `Default.md` (case-insensitive)
   and save it in `.gitlab/merge_request_templates/`.
   This [doesn't overwrite](#priority-of-default-description-templates) the default template if one has been set in the project settings.
 - Users on GitLab Premium and Ultimate: set the default template in project settings:
@@ -212,7 +212,7 @@ To set a default description template for merge requests, either:
 
 To set a default description template for issues, either:
 
-- [Create an issue template](#create-an-issue-template) named `Default.md` (case insensitive)
+- [Create an issue template](#create-an-issue-template) named `Default.md` (case-insensitive)
   and save it in `.gitlab/issue_templates/`.
   This [doesn't overwrite](#priority-of-default-description-templates) the default template if one has been set in the project settings.
 - Users on GitLab Premium and Ultimate: set the default template in project settings:
@@ -236,8 +236,8 @@ in various places, they have the following priorities in a project.
 The ones higher up override the ones below:
 
 1. Template set in project settings.
-1. `Default.md` (case insensitive) from the parent group.
-1. `Default.md` (case insensitive) from the project repository.
+1. `Default.md` (case-insensitive) from the parent group.
+1. `Default.md` (case-insensitive) from the project repository.
 
 Merge requests have [additional inheritance rules](merge_requests/creating_merge_requests.md)
 that depend on the contents of commit messages and branch names.

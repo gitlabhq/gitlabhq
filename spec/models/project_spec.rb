@@ -413,11 +413,24 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
-    context 'updating cd_cd_settings' do
+    context 'updating ci_cd_settings' do
       it 'does not raise an error' do
         project = create(:project)
 
         expect { project.update!(ci_cd_settings: nil) }.not_to raise_exception
+      end
+    end
+
+    describe '.project_namespace_for' do
+      it 'returns the project namespace for the given id' do
+        project = create(:project)
+        expect(described_class.project_namespace_for(id: project.id)).to eq(project.project_namespace)
+      end
+
+      context 'when project is not found' do
+        it 'returns nil' do
+          expect(described_class.project_namespace_for(id: non_existing_record_id)).to be_nil
+        end
       end
     end
 

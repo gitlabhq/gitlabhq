@@ -76,7 +76,7 @@ module WorkItems
       through: :parent_restrictions, class_name: 'WorkItems::Type',
       foreign_key: :parent_type_id, source: :parent_type
     has_many :user_preferences,
-      class_name: 'WorkItems::Types::UserPreference',
+      class_name: 'WorkItems::UserPreference',
       inverse_of: :work_item_type
 
     before_validation :strip_whitespace
