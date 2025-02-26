@@ -203,7 +203,7 @@ module QA
 
           def commit_and_push_to_existing_branch(file_name, message: 'Success! Your changes have been committed.')
             commit_toggle(file_name)
-            push_to_existing_branch(message)
+            push_to_existing_branch(message: message)
             Support::Waiter.wait_until { !has_text?("Loading GitLab Web IDE...", wait: 1) }
           end
 
@@ -228,7 +228,7 @@ module QA
               message: 'The secret detection scan encountered one or more findings.')
           end
 
-          def push_to_existing_branch(message)
+          def push_to_existing_branch(message: 'Success! Your changes have been committed.')
             within_vscode_editor do
               click_continue_with_existing_branch
             end
