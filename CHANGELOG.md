@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.8.4 (2025-02-26)
+
+### Security (4 changes)
+
+- [Increase minimum role in SPP to read policy yaml](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9bfcf4a596b965ce73426d68861cec83ee70f19e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4716))
+- [Fix access to read code review analytics in private projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/537159f505cad7d23cded01140fbdfd84e9cdfa2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4758))
+- [Escape work item dropdown items and restrict HTML tags](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5548168c3d4e0ba660ed934f23c332045a640799) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4784))
+- [Use stricter CSP values in the packages dependency proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d491abd511c9c1cb00c928e28dc84cb7ef8e4cd3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4764))
+
 ## 17.8.3 (2025-02-21)
 
 ### Fixed (2 changes)
