@@ -1,9 +1,10 @@
 @use 'highlight/common';
+@use 'constants';
 
 .rd-text-view-root {
   font-family: $monospace-font;
-  line-height: $code-line-height;
-  font-size: $code-font-size;
+  line-height: constants.$code-line-height;
+  font-size: constants.$code-font-size;
 }
 
 .rd-text-view-root,

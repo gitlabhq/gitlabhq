@@ -42,7 +42,10 @@ describe('Blob Header Filepath', () => {
         ${'renders button that copies path of the blob'} | ${false}
         ${'does not render button'}                      | ${true}
       `('when flag is $flagValue, $description', ({ flagValue }) => {
-        createComponent({}, { provide: { glFeatures: { blobOverflowMenu: flagValue } } });
+        createComponent(
+          {},
+          { provide: { glFeatures: { directoryCodeDropdownUpdates: flagValue } } },
+        );
         const btn = wrapper.findComponent(ClipboardButton);
         expect(btn.exists()).toBe(!flagValue);
         if (!flagValue) {

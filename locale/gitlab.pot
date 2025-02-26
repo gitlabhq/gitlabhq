@@ -2918,6 +2918,9 @@ msgstr ""
 msgid "AccessTokens|An error occurred while fetching the tokens."
 msgstr ""
 
+msgid "AccessTokens|An error occurred while revoking the token."
+msgstr ""
+
 msgid "AccessTokens|An error occurred while rotating the token."
 msgstr ""
 
@@ -3095,6 +3098,9 @@ msgid "AccessTokens|The last five distinct IP addresses from where the token was
 msgstr ""
 
 msgid "AccessTokens|The last time a token was used"
+msgstr ""
+
+msgid "AccessTokens|The token was revoked successfully."
 msgstr ""
 
 msgid "AccessTokens|They are the only accepted password when you have Two-Factor Authentication (2FA) enabled."
@@ -4167,7 +4173,7 @@ msgstr ""
 msgid "AdminSelfHostedModels|Please select a model."
 msgstr ""
 
-msgid "AdminSelfHostedModels|Provide the model identifier in the form of provider/model-name"
+msgid "AdminSelfHostedModels|Provide the model identifier in the form of %{identifierLabel}"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Select an appropriate model family from the list of approved GitLab models."
@@ -48224,6 +48230,9 @@ msgstr ""
 msgid "Replace all labels"
 msgstr ""
 
+msgid "Replace file"
+msgstr ""
+
 msgid "Replaced all labels with %{label_references} %{label_text}."
 msgstr ""
 
@@ -60257,6 +60266,9 @@ msgstr ""
 msgid "Todos|(removed)"
 msgstr ""
 
+msgid "Todos|Action failed. Try again later."
+msgstr ""
+
 msgid "Todos|Added approver"
 msgstr ""
 
@@ -60421,6 +60433,11 @@ msgstr ""
 msgid "Todos|Removed from Merge Train"
 msgstr ""
 
+msgid "Todos|Removed snooze from 1 to-do"
+msgid_plural "Todos|Removed snooze from %d to-dos"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Todos|Restored 1 to-do"
 msgid_plural "Todos|Restored %d to-dos"
 msgstr[0] ""
@@ -60464,6 +60481,11 @@ msgstr ""
 
 msgid "Todos|Snoozed"
 msgstr ""
+
+msgid "Todos|Snoozed 1 to-do"
+msgid_plural "Todos|Snoozed %d to-dos"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Todos|Snoozed until %{date}"
 msgstr ""

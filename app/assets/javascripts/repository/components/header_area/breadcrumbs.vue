@@ -325,7 +325,7 @@ export default {
 
 <template>
   <nav
-    v-if="!glFeatures.blobOverflowMenu"
+    v-if="!glFeatures.directoryCodeDropdownUpdates"
     :aria-label="__('Files breadcrumb')"
     :data-current-path="currentDirectoryPath"
     class="js-repo-breadcrumbs gl-flex"
@@ -368,7 +368,7 @@ export default {
       :path="newDirectoryPath"
     />
   </nav>
-  <div v-else class="gl-flex gl-w-full gl-justify-between sm:gl-w-auto">
+  <div v-else class="repo-breadcrumb gl-flex gl-w-full gl-justify-between sm:gl-w-auto">
     <gl-breadcrumb
       :items="crumbs"
       :data-current-path="currentDirectoryPath"

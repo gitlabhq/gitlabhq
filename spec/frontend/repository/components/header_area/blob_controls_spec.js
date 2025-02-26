@@ -59,8 +59,7 @@ const createComponent = async (
     apolloProvider: createMockApollo([[blobControlsQuery, mockResolver]]),
     provide: {
       glFeatures,
-      canModifyBlob: true,
-      canModifyBlobWithWebIde: true,
+      currentRef: refMock,
     },
     propsData: {
       projectPath,
@@ -168,7 +167,6 @@ describe('Blob controls component', () => {
       expect(findOverflowMenu().props()).toEqual({
         projectPath: 'some/project',
         isBinary: true,
-        isEmpty: false,
         overrideCopy: true,
         isEmptyRepository: false,
         isUsingLfs: false,

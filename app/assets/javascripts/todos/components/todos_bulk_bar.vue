@@ -1,16 +1,24 @@
 <script>
 import { GlButton, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { TABS_INDICES } from '~/todos/constants';
-import { s__ } from '~/locale';
+import { n__, s__ } from '~/locale';
+import { bulkMutationsMixin } from './mixins/bulk_mutations';
+import bulkResolveTodosMutation from './mutations/bulk_resolve_todos.mutation.graphql';
+import bulkRestoreTodosMutation from './mutations/undo_mark_all_as_done.mutation.graphql';
+import bulkUnsnoozeTodosMutation from './mutations/bulk_unsnooze_todos.mutation.graphql';
+import bulkSnoozeTodosMutation from './mutations/bulk_snooze_todos.mutation.graphql';
+import SnoozeTimePicker from './todo_snooze_until_picker.vue';
 
 export default {
   components: {
     GlButton,
     GlSprintf,
+    SnoozeTimePicker,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [bulkMutationsMixin],
   props: {
     ids: {
       type: Array,
@@ -41,6 +49,53 @@ export default {
     resolveTitle: s__('Todos|Mark selected items as done'),
     restoreTitle: s__('Todos|Mark selected items as pending'),
   },
+  methods: {
+    async bulkResolve(ids, undoable = true) {
+      this.handleBulkMutation({
+        mutation: bulkResolveTodosMutation,
+        variables: { todoIDs: ids },
+        responseKey: 'bulkResolveTodos',
+        trackingLabel: 'bulk_resolve',
+        getMessage: (count) =>
+          n__('Todos|Marked 1 to-do as done', 'Todos|Marked %d to-dos as done', count),
+        undoMethod: undoable ? 'bulkRestore' : null,
+      });
+    },
+
+    async bulkRestore(ids, undoable = true) {
+      this.handleBulkMutation({
+        mutation: bulkRestoreTodosMutation,
+        variables: { todoIDs: ids },
+        responseKey: 'undoMarkAllAsDone',
+        trackingLabel: 'bulk_restore',
+        getMessage: (count) => n__('Todos|Restored 1 to-do', 'Todos|Restored %d to-dos', count),
+        undoMethod: undoable ? 'bulkResolve' : null,
+      });
+    },
+
+    async bulkSnooze(ids, until, undoable = true) {
+      this.handleBulkMutation({
+        mutation: bulkSnoozeTodosMutation,
+        variables: { todoIDs: ids, snoozeUntil: until },
+        responseKey: 'bulkSnoozeTodos',
+        trackingLabel: 'bulk_snooze',
+        getMessage: (count) => n__('Todos|Snoozed 1 to-do', 'Todos|Snoozed %d to-dos', count),
+        undoMethod: undoable ? 'bulkUnsnooze' : null,
+      });
+    },
+
+    async bulkUnsnooze(ids) {
+      this.handleBulkMutation({
+        mutation: bulkUnsnoozeTodosMutation,
+        variables: { todoIDs: ids },
+        responseKey: 'bulkUnsnoozeTodos',
+        trackingLabel: 'bulk_unsnooze',
+        getMessage: (count) =>
+          n__('Todos|Removed snooze from 1 to-do', 'Todos|Removed snooze from %d to-dos', count),
+        undoMethod: null,
+      });
+    },
+  },
 };
 </script>
 
@@ -53,15 +108,8 @@ export default {
         </template>
       </gl-sprintf>
     </span>
-    <div>
-      <gl-button
-        v-if="showSnooze"
-        v-gl-tooltip
-        data-testid="bulk-action-snooze"
-        icon="clock"
-        :title="$options.i18n.snoozeTitle"
-        :aria-label="$options.i18n.snoozeTitle"
-      />
+    <div class="gl-flex gl-gap-2">
+      <snooze-time-picker v-if="showSnooze" @snooze-until="(until) => bulkSnooze(ids, until)" />
       <gl-button
         v-if="showUnsnooze"
         v-gl-tooltip
@@ -69,6 +117,7 @@ export default {
         icon="time-out"
         :title="$options.i18n.unsnoozeTitle"
         :aria-label="$options.i18n.unsnoozeTitle"
+        @click="bulkUnsnooze(ids)"
       />
       <gl-button
         v-if="showResolve"
@@ -77,6 +126,7 @@ export default {
         icon="check"
         :title="$options.i18n.resolveTitle"
         :aria-label="$options.i18n.resolveTitle"
+        @click="bulkResolve(ids)"
       />
       <gl-button
         v-if="showRestore"
@@ -85,6 +135,7 @@ export default {
         icon="redo"
         :title="$options.i18n.restoreTitle"
         :aria-label="$options.i18n.restoreTitle"
+        @click="bulkRestore(ids)"
       />
     </div>
   </div>

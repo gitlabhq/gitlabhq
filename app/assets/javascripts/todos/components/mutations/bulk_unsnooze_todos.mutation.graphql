@@ -1,0 +1,8 @@
+mutation bulkUnsnoozeTodos($todoIDs: [TodoID!]!) {
+  bulkUnsnoozeTodos: todoUnsnoozeMany(input: { ids: $todoIDs }) {
+    todos {
+      id
+    }
+    errors
+  }
+}

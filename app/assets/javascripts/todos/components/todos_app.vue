@@ -372,7 +372,7 @@ export default {
 
     <div>
       <div class="gl-flex gl-flex-col">
-        <div v-if="showSelectAll" class="gl-flex gl-items-baseline gl-gap-2 gl-px-5 gl-py-3">
+        <div v-show="showSelectAll" class="gl-flex gl-items-baseline gl-gap-2 gl-px-5 gl-py-3">
           <gl-form-checkbox
             v-model="selectAllChecked"
             data-testid="todos-select-all"

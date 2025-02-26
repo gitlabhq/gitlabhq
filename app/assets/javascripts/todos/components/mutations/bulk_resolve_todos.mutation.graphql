@@ -1,0 +1,9 @@
+mutation bulkResolveTodos($todoIDs: [TodoID!]!) {
+  bulkResolveTodos: todoResolveMany(input: { ids: $todoIDs }) {
+    todos {
+      id
+      state
+    }
+    errors
+  }
+}

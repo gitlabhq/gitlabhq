@@ -86,7 +86,9 @@ export default {
       @close="closeDrawer"
     >
       <template #title>
-        <h4 id="whats-new-drawer-heading" class="page-title gl-my-2">{{ __("What's new") }}</h4>
+        <h2 id="whats-new-drawer-heading" class="page-title gl-heading-2-fixed gl-my-2">
+          {{ __("What's new") }}
+        </h2>
       </template>
       <template v-if="features.length || !fetching">
         <gl-infinite-scroll

@@ -8,7 +8,6 @@ RSpec.describe 'Projects > Files > User uploads files', feature_category: :sourc
   let(:project2) { create(:project, :repository, name: 'Another Project', path: 'another-project') }
 
   before do
-    stub_feature_flags(blob_overflow_menu: false)
     project.add_maintainer(user)
     sign_in(user)
   end

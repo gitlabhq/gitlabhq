@@ -36,13 +36,17 @@ This feature is considered [experimental](../../policy/development_stages_suppor
 
 {{< alert type="disclaimer" />}}
 
-GitLab Duo Workflow is an AI-powered coding agent in the Visual Studio Code (VS Code) IDE.
+GitLab Duo Workflow helps you complete development tasks directly in the VS Code integrated development environment (IDE).
 
 Workflow:
 
-- Is designed to help you solve junior-level coding tasks more quickly,
-  such as drafting code for small features or bugs.
-- Works best in small or medium-sized repositories.
+- Runs in your IDE so that you do not have to switch contexts or tools.
+- In response to your prompt, creates and works through a plan.
+  Workflow then stages the corresponding changes in your project's repository.
+  You control when to accept, modify, or reject the suggestions from Workflow.
+- Is context-aware. Workflow understands your project structure, codebase, and history.
+  You can also add your own context, such as relevant GitLab issues or merge requests.
+  For more information, see [context](context.md).
 
 For more information, see:
 

@@ -75,18 +75,20 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
     end
 
     context 'when the source project is public and the target job user is not a member of the source project' do
-      let(:visibility_level) { source_project.visibility_level }
+      let(:original_visibility_level) { source_project.visibility_level }
       let(:job_user) { create(:user) }
 
+      # Make sure the source_project is public.
       before do
-        if visibility_level != ::Gitlab::VisibilityLevel::PUBLIC
+        if original_visibility_level != ::Gitlab::VisibilityLevel::PUBLIC
           source_project.update!(visibility_level: ::Gitlab::VisibilityLevel::PUBLIC)
         end
       end
 
+      # If the source_project wasn't public, reset the visibility to it's original level
       after do
-        if visibility_level != ::Gitlab::VisibilityLevel::PUBLIC
-          source_project.update!(visibility_level: visibility_level)
+        if original_visibility_level != ::Gitlab::VisibilityLevel::PUBLIC
+          source_project.update!(visibility_level: original_visibility_level)
         end
       end
 

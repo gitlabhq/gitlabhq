@@ -50,6 +50,7 @@ export const TABS_INDICES = {
  * Instrumentation
  */
 export const INSTRUMENT_TODO_ITEM_CLICK = 'click_todo_item_action';
+export const INSTRUMENT_TODO_BULK_CLICK = 'click_todo_bulk_action';
 export const INSTRUMENT_TODO_ITEM_FOLLOW = 'follow_todo_link';
 export const INSTRUMENT_TODO_SORT_CHANGE = 'sort_todo_list';
 export const INSTRUMENT_TODO_FILTER_CHANGE = 'filter_todo_list';

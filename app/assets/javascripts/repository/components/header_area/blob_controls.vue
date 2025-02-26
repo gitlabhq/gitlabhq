@@ -62,9 +62,11 @@ export default {
       },
     },
   },
+  inject: ['currentRef'],
   provide() {
     return {
       blobInfo: computed(() => this.blobInfo ?? DEFAULT_BLOB_INFO.repository.blobs.nodes[0]),
+      currentRef: computed(() => this.currentRef ?? this.blobInfo.ref),
     };
   },
   props: {
@@ -86,7 +88,6 @@ export default {
   data() {
     return {
       project: {},
-      isEmptyRepository: false,
     };
   },
   computed: {
@@ -149,9 +150,6 @@ export default {
 
       const description = this.$options.i18n.permalinkTooltip;
       return this.formatTooltipWithShortcut(description, this.shortcuts.permalink);
-    },
-    isEmpty() {
-      return this.blobInfo.rawSize === '0';
     },
   },
   watch: {
@@ -228,7 +226,6 @@ export default {
       v-if="!isLoadingRepositoryBlob && glFeatures.blobOverflowMenu"
       :project-path="projectPath"
       :is-binary="isBinaryFileType"
-      :is-empty="isEmpty"
       :override-copy="true"
       :is-empty-repository="project.repository.empty"
       :is-using-lfs="isUsingLfs"

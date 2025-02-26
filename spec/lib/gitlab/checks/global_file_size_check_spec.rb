@@ -6,19 +6,6 @@ RSpec.describe Gitlab::Checks::GlobalFileSizeCheck, feature_category: :source_co
   include_context 'changes access checks context'
 
   describe '#validate!' do
-    context 'when global_file_size_check is disabled' do
-      before do
-        stub_feature_flags(global_file_size_check: false)
-      end
-
-      it 'does not log' do
-        expect(subject).not_to receive(:log_timed)
-        expect(Gitlab::AppJsonLogger).not_to receive(:info)
-        expect(Gitlab::Checks::FileSizeCheck::HookEnvironmentAwareAnyOversizedBlobs).not_to receive(:new)
-        subject.validate!
-      end
-    end
-
     it 'checks for file sizes' do
       expect_next_instance_of(Gitlab::Checks::FileSizeCheck::HookEnvironmentAwareAnyOversizedBlobs,
         project: project,

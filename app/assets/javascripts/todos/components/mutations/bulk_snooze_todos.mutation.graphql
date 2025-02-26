@@ -1,0 +1,8 @@
+mutation bulkSnoozeTodos($todoIDs: [TodoID!]!, $snoozeUntil: Time!) {
+  bulkSnoozeTodos: todoSnoozeMany(input: { ids: $todoIDs, snoozeUntil: $snoozeUntil }) {
+    todos {
+      id
+    }
+    errors
+  }
+}

@@ -74,7 +74,7 @@ export default {
     </template>
 
     <clipboard-button
-      v-if="!glFeatures.blobOverflowMenu"
+      v-if="!glFeatures.directoryCodeDropdownUpdates"
       :text="blob.path"
       :gfm="gfmCopyText"
       :title="__('Copy file path')"

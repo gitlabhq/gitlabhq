@@ -50,6 +50,7 @@ export default {
         time: DEFAULT_TIME,
         date: '',
       },
+      isModalVisible: false,
     };
   },
   computed: {
@@ -79,7 +80,10 @@ export default {
   },
   methods: {
     show() {
-      this.$refs.modal.$refs.modal.show();
+      this.isModalVisible = true;
+    },
+    hide() {
+      this.isModalVisible = false;
     },
     onDateInputChanged(event, inputHandler, validator) {
       inputHandler(event);
@@ -97,6 +101,8 @@ export default {
           snooze_until: this.datetime.toISOString(),
         },
       });
+
+      this.hide();
     },
   },
   FORM_ID,
@@ -122,7 +128,7 @@ export default {
 
 <template>
   <gl-modal
-    ref="modal"
+    v-model="isModalVisible"
     modal-id="custom-snooze-todo-modal"
     :title="$options.i18n.snooze"
     :action-primary="actionPrimary"

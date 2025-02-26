@@ -8,8 +8,6 @@ module Gitlab
       LOG_MESSAGE = 'Checking for blobs over the file size limit'
 
       def validate!
-        return unless Feature.enabled?(:global_file_size_check, project)
-
         Gitlab::AppJsonLogger.info(LOG_MESSAGE)
         logger.log_timed(LOG_MESSAGE) do
           oversized_blobs = Gitlab::Checks::FileSizeCheck::HookEnvironmentAwareAnyOversizedBlobs.new(

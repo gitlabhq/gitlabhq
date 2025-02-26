@@ -50,17 +50,19 @@ export default {
         <span class="gl-sr-only">{{ feature.name }}</span>
       </div>
     </gl-link>
-    <gl-link
-      :href="feature.documentation_link"
-      target="_blank"
-      class="gl-mb-1 gl-mt-4 gl-block !gl-text-inherit"
-      data-track-action="click_whats_new_item"
-      data-testid="whats-new-item-link"
-      :data-track-label="feature.name"
-      :data-track-property="feature.documentation_link"
-    >
-      <h5 class="gl-my-0 gl-text-lg" data-testid="feature-name">{{ feature.name }}</h5>
-    </gl-link>
+    <h3 class="gl-mb-1 gl-mt-4 gl-text-lg" data-testid="feature-name">
+      <gl-link
+        :href="feature.documentation_link"
+        target="_blank"
+        class="!gl-text-inherit"
+        data-track-action="click_whats_new_item"
+        data-testid="whats-new-item-link"
+        :data-track-label="feature.name"
+        :data-track-property="feature.documentation_link"
+      >
+        {{ feature.name }}
+      </gl-link>
+    </h3>
     <div v-if="releaseDate" class="gl-mb-3" data-testid="release-date">{{ releaseDate }}</div>
     <div v-if="feature.available_in" class="gl-mb-3">
       <gl-badge

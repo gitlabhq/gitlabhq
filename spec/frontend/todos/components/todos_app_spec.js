@@ -314,18 +314,18 @@ describe('TodosApp', () => {
         });
         await waitForPromises();
 
-        expect(findSelectAllCheckbox().exists()).toBe(false);
+        expect(findSelectAllCheckbox().isVisible()).toBe(false);
       });
 
       it('is not visible on "All" tab', async () => {
         findGlTabs().vm.$emit('input', 3); // All tab
         await nextTick();
 
-        expect(findSelectAllCheckbox().exists()).toBe(false);
+        expect(findSelectAllCheckbox().isVisible()).toBe(false);
       });
 
       it('is visible on other tabs', () => {
-        expect(findSelectAllCheckbox().exists()).toBe(true);
+        expect(findSelectAllCheckbox().isVisible()).toBe(true);
       });
 
       it('becomes indeterminate when some but not all items are selected', async () => {

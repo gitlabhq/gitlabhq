@@ -23,17 +23,26 @@ repository = "https://gitlab.com/gitlab/<path/to/repository>"
 
 Refer to [poetry's documentation](https://python-poetry.org/docs/pyproject/) for additional configuration options.
 
-The following job can be used to deploy the image. Note that PyPI uses [trusted publishers](https://docs.pypi.org/trusted-publishers/), no keys are necessary when the CI pipeline is configured.
+To configure deployment of the PyPI package:
 
-```yaml
-deploy:
-  stage: deploy
-  image: python:3.12
-  script:
-    - poetry --build publish
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^v-/
-```
+1. [Authenticate to PyPI](https://pypi.org/account/login/) using the "PyPI GitLab" credentials found in 1Password (PyPI does not support organizations as of now).
+1. Create a token under `Account Settings > Add API Tokens`.
+1. For the initial publish, select `Entire account (all projects)` scope. If the project already exists, scope the token to the specific project.
+1. Configure credentials:
+  
+   Locally:
+
+   ```shell
+   poetry config pypi-token.pypi <your-api-token>
+   ```
+
+   To configure deployment with CI, set the `POETRY_PYPI_TOKEN_PYPI` to the token created. Alternatively, define a [trusted publisher](https://docs.pypi.org/trusted-publishers/) for the project, in which case no token is needed.
+
+1. Use [Poetry to publish](https://python-poetry.org/docs/cli/#publish) your package:
+
+   ```shell
+   poetry publish
+   ```
 
 ## Python Services
 

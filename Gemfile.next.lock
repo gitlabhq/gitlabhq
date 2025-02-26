@@ -477,7 +477,7 @@ GEM
       git
     css_parser (1.14.0)
       addressable
-    cssbundling-rails (1.4.1)
+    cssbundling-rails (1.4.2)
       railties (>= 6.0.0)
     csv (3.3.0)
     cvss-suite (3.3.0)
@@ -2008,7 +2008,8 @@ GEM
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.8.2)
     websocket (1.2.10)
-    websocket-driver (0.7.6)
+    websocket-driver (0.7.7)
+      base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
     wikicloth (0.8.1)
@@ -2077,7 +2078,7 @@ DEPENDENCIES
   coverband (= 6.1.4)
   creole (~> 0.5.0)
   crystalball (~> 0.7.0)
-  cssbundling-rails (= 1.4.1)
+  cssbundling-rails (= 1.4.2)
   csv_builder!
   cvss-suite (~> 3.3.0)
   database_cleaner-active_record (~> 2.2.0)
@@ -2398,4 +2399,4 @@ DEPENDENCIES
   yajl-ruby (~> 1.4.3)
 
 BUNDLED WITH
-   2.6.5
+   2.5.11

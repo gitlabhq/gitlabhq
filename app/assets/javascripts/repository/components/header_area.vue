@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { computed } from 'vue';
 import { __ } from '~/locale';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
@@ -88,6 +89,11 @@ export default {
     'downloadArtifacts',
     'isBinary',
   ],
+  provide() {
+    return {
+      currentRef: computed(() => this.currentRef ?? this.blobInfo.ref),
+    };
+  },
   props: {
     projectPath: {
       type: String,

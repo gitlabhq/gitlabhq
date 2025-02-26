@@ -50,7 +50,7 @@ describe('Repository breadcrumbs component', () => {
     currentPath,
     extraProps = {},
     mockRoute = {},
-    glFeatures = { blobOverflowMenu: false },
+    glFeatures = { directoryCodeDropdownUpdates: false },
   } = {}) => {
     const apolloProvider = createApolloProvider([[permissionsQuery, permissionsQuerySpy]]);
 
@@ -100,13 +100,13 @@ describe('Repository breadcrumbs component', () => {
   describe('permissions queries', () => {
     it.each`
       featureFlag | description
-      ${true}     | ${'when blobOverflowMenu feature flag is enabled'}
-      ${false}    | ${'when blobOverflowMenu feature flag is disabled'}
+      ${true}     | ${'when directoryCodeDropdownUpdates feature flag is enabled'}
+      ${false}    | ${'when directoryCodeDropdownUpdates feature flag is disabled'}
     `('queries for permissions $description', async ({ featureFlag }) => {
       factory({
         currentPath: '/',
         glFeatures: {
-          blobOverflowMenu: featureFlag,
+          directoryCodeDropdownUpdates: featureFlag,
         },
       });
 
@@ -120,8 +120,8 @@ describe('Repository breadcrumbs component', () => {
 
     it.each`
       featureFlag | description
-      ${true}     | ${'when blobOverflowMenu feature flag is enabled'}
-      ${false}    | ${'when blobOverflowMenu feature flag is disabled'}
+      ${true}     | ${'when directoryCodeDropdownUpdates feature flag is enabled'}
+      ${false}    | ${'when directoryCodeDropdownUpdates feature flag is disabled'}
     `('queries for permissions $description', async ({ featureFlag }) => {
       const mockError = new Error('timeout of 0ms exceeded');
       permissionsQuerySpy = jest.fn().mockRejectedValue(mockError);
@@ -129,7 +129,7 @@ describe('Repository breadcrumbs component', () => {
       factory({
         currentPath: '/',
         glFeatures: {
-          blobOverflowMenu: featureFlag,
+          directoryCodeDropdownUpdates: featureFlag,
         },
       });
 
@@ -143,11 +143,11 @@ describe('Repository breadcrumbs component', () => {
     });
   });
 
-  describe('when `blobOverflowMenu` feature flag is enabled', () => {
+  describe('when `directoryCodeDropdownUpdates` feature flag is enabled', () => {
     beforeEach(() => {
       factory({
         glFeatures: {
-          blobOverflowMenu: true,
+          directoryCodeDropdownUpdates: true,
         },
       });
     });
@@ -175,7 +175,7 @@ describe('Repository breadcrumbs component', () => {
       factory({
         currentPath: path,
         glFeatures: {
-          blobOverflowMenu: true,
+          directoryCodeDropdownUpdates: true,
         },
       });
       expect(findGLBreadcrumb().props('items').length).toEqual(linkCount);
@@ -195,7 +195,7 @@ describe('Repository breadcrumbs component', () => {
             name: routeName,
           },
           glFeatures: {
-            blobOverflowMenu: true,
+            directoryCodeDropdownUpdates: true,
           },
         });
 
@@ -214,7 +214,7 @@ describe('Repository breadcrumbs component', () => {
           factory({
             currentPath,
             glFeatures: {
-              blobOverflowMenu: true,
+              directoryCodeDropdownUpdates: true,
             },
           });
           expect(findClipboardButton().exists()).toBe(expected);
@@ -226,7 +226,7 @@ describe('Repository breadcrumbs component', () => {
     });
   });
 
-  describe('when `blobOverflowMenu` feature flag is disabled', () => {
+  describe('when `directoryCodeDropdownUpdates` feature flag is disabled', () => {
     it.each`
       path                        | linkCount
       ${'/'}                      | ${1}
@@ -354,7 +354,7 @@ describe('Repository breadcrumbs component', () => {
           factory({
             currentPath,
             glFeatures: {
-              blobOverflowMenu: flagValue,
+              directoryCodeDropdownUpdates: flagValue,
             },
           });
           expect(findClipboardButton().exists()).toBe(expected);

@@ -1,29 +1,52 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { createAlert } from '~/alert';
+import projectInfoQuery from 'ee_else_ce/repository/queries/project_info.query.graphql';
 import BlobOverflowMenu from '~/repository/components/header_area/blob_overflow_menu.vue';
 import BlobDefaultActionsGroup from '~/repository/components/header_area/blob_default_actions_group.vue';
 import BlobButtonGroup from '~/repository/components/header_area/blob_button_group.vue';
+import BlobDeleteFileGroup from '~/repository/components/header_area/blob_delete_file_group.vue';
 import createRouter from '~/repository/router';
-import { blobControlsDataMock, refMock } from '../../mock_data';
+import { projectMock, blobControlsDataMock, refMock } from 'ee_else_ce_jest/repository/mock_data';
 
+Vue.use(VueApollo);
+jest.mock('~/alert');
 jest.mock('~/lib/utils/common_utils', () => ({
   isLoggedIn: jest.fn().mockReturnValue(true),
 }));
 
 describe('Blob Overflow Menu', () => {
   let wrapper;
+  let fakeApollo;
 
   const projectPath = '/some/project';
   const router = createRouter(projectPath, refMock);
 
   router.replace({ name: 'blobPath', params: { path: '/some/file.js' } });
 
-  function createComponent(propsData = {}, provided = {}) {
+  const projectInfoQuerySuccessResolver = jest
+    .fn()
+    .mockResolvedValue({ data: { project: projectMock } });
+  const projectInfoQueryErrorResolver = jest.fn().mockRejectedValue(new Error('Request failed'));
+
+  const createComponent = async ({
+    propsData = {},
+    projectInfoResolver = projectInfoQuerySuccessResolver,
+    provided = {},
+  } = {}) => {
+    fakeApollo = createMockApollo([[projectInfoQuery, projectInfoResolver]]);
+
     wrapper = shallowMountExtended(BlobOverflowMenu, {
       router,
+      apolloProvider: fakeApollo,
       provide: {
         blobInfo: blobControlsDataMock.repository.blobs.nodes[0],
+        currentRef: refMock,
         ...provided,
       },
       propsData: {
@@ -34,13 +57,28 @@ describe('Blob Overflow Menu', () => {
         GlDisclosureDropdown,
       },
     });
-  }
+    await waitForPromises();
+  };
 
   const findBlobDefaultActionsGroup = () => wrapper.findComponent(BlobDefaultActionsGroup);
   const findBlobButtonGroup = () => wrapper.findComponent(BlobButtonGroup);
+  const findBlobDeleteFileGroup = () => wrapper.findComponent(BlobDeleteFileGroup);
 
-  beforeEach(() => {
-    createComponent();
+  beforeEach(async () => {
+    createAlert.mockClear();
+    await createComponent();
+  });
+
+  afterEach(() => {
+    fakeApollo = null;
+  });
+
+  it('creates an alert with the correct message, when projectInfo query fails', async () => {
+    await createComponent({ projectInfoResolver: projectInfoQueryErrorResolver });
+
+    expect(createAlert).toHaveBeenCalledWith({
+      message: 'An error occurred while fetching lock information, please try again.',
+    });
   });
 
   describe('Default blob actions', () => {
@@ -51,7 +89,9 @@ describe('Blob Overflow Menu', () => {
     describe('events', () => {
       it('proxy copy event when overrideCopy is true', () => {
         createComponent({
-          overrideCopy: true,
+          propsData: {
+            overrideCopy: true,
+          },
         });
 
         findBlobDefaultActionsGroup().vm.$emit('copy');
@@ -60,7 +100,9 @@ describe('Blob Overflow Menu', () => {
 
       it('does not proxy copy event when overrideCopy is false', () => {
         createComponent({
-          overrideCopy: false,
+          propsData: {
+            overrideCopy: false,
+          },
         });
 
         findBlobDefaultActionsGroup().vm.$emit('copy');
@@ -75,15 +117,14 @@ describe('Blob Overflow Menu', () => {
     });
 
     it('does not render when blob is archived', () => {
-      createComponent(
-        {},
-        {
+      createComponent({
+        provided: {
           blobInfo: {
             ...blobControlsDataMock.repository.blobs.nodes[0],
             archived: true,
           },
         },
-      );
+      });
 
       expect(findBlobButtonGroup().exists()).toBe(false);
     });
@@ -93,6 +134,32 @@ describe('Blob Overflow Menu', () => {
       createComponent();
 
       expect(findBlobButtonGroup().exists()).toBe(false);
+    });
+  });
+
+  describe('Blob Delete File Group', () => {
+    it('renders when blob is not archived, and user is logged in', () => {
+      expect(findBlobDeleteFileGroup().exists()).toBe(true);
+    });
+
+    it('does not render when blob is archived', () => {
+      createComponent({
+        provided: {
+          blobInfo: {
+            ...blobControlsDataMock.repository.blobs.nodes[0],
+            archived: true,
+          },
+        },
+      });
+
+      expect(findBlobDeleteFileGroup().exists()).toBe(false);
+    });
+
+    it('does not render when user is not logged in', () => {
+      isLoggedIn.mockImplementationOnce(() => false);
+      createComponent();
+
+      expect(findBlobDeleteFileGroup().exists()).toBe(false);
     });
   });
 });
