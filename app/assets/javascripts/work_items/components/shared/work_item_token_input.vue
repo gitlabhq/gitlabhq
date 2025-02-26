@@ -1,6 +1,6 @@
 <script>
 import { GlTokenSelector, GlAlert } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce, escape } from 'lodash';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isNumeric } from '~/lib/utils/number_utils';
@@ -208,11 +208,13 @@ export default {
       });
     },
     formatResults(input) {
+      const escapedInput = escape(input);
+
       if (!this.searchTerm) {
-        return input;
+        return escapedInput;
       }
 
-      return highlighter(`<span class="gl-text-default">${input}</span>`, this.searchTerm);
+      return highlighter(`<span class="gl-text-default">${escapedInput}</span>`, this.searchTerm);
     },
     unsetError() {
       this.error = '';
@@ -233,6 +235,7 @@ export default {
     noMatchesFoundMessage: I18N_WORK_ITEM_NO_MATCHES_FOUND,
     addInputPlaceholder: I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER,
   },
+  safeHtmlConfig: { ADD_TAGS: ['strong', 'span'] },
 };
 </script>
 <template>
@@ -262,10 +265,13 @@ export default {
       <template #dropdown-item-content="{ dropdownItem }">
         <div class="gl-flex">
           <div
-            v-safe-html="formatResults(dropdownItem.iid)"
+            v-safe-html:[$options.safeHtmlConfig]="formatResults(dropdownItem.iid)"
             class="gl-mr-4 gl-text-sm gl-text-subtle"
           ></div>
-          <div v-safe-html="formatResults(dropdownItem.title)" class="gl-truncate"></div>
+          <div
+            v-safe-html:[$options.safeHtmlConfig]="formatResults(dropdownItem.title)"
+            class="gl-truncate"
+          ></div>
         </div>
       </template>
       <template #no-results-content>

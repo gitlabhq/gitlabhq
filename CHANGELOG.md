@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.9.1 (2025-02-26)
+
+### Fixed (1 change)
+
+- [Fix instance level dashboard by default severity override](https://gitlab.com/gitlab-org/security/gitlab/-/commit/56d2f940bb6e87b34e4f26ba9a298f28360dd23a) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Increase minimum role in SPP to read policy yaml](https://gitlab.com/gitlab-org/security/gitlab/-/commit/593c0a6f70564e9570fb16b25a37298eacf6c644) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4718))
+- [Fix access to read code review analytics in private projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0faa526c76e3c523ff6486057c5b5b07e8e4e5d9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4794))
+- [Escape work item dropdown items and restrict HTML tags](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fc777a98ebd45b30ab95bc0d94a418479d15f09c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4788))
+- [Use stricter CSP values in the packages dependency proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/922d3ad17cf7493a10f8dbf90c0cae8d9d4b063d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4787))
+
 ## 17.9.0 (2025-02-19)
 
 ### Added (202 changes)
