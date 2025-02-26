@@ -2,14 +2,14 @@
 # You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
 #
 # To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
+# https://docs.gitlab.com/development/cicd/templates/
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Clojure.gitlab-ci.yml
 
 # Based on openjdk:8, already includes lein
 image: clojure:lein-2.7.0
 # If you need to configure a database, add a `services` section here
-# See https://docs.gitlab.com/ee/ci/services/postgres.html
+# See https://docs.gitlab.com/ci/services/postgres/
 # Make sure you configure the connection as well
 
 before_script:

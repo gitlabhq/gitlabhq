@@ -963,29 +963,4 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       end
     end
   end
-
-  describe '#lazy_user_notes' do
-    it 'returns user notes lazily with 1 SQL query' do
-      project_work_item = create(:work_item)
-      create(:note_on_work_item, project: project_work_item.project, noteable: project_work_item)
-      group_work_item = create(:work_item, :group_level)
-      create(:note_on_work_item, namespace: project_work_item.namespace, noteable: group_work_item)
-      work_items = [project_work_item, group_work_item]
-
-      recorder = ActiveRecord::QueryRecorder.new(query_recorder_debug: true) do
-        work_items.each(&:lazy_user_notes)
-        work_items.each do |work_item|
-          expect(work_item.lazy_user_notes).to match_array(work_item.notes)
-        end
-      end
-
-      # from batch loader for lazy_user_notes
-      # 3 queries to find notes using each_batch
-      # when run in EE context, an additional query is made for the issues
-      # from spec itself
-      # 2 queries to load the notes to verify lazy_user_notes returns the right notes
-      expected_count = Gitlab.ee? ? 6 : 5
-      expect(recorder.count).to eq(expected_count)
-    end
-  end
 end

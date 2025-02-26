@@ -1,10 +1,10 @@
 # To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
+# https://docs.gitlab.com/development/cicd/templates/
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Docker.gitlab-ci.yml
 
 # Build a Docker image with CI/CD and push to the GitLab registry.
-# Docker-in-Docker documentation: https://docs.gitlab.com/ee/ci/docker/using_docker_build.html
+# Docker-in-Docker documentation: https://docs.gitlab.com/ci/docker/using_docker_build/
 #
 # This template uses one generic job with conditional builds
 # for the default branch and all other (MR) branches.

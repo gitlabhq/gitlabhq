@@ -40,7 +40,7 @@ sast:
   extends: .sast-analyzer
   script:
     - echo "This job was deprecated in GitLab 16.8 and removed in GitLab 17.0"
-    - echo "For more information see https://docs.gitlab.com/ee/update/deprecations.html#sast-analyzer-coverage-changing-in-gitlab-170"
+    - echo "For more information see https://docs.gitlab.com/update/deprecations/#sast-analyzer-coverage-changing-in-gitlab-170"
     - exit 1
   rules:
     - when: never

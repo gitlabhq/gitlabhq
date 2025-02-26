@@ -2864,6 +2864,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_97e9245e767d() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issues"
+  WHERE "issues"."id" = NEW."issue_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_98ad3a4c1d35() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -15140,7 +15156,8 @@ ALTER SEQUENCE issuable_slas_id_seq OWNED BY issuable_slas.id;
 
 CREATE TABLE issue_assignees (
     user_id bigint NOT NULL,
-    issue_id bigint NOT NULL
+    issue_id bigint NOT NULL,
+    namespace_id bigint
 );
 
 CREATE TABLE issue_assignment_events (
@@ -33287,6 +33304,8 @@ CREATE UNIQUE INDEX index_issuable_slas_on_issue_id ON issuable_slas USING btree
 
 CREATE INDEX index_issuable_slas_on_namespace_id ON issuable_slas USING btree (namespace_id);
 
+CREATE INDEX index_issue_assignees_on_namespace_id ON issue_assignees USING btree (namespace_id);
+
 CREATE INDEX index_issue_assignees_on_user_id_and_issue_id ON issue_assignees USING btree (user_id, issue_id);
 
 CREATE INDEX index_issue_assignment_events_on_namespace_id ON issue_assignment_events USING btree (namespace_id);
@@ -38477,6 +38496,8 @@ CREATE TRIGGER trigger_96a76ee9f147 BEFORE INSERT OR UPDATE ON design_management
 
 CREATE TRIGGER trigger_979e7f45114f BEFORE INSERT OR UPDATE ON ml_candidate_metrics FOR EACH ROW EXECUTE FUNCTION trigger_979e7f45114f();
 
+CREATE TRIGGER trigger_97e9245e767d BEFORE INSERT OR UPDATE ON issue_assignees FOR EACH ROW EXECUTE FUNCTION trigger_97e9245e767d();
+
 CREATE TRIGGER trigger_9e137c16de79 BEFORE INSERT OR UPDATE ON vulnerability_findings_remediations FOR EACH ROW EXECUTE FUNCTION trigger_9e137c16de79();
 
 CREATE TRIGGER trigger_9f3745f8fe32 BEFORE INSERT OR UPDATE ON merge_requests_closing_issues FOR EACH ROW EXECUTE FUNCTION trigger_9f3745f8fe32();
@@ -39264,6 +39285,9 @@ ALTER TABLE ONLY user_namespace_callouts
 
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_4b88e5b255 FOREIGN KEY (component_version_id) REFERENCES sbom_component_versions(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY issue_assignees
+    ADD CONSTRAINT fk_4b97267a3e FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_conan_recipe_revisions
     ADD CONSTRAINT fk_4d18bd6f82 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

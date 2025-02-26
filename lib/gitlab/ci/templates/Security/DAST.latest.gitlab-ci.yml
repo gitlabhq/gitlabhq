@@ -1,5 +1,5 @@
 # To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
+# https://docs.gitlab.com/development/cicd/templates/
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.latest.gitlab-ci.yml
 
@@ -19,7 +19,7 @@
 # Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dast/
 #
 # Configure DAST with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/).
-# List of available variables: https://docs.gitlab.com/ee/user/application_security/dast/browser/configuration/variables.html
+# List of available variables: https://docs.gitlab.com/user/application_security/dast/browser/configuration/variables/
 
 variables:
   DAST_VERSION: 5

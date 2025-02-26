@@ -254,17 +254,6 @@ class WorkItem < Issue
     end
   end
 
-  def lazy_user_notes
-    BatchLoader.for(id).batch(default_value: []) do |work_item_ids, loader|
-      issue_user_notes = ::Note.where(noteable_type: 'Issue', noteable_id: work_item_ids)
-      issue_user_notes.each_batch do |batch|
-        batch.user.each do |note|
-          loader.call(note.noteable_id) { |notes| notes << note }
-        end
-      end
-    end
-  end
-
   private
 
   override :parent_link_confidentiality
