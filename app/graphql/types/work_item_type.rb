@@ -46,6 +46,9 @@ module Types
     field :create_note_email, GraphQL::Types::String,
       null: true,
       description: 'User specific email address for the work item.'
+    field :user_discussions_count, GraphQL::Types::Int, null: false,
+      description: 'Number of user discussions in the work item.',
+      resolver: Resolvers::UserDiscussionsCountResolver
 
     field :reference, GraphQL::Types::String, null: false,
       description: 'Internal reference of the work item. Returned in shortened format by default.',

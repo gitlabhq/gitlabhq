@@ -9,7 +9,7 @@ import {
   GlButton,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import ProjectPreReceiveSecretDetection from '~/security_configuration/graphql/set_pre_receive_secret_detection.graphql';
+import ProjectSetSecretPushProtection from '~/security_configuration/graphql/set_secret_push_protection.graphql';
 import { __, s__ } from '~/locale';
 
 export default {
@@ -99,7 +99,7 @@ export default {
     async toggleSecretPushProtection(checked) {
       try {
         const { data } = await this.$apollo.mutate({
-          mutation: ProjectPreReceiveSecretDetection,
+          mutation: ProjectSetSecretPushProtection,
           variables: {
             input: {
               namespacePath: this.projectFullPath,
@@ -108,15 +108,15 @@ export default {
           },
         });
 
-        const { errors, preReceiveSecretDetectionEnabled } = data.setPreReceiveSecretDetection;
+        const { errors, secretPushProtectionEnabled } = data.setSecretPushProtection;
 
         if (errors.length > 0) {
           this.reportError(errors[0].message);
         }
-        if (preReceiveSecretDetectionEnabled !== null) {
-          this.toggleValue = preReceiveSecretDetectionEnabled;
+        if (secretPushProtectionEnabled !== null) {
+          this.toggleValue = secretPushProtectionEnabled;
           this.$toast.show(
-            preReceiveSecretDetectionEnabled
+            secretPushProtectionEnabled
               ? this.$options.i18n.toastMessageEnabled
               : this.$options.i18n.toastMessageDisabled,
           );

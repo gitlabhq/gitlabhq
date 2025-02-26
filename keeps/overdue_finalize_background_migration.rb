@@ -112,8 +112,12 @@ module Keeps
     def truncate_migration_name(migration_name)
       # File names not allowed to exceed 100 chars due to Cop/FilenameLength so we truncate to 70 because there will be
       # underscores added.
+      if migration_name.length > 70
+        # Consisten 5 digit integer hash so that we always get the same name every time we run this keep
+        hash = Digest::SHA256.hexdigest(migration_name).to_i(16) % 100000
+      end
 
-      migration_name[0...70]
+      migration_name[0...65] + hash.to_s
     end
 
     def add_finalized_by_to_yaml(yaml_file, migration_number)

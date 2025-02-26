@@ -46,6 +46,7 @@ Workflow:
 
 For more information, see:
 
+- [Set up Workflow](set_up.md).
 - [Use Workflow in your IDE](use_in_your_ide.md).
 - [Best practices](best_practices.md).
 

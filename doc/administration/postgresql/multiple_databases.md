@@ -20,7 +20,8 @@ title: Multiple Databases
 
 {{< alert type="warning" >}}
 
-This feature is not ready for production use
+This feature is not ready for production use.
+The migration script supports only dedicated `ci` databases.
 
 {{< /alert >}}
 
@@ -30,10 +31,10 @@ To scale GitLab, you can configure GitLab to use multiple application databases.
 
 Due to [known issues](#known-issues), configuring GitLab with multiple databases is in limited [beta](../../policy/development_stages_support.md#beta).
 
-After you have set up multiple databases, GitLab uses a second application database for
-[CI/CD features](../../ci/_index.md), referred to as the `ci` database. We do not exclude hosting both databases on a single PostgreSQL instance.
+After you set up multiple databases, GitLab may use secondary application databases for
+[CI/CD features](../../ci/_index.md) (referred to as a `ci` database) or [security features](../../user/application_security/secure_your_application.md) (referred to as a `sec` database). You can host multiple databases on a single PostgreSQL instance.
 
-All tables have exactly the same structure in both the `main`, and `ci`
+All tables have exactly the same structure in the `main`, `ci`, and `sec`
 databases. Some examples:
 
 - When multiple databases are configured, the `ci_pipelines` table exists in
@@ -55,7 +56,7 @@ databases. Some examples:
 
 {{< history >}}
 
-- A script for migrating existing Linux package installations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368729) in GitLab 16.8.
+- A script for migrating existing Linux package installations for `ci` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368729) in GitLab 16.8.
 
 {{< /history >}}
 

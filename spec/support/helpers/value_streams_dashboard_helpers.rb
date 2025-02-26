@@ -31,6 +31,10 @@ module ValueStreamsDashboardHelpers
     "[data-testid='dashboard-list-item']"
   end
 
+  def dashboard_list_item_title
+    "[data-testid='dashboard-router-link']"
+  end
+
   def create_custom_yaml_config(user, pointer_project, yaml_fixture_path)
     repository_file_path = '.gitlab/analytics/dashboards/value_streams/value_streams.yaml'
 

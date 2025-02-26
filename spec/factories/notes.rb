@@ -44,6 +44,8 @@ FactoryBot.define do
 
     factory :legacy_diff_note_on_commit, traits: [:on_commit, :legacy_diff_note], class: 'LegacyDiffNote'
 
+    factory :discussion_note_on_work_item, traits: [:on_work_item], class: 'DiscussionNote'
+
     factory :legacy_diff_note_on_merge_request, traits: [:on_merge_request, :legacy_diff_note], class: 'LegacyDiffNote' do
       association :project, :repository
       position { '' }

@@ -5,7 +5,7 @@ import Vue from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import SecretPushProtectionFeatureCard from '~/security_configuration/components/secret_push_protection_feature_card.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import ProjectPreReceiveSecretDetection from '~/security_configuration/graphql/set_pre_receive_secret_detection.graphql';
+import ProjectSetSecretPushProtection from '~/security_configuration/graphql/set_secret_push_protection.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import { secretPushProtectionMock } from '../mock_data';
 
@@ -13,8 +13,8 @@ Vue.use(VueApollo);
 
 const setMockResponse = {
   data: {
-    setPreReceiveSecretDetection: {
-      preReceiveSecretDetectionEnabled: true,
+    setSecretPushProtection: {
+      secretPushProtectionEnabled: true,
       errors: [],
     },
   },
@@ -38,9 +38,7 @@ describe('SecretPushProtectionFeatureCard component', () => {
     requestHandlers = {
       setMutationHandler: jest.fn().mockResolvedValue(setMockResponse),
     };
-    return createMockApollo([
-      [ProjectPreReceiveSecretDetection, requestHandlers.setMutationHandler],
-    ]);
+    return createMockApollo([[ProjectSetSecretPushProtection, requestHandlers.setMutationHandler]]);
   };
 
   const createComponent = ({ props = {}, provide = {} } = {}) => {

@@ -39394,6 +39394,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="workitemtitle"></a>`title` | [`String!`](#string) | Title of the work item. |
 | <a id="workitemtitlehtml"></a>`titleHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `title`. |
 | <a id="workitemupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the work item was last updated. |
+| <a id="workitemuserdiscussionscount"></a>`userDiscussionsCount` | [`Int!`](#int) | Number of user discussions in the work item. |
 | <a id="workitemuserpermissions"></a>`userPermissions` | [`WorkItemPermissions!`](#workitempermissions) | Permissions for the current user on the resource. |
 | <a id="workitemweburl"></a>`webUrl` | [`String`](#string) | URL of this object. |
 | <a id="workitemwidgets"></a>`widgets` | [`[WorkItemWidget!]`](#workitemwidget) | Collection of widgets that belong to the work item. |

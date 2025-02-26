@@ -67,4 +67,22 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
       end
     end
   end
+
+  describe '#truncate_migration_name' do
+    let(:migration_name) { 'FinalizeHKSomeLongMigrationNameThatIsLongerThanLimitMigrationNameThatIsLongerThanLimit' }
+
+    subject(:truncated_name) { keep.truncate_migration_name(migration_name) }
+
+    it 'returns truncated name' do
+      expect(truncated_name).to eq('FinalizeHKSomeLongMigrationNameThatIsLongerThanLimitMigrationName51841')
+    end
+
+    context 'when name is short enough' do
+      let(:migration_name) { 'FinalizeHKSomeShortMigrationName' }
+
+      it 'returns the name' do
+        expect(truncated_name).to eq(migration_name)
+      end
+    end
+  end
 end

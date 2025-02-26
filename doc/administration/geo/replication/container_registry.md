@@ -72,7 +72,7 @@ To configure container registry replication:
 1. Configure the [**secondary** site](#configure-secondary-site).
 1. Verify container registry [replication](#verify-replication).
 
-### Configure **primary** site
+### Configure primary site
 
 Make sure that you have container registry set up and working on
 the **primary** site before following the next steps.
@@ -132,7 +132,7 @@ To be able to replicate new container images, the container registry must send n
    gitlab-ctl reconfigure
    ```
 
-### Configure **secondary** site
+### Configure secondary site
 
 Make sure you have container registry set up and working on
 the **secondary** site before following the next steps.
@@ -216,11 +216,19 @@ To fix this, make sure that the authorization headers being sent with the regist
 
 #### Registry error: `token from untrusted issuer: "<token>"`
 
-To replicate a container image, Sidekiq uses JWT to authenticate itself towards the container registry. Geo replication takes it as a prerequisite that the [container registry configuration](../../packages/container_registry.md) has been done correctly.
+When replicating container images in Geo, you might see the error `token from untrusted issuer: "<token>"`.
 
-Make sure that both sites share a single signing key pair, as instructed under [Configure secondary site](#configure-secondary-site), and that both container registries, plus primary and secondary sites are [all configured to use the same token issuer](../../packages/container_registry.md#configure-gitlab-and-registry-on-separate-nodes-linux-package-installations).
+This issue occurs when the container registry configuration is incorrect, causing Sidekiq's JWT 
+authentication to fail.
 
-On multinode deployments, make sure that the issuer configured on the Sidekiq node matches the value configured on the registries.
+To resolve this issue:
+
+1. Ensure both sites share a single signing key pair, as described in [configure secondary site](#configure-secondary-site).
+1. Verify that both container registries and both primary and secondary sites are configured 
+   to use the same token issuer. For more information, see 
+   [configure GitLab and registry on separate nodes](../../packages/container_registry.md#configure-gitlab-and-registry-on-separate-nodes-linux-package-installations).
+1. For multi-node deployments, confirm that the issuer configured on the Sidekiq node matches 
+   the value configured on the registries.
 
 ### Manually trigger a container registry sync event
 

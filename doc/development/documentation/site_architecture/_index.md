@@ -55,7 +55,6 @@ Then you can use one of these approaches:
 - Recommended. [Add an entry in the global navigation](global_nav.md#add-a-navigation-entry) for
   <https://docs.gitlab.com> that links directly to the documentation in that external repository.
   The documentation pages are not indexed or searchable on <https://docs.gitlab.com>.
-  View [an example](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/fedb6378a3c92274ba3b6031df0d34455594e4cc/content/_data/navigation.yaml#L2944-L2946).
 - Create a landing page for the product in the `gitlab` repository, and add the landing page
   [to the global navigation](global_nav.md#add-a-navigation-entry), but keep the rest
   of the documentation in the external repository. The landing page is indexed and
@@ -71,11 +70,10 @@ For more information, read about the [monthly release process](https://gitlab.co
 
 ## Danger Bot
 
-GitLab uses [Danger](https://github.com/danger/danger) for some elements in
-code review. For docs changes in merge requests, whenever a change to files under `/doc`
-is made, Danger Bot leaves a comment with further instructions about the documentation
-process. This is configured in the `Dangerfile` in the GitLab repository under
-[/danger/documentation/](https://gitlab.com/gitlab-org/gitlab/-/tree/master/danger/documentation).
+GitLab uses [Danger](https://github.com/danger/danger) to automate code review processes.
+When documentation files in `/doc` are modified in a merge request,
+Danger Bot automatically comments with documentation-related guidelines.
+This automation is configured in the [`Dangerfile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/danger/documentation/Dangerfile).
 
 ## Request a documentation survey banner
 
