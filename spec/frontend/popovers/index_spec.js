@@ -36,6 +36,27 @@ describe('popovers/index.js', () => {
   });
 
   describe('initPopover', () => {
+    it('only initializes event listeners once', () => {
+      const addEventListenerSpy = jest.spyOn(document, 'addEventListener');
+
+      buildPopoversApp();
+      expect(addEventListenerSpy).toHaveBeenNthCalledWith(
+        1,
+        'mouseenter',
+        expect.any(Function),
+        true,
+      );
+      expect(addEventListenerSpy).toHaveBeenNthCalledWith(2, 'focus', expect.any(Function), true);
+      expect(addEventListenerSpy).toHaveBeenNthCalledWith(3, 'click', expect.any(Function), true);
+
+      addEventListenerSpy.mockClear();
+
+      buildPopoversApp();
+      expect(addEventListenerSpy).not.toHaveBeenCalled(); // Should not add listeners again
+
+      addEventListenerSpy.mockRestore();
+    });
+
     it('attaches a GlPopover for the elements specified in the selector', async () => {
       const target = createPopoverTarget();
 

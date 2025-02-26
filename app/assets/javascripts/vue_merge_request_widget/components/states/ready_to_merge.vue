@@ -80,7 +80,7 @@ export default {
             false;
           this.commitMessage = data.project.mergeRequest.defaultMergeCommitMessage;
           this.squashBeforeMerge = data.project.mergeRequest.squashOnMerge;
-          this.isSquashReadOnly = data.project.squashReadOnly;
+          this.isSquashReadOnly = data.project.mergeRequest.squashReadOnly;
           this.squashCommitMessage = data.project.mergeRequest.defaultSquashCommitMessage;
         }
 

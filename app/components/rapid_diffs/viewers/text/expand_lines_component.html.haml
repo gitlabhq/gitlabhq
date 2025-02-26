@@ -1,3 +1,6 @@
 - @directions.each do |direction|
-  %button.rd-expand-lines-button{ type: "button", data: { click: 'expandLines' } }
-    = helpers.sprite_icon(icon_name(direction))
+  %button.rd-expand-lines-button{ type: "button", data: { click: 'expandLines', expand_direction: direction } }
+    %span{ data: { visible_when: 'idle' } }
+      = helpers.sprite_icon(icon_name(direction))
+    %span{ data: { visible_when: 'loading' } }
+      = helpers.gl_loading_icon(size: 'sm', inline: true)

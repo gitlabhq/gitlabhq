@@ -161,6 +161,7 @@ class Projects::CommitController < Projects::ApplicationController
     return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
 
     streaming_offset = 5
+    @reload_stream_url = diffs_stream_url(@commit)
     @stream_url = diffs_stream_url(@commit, streaming_offset, diff_view)
     @diffs_slice = @commit.first_diffs_slice(streaming_offset, commit_diff_options)
 

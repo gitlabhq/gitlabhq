@@ -795,7 +795,6 @@ lib/gitlab/checks/**
 /doc/api/import.md @ashrafkhamis
 /doc/api/instance_clusters.md @z_painter
 /doc/api/instance_level_ci_variables.md @marcel.amirault
-/doc/api/integrations.md @ashrafkhamis
 /doc/api/invitations.md @emily.sahlani
 /doc/api/issue_links.md @msedlakjakubowski
 /doc/api/issues.md @msedlakjakubowski
@@ -840,6 +839,7 @@ lib/gitlab/checks/**
 /doc/api/project_clusters.md @z_painter
 /doc/api/project_forks.md @emily.sahlani
 /doc/api/project_import_export.md @ashrafkhamis
+/doc/api/project_integrations.md @ashrafkhamis
 /doc/api/project_job_token_scopes.md @marcel.amirault
 /doc/api/project_level_variables.md @marcel.amirault
 /doc/api/project_markdown_uploads.md @msedlakjakubowski
@@ -1027,7 +1027,7 @@ lib/gitlab/checks/**
 /doc/raketasks/x509_signatures.md @brendan777
 /doc/security/ @idurham
 /doc/security/hardening_nist_800_53.md @emily.sahlani
-/doc/solutions/ @jfullam @brianwald @Darwinjs
+/doc/solutions/ @jfullam @Darwinjs @sbrightwell
 /doc/solutions/integrations/servicenow.md @ashrafkhamis
 /doc/subscriptions/ @lciutacu
 /doc/subscriptions/gitlab_com/ @lyspin
@@ -1111,8 +1111,6 @@ lib/gitlab/checks/**
 /doc/user/group/_index.md @emily.sahlani
 /doc/user/group/access_and_permissions.md @emily.sahlani
 /doc/user/group/clusters/ @z_painter
-/doc/user/group/compliance_frameworks.md @eread
-/doc/user/group/compliance_pipelines.md @eread
 /doc/user/group/contribution_analytics/ @lciutacu
 /doc/user/group/credentials_inventory.md @idurham
 /doc/user/group/custom_project_templates.md @brendan777

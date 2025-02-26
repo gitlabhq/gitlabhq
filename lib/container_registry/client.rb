@@ -30,15 +30,11 @@ module ContainerRegistry
     }.freeze
 
     def self.supports_tag_delete?
-      with_dummy_client(return_value_if_disabled: false) do |client|
-        client.supports_tag_delete?
-      end
+      with_dummy_client(return_value_if_disabled: false, &:supports_tag_delete?)
     end
 
     def self.registry_info
-      with_dummy_client do |client|
-        client.registry_info
-      end
+      with_dummy_client(&:registry_info)
     end
 
     def registry_info

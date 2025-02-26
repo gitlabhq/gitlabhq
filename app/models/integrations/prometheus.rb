@@ -93,9 +93,7 @@ module Integrations
     def prometheus_available?
       return false unless project
 
-      project.all_clusters.enabled.eager_load(:integration_prometheus).any? do |cluster|
-        cluster.integration_prometheus_available?
-      end
+      project.all_clusters.enabled.eager_load(:integration_prometheus).any?(&:integration_prometheus_available?)
     end
 
     def allow_local_api_url?

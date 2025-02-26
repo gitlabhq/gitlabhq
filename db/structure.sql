@@ -39627,9 +39627,6 @@ ALTER TABLE ONLY topics
 ALTER TABLE ONLY work_item_text_field_values
     ADD CONSTRAINT fk_79c719630f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY work_item_type_user_preferences
-    ADD CONSTRAINT fk_79e0353950 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(correct_id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY packages_maven_metadata
     ADD CONSTRAINT fk_7a170ee0a3 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -39806,9 +39803,6 @@ ALTER TABLE ONLY todos
 
 ALTER TABLE ONLY packages_debian_group_architectures
     ADD CONSTRAINT fk_92714bcab1 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY work_item_type_custom_fields
-    ADD CONSTRAINT fk_9447fad7b4 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(correct_id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY workspaces_agent_configs
     ADD CONSTRAINT fk_94660551c8 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
@@ -42728,6 +42722,12 @@ ALTER TABLE ONLY work_item_related_link_restrictions
 
 ALTER TABLE ONLY work_item_related_link_restrictions
     ADD CONSTRAINT fk_work_item_related_link_restrictions_target_type_id FOREIGN KEY (target_type_id) REFERENCES work_item_types(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_type_custom_fields
+    ADD CONSTRAINT fk_work_item_type_custom_fields_on_work_item_type_id FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_type_user_preferences
+    ADD CONSTRAINT fk_work_item_type_user_preferences_on_work_item_type_id FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY work_item_widget_definitions
     ADD CONSTRAINT fk_work_item_widget_definitions_work_item_type_id FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id) ON UPDATE CASCADE ON DELETE CASCADE;

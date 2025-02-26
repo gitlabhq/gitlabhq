@@ -1,12 +1,72 @@
 - if can_admin_cluster?(current_user, @cluster)
-  .settings.expanded.border-0.m-0
+  - cluster_migration = @cluster.agent_migration_for_display
+
+  %h4.gl-mt-0= s_('ClusterIntegration|Migrate to GitLab Agent for Kubernetes')
+
+  - tag_pair_agent_docs = tag_pair(link_to('', help_page_path('user/clusters/agent/_index.md'), target: '_blank', rel: 'noopener noreferrer'), :agent_docs_link_start, :agent_docs_link_end)
+  - tag_pair_install_docs = tag_pair(link_to('', help_page_path('user/clusters/agent/install/_index.md'), target: '_blank', rel: 'noopener noreferrer'), :install_docs_link_start, :install_docs_link_end)
+
+  %p
+    = safe_format(s_('ClusterIntegration|The %{agent_docs_link_start}GitLab Agent for Kubernetes %{agent_docs_link_end} offers improved security, reliability, and functionality. Follow the steps below to create a new agent and migrate your existing certificate-based integration. The process is automated, but you still need to %{install_docs_link_start}install the agent%{install_docs_link_end} in your cluster.') , tag_pair_agent_docs, tag_pair_install_docs)
+    = link_to s_('ClusterIntegration|How do I migrate to the GitLab agent?'), help_page_path('user/infrastructure/clusters/migrate_to_gitlab_agent.md'), target: '_blank', rel: 'noopener noreferrer'
+
+  %h5= s_('ClusterIntegration|Step 1. Connect the agent')
+
+  - if (config = migration_alert_config(cluster_migration))
+    = render Pajamas::AlertComponent.new(title: config[:title],
+      variant: config[:variant],
+      alert_options: { class: 'gl-mb-5' }) do |c|
+      = c.with_body do
+        = config[:message]
+        - if config[:details].present?
+          = config[:details]
+        - if config[:show_help]
+          - c.with_actions do
+            = link_to s_('ClusterIntegration|Learn more about migrating to GitLab Agent'),
+              help_page_path('user/infrastructure/clusters/migrate_to_gitlab_agent.md'),
+              target: '_blank',
+              rel: 'noopener noreferrer'
+
+  - agent = cluster_migration&.agent
+  - project = cluster_migration&.project
+  - if agent.present?
+
+    %p.gl-font-bold.gl-mb-2
+      = s_('ClusterIntegration|Project name')
     %p
-      = s_('ClusterIntegration|Migrate this cluster to use the GitLab agent for Kubernetes')
-    .settings-content#migrate-section
-      .sub-section.form-group
-        %h4
-          = s_('ClusterIntegration|Migrate to the GitLab agent for Kubernetes')
-        %p
-          = s_("ClusterIntegration|This cluster integration is deprecated. To continue using this Kubernetes cluster with GitLab, you must install the agent.")
-        = render Pajamas::ButtonComponent.new(method: :post, href: clusterable.create_cluster_migration_path(@cluster)) do
-          = s_('ClusterIntegration|Install agent')
+      = link_to project.full_name, project_path(project)
+
+    %p.gl-font-bold.gl-mb-2
+      = s_('ClusterIntegration|Agent name')
+    %p
+      - agent_link_name = "#{agent.name}##{agent.id}"
+      = link_to agent_link_name, project_cluster_agent_path(project, agent.name)
+
+  - else
+    - group_id = @cluster.group.id if @cluster.group_type?
+
+    - if @cluster.project_type?
+      - group_id = @cluster.project.group.id if @cluster.project.group
+      - user_id = @cluster.project.namespace.owner_id unless group_id
+
+    = gitlab_ui_form_for cluster_migration, url: clusterable.create_cluster_migration_path(@cluster), html: { class: 'fieldset-form' }, data: { testid: 'cluster-migration-form' }, method: :post do |f|
+      .form-group{ class: 'md:gl-w-1/2' }
+        .js-vue-project-select{ data: { label: s_('ClusterIntegration|Project name'),
+            description: s_('ClusterIntegration|Select a project for the GitLab Agent.'),
+            input_name: 'cluster_migration[configuration_project_id]',
+            input_id: 'cluster_migration_configuration_project_id',
+            order_by: 'last_activity_at',
+            group_id: group_id,
+            user_id: user_id,
+            with_shared: true.to_s,
+            include_subgroups: true.to_s,
+            membership: true.to_s,
+            selected: @cluster.management_project_id } }
+
+      .form-group.-gl-mt-2{ class: 'md:gl-w-1/2' }
+        = f.label :agent_name, s_('ClusterIntegration|Agent name'), class: 'label-bold'
+        = f.text_field :agent_name, name: 'cluster_migration[agent_name]', class: 'form-control gl-form-input', placeholder: s_('ClusterIntegration|New agent name')
+        .form-text.gl-text-subtle
+          = s_('ClusterIntegration|Enter a unique name for your new GitLab Agent. This name will be used to identify the agent in your project.')
+
+      = f.submit s_('ClusterIntegration|Create agent and migrate'), pajamas_button: true

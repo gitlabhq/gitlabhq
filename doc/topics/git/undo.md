@@ -261,9 +261,22 @@ was merged into your branch. In that case, you must revert the changes on the re
 ### Revert remote changes without altering history
 
 To undo changes in the remote repository, you can create a new commit with the changes you
-want to undo. This process preserves the history and provides a clear timeline and development structure.
+want to undo. This process preserves the history and provides a clear timeline and development structure:
 
-![Use revert to keep branch flowing](img/revert_v14_0.png)
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+flowchart LR
+   REMOTE["REMOTE"] --> A(A)
+   A --> B(B)
+   B --> C(C)
+   C --> negB("-B")
+   negB --> D(D)
+
+   B:::crossed
+   classDef crossed stroke:#000,stroke-width:3px,color:#000,stroke-dasharray: 5 5
+
+   negB -.->|reverts| B
+```
 
 To revert changes introduced in a specific commit `B`:
 

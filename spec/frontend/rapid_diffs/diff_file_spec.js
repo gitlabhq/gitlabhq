@@ -101,8 +101,9 @@ describe('DiffFile Web Component', () => {
 
     it('handles specific clicks', () => {
       triggerVisibility(true);
-      getDiffElement().querySelector('[data-click=foo]').click();
-      expect(adapter.clicks.foo).toHaveBeenCalledWith(expect.any(MouseEvent));
+      const clickTarget = getDiffElement().querySelector('[data-click=foo]');
+      clickTarget.click();
+      expect(adapter.clicks.foo).toHaveBeenCalledWith(expect.any(MouseEvent), clickTarget);
       expect(adapter.clicks.foo.mock.instances[0]).toStrictEqual(getContext());
     });
 

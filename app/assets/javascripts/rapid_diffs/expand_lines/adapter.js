@@ -1,44 +1,37 @@
 import { getLines } from '~/rapid_diffs/expand_lines/get_lines';
+import { DiffLineRow } from '~/rapid_diffs/expand_lines/diff_line_row';
 
-const getLineNumber = (el) => parseInt(el.dataset.linenumber, 10);
-
-const collectLineData = (element) => {
-  const buttons = element.querySelectorAll('[data-linenumber]');
-  const lineNumbers = Array.from(buttons).map(getLineNumber);
-  const previousEl = element.previousElementSibling;
-  const prevNewLine = previousEl?.querySelector('[data-linenumber]:last-child');
-  const prevNewLineNumber = prevNewLine ? getLineNumber(prevNewLine) : 0;
-  return [...lineNumbers, prevNewLineNumber];
-};
-
-const viewersMap = {
-  text_inline: 'text',
-  text_parallel: 'parallel',
+const getSurroundingLines = (hunkHeaderRow) => {
+  const wrapperElements = Array.from(hunkHeaderRow.parentElement.children);
+  const rowIndex = wrapperElements.indexOf(hunkHeaderRow);
+  const lineBefore = wrapperElements.slice(0, rowIndex).findLast((el) => 'hunkLines' in el.dataset);
+  const lineAfter = wrapperElements
+    .slice(rowIndex, wrapperElements.length)
+    .find((el) => 'hunkLines' in el.dataset);
+  return [lineBefore, lineAfter].map((lineRow) => (lineRow ? new DiffLineRow(lineRow) : null));
 };
 
 export const ExpandLinesAdapter = {
   clicks: {
-    async expandLines(event) {
-      const { target } = event;
-      const { expandPrevLine, expandNextLine } = target.dataset;
-      if (!expandPrevLine && !expandNextLine) return;
-      const parent = target.closest('tr');
-      if (parent.dataset.loading) return;
+    async expandLines(event, button) {
+      const { expandDirection } = button.dataset;
+      const hunkHeaderRow = button.closest('tr');
 
-      parent.dataset.loading = true;
+      if (hunkHeaderRow.dataset.loading) return;
+      hunkHeaderRow.dataset.loading = expandDirection;
+      button.setAttribute('disabled', 'disabled');
 
-      const { blobDiffPath } = this.data;
+      const { diffLinesPath } = this.data;
       const lines = await getLines({
-        expandPrevLine,
-        lineData: collectLineData(parent),
-        blobDiffPath,
-        view: viewersMap[this.viewer],
+        expandDirection,
+        surroundingLines: getSurroundingLines(hunkHeaderRow),
+        diffLinesPath,
+        view: this.viewer === 'text_parallel' ? 'parallel' : undefined,
       });
 
-      const method = expandPrevLine ? 'beforebegin' : 'afterend';
       // eslint-disable-next-line no-unsanitized/method
-      parent.insertAdjacentHTML(method, lines);
-      parent.remove();
+      hunkHeaderRow.insertAdjacentHTML('afterend', lines);
+      hunkHeaderRow.remove();
     },
   },
 };

@@ -3,13 +3,14 @@
 module Clusters
   module Migration
     class CreateService
-      attr_reader :cluster, :clusterable, :current_user, :configuration_project
+      attr_reader :cluster, :clusterable, :current_user, :configuration_project, :agent_name
 
-      def initialize(cluster, current_user:, configuration_project_id:)
+      def initialize(cluster, current_user:, configuration_project_id:, agent_name:)
         @cluster = cluster
         @clusterable = cluster.clusterable
         @current_user = current_user
         @configuration_project = find_configuration_project(configuration_project_id)
+        @agent_name = agent_name
       end
 
       def execute
@@ -27,7 +28,8 @@ module Clusters
         migration = Clusters::AgentMigration.new(
           cluster: cluster,
           agent: agent,
-          project: configuration_project
+          project: configuration_project,
+          agent_name: agent_name
         )
 
         if migration.save
@@ -41,11 +43,11 @@ module Clusters
 
       def validate_inputs
         message = if !feature_enabled?
-                    'Feature disabled'
+                    _('Feature disabled')
                   elsif !current_user.can?(:admin_cluster, cluster)
-                    'Unauthorized'
+                    _('Unauthorized')
                   elsif configuration_project.nil?
-                    'Invalid configuration project'
+                    s_('ClusterIntegration|Invalid configuration project')
                   end
 
         error_response(message: message) if message
@@ -72,10 +74,6 @@ module Clusters
 
         # User permissions for this project are checked in Agents::CreateService
         clusterable.root_ancestor.all_projects.find_by_id(project_id)
-      end
-
-      def agent_name
-        cluster.name.first(63).parameterize
       end
 
       def feature_enabled?

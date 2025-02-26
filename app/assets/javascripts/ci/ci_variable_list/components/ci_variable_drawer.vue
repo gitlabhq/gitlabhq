@@ -482,16 +482,18 @@ export default {
       </gl-alert>
       <gl-form-group
         :label="$options.i18n.type"
-        label-for="ci-variable-type"
+        label-class="!gl-pt-5 -gl-mb-5"
         class="gl-border-none"
         :class="{
           '-gl-mb-5': !hideEnvironmentScope,
           '-gl-mb-1': hideEnvironmentScope,
         }"
       >
+        <span id="ci-variable-type" class="gl-sr-only">{{ $options.i18n.type }}</span>
         <gl-collapsible-listbox
           v-model="variable.variableType"
           :items="$options.variableOptions"
+          toggle-aria-labelled-by="ci-variable-type"
           block
           fluid-width
         />
@@ -499,12 +501,12 @@ export default {
       <gl-form-group
         v-if="!hideEnvironmentScope"
         class="-gl-mb-5 gl-border-none"
-        label-for="ci-variable-env"
+        label-class="!gl-pt-5 -gl-mb-5"
         data-testid="environment-scope"
       >
         <template #label>
           <div class="gl-flex gl-items-center">
-            <span class="gl-mr-2">
+            <span id="ci-variable-environments" class="gl-mr-2">
               {{ $options.i18n.environments }}
             </span>
             <span
@@ -533,6 +535,7 @@ export default {
         </template>
         <ci-environments-dropdown
           v-if="areScopedVariablesAvailable"
+          aria-labelled-by="ci-variable-environments"
           class="gl-mb-5"
           :are-environments-loading="areEnvironmentsLoading"
           :environments="environments"
@@ -636,8 +639,8 @@ export default {
         </gl-form-checkbox>
       </gl-form-group>
       <gl-form-group
-        label-for="ci-variable-description"
         :label="$options.i18n.description"
+        label-for="ci-variable-description"
         class="-gl-mb-5 gl-border-none"
         data-testid="ci-variable-description-label"
         :description="$options.i18n.descriptionHelpText"

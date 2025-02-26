@@ -101,6 +101,17 @@ module ClustersHelper
     can?(user, :admin_cluster, cluster)
   end
 
+  def migration_alert_config(migration)
+    return unless migration
+
+    status = migration.agent_install_status.to_sym
+    config = migration_alert_configs[status]
+
+    return config unless config && status == :error && migration.agent_install_message.present?
+
+    config.merge(details: migration.agent_install_message)
+  end
+
   private
 
   def default_branch_name(clusterable)
@@ -109,5 +120,24 @@ module ClustersHelper
 
   def clusterable_project_path(clusterable)
     clusterable.full_path if clusterable.is_a?(Project)
+  end
+
+  def migration_alert_configs
+    {
+      in_progress: {
+        variant: :info,
+        message: s_('ClusterIntegration|Installing agent in progress.')
+      },
+      success: {
+        variant: :success,
+        message: s_('ClusterIntegration|The agent connection is set up.')
+      },
+      error: {
+        variant: :warning,
+        title: s_('ClusterIntegration|Agent setup failed'),
+        message: s_('ClusterIntegration|The agent was not installed in the cluster.'),
+        show_help: true
+      }
+    }.freeze
   end
 end

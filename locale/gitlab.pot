@@ -13579,6 +13579,12 @@ msgstr ""
 msgid "ClusterIntegration|Advanced options on this Kubernetes cluster’s integration"
 msgstr ""
 
+msgid "ClusterIntegration|Agent name"
+msgstr ""
+
+msgid "ClusterIntegration|Agent setup failed"
+msgstr ""
+
 msgid "ClusterIntegration|Allow GitLab to manage namespaces and service accounts for this cluster."
 msgstr ""
 
@@ -13657,6 +13663,9 @@ msgstr ""
 msgid "ClusterIntegration|Create a Kubernetes cluster"
 msgstr ""
 
+msgid "ClusterIntegration|Create agent and migrate"
+msgstr ""
+
 msgid "ClusterIntegration|Deploy each environment to its own namespace. Otherwise, environments within a project share a project-wide namespace. Note that anyone who can trigger a deployment of a namespace can read its secrets. If modified, existing environments will use their current namespaces until the cluster cache is cleared."
 msgstr ""
 
@@ -13670,6 +13679,9 @@ msgid "ClusterIntegration|Enable or disable GitLab's connection to your Kubernet
 msgstr ""
 
 msgid "ClusterIntegration|Enable this setting if using role-based access control (RBAC)."
+msgstr ""
+
+msgid "ClusterIntegration|Enter a unique name for your new GitLab Agent. This name will be used to identify the agent in your project."
 msgstr ""
 
 msgid "ClusterIntegration|Enter details about your cluster. %{linkStart}How do I use a certificate to connect to my cluster?%{linkEnd}"
@@ -13714,10 +13726,13 @@ msgstr ""
 msgid "ClusterIntegration|HTTP Error"
 msgstr ""
 
+msgid "ClusterIntegration|How do I migrate to the GitLab agent?"
+msgstr ""
+
 msgid "ClusterIntegration|If you do not wish to delete all associated GitLab resources, you can simply remove the integration."
 msgstr ""
 
-msgid "ClusterIntegration|Install agent"
+msgid "ClusterIntegration|Installing agent in progress."
 msgstr ""
 
 msgid "ClusterIntegration|Instance cluster"
@@ -13727,6 +13742,9 @@ msgid "ClusterIntegration|Integration disabled"
 msgstr ""
 
 msgid "ClusterIntegration|Integration enabled"
+msgstr ""
+
+msgid "ClusterIntegration|Invalid configuration project"
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster is being created..."
@@ -13747,6 +13765,9 @@ msgstr ""
 msgid "ClusterIntegration|Learn more about instance Kubernetes clusters"
 msgstr ""
 
+msgid "ClusterIntegration|Learn more about migrating to GitLab Agent"
+msgstr ""
+
 msgid "ClusterIntegration|Make sure your API endpoint is correct"
 msgstr ""
 
@@ -13756,10 +13777,7 @@ msgstr ""
 msgid "ClusterIntegration|Migrate"
 msgstr ""
 
-msgid "ClusterIntegration|Migrate this cluster to use the GitLab agent for Kubernetes"
-msgstr ""
-
-msgid "ClusterIntegration|Migrate to the GitLab agent for Kubernetes"
+msgid "ClusterIntegration|Migrate to GitLab Agent for Kubernetes"
 msgstr ""
 
 msgid "ClusterIntegration|Migrating cluster - failed: \"%{error}\""
@@ -13771,10 +13789,16 @@ msgstr ""
 msgid "ClusterIntegration|Namespace per environment"
 msgstr ""
 
+msgid "ClusterIntegration|New agent name"
+msgstr ""
+
 msgid "ClusterIntegration|Node calculations use the Kubernetes Metrics API. Make sure your cluster has metrics installed"
 msgstr ""
 
 msgid "ClusterIntegration|Project cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Project name"
 msgstr ""
 
 msgid "ClusterIntegration|Project namespace (optional, unique)"
@@ -13813,6 +13837,9 @@ msgstr ""
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
 msgstr ""
 
+msgid "ClusterIntegration|Select a project for the GitLab Agent."
+msgstr ""
+
 msgid "ClusterIntegration|Service Token"
 msgstr ""
 
@@ -13831,10 +13858,22 @@ msgstr ""
 msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{linkStart}Auto DevOps.%{linkEnd} The domain should have a wildcard DNS configured matching the domain. "
 msgstr ""
 
+msgid "ClusterIntegration|Step 1. Connect the agent"
+msgstr ""
+
+msgid "ClusterIntegration|The %{agent_docs_link_start}GitLab Agent for Kubernetes %{agent_docs_link_end} offers improved security, reliability, and functionality. Follow the steps below to create a new agent and migrate your existing certificate-based integration. The process is automated, but you still need to %{install_docs_link_start}install the agent%{install_docs_link_end} in your cluster."
+msgstr ""
+
 msgid "ClusterIntegration|The Kubernetes certificate used to authenticate to the cluster."
 msgstr ""
 
 msgid "ClusterIntegration|The URL used to access the Kubernetes API."
+msgstr ""
+
+msgid "ClusterIntegration|The agent connection is set up."
+msgstr ""
+
+msgid "ClusterIntegration|The agent was not installed in the cluster."
 msgstr ""
 
 msgid "ClusterIntegration|The certificate-based Kubernetes integration is deprecated and will be removed in the future. You should %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}. For more information, see the %{deprecationLinkStart}deprecation epic%{deprecationLinkEnd}, or contact GitLab support."
@@ -13853,9 +13892,6 @@ msgid "ClusterIntegration|There was a problem authenticating with your cluster. 
 msgstr ""
 
 msgid "ClusterIntegration|There was an HTTP error when connecting to your cluster."
-msgstr ""
-
-msgid "ClusterIntegration|This cluster integration is deprecated. To continue using this Kubernetes cluster with GitLab, you must install the agent."
 msgstr ""
 
 msgid "ClusterIntegration|This is necessary if your integration has become out of sync. The cache is repopulated during the next CI job that requires namespace and service accounts."
@@ -61720,6 +61756,9 @@ msgid "Unauthenticated requests"
 msgstr ""
 
 msgid "Unauthenticated web rate limit period in seconds"
+msgstr ""
+
+msgid "Unauthorized"
 msgstr ""
 
 msgid "Unauthorized to access the cluster agent in this project"

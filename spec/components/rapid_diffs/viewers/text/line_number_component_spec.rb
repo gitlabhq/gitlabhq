@@ -33,6 +33,7 @@ RSpec.describe RapidDiffs::Viewers::Text::LineNumberComponent, type: :component,
     expect(link[:'data-line-number']).to eq(old_line.old_pos.to_s)
     expect(td[:id]).to eq(old_line.id(diff_file.file_hash, :old))
     expect(td[:'data-legacy-id']).to eq(diff_file.line_code(old_line))
+    expect(page).to have_selector('[data-position="old"]')
   end
 
   it "renders link for added line on right side" do
@@ -41,6 +42,7 @@ RSpec.describe RapidDiffs::Viewers::Text::LineNumberComponent, type: :component,
     expect(link[:'data-line-number']).to eq(new_line.new_pos.to_s)
     expect(td[:id]).to eq(new_line.id(diff_file.file_hash, :new))
     expect(td[:'data-legacy-id']).to eq(diff_file.line_code(new_line))
+    expect(page).to have_selector('[data-position="new"]')
   end
 
   def render_component(line:, position: nil)

@@ -26,6 +26,8 @@
 }
 
 .rd-hunk-header {
+  // this is used when a hunk header doesn't have any text, only expand buttons
+  min-height: calc(1em * $code-line-height);
   border-top: 1px solid var(--rd-hunk-header-border-color, $gray-100);
   border-bottom: 1px solid var(--rd-hunk-header-border-color, $gray-100);
   background-color: var(--rd-hunk-header-background-color, $gray-50);
@@ -38,6 +40,18 @@
   &:last-child {
     border-bottom: 0;
   }
+}
+
+.rd-hunk-header[data-loading=both] [data-visible-when=loading],
+.rd-hunk-header[data-loading=up] [data-expand-direction=up] [data-visible-when=loading],
+.rd-hunk-header[data-loading=down] [data-expand-direction=down] [data-visible-when=loading] {
+  display: block;
+}
+
+.rd-hunk-header[data-loading=both] [data-visible-when=idle],
+.rd-hunk-header[data-loading=up] [data-expand-direction=up] [data-visible-when=idle],
+.rd-hunk-header[data-loading=down] [data-expand-direction=down] [data-visible-when=idle] {
+  display: none;
 }
 
 .rd-hunk-header-parallel,
@@ -62,7 +76,12 @@
 .rd-expand-lines-button {
   @include common.diff-expansion($gray-100, $gray-700, $gray-200, $gray-800);
 
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // whitespace inside button increases the minimum size of the row
+  // this causes jumps when the icons change from idle to loading
+  font-size: 0;
   border: 0;
 
   background-color: var(--rd-expand-lines-button-background-color, $gray-100);
@@ -73,6 +92,10 @@
     background-color: var(--rd-expand-lines-button-hover-background-color, $gray-200);
     color: var(--rd-expand-lines-button-hover-color, $gray-800);
   }
+}
+
+.rd-expand-lines-button [data-visible-when=loading] {
+  display: none;
 }
 
 .rd-line-number {

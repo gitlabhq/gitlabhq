@@ -126,6 +126,28 @@ For details, see the [migration guide](https://docs.gitlab.com/user/group/compli
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### Coverage-guided fuzz testing is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.0</span>
+- End of Support in GitLab <span class="milestone">18.0</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/517841).
+
+</div>
+
+Coverage-guided fuzz testing is deprecated and will not be supported
+from GitLab 18.0. The feature will be completely removed in GitLab 19.0.
+
+Coverage-guided fuzz testing integrated several open-source fuzzers into GitLab.
+If you are impacted, you can integrate your open-source fuzzers as standalone applications,
+or migrate to another security feature like [GitLab Advanced SAST](https://docs.gitlab.com/ee/user/application_security/sast/gitlab_advanced_sast.html).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### GitLab Self-Managed certificate-based integration with Kubernetes
 
 <div class="deprecation-notes">

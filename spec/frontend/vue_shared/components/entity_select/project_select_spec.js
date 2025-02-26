@@ -24,6 +24,7 @@ describe('ProjectSelect', () => {
 
   // Props
   const label = 'label';
+  const description = 'description';
   const inputName = 'inputName';
   const inputId = 'inputId';
   const groupId = '22';
@@ -52,6 +53,7 @@ describe('ProjectSelect', () => {
     wrapper = mountExtended(ProjectSelect, {
       propsData: {
         label,
+        description,
         inputName,
         inputId,
         groupId,
@@ -97,6 +99,7 @@ describe('ProjectSelect', () => {
     it.each`
       prop                   | expectedValue
       ${'label'}             | ${label}
+      ${'description'}       | ${description}
       ${'inputName'}         | ${inputName}
       ${'inputId'}           | ${inputId}
       ${'defaultToggleText'} | ${PROJECT_TOGGLE_TEXT}

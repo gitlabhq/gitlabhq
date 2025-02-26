@@ -208,4 +208,17 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
       end
     end
   end
+
+  describe '#emit_event_payload' do
+    let(:payload) { { "event" => "page_view", "user_id" => "123" } }
+
+    before do
+      allow(SnowplowTracker::AsyncEmitter).to receive(:new).and_return(emitter)
+    end
+
+    it "forwards the payload to the emitter" do
+      expect(emitter).to receive(:input).with(payload)
+      subject.emit_event_payload(payload)
+    end
+  end
 end

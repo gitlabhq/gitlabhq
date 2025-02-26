@@ -10,6 +10,10 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
   it_behaves_like 'worker with data consistency', described_class, data_consistency: :sticky
 
   describe '#perform' do
+    before do
+      stub_application_setting(require_personal_access_token_expiry: false)
+    end
+
     it(
       'initiates deletion for project_bot users whose all tokens became inactive before cut_off date or without tokens',
       :aggregate_failures,
@@ -21,6 +25,12 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
 
       active_personal_access_token =
         create(:personal_access_token)
+      active_personal_access_token_without_expiration_date =
+        create(:personal_access_token, expires_at: nil)
+      active_personal_access_token_with_revoked_attribute_set_to_nil =
+        create(:personal_access_token, revoked: nil)
+      active_personal_access_token_without_expiration_date_and_with_revoked_attribute_set_to_nil =
+        create(:personal_access_token, expires_at: nil, revoked: nil)
       personal_access_token_expired_before_cut_off =
         create(:personal_access_token, expires_at: cut_off - 1.day)
       personal_access_token_expired_at_cut_off =
@@ -42,6 +52,12 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
 
       active_resource_access_token =
         create(:resource_access_token)
+      active_resource_access_token_without_expiration_date =
+        create(:resource_access_token, expires_at: nil)
+      active_resource_access_token_with_revoked_attribute_set_to_nil =
+        create(:resource_access_token, revoked: nil)
+      active_resource_access_token_without_expiration_date_and_with_revoked_attribute_set_to_nil =
+        create(:resource_access_token, expires_at: nil, revoked: nil)
       resource_access_token_expired_before_cut_off =
         create(:resource_access_token, expires_at: cut_off - 1.day)
       resource_access_token_expired_at_cut_off =
@@ -75,6 +91,9 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
 
       tokens_to_keep = [
         active_personal_access_token,
+        active_personal_access_token_without_expiration_date,
+        active_personal_access_token_with_revoked_attribute_set_to_nil,
+        active_personal_access_token_without_expiration_date_and_with_revoked_attribute_set_to_nil,
         personal_access_token_expired_before_cut_off,
         personal_access_token_expired_at_cut_off,
         personal_access_token_expired_after_cut_off,
@@ -86,6 +105,9 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
         non_revoked_personal_access_token_updated_after_cut_off,
 
         active_resource_access_token,
+        active_resource_access_token_without_expiration_date,
+        active_resource_access_token_with_revoked_attribute_set_to_nil,
+        active_resource_access_token_without_expiration_date_and_with_revoked_attribute_set_to_nil,
         resource_access_token_expired_at_cut_off,
         resource_access_token_expired_after_cut_off,
         resource_access_token_revoked_at_cut_off,

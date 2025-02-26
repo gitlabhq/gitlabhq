@@ -2,15 +2,8 @@
 # Cop supports --autocorrect.
 Style/SymbolProc:
   Exclude:
-    - 'app/controllers/profiles_controller.rb'
     - 'app/models/ci/pipeline.rb'
-    - 'app/models/container_repository.rb'
-    - 'app/models/discussion.rb'
     - 'app/models/environment.rb'
-    - 'app/models/integrations/prometheus.rb'
-    - 'app/models/members/project_member.rb'
-    - 'app/models/preloaders/merge_request_diff_preloader.rb'
-    - 'app/models/release.rb'
     - 'app/models/remote_mirror.rb'
     - 'app/models/snippet_input_action_collection.rb'
     - 'app/policies/group_policy.rb'
@@ -95,10 +88,6 @@ Style/SymbolProc:
     - 'lib/api/helpers/internal_helpers.rb'
     - 'lib/atlassian/jira_connect/serializers/base_entity.rb'
     - 'lib/bulk_imports/common/pipelines/entity_finisher.rb'
-    - 'lib/bulk_imports/ndjson_pipeline.rb'
-    - 'lib/container_registry/client.rb'
-    - 'lib/container_registry/gitlab_api_client.rb'
-    - 'lib/gitlab/analytics/cycle_analytics/stage_events.rb'
     - 'lib/gitlab/auth/o_auth/auth_hash.rb'
     - 'lib/gitlab/blob_helper.rb'
     - 'lib/gitlab/cache/ci/project_pipeline_status.rb'
@@ -188,4 +177,3 @@ Style/SymbolProc:
     - 'spec/support/shared_examples/models/label_note_shared_examples.rb'
     - 'spec/views/layouts/_published_experiments.html.haml_spec.rb'
     - 'spec/workers/snippets/schedule_bulk_repository_shard_moves_worker_spec.rb'
-    - 'tooling/lib/tooling/test_map_generator.rb'

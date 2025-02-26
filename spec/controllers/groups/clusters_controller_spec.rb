@@ -257,8 +257,11 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
     def go
       post :migrate,
         params: {
+          cluster_migration: {
+            configuration_project_id: configuration_project.id,
+            agent_name: 'new-agent'
+          },
           group_id: group,
-          configuration_project_id: configuration_project.id,
           id: cluster
         }
     end
@@ -272,6 +275,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
         Clusters::Migration::CreateService,
         an_object_having_attributes(class: cluster.class, id: cluster.id),
         current_user: user,
+        agent_name: 'new-agent',
         configuration_project_id: configuration_project.id.to_s
       ) do |service|
         expect(service).to receive(:execute).and_call_original
@@ -300,6 +304,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
 
     describe 'security' do
       it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { expect { go }.to be_allowed_for(:admin) }
+
       it('is denied for admin when admin mode is disabled') { expect { go }.to be_denied_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(group) }
       it { expect { go }.to be_allowed_for(:maintainer).of(group) }

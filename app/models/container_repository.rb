@@ -220,7 +220,7 @@ class ContainerRepository < ApplicationRecord
   def delete_tags!
     return unless has_tags?
 
-    digests = tags.map { |tag| tag.digest }.compact.to_set
+    digests = tags.map(&:digest).compact.to_set
 
     digests.map { |digest| delete_tag(digest) }.all?
   end

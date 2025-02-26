@@ -90,6 +90,16 @@ RSpec.describe RapidDiffs::Viewers::Text::ParallelHunkComponent, type: :componen
     expect(page).to have_selector('button svg use[href$="#expand"]')
   end
 
+  it "renders testid" do
+    render_component
+    expect(page).to have_selector("[data-testid='hunk-lines-parallel']")
+  end
+
+  it "renders data-hunk-lines" do
+    render_component
+    expect(page).to have_selector("[data-hunk-lines]")
+  end
+
   def render_component(diff_hunk = hunk)
     render_inline(
       described_class.new(
@@ -98,10 +108,5 @@ RSpec.describe RapidDiffs::Viewers::Text::ParallelHunkComponent, type: :componen
         file_path: diff_file.file_path
       )
     )
-  end
-
-  it "renders testid" do
-    render_component
-    expect(page).to have_selector("[data-testid='hunk-lines-parallel']")
   end
 end

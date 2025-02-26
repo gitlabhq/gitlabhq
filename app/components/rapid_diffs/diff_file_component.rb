@@ -18,7 +18,7 @@ module RapidDiffs
       params = tree_join(@diff_file.content_sha, @diff_file.file_path)
       {
         viewer: viewer_component.viewer_name,
-        blob_diff_path: project_blob_diff_path(project, params)
+        diff_lines_path: project_blob_diff_lines_path(project, params)
       }
     end
 

@@ -58,6 +58,11 @@ export default {
       required: false,
       default: '',
     },
+    ariaLabelledBy: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -158,6 +163,7 @@ export default {
     :loading="isDropdownLoading"
     :searching="isDropdownSearching"
     :toggle-text="toggleText"
+    :toggle-aria-labelled-by="ariaLabelledBy"
     @search="debouncedSearch"
     @select="selectEnvironment"
     @shown="toggleDropdownShown(true)"

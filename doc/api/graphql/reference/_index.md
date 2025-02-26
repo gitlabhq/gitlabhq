@@ -36350,6 +36350,18 @@ Returns [`String`](#string).
 | ---- | ---- | ----------- |
 | <a id="repositorycodeownerspathref"></a>`ref` | [`String`](#string) | Name of the ref. |
 
+##### `Repository.commit`
+
+Commit from the repository.
+
+Returns [`Commit`](#commit).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="repositorycommitref"></a>`ref` | [`String!`](#string) | Commit reference (SHA, branch name, or tag name). |
+
 ##### `Repository.paginatedTree`
 
 Paginated tree of the repository.

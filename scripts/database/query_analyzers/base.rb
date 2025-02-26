@@ -3,7 +3,7 @@
 require 'json'
 require 'zlib'
 
-class Database
+module Database
   class QueryAnalyzers
     class Base
       attr_accessor :output

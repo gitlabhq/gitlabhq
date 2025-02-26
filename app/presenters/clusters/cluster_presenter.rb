@@ -65,6 +65,10 @@ module Clusters
       }
     end
 
+    def agent_migration_for_display
+      cluster.agent_migration || Clusters::AgentMigration.new(cluster: cluster)
+    end
+
     private
 
     def image_path(path)

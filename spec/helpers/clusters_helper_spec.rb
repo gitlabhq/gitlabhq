@@ -315,4 +315,60 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
       end
     end
   end
+
+  describe '#migration_alert_config' do
+    let_it_be(:error_message) { 'Something went wrong' }
+
+    subject { helper.migration_alert_config(migration) }
+
+    context 'when migration is nil' do
+      let(:migration) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when migration has in_progress status' do
+      let(:migration) { build(:cluster_agent_migration, agent_install_status: :in_progress) }
+
+      it 'returns info alert config' do
+        expect(subject).to match(
+          variant: :info,
+          message: 'Installing agent in progress.'
+        )
+      end
+    end
+
+    context 'when migration has success status' do
+      let(:migration) { build(:cluster_agent_migration, agent_install_status: :success) }
+
+      it 'returns success alert config' do
+        expect(subject).to match(
+          variant: :success,
+          message: 'The agent connection is set up.'
+        )
+      end
+    end
+
+    context 'when migration has error status' do
+      let(:migration) { build(:cluster_agent_migration, agent_install_status: :error, agent_install_message: error_message) }
+
+      it 'returns error alert config with details' do
+        expect(subject).to match(
+          variant: :warning,
+          title: 'Agent setup failed',
+          message: 'The agent was not installed in the cluster.',
+          details: error_message,
+          show_help: true
+        )
+      end
+
+      context 'when error message is nil' do
+        let(:migration) { build(:cluster_agent_migration, agent_install_status: :error, agent_install_message: nil) }
+
+        it 'returns error alert config without details' do
+          expect(subject[:details]).to be_nil
+        end
+      end
+    end
+  end
 end

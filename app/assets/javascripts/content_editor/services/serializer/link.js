@@ -25,6 +25,9 @@ const normalizeUrl = (url) => {
   }
 };
 
+export const escape = (link) => link.replace(/[()"]/g, '\\$&');
+export const quote = (title) => `"${title.replace(/"/g, '\\"')}"`;
+
 /**
  * This function detects whether a link should be serialized
  * as an autolink.
@@ -67,6 +70,7 @@ function getLinkHref(mark, useCanonicalSrc = true) {
 }
 
 const link = preserveUnchangedMark({
+  escape: false,
   open(state, mark, parent) {
     if (isAutoLink(mark, parent)) {
       return isBracketAutoLink(mark.attrs.sourceMarkdown) ? '<' : '';
@@ -78,11 +82,11 @@ const link = preserveUnchangedMark({
     if (href.startsWith('data:') || href.startsWith('blob:')) return '';
 
     const attrs = {
-      href: state.esc(getLinkHref(mark, state.options.useCanonicalSrc)),
+      href: escape(getLinkHref(mark, state.options.useCanonicalSrc)),
     };
 
     if (title) {
-      attrs.title = state.esc(title);
+      attrs.title = title;
     }
 
     if (sourceTagName && !sourceMarkdown) return openTag(sourceTagName, attrs);
@@ -112,12 +116,12 @@ const link = preserveUnchangedMark({
     }
 
     if (isReference) {
-      return `][${state.esc(getLinkHref(mark, state.options.useCanonicalSrc))}]`;
+      return `][${escape(getLinkHref(mark, state.options.useCanonicalSrc))}]`;
     }
 
     if (isGollumLink) {
       const text = getMarkText(mark, parent);
-      const escapedCanonicalSrc = state.esc(canonicalSrc);
+      const escapedCanonicalSrc = escape(canonicalSrc);
 
       if (text.toLowerCase() === escapedCanonicalSrc.toLowerCase()) {
         return ']]';
@@ -126,8 +130,8 @@ const link = preserveUnchangedMark({
       return `|${escapedCanonicalSrc}]]`;
     }
 
-    return `](${state.esc(getLinkHref(mark, state.options.useCanonicalSrc))}${
-      title ? ` ${state.quote(title)}` : ''
+    return `](${escape(getLinkHref(mark, state.options.useCanonicalSrc))}${
+      title ? ` ${quote(title)}` : ''
     })`;
   },
 });

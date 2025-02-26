@@ -69,7 +69,7 @@ export class DiffFile extends HTMLElement {
     if (clickActionElement) {
       const clickAction = clickActionElement.dataset.click;
       this.adapters.forEach((adapter) =>
-        adapter.clicks?.[clickAction]?.call?.(this.adapterContext, event),
+        adapter.clicks?.[clickAction]?.call?.(this.adapterContext, event, clickActionElement),
       );
     }
     this.trigger(events.CLICK, event);

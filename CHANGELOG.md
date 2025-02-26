@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.9.1 (2025-02-26)
+
+### Fixed (1 change)
+
+- [Fix instance level dashboard by default severity override](https://gitlab.com/gitlab-org/security/gitlab/-/commit/56d2f940bb6e87b34e4f26ba9a298f28360dd23a) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Increase minimum role in SPP to read policy yaml](https://gitlab.com/gitlab-org/security/gitlab/-/commit/593c0a6f70564e9570fb16b25a37298eacf6c644) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4718))
+- [Fix access to read code review analytics in private projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0faa526c76e3c523ff6486057c5b5b07e8e4e5d9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4794))
+- [Escape work item dropdown items and restrict HTML tags](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fc777a98ebd45b30ab95bc0d94a418479d15f09c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4788))
+- [Use stricter CSP values in the packages dependency proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/922d3ad17cf7493a10f8dbf90c0cae8d9d4b063d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4787))
+
 ## 17.9.0 (2025-02-19)
 
 ### Added (202 changes)
@@ -1083,6 +1096,15 @@ entry.
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/c932e35efdc0e3c6f316a3c2d37045e115ce8cd5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176452))
 - [Finalize migration BackfillRemoteDevelopmentAgentConfigsProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/da4c63d7aab3685c3fbe9d1e48f68ba2162a0b5e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172769))
 
+## 17.8.4 (2025-02-26)
+
+### Security (4 changes)
+
+- [Increase minimum role in SPP to read policy yaml](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9bfcf4a596b965ce73426d68861cec83ee70f19e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4716))
+- [Fix access to read code review analytics in private projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/537159f505cad7d23cded01140fbdfd84e9cdfa2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4758))
+- [Escape work item dropdown items and restrict HTML tags](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5548168c3d4e0ba660ed934f23c332045a640799) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4784))
+- [Use stricter CSP values in the packages dependency proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d491abd511c9c1cb00c928e28dc84cb7ef8e4cd3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4764))
+
 ## 17.8.3 (2025-02-21)
 
 ### Fixed (2 changes)
@@ -1573,6 +1595,19 @@ entry.
 - [Remove feature flag `ai_custom_model`](https://gitlab.com/gitlab-org/gitlab/-/commit/790adc35614aa08ea66a4a3b66233e9320cf9dce) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175687))
 - [Remove default on `group_saved_replies_flag feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/75d49fe13646e1e0d3b68233ac4a965c86853917) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175647))
 - [Remove use_actual_plan_in_license_check flag](https://gitlab.com/gitlab-org/gitlab/-/commit/b8c3fe16aedb69c82ff52d1c695d72e933c4b946) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175649))
+
+## 17.7.6 (2025-02-26)
+
+### Fixed (1 change)
+
+- [Fix failed jobs widget polling issue](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e2154d3d886d82e1f5fe62fb9d234d00e257e784)
+
+### Security (4 changes)
+
+- [Increase minimum role in SPP to read policy yaml](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6d5c2ea1feb6097cb5720650f39b3808554b6a29) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4717))
+- [Fix access to read code review analytics in private projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4454c18d19d2d8df92520f4c0fafa24ddbf9fbe4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4757))
+- [Escape work item dropdown items and restrict HTML tags](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a834b94cf4e967065590f6b78b15c8733d67df30) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4785))
+- [Use stricter CSP values in the packages dependency proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d975b402434b9e17ff2963d9c4c6f438f52545ed) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4765))
 
 ## 17.7.5 (2025-02-21)
 

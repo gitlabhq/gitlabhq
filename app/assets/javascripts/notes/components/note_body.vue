@@ -108,11 +108,15 @@ export default {
       return escape(suggestion);
     },
   },
-  mounted() {
-    this.renderGFM();
-  },
-  updated() {
-    this.renderGFM();
+  watch: {
+    note: {
+      async handler() {
+        await this.$nextTick();
+        this.renderGFM();
+      },
+      deep: true,
+      immediate: true,
+    },
   },
   methods: {
     ...mapActions([

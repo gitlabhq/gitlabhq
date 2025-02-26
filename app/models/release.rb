@@ -152,7 +152,7 @@ class Release < ApplicationRecord
   end
 
   def milestone_titles
-    self.milestones.order_by_dates_and_title.map { |m| m.title }.join(', ')
+    self.milestones.order_by_dates_and_title.map(&:title).join(', ')
   end
 
   def to_hook_data(action)

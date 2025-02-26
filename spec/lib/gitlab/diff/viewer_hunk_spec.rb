@@ -148,6 +148,12 @@ RSpec.describe Gitlab::Diff::ViewerHunk, feature_category: :code_review_workflow
       expect(instance.header.expand_directions).to eq([:both])
     end
 
+    it 'returns both for 20 lines in between' do
+      lines = [old_line(old_pos: 1), match_line, new_line(old_pos: 22)]
+      instance = described_class.init_from_diff_lines(lines)[1]
+      expect(instance.header.expand_directions).to eq([:both])
+    end
+
     it 'returns up' do
       lines = [match_line, new_line(old_pos: 5)]
       instance = described_class.init_from_diff_lines(lines)[0]

@@ -17,8 +17,8 @@ RSpec.describe RapidDiffs::DiffFileComponent, type: :component, feature_category
 
   it "renders server data" do
     render_component
-    diff_path = "/#{namespace.to_param}/#{project.to_param}/-/blob/#{diff_file.content_sha}/#{diff_file.file_path}/diff"
-    expect(web_component['data-blob-diff-path']).to eq(diff_path)
+    diff_path = "/#{namespace.to_param}/#{project.to_param}/-/blob/#{diff_file.content_sha}/#{diff_file.file_path}"
+    expect(web_component['data-diff-lines-path']).to eq("#{diff_path}/diff_lines")
   end
 
   context "when is text diff" do

@@ -20,6 +20,17 @@ it('correctly serializes a plain URL link', () => {
   );
 });
 
+it('correctly escapes URLs in links', () => {
+  // no double slashes
+  expect(serialize(paragraph(link({ href: 'gitlab\\' }, 'link')))).toBe('[link](gitlab\\)');
+
+  expect(serialize(paragraph(link({ href: 'foo):' }, 'link')))).toBe('[link](foo\\):)');
+  expect(serialize(paragraph(link({ href: '(foo' }, 'link')))).toBe('[link](\\(foo)');
+  expect(serialize(paragraph(link({ title: 'bar', href: 'foo%20"' }, 'link')))).toBe(
+    '[link](foo%20\\" "bar")',
+  );
+});
+
 it('correctly serializes a malformed URL-encoded link', () => {
   expect(
     serialize(

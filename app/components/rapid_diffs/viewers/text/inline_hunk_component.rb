@@ -11,10 +11,6 @@ module RapidDiffs
           @file_hash = file_hash
           @file_path = file_path
         end
-
-        def testid
-          'hunk-lines-inline'
-        end
       end
     end
   end

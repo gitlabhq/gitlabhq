@@ -1,5 +1,6 @@
 import { pickBy, identity } from 'lodash';
 import { preserveUnchanged, openTag } from '../serialization_helpers';
+import { escape, quote } from './link';
 
 function getMediaSrc(node, useCanonicalSrc = true) {
   const { canonicalSrc, src } = node.attrs;
@@ -12,7 +13,7 @@ const image = preserveUnchanged({
   render: (state, node) => {
     const { alt, title, width, height, isReference, sourceMarkdown, sourceTagName } = node.attrs;
 
-    const realSrc = getMediaSrc(node, state.options.useCanonicalSrc);
+    const realSrc = escape(getMediaSrc(node, state.options.useCanonicalSrc));
     // eslint-disable-next-line @gitlab/require-i18n-strings
     if (realSrc.startsWith('data:') || realSrc.startsWith('blob:')) return;
 
@@ -22,7 +23,7 @@ const image = preserveUnchanged({
         state.write(openTag(sourceTagName, { src: realSrc, ...attrs }));
         return;
       }
-      const quotedTitle = title ? ` ${state.quote(title)}` : '';
+      const quotedTitle = title ? ` ${quote(title)}` : '';
       const sourceExpression = isReference ? `[${realSrc}]` : `(${realSrc}${quotedTitle})`;
 
       const sizeAttributes = [];
@@ -35,7 +36,7 @@ const image = preserveUnchanged({
 
       const attributes = sizeAttributes.length ? `{${sizeAttributes.join(' ')}}` : '';
 
-      state.write(`![${state.esc(alt || '')}]${sourceExpression}${attributes}`);
+      state.write(`![${escape(alt || '')}]${sourceExpression}${attributes}`);
     }
   },
   inline: true,

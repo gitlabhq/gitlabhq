@@ -9,7 +9,7 @@ module CachedCommit
     end
   end
 
-  # We don't save these, because they would need a table or a serialised
+  # We don't save these, because they would need a table or a serialized
   # field. They aren't used anywhere, so just pretend the commit has no parents.
   def parent_ids
     []

@@ -11,6 +11,10 @@ module Types
     field :branch_names, [GraphQL::Types::String], null: true, calls_gitaly: true,
       complexity: 170, description: 'Names of branches available in this repository that match the search pattern.',
       resolver: Resolvers::RepositoryBranchNamesResolver
+    field :commit, Types::Repositories::CommitType, null: true,
+      calls_gitaly: true,
+      description: 'Commit from the repository.',
+      resolver: Resolvers::Repositories::CommitResolver
     field :disk_path, GraphQL::Types::String,
       description: 'Shows a disk path of the repository.',
       null: true,
