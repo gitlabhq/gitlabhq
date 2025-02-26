@@ -11,6 +11,6 @@
     Instead, use the [`/approval_rules` endpoint](https://docs.gitlab.com/api/merge_request_approvals/#merge-request-level-mr-approvals) to [create](https://docs.gitlab.com/api/merge_request_approvals/#create-merge-request-level-rule) or [update](https://docs.gitlab.com/api/merge_request_approvals/#update-merge-request-level-rule) the approval rules for a merge request.
   end_of_support_milestone:
   tiers: Premium
-  documentation_url: https://docs.gitlab.com/ee/api/merge_request_approvals.html
+  documentation_url: https://docs.gitlab.com/api/merge_request_approvals/
   image_url:
   video_url:

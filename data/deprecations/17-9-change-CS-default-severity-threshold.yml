@@ -19,6 +19,6 @@
     To continue showing these findings, you must configure the `CS_SEVERITY_THRESHOLD` variable to the desired level.
   end_of_support_milestone:
   tiers: [Free, Premium, Ultimate]
-  documentation_url: https://docs.gitlab.com/ee/user/application_security/container_scanning/
+  documentation_url: https://docs.gitlab.com/user/application_security/container_scanning/
   image_url:
   video_url:

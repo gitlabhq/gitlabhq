@@ -16,6 +16,6 @@
    Removing these two variables will simplify DAST configuration, and provide a better onboarding experience for users.
   end_of_support_milestone:
   tiers: [Ultimate]
-  documentation_url: https://docs.gitlab.com/ee/user/application_security/dast/browser/configuration/variables.html
+  documentation_url: https://docs.gitlab.com/user/application_security/dast/browser/configuration/variables/
   image_url:
   video_url:

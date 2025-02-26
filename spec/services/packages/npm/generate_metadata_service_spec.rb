@@ -67,10 +67,10 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
           if params[:has_dependencies]
             it { expect(subject.dig(package1.version, dependency_type.to_s)).to be_any }
           else
-            it { expect(subject.dig(package1.version, dependency_type)).to be nil }
+            it { expect(subject.dig(package1.version, dependency_type)).to be_nil }
           end
 
-          it { expect(subject.dig(package2.version, dependency_type)).to be nil }
+          it { expect(subject.dig(package2.version, dependency_type)).to be_nil }
         end
 
         context 'when generate dependencies' do
@@ -88,12 +88,12 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
       context 'for metadatum' do
         ::Packages::Npm::GenerateMetadataService::PACKAGE_JSON_ALLOWED_FIELDS.each do |metadata_field|
           if params[:has_metadatum]
-            it { expect(subject.dig(package1.version, metadata_field)).not_to be nil }
+            it { expect(subject.dig(package1.version, metadata_field)).not_to be_nil }
           else
-            it { expect(subject.dig(package1.version, metadata_field)).to be nil }
+            it { expect(subject.dig(package1.version, metadata_field)).to be_nil }
           end
 
-          it { expect(subject.dig(package2.version, metadata_field)).to be nil }
+          it { expect(subject.dig(package2.version, metadata_field)).to be_nil }
         end
       end
 

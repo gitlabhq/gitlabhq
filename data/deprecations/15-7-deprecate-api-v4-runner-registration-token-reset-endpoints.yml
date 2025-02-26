@@ -28,4 +28,4 @@
     From GitLab 18.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
   end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
-  documentation_url: https://docs.gitlab.com/ee/api/runners.html#create-a-runner  # (optional) This is a link to the current documentation page
+  documentation_url: https://docs.gitlab.com/api/runners/#create-a-runner  # (optional) This is a link to the current documentation page

@@ -312,8 +312,12 @@ export default {
 
       <seat-control-section @checkUsersAutoApproval="handleCheckUsersAutoApproval" />
 
-      <gl-form-group :label="$options.i18n.minimumPasswordLengthLabel">
+      <gl-form-group
+        :label="$options.i18n.minimumPasswordLengthLabel"
+        label-for="minimum_password_length"
+      >
         <gl-form-input
+          id="minimum_password_length"
           v-model="form.minimumPasswordLength"
           :min="form.minimumPasswordLengthMin"
           :max="form.minimumPasswordLengthMax"
@@ -353,8 +357,12 @@ export default {
         ></textarea>
       </gl-form-group>
 
-      <gl-form-group :label="$options.i18n.domainDenyListGroupLabel">
+      <gl-form-group
+        :label="$options.i18n.domainDenyListGroupLabel"
+        label-for="domain_denylist_enabled"
+      >
         <signup-checkbox
+          id="domain_denylist_enabled"
           v-model="form.domainDenylistEnabled"
           name="application_setting[domain_denylist_enabled]"
           :label="$options.i18n.domainDenyListLabel"
@@ -401,16 +409,24 @@ export default {
         ></textarea>
       </gl-form-group>
 
-      <gl-form-group :label="$options.i18n.emailRestrictionsEnabledGroupLabel">
+      <gl-form-group
+        :label="$options.i18n.emailRestrictionsEnabledGroupLabel"
+        label-for="email_restrictions_enabled"
+      >
         <signup-checkbox
+          id="email_restrictions_enabled"
           v-model="form.emailRestrictionsEnabled"
           name="application_setting[email_restrictions_enabled]"
           :label="$options.i18n.emailRestrictionsEnabledLabel"
         />
       </gl-form-group>
 
-      <gl-form-group :label="$options.i18n.emailRestrictionsGroupLabel">
+      <gl-form-group
+        :label="$options.i18n.emailRestrictionsGroupLabel"
+        label-for="email_restrictions"
+      >
         <textarea
+          id="email_restrictions"
           v-model="form.emailRestrictions"
           rows="4"
           class="form-control gl-form-input"
@@ -434,9 +450,11 @@ export default {
 
       <gl-form-group
         :label="$options.i18n.afterSignUpTextGroupLabel"
+        label-for="after_sign_up_text"
         :description="$options.i18n.afterSignUpTextGroupDescription"
       >
         <textarea
+          id="after_sign_up_text"
           v-model="form.afterSignUpText"
           rows="4"
           class="form-control gl-form-input"

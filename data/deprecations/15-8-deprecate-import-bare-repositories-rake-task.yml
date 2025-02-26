@@ -25,4 +25,4 @@
   stage: Foundations
   tiers:
   issue_url: https://gitlab.com/gitlab-com/Product/-/issues/5255
-  documentation_url: https://docs.gitlab.com/ee/user/project/import/
+  documentation_url: https://docs.gitlab.com/user/project/import/

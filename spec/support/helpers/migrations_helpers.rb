@@ -9,26 +9,21 @@ See https://docs.gitlab.com/ee/development/database/batched_background_migration
 ERROR
 
   def migration_out_of_test_window?(migration_class)
+    # Skip unless database migration (e.g background migration)
+    return false unless migration_class < Gitlab::Database::Migration[1.0]
+
     return false if ENV.fetch('RUN_ALL_MIGRATION_TESTS', false)
 
-    if migration_class < Gitlab::Database::Migration[1.0]
-      # Skip unless database migration older than min_schema_gitlab_version
-      milestone = migration_class.try(:milestone)
+    milestone = migration_class.try(:milestone)
 
-      # Missing milestone indicates that the migration is pre-16.7,
-      # which is old enough not to execute its tests
-      return true unless milestone
+    # Missing milestone indicates that the migration is pre-16.7,
+    # which is old enough not to execute its tests
+    return true unless milestone
 
-      migration_milestone = Gitlab::VersionInfo.parse_from_milestone(milestone)
-      min_milestone = Gitlab::Database.min_schema_gitlab_version
+    migration_milestone = Gitlab::VersionInfo.parse_from_milestone(milestone)
+    min_milestone = Gitlab::Database.min_schema_gitlab_version
 
-      migration_milestone < min_milestone
-    elsif migration_class < Gitlab::BackgroundMigration::BatchedMigrationJob
-      # Skip batched background migrations that are already finalized
-      finalized_by_version.present?
-    else
-      false
-    end
+    migration_milestone < min_milestone
   end
 
   def active_record_base(database: nil)

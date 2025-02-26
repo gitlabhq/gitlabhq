@@ -35,8 +35,8 @@ RSpec.describe ServiceDesk::CustomEmails::DestroyService, feature_category: :ser
         response = service.execute
 
         expect(response).to be_success
-        expect(project.service_desk_custom_email_verification).to be nil
-        expect(project.service_desk_custom_email_credential).to be nil
+        expect(project.service_desk_custom_email_verification).to be_nil
+        expect(project.service_desk_custom_email_credential).to be_nil
         expect(project.service_desk_setting).to have_attributes(
           custom_email: nil,
           custom_email_enabled: false

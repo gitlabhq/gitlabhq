@@ -21,15 +21,10 @@ title: Container Scanning
 
 {{< /history >}}
 
-Container Scanning searches for known vulnerabilities in container images in your GitLab projects.
-
-Container Scanning:
-
-- Detects known vulnerabilities in container base images and operating system packages.
-- Generates a CycloneDX software bill of materials (SBOM) for scanned images.
-- Scans images in private registries and offline environments.
-- Reports vulnerability findings with clear fix status and resolution details.
-- Provides automated remediations to fix vulnerable dependencies (for some vulnerabilities).
+Security vulnerabilities in container images create risk throughout your application lifecycle.
+Container Scanning detects these risks early, before they reach production environments. When
+vulnerabilities appear in your base images or operating system's packages, Container Scanning identifies them and
+provides a remediation path for those that it can.
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
   For an overview, see [Container Scanning](https://www.youtube.com/watch?v=C0jn2eN5MAs).

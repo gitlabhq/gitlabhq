@@ -12,24 +12,27 @@ title: Application security
 
 {{< /details >}}
 
-GitLab can check your application for security vulnerabilities including:
+Build security into your development process with GitLab security scanning capabilities. Identify
+and address vulnerabilities early in your development lifecycle, before they reach production
+environments.
 
-- Unauthorized access.
-- Data leaks.
-- Denial of Service (DoS) attacks.
+GitLab detects security vulnerabilities throughout your code, dependencies, containers, and deployed
+applications, including:
+
+- Unauthorized access points
+- Potential data leaks
+- Denial of Service (DoS) vulnerabilities
+- Supply chain weaknesses
+
+Security findings appear directly in merge requests, providing actionable information before code is
+merged. This proactive approach reduces the cost and effort of fixing issues later in development.
+
+For security teams, GitLab security dashboard centralizes vulnerability findings, making
+prioritization and remediation tracking more straightforward. For developers, the merge request
+integration means fewer context switches and more efficient workflows.
 
 For a click-through demo, see [Integrating security to the pipeline](https://gitlab.navattic.com/gitlab-scans).
 <!-- Demo published on 2024-01-15 -->
-
-For details of how vulnerabilities are detected throughout your application's development lifecycle
-see [Detect](detect/_index.md).
-
-Statistics and details on vulnerabilities are included in the merge request. Providing
-actionable information _before_ changes are merged enables you to be proactive.
-
-To help with the task of managing and addressing vulnerabilities, GitLab provides a security
-dashboard you can access from your project or group. For more details, see
-[Security Dashboard](security_dashboard/_index.md).
 
 ## Data privacy
 

@@ -3,10 +3,10 @@ import { GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 
 const sizeClasses = {
-  s: 'mw-s',
-  m: 'mw-m',
-  l: 'mw-l',
-  xl: 'mw-xl',
+  s: 'gl-max-w-20',
+  m: 'gl-max-w-30',
+  l: 'gl-max-w-48',
+  xl: 'gl-max-w-75',
 };
 
 export default {

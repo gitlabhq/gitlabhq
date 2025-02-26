@@ -58,18 +58,17 @@ For more information, see [issue 501038](https://gitlab.com/gitlab-org/gitlab/-/
 
 {{< /alert >}}
 
-Dependency Scanning analyzes your application's dependencies for known vulnerabilities. All
-dependencies are scanned, including transitive dependencies, also known as nested dependencies.
+Dependency Scanning identifies security vulnerabilities in your application's dependencies before
+they reach production. This identification protects your application from potential exploits and data breaches that
+could damage user trust and your business reputation. When vulnerabilities are found during pipeline
+runs, they appear directly in your merge request, giving you immediate visibility of security issues
+before code is committed.
 
-Dependency Scanning is often considered part of Software Composition Analysis (SCA). SCA can contain
-aspects of inspecting the items your code uses. These items typically include application and system
-dependencies that are almost always imported from external sources, rather than sourced from items
-you wrote yourself.
+All dependencies in your code, including transitive (nested) dependencies, are automatically
+analyzed during pipelines. This analysis catches security issues that manual review processes might miss.
+Dependency Scanning integrates into your existing CI/CD workflow with minimal configuration changes,
+making it straightforward to implement secure development practices from day one.
 
-Dependency Scanning can run in the development phase of your application's lifecycle. Every time a
-pipeline runs, vulnerabilities are identified and compared between the source and target branches.
-Vulnerabilities and their severity are listed in the merge request, enabling you to proactively
-address the risk to your application, before the code change is committed.
 Vulnerabilities can also be identified outside a pipeline by
 [Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/_index.md).
 

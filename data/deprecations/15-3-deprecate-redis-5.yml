@@ -10,4 +10,4 @@
     Redis 5 has reached the end of life in April 2022 and will no longer be supported as of GitLab 15.6.
     If you are using your own Redis 5.0 instance, you should upgrade it to Redis 6.0 or higher before upgrading to GitLab 16.0 or higher.
   end_of_support_milestone: "15.6"
-  documentation_url: https://docs.gitlab.com/ee/install/requirements.html
+  documentation_url: https://docs.gitlab.com/install/requirements/

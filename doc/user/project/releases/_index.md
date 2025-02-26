@@ -12,18 +12,18 @@ title: Releases
 
 {{< /details >}}
 
-Create a release to capture a snapshot of your project that combines release notes, installation packages, and other assets for your users. Releases serve as a complete package of your project at a specific point in time, so your users can:
+Create a release to package your project at critical milestones. Releases combine code, binaries, documentation, 
+and release notes into a complete snapshot of your project.
+When a release is created, GitLab automatically tags your code, archives a snapshot, and generates
+audit-ready evidence. This creates a permanent record that's perfect for compliance requirements and
+can give your users confidence in your development process.
 
-- Download the latest stable version of your software.
-- Access release notes about new features and changes.
-- Get any additional assets like installation packages, binaries, or documentation.
-- See the history of major updates to your project.
+Your users benefit from:
 
-When you [create a release](#create-a-release), GitLab automatically:
-
-- Creates a Git tag to mark this specific version in the codebase.
-- Archives a snapshot of your code.
-- Generates release evidence (a JSON file for auditing and comparing releases).
+- Easy access to the latest stable version and installation packages
+- Clear documentation about new features and fixes
+- Ability to download specific versions with their corresponding assets
+- Simple way to track your project's evolution over time
 
 {{< alert type="warning" >}}
 

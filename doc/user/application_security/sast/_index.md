@@ -49,16 +49,13 @@ table.no-vertical-table-lines tr {
 
 {{< /details >}}
 
-Static Application Security Testing (SAST) finds known vulnerabilities in your application source
-code. SAST runs in your CI/CD pipeline and performs analysis without requiring compilation.
+Static Application Security Testing (SAST) discovers vulnerabilities in your source code before they
+reach production. Integrated directly into your CI/CD pipeline, SAST identifies security issues
+during development when they're easiest and most cost-effective to fix.
 
-SAST:
-
-- Detects vulnerabilities across multiple programming languages and frameworks.
-- Identifies security issues early in the development lifecycle.
-- Generates reports with detailed vulnerability information.
-- Integrates vulnerability findings into merge request workflows.
-- Supports custom ruleset configuration to control scanning behavior.
+Security vulnerabilities found late in development create costly delays and potential breaches. SAST
+scans happen automatically with each commit, giving you immediate feedback without disrupting
+your workflow.
 
 ## Features
 

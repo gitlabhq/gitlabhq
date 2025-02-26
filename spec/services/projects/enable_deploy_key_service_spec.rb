@@ -19,7 +19,7 @@ RSpec.describe Projects::EnableDeployKeyService, feature_category: :continuous_d
     let!(:params)     { { key_id: another_key.id } }
 
     it 'returns nil if the key cannot be added' do
-      expect(service.execute).to be nil
+      expect(service.execute).to be_nil
     end
   end
 

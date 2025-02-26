@@ -9,4 +9,4 @@
   stage: Monitor  # (optional - may be required in the future) String value of the stage that the feature was created in. e.g., Growth
   tiers: [Core, Premium, Ultimate]  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/348909  # (optional) This is a link to the deprecation issue in GitLab
-  documentation_url: https://docs.gitlab.com/ee/administration/monitoring/gitlab_self_monitoring_project/  # (optional) This is a link to the current documentation page
+  documentation_url: https://docs.gitlab.com/administration/monitoring/gitlab_self_monitoring_project/  # (optional) This is a link to the current documentation page

@@ -14,4 +14,4 @@
 
     1. Move servers running GitLab instances from Ubuntu 18.04 to either Ubuntu 20.04 or Ubuntu 22.04.
     1. Upgrade your GitLab instances using Linux package for the version of Ubuntu you're now using.
-  documentation_url: https://docs.gitlab.com/ee/administration/package_information/supported_os.html
+  documentation_url: https://docs.gitlab.com/administration/package_information/supported_os/

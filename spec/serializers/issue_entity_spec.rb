@@ -135,7 +135,7 @@ RSpec.describe IssueEntity do
       it 'returns nil for archived project doc' do
         response = described_class.new(resource, request: request).as_json
 
-        expect(response[:archived_project_docs_path]).to be nil
+        expect(response[:archived_project_docs_path]).to be_nil
       end
     end
 

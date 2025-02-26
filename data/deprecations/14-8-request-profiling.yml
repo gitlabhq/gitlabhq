@@ -14,4 +14,4 @@
   stage: Monitor
   tiers: [Free, Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352488
-  documentation_url: https://docs.gitlab.com/ee/administration/monitoring/performance/
+  documentation_url: https://docs.gitlab.com/administration/monitoring/performance/

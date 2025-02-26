@@ -9,4 +9,4 @@
     Unexpected behavior in a security feature is inherently dangerous, so we have decided to remove this feature.
   stage: Foundations
   issue_url: "https://gitlab.com/gitlab-org/gitlab/-/issues/351962"  # (optional) This is a link to the deprecation issue in GitLab
-  documentation_url: "https://docs.gitlab.com/ee/administration/settings/account_and_limit_settings.html#allow-expired-personal-access-tokens-to-be-used-deprecated"  # (optional) This is a link to the current documentation page
+  documentation_url: "https://docs.gitlab.com/administration/settings/account_and_limit_settings/#allow-expired-personal-access-tokens-to-be-used-deprecated"  # (optional) This is a link to the current documentation page

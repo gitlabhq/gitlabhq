@@ -20,4 +20,4 @@
 
     - By default, the template will run scan jobs in branch pipelines.
     - You'll be able to set the CI/CD variable `AST_ENABLE_MR_PIPELINES: true` to use MR pipelines instead when an MR is open. The implementation of this new variable is tracked in [issue 410880](https://gitlab.com/gitlab-org/gitlab/-/issues/410880).
-  documentation_url: https://docs.gitlab.com/ee/user/application_security/detect/roll_out_security_scanning.html#use-security-scanning-tools-with-merge-request-pipelines
+  documentation_url: https://docs.gitlab.com/user/application_security/detect/roll_out_security_scanning/#use-security-scanning-tools-with-merge-request-pipelines

@@ -11,4 +11,4 @@
 # The following items are not published on the docs page, but may be used in the future.
   stage: Verify
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/348980
-  documentation_url: https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscobertura
+  documentation_url: https://docs.gitlab.com/ci/yaml/artifacts_reports/#artifactsreportscobertura

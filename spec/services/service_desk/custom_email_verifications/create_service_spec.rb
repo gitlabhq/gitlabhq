@@ -105,7 +105,7 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::CreateService, feature_cat
 
         expect(settings.custom_email_enabled).to be false
         # Because service should normally add initial verification object
-        expect(settings.custom_email_verification).to be nil
+        expect(settings.custom_email_verification).to be_nil
       end
 
       context 'when user has maintainer role in project' do

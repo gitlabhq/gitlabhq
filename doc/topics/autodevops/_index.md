@@ -12,17 +12,19 @@ title: Auto DevOps
 
 {{< /details >}}
 
-GitLab Auto DevOps is a collection of pre-configured features and integrations
-that work together to support your software delivery process.
+Auto DevOps turns your code into production-ready applications without the usual configuration overhead. 
+The entire DevOps lifecycle is pre-configured using industry best practices. Start with the defaults 
+to ship quickly, then customize when you need more control. No complex configuration files or deep 
+DevOps expertise is required.
 
-Auto DevOps detects your programming language and uses [CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates)
-to create and run default pipelines to build and test your application. Then, you can [configure deployments](requirements.md) to deploy your apps to staging
-and production, and set up [review apps](stages.md#auto-review-apps)
-to preview your changes per branch.
+With Auto DevOps you get:
 
-You can use default settings to quickly ship your apps, and iterate and [customize](customize.md) later.
-
-You can also [manage Auto DevOps with APIs](customize.md#extend-auto-devops-with-the-api).
+- CI/CD pipelines that automatically detect your language and framework
+- Built-in security scanning to find vulnerabilities before they reach production
+- Code quality and performance testing on every commit
+- Ready-to-use review apps for previewing changes in a live environment
+- Quick deployments to Kubernetes clusters
+- Progressive deployment strategies that reduce risk and downtime
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an introduction to Auto DevOps, watch [Auto DevOps](https://youtu.be/0Tc0YYBxqi4).

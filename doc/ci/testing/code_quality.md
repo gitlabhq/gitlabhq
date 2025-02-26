@@ -12,16 +12,13 @@ title: Code Quality
 
 {{< /details >}}
 
-Code Quality automatically detects maintainability and complexity issues across your codebase,
-making code easier to understand and less costly to change over time.
+Code Quality identifies maintainability issues before they become technical debt.
+The automated feedback that occurs during code reviews can help your team write better code.
+The findings appear directly in merge requests, making problems visible when they're most cost-effective to fix.
 
-Code Quality:
-
-- Identifies maintainability problems before they enter production.
-- Catches code duplication and complexity automatically.
-- Surfaces code style and formatting issues consistently.
-- Analyzes multiple programming languages in the same pipeline.
-- Integrates findings directly into merge request workflows.
+Code Quality works with multiple programming languages and integrates with common linters, style
+checkers, and complexity analyzers. Your existing tools can feed into the Code Quality workflow,
+preserving your team's preferences while standardizing how results are displayed.
 
 ## Features per tier
 

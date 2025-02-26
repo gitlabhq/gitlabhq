@@ -12,13 +12,16 @@ title: Environments
 
 {{< /details >}}
 
-Environments connect GitLab to your infrastructure. An environment:
+A GitLab environment represents a specific deployment target for your application, like development, staging, or production. Use it to manage different configurations and deploy code during various stages of your software lifecycle.
 
-- Can monitor and deploy to its target infrastructure.
-- Has its own variables.
-- Can be long-lived or ephemeral, depending on its use case.
+With environments, you:
 
-In addition, access to an environment can be controlled.
+- Keep your deployment process consistent and repeatable
+- Track what code is deployed where
+- Roll back to previous versions when problems occur
+- Protect sensitive environments from unauthorized changes
+- Control deployment variables per environment to maintain security boundaries
+- Monitor environment health and get alerts if something goes wrong
 
 ## View environments and deployments
 

@@ -6,6 +6,11 @@ export default {
     GlFormCheckbox,
   },
   props: {
+    id: {
+      type: String,
+      required: false,
+      default: '',
+    },
     name: {
       type: String,
       required: true,
@@ -42,6 +47,7 @@ export default {
     <input :name="name" type="hidden" :value="value ? '1' : '0'" data-testid="input" />
 
     <gl-form-checkbox
+      :id="id"
       :checked="value"
       :data-testid="dataTestId"
       :disabled="disabled"

@@ -52,7 +52,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         it 'allows transfer' do
           transfer_service.execute(new_group)
 
-          expect(transfer_service.error).to be nil
+          expect(transfer_service.error).to be_nil
           expect(group.parent).to eq(new_group)
         end
       end
@@ -114,7 +114,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         it 'allows transfer' do
           transfer_service.execute(nil)
 
-          expect(transfer_service.error).to be nil
+          expect(transfer_service.error).to be_nil
           expect(group.parent).to be_nil
         end
       end

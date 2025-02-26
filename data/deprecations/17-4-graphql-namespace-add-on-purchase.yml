@@ -27,7 +27,7 @@
   # like [Free, Silver, Gold, Core, Premium, Ultimate]
   tiers:
   # Links to documentation and thumbnail image
-  documentation_url: https://docs.gitlab.com/ee/api/graphql/reference/#namespace
+  documentation_url: https://docs.gitlab.com/api/graphql/reference/#namespace
   image_url:
   # Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
   video_url:

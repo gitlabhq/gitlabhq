@@ -9,4 +9,4 @@
   stage: Secure
   tiers: Ultimate
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/333233
-  documentation_url: https://docs.gitlab.com/ee/user/application_security/api_fuzzing/#web-api-fuzzing-configuration-form
+  documentation_url: https://docs.gitlab.com/user/application_security/api_fuzzing/#web-api-fuzzing-configuration-form

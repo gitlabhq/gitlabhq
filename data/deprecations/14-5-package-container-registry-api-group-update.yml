@@ -9,4 +9,4 @@
   stage: Package
   tiers: Free
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/336912
-  documentation_url: https://docs.gitlab.com/ee/api/container_registry.html#within-a-group
+  documentation_url: https://docs.gitlab.com/api/container_registry/#within-a-group

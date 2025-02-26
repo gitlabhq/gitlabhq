@@ -484,7 +484,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
 
             service.execute(merge_request)
 
-            expect(merge_request.reload.should_remove_source_branch?).to be nil
+            expect(merge_request.reload.should_remove_source_branch?).to be_nil
           end
 
           context 'when the merger set the source branch not to be removed' do

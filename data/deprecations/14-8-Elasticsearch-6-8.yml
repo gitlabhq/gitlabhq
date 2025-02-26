@@ -12,4 +12,4 @@
   stage: Enablement
   tiers: [Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350275
-  documentation_url: https://docs.gitlab.com/ee/integration/advanced_search/elasticsearch.html#version-requirements
+  documentation_url: https://docs.gitlab.com/integration/advanced_search/elasticsearch/#version-requirements

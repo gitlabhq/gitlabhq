@@ -25,4 +25,4 @@
   stage: Enablement
   tiers: [Free, Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/347509
-  documentation_url: https://docs.gitlab.com/ee/administration/sidekiq.html
+  documentation_url: https://docs.gitlab.com/administration/sidekiq/

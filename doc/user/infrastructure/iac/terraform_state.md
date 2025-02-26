@@ -19,13 +19,19 @@ title: GitLab-managed Terraform/OpenTofu state
 
 {{< /history >}}
 
-OpenTofu uses state files to store details about your infrastructure configuration.
-With OpenTofu remote [backends](https://opentofu.org/docs/language/settings/backends/configuration/),
-you can store the state file in a remote and shared store.
+Managing infrastructure state files across teams requires both security and reliability. GitLab-managed 
+OpenTofu state eliminates the typical challenges of state management.
+With minimal configuration, your OpenTofu states become a natural extension of your GitLab project. 
+This integration keeps your infrastructure definitions, code, and state all in one secure location.
 
-GitLab provides an [OpenTofu HTTP backend](https://opentofu.org/docs/language/settings/backends/http/)
-to securely store your state files with minimal configuration.
-The OpenTofu state backend provides automatic versioning and encryption of the state files managed by the GitLab instance.
+With GitLab-managed OpenTofu state, you:
+
+- Store state files securely with automatic encryption at rest
+- Track changes with built-in versioning to identify who changed what and when
+- Control access using the GitLab permission model rather than creating separate authentication systems
+- Collaborate across teams without state file conflicts or corruption
+- Integrate seamlessly with your existing GitLab CI/CD pipelines
+- Access state remotely from both CI/CD jobs and local development environments
 
 {{< alert type="warning" >}}
 

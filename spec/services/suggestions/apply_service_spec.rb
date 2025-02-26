@@ -56,7 +56,7 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_review_workflo
 
     it 'updates suggestion applied and commit_id columns' do
       expect(suggestions.map(&:applied)).to all(be false)
-      expect(suggestions.map(&:commit_id)).to all(be nil)
+      expect(suggestions.map(&:commit_id)).to all(be_nil)
 
       apply(suggestions)
 

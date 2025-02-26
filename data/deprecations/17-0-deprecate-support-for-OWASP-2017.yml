@@ -13,4 +13,4 @@
     In the future we will support the most recent version of OWASP top 10 for grouping on the vulnerability report.
     Along with this change we are also deprecating and removing the 2017 GraphQL API enums which the feature uses. Additional details are included in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/488433).
   tiers: [Gold, Ultimate]
-  documentation_url: https://docs.gitlab.com/ee/user/application_security/vulnerability_report/#group-vulnerabilities
+  documentation_url: https://docs.gitlab.com/user/application_security/vulnerability_report/#group-vulnerabilities

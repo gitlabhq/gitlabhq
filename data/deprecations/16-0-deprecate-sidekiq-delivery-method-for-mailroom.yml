@@ -40,4 +40,4 @@
     [Issue 393157](https://gitlab.com/gitlab-org/gitlab/-/issues/393157) tracks improving email ingestion in general.
     We hope this will simplify infrastructure setup and add several improvements to how you manage GitLab in the near future.
   tiers: [Free, Silver, Gold, Core, Premium, Ultimate]
-  documentation_url: https://docs.gitlab.com/ee/user/project/service_desk/configure.html#use-an-additional-service-desk-alias-email
+  documentation_url: https://docs.gitlab.com/user/project/service_desk/configure/#use-an-additional-service-desk-alias-email
