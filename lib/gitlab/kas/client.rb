@@ -102,13 +102,12 @@ module Gitlab
           .cloud_event(request, metadata: metadata)
       end
 
-      def get_environment_template(environment:, template_name:)
-        project = environment.project
-        return unless project && environment.cluster_agent
+      def get_environment_template(agent:, template_name:)
+        project = agent.project
 
         request = Gitlab::Agent::ManagedResources::Rpc::GetEnvironmentTemplateRequest.new(
           template_name: template_name,
-          agent_name: environment.cluster_agent.name,
+          agent_name: agent.name,
           gitaly_info: gitaly_info(project),
           gitaly_repository: repository(project),
           default_branch: project.default_branch_or_main

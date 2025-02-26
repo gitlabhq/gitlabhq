@@ -255,14 +255,13 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
     end
 
     describe '#get_environment_template' do
-      let_it_be(:environment) { create(:environment, project: project, cluster_agent: agent) }
       let(:stub) { instance_double(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub) }
       let(:request) { instance_double(Gitlab::Agent::ManagedResources::Rpc::GetEnvironmentTemplateRequest) }
       let(:template) { double("templates", name: "test-template", data: "{}") }
       let(:response) { double(Gitlab::Agent::ManagedResources::Rpc::GetEnvironmentTemplateResponse, template: template) }
       let(:template_name) { 'default' }
 
-      subject { client.get_environment_template(environment: environment, template_name: template_name) }
+      subject { client.get_environment_template(agent: agent, template_name: template_name) }
 
       before do
         expect(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub).to receive(:new)
