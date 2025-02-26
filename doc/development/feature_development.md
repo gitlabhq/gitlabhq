@@ -137,9 +137,11 @@ The following integration guides are internal. Some integrations require access 
 - [JSON guidelines](json.md) for how to handle JSON in a performant manner.
 - [GraphQL API optimizations](api_graphql_styleguide.md#optimizations) for how to optimize GraphQL code.
 
-## Database guides
+## Data stores guides
 
-See [database guidelines](database/_index.md).
+- [Database guidelines](database/_index.md).
+- [Data retention policies](data_retention_policies.md)
+- [Gitaly guidelines](gitaly.md)
 
 ## Testing guides
 

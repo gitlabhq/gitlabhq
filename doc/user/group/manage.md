@@ -184,7 +184,7 @@ To disable diff previews for all projects in a group:
 
 {{< history >}}
 
-- Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+- Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `extended_expiry_webhook_execution_setting`. Disabled by default.
 
 {{< /history >}}
 

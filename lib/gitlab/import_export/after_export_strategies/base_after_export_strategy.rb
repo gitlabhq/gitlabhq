@@ -65,7 +65,7 @@ module Gitlab
         end
 
         def ensure_lock_files_path!
-          FileUtils.mkdir_p(lock_files_path) unless Dir.exist?(lock_files_path)
+          FileUtils.mkdir_p(lock_files_path)
         end
 
         def lock_files_path

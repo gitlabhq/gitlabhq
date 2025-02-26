@@ -65,6 +65,21 @@ To enable [exact code search](../../user/search/exact_code_search.md) in GitLab:
 1. Select the **Enable indexing for exact code search** and **Enable exact code search** checkboxes.
 1. Select **Save changes**.
 
+## Check indexing status
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+Indexing performance depends on the CPU and memory limits on the Zoekt indexer nodes.
+To check indexing status, in the Rails console, run the following command:
+
+```ruby
+Search::Zoekt::Index.group(:state).count
+Search::Zoekt::Repository.group(:state).count
+Search::Zoekt::Task.group(:state).count
+```
+
 ## Delete offline nodes automatically
 
 Prerequisites:
@@ -96,6 +111,13 @@ To index all root namespaces automatically:
 1. Expand **Exact code search configuration**.
 1. Select the **Index root namespaces automatically** checkbox.
 1. Select **Save changes**.
+
+When you enable this setting, GitLab creates indexing tasks for all projects in:
+
+- All groups and subgroups
+- Any new root namespace
+
+After a project is indexed, GitLab creates only incremental indexing when a repository change is detected.
 
 When you disable this setting:
 

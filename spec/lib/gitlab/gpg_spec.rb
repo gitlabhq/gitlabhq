@@ -172,7 +172,7 @@ RSpec.describe Gitlab::Gpg do
     it 'does not fail if the homedir was deleted while running' do
       expect do
         described_class.using_tmp_keychain do
-          FileUtils.remove_entry(described_class.current_home_dir)
+          FileUtils.rm_rf(described_class.current_home_dir)
         end
       end.not_to raise_error
     end
@@ -204,8 +204,8 @@ RSpec.describe Gitlab::Gpg do
       end
 
       before do
-        # Stub all the other calls for `remove_entry`
-        allow(FileUtils).to receive(:remove_entry).with(any_args).and_call_original
+        # Stub all the other calls for `rm_rf`
+        allow(FileUtils).to receive(:rm_rf).with(any_args).and_call_original
       end
 
       it "tries for #{seconds} or 15 times" do
@@ -216,15 +216,15 @@ RSpec.describe Gitlab::Gpg do
 
       it 'tries at least 2 times to remove the tmp dir before raising', :aggregate_failures do
         expect(Retriable).to receive(:sleep).at_least(:twice)
-        expect(FileUtils).to receive(:remove_entry).with(tmp_dir).at_least(:twice).and_raise('Deletion failed')
+        expect(FileUtils).to receive(:rm_rf).with(tmp_dir).at_least(:twice).and_raise('Deletion failed')
 
         expect { described_class.using_tmp_keychain {} }.to raise_error(described_class::CleanupError)
       end
 
       it 'does not attempt multiple times when the deletion succeeds' do
         expect(Retriable).to receive(:sleep).once
-        expect(FileUtils).to receive(:remove_entry).with(tmp_dir).once.and_raise('Deletion failed')
-        expect(FileUtils).to receive(:remove_entry).with(tmp_dir).and_call_original
+        expect(FileUtils).to receive(:rm_rf).with(tmp_dir).once.and_raise('Deletion failed')
+        expect(FileUtils).to receive(:rm_rf).with(tmp_dir).and_call_original
 
         expect { described_class.using_tmp_keychain {} }.not_to raise_error
 

@@ -65,6 +65,7 @@ query getWorkItems(
           webPath
         }
         closedAt
+        userDiscussionsCount
         confidential
         createdAt
         iid
@@ -126,6 +127,7 @@ query getWorkItems(
           webPath
         }
         closedAt
+        userDiscussionsCount
         confidential
         createdAt
         iid

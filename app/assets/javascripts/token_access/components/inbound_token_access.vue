@@ -3,6 +3,7 @@ import {
   GlAlert,
   GlButton,
   GlCollapsibleListbox,
+  GlDisclosureDropdown,
   GlIcon,
   GlLink,
   GlLoadingIcon,
@@ -24,13 +25,16 @@ import inboundGetCIJobTokenScopeQuery from '../graphql/queries/inbound_get_ci_jo
 import inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery from '../graphql/queries/inbound_get_groups_and_projects_with_ci_job_token_scope.query.graphql';
 import getCiJobTokenScopeAllowlistQuery from '../graphql/queries/get_ci_job_token_scope_allowlist.query.graphql';
 import getAuthLogCountQuery from '../graphql/queries/get_auth_log_count.query.graphql';
+import removeAutopopulatedEntriesMutation from '../graphql/mutations/remove_autopopulated_entries.mutation.graphql';
 import {
   JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT,
   JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG,
+  JOB_TOKEN_REMOVE_AUTOPOPULATED_ENTRIES_MODAL,
 } from '../constants';
 import TokenAccessTable from './token_access_table.vue';
 import NamespaceForm from './namespace_form.vue';
 import AutopopulateAllowlistModal from './autopopulate_allowlist_modal.vue';
+import RemoveAutopopulatedEntriesModal from './remove_autopopulated_entries_modal.vue';
 
 export default {
   i18n: {
@@ -55,6 +59,7 @@ export default {
       'CICD|Are you sure you want to remove %{namespace} from the job token allowlist?',
     ),
     removeNamespaceModalActionText: s__('CICD|Remove group or project'),
+    removeAutopopulatedEntries: s__('CICD|Remove all auto-added allowlist entries'),
   },
   inboundJobTokenScopeOptions: [
     {
@@ -81,11 +86,13 @@ export default {
     GlAlert,
     GlButton,
     GlCollapsibleListbox,
+    GlDisclosureDropdown,
     GlIcon,
     GlLink,
     GlLoadingIcon,
     GlSprintf,
     CrudComponent,
+    RemoveAutopopulatedEntriesModal,
     TokenAccessTable,
     GlFormRadioGroup,
     NamespaceForm,
@@ -170,9 +177,11 @@ export default {
   data() {
     return {
       authLogCount: 0,
+      allowlistLoadingMessage: '',
       inboundJobTokenScopeEnabled: null,
-      isUpdating: false,
+      isUpdatingJobTokenScope: false,
       groupsAndProjectsWithAccess: { groups: [], projects: [] },
+      autopopulationErrorMessage: null,
       projectName: '',
       namespaceToEdit: null,
       namespaceToRemove: null,
@@ -182,6 +191,12 @@ export default {
   computed: {
     authLogExceedsLimit() {
       return this.projectCount + this.groupCount + this.authLogCount > this.projectAllowlistLimit;
+    },
+    isAllowlistLoading() {
+      return (
+        this.$apollo.queries.groupsAndProjectsWithAccess.loading ||
+        this.allowlistLoadingMessage.length > 0
+      );
     },
     isJobTokenPoliciesEnabled() {
       return this.glFeatures.addPoliciesToCiJobToken;
@@ -198,6 +213,17 @@ export default {
     canAutopopulateAuthLog() {
       return this.glFeatures.authenticationLogsMigrationForAllowlist;
     },
+    disclosureDropdownOptions() {
+      return [
+        {
+          text: this.$options.i18n.removeAutopopulatedEntries,
+          variant: 'danger',
+          action: () => {
+            this.selectedAction = JOB_TOKEN_REMOVE_AUTOPOPULATED_ENTRIES_MODAL;
+          },
+        },
+      ];
+    },
     groupCount() {
       return this.groupsAndProjectsWithAccess.groups.length;
     },
@@ -210,13 +236,13 @@ export default {
     projectCountTooltip() {
       return n__('%d project has access', '%d projects have access', this.projectCount);
     },
-    isAllowlistLoading() {
-      return this.$apollo.queries.groupsAndProjectsWithAccess.loading;
-    },
     removeNamespaceModalTitle() {
       return sprintf(this.$options.i18n.removeNamespaceModalTitle, {
         namespace: this.namespaceToRemove?.fullPath,
       });
+    },
+    showRemoveAutopopulatedEntriesModal() {
+      return this.selectedAction === JOB_TOKEN_REMOVE_AUTOPOPULATED_ENTRIES_MODAL;
     },
     showAutopopulateModal() {
       return this.selectedAction === JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG;
@@ -238,7 +264,7 @@ export default {
       }));
     },
     async updateCIJobTokenScope() {
-      this.isUpdating = true;
+      this.isUpdatingJobTokenScope = true;
 
       try {
         const {
@@ -268,7 +294,7 @@ export default {
         this.inboundJobTokenScopeEnabled = !this.inboundJobTokenScopeEnabled;
         createAlert({ message: error.message });
       } finally {
-        this.isUpdating = false;
+        this.isUpdatingJobTokenScope = false;
       }
     },
     async removeItem() {
@@ -290,6 +316,42 @@ export default {
 
       this.refetchGroupsAndProjects();
       return Promise.resolve();
+    },
+    async removeAutopopulatedEntries() {
+      this.hideSelectedAction();
+      this.autopopulationErrorMessage = null;
+      this.allowlistLoadingMessage = s__(
+        'CICD|Removing auto-added allowlist entries. Please wait while the action completes.',
+      );
+
+      try {
+        const {
+          data: {
+            ciJobTokenScopeClearAllowlistAutopopulations: { errors },
+          },
+        } = await this.$apollo.mutate({
+          mutation: removeAutopopulatedEntriesMutation,
+          variables: {
+            projectPath: this.fullPath,
+          },
+        });
+
+        if (errors.length) {
+          this.autopopulationErrorMessage = errors[0].message;
+          return;
+        }
+
+        this.refetchAllowlist();
+        this.$toast.show(
+          s__('CICD|Authentication log entries were successfully removed from the allowlist.'),
+        );
+      } catch (error) {
+        this.autopopulationErrorMessage = s__(
+          'CICD|An error occurred while removing the auto-added log entries. Please try again.',
+        );
+      } finally {
+        this.allowlistLoadingMessage = '';
+      }
     },
     refetchAllowlist() {
       this.$apollo.queries.groupsAndProjectsWithAccess.refetch();
@@ -328,117 +390,133 @@ export default {
       @hide="hideSelectedAction"
       @refetch-allowlist="refetchAllowlist"
     />
-    <gl-loading-icon v-if="$apollo.queries.inboundJobTokenScopeEnabled.loading" size="md" />
-    <template v-else>
-      <div class="gl-font-bold">
-        {{ $options.i18n.radioGroupTitle }}
-      </div>
-      <div class="gl-mb-3">
-        <gl-sprintf :message="$options.i18n.radioGroupDescription">
-          <template #link="{ content }">
-            <gl-link :href="ciJobTokenHelpPage" class="inline-link" target="_blank">{{
-              content
-            }}</gl-link>
-          </template>
-        </gl-sprintf>
-      </div>
-      <gl-form-radio-group
-        v-if="!enforceAllowlist"
-        v-model="inboundJobTokenScopeEnabled"
-        :options="$options.inboundJobTokenScopeOptions"
-        stacked
-      />
-      <gl-alert
-        v-if="!inboundJobTokenScopeEnabled && !enforceAllowlist"
-        variant="warning"
-        class="gl-my-3"
-        :dismissible="false"
-        :show-icon="false"
-      >
-        {{ $options.i18n.settingDisabledMessage }}
-      </gl-alert>
-
-      <gl-button
-        v-if="!enforceAllowlist"
-        variant="confirm"
-        class="gl-mt-3"
-        data-testid="save-ci-job-token-scope-changes-btn"
-        :loading="isUpdating"
-        @click="updateCIJobTokenScope"
-      >
-        {{ $options.i18n.saveButtonTitle }}
-      </gl-button>
-
-      <crud-component
-        :title="$options.i18n.cardHeaderTitle"
-        :description="$options.i18n.cardHeaderDescription"
-        :toggle-text="!canAutopopulateAuthLog ? $options.i18n.addGroupOrProject : undefined"
-        class="gl-mt-5"
-        @hideForm="hideSelectedAction"
-      >
-        <template v-if="canAutopopulateAuthLog" #actions="{ showForm }">
-          <gl-collapsible-listbox
-            v-model="selectedAction"
-            :items="$options.crudFormActions"
-            :toggle-text="$options.i18n.add"
-            data-testid="form-selector"
-            size="small"
-            @select="selectAction($event, showForm)"
-          />
+    <remove-autopopulated-entries-modal
+      :show-modal="showRemoveAutopopulatedEntriesModal"
+      @hide="hideSelectedAction"
+      @remove-entries="removeAutopopulatedEntries"
+    />
+    <div class="gl-font-bold">
+      {{ $options.i18n.radioGroupTitle }}
+    </div>
+    <div class="gl-mb-3">
+      <gl-sprintf :message="$options.i18n.radioGroupDescription">
+        <template #link="{ content }">
+          <gl-link :href="ciJobTokenHelpPage" class="inline-link" target="_blank">{{
+            content
+          }}</gl-link>
         </template>
-        <template #count>
-          <gl-loading-icon v-if="isAllowlistLoading" data-testid="count-loading-icon" />
-          <template v-else>
-            <span
-              v-gl-tooltip.d0="groupCountTooltip"
-              class="gl-cursor-default"
-              data-testid="group-count"
-            >
-              <gl-icon name="group" /> {{ groupCount }}
-            </span>
-            <span
-              v-gl-tooltip.d0="projectCountTooltip"
-              class="gl-ml-2 gl-cursor-default"
-              data-testid="project-count"
-            >
-              <gl-icon name="project" /> {{ projectCount }}
-            </span>
-          </template>
-        </template>
-
-        <template #form="{ hideForm }">
-          <namespace-form
-            :namespace="namespaceToEdit"
-            @saved="refetchGroupsAndProjects"
-            @close="hideForm"
-          />
-        </template>
-
-        <template #default="{ showForm }">
-          <token-access-table
-            :items="allowlist"
-            :loading="isAllowlistLoading"
-            :show-policies="isJobTokenPoliciesEnabled"
-            @editItem="showNamespaceForm($event, showForm)"
-            @removeItem="namespaceToRemove = $event"
-          />
-
-          <confirm-action-modal
-            v-if="namespaceToRemove"
-            modal-id="inbound-token-access-remove-confirm-modal"
-            :title="removeNamespaceModalTitle"
-            :action-fn="removeItem"
-            :action-text="$options.i18n.removeNamespaceModalActionText"
-            @close="namespaceToRemove = null"
+      </gl-sprintf>
+    </div>
+    <gl-form-radio-group
+      v-if="!enforceAllowlist"
+      v-model="inboundJobTokenScopeEnabled"
+      :options="$options.inboundJobTokenScopeOptions"
+      stacked
+    />
+    <gl-alert
+      v-if="!inboundJobTokenScopeEnabled && !enforceAllowlist"
+      variant="warning"
+      class="gl-my-3"
+      :dismissible="false"
+      :show-icon="false"
+    >
+      {{ $options.i18n.settingDisabledMessage }}
+    </gl-alert>
+    <gl-button
+      v-if="!enforceAllowlist"
+      variant="confirm"
+      class="gl-mt-3"
+      data-testid="save-ci-job-token-scope-changes-btn"
+      :loading="isUpdatingJobTokenScope"
+      @click="updateCIJobTokenScope"
+    >
+      {{ $options.i18n.saveButtonTitle }}
+    </gl-button>
+    <gl-alert
+      v-if="autopopulationErrorMessage"
+      variant="danger"
+      class="gl-my-5"
+      :dismissible="false"
+      data-testid="autopopulation-alert"
+    >
+      {{ autopopulationErrorMessage }}
+    </gl-alert>
+    <crud-component
+      :title="$options.i18n.cardHeaderTitle"
+      :description="$options.i18n.cardHeaderDescription"
+      :toggle-text="!canAutopopulateAuthLog ? $options.i18n.addGroupOrProject : undefined"
+      class="gl-mt-5"
+      @hideForm="hideSelectedAction"
+    >
+      <template v-if="canAutopopulateAuthLog" #actions="{ showForm }">
+        <gl-collapsible-listbox
+          v-model="selectedAction"
+          :items="$options.crudFormActions"
+          :toggle-text="$options.i18n.add"
+          data-testid="form-selector"
+          size="small"
+          @select="selectAction($event, showForm)"
+        />
+        <gl-disclosure-dropdown
+          category="tertiary"
+          icon="ellipsis_v"
+          no-caret
+          :items="disclosureDropdownOptions"
+        />
+      </template>
+      <template #count>
+        <gl-loading-icon v-if="isAllowlistLoading" data-testid="count-loading-icon" />
+        <template v-else>
+          <span
+            v-gl-tooltip.d0="groupCountTooltip"
+            class="gl-cursor-default"
+            data-testid="group-count"
           >
-            <gl-sprintf :message="$options.i18n.removeNamespaceModalText">
-              <template #namespace>
-                <code>{{ namespaceToRemove.fullPath }}</code>
-              </template>
-            </gl-sprintf>
-          </confirm-action-modal>
+            <gl-icon name="group" /> {{ groupCount }}
+          </span>
+          <span
+            v-gl-tooltip.d0="projectCountTooltip"
+            class="gl-ml-2 gl-cursor-default"
+            data-testid="project-count"
+          >
+            <gl-icon name="project" /> {{ projectCount }}
+          </span>
         </template>
-      </crud-component>
-    </template>
+      </template>
+
+      <template #form="{ hideForm }">
+        <namespace-form
+          :namespace="namespaceToEdit"
+          @saved="refetchGroupsAndProjects"
+          @close="hideForm"
+        />
+      </template>
+
+      <template #default="{ showForm }">
+        <token-access-table
+          :items="allowlist"
+          :loading="isAllowlistLoading"
+          :loading-message="allowlistLoadingMessage"
+          :show-policies="isJobTokenPoliciesEnabled"
+          @editItem="showNamespaceForm($event, showForm)"
+          @removeItem="namespaceToRemove = $event"
+        />
+
+        <confirm-action-modal
+          v-if="namespaceToRemove"
+          modal-id="inbound-token-access-remove-confirm-modal"
+          :title="removeNamespaceModalTitle"
+          :action-fn="removeItem"
+          :action-text="$options.i18n.removeNamespaceModalActionText"
+          @close="namespaceToRemove = null"
+        >
+          <gl-sprintf :message="$options.i18n.removeNamespaceModalText">
+            <template #namespace>
+              <code>{{ namespaceToRemove.fullPath }}</code>
+            </template>
+          </gl-sprintf>
+        </confirm-action-modal>
+      </template>
+    </crud-component>
   </div>
 </template>

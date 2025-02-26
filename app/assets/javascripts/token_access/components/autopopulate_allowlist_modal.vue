@@ -1,5 +1,6 @@
 <script>
 import { GlAlert, GlLink, GlModal, GlSprintf } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { __, s__, sprintf } from '~/locale';
 import autopopulateAllowlistMutation from '../graphql/mutations/autopopulate_allowlist.mutation.graphql';
 
@@ -116,6 +117,9 @@ export default {
       this.$emit('hide');
     },
   },
+  compactionAlgorithmHelpPage: helpPagePath('ci/jobs/ci_job_token', {
+    anchor: 'auto-populate-a-projects-allowlist',
+  }),
 };
 </script>
 
@@ -129,6 +133,7 @@ export default {
     @primary.prevent="autopopulateAllowlist"
     @secondary="hideModal"
     @canceled="hideModal"
+    @hidden="hideModal"
   >
     <gl-alert v-if="errorMessage" variant="danger" class="gl-mb-3" :dismissible="false">
       {{ errorMessage }}
@@ -138,8 +143,6 @@ export default {
         {{ authLogExceedsLimitMessage }}
       </gl-alert>
       <p data-testid="modal-description">
-        <!-- TODO: Update documentation link -->
-        <!-- See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181294 -->
         <gl-sprintf
           :message="
             s__(
@@ -148,7 +151,9 @@ export default {
           "
         >
           <template #link="{ content }">
-            <gl-link href="/" target="_blank">{{ content }}</gl-link>
+            <gl-link :href="$options.compactionAlgorithmHelpPage" target="_blank">{{
+              content
+            }}</gl-link>
           </template>
         </gl-sprintf>
       </p>

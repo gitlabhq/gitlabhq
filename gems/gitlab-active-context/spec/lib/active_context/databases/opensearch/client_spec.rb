@@ -32,6 +32,21 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
     end
   end
 
+  describe '#opensearch_config' do
+    it 'returns correct configuration hash' do
+      config = client.send(:opensearch_config)
+
+      expect(config).to include(
+        urls: options[:url],
+        randomize_hosts: true
+      )
+      expect(config[:transport_options][:request]).to include(
+        timeout: options[:client_request_timeout],
+        open_timeout: described_class::OPEN_TIMEOUT
+      )
+    end
+  end
+
   describe '#aws_credentials' do
     context 'when static credentials are provided' do
       let(:options) do

@@ -87,12 +87,29 @@ describe('AutopopulateAllowlistModal component', () => {
         );
       });
 
-      // TODO: Test for help link
-      // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181294
       it('renders help link', () => {
         expect(findLink().text()).toBe('What is the compaction algorithm?');
+        expect(findLink().attributes('href')).toBe(
+          '/help/ci/jobs/ci_job_token#auto-populate-a-projects-allowlist',
+        );
       });
     });
+
+    it.each`
+      modalEvent     | emittedEvent
+      ${'canceled'}  | ${'hide'}
+      ${'hidden'}    | ${'hide'}
+      ${'secondary'} | ${'hide'}
+    `(
+      'emits the $emittedEvent event when $modalEvent event is triggered',
+      ({ modalEvent, emittedEvent }) => {
+        expect(wrapper.emitted(emittedEvent)).toBeUndefined();
+
+        findModal().vm.$emit(modalEvent);
+
+        expect(wrapper.emitted(emittedEvent)).toHaveLength(1);
+      },
+    );
   });
 
   describe('when mutation is running', () => {

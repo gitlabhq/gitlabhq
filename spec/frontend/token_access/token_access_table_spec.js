@@ -22,6 +22,7 @@ describe('Token access table', () => {
   const findName = () => wrapper.findByTestId('token-access-name');
   const findPolicies = () => findAllTableRows().at(0).findAll('td').at(1);
   const findAutopopulatedIcon = () => wrapper.findByTestId('autopopulated-icon');
+  const findLoadingMessage = () => wrapper.findByTestId('loading-message');
 
   describe.each`
     type         | items
@@ -86,6 +87,17 @@ describe('Token access table', () => {
       createComponent({ items: mockGroups, loading: true });
 
       expect(findTable().findComponent(GlLoadingIcon).props('size')).toBe('md');
+      expect(findLoadingMessage().exists()).toBe(false);
+    });
+
+    it('shows loading message when available', () => {
+      createComponent({
+        items: mockGroups,
+        loading: true,
+        loadingMessage: 'Removing auto-populated entries...',
+      });
+
+      expect(findLoadingMessage().text()).toBe('Removing auto-populated entries...');
     });
   });
 

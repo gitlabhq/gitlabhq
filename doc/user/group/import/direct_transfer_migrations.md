@@ -35,10 +35,12 @@ If there are any problems, you can:
 
 Before migrating by using direct transfer, see the following prerequisites.
 
-### Network
+### Network and storage space
 
 - The network connection between instances or GitLab.com must support HTTPS.
 - Firewalls must not block the connection between the source and destination GitLab instances.
+- The source and destination GitLab instances must have enough free space in the `/tmp` directory
+  to create and extract archives of transferred projects and groups.
 
 ### Versions
 

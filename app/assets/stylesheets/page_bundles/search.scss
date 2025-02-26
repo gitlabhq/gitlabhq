@@ -386,3 +386,7 @@ input[type='search'] {
   }
 }
 /* stylelint-enable property-no-vendor-prefix */
+
+.description.term p:last-child {
+  @apply gl-m-0;
+}

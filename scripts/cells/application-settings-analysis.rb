@@ -278,6 +278,7 @@ class ApplicationSettingsAnalysis
       vertex_ai_project
       web_ide_oauth_application_id
       zoekt_cpu_to_tasks_ratio
+      zoekt_rollout_batch_size
       zoekt_indexing_enabled
       zoekt_search_enabled
       zoekt_settings

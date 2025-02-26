@@ -245,9 +245,7 @@ module Gitlab
       end
 
       def ensure_directory
-        unless Dir.exist?(default_directory)
-          FileUtils.mkdir_p(default_directory)
-        end
+        FileUtils.mkdir_p(default_directory)
       end
 
       def current_path

@@ -9078,6 +9078,9 @@ msgstr ""
 msgid "Batch size"
 msgstr ""
 
+msgid "Batch size of namespaces for initial indexing"
+msgstr ""
+
 msgid "Batched Job|Background migrations"
 msgstr ""
 
@@ -11240,6 +11243,9 @@ msgstr ""
 msgid "CICD|An error occurred while adding the authentication log entries. Please try again."
 msgstr ""
 
+msgid "CICD|An error occurred while removing the auto-added log entries. Please try again."
+msgstr ""
+
 msgid "CICD|Are you sure you want to remove %{namespace} from the job token allowlist?"
 msgstr ""
 
@@ -11253,6 +11259,9 @@ msgid "CICD|Authentication log"
 msgstr ""
 
 msgid "CICD|Authentication log entries were successfully added to the allowlist."
+msgstr ""
+
+msgid "CICD|Authentication log entries were successfully removed from the allowlist."
 msgstr ""
 
 msgid "CICD|Authorized groups and projects"
@@ -11354,7 +11363,16 @@ msgstr ""
 msgid "CICD|Prevent CI/CD job tokens from this project from being used to access other projects unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "CICD|Remove all auto-added allowlist entries"
+msgstr ""
+
 msgid "CICD|Remove group or project"
+msgstr ""
+
+msgid "CICD|Removing auto-added allowlist entries. Please wait while the action completes."
+msgstr ""
+
+msgid "CICD|Removing these entries could cause authentication failures or disrupt pipelines."
 msgstr ""
 
 msgid "CICD|Select the groups and projects authorized to use a CI/CD job token to authenticate requests to this project. %{linkStart}Learn more%{linkEnd}."
@@ -11385,6 +11403,9 @@ msgid "CICD|There was a problem fetching authentication logs."
 msgstr ""
 
 msgid "CICD|There was a problem fetching authorization logs count."
+msgstr ""
+
+msgid "CICD|This action removes all groups and projects that were auto-added from the authentication log."
 msgstr ""
 
 msgid "CICD|Unprotected branches will not have access to the cache from protected branches."
@@ -47962,6 +47983,9 @@ msgid "Remove due date"
 msgstr ""
 
 msgid "Remove email participants"
+msgstr ""
+
+msgid "Remove entries"
 msgstr ""
 
 msgid "Remove favicon"

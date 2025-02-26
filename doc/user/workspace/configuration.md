@@ -112,57 +112,64 @@ For more information, see [`image_pull_secrets`](settings.md#image_pull_secrets)
 
 {{< /history >}}
 
-Prerequisites:
-
-- Ensure the container images used in the devfile support [arbitrary user IDs](_index.md#arbitrary-user-ids).
-  Sudo access for a workspace does not mean that the container image used
-  in a [devfile](_index.md#devfile) can run with a user ID of `0`.
-
-A development environment often requires sudo permissions to
-install, configure, and use dependencies during runtime.
-You can configure secure sudo access for a workspace with:
+Development environments often require sudo permissions to install, configure, and use dependencies
+during runtime. You can configure sudo access for a workspace with:
 
 - [Sysbox](#with-sysbox)
 - [Kata Containers](#with-kata-containers)
 - [User namespaces](#with-user-namespaces)
+
+Prerequisites:
+
+- Your container images must support [arbitrary user IDs](_index.md#arbitrary-user-ids).
+  Even with sudo access configured, container images used in a [devfile](_index.md#devfile)
+  cannot run with a user ID of `0`.
 
 ### With Sysbox
 
 [Sysbox](https://github.com/nestybox/sysbox) is a container runtime that improves container isolation
 and enables containers to run the same workloads as virtual machines.
 
-To configure sudo access for a workspace with Sysbox:
+To configure sudo access with Sysbox:
 
-1. In the Kubernetes cluster, [install Sysbox](https://github.com/nestybox/sysbox#installation).
-1. In the GitLab agent for workspaces:
-   - Set [`default_runtime_class`](settings.md#default_runtime_class) to the runtime class
-     of Sysbox (for example, `sysbox-runc`).
-   - Set [`allow_privilege_escalation`](settings.md#allow_privilege_escalation) to `true`.
-   - Set [`annotations`](settings.md#annotations) to `{"io.kubernetes.cri-o.userns-mode": "auto:size=65536"}`.
+1. In your Kubernetes cluster, [install Sysbox](https://github.com/nestybox/sysbox#installation).
+1. Configure the GitLab agent for workspaces:
+
+   - Set the default runtime class. In [`default_runtime_class`](settings.md#default_runtime_class),
+     enter the runtime class for Sysbox. For example, `sysbox-runc`.
+   - Enable privilege escalation.
+     Set [`allow_privilege_escalation`](settings.md#allow_privilege_escalation) to `true`.
+   - Configure the annotations required by Sysbox. Set [`annotations`](settings.md#annotations) to
+     `{"io.kubernetes.cri-o.userns-mode": "auto:size=65536"}`.
 
 ### With Kata Containers
 
-[Kata Containers](https://github.com/kata-containers/kata-containers) is a standard implementation of lightweight
-virtual machines that perform like containers but provide the workload isolation and security of virtual machines.
+[Kata Containers](https://github.com/kata-containers/kata-containers) is a standard implementation
+of lightweight virtual machines that perform like containers but provide the workload isolation and
+security of virtual machines.
 
-To configure sudo access for a workspace with Kata Containers:
+To configure sudo access with Kata Containers:
 
-1. In the Kubernetes cluster, [install Kata Containers](https://github.com/kata-containers/kata-containers/tree/main/docs/install).
-1. In the GitLab agent for workspaces:
-   - Set [`default_runtime_class`](settings.md#default_runtime_class) to one of the runtime classes
-     of Kata Containers (for example, `kata-qemu`).
-   - Set [`allow_privilege_escalation`](settings.md#allow_privilege_escalation) to `true`.
+1. In your Kubernetes cluster, [install Kata Containers](https://github.com/kata-containers/kata-containers/tree/main/docs/install).
+1. Configure the GitLab agent for workspaces:
+
+   - Set the default runtime class. In [`default_runtime_class`](settings.md#default_runtime_class),
+     enter the runtime class for Kata Containers. For example, `kata-qemu`.
+   - Enable privilege escalation.
+     Set [`allow_privilege_escalation`](settings.md#allow_privilege_escalation) to `true`.
 
 ### With user namespaces
 
-[User namespaces](https://kubernetes.io/docs/concepts/workloads/pods/user-namespaces/) isolate the user
-running inside the container from the user on the host.
+[User namespaces](https://kubernetes.io/docs/concepts/workloads/pods/user-namespaces/) isolate
+container users from host users.
 
-To configure sudo access for a workspace with user namespaces:
+To configure sudo access with user namespaces:
 
-1. In the Kubernetes cluster, [configure user namespaces](https://kubernetes.io/blog/2024/04/22/userns-beta/).
-1. In the GitLab agent for workspaces, set [`use_kubernetes_user_namespaces`](settings.md#use_kubernetes_user_namespaces)
-   and [`allow_privilege_escalation`](settings.md#allow_privilege_escalation) to `true`.
+1. In your Kubernetes cluster, [configure user namespaces](https://kubernetes.io/blog/2024/04/22/userns-beta/).
+1. Configure the GitLab agent for workspaces:
+
+   - Set [`use_kubernetes_user_namespaces`](settings.md#use_kubernetes_user_namespaces) to `true`.
+   - Set [`allow_privilege_escalation`](settings.md#allow_privilege_escalation) to `true`.
 
 ## Build and run containers in a workspace
 

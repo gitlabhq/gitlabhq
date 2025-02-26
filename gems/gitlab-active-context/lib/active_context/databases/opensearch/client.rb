@@ -49,7 +49,7 @@ module ActiveContext
 
         def opensearch_config
           {
-            adapter: :net_http,
+            adapter: :typhoeus,
             urls: options[:url],
             transport_options: {
               request: {

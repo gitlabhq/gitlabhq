@@ -351,7 +351,7 @@ are then redirected to sign in through the identity provider.
 GitLab.com uses the SAML **NameID** to identify users. The **NameID** is:
 
 - A required field in the SAML response.
-- Case sensitive.
+- Case-insensitive.
 
 The **NameID** must:
 

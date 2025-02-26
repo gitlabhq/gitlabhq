@@ -323,3 +323,13 @@ export const mockAutopopulateAllowlistError = {
     },
   },
 };
+
+export const mockRemoveAutopopulatedEntriesResponse = ({ errorMessage } = {}) => ({
+  data: {
+    ciJobTokenScopeClearAllowlistAutopopulations: {
+      status: 'complete',
+      errors: errorMessage ? [{ message: errorMessage }] : [],
+      __typename: 'CiJobTokenScopeClearAllowlistAutopopulationsPayload',
+    },
+  },
+});

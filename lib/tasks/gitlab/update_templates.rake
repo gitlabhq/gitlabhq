@@ -143,7 +143,7 @@ namespace :gitlab do
   end
 
   def clone_repository(url, directory)
-    FileUtils.rm_rf(directory) if Dir.exist?(directory)
+    FileUtils.rm_rf(directory)
 
     system("git clone #{url} --depth=1 --branch=master #{directory}")
   end

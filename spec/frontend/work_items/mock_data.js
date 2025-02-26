@@ -5347,6 +5347,7 @@ export const groupWorkItemsQueryResponse = {
             title: 'a group level work item',
             updatedAt: '',
             webUrl: 'web/url',
+            userDiscussionsCount: 0,
             widgets: [
               {
                 __typename: 'WorkItemWidgetAssignees',

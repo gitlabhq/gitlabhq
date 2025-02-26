@@ -40,6 +40,11 @@ export default {
       required: false,
       default: false,
     },
+    loadingMessage: {
+      type: String,
+      required: false,
+      default: '',
+    },
     // This can be removed after outbound_token_access.vue is removed, which is a deprecated feature. We need to hide
     // policies for that component, but show them on inbound_token_access.vue.
     showPolicies: {
@@ -95,6 +100,13 @@ export default {
   <gl-table :items="items" :fields="fields" :busy="loading" class="gl-mb-0" stacked="md">
     <template #table-busy>
       <gl-loading-icon size="md" />
+      <p
+        v-if="loadingMessage.length > 0"
+        class="gl-mt-5 gl-text-center"
+        data-testid="loading-message"
+      >
+        {{ loadingMessage }}
+      </p>
     </template>
     <template #cell(fullPath)="{ item }">
       <div class="gl-inline-flex gl-items-center">

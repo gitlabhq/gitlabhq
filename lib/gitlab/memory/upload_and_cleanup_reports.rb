@@ -41,7 +41,7 @@ module Gitlab
       end
 
       def cleanup!(path)
-        File.unlink(path) if File.exist?(path)
+        FileUtils.rm_f(path)
       rescue Errno::ENOENT
         # Path does not exist: Ignore. We already check `File.exist?`. Rescue to be extra safe.
       end
