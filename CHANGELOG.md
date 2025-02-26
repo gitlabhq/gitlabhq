@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.7.6 (2025-02-26)
+
+### Fixed (1 change)
+
+- [Fix failed jobs widget polling issue](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e2154d3d886d82e1f5fe62fb9d234d00e257e784)
+
+### Security (4 changes)
+
+- [Increase minimum role in SPP to read policy yaml](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6d5c2ea1feb6097cb5720650f39b3808554b6a29) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4717))
+- [Fix access to read code review analytics in private projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4454c18d19d2d8df92520f4c0fafa24ddbf9fbe4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4757))
+- [Escape work item dropdown items and restrict HTML tags](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a834b94cf4e967065590f6b78b15c8733d67df30) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4785))
+- [Use stricter CSP values in the packages dependency proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d975b402434b9e17ff2963d9c4c6f438f52545ed) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4765))
+
 ## 17.7.5 (2025-02-21)
 
 ### Fixed (1 change)
