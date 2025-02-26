@@ -35,6 +35,7 @@ module API
             .merge(get_system_id_from_request)
             .merge(get_runner_config_from_request)
             .merge(get_runner_ip)
+            .merge(get_runner_features_from_request)
         end
 
         def get_system_id_from_request
@@ -238,6 +239,12 @@ module API
 
         def get_runner_config_from_request
           { config: attributes_for_keys(%w[gpus], params.dig('info', 'config')) }
+        end
+
+        def get_runner_features_from_request
+          return {} unless Feature.enabled?(:ci_runner_manager_runtime_features, current_runner)
+
+          { runtime_features: attributes_for_keys(%w[features], params['info'])['features'] }.compact
         end
 
         def metrics

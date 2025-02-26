@@ -13,7 +13,7 @@ import {
 import { createAlert } from '~/alert';
 import { __, s__, n__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { TYPENAME_GROUP } from '~/graphql_shared/constants';
+import { TYPENAME_CI_JOB_TOKEN_ACCESSIBLE_GROUP } from '~/graphql_shared/constants';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import ConfirmActionModal from '~/vue_shared/components/confirm_action_modal.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -274,7 +274,7 @@ export default {
     async removeItem() {
       const { __typename, fullPath } = this.namespaceToRemove;
       const mutation =
-        __typename === TYPENAME_GROUP
+        __typename === TYPENAME_CI_JOB_TOKEN_ACCESSIBLE_GROUP
           ? inboundRemoveGroupCIJobTokenScopeMutation
           : inboundRemoveProjectCIJobTokenScopeMutation;
 

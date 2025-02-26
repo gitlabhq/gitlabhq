@@ -958,7 +958,8 @@ ELSIF (TG_OP = 'UPDATE') THEN
     "architecture" = NEW."architecture",
     "revision" = NEW."revision",
     "ip_address" = NEW."ip_address",
-    "version" = NEW."version"
+    "version" = NEW."version",
+    "runtime_features" = NEW."runtime_features"
   WHERE ci_runner_machines_687967fa8a."id" = NEW."id";
 ELSIF (TG_OP = 'INSERT') THEN
   INSERT INTO ci_runner_machines_687967fa8a ("id",
@@ -976,7 +977,8 @@ ELSIF (TG_OP = 'INSERT') THEN
     "architecture",
     "revision",
     "ip_address",
-    "version")
+    "version",
+    "runtime_features")
   VALUES (NEW."id",
     NEW."runner_id",
     NEW."sharding_key_id",
@@ -992,7 +994,8 @@ ELSIF (TG_OP = 'INSERT') THEN
     NEW."architecture",
     NEW."revision",
     NEW."ip_address",
-    NEW."version");
+    NEW."version",
+    NEW."runtime_features");
 END IF;
 RETURN NULL;
 
@@ -10985,6 +10988,7 @@ CREATE TABLE ci_runner_machines (
     creation_state smallint DEFAULT 0 NOT NULL,
     runner_type smallint,
     sharding_key_id bigint,
+    runtime_features jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_1537c1f66f CHECK ((char_length(platform) <= 255)),
     CONSTRAINT check_5253913ae9 CHECK ((char_length(system_xid) <= 64)),
     CONSTRAINT check_6f45a91da7 CHECK ((char_length(version) <= 2048)),
@@ -11011,6 +11015,7 @@ CREATE TABLE ci_runner_machines_687967fa8a (
     revision text,
     ip_address text,
     version text,
+    runtime_features jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_3d8736b3af CHECK ((char_length(system_xid) <= 64)),
     CONSTRAINT check_5bad2a6944 CHECK ((char_length(revision) <= 255)),
     CONSTRAINT check_7dc4eee8a5 CHECK ((char_length(version) <= 2048)),
@@ -14372,6 +14377,7 @@ CREATE TABLE group_type_ci_runner_machines_687967fa8a (
     revision text,
     ip_address text,
     version text,
+    runtime_features jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_3d8736b3af CHECK ((char_length(system_xid) <= 64)),
     CONSTRAINT check_5bad2a6944 CHECK ((char_length(revision) <= 255)),
     CONSTRAINT check_7dc4eee8a5 CHECK ((char_length(version) <= 2048)),
@@ -14968,6 +14974,7 @@ CREATE TABLE instance_type_ci_runner_machines_687967fa8a (
     revision text,
     ip_address text,
     version text,
+    runtime_features jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_3d8736b3af CHECK ((char_length(system_xid) <= 64)),
     CONSTRAINT check_5bad2a6944 CHECK ((char_length(revision) <= 255)),
     CONSTRAINT check_7dc4eee8a5 CHECK ((char_length(version) <= 2048)),
@@ -20137,6 +20144,7 @@ CREATE TABLE project_type_ci_runner_machines_687967fa8a (
     revision text,
     ip_address text,
     version text,
+    runtime_features jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_3d8736b3af CHECK ((char_length(system_xid) <= 64)),
     CONSTRAINT check_5bad2a6944 CHECK ((char_length(revision) <= 255)),
     CONSTRAINT check_7dc4eee8a5 CHECK ((char_length(version) <= 2048)),

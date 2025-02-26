@@ -93,6 +93,12 @@ class GraphqlController < ApplicationController
     render_error(exception.message, status: :unprocessable_entity)
   end
 
+  rescue_from RateLimitedService::RateLimitedError do |e|
+    e.log_request(request, current_user)
+
+    render_error(e.message, status: :too_many_requests)
+  end
+
   rescue_from Gitlab::Auth::TooManyIps do |exception|
     log_exception(exception)
 

@@ -264,6 +264,29 @@ If you find that the AI gateway cannot make that request, this might be caused b
 
 To resolve this, contact your network administrator.
 
+## Check if AI Gateway can make requests to your GitLab instance
+
+The GitLab instance defined in `AIGW_GITLAB_URL` must be accessible from the AI Gateway container for request authentication.
+If the instance is not reachable (for example, because of proxy configuration errors), requests can fail with errors, such as the following:
+
+- ```shell
+  jose.exceptions.JWTError: Signature verification failed
+  ```
+
+- ```shell
+  gitlab_cloud_connector.providers.CompositeProvider.CriticalAuthError: No keys founds in JWKS; are OIDC providers up?
+  ```
+
+In this scenario, verify if  `AIGW_GITLAB_URL` and `$AIGW_GITLAB_API_URL` are properly set to the container and accessible.
+The following commands should be successful when run from the container:
+
+```shell
+poetry run troubleshoot
+curl "$AIGW_GITLAB_API_URL/projects"
+```
+
+If not successful, verify your network configurations.
+
 ## The image's platform does not match the host
 
 When [finding the AI gateway release](../../install/install_ai_gateway.md#find-the-ai-gateway-release),

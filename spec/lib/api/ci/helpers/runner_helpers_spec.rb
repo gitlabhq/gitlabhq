@@ -41,6 +41,7 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
       let(:architecture) { 'arm' }
       let(:executor) { 'shell' }
       let(:config) { { 'gpus' => 'all' } }
+      let(:features) { { 'cancelable' => true, 'proxy' => false } }
       let(:runner_params) do
         {
           system_id: system_id,
@@ -53,6 +54,7 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
             'architecture' => architecture,
             'executor' => executor,
             'config' => config,
+            'features' => features,
             'ignored' => 1
           }
         }
@@ -62,7 +64,7 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
 
       it 'extracts the runner details', :aggregate_failures do
         expect(details.keys).to match_array(
-          %w[system_id name version revision platform architecture executor config ip_address]
+          %w[system_id name version revision platform architecture executor config ip_address runtime_features]
         )
         expect(details['system_id']).to eq(system_id)
         expect(details['name']).to eq(name)
@@ -73,6 +75,13 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
         expect(details['executor']).to eq(executor)
         expect(details['config']).to eq(config)
         expect(details['ip_address']).to eq(ip_address)
+        expect(details['runtime_features']).to eq(features)
+      end
+
+      context 'when the features are empty' do
+        let(:features) { {} }
+
+        it { expect(details).not_to have_key('runtime_features') }
       end
     end
 

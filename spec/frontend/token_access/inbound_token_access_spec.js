@@ -499,9 +499,9 @@ describe('TokenAccess component', () => {
   });
 
   describe.each`
-    type         | mutation                                       | handler
-    ${'Group'}   | ${inboundRemoveGroupCIJobTokenScopeMutation}   | ${inboundRemoveGroupSuccessHandler}
-    ${'Project'} | ${inboundRemoveProjectCIJobTokenScopeMutation} | ${inboundRemoveProjectSuccessHandler}
+    type                           | mutation                                       | handler
+    ${'CiJobTokenAccessibleGroup'} | ${inboundRemoveGroupCIJobTokenScopeMutation}   | ${inboundRemoveGroupSuccessHandler}
+    ${'Project'}                   | ${inboundRemoveProjectCIJobTokenScopeMutation} | ${inboundRemoveProjectSuccessHandler}
   `('remove $type', ({ type, mutation, handler }) => {
     describe('when remove button is clicked', () => {
       beforeEach(async () => {
