@@ -97,7 +97,7 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
       expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
         expect(client).to receive(:execute)
           .with(query: 'query', variables: { ids: source_user_identifiers, after: nil })
-          .and_return(graphql_response([node_0]))
+          .and_return(graphql_response([node_0, node_1, node_2]))
       end
 
       result = service.execute
@@ -122,10 +122,13 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
         expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
           expect(client).to receive(:execute)
             .with(query: 'query', variables: { ids: source_user_identifiers, after: nil })
-            .and_return(graphql_response([node_0]))
+            .and_return(graphql_response([node_0, node_1, node_2]))
         end
 
-        expect(Import::SourceUser).to receive(:find_source_user).with(hash_including(source_hostname: source_hostname))
+        expect(Import::SourceUser)
+          .to receive(:find_source_user)
+          .with(hash_including(source_hostname: source_hostname))
+          .exactly(3).times
 
         service.execute
       end
@@ -147,27 +150,6 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
       end
 
       expect(fetch_users_data.each.to_a).to match_array([node_0, node_1, node_2])
-    end
-
-    context 'when response does not contain users' do
-      it 'returns no data' do
-        allow_next_instance_of(::Import::BulkImports::Common::Graphql::GetUsersQuery) do |query|
-          allow(query).to receive(:to_s).and_return('query')
-        end
-
-        expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
-          expect(client).to receive(:execute).and_return(graphql_response([]))
-        end
-
-        expect_next_instance_of(BulkImports::Logger) do |logger|
-          expect(logger).to receive(:error).with(
-            message: 'No users present in response',
-            response: anything,
-            user_ids: source_user_identifiers)
-        end
-
-        expect(fetch_users_data.each.to_a).to eq([])
-      end
     end
 
     context 'when response is paginated' do
@@ -215,6 +197,44 @@ RSpec.describe Import::BulkImports::UpdateSourceUsersService, :clean_gitlab_redi
         end
 
         expect(fetch_users_data.each.to_a).to match_array([node_0, node_1, node_2])
+      end
+    end
+
+    context 'when no details are retrieved for some source users' do
+      it 'fetches details with the single user query' do
+        missing_user_data = graphql_response_node(
+          gid: source_user_identifiers[2],
+          name: 'Missing User',
+          username: 'missing_user'
+        )
+
+        expect_next_instance_of(BulkImports::Clients::Graphql) do |client|
+          # Mock main query response with only 2 out of 3 users
+          # Note: We're matching all three IDs here, since that's what the service is actually doing
+          expect(client).to receive(:execute)
+            .with(
+              query: ::Import::BulkImports::Common::Graphql::GetUsersQuery.new.to_s,
+              variables: { ids: match_array(source_user_identifiers), after: nil }
+            )
+            .and_return(graphql_response([node_0, node_1]))
+            .ordered
+
+          # Mock single user query for the missing user
+          expect(client).to receive(:execute)
+            .with(query: ::Import::BulkImports::Common::Graphql::GetUserQuery.new.to_s,
+              variables: { id: source_user_identifiers[2] })
+            .and_return(
+              {
+                'data' => {
+                  'user' => missing_user_data
+                }
+              }
+            )
+            .ordered
+        end
+
+        # Verify all three users are returned, including the one fetched individually
+        expect(fetch_users_data.each.to_a).to match_array([node_0, node_1, missing_user_data])
       end
     end
   end

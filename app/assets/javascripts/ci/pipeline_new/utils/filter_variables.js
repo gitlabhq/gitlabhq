@@ -7,10 +7,9 @@
 export default (variables) => {
   return variables
     .filter(({ key }) => key !== '')
-    .map(({ key, value, variable_type: variableType }) => ({
+    .map(({ key, value, variableType }) => ({
       key,
       value,
-      // CiVariableType must be all caps
-      variableType: variableType.toUpperCase(),
+      variableType,
     }));
 };

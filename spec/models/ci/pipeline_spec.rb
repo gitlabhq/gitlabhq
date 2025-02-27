@@ -1426,7 +1426,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#retryable?' do
     subject { pipeline.retryable? }
 
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created, project: project, created_at: 1.day.ago) }
+    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created, project: project) }
 
     context 'no failed builds' do
       before do
@@ -1444,14 +1444,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         it 'is retryable' do
           is_expected.to be_truthy
-        end
-
-        context 'with archived pipelines' do
-          before do
-            stub_application_setting(archive_builds_in_seconds: 3600)
-          end
-
-          it { is_expected.to be_falsey }
         end
       end
     end
@@ -6120,26 +6112,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           end
         end
       end
-    end
-  end
-
-  describe '#archived?' do
-    subject { build_stubbed(:ci_pipeline, created_at: 1.day.ago, project: project) }
-
-    context 'when archive_builds_in is set' do
-      before do
-        stub_application_setting(archive_builds_in_seconds: 3600)
-      end
-
-      it { is_expected.to be_archived }
-    end
-
-    context 'when archive_builds_in is not set' do
-      before do
-        stub_application_setting(archive_builds_in_seconds: nil)
-      end
-
-      it { is_expected.not_to be_archived }
     end
   end
 end

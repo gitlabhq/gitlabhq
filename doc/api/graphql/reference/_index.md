@@ -26783,6 +26783,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupcustomfieldsactive"></a>`active` | [`Boolean`](#boolean) | Filter for active fields. If `false`, excludes active fields. If `true`, returns only active fields. |
+| <a id="groupcustomfieldsfieldtype"></a>`fieldType` | [`CustomFieldType`](#customfieldtype) | Filter for selected field type. |
 | <a id="groupcustomfieldssearch"></a>`search` | [`String`](#string) | Search query for custom field name. |
 | <a id="groupcustomfieldsworkitemtypeids"></a>`workItemTypeIds` | [`[WorkItemsTypeID!]`](#workitemstypeid) | Filter custom fields associated to the given work item types. If empty, returns custom fields not associated to any work item type. |
 
@@ -26866,6 +26867,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupdescendantgroupsids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
 | <a id="groupdescendantgroupsincludeparentdescendants"></a>`includeParentDescendants` | [`Boolean`](#boolean) | List of descendant groups of the parent group. |
 | <a id="groupdescendantgroupsowned"></a>`owned` | [`Boolean`](#boolean) | Limit result to groups owned by authenticated user. |
 | <a id="groupdescendantgroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
@@ -40358,6 +40360,7 @@ Conversation type of the thread.
 | Value | Description |
 | ----- | ----------- |
 | <a id="aiconversationsthreadsconversationtypeduo_chat"></a>`DUO_CHAT` | duo_chat thread. |
+| <a id="aiconversationsthreadsconversationtypeduo_chat_legacy"></a>`DUO_CHAT_LEGACY` | duo_chat_legacy thread. |
 | <a id="aiconversationsthreadsconversationtypeduo_code_review"></a>`DUO_CODE_REVIEW` | duo_code_review thread. |
 | <a id="aiconversationsthreadsconversationtypeduo_quick_chat"></a>`DUO_QUICK_CHAT` | duo_quick_chat thread. |
 

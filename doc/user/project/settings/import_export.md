@@ -15,6 +15,13 @@ title: Migrate projects and groups by using file exports
 Migrating groups and projects by using [direct transfer](../../group/import/_index.md) is recommended. However, in some
 situations, you might need to migrate groups and project by using file exports.
 
+{{< alert type="note" >}}
+
+You should not use project export files to back up your data.
+Using project export files for backups does not always work, and not all items are exported.
+
+{{< /alert >}}
+
 ## Known issues
 
 - Due to a known issue, you might encounter a

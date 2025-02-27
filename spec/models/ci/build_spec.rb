@@ -2555,6 +2555,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_DEPENDENCY_PROXY_PASSWORD', value: 'my-token', public: false, masked: true },
           { key: 'CI_JOB_NAME', value: 'test', public: true, masked: false },
           { key: 'CI_JOB_NAME_SLUG', value: 'test', public: true, masked: false },
+          { key: 'CI_JOB_GROUP_NAME', value: 'test', public: true, masked: false },
           { key: 'CI_JOB_STAGE', value: 'test', public: true, masked: false },
           { key: 'CI_NODE_TOTAL', value: '1', public: true, masked: false },
           { key: 'CI', value: 'true', public: true, masked: false },
@@ -3265,6 +3266,30 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           is_expected.to include(
             { key: 'CI_NODE_TOTAL', value: total.to_s, public: true, masked: false }
           )
+        end
+
+        it 'includes CI_JOB_GROUP_NAME' do
+          is_expected.to include(
+            { key: 'CI_JOB_GROUP_NAME', value: 'test', public: true, masked: false }
+          )
+        end
+      end
+
+      context 'when parallel is a matrix' do
+        let(:config) do
+          {
+            matrix: [
+              {
+                STACK: %w[ruby python],
+                DB: %w[postgresql mysql]
+              }
+            ],
+            total: 4
+          }
+        end
+
+        it_behaves_like 'parallelized jobs config' do
+          let(:total) { 4 }
         end
       end
 
@@ -4991,18 +5016,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#archived?' do
-    before do
-      pipeline.update!(created_at: 1.day.ago)
-    end
-
     context 'when build is degenerated' do
-      subject { build_stubbed(:ci_build, :degenerated, pipeline: pipeline) }
+      subject { create(:ci_build, :degenerated, pipeline: pipeline) }
 
       it { is_expected.to be_archived }
     end
 
-    context 'for old pipelines' do
-      subject { build_stubbed(:ci_build, pipeline: pipeline) }
+    context 'for old build' do
+      subject { create(:ci_build, created_at: 1.day.ago, pipeline: pipeline) }
 
       context 'when archive_builds_in is set' do
         before do

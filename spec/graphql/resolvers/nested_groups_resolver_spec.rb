@@ -86,6 +86,13 @@ RSpec.describe Resolvers::NestedGroupsResolver, feature_category: :groups_and_pr
               is_expected.to contain_exactly(subgroup2)
             end
           end
+
+          context 'with `ids` argument' do
+            it 'filters groups by gid' do
+              params[:ids] = [subgroup1.to_global_id.to_s, subgroup2.to_global_id.to_s]
+              is_expected.to contain_exactly(subgroup1, subgroup2)
+            end
+          end
         end
       end
     end

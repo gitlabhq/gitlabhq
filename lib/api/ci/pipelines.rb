@@ -291,9 +291,7 @@ module API
         put ':id/pipelines/:pipeline_id/metadata', urgency: :low, feature_category: :continuous_integration do
           authorize! :update_pipeline, pipeline
 
-          response = ::Ci::Pipelines::UpdateMetadataService
-            .new(pipeline, current_user: current_user, params: params.slice(:name))
-            .execute
+          response = ::Ci::Pipelines::UpdateMetadataService.new(pipeline, params.slice(:name)).execute
 
           if response.success?
             present response.payload, with: Entities::Ci::PipelineWithMetadata

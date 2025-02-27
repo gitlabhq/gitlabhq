@@ -714,14 +714,7 @@ module Ci
     end
 
     def retryable?
-      return false if archived?
-
       retryable_builds.any?
-    end
-
-    def archived?
-      archive_builds_older_than = Gitlab::CurrentSettings.current_application_settings.archive_builds_older_than
-      archive_builds_older_than.present? && created_at < archive_builds_older_than
     end
 
     def cancelable?

@@ -250,13 +250,7 @@ class CommitStatus < Ci::ApplicationRecord
   end
 
   def group_name
-    # [\b\s:] -> whitespace or column
-    # (\[.*\])|(\d+[\s:\/\\]+\d+) -> variables/matrix or parallel-jobs numbers
-    # {1,3} -> number of times that matches the variables/matrix or parallel-jobs numbers
-    #          we limit this to 3 because of possible abuse
-    regex = %r{([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+))){1,3}\s*\z}
-
-    name.to_s.sub(regex, '').strip
+    Gitlab::Utils::Job.group_name(name)
   end
 
   def supports_canceling?
@@ -290,7 +284,7 @@ class CommitStatus < Ci::ApplicationRecord
   end
 
   def archived?
-    pipeline.archived?
+    false
   end
 
   def stuck?

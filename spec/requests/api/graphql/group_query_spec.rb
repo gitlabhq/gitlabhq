@@ -119,6 +119,25 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
           names = graphql_data['group']['descendantGroups']['nodes'].map { |n| n['name'] }
           expect(names).to match_array(descendants.map(&:name))
         end
+
+        context 'when filtering group\'s descendant groups by ids' do
+          let(:fields) { %w[nodes { name }] }
+
+          let(:query) do
+            graphql_query_for(
+              'group',
+              { 'fullPath' => public_group.full_path },
+              query_graphql_field('descendantGroups', { ids: subgroup1.to_global_id.to_s }, fields)
+            )
+          end
+
+          it 'returns all descendant groups user has access to' do
+            post_graphql(query, current_user: admin)
+
+            names = graphql_data['group']['descendantGroups']['nodes'].map { |n| n['name'] }
+            expect(names).to match_array([subgroup1.name])
+          end
+        end
       end
     end
 

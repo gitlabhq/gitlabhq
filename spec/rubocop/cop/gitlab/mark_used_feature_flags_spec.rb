@@ -47,6 +47,7 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
     Config::FeatureFlags.enabled?
     ::Gitlab::Ci::Config::FeatureFlags.enabled?
     ::Gitlab::AiGateway.push_feature_flag
+    Gitlab::AiGateway.push_feature_flag
   ].each do |feature_flag_method|
     context "#{feature_flag_method} method" do
       context 'a string feature flag' do

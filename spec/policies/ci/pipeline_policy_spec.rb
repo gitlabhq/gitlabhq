@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::PipelinePolicy, :models, :request_store, :use_clean_rails_redis_caching, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:project) { create(:project, :repository, developers: user) }
-  let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project, created_at: 1.day.ago) }
+  let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
   subject(:policy) do
     described_class.new(user, pipeline)
@@ -53,26 +53,6 @@ RSpec.describe Ci::PipelinePolicy, :models, :request_store, :use_clean_rails_red
     end
   end
 
-  describe 'archived rules' do
-    context 'when archive_builds_in is set' do
-      before do
-        stub_application_setting(archive_builds_in_seconds: 3600)
-      end
-
-      it { is_expected.not_to be_allowed(:update_pipeline) }
-      it { is_expected.not_to be_allowed(:cancel_pipeline) }
-    end
-
-    context 'when archive_builds_in is not set' do
-      before do
-        stub_application_setting(archive_builds_in_seconds: nil)
-      end
-
-      it { is_expected.to be_allowed(:update_pipeline) }
-      it { is_expected.to be_allowed(:cancel_pipeline) }
-    end
-  end
-
   context 'when maintainer is allowed to push to pipeline branch' do
     before_all do
       project.add_maintainer(user)
@@ -82,15 +62,6 @@ RSpec.describe Ci::PipelinePolicy, :models, :request_store, :use_clean_rails_red
 
     it { is_expected.to be_allowed(:update_pipeline) }
     it { is_expected.to be_allowed(:cancel_pipeline) }
-
-    context 'and the pipeline is archived' do
-      before do
-        stub_application_setting(archive_builds_in_seconds: 3600)
-      end
-
-      it { is_expected.not_to be_allowed(:update_pipeline) }
-      it { is_expected.not_to be_allowed(:cancel_pipeline) }
-    end
   end
 
   context 'when user does not have access to internal CI' do

@@ -16,6 +16,7 @@ import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { uniqueId } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { fetchPolicies } from '~/lib/graphql';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, __, n__ } from '~/locale';
@@ -24,14 +25,15 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   IDENTITY_VERIFICATION_REQUIRED_ERROR,
   CONFIG_VARIABLES_TIMEOUT,
-  FILE_TYPE,
-  VARIABLE_TYPE,
+  CI_VARIABLE_TYPE_FILE,
+  CI_VARIABLE_TYPE_ENV_VAR,
 } from '../constants';
 import createPipelineMutation from '../graphql/mutations/create_pipeline.mutation.graphql';
 import ciConfigVariablesQuery from '../graphql/queries/ci_config_variables.graphql';
 import filterVariables from '../utils/filter_variables';
 import RefsDropdown from './refs_dropdown.vue';
 import VariableValuesListbox from './variable_values_listbox.vue';
+import PipelineVariablesForm from './pipeline_variables_form.vue';
 
 let pollTimeout;
 export const POLLING_INTERVAL = 2000;
@@ -71,12 +73,14 @@ export default {
     GlLink,
     GlSprintf,
     GlLoadingIcon,
+    PipelineVariablesForm,
     RefsDropdown,
     VariableValuesListbox,
     PipelineAccountVerificationAlert: () =>
       import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
   },
   directives: { SafeHtml },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     pipelinesPath: {
       type: String,
@@ -155,9 +159,9 @@ export default {
     ciConfigVariables: {
       fetchPolicy: fetchPolicies.NO_CACHE,
       query: ciConfigVariablesQuery,
-      // Skip when variables already cached in `form`
+      // Skip when variables already cached in `form` or feature flag is enabled
       skip() {
-        return Object.keys(this.form).includes(this.refFullName);
+        return Object.keys(this.form).includes(this.refFullName) || this.isUsingPipelineInputs;
       },
       variables() {
         return {
@@ -207,6 +211,9 @@ export default {
     isLoading() {
       return this.$apollo.queries.ciConfigVariables.loading || this.isFetchingCiConfigVariables;
     },
+    isUsingPipelineInputs() {
+      return this.glFeatures.ciInputsForPipelines;
+    },
     overMaxWarningsLimit() {
       return this.totalWarnings > this.maxWarnings;
     },
@@ -240,11 +247,11 @@ export default {
     variableTypeListboxItems() {
       return [
         {
-          value: VARIABLE_TYPE,
+          value: CI_VARIABLE_TYPE_ENV_VAR,
           text: s__('Pipeline|Variable'),
         },
         {
-          value: FILE_TYPE,
+          value: CI_VARIABLE_TYPE_FILE,
           text: s__('Pipeline|File'),
         },
       ];
@@ -261,7 +268,7 @@ export default {
 
       variables.push({
         uniqueId: uniqueId(`var-${refValue}`),
-        variable_type: VARIABLE_TYPE,
+        variableType: CI_VARIABLE_TYPE_ENV_VAR,
         key: '',
         value: '',
       });
@@ -295,17 +302,17 @@ export default {
       // Add default variables from yml
       this.setVariableParams(
         this.refFullName,
-        VARIABLE_TYPE,
+        CI_VARIABLE_TYPE_ENV_VAR,
         this.configVariablesWithDescription.values,
       );
 
       // Add/update variables, e.g. from query string
       if (this.variableParams) {
-        this.setVariableParams(this.refFullName, VARIABLE_TYPE, this.variableParams);
+        this.setVariableParams(this.refFullName, CI_VARIABLE_TYPE_ENV_VAR, this.variableParams);
       }
 
       if (this.fileParams) {
-        this.setVariableParams(this.refFullName, FILE_TYPE, this.fileParams);
+        this.setVariableParams(this.refFullName, CI_VARIABLE_TYPE_FILE, this.fileParams);
       }
 
       // Adds empty var at the end of the form
@@ -324,7 +331,7 @@ export default {
           uniqueId: uniqueId(`var-${refValue}`),
           key,
           value,
-          variable_type: type,
+          variableType: type,
         });
       }
     },
@@ -469,119 +476,132 @@ export default {
         </p>
       </details>
     </gl-alert>
-    <gl-form-group :label="s__('Pipeline|Run for branch name or tag')">
-      <refs-dropdown
-        v-model="refValue"
-        :project-id="projectId"
-        @loadingError="onRefsLoadingError"
+    <div class="gl-flex gl-flex-col gl-gap-4">
+      <gl-form-group :label="s__('Pipeline|Run for branch name or tag')">
+        <refs-dropdown
+          v-model="refValue"
+          :project-id="projectId"
+          @loadingError="onRefsLoadingError"
+        />
+      </gl-form-group>
+
+      <pipeline-variables-form
+        v-if="isUsingPipelineInputs"
+        :default-branch="defaultBranch"
+        :project-path="projectPath"
+        :ref-param="refParam"
       />
-    </gl-form-group>
+      <div v-else>
+        <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="md" />
+        <gl-form-group v-else :label="s__('Pipeline|Variables')">
+          <div
+            v-for="(variable, index) in variables"
+            :key="variable.uniqueId"
+            class="gl-mb-4"
+            data-testid="ci-variable-row-container"
+          >
+            <div class="gl-flex gl-flex-col gl-items-stretch gl-gap-4 md:gl-flex-row">
+              <gl-collapsible-listbox
+                :items="variableTypeListboxItems"
+                :selected="variable.variableType"
+                block
+                fluid-width
+                :aria-label="getPipelineAriaLabel(index)"
+                :class="$options.formElementClasses"
+                data-testid="pipeline-form-ci-variable-type"
+                @select="setVariableAttribute(variable.key, 'variableType', $event)"
+              />
+              <gl-form-input
+                v-model="variable.key"
+                :placeholder="s__('CiVariables|Input variable key')"
+                :class="$options.formElementClasses"
+                data-testid="pipeline-form-ci-variable-key-field"
+                @change="addEmptyVariable(refFullName)"
+              />
+              <variable-values-listbox
+                v-if="shouldShowValuesDropdown(variable.key)"
+                :items="createListItemsFromVariableOptions(variable.key)"
+                :selected="variable.value"
+                :class="$options.formElementClasses"
+                class="!gl-mr-0 gl-grow"
+                data-testid="pipeline-form-ci-variable-value-dropdown"
+                @select="setVariableAttribute(variable.key, 'value', $event)"
+              />
+              <gl-form-textarea
+                v-else
+                v-model="variable.value"
+                :placeholder="s__('CiVariables|Input variable value')"
+                :style="$options.textAreaStyle"
+                :no-resize="false"
+                data-testid="pipeline-form-ci-variable-value-field"
+              />
 
-    <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="md" />
+              <template v-if="variables.length > 1">
+                <gl-button
+                  v-if="canRemove(index)"
+                  size="small"
+                  class="gl-shrink-0"
+                  data-testid="remove-ci-variable-row"
+                  :category="removeButtonCategory"
+                  :aria-label="$options.i18n.removeVariableLabel"
+                  @click="removeVariable(index)"
+                >
+                  <gl-icon class="!gl-mr-0" name="remove" />
+                  <span class="md:gl-hidden">{{ $options.i18n.removeVariableLabel }}</span>
+                </gl-button>
+                <gl-button
+                  v-else
+                  class="gl-invisible gl-hidden gl-shrink-0 md:gl-block"
+                  icon="remove"
+                  :aria-label="$options.i18n.removeVariableLabel"
+                />
+              </template>
+            </div>
+            <div v-if="descriptions[variable.key]" class="gl-text-subtle">
+              {{ descriptions[variable.key] }}
+            </div>
+          </div>
 
-    <gl-form-group v-else :label="s__('Pipeline|Variables')">
-      <div
-        v-for="(variable, index) in variables"
-        :key="variable.uniqueId"
-        class="gl-mb-4"
-        data-testid="ci-variable-row-container"
-      >
-        <div class="gl-flex gl-flex-col gl-items-stretch gl-gap-4 md:gl-flex-row">
-          <gl-collapsible-listbox
-            :items="variableTypeListboxItems"
-            :selected="variable.variable_type"
-            block
-            fluid-width
-            :aria-label="getPipelineAriaLabel(index)"
-            :class="$options.formElementClasses"
-            data-testid="pipeline-form-ci-variable-type"
-            @select="setVariableAttribute(variable.key, 'variable_type', $event)"
-          />
-          <gl-form-input
-            v-model="variable.key"
-            :placeholder="s__('CiVariables|Input variable key')"
-            :class="$options.formElementClasses"
-            data-testid="pipeline-form-ci-variable-key-field"
-            @change="addEmptyVariable(refFullName)"
-          />
-          <variable-values-listbox
-            v-if="shouldShowValuesDropdown(variable.key)"
-            :items="createListItemsFromVariableOptions(variable.key)"
-            :selected="variable.value"
-            :class="$options.formElementClasses"
-            class="!gl-mr-0 gl-grow"
-            data-testid="pipeline-form-ci-variable-value-dropdown"
-            @select="setVariableAttribute(variable.key, 'value', $event)"
-          />
-          <gl-form-textarea
-            v-else
-            v-model="variable.value"
-            :placeholder="s__('CiVariables|Input variable value')"
-            :style="$options.textAreaStyle"
-            :no-resize="false"
-            data-testid="pipeline-form-ci-variable-value-field"
-          />
-
-          <template v-if="variables.length > 1">
-            <gl-button
-              v-if="canRemove(index)"
-              size="small"
-              class="gl-shrink-0"
-              data-testid="remove-ci-variable-row"
-              :category="removeButtonCategory"
-              :aria-label="$options.i18n.removeVariableLabel"
-              @click="removeVariable(index)"
-            >
-              <gl-icon class="!gl-mr-0" name="remove" />
-              <span class="md:gl-hidden">{{ $options.i18n.removeVariableLabel }}</span>
-            </gl-button>
-            <gl-button
-              v-else
-              class="gl-invisible gl-hidden gl-shrink-0 md:gl-block"
-              icon="remove"
-              :aria-label="$options.i18n.removeVariableLabel"
-            />
+          <template #description>
+            <gl-sprintf :message="$options.i18n.variablesDescription">
+              <template #link="{ content }">
+                <gl-link
+                  v-if="isMaintainer"
+                  :href="settingsLink"
+                  data-testid="ci-cd-settings-link"
+                  >{{ content }}</gl-link
+                >
+                <template v-else>{{ content }}</template>
+              </template>
+            </gl-sprintf>
+            <gl-link :href="$options.learnMorePath" target="_blank">{{
+              $options.i18n.learnMore
+            }}</gl-link>
+            <div class="gl-mt-4 gl-text-subtle">
+              <gl-sprintf :message="$options.i18n.overrideNoteText">
+                <template #bold="{ content }">
+                  <strong>
+                    {{ content }}
+                  </strong>
+                </template>
+              </gl-sprintf>
+            </div>
           </template>
-        </div>
-        <div v-if="descriptions[variable.key]" class="gl-text-subtle">
-          {{ descriptions[variable.key] }}
-        </div>
+        </gl-form-group>
       </div>
 
-      <template #description>
-        <gl-sprintf :message="$options.i18n.variablesDescription">
-          <template #link="{ content }">
-            <gl-link v-if="isMaintainer" :href="settingsLink" data-testid="ci-cd-settings-link">{{
-              content
-            }}</gl-link>
-            <template v-else>{{ content }}</template>
-          </template>
-        </gl-sprintf>
-        <gl-link :href="$options.learnMorePath" target="_blank">{{
-          $options.i18n.learnMore
-        }}</gl-link>
-      </template>
-    </gl-form-group>
-    <div class="gl-mb-4 gl-text-subtle">
-      <gl-sprintf :message="$options.i18n.overrideNoteText">
-        <template #bold="{ content }">
-          <strong>
-            {{ content }}
-          </strong>
-        </template>
-      </gl-sprintf>
-    </div>
-    <div class="gl-flex gl-pt-5">
-      <gl-button
-        type="submit"
-        category="primary"
-        variant="confirm"
-        class="js-no-auto-disable gl-mr-3"
-        data-testid="run-pipeline-button"
-        :disabled="submitted"
-        >{{ s__('Pipeline|New pipeline') }}</gl-button
-      >
-      <gl-button :href="pipelinesPath">{{ __('Cancel') }}</gl-button>
+      <div class="gl-mt-4 gl-flex">
+        <gl-button
+          type="submit"
+          category="primary"
+          variant="confirm"
+          class="js-no-auto-disable gl-mr-3"
+          data-testid="run-pipeline-button"
+          :disabled="submitted"
+          >{{ s__('Pipeline|New pipeline') }}</gl-button
+        >
+        <gl-button :href="pipelinesPath">{{ __('Cancel') }}</gl-button>
+      </div>
     </div>
   </gl-form>
 </template>

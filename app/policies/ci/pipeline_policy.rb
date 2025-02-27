@@ -26,10 +26,6 @@ module Ci
       can?(:read_build, @subject.project)
     end
 
-    condition(:archived, scope: :subject) do
-      @subject.archived?
-    end
-
     # Allow reading builds for external pipelines regardless of whether CI/CD is disabled
     overrides :read_build
     rule { project_allows_read_build | (external_pipeline & can?(:reporter_access)) }.policy do
@@ -41,7 +37,7 @@ module Ci
       prevent :read_pipeline
     end
 
-    rule { archived | protected_ref }.policy do
+    rule { protected_ref }.policy do
       prevent :update_pipeline
       prevent :cancel_pipeline
     end

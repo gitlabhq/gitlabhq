@@ -9,6 +9,11 @@ module Gitlab
         class Mapper
           # Fetches file contents and verifies them
           class Verifier < Base
+            # TODO: remove with https://gitlab.com/gitlab-org/gitlab/-/issues/520828
+            def skip_load_content!
+              tap { @skip_load_content = true }
+            end
+
             private
 
             def process_without_instrumentation(files)
@@ -38,7 +43,8 @@ module Gitlab
                 verify_execution_time!
 
                 file.validate_content! if file.valid?
-                file.load_and_validate_expanded_hash! if file.valid?
+
+                file.load_and_validate_expanded_hash! if file.valid? && !@skip_load_content
 
                 next unless file.valid?
 

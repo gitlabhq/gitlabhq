@@ -3,17 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PlayBridgeService, '#execute', feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:downstream_project) { create(:project) }
-  let_it_be(:user) { create(:user, maintainer_of: [project, downstream_project]) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-
+  let(:project) { create(:project) }
+  let(:user) { create(:user) }
+  let(:pipeline) { create(:ci_pipeline, project: project) }
+  let(:downstream_project) { create(:project) }
   let(:bridge) { create(:ci_bridge, :playable, pipeline: pipeline, downstream: downstream_project) }
   let(:instance) { described_class.new(project, user) }
 
   subject(:execute_service) { instance.execute(bridge) }
 
   context 'when user can run the bridge' do
+    before do
+      allow(instance).to receive(:can?).with(user, :play_job, bridge).and_return(true)
+    end
+
     it 'marks the bridge pending' do
       execute_service
 
@@ -54,7 +57,9 @@ RSpec.describe Ci::PlayBridgeService, '#execute', feature_category: :continuous_
   end
 
   context 'when user can not run the bridge' do
-    let_it_be(:user) { create(:user, developer_of: project) }
+    before do
+      allow(instance).to receive(:can?).with(user, :play_job, bridge).and_return(false)
+    end
 
     it 'allows user with developer role to play a bridge' do
       expect { execute_service }.to raise_error Gitlab::Access::AccessDeniedError

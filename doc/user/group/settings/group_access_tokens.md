@@ -239,21 +239,16 @@ automatically applied:
 
 {{< history >}}
 
-- Sixty and thirty day expiry notification emails [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464040) in GitLab 17.6 [with a flag](../../../administration/feature_flags.md) named `expiring_pats_30d_60d_notifications`. Disabled by default.
-- Sixty and thirty day notification emails [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173792) in GitLab 17.7. Feature flag `expiring_pats_30d_60d_notifications` removed.
+- 60 and 30 day expiry notifications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464040) in GitLab 17.6 [with a flag](../../../administration/feature_flags.md) named `expiring_pats_30d_60d_notifications`. Disabled by default.
+- 60 and 30 day notifications [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173792) in GitLab 17.7. Feature flag `expiring_pats_30d_60d_notifications` removed.
 - Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+- Feature flag `pat_expiry_inherited_members_notification` [enabled by default in GitLab 17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/393772).
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of the sixty and thirty day expiry notification emails is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
-
 GitLab runs a check every day at 1:00 AM UTC to identify group access tokens that are expiring in the near future. Members of the group with the Owner role are notified by email when these tokens expire in a certain number of days. The number of days differs depending on the version of GitLab:
 
-- In GitLab 17.6 and later, group Owners are notified by email when the check identifies their group access tokens as expiring in the next sixty days. An additional email is sent when the check identifies their group access tokens as expiring in the next thirty days.
+- In GitLab 17.6 and later, group Owners are notified by email when the check identifies their group access tokens as expiring in the next 60 days. An additional email is sent when the check identifies their group access tokens as expiring in the next 30 days.
 - Group Owners are notified by email when the check identifies their group access tokens as expiring in the next seven days.
 - In GitLab 17.7 and later, members with the inherited role of Owner in the group can also receive notification emails. You can configure this by changing:
   - The [group setting](../manage.md#expiry-emails-for-group-and-project-access-tokens) for the group or any parent group.

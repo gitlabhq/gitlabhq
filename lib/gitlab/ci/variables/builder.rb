@@ -198,6 +198,7 @@ module Gitlab
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
             variables.append(key: 'CI_JOB_NAME', value: job.name)
             variables.append(key: 'CI_JOB_NAME_SLUG', value: job_name_slug(job.name))
+            variables.append(key: 'CI_JOB_GROUP_NAME', value: Gitlab::Utils::Job.group_name(job.name))
             variables.append(key: 'CI_JOB_STAGE', value: job.stage_name)
             variables.append(key: 'CI_JOB_MANUAL', value: 'true') if job.action?
             variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true') if job.trigger_request
@@ -219,6 +220,7 @@ module Gitlab
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
             variables.append(key: 'CI_JOB_NAME', value: job_attr[:name])
             variables.append(key: 'CI_JOB_NAME_SLUG', value: job_name_slug(job_attr[:name]))
+            variables.append(key: 'CI_JOB_GROUP_NAME', value: Gitlab::Utils::Job.group_name(job_attr[:name]))
             variables.append(key: 'CI_JOB_STAGE', value: job_attr[:stage])
             variables.append(key: 'CI_JOB_MANUAL', value: 'true') if ::Ci::Processable::ACTIONABLE_WHEN.include?(job_attr[:when])
             variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true') if trigger_request

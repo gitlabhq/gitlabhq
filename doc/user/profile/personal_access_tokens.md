@@ -191,11 +191,11 @@ Disabling the personal access tokens of a group's [enterprise users](../enterpri
 - Stops the enterprise users from creating new personal access tokens. This behavior applies
   even if an enterprise user is also an administrator of the group.
 - Disables the existing personal access tokens of the enterprise users.
-- Disables OAuth tokens. 
+- Disables OAuth tokens.
 
 {{< alert type="warning" >}}
 
-Disabling personal access tokens for enterprise users prevents usage of the [Web IDE](../project/web_ide/_index.md), 
+Disabling personal access tokens for enterprise users prevents usage of the [Web IDE](../project/web_ide/_index.md),
 limits access to GitLab Pages, and disrupts third-party integrations that use GitLab as an OAuth provider.
 
 Disabling personal access tokens for enterprise users does not disable personal access tokens for [service accounts](service_accounts.md).
@@ -337,14 +337,14 @@ automatically applied:
 
 {{< history >}}
 
-- Sixty and thirty day expiry notification emails [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464040) in GitLab 17.6 [with a flag](../../administration/feature_flags.md) named `expiring_pats_30d_60d_notifications`. Disabled by default.
-- Sixty and thirty day notification emails [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173792) in GitLab 17.7. Feature flag `expiring_pats_30d_60d_notifications` removed.
+- 60 and 30 day expiry notifications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464040) in GitLab 17.6 [with a flag](../../administration/feature_flags.md) named `expiring_pats_30d_60d_notifications`. Disabled by default.
+- 60 and 30 day notifications [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173792) in GitLab 17.7. Feature flag `expiring_pats_30d_60d_notifications` removed.
 
 {{< /history >}}
 
 GitLab runs a check every day at 1:00 AM UTC to identify personal access tokens that are expiring in the near future. The owners of these tokens are notified by email when these tokens expire in a certain number of days. The number of days differs depending on the version of GitLab:
 
-- In GitLab 17.6 and later, personal access token owners are notified by email when the check identifies their personal access tokens as expiring in the next sixty days. An additional email is sent when the check identifies their group access tokens as expiring in the next thirty days.
+- In GitLab 17.6 and later, personal access token owners are notified by email when the check identifies their personal access tokens as expiring in the next 60 days. An additional email is sent when the check identifies their group access tokens as expiring in the next 30 days.
 - Personal access token owners are notified by email when the check identifies their group access tokens as expiring in the next seven days.
 
 ### Personal access token expiry calendar

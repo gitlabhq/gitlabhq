@@ -150,8 +150,11 @@ export default {
     isOnAllTab() {
       return this.currentTab === TABS_INDICES.all;
     },
+    isOnFirstPage() {
+      return !this.pageInfo.hasPreviousPage;
+    },
     showEmptyState() {
-      return !this.isLoading && this.todos.length === 0;
+      return this.isOnFirstPage && !this.isLoading && this.todos.length === 0;
     },
     showMarkAllAsDone() {
       if (this.glFeatures.todosBulkActions) return false;
@@ -175,6 +178,11 @@ export default {
     selectedIds(ids) {
       if (!ids.length) this.selectAllChecked = false;
       else if (ids.length === this.todos.length) this.selectAllChecked = true;
+    },
+    todos(todos) {
+      if (!this.isOnFirstPage && todos.length === 0) {
+        this.cursor.after = null; // go to first page
+      }
     },
   },
   created() {

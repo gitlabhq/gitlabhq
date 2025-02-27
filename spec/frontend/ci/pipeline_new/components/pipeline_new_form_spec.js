@@ -13,6 +13,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import PipelineNewForm, {
   POLLING_INTERVAL,
 } from '~/ci/pipeline_new/components/pipeline_new_form.vue';
+import PipelineVariablesForm from '~/ci/pipeline_new/components/pipeline_variables_form.vue';
 import ciConfigVariablesQuery from '~/ci/pipeline_new/graphql/queries/ci_config_variables.graphql';
 import pipelineCreateMutation from '~/ci/pipeline_new/graphql/mutations/create_pipeline.mutation.graphql';
 import RefsDropdown from '~/ci/pipeline_new/components/refs_dropdown.vue';
@@ -51,6 +52,7 @@ describe('Pipeline New Form', () => {
   const pipelineCreateMutationHandler = jest.fn();
 
   const findForm = () => wrapper.findComponent(GlForm);
+  const findPipelineVariablesForm = () => wrapper.findComponent(PipelineVariablesForm);
   const findRefsDropdown = () => wrapper.findComponent(RefsDropdown);
   const findSubmitButton = () => wrapper.findByTestId('run-pipeline-button');
   const findVariableRows = () => wrapper.findAllByTestId('ci-variable-row-container');
@@ -92,6 +94,7 @@ describe('Pipeline New Form', () => {
     props = {},
     mountFn = shallowMountExtended,
     stubs = {},
+    ciInputsForPipelines = false,
   } = {}) => {
     const handlers = [
       [ciConfigVariablesQuery, mockCiConfigVariables],
@@ -104,6 +107,9 @@ describe('Pipeline New Form', () => {
       provide: {
         identityVerificationRequired: true,
         identityVerificationPath: '/test',
+        glFeatures: {
+          ciInputsForPipelines,
+        },
       },
       propsData: {
         projectId: mockProjectId,
@@ -141,6 +147,41 @@ describe('Pipeline New Form', () => {
     mock.restore();
   });
 
+  describe('Feature flag', () => {
+    describe('when the ciInputsForPipelines flag is disabled', () => {
+      beforeEach(async () => {
+        mockCiConfigVariables.mockResolvedValue(mockEmptyCiConfigVariablesResponse);
+        createComponentWithApollo();
+        await waitForPromises();
+      });
+
+      it('does not display the pipeline variables form component', () => {
+        expect(findPipelineVariablesForm().exists()).toBe(false);
+        expect(findVariableRows().exists()).toBe(true);
+      });
+
+      it('fires the variables query', () => {
+        expect(mockCiConfigVariables).toHaveBeenCalled();
+      });
+    });
+    describe('when the ciInputsForPipelines flag is enabled', () => {
+      beforeEach(async () => {
+        mockCiConfigVariables.mockResolvedValue(mockEmptyCiConfigVariablesResponse);
+        createComponentWithApollo({ ciInputsForPipelines: true });
+        await waitForPromises();
+      });
+
+      it('displays the pipeline variables form component', () => {
+        expect(findVariableRows().exists()).toBe(false);
+        expect(findPipelineVariablesForm().exists()).toBe(true);
+      });
+
+      it('skips the variables query', () => {
+        expect(mockCiConfigVariables).not.toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('Form', () => {
     beforeEach(async () => {
       mockCiConfigVariables.mockResolvedValue(mockEmptyCiConfigVariablesResponse);
@@ -151,8 +192,8 @@ describe('Pipeline New Form', () => {
     it('displays the correct values for the provided query params', () => {
       const collapsableLists = findCollapsableListsWithVariableTypes();
 
-      expect(collapsableLists.at(0).props('selected')).toBe('env_var');
-      expect(collapsableLists.at(1).props('selected')).toBe('file');
+      expect(collapsableLists.at(0).props('selected')).toBe('ENV_VAR');
+      expect(collapsableLists.at(1).props('selected')).toBe('FILE');
       expect(findRefsDropdown().props('value')).toEqual({ shortName: 'tag-1' });
       expect(findVariableRows()).toHaveLength(3);
     });
@@ -167,7 +208,7 @@ describe('Pipeline New Form', () => {
 
       expect(findKeyInputs().at(2).attributes('value')).toBe('');
       expect(findValueInputs().at(2).attributes('value')).toBe('');
-      expect(collapsableLists.at(2).props('selected')).toBe('env_var');
+      expect(collapsableLists.at(2).props('selected')).toBe('ENV_VAR');
     });
 
     it('does not display remove icon for last row', () => {
@@ -397,7 +438,7 @@ describe('Pipeline New Form', () => {
 
       expect(findKeyInputs().at(0).attributes('value')).toBe('');
       expect(findValueInputs().at(0).attributes('value')).toBe('');
-      expect(collapsableLists.at(0).props('selected')).toBe('env_var');
+      expect(collapsableLists.at(0).props('selected')).toBe('ENV_VAR');
     });
   });
 

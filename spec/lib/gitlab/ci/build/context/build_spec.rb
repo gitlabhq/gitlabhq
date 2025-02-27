@@ -39,6 +39,7 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
       is_expected.to include('CI_PIPELINE_IID'     => pipeline.iid.to_s)
       is_expected.to include('CI_PROJECT_PATH'     => project.full_path)
       is_expected.to include('CI_JOB_NAME'         => 'some-job')
+      is_expected.to include('CI_JOB_GROUP_NAME'   => 'some-job')
       is_expected.to include('YAML_KEY'            => 'yaml_value')
       is_expected.to include('CI_NODE_INDEX'       => '1')
       is_expected.to include('CI_NODE_TOTAL'       => '2')
@@ -76,6 +77,25 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
       it 'includes trigger variables' do
         expect(variables).to include('CI_PIPELINE_TRIGGERED' => 'true')
         expect(variables).to include('CI_TRIGGER_SHORT_TOKEN' => trigger_request.trigger_short_token)
+      end
+    end
+
+    context 'when job is an instance of parallel:matrix' do
+      let(:seed_attributes) do
+        {
+          name: 'some-job: [ruby, ubuntu]',
+          options: {
+            instance: 1,
+            parallel: { total: 2 }
+          }
+        }
+      end
+
+      it 'returns a collection of variables' do
+        is_expected.to include('CI_JOB_NAME' => 'some-job: [ruby, ubuntu]')
+        is_expected.to include('CI_JOB_GROUP_NAME' => 'some-job')
+        is_expected.to include('CI_NODE_INDEX' => '1')
+        is_expected.to include('CI_NODE_TOTAL' => '2')
       end
     end
 

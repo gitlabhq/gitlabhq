@@ -2279,13 +2279,17 @@ Payload example:
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/439379) in GitLab 16.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454642) in GitLab 16.11. Feature flag `access_token_webhooks` removed.
 - `full_path` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/issues/465421) in GitLab 17.4.
+- 60 and 30 day notifications [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173792) in GitLab 17.7.
 
 {{< /history >}}
 
-Two access token expiration events are generated:
+Access token expiry events trigger before an [access tokens](../../../security/tokens/_index.md) expires.
+These events trigger:
 
-- Seven days before a [project or group access token](../../../security/tokens/_index.md) expires.
-- One day before the token expires.
+- One day before the token expires
+- Seven days before the token expires
+- 30 days before the token expires, if the feature is enabled.
+- 60 days before the token expires, if the feature is enabled.
 
 The available values for `event_name` in the payload are:
 

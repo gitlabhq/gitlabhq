@@ -214,8 +214,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
         known_hosts: '',
         force: false,
         no_tags: false,
-        no_prune: false,
-        check_tags_changed: false
+        no_prune: false
       )
 
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
@@ -223,7 +222,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
         .with(expected_request, kind_of(Hash))
         .and_return(double(value: true))
 
-      client.fetch_remote(url, refmap: nil, ssh_auth: nil, forced: false, no_tags: false, timeout: 1, check_tags_changed: false)
+      client.fetch_remote(url, refmap: nil, ssh_auth: nil, forced: false, no_tags: false, timeout: 1)
     end
 
     context 'with resolved address' do
@@ -239,8 +238,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
           known_hosts: '',
           force: false,
           no_tags: false,
-          no_prune: false,
-          check_tags_changed: false
+          no_prune: false
         )
 
         expect_any_instance_of(Gitaly::RepositoryService::Stub)
@@ -248,7 +246,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
           .with(expected_request, kind_of(Hash))
           .and_return(double(value: true))
 
-        client.fetch_remote(url, refmap: nil, ssh_auth: nil, forced: false, no_tags: false, timeout: 1, check_tags_changed: false, resolved_address: '172.16.123.1')
+        client.fetch_remote(url, refmap: nil, ssh_auth: nil, forced: false, no_tags: false, timeout: 1, resolved_address: '172.16.123.1')
       end
     end
 

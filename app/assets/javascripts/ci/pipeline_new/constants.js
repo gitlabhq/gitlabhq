@@ -3,6 +3,8 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
 export const VARIABLE_TYPE = 'env_var';
 export const FILE_TYPE = 'file';
+export const CI_VARIABLE_TYPE_ENV_VAR = 'ENV_VAR';
+export const CI_VARIABLE_TYPE_FILE = 'FILE';
 export const DEBOUNCE_REFS_SEARCH_MS = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
 export const CONFIG_VARIABLES_TIMEOUT = 5000;
 export const BRANCH_REF_TYPE = 'branch';

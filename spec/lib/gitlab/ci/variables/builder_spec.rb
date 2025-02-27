@@ -127,6 +127,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
             value: 'rspec:test 1' },
           { key: 'CI_JOB_NAME_SLUG',
             value: 'rspec-test-1' },
+          { key: 'CI_JOB_GROUP_NAME',
+            value: 'rspec:test 1' },
           { key: 'CI_JOB_STAGE',
             value: job.stage_name },
           { key: 'CI_NODE_TOTAL',
@@ -241,6 +243,40 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
           'M' => '13', 'N' => '14',
           'O' => '14', 'P' => '15',
           'Q' => '15')
+      end
+    end
+
+    context 'with instance of parallel job' do
+      let(:job) do
+        create(:ci_build,
+          name: 'rspec:test 2/3',
+          pipeline: pipeline,
+          user: user
+        )
+      end
+
+      subject { builder.scoped_variables(job, environment: environment_name, dependencies: dependencies) }
+
+      it 'returns CI_JOB_NAME and CI_JOB_GROUP_NAME' do
+        expect(subject.to_hash).to include('CI_JOB_NAME' => 'rspec:test 2/3')
+        expect(subject.to_hash).to include('CI_JOB_GROUP_NAME' => 'rspec:test')
+      end
+    end
+
+    context 'with instance of parallel:matrix job' do
+      let(:job) do
+        create(:ci_build,
+          name: 'rspec:test: [ruby, rust]',
+          pipeline: pipeline,
+          user: user
+        )
+      end
+
+      subject { builder.scoped_variables(job, environment: environment_name, dependencies: dependencies) }
+
+      it 'returns CI_JOB_NAME and CI_JOB_GROUP_NAME' do
+        expect(subject.to_hash).to include('CI_JOB_NAME' => 'rspec:test: [ruby, rust]')
+        expect(subject.to_hash).to include('CI_JOB_GROUP_NAME' => 'rspec:test')
       end
     end
 
@@ -364,6 +400,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
             value: 'rspec:test 2' },
           { key: 'CI_JOB_NAME_SLUG',
             value: 'rspec-test-2' },
+          { key: 'CI_JOB_GROUP_NAME',
+            value: 'rspec:test 2' },
           { key: 'CI_JOB_STAGE',
             value: 'test' },
           { key: 'CI_NODE_TOTAL',
@@ -502,6 +540,36 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
           'M' => '13', 'N' => '14',
           'O' => '14', 'P' => '15',
           'Q' => '15')
+      end
+    end
+
+    context 'with instance of parallel job' do
+      let(:job_attr) do
+        {
+          name: 'rspec:test 1/2',
+          stage: 'test',
+          **extra_attributes
+        }
+      end
+
+      it 'returns CI_JOB_NAME and CI_JOB_GROUP_NAME' do
+        expect(subject.to_hash).to include('CI_JOB_NAME' => 'rspec:test 1/2')
+        expect(subject.to_hash).to include('CI_JOB_GROUP_NAME' => 'rspec:test')
+      end
+    end
+
+    context 'with instance of parallel:matrix job' do
+      let(:job_attr) do
+        {
+          name: 'rspec:test: [ubuntu, ruby]',
+          stage: 'test',
+          **extra_attributes
+        }
+      end
+
+      it 'returns CI_JOB_NAME and CI_JOB_GROUP_NAME' do
+        expect(subject.to_hash).to include('CI_JOB_NAME' => 'rspec:test: [ubuntu, ruby]')
+        expect(subject.to_hash).to include('CI_JOB_GROUP_NAME' => 'rspec:test')
       end
     end
 

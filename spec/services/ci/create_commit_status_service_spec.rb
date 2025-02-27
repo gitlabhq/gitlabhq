@@ -18,11 +18,11 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
   let(:params) { { state: 'pending' } }
   let(:job) { response.payload[:job] }
 
-  context 'when pipeline for sha does not exists' do
-    %w[pending running success failed canceled skipped].each do |status|
-      context "for #{status}" do
-        let(:params) { { state: status } }
+  %w[pending running success failed canceled skipped].each do |status|
+    context "for #{status}" do
+      let(:params) { { state: status } }
 
+      context 'when pipeline for sha does not exists' do
         it 'creates commit status and sets pipeline iid' do
           expect(response).to be_success
           expect(job.sha).to eq(commit.id)
@@ -36,37 +36,6 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
           expect(CommitStatus.find(job.id)).to be_api_failure if status == 'failed'
 
           expect(::Ci::Pipeline.last.iid).not_to be_nil
-        end
-      end
-    end
-  end
-
-  context 'when pipeline for sha already exists' do
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: commit.id, created_at: 1.day.ago) }
-
-    %w[pending running success failed canceled skipped].each do |status|
-      context "for #{status}" do
-        let(:params) { { state: status } }
-
-        it 'creates commit status on the pipeline' do
-          expect(response).to be_success
-          expect(job.sha).to eq(commit.id)
-          expect(job.status).to eq(status)
-          expect(job.name).to eq('default')
-          expect(job.ref).not_to be_empty
-          expect(job.pipeline_id).to eq(pipeline.id)
-        end
-
-        context 'when the pipeline is archived' do
-          before do
-            stub_application_setting(archive_builds_in_seconds: 3600)
-          end
-
-          it 'returns an error' do
-            expect(response).to be_error
-            expect(response.http_status).to eq(:forbidden)
-            expect(response.message).to eq('403 Forbidden')
-          end
         end
       end
     end

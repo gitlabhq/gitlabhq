@@ -14,6 +14,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
     let(:user) { create(:user) }
 
     before do
+      stub_feature_flags(ci_inputs_for_pipelines: false)
       sign_in(user)
 
       project.add_developer(user)

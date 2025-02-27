@@ -96,6 +96,37 @@ describe('TodosApp', () => {
     );
   });
 
+  it('resets cursor to first page when receiving empty todos on non-first page', async () => {
+    createComponent();
+
+    const newCursor = { first: 50, after: 'cursor-1' };
+    findPagination().vm.$emit(CURSOR_CHANGED_EVENT, newCursor);
+    await waitForPromises();
+    expect(wrapper.vm.cursor.after).toBe('cursor-1');
+
+    // Modify response to be empty with hasPreviousPage true
+    const emptyResponse = {
+      data: {
+        currentUser: {
+          ...todosResponse.data.currentUser,
+          todos: {
+            nodes: [],
+            pageInfo: {
+              ...todosResponse.data.currentUser.todos.pageInfo,
+              hasPreviousPage: true,
+            },
+          },
+        },
+      },
+    };
+
+    todosQuerySuccessHandler.mockResolvedValueOnce(emptyResponse);
+    wrapper.vm.$apollo.queries.todos.refetch();
+    await waitForPromises();
+
+    expect(wrapper.vm.cursor.after).toBe(null);
+  });
+
   it('fetches the todos and counts when filters change', async () => {
     createComponent();
 
