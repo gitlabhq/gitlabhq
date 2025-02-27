@@ -71,7 +71,7 @@ module ProjectsHelper
       testid: "author-link"
     }
 
-    inject_classes = ["author-link", opts[:extra_class]]
+    inject_classes = ["author-link gl-text-link", opts[:extra_class]]
 
     if opts[:name]
       inject_classes.concat(["js-user-link", opts[:mobile_classes]])

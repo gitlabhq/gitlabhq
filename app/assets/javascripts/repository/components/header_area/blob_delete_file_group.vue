@@ -13,7 +13,7 @@ export default {
     DeleteBlobModal,
   },
   inject: {
-    targetBranch: {
+    selectedBranch: {
       default: '',
     },
     originalBranch: {
@@ -101,7 +101,7 @@ export default {
       :delete-path="blobInfo.webPath"
       :modal-id="deleteModalId"
       :commit-message="deleteModalCommitMessage"
-      :target-branch="targetBranch || currentRef"
+      :target-branch="selectedBranch || currentRef"
       :original-branch="originalBranch || currentRef"
       :can-push-code="userPermissions.pushCode"
       :can-push-to-branch="blobInfo.canCurrentUserPushToBranch"

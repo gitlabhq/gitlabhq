@@ -46,7 +46,8 @@ To disable the agent server on a single node:
 
 #### Turn on KAS on multiple nodes
 
-KAS instances communicate with each other by registering their private addresses in Redis at a well-known location. Each KAS must be configured with its specific location details so that other instances can reach it.
+KAS instances communicate with each other by registering their private addresses in Redis at a well-known location.
+Each KAS must be configured to present its private address details so that other instances can reach it.
 
 To turn on KAS on multiple nodes:
 

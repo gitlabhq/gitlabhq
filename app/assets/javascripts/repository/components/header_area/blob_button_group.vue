@@ -23,7 +23,7 @@ export default {
   },
   mixins: [getRefMixin, glFeatureFlagMixin()],
   inject: {
-    targetBranch: {
+    selectedBranch: {
       default: '',
     },
     originalBranch: {
@@ -125,7 +125,7 @@ export default {
       :ref="$options.replaceBlobModalId"
       :modal-id="$options.replaceBlobModalId"
       :commit-message="replaceCommitMessage"
-      :target-branch="targetBranch || currentRef"
+      :target-branch="selectedBranch || currentRef"
       :original-branch="originalBranch || currentRef"
       :can-push-code="userPermissions.pushCode"
       :can-push-to-branch="blobInfo.canCurrentUserPushToBranch"

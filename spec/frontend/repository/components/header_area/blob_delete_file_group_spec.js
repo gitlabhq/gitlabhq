@@ -18,7 +18,7 @@ const DEFAULT_PROPS = {
 };
 
 const DEFAULT_INJECT = {
-  targetBranch: 'master',
+  selectedBranch: 'root-main-patch-07420',
   originalBranch: 'master',
   blobInfo: blobControlsDataMock.repository.blobs.nodes[0],
 };
@@ -112,7 +112,7 @@ describe('BlobDeleteFileGroup component', () => {
   it('renders DeleteBlobModal', () => {
     expect(findDeleteBlobModal().props()).toMatchObject({
       commitMessage: 'Delete file.js',
-      targetBranch: 'master',
+      targetBranch: 'root-main-patch-07420',
       originalBranch: 'master',
       canPushCode: true,
       emptyRepo: false,

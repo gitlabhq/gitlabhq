@@ -24663,6 +24663,9 @@ msgstr ""
 msgid "Failed to update branch!"
 msgstr ""
 
+msgid "Failed to update compliance control status. Error: %{error_message}"
+msgstr ""
+
 msgid "Failed to update compliance requirement"
 msgstr ""
 

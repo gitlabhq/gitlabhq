@@ -18,7 +18,7 @@ const DEFAULT_PROPS = {
 };
 
 const DEFAULT_INJECT = {
-  targetBranch: 'master',
+  selectedBranch: 'root-main-patch-07420',
   originalBranch: 'master',
   blobInfo: blobControlsDataMock.repository.blobs.nodes[0],
 };
@@ -113,7 +113,7 @@ describe('BlobButtonGroup component', () => {
   it('renders UploadBlobModal', () => {
     expect(findUploadBlobModal().props()).toMatchObject({
       commitMessage: 'Replace file.js',
-      targetBranch: 'master',
+      targetBranch: 'root-main-patch-07420',
       originalBranch: 'master',
       canPushCode: true,
       path: 'some/file.js',
