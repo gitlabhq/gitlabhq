@@ -2,14 +2,14 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: REST API deprecations and removals
+title: REST API deprecations
 ---
 
-The following API changes will occur between REST API v4 and v5.
-No date is set for this upgrade.
+You should regularly review the following deprecations and make the recommended changes. These deprecations often signal improved API features and recommend using new fields
+or endpoints for features.
 
-For more information, see [issue 216456](https://gitlab.com/gitlab-org/gitlab/-/issues/216456)
-and [issue 387485](https://gitlab.com/gitlab-org/gitlab/-/issues/387485).
+Though some deprecations mention a v5 REST API, no v5 REST API development is active.
+GitLab will not make these changes within REST API v4, as [we commit to follow semantic versioning for our REST API](_index.md#versioning-and-deprecations).
 
 ## `geo_nodes` API endpoints
 

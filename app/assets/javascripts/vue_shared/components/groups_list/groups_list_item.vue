@@ -45,6 +45,11 @@ export default {
       required: false,
       default: false,
     },
+    listItemClass: {
+      type: [String, Array, Object],
+      required: false,
+      default: '',
+    },
     timestampType: {
       type: String,
       required: false,
@@ -125,6 +130,7 @@ export default {
     :show-icon="showGroupIcon"
     :icon-name="groupIconName"
     :actions="actions"
+    :list-item-class="listItemClass"
     :timestamp-type="timestampType"
   >
     <template #avatar-meta>
@@ -179,6 +185,10 @@ export default {
         @confirm.prevent="$emit('delete', group)"
         @change="onModalChange"
       />
+    </template>
+
+    <template #nested-items>
+      <slot name="nested-items"></slot>
     </template>
   </list-item>
 </template>

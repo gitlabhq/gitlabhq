@@ -95,6 +95,11 @@ export default {
       required: false,
       default: false,
     },
+    listItemClass: {
+      type: [String, Array, Object],
+      required: false,
+      default: '',
+    },
     timestampType: {
       type: String,
       required: false,
@@ -225,6 +230,7 @@ export default {
     :resource="project"
     :show-icon="showProjectIcon"
     icon-name="project"
+    :list-item-class="listItemClass"
     :timestamp-type="timestampType"
     :data-testid="dataTestid"
     content-testid="project-content"

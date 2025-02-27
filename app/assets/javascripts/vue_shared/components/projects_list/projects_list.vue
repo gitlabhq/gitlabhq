@@ -64,7 +64,7 @@ export default {
       :key="project.id"
       :project="project"
       :show-project-icon="showProjectIcon"
-      :class="listItemClass"
+      :list-item-class="listItemClass"
       :timestamp-type="timestampType"
       @refetch="$emit('refetch')"
     />

@@ -5301,6 +5301,7 @@ export const groupWorkItemStateCountsQueryResponse = {
   data: {
     group: {
       id: 'gid://gitlab/Group/3',
+      __typename: 'Group',
       workItemStateCounts: {
         all: 3,
         closed: 1,
@@ -5314,6 +5315,7 @@ export const groupWorkItemsQueryResponse = {
   data: {
     group: {
       id: 'gid://gitlab/Group/3',
+      __typename: 'Group',
       name: 'Test',
       workItems: {
         pageInfo: {

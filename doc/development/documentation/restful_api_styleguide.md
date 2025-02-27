@@ -145,11 +145,10 @@ To deprecate an attribute:
    ```markdown
    | Attribute     | Type   | Required | Description |
    |---------------|--------|----------|-------------|
-   | `widget_name` | string | No       | [Deprecated](https://link-to-issue) in GitLab 14.7 and is planned for removal in 15.4. Use `widget_id` instead. The name of the widget. |
+   | `widget_name` | string | No       | [Deprecated](https://link-to-issue) in GitLab 14.7. Use `widget_id` instead. The name of the widget. |
    ```
 
-To widely announce a deprecation, or if it's a breaking change,
-[update the REST API deprecations and removals page](../../api/rest/deprecations.md).
+To widely announce a deprecation, [update the REST API deprecations page](../../api/rest/deprecations.md).
 
 ## Method description
 

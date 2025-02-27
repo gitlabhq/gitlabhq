@@ -72,7 +72,9 @@ describeSkipVue3(skipReason, () => {
   Vue.use(VueRouter);
 
   const defaultQueryHandler = jest.fn().mockResolvedValue(groupWorkItemsQueryResponse);
-  const countsQueryHandler = jest.fn().mockResolvedValue(groupWorkItemStateCountsQueryResponse);
+  const defaultCountsQueryHandler = jest
+    .fn()
+    .mockResolvedValue(groupWorkItemStateCountsQueryResponse);
   const mutationHandler = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
 
   const findIssuableList = () => wrapper.findComponent(IssuableList);
@@ -84,6 +86,7 @@ describeSkipVue3(skipReason, () => {
   const mountComponent = ({
     provide = {},
     queryHandler = defaultQueryHandler,
+    countsQueryHandler = defaultCountsQueryHandler,
     sortPreferenceMutationResponse = mutationHandler,
     workItemsViewPreference = false,
     workItemsToggleEnabled = true,
@@ -716,6 +719,34 @@ describeSkipVue3(skipReason, () => {
     });
     it('passes empty array in the tabs props', () => {
       expect(findIssuableList().props('tabs')).toEqual([]);
+    });
+  });
+
+  describe('when filters are applied and no work items match', () => {
+    beforeEach(async () => {
+      const emptyWorkItemsQueryResponse = cloneDeep(groupWorkItemsQueryResponse);
+      emptyWorkItemsQueryResponse.data.group.workItems.nodes = [];
+
+      const emptyWorkItemStateCountsResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
+      emptyWorkItemStateCountsResponse.data.group.workItemStateCounts = {
+        all: 0,
+        closed: 0,
+        opened: 0,
+      };
+
+      setWindowLocation('?label_name=bug');
+
+      mountComponent({
+        queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsQueryResponse),
+        countsQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemStateCountsResponse),
+      });
+
+      await waitForPromises();
+    });
+
+    it('renders IssuableList component with empty results', () => {
+      expect(findIssuableList().exists()).toBe(true);
+      expect(findIssuableList().props('issuables')).toEqual([]);
     });
   });
 });

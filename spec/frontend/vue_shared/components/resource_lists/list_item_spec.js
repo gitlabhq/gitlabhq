@@ -36,6 +36,7 @@ describe('ListItem', () => {
         'avatar-meta': '<div data-testid="avatar-meta"></div>',
         stats: '<div data-testid="stats"></div>',
         footer: '<div data-testid="footer"></div>',
+        'nested-items': '<div data-testid="nested-items"></div>',
         ...scopedSlots,
       },
       stubs,
@@ -81,6 +82,12 @@ describe('ListItem', () => {
     createComponent();
 
     expect(wrapper.findByTestId('footer').exists()).toBe(true);
+  });
+
+  it('renders nested-items slot', () => {
+    createComponent();
+
+    expect(wrapper.findByTestId('nested-items').exists()).toBe(true);
   });
 
   describe('when avatar-default slot is provided', () => {
@@ -255,5 +262,11 @@ describe('ListItem', () => {
     it('adds data-testid attribute to content', () => {
       expect(wrapper.findByTestId('foo').exists()).toBe(true);
     });
+  });
+
+  it('renders listItemClass prop on first div in li element', () => {
+    createComponent({ propsData: { listItemClass: 'foo' } });
+
+    expect(wrapper.element.firstChild.classList).toContain('foo');
   });
 });

@@ -32,6 +32,9 @@ describe('GroupsListItem', () => {
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
+      scopedSlots: {
+        'nested-items': '<div data-testid="nested-items"></div>',
+      },
     });
   };
 
@@ -380,5 +383,17 @@ describe('GroupsListItem', () => {
     it('does not render timestamp', () => {
       expect(findTimeAgoTooltip().exists()).toBe(false);
     });
+  });
+
+  it('renders listItemClass prop on first div in li element', () => {
+    createComponent({ propsData: { listItemClass: 'foo' } });
+
+    expect(wrapper.element.firstChild.classList).toContain('foo');
+  });
+
+  it('renders nested-items slot', () => {
+    createComponent();
+
+    expect(wrapper.findByTestId('nested-items').exists()).toBe(true);
   });
 });

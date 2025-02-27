@@ -48,6 +48,7 @@ The information on this page assumes:
 - Pod access to node mountpoint `/sys/fs/cgroup`.
 - Pod init container (`init-cgroups`) access to `root` user filesystem permissions on `/sys/fs/cgroup`. Used to delegate the pod cgroup to the Gitaly container
   (user `git`, UID `1000`).
+- The cgroups filesystem is not mounted with the `nsdelegate` flag. For more information, see Gitaly issue [6480](https://gitlab.com/gitlab-org/gitaly/-/issues/6480).
 
 ## Guidance
 
@@ -129,7 +130,7 @@ This section focuses on reducing the scope of impact and protecting the service 
 
 Isolating Git processes provides safety in guaranteeing that a single Git call can't consume all service and pod resources.
 
-Gitaly can use Linux [Control Groups (cgroups)](configure_gitaly.md#control-groups) to impose smaller, per repository quotas on resource usage.
+Gitaly can use Linux [Control Groups (cgroups)](cgroups.md) to impose smaller, per repository quotas on resource usage.
 
 You should maintain cgroup quotas below the overall pod resource allocation.
 CPU is not critical because it only slows down the service. However, memory saturation can lead to pod termination. A 1 GiB memory buffer between pod request and Git cgroup

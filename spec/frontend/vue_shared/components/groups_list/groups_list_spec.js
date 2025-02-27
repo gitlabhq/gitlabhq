@@ -25,19 +25,14 @@ describe('GroupsList', () => {
     const expectedProps = groupsListItemWrappers.map((groupsListItemWrapper) =>
       groupsListItemWrapper.props(),
     );
-    const expectedClasses = groupsListItemWrappers.map((groupsListItemWrapper) =>
-      groupsListItemWrapper.classes(),
-    );
 
     expect(expectedProps).toEqual(
       defaultPropsData.groups.map((group) => ({
         group,
         showGroupIcon: false,
+        listItemClass: defaultPropsData.listItemClass,
         timestampType: TIMESTAMP_TYPE_CREATED_AT,
       })),
-    );
-    expect(expectedClasses).toEqual(
-      defaultPropsData.groups.map(() => [defaultPropsData.listItemClass]),
     );
   });
 

@@ -525,4 +525,10 @@ describe('ProjectsListItem', () => {
 
     expect(wrapper.findByTestId('project-content').exists()).toBe(true);
   });
+
+  it('renders listItemClass prop on first div in li element', () => {
+    createComponent({ propsData: { listItemClass: 'foo' } });
+
+    expect(wrapper.element.firstChild.classList).toContain('foo');
+  });
 });
