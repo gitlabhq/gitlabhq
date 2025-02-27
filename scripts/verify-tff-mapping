@@ -203,12 +203,6 @@ tests = [
   },
 
   {
-    explanation: 'The documentation index page is used in this haml_lint spec',
-    changed_file: 'doc/_index.md',
-    expected: ['spec/haml_lint/linter/documentation_links_spec.rb']
-  },
-
-  {
     explanation: 'Spec for FOSS model',
     changed_file: 'app/models/uploads/base.rb',
     expected: [

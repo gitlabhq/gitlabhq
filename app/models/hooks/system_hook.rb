@@ -31,7 +31,7 @@ class SystemHook < WebHook
   end
 
   def help_path
-    'administration/system_hooks'
+    Gitlab::Routing.url_helpers.help_page_path('administration/system_hooks.md')
   end
 
   override :validate_public_url?

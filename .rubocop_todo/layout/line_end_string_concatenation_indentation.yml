@@ -261,7 +261,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/spec/requests/api/graphql/mutations/iterations/create_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/iterations/delete_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/iterations/update_spec.rb'
-    - 'ee/spec/requests/api/graphql/mutations/member_role/create_member_role_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/projects/initialize_product_analytics_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/projects/product_analytics_project_settings_update_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/projects/set_compliance_framework_spec.rb'

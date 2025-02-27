@@ -251,6 +251,6 @@ RSpec.describe SystemHook, feature_category: :webhooks do
   describe '#help_path' do
     subject { build(:system_hook).help_path }
 
-    it { is_expected.to eq('administration/system_hooks') }
+    it { is_expected.to eq('/help/administration/system_hooks.md') }
   end
 end

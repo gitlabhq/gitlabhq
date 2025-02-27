@@ -87,7 +87,7 @@ module WebHooks
       end
 
       def help_path
-        'user/project/integrations/webhooks'
+        Gitlab::Routing.url_helpers.help_page_path('user/project/integrations/webhooks.md')
       end
 
       # @return [Boolean] Whether or not the WebHook is currently throttled.

@@ -330,7 +330,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/requests/api/graphql/boards/epic_lists_query_spec.rb'
     - 'ee/spec/requests/api/graphql/ci/minutes/usage_spec.rb'
     - 'ee/spec/requests/api/graphql/compliance_management/merge_requests/compliance_violations_spec.rb'
-    - 'ee/spec/requests/api/graphql/dora/dora_scores_spec.rb'
     - 'ee/spec/requests/api/graphql/gitlab_subscriptions/preview_billable_user_change_spec.rb'
     - 'ee/spec/requests/api/graphql/group/dast_profile_schedule_spec.rb'
     - 'ee/spec/requests/api/graphql/group/epic/epic_aggregate_query_spec.rb'

@@ -78,7 +78,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
         'reference' => work_item.to_reference,
         'createNoteEmail' => work_item_email,
         'archived' => false,
-        'userPermissions' => {
+        'userPermissions' => hash_including(
           'readWorkItem' => true,
           'updateWorkItem' => true,
           'deleteWorkItem' => false,
@@ -92,7 +92,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           'cloneWorkItem' => true,
           'reportSpam' => false,
           'summarizeComments' => false
-        },
+        ),
         'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )
     end

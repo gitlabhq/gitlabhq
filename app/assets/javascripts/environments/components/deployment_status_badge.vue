@@ -55,5 +55,5 @@ export default {
 };
 </script>
 <template>
-  <ci-icon v-if="status" :status="statusObject" show-status-text class="!gl-border-0" />
+  <ci-icon v-if="status" :status="statusObject" show-status-text />
 </template>

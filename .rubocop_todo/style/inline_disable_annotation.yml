@@ -1228,7 +1228,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/services/app_sec/dast/site_tokens/find_or_create_service.rb'
     - 'ee/app/services/app_sec/dast/sites/find_or_create_service.rb'
     - 'ee/app/services/approval_rules/params_filtering_service.rb'
-    - 'ee/app/services/billable_members/destroy_service.rb'
     - 'ee/app/services/ci/minutes/additional_packs/create_service.rb'
     - 'ee/app/services/ci/minutes/refresh_cached_data_service.rb'
     - 'ee/app/services/ci/minutes/reset_usage_service.rb'

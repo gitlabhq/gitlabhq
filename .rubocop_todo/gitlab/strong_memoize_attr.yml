@@ -320,7 +320,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/app/services/protected_environments/base_service.rb'
     - 'ee/app/services/security/ingestion/tasks/ingest_vulnerabilities/mark_resolved_as_detected.rb'
     - 'ee/app/services/security/report_summary_service.rb'
-    - 'ee/app/services/security/security_orchestration_policies/on_demand_scan_pipeline_configuration_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/operational_vulnerabilities_configuration_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/validate_policy_service.rb'
     - 'ee/app/services/status_page/publish_attachments_service.rb'

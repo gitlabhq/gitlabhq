@@ -465,8 +465,6 @@ Gitlab/DocumentationLinks/HardcodedUrl:
 
 Gitlab/DocumentationLinks/Link:
   Enabled: true
-  Exclude:
-    - '**/*.haml'
 
 GitlabSecurity/PublicSend:
   Enabled: true

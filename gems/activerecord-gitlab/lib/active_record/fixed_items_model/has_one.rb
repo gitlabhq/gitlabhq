@@ -32,10 +32,10 @@ module ActiveRecord
         def belongs_to_fixed_items(association_name, fixed_items_class:, foreign_key: nil)
           foreign_key ||= "#{association_name}_id"
 
-          raise "Missing attribute #{foreign_key}" unless attribute_names.include?(foreign_key)
-
           # Getter method
           define_method(association_name) do
+            raise "Missing attribute #{foreign_key}" unless attribute_names.include?(foreign_key)
+
             current_id = read_attribute(foreign_key)
             return if current_id.nil?
 
@@ -53,12 +53,16 @@ module ActiveRecord
 
           # Setter method
           define_method(:"#{association_name}=") do |static_object|
+            raise "Missing attribute #{foreign_key}" unless attribute_names.include?(foreign_key)
+
             @cached_static_associations&.delete(association_name)
             write_attribute(foreign_key, static_object&.id)
           end
 
           # Query method
           define_method(:"#{association_name}?") do
+            raise "Missing attribute #{foreign_key}" unless attribute_names.include?(foreign_key)
+
             attribute_present?(foreign_key)
           end
 

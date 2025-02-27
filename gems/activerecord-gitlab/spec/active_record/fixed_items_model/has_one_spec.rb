@@ -56,19 +56,35 @@ RSpec.describe ActiveRecord::FixedItemsModel::HasOne, feature_category: :shared 
     it { is_expected.to respond_to(:static_item?) }
 
     context 'when foreign key attribute does not exist' do
-      it 'raises runtime error' do
+      before do
+        stub_const('TestRecord', Class.new do
+          include ActiveModel::Attributes
+          include ActiveRecord::FixedItemsModel::HasOne
+
+          attribute :static_item_id, :integer
+
+          # No need for mock methods because they're not called
+          # because of the guard raise
+
+          belongs_to_fixed_items :doesnt_exist, fixed_items_class: TestStaticModel
+        end)
+      end
+
+      it 'getter raises runtime error' do
         expect do
-          stub_const('TestRecord', Class.new do
-            include ActiveModel::Attributes
-            include ActiveRecord::FixedItemsModel::HasOne
+          record.doesnt_exist
+        end.to raise_error(RuntimeError, "Missing attribute doesnt_exist_id")
+      end
 
-            attribute :static_item_id, :integer
+      it 'setter raises runtime error' do
+        expect do
+          record.doesnt_exist = nil
+        end.to raise_error(RuntimeError, "Missing attribute doesnt_exist_id")
+      end
 
-            # No need for mock methods because they're not called
-            # because of the guard raise
-
-            belongs_to_fixed_items :doesnt_exist, fixed_items_class: TestStaticModel
-          end)
+      it 'query method raises runtime error' do
+        expect do
+          record.doesnt_exist?
         end.to raise_error(RuntimeError, "Missing attribute doesnt_exist_id")
       end
     end

@@ -1110,7 +1110,6 @@ RSpec/BeEq:
     - 'spec/models/integrations/jira_cloud_app_spec.rb'
     - 'spec/models/integrations/jira_spec.rb'
     - 'spec/models/integrations/prometheus_spec.rb'
-    - 'spec/models/integrations/telegram_spec.rb'
     - 'spec/models/integrations/zentao_tracker_data_spec.rb'
     - 'spec/models/issue_spec.rb'
     - 'spec/models/jira_connect_installation_spec.rb'

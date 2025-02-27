@@ -2022,6 +2022,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_4fc14aa830b1() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issues"
+  WHERE "issues"."id" = NEW."work_item_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_54707c384ad7() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -21298,7 +21314,13 @@ CREATE TABLE security_pipeline_execution_project_schedules (
     updated_at timestamp with time zone NOT NULL,
     next_run_at timestamp with time zone NOT NULL,
     security_policy_id bigint NOT NULL,
-    project_id bigint NOT NULL
+    project_id bigint NOT NULL,
+    time_window_seconds integer NOT NULL,
+    cron text NOT NULL,
+    cron_timezone text NOT NULL,
+    CONSTRAINT check_b93315bfbb CHECK ((char_length(cron_timezone) <= 255)),
+    CONSTRAINT check_bbbe4b1b8d CHECK ((char_length(cron) <= 128)),
+    CONSTRAINT check_c440017377 CHECK ((time_window_seconds > 0))
 );
 
 CREATE SEQUENCE security_pipeline_execution_project_schedules_id_seq
@@ -23962,6 +23984,25 @@ CREATE TABLE work_item_colors (
     CONSTRAINT check_485e19ad7b CHECK ((char_length(color) <= 7))
 );
 
+CREATE TABLE work_item_current_statuses (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    work_item_id bigint NOT NULL,
+    system_defined_status_id bigint,
+    custom_status_id bigint,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_0734284d2c CHECK ((num_nonnulls(custom_status_id, system_defined_status_id) > 0))
+);
+
+CREATE SEQUENCE work_item_current_statuses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE work_item_current_statuses_id_seq OWNED BY work_item_current_statuses.id;
+
 CREATE TABLE work_item_dates_sources (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -26283,6 +26324,8 @@ ALTER TABLE ONLY wiki_page_meta_user_mentions ALTER COLUMN id SET DEFAULT nextva
 ALTER TABLE ONLY wiki_page_slugs ALTER COLUMN id SET DEFAULT nextval('wiki_page_slugs_id_seq'::regclass);
 
 ALTER TABLE ONLY wiki_repository_states ALTER COLUMN id SET DEFAULT nextval('wiki_repository_states_id_seq'::regclass);
+
+ALTER TABLE ONLY work_item_current_statuses ALTER COLUMN id SET DEFAULT nextval('work_item_current_statuses_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_hierarchy_restrictions ALTER COLUMN id SET DEFAULT nextval('work_item_hierarchy_restrictions_id_seq'::regclass);
 
@@ -29341,6 +29384,9 @@ ALTER TABLE ONLY wiki_repository_states
 ALTER TABLE ONLY work_item_colors
     ADD CONSTRAINT work_item_colors_pkey PRIMARY KEY (issue_id);
 
+ALTER TABLE ONLY work_item_current_statuses
+    ADD CONSTRAINT work_item_current_statuses_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT work_item_dates_sources_pkey PRIMARY KEY (issue_id);
 
@@ -31202,6 +31248,8 @@ CREATE INDEX idx_pat_last_used_ips_on_pat_id ON personal_access_token_last_used_
 
 CREATE INDEX idx_personal_access_tokens_on_previous_personal_access_token_id ON personal_access_tokens USING btree (previous_personal_access_token_id);
 
+CREATE INDEX idx_pipeline_execution_schedules_on_project_id ON security_pipeline_execution_project_schedules USING btree (project_id);
+
 CREATE INDEX idx_pipeline_execution_schedules_security_policy_id_and_id ON security_pipeline_execution_project_schedules USING btree (security_policy_id, id);
 
 CREATE INDEX idx_pkgs_conan_file_metadata_on_pkg_file_id_when_recipe_file ON packages_conan_file_metadata USING btree (package_file_id) WHERE (conan_file_type = 1);
@@ -31353,6 +31401,10 @@ CREATE INDEX idx_vulnerability_reads_for_traversal_ids_queries_srt_severity ON v
 CREATE INDEX idx_vulnerability_reads_project_id_scanner_id_vulnerability_id ON vulnerability_reads USING btree (project_id, scanner_id, vulnerability_id);
 
 CREATE INDEX idx_vulnerability_statistics_on_traversal_ids_and_letter_grade ON vulnerability_statistics USING btree (traversal_ids, letter_grade) WHERE (archived = false);
+
+CREATE UNIQUE INDEX idx_wi_current_statuses_on_wi_id_custom_status_id_unique ON work_item_current_statuses USING btree (work_item_id, custom_status_id);
+
+CREATE UNIQUE INDEX idx_wi_current_statuses_on_wi_id_system_def_status_id_unique ON work_item_current_statuses USING btree (work_item_id, system_defined_status_id);
 
 CREATE UNIQUE INDEX idx_wi_number_values_on_work_item_id_custom_field_id ON work_item_number_field_values USING btree (work_item_id, custom_field_id);
 
@@ -35748,6 +35800,10 @@ CREATE INDEX index_wiki_repository_states_on_verification_state ON wiki_reposito
 
 CREATE INDEX index_wiki_repository_states_pending_verification ON wiki_repository_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
+CREATE INDEX index_work_item_current_statuses_on_namespace_id ON work_item_current_statuses USING btree (namespace_id);
+
+CREATE UNIQUE INDEX index_work_item_current_statuses_on_work_item_id ON work_item_current_statuses USING btree (work_item_id);
+
 CREATE INDEX index_work_item_hierarchy_restrictions_on_child_type_id ON work_item_hierarchy_restrictions USING btree (child_type_id);
 
 CREATE UNIQUE INDEX index_work_item_hierarchy_restrictions_on_parent_and_child ON work_item_hierarchy_restrictions USING btree (parent_type_id, child_type_id);
@@ -36121,8 +36177,6 @@ CREATE UNIQUE INDEX uniq_idx_on_packages_conan_package_references_package_refere
 CREATE UNIQUE INDEX uniq_idx_on_packages_conan_package_revisions_revision ON packages_conan_package_revisions USING btree (package_id, package_reference_id, revision);
 
 CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_model ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 14) AND (status <> 4));
-
-CREATE UNIQUE INDEX uniq_idx_pipeline_execution_schedules_projects_and_policies ON security_pipeline_execution_project_schedules USING btree (project_id, security_policy_id);
 
 CREATE UNIQUE INDEX uniq_idx_project_compliance_framework_on_project_framework ON project_compliance_framework_settings USING btree (project_id, framework_id);
 
@@ -38391,6 +38445,8 @@ CREATE TRIGGER trigger_4b43790d717f BEFORE INSERT OR UPDATE ON protected_environ
 CREATE TRIGGER trigger_4cc5c3ac4d7f BEFORE INSERT OR UPDATE ON bulk_import_export_uploads FOR EACH ROW EXECUTE FUNCTION trigger_4cc5c3ac4d7f();
 
 CREATE TRIGGER trigger_4dc8ec48e038 BEFORE INSERT OR UPDATE ON requirements_management_test_reports FOR EACH ROW EXECUTE FUNCTION trigger_4dc8ec48e038();
+
+CREATE TRIGGER trigger_4fc14aa830b1 BEFORE INSERT OR UPDATE ON work_item_current_statuses FOR EACH ROW EXECUTE FUNCTION trigger_4fc14aa830b1();
 
 CREATE TRIGGER trigger_54707c384ad7 BEFORE INSERT OR UPDATE ON security_orchestration_policy_rule_schedules FOR EACH ROW EXECUTE FUNCTION trigger_54707c384ad7();
 
@@ -42348,6 +42404,9 @@ ALTER TABLE ONLY design_management_repository_states
 ALTER TABLE ONLY web_hooks
     ADD CONSTRAINT fk_rails_d35697648e FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_current_statuses
+    ADD CONSTRAINT fk_rails_d37e56a437 FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY group_group_links
     ADD CONSTRAINT fk_rails_d3a0488427 FOREIGN KEY (shared_group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -42548,6 +42607,9 @@ ALTER TABLE ONLY iterations_cadences
 
 ALTER TABLE ONLY dast_profiles
     ADD CONSTRAINT fk_rails_ed1e66fbbf FOREIGN KEY (dast_site_profile_id) REFERENCES dast_site_profiles(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_current_statuses
+    ADD CONSTRAINT fk_rails_ed36c2df68 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_security_settings
     ADD CONSTRAINT fk_rails_ed4abe1338 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

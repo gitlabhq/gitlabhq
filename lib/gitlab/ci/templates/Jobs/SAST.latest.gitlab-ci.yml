@@ -155,7 +155,7 @@ gitlab-enrich-cdx-results:
     GLAS_STATIC_REACHABILITY_MATCHER_VERSION: "v1.0.1"
     GLAS_REPORT: $GITLAB_ADVANCED_SAST_SCA_FILENAME
     SCA_TO_SARIF_PROJECT_ID: 60962090
-    DEPENDENCY_SCANNING_PATTERN: "**/gl-sbom-*.cdx.json"
+    DEPENDENCY_SCANNING_PATTERN: "**/gl-sbom-*-*.cdx.json"
   image:
     name: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
     entrypoint: [""]

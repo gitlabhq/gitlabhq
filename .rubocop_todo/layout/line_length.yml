@@ -727,7 +727,6 @@ Layout/LineLength:
     - 'ee/app/services/security/report_summary_service.rb'
     - 'ee/app/services/security/scanned_resources_counting_service.rb'
     - 'ee/app/services/security/scanned_resources_service.rb'
-    - 'ee/app/services/security/security_orchestration_policies/on_demand_scan_pipeline_configuration_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/policy_commit_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/policy_configuration_validation_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/process_policy_service.rb'

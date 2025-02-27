@@ -13,3 +13,5 @@ module Types
     end
   end
 end
+
+::Types::PermissionTypes::WorkItem.prepend_mod

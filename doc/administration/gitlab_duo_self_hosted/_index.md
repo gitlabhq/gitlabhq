@@ -55,6 +55,9 @@ You can use the following GitLab Duo Chat features with GitLab Duo Self-Hosted:
 - [Ask about GitLab](../../user/gitlab_duo_chat/examples.md#ask-about-gitlab)
 - [Ask about a specific issue](../../user/gitlab_duo_chat/examples.md#ask-about-a-specific-issue)
 - [Ask about a specific epic](../../user/gitlab_duo_chat/examples.md#ask-about-a-specific-epic)
+- [Ask about a specific merge request](../../user/gitlab_duo_chat/examples.md#ask-about-a-specific-merge-request)
+- [Ask about a specific commit](../../user/gitlab_duo_chat/examples.md#ask-about-a-specific-commit)
+- [Ask about a specific pipeline job](../../user/gitlab_duo_chat/examples.md#ask-about-a-specific-pipeline-job)
 - [Explain selected code](../../user/gitlab_duo_chat/examples.md#explain-selected-code)
 - [Ask about or generate code](../../user/gitlab_duo_chat/examples.md#ask-about-or-generate-code)
 - [Ask follow up questions](../../user/gitlab_duo_chat/examples.md#ask-follow-up-questions)
@@ -64,7 +67,7 @@ You can use the following GitLab Duo Chat features with GitLab Duo Self-Hosted:
 - [Fix code in the IDE](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)
 - [Write tests in the IDE](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)
 - [Ask about CI/CD](../../user/gitlab_duo_chat/examples.md#ask-about-cicd)
-- [Use universal and IDE slash commands](../../user/gitlab_duo_chat/examples.md#gitlab-duo-chat-slash-commands)
+- [Use IDE slash commands](../../user/gitlab_duo_chat/examples.md#ide)
 
 ### Prerequisites
 

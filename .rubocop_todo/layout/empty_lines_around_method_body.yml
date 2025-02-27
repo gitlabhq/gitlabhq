@@ -20,7 +20,6 @@ Layout/EmptyLinesAroundMethodBody:
     - 'lib/gitlab/database/partitioning/list/convert_table.rb'
     - 'lib/gitlab/database/partitioning_migration_helpers/table_management_helpers.rb'
     - 'lib/gitlab/diff/file.rb'
-    - 'lib/gitlab/fp/settings/default_settings_parser.rb'
     - 'lib/gitlab/git/repository.rb'
     - 'lib/gitlab/gitaly_client/operation_service.rb'
     - 'lib/gitlab/import/import_failure_service.rb'
@@ -28,5 +27,4 @@ Layout/EmptyLinesAroundMethodBody:
     - 'spec/lib/gitlab/database/migrations/test_batched_background_runner_spec.rb'
     - 'spec/lib/gitlab/popen/runner_spec.rb'
     - 'spec/support/helpers/workhorse_lfs_helpers.rb'
-    - 'spec/support/matchers/invoke_rop_steps.rb'
     - 'tooling/lib/tooling/find_changes.rb'

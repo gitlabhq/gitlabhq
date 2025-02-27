@@ -40,14 +40,21 @@ module Mutations
           required: false,
           description: 'Variables for the pipeline.'
 
+        argument :inputs, [Types::Ci::Inputs::InputType],
+          required: false,
+          description: 'Inputs for the pipeline.',
+          experiment: { milestone: '17.10' }
+
         authorize :create_pipeline
 
-        def resolve(project_path:, ref:, async: false, variables: {})
+        def resolve(project_path:, ref:, async: false, variables: {}, inputs: [])
           project = authorized_find!(project_path)
           creation_params = { ref: ref, variables_attributes: variables.map(&:to_h) }
-          service = ::Ci::CreatePipelineService.new(project, current_user, creation_params)
 
-          response = execute_service(service, source, async)
+          execute_options = EXECUTE_OPTIONS.merge(inputs: parse_inputs(inputs))
+
+          service = ::Ci::CreatePipelineService.new(project, current_user, creation_params)
+          response = execute_service(service, source, async, execute_options)
 
           if response.success?
             if async
@@ -62,11 +69,11 @@ module Mutations
 
         private
 
-        def execute_service(service, source, async)
+        def execute_service(service, source, async, options)
           if async
-            service.execute_async(source, EXECUTE_OPTIONS)
+            service.execute_async(source, options)
           else
-            service.execute(source, **EXECUTE_OPTIONS)
+            service.execute(source, **options)
           end
         end
 
@@ -74,6 +81,10 @@ module Mutations
           return 'web' if context.query.operation_name == INTERNAL_CREATE_OPERATION_NAME
 
           'api'
+        end
+
+        def parse_inputs(inputs)
+          inputs.to_h { |input| [input.key, input.value] }
         end
       end
     end

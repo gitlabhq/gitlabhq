@@ -1,6 +1,10 @@
 - save_endpoint = local_assigns.fetch(:save_endpoint, nil)
 - is_group = !@group.nil?
 - is_project = !@project.nil?
+- is_root_group = @group && @group.root?
+
+- if is_root_group
+  #js-pipeline-variables-default-role{ data: { full_path: @group.full_path } }
 
 - if is_project
   #js-ci-variables-minimum-override-role-app{ data: { full_path: @project.full_path } }
