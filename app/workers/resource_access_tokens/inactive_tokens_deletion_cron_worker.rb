@@ -27,8 +27,11 @@ module ResourceAccessTokens
                 .select(1)
                 .where('"personal_access_tokens"."user_id" = "users"."id"')
                 .and(
-                  PersonalAccessToken.expired_before(cut_off).or(PersonalAccessToken.revoked_before(cut_off))
-                    .invert_where
+                  PersonalAccessToken.active
+                    .or(
+                      PersonalAccessToken.expired_before(cut_off).or(PersonalAccessToken.revoked_before(cut_off))
+                        .invert_where
+                    )
                 )
             )
 
