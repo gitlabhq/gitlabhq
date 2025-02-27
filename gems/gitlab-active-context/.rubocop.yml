@@ -14,8 +14,7 @@ RSpec/MultipleMemoizedHelpers:
   Max: 25
 
 RSpec/VerifiedDoubles:
-  Exclude:
-  - 'spec/lib/active_context/tracker_spec.rb'
+  Enabled: false
 
 Naming/ClassAndModuleCamelCase:
   AllowedNames:

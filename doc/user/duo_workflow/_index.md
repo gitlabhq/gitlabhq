@@ -47,13 +47,22 @@ Workflow:
 - Understands the context of your project structure, codebase, and history.
   You can also add your own context, such as relevant GitLab issues or merge requests.
 
+## Prerequisites
+
+To use Workflow:
+
+- You must have [completed setup](set_up.md).
+- You must have an account on GitLab.com.
+- You must have a project that meets the following requirements:
+  - The project is on GitLab.com.
+  - You have at least the Developer role.
+  - The project belongs to a [group namespace](../namespace/_index.md) with an Ultimate subscription.
+  - [Experimental features must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
+  - [GitLab Duo must be turned on](../gitlab_duo/_index.md).
+  - The repository you want to work with should be small or medium-sized.
+    Workflow can be slow or fail for large repositories.
+
 ## Use Workflow in VS Code
-
-Prerequisites:
-
-- You must have [set up Workflow](set_up.md).
-- The repository you want to work with should be small or medium-sized.
-  Workflow can be slow or fail for large repositories.
 
 To use Workflow in VS Code:
 
@@ -83,11 +92,11 @@ You can also provide it with additional context.
 
 | Area                          | How to use GitLab Workflow |
 |-------------------------------|--------------------------------|
-| Epics                         | Enter the epic ID and the name of the group the epic is in. The group must include a project that meets the [prerequisites](set_up.md#prerequisites). |
-| Issues                        | Enter the issue ID if it's in the current project. You can also enter a project ID from a different project, as long as it meets the [prerequisites](set_up.md#prerequisites). |
+| Epics                         | Enter the epic ID and the name of the group the epic is in. The group must include a project that meets the project prerequisites. |
+| Issues                        | Enter the issue ID if it's in the current project. You can also enter a project ID from a different project, as long as it meets the project prerequisites. |
 | Local files                   | Workflow is aware of all files available to Git in the project you have open in your editor. You can also reference a specific file by its file path. |
-| Merge requests                | Enter the merge request ID if it's in the current project. You can also enter a project ID from a different project, as long as it meets the [prerequisites](set_up.md#prerequisites). |
-| Merge request pipelines       | Enter the merge request ID that has the pipeline, if it's in the current project. You can also enter a project ID from a different project, as long as it meets the [prerequisites](set_up.md#prerequisites). |
+| Merge requests                | Enter the merge request ID if it's in the current project. You can also enter a project ID from a different project, as long as it meets the project prerequisites. |
+| Merge request pipelines       | Enter the merge request ID that has the pipeline, if it's in the current project. You can also enter a project ID from a different project, as long as it meets the project prerequisites. |
 
 Workflow also has access to the GitLab [Search API](../../api/search.md) to find related issues or merge requests.
 

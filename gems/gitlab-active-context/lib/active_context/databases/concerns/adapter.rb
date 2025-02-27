@@ -4,7 +4,7 @@ module ActiveContext
   module Databases
     module Concerns
       module Adapter
-        attr_reader :options, :prefix, :client, :indexer, :executor
+        attr_reader :connection, :options, :prefix, :client, :indexer, :executor
 
         DEFAULT_PREFIX = 'gitlab_active_context'
         DEFAULT_SEPARATOR = '_'
@@ -12,7 +12,8 @@ module ActiveContext
         delegate :search, to: :client
         delegate :all_refs, :add_ref, :empty?, :bulk, :process_bulk_errors, :reset, to: :indexer
 
-        def initialize(options)
+        def initialize(connection, options:)
+          @connection = connection
           @options = options
           @prefix = options[:prefix] || DEFAULT_PREFIX
           @client = client_klass.new(options)

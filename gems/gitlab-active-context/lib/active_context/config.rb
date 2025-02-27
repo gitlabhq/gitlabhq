@@ -4,11 +4,11 @@ module ActiveContext
   class Config
     Cfg = Struct.new(
       :enabled,
-      :databases,
       :logger,
       :indexing_enabled,
       :re_enqueue_indexing_workers,
       :migrations_path,
+      :connection_model,
       :collection_model
     )
 
@@ -25,12 +25,12 @@ module ActiveContext
         current.enabled || false
       end
 
-      def databases
-        current.databases || {}
-      end
-
       def migrations_path
         current.migrations_path || Rails.root.join('ee/db/active_context/migrate')
+      end
+
+      def connection_model
+        current.connection_model || ::Ai::ActiveContext::Connection
       end
 
       def collection_model

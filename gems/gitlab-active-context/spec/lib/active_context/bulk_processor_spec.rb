@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveContext::BulkProcessor do
-  let(:adapter) { ActiveContext::Databases::Elasticsearch::Adapter.new(url: 'http://localhost:9200') }
+  let(:connection) { double('Connection') }
+  let(:adapter) { ActiveContext::Databases::Elasticsearch::Adapter.new(connection, options: { url: 'http://localhost:9200' }) }
   let(:logger) { instance_double(Logger) }
   let(:ref) { double }
 

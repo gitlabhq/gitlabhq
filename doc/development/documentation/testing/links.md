@@ -51,7 +51,7 @@ To test documentation links from GitLab code files locally, you can run
 1. Run:
 
    ```shell
-   bundle exec haml-lint -i DocumentationLinks
+   bundle exec haml-lint
    ```
 
 If you receive an error the first time you run this test, run `bundle install`, which

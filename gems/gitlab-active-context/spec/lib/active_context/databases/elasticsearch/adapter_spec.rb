@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveContext::Databases::Elasticsearch::Adapter do
+  let(:connection) { double('Connection') }
   let(:options) { { url: 'http://localhost:9200' } }
 
-  subject(:adapter) { described_class.new(options) }
+  subject(:adapter) { described_class.new(connection, options: options) }
 
   it 'delegates search to client' do
     query = ActiveContext::Query.filter(foo: :bar)
@@ -18,7 +19,7 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Adapter do
     end
 
     it 'returns configured prefix' do
-      adapter = described_class.new(options.merge(prefix: 'custom'))
+      adapter = described_class.new(connection, options: options.merge(prefix: 'custom'))
       expect(adapter.prefix).to eq('custom')
     end
   end

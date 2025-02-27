@@ -109,7 +109,7 @@ ui-docs-links lint:
   stage: lint
   needs: []
   script:
-    - bundle exec haml-lint -i DocumentationLinks
+    - bundle exec haml-lint
 
 docs-lint deprecations-and-removals:
   variables:

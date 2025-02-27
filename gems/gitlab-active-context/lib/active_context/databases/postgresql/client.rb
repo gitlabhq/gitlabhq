@@ -17,7 +17,7 @@ module ActiveContext
         attr_reader :connection_pool, :options
 
         def initialize(options)
-          @options = options
+          @options = options.with_indifferent_access
           setup_connection_pool
         end
 

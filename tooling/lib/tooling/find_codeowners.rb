@@ -5,43 +5,38 @@ require 'yaml'
 module Tooling
   class FindCodeowners
     def execute
-      load_definitions.each do |section, group_defintions|
-        puts section
+      load_definitions.each do |section, section_definition|
+        puts "#{section} #{section_definition[:group]}"
 
-        group_defintions.each do |group, list|
-          print_entries(group, list[:entries]) if list[:entries]
-          print_expanded_entries(group, list) if list[:allow]
+        print_entries(section_definition[:entries]) if section_definition[:entries]
+        print_expanded_entries(section_definition) if section_definition[:allow]
 
-          puts
-        end
+        puts
       end
     end
 
     def load_definitions
       result = load_config
 
-      result.each do |section, group_defintions|
-        group_defintions.each do |group, definitions|
-          definitions.transform_values! do |rules|
-            case rules
-            when Hash
-              case rules[:keywords]
-              when Array
-                rules[:keywords].flat_map do |keyword|
-                  rules[:patterns].map do |pattern|
-                    pattern % { keyword: keyword }
-                  end
-                end
-              else
-                rules[:patterns]
-              end
+      result.each_value do |definitions|
+        definitions.transform_values! do |rules|
+          case rules
+          when Hash
+            case rules[:keywords]
             when Array
-              rules
+              rules[:keywords].flat_map do |keyword|
+                rules[:patterns].map do |pattern|
+                  pattern % { keyword: keyword }
+                end
+              end
+            else
+              rules[:patterns]
             end
+          when Array, String
+            rules
           end
         end
       end
-
       result
     end
 
@@ -97,13 +92,13 @@ module Tooling
 
     private
 
-    def print_entries(group, entries)
+    def print_entries(entries)
       entries.each do |entry|
-        puts "#{entry} #{group}"
+        puts entry
       end
     end
 
-    def print_expanded_entries(group, list)
+    def print_expanded_entries(list)
       matched_files = git_ls_files.each_line.select do |line|
         list[:allow].find do |pattern|
           path = "/#{line.chomp}"
@@ -133,9 +128,9 @@ module Tooling
         path = line.chomp
 
         if File.directory?(path)
-          puts "/#{path}/ #{group}"
+          puts "/#{path}/"
         else
-          puts "/#{path} #{group}"
+          puts "/#{path}"
         end
       end
     end

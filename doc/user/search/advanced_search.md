@@ -18,25 +18,18 @@ title: Advanced search
 
 {{< /history >}}
 
-You can use advanced search for faster, more efficient search across the entire GitLab
-instance. Advanced search is based on Elasticsearch, a purpose-built full-text search
-engine you can horizontally scale to get results in up to a second in most cases.
+Use advanced search to find exactly what you need across your entire GitLab instance.
 
-You can find code you want to update in all projects at once to save
-maintenance time and promote innersourcing.
+With advanced search:
 
-You can use advanced search in:
+- Identify code patterns across all projects to refactor shared components more efficiently.
+- Locate security vulnerabilities in dependencies across your entire organization at once.
+- Track usage of deprecated functions or libraries throughout all repositories.
+- Find discussions buried in issues, merge requests, or comments.
+- Discover existing solutions instead of reinventing functionality that already exists.
 
-- Projects
-- Issues
-- Merge requests
-- Milestones
-- Users
-- Epics
-- Code
-- Comments
-- Commits
-- Project and group wikis
+Advanced search works in projects, issues, merge requests, milestones,
+users, epics, code, comments, commits, and wikis.
 
 ## Enable advanced search
 

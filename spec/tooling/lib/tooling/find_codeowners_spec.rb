@@ -10,16 +10,15 @@ RSpec.describe Tooling::FindCodeowners do
     before do
       allow(subject).to receive(:load_config).and_return(
         '[Section name]': {
-          '@group': {
-            entries: %w[whatever entries],
-            allow: {
-              keywords: %w[dir0 file],
-              patterns: ['/%{keyword}/**/*', '/%{keyword}']
-            },
-            deny: {
-              keywords: %w[file0],
-              patterns: ['**/%{keyword}']
-            }
+          group: '@group',
+          entries: %w[whatever entries],
+          allow: {
+            keywords: %w[dir0 file],
+            patterns: ['/%{keyword}/**/*', '/%{keyword}']
+          },
+          deny: {
+            keywords: %w[file0],
+            patterns: ['**/%{keyword}']
           }
         }
       )
@@ -31,11 +30,11 @@ RSpec.describe Tooling::FindCodeowners do
           subject.execute
         end
       end.to output(<<~CODEOWNERS).to_stdout
-        [Section name]
-        whatever @group
-        entries @group
-        /dir0/dir1/ @group
-        /file @group
+        [Section name] @group
+        whatever
+        entries
+        /dir0/dir1/
+        /file
 
       CODEOWNERS
     end
@@ -46,32 +45,30 @@ RSpec.describe Tooling::FindCodeowners do
       allow(subject).to receive(:load_config).and_return(
         {
           '[Authentication and Authorization]': {
-            '@gitlab-org/manage/authentication-and-authorization': {
-              allow: {
-                keywords: %w[password auth token],
-                patterns:
-                  %w[
-                    /{,ee/}app/**/*%{keyword}*{,/**/*}
-                    /{,ee/}config/**/*%{keyword}*{,/**/*}
-                    /{,ee/}lib/**/*%{keyword}*{,/**/*}
-                  ]
-              },
-              deny: {
-                keywords: %w[*author.* *author_* *authored*],
-                patterns: ['%{keyword}']
-              }
+            group: '@gitlab-org/manage/authentication-and-authorization',
+            allow: {
+              keywords: %w[password auth token],
+              patterns:
+                %w[
+                  /{,ee/}app/**/*%{keyword}*{,/**/*}
+                  /{,ee/}config/**/*%{keyword}*{,/**/*}
+                  /{,ee/}lib/**/*%{keyword}*{,/**/*}
+                ]
+            },
+            deny: {
+              keywords: %w[*author.* *author_* *authored*],
+              patterns: ['%{keyword}']
             }
           },
           '[Compliance]': {
-            '@gitlab-org/govern/compliance': {
-              entries: %w[
-                /ee/app/services/audit_events/build_service.rb
-              ],
-              allow: {
-                patterns: %w[
-                  /ee/app/services/audit_events/*
-                ]
-              }
+            group: '@gitlab-org/govern/compliance',
+            entries: %w[
+              /ee/app/services/audit_events/build_service.rb
+            ],
+            allow: {
+              patterns: %w[
+                /ee/app/services/audit_events/*
+              ]
             }
           }
         }
@@ -79,20 +76,17 @@ RSpec.describe Tooling::FindCodeowners do
     end
 
     it 'expands the allow and deny list with keywords and patterns' do
-      group_defintions = subject.load_definitions[:'[Authentication and Authorization]']
+      group_definitions = subject.load_definitions[:'[Authentication and Authorization]']
 
-      group_defintions.each do |group, definitions|
-        expect(definitions[:allow]).to be_an(Array)
-        expect(definitions[:deny]).to be_an(Array)
-      end
+      expect(group_definitions[:allow]).to be_an(Array)
+      expect(group_definitions[:deny]).to be_an(Array)
     end
 
     it 'expands the patterns for the auth group' do
-      auth = subject.load_definitions.dig(
-        :'[Authentication and Authorization]',
-        :'@gitlab-org/manage/authentication-and-authorization')
+      auth = subject.load_definitions[:'[Authentication and Authorization]']
 
       expect(auth).to eq(
+        group: '@gitlab-org/manage/authentication-and-authorization',
         allow: %w[
           /{,ee/}app/**/*password*{,/**/*}
           /{,ee/}config/**/*password*{,/**/*}
@@ -113,11 +107,9 @@ RSpec.describe Tooling::FindCodeowners do
     end
 
     it 'retains the array and expands the patterns for the compliance group' do
-      compliance = subject.load_definitions.dig(
-        :'[Compliance]',
-        :'@gitlab-org/govern/compliance')
-
+      compliance = subject.load_definitions[:'[Compliance]']
       expect(compliance).to eq(
+        group: '@gitlab-org/govern/compliance',
         entries: %w[
           /ee/app/services/audit_events/build_service.rb
         ],

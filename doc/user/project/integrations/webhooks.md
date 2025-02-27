@@ -13,13 +13,16 @@ title: Webhooks
 
 {{< /details >}}
 
-Webhooks are custom HTTP callbacks that send JSON data about GitLab events to a configured URL.
-Webhooks:
+Webhooks connect GitLab to your other tools and systems through real-time notifications.
+When important events happen in GitLab, webhooks send that information directly to your external applications.
+Build automation workflows by reacting to merge requests, code pushes, and issue updates.
 
-- Send real-time notifications about merge requests, issues, and other GitLab events.
-- Update external issue trackers and deployment tools.
-- Trigger CI/CD pipelines.
-- Support custom headers, payload templates, and mutual TLS.
+With webhooks, your team stays synchronized as changes occur:
+
+- External issue trackers update automatically when GitLab issues change.
+- Chat applications notify team members about pipeline completions.
+- Custom scripts deploy applications when code reaches the main branch.
+- Monitoring systems track development activity across your entire organization.
 
 ## Webhook events
 

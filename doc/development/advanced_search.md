@@ -1309,6 +1309,14 @@ header which allows us to track any
 [tasks](https://www.elastic.co/guide/en/elasticsearch/reference/current/tasks.html)
 in the cluster back the request in GitLab.
 
+## Development tips
+
+- [Kibana](advanced_search/tips.md#kibana)
+- [Viewing index status](advanced_search/tips.md#viewing-index-status)
+- [Creating indices from scratch](advanced_search/tips.md#creating-all-indices-from-scratch-and-populating-with-local-data)
+- [Testing migrations](advanced_search/tips.md#testing-migrations)
+- [Index data](advanced_search/tips.md#index-data)
+
 ## Troubleshooting
 
 ### Debugging Elasticsearch queries

@@ -10,21 +10,16 @@ module ActiveContext
       private
 
       def load_adapter
-        config = ActiveContext::Config.current
-        return nil unless config.enabled
+        return nil unless ActiveContext::Config.enabled?
 
-        name, hash = config.databases.first
-        return nil unless name
+        connection = ActiveContext::Config.connection_model&.active
+        return nil unless connection
 
-        adapter = hash.fetch(:adapter)
-        return nil unless adapter
-
-        adapter_klass = adapter.safe_constantize
+        adapter_klass = connection.adapter_class&.safe_constantize
         return nil unless adapter_klass
 
-        options = hash.fetch(:options)
-
-        adapter_klass.new(options)
+        options = connection.options
+        adapter_klass.new(connection, options: options)
       end
     end
   end

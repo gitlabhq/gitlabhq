@@ -12,8 +12,18 @@ title: REST API resources
 
 {{< /details >}}
 
-The GitLab REST API provides HTTP endpoints to control and interact
-with GitLab resources and features programmatically.
+The GitLab REST API gives you programmatic control over GitLab resources.
+Build integrations with your existing tools, automate repetitive tasks, and extract data for custom reports.
+Access and manipulate projects, groups, issues, and merge requests without using the web interface.
+
+Use the REST API to:
+
+- Automate project creation and user management.
+- Trigger CI/CD pipelines from external systems.
+- Extract issue and merge request data for custom dashboards.
+- Integrate GitLab with third-party applications.
+- Implement custom workflows across multiple repositories.
+
 The REST API resources are organized into:
 
 - [Project endpoints](#project-resources)

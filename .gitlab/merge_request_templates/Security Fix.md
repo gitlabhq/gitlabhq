@@ -23,7 +23,6 @@ See [the general developer security guidelines](https://gitlab.com/gitlab-org/re
   - [ ] Ensure it's approved according to our [Approval Guidelines].
   - [ ] Ensure it's approved by an AppSec engineer.
     - Please see the security [Code reviews and Approvals] documentation for details on which AppSec team member to ping for approval.
-    - Trigger the [`e2e:test-on-omnibus` job]. The docker image generated will be used by the AppSec engineer to validate the security vulnerability has been remediated.
 - [ ] For a backport MR targeting a versioned stable branch (`X-Y-stable-ee`).
   - [ ] Ensure it's approved by the same maintainer that reviewed and approved the merge request targeting the default branch.
 - [ ] Ensure this merge request and the related security issue have a `~severity::x` label

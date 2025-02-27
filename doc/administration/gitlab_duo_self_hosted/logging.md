@@ -23,11 +23,16 @@ title: Enable logging for self-hosted models
 
 {{< /history >}}
 
+Monitor your self-hosted model performance and debug issues more effectively with detailed
+logging for GitLab Duo Self-Hosted.
+
+## Enable logging
+
 Prerequisites:
 
 - You must be an administrator.
-- You must have an Ultimate license.
-- You must have a Duo Enterprise license add-on.
+- You must have an Ultimate subscription.
+- You must have a GitLab Duo Enterprise add-on.
 
 To enable logging and access the logs, enable the feature flag:
 

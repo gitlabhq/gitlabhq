@@ -12,8 +12,10 @@ title: Searching in GitLab
 
 {{< /details >}}
 
-GitLab has three types of search: **basic search**, [**advanced search**](advanced_search.md),
-and [**exact code search**](exact_code_search.md).
+Find what you need in a growing codebase or expanding organization.
+Save time by looking up specific code, issues, merge requests, and other content across your projects.
+Choose from three types of search to match your needs: **basic search**,
+[**advanced search**](advanced_search.md), and [**exact code search**](exact_code_search.md).
 
 For code search, GitLab uses these types in this order:
 

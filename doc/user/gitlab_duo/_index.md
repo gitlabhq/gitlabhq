@@ -99,7 +99,7 @@ To improve your security, try these features:
 - [Vulnerability Resolution](../application_security/vulnerabilities/_index.md#vulnerability-resolution): Generate a merge request that addresses a vulnerability.
   <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=VJmsw_C125E&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 
-## Summary of all GitLab Duo features
+## Summary of GitLab Duo features
 
 | Feature | Tier | Add-on | Offering | Status |
 | ------- | ---- | ------ | -------- | ------ |

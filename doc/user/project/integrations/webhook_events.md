@@ -12,11 +12,17 @@ title: Webhook events
 
 {{< /details >}}
 
+Connect GitLab to your external applications and automate your workflow with webhooks.
+When specific events occur in GitLab, webhooks send HTTP POST requests with detailed
+information to your configured endpoints.
+Build automated processes that react to code changes, deployments, comments,
+and other activities without manual intervention.
+
 This page lists the events that are triggered for [project webhooks](webhooks.md) and [group webhooks](webhooks.md#group-webhooks).
 
 For a list of events triggered for system webhooks, see [system webhooks](../../../administration/system_hooks.md).
 
-**Events triggered for both project and group webhooks:**
+## Events triggered for both project and group webhooks
 
 Event type                                   | Trigger
 ---------------------------------------------|-----------------------------------------------------------------------------
@@ -39,7 +45,7 @@ Event type                                   | Trigger
 
 1. Comment events triggered when the comment is edited [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127169) in GitLab 16.11.
 
-**Events triggered for group webhooks only:**
+## Events triggered for group webhooks only
 
 Event type                                   | Trigger
 ---------------------------------------------|-----------------------------------------------------------------------------

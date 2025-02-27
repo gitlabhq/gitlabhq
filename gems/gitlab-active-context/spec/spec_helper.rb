@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+if ENV['ACTIVE_CONTEXT_SIMPLECOV'] == '1'
+  require 'simplecov'
+  SimpleCov.start 'rails'
+end
+
 require 'active_context'
 require 'active_support/all'
 require 'logger'

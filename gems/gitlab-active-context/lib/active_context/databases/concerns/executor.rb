@@ -27,7 +27,7 @@ module ActiveContext
         private
 
         def create_collection_record(name, number_of_partitions)
-          collection = Config.collection_model.find_or_initialize_by(name: name)
+          collection = adapter.connection.collections.find_or_initialize_by(name: name)
           collection.update(number_of_partitions: number_of_partitions)
           collection.save!
         end

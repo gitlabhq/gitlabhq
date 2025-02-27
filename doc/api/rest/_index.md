@@ -13,14 +13,15 @@ title: REST API
 
 {{< /details >}}
 
-The GitLab REST API provides programmatic access to read and modify GitLab resources
-by using standard HTTP methods and JSON data formats.
-The REST API offers tools to:
+Automate your workflows and build integrations with the GitLab REST API:
 
-- Create, update, and retrieve projects, groups, repositories, and other GitLab resources.
-- Integrate GitLab data and functionality into external applications.
-- Automate GitLab tasks and workflows.
-- Control user access and permissions.
+- Create custom tools to manage your GitLab resources at scale without manual intervention.
+- Improve collaboration by integrating GitLab data directly into your applications.
+- Manage CI/CD processes across multiple projects with precision.
+- Control user access programmatically to maintain consistent permissions across your organization.
+
+The REST API uses standard HTTP methods and JSON data formats
+for compatibility with your existing tools and systems.
 
 ## Make a REST API request
 

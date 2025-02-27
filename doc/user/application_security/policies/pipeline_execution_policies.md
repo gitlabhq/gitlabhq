@@ -527,6 +527,13 @@ compliance_job:
 
 ## CI/CD variables
 
+{{< alert type="warning" >}}
+
+Don't store sensitive information or credentials in variables because they are stored as part of the plaintext policy configuration
+in a Git repository.
+
+{{< /alert >}}
+
 Pipeline execution jobs are executed in isolation. Variables defined in another policy or in the project's `.gitlab-ci.yml` file are not available in the pipeline execution policy
 and cannot be overwritten from the outside.
 
