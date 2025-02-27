@@ -2,7 +2,7 @@
 stage: AI-Powered
 group: Custom Models
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Supported Models and Hardware Requirements.
+description: Supported models and hardware requirements.
 title: Supported GitLab Duo Self-Hosted models and hardware requirements
 ---
 
@@ -23,7 +23,10 @@ title: Supported GitLab Duo Self-Hosted models and hardware requirements
 
 {{< /history >}}
 
-The following table shows the supported models along with their specific features and hardware requirements to help you select the model that best fits your infrastructure needs for optimal performance.
+GitLab Duo Self-Hosted supports integration with industry-leading models from Mistral,
+Claude, and GPT
+through your preferred serving platform. Choose from these models to match your specific performance
+needs and use cases.
 
 ## Supported models
 

@@ -15,6 +15,36 @@ describe('TimeAgo utils', () => {
         [new Date().getTime(), 'just now'],
         [new Date(), 'just now'],
         [null, 'just now'],
+        // test relative time in future
+        [new Date().getTime() + 30e3, 'in 30 seconds'],
+        [new Date().getTime() + 59e3, 'in 59 seconds'],
+        [new Date().getTime() + 60e3, 'in 1 minute'],
+        [new Date().getTime() + 60e3 * 30, 'in 30 minutes'],
+        [new Date().getTime() + 60e3 * 59, 'in 59 minutes'],
+        [new Date().getTime() + 60e3 * 60, 'in 1 hour'],
+        [new Date().getTime() + 60e3 * 60 * 2, 'in 2 hours'],
+        [new Date().getTime() + 60e3 * 60 * 23, 'in 23 hours'],
+        [new Date().getTime() + 60e3 * 60 * 24, 'in 1 day'],
+        [new Date().getTime() + 60e3 * 60 * 24 * 2, 'in 2 days'],
+        [new Date().getTime() + 60e3 * 60 * 24 * 31, 'in 1 month'],
+        [new Date().getTime() + 60e3 * 60 * 24 * 61, 'in 2 months'],
+        [new Date().getTime() + 60e3 * 60 * 24 * 366, 'in 1 year'],
+        [new Date().getTime() + 60e3 * 60 * 24 * 366 * 2, 'in 2 years'],
+        // test relative time in past
+        [new Date().getTime() - 30e3, '30 seconds ago'],
+        [new Date().getTime() - 59e3, '59 seconds ago'],
+        [new Date().getTime() - 60e3, '1 minute ago'],
+        [new Date().getTime() - 60e3 * 30, '30 minutes ago'],
+        [new Date().getTime() - 60e3 * 59, '59 minutes ago'],
+        [new Date().getTime() - 60e3 * 60, '1 hour ago'],
+        [new Date().getTime() - 60e3 * 60 * 2, '2 hours ago'],
+        [new Date().getTime() - 60e3 * 60 * 23, '23 hours ago'],
+        [new Date().getTime() - 60e3 * 60 * 24, '1 day ago'],
+        [new Date().getTime() - 60e3 * 60 * 24 * 2, '2 days ago'],
+        [new Date().getTime() - 60e3 * 60 * 24 * 31, '1 month ago'],
+        [new Date().getTime() - 60e3 * 60 * 24 * 61, '2 months ago'],
+        [new Date().getTime() - 60e3 * 60 * 24 * 366, '1 year ago'],
+        [new Date().getTime() - 60e3 * 60 * 24 * 366 * 2, '2 years ago'],
       ])('formats date `%p` as `%p`', (date, result) => {
         expect(getTimeago().format(date)).toEqual(result);
       });
@@ -67,15 +97,24 @@ describe('TimeAgo utils', () => {
       expect(timeFor(date)).toBe('Past due');
     });
 
-    it('returns localized remaining time when in the future', () => {
-      const date = new Date();
-      date.setFullYear(date.getFullYear() + 1);
-
-      // Add a day to prevent a transient error. If date is even 1 second
-      // short of a full year, timeFor will return '11 months remaining'
-      date.setDate(date.getDate() + 1);
-
-      expect(timeFor(date)).toBe('1 year remaining');
+    it.each([
+      [new Date().getTime(), 'just now'],
+      [new Date().getTime() + 30e3, '30 seconds remaining'],
+      [new Date().getTime() + 59e3, '59 seconds remaining'],
+      [new Date().getTime() + 60e3, '1 minute remaining'],
+      [new Date().getTime() + 60e3 * 30, '30 minutes remaining'],
+      [new Date().getTime() + 60e3 * 59, '59 minutes remaining'],
+      [new Date().getTime() + 60e3 * 60, '1 hour remaining'],
+      [new Date().getTime() + 60e3 * 60 * 2, '2 hours remaining'],
+      [new Date().getTime() + 60e3 * 60 * 23, '23 hours remaining'],
+      [new Date().getTime() + 60e3 * 60 * 24, '1 day remaining'],
+      [new Date().getTime() + 60e3 * 60 * 24 * 2, '2 days remaining'],
+      [new Date().getTime() + 60e3 * 60 * 24 * 31, '1 month remaining'],
+      [new Date().getTime() + 60e3 * 60 * 24 * 61, '2 months remaining'],
+      [new Date().getTime() + 60e3 * 60 * 24 * 366, '1 year remaining'],
+      [new Date().getTime() + 60e3 * 60 * 24 * 366 * 2, '2 years remaining'],
+    ])('formats date `%p` as `%p`', (date, result) => {
+      expect(timeFor(date)).toEqual(result);
     });
   });
 

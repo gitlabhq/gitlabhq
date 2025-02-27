@@ -93,7 +93,3 @@ that get installed with the script.
          ```json
          "gitlab.duoWorkflow.dockerSocket": "/Users/<your_user>/.colima/default/docker.sock",
          ```
-
-## Next steps
-
-Try [using GitLab Duo Workflow in your IDE](use_in_your_ide.md).

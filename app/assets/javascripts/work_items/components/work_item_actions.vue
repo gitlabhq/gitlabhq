@@ -25,15 +25,6 @@ import {
   I18N_WORK_ITEM_DELETE,
   I18N_WORK_ITEM_ARE_YOU_SURE_DELETE,
   I18N_WORK_ITEM_ARE_YOU_SURE_DELETE_HIERARCHY,
-  TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
-  TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
-  TEST_ID_DELETE_ACTION,
-  TEST_ID_PROMOTE_ACTION,
-  TEST_ID_CHANGE_TYPE_ACTION,
-  TEST_ID_MOVE_ACTION,
-  TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
-  TEST_ID_COPY_REFERENCE_ACTION,
-  TEST_ID_TOGGLE_ACTION,
   I18N_WORK_ITEM_ERROR_CONVERTING,
   WORK_ITEM_TYPE_VALUE_KEY_RESULT,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
@@ -41,9 +32,6 @@ import {
   I18N_WORK_ITEM_ERROR_COPY_REFERENCE,
   I18N_WORK_ITEM_ERROR_COPY_EMAIL,
   I18N_WORK_ITEM_NEW_RELATED_ITEM,
-  TEST_ID_LOCK_ACTION,
-  TEST_ID_REPORT_ABUSE,
-  TEST_ID_NEW_RELATED_WORK_ITEM,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_VALUE_EPIC,
   WORK_ITEM_TYPE_VALUE_MAP,
@@ -95,18 +83,6 @@ export default {
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin({ label: 'actions_menu' })],
   isLoggedIn: isLoggedIn(),
-  notificationsToggleFormTestId: TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
-  confidentialityTestId: TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
-  copyReferenceTestId: TEST_ID_COPY_REFERENCE_ACTION,
-  copyCreateNoteEmailTestId: TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
-  deleteActionTestId: TEST_ID_DELETE_ACTION,
-  promoteActionTestId: TEST_ID_PROMOTE_ACTION,
-  changeTypeTestId: TEST_ID_CHANGE_TYPE_ACTION,
-  moveTestId: TEST_ID_MOVE_ACTION,
-  lockDiscussionTestId: TEST_ID_LOCK_ACTION,
-  stateToggleTestId: TEST_ID_TOGGLE_ACTION,
-  reportAbuseActionTestId: TEST_ID_REPORT_ABUSE,
-  newRelatedItemTestId: TEST_ID_NEW_RELATED_WORK_ITEM,
   inject: ['hasOkrsFeature'],
   props: {
     fullPath: {
@@ -129,11 +105,6 @@ export default {
       default: null,
     },
     workItemType: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    workItemTypeId: {
       type: String,
       required: false,
       default: null,
@@ -542,7 +513,7 @@ export default {
       <template v-if="$options.isLoggedIn && !hideSubscribe">
         <gl-disclosure-dropdown-item
           class="gl-flex gl-w-full gl-justify-end"
-          :data-testid="$options.notificationsToggleFormTestId"
+          data-testid="notifications-toggle-form"
         >
           <template #list-item>
             <gl-toggle
@@ -559,7 +530,7 @@ export default {
 
       <work-item-state-toggle
         v-if="canUpdate"
-        :data-testid="$options.stateToggleTestId"
+        data-testid="state-toggle-action"
         :work-item-id="workItemId"
         :work-item-iid="workItemIid"
         :work-item-state="workItemState"
@@ -573,7 +544,7 @@ export default {
 
       <gl-disclosure-dropdown-item
         v-if="canCreateRelatedItem && canUpdate"
-        :data-testid="$options.newRelatedItemTestId"
+        data-testid="new-related-work-item"
         @action="isCreateWorkItemModalVisible = true"
       >
         <template #list-item>{{ newRelatedItemLabel }}</template>
@@ -581,7 +552,7 @@ export default {
 
       <gl-disclosure-dropdown-item
         v-if="canPromoteToObjective"
-        :data-testid="$options.promoteActionTestId"
+        data-testid="promote-action"
         @action="promoteToObjective"
       >
         <template #list-item>{{ __('Promote to objective') }}</template>
@@ -589,7 +560,7 @@ export default {
 
       <gl-disclosure-dropdown-item
         v-if="showChangeType"
-        :data-testid="$options.changeTypeTestId"
+        data-testid="change-type-action"
         @action="showChangeTypeModal"
       >
         <template #list-item>{{ $options.i18n.changeWorkItemType }}</template>
@@ -597,7 +568,7 @@ export default {
 
       <gl-disclosure-dropdown-item
         v-if="showMoveButton"
-        :data-testid="$options.moveTestId"
+        data-testid="move-action"
         @action="isMoveWorkItemModalVisible = true"
       >
         <template #list-item>{{ __('Move') }}</template>
@@ -605,7 +576,7 @@ export default {
 
       <gl-disclosure-dropdown-item
         v-if="canUpdateMetadata"
-        :data-testid="$options.lockDiscussionTestId"
+        data-testid="lock-action"
         @action="toggleDiscussionLock"
       >
         <template #list-item>
@@ -618,12 +589,12 @@ export default {
         v-if="canUpdateMetadata"
         v-gl-tooltip.left.viewport.d0="confidentialTooltip"
         :item="confidentialItem"
-        :data-testid="$options.confidentialityTestId"
+        data-testid="confidentiality-toggle-action"
         @action="handleToggleWorkItemConfidentiality"
       />
 
       <gl-disclosure-dropdown-item
-        :data-testid="$options.copyReferenceTestId"
+        data-testid="copy-reference-action"
         :data-clipboard-text="workItemReference"
         class="shortcut-copy-reference"
         @action="copyToClipboard(workItemReference, $options.i18n.referenceCopied)"
@@ -633,7 +604,7 @@ export default {
 
       <gl-disclosure-dropdown-item
         v-if="$options.isLoggedIn && workItemCreateNoteEmail"
-        :data-testid="$options.copyCreateNoteEmailTestId"
+        data-testid="copy-create-note-email-action"
         :data-clipboard-text="workItemCreateNoteEmail"
         @action="copyToClipboard(workItemCreateNoteEmail, $options.i18n.emailAddressCopied)"
       >
@@ -644,7 +615,7 @@ export default {
 
       <gl-disclosure-dropdown-item
         v-if="!isAuthor"
-        :data-testid="$options.reportAbuseActionTestId"
+        data-testid="report-abuse-action"
         @action="handleToggleReportAbuseModal"
       >
         <template #list-item>{{ $options.i18n.reportAbuse }}</template>
@@ -658,7 +629,7 @@ export default {
 
       <template v-if="canDelete">
         <gl-disclosure-dropdown-item
-          :data-testid="$options.deleteActionTestId"
+          data-testid="delete-action"
           variant="danger"
           @action="handleDelete"
         >

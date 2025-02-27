@@ -6,4 +6,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173767
 milestone: '17.7'
 queued_migration_version: 20241125174339
 finalize_after: '2025-01-07'
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20250220232412'

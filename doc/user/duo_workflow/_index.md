@@ -41,18 +41,55 @@ GitLab Duo Workflow helps you complete development tasks directly in the VS Code
 Workflow:
 
 - Runs in your IDE so that you do not have to switch contexts or tools.
-- In response to your prompt, creates and works through a plan.
-  Workflow then stages the corresponding changes in your project's repository.
-  You control when to accept, modify, or reject the suggestions from Workflow.
-- Is context-aware. Workflow understands your project structure, codebase, and history.
+- Creates and works through a plan, in response to your prompt.
+- Stages proposed changes in your project's repository.
+  You control when to accept, modify, or reject the suggestions.
+- Understands the context of your project structure, codebase, and history.
   You can also add your own context, such as relevant GitLab issues or merge requests.
-  For more information, see [context](context.md).
 
-For more information, see:
+## Use Workflow in VS Code
 
-- [Set up Workflow](set_up.md).
-- [Use Workflow in your IDE](use_in_your_ide.md).
-- [Best practices](best_practices.md).
+Prerequisites:
+
+- You must have [set up Workflow](set_up.md).
+- The repository you want to work with should be small or medium-sized.
+  Workflow can be slow or fail for large repositories.
+
+To use Workflow in VS Code:
+
+1. In VS Code, open the Git repository folder for your GitLab project.
+1. Check out the branch for the code you would like to change.
+   - If you do not check out a GitLab project and branch, Workflow will not work.
+1. Open the command palette:
+   - On macOS: <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>
+   - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>P</kbd>.
+1. Type `GitLab Duo Workflow` and select **GitLab: Show Duo Workflow**.
+1. To create a workflow, select **New workflow**.
+1. For **Task description**, specify a junior-level code task in detail.
+   - Workflow is aware of all files available to Git in the project and branch you have open in your editor.
+   - You can also give Workflow [additional context](#the-context-workflow-is-aware-of).
+   - Workflow cannot access external sources or the web.
+1. Select **Start**.
+
+After you describe your task, Workflow generates and executes on a plan to address it.
+While it executes, you can pause or ask it to adjust the plan.
+
+For more information about how to interact with Workflow, see [best practices](best_practices.md).
+
+## The context Workflow is aware of
+
+When you ask Workflow for help with a task, it is aware of some files by default.
+You can also provide it with additional context.
+
+| Area                          | How to use GitLab Workflow |
+|-------------------------------|--------------------------------|
+| Epics                         | Enter the epic ID and the name of the group the epic is in. The group must include a project that meets the [prerequisites](set_up.md#prerequisites). |
+| Issues                        | Enter the issue ID if it's in the current project. You can also enter a project ID from a different project, as long as it meets the [prerequisites](set_up.md#prerequisites). |
+| Local files                   | Workflow is aware of all files available to Git in the project you have open in your editor. You can also reference a specific file by its file path. |
+| Merge requests                | Enter the merge request ID if it's in the current project. You can also enter a project ID from a different project, as long as it meets the [prerequisites](set_up.md#prerequisites). |
+| Merge request pipelines       | Enter the merge request ID that has the pipeline, if it's in the current project. You can also enter a project ID from a different project, as long as it meets the [prerequisites](set_up.md#prerequisites). |
+
+Workflow also has access to the GitLab [Search API](../../api/search.md) to find related issues or merge requests.
 
 ## Supported languages
 
@@ -86,21 +123,11 @@ to the following APIs:
 - [Notes API](../../api/notes.md)
 - [Usage Data API](../../api/usage_data.md)
 
-## Current limitations
-
-Workflow has the following limitations:
-
-- Requires the workspace folder in VS Code to have a Git repository for a GitLab project.
-- Only runs workflows for the GitLab project that's open in VS Code.
-- Only accesses files in the current branch and project.
-- Only accesses GitLab references in the GitLab instance of your project. For example, if your project is in GitLab.com, Workflow only accesses GitLab references in that instance. It cannot access external sources or the web.
-- Only reliably accesses GitLab references if provided with their IDs. For example, issue ID and not issue URL.
-- Can be slow or fail in large repositories.
-
 ## Audit log
 
 An audit event is created for each API request done by Workflow.
-On your GitLab Self-Managed instance, you can view these events on the [instance audit events](../../administration/audit_event_reports.md#instance-audit-events) page.
+On your GitLab Self-Managed instance, you can view these events on the
+[instance audit events](../../administration/compliance/audit_event_reports.md#instance-audit-events) page.
 
 ## Give feedback
 

@@ -1,7 +1,7 @@
 import * as timeago from 'timeago.js';
 import { newDate } from '~/lib/utils/datetime/date_calculation_utility';
 import { DEFAULT_DATE_TIME_FORMAT, localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
-import { languageCode, s__ } from '~/locale';
+import { languageCode, getPluralFormIndex, s__, n__ } from '~/locale';
 
 /**
  * Timeago uses underscores instead of dashes to separate language from country code.
@@ -10,64 +10,104 @@ import { languageCode, s__ } from '~/locale';
  */
 export const timeagoLanguageCode = languageCode().replace(/-/g, '_');
 
+const i18n = {
+  justNow: s__('Timeago|just now'),
+  rightNow: s__('Timeago|right now'),
+  secondsAgoPlural: (n) => n__('Timeago|1 second ago', 'Timeago|%s seconds ago', n),
+  secondsRemainingPlural: (n) =>
+    n__('Timeago|1 second remaining', 'Timeago|%s seconds remaining', n),
+  inSecondsPlural: (n) => n__('Timeago|in 1 second', 'Timeago|in %s seconds', n),
+  durationSecondsPlural: (n) => n__('Duration|1 second', 'Duration|%s seconds', n),
+  minutesAgoPlural: (n) => n__('Timeago|1 minute ago', 'Timeago|%s minutes ago', n),
+  minutesRemainingPlural: (n) =>
+    n__('Timeago|1 minute remaining', 'Timeago|%s minutes remaining', n),
+  inMinutesPlural: (n) => n__('Timeago|in 1 minute', 'Timeago|in %s minutes', n),
+  durationMinutesPlural: (n) => n__('Duration|1 minute', 'Duration|%s minutes', n),
+  hoursAgoPlural: (n) => n__('Timeago|1 hour ago', 'Timeago|%s hours ago', n),
+  hoursRemainingPlural: (n) => n__('Timeago|1 hour remaining', 'Timeago|%s hours remaining', n),
+  inHoursPlural: (n) => n__('Timeago|in 1 hour', 'Timeago|in %s hours', n),
+  durationHoursPlural: (n) => n__('Duration|1 hour', 'Duration|%s hours', n),
+  daysAgoPlural: (n) => n__('Timeago|1 day ago', 'Timeago|%s days ago', n),
+  daysRemainingPlural: (n) => n__('Timeago|1 day remaining', 'Timeago|%s days remaining', n),
+  inDaysPlural: (n) => n__('Timeago|in 1 day', 'Timeago|in %s days', n),
+  durationDaysPlural: (n) => n__('Duration|1 day', 'Duration|%s days', n),
+  weeksAgoPlural: (n) => n__('Timeago|1 week ago', 'Timeago|%s weeks ago', n),
+  weeksRemainingPlural: (n) => n__('Timeago|1 week remaining', 'Timeago|%s weeks remaining', n),
+  inWeeksPlural: (n) => n__('Timeago|in 1 week', 'Timeago|in %s weeks', n),
+  durationWeeksPlural: (n) => n__('Duration|1 week', 'Duration|%s weeks', n),
+  monthsAgoPlural: (n) => n__('Timeago|1 month ago', 'Timeago|%s months ago', n),
+  monthsRemainingPlural: (n) => n__('Timeago|1 month remaining', 'Timeago|%s months remaining', n),
+  inMonthsPlural: (n) => n__('Timeago|in 1 month', 'Timeago|in %s months', n),
+  durationMonthsPlural: (n) => n__('Duration|1 month', 'Duration|%s months', n),
+  yearsAgoPlural: (n) => n__('Timeago|1 year ago', 'Timeago|%s years ago', n),
+  yearsRemainingPlural: (n) => n__('Timeago|1 year remaining', 'Timeago|%s years remaining', n),
+  inYearsPlural: (n) => n__('Timeago|in 1 year', 'Timeago|in %s years', n),
+  durationYearsPlural: (n) => n__('Duration|1 year', 'Duration|%s years', n),
+  pastDue: s__('Timeago|Past due'),
+};
+
 /**
  * Registers timeago locales
  */
 const memoizedLocaleRemaining = () => {
   const cache = [];
 
-  const timeAgoLocaleRemaining = [
-    () => [s__('Timeago|just now'), s__('Timeago|right now')],
-    () => [s__('Timeago|just now'), s__('Timeago|%s seconds remaining')],
-    () => [s__('Timeago|1 minute ago'), s__('Timeago|1 minute remaining')],
-    () => [s__('Timeago|%s minutes ago'), s__('Timeago|%s minutes remaining')],
-    () => [s__('Timeago|1 hour ago'), s__('Timeago|1 hour remaining')],
-    () => [s__('Timeago|%s hours ago'), s__('Timeago|%s hours remaining')],
-    () => [s__('Timeago|1 day ago'), s__('Timeago|1 day remaining')],
-    () => [s__('Timeago|%s days ago'), s__('Timeago|%s days remaining')],
-    () => [s__('Timeago|1 week ago'), s__('Timeago|1 week remaining')],
-    () => [s__('Timeago|%s weeks ago'), s__('Timeago|%s weeks remaining')],
-    () => [s__('Timeago|1 month ago'), s__('Timeago|1 month remaining')],
-    () => [s__('Timeago|%s months ago'), s__('Timeago|%s months remaining')],
-    () => [s__('Timeago|1 year ago'), s__('Timeago|1 year remaining')],
-    () => [s__('Timeago|%s years ago'), s__('Timeago|%s years remaining')],
+  const locales = [
+    () => [i18n.justNow, i18n.rightNow],
+    (n) => [i18n.secondsAgoPlural(n), i18n.secondsRemainingPlural(n)],
+    () => [i18n.minutesAgoPlural(1), i18n.minutesRemainingPlural(1)],
+    (n) => [i18n.minutesAgoPlural(n), i18n.minutesRemainingPlural(n)],
+    () => [i18n.hoursAgoPlural(1), i18n.hoursRemainingPlural(1)],
+    (n) => [i18n.hoursAgoPlural(n), i18n.hoursRemainingPlural(n)],
+    () => [i18n.daysAgoPlural(1), i18n.daysRemainingPlural(1)],
+    (n) => [i18n.daysAgoPlural(n), i18n.daysRemainingPlural(n)],
+    () => [i18n.weeksAgoPlural(1), i18n.weeksRemainingPlural(1)],
+    (n) => [i18n.weeksAgoPlural(n), i18n.weeksRemainingPlural(n)],
+    () => [i18n.monthsAgoPlural(1), i18n.monthsRemainingPlural(1)],
+    (n) => [i18n.monthsAgoPlural(n), i18n.monthsRemainingPlural(n)],
+    () => [i18n.yearsAgoPlural(1), i18n.yearsRemainingPlural(1)],
+    (n) => [i18n.yearsAgoPlural(n), i18n.yearsRemainingPlural(n)],
   ];
 
   return (number, index) => {
-    if (cache[index]) {
-      return cache[index];
+    const form = getPluralFormIndex(number);
+    const cacheKey = `${index}-${form}`;
+    if (!cache[cacheKey]) {
+      cache[cacheKey] = locales[index] && locales[index](number);
     }
-    cache[index] = timeAgoLocaleRemaining[index] && timeAgoLocaleRemaining[index]();
-    return cache[index];
+
+    return cache[cacheKey];
   };
 };
 
 const memoizedLocale = () => {
   const cache = [];
 
-  const timeAgoLocale = [
-    () => [s__('Timeago|just now'), s__('Timeago|right now')],
-    () => [s__('Timeago|just now'), s__('Timeago|in %s seconds')],
-    () => [s__('Timeago|1 minute ago'), s__('Timeago|in 1 minute')],
-    () => [s__('Timeago|%s minutes ago'), s__('Timeago|in %s minutes')],
-    () => [s__('Timeago|1 hour ago'), s__('Timeago|in 1 hour')],
-    () => [s__('Timeago|%s hours ago'), s__('Timeago|in %s hours')],
-    () => [s__('Timeago|1 day ago'), s__('Timeago|in 1 day')],
-    () => [s__('Timeago|%s days ago'), s__('Timeago|in %s days')],
-    () => [s__('Timeago|1 week ago'), s__('Timeago|in 1 week')],
-    () => [s__('Timeago|%s weeks ago'), s__('Timeago|in %s weeks')],
-    () => [s__('Timeago|1 month ago'), s__('Timeago|in 1 month')],
-    () => [s__('Timeago|%s months ago'), s__('Timeago|in %s months')],
-    () => [s__('Timeago|1 year ago'), s__('Timeago|in 1 year')],
-    () => [s__('Timeago|%s years ago'), s__('Timeago|in %s years')],
+  const locales = [
+    () => [i18n.justNow, i18n.rightNow],
+    (n) => [i18n.secondsAgoPlural(n), i18n.inSecondsPlural(n)],
+    () => [i18n.minutesAgoPlural(1), i18n.inMinutesPlural(1)],
+    (n) => [i18n.minutesAgoPlural(n), i18n.inMinutesPlural(n)],
+    () => [i18n.hoursAgoPlural(1), i18n.inHoursPlural(1)],
+    (n) => [i18n.hoursAgoPlural(n), i18n.inHoursPlural(n)],
+    () => [i18n.daysAgoPlural(1), i18n.inDaysPlural(1)],
+    (n) => [i18n.daysAgoPlural(n), i18n.inDaysPlural(n)],
+    () => [i18n.weeksAgoPlural(1), i18n.inWeeksPlural(1)],
+    (n) => [i18n.weeksAgoPlural(n), i18n.inWeeksPlural(n)],
+    () => [i18n.monthsAgoPlural(1), i18n.inMonthsPlural(1)],
+    (n) => [i18n.monthsAgoPlural(n), i18n.inMonthsPlural(n)],
+    () => [i18n.yearsAgoPlural(1), i18n.inYearsPlural(1)],
+    (n) => [i18n.yearsAgoPlural(n), i18n.inYearsPlural(n)],
   ];
 
   return (number, index) => {
-    if (cache[index]) {
-      return cache[index];
+    const form = getPluralFormIndex(number);
+    const cacheKey = `${index}-${form}`;
+    if (!cache[cacheKey]) {
+      cache[cacheKey] = locales[index] && locales[index](number);
     }
-    cache[index] = timeAgoLocale[index] && timeAgoLocale[index]();
-    return cache[index];
+
+    return cache[cacheKey];
   };
 };
 
@@ -77,29 +117,31 @@ const memoizedLocale = () => {
 const memoizedLocaleDuration = () => {
   const cache = [];
 
-  const durations = [
-    () => [s__('Duration|%s seconds')],
-    () => [s__('Duration|%s seconds')],
-    () => [s__('Duration|1 minute')],
-    () => [s__('Duration|%s minutes')],
-    () => [s__('Duration|1 hour')],
-    () => [s__('Duration|%s hours')],
-    () => [s__('Duration|1 day')],
-    () => [s__('Duration|%s days')],
-    () => [s__('Duration|1 week')],
-    () => [s__('Duration|%s weeks')],
-    () => [s__('Duration|1 month')],
-    () => [s__('Duration|%s months')],
-    () => [s__('Duration|1 year')],
-    () => [s__('Duration|%s years')],
+  const locales = [
+    (n) => [i18n.durationSecondsPlural(n)],
+    (n) => [i18n.durationSecondsPlural(n)],
+    () => [i18n.durationMinutesPlural(1)],
+    (n) => [i18n.durationMinutesPlural(n)],
+    () => [i18n.durationHoursPlural(1)],
+    (n) => [i18n.durationHoursPlural(n)],
+    () => [i18n.durationDaysPlural(1)],
+    (n) => [i18n.durationDaysPlural(n)],
+    () => [i18n.durationWeeksPlural(1)],
+    (n) => [i18n.durationWeeksPlural(n)],
+    () => [i18n.durationMonthsPlural(1)],
+    (n) => [i18n.durationMonthsPlural(n)],
+    () => [i18n.durationYearsPlural(1)],
+    (n) => [i18n.durationYearsPlural(n)],
   ];
 
-  return (_, index) => {
-    if (cache[index]) {
-      return cache[index];
+  return (number, index) => {
+    const form = getPluralFormIndex(number);
+    const cacheKey = `${index}-${form}`;
+    if (!cache[cacheKey]) {
+      cache[cacheKey] = locales[index] && locales[index](number);
     }
-    cache[index] = durations[index] && durations[index]();
-    return cache[index];
+
+    return cache[cacheKey];
   };
 };
 
@@ -147,7 +189,7 @@ export const timeFor = (time, expiredLabel) => {
     return '';
   }
   if (new Date(time) < new Date()) {
-    return expiredLabel || s__('Timeago|Past due');
+    return expiredLabel || i18n.pastDue;
   }
   return timeago.format(time, `${timeagoLanguageCode}-remaining`).trim();
 };

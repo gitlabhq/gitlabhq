@@ -89,7 +89,7 @@ RSpec.describe Gitlab::Database::Sos::BaseDbStatsHandler, feature_category: :dat
 
     context 'when an error occurs' do
       before do
-        allow(output).to receive(:write_file).and_raise(StandardError.new('Something when wrong'))
+        allow(output).to receive(:write_file).and_raise(StandardError.new('Something went wrong'))
       end
 
       it 'logs the error' do

@@ -18,7 +18,7 @@ management [solutions page](https://about.gitlab.com/solutions/compliance/).
 The [security features](../../security/_index.md) in GitLab may also help you meet relevant compliance standards.
 
 For more information on all GitLab compliance features to ensure your GitLab instance meets common compliance standards, see
-[Compliance features](../../administration/compliance.md).
+[Compliance features](../../administration/compliance/compliance_features.md).
 
 ## Compliant workflow automation
 

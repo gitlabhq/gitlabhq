@@ -12,8 +12,10 @@ title: Performance bar
 
 {{< /details >}}
 
-You can display the performance bar to see statistics for the performance of a GitLab UI page.
-For example:
+The performance bar displays real-time metrics directly in your browser, giving you insights without
+making you look through logs or run separate profiling tools.
+
+For development teams, the performance bar simplifies debugging by showing exactly where they should focus their efforts.
 
 ![Performance bar](img/performance_bar_v14_4.png)
 

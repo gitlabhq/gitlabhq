@@ -5,6 +5,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Reducing memory use
 ---
 
+The Sidekiq memory killer automatically manages background job processes that
+consume too much memory.
+
+This feature monitors worker processes and restarts them before they crash your instance.
+Background jobs continue processing with minimal interruption.
+
+The detailed logging makes troubleshooting easier by identifying which jobs trigger
+high memory usage.
+
+## Memory management
+
 The GitLab Rails application code suffers from memory leaks. For web requests
 this problem is made manageable using a [supervision thread](../operations/puma.md#reducing-memory-use)
 that automatically restarts workers if they exceed a given resident set size (RSS) threshold

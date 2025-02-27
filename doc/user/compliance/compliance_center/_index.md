@@ -29,4 +29,4 @@ The compliance center comprises the:
 - [Compliance projects report](compliance_projects_report.md).
 
 For more information on other GitLab compliance features for projects, groups, and instances, see
-[Compliance features](../../../administration/compliance.md).
+[Compliance features](../../../administration/compliance/compliance_features.md).

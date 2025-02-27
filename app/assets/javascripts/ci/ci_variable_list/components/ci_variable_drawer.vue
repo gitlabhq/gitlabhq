@@ -662,7 +662,7 @@ export default {
       />
       <p
         v-if="variable.key.length > 0 && !isKeyValid"
-        class="gl-mb-0 gl-border-none !gl-pb-0 !gl-pt-3 gl-text-red-500"
+        class="gl-mb-0 gl-border-none !gl-pb-0 !gl-pt-3 gl-text-danger"
       >
         {{ $options.i18n.keyFeedback }}
       </p>

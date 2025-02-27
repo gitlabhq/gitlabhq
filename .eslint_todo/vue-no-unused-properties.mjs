@@ -385,7 +385,6 @@ export default {
     'app/assets/javascripts/work_items/components/notes/work_item_note_body.vue',
     'app/assets/javascripts/work_items/components/shared/work_item_link_child_metadata.vue',
     'app/assets/javascripts/work_items/components/shared/work_item_token_input.vue',
-    'app/assets/javascripts/work_items/components/work_item_actions.vue',
     'app/assets/javascripts/work_items/components/work_item_assignees.vue',
     'app/assets/javascripts/work_items/components/work_item_attributes_wrapper.vue',
     'app/assets/javascripts/work_items/components/work_item_change_type_modal.vue',

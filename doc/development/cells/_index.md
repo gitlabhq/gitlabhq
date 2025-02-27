@@ -294,11 +294,42 @@ On another cell, the `plans` table has differing ids for the same `name`:
  10 | opensource                   | Opensource
  ```
 
-This `plans.id` column is then used in the `gitlab_subscriptions` table.
+This `plans.id` column is then used as a reference in the `hosted_plan_id`
+column of `gitlab_subscriptions` table.
 
 Solution: Use globally unique references, not a database sequence.
 If possible, hard-code static data in application code, instead of using the
 database.
+
+In this case, the `plans` table can be dropped, and replaced with a fixed model:
+
+```ruby
+class Plan
+  include ActiveModel::Model
+  include ActiveModel::Attributes
+  include ActiveRecord::FixedItemsModel::Model
+
+  ITEMS = [
+    {:id=>1, :name=>"default", :title=>"Default"},
+    {:id=>2, :name=>"bronze", :title=>"Bronze"},
+    {:id=>3, :name=>"silver", :title=>"Silver"},
+    {:id=>4, :name=>"premium", :title=>"Premium"},
+    {:id=>5, :name=>"gold", :title=>"Gold"},
+    {:id=>6, :name=>"ultimate", :title=>"Ultimate"},
+    {:id=>7, :name=>"ultimate_trial", :title=>"Ultimate Trial"},
+    {:id=>8, :name=>"ultimate_trial_paid_customer", :title=>"Ultimate Trial Paid Customer"},
+    {:id=>9, :name=>"premium_trial", :title=>"Premium Trial"},
+    {:id=>10, :name=>"opensource", :title=>"Opensource"}
+  ]
+
+  attribute :id, :integer
+  attribute :name, :string
+  attribute :title, :string
+end
+```
+
+The `hosted_plan_id` column will also be updated to refer to the fixed model's
+`id` value.
 
 Examples of hard-coding static data include:
 

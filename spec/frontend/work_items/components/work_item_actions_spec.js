@@ -19,23 +19,11 @@ import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_
 import MoveWorkItemModal from '~/work_items/components/move_work_item_modal.vue';
 import {
   STATE_OPEN,
-  TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
-  TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
-  TEST_ID_COPY_REFERENCE_ACTION,
-  TEST_ID_DELETE_ACTION,
-  TEST_ID_LOCK_ACTION,
-  TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
-  TEST_ID_PROMOTE_ACTION,
-  TEST_ID_CHANGE_TYPE_ACTION,
-  TEST_ID_TOGGLE_ACTION,
-  TEST_ID_REPORT_ABUSE,
-  TEST_ID_NEW_RELATED_WORK_ITEM,
   WORK_ITEM_TYPE_VALUE_INCIDENT,
   WORK_ITEM_TYPE_VALUE_ISSUE,
   WORK_ITEM_TYPE_VALUE_KEY_RESULT,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORK_ITEM_TYPE_VALUE_TASK,
-  TEST_ID_MOVE_ACTION,
 } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '~/work_items/graphql/update_work_item_notifications.mutation.graphql';
@@ -63,18 +51,17 @@ describe('WorkItemActions component', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findConfidentialityToggleButton = () =>
-    wrapper.findByTestId(TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION);
-  const findLockDiscussionButton = () => wrapper.findByTestId(TEST_ID_LOCK_ACTION);
-  const findDeleteButton = () => wrapper.findByTestId(TEST_ID_DELETE_ACTION);
-  const findPromoteButton = () => wrapper.findByTestId(TEST_ID_PROMOTE_ACTION);
-  const findCopyReferenceButton = () => wrapper.findByTestId(TEST_ID_COPY_REFERENCE_ACTION);
+    wrapper.findByTestId('confidentiality-toggle-action');
+  const findLockDiscussionButton = () => wrapper.findByTestId('lock-action');
+  const findDeleteButton = () => wrapper.findByTestId('delete-action');
+  const findPromoteButton = () => wrapper.findByTestId('promote-action');
+  const findCopyReferenceButton = () => wrapper.findByTestId('copy-reference-action');
   const findWorkItemToggleOption = () => wrapper.findComponent(WorkItemStateToggle);
-  const findCopyCreateNoteEmailButton = () =>
-    wrapper.findByTestId(TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION);
-  const findReportAbuseButton = () => wrapper.findByTestId(TEST_ID_REPORT_ABUSE);
+  const findCopyCreateNoteEmailButton = () => wrapper.findByTestId('copy-create-note-email-action');
+  const findReportAbuseButton = () => wrapper.findByTestId('report-abuse-action');
   const findSubmitAsSpamItem = () => wrapper.findByTestId('submit-as-spam-item');
-  const findNewRelatedItemButton = () => wrapper.findByTestId(TEST_ID_NEW_RELATED_WORK_ITEM);
-  const findChangeTypeButton = () => wrapper.findByTestId(TEST_ID_CHANGE_TYPE_ACTION);
+  const findNewRelatedItemButton = () => wrapper.findByTestId('new-related-work-item');
+  const findChangeTypeButton = () => wrapper.findByTestId('change-type-action');
   const findReportAbuseModal = () => wrapper.findComponent(WorkItemAbuseModal);
   const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
   const findWorkItemChangeTypeModal = () => wrapper.findComponent(WorkItemChangeTypeModal);
@@ -93,7 +80,7 @@ describe('WorkItemActions component', () => {
       };
     });
   const findNotificationsToggle = () => wrapper.findComponent(GlToggle);
-  const findMoveButton = () => wrapper.findByTestId(TEST_ID_MOVE_ACTION);
+  const findMoveButton = () => wrapper.findByTestId('move-action');
   const findMoveModal = () => wrapper.findComponent(MoveWorkItemModal);
 
   const modalShowSpy = jest.fn();
@@ -233,50 +220,50 @@ describe('WorkItemActions component', () => {
 
     expect(findDropdownItemsActual()).toEqual([
       {
-        testId: TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
+        testId: 'notifications-toggle-form',
         text: '',
       },
       {
         divider: true,
       },
       {
-        testId: TEST_ID_TOGGLE_ACTION,
+        testId: 'state-toggle-action',
         text: '',
       },
       {
-        testId: TEST_ID_NEW_RELATED_WORK_ITEM,
+        testId: 'new-related-work-item',
         text: 'New related item',
       },
 
       {
-        testId: TEST_ID_CHANGE_TYPE_ACTION,
+        testId: 'change-type-action',
         text: 'Change type',
       },
       {
-        testId: TEST_ID_MOVE_ACTION,
+        testId: 'move-action',
         text: 'Move',
       },
       {
-        testId: TEST_ID_LOCK_ACTION,
+        testId: 'lock-action',
         text: 'Lock discussion',
       },
       {
-        testId: TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
+        testId: 'confidentiality-toggle-action',
         text: 'Turn on confidentiality',
       },
       {
-        testId: TEST_ID_COPY_REFERENCE_ACTION,
+        testId: 'copy-reference-action',
         text: 'Copy reference',
       },
       {
-        testId: TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
+        testId: 'copy-create-note-email-action',
         text: 'Copy issue email address',
       },
       {
         divider: true,
       },
       {
-        testId: TEST_ID_REPORT_ABUSE,
+        testId: 'report-abuse-action',
         text: 'Report abuse',
       },
       {
@@ -284,7 +271,7 @@ describe('WorkItemActions component', () => {
         text: 'Submit as spam',
       },
       {
-        testId: TEST_ID_DELETE_ACTION,
+        testId: 'delete-action',
         text: 'Delete issue',
       },
     ]);
@@ -296,7 +283,7 @@ describe('WorkItemActions component', () => {
     expect(findDropdownItemsActual()).toEqual(
       expect.arrayContaining([
         {
-          testId: TEST_ID_NEW_RELATED_WORK_ITEM,
+          testId: 'new-related-work-item',
           text: 'New related epic',
         },
       ]),

@@ -26,7 +26,9 @@ Follow these best practices to get the most value from GitLab Duo Workflow.
 A prompt is the text input that you give to Workflow. To create an effective prompt:
 
 - Define a clear goal with measurable outcomes.
-- Provide clear context by including relevant files, merge requests, or issues. For information about the types of context Workflow understands, see [context](context.md).
+- Provide clear context by including relevant files, merge requests, or issues.
+  For information about the types of context Workflow understands, see
+  [context](_index.md#the-context-workflow-is-aware-of).
 - Provide examples of expected changes.
 - Include or link to any technical requirements or rules.
 
@@ -96,7 +98,3 @@ Add aria-label attributes to buttons without text content.
 Use the button's function for the label value.
 Required format: aria-label="Action description"
 ```
-
-## Related topics
-
-- [Use GitLab Duo Workflow in your IDE](use_in_your_ide.md)

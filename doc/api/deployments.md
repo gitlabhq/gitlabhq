@@ -12,7 +12,11 @@ title: Deployments API
 
 {{< /details >}}
 
-> Support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414549) in GitLab 16.2.
+{{< history >}}
+
+- Support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414549) in GitLab 16.2.
+
+{{< /history >}}
 
 ## List project deployments
 

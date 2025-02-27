@@ -115,9 +115,6 @@ export default {
     workItemType() {
       return this.workItem.workItemType?.name;
     },
-    workItemTypeId() {
-      return this.workItem.workItemType?.id;
-    },
     projectFullPath() {
       return this.workItem.namespace?.fullPath;
     },
@@ -197,7 +194,6 @@ export default {
             :hide-subscribe="newTodoAndNotificationsEnabled"
             :subscribed-to-notifications="workItemNotificationsSubscribed"
             :work-item-type="workItemType"
-            :work-item-type-id="workItemTypeId"
             :can-delete="canDelete"
             :can-report-spam="canReportSpam"
             :can-update="canUpdate"

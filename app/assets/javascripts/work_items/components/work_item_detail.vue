@@ -298,9 +298,6 @@ export default {
     workItemType() {
       return this.workItem.workItemType?.name;
     },
-    workItemTypeId() {
-      return this.workItem.workItemType?.id;
-    },
     workItemAuthorId() {
       return getIdFromGraphQLId(this.workItem.author?.id);
     },
@@ -903,7 +900,6 @@ export default {
                 :hide-subscribe="newTodoAndNotificationsEnabled"
                 :subscribed-to-notifications="workItemNotificationsSubscribed"
                 :work-item-type="workItemType"
-                :work-item-type-id="workItemTypeId"
                 :work-item-iid="iid"
                 :project-id="workItemProjectId"
                 :can-delete="canDelete"

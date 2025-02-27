@@ -22,6 +22,8 @@ swap:
   (?<!right-)click(?!-through): "select"
   cancelled: "canceled"
   cancelling: "canceling"
+  case sensitive: "case-sensitive"
+  case insensitive: "case-insensitive"
   cherry pick: "cherry-pick"
   code base: "codebase"
   config: "configuration"

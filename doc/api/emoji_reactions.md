@@ -12,7 +12,11 @@ title: Emoji reactions API
 
 {{< /details >}}
 
-> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409884) from "award emoji" to "emoji reactions" in GitLab 16.0.
+{{< history >}}
+
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409884) from "award emoji" to "emoji reactions" in GitLab 16.0.
+
+{{< /history >}}
 
 An [emoji reaction](../user/emoji_reactions.md) tells a thousand words.
 
