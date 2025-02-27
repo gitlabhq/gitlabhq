@@ -848,7 +848,7 @@ export default {
         <work-item-loading v-if="workItemLoading" />
         <gl-empty-state
           v-else-if="error"
-          :title="$options.i18n.fetchErrorTitle"
+          :title="s__('WorkItem|Work item not found')"
           :description="error"
           :svg-path="$options.noAccessSvg"
         />
@@ -1058,7 +1058,7 @@ export default {
                   @change="onUploadDesign"
                 >
                   <template #upload-text>
-                    {{ $options.i18n.addDesignEmptyState }}
+                    {{ s__('DesignManagement|Drag images here to add designs.') }}
                   </template>
                 </design-dropzone>
               </template>

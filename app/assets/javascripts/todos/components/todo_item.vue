@@ -128,6 +128,7 @@ export default {
       :href="targetUrl"
       :data-track-label="trackingLabel"
       :data-track-action="$options.TRACK_ACTION"
+      :data-track-property="todo.action"
       class="gl-flex gl-min-w-0 gl-flex-1 gl-flex-wrap gl-justify-end gl-gap-y-3 !gl-text-default !gl-no-underline sm:gl-flex-nowrap sm:gl-items-center"
     >
       <div

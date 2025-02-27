@@ -2,7 +2,7 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { reportToSentry } from '~/ci/utils';
 import { s__ } from '~/locale';
-import Tracking from '~/tracking';
+import { InternalEvents } from '~/tracking';
 import { INSTRUMENT_TODO_ITEM_CLICK, TODO_STATE_DONE, TODO_STATE_PENDING } from '../constants';
 import markAsDoneMutation from './mutations/mark_as_done.mutation.graphql';
 import markAsPendingMutation from './mutations/mark_as_pending.mutation.graphql';
@@ -16,7 +16,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [InternalEvents.mixin()],
   props: {
     todo: {
       type: Object,
@@ -63,8 +63,9 @@ export default {
       });
     },
     async toggleStatus() {
-      this.track(INSTRUMENT_TODO_ITEM_CLICK, {
+      this.trackEvent(INSTRUMENT_TODO_ITEM_CLICK, {
         label: this.isDone ? 'mark_pending' : 'mark_done',
+        property: this.todo.action,
       });
       const mutation = this.isDone ? markAsPendingMutation : markAsDoneMutation;
       const showError = this.isDone ? this.showMarkAsPendingError : this.showMarkAsDoneError;

@@ -22,10 +22,6 @@ import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_
 import {
   sprintfWorkItem,
   BASE_ALLOWED_CREATE_TYPES,
-  I18N_WORK_ITEM_DELETE,
-  I18N_WORK_ITEM_ARE_YOU_SURE_DELETE,
-  I18N_WORK_ITEM_ARE_YOU_SURE_DELETE_HIERARCHY,
-  I18N_WORK_ITEM_ERROR_CONVERTING,
   WORK_ITEM_TYPE_VALUE_KEY_RESULT,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL,
@@ -256,8 +252,13 @@ export default {
   computed: {
     i18n() {
       return {
-        deleteWorkItem: sprintfWorkItem(I18N_WORK_ITEM_DELETE, this.workItemType),
-        convertError: sprintfWorkItem(I18N_WORK_ITEM_ERROR_CONVERTING, this.workItemType),
+        deleteWorkItem: sprintfWorkItem(s__('WorkItem|Delete %{workItemType}'), this.workItemType),
+        convertError: sprintfWorkItem(
+          s__(
+            'WorkItem|Something went wrong while promoting the %{workItemType}. Please try again.',
+          ),
+          this.workItemType,
+        ),
         copyCreateNoteEmail: sprintfWorkItem(
           I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL,
           this.workItemType,
@@ -275,9 +276,14 @@ export default {
         : s__('WorkItem|New related item');
     },
     areYouSureDeleteMessage() {
-      return this.hasChildren
-        ? sprintfWorkItem(I18N_WORK_ITEM_ARE_YOU_SURE_DELETE_HIERARCHY, this.workItemType)
-        : sprintfWorkItem(I18N_WORK_ITEM_ARE_YOU_SURE_DELETE, this.workItemType);
+      const message = this.hasChildren
+        ? s__(
+            'WorkItem|Delete this %{workItemType} and release all child items? This action cannot be reversed.',
+          )
+        : s__(
+            'WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed.',
+          );
+      return sprintfWorkItem(message, this.workItemType);
     },
     canPromoteToObjective() {
       return this.canUpdateMetadata && this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT;

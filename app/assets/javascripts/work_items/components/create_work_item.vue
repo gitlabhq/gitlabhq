@@ -30,7 +30,6 @@ import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import {
   I18N_WORK_ITEM_CREATE_BUTTON_LABEL,
   I18N_WORK_ITEM_ERROR_CREATING,
-  I18N_WORK_ITEM_ERROR_FETCHING_TYPES,
   sprintfWorkItem,
   i18n,
   WIDGET_TYPE_ASSIGNEES,
@@ -273,7 +272,9 @@ export default {
         }
       },
       error() {
-        this.error = I18N_WORK_ITEM_ERROR_FETCHING_TYPES;
+        this.error = s__(
+          'WorkItem|Something went wrong when fetching work item types. Please try again',
+        );
       },
     },
   },

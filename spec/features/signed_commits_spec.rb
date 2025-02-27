@@ -98,8 +98,7 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
       end
     end
 
-    it 'unverified signature: gpg key email does not match the committer_email when the committer_email belongs to the user as a unconfirmed secondary email',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408233' do
+    it 'unverified signature: gpg key email does not match the committer_email when the committer_email belongs to the user as a unconfirmed secondary email' do
       user_2_key
 
       visit project_commit_path(project, GpgHelpers::SIGNED_COMMIT_SHA)
@@ -113,7 +112,7 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
       end
     end
 
-    it 'unverified signature: commit contains multiple GPG signatures', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408233' do
+    it 'unverified signature: commit contains multiple GPG signatures' do
       user_1_key
 
       visit project_commit_path(project, GpgHelpers::MULTIPLE_SIGNATURES_SHA)
@@ -126,7 +125,7 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
       end
     end
 
-    it 'verified and the gpg user has a gitlab profile', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408233' do
+    it 'verified and the gpg user has a gitlab profile' do
       user_1_key
 
       visit project_commit_path(project, GpgHelpers::SIGNED_AND_AUTHORED_SHA)

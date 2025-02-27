@@ -362,7 +362,7 @@ export default {
       return this.shouldDisplayMergeImmediatelyDropdownOptions && this.isSkipMergeTrainAvailable;
     },
     canRebase() {
-      return this.sourceHasDivergedFromTarget && this.shouldShowMergeControls;
+      return this.sourceHasDivergedFromTarget && this.mr.canPushToSourceBranch;
     },
   },
   watch: {
@@ -847,14 +847,27 @@ export default {
                 {{ __('Merge details') }}
               </p>
               <ul class="gl-mb-0 gl-ml-3 gl-pl-4 gl-text-subtle">
-                <li v-if="sourceHasDivergedFromTarget" class="gl-leading-normal">
-                  <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
-                    <template #link>
-                      <gl-link :href="mr.targetBranchPath">{{
-                        $options.i18n.divergedCommits(mr.divergedCommitsCount)
-                      }}</gl-link>
-                    </template>
-                  </gl-sprintf>
+                <li v-if="sourceHasDivergedFromTarget">
+                  <div class="gl-gap-2 md:gl-flex">
+                    <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
+                      <template #link>
+                        <gl-link :href="mr.targetBranchPath">{{
+                          $options.i18n.divergedCommits(mr.divergedCommitsCount)
+                        }}</gl-link>
+                      </template>
+                    </gl-sprintf>
+                    <gl-button
+                      v-if="canRebase"
+                      size="small"
+                      variant="link"
+                      data-testid="rebase-button"
+                      :loading="isRebaseInProgress"
+                      :aria-label="__('Rebase source branch')"
+                      @click="handleRebaseClick"
+                    >
+                      {{ __('Rebase source branch') }}
+                    </gl-button>
+                  </div>
                 </li>
                 <li class="gl-leading-normal">
                   <added-commit-message

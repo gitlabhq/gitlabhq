@@ -3,7 +3,7 @@ import { GlButton, GlDisclosureDropdown, GlLabel } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { difference, unionBy } from 'lodash';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
-import { __, n__ } from '~/locale';
+import { __, n__, s__ } from '~/locale';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
 import groupLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/group_labels.query.graphql';
@@ -13,7 +13,7 @@ import Tracking from '~/tracking';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
-import { i18n, I18N_WORK_ITEM_ERROR_FETCHING_LABELS, TRACKING_CATEGORY_SHOW } from '../constants';
+import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
 import { isLabelsWidget, newWorkItemId, newWorkItemFullPath } from '../utils';
 
 function formatLabelForListbox(label) {
@@ -216,7 +216,10 @@ export default {
         this.labelsCache = unionBy(this.labelsCache, labels, 'id');
       },
       error() {
-        this.$emit('error', I18N_WORK_ITEM_ERROR_FETCHING_LABELS);
+        this.$emit(
+          'error',
+          s__('WorkItem|Something went wrong when fetching labels. Please try again.'),
+        );
       },
     },
   },

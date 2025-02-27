@@ -33,20 +33,20 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
     context 'when changing restrict_user_defined_variables' do
       using RSpec::Parameterized::TableSyntax
 
-      where(:current_user_role, :project_minimum_role, :from_value, :to_value, :status) do
-        :owner      | :developer  | true  | false | :success
-        :owner      | :maintainer | true  | false | :success
-        :owner      | :developer  | false | true  | :success
-        :owner      | :maintainer | false | true  | :success
-        :maintainer | :developer  | true  | false | :success
-        :maintainer | :maintainer | true  | false | :success
-        :maintainer | :owner      | true  | false | :api_error
-        :maintainer | :owner      | false | true  | :success
-        :maintainer | :owner      | true  | true  | :success
-        :developer  | :owner      | true  | false | :api_error
-        :developer  | :developer  | true  | false | :api_error
-        :developer  | :maintainer | true  | false | :api_error
-        :developer  | :maintainer | false | true  | :api_error
+      where(:current_user_role, :project_minimum_role, :from_value, :to_value, :expected_value, :expected_role, :status) do
+        :owner      | :developer  | true  | false | true  | :developer  | :success
+        :owner      | :maintainer | true  | false | true  | :developer  | :success
+        :owner      | :developer  | false | true  | true  | :developer  | :success
+        :owner      | :maintainer | false | true  | true  | :maintainer | :success
+        :maintainer | :developer  | true  | false | true  | :developer  | :success
+        :maintainer | :maintainer | true  | false | true  | :developer  | :success
+        :maintainer | :owner      | true  | false | true  | :owner      | :api_error
+        :maintainer | :owner      | false | true  | true  | :owner      | :success
+        :maintainer | :owner      | true  | true  | true  | :owner      | :success
+        :developer  | :owner      | true  | false | true  | :owner      | :api_error
+        :developer  | :developer  | true  | false | true  | :developer  | :api_error
+        :developer  | :maintainer | true  | false | true  | :maintainer | :api_error
+        :developer  | :maintainer | false | true  | false | :developer  | :api_error
       end
 
       with_them do
@@ -66,6 +66,10 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         it 'allows/disallows to change restrict_user_defined_variables' do
           result = update_project(project, current_user, restrict_user_defined_variables: to_value)
           expect(result[:status]).to eq(status)
+
+          project.reload
+          expect(project.restrict_user_defined_variables).to eq(expected_value)
+          expect(project.ci_pipeline_variables_minimum_override_role).to eq(expected_role.to_s)
         end
       end
     end

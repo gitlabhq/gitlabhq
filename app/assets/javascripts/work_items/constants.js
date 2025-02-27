@@ -56,55 +56,24 @@ export const WORK_ITEM_TYPE_VALUE_TICKET = 'Ticket';
 export const SEARCH_DEBOUNCE = 500;
 
 export const i18n = {
-  fetchErrorTitle: s__('WorkItem|Work item not found'),
   fetchError: s__(
     "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it.",
   ),
   updateError: s__('WorkItem|Something went wrong while updating the work item. Please try again.'),
-  addDesignEmptyState: s__('DesignManagement|Drag images here to add designs.'),
 };
 
-export const I18N_WORK_ITEM_ERROR_FETCHING_LABELS = s__(
-  'WorkItem|Something went wrong when fetching labels. Please try again.',
-);
-export const I18N_WORK_ITEM_ERROR_FETCHING_CRM_CONTACTS = s__(
-  'WorkItem|Something went wrong when fetching CRM contacts. Please try again.',
-);
-export const I18N_WORK_ITEM_ERROR_FETCHING_TYPES = s__(
-  'WorkItem|Something went wrong when fetching work item types. Please try again',
-);
 export const I18N_WORK_ITEM_ERROR_CREATING = s__(
   'WorkItem|Something went wrong when creating %{workItemType}. Please try again.',
 );
 export const I18N_WORK_ITEM_ERROR_UPDATING = s__(
   'WorkItem|Something went wrong while updating the %{workItemType}. Please try again.',
 );
-export const I18N_WORK_ITEM_ERROR_CONVERTING = s__(
-  'WorkItem|Something went wrong while promoting the %{workItemType}. Please try again.',
-);
 export const I18N_WORK_ITEM_ERROR_DELETING = s__(
   'WorkItem|Something went wrong when deleting the %{workItemType}. Please try again.',
-);
-export const I18N_WORK_ITEM_DELETE = s__('WorkItem|Delete %{workItemType}');
-export const I18N_WORK_ITEM_ARE_YOU_SURE_DELETE = s__(
-  'WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed.',
-);
-export const I18N_WORK_ITEM_ARE_YOU_SURE_DELETE_HIERARCHY = s__(
-  'WorkItem|Delete this %{workItemType} and release all child items? This action cannot be reversed.',
-);
-export const I18N_WORK_ITEM_CREATED = s__('WorkItem|%{workItemType} created');
-export const I18N_WORK_ITEM_DELETED = s__('WorkItem|%{workItemType} deleted');
-
-export const I18N_WORK_ITEM_FETCH_ITERATIONS_ERROR = s__(
-  'WorkItem|Something went wrong when fetching iterations. Please try again.',
 );
 
 export const I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR = s__(
   'WorkItem|Something went wrong while fetching work item award emojis. Please try again.',
-);
-
-export const I18N_WORK_ITEM_FETCH_CUSTOM_FIELDS_ERROR = s__(
-  'WorkItem|Some fields could not be loaded. Refresh the page to try again.',
 );
 
 export const I18N_NEW_WORK_ITEM_BUTTON_LABEL = s__('WorkItem|New %{workItemType}');

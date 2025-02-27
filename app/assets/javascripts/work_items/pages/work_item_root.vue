@@ -1,13 +1,10 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { s__ } from '~/locale';
 import ZenMode from '~/zen_mode';
 import WorkItemDetail from '../components/work_item_detail.vue';
-import {
-  sprintfWorkItem,
-  I18N_WORK_ITEM_ERROR_DELETING,
-  I18N_WORK_ITEM_DELETED,
-} from '../constants';
+import { sprintfWorkItem, I18N_WORK_ITEM_ERROR_DELETING } from '../constants';
 import deleteWorkItemMutation from '../graphql/delete_work_item.mutation.graphql';
 
 export default {
@@ -53,7 +50,7 @@ export default {
             throw new Error(workItemDelete.errors[0]);
           }
 
-          const msg = sprintfWorkItem(I18N_WORK_ITEM_DELETED, workItemType);
+          const msg = sprintfWorkItem(s__('WorkItem|%{workItemType} deleted'), workItemType);
           this.$toast.show(msg);
           visitUrl(this.issuesListPath);
         })
