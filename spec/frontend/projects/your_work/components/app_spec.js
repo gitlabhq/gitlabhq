@@ -83,6 +83,7 @@ describe('YourWorkProjectsApp', () => {
   });
 
   const createComponent = async ({
+    provide = {},
     projectsCountHandler = successHandler,
     userPreferencesUpdateHandler = userPreferencesUpdateSuccessHandler,
     route = defaultRoute,
@@ -100,7 +101,7 @@ describe('YourWorkProjectsApp', () => {
       stubs: {
         TabView: stubComponent(TabView),
       },
-      provide: defaultProvide,
+      provide: { ...defaultProvide, ...provide },
     });
   };
 
@@ -351,6 +352,45 @@ describe('YourWorkProjectsApp', () => {
         },
         endCursor: mockEndCursor,
         startCursor: mockStartCursor,
+      });
+    });
+  });
+
+  describe('when sort query param is invalid', () => {
+    beforeEach(async () => {
+      await createComponent({
+        route: {
+          ...defaultRoute,
+          query: {
+            sort: 'foo_bar',
+          },
+        },
+      });
+    });
+
+    it('falls back to initial sort', () => {
+      expect(findTabView().props()).toMatchObject({
+        sort: `${SORT_OPTION_CREATED.value}_${SORT_DIRECTION_DESC}`,
+      });
+    });
+  });
+
+  describe('when sort query param and initial sort are invalid', () => {
+    beforeEach(async () => {
+      await createComponent({
+        provide: { initialSort: 'foo_bar' },
+        route: {
+          ...defaultRoute,
+          query: {
+            sort: 'foo_bar',
+          },
+        },
+      });
+    });
+
+    it('falls back to updated in ascending order', () => {
+      expect(findTabView().props()).toMatchObject({
+        sort: `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_ASC}`,
       });
     });
   });

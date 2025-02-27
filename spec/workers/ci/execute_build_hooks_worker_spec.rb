@@ -64,6 +64,27 @@ RSpec.describe Ci::ExecuteBuildHooksWorker, feature_category: :pipeline_composit
       end
     end
 
+    context 'with Datadog integration' do
+      let!(:datadog) do
+        integration = create(:datadog_integration,
+          project: project,
+          active: true,
+          datadog_site: 'datadoghq.com',
+          api_key: 'test_api_key',
+          datadog_ci_visibility: true)
+
+        integration.update!(job_events: true)
+        integration
+      end
+
+      it 'executes the Datadog integration with build data' do
+        expect(Integrations::ExecuteWorker).to receive(:perform_async)
+          .with(datadog.id, hash_including(object_kind: 'build'))
+
+        perform
+      end
+    end
+
     context 'when build_data has symbol keys' do
       it 'converts data to indifferent access' do
         allow_next_instance_of(Project) do |project|

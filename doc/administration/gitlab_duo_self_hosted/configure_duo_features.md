@@ -93,7 +93,7 @@ To enable self-hosted [beta](../../policy/development_stages_support.md#beta) mo
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
 1. In the **GitLab Duo** section, select **Change configuration**.
-1. Under **Self-hosted AI models**, select **Use self-hosted models features**.
+1. Under **Self-hosted AI models**, select **Use beta self-hosted models features**.
 1. Select **Save changes**.
 
 {{< alert type="note" >}}

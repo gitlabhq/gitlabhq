@@ -129,11 +129,20 @@ export default {
       return this.$route.query.sort;
     },
     sort() {
-      if (this.sortQuery) {
+      const sortOptionValues = SORT_OPTIONS.flatMap(({ value }) => [
+        `${value}_${SORT_DIRECTION_ASC}`,
+        `${value}_${SORT_DIRECTION_DESC}`,
+      ]);
+
+      if (this.sortQuery && sortOptionValues.includes(this.sortQuery)) {
         return this.sortQuery;
       }
 
-      return this.initialSort || `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_ASC}`;
+      if (sortOptionValues.includes(this.initialSort)) {
+        return this.initialSort;
+      }
+
+      return `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_ASC}`;
     },
     activeSortOption() {
       return SORT_OPTIONS.find((sortItem) => this.sort.includes(sortItem.value));

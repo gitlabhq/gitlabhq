@@ -39,6 +39,7 @@ import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 import waitForPromises from 'helpers/wait_for_promises';
 import { diffMetadata } from 'jest/diffs/mock_data/diff_metadata';
 import { pinia } from '~/pinia/instance';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import createDiffsStore from '../create_diffs_store';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
@@ -1158,8 +1159,10 @@ describe('diffs/components/app', () => {
     });
   });
 
-  describe('track "trackRedisHllUserEvent" and "trackRedisCounterEvent" metrics', () => {
+  describe('event tracking', () => {
     let mockGetTime;
+
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
     beforeEach(() => {
       jest.clearAllMocks();
@@ -1178,16 +1181,20 @@ describe('diffs/components/app', () => {
     };
 
     it('should not track metrics if keydownTime is not set', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
       createComponent({ props: { shouldShow: true } });
 
       await nextTick();
       window.dispatchEvent(new Event('blur'));
 
-      expect(api.trackRedisHllUserEvent).not.toHaveBeenCalled();
+      expect(trackEventSpy).not.toHaveBeenCalled();
       expect(api.trackRedisCounterEvent).not.toHaveBeenCalled();
     });
 
     it('should track metrics if delta is between 0 and 1000ms', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
       createComponent({ props: { shouldShow: true } });
 
       // delta 500 ms
@@ -1196,11 +1203,13 @@ describe('diffs/components/app', () => {
 
       window.dispatchEvent(new Event('blur'));
 
-      expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith('i_code_review_user_searches_diff');
+      expect(trackEventSpy).toHaveBeenCalledWith('i_code_review_user_searches_diff', {}, undefined);
       expect(api.trackRedisCounterEvent).toHaveBeenCalledWith('diff_searches');
     });
 
     it('should not track metrics if delta is greater than or equal to 1000ms', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
       createComponent({ props: { shouldShow: true } });
 
       // delta 1050 ms
@@ -1209,11 +1218,13 @@ describe('diffs/components/app', () => {
 
       window.dispatchEvent(new Event('blur'));
 
-      expect(api.trackRedisHllUserEvent).not.toHaveBeenCalled();
+      expect(trackEventSpy).not.toHaveBeenCalled();
       expect(api.trackRedisCounterEvent).not.toHaveBeenCalled();
     });
 
     it('should not track metrics if delta is negative', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
       createComponent({ props: { shouldShow: true } });
 
       // delta -500 ms
@@ -1222,7 +1233,7 @@ describe('diffs/components/app', () => {
 
       window.dispatchEvent(new Event('blur'));
 
-      expect(api.trackRedisHllUserEvent).not.toHaveBeenCalled();
+      expect(trackEventSpy).not.toHaveBeenCalled();
       expect(api.trackRedisCounterEvent).not.toHaveBeenCalled();
     });
   });

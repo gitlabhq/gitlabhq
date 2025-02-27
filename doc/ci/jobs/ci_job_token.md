@@ -19,7 +19,7 @@ is revoked and you cannot use the token anymore.
 
 Use a CI/CD job token to authenticate with certain GitLab features from running jobs.
 The token receives the same access level as the user that triggered the pipeline,
-but has [access to fewer resources](#job-token-feature-access) than a personal access token. A user can cause a job to run
+but has [access to fewer resources](#job-token-access) than a personal access token. A user can cause a job to run
 with an action like pushing a commit, triggering a manual job, or being the owner of a scheduled pipeline.
 This user must have a [role that has the required privileges](../../user/permissions.md#cicd)
 to access the resources.
@@ -31,30 +31,30 @@ If a project is public or internal, you can access some features without being o
 For example, you can fetch artifacts from the project's public pipelines.
 This access can also [be restricted](#limit-job-token-scope-for-public-or-internal-projects).
 
-## Job token feature access
+## Job token access
 
-The CI/CD job token can only access the following features and API endpoints:
+CI/CD job tokens can access the following resources:
 
-| Feature                                                                                               | Additional details |
-|-------------------------------------------------------------------------------------------------------|--------------------|
-| [Container registry API](../../api/container_registry.md)                                             | The token is scoped to the container registry of the job's project only. |
-| [Container registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd) | The `$CI_REGISTRY_PASSWORD` [predefined variable](../variables/predefined_variables.md) is the CI/CD job token. Both are scoped to the container registry of the job's project only. |
-| [Deployments API](../../api/deployments.md)                                                           | `GET` requests are public by default. |
-| [Environments API](../../api/environments.md)                                                         | `GET` requests are public by default. |
-| [Job artifacts API](../../api/job_artifacts.md#get-job-artifacts)                                     | `GET` requests are public by default. |
-| [API endpoint to get the job of a job token](../../api/jobs.md#get-job-tokens-job)                    | To get the job token's job. |
-| [Package registry](../../user/packages/package_registry/_index.md#to-build-packages)                   |         |
-| [Packages API](../../api/packages.md)                                                                 | `GET` requests are public by default. |
-| [Pipeline triggers](../../api/pipeline_triggers.md)                                                   | Used with the `token=` parameter to [trigger a multi-project pipeline](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api). |
-| [Update pipeline metadata API endpoint](../../api/pipelines.md#update-pipeline-metadata)              | To update pipeline metadata. |
-| [Release links API](../../api/releases/links.md)                                                      |         |
-| [Releases API](../../api/releases/_index.md)                                                           | `GET` requests are public by default. |
-| [Repositories API](../../api/repositories.md#generate-changelog-data)                                 | Generates changelog data based on commits in a repository. |
-| [Secure files](../secure_files/_index.md#use-secure-files-in-cicd-jobs)                                | The `download-secure-files` tool authenticates with a CI/CD job token by default. |
-| [Terraform plan](../../user/infrastructure/_index.md)                                                  |         |
+| Resource                                                                                              | Notes |
+| ----------------------------------------------------------------------------------------------------- | ----- |
+| [Container registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd) | Used as the `$CI_REGISTRY_PASSWORD` [predefined variable](../variables/predefined_variables.md) to authenticate with the container registry associated with the job's project. |
+| [Package registry](../../user/packages/package_registry/_index.md#to-build-packages)                  | Used to authenticate with the registry. |
+| [Terraform module registry](../../user/packages/terraform_module_registry/_index.md)                  | Used to authenticate with the registry. |
+| [Secure files](../secure_files/_index.md#use-secure-files-in-cicd-jobs)                               | Used by the [`download-secure-files`](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files) tool to use secure files in jobs. |
+| [Container registry API](../../api/container_registry.md)                                             | Can authenticate only with the container registry associated with the job's project. |
+| [Deployments API](../../api/deployments.md)                                                           | Can access all endpoints in this API. |
+| [Environments API](../../api/environments.md)                                                         | Can access all endpoints in this API. |
+| [Jobs API](../../api/jobs.md#get-job-tokens-job)                                                      | Can access only the `GET /job` endpoint. |
+| [Job artifacts API](../../api/job_artifacts.md)                                                       | Can access all endpoints in this API. |
+| [Packages API](../../api/packages.md)                                                                 | Can access all endpoints in this API. |
+| [Pipeline trigger tokens API](../../api/pipeline_triggers.md#trigger-a-pipeline-with-a-token)         | Can access only the `POST /projects/:id/trigger/pipeline` endpoint. |
+| [Pipelines API](../../api/pipelines.md#update-pipeline-metadata)                                      | Can access only the `PUT /projects/:id/pipelines/:pipeline_id/metadata` endpoint. |
+| [Release links API](../../api/releases/links.md)                                                      | Can access all endpoints in this API. |
+| [Releases API](../../api/releases/_index.md)                                                          | Can access all endpoints in this API. |
+| [Repositories API](../../api/repositories.md#generate-changelog-data)                                 | Can access only the `GET /projects/:id/repository/changelog` endpoint. |
 
-Other API endpoints are not accessible using a job token. There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559)
-to redesign the feature for more granular control of access permissions.
+An open [proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) exists to make permissions
+more granular.
 
 ## GitLab CI/CD job token security
 

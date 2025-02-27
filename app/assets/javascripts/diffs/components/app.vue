@@ -673,7 +673,7 @@ export default {
       if (delta >= 0 && delta < 1000) {
         this.disableVirtualScroller();
 
-        api.trackRedisHllUserEvent('i_code_review_user_searches_diff');
+        this.trackEvent('i_code_review_user_searches_diff');
         api.trackRedisCounterEvent('diff_searches');
       }
     },

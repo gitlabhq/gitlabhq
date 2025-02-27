@@ -157,7 +157,6 @@
 - i_code_review_user_resolve_thread_in_issue
 - i_code_review_user_review_requested
 - i_code_review_user_reviewers_changed
-- i_code_review_user_searches_diff
 - i_code_review_user_single_file_diffs
 - i_code_review_user_time_estimate_changed
 - i_code_review_user_time_spent_changed

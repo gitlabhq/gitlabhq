@@ -12,8 +12,8 @@ module RuboCop
       class MarkUsedFeatureFlags < RuboCop::Cop::Base
         include RuboCop::CodeReuseHelpers
 
-        FEATURE_CALLERS = %w[Feature Config::FeatureFlags].freeze
-        FEATURE_METHODS = %i[enabled? disabled?].freeze
+        FEATURE_CALLERS = %w[Feature Config::FeatureFlags Gitlab::AiGateway].freeze
+        FEATURE_METHODS = %i[enabled? disabled? push_feature_flag].freeze
         EXPERIMENT_METHODS = %i[
           experiment
         ].freeze
