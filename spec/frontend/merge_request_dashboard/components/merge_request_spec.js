@@ -1,10 +1,12 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlLabel } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import MergeRequest from '~/merge_request_dashboard/components/merge_request.vue';
 import StatusBadge from '~/merge_request_dashboard/components/status_badge.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 
 Vue.use(VueApollo);
 
@@ -13,8 +15,15 @@ describe('Merge request dashboard merge request component', () => {
 
   const findBrokenBadge = () => wrapper.findByTestId('mr-broken-badge');
 
-  function createComponent(mergeRequest = {}) {
+  function createComponent(mergeRequest = {}, isShowingLabels = false) {
     const mockApollo = createMockApollo();
+
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: isShowingLabelsQuery,
+      data: {
+        isShowingLabels,
+      },
+    });
 
     wrapper = shallowMountExtended(MergeRequest, {
       apolloProvider: mockApollo,
@@ -60,6 +69,18 @@ describe('Merge request dashboard merge request component', () => {
                 username: 'jsmith',
                 webUrl: 'https://gitlab.com/root',
                 webPath: '/root',
+              },
+            ],
+          },
+          labels: {
+            nodes: [
+              {
+                color: '#125e9b',
+                description: null,
+                id: 'gid://gitlab/ProjectLabel/81',
+                textColor: '#FFFFFF',
+                title: 'Caliber',
+                __typename: 'Label',
               },
             ],
           },
@@ -120,5 +141,16 @@ describe('Merge request dashboard merge request component', () => {
     createComponent({ state });
 
     expect(findBrokenBadge().exists()).toBe(exists);
+  });
+
+  it.each`
+    isShowingLabels | exists   | existsText
+    ${false}        | ${false} | ${'does not render'}
+    ${true}         | ${true}  | ${'renders'}
+  `('$existsText when isShowingLabels is $isShowingLabels', ({ exists, isShowingLabels }) => {
+    createComponent({}, isShowingLabels);
+
+    expect(wrapper.findByTestId('labels-container').exists()).toBe(exists);
+    expect(wrapper.findComponent(GlLabel).exists()).toBe(exists);
   });
 });

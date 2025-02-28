@@ -157,7 +157,6 @@ apply the following configuration to GDK:
 export GITLAB_SIMULATE_SAAS=1
 export CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1
 export AIGW_AUTH__BYPASS_EXTERNAL=false
-export AIGW_GITLAB_URL=<your-gdk-url>
 ```
 
 and `gdk restart`.

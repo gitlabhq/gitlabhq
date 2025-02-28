@@ -227,6 +227,18 @@ class MigrationName < Elastic::Migration
 end
 ```
 
+You can test this migration with the `'migration removes field'` shared examples.
+
+```ruby
+include_examples 'migration removes field' do
+  let(:expected_throttle_delay) { 1.minute }
+  let(:objects) { create_list(:work_item, 6) }
+  let(:index_name) { ::Search::Elastic::Types::WorkItem.index_name }
+  let(:field) { :correct_work_item_type_id }
+  let(:type) { 'long' }
+end
+```
+
 #### `Elastic::MigrationObsolete`
 
 Marks a migration as obsolete when it's no longer required.

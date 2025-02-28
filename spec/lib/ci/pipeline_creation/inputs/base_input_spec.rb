@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative Rails.root.join('lib/ci/pipeline_creation/inputs/base_input.rb')
 
-RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs::BaseInput, feature_category: :pipeline_composition do
+RSpec.describe Ci::PipelineCreation::Inputs::BaseInput, feature_category: :pipeline_composition do
   describe '.matches?' do
     context 'when given is a hash' do
       before do
@@ -41,13 +42,21 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs::BaseInput, feature_cat
     end
   end
 
-  describe '#valid_value?' do
-    it 'is not implemented' do
-      expect do
-        described_class.new(
-          name: 'website', spec: { website: nil }, value: { website: 'example.com' }
-        ).valid_value?('test')
-      end.to raise_error(NotImplementedError)
+  describe 'attributes' do
+    let(:spec) do
+      {
+        type: 'string',
+        default: 'default-value',
+        options: %w[default-value another-value]
+      }
+    end
+
+    let(:input) { described_class.new(name: :the_input_name, spec: spec) }
+
+    it 'has methods to return attributes' do
+      expect(input).not_to be_required
+      expect(input.default).to eq('default-value')
+      expect(input.options).to eq(%w[default-value another-value])
     end
   end
 end

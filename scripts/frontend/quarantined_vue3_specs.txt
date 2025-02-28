@@ -143,7 +143,6 @@ spec/frontend/design_management/components/design_notes/design_reply_form_spec.j
 spec/frontend/design_management/components/design_overlay_spec.js
 spec/frontend/design_management/pages/design/index_spec.js
 spec/frontend/design_management/pages/index_spec.js
-spec/frontend/design_management/router_spec.js
 spec/frontend/diffs/components/diff_line_note_form_spec.js
 spec/frontend/diffs/components/image_diff_overlay_spec.js
 spec/frontend/editor/components/source_editor_toolbar_spec.js

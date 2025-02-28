@@ -10,6 +10,7 @@ module Ml
       @user = params[:user]
       @metadata = params[:metadata]
       @candidate_id = params[:candidate_id]
+      @candidate_eid = params[:candidate_eid]
     end
 
     def execute
@@ -53,9 +54,15 @@ module Ml
     private
 
     def find_or_create_candidate
-      if @candidate_id
+      if @candidate_id # global id
         candidate = ::Ml::Candidate.with_project_id_and_id(@model.project_id, @candidate_id.model_id)
-        error(_("Run not found")) unless candidate
+        error(_("Run with id not found")) unless candidate
+      elsif @candidate_eid
+        candidate = ::Ml::Candidate.with_project_id_and_eid(@model.project_id, @candidate_eid)
+        error(_("Run with eid not found")) unless candidate
+      end
+
+      if candidate
         error(_("Run has already a model version")) if candidate.model_version_id
 
         candidate.update! model_version: @model_version, experiment: @model.default_experiment

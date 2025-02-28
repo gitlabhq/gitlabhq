@@ -93,6 +93,11 @@ export default {
       required: false,
       default: false,
     },
+    isGroupWorkItem: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -353,6 +358,7 @@ export default {
                       :is-resolving="isResolving"
                       :has-replies="hasReplies"
                       :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
+                      :is-group-work-item="isGroupWorkItem"
                       @startReplying="showReplyForm"
                       @cancelEditing="hideReplyForm"
                       @replied="onReplied"

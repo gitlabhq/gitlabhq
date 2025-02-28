@@ -23,8 +23,6 @@ title: MLflow client compatibility
 GitLab [Model experiment tracking](_index.md) and GitLab
 [Model registry](../model_registry/_index.md) are compatible with the MLflow client. The setup requires minimal changes to existing code.
 
-GitLab plays the role of a MLflow server. Running `mlflow server` is not necessary.
-
 ## Enable MLflow client integration
 
 Prerequisites:
@@ -420,8 +418,7 @@ if os.getenv('GITLAB_CI'):
 
 ## Supported MLflow client methods and caveats
 
-GitLab supports these methods from the MLflow client. Other methods might be supported but were not
-tested. More information can be found in the [MLflow Documentation](https://www.mlflow.org/docs/1.28.0/python_api/mlflow.html). The MlflowClient counterparts
+GitLab supports the following methods from the MLflow client. More information can be found in the [MLflow Documentation](https://mlflow.org/docs/latest/index.html). The MlflowClient counterparts
 of the methods below are also supported with the same caveats.
 
 | Method                   | Supported       | Version Added | Comments                                                                                     |

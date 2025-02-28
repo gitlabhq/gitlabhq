@@ -6,6 +6,7 @@ import {
   TYPENAME_DISCUSSION,
   TYPENAME_DISCUSSION_NOTE,
   TYPENAME_NOTE,
+  TYPENAME_GROUP,
 } from '~/graphql_shared/constants';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
 import WorkItemNotesLoading from '~/work_items/components/notes/work_item_notes_loading.vue';
@@ -164,7 +165,7 @@ export default {
       return markdownPreviewPath({ fullPath, iid, isGroup: this.isGroupWorkItem });
     },
     isGroupWorkItem() {
-      return this.workItemNamespace?.id?.includes?.('Group');
+      return this.workItemNamespace?.id?.includes?.(TYPENAME_GROUP);
     },
     autocompleteDataSources() {
       const { fullPath, workItemIid: iid } = this;
@@ -471,6 +472,7 @@ export default {
           <work-item-add-note
             v-bind="workItemCommentFormProps"
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
+            :is-group-work-item="isGroupWorkItem"
             @startEditing="$emit('startEditing')"
             @stopEditing="$emit('stopEditing')"
             @error="$emit('error', $event)"
@@ -503,6 +505,7 @@ export default {
               :is-work-item-confidential="isWorkItemConfidential"
               :is-expanded-on-load="isDiscussionExpandedOnLoad(discussion)"
               :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
+              :is-group-work-item="isGroupWorkItem"
               @deleteNote="showDeleteNoteModal($event, discussion)"
               @reportAbuse="reportAbuse(true, $event)"
               @error="$emit('error', $event)"
@@ -523,6 +526,7 @@ export default {
           <work-item-add-note
             v-bind="workItemCommentFormProps"
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
+            :is-group-work-item="isGroupWorkItem"
             @startEditing="$emit('startEditing')"
             @stopEditing="$emit('stopEditing')"
             @error="$emit('error', $event)"

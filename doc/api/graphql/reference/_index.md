@@ -11893,6 +11893,31 @@ Input type: `VerifiedNamespaceCreateInput`
 | <a id="mutationverifiednamespacecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationverifiednamespacecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.vulnerabilitiesArchive`
+
+{{< details >}}
+**Introduced** in GitLab 17.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `VulnerabilitiesArchiveInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitiesarchiveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitiesarchivedate"></a>`date` | [`Date!`](#date) | Last update date of vulnerabilities being archived. |
+| <a id="mutationvulnerabilitiesarchiveprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project to attach the vulnerability to. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitiesarchiveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitiesarchiveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationvulnerabilitiesarchivestatus"></a>`status` | [`String!`](#string) | Status of the action. |
+
 ### `Mutation.vulnerabilitiesCreateIssue`
 
 {{< details >}}
@@ -46643,7 +46668,7 @@ Attributes for defining an input.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="ciinputsinputtypekey"></a>`key` | [`String!`](#string) | Name of the input. |
+| <a id="ciinputsinputtypename"></a>`name` | [`String!`](#string) | Name of the input. |
 | <a id="ciinputsinputtypevalue"></a>`value` | [`CiInputsValueInputType!`](#ciinputsvalueinputtype) | Value of the input. |
 
 ### `CiVariableInput`

@@ -2,6 +2,7 @@
 import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormTextarea } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { __, s__ } from '~/locale';
@@ -178,7 +179,7 @@ export default {
       return this.workItemDescription?.lastEditedBy?.webPath;
     },
     isGroupWorkItem() {
-      return this.workItemNamespaceId.includes('Group');
+      return this.workItemNamespaceId.includes(TYPENAME_GROUP);
     },
     workItemNamespaceId() {
       return this.workItem?.namespace?.id || '';
@@ -232,6 +233,11 @@ export default {
         return ['full-screen'];
       }
       return [];
+    },
+    uploadsPath() {
+      return this.isGroupWorkItem
+        ? `/groups/${this.fullPath}/-/uploads`
+        : `/${this.fullPath}/uploads`;
     },
   },
   watch: {
@@ -492,6 +498,7 @@ export default {
           :quick-actions-docs-path="$options.quickActionsDocsPath"
           :autocomplete-data-sources="autocompleteDataSources"
           :restricted-tool-bar-items="restrictedToolBarItems"
+          :uploads-path="uploadsPath"
           enable-autocomplete
           supports-quick-actions
           :autofocus="autofocus"

@@ -132,7 +132,7 @@ model_name = "<your_model_name>"
 model_endpoint = "<your_model_endpoint>"
 model_api_key = "<your_model_api_key>"
 body = {:prompt_components=>[{:type=>"prompt", :metadata=>{:source=>"GitLab EE", :version=>"17.3.0"}, :payload=>{:content=>[{:role=>:user, :content=>"Hello"}], :provider=>:litellm, :model=>model_name, :model_endpoint=>model_endpoint, :model_api_key=>model_api_key}}]}
-ai_gateway_url = Gitlab::AiGateway.url # Verify that it's not nil
+ai_gateway_url = Ai::Setting.instance.ai_gateway_url # Verify that the AI gateway URL is set in the database
 client = Gitlab::Llm::AiGateway::Client.new(User.find_by_id(1), service_name: :self_hosted_models)
 client.complete(url: "#{ai_gateway_url}/v1/chat/agent", body: body)
 ```
@@ -151,7 +151,7 @@ If that is not the case, this might means one of the following:
 
 - The user might not have access to Code Suggestions. To resolve,
   [check if a user can request Code Suggestions](#check-if-a-user-can-request-code-suggestions).
-- The GitLab environment variables are not configured correctly. To resolve, [check that the GitLab environmental variables are set up correctly](#check-that-gitlab-environmental-variables-are-set-up-correctly).
+- The GitLab environment variables are not configured correctly. To resolve, [check that the GitLab environment variables are set up correctly](#check-that-the-ai-gateway-environment-variables-are-set-up-correctly).
 - The GitLab instance is not configured to use self-hosted models. To resolve, [check if the GitLab instance is configured to use self-hosted models](#check-if-gitlab-instance-is-configured-to-use-self-hosted-models).
 - The AI gateway is not reachable. To resolve, [check if GitLab can make an HTTP request to the AI gateway](#check-if-gitlab-can-make-an-http-request-to-the-ai-gateway).
 - When the LLM server is installed on the same instance as the AI gateway container, local requests may not work. To resolve, [allow local requests from the Docker container](#llm-server-is-not-available-inside-the-ai-gateway-container).
@@ -181,17 +181,15 @@ To check if GitLab Duo was configured correctly:
 1. Expand **AI-powered features**.
 1. Under **Features**, check that **Code Suggestions** and **Code generation** are set to **Self-hosted model**.
 
-## Check that GitLab environmental variables are set up correctly
+## Check that the AI gateway URL is set up correctly
 
-To check if the GitLab environmental variables are set up correctly, run the
-following on the GitLab Rails console:
+To check that the AI gateway URL is correct, run the following on the GitLab Rails console:
 
 ```ruby
-ENV["AI_GATEWAY_URL"] == "<your-ai-gateway-endpoint>"
+Ai::Setting.instance.ai_gateway_url == "<your-ai-gateway-instance-url>"
 ```
 
-If the environmental variables are not set up correctly, set them by following the
-[Linux package custom environment variables setting documentation](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
+If the AI gateway is not set up, [configure your GitLab instance to access the AI gateway](configure_duo_features.md#configure-your-gitlab-instance-to-access-the-ai-gateway).
 
 ## Check if GitLab can make an HTTP request to the AI gateway
 
@@ -225,7 +223,8 @@ curl --request POST "http://localhost:5052/v1/chat/agent" \
 
 If the request fails, the:
 
-- AI gateway might not be configured properly to use self-hosted models. To resolve this, [check that the AI gateway environmental variables are set up correctly](#check-that-the-ai-gateway-environmental-variables-are-set-up-correctly).
+- AI gateway might not be configured properly to use self-hosted models. To resolve this,
+  [check that the AI gateway URL is set up correctly](#check-that-the-ai-gateway-url-is-set-up-correctly).
 - AI gateway might not be able to access the model. To resolve,
   [check if the model is reachable from the AI gateway](#check-if-the-model-is-reachable-from-ai-gateway).
 - Model name or endpoint might be incorrect. Check the values, and correct them
@@ -240,9 +239,9 @@ curl '<your-aigateway-endpoint>/monitoring/healthz'
 
 If the response is not `200`, this means that AI gateway is not installed correctly. To resolve, follow the [documentation on how to install the AI gateway](../../install/install_ai_gateway.md).
 
-## Check that the AI gateway environmental variables are set up correctly
+## Check that the AI gateway environment variables are set up correctly
 
-To check that the AI gateway environmental variables are set up correctly, run the
+To check that the AI gateway environment variables are set up correctly, run the
 following in a console on the AI gateway container:
 
 ```shell
@@ -250,7 +249,7 @@ docker exec -it <ai-gateway-container> sh
 echo $AIGW_CUSTOM_MODELS__ENABLED # must be true
 ```
 
-If the environmental variables are not set up correctly, set them by
+If the environment variables are not set up correctly, set them by
 [creating a container](../../install/install_ai_gateway.md#find-the-ai-gateway-release).
 
 ## Check if the model is reachable from AI gateway

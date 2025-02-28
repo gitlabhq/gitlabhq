@@ -7,7 +7,7 @@ module Types
         graphql_name 'CiInputsInputType'
         description 'Attributes for defining an input.'
 
-        argument :key,
+        argument :name,
           GraphQL::Types::String,
           required: true,
           description: 'Name of the input.'

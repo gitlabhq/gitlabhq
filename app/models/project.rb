@@ -3464,13 +3464,13 @@ class Project < ApplicationRecord
     { namespace_id: namespace_id }
   end
 
-  private
-
   def pages_url_builder(options = nil)
     strong_memoize_with(:pages_url_builder, options) do
       Gitlab::Pages::UrlBuilder.new(self, options)
     end
   end
+
+  private
 
   def with_redis(&block)
     Gitlab::Redis::Cache.with(&block)

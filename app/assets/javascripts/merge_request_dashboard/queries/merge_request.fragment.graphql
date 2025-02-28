@@ -1,6 +1,7 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 #import "~/graphql_shared/fragments/milestone.fragment.graphql"
 #import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+#import "~/graphql_shared/fragments/label.fragment.graphql"
 #import "ee_else_ce/merge_request_dashboard/queries/merge_request_approval.fragment.graphql"
 
 fragment MergeRequestDashboardFragment on MergeRequest {
@@ -38,6 +39,11 @@ fragment MergeRequestDashboardFragment on MergeRequest {
     id
     detailedStatus {
       ...CiIcon
+    }
+  }
+  labels {
+    nodes {
+      ...Label
     }
   }
   userNotesCount

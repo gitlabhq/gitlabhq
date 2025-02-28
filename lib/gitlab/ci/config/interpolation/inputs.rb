@@ -4,33 +4,17 @@ module Gitlab
   module Ci
     class Config
       module Interpolation
-        # Interpolation inputs provided by the user.
         class Inputs
-          UnknownInputTypeError = Class.new(StandardError)
+          def initialize(specs, params)
+            @spec_inputs = ::Ci::PipelineCreation::Inputs::SpecInputs.new(specs)
+            @params = params.to_h
+            @params_errors = []
 
-          TYPES = [
-            ArrayInput,
-            BooleanInput,
-            NumberInput,
-            StringInput
-          ].freeze
-
-          def self.input_types
-            TYPES.map(&:type_name)
-          end
-
-          def initialize(specs, args)
-            @specs = specs.to_h
-            @args = args.to_h
-            @inputs = []
-            @errors = []
-
-            validate!
-            fabricate!
+            validate_params!
           end
 
           def errors
-            @errors + @inputs.flat_map(&:errors)
+            @params_errors + @spec_inputs.errors
           end
 
           def valid?
@@ -38,39 +22,23 @@ module Gitlab
           end
 
           def to_hash
-            @inputs.inject({}) do |hash, input|
-              hash.merge(input.to_hash)
-            end
+            @spec_inputs.to_params(@params)
           end
 
           private
 
-          def validate!
-            unknown_inputs = @args.keys - @specs.keys
+          def validate_params!
+            @spec_inputs.validate_input_params!(@params)
+            return if @params_errors.any?
+
+            check_if_unknown_inputs_provided!
+          end
+
+          def check_if_unknown_inputs_provided!
+            unknown_inputs = @params.keys - @spec_inputs.input_names
             return if unknown_inputs.empty?
 
-            @errors.push("unknown input arguments: #{unknown_inputs.join(', ')}")
-          end
-
-          def fabricate!
-            @specs.each do |input_name, spec|
-              input_type = TYPES.find { |klass| klass.matches?(spec) }
-
-              unless input_type
-                @errors.push(
-                  "unknown input specification for `#{input_name}` (valid types: #{valid_type_names.join(', ')})")
-                next
-              end
-
-              @inputs.push(input_type.new(
-                name: input_name,
-                spec: spec,
-                value: @args[input_name]))
-            end
-          end
-
-          def valid_type_names
-            TYPES.map(&:type_name)
+            @params_errors.push("unknown input arguments: #{unknown_inputs.join(', ')}")
           end
         end
       end

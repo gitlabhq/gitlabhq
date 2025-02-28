@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative Rails.root.join('lib/gitlab/ci/config/interpolation/inputs.rb')
 
 RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pipeline_composition do
   let(:inputs) { described_class.new(specs, args) }
@@ -316,6 +317,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
       it 'is invalid' do
         expect(inputs).not_to be_valid
         expect(inputs.errors).to contain_exactly(
+          'unknown input arguments: unknown',
           'unknown input specification for `unknown` (valid types: array, boolean, number, string)'
         )
       end

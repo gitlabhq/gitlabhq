@@ -71,8 +71,6 @@ module BulkImports
       def run_pipeline_step(step, class_name = nil, entry = nil)
         raise MarkedAsFailedError if context.entity.failed?
 
-        info(pipeline_step: step, step_class: class_name)
-
         yield
       rescue MarkedAsFailedError
         skip!(

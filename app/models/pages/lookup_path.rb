@@ -57,7 +57,7 @@ module Pages
       # https://gitlab.com/gitlab-org/gitlab/-/issues/426435
       return if domain.present?
 
-      url_builder.unique_host
+      project.pages_url_builder.unique_host
     end
     strong_memoize_attr :unique_host
 
@@ -77,13 +77,8 @@ module Pages
 
     attr_reader :project, :deployment, :trim_prefix, :domain
 
-    def url_builder
-      Gitlab::Pages::UrlBuilder.new(project)
-    end
-    strong_memoize_attr :url_builder
-
     def prefix_value
-      return deployment.path_prefix if url_builder.is_namespace_homepage?
+      return deployment.path_prefix if project.pages_url_builder.is_namespace_homepage?
 
       [project.full_path.delete_prefix(trim_prefix), deployment.path_prefix].compact.join('/')
     end

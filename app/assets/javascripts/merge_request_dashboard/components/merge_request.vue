@@ -1,20 +1,29 @@
 <script>
-import { GlLink, GlSprintf, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlLink, GlSprintf, GlIcon, GlTooltipDirective, GlLabel } from '@gitlab/ui';
 import ApprovalCount from 'ee_else_ce/merge_requests/components/approval_count.vue';
 import { __, n__, sprintf } from '~/locale';
+import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import DiscussionsBadge from '~/merge_requests/list/components/discussions_badge.vue';
+import { isScopedLabel } from '~/lib/utils/common_utils';
 import AssignedUsers from './assigned_users.vue';
 import StatusBadge from './status_badge.vue';
 
 export default {
+  apollo: {
+    isShowingLabels: {
+      query: isShowingLabelsQuery,
+      update: (data) => data.isShowingLabels,
+    },
+  },
   components: {
     GlLink,
     GlSprintf,
     GlIcon,
+    GlLabel,
     UserAvatarImage,
     CiIcon,
     TimeAgoTooltip,
@@ -40,6 +49,11 @@ export default {
       type: Boolean,
       required: false,
     },
+  },
+  data() {
+    return {
+      isShowingLabels: null,
+    };
   },
   computed: {
     statsAriaLabel() {
@@ -69,6 +83,9 @@ export default {
           this.mergeRequest.conflicts)
       );
     },
+  },
+  methods: {
+    isScopedLabel,
   },
 };
 </script>
@@ -130,6 +147,22 @@ export default {
             </div>
           </template>
         </gl-sprintf>
+      </div>
+      <div
+        v-if="isShowingLabels && mergeRequest.labels.nodes.length"
+        class="gl-mt-3"
+        data-testid="labels-container"
+      >
+        <gl-label
+          v-for="label in mergeRequest.labels.nodes"
+          :key="label.id"
+          :background-color="label.color"
+          :title="label.title"
+          :description="label.description"
+          size="sm"
+          :scoped="isScopedLabel(label)"
+          class="gl-mr-2"
+        />
       </div>
     </td>
     <td class="gl-px-3 gl-py-4 gl-align-top">

@@ -203,12 +203,10 @@ Now add the Amazon Q service account user as a member of your project.
 
 Now configure your AI gateway.
 
-1. On your GitLab instance, in `/etc/gitlab/gitlab.rb`, in production mode, your `gitlab_rails['env']` configuration should look like:
+1. On your GitLab instance, in a Rails console, configure your AI gateway URL:
 
    ```ruby
-   gitlab_rails['env'] = {
-     "AI_GATEWAY_URL" => "https://ai-gateway-panda.runway.gitlab.net"
-   }
+   Ai::Setting.instance.update!(ai_gateway_url: "https://ai-gateway-panda.runway.gitlab.net")
    ```
 
    Be sure that `GITLAB_LICENSE_MODE`, `CUSTOMER_PORTAL_URL`, and `CLOUD_CONNECTOR_SELF_SIGN_TOKENS` are NOT set.
@@ -219,8 +217,13 @@ Now configure your AI gateway.
    gitlab_rails['env'] = {
      "GITLAB_LICENSE_MODE" => "test",
      "CUSTOMER_PORTAL_URL" => "https://customers.staging.gitlab.com",
-     "AI_GATEWAY_URL" => "https://ai-gateway-panda.staging.runway.gitlab.net"
    }
+   ```
+
+   For staging, your Rails console should have:
+
+   ```ruby
+   Ai::Setting.instance.update!(ai_gateway_url: "https://ai-gateway-panda.staging.runway.gitlab.net")
    ```
 
 1. Run `gitlab-ctl reconfigure` for these changes to take effect.

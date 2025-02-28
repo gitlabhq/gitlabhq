@@ -267,5 +267,21 @@ RSpec.describe ::Ml::CreateModelVersionService, feature_category: :mlops do
         expect(service.message).to include('Version must be semantic version')
       end
     end
+
+    context 'when a candidate_id is given but is missing' do
+      let(:params) { { user: user, candidate_id: GlobalID.new('gid://gitlab/Ml::Candidate/None') } }
+
+      it 'raises an error' do
+        expect(service).to be_error.and have_attributes(message: ["Run with id not found"])
+      end
+    end
+
+    context 'when a candidate_eid is given but is missing' do
+      let(:params) { { user: user, candidate_eid: 'zzzz-none' } }
+
+      it 'raises an error' do
+        expect(service).to be_error.and have_attributes(message: ["Run with eid not found"])
+      end
+    end
   end
 end

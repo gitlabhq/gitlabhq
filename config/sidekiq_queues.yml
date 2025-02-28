@@ -971,6 +971,8 @@
   - 1
 - - users_track_namespace_visits
   - 1
+- - vulnerabilities_archival_archive
+  - 1
 - - vulnerabilities_mark_dropped_as_resolved
   - 1
 - - vulnerabilities_namespace_historical_statistics_process_transfer_events

@@ -76,11 +76,11 @@ RSpec.describe 'PipelineCreate', feature_category: :pipeline_composition do
       context 'when passing inputs' do
         let(:inputs) do
           [
-            { key: 'deploy_strategy', value: 'blue-green' },
-            { key: 'job_stage', value: 'deploy' },
-            { key: 'test_script', value: ['echo "test"'] },
-            { key: 'test_rules', value: [{ if: '$CI_PIPELINE_SOURCE == "api"' }] }, # static source of the mutation
-            { key: 'test_framework', value: '$TEST_FRAMEWORK' }
+            { name: 'deploy_strategy', value: 'blue-green' },
+            { name: 'job_stage', value: 'deploy' },
+            { name: 'test_script', value: ['echo "test"'] },
+            { name: 'test_rules', value: [{ if: '$CI_PIPELINE_SOURCE == "api"' }] }, # static source of the mutation
+            { name: 'test_framework', value: '$TEST_FRAMEWORK' }
           ]
         end
 
@@ -106,10 +106,10 @@ RSpec.describe 'PipelineCreate', feature_category: :pipeline_composition do
         context 'when passing some inputs multiple times' do
           let(:inputs) do
             [
-              { key: 'deploy_strategy', value: 'blue-green' },
-              { key: 'job_stage', value: 'deploy' },
-              { key: 'test_script', value: ['echo "test"'] },
-              { key: 'job_stage', value: 'test' }
+              { name: 'deploy_strategy', value: 'blue-green' },
+              { name: 'job_stage', value: 'deploy' },
+              { name: 'test_script', value: ['echo "test"'] },
+              { name: 'job_stage', value: 'test' }
             ]
           end
 
@@ -139,7 +139,7 @@ RSpec.describe 'PipelineCreate', feature_category: :pipeline_composition do
 
         context 'when there are errors in the inputs' do
           let(:inputs) do
-            [{ key: 'deploy_strategy', value: 'invalid' }]
+            [{ name: 'deploy_strategy', value: 'invalid' }]
           end
 
           it 'returns errors' do

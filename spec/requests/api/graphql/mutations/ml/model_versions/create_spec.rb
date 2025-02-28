@@ -80,7 +80,7 @@ RSpec.describe 'Creation of a machine learning model version', feature_category:
     context 'when run is not found in the same project' do
       let_it_be(:candidate) { create(:ml_candidates) }
 
-      it_behaves_like 'a mutation that returns errors in the response', errors: ["Run not found"]
+      it_behaves_like 'a mutation that returns errors in the response', errors: ["Run with id not found"]
     end
   end
 end

@@ -12,11 +12,13 @@ title: Import and migrate groups and projects
 
 {{< /details >}}
 
-To bring existing projects to GitLab, or copy GitLab groups and projects to a different location, you can:
+Bring your existing work into GitLab and preserve your contribution history.
+Consolidate projects from multiple platforms or transfer data between GitLab instances.
+
+GitLab offers different methods to:
 
 - Migrate GitLab groups and projects by using direct transfer.
-- Import from supported import sources.
-- Import from other import sources.
+- Import projects from a variety of supported sources.
 
 ## Migrate from GitLab to GitLab by using direct transfer
 

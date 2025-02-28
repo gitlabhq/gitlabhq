@@ -50,7 +50,12 @@ with the deployed staging AI gateway. To do this:
    ```shell
    export GITLAB_LICENSE_MODE=test
    export CUSTOMER_PORTAL_URL=https://customers.staging.gitlab.com
-   export AI_GATEWAY_URL=https://cloud.staging.gitlab.com/ai
+   ```
+
+1. Set the AI gateway URL in a Rails console:
+
+   ```ruby
+   Ai::Setting.instance.update!(ai_gateway_url: 'https://cloud.staging.gitlab.com/ai')
    ```
 
 1. Restart the GDK.
@@ -85,9 +90,14 @@ with the deployed staging AI gateway. To do this:
       ```shell
       gitlab_rails['env'] = {
         'GITLAB_LICENSE_MODE' => 'test',
-        'CUSTOMER_PORTAL_URL' => 'https://customers.staging.gitlab.com',
-        'AI_GATEWAY_URL' => 'https://cloud.staging.gitlab.com/ai'
+        'CUSTOMER_PORTAL_URL' => 'https://customers.staging.gitlab.com'
       }
+      ```
+
+   1. Set the AI gateway URL in a Rails console:
+
+      ```ruby
+       Ai::Setting.instance.update!(ai_gateway_url: 'https://cloud.staging.gitlab.com/ai')
       ```
 
    1. Restart your GDK.

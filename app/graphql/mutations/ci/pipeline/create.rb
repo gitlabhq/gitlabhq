@@ -84,7 +84,7 @@ module Mutations
         end
 
         def parse_inputs(inputs)
-          inputs.to_h { |input| [input.key, input.value] }
+          inputs.to_h { |input| [input.name, input.value] }
         end
       end
     end
