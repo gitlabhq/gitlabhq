@@ -35,6 +35,46 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
     end
   end
 
+  describe 'GET /:namespace/:project/-/work_items' do
+    context 'when the user can read the group' do
+      before do
+        sign_in(current_user)
+      end
+
+      it 'renders index' do
+        get project_work_items_url(work_item.project)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when the work_item_planning_view feature flag is disabled' do
+      before do
+        sign_in(current_user)
+        stub_feature_flags(work_item_planning_view: false)
+      end
+
+      it 'returns not found' do
+        get project_work_items_url(work_item.project)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the user cannot read the group' do
+      before do
+        sign_in(current_user)
+        work_item.project.team.truncate
+      end
+
+      it 'returns not found' do
+        get project_work_items_path(work_item.project)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET /:namespace/:project/work_items/:id' do
     context 'when authenticated' do
       before do

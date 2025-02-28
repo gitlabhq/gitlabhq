@@ -33,7 +33,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
 
     it 'adds sensible defaults' do
       within_testid 'pinned-nav-items' do
-        expect(page).to have_link 'Issues'
+        expect(page).to have_link 'Work items'
       end
     end
 
@@ -51,7 +51,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
       end
 
       within_testid 'pinned-nav-items' do
-        expect(page).to have_link 'Issues'
+        expect(page).to have_link 'Work items'
         expect(page).to have_link 'Activity'
         expect(page).to have_link 'Members'
       end
@@ -59,7 +59,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
 
     describe 'when all pins are removed' do
       before do
-        remove_pin('Issues')
+        remove_pin('Work items')
       end
 
       it 'shows the Pinned section as expanded by default' do
@@ -154,7 +154,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
         pinned_items = page.find_all('a', wait: false)
           .map(&:text)
           .map { |text| text.split("\n").first } # to drop the counter badge text from "Issues\n0"
-        expect(pinned_items).to eq ["Issues", "Merge requests", "Commits", "Members", "Activity"]
+        expect(pinned_items).to eq ["Work items", "Merge requests", "Commits", "Members", "Activity"]
       end
     end
   end
@@ -168,17 +168,17 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
     context 'when a pinned item is clicked in the Pinned section' do
       before do
         within_testid 'pinned-nav-items' do
-          click_on 'Issues'
+          click_on 'Work items'
         end
       end
 
       it 'shows the Pinned section as expanded and the original section as collapsed' do
         within_testid 'pinned-nav-items' do
-          expect(page).to have_link 'Issues'
+          expect(page).to have_link 'Work items'
         end
 
         within '#menu-section-button-plan' do
-          expect(page).not_to have_link 'Issues'
+          expect(page).not_to have_link 'Work items'
         end
       end
     end
@@ -189,16 +189,16 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
           click_on 'Plan'
         end
         within '#super-sidebar #plan' do
-          click_on 'Issues'
+          click_on 'Work items'
         end
       end
 
       it 'shows the Pinned section as collapsed and the original section as expanded' do
         within '#menu-section-button-plan' do
-          expect(page).not_to have_link 'Issues'
+          expect(page).not_to have_link 'Work items'
         end
         within '#super-sidebar #plan' do
-          expect(page).to have_link 'Issues'
+          expect(page).to have_link 'Work items'
         end
       end
     end

@@ -107,41 +107,52 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
     end
   end
 
-  describe 'abuse detection' do
+  describe '#abusive?' do
     let(:abuse_detection) { instance_double(Gitlab::Search::AbuseDetection) }
 
-    before do
-      allow(search_params).to receive(:abuse_detection).and_return abuse_detection
-      allow(abuse_detection).to receive(:errors).and_return abuse_errors
-    end
+    context 'when detect_abuse is false' do
+      let(:detect_abuse) { false }
 
-    context 'when there are abuse validation errors' do
-      let(:abuse_errors) { { foo: ['bar'] } }
-
-      it 'is considered abusive' do
-        expect(search_params).to be_abusive
+      it 'is not considered as abusive' do
+        expect(abuse_detection).not_to receive(:errors)
+        expect(search_params).not_to be_abusive
       end
     end
 
-    context 'when there are NOT any abuse validation errors' do
-      let(:abuse_errors) { {} }
+    context 'when detect_abuse is true' do
+      before do
+        allow(search_params).to receive(:abuse_detection).and_return abuse_detection
+        allow(abuse_detection).to receive(:errors).and_return abuse_errors
+      end
 
-      context 'and there are other validation errors' do
-        it 'is NOT considered abusive' do
-          allow(search_params).to receive(:valid?) do
-            search_params.errors.add :project_id, 'validation error unrelated to abuse'
-            false
-          end
+      context 'when there are abuse validation errors' do
+        let(:abuse_errors) { { foo: ['bar'] } }
 
-          expect(search_params).not_to be_abusive
+        it 'is considered abusive' do
+          expect(search_params).to be_abusive
         end
       end
 
-      context 'and there are NO other validation errors' do
-        it 'is NOT considered abusive' do
-          allow(search_params).to receive(:valid?).and_return(true)
+      context 'when there are NOT any abuse validation errors' do
+        let(:abuse_errors) { {} }
 
-          expect(search_params).not_to be_abusive
+        context 'and there are other validation errors' do
+          it 'is NOT considered abusive' do
+            allow(search_params).to receive(:valid?) do
+              search_params.errors.add :project_id, 'validation error unrelated to abuse'
+              false
+            end
+
+            expect(search_params).not_to be_abusive
+          end
+        end
+
+        context 'and there are NO other validation errors' do
+          it 'is NOT considered abusive' do
+            allow(search_params).to receive(:valid?).and_return(true)
+
+            expect(search_params).not_to be_abusive
+          end
         end
       end
     end

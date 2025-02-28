@@ -180,12 +180,7 @@ export default {
         this.pageInfo = data?.[this.namespace].workItems.pageInfo ?? {};
 
         if (data?.[this.namespace]) {
-          if (this.isGroup) {
-            const rootBreadcrumbName = this.isEpicsList ? __('Epics') : s__('WorkItem|Work items');
-            document.title = `${rootBreadcrumbName} · ${data.group.name} · GitLab`;
-          } else {
-            document.title = `Issues · ${data.project.name} · GitLab`;
-          }
+          document.title = this.calculateDocumentTitle(data);
         }
         if (!this.withTabs) {
           this.hasAnyIssues = Boolean(data?.[this.namespace].workItems.nodes);
@@ -497,6 +492,19 @@ export default {
     handleSelect(item) {
       this.activeItem = item;
     },
+    calculateDocumentTitle(data) {
+      const middleCrumb = this.isGroup ? data.group.name : data.project.name;
+      if (this.glFeatures.workItemPlanningView) {
+        return `${s__('WorkItem|Work items')} · ${middleCrumb} · GitLab`;
+      }
+      if (this.isGroup && this.isEpicsList) {
+        return `${__('Epics')} · ${middleCrumb} · GitLab`;
+      }
+      if (this.isGroup) {
+        return `${s__('WorkItem|Work items')} · ${middleCrumb} · GitLab`;
+      }
+      return `${__('Issues')} · ${middleCrumb} · GitLab`;
+    },
     fetchEmojis(search) {
       return this.autocompleteCache.fetch({
         url: this.autocompleteAwardEmojisPath,
@@ -744,6 +752,10 @@ export default {
     >
       <template #nav-actions>
         <slot name="nav-actions"></slot>
+      </template>
+
+      <template v-if="!withTabs" #title>
+        <h2>{{ s__('WorkItem|Work items') }}</h2>
       </template>
 
       <template #timeframe="{ issuable = {} }">

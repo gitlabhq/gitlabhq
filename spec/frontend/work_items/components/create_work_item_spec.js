@@ -590,7 +590,9 @@ describe('Create work item component', () => {
     const webUrl = 'web/url';
 
     beforeEach(async () => {
-      createComponent({ props: { relatedItem: { id, type, reference, webUrl } } });
+      createComponent({
+        props: { relatedItem: { id, type, reference, webUrl }, showProjectSelector: true },
+      });
       await waitForPromises();
     });
 
@@ -605,6 +607,12 @@ describe('Create work item component', () => {
 
       expect(link.text()).toBe('#1');
       expect(link.attributes('href')).toBe('web/url');
+    });
+
+    it('provides the related item fullPath to the project listbox', () => {
+      const listbox = findProjectsSelector();
+
+      expect(listbox.props('selectedProjectFullPath')).toBe('full-path');
     });
 
     it('includes the related item in the create work item request', async () => {

@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+$:.unshift File.expand_path("../lib", __dir__)
+
 require "optparse"
 require 'gitlab/housekeeper'
 

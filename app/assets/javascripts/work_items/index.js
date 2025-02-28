@@ -16,7 +16,7 @@ import { createRouter } from './router';
 
 Vue.use(VueApollo);
 
-export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
+export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}) => {
   const el = document.querySelector('#js-work-items');
 
   if (!el) {
@@ -148,6 +148,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
       return createElement(App, {
         props: {
           newCommentTemplatePaths: JSON.parse(newCommentTemplatePaths),
+          withTabs,
         },
       });
     },

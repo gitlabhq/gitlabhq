@@ -1,6 +1,6 @@
 import { escapeRegExp } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { queryToObject } from '~/lib/utils/url_utility';
+import { queryToObject, joinPaths } from '~/lib/utils/url_utility';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
@@ -325,16 +325,25 @@ export const canRouterNav = ({ fullPath, webUrl, isGroup, issueAsWorkItem }) => 
 
 export const createBranchMRApiPathHelper = {
   canCreateBranch({ fullPath, workItemIid }) {
-    return `/${fullPath}/-/issues/${workItemIid}/can_create_branch`;
+    return joinPaths(
+      gon.relative_url_root || '',
+      `/${fullPath}/-/issues/${workItemIid}/can_create_branch`,
+    );
   },
   createBranch({ fullPath, workItemIid, sourceBranch, targetBranch }) {
-    return `/${fullPath}/-/branches?branch_name=${targetBranch}&format=json&issue_iid=${workItemIid}&ref=${sourceBranch}`;
+    return joinPaths(
+      gon.relative_url_root || '',
+      `/${fullPath}/-/branches?branch_name=${targetBranch}&format=json&issue_iid=${workItemIid}&ref=${sourceBranch}`,
+    );
   },
   createMR({ fullPath, workItemIid, sourceBranch, targetBranch }) {
-    return `/${fullPath}/-/merge_requests/new?merge_request%5Bissue_iid%5D=${workItemIid}&merge_request%5Bsource_branch%5D=${sourceBranch}&merge_request%5Btarget_branch%5D=${targetBranch}`;
+    return joinPaths(
+      gon.relative_url_root || '',
+      `/${fullPath}/-/merge_requests/new?merge_request%5Bissue_iid%5D=${workItemIid}&merge_request%5Bsource_branch%5D=${sourceBranch}&merge_request%5Btarget_branch%5D=${targetBranch}`,
+    );
   },
   getRefs({ fullPath }) {
-    return `/${fullPath}/refs?search=`;
+    return joinPaths(gon.relative_url_root || '', `/${fullPath}/refs?search=`);
   },
 };
 

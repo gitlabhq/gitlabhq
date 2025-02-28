@@ -9,6 +9,7 @@ export default {
       default: '',
     },
   },
+  inheritAttrs: false,
   props: {
     workItemIid: {
       type: String,

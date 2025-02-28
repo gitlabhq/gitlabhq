@@ -22,6 +22,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, __, n__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
 import {
   IDENTITY_VERIFICATION_REQUIRED_ERROR,
   CONFIG_VARIABLES_TIMEOUT,
@@ -73,6 +74,7 @@ export default {
     GlLink,
     GlSprintf,
     GlLoadingIcon,
+    PipelineInputsForm,
     PipelineVariablesForm,
     RefsDropdown,
     VariableValuesListbox,
@@ -490,6 +492,8 @@ export default {
           @loadingError="onRefsLoadingError"
         />
       </gl-form-group>
+
+      <pipeline-inputs-form v-if="isUsingPipelineInputs" />
 
       <pipeline-variables-form
         v-if="isUsingPipelineInputs"

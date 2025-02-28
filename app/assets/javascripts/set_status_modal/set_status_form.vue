@@ -5,6 +5,7 @@ import {
   GlIcon,
   GlFormCheckbox,
   GlFormInput,
+  GlFormCharacterCount,
   GlFormInputGroup,
   GlCollapsibleListbox,
   GlFormGroup,
@@ -13,9 +14,14 @@ import $ from 'jquery';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import * as Emoji from '~/emoji';
-import { s__ } from '~/locale';
+import { n__, s__ } from '~/locale';
 import { cloneDate, nSecondsAfter, isToday, localeDateFormat } from '~/lib/utils/datetime_utility';
-import { TIME_RANGES_WITH_NEVER, AVAILABILITY_STATUS, NEVER_TIME_RANGE } from './constants';
+import {
+  TIME_RANGES_WITH_NEVER,
+  AVAILABILITY_STATUS,
+  NEVER_TIME_RANGE,
+  STATUS_MAX_LENGTH,
+} from './constants';
 
 export default {
   components: {
@@ -23,6 +29,7 @@ export default {
     GlIcon,
     GlFormCheckbox,
     GlFormInput,
+    GlFormCharacterCount,
     GlFormInputGroup,
     GlCollapsibleListbox,
     GlFormGroup,
@@ -153,12 +160,20 @@ export default {
 
       return localeDateFormat.asDateTime.format(date);
     },
+    remainingCountText(count) {
+      return n__('%d character remaining.', '%d characters remaining.', count);
+    },
+    overLimitText(count) {
+      return n__('%d character over limit.', '%d characters over limit.', count);
+    },
   },
   TIME_RANGES_WITH_NEVER,
   AVAILABILITY_STATUS,
+  STATUS_MAX_LENGTH,
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
   i18n: {
     statusMessagePlaceholder: s__(`SetStatusModal|What's your status?`),
+    statusMessageLabel: s__(`SetStatusModal|Status message`),
     clearStatusButtonLabel: s__('SetStatusModal|Clear status'),
     availabilityCheckboxLabel: s__('SetStatusModal|Set yourself as busy'),
     availabilityCheckboxHelpText: s__(
@@ -172,48 +187,66 @@ export default {
 
 <template>
   <div>
-    <gl-form-input-group class="gl-mb-5">
-      <gl-form-input
-        ref="statusMessageField"
-        :value="message"
-        :placeholder="$options.i18n.statusMessagePlaceholder"
-        @keyup="setDefaultEmoji"
-        @input="$emit('message-input', $event)"
-        @keyup.enter.prevent
-      />
-      <template #prepend>
-        <emoji-picker
-          dropdown-class="gl-h-full"
-          toggle-class="emoji-menu-toggle-button !gl-px-4 !gl-rounded-r-none"
-          :right="false"
-          @click="handleEmojiClick"
-        >
-          <template #button-content>
-            <span v-if="noEmoji" class="gl-relative" data-testid="no-emoji-placeholder">
-              <gl-icon name="slight-smile" class="award-control-icon-neutral" />
-              <gl-icon name="smiley" class="award-control-icon-positive" />
-              <gl-icon name="smile" class="award-control-icon-super-positive" />
-            </span>
-            <span v-else>
-              <span
-                v-safe-html:[$options.safeHtmlConfig]="emojiTag"
-                data-testid="selected-emoji"
-              ></span>
-            </span>
-          </template>
-        </emoji-picker>
-      </template>
-      <template v-if="isDirty" #append>
-        <gl-button
-          v-gl-tooltip.bottom
-          :title="$options.i18n.clearStatusButtonLabel"
-          :aria-label="$options.i18n.clearStatusButtonLabel"
-          icon="close"
-          class="js-clear-user-status-button"
-          @click="clearStatusInputs"
+    <gl-form-group>
+      <gl-form-input-group>
+        <gl-form-input
+          id="status-message-field"
+          ref="statusMessageField"
+          :value="message"
+          :placeholder="$options.i18n.statusMessagePlaceholder"
+          :maxlength="$options.STATUS_MAX_LENGTH"
+          :aria-label="$options.i18n.statusMessageLabel"
+          aria-describedby="character-count-text"
+          @keyup="setDefaultEmoji"
+          @input="$emit('message-input', $event)"
+          @keyup.enter.prevent
         />
+        <template #prepend>
+          <emoji-picker
+            dropdown-class="gl-h-full"
+            toggle-class="emoji-menu-toggle-button !gl-px-4 !gl-rounded-r-none"
+            :right="false"
+            @click="handleEmojiClick"
+          >
+            <template #button-content>
+              <span v-if="noEmoji" class="gl-relative" data-testid="no-emoji-placeholder">
+                <gl-icon name="slight-smile" class="award-control-icon-neutral" />
+                <gl-icon name="smiley" class="award-control-icon-positive" />
+                <gl-icon name="smile" class="award-control-icon-super-positive" />
+              </span>
+              <span v-else>
+                <span
+                  v-safe-html:[$options.safeHtmlConfig]="emojiTag"
+                  data-testid="selected-emoji"
+                ></span>
+              </span>
+            </template>
+          </emoji-picker>
+        </template>
+        <template v-if="isDirty" #append>
+          <gl-button
+            v-gl-tooltip.bottom
+            :title="$options.i18n.clearStatusButtonLabel"
+            :aria-label="$options.i18n.clearStatusButtonLabel"
+            icon="close"
+            class="js-clear-user-status-button"
+            @click="clearStatusInputs"
+          />
+        </template>
+      </gl-form-input-group>
+      <template #description>
+        <p>
+          <gl-form-character-count
+            :value="message"
+            :limit="$options.STATUS_MAX_LENGTH"
+            count-text-id="character-count-text"
+          >
+            <template #remaining-count-text="{ count }">{{ remainingCountText(count) }}</template>
+            <template #over-limit-text="{ count }">{{ overLimitText(count) }}</template>
+          </gl-form-character-count>
+        </p>
       </template>
-    </gl-form-input-group>
+    </gl-form-group>
 
     <gl-form-checkbox
       :checked="availability"

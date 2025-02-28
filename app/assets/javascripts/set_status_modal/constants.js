@@ -14,3 +14,5 @@ export const AVAILABILITY_STATUS = {
 };
 
 export const SET_STATUS_MODAL_ID = 'set-user-status-modal';
+
+export const STATUS_MAX_LENGTH = 100;

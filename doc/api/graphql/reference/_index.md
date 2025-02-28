@@ -1548,7 +1548,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryvulnerabilitieshasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked merge requests. |
 | <a id="queryvulnerabilitieshasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have remediations. |
 | <a id="queryvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
-| <a id="queryvulnerabilitiesidentifiername"></a>`identifierName` | [`String`](#string) | Filter vulnerabilities by identifier name. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance security dashboard queries. |
+| <a id="queryvulnerabilitiesidentifiername"></a>`identifierName` | [`String`](#string) | Filter vulnerabilities by identifier name. Ignored when applied on instance security dashboard queries. |
 | <a id="queryvulnerabilitiesimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
 | <a id="queryvulnerabilitiesowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. Wildcard value "NONE" also supported and it cannot be combined with other OWASP top 10 values. |
 | <a id="queryvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
@@ -27781,7 +27781,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupvulnerabilitieshasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked merge requests. |
 | <a id="groupvulnerabilitieshasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have remediations. |
 | <a id="groupvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
-| <a id="groupvulnerabilitiesidentifiername"></a>`identifierName` | [`String`](#string) | Filter vulnerabilities by identifier name. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance security dashboard queries. |
+| <a id="groupvulnerabilitiesidentifiername"></a>`identifierName` | [`String`](#string) | Filter vulnerabilities by identifier name. Ignored when applied on instance security dashboard queries. |
 | <a id="groupvulnerabilitiesimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
 | <a id="groupvulnerabilitiesowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. Wildcard value "NONE" also supported and it cannot be combined with other OWASP top 10 values. |
 | <a id="groupvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
@@ -27824,12 +27824,7 @@ Returns [`[VulnerableProjectsByGrade!]`](#vulnerableprojectsbygrade).
 
 ##### `Group.vulnerabilityIdentifierSearch`
 
-Search for vulnerabilities by identifier. Feature flag `vulnerability_filtering_by_identifier_group` has to be enabled for the group.
-
-{{< details >}}
-**Introduced** in GitLab 17.8.
-**Status**: Experiment.
-{{< /details >}}
+Search for vulnerabilities by identifier.
 
 Returns [`[String!]`](#string).
 
@@ -27879,7 +27874,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="groupvulnerabilityseveritiescounthasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a merge request. |
 | <a id="groupvulnerabilityseveritiescounthasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have remediations. |
 | <a id="groupvulnerabilityseveritiescounthasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a resolution. |
-| <a id="groupvulnerabilityseveritiescountidentifiername"></a>`identifierName` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Filter vulnerabilities by identifier name. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance security dashboard queries. |
+| <a id="groupvulnerabilityseveritiescountidentifiername"></a>`identifierName` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Filter vulnerabilities by identifier name. Ignored when applied on instance security dashboard queries. |
 | <a id="groupvulnerabilityseveritiescountimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
 | <a id="groupvulnerabilityseveritiescountowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. Wildcard value "NONE" also supported and it cannot be combined with other OWASP top 10 values. |
 | <a id="groupvulnerabilityseveritiescountprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
@@ -28656,7 +28651,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="instancesecuritydashboardvulnerabilityseveritiescounthasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a merge request. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescounthasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have remediations. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescounthasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a resolution. |
-| <a id="instancesecuritydashboardvulnerabilityseveritiescountidentifiername"></a>`identifierName` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Filter vulnerabilities by identifier name. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance security dashboard queries. |
+| <a id="instancesecuritydashboardvulnerabilityseveritiescountidentifiername"></a>`identifierName` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Filter vulnerabilities by identifier name. Ignored when applied on instance security dashboard queries. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. Wildcard value "NONE" also supported and it cannot be combined with other OWASP top 10 values. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
@@ -35437,7 +35432,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectvulnerabilitieshasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked merge requests. |
 | <a id="projectvulnerabilitieshasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have remediations. |
 | <a id="projectvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
-| <a id="projectvulnerabilitiesidentifiername"></a>`identifierName` | [`String`](#string) | Filter vulnerabilities by identifier name. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance security dashboard queries. |
+| <a id="projectvulnerabilitiesidentifiername"></a>`identifierName` | [`String`](#string) | Filter vulnerabilities by identifier name. Ignored when applied on instance security dashboard queries. |
 | <a id="projectvulnerabilitiesimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
 | <a id="projectvulnerabilitiesowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. Wildcard value "NONE" also supported and it cannot be combined with other OWASP top 10 values. |
 | <a id="projectvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
@@ -35517,7 +35512,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="projectvulnerabilityseveritiescounthasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a merge request. |
 | <a id="projectvulnerabilityseveritiescounthasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have remediations. |
 | <a id="projectvulnerabilityseveritiescounthasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a resolution. |
-| <a id="projectvulnerabilityseveritiescountidentifiername"></a>`identifierName` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Filter vulnerabilities by identifier name. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance security dashboard queries. |
+| <a id="projectvulnerabilityseveritiescountidentifiername"></a>`identifierName` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Filter vulnerabilities by identifier name. Ignored when applied on instance security dashboard queries. |
 | <a id="projectvulnerabilityseveritiescountimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
 | <a id="projectvulnerabilityseveritiescountowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. Wildcard value "NONE" also supported and it cannot be combined with other OWASP top 10 values. |
 | <a id="projectvulnerabilityseveritiescountprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |

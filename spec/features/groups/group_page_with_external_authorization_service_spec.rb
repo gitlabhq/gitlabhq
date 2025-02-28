@@ -18,7 +18,7 @@ RSpec.describe 'The group page', :js, feature_category: :groups_and_projects do
       click_button 'Manage'
       click_button 'Plan'
       expect(page).to have_link('Activity')
-      expect(page).to have_link('Issues')
+      expect(page).to have_link('Work items')
       expect(page).to have_link('Merge requests')
       expect(page).to have_link('Members')
     end
@@ -51,7 +51,7 @@ RSpec.describe 'The group page', :js, feature_category: :groups_and_projects do
         expect(page).not_to have_link('Activity')
         expect(page).not_to have_link('Contribution')
 
-        expect(page).not_to have_link('Issues')
+        expect(page).not_to have_link('Work items')
         expect(page).not_to have_link('Merge requests')
         expect(page).to have_link('Members')
       end

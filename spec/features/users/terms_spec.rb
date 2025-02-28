@@ -116,14 +116,14 @@ RSpec.describe 'Users > Terms', :js, feature_category: :user_profile do
         # Application settings are cached for a minute
         travel_to 2.minutes.from_now do
           within('.contextual-nav') do
-            click_link 'Issues'
+            click_link 'Work items'
           end
 
           expect_to_be_on_terms_page
 
           click_button('Accept terms')
 
-          expect(page).to have_current_path(project_issues_path(project), ignore_query: true)
+          expect(page).to have_current_path(project_work_items_path(project), ignore_query: true)
         end
       end
 

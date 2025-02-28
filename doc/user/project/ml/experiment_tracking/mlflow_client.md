@@ -373,6 +373,8 @@ client.log_param(run_id, '<param_name>', '<param_value>')
 client.log_batch(run_id, metric_list, param_list, tag_list)
 ```
 
+Because each file has a size limit of 5 GB, you must partition larger models.
+
 #### Logging artifacts to a model version
 
 GitLab creates a package that can be used by the MLflow client to upload files.

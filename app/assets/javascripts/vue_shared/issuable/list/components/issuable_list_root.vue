@@ -340,6 +340,9 @@ export default {
       <template #nav-actions>
         <slot name="nav-actions"></slot>
       </template>
+      <template #title>
+        <slot name="title"></slot>
+      </template>
     </issuable-tabs>
     <filtered-search-bar
       :namespace="namespace"

@@ -54,6 +54,14 @@ export default {
     };
   },
   computed: {
+    navItems() {
+      return this.item.items.filter((item) => {
+        if (item.link_classes) {
+          return !item.link_classes.includes('js-super-sidebar-nav-item-hidden');
+        }
+        return true;
+      });
+    },
     buttonProps() {
       return {
         'aria-controls': this.itemId,
@@ -146,9 +154,9 @@ export default {
     </button>
 
     <flyout-menu
-      v-if="hasFlyout && isMouseOver && !isExpanded && !keepFlyoutClosed && item.items.length > 0"
+      v-if="hasFlyout && isMouseOver && !isExpanded && !keepFlyoutClosed && navItems.length > 0"
       :target-id="`menu-section-button-${itemId}`"
-      :items="item.items"
+      :items="navItems"
       :async-count="asyncCount"
       @mouseover="isMouseOverFlyout = true"
       @mouseleave="isMouseOverFlyout = false"
@@ -167,7 +175,7 @@ export default {
       <slot>
         <ul :aria-label="item.title" class="gl-m-0 gl-list-none gl-p-0">
           <nav-item
-            v-for="subItem of item.items"
+            v-for="subItem of navItems"
             :key="`${item.title}-${subItem.title}`"
             :item="subItem"
             :async-count="asyncCount"

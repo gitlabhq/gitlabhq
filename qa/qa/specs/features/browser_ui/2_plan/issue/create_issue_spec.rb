@@ -26,7 +26,7 @@ module QA
       ) do
         issue = Resource::Issue.fabricate_via_browser_ui! { |issue| issue.project = project }
 
-        Page::Project::Menu.perform(&:go_to_issues)
+        Page::Project::Menu.perform(&:go_to_work_items)
 
         Page::Project::Issue::Index.perform do |index|
           expect(index).to have_issue(issue)
@@ -46,7 +46,7 @@ module QA
           expect(issue_page).to have_reopen_issue_button
         end
 
-        Page::Project::Menu.perform(&:go_to_issues)
+        Page::Project::Menu.perform(&:go_to_work_items)
 
         Page::Project::Issue::Index.perform do |index|
           expect(index).not_to have_issue(closed_issue)

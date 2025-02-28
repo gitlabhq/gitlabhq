@@ -90,7 +90,7 @@ module Keeps
         This MR makes a new file #{file_name}
         MARKDOWN
 
-        change.labels = %w(type::feature)
+        change.labels = %w[type::feature]
 
         change.changed_files = [file_name]
 

@@ -178,7 +178,7 @@ export default {
       isRelatedToItem: true,
       error: null,
       workItemTypes: [],
-      selectedProjectFullPath: this.fullPath || null,
+      selectedProjectFullPath: this.initialSelectedProject(),
       selectedWorkItemTypeId: null,
       loading: false,
       initialLoadingWorkItem: true,
@@ -523,6 +523,12 @@ export default {
     document.removeEventListener('keydown', this.handleKeydown);
   },
   methods: {
+    initialSelectedProject() {
+      if (this.relatedItem) {
+        return this.relatedItem.reference.substring(0, this.relatedItem.reference.lastIndexOf('#'));
+      }
+      return this.fullPath || null;
+    },
     handleKeydown(e) {
       if (isMetaEnterKeyPair(e)) {
         this.createWorkItem();

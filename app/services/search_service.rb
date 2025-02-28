@@ -14,25 +14,20 @@ class SearchService
     @params = Gitlab::Search::Params.new(params, detect_abuse: true)
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def project
     return unless params[:project_id].present? && valid_request?
 
-    the_project = Project.find_by(id: params[:project_id])
+    the_project = Project.find_by_id(params[:project_id])
     can?(current_user, :read_project, the_project) ? the_project : nil
   end
   strong_memoize_attr :project
-  # rubocop: enable CodeReuse/ActiveRecord
-
-  # rubocop: disable CodeReuse/ActiveRecord
   def group
     return unless params[:group_id].present? && valid_request?
 
-    the_group = Group.find_by(id: params[:group_id])
+    the_group = Group.find_by_id(params[:group_id])
     can?(current_user, :read_group, the_group) ? the_group : nil
   end
   strong_memoize_attr :group
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def projects
     # overridden in EE
@@ -78,12 +73,12 @@ class SearchService
   end
 
   def abuse_detected?
-    params.abusive?
+    params.abusive? || pipe_abuse_detector.abusive?
   end
   strong_memoize_attr :abuse_detected?
 
   def abuse_messages
-    return [] unless params.abusive?
+    return [] unless abuse_detected?
 
     params.abuse_detection.errors.full_messages
   end
@@ -122,6 +117,10 @@ class SearchService
   end
 
   private
+
+  def pipe_abuse_detector
+    Search::PipeAbuseDetector.new(search_type, params)
+  end
 
   def page
     [1, params[:page].to_i].max

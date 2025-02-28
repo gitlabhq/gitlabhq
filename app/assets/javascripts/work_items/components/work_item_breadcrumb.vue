@@ -26,10 +26,17 @@ export default {
     },
   },
   computed: {
+    isWorkItemOnly() {
+      return this.glFeatures.workItemPlanningView;
+    },
     isEpicsList() {
       return this.workItemType === WORK_ITEM_TYPE_ENUM_EPIC;
     },
     listName() {
+      if (this.isWorkItemOnly) {
+        return s__('WorkItem|Work items');
+      }
+
       if (this.isEpicsList) {
         return __('Epics');
       }
@@ -49,7 +56,7 @@ export default {
         text: this.listName,
       };
 
-      if (this.glFeatures.workItemEpicsList || this.issueAsWorkItem) {
+      if (this.isWorkItemOnly || this.glFeatures.workItemEpicsList || this.issueAsWorkItem) {
         indexCrumb.to = { name: ROUTES.index, query: this.$route.query };
       } else {
         indexCrumb.href = this.listPath;

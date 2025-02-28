@@ -194,6 +194,11 @@ msgid_plural "%d characters over limit"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d character over limit."
+msgid_plural "%d characters over limit."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d character remaining"
 msgid_plural "%d characters remaining"
 msgstr[0] ""
@@ -42785,6 +42790,9 @@ msgstr ""
 msgid "Pipelines|If you are unsure, please ask a project maintainer to review it for you."
 msgstr ""
 
+msgid "Pipelines|Inputs"
+msgstr ""
+
 msgid "Pipelines|It is recommended the code is reviewed thoroughly before running this pipeline with the parent project's CI resource."
 msgstr ""
 
@@ -51906,6 +51914,9 @@ msgstr ""
 msgid "SecurityConfiguration|Using custom settings. You won't receive automatic updates on this variable. %{anchorStart}Restore to default%{anchorEnd}"
 msgstr ""
 
+msgid "SecurityConfiguration|Vulnerabilities"
+msgstr ""
+
 msgid "SecurityConfiguration|Vulnerabilities are retained in the database for one year after the last update. After one year of inactivity, vulnerabilities are archived on the first of each month. Archives are removed after five years."
 msgstr ""
 
@@ -54640,6 +54651,9 @@ msgstr ""
 msgid "SetStatusModal|Sorry, we weren't able to set your status. Please try again later."
 msgstr ""
 
+msgid "SetStatusModal|Status message"
+msgstr ""
+
 msgid "SetStatusModal|Status updated"
 msgstr ""
 
@@ -55995,6 +56009,9 @@ msgid "Specify IP ranges that are always allowed for inbound traffic, for use wi
 msgstr ""
 
 msgid "Specify an email address regex pattern to identify default internal users."
+msgstr ""
+
+msgid "Specify the input values to use in this pipeline."
 msgstr ""
 
 msgid "Spent at can't be a future date and time."
@@ -59281,6 +59298,12 @@ msgid "This is a private email address %{helpIcon} generated just for you. Anyon
 msgstr ""
 
 msgid "This is a security log of authentication events involving your account."
+msgstr ""
+
+msgid "This is a username."
+msgstr ""
+
+msgid "This is an ID."
 msgstr ""
 
 msgid "This is an archived project. Repository and other project resources are read-only."

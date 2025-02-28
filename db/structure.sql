@@ -4453,6 +4453,25 @@ PARTITION BY RANGE (created_at);
 
 COMMENT ON TABLE verification_codes IS 'JiHu-specific table';
 
+CREATE TABLE vulnerability_archive_exports (
+    id bigint NOT NULL,
+    partition_number bigint DEFAULT 1 NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    started_at timestamp with time zone,
+    finished_at timestamp with time zone,
+    project_id bigint NOT NULL,
+    author_id bigint NOT NULL,
+    date_range daterange NOT NULL,
+    file_store smallint,
+    format smallint,
+    file text,
+    status text,
+    CONSTRAINT check_3423276100 CHECK ((char_length(file) <= 255)),
+    CONSTRAINT check_aada0b0f45 CHECK ((char_length(status) <= 8))
+)
+PARTITION BY LIST (partition_number);
+
 CREATE TABLE web_hook_logs (
     id bigint NOT NULL,
     web_hook_id bigint NOT NULL,
@@ -23204,6 +23223,15 @@ CREATE SEQUENCE vulnerabilities_id_seq
 
 ALTER SEQUENCE vulnerabilities_id_seq OWNED BY vulnerabilities.id;
 
+CREATE SEQUENCE vulnerability_archive_exports_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vulnerability_archive_exports_id_seq OWNED BY vulnerability_archive_exports.id;
+
 CREATE TABLE vulnerability_archived_records (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -26259,6 +26287,8 @@ ALTER TABLE ONLY vs_code_settings ALTER COLUMN id SET DEFAULT nextval('vs_code_s
 
 ALTER TABLE ONLY vulnerabilities ALTER COLUMN id SET DEFAULT nextval('vulnerabilities_id_seq'::regclass);
 
+ALTER TABLE ONLY vulnerability_archive_exports ALTER COLUMN id SET DEFAULT nextval('vulnerability_archive_exports_id_seq'::regclass);
+
 ALTER TABLE ONLY vulnerability_archived_records ALTER COLUMN id SET DEFAULT nextval('vulnerability_archived_records_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_archives ALTER COLUMN id SET DEFAULT nextval('vulnerability_archives_id_seq'::regclass);
@@ -29275,6 +29305,9 @@ ALTER TABLE ONLY vs_code_settings
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT vulnerabilities_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY vulnerability_archive_exports
+    ADD CONSTRAINT vulnerability_archive_exports_pkey PRIMARY KEY (id, partition_number);
 
 ALTER TABLE ONLY vulnerability_archived_records
     ADD CONSTRAINT vulnerability_archived_records_pkey PRIMARY KEY (id);
@@ -35593,6 +35626,12 @@ CREATE INDEX index_vulnerabilities_on_resolved_by_id ON vulnerabilities USING bt
 CREATE INDEX index_vulnerabilities_project_id_and_id_on_default_branch ON vulnerabilities USING btree (project_id, id) WHERE (present_on_default_branch IS TRUE);
 
 CREATE INDEX index_vulnerabilities_project_id_state_severity_default_branch ON vulnerabilities USING btree (project_id, state, severity, present_on_default_branch);
+
+CREATE INDEX index_vulnerability_archive_exports_on_author_id ON ONLY vulnerability_archive_exports USING btree (author_id);
+
+CREATE INDEX index_vulnerability_archive_exports_on_project_id ON ONLY vulnerability_archive_exports USING btree (project_id);
+
+CREATE INDEX index_vulnerability_archive_exports_on_status ON ONLY vulnerability_archive_exports USING btree (status);
 
 CREATE INDEX index_vulnerability_archived_records_on_archive_id ON vulnerability_archived_records USING btree (archive_id);
 

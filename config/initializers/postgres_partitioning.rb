@@ -49,7 +49,8 @@ if Gitlab.ee?
       Ci::FinishedBuildChSyncEvent,
       Search::Zoekt::Task,
       Ai::CodeSuggestionEvent,
-      Ai::DuoChatEvent
+      Ai::DuoChatEvent,
+      Vulnerabilities::ArchiveExport
     ])
 else
   Gitlab::Database::Partitioning.register_tables(

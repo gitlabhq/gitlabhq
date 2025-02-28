@@ -8,8 +8,12 @@ export default () => ({
   addedLines: null,
   removedLines: null,
   endpoint: '',
+  endpointBatch: '',
+  endpointMetadata: '',
+  endpointCoverage: '',
   endpointUpdateUser: '',
   endpointDiffForPath: '',
+  perPage: undefined,
   basePath: '',
   commit: null,
   startVersion: null, // Null unless a target diff is selected for comparison that is not the "base" diff

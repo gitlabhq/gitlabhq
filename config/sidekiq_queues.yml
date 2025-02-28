@@ -869,6 +869,8 @@
   - 1
 - - security_orchestration_configuration_create_bot
   - 1
+- - security_orchestration_configuration_create_bot_for_namespace
+  - 1
 - - security_orchestration_configuration_remove_bot
   - 1
 - - security_orchestration_configuration_remove_bot_for_namespace

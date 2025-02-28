@@ -620,6 +620,13 @@ vulnerabilities:
   - table: projects
     column: project_id
     on_delete: async_delete
+vulnerability_archive_exports:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: users
+    column: author_id
+    on_delete: async_delete
 vulnerability_archived_records:
   - table: projects
     column: project_id

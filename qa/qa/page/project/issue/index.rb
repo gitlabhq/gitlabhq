@@ -46,7 +46,16 @@ module QA
           end
 
           def click_closed_issues_tab
-            click_element('closed-issuables-tab')
+            if has_element?('closed-issuables-tab')
+              click_element('closed-issuables-tab')
+            else
+              # When we no longer use tabs for open/closed/all lists
+              click_element('clear-icon')
+              click_element('filtered-search-token-segment')
+              click_link('State')
+              click_link('Closed')
+              click_element('search-button')
+            end
           end
 
           def click_export_as_csv_button

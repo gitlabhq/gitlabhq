@@ -1,3 +1,3 @@
 import { initWorkItemsRoot } from '~/work_items';
 
-initWorkItemsRoot();
+initWorkItemsRoot({ withTabs: false });

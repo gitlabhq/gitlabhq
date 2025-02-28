@@ -10,6 +10,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
+import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
 import PipelineNewForm, {
   POLLING_INTERVAL,
 } from '~/ci/pipeline_new/components/pipeline_new_form.vue';
@@ -52,6 +53,7 @@ describe('Pipeline New Form', () => {
   const pipelineCreateMutationHandler = jest.fn();
 
   const findForm = () => wrapper.findComponent(GlForm);
+  const findPipelineInputsForm = () => wrapper.findComponent(PipelineInputsForm);
   const findPipelineVariablesForm = () => wrapper.findComponent(PipelineVariablesForm);
   const findRefsDropdown = () => wrapper.findComponent(RefsDropdown);
   const findSubmitButton = () => wrapper.findByTestId('run-pipeline-button');
@@ -155,6 +157,10 @@ describe('Pipeline New Form', () => {
         await waitForPromises();
       });
 
+      it('does not display the pipeline inputs form component', () => {
+        expect(findPipelineInputsForm().exists()).toBe(false);
+      });
+
       it('does not display the pipeline variables form component', () => {
         expect(findPipelineVariablesForm().exists()).toBe(false);
         expect(findVariableRows().exists()).toBe(true);
@@ -170,6 +176,10 @@ describe('Pipeline New Form', () => {
         mockCiConfigVariables.mockResolvedValue(mockEmptyCiConfigVariablesResponse);
         createComponentWithApollo({ ciInputsForPipelines: true });
         await waitForPromises();
+      });
+
+      it('displays the pipeline inputs form component', () => {
+        expect(findPipelineInputsForm().exists()).toBe(true);
       });
 
       it('displays the pipeline variables form component', () => {
