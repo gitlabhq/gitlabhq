@@ -59,7 +59,7 @@ describe('Terraform extension', () => {
 
   describe('summary', () => {
     describe('while loading', () => {
-      const loadingText = 'Loading Terraform reports...';
+      const loadingText = 'Loading Terraform reports…';
 
       it('should render loading text', async () => {
         mockPollingApi(HTTP_STATUS_OK, plans, {});

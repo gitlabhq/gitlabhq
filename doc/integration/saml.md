@@ -908,7 +908,7 @@ Prerequisites:
 
   The name of the attribute must contain the groups that a user belongs to.
   To tell GitLab where to find these groups, add a `groups_attribute:`
-  element to your SAML settings.
+  element to your SAML settings. This attribute is case-sensitive.
 
 ### Required groups
 

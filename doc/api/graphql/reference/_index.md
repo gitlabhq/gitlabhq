@@ -24220,6 +24220,29 @@ A software dependency used by a project.
 | <a id="dependencyversion"></a>`version` | [`String`](#string) | Version of the dependency. |
 | <a id="dependencyvulnerabilitycount"></a>`vulnerabilityCount` | [`Int!`](#int) | Number of vulnerabilities within the dependency. |
 
+### `DependencyPath`
+
+Ancestor path of a given dependency.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencypathiscyclic"></a>`isCyclic` | [`Boolean!`](#boolean) | Indicates if the path is cyclic. |
+| <a id="dependencypathmaxdepthreached"></a>`maxDepthReached` | [`Boolean!`](#boolean) | Indicates if the path reached the maximum depth (20). |
+| <a id="dependencypathpath"></a>`path` | [`[DependencyPathPartial!]!`](#dependencypathpartial) | Name of the dependency. |
+
+### `DependencyPathPartial`
+
+Ancestor path partial of a given dependency.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencypathpartialname"></a>`name` | [`String!`](#string) | Name of the dependency. |
+| <a id="dependencypathpartialversion"></a>`version` | [`String!`](#string) | Version of the dependency. |
+
 ### `DependencyProxyBlob`
 
 Dependency proxy blob.
@@ -34084,6 +34107,24 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectdependenciespackagemanagers"></a>`packageManagers` | [`[PackageManager!]`](#packagemanager) | Filter dependencies by package managers. |
 | <a id="projectdependenciessort"></a>`sort` | [`DependencySort`](#dependencysort) | Sort dependencies by given criteria. |
 | <a id="projectdependenciessourcetypes"></a>`sourceTypes` | [`[SbomSourceType!]`](#sbomsourcetype) | Filter dependencies by source type. |
+
+##### `Project.dependencyPaths`
+
+Ancestor dependency paths for a dependency used by the project. \
+          Returns `null` if `dependency_graph_graphql` feature flag is disabled.
+
+{{< details >}}
+**Introduced** in GitLab 17.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`[DependencyPath!]`](#dependencypath).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectdependencypathscomponent"></a>`component` | [`SbomComponentID!`](#sbomcomponentid) | Dependency path for component. |
 
 ##### `Project.deployment`
 

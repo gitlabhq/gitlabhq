@@ -1,6 +1,7 @@
 ---
 table_name: sbom_occurrences
 classes:
+- Sbom::DependencyPath
 - Sbom::Occurrence
 feature_categories:
 - dependency_management

@@ -85,10 +85,10 @@ export default {
     },
     applyingSuggestionsMessage() {
       if (this.isApplyingSingle || this.batchSuggestionsCount < 2) {
-        return __('Applying suggestion...');
+        return __('Applying suggestion…');
       }
 
-      return __('Applying suggestions...');
+      return __('Applying suggestions…');
     },
     isLoggedIn() {
       return isLoggedIn();

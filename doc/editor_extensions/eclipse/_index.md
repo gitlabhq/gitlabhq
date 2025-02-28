@@ -24,7 +24,7 @@ This feature is an [experiment](../../policy/development_stages_support.md).
 ## Report issues with the plugin
 
 You can report any issues, bugs, or feature requests in the
-[`gitlab-eclipse-plugin` issue queue](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues).
+[`gitlab-eclipse-plugin` issue tracker](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues).
 Use the `Bug` or `Feature Proposal` template.
 
 ## Related topics

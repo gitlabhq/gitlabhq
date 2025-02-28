@@ -211,7 +211,7 @@ module SystemNotes
     end
 
     def reviewed
-      body = "left review comments without approving or requesting changes"
+      body = "left review comments"
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'reviewed'))
     end

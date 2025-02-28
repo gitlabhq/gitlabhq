@@ -9,29 +9,29 @@ module RuboCop
       #
       # @example
       #
-      # # bad
-      # class SomeService
-      #   def execute
-      #     do_something_with(Current.organization)
-      #   end
-      # end
-      #
-      # # good
-      # class SomeController < ApplicationController
-      #   def create
-      #     response = SomeService.new(organization: Current.organization).execute
-      #   end
-      # end
-      #
-      # class SomeService
-      #   def initialize(organization:)
-      #     @organization = organization
+      #   # bad
+      #   class SomeService
+      #     def execute
+      #       do_something_with(Current.organization)
+      #     end
       #   end
       #
-      #   def execute
-      #     do_something_with(@organization)
+      #   # good
+      #   class SomeController < ApplicationController
+      #     def create
+      #       response = SomeService.new(organization: Current.organization).execute
+      #     end
       #   end
-      # end
+      #
+      #   class SomeService
+      #     def initialize(organization:)
+      #       @organization = organization
+      #     end
+      #
+      #     def execute
+      #       do_something_with(@organization)
+      #     end
+      #   end
       #
       #
       class AvoidCurrentOrganization < RuboCop::Cop::Base

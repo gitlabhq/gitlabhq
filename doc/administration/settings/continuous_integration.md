@@ -142,7 +142,7 @@ To restrict runner registration by members in a specific group:
 1. Clear the **New group runners can be registered** checkbox if you want to disable runner registration by all members in the group. If the setting is read-only, you must enable runner registration for the [instance](#restrict-runner-registration-by-all-users-in-an-instance).
 1. Select **Save changes**.
 
-### Allow runner registrations tokens
+### Allow runner registration tokens
 
 {{< history >}}
 

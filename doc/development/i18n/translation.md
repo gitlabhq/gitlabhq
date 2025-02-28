@@ -46,14 +46,14 @@ Remember to **Save** each translation.
 In Crowdin, each string contains a link that shows all instances of the string in the entire GitLab codebase.
 When you translate a string, you can go to the relevant commit or merge request to get more context.
 
-![Crowdin Editor showing a string with a link for more translation context](img/crowdin-editor-string-context.png)
+![Crowdin Editor showing a string with a link for more translation context](img/crowdin-editor-string-context_v17_10.png)
 
 When you select the link, code search results appear for that string.
 You can [view Git blame from code search](../../user/search/_index.md#view-git-blame-from-code-search)
 to see the commits that added the string.
 For a list of relevant merge requests, select a commit.
 
-![GitLab code search displaying results for a string](img/gitlab-search-occurrence.png)
+![GitLab code search displaying results for a string](img/gitlab-search-occurrence_v17_10.png)
 
 ## General Translation Guidelines
 

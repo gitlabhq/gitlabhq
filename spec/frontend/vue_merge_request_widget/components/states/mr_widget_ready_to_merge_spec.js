@@ -895,7 +895,7 @@ describe('ReadyToMerge', () => {
     });
 
     it('should display the correct merge text', () => {
-      expect(findMergeButton().text()).toBe('Merge...');
+      expect(findMergeButton().text()).toBe('Merge…');
     });
 
     it('should display confirmation modal when merge button is clicked', async () => {

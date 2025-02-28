@@ -13,12 +13,11 @@ title: Contribution analytics
 {{< /details >}}
 
 Contribution analytics provide an overview of the
-[contribution events](../../profile/contributions_calendar.md#user-contribution-events) made by your group's members.
+[contribution events](../../profile/contributions_calendar.md#user-contribution-events) your group's members made in the last week, month, or three months.
+Interactive bar charts and a detailed table show contribution events
+(such as push events, issues, and merge requests) by group member.
 
-Contribution analytics provides an overview of the contribution events made by the group's members, offering valuable insights into team activity and individual performance.
-This report includes visualizations like bar charts and a detailed table that breaks down contribution types (such as push events, issues, and merge requests) by group member.
-
-Use contribution analytics data visualizations for:
+Use contribution analytics to get insights into team activity and individual performance, and use this information for:
 
 - Workload balancing: Analyze your group's contributions over a period of time, and identify group members who are high performers or may benefit from additional support.
 - Team collaboration: Evaluate the balance of contributions, such as code pushes versus reviews or approvals, to ensure collaborative development practices.

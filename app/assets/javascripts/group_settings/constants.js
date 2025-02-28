@@ -12,7 +12,7 @@ export const I18N_CONFIRM_TITLE = s__(
 export const I18N_UPDATE_ERROR_MESSAGE = __('An error occurred while updating configuration.');
 export const I18N_REFRESH_MESSAGE = __('Refresh the page and try again.');
 
-export const I18N_PENDING_MESSAGE = s__('GroupSettings|Saving...');
+export const I18N_PENDING_MESSAGE = s__('GroupSettings|Saving…');
 export const I18N_SUCCESS_MESSAGE = s__('GroupSettings|Change saved.');
 export const I18N_ERROR_MESSAGE = s__('GroupSettings|Failed to save changes.');
 export const I18N_RETRY_ACTION_TEXT = s__('GroupSettings|Retry');

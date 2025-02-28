@@ -1,232 +1,100 @@
-import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import { GlFilteredSearch, GlSorting } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import CredentialsFilterSortApp from '~/credentials/components/credentials_filter_sort_app.vue';
-import { visitUrl, getBaseURL } from '~/lib/utils/url_utility';
-import setWindowLocation from 'helpers/set_window_location_helper';
-import { SORT_KEY_NAME } from '~/credentials/constants';
+import { goTo } from '~/credentials/utils';
 
-const mockFilters = [
-  'dummy',
-  {
-    type: 'created',
-    value: { data: '2025-01-01', operator: '<' },
-    id: 1,
-  },
-  {
-    type: 'expires',
-    value: { data: '2025-01-01', operator: '<' },
-    id: 3,
-  },
-  {
-    type: 'last_used',
-    value: { data: '2025-01-01', operator: '≥' },
-    id: 2,
-  },
-  {
-    type: 'state',
-    value: { data: 'inactive', operator: '=' },
-    id: 3,
-  },
-];
-
-jest.mock('~/lib/utils/url_utility', () => {
-  return {
-    ...jest.requireActual('~/lib/utils/url_utility'),
-    visitUrl: jest.fn(),
-  };
-});
+jest.mock('~/credentials/utils', () => ({
+  ...jest.requireActual('~/credentials/utils'),
+  initializeValuesFromQuery: () => ({
+    sorting: { value: 'expires', isAsc: true },
+    tokens: [],
+  }),
+  goTo: jest.fn(),
+}));
 
 describe('CredentialsFilterSortApp', () => {
   let wrapper;
-  const URL_HOST = 'https://localhost/';
 
   const createComponent = () => {
-    wrapper = mount(CredentialsFilterSortApp, {
-      stubs: {
-        GlFilteredSearch: true,
-      },
-    });
+    wrapper = shallowMount(CredentialsFilterSortApp);
   };
 
-  beforeEach(() => {
-    setWindowLocation(URL_HOST);
-  });
-
   const findFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
-  const findAvailableTokens = () => findFilteredSearch().props('availableTokens');
-  const findSortingComponent = () => wrapper.findComponent(GlSorting);
-  const findSortDirectionToggle = () =>
-    findSortingComponent().find('button[title^="Sort direction"]');
-  const findDropdownToggle = () => findSortingComponent().find('button[aria-haspopup="listbox"]');
+  const findSorting = () => wrapper.findComponent(GlSorting);
 
-  describe('Mounts GlFilteredSearch with corresponding filters', () => {
-    it.each`
-      option
-      ${'personal_access_tokens'}
-      ${'ssh_keys'}
-      ${'resource_access_tokens'}
-      ${'gpg_keys'}
-      ${'active'}
-      ${'inactive'}
-      ${'true'}
-    `(`includes token with option $option`, ({ option }) => {
-      createComponent();
-      const tokenExists = findAvailableTokens().find((token) => {
-        return token.options?.find(({ value }) => {
-          return value === option;
-        });
-      });
+  it('reloads the page with correct parameters when the search is submitted', () => {
+    createComponent();
+    findFilteredSearch().vm.$emit('submit', [
+      { type: 'search', value: { data: '', operator: '=' } },
+    ]);
 
-      expect(Boolean(tokenExists)).toBe(true);
-    });
-
-    it.each`
-      filter
-      ${'ssh_keys'}
-      ${'gpg_keys'}
-    `(`exclude all other tokens if filter is $filter`, async ({ filter }) => {
-      createComponent();
-      findFilteredSearch().vm.$emit('input', [
-        {
-          type: 'filter',
-          value: { data: filter, operator: '=' },
-          id: 1,
-        },
-      ]);
-      await nextTick();
-
-      const tokens = findAvailableTokens();
-      expect(tokens.length).toEqual(1);
-      expect(tokens[0].type).toBe('filter');
-    });
+    expect(goTo).toHaveBeenCalledWith('expires', true, [
+      { type: 'search', value: { data: '', operator: '=' } },
+    ]);
   });
 
-  describe('URL search params', () => {
-    afterEach(() => {
-      window.history.pushState({}, null, '');
-    });
+  it('reloads the page with correct parameters when sorting is changed', () => {
+    createComponent();
+    findSorting().vm.$emit('sortByChange', 'name');
 
-    it.each`
-      filter
-      ${'ssh_keys'}
-      ${'gpg_keys'}
-    `(`exclude all other tokens if filter is $filter`, ({ filter }) => {
-      window.history.replaceState({}, '', `/?filter=${filter}`);
-      createComponent();
-
-      const tokens = findAvailableTokens();
-      expect(tokens.length).toEqual(1);
-      expect(tokens[0].type).toBe('filter');
-    });
-
-    it('triggers location changes having emitted `submit` event', async () => {
-      createComponent();
-      const filteredSearch = findFilteredSearch();
-      filteredSearch.vm.$emit('submit', mockFilters);
-      await nextTick();
-      expect(visitUrl).toHaveBeenCalledWith(
-        `${getBaseURL()}/?search=dummy&created_before=2025-01-01&expires_before=2025-01-01&last_used_after=2025-01-01&state=inactive`,
-      );
-    });
-
-    it('Removes all query param except filter if filter has been changed', async () => {
-      window.history.replaceState({}, '', '/?page=2&non-existing-token=dummy');
-      createComponent();
-      const filteredSearch = findFilteredSearch();
-      filteredSearch.vm.$emit('submit', mockFilters);
-      await nextTick();
-      expect(visitUrl).toHaveBeenCalledWith(
-        `${getBaseURL()}/?search=dummy&created_before=2025-01-01&expires_before=2025-01-01&last_used_after=2025-01-01&state=inactive`,
-      );
-    });
-  });
-  describe('renders CredentialsSortApp component', () => {
-    it('when url has filter param with value personal_access_tokens', async () => {
-      setWindowLocation('?filter=personal_access_tokens');
-      createComponent();
-      await nextTick();
-
-      expect(findSortingComponent().exists()).toBe(true);
-    });
-    it('when url has no filter param', async () => {
-      createComponent();
-      await nextTick();
-
-      expect(findSortingComponent().exists()).toBe(true);
-    });
+    expect(goTo).toHaveBeenCalledWith('name', true, []);
   });
 
-  describe('sort dropdown', () => {
-    it('defaults to sorting by "Created date" in ascending order', async () => {
-      createComponent();
-      await nextTick();
-      expect(findSortingComponent().props('isAscending')).toBe(true);
-      expect(findDropdownToggle().text()).toBe('Expiration date');
-    });
+  it('reloads the page with correct parameters when sorting direction is changed', () => {
+    createComponent();
+    findSorting().vm.$emit('sortDirectionChange', false);
 
-    it('sets the sort label correctly', () => {
-      setWindowLocation('?sort=name_asc');
-
-      createComponent();
-
-      expect(findDropdownToggle().text()).toBe('Name');
-    });
-
-    describe('new sort option is selected', () => {
-      beforeEach(async () => {
-        visitUrl.mockImplementation(() => {});
-        createComponent();
-
-        findSortingComponent().vm.$emit('sortByChange', SORT_KEY_NAME);
-        await nextTick();
-      });
-
-      it('sorts by new option', () => {
-        expect(visitUrl).toHaveBeenCalledWith(`${URL_HOST}?sort=name_asc`);
-      });
-    });
+    expect(goTo).toHaveBeenCalledWith('expires', false, []);
   });
 
-  describe('sort direction toggle', () => {
-    beforeEach(() => {
-      visitUrl.mockImplementation(() => {});
-    });
+  it('removes all tokens if ssh or gpg keys are chosen', async () => {
+    createComponent();
+    const filteredSearch = findFilteredSearch();
+    filteredSearch.vm.$emit('input', [
+      { type: 'search', value: { data: 'my search', operator: '=' } },
+      { type: 'filter', value: { data: 'personal_access_tokens', operator: '=' } },
+    ]);
+    await nextTick();
 
-    describe('when current sort direction is ascending', () => {
-      beforeEach(() => {
-        setWindowLocation('?sort=name_asc');
+    expect(findFilteredSearch().props('value')).toMatchObject([
+      { type: 'search', value: { data: 'my search', operator: '=' } },
+      { type: 'filter', value: { data: 'personal_access_tokens', operator: '=' } },
+    ]);
 
-        createComponent();
-      });
+    filteredSearch.vm.$emit('input', [
+      { type: 'search', value: { data: 'my search', operator: '=' } },
+      { type: 'filter', value: { data: 'ssh_keys', operator: '=' } },
+    ]);
+    await nextTick();
 
-      describe('when sort direction toggle is clicked', () => {
-        beforeEach(() => {
-          findSortDirectionToggle().trigger('click');
-        });
+    expect(findFilteredSearch().props('value')).toMatchObject([
+      { type: 'filter', value: { data: 'ssh_keys', operator: '=' } },
+    ]);
+  });
 
-        it('sorts in descending order', () => {
-          expect(visitUrl).toHaveBeenCalledWith(`${URL_HOST}?sort=name_desc`);
-        });
-      });
-    });
+  it('removes all available tokens if ssh or gpg keys are chosen', async () => {
+    createComponent();
+    const filteredSearch = findFilteredSearch();
+    expect(filteredSearch.props('availableTokens')).toHaveLength(6);
 
-    describe('when current sort direction is descending', () => {
-      beforeEach(() => {
-        setWindowLocation('?sort=name_desc');
+    filteredSearch.vm.$emit('input', [
+      { type: 'filter', value: { data: 'ssh_keys', operator: '=' } },
+    ]);
+    await nextTick();
 
-        createComponent();
-      });
+    expect(filteredSearch.props('availableTokens')).toHaveLength(1);
+  });
 
-      describe('when sort direction toggle is clicked', () => {
-        beforeEach(() => {
-          findSortDirectionToggle().trigger('click');
-        });
+  it('hides sorting if ssh or gpg keys are chosen', async () => {
+    createComponent();
+    const sorting = findSorting();
+    expect(sorting.exists()).toBe(true);
+    findFilteredSearch().vm.$emit('input', [
+      { type: 'filter', value: { data: 'ssh_keys', operator: '=' } },
+    ]);
+    await nextTick();
 
-        it('sorts in ascending order', () => {
-          expect(visitUrl).toHaveBeenCalledWith(`${URL_HOST}?sort=name_asc`);
-        });
-      });
-    });
+    expect(sorting.exists()).toBe(false);
   });
 });

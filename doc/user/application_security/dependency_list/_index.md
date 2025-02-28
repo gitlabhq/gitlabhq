@@ -28,12 +28,16 @@ Software Bill of Materials, SBOM, or BOM.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Project Dependency](https://www.youtube.com/watch?v=ckqkn9Tnbw4).
 
-## Prerequisites
+## Set up the dependency list
 
-To list your project's dependencies the SBOM document must:
+To list your project's dependencies, run [Dependency Scanning](../dependency_scanning/_index.md)
+or [Container Scanning](../container_scanning/_index.md) on the default branch of your project.
 
-- Comply with [the CycloneDX specification](https://github.com/CycloneDX/specification) version `1.4`, `1.5`, or `1.6`. Online validator available on [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-tool/validate).
-- Be uploaded as [a CI/CD artifact report](../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline on the default branch.
+The dependency list also shows dependencies from any
+[CycloneDX reports](../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) uploaded from the
+latest default branch pipeline.
+The CycloneDX reports must comply with [the CycloneDX specification](https://github.com/CycloneDX/specification) version `1.4`, `1.5`, or `1.6`.
+You can use the [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-tool/validate) to validate CycloneDX reports.
 
 {{< alert type="note" >}}
 
@@ -41,18 +45,6 @@ Although this is not mandatory for populating the dependency list, the SBOM docu
 [GitLab CycloneDX property taxonomy](../../../development/sec/cyclonedx_property_taxonomy.md) to provide some properties and to enable some security features.
 
 {{< /alert >}}
-
-GitLab already generates this document when the following requirements are met:
-
-- The [Dependency Scanning](../dependency_scanning/_index.md)
-  or [Container Scanning](../container_scanning/_index.md)
-  CI job must be configured for your project.
-- Your project uses at least one of the
-  [languages and package managers](../dependency_scanning/_index.md#supported-languages-and-package-managers)
-  supported by Gemnasium.
-- A successful pipeline was run on the default branch.
-  You should not change the default behavior of allowing the
-  [application security jobs](../detect/_index.md) to fail.
 
 ## View project dependencies
 

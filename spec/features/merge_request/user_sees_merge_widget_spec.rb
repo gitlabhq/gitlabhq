@@ -139,7 +139,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
-      click_button 'Merge...'
+      click_button 'Merge…'
 
       expect(page).to have_selector('[data-testid="merge-failed-pipeline-confirmation-dialog"]', visible: true)
     end
@@ -147,7 +147,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
     it 'allows me to merge with a failed pipeline', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449599' do
       wait_for_requests
 
-      click_button 'Merge...'
+      click_button 'Merge…'
 
       within_testid('merge-failed-pipeline-confirmation-dialog') do
         click_button 'Merge unverified changes'

@@ -168,7 +168,7 @@ enabling Group Sync in GitLab.
 To configure SAML Group Sync for GitLab Self-Managed:
 
 1. Configure the [SAML OmniAuth Provider](../../../integration/saml.md).
-1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting. See the following provider configuration example in `/etc/gitlab/gitlab.rb` for reference:
+1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting. This attribute is case-sensitive. See the following provider configuration example in `/etc/gitlab/gitlab.rb` for reference:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [

@@ -124,7 +124,7 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
       it 'shows loading text', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410499' do
         visit_blob_blame(path)
         click_link _('Show full blame')
-        expect(page).to have_text('Loading full blame...')
+        expect(page).to have_text('Loading full blame…')
       end
     end
   end

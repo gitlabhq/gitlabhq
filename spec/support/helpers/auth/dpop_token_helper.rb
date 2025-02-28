@@ -8,9 +8,10 @@ module Auth
 
     DpopProof = Struct.new(:ssh_public_key, :public_key_in_jwk, :openssl_private_key, :fingerprint, :proof)
 
-    def generate_dpop_proof_for(
-      user, ssh_public_key: nil, alg: VALID_ALG, typ: VALID_TYP,
-      kty: VALID_KTY, fingerprint: nil, ath: nil, public_key_in_jwk: nil)
+    def generate_dpop_proof_for( # rubocop:disable Metrics/ParameterLists -- all params needed for edge cases
+      user, ssh_public_key: nil, alg: VALID_ALG, typ: VALID_TYP, no_ath_claim: false,
+      kty: VALID_KTY, fingerprint: nil, ath: nil, public_key_in_jwk: nil, no_jwk_claim: false,
+      iat: Time.now.to_i, exp: Time.now.to_i + Gitlab::Auth::DpopToken::MAX_EXPIRY_TIME_IN_SECS)
       # NOTE: `ssh_public_key` and `ssh_private_key` are not real secrets.
       # They are a key pair generated solely for testing.
       #
@@ -66,13 +67,17 @@ module Auth
       fingerprint ||= create_fingerprint(key.key)
       openssl_private_key = OpenSSL::PKey::RSA.new(ssh_private_key)
 
-      public_key_in_jwk ||= {
-        kty: kty,
-        n: Base64.urlsafe_encode64(openssl_private_key.n.to_s(2), padding: false),
-        e: Base64.urlsafe_encode64(openssl_private_key.e.to_s(2), padding: false)
-      }
+      if no_jwk_claim
+        public_key_in_jwk = nil
+      else
+        public_key_in_jwk ||= {
+          kty: kty,
+          n: Base64.urlsafe_encode64(openssl_private_key.n.to_s(2), padding: false),
+          e: Base64.urlsafe_encode64(openssl_private_key.e.to_s(2), padding: false)
+        }
+      end
 
-      ath ||= generate_ath(personal_access_token)
+      ath = no_ath_claim ? nil : (ath || generate_ath(personal_access_token))
 
       dpop_proof = create_dpop_proof(
         alg,
@@ -80,6 +85,8 @@ module Auth
         fingerprint,
         public_key_in_jwk,
         openssl_private_key,
+        iat: iat,
+        exp: exp,
         ath: ath
       )
 
@@ -90,55 +97,41 @@ module Auth
       Base64.urlsafe_encode64(Digest::SHA256.digest(pat.token), padding: false)
     end
 
-    def create_dpop_proof(alg, typ, kid, public_key, private_key, htu: '', htm: '', ath: nil, iat: Time.now.to_i, exp: Time.now.to_i + 300) # rubocop:disable Metrics/ParameterLists -- all params needed for edge cases
+    # -- all params needed for edge cases
+    def create_dpop_proof(alg, typ, kid, public_key, private_key, htu: '', htm: '', **claims)
       headers = create_headers(alg, typ, public_key, kid)
-
       jti = SecureRandom.uuid
 
       payload = create_payload(
-        htu: htu, htm: htm, ath: ath, iat: iat, jti: jti, exp: exp)
+        htu: htu, htm: htm, jti: jti, **claims)
 
       JWT.encode(payload, private_key, alg, headers)
     end
 
     def create_headers(alg, typ, public_key, kid)
-      if kid == ""
-        {
-          alg: alg,
-          typ: typ,
-          jwk: public_key
-        }
-      else
-        {
-          alg: alg,
-          typ: typ,
-          jwk: public_key,
-          kid: kid
-        }
-      end
+      headers = {
+        alg: alg,
+        typ: typ,
+        jwk: public_key
+      }
+
+      headers[:kid] = kid if kid.present?
+
+      headers
     end
 
-    def create_payload(
-      htu:, htm:, ath: nil, iat: Time.now.to_i, jti: SecureRandom.uuid,
-      exp: Time.now.to_i + 300)
-      if exp == ""
-        {
-          htu: htu,
-          htm: htm,
-          ath: ath,
-          iat: iat,
-          jti: jti
-        }
-      else
-        {
-          htu: htu,
-          htm: htm,
-          ath: ath,
-          iat: iat,
-          jti: jti,
-          exp: exp
-        }
+    def create_payload(htu:, htm:, jti: SecureRandom.uuid, **claims)
+      payload = {
+        htu: htu,
+        htm: htm,
+        jti: jti
+      }
+
+      claims.each do |key, value|
+        payload[key] = value if value.present?
       end
+
+      payload
     end
 
     def create_fingerprint(key)

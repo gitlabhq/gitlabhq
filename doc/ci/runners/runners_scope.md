@@ -94,7 +94,7 @@ in GitLab 18.0. Use runner authentication tokens instead. For more information, 
 
 Prerequisites:
 
-- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#allow-runner-registrations-tokens) in the **Admin** area.
+- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#allow-runner-registration-tokens) in the **Admin** area.
 - You must be an administrator.
 
 To create an instance runner:
@@ -792,7 +792,7 @@ In GitLab 17.0, the use of runner registration tokens is disabled in all GitLab 
 
 Prerequisites:
 
-- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#allow-runner-registrations-tokens) in the **Admin** area.
+- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#allow-runner-registration-tokens) in the **Admin** area.
 
 To enable the use of runner registration token in project and groups:
 

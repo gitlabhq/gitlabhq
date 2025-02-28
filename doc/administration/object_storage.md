@@ -326,48 +326,181 @@ It uses the first of these settings that has a value.
 The service account must have permission to access the bucket. For more information,
 see the [Cloud Storage authentication documentation](https://cloud.google.com/storage/docs/authentication).
 
-{{< alert type="note" >}}
+#### Google Cloud Application Default Credentials
 
-To use bucket encryption with [customer-managed encryption keys](https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys), use the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
-
-{{< /alert >}}
-
-#### GCS example
-
-For Linux Package installations, this is an example of the `connection` setting in the consolidated form:
-
-```ruby
-gitlab_rails['object_store']['connection'] = {
-  'provider' => 'Google',
-  'google_project' => '<GOOGLE PROJECT>',
-  'google_json_key_location' => '<FILENAME>'
-}
-```
-
-#### GCS example with ADC
-
-Google Cloud Application Default Credentials (ADC) are typically
-used with GitLab to use the default service account. This eliminates the
-need to supply credentials for the instance. For example, in the consolidated form:
-
-```ruby
-gitlab_rails['object_store']['connection'] = {
-  'provider' => 'Google',
-  'google_project' => '<GOOGLE PROJECT>',
-  'google_application_default' => true
-}
-```
+[Google Cloud Application Default Credentials (ADC)](https://cloud.google.com/docs/authentication/application-default-credentials) are typically
+used with GitLab to use the default service account or [Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation).
+Set `google_application_default` to `true` and omit `google_json_key_location` and `google_json_key_string`.
 
 If you use ADC, be sure that:
 
 - The service account that you use has the
   [`iam.serviceAccounts.signBlob` permission](https://cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/signBlob).
   Typically this is done by granting the `Service Account Token Creator` role to the service account.
-- Your virtual machines have the [correct access scopes to access Google Cloud APIs](https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#changeserviceaccountandscopes). If the machines do not have the right scope, the error logs may show:
+- If you are using Google Compute virtual machines, ensure they have the [correct access scopes to access Google Cloud APIs](https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#changeserviceaccountandscopes). If the machines do not have the right scope, the error logs may show:
 
   ```markdown
   Google::Apis::ClientError (insufficientPermissions: Request had insufficient authentication scopes.)
   ```
+
+{{< alert type="note" >}}
+
+To use bucket encryption with [customer-managed encryption keys](https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys), use the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
+
+{{< /alert >}}
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, substituting
+   the values you want:
+
+   ```ruby
+   gitlab_rails['object_store']['connection'] = {
+    'provider' => 'Google',
+    'google_project' => '<GOOGLE PROJECT>',
+    'google_json_key_location' => '<FILENAME>'
+   }
+   ```
+
+   To use ADC, use `google_application_default` instead:
+
+   ```ruby
+   gitlab_rails['object_store']['connection'] = {
+    'provider' => 'Google',
+    'google_project' => '<GOOGLE PROJECT>',
+    'google_application_default' => true
+   }
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+1. Put the following content in a file named `object_storage.yaml` to be used as a
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#connection):
+
+   ```yaml
+   provider: Google
+   google_project: <GOOGLE PROJECT>
+   google_json_key_location: '<FILENAME>'
+   ```
+
+   To use ADC, use `google_application_default` instead:
+
+   ```yaml
+   provider: Google
+   google_project: <GOOGLE PROJECT>
+   google_application_default: true
+   ```
+
+1. Create the Kubernetes Secret:
+
+   ```shell
+   kubectl create secret generic -n <namespace> gitlab-object-storage --from-file=connection=object_storage.yaml
+   ```
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+        artifacts:
+          bucket: gitlab-artifacts
+        ciSecureFiles:
+          bucket: gitlab-ci-secure-files
+          enabled: true
+        dependencyProxy:
+          bucket: gitlab-dependency-proxy
+          enabled: true
+        externalDiffs:
+          bucket: gitlab-mr-diffs
+          enabled: true
+        lfs:
+          bucket: gitlab-lfs
+        object_store:
+          connection:
+            secret: gitlab-object-storage
+          enabled: true
+          proxy_download: false
+        packages:
+          bucket: gitlab-packages
+        terraformState:
+          bucket: gitlab-terraform-state
+          enabled: true
+        uploads:
+          bucket: gitlab-uploads
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           # Consolidated object storage configuration
+           gitlab_rails['object_store']['enabled'] = true
+           gitlab_rails['object_store']['proxy_download'] = false
+           gitlab_rails['object_store']['connection'] = {
+             'provider' => 'Google',
+             'google_project' => '<GOOGLE PROJECT>',
+             'google_json_key_location' => '<FILENAME>'
+           }
+           gitlab_rails['object_store']['objects']['artifacts']['bucket'] = 'gitlab-artifacts'
+           gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = 'gitlab-mr-diffs'
+           gitlab_rails['object_store']['objects']['lfs']['bucket'] = 'gitlab-lfs'
+           gitlab_rails['object_store']['objects']['uploads']['bucket'] = 'gitlab-uploads'
+           gitlab_rails['object_store']['objects']['packages']['bucket'] = 'gitlab-packages'
+           gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = 'gitlab-dependency-proxy'
+           gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = 'gitlab-terraform-state'
+           gitlab_rails['object_store']['objects']['ci_secure_files']['bucket'] = 'gitlab-ci-secure-files'
+           gitlab_rails['object_store']['objects']['pages']['bucket'] = 'gitlab-pages'
+   ```
+
+   To use ADC, use `google_application_default` instead:
+
+   ```ruby
+   gitlab_rails['object_store']['connection'] = {
+     'provider' => 'Google',
+     'google_project' => '<GOOGLE PROJECT>',
+     'google_application_default' => true
+   }
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Azure Blob storage
 

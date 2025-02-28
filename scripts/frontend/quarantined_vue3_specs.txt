@@ -28,8 +28,6 @@ ee/spec/frontend/boards/components/board_list_spec.js
 ee/spec/frontend/boards/components/board_new_issue_spec.js
 ee/spec/frontend/boards/components/epic_board_content_sidebar_spec.js
 ee/spec/frontend/boards/components/epics_swimlanes_spec.js
-ee/spec/frontend/ci/pipeline_details/header/pipeline_header_spec.js
-ee/spec/frontend/ci/runner/components/runner_usage_spec.js
 ee/spec/frontend/ci/secrets/components/secrets_breadcrumbs_spec.js
 ee/spec/frontend/compliance_dashboard/components/frameworks_report/edit_framework/components/policies_section_spec.js
 ee/spec/frontend/compliance_dashboard/components/frameworks_report/report_spec.js
@@ -54,7 +52,6 @@ ee/spec/frontend/metrics/details/filter_bar/groupby_filter_spec.js
 ee/spec/frontend/metrics/details/metrics_details_spec.js
 ee/spec/frontend/metrics/details/related_traces_spec.js
 ee/spec/frontend/ml/ai_agents/views/edit_agent_spec.js
-ee/spec/frontend/on_demand_scans_form/components/scan_schedule_spec.js
 ee/spec/frontend/oncall_schedule/schedule/components/preset_days/days_header_sub_item_spec.js
 ee/spec/frontend/pages/admin/application_settings/general/components/allowed_integrations_spec.js
 ee/spec/frontend/password/components/password_requirement_list_spec.js
@@ -214,7 +211,6 @@ spec/frontend/projects/settings_service_desk/components/service_desk_setting_spe
 spec/frontend/ref/init_ambiguous_ref_modal_spec.js
 spec/frontend/releases/components/app_edit_new_spec.js
 spec/frontend/releases/components/asset_links_form_spec.js
-spec/frontend/repository/components/header_area/blob_controls_spec.js
 spec/frontend/repository/components/table/index_spec.js
 spec/frontend/repository/components/table/row_spec.js
 spec/frontend/search/sidebar/components/checkbox_filter_spec.js
@@ -248,7 +244,6 @@ spec/frontend/vue_popovers_spec.js
 spec/frontend/vue_shared/components/confirm_modal_spec.js
 spec/frontend/vue_shared/components/design_management/design_note_pin_spec.js
 spec/frontend/vue_shared/components/diff_stats_dropdown_spec.js
-spec/frontend/vue_shared/components/file_finder/index_spec.js
 spec/frontend/vue_shared/components/file_tree_spec.js
 spec/frontend/vue_shared/components/filtered_search_bar/tokens/date_token_spec.js
 spec/frontend/vue_shared/components/markdown/markdown_editor_spec.js

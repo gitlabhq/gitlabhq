@@ -525,9 +525,7 @@ Additionally, the following cloud provider services are recommended for use as p
 
 ### Best practices for the database services
 
-Use an [external database service](../postgresql/external.md) that runs a standard, performant, and [supported PostgreSQL version](../../install/requirements.md#postgresql).
-
-If you choose to use a third-party external service:
+If you choose to use a third-party external service, use an [external database service](../postgresql/external.md) that runs a standard, performant, and [supported PostgreSQL version](../../install/requirements.md#postgresql) and take note of the following considerations:
 
 1. The HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer, and Consul. All of these components are no longer required when using a third party external service.
 1. For optimal performance, enable [Database Load Balancing](../postgresql/database_load_balancing.md) with Read Replicas. Match the node counts to those used in standard

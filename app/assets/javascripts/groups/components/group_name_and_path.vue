@@ -54,7 +54,7 @@ export default {
         validFeedback: s__('Groups|Group path is available.'),
       },
     },
-    apiLoadingMessage: s__('Groups|Checking group URL availability...'),
+    apiLoadingMessage: s__('Groups|Checking group URL availability…'),
     apiErrorMessage: __(
       'An error occurred while checking group path. Please refresh and try again.',
     ),

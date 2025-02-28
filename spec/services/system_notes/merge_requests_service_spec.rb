@@ -385,7 +385,7 @@ RSpec.describe ::SystemNotes::MergeRequestsService, feature_category: :code_revi
 
     context 'when the user submits the review without approving or requesting changes' do
       it 'sets the note text' do
-        expect(subject.note).to eq "left review comments without approving or requesting changes"
+        expect(subject.note).to eq "left review comments"
       end
     end
   end

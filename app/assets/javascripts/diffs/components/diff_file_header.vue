@@ -124,7 +124,7 @@ export default {
         const truncatedOldSha = escape(truncateSha(this.diffFile.submodule_compare.old_sha));
         const truncatedNewSha = escape(truncateSha(this.diffFile.submodule_compare.new_sha));
         return sprintf(
-          __('Compare %{oldCommitId}...%{newCommitId}'),
+          __('Compare %{oldCommitId}…%{newCommitId}'),
           {
             oldCommitId: `<span class="commit-sha">${truncatedOldSha}</span>`,
             newCommitId: `<span class="commit-sha">${truncatedNewSha}</span>`,

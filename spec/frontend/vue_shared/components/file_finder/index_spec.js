@@ -1,6 +1,5 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
-import VirtualList from 'vue-virtual-scroll-list';
 import { Mousetrap } from '~/lib/mousetrap';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { file } from 'jest/ide/helpers';
@@ -39,8 +38,14 @@ describe('File finder item spec', () => {
 
   const findAllFileFinderItems = () => wrapper.findAllComponents(FileFinderItem);
   const findSearchInput = () => wrapper.findByTestId('search-input');
-  const enterSearchText = (text) => findSearchInput().setValue(text);
-  const clearSearch = () => wrapper.findByTestId('clear-search-input').vm.$emit('click');
+  const enterSearchText = (text) => {
+    findSearchInput().setValue(text);
+    return nextTick();
+  };
+  const clearSearch = () => {
+    wrapper.findByTestId('clear-search-input').vm.$emit('click');
+    return nextTick();
+  };
 
   describe('with entries', () => {
     beforeEach(() => {
@@ -55,13 +60,6 @@ describe('File finder item spec', () => {
       expect(wrapper.text()).toContain('index.js');
       expect(wrapper.text()).toContain('component.js');
       expect(wrapper.text()).not.toContain('folder');
-    });
-
-    it('filters entries', async () => {
-      await enterSearchText('index');
-
-      expect(wrapper.text()).toContain('index.js');
-      expect(wrapper.text()).not.toContain('component.js');
     });
 
     it('shows clear button when searchText is not empty', async () => {
@@ -89,23 +87,17 @@ describe('File finder item spec', () => {
       expect(findSearchInput().element).toBe(document.activeElement);
     });
 
-    describe('listShowCount', () => {
-      it('returns 1 when no filtered entries exist', async () => {
-        await enterSearchText('testing 123');
-
-        expect(wrapper.findComponent(VirtualList).props('remain')).toBe(1);
-      });
-
-      it('returns entries length when not filtered', () => {
-        expect(wrapper.findComponent(VirtualList).props('remain')).toBe(2);
-      });
-    });
-
     describe('filtering', () => {
       it('renders only items that match the filter', async () => {
         await enterSearchText('index');
 
-        expect(findAllFileFinderItems()).toHaveLength(1);
+        const visibleItems = findAllFileFinderItems().filter(
+          (item) =>
+            item.element.closest('.vue-recycle-scroller__item-view').style.transform !==
+            'translateY(-9999px)',
+        );
+
+        expect(visibleItems).toHaveLength(1);
       });
     });
 
@@ -125,7 +117,7 @@ describe('File finder item spec', () => {
           await enterSearchText('index');
           await nextTick();
 
-          expect(findAllFileFinderItems().at(0).props('focused')).toBe(true);
+          expect(wrapper.vm.focusedIndex).toBe(0);
         });
       });
 
@@ -180,36 +172,36 @@ describe('File finder item spec', () => {
     describe('onKeyDown', () => {
       describe('up key', () => {
         it('resets to last index when at top', async () => {
-          expect(findAllFileFinderItems().at(0).props('focused')).toBe(true);
+          expect(wrapper.vm.focusedIndex).toBe(0);
 
           await findSearchInput().trigger('keydown.up');
 
-          expect(findAllFileFinderItems().at(-1).props('focused')).toBe(true);
+          expect(wrapper.vm.focusedIndex).toBe(1);
         });
 
         it('minus 1 from focusedIndex', async () => {
           await findSearchInput().trigger('keydown.up');
           await findSearchInput().trigger('keydown.up');
 
-          expect(findAllFileFinderItems().at(0).props('focused')).toBe(true);
+          expect(wrapper.vm.focusedIndex).toBe(0);
         });
       });
 
       describe('down key', () => {
         it('resets to first index when at bottom', async () => {
           await findSearchInput().trigger('keydown.down');
-          expect(findAllFileFinderItems().at(-1).props('focused')).toBe(true);
+          expect(wrapper.vm.focusedIndex).toBe(1);
 
           await findSearchInput().trigger('keydown.down');
-          expect(findAllFileFinderItems().at(0).props('focused')).toBe(true);
+          expect(wrapper.vm.focusedIndex).toBe(0);
         });
 
         it('adds 1 to focusedIndex', async () => {
-          expect(findAllFileFinderItems().at(0).props('focused')).toBe(true);
+          expect(wrapper.vm.focusedIndex).toBe(0);
 
           await findSearchInput().trigger('keydown.down');
 
-          expect(findAllFileFinderItems().at(1).props('focused')).toBe(true);
+          expect(wrapper.vm.focusedIndex).toBe(1);
         });
       });
     });

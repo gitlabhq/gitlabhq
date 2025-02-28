@@ -507,7 +507,7 @@ export default class CreateMergeRequestDropdown {
   setUnavailableButtonState(isLoading = true) {
     if (isLoading) {
       this.unavailableButtonSpinner.classList.remove('gl-hidden');
-      this.unavailableButtonText.textContent = __('Checking branch availability...');
+      this.unavailableButtonText.textContent = __('Checking branch availability…');
     } else {
       this.unavailableButtonSpinner.classList.add('gl-hidden');
       this.unavailableButtonText.textContent = __('New branch unavailable');

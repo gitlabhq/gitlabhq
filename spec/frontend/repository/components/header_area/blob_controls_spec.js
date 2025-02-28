@@ -13,6 +13,7 @@ import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
 import OverflowMenu from '~/repository/components/header_area/blob_overflow_menu.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { blobControlsDataMock, refMock } from '../../mock_data';
 
 jest.mock('~/repository/utils/dom');
@@ -33,7 +34,7 @@ const createComponent = async (
   const projectPath = 'some/project';
   router = createRouter(projectPath, refMock);
 
-  router.replace({ name: 'blobPath', params: { path: '/some/file.js' } });
+  await router.push({ name: 'blobPathDecoded', params: { path: '/some/file.js' } });
 
   mockResolver = jest.fn().mockResolvedValue({
     data: {
@@ -67,7 +68,7 @@ const createComponent = async (
       refType: 'heads',
       ...props,
     },
-    mixins: [{ data: () => ({ ref: refMock }) }],
+    mixins: [{ data: () => ({ ref: refMock }) }, glFeatureFlagMixin()],
   });
 
   await waitForPromises();
@@ -80,7 +81,9 @@ describe('Blob controls component', () => {
   const findOverflowMenu = () => wrapper.findComponent(OverflowMenu);
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
-  beforeEach(() => createComponent());
+  beforeEach(async () => {
+    await createComponent();
+  });
 
   describe('FindFile button', () => {
     it('renders FindFile button', () => {
@@ -140,7 +143,7 @@ describe('Blob controls component', () => {
   `(
     'does not render any buttons if router name is $name and router path is $path',
     async ({ name, path }) => {
-      router.replace({ name, params: { path } });
+      await router.replace({ name, params: { path } });
 
       await nextTick();
 

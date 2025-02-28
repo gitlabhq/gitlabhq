@@ -13,8 +13,12 @@ RSpec.describe Gitlab::Auth::DpopTokenUser, feature_category: :system_access do
   let(:ssh_public_key) { nil }
   let(:ath) { nil }
   let(:public_key_in_jwk) { nil }
+  let(:no_ath_claim) { false }
+  let(:exp) { Time.now.to_i + Gitlab::Auth::DpopToken::MAX_EXPIRY_TIME_IN_SECS }
+  let(:iat) { Time.now.to_i }
   let(:dpop_proof) do
-    generate_dpop_proof_for(user, ssh_public_key: ssh_public_key, ath: ath, public_key_in_jwk: public_key_in_jwk)
+    generate_dpop_proof_for(user, exp: exp, iat: iat, ssh_public_key: ssh_public_key, ath: ath,
+      public_key_in_jwk: public_key_in_jwk, no_ath_claim: no_ath_claim)
   end
 
   let(:dpop_token) do
@@ -57,6 +61,39 @@ RSpec.describe Gitlab::Auth::DpopTokenUser, feature_category: :system_access do
       end
 
       context "when the DPoP token isn't valid for the user" do
+        context 'when the DPoP token is expired' do
+          let(:exp) { Time.now.to_i - 400 }
+
+          it 'raises DpopValidationError' do
+            expect do
+              validate!
+            end.to raise_error(Gitlab::Auth::DpopValidationError,
+              /Signature expired/)
+          end
+        end
+
+        context 'when the DPoP token is missing a claim' do
+          let(:no_ath_claim) { true }
+
+          it 'raises DpopValidationError' do
+            expect do
+              validate!
+            end.to raise_error(Gitlab::Auth::DpopValidationError,
+              /Missing required claim ath/)
+          end
+        end
+
+        context 'when the DPoP token has invalid iat' do
+          let(:iat) { Time.now.to_i + 4000 }
+
+          it 'raises DpopValidationError' do
+            expect do
+              validate!
+            end.to raise_error(Gitlab::Auth::DpopValidationError,
+              /Invalid IAT value/)
+          end
+        end
+
         context "when the jwk value is malformed" do
           let(:public_key_in_jwk) { { kty: Auth::DpopTokenHelper::VALID_KTY } }
 
@@ -76,6 +113,31 @@ RSpec.describe Gitlab::Auth::DpopTokenUser, feature_category: :system_access do
               validate!
             end.to raise_error(Gitlab::Auth::DpopValidationError,
               /Failed to parse JWK: invalid JWK/)
+          end
+        end
+
+        context "when the jwk contains a private key" do
+          jwk_private_key = JWT::JWK.new(OpenSSL::PKey::RSA.generate(2048))
+          let(:public_key_in_jwk) do
+            {
+              kty: jwk_private_key[:kty],
+              n: jwk_private_key[:n],
+              e: jwk_private_key[:e],
+              d: jwk_private_key[:d],
+              p: jwk_private_key[:p],
+              q: jwk_private_key[:q],
+              dp: jwk_private_key[:dp],
+              dq: jwk_private_key[:dq],
+              qi: jwk_private_key[:qi],
+              kid: jwk_private_key[:kid]
+            }
+          end
+
+          it 'raises DpopValidationError' do
+            expect do
+              validate!
+            end.to raise_error(Gitlab::Auth::DpopValidationError,
+              /JWK contains private key/)
           end
         end
       end

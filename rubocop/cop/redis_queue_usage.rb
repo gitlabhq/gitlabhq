@@ -2,8 +2,8 @@
 
 module RuboCop
   module Cop
-    # This class complements Rubocop::Cop::SidekiqRedisCall by disallowing the use of
-    # Gitlab::Redis::Queues with the exception of initialising Sidekiq and monitoring.
+    # This class complements `Rubocop::Cop::SidekiqRedisCall` by disallowing the use of
+    # `Gitlab::Redis::Queues` with the exception of initialising Sidekiq and monitoring.
     class RedisQueueUsage < RuboCop::Cop::Base
       MSG = 'Gitlab::Redis::Queues should only be used by Sidekiq initializers. '\
         'Assignments or using its params to initialise another connection is not allowed.'

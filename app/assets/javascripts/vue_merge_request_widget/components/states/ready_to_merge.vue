@@ -283,7 +283,7 @@ export default {
       }
 
       if (this.status === PIPELINE_FAILED_STATE || this.isPipelineFailed) {
-        return __('Merge...');
+        return __('Merge…');
       }
 
       return __('Merge');

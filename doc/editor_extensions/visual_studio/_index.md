@@ -14,7 +14,7 @@ and [GitLab Duo Chat](../../user/gitlab_duo_chat/_index.md#use-gitlab-duo-chat-i
 [Install and configure the extension](setup.md).
 
 Report any issues, bugs, or feature requests in the
-[`gitlab-visual-studio-extension` issue queue](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues).
+[`gitlab-visual-studio-extension` issue tracker](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues).
 
 ## Related topics
 

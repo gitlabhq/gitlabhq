@@ -24,7 +24,7 @@ export default {
     };
   },
   i18n: {
-    loading: s__('Terraform|Loading Terraform reports...'),
+    loading: s__('Terraform|Loading Terraform reports…'),
     error: s__('Terraform|Failed to load Terraform reports'),
     reportGenerated: s__('Terraform|A Terraform report was generated in your pipelines.'),
     namedReportGenerated: s__(

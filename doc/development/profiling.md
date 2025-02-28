@@ -280,7 +280,7 @@ and a new method [`ruby-prof`](https://ruby-prof.github.io/).
 [Performance bar](../administration/monitoring/performance/performance_bar.md) is a great tool to get a stackprof report
 and see a flamegraph via a single click;
 
-![Performance Bar Flamegraph Link](img/performance_bar_flamegraph_link.png)
+![Performance Bar Flamegraph Link](img/performance_bar_flamegraph_link_v17_7.png)
 
 However, it's not available for other than GET requests.
 
@@ -302,7 +302,7 @@ curl --request POST \
 
 To get around this, we copy the request as `curl` and use it in the terminal.
 
-![Performance copy as curl](img/performance_copy_as_curl.png)
+![Performance copy as curl](img/performance_copy_as_curl_v17_7.png)
 
 We'll have a `curl` command like this:
 
@@ -333,12 +333,12 @@ curl "https://gitlab.com/api/v4/projects/:id/merge_requests/:iid/pipelines?perfo
 
 Then, we use the `flamegraph.json` file on the `https://www.speedscope.app/` website to see the flamegraph.
 
-![Speedscope flamegraph example](img/performance_speedscope_example.png)
+![Speedscope flamegraph example](img/performance_speedscope_example_v17_7.png)
 
 As an example, when investigating into this speedscope flamegraph, we saw that the `kubernetes_variables` method was
 taking a lot of time and created [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/498648).
 
-![Speedscope flamegraph Kubernetes example](img/performance_speedscope_example_kubernetes.png)
+![Speedscope flamegraph Kubernetes example](img/performance_speedscope_example_kubernetes_v17_7.png)
 
 ### Using `ruby-prof`
 
@@ -381,7 +381,7 @@ end
 ::Ci::DestroyPipelineService.new(project, user).execute(Ci::Pipeline.last)
 ```
 
-![Ruby-prof callstack report](img/performance_ruby-prof_example.png)
+![Ruby-prof callstack report](img/performance_ruby-prof_example_v17_7.png)
 
 Here, we can see that we call `Ci::GenerateKubeconfigService` ~2k times.
 This is a good indicator that we need to investigate this.

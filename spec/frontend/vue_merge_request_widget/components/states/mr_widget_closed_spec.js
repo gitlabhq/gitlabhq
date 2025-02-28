@@ -116,7 +116,7 @@ describe('MRWidgetClosed', () => {
         );
       });
 
-      it('shows "Reopening..." while the reopen network request is pending', async () => {
+      it('shows "Reopening…" while the reopen network request is pending', async () => {
         const reopenButton = findReopenActionButton(wrapper);
 
         api.updateMergeRequest.mockReturnValue(new Promise(() => {}));
@@ -124,16 +124,16 @@ describe('MRWidgetClosed', () => {
         reopenButton.trigger('click');
         await nextTick();
 
-        expect(reopenButton.text()).toBe('Reopening...');
+        expect(reopenButton.text()).toBe('Reopening…');
       });
 
-      it('shows "Refreshing..." when the reopen has succeeded', async () => {
+      it('shows "Refreshing…" when the reopen has succeeded', async () => {
         const reopenButton = findReopenActionButton(wrapper);
 
         reopenButton.trigger('click');
         await waitForPromises();
 
-        expect(reopenButton.text()).toBe('Refreshing...');
+        expect(reopenButton.text()).toBe('Refreshing…');
       });
 
       it('reloads the page when a reopen has succeeded', async () => {

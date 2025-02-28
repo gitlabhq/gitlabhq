@@ -124,9 +124,7 @@ export default {
             ),
           ],
           groupAttrs: {
-            description: this.isPathLoading
-              ? s__('Groups|Checking group URL availability...')
-              : null,
+            description: this.isPathLoading ? s__('Groups|Checking group URL availability…') : null,
           },
         },
         ...(this.isEditing

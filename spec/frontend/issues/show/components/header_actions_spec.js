@@ -435,7 +435,7 @@ describe('HeaderActions component', () => {
 
       it('shows a success message and tells the user they are being redirected', () => {
         expect(createAlert).toHaveBeenCalledWith({
-          message: 'The issue was successfully promoted to an epic. Redirecting to epic...',
+          message: 'The issue was successfully promoted to an epic. Redirecting to epic…',
           variant: VARIANT_SUCCESS,
         });
       });

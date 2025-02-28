@@ -113,6 +113,7 @@ Interactions with GitLab Duo can help to improve the suggestions and feedback as
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10466) in GitLab 16.0 as an [experiment](../../../policy/development_stages_support.md#experiment).
+- Feature flag `summarize_my_code_review` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182448) in GitLab 17.10.
 
 {{< /history >}}
 

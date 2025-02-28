@@ -97,7 +97,7 @@ describe('Suggestion Diff component', () => {
 
     it('shows loading', () => {
       expect(findLoading().exists()).toBe(true);
-      expect(wrapper.text()).toContain('Applying suggestion...');
+      expect(wrapper.text()).toContain('Applying suggestion…');
     });
 
     it('when callback of apply is called, hides loading', async () => {
@@ -179,7 +179,7 @@ describe('Suggestion Diff component', () => {
         });
 
         expect(findLoading().exists()).toBe(true);
-        expect(wrapper.text()).toContain('Applying suggestions...');
+        expect(wrapper.text()).toContain('Applying suggestions…');
       });
 
       it('adjusts message for batch with single suggestion', () => {
@@ -190,7 +190,7 @@ describe('Suggestion Diff component', () => {
         });
 
         expect(findLoading().exists()).toBe(true);
-        expect(wrapper.text()).toContain('Applying suggestion...');
+        expect(wrapper.text()).toContain('Applying suggestion…');
       });
 
       it('hides remove from batch and apply suggestions buttons', () => {

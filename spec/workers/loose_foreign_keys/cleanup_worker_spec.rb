@@ -105,16 +105,15 @@ RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :cell do
   def perform_for(db:)
     time = Time.current.midnight
 
-    case db
-    when :main
-      time += 2.minutes
-    when :ci
-      time += 3.minutes
-    when :sec
-      time += 4.minutes
-    else
-      raise "Unsupported DB: #{db}"
-    end
+    # Use the same mechanism as app/workers/loose_foreign_keys/cleanup_worker.rb
+    # to ensure consistency for future decompositions.
+    index = Gitlab::Database.database_base_models_with_gitlab_shared
+                            .keys
+                            .find_index(db.to_s)
+
+    raise "Unsupported DB: #{db}" unless index
+
+    time += index.minutes
 
     travel_to(time) do
       described_class.new.perform
@@ -122,11 +121,6 @@ RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :cell do
   end
 
   it 'cleans up all rows' do
-    # Some spec in this file currently fails when a sec database is configured. We plan to ensure it all functions
-    # and passes prior to the sec db rollout.
-    # Consult https://gitlab.com/gitlab-org/gitlab/-/issues/520270 for more info.
-    skip_if_multiple_databases_are_setup(:sec)
-
     perform_for(db: :main)
 
     expect(loose_fk_child_table_1_1.count).to eq(0)
@@ -180,13 +174,6 @@ RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :cell do
   end
 
   describe 'turbo mode' do
-    before do
-      # Some spec in this file currently fails when a sec database is configured. We plan to ensure it all functions
-      # and passes prior to the sec db rollout.
-      # Consult https://gitlab.com/gitlab-org/gitlab/-/issues/520270 for more info.
-      skip_if_multiple_databases_are_setup(:sec)
-    end
-
     context 'when turbo mode is off' do
       where(:database_name, :feature_flag) do
         :main | :loose_foreign_keys_turbo_mode_main

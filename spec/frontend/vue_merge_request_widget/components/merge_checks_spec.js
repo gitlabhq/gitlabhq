@@ -263,7 +263,7 @@ describe('Merge request merge checks component', () => {
     });
 
     it('renders checking text', () => {
-      expect(wrapper.text()).toContain('Checking if merge request can be merged...');
+      expect(wrapper.text()).toContain('Checking if merge request can be merged…');
     });
 
     it('renders checks expanded by default', () => {

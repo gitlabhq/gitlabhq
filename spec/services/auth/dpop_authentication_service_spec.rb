@@ -53,6 +53,17 @@ RSpec.describe Auth::DpopAuthenticationService, feature_category: :system_access
         end
       end
 
+      context 'when two DPoP headers are provided' do
+        it 'raises a DpopValidationError' do
+          # Rails concatenates duplicate headers with a comma
+          headers['dpop'] = "#{dpop_proof.proof}, #{dpop_proof.proof}"
+
+          expect do
+            service.execute
+          end.to raise_error(Gitlab::Auth::DpopValidationError, /Only 1 DPoP header is allowed in request/)
+        end
+      end
+
       context 'when a valid DPoP header is provided' do
         it 'succeeds' do
           expect(service.execute).to be_success

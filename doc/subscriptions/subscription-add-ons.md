@@ -13,8 +13,13 @@ title: GitLab Duo add-ons
 
 {{< /details >}}
 
-You can purchase GitLab Duo seats to give users in your organization access to more GitLab features. GitLab Duo is only available for Premium and Ultimate customers.
-Access to features provided by GitLab Duo is managed through seat assignment. GitLab Duo can be assigned to any user in your group namespace or instance.
+GitLab Duo add-ons extend your Premium or Ultimate subscription with AI-powered features.
+Use GitLab Duo to help accelerate development workflows, reduce repetitive coding tasks,
+and gain deeper insights across your projects.
+
+Purchase GitLab Duo seats and assign them to team members.
+The seat-based model gives you control over feature access and cost management
+based on your specific team needs.
 
 ## Purchase GitLab Duo
 

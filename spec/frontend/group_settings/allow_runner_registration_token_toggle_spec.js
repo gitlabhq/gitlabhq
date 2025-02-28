@@ -114,7 +114,7 @@ describe('initAllowRunnerRegistrationTokenToggle', () => {
     it('shows a pending message', () => {
       findToggle().vm.$emit('change', false);
 
-      expect(toast).toHaveBeenCalledWith('Saving...', {});
+      expect(toast).toHaveBeenCalledWith('Saving…', {});
     });
   });
 
