@@ -555,7 +555,7 @@ incoming_email:
     ssl: true
 
     # If you are using Microsoft Graph instead of IMAP, set this to false to retain
-    # messages in the inbox since deleted messages are auto-expunged after some time.
+    # messages in the inbox because deleted messages are auto-expunged after some time.
     delete_after_delivery: true
 
     # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
@@ -622,7 +622,7 @@ incoming_email:
     ssl: true
 
     # If you are using Microsoft Graph instead of IMAP, set this to false to retain
-    # messages in the inbox since deleted messages are auto-expunged after some time.
+    # messages in the inbox because deleted messages are auto-expunged after some time.
     delete_after_delivery: true
 
     # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery

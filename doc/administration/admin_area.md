@@ -520,7 +520,7 @@ The Sidekiq dashboard consists of the following elements:
 
 ### Logs
 
-**Log** view has been removed from the **Admin** area dashboard since the logging does not work in multi-node setups and could cause confusion for administrators by displaying partial information.
+**Log** view has been removed from the **Admin** area dashboard because the logging does not work in multi-node setups and could cause confusion for administrators by displaying partial information.
 
 For multi-node systems we recommend ingesting the logs into services like Elasticsearch and Splunk.
 

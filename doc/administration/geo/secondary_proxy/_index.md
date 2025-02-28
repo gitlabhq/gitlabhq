@@ -202,12 +202,12 @@ If your secondary site uses the same external URL as the primary site:
 Considering that web traffic is proxied to the primary, the behavior of the secondary sites differs when the primary
 site is inaccessible:
 
-- UI and API traffic return the same errors as the primary (or fail if the primary is not accessible at all), since they are proxied.
+- UI and API traffic return the same errors as the primary (or fail if the primary is not accessible at all) because they are proxied.
 - For repositories that are fully up-to-date on the specific secondary site being accessed, Git read operations still work as expected,
   including authentication through HTTP(s) or SSH. However, Git reads performed by GitLab Runners will fail.
 - Git operations for repositories that are not replicated to the secondary site return the same errors
-  as the primary site, since they are proxied.
-- All Git write operations return the same errors as the primary site, since they are proxied.
+  as the primary site because they are proxied.
+- All Git write operations return the same errors as the primary site because they are proxied.
 
 ## Features accelerated by secondary Geo sites
 

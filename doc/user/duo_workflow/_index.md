@@ -75,7 +75,7 @@ To use Workflow in VS Code:
 1. Type `GitLab Duo Workflow` and select **GitLab: Show Duo Workflow**.
 1. To create a workflow, select **New workflow**.
 1. For **Task description**, specify a junior-level code task in detail.
-   - Workflow is aware of all files available to Git in the project and branch you have open in your editor.
+   - Workflow is aware of all files available to Git in the project branch.
    - You can also give Workflow [additional context](#the-context-workflow-is-aware-of).
    - Workflow cannot access external sources or the web.
 1. Select **Start**.
@@ -94,7 +94,7 @@ You can also provide it with additional context.
 |-------------------------------|--------------------------------|
 | Epics                         | Enter the epic ID and the name of the group the epic is in. The group must include a project that meets the project prerequisites. |
 | Issues                        | Enter the issue ID if it's in the current project. You can also enter a project ID from a different project, as long as it meets the project prerequisites. |
-| Local files                   | Workflow is aware of all files available to Git in the project you have open in your editor. You can also reference a specific file by its file path. |
+| Local files                   | Workflow is aware of all files available to Git in the project branch. You can also reference a specific file by its file path. |
 | Merge requests                | Enter the merge request ID if it's in the current project. You can also enter a project ID from a different project, as long as it meets the project prerequisites. |
 | Merge request pipelines       | Enter the merge request ID that has the pipeline, if it's in the current project. You can also enter a project ID from a different project, as long as it meets the project prerequisites. |
 

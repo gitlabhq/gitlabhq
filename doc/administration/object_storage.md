@@ -63,7 +63,7 @@ For GitLab Helm Charts, see how to [configure the consolidated form](https://doc
 
 Configuring the object storage using the consolidated form has a number of advantages:
 
-- It can simplify your GitLab configuration since the connection details are shared
+- It can simplify your GitLab configuration because the connection details are shared
   across object types.
 - It enables the use of [encrypted S3 buckets](#encrypted-s3-buckets).
 - It [uploads files to S3 with proper `Content-MD5` headers](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/222).
@@ -267,7 +267,7 @@ When configured either with an instance profile or with the consolidated
 form, GitLab Workhorse properly uploads files to S3
 buckets that have [SSE-S3 or SSE-KMS encryption enabled by default](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html).
 AWS KMS keys and SSE-C encryption are
-[not supported since this requires sending the encryption keys in every request](https://gitlab.com/gitlab-org/gitlab/-/issues/226006).
+[not supported because this requires sending the encryption keys in every request](https://gitlab.com/gitlab-org/gitlab/-/issues/226006).
 
 #### Server-side encryption headers
 
@@ -998,7 +998,7 @@ gitlab_rails['uploads_object_store_connection'] = { 'provider' => 'AWS', 'aws_ac
 
 Although this provides flexibility in that it makes it possible for GitLab
 to store objects across different cloud providers, it also creates
-additional complexity and unnecessary redundancy. Since both GitLab
+additional complexity and unnecessary redundancy. Because both GitLab
 Rails and Workhorse components need access to object storage, the
 consolidated form avoids excessive duplication of credentials.
 

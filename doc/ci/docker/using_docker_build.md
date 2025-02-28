@@ -499,6 +499,23 @@ sudo gitlab-runner register -n \
   --docker-volumes /var/run/docker.sock:/var/run/docker.sock
 ```
 
+For the `docker-windows` executor, use a configuration similar to this example:
+
+```toml
+[[runners]]
+  url = "https://gitlab.example.com/"
+  token = RUNNER_TOKEN
+  executor = "docker-windows"
+  [runners.docker]
+    tls_verify = false
+    image = "docker:windowsservercore-ltsc2022"
+    privileged = false
+    disable_cache = false
+    volumes = ["//./pipe/docker_engine://./pipe/docker_engine", "/cache"]
+  [runners.cache]
+    Insecure = false
+```
+
 For complex Docker-in-Docker setups like [Code Quality scanning using CodeClimate](../testing/code_quality_codeclimate_scanning.md), you must match host and container paths for proper execution. For more details, see
 [Use private runners for CodeClimate-based scanning](../testing/code_quality_codeclimate_scanning.md#use-private-runners).
 

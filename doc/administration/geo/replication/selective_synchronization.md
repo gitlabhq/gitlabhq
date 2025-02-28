@@ -31,7 +31,7 @@ Selective synchronization:
 1. Does not prevent users from viewing, interacting with, cloning, and pushing to project repositories that are not included in the selective sync.
    - For more details, see [Geo proxying for secondary sites](../secondary_proxy/_index.md).
 1. Does not hide project metadata from **secondary** sites.
-   - Since Geo relies on PostgreSQL replication, all project metadata
+   - Because Geo relies on PostgreSQL replication, all project metadata
      gets replicated to **secondary** sites, but repositories that have not been
      selected will not exist on the secondary site.
 1. Does not reduce the number of events generated for the Geo event log.

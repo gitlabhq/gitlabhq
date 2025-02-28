@@ -6,6 +6,13 @@ description: Available features and benefits.
 title: GitLab Dedicated
 ---
 
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Dedicated
+
+{{< /details >}}
+
 GitLab Dedicated is a single-tenant SaaS solution that is:
 
 - Fully isolated.

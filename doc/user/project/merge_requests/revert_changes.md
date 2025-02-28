@@ -13,16 +13,20 @@ title: Revert changes
 
 {{< /details >}}
 
-You can revert individual commits or an entire merge request in GitLab.
+Mistakes happen in code. Version control makes it possible to fix those mistakes by reverting them.
 
-When you revert a commit in Git, you create a new commit that reverses all actions
-taken in the original commit. The new commit:
+When you revert a commit, you create a new commit (a **revert commit**) that reverses the
+bad change, rather than erasing the existence of the problem from your project's history. Revert commits
+provide a clear audit trail, rather than a gap where the previous commit was. The revert commit
+follows your project's access controls and processes, and:
 
 - Removes the lines added in the original commit.
 - Restores the lines removed in the original commit.
 - Restores the lines modified in the original commit to their previous state.
 
-Your **revert commit** is still subject to your project's access controls and processes.
+Reverts are not limited to just commits. If the bad change spans more than one commit, consider
+reverting all changes from the merge request, rather than reverting commit by commit. This approach
+provides a cleaner audit trail.
 
 ## Revert a merge request
 

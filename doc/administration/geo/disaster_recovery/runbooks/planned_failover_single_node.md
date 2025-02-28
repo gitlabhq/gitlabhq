@@ -60,7 +60,7 @@ What is not covered:
 {{< alert type="note" >}}
 
 Before following any of those steps, make sure you have `root` access to the
-**secondary** to promote it, since there isn't provided an automated way to
+**secondary** to promote it because there isn't an automated way to
 promote a Geo replica and perform a failover.
 
 {{< /alert >}}
@@ -223,7 +223,7 @@ follow these steps to avoid unnecessary data loss:
      {{< /alert >}}
 
    - If you do not have SSH access to the **primary** site, take the machine offline and
-     prevent it from rebooting. Since there are many ways you may prefer to accomplish
+     prevent it from rebooting. Because there are many ways you may prefer to accomplish
      this, we avoid a single recommendation. You may need to:
 
      - Reconfigure the load balancers.

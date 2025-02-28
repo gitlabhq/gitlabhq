@@ -12,6 +12,17 @@ title: Web exporter (dedicated metrics server)
 
 {{< /details >}}
 
+Improve reliability and performance of your GitLab monitoring by collecting metrics
+separately from your main application server. A dedicated metrics server isolates
+monitoring traffic from user requests, preventing metrics collection from impacting
+application performance.
+
+For medium to large installations, this separation can provide more consistent data
+collection during peak usage times and can reduce the risk of missing critical metrics
+during high load periods.
+
+## How GitLab metrics collection works
+
 When [monitoring GitLab with Prometheus](_index.md), GitLab runs various collectors that
 sample the application for data related to usage, load and performance. GitLab can then make
 this data available to a Prometheus scraper by running one or more Prometheus exporters.

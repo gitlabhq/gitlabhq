@@ -20,15 +20,22 @@ title: Merge requests
 
 {{< /history >}}
 
-A merge request (MR) is a proposal to incorporate changes from a source branch to a target branch.
+Merge requests provide a central location for your team to review code, have discussions,
+and track code changes.
+To help describe why a change was made, link a merge request to an issue and
+automatically close the issue when the merge request merges.
 
-When you open a merge request, you can visualize and collaborate on the changes before merge.
-Merge requests include:
+Merge requests help ensure subject matter experts review your proposed changes and
+your organization's security requirements are met.
+When you create your merge request early in the development process, your team has time to catch bugs and code quality problems.
+
+When viewing a merge request, you see:
 
 - A description of the request.
 - Code changes and inline code reviews.
 - Information about CI/CD pipelines.
-- A comment section for discussion threads.
+- Mergeability reports.
+- Comments.
 - The list of commits.
 
 ## Create a merge request

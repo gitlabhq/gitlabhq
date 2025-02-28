@@ -25,6 +25,11 @@ title: Merge requests API
 
 {{< /history >}}
 
+Use the merge requests API to automate any part of the code review process, and connect your code
+changes to external tools. Use this API to send information about merge requests to non-GitLab systems,
+including tools you've built yourself, in your preferred format. Based on data returned from those systems,
+use this API to update, approve, merge, or block those merge requests.
+
 All API calls to non-public information require authentication.
 
 ## Removals in API v5
