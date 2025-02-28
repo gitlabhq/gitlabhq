@@ -41,6 +41,10 @@ RSpec.describe RegistrationsController, :with_current_organization, type: :reque
 
         let!(:banned_user) { create(:user, :banned, email: normalized_email) }
 
+        before do
+          stub_application_setting(enforce_email_subaddress_restrictions: true)
+        end
+
         it 'renders new action with correct error message', :aggregate_failures do
           request
 
@@ -48,9 +52,9 @@ RSpec.describe RegistrationsController, :with_current_organization, type: :reque
           expect(response).to render_template(:new)
         end
 
-        context 'when feature flag is disabled' do
+        context 'when enforce_email_subaddress_restrictions application setting is disabled' do
           before do
-            stub_feature_flags(block_banned_user_normalized_email_reuse: false)
+            stub_application_setting(enforce_email_subaddress_restrictions: false)
           end
 
           it 'does not re-render the form' do

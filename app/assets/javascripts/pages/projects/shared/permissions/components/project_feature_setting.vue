@@ -12,6 +12,11 @@ export default {
     event: 'change',
   },
   props: {
+    id: {
+      type: String,
+      required: false,
+      default: '',
+    },
     label: {
       type: String,
       required: false,
@@ -134,6 +139,7 @@ export default {
     />
     <div class="select-wrapper gl-grow">
       <select
+        :id="id"
         v-model="internalValue"
         :disabled="disableSelectInput"
         class="form-control project-repo-select select-control"

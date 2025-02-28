@@ -3316,7 +3316,6 @@ RSpec/FeatureCategory:
     - 'spec/models/legacy_diff_discussion_spec.rb'
     - 'spec/models/legacy_diff_note_spec.rb'
     - 'spec/models/lfs_download_object_spec.rb'
-    - 'spec/models/lfs_file_lock_spec.rb'
     - 'spec/models/license_template_spec.rb'
     - 'spec/models/list_spec.rb'
     - 'spec/models/list_user_preference_spec.rb'

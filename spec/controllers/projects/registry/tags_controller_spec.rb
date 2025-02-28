@@ -82,6 +82,10 @@ RSpec.describe Projects::Registry::TagsController do
   end
 
   describe 'POST destroy' do
+    before do
+      allow(controller).to receive(:authorize_destroy_container_image_tag!).and_call_original
+    end
+
     context 'when user has access to registry' do
       before do
         project.add_developer(user)
@@ -96,12 +100,16 @@ RSpec.describe Projects::Registry::TagsController do
           expect_delete_tags(%w[rc1])
 
           destroy_tag('rc1')
+
+          expect(controller).to have_received(:authorize_destroy_container_image_tag!)
         end
 
         it 'makes it possible to delete a tag that ends with a dot' do
           expect_delete_tags(%w[test.])
 
           destroy_tag('test.')
+
+          expect(controller).to have_received(:authorize_destroy_container_image_tag!)
         end
 
         it 'tracks the event', :snowplow do
@@ -111,6 +119,21 @@ RSpec.describe Projects::Registry::TagsController do
 
           expect_snowplow_event(category: 'Projects::Registry::TagsController', action: 'delete_tag')
         end
+      end
+    end
+
+    context 'when user cannot destroy image tags' do
+      before do
+        project.add_developer(user)
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?).with(user, :destroy_container_image_tag, project).and_return(false)
+      end
+
+      it 'returns not_found' do
+        destroy_tag('test.')
+
+        expect(controller).to have_received(:authorize_destroy_container_image_tag!)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

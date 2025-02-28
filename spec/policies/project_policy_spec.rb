@@ -2977,7 +2977,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     let(:developer_operations_permissions) do
       guest_operations_permissions + [
-        :create_container_image, :update_container_image, :destroy_container_image
+        :create_container_image, :update_container_image, :destroy_container_image, :destroy_container_image_tag
       ]
     end
 

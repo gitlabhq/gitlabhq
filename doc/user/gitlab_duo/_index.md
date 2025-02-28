@@ -104,7 +104,7 @@ To improve your security, try these features:
 | Feature | Tier | Add-on | Offering | Status |
 | ------- | ---- | ------ | -------- | ------ |
 | [GitLab Duo Chat](../gitlab_duo_chat/_index.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md) | Ultimate | GitLab Duo Enterprise | Self-managed | Beta |
+| [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md) | Ultimate | GitLab Duo Enterprise | Self-managed | General availability |
 | [GitLab Duo Workflow](../duo_workflow/_index.md) | Ultimate | - | GitLab.com | Experiment |
 | [Issue Description Generation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | Ultimate | GitLab Duo Enterprise | GitLab.com | Experiment |
 | [Discussion Summary](../discussions/_index.md#summarize-issue-discussions-with-duo-chat) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |

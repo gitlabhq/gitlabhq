@@ -11,7 +11,7 @@ RSpec.describe ContainerRegistry::TagPolicy, feature_category: :container_regist
 
   subject { described_class.new(user, tag) }
 
-  describe 'destroy_container_image' do
+  describe 'destroy_container_image_tag' do
     using RSpec::Parameterized::TableSyntax
 
     shared_examples 'matching expected result with protection rules' do
@@ -23,13 +23,13 @@ RSpec.describe ContainerRegistry::TagPolicy, feature_category: :container_regist
         allow(tag).to receive(:protection_rule).and_return(protection_rule)
       end
 
-      it { is_expected.to send(expected_result, :destroy_container_image) }
+      it { is_expected.to send(expected_result, :destroy_container_image_tag) }
     end
 
     context 'for admin', :enable_admin_mode do
       let(:user) { build_stubbed(:admin) }
 
-      it { expect_allowed(:destroy_container_image) }
+      it { expect_allowed(:destroy_container_image_tag) }
     end
 
     context 'for owner' do
@@ -38,7 +38,7 @@ RSpec.describe ContainerRegistry::TagPolicy, feature_category: :container_regist
       end
 
       context 'when tag has no protection rule' do
-        it { expect_allowed(:destroy_container_image) }
+        it { expect_allowed(:destroy_container_image_tag) }
       end
 
       context 'when tag has protection rule' do
@@ -60,7 +60,7 @@ RSpec.describe ContainerRegistry::TagPolicy, feature_category: :container_regist
       end
 
       context 'when tag has no protection rule' do
-        it { expect_allowed(:destroy_container_image) }
+        it { expect_allowed(:destroy_container_image_tag) }
       end
 
       context 'when tag has protection rule' do
@@ -82,7 +82,7 @@ RSpec.describe ContainerRegistry::TagPolicy, feature_category: :container_regist
       end
 
       context 'when tag has no protection rule' do
-        it { expect_allowed(:destroy_container_image) }
+        it { expect_allowed(:destroy_container_image_tag) }
       end
 
       context 'when tag has protection rule' do

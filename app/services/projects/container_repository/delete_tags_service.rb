@@ -9,7 +9,7 @@ module Projects
         @container_repository = container_repository
 
         unless container_expiration_policy?
-          return error('access denied') unless can?(current_user, :destroy_container_image, project)
+          return error('access denied') unless can?(current_user, :destroy_container_image_tag, project)
         end
 
         @tag_names = params[:tags]

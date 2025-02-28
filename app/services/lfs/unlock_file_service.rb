@@ -34,17 +34,15 @@ module Lfs
       end
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def lock
       return @lock if defined?(@lock)
 
       @lock = if params[:id].present?
                 project.lfs_file_locks.find(params[:id])
               elsif params[:path].present?
-                project.lfs_file_locks.find_by!(path: params[:path])
+                project.lfs_file_locks.for_path!(params[:path])
               end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
   end
 end
 

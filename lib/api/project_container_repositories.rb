@@ -180,7 +180,7 @@ module API
         requires :tag_name, type: String, desc: 'The name of the tag'
       end
       delete ':id/registry/repositories/:repository_id/tags/:tag_name', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
-        authorize_destroy_container_image!
+        authorize_destroy_container_image_tag!
 
         result = ::Projects::ContainerRepository::DeleteTagsService
           .new(repository.project, current_user, tags: [declared_params[:tag_name]])
@@ -205,8 +205,8 @@ module API
         authorize! :read_container_image, repository
       end
 
-      def authorize_destroy_container_image!
-        authorize! :destroy_container_image, repository
+      def authorize_destroy_container_image_tag!
+        authorize! :destroy_container_image_tag, tag
       end
 
       def authorize_admin_container_image!

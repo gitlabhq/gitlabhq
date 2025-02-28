@@ -8,7 +8,7 @@ module Mutations
       LIMIT = 20
       TOO_MANY_TAGS_ERROR_MESSAGE = "Number of tags is greater than #{LIMIT}"
 
-      authorize :destroy_container_image
+      authorize :destroy_container_image_tag
 
       argument :id,
         ::Types::GlobalIDType[::ContainerRepository],

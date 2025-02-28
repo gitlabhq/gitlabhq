@@ -66,7 +66,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       create_commit_status create_container_image create_deployment
       create_environment create_merge_request_from
       create_pipeline create_release
-      create_wiki destroy_container_image push_code read_pod_logs
+      create_wiki destroy_container_image destroy_container_image_tag push_code read_pod_logs
       read_terraform_state resolve_note update_build cancel_build update_commit_status
       update_container_image update_deployment update_environment
       update_merge_request update_pipeline update_release destroy_release

@@ -341,12 +341,12 @@ The limit varies depending on your plan and the number of seats in your subscrip
 
 ### Other limits
 
-| Setting                                                        | Default for GitLab.com |
-|:---------------------------------------------------------------|:-----------------------|
-| Number of webhooks                                             | 100 for each project, 50 for each group (subgroup webhooks are not counted towards parent group limits ) |
-| Maximum payload size                                           | 25 MB                  |
-| Timeout                                                        | 10 seconds             |
-| [Multiple Pages deployments](../project/pages/_index.md#limits) | 100 extra deployments (Premium tier), 500 extra deployments (Ultimate tier) |
+| Setting                                                             | Default for GitLab.com |
+|:--------------------------------------------------------------------|:-----------------------|
+| Number of webhooks                                                  | 100 for each project, 50 for each group (subgroup webhooks are not counted towards parent group limits ) |
+| Maximum payload size                                                | 25 MB                  |
+| Timeout                                                             | 10 seconds             |
+| [Parallel Pages deployments](../project/pages/parallel_deployments.md#limits) | 100 extra deployments (Premium tier), 500 extra deployments (Ultimate tier) |
 
 For self-managed instance limits, see:
 

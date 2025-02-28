@@ -23182,7 +23182,7 @@ A tag from a container repository.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerrepositorytagpermissionsdestroycontainerrepositorytag"></a>`destroyContainerRepositoryTag` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_container_image` on this resource. |
+| <a id="containerrepositorytagpermissionsdestroycontainerrepositorytag"></a>`destroyContainerRepositoryTag` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_container_image_tag` on this resource. |
 
 ### `ContainerTagsExpirationPolicy`
 

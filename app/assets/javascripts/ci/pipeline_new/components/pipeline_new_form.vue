@@ -147,6 +147,7 @@ export default {
       form: {},
       errorTitle: null,
       error: null,
+      pipelineVariables: [],
       predefinedVariables: null,
       warnings: [],
       totalWarnings: 0,
@@ -277,6 +278,9 @@ export default {
       clearTimeout(pollTimeout);
       this.$apollo.queries.ciConfigVariables.stopPolling();
     },
+    handleVariablesUpdated(updatedVariables) {
+      this.pipelineVariables = updatedVariables;
+    },
     populateForm() {
       this.configVariablesWithDescription = this.predefinedVariables.reduce(
         (accumulator, { description, key, value, valueOptions }) => {
@@ -367,7 +371,9 @@ export default {
             input: {
               projectPath: this.projectPath,
               ref: this.refShortName,
-              variables: filterVariables(this.variables),
+              variables: this.isUsingPipelineInputs
+                ? this.pipelineVariables
+                : filterVariables(this.variables),
             },
           },
         });
@@ -488,8 +494,13 @@ export default {
       <pipeline-variables-form
         v-if="isUsingPipelineInputs"
         :default-branch="defaultBranch"
+        :file-params="fileParams"
+        :is-maintainer="isMaintainer"
         :project-path="projectPath"
         :ref-param="refParam"
+        :settings-link="settingsLink"
+        :variable-params="variableParams"
+        @variables-updated="handleVariablesUpdated"
       />
       <div v-else>
         <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="md" />

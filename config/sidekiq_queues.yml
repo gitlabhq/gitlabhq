@@ -225,6 +225,16 @@
   - 1
 - - cluster_agent
   - 1
+- - clusters_agents_auto_flow_merge_requests_closed_event
+  - 1
+- - clusters_agents_auto_flow_merge_requests_created_event
+  - 1
+- - clusters_agents_auto_flow_merge_requests_merged_event
+  - 1
+- - clusters_agents_auto_flow_merge_requests_reopened_event
+  - 1
+- - clusters_agents_auto_flow_merge_requests_updated_event
+  - 1
 - - clusters_agents_auto_flow_work_items_closed_event
   - 1
 - - clusters_agents_auto_flow_work_items_created_event

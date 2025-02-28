@@ -9036,6 +9036,10 @@ RSpec.describe User, feature_category: :user_profile do
 
     subject(:validate) { new_user.validate }
 
+    before do
+      stub_application_setting(enforce_email_subaddress_restrictions: true)
+    end
+
     shared_examples 'adds a validation error' do |reason|
       specify do
         expect(::Gitlab::AppLogger).to receive(:info).with(
@@ -9090,9 +9094,9 @@ RSpec.describe User, feature_category: :user_profile do
         end
       end
 
-      context 'when the feature flag is disabled' do
+      context 'when the enforce_email_subaddress_restrictions application setting is disabled' do
         before do
-          stub_feature_flags(limit_normalized_email_reuse: false)
+          stub_application_setting(enforce_email_subaddress_restrictions: false)
         end
 
         it 'does not perform the check' do
@@ -9158,16 +9162,14 @@ RSpec.describe User, feature_category: :user_profile do
           end
         end
 
-        context 'when feature flag is disabled' do
+        context 'when enforce_email_subaddress_restrictions application setting is disabled' do
           before do
-            stub_feature_flags(block_banned_user_normalized_email_reuse: false)
+            stub_application_setting(enforce_email_subaddress_restrictions: false)
           end
 
           it 'does not perform the check' do
             expect(::Users::BannedUser).not_to receive(:by_detumbled_email)
           end
-
-          it_behaves_like 'checking normalized email reuse limit'
         end
       end
 

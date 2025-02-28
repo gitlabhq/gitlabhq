@@ -164,6 +164,7 @@ describe('Pipeline New Form', () => {
         expect(mockCiConfigVariables).toHaveBeenCalled();
       });
     });
+
     describe('when the ciInputsForPipelines flag is enabled', () => {
       beforeEach(async () => {
         mockCiConfigVariables.mockResolvedValue(mockEmptyCiConfigVariablesResponse);

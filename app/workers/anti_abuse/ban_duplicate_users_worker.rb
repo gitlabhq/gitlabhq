@@ -22,7 +22,7 @@ module AntiAbuse
     attr_reader :banned_user
 
     def ban_users_with_the_same_detumbled_email!
-      return unless Feature.enabled?(:auto_ban_via_detumbled_email, banned_user, type: :gitlab_com_derisk)
+      return unless ::Gitlab::CurrentSettings.enforce_email_subaddress_restrictions
 
       reason = "User #{banned_user.id} was banned with the same detumbled email address"
 

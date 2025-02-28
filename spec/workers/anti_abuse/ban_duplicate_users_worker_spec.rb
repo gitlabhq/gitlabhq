@@ -11,6 +11,7 @@ RSpec.describe AntiAbuse::BanDuplicateUsersWorker, feature_category: :instance_r
   # The banned user cannot be instantiated as banned because validators prevent users from
   # being created that have similar characteristics of previously banned users.
   before do
+    stub_application_setting(enforce_email_subaddress_restrictions: true)
     banned_user.ban!
   end
 
@@ -44,9 +45,9 @@ RSpec.describe AntiAbuse::BanDuplicateUsersWorker, feature_category: :instance_r
 
       it_behaves_like 'executing the ban duplicate users worker'
 
-      context 'when the auto_ban_via_detumbled_email feature is disabled' do
+      context 'when the enforce_email_subaddress_restrictions application setting is disabled' do
         before do
-          stub_feature_flags(auto_ban_via_detumbled_email: false)
+          stub_application_setting(enforce_email_subaddress_restrictions: false)
         end
 
         it_behaves_like 'does not ban the duplicate user'
