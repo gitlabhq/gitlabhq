@@ -22,6 +22,7 @@ RSpec.describe Snippets::RepositoryValidationService, feature_category: :source_
       allow(repository).to receive(:branch_count).and_return(2)
 
       expect(subject).to be_error
+      expect(subject.reason).to eq(described_class::INVALID_REPOSITORY)
       expect(subject.message).to match(/Repository has more than one branch/)
     end
 
@@ -29,6 +30,7 @@ RSpec.describe Snippets::RepositoryValidationService, feature_category: :source_
       allow(repository).to receive(:branch_names).and_return(['foo'])
 
       expect(subject).to be_error
+      expect(subject.reason).to eq(described_class::INVALID_REPOSITORY)
       expect(subject.message).to match(/Repository has an invalid default branch name/)
     end
 
@@ -36,6 +38,7 @@ RSpec.describe Snippets::RepositoryValidationService, feature_category: :source_
       allow(repository).to receive(:tag_count).and_return(1)
 
       expect(subject).to be_error
+      expect(subject.reason).to eq(described_class::INVALID_REPOSITORY)
       expect(subject.message).to match(/Repository has tags/)
     end
 
@@ -45,6 +48,7 @@ RSpec.describe Snippets::RepositoryValidationService, feature_category: :source_
       allow(repository).to receive(:ls_files).and_return(files)
 
       expect(subject).to be_error
+      expect(subject.reason).to eq(described_class::INVALID_REPOSITORY)
       expect(subject.message).to match(/Repository files count over the limit/)
     end
 
@@ -52,6 +56,7 @@ RSpec.describe Snippets::RepositoryValidationService, feature_category: :source_
       allow(repository).to receive(:ls_files).and_return([])
 
       expect(subject).to be_error
+      expect(subject.reason).to eq(described_class::INVALID_REPOSITORY)
       expect(subject.message).to match(/Repository must contain at least 1 file/)
     end
 
@@ -61,6 +66,7 @@ RSpec.describe Snippets::RepositoryValidationService, feature_category: :source_
       end
 
       expect(subject).to be_error
+      expect(subject.reason).to eq(described_class::INVALID_REPOSITORY)
       expect(subject.message).to match(/Repository size is above the limit/)
     end
 

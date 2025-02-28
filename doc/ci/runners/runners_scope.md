@@ -758,7 +758,7 @@ To determine the IP address of an instance runner:
 1. Select **CI/CD > Runners**.
 1. Find the runner in the table and view the **IP Address** column.
 
-![Instance runner IP address](img/shared_runner_ip_address_14_5.png)
+![Instance runner IP address](img/shared_runner_ip_address_v14_5.png)
 
 ### Determine the IP address of a project runner
 

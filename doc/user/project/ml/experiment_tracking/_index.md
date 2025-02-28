@@ -32,19 +32,19 @@ short-lived (results from hyperparameter tuning triggered by a merge request),
 but usually hold model runs that have a similar set of parameters measured
 by the same metrics.
 
-![List of experiments](img/experiments.png)
+![List of experiments](img/experiments_v17_9.png)
 
 ## Model run
 
 A model run is a variation of the training of a machine learning model, that can be eventually promoted to a version
 of the model.
 
-![Experiment runs](img/runs.png)
+![Experiment runs](img/runs_v17_9.png)
 
 The goal of a data scientist is to find the model run whose parameter values lead to the best model
 performance, as indicated by the given metrics.
 
-![Run Detail](img/run.png)
+![Run Detail](img/run_v17_9.png)
 
 Some example parameters:
 
@@ -76,7 +76,7 @@ Trial artifacts are saved as packages. After an artifact is logged for a run, al
 
 You can associate runs to the CI job that created them, allowing quick links to the merge request, pipeline, and user that triggered the pipeline:
 
-![CI information in run detail](img/run_detail_ci.png)
+![CI information in run detail](img/run_detail_ci_v17_9.png)
 
 ## View logged metrics
 
@@ -89,4 +89,4 @@ To view logged metrics:
 1. Select the experiment you want to view.
 1. Select the **Performance** tab.
 
-![A graph of an experiment's performance](img/metrics.png)
+![A graph of an experiment's performance](img/metrics_v17_10.png)

@@ -1,6 +1,6 @@
 ---
 stage: Software Supply Chain Security
-group: Pipeline Security
+group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Fine-grained permissions for CI/CD job tokens
 ---
@@ -23,10 +23,43 @@ Status: Experiment
 
 {{< /details >}}
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15234) in GitLab 17.10. This feature is an [experiment](../../policy/development_stages_support.md#experiment).
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+You can use fine-grained permissions to explicitly allow access to a limited set of API endpoints.
+These permissions are applied to the CI/CD job tokens in a specified project.
+This feature is an [experiment](../../policy/development_stages_support.md#experiment).
+
+## Enable fine-grained permissions
+
+### On GitLab Self-Managed
+
+1. Start the GitLab Rails console. For information, see [Enable and disable GitLab features deployed behind feature flags](../../administration/feature_flags.md#enable-or-disable-the-feature)
+1. Turn on the [feature flag](../../administration/feature_flags.md):
+
+```ruby
+# You must include a specific project ID with this command.
+Feature.enable(:add_policies_to_ci_job_token, <project_id>)
+```
+
+### On GitLab.com
+
+Add a comment on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575) with your project ID.
+
 ## Available API endpoints
 
 The following endpoints are available for CI/CD job tokens.
-You can use fine-grained permissions to explicitly allow access to a limited set of the following API endpoints.
 
 `None` means fine-grained permissions cannot control access to this endpoint.
 

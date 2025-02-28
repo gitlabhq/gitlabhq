@@ -24553,6 +24553,8 @@ CREATE TABLE zoekt_nodes (
     search_base_url text NOT NULL,
     metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
     indexed_bytes bigint DEFAULT 0 NOT NULL,
+    usable_storage_bytes bigint DEFAULT 0 NOT NULL,
+    usable_storage_bytes_locked_until timestamp with time zone,
     CONSTRAINT check_32f39efba3 CHECK ((char_length(search_base_url) <= 1024)),
     CONSTRAINT check_38c354a3c2 CHECK ((char_length(index_base_url) <= 1024))
 );

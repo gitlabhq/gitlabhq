@@ -418,7 +418,7 @@ To disable the banner:
 
 By default, a banner shows in merge requests in projects with the [Jenkins integration enabled](../../integration/jenkins.md) to prompt migration to GitLab CI/CD.
 
-![A banner prompting migration from Jenkins to GitLab CI](img/suggest_migrate_from_jenkins_v_17_7.png)
+![A banner prompting migration from Jenkins to GitLab CI](img/suggest_migrate_from_jenkins_v17_7.png)
 
 To disable the banner:
 

@@ -22330,7 +22330,7 @@ Represents the Geo replication and verification state of a ci_secure_file.
 | <a id="cisecurefileregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the CiSecureFileRegistry do not match on the primary and secondary. |
 | <a id="cisecurefileregistrycisecurefileid"></a>`ciSecureFileId` | [`ID!`](#id) | ID of the Ci Secure File. |
 | <a id="cisecurefileregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the CiSecureFileRegistry was created. |
-| <a id="cisecurefileregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="cisecurefileregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="cisecurefileregistryid"></a>`id` | [`ID!`](#id) | ID of the CiSecureFileRegistry. |
 | <a id="cisecurefileregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the CiSecureFileRegistry. |
 | <a id="cisecurefileregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the CiSecureFileRegistry. |
@@ -23161,7 +23161,7 @@ Represents the Geo replication and verification state of an Container Repository
 | <a id="containerrepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the ContainerRepositoryRegistry do not match on the primary and secondary. |
 | <a id="containerrepositoryregistrycontainerrepositoryid"></a>`containerRepositoryId` | [`ID!`](#id) | ID of the ContainerRepository. |
 | <a id="containerrepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the ContainerRepositoryRegistry was created. |
-| <a id="containerrepositoryregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="containerrepositoryregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="containerrepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the ContainerRepositoryRegistry. |
 | <a id="containerrepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the ContainerRepositoryRegistry. |
 | <a id="containerrepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the ContainerRepositoryRegistry. |
@@ -24267,7 +24267,7 @@ Represents the Geo replication and verification state of a dependency_proxy_blob
 | <a id="dependencyproxyblobregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the DependencyProxyBlobRegistry do not match on the primary and secondary. |
 | <a id="dependencyproxyblobregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the DependencyProxyBlobRegistry was created. |
 | <a id="dependencyproxyblobregistrydependencyproxyblobid"></a>`dependencyProxyBlobId` | [`ID!`](#id) | ID of the Dependency Proxy Blob. |
-| <a id="dependencyproxyblobregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="dependencyproxyblobregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="dependencyproxyblobregistryid"></a>`id` | [`ID!`](#id) | ID of the DependencyProxyBlobRegistry. |
 | <a id="dependencyproxyblobregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the DependencyProxyBlobRegistry. |
 | <a id="dependencyproxyblobregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the DependencyProxyBlobRegistry. |
@@ -24326,7 +24326,7 @@ Represents the Geo replication and verification state of a dependency_proxy_mani
 | <a id="dependencyproxymanifestregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the DependencyProxyManifestRegistry do not match on the primary and secondary. |
 | <a id="dependencyproxymanifestregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the DependencyProxyManifestRegistry was created. |
 | <a id="dependencyproxymanifestregistrydependencyproxymanifestid"></a>`dependencyProxyManifestId` | [`ID!`](#id) | ID of the Dependency Proxy Manifest. |
-| <a id="dependencyproxymanifestregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="dependencyproxymanifestregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="dependencyproxymanifestregistryid"></a>`id` | [`ID!`](#id) | ID of the DependencyProxyManifestRegistry. |
 | <a id="dependencyproxymanifestregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the DependencyProxyManifestRegistry. |
 | <a id="dependencyproxymanifestregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the DependencyProxyManifestRegistry. |
@@ -24695,7 +24695,7 @@ Represents the Geo replication and verification state of a Design Management Rep
 | <a id="designmanagementrepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the DesignManagementRepositoryRegistry do not match on the primary and secondary. |
 | <a id="designmanagementrepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the DesignManagementRepositoryRegistry was created. |
 | <a id="designmanagementrepositoryregistrydesignmanagementrepositoryid"></a>`designManagementRepositoryId` | [`ID!`](#id) | ID of the Design Management Repository. |
-| <a id="designmanagementrepositoryregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="designmanagementrepositoryregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="designmanagementrepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the DesignManagementRepositoryRegistry. |
 | <a id="designmanagementrepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the DesignManagementRepositoryRegistry. |
 | <a id="designmanagementrepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the DesignManagementRepositoryRegistry. |
@@ -28350,7 +28350,7 @@ Represents the Geo sync and verification state of a group wiki repository.
 | ---- | ---- | ----------- |
 | <a id="groupwikirepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the GroupWikiRepositoryRegistry do not match on the primary and secondary. |
 | <a id="groupwikirepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the GroupWikiRepositoryRegistry was created. |
-| <a id="groupwikirepositoryregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="groupwikirepositoryregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="groupwikirepositoryregistrygroupwikirepositoryid"></a>`groupWikiRepositoryId` | [`ID!`](#id) | ID of the Group Wiki Repository. |
 | <a id="groupwikirepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the GroupWikiRepositoryRegistry. |
@@ -29068,7 +29068,7 @@ Represents the Geo replication and verification state of a job_artifact.
 | <a id="jobartifactregistryartifactid"></a>`artifactId` | [`ID!`](#id) | ID of the Job Artifact. |
 | <a id="jobartifactregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the JobArtifactRegistry do not match on the primary and secondary. |
 | <a id="jobartifactregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the JobArtifactRegistry was created. |
-| <a id="jobartifactregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="jobartifactregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="jobartifactregistryid"></a>`id` | [`ID!`](#id) | ID of the JobArtifactRegistry. |
 | <a id="jobartifactregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the JobArtifactRegistry. |
 | <a id="jobartifactregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the JobArtifactRegistry. |
@@ -29172,7 +29172,7 @@ Represents the Geo sync and verification state of an LFS object.
 | ---- | ---- | ----------- |
 | <a id="lfsobjectregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the LfsObjectRegistry do not match on the primary and secondary. |
 | <a id="lfsobjectregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the LfsObjectRegistry was created. |
-| <a id="lfsobjectregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="lfsobjectregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="lfsobjectregistryid"></a>`id` | [`ID!`](#id) | ID of the LfsObjectRegistry. |
 | <a id="lfsobjectregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the LfsObjectRegistry. |
 | <a id="lfsobjectregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the LfsObjectRegistry. |
@@ -30422,7 +30422,7 @@ Represents the Geo sync and verification state of a Merge Request diff.
 | ---- | ---- | ----------- |
 | <a id="mergerequestdiffregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the MergeRequestDiffRegistry do not match on the primary and secondary. |
 | <a id="mergerequestdiffregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the MergeRequestDiffRegistry was created. |
-| <a id="mergerequestdiffregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="mergerequestdiffregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="mergerequestdiffregistryid"></a>`id` | [`ID!`](#id) | ID of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the MergeRequestDiffRegistry. |
@@ -32503,7 +32503,7 @@ Represents the Geo sync and verification state of a package file.
 | ---- | ---- | ----------- |
 | <a id="packagefileregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the PackageFileRegistry do not match on the primary and secondary. |
 | <a id="packagefileregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the PackageFileRegistry was created. |
-| <a id="packagefileregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="packagefileregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="packagefileregistryid"></a>`id` | [`ID!`](#id) | ID of the PackageFileRegistry. |
 | <a id="packagefileregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the PackageFileRegistry. |
 | <a id="packagefileregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the PackageFileRegistry. |
@@ -32704,7 +32704,7 @@ Represents the Geo replication and verification state of a pages_deployment.
 | ---- | ---- | ----------- |
 | <a id="pagesdeploymentregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the PagesDeploymentRegistry do not match on the primary and secondary. |
 | <a id="pagesdeploymentregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the PagesDeploymentRegistry was created. |
-| <a id="pagesdeploymentregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="pagesdeploymentregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="pagesdeploymentregistryid"></a>`id` | [`ID!`](#id) | ID of the PagesDeploymentRegistry. |
 | <a id="pagesdeploymentregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the PagesDeploymentRegistry. |
 | <a id="pagesdeploymentregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the PagesDeploymentRegistry. |
@@ -33041,7 +33041,7 @@ Represents the Geo sync and verification state of a pipeline artifact.
 | ---- | ---- | ----------- |
 | <a id="pipelineartifactregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the PipelineArtifactRegistry do not match on the primary and secondary. |
 | <a id="pipelineartifactregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the PipelineArtifactRegistry was created. |
-| <a id="pipelineartifactregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="pipelineartifactregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="pipelineartifactregistryid"></a>`id` | [`ID!`](#id) | ID of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the PipelineArtifactRegistry. |
@@ -35818,7 +35818,7 @@ Represents the Geo replication and verification state of a project repository.
 | ---- | ---- | ----------- |
 | <a id="projectrepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the ProjectRepositoryRegistry do not match on the primary and secondary. |
 | <a id="projectrepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the ProjectRepositoryRegistry was created. |
-| <a id="projectrepositoryregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="projectrepositoryregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="projectrepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the ProjectRepositoryRegistry. |
 | <a id="projectrepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the ProjectRepositoryRegistry. |
 | <a id="projectrepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the ProjectRepositoryRegistry. |
@@ -36106,7 +36106,7 @@ Represents the Geo replication and verification state of a project_wiki_reposito
 | ---- | ---- | ----------- |
 | <a id="projectwikirepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the ProjectWikiRepositoryRegistry do not match on the primary and secondary. |
 | <a id="projectwikirepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the ProjectWikiRepositoryRegistry was created. |
-| <a id="projectwikirepositoryregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="projectwikirepositoryregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="projectwikirepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the ProjectWikiRepositoryRegistry. |
 | <a id="projectwikirepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the ProjectWikiRepositoryRegistry. |
 | <a id="projectwikirepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the ProjectWikiRepositoryRegistry. |
@@ -37318,7 +37318,7 @@ Represents the Geo sync and verification state of a snippet repository.
 | ---- | ---- | ----------- |
 | <a id="snippetrepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the SnippetRepositoryRegistry do not match on the primary and secondary. |
 | <a id="snippetrepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the SnippetRepositoryRegistry was created. |
-| <a id="snippetrepositoryregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="snippetrepositoryregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="snippetrepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the SnippetRepositoryRegistry. |
 | <a id="snippetrepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the SnippetRepositoryRegistry. |
 | <a id="snippetrepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the SnippetRepositoryRegistry. |
@@ -37649,7 +37649,7 @@ Represents the Geo sync and verification state of a terraform state version.
 | ---- | ---- | ----------- |
 | <a id="terraformstateversionregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the TerraformStateVersionRegistry do not match on the primary and secondary. |
 | <a id="terraformstateversionregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the TerraformStateVersionRegistry was created. |
-| <a id="terraformstateversionregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="terraformstateversionregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="terraformstateversionregistryid"></a>`id` | [`ID!`](#id) | ID of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the TerraformStateVersionRegistry. |
@@ -37971,7 +37971,7 @@ Represents the Geo replication and verification state of an upload.
 | <a id="uploadregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the UploadRegistry do not match on the primary and secondary. |
 | <a id="uploadregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the UploadRegistry was created. |
 | <a id="uploadregistryfileid"></a>`fileId` | [`ID!`](#id) | ID of the Upload. |
-| <a id="uploadregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
+| <a id="uploadregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="uploadregistryid"></a>`id` | [`ID!`](#id) | ID of the UploadRegistry. |
 | <a id="uploadregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the UploadRegistry. |
 | <a id="uploadregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the UploadRegistry. |
