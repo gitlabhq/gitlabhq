@@ -109,7 +109,7 @@ export default {
       <template #label-description>
         <span>{{
           s__(
-            'CiVariables|SSelect the default minimum role to use in new projects, to run a new pipeline with pipeline variables.',
+            'CiVariables|Select the default minimum role to use in new projects, to run a new pipeline with pipeline variables.',
           )
         }}</span>
         <gl-link :href="$options.helpPath" target="_blank">{{

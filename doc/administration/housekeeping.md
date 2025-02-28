@@ -129,7 +129,7 @@ To trigger housekeeping tasks manually:
 This starts an asynchronous background worker for the project's repository. The
 background worker asks Gitaly to perform a number of optimizations.
 
-Housekeeping also [removes unreferenced LFS files](../raketasks/cleanup.md#remove-unreferenced-lfs-files)
+Housekeeping also [removes unreferenced LFS files](raketasks/cleanup.md#remove-unreferenced-lfs-files)
 from your project every `200` push, freeing up storage space for your project.
 
 ### Prune unreachable objects

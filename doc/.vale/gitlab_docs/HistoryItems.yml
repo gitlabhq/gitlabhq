@@ -13,3 +13,4 @@ scope: raw
 tokens:
   - '\{\{< history >\}\}\n\n[^-]'
   - '(^#+[^\n]*|\{\{< /details >\}\})\n\n> -'
+  - '^##.*?\n\n- \[?(Introduced|Changed|Renamed|Updated|Improved|Generally)'

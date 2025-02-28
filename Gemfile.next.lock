@@ -341,10 +341,10 @@ GEM
     asciidoctor-plantuml (0.0.16)
       asciidoctor (>= 2.0.17, < 3.0.0)
     ast (2.4.2)
-    async (2.22.0)
+    async (2.23.0)
       console (~> 1.29)
       fiber-annotation
-      io-event (~> 1.7)
+      io-event (~> 1.9)
       metrics (~> 0.12)
       traces (~> 0.15)
     atlassian-jwt (0.2.1)
@@ -2045,7 +2045,7 @@ DEPENDENCIES
   asciidoctor-include-ext (~> 0.4.0)
   asciidoctor-kroki (~> 0.10.0)
   asciidoctor-plantuml (~> 0.0.16)
-  async (~> 2.22.0)
+  async (~> 2.23.0)
   atlassian-jwt (~> 0.2.1)
   attr_encrypted (~> 3.2.4)!
   awesome_print

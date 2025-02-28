@@ -17,10 +17,10 @@ reasons are:
 - Job logs are larger than expected, and have accumulated over time.
 - The file system might run out of inodes because
   [empty directories are left behind by artifact housekeeping](https://gitlab.com/gitlab-org/gitlab/-/issues/17465).
-  [The Rake task for _orphaned_ artifact files](../../raketasks/cleanup.md#remove-orphan-artifact-files)
+  [The Rake task for _orphaned_ artifact files](../raketasks/cleanup.md#remove-orphan-artifact-files)
   removes these.
 - Artifact files might be left on disk and not deleted by housekeeping. Run the
-  [Rake task for _orphaned_ artifact files](../../raketasks/cleanup.md#remove-orphan-artifact-files)
+  [Rake task for _orphaned_ artifact files](../raketasks/cleanup.md#remove-orphan-artifact-files)
   to remove these. This script should always find work to do, as it also removes empty directories (see above).
 - [Artifact housekeeping was changed significantly](#housekeeping-disabled-in-gitlab-150-to-152), and you might need to enable a feature flag to use the updated system.
 - The [keep latest artifacts from most recent success jobs](../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)

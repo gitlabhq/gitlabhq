@@ -87,6 +87,26 @@ RSpec.describe Resolvers::WorkItemsResolver, feature_category: :team_planning do
           end
         end
 
+        %w[start_date due_date].each do |field|
+          context "when sorting by #{field}" do
+            let_it_be(:work_item_dates_source1) do
+              create(:work_items_dates_source, work_item: item1, start_date: 2.days.ago, due_date: 1.day.from_now)
+            end
+
+            let_it_be(:work_item_dates_source2) do
+              create(:work_items_dates_source, work_item: item2, start_date: 1.day.ago, due_date: 2.days.from_now)
+            end
+
+            it 'sorts items ascending' do
+              expect(resolve_items(sort: "#{field}_asc").to_a).to eq [item1, item2]
+            end
+
+            it 'sorts items descending' do
+              expect(resolve_items(sort: "#{field}_desc").to_a).to eq [item2, item1]
+            end
+          end
+        end
+
         context 'when sorting by title' do
           let_it_be(:project) { create(:project, :public) }
           let_it_be(:item1) { create(:work_item, project: project, title: 'foo') }

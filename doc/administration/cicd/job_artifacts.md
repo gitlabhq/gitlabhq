@@ -313,7 +313,7 @@ processing is done in a background worker and requires **no downtime**.
 
 1. If [Geo](../geo/_index.md) is enabled, [reverify all job artifacts](../geo/replication/troubleshooting/synchronization_verification.md#reverify-one-component-on-all-sites).
 
-In some cases, you need to run the [orphan artifact file cleanup Rake task](../../raketasks/cleanup.md#remove-orphan-artifact-files)
+In some cases, you need to run the [orphan artifact file cleanup Rake task](../raketasks/cleanup.md#remove-orphan-artifact-files)
 to clean up orphaned artifacts.
 
 ### Migrating from object storage to local storage

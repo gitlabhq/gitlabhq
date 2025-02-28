@@ -9,9 +9,16 @@ title: Gitaly on Kubernetes
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
+
+{{< history >}}
+
+- Introduced in GitLab 17.3 as an [experiment](../../policy/development_stages_support.md#experiment).
+- Promoted to [beta](../../policy/development_stages_support.md#beta) status in GitLab 17.10.
+
+{{< /history >}}
 
 Running Gitaly on Kubernetes has availability trade-offs, so consider these trade-offs when planing a production environment and set expectations accordingly.
 This document describes and provides guidance on how to minimize, and plan for existing limitations.

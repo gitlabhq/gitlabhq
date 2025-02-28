@@ -78,6 +78,7 @@ export default {
     v-gl-tooltip.left.viewport
     :class="buttonClasses"
     :variant="buttonVariant"
+    :selected="isActionActive"
     :title="buttonTooltip"
     :aria-label="buttonLabel"
     :data-issuable-id="issuableId"

@@ -183,6 +183,70 @@ If Gitaly Cluster is used, Praefect manages storage locations. The internal path
 differs from the hashed path. For more information, see
 [Praefect-generated replica paths](gitaly/_index.md#praefect-generated-replica-paths).
 
+### Repository file archive cache
+
+Users can download an archive in formats such as `.zip` or `.tar.gz` of a repository by using either:
+
+- The GitLab UI.
+- The [Repositories API](../api/repositories.md#get-file-archive).
+
+GitLab stores this archive in a cache in a directory on the GitLab server.
+
+A background job running on Sidekiq periodically cleans out stale
+archives from this directory. For this reason, this directory must be
+accessible by both the Sidekiq and GitLab Workhorse services. If Sidekiq
+can't access the same directory used by GitLab Workhorse, the [disk containing the directory fills up](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6005).
+
+If you don't want to use a shared mount for Sidekiq and GitLab
+Workhorse, you can instead configure a separate `cron` job to delete
+files from this directory.
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+The default directory for the file archive cache is `/var/opt/gitlab/gitlab-rails/shared/cache/archive`. You can
+configure this with the `gitlab_rails['gitlab_repository_downloads_path']` setting in `/etc/gitlab/gitlab.rb`.
+
+To disable the cache:
+
+1. Set the `WORKHORSE_ARCHIVE_CACHE_DISABLED` environment variable on all nodes that run Puma:
+
+   ```shell
+   sudo -e /etc/gitlab/gitlab.rb
+   ```
+
+   ```ruby
+   gitlab_rails['env'] = { 'WORKHORSE_ARCHIVE_CACHE_DISABLED' => '1' }
+   ```
+
+1. Reconfigure the updated nodes for the change to take effect:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+The Helm chart stores the cache in `/srv/gitlab/shared/cache/archive`.
+The directory cannot be configured.
+
+To disable the cache, you can use `--set gitlab.webservice.extraEnv.WORKHORSE_ARCHIVE_CACHE_DISABLED="1"`, or
+specify the following in your values file:
+
+```yaml
+gitlab:
+  webservice:
+    extraEnv:
+      WORKHORSE_ARCHIVE_CACHE_DISABLED: "1"
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ### Object storage support
 
 This table shows which storable objects are storable in each storage type:

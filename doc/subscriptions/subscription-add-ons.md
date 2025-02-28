@@ -153,7 +153,7 @@ Prerequisites:
    - To remove users from seats, select **Remove seat**, then **Remove seats** to confirm.
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
 
-Administrators of self-managed instances can also use a [Rake task](../raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro) to assign or remove seats in bulk.
+Administrators of self-managed instances can also use a [Rake task](../administration/raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro) to assign or remove seats in bulk.
 
 #### Managing GitLab Duo seats with LDAP configuration
 

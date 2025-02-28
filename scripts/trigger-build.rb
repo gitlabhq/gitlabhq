@@ -263,7 +263,7 @@ module Trigger
     end
 
     #
-    # Remove a remote branch in gitlab-docs.
+    # Remove a remote environment in the docs-gitlab-com project.
     #
     def cleanup!
       environment = com_gitlab_client.environments(downstream_project_path, name: downstream_environment).first
@@ -334,13 +334,6 @@ module Trigger
       puts format(SUCCESS_MESSAGE, app_url: app_url)
     end
   end
-
-  # Alias DocsHugo to Docs until callers to DocsHugo are updated:
-  # - https://gitlab.com/gitlab-org/gitlab-runner/-/blob/d1bee4412f473208d5c96a6a40103e7198a04e69/.gitlab/ci/docs.gitlab-ci.yml
-  # - https://gitlab.com/gitlab-org/charts/gitlab/-/blob/7eeea87621ed4661b66d4fd1c561bab3a53baecf/.gitlab-ci.yml
-  # - https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/4732915e79f16465ff5a669540b36d29dca22028/gitlab-ci-config/gitlab-com.yml
-  # - https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/b254c9982dd2c26cdf70e038a033600a28007c68/.gitlab-ci.yml
-  DocsHugo = Docs
 
   class DatabaseTesting < Base
     IDENTIFIABLE_NOTE_TAG = 'gitlab-org/database-team/gitlab-com-database-testing:identifiable-note'
@@ -468,8 +461,8 @@ if $PROGRAM_NAME == __FILE__
   case ARGV[0]
   when 'gitlab-com-database-testing'
     Trigger::DatabaseTesting.new.invoke!
-  when 'docs-hugo', 'docs'
-    docs_trigger = (ARGV[0] == 'docs-hugo' ? Trigger::DocsHugo : Trigger::Docs).new
+  when 'docs'
+    docs_trigger = Trigger::Docs.new
 
     case ARGV[1]
     when 'deploy'
@@ -482,9 +475,8 @@ if $PROGRAM_NAME == __FILE__
     end
   else
     puts "Please provide a valid option:
-    docs - Triggers a pipline that builds a documentation review app by using the gitlab-docs project
-    docs-hugo - Triggers a pipline that builds a documentation review app by using the gitlab-docs-hugo project
-    omnibus - Triggers a pipelines that builds the omnibus-gitlab package
+    docs - Triggers a pipeline that builds a documentation review app by using the docs-gitlab-com project
+    omnibus - Triggers a pipeline that builds the omnibus-gitlab package
     gitlab-com-database-testing - Triggers a pipeline that tests database changes on GitLab.com data"
   end
 end

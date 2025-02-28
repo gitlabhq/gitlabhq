@@ -128,6 +128,12 @@ track_internal_event(
 
 Please add custom properties only in addition to the built-in properties. Additional properties can only have string or numeric values.
 
+{{< alert type="warning" >}}
+
+Make sure the additional properties don't contain any sensitive information. For more information, see the [Data Classification Standard](https://about.gitlab.com/handbook/security/data-classification-standard/).
+
+{{< /alert >}}
+
 #### Controller and API helpers
 
 There is a helper module `ProductAnalyticsTracking` for controllers you can use to track internal events for particular controller actions by calling `#track_internal_event`:

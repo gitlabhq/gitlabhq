@@ -6589,9 +6589,6 @@ msgstr ""
 msgid "An error occurred while fetching reviewers."
 msgstr ""
 
-msgid "An error occurred while fetching secrets, please try again."
-msgstr ""
-
 msgid "An error occurred while fetching tags. Retry the search."
 msgstr ""
 
@@ -12559,13 +12556,13 @@ msgstr ""
 msgid "CiVariables|Run job again"
 msgstr ""
 
-msgid "CiVariables|SSelect the default minimum role to use in new projects, to run a new pipeline with pipeline variables."
-msgstr ""
-
 msgid "CiVariables|Scope"
 msgstr ""
 
 msgid "CiVariables|Search values"
+msgstr ""
+
+msgid "CiVariables|Select the default minimum role to use in new projects, to run a new pipeline with pipeline variables."
 msgstr ""
 
 msgid "CiVariables|Select the minimum role that is allowed to run a new pipeline with pipeline variables."
@@ -37426,6 +37423,9 @@ msgstr ""
 msgid "My-Reaction"
 msgstr ""
 
+msgid "N/A"
+msgstr ""
+
 msgid "NEW"
 msgstr ""
 
@@ -51568,6 +51568,9 @@ msgstr ""
 msgid "Secrets|Add secret"
 msgstr ""
 
+msgid "Secrets|An error occurred while fetching secrets. Please try again."
+msgstr ""
+
 msgid "Secrets|An error occurred while fetching the Secret manager status. Please try again."
 msgstr ""
 
@@ -51641,9 +51644,6 @@ msgid "Secrets|Secrets can be items like API tokens, database credentials, or pr
 msgstr ""
 
 msgid "Secrets|Select a reminder interval"
-msgstr ""
-
-msgid "Secrets|Status"
 msgstr ""
 
 msgid "Secrets|Stored secrets"

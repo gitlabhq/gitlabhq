@@ -58,7 +58,11 @@ Web commits are accepted without a signature.
 
 ## Skip push check for service accounts
 
+{{< history >}}
+
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454369) in GitLab 16.11.
+
+{{< /history >}}
 
 Prerequisites:
 

@@ -458,7 +458,11 @@ Example response:
 
 ## Delete epic
 
+{{< history >}}
+
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/452189) in GitLab 16.11. In GitLab 16.10 and earlier, if you delete an epic, all its child epics and their descendants are deleted as well. If needed, you can remove child epics from the parent epic before you delete it.
+
+{{< /history >}}
 
 Deletes an epic
 

@@ -195,6 +195,8 @@ class Issue < ApplicationRecord
   scope :order_escalation_status_desc, -> { includes(:incident_management_issuable_escalation_status).order(IncidentManagement::IssuableEscalationStatus.arel_table[:status].desc.nulls_last).references(:incident_management_issuable_escalation_status) }
   scope :order_closed_at_asc, -> { reorder(arel_table[:closed_at].asc.nulls_last) }
   scope :order_closed_at_desc, -> { reorder(arel_table[:closed_at].desc.nulls_last) }
+  scope :order_start_date_asc, -> { left_joins(:dates_source).order(WorkItems::DatesSource.arel_table[:start_date].asc.nulls_last) }
+  scope :order_start_date_desc, -> { left_joins(:dates_source).order(WorkItems::DatesSource.arel_table[:start_date].desc.nulls_last) }
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_web_entity_associations, -> do
@@ -461,6 +463,8 @@ class Issue < ApplicationRecord
     when 'escalation_status_desc'                         then order_escalation_status_desc
     when 'closed_at', 'closed_at_asc'                     then order_closed_at_asc
     when 'closed_at_desc'                                 then order_closed_at_desc
+    when 'start_date', 'start_date_asc'                   then order_start_date_asc
+    when 'start_date_desc'                                then order_start_date_desc
     else
       super
     end

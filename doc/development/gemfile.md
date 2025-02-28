@@ -70,6 +70,13 @@ to be available in the RubyGems index. We want to minimize external build
 dependencies and build times. It's enforced by the RuboCop rule
 [`Cop/GemFetcher`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles/-/blob/master/lib/rubocop/cop/gem_fetcher.rb).
 
+## No gems for importers or integrations
+
+Do not add gems for use in importers or integrations. For more information, see:
+
+- [Integration developer guide](integrations/_index.md#do-not-add-ruby-gems)
+- [Principles of importer design](import/principles_of_importer_design.md#security)
+
 ## Review the new dependency for quality
 
 We should not add 3rd-party dependencies to GitLab that would not pass our own quality standards.
