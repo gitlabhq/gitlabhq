@@ -10,9 +10,9 @@ title: Principles of Importer Design
 - Uploaded files must be validated. Examples:
   - [`BulkImports::FileDownloadService`](https://gitlab.com/gitlab-org/gitlab/-/blob/cd4a880cbb2bc56b3a55f14c1d8370f4385319db/app/services/bulk_imports/file_download_service.rb#L38-46)
   - [`ImportExport::CommandLineUtil`](https://gitlab.com/gitlab-org/gitlab/blob/139690b3aeac69675119ce70f17f70bc1753de48/lib/gitlab/import_export/command_line_util.rb#L134)
-- Importers must not add third-party Ruby gems to our `Gemfile`.
-  For more information, see the
-  [reasons](../integrations/_index.md#do-not-add-ruby-gems) given for integrations.
+- Importers must not add third-party Ruby gems that make HTTP calls.
+  Importers use the same
+  [Ruby gem policy as for integrations](../integrations/_index.md#no-ruby-gems-that-make-http-calls), for more information about Ruby gem use for importers see that page.
 - All HTTP calls must use `Gitlab::HTTP`.
   `Gitlab::HTTP` ensures that [network settings](../../security/webhooks.md) of the instance
   are enforced and has other [security hardening](../../security/webhooks.md#enforce-dns-rebinding-attack-protection) measures.

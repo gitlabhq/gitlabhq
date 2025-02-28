@@ -43626,7 +43626,6 @@ Possible types of user.
 | <a id="usertypeadmin_bot"></a>`ADMIN_BOT` | Admin bot. |
 | <a id="usertypealert_bot"></a>`ALERT_BOT` | Alert bot. |
 | <a id="usertypeautomation_bot"></a>`AUTOMATION_BOT` | Automation bot. |
-| <a id="usertypeci_pipeline_bot"></a>`CI_PIPELINE_BOT` | Ci pipeline bot. |
 | <a id="usertypeduo_code_review_bot"></a>`DUO_CODE_REVIEW_BOT` | Duo code review bot. |
 | <a id="usertypeghost"></a>`GHOST` | Ghost. |
 | <a id="usertypehuman"></a>`HUMAN` | Human. |

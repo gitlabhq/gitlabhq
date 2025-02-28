@@ -283,7 +283,7 @@ module Gitlab
       end
 
       def bot_user_can_read_project?(user, project)
-        (user.project_bot? || user.ci_pipeline_bot? || user.service_account? || user.security_policy_bot?) && can_read_project?(user, project)
+        (user.project_bot? || user.service_account? || user.security_policy_bot?) && can_read_project?(user, project)
       end
 
       def valid_oauth_token?(token)

@@ -183,7 +183,6 @@ module Ci
     scope :with_live_trace, -> { where_exists(Ci::BuildTraceChunk.scoped_build) }
     scope :with_stale_live_trace, -> { with_live_trace.finished_before(12.hours.ago) }
     scope :finished_before, ->(date) { finished.where('finished_at < ?', date) }
-    scope :license_management_jobs, -> { where(name: %i[license_management license_scanning]) } # handle license rename https://gitlab.com/gitlab-org/gitlab/issues/8911
     # WARNING: This scope could lead to performance implications for large size of tables `ci_builds` and ci_runners`.
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123131
     scope :with_runner_type, ->(runner_type) { joins(:runner).where(runner: { runner_type: runner_type }) }
@@ -1343,7 +1342,14 @@ module Ci
     end
 
     def track_ci_build_created_event
-      Gitlab::InternalEvents.track_event('create_ci_build', project: project, user: user)
+      Gitlab::InternalEvents.track_event(
+        'create_ci_build',
+        project: project,
+        user: user,
+        additional_properties: {
+          property: name
+        }
+      )
     end
 
     def partition_id_prefix_in_16_bit_encode

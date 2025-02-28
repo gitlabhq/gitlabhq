@@ -70,11 +70,13 @@ to be available in the RubyGems index. We want to minimize external build
 dependencies and build times. It's enforced by the RuboCop rule
 [`Cop/GemFetcher`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles/-/blob/master/lib/rubocop/cop/gem_fetcher.rb).
 
-## No gems for importers or integrations
+## No gems that make HTTP calls for importers or integrations
 
-Do not add gems for use in importers or integrations. For more information, see:
+Do not add gems that make HTTP calls in importers or integrations.
+In general, other gems are also strongly discouraged from these domains.
+For more information, see:
 
-- [Integration developer guide](integrations/_index.md#do-not-add-ruby-gems)
+- [Integration development guidelines](integrations/_index.md#no-ruby-gems-that-make-http-calls)
 - [Principles of importer design](import/principles_of_importer_design.md#security)
 
 ## Review the new dependency for quality

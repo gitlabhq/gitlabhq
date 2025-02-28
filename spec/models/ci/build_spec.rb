@@ -158,14 +158,19 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'when running after_commit callbacks' do
-      it 'tracks creation event' do
-        expect(Gitlab::InternalEvents).to receive(:track_event).with(
-          'create_ci_build',
-          project: project,
-          user: user
-        )
+      let(:name) { 'test123' }
 
-        create(:ci_build, user: user, project: project)
+      subject(:create_ci_build) { create(:ci_build, user: user, project: project, name: name) }
+
+      it 'tracks creation event' do
+        expect { create_ci_build }
+          .to trigger_internal_events('create_ci_build')
+          .with(
+            category: 'InternalEventTracking',
+            user: user,
+            project: project,
+            additional_properties: { property: name }
+          )
       end
     end
   end
@@ -357,26 +362,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it 'does not select the build' do
         is_expected.to be_empty
       end
-    end
-  end
-
-  describe '.license_management_jobs' do
-    subject { described_class.license_management_jobs }
-
-    let!(:management_build) { create(:ci_build, :success, name: :license_management, pipeline: pipeline) }
-    let!(:scanning_build) { create(:ci_build, :success, name: :license_scanning, pipeline: pipeline) }
-    let!(:another_build) { create(:ci_build, :success, name: :another_type, pipeline: pipeline) }
-
-    it 'returns license_scanning jobs' do
-      is_expected.to include(scanning_build)
-    end
-
-    it 'returns license_management jobs' do
-      is_expected.to include(management_build)
-    end
-
-    it 'doesnt return filtered out jobs' do
-      is_expected.not_to include(another_build)
     end
   end
 

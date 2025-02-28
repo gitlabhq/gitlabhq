@@ -85,14 +85,15 @@ module API
           agent = ::Clusters::AgentsFinder.new(user_project, current_user).execute.find_by_id(params[:cluster_agent_id])
 
           bad_request!("cluster agent doesn't exist or cannot be associated with this environment") unless agent
+          params[:cluster_agent] = agent
         end
 
-        environment = user_project.environments.create(params)
+        response = ::Environments::CreateService.new(user_project, current_user, params).execute
 
-        if environment.persisted?
-          present environment, with: Entities::Environment, current_user: current_user
+        if response.success?
+          present response.payload[:environment], with: Entities::Environment, current_user: current_user
         else
-          render_validation_error!(environment)
+          render_api_error!(response.message, 400)
         end
       end
 

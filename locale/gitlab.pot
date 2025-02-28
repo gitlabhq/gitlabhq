@@ -26668,6 +26668,15 @@ msgstr ""
 msgid "Gitea import"
 msgstr ""
 
+msgid "GithubImporter|%{codeStart}read:org%{codeEnd} (optional): Used to import collaborators from GitHub repositories, or if your project has Git LFS files."
+msgstr ""
+
+msgid "GithubImporter|%{codeStart}repo%{codeEnd}: Used to display a list of your public and private repositories that are available to connect to."
+msgstr ""
+
+msgid "GithubImporter|%{codeStart}repo%{codeEnd}: Used to display a list of your public and private repositories that are available to import from."
+msgstr ""
+
 msgid "GithubImporter|%{code_start}read:org%{code_end} (optional): Used to import collaborators from GitHub repositories, or if your project has Git LFS files."
 msgstr ""
 
@@ -26755,7 +26764,13 @@ msgstr ""
 msgid "GithubImport|\"%{repository_name}\" size (%{repository_size}) is larger than the limit of %{limit}."
 msgstr ""
 
+msgid "GithubImport|%{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "GithubImport|%{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "GithubImport|Create and provide your GitHub %{linkStart}personal access token%{linkEnd}."
 msgstr ""
 
 msgid "GithubImport|Create and provide your GitHub %{link_start}personal access token%{link_end}."
@@ -46236,6 +46251,12 @@ msgstr ""
 msgid "ProjectsNew|Analyze your source code for known security vulnerabilities."
 msgstr ""
 
+msgid "ProjectsNew|Authenticate through GitHub"
+msgstr ""
+
+msgid "ProjectsNew|Authenticate with GitHub"
+msgstr ""
+
 msgid "ProjectsNew|Available only for projects within groups"
 msgstr ""
 
@@ -52853,7 +52874,7 @@ msgstr ""
 msgid "SecurityOrchestration|This %{namespaceType} does not contain any security policies."
 msgstr ""
 
-msgid "SecurityOrchestration|This %{namespaceType} is not linked to a security policy project"
+msgid "SecurityOrchestration|This %{namespaceType} is not linked to a security policy project. Either link it to an existing project or create a new policy, which will create a new project that you can use as a security policy project. For help, see %{linkStart}policies%{linkEnd}."
 msgstr ""
 
 msgid "SecurityOrchestration|This applies to following compliance frameworks:"
@@ -62648,6 +62669,9 @@ msgid "Use issues to collaborate on ideas, solve problems, and plan work"
 msgstr ""
 
 msgid "Use one line per URI"
+msgstr ""
+
+msgid "Use personal access token"
 msgstr ""
 
 msgid "Use primary email (%{email})"

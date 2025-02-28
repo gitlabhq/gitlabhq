@@ -185,21 +185,6 @@ attribute :wiki_page_events, default: false
 If an event attribute for an existing integration changes to `true`,
 this requires a data migration to back-fill the attribute value for old records.
 
-#### Do not add Ruby gems
-
-GitLab integrations must not add Ruby gems to our `Gemfile`.
-Instead, any required HTTP clients or small abstractions must be implemented in GitLab.
-
-Gems that wrap interactions with third-party services may look convenient at first glance,
-but they offer minimal benefit compared to the costs involved:
-
-- They increase the potential surface area of security problems and the effort required to fix them.
-- Often these gems make HTTP calls on your behalf. As integrations can make HTTP calls to remote
-  servers configured by users, it is critical that we
-  [fully control the network calls](#all-http-calls-must-use-gitlabhttp).
-- There is a maintenance cost of managing gem upgrades.
-- They can block us from using newer features.
-
 ### Security requirements
 
 #### All HTTP calls must use `Gitlab::HTTP`
@@ -224,6 +209,23 @@ def mask_configurable_channels?
   true
 end
 ```
+
+## No Ruby gems that make HTTP calls
+
+GitLab integrations must not add Ruby gems that make HTTP calls.
+Other gems that add small abstractions should also not be added.
+
+Certain utility-like gems from official sources, like `atlassian-jwt` gem can be used if required.
+
+Gems that wrap interactions with third-party services may look convenient at first glance,
+but they offer minimal benefit compared to the costs involved:
+
+- They increase the potential surface area of security problems and the effort required to fix them.
+- Often these gems make HTTP calls on your behalf. As integrations can make HTTP calls to remote
+  servers configured by users, it is critical that we
+  [fully control the network calls](#all-http-calls-must-use-gitlabhttp).
+- There is a maintenance cost of managing gem upgrades.
+- They can block us from using newer features.
 
 ## Define configuration test
 

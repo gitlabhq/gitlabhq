@@ -13,3 +13,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  property:
+    description: the name of the build

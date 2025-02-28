@@ -3,50 +3,61 @@
 - header_title _("New project"), new_project_path
 - add_to_breadcrumbs s_('ProjectsNew|Import project'), new_project_path(anchor: 'import_project')
 
-= render ::Layouts::PageHeadingComponent.new('') do |c|
-  - c.with_heading do
-    .gl-flex.gl-gap-3.gl-items-center
-      = sprite_icon('github', size: 32)
-      = title
-  - c.with_description do
-    = import_github_authorize_message
-    - if !has_ci_cd_only_params?
-      .gl-mt-5
-        - if github_import_configured?
-          = render Pajamas::ButtonComponent.new(variant: :confirm,
-            href: status_import_github_path(namespace_id: params[:namespace_id]),
-            icon: 'github') do
-            = title
-        - else
-          = render Pajamas::AlertComponent.new(variant: :info, dismissible: false) do |c|
-            - c.with_body do
-              = import_configure_github_admin_message
+- if Feature.enabled?(:new_project_creation_form, @user)
+  #js-vue-import-github-project-app{ data: { view_model: Gitlab::Json.generate({
+    back_button_path: new_project_path(anchor: 'import_project'),
+    namespace_id: namespace_id_from(params),
+    message_admin: import_configure_github_admin_message,
+    is_ci_cd_only: has_ci_cd_only_params?,
+    is_configured: github_import_configured?,
+    button_auth_href: status_import_github_path(namespace_id: params[:namespace_id]),
+    form_path: personal_access_token_import_github_path
+    }) } }
+- else
+  = render ::Layouts::PageHeadingComponent.new('') do |c|
+    - c.with_heading do
+      .gl-flex.gl-gap-3.gl-items-center
+        = sprite_icon('github', size: 32)
+        = title
+    - c.with_description do
+      = import_github_authorize_message
+      - if !has_ci_cd_only_params?
+        .gl-mt-5
+          - if github_import_configured?
+            = render Pajamas::ButtonComponent.new(variant: :confirm,
+              href: status_import_github_path(namespace_id: params[:namespace_id]),
+              icon: 'github') do
+              = title
+          - else
+            = render Pajamas::AlertComponent.new(variant: :info, dismissible: false) do |c|
+              - c.with_body do
+                = import_configure_github_admin_message
 
-= form_tag personal_access_token_import_github_path, method: :post, class: 'gl-mt-3' do
-  .form-group.gl-form-group
-    %label.col-form-label{ for: 'personal_access_token' }= _('Personal access token')
-    = hidden_field_tag(:namespace_id, params[:namespace_id])
-    = password_field_tag :personal_access_token, '', class: 'form-control gl-form-input js-import-github-pat-field', placeholder: _('e.g. %{token}') % { token: '8d3f016698e...' }, data: { testid: 'personal-access-token-field' }
-    %p.invalid-feedback.js-import-github-pat-validation
-      = _('Personal access token is required.')
-    %span.form-text.gl-text-subtle
-      - code_pair = tag_pair(tag.code, :code_start, :code_end)
-      - github_link_tag_pair = tag_pair(link_to('', 'https://github.com/settings/tokens', target: '_blank', rel: 'noopener noreferrer'), :link_start, :link_end)
-      = safe_format(s_('GithubImport|Create and provide your GitHub %{link_start}personal access token%{link_end}.'), github_link_tag_pair)
-      %br
-      = safe_format(s_('GithubImport|Use a classic GitHub personal access token with the following scopes:'))
-      %ul
-        - if has_ci_cd_only_params?
-          %li= safe_format(s_('GithubImporter|%{code_start}repo%{code_end}: Used to display a list of your public and private repositories that are available to connect to.'), code_pair)
-        - else
-          %li= safe_format(s_('GithubImporter|%{code_start}repo%{code_end}: Used to display a list of your public and private repositories that are available to import from.'), code_pair)
-          %li= safe_format(s_('GithubImporter|%{code_start}read:org%{code_end} (optional): Used to import collaborators from GitHub repositories, or if your project has Git LFS files.'), code_pair)
-      - docs_link = link_to('', help_page_path('user/project/import/github.md', anchor: 'use-a-github-personal-access-token'), target: '_blank', rel: 'noopener noreferrer')
-      - docs_link_tag_pair = tag_pair(docs_link, :link_start, :link_end)
-      = safe_format(s_('GithubImport|%{link_start}Learn more%{link_end}.'), docs_link_tag_pair)
+  = form_tag personal_access_token_import_github_path, method: :post, class: 'gl-mt-3' do
+    .form-group.gl-form-group
+      %label.col-form-label{ for: 'personal_access_token' }= _('Personal access token')
+      = hidden_field_tag(:namespace_id, params[:namespace_id])
+      = password_field_tag :personal_access_token, '', class: 'form-control gl-form-input js-import-github-pat-field', placeholder: _('e.g. %{token}') % { token: '8d3f016698e...' }, data: { testid: 'personal-access-token-field' }
+      %p.invalid-feedback.js-import-github-pat-validation
+        = _('Personal access token is required.')
+      %span.form-text.gl-text-subtle
+        - code_pair = tag_pair(tag.code, :code_start, :code_end)
+        - github_link_tag_pair = tag_pair(link_to('', 'https://github.com/settings/tokens', target: '_blank', rel: 'noopener noreferrer'), :link_start, :link_end)
+        = safe_format(s_('GithubImport|Create and provide your GitHub %{link_start}personal access token%{link_end}.'), github_link_tag_pair)
+        %br
+        = safe_format(s_('GithubImport|Use a classic GitHub personal access token with the following scopes:'))
+        %ul
+          - if has_ci_cd_only_params?
+            %li= safe_format(s_('GithubImporter|%{code_start}repo%{code_end}: Used to display a list of your public and private repositories that are available to connect to.'), code_pair)
+          - else
+            %li= safe_format(s_('GithubImporter|%{code_start}repo%{code_end}: Used to display a list of your public and private repositories that are available to import from.'), code_pair)
+            %li= safe_format(s_('GithubImporter|%{code_start}read:org%{code_end} (optional): Used to import collaborators from GitHub repositories, or if your project has Git LFS files.'), code_pair)
+        - docs_link = link_to('', help_page_path('user/project/import/github.md', anchor: 'use-a-github-personal-access-token'), target: '_blank', rel: 'noopener noreferrer')
+        - docs_link_tag_pair = tag_pair(docs_link, :link_start, :link_end)
+        = safe_format(s_('GithubImport|%{link_start}Learn more%{link_end}.'), docs_link_tag_pair)
 
-  .gl-mt-5.gl-flex.gl-gap-3
-    = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit, button_options: { class: 'js-import-github-pat-authenticate', data: { testid: 'authenticate-button' } }) do
-      = _('Authenticate')
-    = render Pajamas::ButtonComponent.new(href: new_project_path) do
-      = _('Cancel')
+    .gl-mt-5.gl-flex.gl-gap-3
+      = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit, button_options: { class: 'js-import-github-pat-authenticate', data: { testid: 'authenticate-button' } }) do
+        = _('Authenticate')
+      = render Pajamas::ButtonComponent.new(href: new_project_path) do
+        = _('Cancel')

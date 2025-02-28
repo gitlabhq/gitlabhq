@@ -4075,6 +4075,30 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
     end
 
+    context 'when a Gitlab::Git::CommandTimedOut is raised' do
+      before do
+        expect(repository.raw_repository)
+          .to receive(:get_patch_id).and_raise(Gitlab::Git::CommandTimedOut)
+      end
+
+      it 'returns nil' do
+        expect(repository.get_patch_id('HEAD', 'f' * 40)).to be_nil
+      end
+
+      it 'reports the exception' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception)
+          .with(
+            instance_of(Gitlab::Git::CommandTimedOut),
+            project_id: repository.project.id,
+            old_revision: 'HEAD',
+            new_revision: 'HEAD'
+          )
+
+        repository.get_patch_id('HEAD', 'HEAD')
+      end
+    end
+
     context 'when a Gitlab::Git::Repository::NoRepository is raised' do
       before do
         expect(repository.raw_repository)
