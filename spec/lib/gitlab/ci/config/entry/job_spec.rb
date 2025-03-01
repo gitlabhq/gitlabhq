@@ -790,6 +790,35 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
     end
   end
 
+  describe '#artifacts_with_pages_publish_path', :aggregate_failures, feature_category: :pages do
+    where(:name, :config, :result) do
+      :pages | {} | { paths: ["public"] }
+      :pages | { pages: { publish: 'foo' } } | { paths: ["foo"] }
+      :pages | { pages: { publish: 'foo' }, artifacts: { paths: ['foo'] } } | { paths: ["foo"] }
+      :pages | { artifacts: { paths: ['foo'] } } | { paths: %w[foo public] }
+      :pages | { pages: { publish: 'foo' }, artifacts: { paths: ['bar'] } } | { paths: %w[bar foo] }
+      :pages | { pages: { publish: 'public' }, artifacts: { paths: ['public'] } } | { paths: ["public"] }
+      :pages | { artifacts: {} } | { paths: ["public"] }
+      :pages | { artifacts: { paths: [] } } | { paths: ["public"] }
+      :pages | { pages: false } | nil
+      :'non-pages' | {} | nil
+      :custom | { pages: { publish: 'foo' } } | { paths: ["foo"] }
+      :custom | { pages: true, publish: 'foo', artifacts: { paths: ['bar'] } } | { paths: %w[bar foo] }
+    end
+
+    before do
+      allow_next_instance_of(described_class) do |job|
+        allow(job).to receive(:artifacts_value).and_return(config[:artifacts])
+      end
+    end
+
+    with_them do
+      subject { described_class.new(config, name: name).artifacts_with_pages_publish_path }
+
+      it { is_expected.to eq(result) }
+    end
+  end
+
   describe '#relevant?' do
     it 'is a relevant entry' do
       entry = described_class.new({ script: 'rspec' }, name: :rspec)

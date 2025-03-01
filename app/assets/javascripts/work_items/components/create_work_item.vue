@@ -21,6 +21,8 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { findWidget } from '~/issues/list/utils';
 import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
+import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import {
   getDisplayReference,
   getNewWorkItemAutoSaveKey,
@@ -518,6 +520,7 @@ export default {
     document.addEventListener('keydown', this.handleKeydown);
 
     this.setNumberOfDiscussionsResolved();
+    addShortcutsExtension(ShortcutsWorkItems);
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleKeydown);
@@ -907,7 +910,7 @@ export default {
             />
             <work-item-milestone
               v-if="workItemMilestone"
-              class="work-item-attributes-item"
+              class="js-milestone work-item-attributes-item"
               :is-group="isGroup"
               :full-path="fullPath"
               :work-item-id="workItemId"

@@ -421,15 +421,15 @@ a08f14ef632e: Pushing [==================================================>] 2.04
 error parsing HTTP 403 response body: unexpected end of JSON input: ""
 ```
 
-This error is ambiguous, as it's not clear whether the 403 is coming from the
+This error is ambiguous because it's not clear whether the 403 is coming from the
 GitLab Rails application, the Docker Registry, or something else. In this
-case, since we know that since the login succeeded, we probably need to look
+case, because we know that the login succeeded, we probably need to look
 at the communication between the client and the Registry.
 
 The REST API between the Docker client and Registry is described
 [in the Docker documentation](https://distribution.github.io/distribution/spec/api/). Usually, one would just
 use Wireshark or tcpdump to capture the traffic and see where things went
-wrong. However, since all communications between Docker clients and servers
+wrong. However, because all communications between Docker clients and servers
 are done over HTTPS, it's a bit difficult to decrypt the traffic quickly even
 if you know the private key. What can we do instead?
 

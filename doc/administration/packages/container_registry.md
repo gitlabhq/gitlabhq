@@ -1139,7 +1139,7 @@ end
 
 {{< alert type="note" >}}
 
-The script calculates size based on container image layers. Since layers can be shared across multiple projects, the results are approximate but give a good indication of relative disk usage between projects.
+The script calculates size based on container image layers. Because layers can be shared across multiple projects, the results are approximate but give a good indication of relative disk usage between projects.
 
 {{< /alert >}}
 
@@ -1581,7 +1581,7 @@ flowchart LR
 The flow described by the diagram above:
 
 1. A user runs `docker login registry.gitlab.example` on their client. This reaches the web server (or LB) on port 443.
-1. Web server connects to the Registry backend pool (by default, using port 5000). Since the user
+1. Web server connects to the Registry backend pool (by default, using port 5000). Because the user
    didn't provide a valid token, the Registry returns a 401 HTTP code and the URL (`token_realm` from
    Registry configuration) where to get one. This points to the GitLab API.
 1. The Docker client then connects to the GitLab API and obtains a token.

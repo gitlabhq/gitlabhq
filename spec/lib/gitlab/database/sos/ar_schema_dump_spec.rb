@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Sos::PgSchemaDump, feature_category: :database do
+RSpec.describe Gitlab::Database::Sos::ArSchemaDump, feature_category: :database do
   let(:temp_directory) { Dir.mktmpdir }
   let(:output) { Gitlab::Database::Sos::Output.new(temp_directory, mode: :directory) }
   let(:db_name) { 'test_db' }

@@ -57,8 +57,9 @@ may require up to 10 minutes before the policy changes take effect.
 
 {{< history >}}
 
-- The deletion protection for security policy projects was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/482967) in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `reject_security_policy_project_deletion`. Disabled by default.
+- The deletion protection for security policy projects was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/482967) in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `reject_security_policy_project_deletion`. Enabled by default. 
 - The deletion protection for groups that contain security policy projects was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512043) in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `reject_security_policy_project_deletion_groups`. Disabled by default.
+- The deletion protection for security policy projects is generally available in GitLab 17.10. Feature flag `reject_security_policy_project_deletion` removed in GitLab 17.10.
 
 {{< /history >}}
 

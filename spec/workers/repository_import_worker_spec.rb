@@ -3,18 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe RepositoryImportWorker, feature_category: :importers do
+  let(:project) { build_stubbed(:project, :import_scheduled, import_state: import_state, import_url: 'url') }
+  let(:import_state) { create(:import_state, status: :scheduled) }
+  let(:jid) { '12345678' }
+
+  before do
+    allow(subject).to receive(:jid).and_return(jid)
+    allow(Project).to receive(:find_by_id).with(project.id).and_return(project)
+    allow(project).to receive(:after_import)
+    allow(import_state).to receive(:start).and_return(true)
+  end
+
   describe '#perform' do
-    let(:project) { build_stubbed(:project, :import_scheduled, import_state: import_state, import_url: 'url') }
-    let(:import_state) { create(:import_state, status: :scheduled) }
-    let(:jid) { '12345678' }
-
-    before do
-      allow(subject).to receive(:jid).and_return(jid)
-      allow(Project).to receive(:find_by_id).with(project.id).and_return(project)
-      allow(project).to receive(:after_import)
-      allow(import_state).to receive(:start).and_return(true)
-    end
-
     context 'when project not found (deleted)' do
       before do
         allow(Project).to receive(:find_by_id).with(project.id).and_return(nil)
@@ -86,6 +86,24 @@ RSpec.describe RepositoryImportWorker, feature_category: :importers do
         expect(import_state).to have_received(:mark_as_failed).with(error)
         expect(project).not_to have_received(:after_import)
       end
+    end
+  end
+
+  describe '.sidekiq_interruptions_exhausted' do
+    it 'sets import status to failed and removes import_file' do
+      user = build_stubbed(:user)
+      upload = build_stubbed(:import_export_upload, project: project, user: user)
+      job = { 'args' => [project.id] }
+
+      allow(import_state).to receive(:mark_as_failed)
+      allow(project).to receive_message_chain(:import_export_uploads, :find_by_user_id).and_return(upload)
+      expect(::Gitlab::Import::RemoveImportFileWorker).to receive(:perform_async).with(upload.id)
+
+      described_class.interruptions_exhausted_block.call(job)
+
+      expect(import_state)
+        .to have_received(:mark_as_failed)
+        .with('Import process reached the maximum number of interruptions')
     end
   end
 end

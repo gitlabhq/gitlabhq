@@ -17,6 +17,8 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
+import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import {
   i18n,
   WIDGET_TYPE_ASSIGNEES,
@@ -508,6 +510,9 @@ export default {
     isModalOrDrawer() {
       return this.isModal || this.isDrawer;
     },
+  },
+  mounted() {
+    addShortcutsExtension(ShortcutsWorkItems);
   },
   methods: {
     handleWorkItemCreated() {

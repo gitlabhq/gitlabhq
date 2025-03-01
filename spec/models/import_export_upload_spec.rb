@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ImportExportUpload do
+RSpec.describe ImportExportUpload, feature_category: :importers do
   let(:project) { create(:project) }
 
   subject(:import_export_upload) { described_class.new(project: project) }
@@ -35,13 +35,19 @@ RSpec.describe ImportExportUpload do
 
   describe 'scopes' do
     let_it_be(:upload1) { create(:import_export_upload, export_file: fixture_file_upload('spec/fixtures/project_export.tar.gz')) }
-    let_it_be(:upload2) { create(:import_export_upload, export_file: nil) }
+    let_it_be(:upload2) { create(:import_export_upload, export_file: nil, import_file: fixture_file_upload('spec/fixtures/project_export.tar.gz')) }
     let_it_be(:upload3) { create(:import_export_upload, export_file: fixture_file_upload('spec/fixtures/project_export.tar.gz'), updated_at: 25.hours.ago) }
     let_it_be(:upload4) { create(:import_export_upload, export_file: nil, updated_at: 2.days.ago) }
 
     describe '.with_export_file' do
       it 'returns uploads with export file' do
         expect(described_class.with_export_file).to contain_exactly(upload1, upload3)
+      end
+    end
+
+    describe '.with_import_file' do
+      it 'returns uploads with import file' do
+        expect(described_class.with_import_file).to contain_exactly(upload2)
       end
     end
 

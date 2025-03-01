@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ImportExportUpload < ApplicationRecord
+  include EachBatch
   include WithUploads
 
   belongs_to :project
@@ -21,6 +22,7 @@ class ImportExportUpload < ApplicationRecord
 
   scope :updated_before, ->(date) { where('updated_at < ?', date) }
   scope :with_export_file, -> { where.not(export_file: nil) }
+  scope :with_import_file, -> { where.not(import_file: nil) }
 
   def retrieve_upload(_identifier, paths)
     Upload.find_by(model: self, path: paths)

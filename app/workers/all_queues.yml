@@ -636,6 +636,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:import_import_file_cleanup
+  :worker_name: Gitlab::Import::ImportFileCleanupWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:import_stuck_project_import_jobs
   :worker_name: Gitlab::Import::StuckProjectImportJobsWorker
   :feature_category: :importers
@@ -3812,6 +3822,16 @@
   :queue_namespace:
 - :name: import_refresh_import_jid
   :worker_name: Gitlab::Import::RefreshImportJidWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: import_remove_import_file
+  :worker_name: Gitlab::Import::RemoveImportFileWorker
   :feature_category: :importers
   :has_external_dependencies: false
   :urgency: :low

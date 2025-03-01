@@ -481,6 +481,8 @@
   - 1
 - - import_refresh_import_jid
   - 1
+- - import_remove_import_file
+  - 1
 - - import_user_mapping_assignment_from_csv
   - 1
 - - incident_management

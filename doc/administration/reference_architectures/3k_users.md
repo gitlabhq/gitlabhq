@@ -343,7 +343,7 @@ Configure your load balancer to use the `HTTP(S)` protocol rather than `TCP`.
 The load balancer will then be responsible for managing SSL certificates and
 terminating SSL.
 
-Since communication between the load balancer and GitLab will not be secure,
+Because communication between the load balancer and GitLab will not be secure,
 there is some additional configuration needed. See the
 [proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl/#configure-a-reverse-proxy-or-load-balancer-ssl-termination)
 for details.
@@ -355,7 +355,7 @@ The load balancers will be responsible for managing SSL certificates that
 end users will see.
 
 Traffic will also be secure between the load balancers and NGINX in this
-scenario. There is no need to add configuration for proxied SSL since the
+scenario. There is no need to add configuration for proxied SSL because the
 connection will be secure all the way. However, configuration will need to be
 added to GitLab to configure SSL certificates. See
 the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/)

@@ -5,8 +5,8 @@ module Gitlab
   module Database
     module Sos
       TASKS = [
-        Sos::DbStatsActivity,
-        Sos::PgSchemaDump
+        Sos::ArSchemaDump,
+        Sos::DbStatsActivity
       ].freeze
 
       def self.run(output_file)

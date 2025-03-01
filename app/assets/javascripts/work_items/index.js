@@ -4,7 +4,6 @@ import { DESIGN_MARK_APP_START, DESIGN_MEASURE_BEFORE_APP } from '~/performance/
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import { WORKSPACE_GROUP } from '~/issues/constants';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
-import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
@@ -24,7 +23,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
   }
 
   addShortcutsExtension(ShortcutsNavigation);
-  addShortcutsExtension(ShortcutsWorkItems);
 
   const {
     canAdminLabel,

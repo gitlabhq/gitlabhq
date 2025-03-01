@@ -182,7 +182,7 @@ Kubernetes cluster, the restore task expects the restore directories to be
 empty. However, with Docker and Kubernetes volume mounts, some system level
 directories may be created at the volume roots, such as the `lost+found`
 directory found in Linux operating systems. These directories are usually owned
-by `root`, which can cause access permission errors since the restore Rake task
+by `root`, which can cause access permission errors because the restore Rake task
 runs as the `git` user. To restore a GitLab installation, users have to confirm
 the restore target directories are empty.
 

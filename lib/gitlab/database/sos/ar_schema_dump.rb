@@ -3,7 +3,7 @@
 module Gitlab
   module Database
     module Sos
-      class PgSchemaDump
+      class ArSchemaDump
         attr_reader :connection, :name, :output
 
         def initialize(connection, name, output)

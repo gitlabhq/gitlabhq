@@ -1538,6 +1538,8 @@ To create a diagram by using the Draw.io web application:
    1. In the Draw.io web application, select **File** > **Export as** > **SVG**.
    1. Select the **Include a copy of my diagram: All pages** checkbox, then select **Export**. Use
       the file extension `drawio.svg` to indicate it can be edited in Draw.io.
+1. [Add the SVG to the docs as an image](#add-the-image-link-to-content).
+   These SVGs use the same Markdown as other non-SVG images.
 
 ##### Use the VS Code extension
 
@@ -1549,6 +1551,8 @@ To create a diagram by using the Draw.io Integration extension for VS Code:
 1. Save the file.
 
    The diagram's definition is stored in Draw.io-compatible format in the SVG file.
+1. [Add the SVG to the docs as an image](#add-the-image-link-to-content).
+   These SVGs use the same Markdown as other non-SVG images.
 
 ## Emoji
 

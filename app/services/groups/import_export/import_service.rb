@@ -30,6 +30,7 @@ module Groups
         Gitlab::Tracking.event(self.class.name, 'create', label: 'import_group_from_file')
 
         if valid_user_permissions? && import_file && valid_import_file? && restorers.all?(&:restore)
+          remove_import_file
           notify_success
 
           Gitlab::Tracking.event(
@@ -47,7 +48,6 @@ module Groups
 
       ensure
         remove_base_tmp_dir
-        remove_import_file
       end
 
       private

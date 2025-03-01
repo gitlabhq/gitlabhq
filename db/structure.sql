@@ -31139,6 +31139,8 @@ CREATE INDEX idx_hosted_runner_usage_on_project_billing_month ON ci_gitlab_hoste
 
 CREATE UNIQUE INDEX idx_hosted_runner_usage_unique ON ci_gitlab_hosted_runner_monthly_usages USING btree (runner_id, billing_month, root_namespace_id, project_id);
 
+CREATE INDEX idx_import_export_uploads_updated_at_id_import_file ON import_export_uploads USING btree (updated_at, id) WHERE (import_file IS NOT NULL);
+
 CREATE UNIQUE INDEX idx_import_placeholder_memberships_on_source_user_group_id ON import_placeholder_memberships USING btree (source_user_id, group_id);
 
 CREATE INDEX idx_import_placeholder_memberships_on_source_user_id_and_id ON import_placeholder_memberships USING btree (source_user_id, id);

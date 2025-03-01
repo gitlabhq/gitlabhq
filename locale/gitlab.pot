@@ -35347,6 +35347,9 @@ msgstr ""
 msgid "MemberRole|Actions"
 msgstr ""
 
+msgid "MemberRole|Added from %{role}"
+msgstr ""
+
 msgid "MemberRole|Are you sure you want to delete this custom role?"
 msgstr ""
 

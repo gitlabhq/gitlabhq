@@ -117,6 +117,12 @@ Example response:
 
 ### Specify a custom email address
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178689) in GitLab 17.9.
+
+{{< /history >}}
+
 You can specify a custom email address at service account creation to receive
 notifications on this service account's actions.
 
