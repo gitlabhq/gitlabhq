@@ -28,6 +28,8 @@ GitLab Solution to provide an integrated end to end DevSecOps workflow.
 
 GitLab Solution Packages to provide rules and policies to enforce standards and application security tests
 
+[Secret Detection](secret_detection.md)
+
 [OSS License Check](oss_license_check.md)
 
 ## Metrics and KPIs
