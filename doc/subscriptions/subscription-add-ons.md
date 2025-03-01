@@ -58,7 +58,7 @@ Prerequisites:
 1. Select **Purchase seats**.
 1. Select the **GitLab SaaS** tab and refresh the page.
 
-### For self-managed and GitLab Dedicated
+### For GitLab Self-Managed and GitLab Dedicated
 
 Prerequisites:
 
@@ -76,7 +76,7 @@ Prerequisites:
 Prerequisites:
 
 - You must purchase a GitLab Duo add-on, or have an active GitLab Duo trial.
-- For self-managed and GitLab Dedicated:
+- For GitLab Self-Managed and GitLab Dedicated:
   - The GitLab Duo Pro add-on is available in GitLab 16.8 and later.
   - The GitLab Duo Enterprise add-on is only available in GitLab 17.3 and later.
 
@@ -97,7 +97,7 @@ To use GitLab Duo features in any project or group, you must assign the user to 
 
 The user is sent a confirmation email.
 
-### For self-managed
+### For GitLab Self-Managed
 
 Prerequisites:
 
@@ -140,7 +140,7 @@ GitLab.com groups can use SAML Group Sync to [manage GitLab Duo seat assignments
    - To assign seats, select **Assign seat**, then **Assign seats** to confirm.
    - To remove users from seats, select **Remove seat**, then **Remove seats** to confirm.
 
-### For self-managed
+### For GitLab Self-Managed
 
 Prerequisites:
 
@@ -180,6 +180,9 @@ Prerequisites:
 
 After you purchase GitLab Duo, you can assign seats to users to grant access to the add-on.
 
+To retrieve the **Last Duo activity** date for assigned GitLab Duo users,
+you can also use the [GraphQL API](../api/graphql/reference/_index.md#addonuser) with the `AddOnUser` type.
+
 ### For GitLab.com
 
 Prerequisites:
@@ -192,7 +195,7 @@ Prerequisites:
 1. From the filter bar, select **Assigned seat** and **Yes**.
 1. User list is filtered to only users assigned a GitLab Duo seat.
 
-### For self-managed
+### For GitLab Self-Managed
 
 Prerequisites:
 
@@ -234,7 +237,7 @@ Prerequisites:
 1. Select **Activate my trial**.
 1. [Assign seats](#assign-gitlab-duo-seats) to the users who need access.
 
-### On Self-managed and GitLab Dedicated
+### On GitLab Self-Managed and GitLab Dedicated
 
 Prerequisites:
 
