@@ -619,6 +619,21 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
 
           expect(response).to have_gitlab_http_status(:ok)
         end
+
+        context 'when the environment cannot be stopped' do
+          before do
+            allow_next_instance_of(Environments::StopService) do |service|
+              allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'error message'))
+            end
+          end
+
+          it 'returns 400 status' do
+            post api("/projects/#{project.id}/environments/#{environment.id}/stop", user)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq('400 Bad request - error message')
+          end
+        end
       end
 
       it 'returns a 404 for non existing id' do

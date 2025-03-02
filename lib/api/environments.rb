@@ -202,9 +202,10 @@ module API
       end
 
       desc 'Stop an environment' do
-        detail 'It returns 200 if the environment was successfully stopped, and 404 if the environment does not exist.'
+        detail 'It returns 200 if the environment was successfully stopped.'
         success Entities::Environment
         failure [
+          { code: 400, message: 'Bad request' },
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
@@ -223,8 +224,13 @@ module API
 
         authorize! :stop_environment, environment
 
-        ::Environments::StopService.new(user_project, current_user, declared_params(include_missing: false))
-                                 .execute(environment)
+        service_response = ::Environments::StopService.new(
+          user_project,
+          current_user,
+          declared_params(include_missing: false)
+        ).execute(environment)
+
+        bad_request!(service_response.message) if service_response.error?
 
         status 200
         present environment, with: Entities::Environment, current_user: current_user
