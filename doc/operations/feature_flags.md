@@ -282,7 +282,7 @@ With the Unleash client, developers can define, in the application code, the def
 Each feature flag evaluation can express the desired outcome if the flag isn't present in the
 provided configuration file.
 
-Unleash currently [offers many SDKs for various languages and frameworks](https://github.com/Unleash/unleash#client-implementations).
+Unleash currently [offers many SDKs for various languages and frameworks](https://github.com/Unleash/unleash#unleash-sdks).
 
 ### Feature flags API information
 
