@@ -9,19 +9,19 @@ module RuboCop
       #
       # @example
       #
-      #   # bad
-      #   class TroubleMakerWorker
-      #     def perform
-      #     end
+      # # bad
+      # class TroubleMakerWorker
+      #   def perform
       #   end
+      # end
       #
-      #   # good
-      #   class NiceWorker
-      #     idempotent!
+      # # good
+      # class NiceWorker
+      #   idempotent!
       #
-      #     def perform
-      #     end
+      #   def perform
       #   end
+      # end
       #
       class IdempotentWorker < RuboCop::Cop::Base
         include CodeReuseHelpers

@@ -1,4 +1,0 @@
-{{ $file := .Get 0 }}
-{{ $content := readFile $file }}
-{{ $content := split $content "---" }}
-{{ index $content 2 | markdownify }}

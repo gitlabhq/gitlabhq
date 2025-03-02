@@ -2397,7 +2397,6 @@ DEPENDENCIES
   webrick (~> 1.8.1)
   wikicloth (= 0.8.1)
   yajl-ruby (~> 1.4.3)
-  yard (~> 0.9)
 
 BUNDLED WITH
    2.5.11
