@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class DeployTokenPolicy < BasePolicy
-  with_options scope: :subject, score: 0
+  with_options score: 0
   condition(:maintainer) { @subject.project.team.maintainer?(@user) }
 
   rule { anonymous }.prevent_all

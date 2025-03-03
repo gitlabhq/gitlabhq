@@ -12,6 +12,9 @@ module API
           feature_category :virtual_registry
           urgency :low
 
+          AUTHENTICATE_REALM_HEADER = 'WWW-Authenticate'
+          AUTHENTICATE_REALM_NAME = 'Basic realm="GitLab Virtual Registry"'
+
           SHA1_CHECKSUM_HEADER = 'x-checksum-sha1'
           MD5_CHECKSUM_HEADER = 'x-checksum-md5'
 
@@ -48,6 +51,12 @@ module API
                 SHA1_CHECKSUM_HEADER => action_params[:file_sha1],
                 MD5_CHECKSUM_HEADER => action_params[:file_md5]
               }
+            end
+
+            # override from api helpers unauthorized! function
+            def unauthorized!(reason = nil)
+              header(AUTHENTICATE_REALM_HEADER, AUTHENTICATE_REALM_NAME)
+              super
             end
 
             params :id_and_path do

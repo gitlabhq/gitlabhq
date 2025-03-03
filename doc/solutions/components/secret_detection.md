@@ -27,7 +27,7 @@ title: Secret Detection
 
 ## Configure Secret Detection Custom Rules
 
-This guide helps you implement Secret Detection Policy at the global level, and extend the detection rules to include the detection of PII data and password in clear text. The rule extension is considered as the remote ruleset.
+This guide helps you implement Secret Detection Policy at the global level. This solution extends the default secret detection rules to include the detection of PII data elements like Social Security Number and passwords in clear text. The rule extension is considered as the remote ruleset.
 
 ### Configure Custom Ruleset
 

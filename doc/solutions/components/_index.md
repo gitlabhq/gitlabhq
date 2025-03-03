@@ -40,6 +40,4 @@ GitLab Metrics and KPI Dashboard and Solution
 
 ## GenAI and Data Science
 
-GitLab Gen AI solution
-
-[Agentic Workflow: Apply Coding Style Guide](duo_workflow_codestyle.md)
+[Agentic Workflow: Apply Coding Style Guide](duo_workflow/duo_workflow_codestyle.md)

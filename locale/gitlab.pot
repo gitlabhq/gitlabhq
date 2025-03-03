@@ -1846,25 +1846,7 @@ msgstr ""
 msgid "/"
 msgstr ""
 
-msgid "/clear"
-msgstr ""
-
 msgid "/day"
-msgstr ""
-
-msgid "/help"
-msgstr ""
-
-msgid "/reset"
-msgstr ""
-
-msgid "/summarize_comments"
-msgstr ""
-
-msgid "/troubleshoot"
-msgstr ""
-
-msgid "/vulnerability_explain"
 msgstr ""
 
 msgid "0 B"

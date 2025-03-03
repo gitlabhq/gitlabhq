@@ -5,7 +5,7 @@ module Ci
     with_options scope: :subject, score: 0
     condition(:locked, scope: :subject) { @subject.locked? }
 
-    with_options scope: :subject, score: 20
+    with_options score: 20
     condition(:owned_runner) do
       @user.owns_runner?(@subject)
     end

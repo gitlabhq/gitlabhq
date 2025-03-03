@@ -199,6 +199,18 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
       it_behaves_like 'maven virtual registry disabled dependency proxy'
     end
 
+    context 'with no user' do
+      let(:headers) { {} }
+
+      it 'returns unauthorized with the www-authenticate header' do
+        request
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(response.headers[described_class::AUTHENTICATE_REALM_HEADER])
+          .to eq(described_class::AUTHENTICATE_REALM_NAME)
+      end
+    end
+
     it_behaves_like 'maven virtual registry not authenticated user'
   end
 

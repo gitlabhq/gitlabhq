@@ -99,6 +99,16 @@ class LintDocsRedirect
       # Allow renames between index.md and _index.md
       return if %w[index.md _index.md].include?(old_basename) &&
         %w[index.md _index.md].include?(new_basename)
+
+      # Handle the case where page.md is moved to page/_index.md
+      if !old_basename.start_with?('_') &&
+          new_basename == '_index.md' &&
+          File.dirname(file['old_path']) == File.dirname(File.dirname(file['new_path']))
+        # The path structure looks like:
+        # old: doc/path/page.md
+        # new: doc/path/page/_index.md
+        return
+      end
     end
 
     warning(file)

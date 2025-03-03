@@ -21,7 +21,7 @@ class IssuePolicy < IssuablePolicy
   # rubocop:enable Cop/UserAdmin
 
   desc "Project belongs to a group, crm is enabled and user can read contacts in source group"
-  condition(:can_read_crm_contacts, scope: :subject) do
+  condition(:can_read_crm_contacts) do
     subject_container&.crm_enabled? &&
       (@user&.can?(:read_crm_contact, subject_container.crm_group) || @user&.support_bot?)
   end
