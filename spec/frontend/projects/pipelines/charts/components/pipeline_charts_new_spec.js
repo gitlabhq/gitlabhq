@@ -1,20 +1,19 @@
-import { GlCollapsibleListbox, GlSkeletonLoader } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { shallowMount, mount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { getDateInPast, getDayDifference } from '~/lib/utils/datetime_utility';
+import { getDateInPast } from '~/lib/utils/datetime_utility';
 import PipelineChartsNew from '~/projects/pipelines/charts/components/pipeline_charts_new.vue';
 import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
+import PipelineDurationChart from '~/projects/pipelines/charts/components/pipeline_duration_chart.vue';
+import PipelineStatusChart from '~/projects/pipelines/charts/components/pipeline_status_chart.vue';
 import getPipelineAnalyticsQuery from '~/projects/pipelines/charts/graphql/queries/get_pipeline_analytics.query.graphql';
 import { createAlert } from '~/alert';
-import {
-  mockEmptyPipelineAnalytics,
-  mockSevenDayPipelineAnalytics,
-  mockNinetyDayPipelineAnalytics,
-} from '../mock_data';
+import { useFakeDate } from 'helpers/fake_date';
+import { pipelineAnalyticsEmptyData, pipelineAnalyticsData } from '../mock_data';
 
 Vue.use(VueApollo);
 jest.mock('~/alert');
@@ -22,44 +21,39 @@ jest.mock('~/alert');
 const projectPath = 'gitlab-org/gitlab';
 
 describe('~/projects/pipelines/charts/components/pipeline_charts_new.vue', () => {
+  useFakeDate();
+
   let wrapper;
-  let requestHandlers;
+  let getPipelineAnalyticsHandler;
 
   const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findStatisticsList = () => wrapper.findComponent(StatisticsList);
+  const findPipelineDurationChart = () => wrapper.findComponent(PipelineDurationChart);
+  const findPipelineStatusChart = () => wrapper.findComponent(PipelineStatusChart);
   const findAllSingleStats = () => wrapper.findAllComponents(GlSingleStat);
 
-  const defaultHandlers = {
-    getPipelineAnalytics: jest.fn().mockImplementation(({ fromTime, toTime }) => {
-      if (getDayDifference(fromTime, toTime) > 7) return mockNinetyDayPipelineAnalytics;
-      return mockSevenDayPipelineAnalytics;
-    }),
-  };
-
-  const createComponent = ({ mountFn = shallowMount, handlers = defaultHandlers } = {}) => {
-    requestHandlers = handlers;
+  const createComponent = ({ mountFn = shallowMount } = {}) => {
     wrapper = mountFn(PipelineChartsNew, {
       provide: {
         projectPath,
       },
-      apolloProvider: createMockApollo([
-        [getPipelineAnalyticsQuery, handlers.getPipelineAnalytics],
-      ]),
+      apolloProvider: createMockApollo([[getPipelineAnalyticsQuery, getPipelineAnalyticsHandler]]),
     });
   };
 
+  beforeEach(() => {
+    getPipelineAnalyticsHandler = jest.fn();
+  });
+
   it('creates an alert on error', async () => {
-    createComponent({
-      handlers: {
-        getPipelineAnalytics: jest.fn().mockRejectedValue(),
-      },
-    });
+    getPipelineAnalyticsHandler.mockRejectedValue();
+    createComponent({});
 
     await waitForPromises();
 
     expect(createAlert).toHaveBeenCalledWith({
-      message: 'An error occurred while loading pipeline analytics.',
+      message:
+        'An error occurred while loading pipeline analytics. Please try refreshing the page.',
     });
   });
 
@@ -72,7 +66,9 @@ describe('~/projects/pipelines/charts/components/pipeline_charts_new.vue', () =>
 
     it('is "Last 7 days" by default', () => {
       expect(findGlCollapsibleListbox().props('selected')).toBe(7);
-      expect(requestHandlers.getPipelineAnalytics).toHaveBeenLastCalledWith({
+
+      expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(1);
+      expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith({
         fullPath: projectPath,
         fromTime: getDateInPast(new Date(), 7),
         toTime: new Date(),
@@ -84,7 +80,8 @@ describe('~/projects/pipelines/charts/components/pipeline_charts_new.vue', () =>
 
       await waitForPromises();
 
-      expect(requestHandlers.getPipelineAnalytics).toHaveBeenLastCalledWith({
+      expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(2);
+      expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith({
         fullPath: projectPath,
         fromTime: getDateInPast(new Date(), 90),
         toTime: new Date(),
@@ -96,22 +93,18 @@ describe('~/projects/pipelines/charts/components/pipeline_charts_new.vue', () =>
     it('renders loading state', () => {
       createComponent();
 
-      expect(findSkeletonLoader().exists()).toBe(true);
+      expect(findStatisticsList().props('loading')).toEqual(true);
     });
 
     it('renders with empty data', async () => {
-      createComponent({
-        mountFn: mount,
-        handlers: {
-          getPipelineAnalytics: jest.fn().mockReturnValue(mockEmptyPipelineAnalytics),
-        },
-      });
+      getPipelineAnalyticsHandler.mockResolvedValue(pipelineAnalyticsEmptyData);
 
+      createComponent({ mountFn: mount });
       await waitForPromises();
 
       expect(findStatisticsList().props('counts')).toEqual({
         failureRatio: 0,
-        meanDuration: null,
+        meanDuration: 0,
         successRatio: 0,
         total: '0',
       });
@@ -122,41 +115,46 @@ describe('~/projects/pipelines/charts/components/pipeline_charts_new.vue', () =>
     });
 
     it('renders with data', async () => {
+      getPipelineAnalyticsHandler.mockResolvedValue(pipelineAnalyticsData);
+
       createComponent({ mountFn: mount });
 
       await waitForPromises();
 
       expect(findStatisticsList().props('counts')).toEqual({
-        failureRatio: 10,
-        meanDuration: '12345',
-        successRatio: 80,
-        total: '100',
+        failureRatio: 25,
+        meanDuration: 1800,
+        successRatio: 25,
+        total: '8',
       });
 
-      expect(findAllSingleStats().at(0).text()).toBe('Total pipeline runs 100');
-      expect(findAllSingleStats().at(1).text()).toBe('Mean duration 3h 25m');
-      expect(findAllSingleStats().at(2).text()).toBe('Failure rate 10%');
-      expect(findAllSingleStats().at(3).text()).toBe('Success rate 80%');
+      expect(findAllSingleStats().at(0).text()).toBe('Total pipeline runs 8');
+      expect(findAllSingleStats().at(1).text()).toBe('Mean duration 30m');
+      expect(findAllSingleStats().at(2).text()).toBe('Failure rate 25%');
+      expect(findAllSingleStats().at(3).text()).toBe('Success rate 25%');
+    });
+  });
+
+  describe('charts', () => {
+    it('renders loading state with no charts', () => {
+      createComponent();
+
+      expect(findPipelineDurationChart().props()).toEqual({ loading: true, timeSeries: [] });
+      expect(findPipelineDurationChart().props()).toEqual({ loading: true, timeSeries: [] });
     });
 
-    it('changes with date range', async () => {
-      createComponent({ mountFn: mount });
+    it('renders with data', async () => {
+      getPipelineAnalyticsHandler.mockResolvedValue(pipelineAnalyticsData);
 
-      findGlCollapsibleListbox().vm.$emit('select', 90);
-
+      createComponent();
       await waitForPromises();
 
-      expect(findStatisticsList().props('counts')).toEqual({
-        failureRatio: 20,
-        meanDuration: '23456',
-        successRatio: 33.33333333333333,
-        total: '1800',
-      });
-
-      expect(findAllSingleStats().at(0).text()).toBe('Total pipeline runs 1,800');
-      expect(findAllSingleStats().at(1).text()).toBe('Mean duration 6h 30m');
-      expect(findAllSingleStats().at(2).text()).toBe('Failure rate 20%');
-      expect(findAllSingleStats().at(3).text()).toBe('Success rate 33%');
+      expect(findPipelineDurationChart().props('timeSeries')).toEqual(
+        pipelineAnalyticsData.data.project.pipelineAnalytics.timeSeries,
+      );
+      expect(findPipelineStatusChart().props('timeSeries')).toEqual(
+        pipelineAnalyticsData.data.project.pipelineAnalytics.timeSeries,
+      );
     });
   });
 });

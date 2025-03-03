@@ -48,6 +48,7 @@ module Gitlab
       attr_reader :storage, :gl_repository, :gl_project_path, :container
 
       delegate :list_oversized_blobs, :list_all_blobs, :list_blobs, to: :gitaly_blob_client
+      delegate :repository_info, to: :gitaly_repository_client
 
       # This remote name has to be stable for all types of repositories that
       # can join an object pool. If it's structure ever changes, a migration
@@ -1329,7 +1330,7 @@ module Gitlab
       end
 
       def repository_info_size_megabytes
-        bytes = gitaly_repository_client.repository_info.size
+        bytes = repository_info.size
 
         Gitlab::Utils.bytes_to_megabytes(bytes).round(2)
       end

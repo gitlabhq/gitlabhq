@@ -1,5 +1,5 @@
 <script>
-import { GlCollapsibleListbox, GlFormGroup, GlSkeletonLoader } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { getDateInPast } from '~/lib/utils/datetime_utility';
@@ -11,13 +11,16 @@ import {
 } from '../constants';
 import getPipelineAnalytics from '../graphql/queries/get_pipeline_analytics.query.graphql';
 import StatisticsList from './statistics_list.vue';
+import PipelineDurationChart from './pipeline_duration_chart.vue';
+import PipelineStatusChart from './pipeline_status_chart.vue';
 
 export default {
   components: {
     GlCollapsibleListbox,
     GlFormGroup,
-    GlSkeletonLoader,
     StatisticsList,
+    PipelineDurationChart,
+    PipelineStatusChart,
   },
   inject: {
     projectPath: {
@@ -29,12 +32,15 @@ export default {
     return {
       dateRange: DATE_RANGE_LAST_WEEK,
       pipelineAnalytics: {
-        count: null,
-        successCount: null,
-        failedCount: null,
-        durationStatistics: {
-          p50: null,
+        aggregate: {
+          count: null,
+          successCount: null,
+          failedCount: null,
+          durationStatistics: {
+            p50: null,
+          },
         },
+        timeSeries: [],
       },
     };
   },
@@ -49,11 +55,13 @@ export default {
         };
       },
       update(data) {
-        return data?.project?.pipelineAnalytics?.aggregate;
+        return data?.project?.pipelineAnalytics;
       },
       error() {
         createAlert({
-          message: s__('PipelineCharts|An error occurred while loading pipeline analytics.'),
+          message: s__(
+            'PipelineCharts|An error occurred while loading pipeline analytics. Please try refreshing the page.',
+          ),
         });
       },
     },
@@ -63,7 +71,8 @@ export default {
       return this.$apollo.queries.pipelineAnalytics.loading;
     },
     formattedCounts() {
-      const { count, successCount, failedCount, durationStatistics } = this.pipelineAnalytics;
+      const { count, successCount, failedCount, durationStatistics } =
+        this.pipelineAnalytics.aggregate;
       return {
         total: count === null ? '-' : count,
         meanDuration: durationStatistics.p50,
@@ -104,12 +113,10 @@ export default {
         />
       </gl-form-group>
     </div>
-    <gl-skeleton-loader v-if="loading">
-      <rect width="45" height="18" rx="4" />
-      <rect x="50" width="45" height="18" rx="4" />
-      <rect x="100" width="45" height="18" rx="4" />
-      <rect x="150" width="45" height="18" rx="4" />
-    </gl-skeleton-loader>
-    <statistics-list v-else :counts="formattedCounts" />
+    <div>
+      <statistics-list :loading="loading" :counts="formattedCounts" />
+      <pipeline-duration-chart :loading="loading" :time-series="pipelineAnalytics.timeSeries" />
+      <pipeline-status-chart :loading="loading" :time-series="pipelineAnalytics.timeSeries" />
+    </div>
   </div>
 </template>

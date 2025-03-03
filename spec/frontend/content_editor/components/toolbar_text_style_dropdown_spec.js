@@ -70,6 +70,10 @@ describe('content_editor/components/toolbar_text_style_dropdown', () => {
     it('sets dropdown as enabled', () => {
       expect(findListbox().props('disabled')).toBe(false);
     });
+
+    it('sets the header text to "Text style"', () => {
+      expect(findListbox().props('headerText')).toBe('Text style');
+    });
   });
 
   describe('when there isn’t an active item', () => {
@@ -85,6 +89,10 @@ describe('content_editor/components/toolbar_text_style_dropdown', () => {
 
     it('sets dropdown toggle text to Text style', () => {
       expect(findListbox().props('toggleText')).toBe('Text style');
+    });
+
+    it('sets the header text to "Text style"', () => {
+      expect(findListbox().props('headerText')).toBe('Text style');
     });
   });
 

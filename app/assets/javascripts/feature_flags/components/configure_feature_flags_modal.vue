@@ -230,7 +230,7 @@ export default {
         </template>
       </gl-sprintf>
     </p>
-    <gl-form-group :label="__('Confirm project name')">
+    <gl-form-group :label="__('Confirm project name')" label-for="project_name_verification">
       <gl-form-input
         v-if="canUserRotateToken"
         id="project_name_verification"

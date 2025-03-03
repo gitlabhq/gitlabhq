@@ -85,7 +85,7 @@ For more information, see [Test the GitLab chart on GKE or EKS](https://docs.git
 
 ### Add the AI gateway Helm repository
 
-Add the AI gateway Helm repository to Helm’s configuration:
+Add the AI gateway Helm repository to the Helm configuration:
 
 ```shell
 helm repo add ai-gateway \

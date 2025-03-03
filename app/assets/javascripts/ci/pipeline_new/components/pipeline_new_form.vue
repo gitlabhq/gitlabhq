@@ -11,6 +11,7 @@ import {
   GlLink,
   GlSprintf,
   GlLoadingIcon,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { uniqueId } from 'lodash';
@@ -54,6 +55,7 @@ const i18n = {
   removeVariableLabel: s__('CiVariables|Remove variable'),
   learnMore: __('Learn more'),
   pipelineAriaLabel: s__('Pipeline|Variable'),
+  variableTypeLabel: s__('Pipeline|Variable type'),
 };
 
 export default {
@@ -81,7 +83,7 @@ export default {
     PipelineAccountVerificationAlert: () =>
       import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
   },
-  directives: { SafeHtml },
+  directives: { SafeHtml, GlTooltip: GlTooltipDirective },
   mixins: [glFeatureFlagsMixin()],
   props: {
     pipelinesPath: {
@@ -427,6 +429,12 @@ export default {
     getPipelineAriaLabel(index) {
       return `${this.$options.i18n.pipelineAriaLabel} ${index + 1}`;
     },
+    getSelectedTypeText(variableType) {
+      const item = this.variableTypeListboxItems.find(
+        (variable) => variable.value === variableType,
+      );
+      return item ? item.text : '';
+    },
   },
   learnMorePath: helpPagePath('ci/variables/_index', {
     anchor: 'cicd-variable-precedence',
@@ -525,7 +533,28 @@ export default {
                 :class="$options.formElementClasses"
                 data-testid="pipeline-form-ci-variable-type"
                 @select="setVariableAttribute(variable.key, 'variableType', $event)"
-              />
+              >
+                <template #toggle>
+                  <gl-button
+                    v-gl-tooltip="$options.i18n.variableTypeLabel"
+                    data-testid="selected-date-range"
+                    :aria-label="`${$options.i18n.variableTypeLabel} ${getSelectedTypeText(variable.variableType)}`"
+                    :title="variable.value"
+                    class="gl-w-full"
+                    button-text-classes="gl-mr-[-4px] !gl-flex !gl-justify-between gl-w-full"
+                    ><span class="gl-flex-grow-1 gl-text-left">{{
+                      getSelectedTypeText(variable.variableType)
+                    }}</span>
+                    <gl-icon
+                      aria-hidden="true"
+                      name="chevron-down"
+                      :size="16"
+                      variant="current"
+                      class="gl-flex-shrink-0"
+                  /></gl-button>
+                </template>
+              </gl-collapsible-listbox>
+
               <gl-form-input
                 v-model="variable.key"
                 :placeholder="s__('CiVariables|Input variable key')"

@@ -42184,7 +42184,7 @@ msgstr ""
 msgid "PipelineCharts|An error has occurred when retrieving the pipelines data"
 msgstr ""
 
-msgid "PipelineCharts|An error occurred while loading pipeline analytics."
+msgid "PipelineCharts|An error occurred while loading pipeline analytics. Please try refreshing the page."
 msgstr ""
 
 msgid "PipelineCharts|An unknown error occurred while processing CI/CD analytics."
@@ -42838,6 +42838,9 @@ msgstr ""
 msgid "Pipelines|Pipeline syntax is correct. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
+msgid "Pipelines|Pipelines count"
+msgstr ""
+
 msgid "Pipelines|Project cache successfully reset."
 msgstr ""
 
@@ -42952,6 +42955,9 @@ msgstr ""
 msgid "Pipelines|This project is not currently set up to run pipelines."
 msgstr ""
 
+msgid "Pipelines|Time"
+msgstr ""
+
 msgid "Pipelines|To run new jobs and pipelines in this namespace's projects, %{link_start}buy additional compute minutes%{link_end}."
 msgstr ""
 
@@ -43051,6 +43057,9 @@ msgstr ""
 msgid "Pipelines|yaml invalid"
 msgstr ""
 
+msgid "Pipeline|95th percentile"
+msgstr ""
+
 msgid "Pipeline|Actions"
 msgstr ""
 
@@ -43084,6 +43093,9 @@ msgstr ""
 msgid "Pipeline|Date"
 msgstr ""
 
+msgid "Pipeline|Duration"
+msgstr ""
+
 msgid "Pipeline|Failed"
 msgstr ""
 
@@ -43091,6 +43103,9 @@ msgid "Pipeline|File"
 msgstr ""
 
 msgid "Pipeline|Manual"
+msgstr ""
+
+msgid "Pipeline|Mean (50th percentile)"
 msgstr ""
 
 msgid "Pipeline|Merge request pipeline"
@@ -43118,6 +43133,9 @@ msgid "Pipeline|New pipeline"
 msgstr ""
 
 msgid "Pipeline|Only the first 100 jobs per stage are displayed"
+msgstr ""
+
+msgid "Pipeline|Other"
 msgstr ""
 
 msgid "Pipeline|Passed"
@@ -43153,6 +43171,9 @@ msgstr ""
 msgid "Pipeline|Running"
 msgstr ""
 
+msgid "Pipeline|Seconds"
+msgstr ""
+
 msgid "Pipeline|Skipped"
 msgstr ""
 
@@ -43178,6 +43199,9 @@ msgid "Pipeline|Stop pipeline"
 msgstr ""
 
 msgid "Pipeline|Stop pipeline #%{pipelineId}?"
+msgstr ""
+
+msgid "Pipeline|Successful"
 msgstr ""
 
 msgid "Pipeline|Tag name"
@@ -43216,6 +43240,9 @@ msgstr ""
 msgid "Pipeline|This pipeline ran on the contents of the merge request's source branch, not the target branch."
 msgstr ""
 
+msgid "Pipeline|Time"
+msgstr ""
+
 msgid "Pipeline|To run a merge request pipeline, the jobs in the CI/CD configuration file %{ciDocsLinkStart}must be configured%{ciDocsLinkEnd} to run in merge request pipelines and you must have %{permissionDocsLinkStart}sufficient permissions%{permissionDocsLinkEnd} in the source project."
 msgstr ""
 
@@ -43226,6 +43253,9 @@ msgid "Pipeline|Trigger author"
 msgstr ""
 
 msgid "Pipeline|Variable"
+msgstr ""
+
+msgid "Pipeline|Variable type"
 msgstr ""
 
 msgid "Pipeline|Variables"

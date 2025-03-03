@@ -71,7 +71,7 @@ docs code_quality:
     when: always
 
 docs hugo_build:
-  image: hugomods/hugo:exts-0.142.0
+  image: registry.gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/docs-gitlab-com-builder:hugo-0.142.0
   extends:
     - .default-retry
     - .docs:rules:docs-lint
@@ -79,7 +79,6 @@ docs hugo_build:
   needs: []
   dependencies: []
   before_script:
-    - apk add --no-cache git make nodejs npm bash
     - git clone --depth 1 --filter=tree:0 https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com.git
     - cd docs-gitlab-com
     - make add-latest-icons

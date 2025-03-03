@@ -1,0 +1,9 @@
+---
+name: project_repositories_health
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/509253
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182220
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/521115
+milestone: '17.10'
+group: group::gitaly
+type: gitlab_com_derisk
+default_enabled: false

@@ -25,6 +25,7 @@ module Gitlab
           project_download_export: { threshold: -> { application_settings.project_download_export_limit }, interval: 1.minute },
           project_repositories_archive: { threshold: 5, interval: 1.minute },
           project_repositories_changelog: { threshold: 5, interval: 1.minute },
+          project_repositories_health: { threshold: 5, interval: 1.hour },
           project_generate_new_export: { threshold: -> { application_settings.project_export_limit }, interval: 1.minute },
           project_import: { threshold: -> { application_settings.project_import_limit }, interval: 1.minute },
           play_pipeline_schedule: { threshold: 1, interval: 1.minute },

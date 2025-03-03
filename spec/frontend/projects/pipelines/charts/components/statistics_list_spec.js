@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Component from '~/projects/pipelines/charts/components/statistics_list.vue';
 
@@ -15,17 +15,30 @@ describe('StatisticsList', () => {
   const failedPipelinesLink = '/flightjs/Flight/-/pipelines?page=1&scope=all&status=failed';
 
   const findFailedPipelinesLink = () => wrapper.findComponent(GlLink);
+  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
-  beforeEach(() => {
-    trackingSpy = mockTracking(undefined, window.document, jest.spyOn);
+  const createComponent = ({ props } = {}) => {
     wrapper = shallowMount(Component, {
       provide: {
         failedPipelinesLink,
       },
       propsData: {
         counts,
+        ...props,
       },
     });
+  };
+
+  beforeEach(() => {
+    trackingSpy = mockTracking(undefined, window.document, jest.spyOn);
+
+    createComponent();
+  });
+
+  it('displays loading state', () => {
+    createComponent({ props: { loading: true } });
+
+    expect(findSkeletonLoader().exists()).toBe(true);
   });
 
   it('displays the counts data with labels', () => {

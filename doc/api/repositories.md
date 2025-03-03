@@ -510,6 +510,54 @@ Example response, with line breaks added for readability:
 }
 ```
 
+## Health
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182220) in GitLab 17.10. Guarded behind the
+  [project_repositories_health](https://gitlab.com/gitlab-org/gitlab/-/issues/521115) feature flag.
+
+{{< /history >}}
+
+Get statistics related to the health of a project repository. This endpoint is rate-limited to 5 requests/hour per project.
+
+```plaintext
+GET /projects/:id/repository/health
+```
+
+Supported attributes:
+
+| Attribute  | Type    | Required | Description                                                                            |
+|:-----------|:--------|:---------|:---------------------------------------------------------------------------------------|
+| `generate` | boolean | no       | Whether a new health report should be generated. Set this if the endpoint returns 404. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: token" \
+  --url "https://gitlab.com/api/v4/projects/42/repository/health"
+```
+
+Example response:
+
+```json
+{
+  "size": 42002816,
+  "references": {
+    "loose_count": 3,
+    "packed_size": 315703,
+    "reference_backend": "REFERENCE_BACKEND_FILES"
+  },
+  "objects": {
+    "size": 39651458,
+    "recent_size": 39461265,
+    "stale_size": 190193,
+    "keep_size": 0
+  },
+  "updated_at": "2025-02-26T03:42:13.015Z"
+}
+```
+
 ## Related topics
 
 - User documentation for [changelogs](../user/project/changelogs.md)

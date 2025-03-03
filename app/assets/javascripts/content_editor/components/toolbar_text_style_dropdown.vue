@@ -1,5 +1,10 @@
 <script>
-import { GlTooltipDirective as GlTooltip, GlCollapsibleListbox } from '@gitlab/ui';
+import {
+  GlTooltipDirective as GlTooltip,
+  GlCollapsibleListbox,
+  GlButton,
+  GlIcon,
+} from '@gitlab/ui';
 import { __ } from '~/locale';
 import { TEXT_STYLE_DROPDOWN_ITEMS } from '../constants';
 import EditorStateObserver from './editor_state_observer.vue';
@@ -8,6 +13,8 @@ export default {
   components: {
     GlCollapsibleListbox,
     EditorStateObserver,
+    GlButton,
+    GlIcon,
   },
   directives: {
     GlTooltip,
@@ -69,7 +76,7 @@ export default {
 <template>
   <editor-state-observer @transaction="updateActiveItem">
     <gl-collapsible-listbox
-      v-gl-tooltip.hover="$options.i18n.placeholder"
+      :header-text="$options.i18n.placeholder"
       :items="listboxItems"
       :toggle-text="activeItemLabel"
       :selected="activeItemLabel"
@@ -78,6 +85,24 @@ export default {
       size="small"
       toggle-class="btn-default-tertiary"
       @select="execute"
-    />
+    >
+      <template #toggle>
+        <gl-button
+          v-gl-tooltip="$options.i18n.placeholder"
+          data-testid="selected-date-range"
+          :aria-label="`${$options.i18n.placeholder} ${activeItemLabel}`"
+          :title="$options.i18n.placeholder"
+          class="gl-w-full"
+          button-text-classes="gl-mr-[-4px] !gl-flex !gl-justify-between gl-w-full"
+          ><span class="gl-flex-grow-1 gl-text-left">{{ activeItemLabel }}</span>
+          <gl-icon
+            aria-hidden="true"
+            name="chevron-down"
+            :size="16"
+            variant="current"
+            class="gl-flex-shrink-0"
+        /></gl-button>
+      </template>
+    </gl-collapsible-listbox>
   </editor-state-observer>
 </template>

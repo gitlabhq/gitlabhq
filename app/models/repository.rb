@@ -791,6 +791,18 @@ class Repository
     Commit.order_by(collection: commits, order_by: order_by, sort: sort)
   end
 
+  def health(generate)
+    cache.fetch(:health) do
+      if generate
+        info = raw_repository.repository_info
+
+        info_h = info.to_h
+        info_h[:updated_at] = Time.current
+        info_h
+      end
+    end
+  end
+
   def branch_names_contains(sha, limit: 0, exclude_refs: [])
     refs = raw_repository.branch_names_contains_sha(sha, limit: adjust_containing_limit(limit: limit, exclude_refs: exclude_refs))
 

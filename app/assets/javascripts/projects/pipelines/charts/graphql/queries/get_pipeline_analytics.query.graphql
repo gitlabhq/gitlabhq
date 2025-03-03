@@ -10,6 +10,17 @@ query getPipelineAnalytics($fullPath: ID!, $fromTime: Time!, $toTime: Time!) {
           p50
         }
       }
+
+      timeSeries(period: DAY) {
+        label
+        successCount: count(status: SUCCESS)
+        failedCount: count(status: FAILED)
+        otherCount: count(status: OTHER)
+        durationStatistics {
+          p50
+          p95
+        }
+      }
     }
   }
 }

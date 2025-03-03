@@ -1,5 +1,5 @@
 <script>
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlSkeletonLoader } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
 import { formatTimeSpent } from '~/lib/utils/datetime_utility';
@@ -11,6 +11,7 @@ export default {
   components: {
     GlLink,
     GlSingleStat,
+    GlSkeletonLoader,
   },
   inject: {
     failedPipelinesLink: {
@@ -71,22 +72,30 @@ export default {
 </script>
 <template>
   <div class="gl-mb-6 gl-flex gl-flex-wrap gl-gap-6">
-    <div v-for="statistic in statistics" :key="statistic.label">
-      <gl-single-stat
-        :id="statistic.identifier"
-        :value="`${statistic.value}`"
-        :title="statistic.label"
-        :unit="statistic.unit || ''"
-        :should-animate="true"
-        use-delimiters
-      />
-      <gl-link
-        v-if="shouldDisplayLink(statistic)"
-        class="gl-p-2"
-        :href="statistic.link"
-        data-event-tracking="click_view_all_link_in_pipeline_analytics"
-        >{{ s__('Pipeline|View all') }}</gl-link
-      >
-    </div>
+    <gl-skeleton-loader v-if="loading" :height="30">
+      <rect width="45" height="30" rx="4" />
+      <rect x="50" width="45" height="30" rx="4" />
+      <rect x="100" width="45" height="30" rx="4" />
+      <rect x="150" width="45" height="30" rx="4" />
+    </gl-skeleton-loader>
+    <template v-else>
+      <div v-for="statistic in statistics" :key="statistic.label">
+        <gl-single-stat
+          :id="statistic.identifier"
+          :value="`${statistic.value}`"
+          :title="statistic.label"
+          :unit="statistic.unit || ''"
+          :should-animate="true"
+          use-delimiters
+        />
+        <gl-link
+          v-if="shouldDisplayLink(statistic)"
+          class="gl-p-2"
+          :href="statistic.link"
+          data-event-tracking="click_view_all_link_in_pipeline_analytics"
+          >{{ s__('Pipeline|View all') }}</gl-link
+        >
+      </div>
+    </template>
   </div>
 </template>

@@ -1,4 +1,5 @@
 - milestones_sort_options = milestones_sort_options_hash.map { |value, text| { value: value, text: text, href: page_filter_path(sort: value) } }
 
 %div
-  = gl_redirect_listbox_tag milestones_sort_options, @sort
+  = gl_redirect_listbox_tag milestones_sort_options, @sort, class: 'gl-text-left' , data: { header_text: _('Sort by') }
+
