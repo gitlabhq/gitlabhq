@@ -44,7 +44,11 @@ There are a few ways to view a list of environments for a given project:
 
   ![Deployments list](img/deployments_list_v13_10.png)
 
-Deployments show up in this list only after a deployment job has created them.
+  Deployments show up in this list only after a deployment job has created them.
+
+- To view a list of all manual jobs in a deployment pipeline, select the **Run** ({{< icon name="play" >}}) dropdown list.
+
+  ![Viewing a manual job in a deployment pipeline](img/view_manual_jobs_v17_10.png)
 
 ### Environment URL
 

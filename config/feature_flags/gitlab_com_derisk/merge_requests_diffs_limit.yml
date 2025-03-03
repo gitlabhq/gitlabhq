@@ -1,0 +1,9 @@
+---
+name: merge_requests_diffs_limit
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517497
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183063
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/521970
+milestone: '17.10'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

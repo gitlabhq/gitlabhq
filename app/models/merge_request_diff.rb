@@ -75,6 +75,11 @@ class MergeRequestDiff < ApplicationRecord
   scope :viewable, -> { without_state(:empty) }
   scope :by_head_commit_sha, ->(sha) { where(head_commit_sha: sha) }
   scope :by_commit_sha, ->(sha) do
+    Gitlab::AppLogger.info(
+      event: 'merge_request_diff_by_commit_sha_call',
+      message: "MergeRequestDiff.by_commit_sha called via #{caller_locations.reject { |line| line.path.include?('/gems/') }.first}"
+    )
+
     joins(:merge_request_diff_commits).where(merge_request_diff_commits: { sha: sha }).reorder(nil)
   end
 

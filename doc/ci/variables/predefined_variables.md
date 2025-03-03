@@ -113,6 +113,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_PROJECT_NAME`                               | Pre-pipeline | The name of the directory for the project. For example if the project URL is `gitlab.example.com/group-name/project-1`, `CI_PROJECT_NAME` is `project-1`. |
 | `CI_PROJECT_NAMESPACE`                          | Pre-pipeline | The project namespace (username or group name) of the job. |
 | `CI_PROJECT_NAMESPACE_ID`                       | Pre-pipeline | The project namespace ID of the job. Introduced in GitLab 15.7. |
+| `CI_PROJECT_NAMESPACE_SLUG`                     | Pre-pipeline | `$CI_PROJECT_NAMESPACE` in lowercase with characters that are not `a-z` or `0-9` replaced with - and shortened to 63 bytes. |
 | `CI_PROJECT_PATH_SLUG`                          | Pre-pipeline | `$CI_PROJECT_PATH` in lowercase with characters that are not `a-z` or `0-9` replaced with `-` and shortened to 63 bytes. Use in URLs and domain names. |
 | `CI_PROJECT_PATH`                               | Pre-pipeline | The project namespace with the project name included. |
 | `CI_PROJECT_REPOSITORY_LANGUAGES`               | Pre-pipeline | A comma-separated, lowercase list of the languages used in the repository. For example `ruby,javascript,html,css`. The maximum number of languages is limited to 5. An issue [proposes to increase the limit](https://gitlab.com/gitlab-org/gitlab/-/issues/368925). |

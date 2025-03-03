@@ -71,6 +71,8 @@ module Types
 
     field :nuget_symbol_server_enabled, GraphQL::Types::Boolean,
       null: false,
-      description: 'Indicates wheather the NuGet symbol server is enabled for this namespace.'
+      description: 'Indicates whether the NuGet symbol server is enabled for this namespace.'
   end
 end
+
+Types::Namespace::PackageSettingsType.prepend_mod

@@ -61,7 +61,7 @@ The banner can be customized with a specific message.
 
 An error is displayed when a user tries to perform a write operation that isn't allowed.
 
-![Maintenance Mode banner and error message](img/maintenance_mode_error_message_v17.6.png)
+![Maintenance Mode banner and error message](img/maintenance_mode_error_message_v17_6.png)
 
 {{< alert type="note" >}}
 

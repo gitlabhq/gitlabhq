@@ -30,6 +30,16 @@ in GitLab 15.0. Iterating pages of results with a number (`?page=2`) is unsuppor
 
 {{< /alert >}}
 
+{{< alert type="warning" >}}
+
+In version 17.7, the error handling behavior when a requested path is not found is updated.
+The endpoint now returns a status code `404 Not Found`. Previously, the status code was `200 OK`.
+
+If your implementation relies on receiving a `200` status code with an empty array for
+missing paths, you must update your error handling to handle the new `404` responses.
+
+{{< /alert >}}
+
 ```plaintext
 GET /projects/:id/repository/tree
 ```

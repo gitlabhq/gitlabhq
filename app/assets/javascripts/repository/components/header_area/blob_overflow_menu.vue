@@ -12,7 +12,8 @@ import BlobButtonGroup from './blob_button_group.vue';
 import BlobDeleteFileGroup from './blob_delete_file_group.vue';
 
 export const i18n = {
-  dropdownLabel: __('Actions'),
+  dropdownLabel: __('File actions'),
+  dropdownTooltip: __('Actions'),
   fetchError: __('An error occurred while fetching lock information, please try again.'),
 };
 
@@ -117,7 +118,7 @@ export default {
 </script>
 <template>
   <gl-disclosure-dropdown
-    v-gl-tooltip-directive.hover="$options.i18n.dropdownLabel"
+    v-gl-tooltip-directive.hover="$options.i18n.dropdownTooltip"
     no-caret
     icon="ellipsis_v"
     data-testid="default-actions-container"

@@ -136,7 +136,7 @@ class MergeRequestDiffCommit < ApplicationRecord
   def message
     Gitlab::AppLogger.info(
       event: 'mrdc_message_method',
-      message: "mrdc#message called via #{caller_locations(2, 1).first.path}"
+      message: "mrdc#message called via #{caller_locations.reject { |line| line.path.include?('/gems/') }.first}"
     )
 
     if ::Feature.enabled?(:disable_message_attribute_on_mr_diff_commits, project)

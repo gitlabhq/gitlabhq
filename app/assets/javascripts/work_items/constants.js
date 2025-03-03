@@ -76,34 +76,17 @@ export const I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR = s__(
   'WorkItem|Something went wrong while fetching work item award emojis. Please try again.',
 );
 
-export const I18N_NEW_WORK_ITEM_BUTTON_LABEL = s__('WorkItem|New %{workItemType}');
-export const I18N_WORK_ITEM_CREATE_BUTTON_LABEL = s__('WorkItem|Create %{workItemType}');
-export const I18N_WORK_ITEM_NEW_RELATED_ITEM = s__('WorkItem|New related %{workItemType}');
-export const I18N_WORK_ITEM_ADD_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}');
-export const I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}s');
 export const I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER = s__(
   'WorkItem|Search existing items, paste URL, or enter reference ID',
 );
 export const I18N_WORK_ITEM_SEARCH_ERROR = s__(
   'WorkItem|Something went wrong while fetching the %{workItemType}. Please try again.',
 );
-export const I18N_WORK_ITEM_NO_MATCHES_FOUND = s__('WorkItem|No matches found');
 export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL = s__(
   'WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least the Planner role',
 );
 export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP = s__(
   'WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}.',
-);
-
-export const I18N_WORK_ITEM_ERROR_COPY_REFERENCE = s__(
-  'WorkItem|Something went wrong while copying the %{workItemType} reference. Please try again.',
-);
-export const I18N_WORK_ITEM_ERROR_COPY_EMAIL = s__(
-  'WorkItem|Something went wrong while copying the %{workItemType} email address. Please try again.',
-);
-
-export const I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL = s__(
-  'WorkItem|Copy %{workItemType} email address',
 );
 
 export const MAX_WORK_ITEMS = 10;
@@ -203,13 +186,6 @@ export const WORK_ITEM_TYPE_VALUE_MAP = {
   [WORK_ITEM_TYPE_VALUE_TASK]: WORK_ITEM_TYPE_ENUM_TASK,
   [WORK_ITEM_TYPE_VALUE_TEST_CASE]: WORK_ITEM_TYPE_ENUM_TEST_CASE,
   [WORK_ITEM_TYPE_VALUE_TICKET]: WORK_ITEM_TYPE_ENUM_TICKET,
-};
-
-export const WORK_ITEMS_TREE_TEXT = {
-  title: s__('WorkItem|Child items'),
-  empty: s__(
-    'WorkItem|No child items are currently assigned. Use child items to break down work into smaller parts.',
-  ),
 };
 
 export const FORM_TYPES = {

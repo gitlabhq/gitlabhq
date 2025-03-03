@@ -409,6 +409,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       )
     end
 
+    display_max_limit_warning
+
     respond_to do |format|
       format.html do
         # use next to appease Rubocop
@@ -682,6 +684,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       offset: offset,
       view: diff_view
     )
+  end
+
+  def display_max_limit_warning
+    return unless @merge_request.reached_versions_limit?
+
+    flash[:alert] = format(
+      _("This merge request has reached the maximum limit of %{limit} versions and cannot be updated further. " \
+        "Close this merge request and create a new one instead."), limit: MergeRequest::DIFF_VERSION_LIMIT)
   end
 end
 

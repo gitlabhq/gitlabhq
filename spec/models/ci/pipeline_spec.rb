@@ -3464,6 +3464,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let(:pipeline_action) { action }
 
         it 'schedules a new PipelineHooksWorker job' do
+          # Need this so this test will not fail if there are other logging calls
+          # in this method and the methods it uses.
+          allow(Gitlab::AppLogger).to receive(:info).and_call_original
+
           expect(Gitlab::AppLogger).to receive(:info).with(
             message: include("Enqueuing hooks for Pipeline #{pipeline.id}"),
             class: described_class.name,

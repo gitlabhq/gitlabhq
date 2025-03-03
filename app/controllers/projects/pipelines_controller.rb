@@ -95,7 +95,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   def create
     service_response = Ci::CreatePipelineService
       .new(project, current_user, create_params)
-      .execute(:web, ignore_skip_ci: true, save_on_errors: false)
+      .execute(:web, ignore_skip_ci: true, save_on_errors: false, **create_execute_params)
 
     @pipeline = service_response.payload
 
@@ -260,6 +260,10 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def create_params
     params.require(:pipeline).permit(:ref, variables_attributes: %i[key variable_type secret_value])
+  end
+
+  def create_execute_params
+    params.require(:pipeline).permit(inputs: {}).to_h.symbolize_keys
   end
 
   def ensure_pipeline

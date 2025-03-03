@@ -39,10 +39,10 @@ export default {
 </script>
 <template>
   <div id="peek-view-add-request" class="view gl-flex">
-    <gl-form class="gl-flex gl-items-center" @submit.prevent="addRequest">
+    <gl-form class="gl-flex gl-items-center gl-gap-4" @submit.prevent="addRequest">
       <gl-button
         v-gl-tooltip.viewport
-        class="gl-mr-2"
+        class="!gl-text-neutral-0"
         category="tertiary"
         variant="link"
         icon="plus"
@@ -57,17 +57,16 @@ export default {
           type="text"
           :placeholder="$options.i18n.inputLabel"
           :aria-label="$options.i18n.inputLabel"
-          class="gl-ml-2 !gl-px-3 !gl-py-2"
+          class="gl-w-20 !gl-bg-alpha-light-24 !gl-text-neutral-0 !gl-placeholder-neutral-0"
           @keyup.esc="clearForm"
         />
         <gl-button
           v-gl-tooltip.viewport
-          class="gl-ml-2"
           category="tertiary"
           type="submit"
           variant="link"
-          icon="file-addition-solid"
           size="small"
+          class="!gl-text-neutral-0"
           :aria-label="$options.i18n.submitLabel"
         >
           {{ $options.i18n.submitLabel }}

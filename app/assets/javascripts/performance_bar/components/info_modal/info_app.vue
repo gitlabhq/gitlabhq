@@ -41,6 +41,7 @@ export default {
   <div class="view gl-flex gl-gap-2">
     <gl-button
       icon="information-o"
+      class="!gl-text-neutral-0"
       variant="link"
       :aria-label="s__('PerformanceBar|Debugging information')"
       @click="showInfoModal"
@@ -52,12 +53,13 @@ export default {
       size="sm"
       hide-backdrop
       hide-footer
+      no-focus-on-show
     >
       <div class="gl-pb-6">
         <div class="gl-flex gl-flex-col gl-text-lg">
-          <strong class="gl-border-b gl-mb-4 gl-w-full gl-font-bold">
-            {{ s__('PerformanceBar|Host') }}</strong
-          >
+          <strong class="gl-border-b gl-mb-4 gl-w-full gl-font-bold gl-text-neutral-0">
+            {{ s__('PerformanceBar|Host') }}
+          </strong>
           <div>
             <gl-emoji data-testid="host-emoji" data-name="computer" />
             <span>{{ hostInfo }} </span>

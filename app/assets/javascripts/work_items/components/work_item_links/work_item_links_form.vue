@@ -12,9 +12,6 @@ import {
   FORM_TYPES,
   WORK_ITEMS_TYPE_MAP,
   WORK_ITEM_TYPE_ENUM_TASK,
-  I18N_WORK_ITEM_CREATE_BUTTON_LABEL,
-  I18N_WORK_ITEM_ADD_BUTTON_LABEL,
-  I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL,
   I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL,
   I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP,
   WORK_ITEM_TYPE_VALUE_EPIC,
@@ -192,12 +189,12 @@ export default {
     },
     addOrCreateButtonLabel() {
       if (this.isCreateForm) {
-        return sprintfWorkItem(I18N_WORK_ITEM_CREATE_BUTTON_LABEL, this.childrenTypeName);
+        return sprintfWorkItem(s__('WorkItem|Create %{workItemType}'), this.childrenTypeName);
       }
       if (this.workItemsToAdd.length > 1) {
-        return sprintfWorkItem(I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL, this.childrenTypeName);
+        return sprintfWorkItem(s__('WorkItem|Add %{workItemType}s'), this.childrenTypeName);
       }
-      return sprintfWorkItem(I18N_WORK_ITEM_ADD_BUTTON_LABEL, this.childrenTypeName);
+      return sprintfWorkItem(s__('WorkItem|Add %{workItemType}'), this.childrenTypeName);
     },
     confidentialityCheckboxLabel() {
       return sprintfWorkItem(I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL, this.childrenTypeName);

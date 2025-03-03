@@ -2613,6 +2613,7 @@ class Project < ApplicationRecord
         .append(key: 'CI_PROJECT_PATH', value: full_path)
         .append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug)
         .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
+        .append(key: 'CI_PROJECT_NAMESPACE_SLUG', value: Gitlab::Utils.slugify(namespace.full_path))
         .append(key: 'CI_PROJECT_NAMESPACE_ID', value: namespace.id.to_s)
         .append(key: 'CI_PROJECT_ROOT_NAMESPACE', value: namespace.root_ancestor.path)
         .append(key: 'CI_PROJECT_URL', value: web_url)

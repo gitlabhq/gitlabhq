@@ -4397,14 +4397,38 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     context 'with an empty branch' do
       let_it_be(:project) { create(:project, :empty_repo) }
-      let(:target_sha) { nil }
 
-      it 'calls UserCommitFiles RPC' do
-        expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
-          expect(client).to receive(:user_commit_files).with(*expected_params)
+      context 'when feature flag is enabled' do
+        before do
+          stub_feature_flags(commit_files_target_sha: true)
         end
 
-        subject
+        let(:target_sha) { repository.blank_ref }
+
+        it 'calls UserCommitFiles RPC' do
+          expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
+            expect(client).to receive(:user_commit_files).with(*expected_params)
+          end
+
+          subject
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        let(:project) { create(:project, :empty_repo) }
+        let(:target_sha) { nil }
+
+        before do
+          stub_feature_flags(commit_files_target_sha: false)
+        end
+
+        it 'calls UserCommitFiles RPC with nil target_sha' do
+          expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
+            expect(client).to receive(:user_commit_files).with(*expected_params)
+          end
+
+          subject
+        end
       end
     end
   end

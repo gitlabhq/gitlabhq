@@ -17,7 +17,6 @@ import {
   WORK_ITEMS_TYPE_MAP,
   I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER,
   I18N_WORK_ITEM_SEARCH_ERROR,
-  I18N_WORK_ITEM_NO_MATCHES_FOUND,
   sprintfWorkItem,
 } from '../../constants';
 import { formatAncestors, isReference } from '../../utils';
@@ -232,7 +231,6 @@ export default {
     },
   },
   i18n: {
-    noMatchesFoundMessage: I18N_WORK_ITEM_NO_MATCHES_FOUND,
     addInputPlaceholder: I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER,
   },
   safeHtmlConfig: { ADD_TAGS: ['strong', 'span'] },
@@ -276,7 +274,7 @@ export default {
       </template>
       <template #no-results-content>
         <span data-testid="no-match-found-namespace-message">{{
-          $options.i18n.noMatchesFoundMessage
+          s__('WorkItem|No matches found')
         }}</span>
       </template>
     </gl-token-selector>

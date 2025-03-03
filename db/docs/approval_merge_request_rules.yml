@@ -8,14 +8,6 @@ description: Keeps approval merge request rules
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8497
 milestone: '11.7'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: merge_request_id
-        table: merge_requests
-        sharding_key: target_project_id
-        belongs_to: merge_request
-desired_sharding_key_migration_job_name: BackfillApprovalMergeRequestRulesProjectId
 table_size: medium
+sharding_key:
+  project_id: projects

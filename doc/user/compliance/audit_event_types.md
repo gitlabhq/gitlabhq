@@ -444,8 +444,8 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
-| [`package_registry_package_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178181) | A package was deleted from GitLab package registry. Available only when the feature flag `package_registry_audit_events` is enabled. | {{< icon name="check-circle" >}} Yes | GitLab [17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/329588) | Project, Group |
-| [`package_registry_package_published`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178181) | A package was published to GitLab package registry. Available only when the feature flag `package_registry_audit_events` is enabled. | {{< icon name="check-circle" >}} Yes | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/329588) | Project, Group |
+| [`package_registry_package_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178181) | A package was deleted from GitLab package registry. Available only when the feature flag `package_registry_audit_events` is enabled and the namespace's package setting `audit_events_enabled` is true. | {{< icon name="check-circle" >}} Yes | GitLab [17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/329588) | Project, Group |
+| [`package_registry_package_published`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178181) | A package was published to GitLab package registry. Available only when the feature flag `package_registry_audit_events` is enabled and the namespace's package setting `audit_events_enabled` is true. | {{< icon name="check-circle" >}} Yes | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/329588) | Project, Group |
 
 ### Permissions
 

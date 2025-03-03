@@ -9,7 +9,6 @@ Layout/EmptyLinesAroundMethodBody:
     - 'app/models/repository.rb'
     - 'app/services/members/destroy_service.rb'
     - 'ee/app/models/software_license.rb'
-    - 'ee/lib/gitlab/elastic/helper.rb'
     - 'ee/spec/support/helpers/identity_verification_helpers.rb'
     - 'lib/api/helpers/packages_helpers.rb'
     - 'lib/gitlab/background_migration/batched_migration_job.rb'

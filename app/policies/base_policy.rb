@@ -13,6 +13,11 @@ class BasePolicy < DeclarativePolicy::Base
     end
   end
 
+  desc "The current instance is a GitLab Dedicated instance"
+  condition :gitlab_dedicated do
+    Gitlab::CurrentSettings.gitlab_dedicated_instance?
+  end
+
   desc "User is blocked"
   with_options scope: :user, score: 0
   condition(:blocked) { @user&.blocked? }
@@ -90,6 +95,10 @@ class BasePolicy < DeclarativePolicy::Base
     # Policy extended in EE to also enable auditors
     enable :read_all_resources
     enable :change_repository_storage
+  end
+
+  rule { gitlab_dedicated & admin }.policy do
+    enable :read_dedicated_hosted_runner_usage
   end
 
   rule { default }.enable :read_cross_project

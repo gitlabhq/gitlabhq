@@ -29,7 +29,10 @@ export default {
 </script>
 <template>
   <div id="peek-request-selector" data-testid="request-dropdown" class="view gl-mr-5">
-    <gl-form-select v-model="currentRequestId">
+    <gl-form-select
+      v-model="currentRequestId"
+      select-class="gl-bg-alpha-light-24 gl-text-neutral-0 gl-w-26"
+    >
       <option
         v-for="request in requests"
         :key="request.id"

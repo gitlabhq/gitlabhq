@@ -39,6 +39,7 @@ class MergeRequest < ApplicationRecord
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
   CI_MERGE_REQUEST_DESCRIPTION_MAX_LENGTH = 2700
   MERGE_LEASE_TIMEOUT = 15.minutes.to_i
+  DIFF_VERSION_LIMIT = 1_000
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -333,6 +334,11 @@ class MergeRequest < ApplicationRecord
     includes(:target_project)
   end
   scope :by_commit_sha, ->(sha) do
+    Gitlab::AppLogger.info(
+      event: 'merge_request_by_commit_sha_call',
+      message: "MergeRequest.by_commit_sha called via #{caller_locations.reject { |line| line.path.include?('/gems/') }.first}"
+    )
+
     where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(sha)).reorder(nil)
   end
   scope :by_merge_commit_sha, ->(sha) do
@@ -348,6 +354,11 @@ class MergeRequest < ApplicationRecord
     from_union([by_squash_commit_sha(sha), by_merge_commit_sha(sha), by_merged_commit_sha(sha)])
   end
   scope :by_related_commit_sha, ->(sha) do
+    Gitlab::AppLogger.info(
+      event: 'merge_request_by_related_commit_sha_call',
+      message: "MergeRequest.by_related_commit_sha called via #{caller_locations.reject { |line| line.path.include?('/gems/') }.first}"
+    )
+
     from_union(
       [
         by_commit_sha(sha),
@@ -2453,6 +2464,12 @@ class MergeRequest < ApplicationRecord
   end
 
   delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?, to: :squash_option
+
+  def reached_versions_limit?
+    return false if Feature.disabled?(:merge_requests_diffs_limit, target_project)
+
+    merge_request_diffs.count >= DIFF_VERSION_LIMIT
+  end
 
   private
 

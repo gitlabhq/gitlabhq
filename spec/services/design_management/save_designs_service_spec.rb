@@ -366,7 +366,7 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
           expect { service.execute }
             .to change { issue.designs.count }.from(0).to(2)
             .and change { DesignManagement::Version.count }.by(1)
-            .and change { Gitlab::GitalyClient.get_request_count }.by(4)
+            .and change { Gitlab::GitalyClient.get_request_count }.by(5)
             .and change { commit_count }.by(1)
             .and trigger_internal_events(Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_ADDED)
               .twice.with(user: user, project: project, category: 'InternalEventTracking')

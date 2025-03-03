@@ -119,7 +119,7 @@ describe('FailedJobsList component', () => {
 
     it('passes the correct props to failed jobs row', () => {
       expect(findFailedJobRows().at(0).props()).toStrictEqual({
-        canTroubleshootJob: true,
+        canTroubleshootJob: false,
         job: failedJobsMock.data.project.pipeline.jobs.nodes[0],
       });
     });

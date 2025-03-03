@@ -835,11 +835,6 @@ rspec-ee unit pg14:
     - .rspec-ee-unit-parallel
     - .rails:rules:ee-only-unit
 
-rspec-ee unit pg14 es8:
-  extends:
-    - .rspec-ee-base-pg14-es8
-    - .rspec-ee-unit-parallel
-
 rspec-ee unit pg14 single-db:
   extends:
     - rspec-ee unit pg14
@@ -873,11 +868,6 @@ rspec-ee integration pg14:
     - .rspec-ee-base-pg14
     - .rspec-ee-integration-parallel
     - .rails:rules:ee-only-integration
-
-rspec-ee integration pg14 es8:
-  extends:
-    - .rspec-ee-base-pg14-es8
-    - .rspec-ee-integration-parallel
 
 rspec-ee integration pg14 single-db:
   extends:
@@ -927,11 +917,6 @@ rspec-ee system pg14:
     - .rspec-ee-base-pg14
     - .rspec-ee-system-parallel
     - .rails:rules:ee-only-system
-
-rspec-ee system pg14 es8:
-  extends:
-    - .rspec-ee-base-pg14-es8
-    - .rspec-ee-system-parallel
 
 rspec-ee system pg14 single-db:
   extends:
@@ -1038,80 +1023,7 @@ rspec system pg16:
 #####################################
 # EE: default branch nightly scheduled jobs #
 
-# PG14
-rspec-ee unit pg14 opensearch1:
-  extends:
-    - .rspec-ee-base-pg14-opensearch1
-    - .rspec-ee-unit-parallel
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-
-rspec-ee unit pg14 opensearch2:
-  extends:
-    - .rspec-ee-base-pg14-opensearch2
-    - .rspec-ee-unit-parallel
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-
-rspec-ee integration pg14 opensearch1:
-  extends:
-    - .rspec-ee-base-pg14-opensearch1
-    - .rspec-ee-integration-parallel
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-
-rspec-ee integration pg14 opensearch2:
-  extends:
-    - .rspec-ee-base-pg14-opensearch2
-    - .rspec-ee-integration-parallel
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-
-rspec-ee system pg14 opensearch1:
-  extends:
-    - .rspec-ee-base-pg14-opensearch1
-    - .rspec-ee-system-parallel
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-
-rspec-ee system pg14 opensearch2:
-  extends:
-    - .rspec-ee-base-pg14-opensearch2
-    - .rspec-ee-system-parallel
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-
 # PG15
-rspec-ee unit pg15 opensearch1:
-  extends:
-    - .rspec-ee-base-pg15-opensearch1
-    - .rspec-ee-unit-parallel
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-
-rspec-ee unit pg15 opensearch2:
-  extends:
-    - .rspec-ee-base-pg15-opensearch2
-    - .rspec-ee-unit-parallel
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-
-rspec-ee integration pg15 opensearch1:
-  extends:
-    - .rspec-ee-base-pg15-opensearch1
-    - .rspec-ee-integration-parallel
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-
-rspec-ee integration pg15 opensearch2:
-  extends:
-    - .rspec-ee-base-pg15-opensearch2
-    - .rspec-ee-integration-parallel
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-
-rspec-ee system pg15 opensearch1:
-  extends:
-    - .rspec-ee-base-pg15-opensearch1
-    - .rspec-ee-system-parallel
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-
-rspec-ee system pg15 opensearch2:
-  extends:
-    - .rspec-ee-base-pg15-opensearch2
-    - .rspec-ee-system-parallel
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-
 rspec-ee migration pg15:
   extends:
     - .rspec-ee-base-pg15
@@ -1132,31 +1044,16 @@ rspec-ee unit pg15:
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-unit-parallel
 
-rspec-ee unit pg15 es8:
-  extends:
-    - .rspec-ee-base-pg15-es8
-    - .rspec-ee-unit-parallel
-
 rspec-ee integration pg15:
   extends:
     - .rspec-ee-base-pg15
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-integration-parallel
 
-rspec-ee integration pg15 es8:
-  extends:
-    - .rspec-ee-base-pg15-es8
-    - .rspec-ee-integration-parallel
-
 rspec-ee system pg15:
   extends:
     - .rspec-ee-base-pg15
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-system-parallel
-
-rspec-ee system pg15 es8:
-  extends:
-    - .rspec-ee-base-pg15-es8
     - .rspec-ee-system-parallel
 
 # PG16
@@ -1192,62 +1089,61 @@ rspec-ee system pg16:
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-system-parallel
 
-# We have too many jobs in nightly pipeline, more than 2k+,
-# which exceeds the limit of jobs a pipeline can have. Disable below for now.
-#
-# rspec-ee unit pg16 opensearch1:
-#   extends:
-#     - .rspec-ee-base-pg16-opensearch1
-#     - .rspec-ee-unit-parallel
-#     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+# Integration tests with Elastic Search and the actual PG production version (PG16)
+# https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/534
+rspec-ee unit pg16 opensearch1:
+  extends:
+    - .rspec-ee-base-pg16-opensearch1
+    - .rspec-ee-unit-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
 
-# rspec-ee unit pg16 opensearch2:
-#   extends:
-#     - .rspec-ee-base-pg16-opensearch2
-#     - .rspec-ee-unit-parallel
-#     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+rspec-ee unit pg16 opensearch2:
+  extends:
+    - .rspec-ee-base-pg16-opensearch2
+    - .rspec-ee-unit-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
 
-# rspec-ee integration pg16 opensearch1:
-#   extends:
-#     - .rspec-ee-base-pg16-opensearch1
-#     - .rspec-ee-integration-parallel
-#     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+rspec-ee integration pg16 opensearch1:
+  extends:
+    - .rspec-ee-base-pg16-opensearch1
+    - .rspec-ee-integration-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
 
-# rspec-ee integration pg16 opensearch2:
-#   extends:
-#     - .rspec-ee-base-pg16-opensearch2
-#     - .rspec-ee-integration-parallel
-#     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+rspec-ee integration pg16 opensearch2:
+  extends:
+    - .rspec-ee-base-pg16-opensearch2
+    - .rspec-ee-integration-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
 
-# rspec-ee system pg16 opensearch1:
-#   extends:
-#     - .rspec-ee-base-pg16-opensearch1
-#     - .rspec-ee-system-parallel
-#     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+rspec-ee system pg16 opensearch1:
+  extends:
+    - .rspec-ee-base-pg16-opensearch1
+    - .rspec-ee-system-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
 
-# rspec-ee system pg16 opensearch2:
-#   extends:
-#     - .rspec-ee-base-pg16-opensearch2
-#     - .rspec-ee-system-parallel
-#     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+rspec-ee system pg16 opensearch2:
+  extends:
+    - .rspec-ee-base-pg16-opensearch2
+    - .rspec-ee-system-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
 
-# rspec-ee unit pg16 es8:
-#   extends:
-#     - .rspec-ee-base-pg16-es8
-#     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-#     - .rspec-ee-unit-parallel
+rspec-ee unit pg16 es8:
+  extends:
+    - .rspec-ee-base-pg16-es8
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-unit-parallel
 
-# rspec-ee integration pg16 es8:
-#   extends:
-#     - .rspec-ee-base-pg16-es8
-#     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-#     - .rspec-ee-integration-parallel
+rspec-ee integration pg16 es8:
+  extends:
+    - .rspec-ee-base-pg16-es8
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-integration-parallel
 
-# rspec-ee system pg16 es8:
-#   extends:
-#     - .rspec-ee-base-pg16-es8
-#     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-#     - .rspec-ee-system-parallel
+rspec-ee system pg16 es8:
+  extends:
+    - .rspec-ee-base-pg16-es8
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-system-parallel
 # EE: default branch nightly scheduled jobs #
 #####################################
 

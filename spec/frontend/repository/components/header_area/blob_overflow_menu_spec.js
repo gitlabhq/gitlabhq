@@ -60,6 +60,7 @@ describe('Blob Overflow Menu', () => {
     await waitForPromises();
   };
 
+  const findBlobActionsDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findBlobDefaultActionsGroup = () => wrapper.findComponent(BlobDefaultActionsGroup);
   const findBlobButtonGroup = () => wrapper.findComponent(BlobButtonGroup);
   const findBlobDeleteFileGroup = () => wrapper.findComponent(BlobDeleteFileGroup);
@@ -71,6 +72,11 @@ describe('Blob Overflow Menu', () => {
 
   afterEach(() => {
     fakeApollo = null;
+  });
+
+  it('renders blob actions dropdown', () => {
+    expect(findBlobActionsDropdown().exists()).toBe(true);
+    expect(findBlobActionsDropdown().props('toggleText')).toBe('File actions');
   });
 
   it('creates an alert with the correct message, when projectInfo query fails', async () => {

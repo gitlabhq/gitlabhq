@@ -9743,6 +9743,9 @@ msgstr ""
 msgid "Blame|Older"
 msgstr ""
 
+msgid "BlobViewer|Copy contents"
+msgstr ""
+
 msgid "BlobViewer|If you delete the file, it will be removed from the branch %{branch}."
 msgstr ""
 
@@ -19861,7 +19864,7 @@ msgstr ""
 msgid "DependencyProxy|All items in the cache are scheduled for removal."
 msgstr ""
 
-msgid "DependencyProxy|Base URL of the external registry."
+msgid "DependencyProxy|Base URL of the external registry. Must begin with %{codeStart}http%{codeEnd} or %{codeStart}https%{codeEnd}"
 msgstr ""
 
 msgid "DependencyProxy|Cached %{time}"
@@ -19909,7 +19912,7 @@ msgstr ""
 msgid "DependencyProxy|Image list"
 msgstr ""
 
-msgid "DependencyProxy|Password for your external registry."
+msgid "DependencyProxy|Password of the external registry."
 msgstr ""
 
 msgid "DependencyProxy|Pull image by digest example"
@@ -24961,6 +24964,9 @@ msgid "File %{current} of %{total}"
 msgstr ""
 
 msgid "File Tree"
+msgstr ""
+
+msgid "File actions"
 msgstr ""
 
 msgid "File added"
@@ -33816,7 +33822,7 @@ msgstr ""
 msgid "Latest changes"
 msgstr ""
 
-msgid "Latest pipeline for the most recent commit on this branch"
+msgid "Latest pipeline for the most recent commit on this ref"
 msgstr ""
 
 msgid "Launch a ready-to-code development environment for your project."
@@ -34472,9 +34478,6 @@ msgid "Lock directory?"
 msgstr ""
 
 msgid "Lock discussion"
-msgstr ""
-
-msgid "Lock file"
 msgstr ""
 
 msgid "Lock file?"
@@ -40976,6 +40979,9 @@ msgstr ""
 msgid "PackageRegistry|Conan Command"
 msgstr ""
 
+msgid "PackageRegistry|Configure external Maven registry"
+msgstr ""
+
 msgid "PackageRegistry|Configure in settings"
 msgstr ""
 
@@ -42937,6 +42943,12 @@ msgstr ""
 msgid "Pipelines|This pipeline is stuck"
 msgstr ""
 
+msgid "Pipelines|This pipeline ran for a branch."
+msgstr ""
+
+msgid "Pipelines|This pipeline ran for a tag."
+msgstr ""
+
 msgid "Pipelines|This pipeline ran on the contents of the merge request combined with the contents of all other merge requests queued for merging into the target branch."
 msgstr ""
 
@@ -43027,6 +43039,9 @@ msgstr ""
 msgid "Pipelines|Your changes have been successfully committed. Now redirecting to the new merge request page."
 msgstr ""
 
+msgid "Pipelines|branch"
+msgstr ""
+
 msgid "Pipelines|error"
 msgstr ""
 
@@ -43049,6 +43064,9 @@ msgid "Pipelines|merged results"
 msgstr ""
 
 msgid "Pipelines|stuck"
+msgstr ""
+
+msgid "Pipelines|tag"
 msgstr ""
 
 msgid "Pipelines|yaml invalid"
@@ -43228,6 +43246,12 @@ msgstr ""
 msgid "Pipeline|This change will not change the overall test coverage if merged."
 msgstr ""
 
+msgid "Pipeline|This pipeline ran for a branch."
+msgstr ""
+
+msgid "Pipeline|This pipeline ran for a tag."
+msgstr ""
+
 msgid "Pipeline|This pipeline ran on the contents of the merge request combined with the contents of all other merge requests queued for merging into the target branch."
 msgstr ""
 
@@ -43276,6 +43300,9 @@ msgstr ""
 msgid "Pipeline|api"
 msgstr ""
 
+msgid "Pipeline|branch"
+msgstr ""
+
 msgid "Pipeline|for"
 msgstr ""
 
@@ -43289,6 +43316,9 @@ msgid "Pipeline|merged results"
 msgstr ""
 
 msgid "Pipeline|on"
+msgstr ""
+
+msgid "Pipeline|tag"
 msgstr ""
 
 msgid "PivotalTrackerService|Add commit messages as comments to Pivotal Tracker stories."
@@ -48346,9 +48376,6 @@ msgid "Replace %{name}"
 msgstr ""
 
 msgid "Replace all labels"
-msgstr ""
-
-msgid "Replace file"
 msgstr ""
 
 msgid "Replaced all labels with %{label_references} %{label_text}."
@@ -59518,6 +59545,9 @@ msgstr ""
 msgid "This merge request does not have codequality reports"
 msgstr ""
 
+msgid "This merge request has reached the maximum limit of %{limit} versions and cannot be updated further. Close this merge request and create a new one instead."
+msgstr ""
+
 msgid "This merge request is closed. To apply this suggestion, edit this file directly."
 msgstr ""
 
@@ -61995,9 +62025,6 @@ msgid "Unlock account"
 msgstr ""
 
 msgid "Unlock discussion"
-msgstr ""
-
-msgid "Unlock file"
 msgstr ""
 
 msgid "Unlock file?"

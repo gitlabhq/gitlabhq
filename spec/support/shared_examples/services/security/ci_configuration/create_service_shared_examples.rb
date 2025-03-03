@@ -149,16 +149,6 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
         end
       end
 
-      context 'when parsing existing ci config gives any other error' do
-        let(:params) { {} }
-        let_it_be(:repository) { project.repository }
-
-        it 'is successful' do
-          expect(repository).to receive(:commit).twice.and_return(nil)
-          expect(result.status).to eq(:success)
-        end
-      end
-
       unless skip_w_params
         context 'with parameters' do
           let(:params) { non_empty_params }

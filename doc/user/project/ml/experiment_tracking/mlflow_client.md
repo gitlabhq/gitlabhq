@@ -453,6 +453,7 @@ of the methods below are also supported with the same caveats.
 | `log_model`              | Partial         | 15.11         | (15.11) Saves the artifacts, but not the model data. `artifact_path` must be empty.          |
 | `load_model`             | Yes             | 17.5          |                                                                                              |
 | `download_artifacts`     | Yes             | 17.9          |                                                                                              |
+| `list_artifacts`         | Yes             | 17.9          |                                                                                              |
 
 Other MLflowClient methods:
 

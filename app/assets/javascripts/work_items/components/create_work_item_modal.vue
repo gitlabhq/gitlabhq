@@ -5,7 +5,6 @@ import { __, s__ } from '~/locale';
 import { isMetaClick } from '~/lib/utils/common_utils';
 import { convertTypeEnumToName, newWorkItemPath } from '~/work_items/utils';
 import {
-  I18N_NEW_WORK_ITEM_BUTTON_LABEL,
   sprintfWorkItem,
   ROUTES,
   RELATED_ITEM_ID_URL_QUERY_PARAM,
@@ -138,11 +137,14 @@ export default {
     },
     newWorkItemButtonText() {
       return this.alwaysShowWorkItemTypeSelect && this.workItemTypeName
-        ? sprintfWorkItem(I18N_NEW_WORK_ITEM_BUTTON_LABEL, '')
+        ? sprintfWorkItem(s__('WorkItem|New %{workItemType}'), '')
         : this.newWorkItemText;
     },
     newWorkItemText() {
-      return sprintfWorkItem(I18N_NEW_WORK_ITEM_BUTTON_LABEL, this.selectedWorkItemTypeLowercase);
+      return sprintfWorkItem(
+        s__('WorkItem|New %{workItemType}'),
+        this.selectedWorkItemTypeLowercase,
+      );
     },
     workItemCreatedText() {
       return sprintfWorkItem(

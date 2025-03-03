@@ -5,7 +5,7 @@ import { setUrlParams, relativePathToAbsolute, getBaseURL } from '~/lib/utils/ur
 import { DEFAULT_BLOB_INFO } from '~/repository/constants';
 
 export const i18n = {
-  btnCopyContentsTitle: __('Copy file contents'),
+  btnCopyContentsTitle: s__('BlobViewer|Copy contents'),
   btnDownloadTitle: __('Download'),
   btnRawTitle: s__('BlobViewer|Open raw'),
 };

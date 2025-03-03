@@ -11,7 +11,7 @@ const REPLACE_BLOB_MODAL_ID = 'modal-replace-blob';
 
 export default {
   i18n: {
-    replace: __('Replace file'),
+    replace: __('Replace'),
   },
   replaceBlobModalId: REPLACE_BLOB_MODAL_ID,
   components: {

@@ -1990,6 +1990,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_4c320a13bc8d() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "security_orchestration_policy_configurations"
+  WHERE "security_orchestration_policy_configurations"."id" = NEW."security_orchestration_policy_configuration_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_4cc5c3ac4d7f() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -3164,6 +3180,22 @@ IF NEW."namespace_id" IS NULL THEN
   INTO NEW."namespace_id"
   FROM "issues"
   WHERE "issues"."id" = NEW."issue_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_b83b7e51e2f5() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "security_orchestration_policy_configurations"
+  WHERE "security_orchestration_policy_configurations"."id" = NEW."security_orchestration_policy_configuration_id";
 END IF;
 
 RETURN NEW;
@@ -8597,6 +8629,7 @@ CREATE TABLE approval_merge_request_rules (
     role_approvers integer[] DEFAULT '{}'::integer[] NOT NULL,
     approval_policy_action_idx smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_6fca5928b2 CHECK ((char_length(section) <= 255)),
+    CONSTRAINT check_90caab37e0 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_approval_m_r_rules_allowed_role_approvers_valid_entries CHECK (((role_approvers = '{}'::integer[]) OR (role_approvers <@ ARRAY[20, 30, 40, 50, 60])))
 );
 
@@ -16925,6 +16958,7 @@ CREATE TABLE namespace_package_settings (
     nuget_symbol_server_enabled boolean DEFAULT false NOT NULL,
     terraform_module_duplicates_allowed boolean DEFAULT false NOT NULL,
     terraform_module_duplicate_exception_regex text DEFAULT ''::text NOT NULL,
+    audit_events_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT check_31340211b1 CHECK ((char_length(generic_duplicate_exception_regex) <= 255)),
     CONSTRAINT check_d63274b2b6 CHECK ((char_length(maven_duplicate_exception_regex) <= 255)),
     CONSTRAINT check_eedcf85c48 CHECK ((char_length(nuget_duplicate_exception_regex) <= 255)),
@@ -21177,6 +21211,7 @@ CREATE TABLE scan_result_policies (
     action_idx smallint DEFAULT 0 NOT NULL,
     custom_roles bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     licenses jsonb DEFAULT '{}'::jsonb NOT NULL,
+    namespace_id bigint,
     CONSTRAINT age_value_null_or_positive CHECK (((age_value IS NULL) OR (age_value >= 0))),
     CONSTRAINT check_scan_result_policies_rule_idx_positive CHECK (((rule_idx IS NULL) OR (rule_idx >= 0))),
     CONSTRAINT custom_roles_array_check CHECK ((array_position(custom_roles, NULL::bigint) IS NULL))
@@ -27358,9 +27393,6 @@ ALTER TABLE ONLY project_type_ci_runners_e59bb2812d
 ALTER TABLE ONLY group_type_ci_runners_e59bb2812d
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
 
-ALTER TABLE approval_merge_request_rules
-    ADD CONSTRAINT check_90caab37e0 CHECK ((project_id IS NOT NULL)) NOT VALID;
-
 ALTER TABLE approvals
     ADD CONSTRAINT check_9da7c942dc CHECK ((project_id IS NOT NULL)) NOT VALID;
 
@@ -31122,6 +31154,8 @@ CREATE UNIQUE INDEX idx_environment_merge_requests_unique_index ON deployment_me
 CREATE UNIQUE INDEX idx_external_audit_event_destination_id_key_uniq ON audit_events_streaming_headers USING btree (key, external_audit_event_destination_id);
 
 CREATE INDEX idx_external_status_checks_on_id_and_project_id ON external_status_checks USING btree (id, project_id);
+
+CREATE INDEX idx_gitlab_hosted_runner_monthly_usages_on_billing_month_year ON ci_gitlab_hosted_runner_monthly_usages USING btree (EXTRACT(year FROM billing_month));
 
 CREATE INDEX idx_gpg_keys_on_user_externally_verified ON gpg_keys USING btree (user_id) WHERE (externally_verified = true);
 
@@ -35045,6 +35079,8 @@ CREATE UNIQUE INDEX index_scan_execution_policy_rules_on_unique_policy_rule_inde
 
 CREATE UNIQUE INDEX index_scan_result_policies_on_configuration_action_and_rule_idx ON scan_result_policies USING btree (security_orchestration_policy_configuration_id, project_id, orchestration_policy_idx, rule_idx, action_idx);
 
+CREATE INDEX index_scan_result_policies_on_namespace_id ON scan_result_policies USING btree (namespace_id);
+
 CREATE INDEX index_scan_result_policies_on_project_id ON scan_result_policies USING btree (project_id);
 
 CREATE INDEX index_scan_result_policy_violations_on_approval_policy_rule_id ON scan_result_policy_violations USING btree (approval_policy_rule_id);
@@ -38485,6 +38521,8 @@ CREATE TRIGGER trigger_4ad9a52a6614 BEFORE INSERT OR UPDATE ON sbom_occurrences_
 
 CREATE TRIGGER trigger_4b43790d717f BEFORE INSERT OR UPDATE ON protected_environment_approval_rules FOR EACH ROW EXECUTE FUNCTION trigger_4b43790d717f();
 
+CREATE TRIGGER trigger_4c320a13bc8d BEFORE INSERT OR UPDATE ON scan_result_policies FOR EACH ROW EXECUTE FUNCTION trigger_4c320a13bc8d();
+
 CREATE TRIGGER trigger_4cc5c3ac4d7f BEFORE INSERT OR UPDATE ON bulk_import_export_uploads FOR EACH ROW EXECUTE FUNCTION trigger_4cc5c3ac4d7f();
 
 CREATE TRIGGER trigger_4dc8ec48e038 BEFORE INSERT OR UPDATE ON requirements_management_test_reports FOR EACH ROW EXECUTE FUNCTION trigger_4dc8ec48e038();
@@ -38636,6 +38674,8 @@ CREATE TRIGGER trigger_b4520c29ea74 BEFORE INSERT OR UPDATE ON approval_merge_re
 CREATE TRIGGER trigger_b75e5731e305 BEFORE INSERT OR UPDATE ON dast_profiles_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b75e5731e305();
 
 CREATE TRIGGER trigger_b7abb8fc4cf0 BEFORE INSERT OR UPDATE ON work_item_progresses FOR EACH ROW EXECUTE FUNCTION trigger_b7abb8fc4cf0();
+
+CREATE TRIGGER trigger_b83b7e51e2f5 BEFORE INSERT OR UPDATE ON scan_result_policies FOR EACH ROW EXECUTE FUNCTION trigger_b83b7e51e2f5();
 
 CREATE TRIGGER trigger_b8eecea7f351 BEFORE INSERT OR UPDATE ON dependency_proxy_manifest_states FOR EACH ROW EXECUTE FUNCTION trigger_b8eecea7f351();
 
@@ -39809,6 +39849,9 @@ ALTER TABLE ONLY push_rules
 
 ALTER TABLE ONLY merge_request_diffs
     ADD CONSTRAINT fk_8483f3258f FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY scan_result_policies
+    ADD CONSTRAINT fk_84d4bc9abe FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY requirements
     ADD CONSTRAINT fk_85044baef0 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

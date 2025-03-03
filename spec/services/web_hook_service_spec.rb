@@ -481,7 +481,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
           expect(service_instance.execute).to have_attributes(
             status: :error,
             message: 'Error while parsing rendered custom webhook template: quoted string not terminated ' \
-                     '(after test) at line 1, column 16 [parse.c:379] in \'{"test":"oldrev}'
+                     '(after test) at line 1, column 16 [parse.c:377] in \'{"test":"oldrev}'
           )
           expect { service_instance.execute }.not_to raise_error
         end

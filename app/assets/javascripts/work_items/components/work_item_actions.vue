@@ -24,10 +24,6 @@ import {
   BASE_ALLOWED_CREATE_TYPES,
   WORK_ITEM_TYPE_VALUE_KEY_RESULT,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-  I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL,
-  I18N_WORK_ITEM_ERROR_COPY_REFERENCE,
-  I18N_WORK_ITEM_ERROR_COPY_EMAIL,
-  I18N_WORK_ITEM_NEW_RELATED_ITEM,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_VALUE_EPIC,
   WORK_ITEM_TYPE_VALUE_MAP,
@@ -260,19 +256,26 @@ export default {
           this.workItemType,
         ),
         copyCreateNoteEmail: sprintfWorkItem(
-          I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL,
+          s__('WorkItem|Copy %{workItemType} email address'),
           this.workItemType,
         ),
-        copyReferenceError: sprintfWorkItem(I18N_WORK_ITEM_ERROR_COPY_REFERENCE, this.workItemType),
+        copyReferenceError: sprintfWorkItem(
+          s__(
+            'WorkItem|Something went wrong while copying the %{workItemType} reference. Please try again.',
+          ),
+          this.workItemType,
+        ),
         copyCreateNoteEmailError: sprintfWorkItem(
-          I18N_WORK_ITEM_ERROR_COPY_EMAIL,
+          s__(
+            'WorkItem|Something went wrong while copying the %{workItemType} email address. Please try again.',
+          ),
           this.workItemType,
         ),
       };
     },
     newRelatedItemLabel() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC
-        ? sprintfWorkItem(I18N_WORK_ITEM_NEW_RELATED_ITEM, this.workItemType)
+        ? sprintfWorkItem(s__('WorkItem|New related %{workItemType}'), this.workItemType)
         : s__('WorkItem|New related item');
     },
     areYouSureDeleteMessage() {

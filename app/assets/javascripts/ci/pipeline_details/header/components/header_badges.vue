@@ -6,6 +6,8 @@ import {
   SCHEDULE_SOURCE,
   MERGE_TRAIN_EVENT_TYPE,
   MERGED_RESULT_EVENT_TYPE,
+  PIPELINE_TYPE_BRANCH,
+  PIPELINE_TYPE_TAG,
 } from '../constants';
 
 export default {
@@ -37,6 +39,12 @@ export default {
     isMergedResultsPipeline() {
       return this.mergeRequestEventType === MERGED_RESULT_EVENT_TYPE;
     },
+    isBranchPipeline() {
+      return this.pipeline.type === PIPELINE_TYPE_BRANCH;
+    },
+    isTagPipeline() {
+      return this.pipeline.type === PIPELINE_TYPE_TAG;
+    },
     isDetachedPipeline() {
       return this.mergeRequestEventType === DETACHED_EVENT_TYPE;
     },
@@ -64,6 +72,8 @@ export default {
         latest: this.pipeline.latest,
         mergeTrainPipeline: this.isMergeTrainPipeline,
         mergedResultsPipeline: this.isMergedResultsPipeline,
+        branchPipeline: this.isBranchPipeline,
+        tagPipeline: this.isTagPipeline,
         detached: this.isDetachedPipeline,
         failed: Boolean(this.failureReason),
         autoDevops: this.isAutoDevopsPipeline,
@@ -109,7 +119,7 @@ export default {
     <gl-badge
       v-if="badges.latest"
       v-gl-tooltip
-      :title="__('Latest pipeline for the most recent commit on this branch')"
+      :title="__('Latest pipeline for the most recent commit on this ref')"
       variant="success"
     >
       {{ s__('Pipelines|latest') }}
@@ -165,6 +175,22 @@ export default {
       variant="info"
     >
       {{ s__('Pipelines|merged results') }}
+    </gl-badge>
+    <gl-badge
+      v-if="badges.branchPipeline"
+      v-gl-tooltip
+      :title="s__('Pipelines|This pipeline ran for a branch.')"
+      variant="info"
+    >
+      {{ s__('Pipelines|branch') }}
+    </gl-badge>
+    <gl-badge
+      v-if="badges.tagPipeline"
+      v-gl-tooltip
+      :title="s__('Pipelines|This pipeline ran for a tag.')"
+      variant="info"
+    >
+      {{ s__('Pipelines|tag') }}
     </gl-badge>
     <gl-badge
       v-if="badges.stuck"

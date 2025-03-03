@@ -81,6 +81,60 @@ RSpec.describe BasePolicy do
     end
   end
 
+  describe 'read_dedicated_hosted_runner_usage' do
+    let(:current_user) { build_stubbed(:user) }
+
+    subject { described_class.new(current_user, nil) }
+
+    context 'for a regular user' do
+      it { is_expected.not_to be_allowed(:read_dedicated_hosted_runner_usage) }
+    end
+
+    context 'with an admin' do
+      let(:current_user) { build_stubbed(:admin) }
+
+      before do
+        enable_admin_mode!(current_user)
+      end
+
+      context 'on a non-dedicated instance' do
+        before do
+          allow(Gitlab::CurrentSettings).to receive(:gitlab_dedicated_instance?).and_return(false)
+        end
+
+        it { is_expected.not_to be_allowed(:read_dedicated_hosted_runner_usage) }
+      end
+
+      context 'on a dedicated instance' do
+        before do
+          allow(Gitlab::CurrentSettings).to receive(:gitlab_dedicated_instance?).and_return(true)
+        end
+
+        it { is_expected.to be_allowed(:read_dedicated_hosted_runner_usage) }
+      end
+    end
+
+    context 'with an admin not in admin mode' do
+      let(:current_user) { build_stubbed(:admin) }
+
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:gitlab_dedicated_instance?).and_return(true)
+      end
+
+      it { is_expected.not_to be_allowed(:read_dedicated_hosted_runner_usage) }
+    end
+
+    context 'with anonymous' do
+      let(:current_user) { nil }
+
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:gitlab_dedicated_instance?).and_return(true)
+      end
+
+      it { is_expected.not_to be_allowed(:read_dedicated_hosted_runner_usage) }
+    end
+  end
+
   describe 'read cross project' do
     let(:current_user) { build_stubbed(:user) }
     let(:user) { build_stubbed(:user) }

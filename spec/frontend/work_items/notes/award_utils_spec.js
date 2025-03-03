@@ -25,7 +25,7 @@ describe('Work item note award utils', () => {
   const currentUserId = getIdFromGraphQLId(mockAwardEmojiThumbsDown.user.id);
 
   beforeEach(() => {
-    window.gon = { current_user_id: currentUserId };
+    window.gon = { current_user_id: currentUserId, current_user_fullname: 'root' };
   });
 
   describe('getMutation', () => {

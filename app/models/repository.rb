@@ -901,9 +901,13 @@ class Repository
       options[:start_repository] = start_project.repository.raw_repository
     end
 
-    skip_target_sha = options.delete(:skip_target_sha)
-    unless skip_target_sha
-      options[:target_sha] = self.commit(options[:branch_name])&.sha
+    if Feature.enabled?(:commit_files_target_sha, project)
+      options[:target_sha] = self.commit(options[:branch_name])&.sha || blank_ref
+    else
+      skip_target_sha = options.delete(:skip_target_sha)
+      unless skip_target_sha
+        options[:target_sha] = self.commit(options[:branch_name])&.sha
+      end
     end
 
     with_cache_hooks { raw.commit_files(user, **options) }

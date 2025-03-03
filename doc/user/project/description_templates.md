@@ -104,7 +104,7 @@ When you select a description template, its content is copied to the description
 
 To discard any changes to the description you've made after selecting the template: expand the **Choose a template** dropdown list and select **Reset template**.
 
-![Choosing a description template in an issue](img/description_templates_v17-10.png)
+![Choosing a description template in an issue](img/description_templates_v17_10.png)
 
 {{< alert type="note" >}}
 

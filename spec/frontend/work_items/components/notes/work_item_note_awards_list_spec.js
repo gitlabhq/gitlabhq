@@ -73,6 +73,7 @@ describe('Work Item Note Awards List', () => {
 
   beforeEach(() => {
     window.gon.current_user_id = currentUserId;
+    window.gon.current_user_fullname = 'root';
   });
 
   describe('when not editing', () => {

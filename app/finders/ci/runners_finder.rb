@@ -22,6 +22,7 @@ module Ci
                 all_runners
               end
 
+      items = by_ids(items)
       items = search(items)
       items = by_active(items)
       items = by_status(items)
@@ -44,6 +45,12 @@ module Ci
     private
 
     attr_reader :group, :project
+
+    def by_ids(items)
+      return items unless @params[:id_in]
+
+      items.id_in(@params[:id_in])
+    end
 
     def runner_type
       @params[:type_type]&.to_sym

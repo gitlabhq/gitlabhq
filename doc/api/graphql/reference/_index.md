@@ -409,6 +409,12 @@ Returns [`CiConfig`](#ciconfig).
 | <a id="queryciconfigsha"></a>`sha` | [`String`](#string) | Sha for the pipeline. |
 | <a id="queryciconfigskipverifyprojectsha"></a>`skipVerifyProjectSha` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.5. **Status**: Experiment. If the provided `sha` is found in the project's repository but is not associated with a Git reference (a detached commit), the verification fails and a validation error is returned. Otherwise, verification passes, even if the `sha` is invalid. Set to `true` to skip this verification process. |
 
+### `Query.ciDedicatedHostedRunnerFilters`
+
+Returns available filters for GitLab Dedicated runner usage data.
+
+Returns [`CiDedicatedHostedRunnerFilters`](#cidedicatedhostedrunnerfilters).
+
 ### `Query.ciDedicatedHostedRunnerUsage`
 
 Compute usage data for runners across namespaces on GitLab Dedicated. Defaults to the current year if no year or billing month is specified. Ultimate only.
@@ -11400,6 +11406,7 @@ Input type: `UpdateNamespacePackageSettingsInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationupdatenamespacepackagesettingsauditeventsenabled"></a>`auditEventsEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
 | <a id="mutationupdatenamespacepackagesettingsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatenamespacepackagesettingsgenericduplicateexceptionregex"></a>`genericDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When generic_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
 | <a id="mutationupdatenamespacepackagesettingsgenericduplicatesallowed"></a>`genericDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate generic packages are allowed for this namespace. |
@@ -11413,7 +11420,7 @@ Input type: `UpdateNamespacePackageSettingsInput`
 | <a id="mutationupdatenamespacepackagesettingsnpmpackagerequestsforwarding"></a>`npmPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether npm package forwarding is allowed for this namespace. |
 | <a id="mutationupdatenamespacepackagesettingsnugetduplicateexceptionregex"></a>`nugetDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
 | <a id="mutationupdatenamespacepackagesettingsnugetduplicatesallowed"></a>`nugetDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate NuGet packages are allowed for this namespace. |
-| <a id="mutationupdatenamespacepackagesettingsnugetsymbolserverenabled"></a>`nugetSymbolServerEnabled` | [`Boolean`](#boolean) | Indicates wheather the NuGet symbol server is enabled for this namespace. |
+| <a id="mutationupdatenamespacepackagesettingsnugetsymbolserverenabled"></a>`nugetSymbolServerEnabled` | [`Boolean`](#boolean) | Indicates whether the NuGet symbol server is enabled for this namespace. |
 | <a id="mutationupdatenamespacepackagesettingspypipackagerequestsforwarding"></a>`pypiPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether PyPI package forwarding is allowed for this namespace. |
 | <a id="mutationupdatenamespacepackagesettingsterraformmoduleduplicateexceptionregex"></a>`terraformModuleDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When terraform_module_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
 | <a id="mutationupdatenamespacepackagesettingsterraformmoduleduplicatesallowed"></a>`terraformModuleDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate Terraform packages are allowed for this namespace. |
@@ -21731,6 +21738,17 @@ CI/CD config variables.
 | <a id="ciconfigvariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
 | <a id="ciconfigvariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
 | <a id="ciconfigvariablevalueoptions"></a>`valueOptions` | [`[String!]`](#string) | Value options for the variable. |
+
+### `CiDedicatedHostedRunnerFilters`
+
+Filter options available for GitLab Dedicated runner usage data.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cidedicatedhostedrunnerfiltersrunners"></a>`runners` | [`CiRunnerConnection`](#cirunnerconnection) | List of unique runners with usage data. (see [Connections](#connections)) |
+| <a id="cidedicatedhostedrunnerfiltersyears"></a>`years` | [`[Int!]`](#int) | List of years with available usage data. |
 
 ### `CiDedicatedHostedRunnerUsage`
 
@@ -32641,6 +32659,7 @@ Namespace-level Package Registry settings.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="packagesettingsauditeventsenabled"></a>`auditEventsEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.10. **Status**: Experiment. Indicates whether audit events are created when publishing or deleting a package in the namespace (Premium and Ultimate only). Returns `null` if `package_registry_audit_events` feature flag is disabled. |
 | <a id="packagesettingsgenericduplicateexceptionregex"></a>`genericDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When generic_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
 | <a id="packagesettingsgenericduplicatesallowed"></a>`genericDuplicatesAllowed` | [`Boolean!`](#boolean) | Indicates whether duplicate generic packages are allowed for this namespace. |
 | <a id="packagesettingslockmavenpackagerequestsforwarding"></a>`lockMavenPackageRequestsForwarding` | [`Boolean!`](#boolean) | Indicates whether Maven package forwarding is locked for all descendent namespaces. |
@@ -32654,7 +32673,7 @@ Namespace-level Package Registry settings.
 | <a id="packagesettingsnpmpackagerequestsforwardinglocked"></a>`npmPackageRequestsForwardingLocked` | [`Boolean!`](#boolean) | Indicates whether npm package forwarding settings are locked by a parent namespace. |
 | <a id="packagesettingsnugetduplicateexceptionregex"></a>`nugetDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
 | <a id="packagesettingsnugetduplicatesallowed"></a>`nugetDuplicatesAllowed` | [`Boolean!`](#boolean) | Indicates whether duplicate NuGet packages are allowed for this namespace. |
-| <a id="packagesettingsnugetsymbolserverenabled"></a>`nugetSymbolServerEnabled` | [`Boolean!`](#boolean) | Indicates wheather the NuGet symbol server is enabled for this namespace. |
+| <a id="packagesettingsnugetsymbolserverenabled"></a>`nugetSymbolServerEnabled` | [`Boolean!`](#boolean) | Indicates whether the NuGet symbol server is enabled for this namespace. |
 | <a id="packagesettingspypipackagerequestsforwarding"></a>`pypiPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether PyPI package forwarding is allowed for this namespace. |
 | <a id="packagesettingspypipackagerequestsforwardinglocked"></a>`pypiPackageRequestsForwardingLocked` | [`Boolean!`](#boolean) | Indicates whether PyPI package forwarding settings are locked by a parent namespace. |
 | <a id="packagesettingsterraformmoduleduplicateexceptionregex"></a>`terraformModuleDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When terraform_module_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |

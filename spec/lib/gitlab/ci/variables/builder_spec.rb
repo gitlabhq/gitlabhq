@@ -75,6 +75,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         value: project.full_path_slug },
       { key: 'CI_PROJECT_NAMESPACE',
         value: project.namespace.full_path },
+      { key: 'CI_PROJECT_NAMESPACE_SLUG',
+        value: Gitlab::Utils.slugify(project.namespace.full_path) },
       { key: 'CI_PROJECT_NAMESPACE_ID',
         value: project.namespace.id.to_s },
       { key: 'CI_PROJECT_ROOT_NAMESPACE',

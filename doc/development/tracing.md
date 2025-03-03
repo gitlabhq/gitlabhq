@@ -91,7 +91,7 @@ To view the list of traces:
 1. Select **Monitor > Traces**.
 1. Optional. To view the details of a trace, select it from the list.
 
-   ![list of traces](img/tracing_list_v16.11.png)
+   ![list of traces](img/tracing_list_v16_11.png)
 
    The trace details page and a list of spans are displayed.
 

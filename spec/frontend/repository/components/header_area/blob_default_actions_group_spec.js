@@ -38,7 +38,7 @@ describe('Blob Default Actions Group', () => {
   const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findDropdownItemWithText = (text) =>
     findDropdownItems().wrappers.find((x) => x.props('item').text === text);
-  const findCopyFileContentItem = () => findDropdownItemWithText('Copy file contents');
+  const findCopyFileContentItem = () => findDropdownItemWithText('Copy contents');
   const findViewRawItem = () => findDropdownItemWithText('Open raw');
   const findDownloadItem = () => findDropdownItemWithText('Download');
   const findEnvironmentItem = () =>
@@ -48,14 +48,14 @@ describe('Blob Default Actions Group', () => {
     createComponent();
   });
 
-  describe('Copy file contents', () => {
-    it('renders "Copy file contents" button as enabled if the viewer is Simple', () => {
+  describe('Copy contents', () => {
+    it('renders "Copy contents" button as enabled if the viewer is Simple', () => {
       expect(findCopyFileContentItem().props('item')).toMatchObject({
         extraAttrs: { disabled: false },
       });
     });
 
-    it('renders "Copy file contents" button as disabled if the viewer is Rich', () => {
+    it('renders "Copy contents" button as disabled if the viewer is Rich', () => {
       createComponent({ activeViewerType: 'rich' });
 
       expect(findCopyFileContentItem().props('item')).toMatchObject({

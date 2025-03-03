@@ -199,6 +199,28 @@ Several known issues exist when you allow anyone to pull from the package regist
 - It does not work with the [Composer](../composer_repository/_index.md#install-a-composer-package), because Composer only has a group endpoint.
 - It works with Conan, but using [`conan search`](../conan_repository/_index.md#search-for-conan-packages-in-the-package-registry) does not work.
 
+## Audit events
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329588) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `package_registry_audit_events`. Disabled by default.
+
+{{< /history >}}
+
+Create audit events when a package is published or deleted. Namespace Owners can turn on the `audit_events_enabled` setting through the [GraphQl API](../../../api/graphql/reference/_index.md#packagesettings).
+
+You can view audit events:
+
+- On the [**Group audit events**](../../compliance/audit_events.md#group-audit-events) page if the package's project is in a group.
+- On the [**Project audit events**](../../compliance/audit_events.md#project-audit-events) page if the package's project is in a user namespace.
+
 ## Accepting contributions
 
 This table lists unsupported package manager formats that we are accepting contributions for.
