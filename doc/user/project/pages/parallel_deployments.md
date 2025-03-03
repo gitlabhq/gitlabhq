@@ -21,6 +21,7 @@ title: GitLab Pages parallel deployments
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/507423) to allow periods in `path_prefix` in GitLab 17.8.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/500000) to allow variables when passed to `publish` property in GitLab 17.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/487161) in GitLab 17.9. Feature flag `pages_multiple_versions_setting` removed.
+- Automatically appending `pages:pages.publish` path to `artifacts:paths` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) in GitLab 17.10 for Pages jobs only.
 
 {{< /history >}}
 
@@ -55,11 +56,8 @@ To create a parallel deployment:
      stage: deploy
      script:
        - echo "Pages accessible through ${CI_PAGES_URL}/${CI_COMMIT_BRANCH}"
-     pages:
+     pages:  # specifies that this is a Pages job and publishes the default public directory
        path_prefix: "$CI_COMMIT_BRANCH"
-     artifacts:
-       paths:
-         - public
    ```
 
    The `path_prefix` value:
@@ -172,11 +170,8 @@ deploy-pages:
     - echo "Pages accessible through ${CI_PAGES_URL}"
   variables:
     PAGES_PREFIX: "" # No prefix by default (main)
-  pages:  # specifies that this is a Pages job
+  pages:  # specifies that this is a Pages job and publishes the default public directory
     path_prefix: "$PAGES_PREFIX"
-  artifacts:
-    paths:
-    - public
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # Run on default branch (with default PAGES_PREFIX)
     - if: $CI_COMMIT_BRANCH == "staging" # Run on main (with default PAGES_PREFIX)
@@ -208,14 +203,11 @@ deploy-pages:
     - echo "Pages accessible through ${CI_PAGES_URL}"
   variables:
     PAGES_PREFIX: "" # no prefix by default (master)
-  pages:  # specifies that this is a Pages job
+  pages:  # specifies that this is a Pages job and publishes the default public directory
     path_prefix: "$PAGES_PREFIX"
   environment:
     name: "Pages ${PAGES_PREFIX}"
     url: $CI_PAGES_URL
-  artifacts:
-    paths:
-    - public
   rules:
     - if: $CI_COMMIT_BRANCH == "staging" # ensure to run on master (with default PAGES_PREFIX)
       variables:

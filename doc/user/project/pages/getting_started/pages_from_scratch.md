@@ -149,9 +149,17 @@ deploy-pages:
 
 ## Specify the `public` directory for artifacts
 
-Now that Jekyll has output the files to the `public` directory,
-the runner needs to know where to get them. The artifacts are stored
-in the `public` directory:
+{{< history >}}
+
+- Automatically appending `pages:pages.publish` path to `artifacts:paths` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) in GitLab 17.10 for Pages jobs only.
+
+{{< /history >}}
+
+Now that Jekyll has output the files to the `public` directory, the runner needs to know where
+to get them. In GitLab 17.10 and later, for Pages jobs only, the `public` directory is
+appended automatically to [`artifacts:paths`](../../../../ci/yaml/_index.md#artifactspaths)
+when the [`pages:pages.publish`](../../../../ci/yaml/_index.md#pagespagespublish) path
+is not explicitly specified:
 
 ```yaml
 deploy-pages:
@@ -159,10 +167,7 @@ deploy-pages:
     - gem install bundler
     - bundle install
     - bundle exec jekyll build -d public
-  pages: true  # specifies that this is a Pages job
-  artifacts:
-    paths:
-      - public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
 ```
 
 Your `.gitlab-ci.yml` file should now look like this:
@@ -176,10 +181,7 @@ deploy-pages:
     - gem install bundler
     - bundle install
     - bundle exec jekyll build -d public
-  pages: true  # specifies that this is a Pages job
-  artifacts:
-    paths:
-      - public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
 ```
 
 ## Deploy and view your website
@@ -224,10 +226,7 @@ deploy-pages:
     - gem install bundler
     - bundle install
     - bundle exec jekyll build -d public
-  pages: true  # specifies that this is a Pages job
-  artifacts:
-    paths:
-      - public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
 ```
 
 Then configure the pipeline to run the job for the
@@ -246,10 +245,7 @@ deploy-pages:
     - gem install bundler
     - bundle install
     - bundle exec jekyll build -d public
-  pages: true  # specifies that this is a Pages job
-  artifacts:
-    paths:
-      - public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
 ```
@@ -280,10 +276,7 @@ deploy-pages:
     - gem install bundler
     - bundle install
     - bundle exec jekyll build -d public
-  pages: true  # specifies that this is a Pages job
-  artifacts:
-    paths:
-      - public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   environment: production
@@ -306,10 +299,7 @@ deploy-pages:
     - gem install bundler
     - bundle install
     - bundle exec jekyll build -d public
-  pages: true  # specifies that this is a Pages job
-  artifacts:
-    paths:
-      - public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   environment: production
@@ -361,10 +351,7 @@ deploy-pages:
   stage: deploy
   script:
     - bundle exec jekyll build -d public
-  pages: true  # specifies that this is a Pages job
-  artifacts:
-    paths:
-      - public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   environment: production
@@ -407,10 +394,7 @@ deploy-pages:
   stage: deploy
   script:
     - bundle exec jekyll build -d public
-  pages: true  # specifies that this is a Pages job
-  artifacts:
-    paths:
-      - public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   environment: production

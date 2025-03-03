@@ -5,19 +5,25 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::Sos::BaseDbStatsHandler, feature_category: :database do
   let(:temp_directory) { Dir.mktmpdir }
   let(:output_file_path) { temp_directory }
-  let(:expected_file_path) { File.join(output_file_path, db_name, "#{query.each_key.first}.csv") }
   let(:output) { Gitlab::Database::Sos::Output.new(output_file_path, mode: :directory) }
   let(:db_name) { 'test_db' }
   let(:connection) { ApplicationRecord.connection }
   let(:handler) { described_class.new(connection, db_name, output) }
-  let(:query) { { pg_show_all_settings: "SHOW ALL;" } }
-  let(:result) { ApplicationRecord.connection.execute(query[:pg_show_all_settings]) }
-
-  before do
-    allow(Gitlab::Database::Sos::DbStatsActivity).to receive(:queries).and_return({
-      pg_show_all_settings: 'SHOW ALL;'
-    })
+  let(:queries) do
+    {
+      pg_show_all_settings: 'SHOW ALL;',
+      pg_statio_user_tables: 'SELECT now() AS timestamp, * FROM pg_statio_user_tables;'
+    }
   end
+
+  let(:result) { ApplicationRecord.connection.execute(queries[:pg_show_all_settings]) }
+  let(:result_with_timestamp) { ApplicationRecord.connection.execute(queries[:pg_statio_user_tables]) }
+  let(:timestamp) { Time.zone.now.strftime("%Y%m%d_%H%M%S") }
+  let(:file_path_with_timestamp) do
+    File.join(output_file_path, db_name, queries.keys.last.to_s, "#{timestamp}.csv")
+  end
+
+  let(:file_path_without_timestamp) { File.join(output_file_path, db_name, "#{queries.each_key.first}.csv") }
 
   after do
     FileUtils.remove_entry(temp_directory)
@@ -34,7 +40,7 @@ RSpec.describe Gitlab::Database::Sos::BaseDbStatsHandler, feature_category: :dat
   describe '#execute_query' do
     context "when a query is sucessfully executed" do
       it 'executes the query and returns the result' do
-        result = handler.execute_query(query[:pg_show_all_settings])
+        result = handler.execute_query(queries[:pg_show_all_settings])
         expect(result).to be_an(PG::Result)
         expect(result.ntuples).to be > 0
       end
@@ -55,14 +61,26 @@ RSpec.describe Gitlab::Database::Sos::BaseDbStatsHandler, feature_category: :dat
   end
 
   describe '#write_to_csv' do
+    before do
+      allow(Time.zone).to receive(:now).and_return(Time.zone.parse('2023-01-01 12:00:00 UTC'))
+
+      allow(Gitlab::Database::Sos::DbStatsActivity).to receive(:queries).and_return({
+        pg_show_all_settings: 'SHOW ALL;'
+      })
+
+      allow(Gitlab::Database::Sos::DbLoopStatsActivity).to receive(:queries).and_return({
+        pg_statio_user_tables: 'SELECT now() AS timestamp, * FROM pg_statio_user_tables;'
+      })
+    end
+
     context 'when result exists' do
-      it 'creates a CSV file with the correct headers and data (if applicable)' do
-        handler.write_to_csv(query.each_key.first, result)
+      it 'creates a CSV file with the correct headers and data (if applicable) without timestamps' do
+        handler.write_to_csv(queries.each_key.first, result)
         output.finish
 
-        expect(File.exist?(expected_file_path)).to be true
+        expect(File.exist?(file_path_without_timestamp)).to be true
 
-        csv_content = CSV.read(expected_file_path)
+        csv_content = CSV.read(file_path_without_timestamp)
 
         expect(csv_content.first).to eq(%w[name setting description])
 
@@ -73,17 +91,36 @@ RSpec.describe Gitlab::Database::Sos::BaseDbStatsHandler, feature_category: :dat
         # it's safe to say this value will not change for us.
         expect(block_size_row[1]).to eq('8192')
       end
+
+      it 'creates a CSV file with the correct headers and data (if applicable) with timestamps' do
+        handler.write_to_csv(queries.keys.last, result_with_timestamp, include_timestamp: true)
+        output.finish
+
+        expect(File.exist?(file_path_with_timestamp)).to be true
+
+        csv_content = CSV.read(file_path_with_timestamp)
+
+        expect(csv_content.first).to include("timestamp", "relid", "schemaname")
+      end
     end
 
     context 'when result is empty' do
       let(:empty_result) { [] }
 
-      it 'creates an empty CSV file' do
-        handler.write_to_csv(query.each_key.first, empty_result)
+      it 'creates an empty CSV file without timestamp' do
+        handler.write_to_csv(queries.each_key.first, empty_result)
         output.finish
 
-        expect(File.exist?(expected_file_path)).to be true
-        expect(File.zero?(expected_file_path)).to be true
+        expect(File.exist?(file_path_without_timestamp)).to be true
+        expect(File.zero?(file_path_without_timestamp)).to be true
+      end
+
+      it 'creates an empty CSV file with timestamp' do
+        handler.write_to_csv(queries.keys.last, empty_result, include_timestamp: true)
+        output.finish
+
+        expect(File.exist?(file_path_with_timestamp)).to be true
+        expect(File.zero?(file_path_with_timestamp)).to be true
       end
     end
 
@@ -94,9 +131,9 @@ RSpec.describe Gitlab::Database::Sos::BaseDbStatsHandler, feature_category: :dat
 
       it 'logs the error' do
         expect(Gitlab::AppLogger).to receive(:error) do |message|
-          expect(message).to include("Error writing CSV for DB:#{db_name} query:#{query.each_key.first} error message")
+          expect(message).to include("Error writing CSV for DB:#{db_name} query:#{queries.each_key.first} ")
         end
-        handler.write_to_csv(query.each_key.first, result)
+        handler.write_to_csv(queries.each_key.first, result)
       end
     end
   end

@@ -124,10 +124,7 @@ deploy-pages:
     - mkdir .public
     - cp -r * .public
     - mv .public public
-  pages: true  # specifies that this is a Pages job
-  artifacts:
-    paths:
-      - public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
 ```
@@ -168,10 +165,7 @@ deploy-pages:
   script:
     - gem install jekyll
     - jekyll build -d public/
-  pages: true  # specifies that this is a Pages job
-  artifacts:
-    paths:
-      - public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
   rules:
     - if: '$CI_COMMIT_REF_NAME == "pages"'
 ```
@@ -380,10 +374,7 @@ deploy-pages:
     ARTIFACT_COMPRESSION_LEVEL: "fastest"
   script:
     - echo "Deploying pages"
-  pages: true  # specifies that this is a Pages job
-  artifacts:
-    paths:
-      - public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
   environment: production
 ```
 

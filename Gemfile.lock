@@ -775,7 +775,7 @@ GEM
       activesupport (>= 5.2.0)
       rake (~> 13.0)
       snowplow-tracker (~> 0.8.0)
-    gitlab-secret_detection (0.18.0)
+    gitlab-secret_detection (0.19.0)
       grpc (~> 1.63)
       grpc-tools (~> 1.63)
       grpc_reflection (~> 0.1)
@@ -1097,7 +1097,7 @@ GEM
     language_server-protocol (3.17.0.3)
     launchy (2.5.2)
       addressable (~> 2.8)
-    lefthook (1.10.10)
+    lefthook (1.11.2)
     letter_opener (1.10.0)
       launchy (>= 2.2, < 4)
     letter_opener_web (3.0.0)
@@ -2181,7 +2181,7 @@ DEPENDENCIES
   knapsack (~> 4.0.0)
   kramdown (~> 2.5.0)
   kubeclient (~> 4.11.0)
-  lefthook (~> 1.10.0)
+  lefthook (~> 1.11.0)
   letter_opener_web (~> 3.0.0)
   license_finder (~> 7.0)
   licensee (~> 9.16)
@@ -2366,4 +2366,4 @@ DEPENDENCIES
   yajl-ruby (~> 1.4.3)
 
 BUNDLED WITH
-   2.5.11
+   2.6.5

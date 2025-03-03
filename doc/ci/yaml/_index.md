@@ -1349,6 +1349,13 @@ link outside it.
   - In [GitLab Runner 13.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620),
     [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
   - In GitLab Runner 12.10 and earlier, [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
+- For [GitLab Pages job](#pages):
+  - In [GitLab 17.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/428018),
+    the [`pages:pages.publish`](#pagespagespublish) path is automatically appended to `artifacts:paths`,
+    so you don't need to specify it again.
+  - In [GitLab 17.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/428018),
+    when the [`pages:pages.publish`](#pagespagespublish) path is not specified,
+    the `public` directory is automatically appended to `artifacts:paths`.
 
 CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
@@ -3594,13 +3601,10 @@ You must:
 **Example of `pages`**:
 
 ```yaml
-pages:
+pages:  # specifies that this is a Pages job and publishes the default public directory
   stage: deploy
   script:
     - mv my-html-content public
-  artifacts:
-    paths:
-      - public
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   environment: production
@@ -3616,6 +3620,7 @@ This directory is exported as an artifact and published with GitLab Pages.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415821) in GitLab 16.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/500000) to allow variables when passed to `publish` property in GitLab 17.9.
 - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) the `publish` property under the `pages` keyword in GitLab 17.9.
+- [Appended](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) the `pages:pages.publish` path automatically to `artifacts:paths` in GitLab 17.10.
 
 {{< /history >}}
 
@@ -3625,6 +3630,9 @@ The top-level `publish` keyword is deprecated as of GitLab 17.9 and must now be 
 **Keyword type**: Job keyword. You can use it only as part of a `pages` job.
 
 **Supported values**: A path to a directory containing the Pages content.
+In [GitLab 17.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/428018),
+if not specified, the default `public` directory is used and if specified,
+this path is automatically appended to [`artifacts:paths`](#artifactspaths).
 
 **Example of `pages.publish`**:
 
@@ -3633,11 +3641,8 @@ pages:
   stage: deploy
   script:
     - npx @11ty/eleventy --input=path/to/eleventy/root --output=dist
-  artifacts:
-    paths:
-      - dist
   pages:
-    publish: dist
+    publish: dist  # this path is automatically appended to artifacts:paths
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   environment: production
@@ -3655,11 +3660,8 @@ pages:
   script:
     - mkdir -p $CUSTOM_FOLDER/$CUSTOM_PATH
     - cp -r public $CUSTOM_FOLDER/$CUSTOM_SUBFOLDER
-  artifacts:
-    paths:
-      - $CUSTOM_FOLDER/$CUSTOM_SUBFOLDER
   pages:
-    publish: $CUSTOM_FOLDER/$CUSTOM_SUBFOLDER
+    publish: $CUSTOM_FOLDER/$CUSTOM_SUBFOLDER  # this path is automatically appended to artifacts:paths
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   variables:
@@ -3707,11 +3709,8 @@ pages:
   stage: deploy
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}/${CI_COMMIT_BRANCH}"
-  pages:
+  pages:  # specifies that this is a Pages job and publishes the default public directory
     path_prefix: "$CI_COMMIT_BRANCH"
-  artifacts:
-    paths:
-    - public
 ```
 
 In this example, a different pages deployment is created for each branch.
@@ -3761,11 +3760,8 @@ pages:
   stage: deploy
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}"
-  pages:
+  pages:  # specifies that this is a Pages job and publishes the default public directory
     expire_in: 1 week
-  artifacts:
-    paths:
-      - public
 ```
 
 ### `parallel`

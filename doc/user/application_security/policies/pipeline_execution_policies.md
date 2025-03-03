@@ -184,6 +184,7 @@ Prerequisites:
   specified in a security policy project using the `content` type. To do so, enable the setting **Pipeline execution policies** in the general settings of the security policy project.
   Enabling this setting grants the user who triggered the pipeline access to
   read the CI/CD configuration file enforced by the pipeline execution policy. This setting does not grant the user access to any other parts of the project where the configuration file is stored.
+  For more details, see [Grant access automatically](#grant-access-automatically).
 
 ### `skip_ci` type
 
@@ -209,6 +210,56 @@ from bypassing the pipeline execution policies.
 To customize policy enforcement, you can define a policy's scope to either include, or exclude,
 specified projects, groups, or compliance framework labels. For more details, see
 [Scope](_index.md#scope).
+
+## Manage access to the CI/CD configuration
+
+When you enforce pipeline execution policies on a project, users that trigger pipelines must have at least read-only access to the project that contains the policy CI/CD configuration. You can grant access to the project manually or automatically.
+
+### Grant access manually
+
+To allow users or groups to run pipelines with enforced pipeline execution policies, you can invite them to the project that contains the policy CI/CD configuration.
+
+### Grant access automatically
+
+You can automatically grant access to the policy CI/CD configuration for all users who run pipelines in projects with enforced pipeline execution policies.
+
+Prerequisites:
+
+- Make sure the pipeline execution policy CI/CD configuration is stored in a security policy project.
+- In the general settings of the security policy project, enable the **Pipeline execution policies** setting.
+
+If you don't yet have a security policy project and you are creating the first pipeline execution policy, create an empty project and link it as a security policy project. To link the project:
+
+- In the group or project where you want to enforce the policy, select **Secure** > **Policies** > **Edit policy project**, and select the security policy project.
+
+The project becomes a security policy project, and the setting becomes available.
+
+#### Configuration
+
+1. In the policy project, select **Settings** > **General** > **Visibility, project features, permissions**.
+1. Enable the setting **Pipeline execution policies: Grant access to the CI/CD configurations for projects linked to this security policy project as the source for security policies.**
+1. In the policy project, create a file for the policy CI/CD configuration.
+
+   ```yaml
+   # policy-ci.yml
+
+   policy-job:
+     script: ...
+   ```
+
+1. In the group or project where you want to enforce the policy, create a pipeline execution policy and specify the CI/CD configuration file for the security policy project.
+
+   ```yaml
+   pipeline_execution_policy:
+   - name: My pipeline execution policy
+     description: Enforces CI/CD jobs
+     enabled: true
+     pipeline_config_strategy: inject_policy
+     content:
+       include:
+       - project: my-group/my-security-policy-project
+         file: policy-ci.yml
+   ```
 
 ## Pipeline configuration strategies
 
@@ -401,7 +452,7 @@ the only jobs that run are the pipeline execution policy jobs.
 
 {{< history >}}
 
-- Updated handling of workflow rules [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175088) in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `policies_always_override_project_ci`. Enabled by default. 
+- Updated handling of workflow rules [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175088) in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `policies_always_override_project_ci`. Enabled by default.
 - Updated handling of workflow rules [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512877) in GitLab 17.10. Feature flag `policies_always_override_project_ci` removed.
 
 {{< /history >}}
@@ -619,7 +670,7 @@ pipeline_execution_policy:
   pipeline_config_strategy: override_project_ci
   content:
     include:
-    - project: verify-issue-469027/policy-ci
+    - project: my-group/pipeline-execution-ci-project
       file: policy-ci.yml
       ref: main # optional
   policy_scope:
@@ -734,7 +785,7 @@ pipeline_execution_policy:
 - name: Pipeline execution policy
   description: ''
   enabled: true
-  pipeline_config_strategy: inject_ci
+  pipeline_config_strategy: inject_policy
   content:
     include:
     - project: my-group/pipeline-execution-ci-project

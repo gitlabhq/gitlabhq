@@ -256,11 +256,38 @@ export function removeParams(params, url = window.location.href, skipEncoding = 
   return `${root}${writableQuery}${writableFragment}`;
 }
 
+export function updateHistory({ state = {}, title = '', url, replace = false, win = window } = {}) {
+  if (win.history) {
+    if (replace) {
+      win.history.replaceState(state, title, url);
+    } else {
+      win.history.pushState(state, title, url);
+    }
+  }
+}
+
 /**
  * Returns value after the '#' in the location hash
  * @returns Current value of the hash, undefined if not set
  */
 export const getLocationHash = () => window.location.hash?.split('#')[1];
+
+/**
+ * Sets location hash to the given value.
+ * When value is undefined, the hash is removed.
+ * @param {string} hash - use undefined to remove location hash
+ */
+export const setLocationHash = (hash) => {
+  if (hash === undefined) {
+    updateHistory({
+      title: document.title,
+      url: window.location.pathname + window.location.search,
+      replace: true,
+    });
+  } else {
+    window.location.hash = hash;
+  }
+};
 
 /**
  * Returns a boolean indicating whether the URL hash contains the given string value
@@ -298,16 +325,6 @@ export const setUrlFragment = (url, fragment) => {
   const encodedFragment = encodeURIComponent(fragment.replace(/^#/, ''));
   return `${rootUrl}#${encodedFragment}`;
 };
-
-export function updateHistory({ state = {}, title = '', url, replace = false, win = window } = {}) {
-  if (win.history) {
-    if (replace) {
-      win.history.replaceState(state, title, url);
-    } else {
-      win.history.pushState(state, title, url);
-    }
-  }
-}
 
 export const escapeFileUrl = (fileUrl) => encodeURIComponent(fileUrl).replace(/%2F/g, '/');
 

@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlButtonGroup, GlFormGroup, GlIcon, GlAlert } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
+import { getLocationHash, setLocationHash } from '~/lib/utils/url_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import SingleChoiceSelector from '~/vue_shared/components/single_choice_selector.vue';
@@ -149,6 +150,13 @@ export default {
     step2Component() {
       return this.selectedProjectOption.component;
     },
+    additionalBreadcrumb() {
+      return this.currentStep === 2 ? this.selectedProjectOption : null;
+    },
+  },
+
+  created() {
+    this.setStepFromLocationHash();
   },
 
   methods: {
@@ -163,9 +171,20 @@ export default {
     },
     onBack() {
       this.currentStep -= 1;
+      setLocationHash();
     },
     onNext() {
       this.currentStep += 1;
+      setLocationHash(this.selectedProjectType);
+    },
+    setStepFromLocationHash() {
+      const hash = getLocationHash();
+      if (this.availableProjectTypes.some((type) => type.value === hash)) {
+        this.selectedProjectType = hash;
+        this.currentStep = 2;
+      } else {
+        this.currentStep = 1;
+      }
     },
   },
 };
@@ -173,7 +192,7 @@ export default {
 
 <template>
   <div>
-    <breadcrumb />
+    <breadcrumb :selected-project-type="additionalBreadcrumb" />
 
     <multi-step-form-template
       v-if="currentStep === 1"

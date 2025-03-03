@@ -1,0 +1,20 @@
+---
+description: Tracks when the CI JobToken Allowlist Autopopulation action is performed for a project
+internal_events: true
+action: ci_job_token_autopopulate_allowlist
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: The method of execution, e.g. UI or rake task
+product_group: pipeline_security
+product_categories:
+- secrets_management
+milestone: '17.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182635
+tiers:
+- free
+- premium
+- ultimate

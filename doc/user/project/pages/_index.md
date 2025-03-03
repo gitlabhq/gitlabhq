@@ -219,11 +219,8 @@ deploy-pages:
   stage: deploy
   script:
     - ...
-  pages:  # specifies that this is a Pages job
+  pages:  # specifies that this is a Pages job and publishes the default public directory
     expire_in: 1 week
-  artifacts:
-    paths:
-      - public
 ```
 
 Expired deployments are stopped by a cron job that runs every 10 minutes.
@@ -287,10 +284,7 @@ deploy-my-pages-site:
   stage: deploy
   script:
     - npm run build
-  pages: true  # specifies that this is a Pages job
-  artifacts:
-    paths:
-      - public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
 ```
 
 For example, using a hash:
@@ -300,11 +294,8 @@ deploy-pages-review-app:
   stage: deploy
   script:
     - npm run build
-  pages:  # specifies that this is a Pages job
+  pages:  # specifies that this is a Pages job and publishes the default public directory
     path_prefix: '_staging'
-  artifacts:
-    paths:
-    - public
 ```
 
 If the `pages` property of a job named `pages` is set to `false`, no

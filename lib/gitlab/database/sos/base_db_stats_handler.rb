@@ -19,17 +19,23 @@ module Gitlab
           []
         end
 
-        def write_to_csv(query_name, result)
-          file_path = File.join(name, "#{query_name}.csv")
+        def write_to_csv(query_name, result, include_timestamp: false)
+          timestamp = Time.zone.now.strftime("%Y%m%d_%H%M%S")
+
+          file_path = if include_timestamp
+                        File.join(name, query_name.to_s, "#{timestamp}.csv")
+                      else
+                        File.join(name, "#{query_name}.csv")
+                      end
 
           output.write_file(file_path) do |f|
-            CSV.open(f, 'w+') do |csv|
+            CSV.open(f, "w+") do |csv|
               csv << result.fields
               result.each { |row| csv << row.values }
             end
           end
         rescue StandardError => e
-          Gitlab::AppLogger.error("Error writing CSV for DB:#{name} query:#{query_name} error message:#{e.message}")
+          Gitlab::AppLogger.error("Error writing CSV for DB:#{name} query:#{query_name} error_message:#{e.message}")
         end
       end
     end

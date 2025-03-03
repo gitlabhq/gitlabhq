@@ -122,13 +122,18 @@ end
 
 RSpec.shared_examples 'merge train pipeline' do
   let(:ci_merge_request_event_type) { 'merge_train' }
+  let(:expected_job_names) do
+    %w[
+      dont-interrupt-me
+      pre-merge-checks
+    ]
+  end
 
   it "succeeds with expected job" do
     expect(pipeline.yaml_errors).to be_nil
     expect(pipeline.errors).to be_empty
     expect(pipeline.status).to eq('created')
-    expect(jobs).to include('pre-merge-checks')
-    expect(jobs).not_to include('upload-frontend-fixtures')
+    expect(jobs).to eq(expected_job_names)
   end
 end
 
