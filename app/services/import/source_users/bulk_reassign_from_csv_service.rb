@@ -92,6 +92,14 @@ module Import
           )
         end
 
+        # If the source user is already in some mid-reassignment state for the
+        # same reassign_to_user, we treat it as though the CSV line matched.
+        # This is to avoid misleading error messages if a worker restart causes
+        # the same CSV line to be processed multiple times.
+        if !source_user.reassignable_status? && source_user.reassign_to_user_id == reassign_to_user.id
+          return ServiceResponse.success(payload: source_user)
+        end
+
         ::Import::SourceUsers::ReassignService.new(
           source_user,
           reassign_to_user,

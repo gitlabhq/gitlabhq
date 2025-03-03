@@ -30,7 +30,7 @@ RSpec.describe Import::UserMapping::AssignmentFromCsvWorker, feature_category: :
       allow(Upload).to receive(:find_by_id).and_return(fake_upload)
 
       allow_next_instance_of(Import::SourceUsers::BulkReassignFromCsvService) do |service|
-        allow(service).to receive(:find_source_user).and_return(source_user)
+        allow(service).to receive(:find_source_user).and_return(source_user.reload)
       end
     end
 

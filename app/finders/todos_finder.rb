@@ -20,6 +20,7 @@ class TodosFinder
   prepend FinderWithCrossProjectAccess
   include FinderMethods
   include Gitlab::Utils::StrongMemoize
+  include SafeFormatHelper
 
   requires_cross_project_access unless: -> { project? }
 
@@ -143,9 +144,8 @@ class TodosFinder
   end
 
   def invalid_type_message
-    _("Unsupported todo type passed. Supported todo types are: %{todo_types}") % {
-      todo_types: self.class.todo_types.to_a.join(', ')
-    }
+    safe_format(_("Unsupported todo type passed. Supported todo types are: %{todo_types}"),
+      todo_types: self.class.todo_types.to_a.join(', '))
   end
 
   def sort(items)

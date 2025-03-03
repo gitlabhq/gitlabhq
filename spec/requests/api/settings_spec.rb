@@ -310,7 +310,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['namespace_aggregation_schedule_lease_duration_in_seconds']).to be(400)
         expect(json_response['max_import_remote_file_size']).to be(2)
         expect(json_response['bulk_import_max_download_file_size']).to be(1)
-        expect(json_response['security_txt_content']).to be(nil)
+        expect(json_response['security_txt_content']).to be_nil
         expect(json_response['bulk_import_concurrent_pipeline_batch_limit']).to be(2)
         expect(json_response['downstream_pipeline_trigger_limit_per_project_user_sha']).to be(300)
         expect(json_response['concurrent_github_import_jobs_limit']).to be(2)
@@ -643,11 +643,11 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
             expect(response).to have_gitlab_http_status(:bad_request)
 
-            expect(json_response['slack_app_enabled']).to be(nil)
-            expect(json_response['slack_app_id']).to be(nil)
-            expect(json_response['slack_app_secret']).to be(nil)
-            expect(json_response['slack_app_signing_secret']).to be(nil)
-            expect(json_response['slack_app_verification_token']).to be(nil)
+            expect(json_response['slack_app_enabled']).to be_nil
+            expect(json_response['slack_app_id']).to be_nil
+            expect(json_response['slack_app_secret']).to be_nil
+            expect(json_response['slack_app_signing_secret']).to be_nil
+            expect(json_response['slack_app_verification_token']).to be_nil
 
             message = json_response['message']
 
@@ -689,10 +689,10 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['slack_app_enabled']).to be(false)
-          expect(json_response['slack_app_id']).to be(nil)
-          expect(json_response['slack_app_secret']).to be(nil)
-          expect(json_response['slack_app_signing_secret']).to be(nil)
-          expect(json_response['slack_app_verification_token']).to be(nil)
+          expect(json_response['slack_app_id']).to be_nil
+          expect(json_response['slack_app_secret']).to be_nil
+          expect(json_response['slack_app_signing_secret']).to be_nil
+          expect(json_response['slack_app_verification_token']).to be_nil
         end
       end
     end

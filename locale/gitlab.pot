@@ -50688,6 +50688,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|%{rules} every time a pipeline runs for %{scopes} %{branches} %{branchExceptions} %{agents} %{namespaces}"
 msgstr ""
 
+msgid "ScanExecutionPolicy|%{strategySelector} pipeline file to run from %{projectSelector}"
+msgstr ""
+
 msgid "ScanExecutionPolicy|%{strategySelector}into the %{boldStart}.gitlab-ci.yml%{boldEnd} with the following %{boldStart}pipeline execution file%{boldEnd} from %{projectSelector}"
 msgstr ""
 
@@ -50815,6 +50818,9 @@ msgid "ScanExecutionPolicy|The content of this pipeline execution YAML file is i
 msgstr ""
 
 msgid "ScanExecutionPolicy|The content of this pipeline execution YAML file is injected into the .gitlab-ci.yml file of the target project. Custom stages used in the pipeline execution YAML are ignored, unless they are defined in the `.gitlab-ci.yml` file of the target project. All GitLab CI/CD features are supported."
+msgstr ""
+
+msgid "ScanExecutionPolicy|The content of this pipeline execution YAML file of the target project is run at the scheduled time. All GitLab CI/CD features are supported."
 msgstr ""
 
 msgid "ScanExecutionPolicy|The content of this pipeline execution YAML file overrides the .gitlab-ci.yml file of the target project. All GitLab CI/CD features are supported."
@@ -52789,6 +52795,12 @@ msgid "SecurityOrchestration|Scan execution policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan will automatically choose a runner to run on because there are no tags exist on runners. You can %{linkStart}create a new tag in settings%{linkEnd}."
+msgstr ""
+
+msgid "SecurityOrchestration|Schedule a new"
+msgstr ""
+
+msgid "SecurityOrchestration|Schedules"
 msgstr ""
 
 msgid "SecurityOrchestration|Scope"

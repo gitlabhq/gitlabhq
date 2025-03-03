@@ -1,8 +1,0 @@
----
-name: source_editor_toolbar
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82304
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/354748
-milestone: '14.9'
-type: development
-group: group::source code
-default_enabled: false

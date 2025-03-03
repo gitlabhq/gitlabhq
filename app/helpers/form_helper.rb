@@ -6,11 +6,11 @@ module FormHelper
 
     return unless errors.any?
 
-    headline = custom_headline || (n_(
+    headline = custom_headline || safe_format(n_(
       'The %{type} contains the following error:',
       'The %{type} contains the following errors:',
       errors.count
-    ) % { type: type })
+    ), type: type)
 
     truncate = Array.wrap(truncate)
 

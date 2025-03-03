@@ -904,7 +904,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq '404 Not found'
-        expect(json_response['id']).to be nil
+        expect(json_response['id']).to be_nil
       end
 
       context 'with coverage' do
@@ -926,7 +926,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq '404 Project Not Found'
-        expect(json_response['id']).to be nil
+        expect(json_response['id']).to be_nil
       end
     end
 
@@ -1001,7 +1001,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq '404 Project Not Found'
-        expect(json_response['id']).to be nil
+        expect(json_response['id']).to be_nil
       end
     end
   end
@@ -1258,7 +1258,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq '404 Project Not Found'
-        expect(json_response['id']).to be nil
+        expect(json_response['id']).to be_nil
       end
     end
 
@@ -1275,7 +1275,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
         expect(response).to have_gitlab_http_status(:forbidden)
         expect(json_response['message']).to eq 'hello world'
-        expect(json_response['id']).to be nil
+        expect(json_response['id']).to be_nil
       end
     end
   end

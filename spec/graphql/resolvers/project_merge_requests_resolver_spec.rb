@@ -113,7 +113,8 @@ RSpec.describe Resolvers::ProjectMergeRequestsResolver do
 
     it 'returns error when assignee username and wildcard id are used' do
       expect_graphql_error_to_be_created(GraphQL::Schema::Validator::ValidationFailedError,
-        'Only one of [assigneeUsername, assigneeWildcardId] arguments is allowed at the same time.') do
+        'Only one of [assigneeUsernames, assigneeUsername, assigneeWildcardId] ' \
+          'arguments is allowed at the same time.') do
         resolve_mr(project, assignee_username: current_user.username, assignee_wildcard_id: 'ANY')
       end
     end

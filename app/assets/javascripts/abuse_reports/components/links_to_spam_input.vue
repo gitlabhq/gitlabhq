@@ -37,13 +37,9 @@ export default {
     <template v-for="(link, index) in links">
       <div :key="index" class="row">
         <div class="col-lg-8">
-          <gl-form-group>
-            <template #label>
-              <div>
-                {{ $options.i18n.label }}
-              </div>
-            </template>
+          <gl-form-group :label="$options.i18n.label" :label-for="`spam-link-${index}`">
             <gl-form-input
+              :id="`spam-link-${index}`"
               v-model.trim="links[index]"
               type="url"
               name="abuse_report[links_to_spam][]"

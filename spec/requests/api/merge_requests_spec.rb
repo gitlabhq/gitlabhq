@@ -3421,7 +3421,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(source_repository.branch_exists?(source_branch)).to be false
-        expect(merge_request.reload.should_remove_source_branch?).to be nil
+        expect(merge_request.reload.should_remove_source_branch?).to be_nil
       end
 
       it 'does not remove the source branch' do

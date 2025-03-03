@@ -222,7 +222,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
         subject
 
         expect(response).to have_gitlab_http_status(:found)
-        expect(flash[:toast]).to eq("Pipelines settings for '#{project.name}' were successfully updated.")
+        expect(flash[:toast]).to eq("Pipelines settings for &#39;#{project.name}&#39; were successfully updated.")
       end
 
       context 'when updating the auto_devops settings' do

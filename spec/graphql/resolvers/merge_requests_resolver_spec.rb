@@ -750,6 +750,144 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
     end
   end
 
+  describe 'private methods' do
+    # Create a test subclass that exposes private methods
+    let(:test_resolver_class) do
+      Class.new(Resolvers::MergeRequestsResolver) do
+        # Make private methods public
+        public :prepare_finder_params, :prepare_assignee_username_params, :rewrite_param_name
+      end
+    end
+
+    let(:resolver) { test_resolver_class.allocate }
+
+    before do
+      allow(resolver).to receive(:super).and_return({ base_param: 'value' })
+    end
+
+    describe '#prepare_finder_params' do
+      it 'converts :not to a hash' do
+        args = { not: { assignee_usernames: [current_user.username] } }
+        result = resolver.prepare_finder_params(args)
+
+        expect(result[:not]).to eq({ assignee_username: [current_user.username] })
+      end
+
+      it 'converts :or to a hash' do
+        args = { or: { assignee_usernames: [current_user.username] } }
+        result = resolver.prepare_finder_params(args)
+
+        expect(result[:or]).to eq({ assignee_username: [current_user.username] })
+      end
+
+      it 'returns the modified params' do
+        args = { assignee_usernames: ['user1'] }
+        result = resolver.prepare_finder_params(args)
+
+        expect(result).to include(assignee_username: ['user1'])
+        expect(result).not_to include(:assignee_usernames)
+      end
+
+      it 'handles nested conditions' do
+        args = {
+          or: { assignee_usernames: ['user1'] },
+          not: { assignee_usernames: ['user2'] }
+        }
+        result = resolver.prepare_finder_params(args)
+
+        expect(result[:or]).to include(assignee_username: ['user1'])
+        expect(result[:not]).to include(assignee_username: ['user2'])
+      end
+    end
+
+    describe '#prepare_assignee_username_params' do
+      it 'rewrites assignee_usernames to assignee_username in the main args' do
+        args = { assignee_usernames: %w[user1 user2] }
+        resolver.prepare_assignee_username_params(args)
+
+        expect(args[:assignee_username]).to eq(%w[user1 user2])
+        expect(args[:assignee_usernames]).to be_nil
+      end
+
+      it 'rewrites assignee_usernames in :or conditions' do
+        args = { or: { assignee_usernames: %w[user1 user2] } }
+        resolver.prepare_assignee_username_params(args)
+
+        expect(args[:or][:assignee_username]).to eq(%w[user1 user2])
+        expect(args[:or][:assignee_usernames]).to be_nil
+      end
+
+      it 'rewrites assignee_usernames in :not conditions' do
+        args = { not: { assignee_usernames: %w[user1 user2] } }
+        resolver.prepare_assignee_username_params(args)
+
+        expect(args[:not][:assignee_username]).to eq(%w[user1 user2])
+        expect(args[:not][:assignee_usernames]).to be_nil
+      end
+    end
+
+    describe '#rewrite_param_name' do
+      it 'rewrites parameter name when old_name exists and has a value' do
+        params = { old_name: 'value' }
+        resolver.rewrite_param_name(params, :old_name, :new_name)
+
+        expect(params[:new_name]).to eq('value')
+        expect(params[:old_name]).to be_nil
+      end
+
+      it 'does nothing when old_name exists but is empty' do
+        params = { old_name: '' }
+        resolver.rewrite_param_name(params, :old_name, :new_name)
+
+        expect(params[:new_name]).to be_nil
+        expect(params[:old_name]).to eq('')
+      end
+
+      it 'does nothing when old_name exists but is nil' do
+        params = { old_name: nil }
+        resolver.rewrite_param_name(params, :old_name, :new_name)
+
+        expect(params[:new_name]).to be_nil
+        expect(params[:old_name]).to be_nil
+      end
+
+      it 'does nothing when old_name does not exist' do
+        params = { different_name: 'value' }
+        resolver.rewrite_param_name(params, :old_name, :new_name)
+
+        expect(params[:new_name]).to be_nil
+        expect(params[:different_name]).to eq('value')
+      end
+
+      it 'handles nil params' do
+        expect { resolver.rewrite_param_name(nil, :old_name, :new_name) }.not_to raise_error
+      end
+
+      it 'handles empty params' do
+        params = {}
+        resolver.rewrite_param_name(params, :old_name, :new_name)
+
+        expect(params).to eq({})
+      end
+
+      it 'handles arrays as values' do
+        params = { old_name: %w[value1 value2] }
+        resolver.rewrite_param_name(params, :old_name, :new_name)
+
+        expect(params[:new_name]).to eq(%w[value1 value2])
+        expect(params[:old_name]).to be_nil
+      end
+
+      it 'handles hashes as values' do
+        params = { old_name: { nested: 'value' } }
+        resolver.rewrite_param_name(params, :old_name, :new_name)
+
+        expect(params[:new_name]).to eq({ nested: 'value' })
+        expect(params[:old_name]).to be_nil
+      end
+    end
+  end
+
   def resolve_mr_single(project, iid)
     resolve_mr(project, resolver: described_class.single, iid: iid.to_s)
   end

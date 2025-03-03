@@ -452,6 +452,7 @@ of the methods below are also supported with the same caveats.
 | `update_run`             | Yes             | 15.11         |                                                                                              |
 | `log_model`              | Partial         | 15.11         | (15.11) Saves the artifacts, but not the model data. `artifact_path` must be empty.          |
 | `load_model`             | Yes             | 17.5          |                                                                                              |
+| `download_artifacts`     | Yes             | 17.9          |                                                                                              |
 
 Other MLflowClient methods:
 
@@ -471,5 +472,5 @@ Other MLflowClient methods:
 ## Known issues
 
 - The API GitLab supports is the one defined at MLflow version 2.7.1.
-- MLflow client methods not listed above are not supported.
+- MLflow client methods not listed in [supported methods](#supported-mlflow-client-methods-and-caveats) might still work but have not been tested.
 - During creation of experiments and runs, ExperimentTags are stored, even though they are not displayed.

@@ -480,7 +480,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
         created_at_without_ms # to_s truncates ms of the argument
       )
 
-      expect(result).to be(nil)
+      expect(result).to be_nil
     end
 
     it 'returns nil if title does not match' do
@@ -490,7 +490,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
         created_at_without_ms # to_s truncates ms of the argument
       )
 
-      expect(result).to be(nil)
+      expect(result).to be_nil
     end
 
     it 'returns nil if created_at does not match' do
@@ -500,7 +500,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
         snippet.created_at # fails match by milliseconds
       )
 
-      expect(result).to be(nil)
+      expect(result).to be_nil
     end
   end
 

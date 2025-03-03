@@ -6,6 +6,7 @@ module Mutations
       graphql_name 'ReleaseAssetLinkCreate'
 
       include FindsProject
+      include SafeFormatHelper
       include Types::ReleaseAssetLinkSharedInputArguments
 
       authorize :create_release
@@ -28,7 +29,7 @@ module Mutations
         release = project.releases.find_by_tag(tag)
 
         if release.nil?
-          message = _('Release with tag "%{tag}" was not found') % { tag: tag }
+          message = safe_format(_('Release with tag "%{tag}" was not found'), tag: tag)
           return { link: nil, errors: [message] }
         end
 

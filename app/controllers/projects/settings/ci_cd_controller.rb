@@ -47,7 +47,8 @@ module Projects
         Projects::UpdateService.new(project, current_user, update_params).tap do |service|
           result = service.execute
           if result[:status] == :success
-            flash[:toast] = _("Pipelines settings for '%{project_name}' were successfully updated.") % { project_name: @project.name }
+            flash[:toast] = safe_format(_("Pipelines settings for '%{project_name}' were successfully updated."),
+              project_name: @project.name)
 
             run_autodevops_pipeline(service)
 

@@ -92,8 +92,13 @@ export default {
           data-testid="input-referer"
         />
 
-        <gl-form-group :label="$options.i18n.label" label-class="gl-text-default">
+        <gl-form-group
+          :label="$options.i18n.label"
+          label-for="abuse-report-category"
+          label-class="gl-text-default"
+        >
           <gl-form-radio-group
+            id="abuse-report-category"
             v-model="selected"
             :options="$options.CATEGORY_OPTIONS"
             name="abuse_report[category]"

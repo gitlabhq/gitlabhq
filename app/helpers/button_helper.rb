@@ -79,9 +79,9 @@ module ButtonHelper
 
   def http_dropdown_description(protocol)
     if current_user.try(:require_password_creation_for_git?)
-      _("Set a password on your account to pull or push via %{protocol}.") % { protocol: protocol }
+      safe_format(_("Set a password on your account to pull or push via %{protocol}."), protocol: protocol)
     elsif current_user.try(:require_personal_access_token_creation_for_git_auth?)
-      _("Create a personal access token on your account to pull or push via %{protocol}.") % { protocol: protocol }
+      safe_format(_("Create a personal access token on your account to pull or push via %{protocol}."), protocol: protocol)
     end
   end
 

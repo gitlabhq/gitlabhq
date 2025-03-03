@@ -1973,7 +1973,7 @@ RSpec.describe User, feature_category: :user_profile do
 
     context 'when credit_card_validation does not exist' do
       it 'returns nil' do
-        expect(user.credit_card_validated_at).to be nil
+        expect(user.credit_card_validated_at).to be_nil
       end
     end
 
@@ -4688,7 +4688,7 @@ RSpec.describe User, feature_category: :user_profile do
       subject { create(:user, email: email, notification_email: nil) }
 
       it 'defaults to the primary email' do
-        expect(subject.notification_email).to be nil
+        expect(subject.notification_email).to be_nil
         expect(subject.notification_email_or_default).to eq(email)
       end
     end
@@ -8614,7 +8614,7 @@ RSpec.describe User, feature_category: :user_profile do
       it 'un-sets the secondary email' do
         expect(subject).to receive(:save)
         subject.unset_secondary_emails_matching_deleted_email!(deleted_email)
-        expect(subject.commit_email).to be nil
+        expect(subject.commit_email).to be_nil
       end
     end
   end
@@ -8733,7 +8733,7 @@ RSpec.describe User, feature_category: :user_profile do
       user = create(:user)
       create(:project, :repository, :private, path: user.username, namespace: user.namespace)
 
-      expect(user.user_readme).to be(nil)
+      expect(user.user_readme).to be_nil
     end
   end
 
@@ -8805,7 +8805,7 @@ RSpec.describe User, feature_category: :user_profile do
       let(:project) {}
 
       it 'returns nil' do
-        expect(emails).to be(nil)
+        expect(emails).to be_nil
       end
     end
 
@@ -8817,7 +8817,7 @@ RSpec.describe User, feature_category: :user_profile do
       context 'without a defined root group namespace_commit_email' do
         context 'without a defined project namespace_commit_email' do
           it 'returns nil' do
-            expect(emails).to be(nil)
+            expect(emails).to be_nil
           end
         end
 
@@ -8864,7 +8864,7 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'without a defined project namespace_commit_email' do
         it 'returns nil' do
-          expect(emails).to be(nil)
+          expect(emails).to be_nil
         end
       end
 

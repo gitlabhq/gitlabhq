@@ -200,6 +200,7 @@ export function initPageBreadcrumbs() {
 
   return new Vue({
     el,
+    name: 'SuperSidebarBreadcrumbs',
     render(h) {
       return h(GlBreadcrumb, {
         props: staticBreadcrumbs,

@@ -1116,7 +1116,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
       expect { Project.find(orig_id) }.to raise_error(ActiveRecord::RecordNotFound)
       expect(response).to have_gitlab_http_status(:found)
-      expect(flash[:toast]).to eq(format(_("Project '%{project_name}' is being deleted."), project_name: project.full_name))
+      expect(flash[:toast]).to eq(format(_("Project &#39;%{project_name}&#39; is being deleted."), project_name: project.full_name))
       expect(response).to redirect_to(dashboard_projects_path)
     end
 

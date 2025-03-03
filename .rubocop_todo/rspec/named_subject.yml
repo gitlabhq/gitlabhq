@@ -1089,7 +1089,6 @@ RSpec/NamedSubject:
     - 'ee/spec/workers/repository_update_mirror_worker_spec.rb'
     - 'ee/spec/workers/requirements_management/import_requirements_csv_worker_spec.rb'
     - 'ee/spec/workers/requirements_management/process_requirements_reports_worker_spec.rb'
-    - 'ee/spec/workers/search/zoekt/namespace_indexer_worker_spec.rb'
     - 'ee/spec/workers/security/scan_execution_policies/rule_schedule_worker_spec.rb'
     - 'ee/spec/workers/security/scans/purge_by_job_id_worker_spec.rb'
     - 'ee/spec/workers/security/track_secure_scans_worker_spec.rb'

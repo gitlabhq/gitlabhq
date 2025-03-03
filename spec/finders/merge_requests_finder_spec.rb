@@ -486,6 +486,50 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         it_behaves_like 'any assignee filter' do
           let(:expected_issuables) { [merge_request1, merge_request2, merge_request3] }
         end
+
+        context 'filtering by multiple assignee usernames' do
+          let(:merge_request1) { create(:merge_request, source_project: project1, source_branch: 'feature_x', target_branch: 'master') }
+          let(:merge_request2) { create(:merge_request, source_project: project1, source_branch: 'feature_y', target_branch: 'master') }
+          let(:user1) { create(:user) }
+          let(:user2) { create(:user) }
+
+          before do
+            project1.add_developer(user1)
+            project1.add_developer(user2)
+            merge_request1.assignees = [user1]
+            merge_request2.assignees = [user2]
+          end
+
+          it 'returns merge requests that are assigned to any of the users' do
+            params = { or: { assignee_usernames: [user1.username, user2.username] }, project_id: project1.id }
+
+            merge_requests = described_class.new(user1, params).execute
+
+            expect(merge_requests).to contain_exactly(merge_request1, merge_request2)
+          end
+
+          it 'returns no merge requests when users do not have any assignments' do
+            unassigned_user = create(:user)
+            project1.add_developer(unassigned_user)
+            params = { or: { assignee_username: [unassigned_user.username] }, project_id: project1 }
+
+            merge_requests = described_class.new(user, params).execute
+
+            expect(merge_requests).to be_empty
+          end
+
+          context 'when using NOT filter' do
+            it 'excludes merge requests assigned to any of the specified users' do
+              params = { not: { assignee_username: [user1.username, user2.username] }, project_id: project1.id }
+              merge_request3 = create(:merge_request, source_project: project1)
+
+              merge_requests = described_class.new(user, params).execute
+
+              expect(merge_requests).to contain_exactly(merge_request3)
+              expect(merge_requests).not_to include(merge_request1, merge_request2)
+            end
+          end
+        end
       end
 
       context 'reviewer filtering' do

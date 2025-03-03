@@ -150,7 +150,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         expect(json_response['description']).to eq('description')
         expect(json_response['slug']).to eq('mepmep')
         expect(json_response['tier']).to eq('staging')
-        expect(json_response['external']).to be nil
+        expect(json_response['external']).to be_nil
         expect(json_response['auto_stop_setting']).to eq('always')
       end
 

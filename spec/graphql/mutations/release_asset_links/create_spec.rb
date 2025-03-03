@@ -98,7 +98,7 @@ RSpec.describe Mutations::ReleaseAssetLinks::Create, feature_category: :release_
       context "when the release doesn't exist" do
         let(:tag) { "nonexistent-tag" }
 
-        it_behaves_like 'returns errors-as-data', ['Release with tag "nonexistent-tag" was not found']
+        it_behaves_like 'returns errors-as-data', ['Release with tag &quot;nonexistent-tag&quot; was not found']
       end
 
       context 'when the URL is badly formatted' do

@@ -52,7 +52,7 @@ RSpec.shared_examples 'a valid diff positionable note' do |factory_on_commit|
       describe "#{method}=" do
         it "doesn't accept non-hash JSON passed as a string" do
           subject.send(:"#{method}=", "true")
-          expect(subject.attributes_before_type_cast[method.to_s]).to be(nil)
+          expect(subject.attributes_before_type_cast[method.to_s]).to be_nil
         end
 
         it "does accept a position hash as a string" do
@@ -62,7 +62,7 @@ RSpec.shared_examples 'a valid diff positionable note' do |factory_on_commit|
 
         it "doesn't accept an array" do
           subject.send(:"#{method}=", ["test"])
-          expect(subject.attributes_before_type_cast[method.to_s]).to be(nil)
+          expect(subject.attributes_before_type_cast[method.to_s]).to be_nil
         end
 
         it "does accept a hash" do

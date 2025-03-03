@@ -113,6 +113,36 @@ RSpec.describe Import::SourceUsers::BulkReassignFromCsvService, feature_category
         end
       end
 
+      context 'when the requested reassignment is already pending' do
+        let(:username) { 'alice-gl' }
+
+        before do
+          source_user.update!(status: 1, reassign_to_user: user, reassignment_token: SecureRandom.hex)
+        end
+
+        it 'treats it as a match' do
+          result = execute_service
+
+          stats = result.payload[:stats]
+          expect(stats).to match(matched: 1, failed: 0, skipped: 0)
+        end
+      end
+
+      context 'when a different reassignment is already pending' do
+        let(:username) { 'alice-gl' }
+
+        before do
+          source_user.update!(status: 1, reassign_to_user: create(:user), reassignment_token: SecureRandom.hex)
+        end
+
+        it 'treats it as a failure' do
+          result = execute_service
+
+          stats = result.payload[:stats]
+          expect(stats).to match(matched: 0, failed: 1, skipped: 0)
+        end
+      end
+
       context 'when the reassignment service returns an error' do
         before do
           allow_next_instance_of(::Import::SourceUsers::ReassignService) do |reassign_service|

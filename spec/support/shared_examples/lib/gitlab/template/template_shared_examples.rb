@@ -26,7 +26,7 @@ RSpec.shared_examples 'file template shared examples' do |filename, file_extensi
 
   describe '.find' do
     it 'returns nil if the file does not exist' do
-      expect(subject.find('nonexistent-file')).to be nil
+      expect(subject.find('nonexistent-file')).to be_nil
     end
 
     it 'returns the corresponding object of a valid file' do

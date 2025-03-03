@@ -3,6 +3,8 @@
 module WorkItems
   class RelatedWorkItemLink < ApplicationRecord
     include LinkableItem
+    include CreatedAtFilterable
+    include UpdatedAtFilterable
 
     self.table_name = 'issue_links'
 

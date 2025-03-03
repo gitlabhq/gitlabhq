@@ -81,18 +81,25 @@ Before setting up the GitLab Duo Self-Hosted infrastructure, you must have:
 
 ## Decide on your configuration type
 
-The configuration for GitLab Duo Self-Hosted is different to the default configuration
-that uses GitLab external AI vendors.
+GitLab Self-Managed customers can implement AI-powered features using either of the following options:
 
-{{< alert type="note" >}}
+- [**Self-hosted AI gateway and LLMs**](#self-hosted-ai-gateway-and-llms): Full control over your AI infrastructure.
+- [**GitLab.com AI gateway with default GitLab external vendor LLMs**](#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms): Use GitLab managed AI infrastructure.
 
-Both of the following configuration types are for GitLab Self-Managed instances.
+The differences between these options are:
 
-{{< /alert >}}
+| Feature | Self-hosted AI gateway | GitLab.com AI gateway |
+|---------|------------------------|------------------------|
+| Infrastructure requirements | Requires hosting your own AI gateway and models | No additional infrastructure needed |
+| Model options | Choose from [supported models](../gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md) | Uses the default GitLab external vendor LLMs |
+| Network requirements | Can operate in fully isolated networks | Requires internet connectivity |
+| Responsibilities | You set up your infrastructure, and do your own maintenance | GitLab does the set up and maintenance |
 
 ### Self-hosted AI gateway and LLMs
 
-In a fully self-hosted configuration, you deploy your own AI gateway and LLMs in your infrastructure, without relying on external public services. This gives you full control over your data and security.
+In a fully self-hosted configuration, you deploy your own AI gateway and use any [supported LLMs](supported_models_and_hardware_requirements.md) in your infrastructure, without relying on external public services. This gives you full control over your data and security.
+
+While this configuration is fully self-hosted and you can use models like Mistral that are hosted on your own infrastructure, you can still use cloud-based LLM services like [AWS Bedrock](https://aws.amazon.com/bedrock/) or [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service) as your model backend.
 
 If you have an offline environment with physical barriers or security policies that prevent or limit internet access, and comprehensive LLM controls, you can use GitLab Duo Self-Hosted.
 
@@ -110,7 +117,11 @@ GitLab.com AI gateway with default GitLab external vendor LLMs.
 
 The GitLab.com AI gateway is the default Enterprise offering and is not self-hosted. In this configuration,
 you connect your instance to the GitLab-hosted AI gateway, which
-integrates with external vendor LLM providers (such as Google Vertex or Anthropic).
+integrates with external vendor LLM providers, including:
+
+- [Anthropic](https://www.anthropic.com/)
+- [Fireworks AI](https://fireworks.ai/)
+- [Google Vertex](https://cloud.google.com/vertex-ai/)
 
 These LLMs communicate through the [GitLab Cloud Connector](../../development/cloud_connector/_index.md),
 offering a ready-to-use AI solution without the need for on-premise infrastructure.

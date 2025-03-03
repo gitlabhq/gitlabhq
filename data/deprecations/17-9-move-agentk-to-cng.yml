@@ -11,8 +11,15 @@
   resolution_role: Admin
   manual_task: true
   body: |  # (required) Don't change this line.
-    We are moving the `agentk` container registry from [its project-specific registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/1223205) to [the Cloud Native GitLab registry](https://gitlab.com/gitlab-org/build/CNG/container_registry/8241772).
-    From GitLab 18.0, the project-specific registry will not receive `agentk` updates.
-    If you mirror the `agentk` container to a local registry, you should change your mirror source to the CNG registry.
+    We are moving the `agentk` container registry from
+    [its project-specific registry](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/container_registry/1223205)
+    to [the Cloud Native GitLab (CNG) registry](https://gitlab.com/gitlab-org/build/CNG/container_registry/8241772).
+    From GitLab 18.0 onward, `agentk` images built in CNG will mirror into the project-specific registry.
+    The new image is equivalent to the old image, except the new image only supports `amd64` and `arm64` architectures.
+    It does not support the 32-bit `arm` architecture.
+    From GitLab 19.0 onward, the project-specific registry will not receive `agentk` updates.
+    If you mirror the `agentk` container to a local registry, you should change your mirror source to the
+    [CNG registry](https://gitlab.com/gitlab-org/build/CNG/container_registry/8241772).
 
-    If you use the official Helm charts, they will start deploying from the new location seamlessly.
+    If you use the official [GitLab Agent Helm chart](https://gitlab.com/gitlab-org/charts/gitlab-agent/),
+    the new `agentk` image will start deploying from the new location seamlessly in GitLab 18.0.

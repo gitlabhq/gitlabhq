@@ -41,7 +41,9 @@ module Ci
     def deletion_delay_metrics(latencies)
       return { min: nil, max: nil, sum: 0, average: nil, total_count: 0 } if latencies.blank?
 
-      sum = latencies.sum.to_f
+      latencies = latencies.map(&:to_f)
+
+      sum = latencies.sum
       size = latencies.size
 
       {

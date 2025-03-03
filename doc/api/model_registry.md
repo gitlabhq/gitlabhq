@@ -20,12 +20,17 @@ Returns the file.
 GET /projects/:id/packages/ml_models/:model_version_id/files/(*path/):file_name
 ```
 
+For Versions, the `:model_version_id` is specified in the URL of the model version.
+In the following example, the model version is `5`: `/namespace/project/-/ml/models/1/versions/5`.
+
+For Runs, the ID must prepended with `candidate:`. In the following example, the `:model_version_id` is `candidate:5`: `/namespace/project/-/ml/candidates/5`.
+
 Parameters:
 
 | Attribute          | Type              | Required | Description                                                                            |
 |--------------------|-------------------|----------|----------------------------------------------------------------------------------------|
 | `id`               | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)    |
-| `model_version_id` | integer           | yes      | The model version ID for the file                                                      |
+| `model_version_id` | integer or string | yes      | The model version ID for the file                                                      |
 | `path`             | string            | yes      | File directory path                                                                    |
 | `filename`         | string            | yes      | Filename                                                                               |
 

@@ -96,9 +96,9 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(secure_file.name)
-        expect(json_response['expires_at']).to be nil
-        expect(json_response['metadata']).to be nil
-        expect(json_response['file_extension']).to be nil
+        expect(json_response['expires_at']).to be_nil
+        expect(json_response['metadata']).to be_nil
+        expect(json_response['file_extension']).to be_nil
       end
 
       it 'returns project secure file details with metadata when supported' do

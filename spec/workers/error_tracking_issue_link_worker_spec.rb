@@ -36,7 +36,7 @@ RSpec.describe ErrorTrackingIssueLinkWorker, feature_category: :observability do
         expect_any_instance_of(ErrorTracking::SentryClient).not_to receive(:repos)
         expect_any_instance_of(ErrorTracking::SentryClient).not_to receive(:create_issue_link)
 
-        expect(subject).to be nil
+        expect(subject).to be_nil
       end
     end
 

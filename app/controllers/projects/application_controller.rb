@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class Projects::ApplicationController < ApplicationController
+  include ChecksCollaboration
   include CookiesHelper
   include RoutableActions
-  include ChecksCollaboration
+  include SafeFormatHelper
 
   skip_before_action :authenticate_user!
   before_action :project

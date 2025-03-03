@@ -2,6 +2,7 @@
 
 class SearchController < ApplicationController
   include ControllerWithCrossProjectAccessCheck
+  include SafeFormatHelper
   include SearchHelper
   include ProductAnalyticsTracking
   include Gitlab::InternalEventsTracking
@@ -232,14 +233,15 @@ class SearchController < ApplicationController
     return false unless commit.present?
 
     link = search_path(safe_params.merge(force_search_results: true))
-    flash[:notice] = ERB::Util.html_escape(
+    search_link = helpers.link_to('', link)
+
+    flash[:notice] = safe_format(
       _(
         "You have been redirected to the only result; " \
           "see the %{a_start}search results%{a_end} instead."
-      )
-    ) % {
-      a_start: "<a href=\"#{link}\"><u>".html_safe, a_end: '</u></a>'.html_safe
-    }
+      ),
+      tag_pair(search_link, :a_start, :a_end)
+    )
     redirect_to project_commit_path(@project, commit)
 
     true

@@ -111,7 +111,7 @@ class ProjectsController < Projects::ApplicationController
     if @project.saved?
       redirect_to(
         project_path(@project, custom_import_params),
-        notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }
+        notice: safe_format(_("Project '%{project_name}' was successfully created."), project_name: @project.name)
       )
     else
       render 'new'
@@ -173,7 +173,7 @@ class ProjectsController < Projects::ApplicationController
     end
 
     if @project.pending_delete?
-      flash.now[:alert] = _("Project '%{project_name}' queued for deletion.") % { project_name: @project.name }
+      flash.now[:alert] = safe_format(_("Project '%{project_name}' queued for deletion."), project_name: @project.name)
     end
 
     @ref_type = 'heads'
@@ -196,7 +196,7 @@ class ProjectsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :remove_project, @project)
 
     ::Projects::DestroyService.new(@project, current_user, {}).async_execute
-    flash[:toast] = format(_("Project '%{project_name}' is being deleted."), project_name: @project.full_name)
+    flash[:toast] = safe_format(_("Project '%{project_name}' is being deleted."), project_name: @project.full_name)
 
     redirect_to dashboard_projects_path, status: :found
   rescue Projects::DestroyService::DestroyError => e

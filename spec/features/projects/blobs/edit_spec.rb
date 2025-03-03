@@ -107,13 +107,7 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
         end
       end
 
-      it "has defined set of toolbar buttons when the flag is on" do
-        stub_feature_flags(source_editor_toolbar: true)
-        has_toolbar_buttons
-      end
-
-      it "has defined set of toolbar buttons when the flag is off" do
-        stub_feature_flags(source_editor_toolbar: false)
+      it "has defined set of toolbar buttons" do
         has_toolbar_buttons
       end
     end

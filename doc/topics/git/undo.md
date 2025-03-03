@@ -5,10 +5,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Revert and undo changes
 ---
 
-Git provides options for undoing changes at any point in the
+Working with Git involves experimentation and iteration. Mistakes happen during development,
+and sometimes you need to reverse changes. Git gives you control over your code history
+with features to undo changes at any point in your
 [Git workflow](get_started.md#understand-the-git-workflow).
 
-The method to use depends on whether the changes are:
+Recover from accidental commits, remove sensitive data, fix incorrect merges, and maintain a clean
+repository history. When collaborating with others, preserve transparency with new revert
+commits, or reset your work locally before sharing. The method to use depends on whether the
+changes are:
 
 - Only on your local computer.
 - Stored remotely on a Git server such as GitLab.com.

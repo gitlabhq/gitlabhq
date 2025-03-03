@@ -14,6 +14,9 @@ module Resolvers
       argument :assignee_username, GraphQL::Types::String,
         required: false,
         description: 'Username of the assignee.'
+      argument :assignee_usernames, [GraphQL::Types::String],
+        required: false,
+        description: 'Usernames of users assigned to the merge request.'
       argument :assignee_wildcard_id, ::Types::AssigneeWildcardIdEnum,
         required: false,
         description: 'Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername.'
@@ -43,18 +46,19 @@ module Resolvers
       required: false,
       description: 'Filter by release tag.'
 
+    argument :iids, [GraphQL::Types::String],
+      required: false,
+      description: 'Array of IIDs of merge requests, for example `[1, 2]`.'
     argument :merged_by, GraphQL::Types::String,
       required: false,
       as: :merge_user_username,
       description: 'Username of the merger.'
-
     argument :my_reaction_emoji, GraphQL::Types::String,
       required: false,
       description: 'Filter by your reaction emoji.'
-
-    argument :iids, [GraphQL::Types::String],
-      required: false,
-      description: 'Array of IIDs of merge requests, for example `[1, 2]`.'
+    argument :or, Types::MergeRequests::UnionedMergeRequestFilterInputType,
+      description: 'List of arguments with inclusive OR.',
+      required: false
 
     argument :source_branches, [GraphQL::Types::String],
       required: false,
@@ -204,7 +208,7 @@ module Resolvers
         description: 'Filters merge requests to exclude the target branch names provided in the given array.'
     end
 
-    validates mutually_exclusive: [:assignee_username, :assignee_wildcard_id]
+    validates mutually_exclusive: [:assignee_usernames, :assignee_username, :assignee_wildcard_id]
     validates mutually_exclusive: [:reviewer_username, :reviewer_wildcard_id]
     validates mutually_exclusive: [:milestone_title, :milestone_wildcard_id]
 
@@ -218,6 +222,28 @@ module Resolvers
 
     def some_argument_is_empty?(args)
       args.values.any? { |v| v.is_a?(Array) && v.empty? }
+    end
+
+    private
+
+    def prepare_finder_params(args)
+      params = super
+      params[:not] = params[:not].to_h if params[:not]
+      params[:or] = params[:or].to_h if params[:or]
+
+      prepare_assignee_username_params(params)
+
+      params
+    end
+
+    def prepare_assignee_username_params(args)
+      rewrite_param_name(args, :assignee_usernames, :assignee_username)
+      rewrite_param_name(args[:or], :assignee_usernames, :assignee_username)
+      rewrite_param_name(args[:not], :assignee_usernames, :assignee_username)
+    end
+
+    def rewrite_param_name(params, old_name, new_name)
+      params[new_name] = params.delete(old_name) if params && params[old_name].present?
     end
   end
 end
