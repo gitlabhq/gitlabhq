@@ -101,16 +101,6 @@ docs-lint links:
   script:
     - lychee --offline --no-progress --include-fragments doc
 
-ui-docs-links lint:
-  extends:
-    - .docs:rules:docs-lint
-    - .static-analysis-base
-    - .ruby-cache
-  stage: lint
-  needs: []
-  script:
-    - bundle exec haml-lint
-
 docs-lint deprecations-and-removals:
   variables:
     SETUP_DB: "false"

@@ -20,7 +20,12 @@ module Gitlab
         # - scoped_variables_for_pipeline_seed
         def scoped_variables(job, environment:, dependencies:)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
-            if pipeline.disable_all_except_yaml_variables?
+            if pipeline.only_workload_variables?
+              # predefined_project_variables includes things like $CI_PROJECT_PATH which are used by the runner to clone
+              # the repo
+              variables.concat(project.predefined_project_variables)
+
+              # yaml_variables is how we inject dynamic configuration into a workload
               variables.concat(job.yaml_variables)
               next
             end
@@ -44,7 +49,12 @@ module Gitlab
 
         def unprotected_scoped_variables(job, expose_project_variables:, expose_group_variables:, environment:, dependencies:)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
-            if pipeline.disable_all_except_yaml_variables?
+            if pipeline.only_workload_variables?
+              # predefined_project_variables includes things like $CI_PROJECT_PATH which are used by the runner to clone
+              # the repo
+              variables.concat(project.predefined_project_variables)
+
+              # yaml_variables is how we inject dynamic configuration into a workload
               variables.concat(job.yaml_variables)
               next
             end
@@ -68,7 +78,12 @@ module Gitlab
 
         def scoped_variables_for_pipeline_seed(job_attr, environment:, kubernetes_namespace:, user:, trigger_request:)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
-            if pipeline.disable_all_except_yaml_variables?
+            if pipeline.only_workload_variables?
+              # predefined_project_variables includes things like $CI_PROJECT_PATH which are used by the runner to clone
+              # the repo
+              variables.concat(project.predefined_project_variables)
+
+              # yaml_variables is how we inject dynamic configuration into a workload
               variables.concat(job_attr[:yaml_variables])
               next
             end
@@ -93,7 +108,7 @@ module Gitlab
         def config_variables
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
             break variables unless project
-            next if pipeline.disable_all_except_yaml_variables?
+            next if pipeline.only_workload_variables?
 
             variables.concat(project.predefined_variables)
             variables.concat(pipeline_variables_builder.predefined_variables)

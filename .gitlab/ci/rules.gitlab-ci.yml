@@ -311,6 +311,9 @@
   - "doc/**/*"
   - "scripts/lint-doc.sh"
   - "scripts/lint/check_mermaid.mjs"
+  - "rubocop/cop/gitlab/documentation_links/**/*"
+  - "scripts/frontend/lint_docs_links.mjs"
+  - "tooling/eslint-config/eslint-local-rules/**/*"
 
 .docs-deprecations-and-removals-patterns: &docs-deprecations-and-removals-patterns
   - "doc/update/breaking_windows.md"

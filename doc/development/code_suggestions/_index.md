@@ -64,6 +64,18 @@ with the deployed staging AI gateway. To do this:
 
 ### Setup instructions to use GDK with the Code Suggestions Add-on
 
+**Option 1 - Recommended**
+
+1. Ensure that you have a [GitLab Team Member License](https://handbook.gitlab.com/handbook/engineering/developer-onboarding/#working-on-gitlab-ee-developer-licenses) and that it is [activated](../../administration/license_file.md).
+1. Follow the [Setup and Run GDK](../ai_features/_index.md#set-up-and-run-gdk) guide under the AI Features doc.
+
+**Option 2**
+
+You can set up Duo on your GDK by going through CustomersDot. This is a more complex process, but it more accurately reflects the self-managed setup of our customers.
+
+<details>
+<summary>Expand for alternate setup</summary>
+
 1. Add a **GitLab Ultimate Self-Managed** subscription with a [Duo Pro subscription add-on](../../subscriptions/subscription-add-ons.md) to your GDK instance.
 
    1. Sign in to the [staging Customers Portal](https://customers.staging.gitlab.com) by selecting the **Continue with GitLab.com account** button.
@@ -107,6 +119,8 @@ with the deployed staging AI gateway. To do this:
 
 1. Inside your GDK, navigate to **Admin area** > **GitLab Duo Pro**, go to `/admin/code_suggestions`
 1. Filter users to find `root` and click the toggle to assign a GitLab Duo Pro add-on seat to the root user.
+
+</details>
 
 ### Bulk assign users to Duo Pro/Duo Enterprise add-on
 

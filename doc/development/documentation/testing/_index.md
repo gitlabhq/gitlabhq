@@ -18,7 +18,6 @@ Merge requests containing changes to Markdown (`.md`) files run these CI/CD jobs
   - [`lint-docs.sh`](#tests-in-lint-docsh) script: Miscellaneous tests, including
     [`mermaidlint`](#mermaid-chart-linting) to check for invalid Mermaid charts.
 - `docs-lint links`: Checks the validity of [relative links](links.md#run-the-relative-link-test-locally) in the documentation suite.
-- `ui-docs-links lint`: Checks links to documentation [from `.haml` files](links.md#run-haml-lint-tests).
 - `rubocop-docs`: Checks links to documentation [from `.rb` files](links.md#run-rubocop-tests).
 - `eslint-docs`: Checks links to documentation [from `.js` and `.vue` files](links.md#run-eslint-tests).
 - `docs-lint redirects`: Checks for deleted or renamed documentation files without [redirects](../redirects.md).
@@ -46,7 +45,7 @@ The `docs-lint markdown` job fails if any of these `lint-doc.sh` tests fail:
 - Documentation pages must contain front matter indicating ownership of the page.
 - `CHANGELOG.md` must not contain duplicate versions.
 - No files in the `doc/` directory may be executable.
-- Use `index.md` instead of `README.md`.
+- Use `_index.md` instead of `README.md`.
 - Directories and filenames must use underscores instead of dashes.
 - Directories and filenames must be in lower case.
 - Mermaid charts must render without errors.

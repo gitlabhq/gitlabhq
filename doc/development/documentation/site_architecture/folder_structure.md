@@ -44,7 +44,7 @@ Do not add new content to these folders:
 
 When working with directories and files:
 
-1. When you create a new directory, always start with an `index.md` file.
+1. When you create a new directory, always start with an `_index.md` file.
    Don't use another filename and do not create `README.md` files.
 1. Do not use special characters and spaces, or capital letters in file
    names, directory names, branch names, and anything that generates a path.

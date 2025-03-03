@@ -355,9 +355,12 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         pipeline.source = :duo_workflow
       end
 
-      it 'only includes the YAML defined variables' do
-        expect(subject).to contain_exactly(
+      it 'only includes the YAML and project predefined variables' do
+        expect(subject).to include(
           Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'YAML_VARIABLE', value: 'value' })
+        )
+        expect(subject).to include(
+          Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'CI_PROJECT_PATH', value: project.full_path })
         )
       end
     end
@@ -378,9 +381,12 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         pipeline.source = :duo_workflow
       end
 
-      it 'only includes the YAML defined variables' do
-        expect(subject).to contain_exactly(
+      it 'only includes the YAML and project predefined variables' do
+        expect(subject).to include(
           Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'YAML_VARIABLE', value: 'value' })
+        )
+        expect(subject).to include(
+          Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'CI_PROJECT_PATH', value: project.full_path })
         )
       end
     end
@@ -667,9 +673,12 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         pipeline.source = :duo_workflow
       end
 
-      it 'only includes the YAML defined variables' do
-        expect(subject).to contain_exactly(
+      it 'only includes the YAML and project predefined variables' do
+        expect(subject).to include(
           Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'YAML_VARIABLE', value: 'value' })
+        )
+        expect(subject).to include(
+          Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'CI_PROJECT_PATH', value: project.full_path })
         )
       end
     end

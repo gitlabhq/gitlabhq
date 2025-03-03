@@ -2603,23 +2603,25 @@ class Project < ApplicationRecord
   end
 
   def predefined_project_variables
-    Gitlab::Ci::Variables::Collection.new
-      .append(key: 'GITLAB_FEATURES', value: licensed_features.join(','))
-      .append(key: 'CI_PROJECT_ID', value: id.to_s)
-      .append(key: 'CI_PROJECT_NAME', value: path)
-      .append(key: 'CI_PROJECT_TITLE', value: title)
-      .append(key: 'CI_PROJECT_DESCRIPTION', value: description)
-      .append(key: 'CI_PROJECT_PATH', value: full_path)
-      .append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug)
-      .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
-      .append(key: 'CI_PROJECT_NAMESPACE_ID', value: namespace.id.to_s)
-      .append(key: 'CI_PROJECT_ROOT_NAMESPACE', value: namespace.root_ancestor.path)
-      .append(key: 'CI_PROJECT_URL', value: web_url)
-      .append(key: 'CI_PROJECT_VISIBILITY', value: Gitlab::VisibilityLevel.string_level(visibility_level))
-      .append(key: 'CI_PROJECT_REPOSITORY_LANGUAGES', value: repository_languages.map(&:name).join(',').downcase)
-      .append(key: 'CI_PROJECT_CLASSIFICATION_LABEL', value: external_authorization_classification_label)
-      .append(key: 'CI_DEFAULT_BRANCH', value: default_branch)
-      .append(key: 'CI_CONFIG_PATH', value: ci_config_path_or_default)
+    strong_memoize(:predefined_project_variables) do
+      Gitlab::Ci::Variables::Collection.new
+        .append(key: 'GITLAB_FEATURES', value: licensed_features.join(','))
+        .append(key: 'CI_PROJECT_ID', value: id.to_s)
+        .append(key: 'CI_PROJECT_NAME', value: path)
+        .append(key: 'CI_PROJECT_TITLE', value: title)
+        .append(key: 'CI_PROJECT_DESCRIPTION', value: description)
+        .append(key: 'CI_PROJECT_PATH', value: full_path)
+        .append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug)
+        .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
+        .append(key: 'CI_PROJECT_NAMESPACE_ID', value: namespace.id.to_s)
+        .append(key: 'CI_PROJECT_ROOT_NAMESPACE', value: namespace.root_ancestor.path)
+        .append(key: 'CI_PROJECT_URL', value: web_url)
+        .append(key: 'CI_PROJECT_VISIBILITY', value: Gitlab::VisibilityLevel.string_level(visibility_level))
+        .append(key: 'CI_PROJECT_REPOSITORY_LANGUAGES', value: repository_languages.map(&:name).join(',').downcase)
+        .append(key: 'CI_PROJECT_CLASSIFICATION_LABEL', value: external_authorization_classification_label)
+        .append(key: 'CI_DEFAULT_BRANCH', value: default_branch)
+        .append(key: 'CI_CONFIG_PATH', value: ci_config_path_or_default)
+    end
   end
 
   def predefined_ci_server_variables

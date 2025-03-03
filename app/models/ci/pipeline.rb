@@ -1358,7 +1358,7 @@ module Ci
       Enums::Ci::Pipeline.dangling_sources.key?(source.to_sym)
     end
 
-    def disable_all_except_yaml_variables?
+    def only_workload_variables?
       Enums::Ci::Pipeline.workload_sources.key?(source.to_sym)
     end
 
