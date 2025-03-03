@@ -393,7 +393,6 @@ export default {
     'app/assets/javascripts/work_items/components/work_item_detail.vue',
     'app/assets/javascripts/work_items/components/work_item_detail_modal.vue',
     'app/assets/javascripts/work_items/components/work_item_development/work_item_create_branch_merge_request_modal.vue',
-    'app/assets/javascripts/work_items/components/work_item_development/work_item_development.vue',
     'app/assets/javascripts/work_items/components/work_item_development/work_item_development_mr_item.vue',
     'app/assets/javascripts/work_items/components/work_item_due_date.vue',
     'app/assets/javascripts/work_items/components/work_item_labels.vue',

@@ -1248,7 +1248,7 @@ export const workItemDevelopmentFragmentResponse = ({
 export const workItemDevelopmentResponse = ({
   iid = '1',
   id = 'gid://gitlab/WorkItem/1',
-  developmentItems,
+  widgets,
 } = {}) => ({
   data: {
     workItem: {
@@ -1259,35 +1259,7 @@ export const workItemDevelopmentResponse = ({
         __typename: 'Project',
         id: '1',
       },
-      widgets: [
-        {
-          __typename: 'WorkItemWidgetIteration',
-        },
-        {
-          __typename: 'WorkItemWidgetWeight',
-        },
-        {
-          __typename: 'WorkItemWidgetAssignees',
-        },
-        {
-          __typename: 'WorkItemWidgetLabels',
-        },
-        {
-          __typename: 'WorkItemWidgetDescription',
-        },
-        {
-          __typename: 'WorkItemWidgetHierarchy',
-        },
-        {
-          __typename: 'WorkItemWidgetStartAndDueDate',
-        },
-        {
-          __typename: 'WorkItemWidgetMilestone',
-        },
-        {
-          ...developmentItems,
-        },
-      ],
+      widgets,
     },
   },
 });

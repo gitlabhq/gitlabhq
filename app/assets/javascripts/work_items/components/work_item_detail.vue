@@ -1106,7 +1106,6 @@ export default {
               :work-item-id="workItem.id"
               :work-item-iid="iid"
               :work-item-full-path="workItemFullPath"
-              :work-item-type="workItem.workItemType.name"
             />
             <work-item-notes
               v-if="workItemNotes"

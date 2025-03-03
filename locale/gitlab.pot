@@ -66153,6 +66153,9 @@ msgstr ""
 msgid "WorkItem|Objective"
 msgstr ""
 
+msgid "WorkItem|One or more items cannot be shown. If you're using SAML authentication, this could mean your session has expired."
+msgstr ""
+
 msgid "WorkItem|Only %{MAX_WORK_ITEMS} items can be added at a time."
 msgstr ""
 
