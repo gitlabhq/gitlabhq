@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Packages::Conan::FileMetadatum < ApplicationRecord
+  ignore_column :conan_package_reference, remove_with: '18.0', remove_after: '2025-04-17'
+
   belongs_to :package_file, inverse_of: :conan_file_metadatum
   belongs_to :recipe_revision, inverse_of: :file_metadata, class_name: 'Packages::Conan::RecipeRevision'
   belongs_to :package_revision, inverse_of: :file_metadata, class_name: 'Packages::Conan::PackageRevision'
@@ -9,10 +11,8 @@ class Packages::Conan::FileMetadatum < ApplicationRecord
   DEFAULT_REVISION = '0'
 
   validates :package_file, presence: true
-  validates :conan_package_reference, absence: true, if: :recipe_file?
-  validates :conan_package_reference, format: { with: Gitlab::Regex.conan_package_reference_regex }, if: :package_file?
   validates :package_reference, absence: true, if: :recipe_file?
-  validates :package_reference, presence: true, if: :package_file?, on: :create
+  validates :package_reference, presence: true, if: :package_file?
   validate :conan_package_type
   # package_revision is not supported yet
   validates :package_revision, absence: true
@@ -32,6 +32,10 @@ class Packages::Conan::FileMetadatum < ApplicationRecord
     return unless package_file?
 
     DEFAULT_REVISION
+  end
+
+  def package_reference_value
+    package_reference&.reference
   end
 
   private

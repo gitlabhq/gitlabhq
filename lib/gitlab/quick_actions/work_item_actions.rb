@@ -35,12 +35,28 @@ module Gitlab
         explanation do |parent_param|
           format(_("Change item's parent to %{parent_ref}."), parent_ref: parent_param)
         end
-        types WorkItem
+        types WorkItem, Issue
         params 'Parent #iid, reference or URL'
-        condition { supports_parent? && can_admin_link? }
-        command :set_parent do |parent_param|
-          @updates[:set_parent] = extract_work_items(parent_param).first
-          @execution_message[:set_parent] = success_msg[:set_parent]
+        condition do
+          case quick_action_target
+          when ::WorkItem
+            supports_parent? && can_admin_link?
+          when ::Issue
+            can_user_link_issue_to_epic?
+          end
+        end
+        conditional_aliases_autocompletion :epic do
+          show_epic_alias?
+        end
+        command :set_parent, :epic do |parent_param|
+          if quick_action_target.instance_of?(WorkItem)
+            first = extract_work_items(parent_param).first
+
+            @updates[:set_parent] = first
+            @execution_message[:set_parent] = success_msg[:set_parent]
+          elsif quick_action_target.instance_of?(Issue)
+            handle_set_epic(parent_param)
+          end
         end
 
         desc { _('Remove parent') }
@@ -191,6 +207,15 @@ module Gitlab
         success_msg[command]
       end
       # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+      # overridden in EE
+      def handle_set_epic(parent_param); end
+
+      # overridden in EE
+      def show_epic_alias?; end
+
+      # overridden in EE
+      def can_user_link_issue_to_epic?; end
     end
   end
 end

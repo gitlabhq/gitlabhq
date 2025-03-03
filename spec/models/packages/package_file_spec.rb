@@ -165,7 +165,7 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
       subject { described_class.with_conan_package_reference(reference) }
 
       context 'with existing reference' do
-        let(:reference) { matching_package_file.conan_file_metadatum.conan_package_reference }
+        let(:reference) { matching_package_file.conan_file_metadatum.package_reference.reference }
 
         it 'returns package files with matching reference' do
           expect(subject).to contain_exactly(matching_package_file)

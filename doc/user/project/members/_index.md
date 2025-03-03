@@ -104,7 +104,7 @@ To add a user to a project:
    - Has a GitLab account, enter their username.
    - Doesn't have a GitLab account, enter their email address.
 
-1. Select a [default role](../../permissions.md) or [custom role](../../custom_roles.md).
+1. Select a [default role](../../permissions.md) or [custom role](../../custom_roles/_index.md).
 1. Optional. Select an **Access expiration date**.
    From that date onward, the user can no longer access the project.
 

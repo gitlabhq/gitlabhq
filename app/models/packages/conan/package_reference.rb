@@ -20,7 +20,8 @@ module Packages
       has_many :file_metadata, inverse_of: :package_reference, class_name: 'Packages::Conan::FileMetadatum'
 
       validates :package, :project, presence: true
-      validates :reference, presence: true, bytesize: { maximum: -> { REFERENCE_LENGTH_MAX } }
+      validates :reference, presence: true, format: { with: Gitlab::Regex.conan_package_reference_regex },
+        bytesize: { maximum: -> { REFERENCE_LENGTH_MAX } }
       validates :reference, uniqueness: { scope: %i[package_id recipe_revision_id] }, on: %i[create update]
 
       validates :info, json_schema: { filename: 'conan_package_info', detail_errors: true }

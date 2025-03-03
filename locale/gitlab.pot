@@ -3603,9 +3603,6 @@ msgstr ""
 msgid "Add to board"
 msgstr ""
 
-msgid "Add to epic"
-msgstr ""
-
 msgid "Add to merge train"
 msgstr ""
 
@@ -3762,9 +3759,6 @@ msgid "Adds a timeline event to incident."
 msgstr ""
 
 msgid "Adds a to-do item."
-msgstr ""
-
-msgid "Adds an issue to an epic."
 msgstr ""
 
 msgid "Adds email participants that don't have a GitLab account."
@@ -7443,9 +7437,6 @@ msgstr ""
 msgid "ApplicationSettings|New users can sign up without confirming their email address."
 msgstr ""
 
-msgid "ApplicationSettings|New users cannot be added or request access. Restricts the occurrence of seat overages."
-msgstr ""
-
 msgid "ApplicationSettings|Off"
 msgstr ""
 
@@ -7453,6 +7444,9 @@ msgid "ApplicationSettings|Only users with e-mail addresses that match these dom
 msgstr ""
 
 msgid "ApplicationSettings|Open access"
+msgstr ""
+
+msgid "ApplicationSettings|Prevent the billable user count from exceeding the number of seats in the license."
 msgstr ""
 
 msgid "ApplicationSettings|Proceed and approve %d user"
@@ -28430,7 +28424,7 @@ msgstr ""
 msgid "GroupSettings|How do I manage group SSH certificates?"
 msgstr ""
 
-msgid "GroupSettings|If enabled, enterprise user accounts will not be able to use personal access tokens."
+msgid "GroupSettings|If enabled, enterprise user accounts will not be able to use personal access tokens. %{learn_more_link}."
 msgstr ""
 
 msgid "GroupSettings|If enabled, group access tokens expiry webhooks execute 60, 30, and 7 days before the token expires. If disabled, these webhooks only execute 7 days before the token expires."
@@ -36724,6 +36718,9 @@ msgid "MlExperimentTracking|Experiments keep track of comparable model runs, and
 msgstr ""
 
 msgid "MlExperimentTracking|Failed to load experiment candidates with error: %{message}"
+msgstr ""
+
+msgid "MlExperimentTracking|Failed to remove run"
 msgstr ""
 
 msgid "MlExperimentTracking|Get started with model experiments!"
@@ -49584,6 +49581,9 @@ msgstr ""
 msgid "Runners|Creator"
 msgstr ""
 
+msgid "Runners|Date range limited to %{dateRange} days"
+msgstr ""
+
 msgid "Runners|Delete"
 msgstr ""
 
@@ -50058,7 +50058,7 @@ msgstr ""
 msgid "Runners|Runner Registration token"
 msgstr ""
 
-msgid "Runners|Runner Usage (previous month)"
+msgid "Runners|Runner Usage"
 msgstr ""
 
 msgid "Runners|Runner assigned to project."
@@ -50452,10 +50452,15 @@ msgstr ""
 msgid "Runners|shared"
 msgstr ""
 
+msgid "Runner|1 day selected"
+msgid_plural "Runner|%d days selected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Runner|Export runner usage"
 msgstr ""
 
-msgid "Runner|Export runner usage for previous month"
+msgid "Runner|Export runner usage for selected dates"
 msgstr ""
 
 msgid "Runner|Runner actions"
@@ -50464,7 +50469,7 @@ msgstr ""
 msgid "Runner|Something went wrong while generating the CSV export. Please try again."
 msgstr ""
 
-msgid "Runner|The CSV export contains a list of projects, the number of minutes used by instance runners, and the number of jobs that ran in the previous month. When the export is completed, it is sent as an attachment to your email."
+msgid "Runner|The CSV export contains a list of projects, the number of minutes used by instance runners, and the number of jobs that ran. When the export is completed, it is sent as an attachment to your email."
 msgstr ""
 
 msgid "Runner|Your CSV export has started. It will be sent to your email inbox when its ready."
@@ -51774,6 +51779,9 @@ msgstr ""
 msgid "Security dashboard"
 msgstr ""
 
+msgid "Security inventory"
+msgstr ""
+
 msgid "Security policy"
 msgstr ""
 
@@ -52079,6 +52087,12 @@ msgid "SecurityExclusions|ex: glpat-1234567890"
 msgstr ""
 
 msgid "SecurityExclusions|ex: spec/**/*.rb"
+msgstr ""
+
+msgid "SecurityInventory|Security inventory"
+msgstr ""
+
+msgid "SecurityInventory|View security coverage and vulnerabilities for all the projects in this group. Data is refreshed and may be upto 24 hours behind."
 msgstr ""
 
 msgid "SecurityOrchestration| and "
@@ -64588,6 +64602,9 @@ msgid "Vulnerability|Location"
 msgstr ""
 
 msgid "Vulnerability|Namespace:"
+msgstr ""
+
+msgid "Vulnerability|Project"
 msgstr ""
 
 msgid "Vulnerability|Project:"

@@ -19,7 +19,6 @@ module Packages
             file_sha1: params['file.sha1'],
             file_md5: params['file.md5'],
             conan_file_metadatum_attributes: {
-              conan_package_reference: params[:conan_package_reference],
               conan_file_type: params[:conan_file_type],
               package_reference_id: package_reference_id
             }

@@ -19,6 +19,7 @@ module Sidebars
           [
             :security_dashboard,
             :vulnerability_report,
+            :security_inventory,
             :dependency_list,
             :audit_events,
             :compliance,

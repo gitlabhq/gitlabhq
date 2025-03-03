@@ -232,7 +232,7 @@ Feedback is welcome on our vision for [unifying the user experience for these tw
 
 ## Custom security role
 
-You can create a [custom role](../custom_roles.md) for security team members who need access to application security features, such as vulnerability management, security policies, or dependencies. This approach allows organizations to follow the Principle of Least Privilege by providing security team members with the privileges they need without promoting them to Developer or Maintainer on a group or project.
+You can create a [custom role](../custom_roles/_index.md) for security team members who need access to application security features, such as vulnerability management, security policies, or dependencies. This approach allows organizations to follow the Principle of Least Privilege by providing security team members with the privileges they need without promoting them to Developer or Maintainer on a group or project.
 
 For example, the custom security role may have the following [permissions](../custom_roles/abilities.md):
 

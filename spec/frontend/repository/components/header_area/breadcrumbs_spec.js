@@ -160,6 +160,7 @@ describe('Repository breadcrumbs component', () => {
             path: '/',
             text: '',
             to: '/-/tree',
+            href: '/test-project/path/-/tree',
           },
         ],
       });

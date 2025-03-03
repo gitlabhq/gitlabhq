@@ -655,9 +655,9 @@ gem 'google-protobuf', '~> 3.25', '>= 3.25.3', feature_category: :shared
 gem 'toml-rb', '~> 2.2.0', feature_category: :shared
 
 # Feature toggles
-gem 'flipper', '~> 0.26.2', feature_category: :shared
-gem 'flipper-active_record', '~> 0.26.2', feature_category: :shared
-gem 'flipper-active_support_cache_store', '~> 0.26.2', feature_category: :shared
+gem 'flipper', '~> 0.28.0', feature_category: :shared
+gem 'flipper-active_record', '~> 0.28.0', feature_category: :shared
+gem 'flipper-active_support_cache_store', '~> 0.28.0', feature_category: :shared
 gem 'unleash', '~> 3.2.2', feature_category: :shared
 gem 'gitlab-experiment', '~> 0.9.1', feature_category: :shared
 

@@ -121,7 +121,7 @@ access. At the project level, the following roles are supported
 - Owner
 
 Additional details on [project level permissions](../user/permissions.md#project-members-permissions)
-can be found in the documentation. GitLab also supports [custom roles](../user/custom_roles.md)
+can be found in the documentation. GitLab also supports [custom roles](../user/custom_roles/_index.md)
 for customers that have unique permission requirements.
 
 GitLab also supports the following user types for unique use cases:

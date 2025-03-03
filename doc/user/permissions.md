@@ -38,7 +38,7 @@ It's okay to list multiple related objects per line (for example, "View pipeline
 
 {{< /history >}}
 
-You can assign users a default role or a [custom role](custom_roles.md).
+You can assign users a default role or a [custom role](custom_roles/_index.md).
 
 The available default roles are:
 
@@ -362,7 +362,7 @@ Project permissions for [repository](project/repository/_index.md) features incl
 
 | Action                                                                | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | --------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| View project code                                                     |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | On GitLab Self-Managed, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. In GitLab 15.9 and later, users with the Guest role and an Ultimate license can view private repository content if an administrator (on self-managed or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator or group owner can create a [custom role](custom_roles.md) through the API or UI and assign that role to the users. |
+| View project code                                                     |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | On GitLab Self-Managed, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. In GitLab 15.9 and later, users with the Guest role and an Ultimate license can view private repository content if an administrator (on self-managed or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator or group owner can create a [custom role](custom_roles/_index.md) through the API or UI and assign that role to the users. |
 | Pull project code                                                     |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | On GitLab Self-Managed, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
 | View commit status                                                    |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Create commit status                                                  |       |         |          |     ✓     |     ✓      |   ✓   | If the [branch is protected](project/repository/branches/protected.md), this depends on the access given to Developers and Maintainers. |
@@ -650,7 +650,7 @@ To work around the issue, give these users the Guest role or higher to any proje
 
 ## Related topics
 
-- [Custom roles](custom_roles.md)
+- [Custom roles](custom_roles/_index.md)
 - [The GitLab principles behind permissions](https://handbook.gitlab.com/handbook/product/categories/gitlab-the-product/#permissions-in-gitlab)
 - [Members](project/members/_index.md)
 - Customize permissions on [protected branches](project/repository/branches/protected.md)

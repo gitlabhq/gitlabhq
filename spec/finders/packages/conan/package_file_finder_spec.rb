@@ -20,8 +20,10 @@ RSpec.describe ::Packages::Conan::PackageFileFinder do
     end
 
     context 'with conan_package_reference' do
+      let_it_be(:package_file) { package.package_files.find_by(file_name: 'conaninfo.txt') }
+
       let(:params) do
-        { conan_package_reference: package_file.conan_file_metadatum.conan_package_reference }
+        { conan_package_reference: package_file.conan_file_metadatum.package_reference_value }
       end
 
       it { expect(subject).to eq(package_file) }
@@ -65,7 +67,8 @@ RSpec.describe ::Packages::Conan::PackageFileFinder do
     end
 
     it 'returns the correct package file' do
-      expect(package.package_files.last).to eq(recent_package_file_pending_destruction)
+      # Verify the pending_destruction file is indeed the last one, as only the last file is returned
+      expect(package.reload.package_files.last).to eq(recent_package_file_pending_destruction)
 
       expect(subject).to eq(package_file)
     end

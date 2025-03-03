@@ -266,7 +266,7 @@ After you set up your identity provider to work with GitLab, you must configure 
    select the role to assign to new users.
    The default role is **Guest**. That role becomes the starting role of all users
    added to the group:
-   - In GitLab 16.7 and later, group Owners can set a [custom role](../../custom_roles.md)
+   - In GitLab 16.7 and later, group Owners can set a [custom role](../../custom_roles/_index.md)
    - In GitLab 16.6 and earlier, group Owners can set a default membership role other than **Guest**.
      as the default membership role.
 1. Select the **Enable SAML authentication for this group** checkbox.

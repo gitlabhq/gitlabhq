@@ -401,9 +401,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     # We need to handle the exception that the auto merge was missed
     # For example, the approval group was changed and now the approvals are passing
-    if Feature.enabled?(:process_auto_merge_on_load, @merge_request.project) &&
-        @merge_request.auto_merge_enabled? &&
-        @merge_request.mergeability_checks_pass?
+    if @merge_request.auto_merge_enabled? && @merge_request.mergeability_checks_pass?
       Gitlab::EventStore.publish(
         MergeRequests::MergeableEvent.new(
           data: { merge_request_id: @merge_request.id }

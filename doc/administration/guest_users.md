@@ -26,7 +26,7 @@ In GitLab Free and Premium, Guest users count towards the license seat usage.
 
 In GitLab Ultimate, users with the Guest role do not count towards the license seat usage. You can add Guest users to your GitLab instance without impacting your billable seats.
 
-While Guest users generally have limited access, you can configure a [custom role](../user/custom_roles.md) that includes the [`View repository code` permission](../user/custom_roles/abilities.md#source-code-management) to allow Guests to read code in your repositories. Adding any other permissions causes the role to occupy a billable seat.
+While Guest users generally have limited access, you can configure a [custom role](../user/custom_roles/_index.md) that includes the [`View repository code` permission](../user/custom_roles/abilities.md#source-code-management) to allow Guests to read code in your repositories. Adding any other permissions causes the role to occupy a billable seat.
 
 ## Assign Guest role to users
 

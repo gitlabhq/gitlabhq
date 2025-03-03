@@ -98,24 +98,41 @@ RSpec.describe Projects::Ml::CandidatesController, feature_category: :mlops do
 
     let(:candidate_iid) { candidate_for_deletion.iid }
 
-    before do
-      destroy_candidate
+    context 'when experiment can be destroyed' do
+      before do
+        destroy_candidate
+      end
+
+      it 'deletes the experiment', :aggregate_failures do
+        expect(response).to have_gitlab_http_status(:found)
+        expect(flash[:notice]).to eq('Run removed')
+        expect(response).to redirect_to("/#{project.full_path}/-/ml/experiments/#{experiment.iid}")
+        expect { Ml::Candidate.find(id: candidate_for_deletion.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it_behaves_like '404 if candidate does not exist'
+
+      describe 'requires write_model_experiments' do
+        let(:write_model_experiments) { false }
+
+        it 'is 404' do
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
 
-    it 'deletes the experiment', :aggregate_failures do
-      expect(response).to have_gitlab_http_status(:found)
-      expect(flash[:notice]).to eq('Run removed')
-      expect(response).to redirect_to("/#{project.full_path}/-/ml/experiments/#{experiment.iid}")
-      expect { Ml::Candidate.find(id: candidate_for_deletion.id) }.to raise_error(ActiveRecord::RecordNotFound)
-    end
+    context 'when candidate can not be destroyed' do
+      before do
+        allow_next_found_instance_of(Ml::Candidate) do |instance|
+          allow(instance).to receive(:destroy).and_return(false)
+        end
+        destroy_candidate
+      end
 
-    it_behaves_like '404 if candidate does not exist'
-
-    describe 'requires write_model_experiments' do
-      let(:write_model_experiments) { false }
-
-      it 'is 404' do
-        expect(response).to have_gitlab_http_status(:not_found)
+      it 'returns error status and shows alert' do
+        expect(response).to have_gitlab_http_status(:redirect)
+        expect(response).to redirect_to project_ml_experiment_path(project, candidate.experiment.iid)
+        expect(flash[:alert]).to eq(s_("MlExperimentTracking|Failed to remove run"))
       end
     end
   end

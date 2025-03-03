@@ -162,7 +162,7 @@ RSpec.describe Gitlab::QuickActions::CommandDefinition do
       end
 
       context "when the command is available" do
-        context "when the commnd has no arguments" do
+        context "when the command has no arguments" do
           before do
             subject.action_block = proc { self.run = true }
           end
@@ -341,6 +341,30 @@ RSpec.describe Gitlab::QuickActions::CommandDefinition do
         result = subject.explain({}, 'explanation')
 
         expect(result).to eq 'Dynamic explanation'
+      end
+    end
+  end
+
+  describe '.to_h' do
+    context 'with conditional aliases' do
+      before do
+        subject.conditional_aliases = [:test]
+      end
+
+      it 'adds aliases if conditional aliases are available' do
+        subject.conditional_aliases_block = proc { true }
+
+        result = subject.to_h(context: {})
+
+        expect(result[:aliases]).to eq([:test])
+      end
+
+      it 'does not add aliases if conditional aliases are not available' do
+        subject.conditional_aliases_block = proc { false }
+
+        result = subject.to_h(context: {})
+
+        expect(result[:aliases]).to be_empty
       end
     end
   end

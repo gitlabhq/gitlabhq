@@ -94,9 +94,9 @@ class Packages::PackageFile < ApplicationRecord
     where('EXISTS (?)', file_metadata.select(1))
   end
 
-  scope :with_conan_package_reference, ->(conan_package_reference) do
-    joins(:conan_file_metadatum)
-      .where(packages_conan_file_metadata: { conan_package_reference: conan_package_reference })
+  scope :with_conan_package_reference, ->(reference) do
+    joins(conan_file_metadatum: :package_reference)
+      .where(packages_conan_package_references: { reference: reference })
   end
 
   scope :with_conan_recipe_revision, ->(recipe_revision) do

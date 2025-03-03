@@ -1749,7 +1749,7 @@ POST /groups/:id/share
 | `group_id`     | integer        | yes      | The ID of the group to share with |
 | `group_access` | integer        | yes      | The [role (`access_level`)](members.md#roles) to grant the group |
 | `expires_at`   | string         | no       | Share expiration date in ISO 8601 format: 2016-09-26 |
-| `member_role_id`   | integer         | no       | The ID of a [Custom Role](../user/custom_roles.md#assign-a-custom-role-to-an-invited-group) to assign to the invited group |
+| `member_role_id`   | integer         | no       | The ID of a [Custom Role](../user/custom_roles/_index.md#assign-a-custom-role-to-an-invited-group) to assign to the invited group |
 
 #### Delete the link that shares a group with another group
 

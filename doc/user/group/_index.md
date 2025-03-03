@@ -442,7 +442,7 @@ Prerequisites:
    - Has a GitLab account, enter the user's username.
    - Doesn't have a GitLab account, enter the user's email address.
 
-1. Select a [default role](../permissions.md) or [custom role](../custom_roles.md).
+1. Select a [default role](../permissions.md) or [custom role](../custom_roles/_index.md).
 1. Optional. For **Access expiration date**, enter or select a date.
    From that date onward, the user can no longer access the project.
 

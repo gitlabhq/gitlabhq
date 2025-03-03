@@ -5,7 +5,7 @@ import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { issuesListClient } from '~/issues/list';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { getBaseURL, getParameterByName } from '~/lib/utils/url_utility';
+import { getBaseURL } from '~/lib/utils/url_utility';
 import { convertEachWordToTitleCase } from '~/lib/utils/text_utility';
 import { getDraft, clearDraft } from '~/lib/utils/autosave';
 import { findWidget } from '~/issues/list/utils';
@@ -346,13 +346,10 @@ export const setNewWorkItemCache = async (
   const draftDescriptionWidget =
     findWidget(WIDGET_TYPE_DESCRIPTION, draftData?.workspace?.workItem) || {};
   const draftDescription = draftDescriptionWidget?.description || null;
-  const isWorkItemToResolveDiscussion = getParameterByName(
-    'merge_request_to_resolve_discussions_of',
-  );
 
   widgets.push({
     type: WIDGET_TYPE_DESCRIPTION,
-    description: isWorkItemToResolveDiscussion ? workItemDescription : draftDescription,
+    description: workItemDescription || draftDescription,
     descriptionHtml: '',
     lastEditedAt: null,
     lastEditedBy: null,
@@ -562,7 +559,7 @@ export const setNewWorkItemCache = async (
           id: newWorkItemId(workItemType),
           iid: NEW_WORK_ITEM_IID,
           archived: false,
-          title: isWorkItemToResolveDiscussion ? workItemTitle : draftTitle,
+          title: workItemTitle || draftTitle,
           state: 'OPEN',
           description: null,
           confidential: false,

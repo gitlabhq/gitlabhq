@@ -209,18 +209,21 @@ export default {
       this.updateInProgress = true;
 
       if (this.workItemId === newWorkItemId(this.workItemType)) {
+        const visibleWorkItems = this.workItemsByReference.concat(this.workspaceWorkItems);
+
         this.$apollo
           .mutate({
             mutation: updateNewWorkItemMutation,
             variables: {
               input: {
                 fullPath: this.fullPath,
-                parent: this.localSelectedItem
-                  ? {
-                      ...this.availableWorkItems?.find(({ id }) => id === this.localSelectedItem),
-                      webUrl: this.parentWebUrl ?? null,
-                    }
-                  : null,
+                parent:
+                  this.localSelectedItem && visibleWorkItems.length
+                    ? {
+                        ...visibleWorkItems?.find(({ id }) => id === this.localSelectedItem),
+                        webUrl: this.parentWebUrl ?? null,
+                      }
+                    : null,
                 workItemType: this.workItemType,
               },
             },

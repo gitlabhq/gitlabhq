@@ -369,12 +369,6 @@ You can filter value stream analytics to view data that matches specific criteri
 - Milestone
 - Label
 
-{{< alert type="note" >}}
-
-For the "Tasks by type" chart, only the Date range and Project selector filters are available. Labels and other filters are not applied, and you need to select labels separately from the dropdown list next to the chart.
-
-{{< /alert >}}
-
 ## Value stream analytics metrics
 
 The **Overview** page in value stream analytics displays key metrics of the DevSecOps lifecycle performance for projects and groups.
@@ -483,20 +477,17 @@ selected stage finished for the given item.
 
 {{< /details >}}
 
-The **Tasks by type** chart displays the cumulative number of issues and merge requests per day for your group.
+The **Tasks by type** chart displays the cumulative number of completed tasks (closed issues and merged merge requests) per day for your group.
 
-The chart uses the global page filters to display data based on the selected
-group and time frame.
+The chart uses the global page filters to display data based on the selected group and time frame.
 
 To view tasks by type:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Analyze > Value stream analytics**.
 1. Below the **Filter results** text box, select **Overview**. The **Tasks by type** chart displays below the **Total time** chart.
-1. To switch between the task type, select the **Settings** ({{< icon name="settings" >}}) dropdown list
-   and select **Issues** or **Merge Requests**.
-1. To add or remove labels, select the **Settings** ({{< icon name="settings" >}}) dropdown list
-   and select or search for a label. By default the top group-level labels (maximum 10) are selected. You can select a maximum of 15 labels.
+1. Optional. To filter the tasks by type, select **Settings** ({{< icon name="settings" >}}), then **Issues** or **Merge Requests**.
+1. Optional. To filter the tasks by label, select **Settings** ({{< icon name="settings" >}}), then one or more labels. By default the top group labels (maximum 10) are selected. You can select a maximum of 15 labels.
 
 ## Create a value stream
 

@@ -6,7 +6,8 @@ module Gitlab
       ParseError = Class.new(StandardError)
 
       attr_accessor :name, :aliases, :description, :explanation, :execution_message,
-        :params, :condition_block, :parse_params_block, :action_block, :warning, :icon, :types
+        :params, :condition_block, :parse_params_block, :action_block, :warning, :icon, :types, :conditional_aliases,
+        :conditional_aliases_block
 
       def initialize(name, attributes = {})
         @name = name
@@ -22,6 +23,8 @@ module Gitlab
         @parse_params_block = attributes[:parse_params_block]
         @action_block = attributes[:action_block]
         @types = attributes[:types] || []
+        @conditional_aliases = attributes[:conditional_aliases] || []
+        @conditional_aliases_block = attributes[:conditional_aliases_block]
       end
 
       def all_names
@@ -36,7 +39,7 @@ module Gitlab
         return false unless valid_type?(context)
         return true unless condition_block
 
-        context.instance_exec(&condition_block)
+        context.instance_exec(self, &condition_block)
       end
 
       def explain(context, arg)
@@ -114,9 +117,17 @@ module Gitlab
           end
         end
 
+        all_aliases = aliases
+
+        if conditional_aliases_allowed?(context)
+          all_aliases += conditional_aliases
+        else
+          all_aliases -= conditional_aliases
+        end
+
         {
           name: name,
-          aliases: aliases,
+          aliases: all_aliases.uniq,
           description: desc,
           warning: warn,
           icon: icon,
@@ -156,6 +167,10 @@ module Gitlab
             context.quick_action_target.is_a?(type)
           end
         end
+      end
+
+      def conditional_aliases_allowed?(context)
+        conditional_aliases.present? && context.instance_exec(&conditional_aliases_block)
       end
     end
   end

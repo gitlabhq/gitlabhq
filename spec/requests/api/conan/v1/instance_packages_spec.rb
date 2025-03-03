@@ -144,7 +144,7 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
       '/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name' do
       subject(:request) do
         get api("/packages/conan/v1/files/#{recipe_path}/#{package_file_metadata.recipe_revision_value}/package" \
-          "/#{package_file_metadata.conan_package_reference}/#{package_file_metadata.package_revision_value}" \
+          "/#{package_file_metadata.package_reference_value}/#{package_file_metadata.package_revision_value}" \
           "/#{package_file.file_name}"),
           headers: headers
       end

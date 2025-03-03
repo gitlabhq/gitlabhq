@@ -59,7 +59,7 @@ item in group **Settings > SAML Group Links**.
 To link the SAML groups:
 
 1. In **SAML Group Name**, enter the value of the relevant `saml:AttributeValue`. The value entered here must exactly match the value sent in the SAML response. For some IdPs, this may be a group ID or object ID (Azure AD) instead of a friendly group name.
-1. Choose a [default role](../../permissions.md) or [custom role](../../custom_roles.md) in **Access Level**.
+1. Choose a [default role](../../permissions.md) or [custom role](../../custom_roles/_index.md) in **Access Level**.
 1. Select **Save**.
 1. Repeat to add additional group links if required.
 

@@ -103,16 +103,6 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
           expect { go }.to publish_event(MergeRequests::MergeableEvent)
             .with(merge_request_id: merge_request.id)
         end
-
-        context 'when process_auto_merge_on_load is off' do
-          before do
-            stub_feature_flags(process_auto_merge_on_load: false)
-          end
-
-          it 'does not call the auto merge process worker' do
-            expect { go }.not_to publish_event(MergeRequests::MergeableEvent)
-          end
-        end
       end
 
       context 'when the merge request is not mergeable' do

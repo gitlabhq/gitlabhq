@@ -1,5 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { InternalEvents } from '~/tracking';
@@ -43,7 +44,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['query', 'searchType', 'defaultBranchName', 'urlQuery']),
+    ...mapState(['query', 'searchType', 'defaultBranchName', 'urlQuery', 'projectInitialJson']),
     ...mapGetters(['currentScope']),
     search: {
       get() {
@@ -65,7 +66,11 @@ export default {
         : SYNTAX_OPTIONS_ADVANCED_DOCUMENT;
     },
     isDefaultBranch() {
-      return !this.query.repository_ref || this.query.repository_ref === this.defaultBranchName;
+      return (
+        !this.query.repository_ref ||
+        this.query.repository_ref === this.defaultBranchName ||
+        isEmpty(this.projectInitialJson)
+      );
     },
     isRegexButtonVisible() {
       return this.searchType === ZOEKT_SEARCH_TYPE && this.isDefaultBranch;

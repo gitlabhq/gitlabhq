@@ -28,7 +28,7 @@ import {
   getNewWorkItemAutoSaveKey,
   newWorkItemFullPath,
 } from '~/work_items/utils';
-import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
+import { TYPENAME_MERGE_REQUEST, TYPENAME_VULNERABILITY } from '~/graphql_shared/constants';
 import {
   I18N_WORK_ITEM_CREATE_BUTTON_LABEL,
   I18N_WORK_ITEM_ERROR_CREATING,
@@ -188,6 +188,7 @@ export default {
       showWorkItemTypeSelect: false,
       discussionToResolve: getParameterByName('discussion_to_resolve'),
       mergeRequestToResolveDiscussionsOf: getParameterByName('merge_request_id'),
+      vulnerabilityId: getParameterByName('vulnerability_id'),
       numberOfDiscussionsResolved: '',
     };
   },
@@ -242,14 +243,18 @@ export default {
 
         let workItemDescription = '';
         let workItemTitle = '';
-        if (this.mergeRequestToResolveDiscussionsOf) {
-          workItemTitle = document.querySelector(
-            '.follow_up_work_item .follow-up-title',
-          )?.textContent;
-          workItemDescription = document.querySelector(
-            '.follow_up_work_item .follow-up-description',
-          )?.textContent;
-        }
+
+        // The follow up title and description can come from the backend for the following three use cases
+        // 1. when resolving a discussion in the MR and we have the merge request id in the query param
+        // 2. when the issue and title are added in the query param . read https://docs.gitlab.com/user/project/issues/create_issues/#using-a-url-with-prefilled-values
+        // 3. when following up a work item with a vulnerability, where we have the vulnerability id in the query param
+
+        workItemTitle = document.querySelector(
+          '.follow_up_work_item .follow-up-title',
+        )?.textContent;
+        workItemDescription = document.querySelector(
+          '.follow_up_work_item .follow-up-description',
+        )?.textContent;
 
         for await (const workItemType of this.workItemTypes) {
           await setNewWorkItemCache(
@@ -606,6 +611,13 @@ export default {
             this.mergeRequestToResolveDiscussionsOf,
           ),
         };
+      }
+
+      if (this.vulnerabilityId) {
+        workItemCreateInput.vulnerabilityId = convertToGraphQLId(
+          TYPENAME_VULNERABILITY,
+          this.vulnerabilityId,
+        );
       }
 
       // TODO , we can move this to util, currently objectives with other widgets not being supported is causing issues

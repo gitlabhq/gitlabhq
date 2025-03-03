@@ -101,7 +101,7 @@ To apply setting changes, for example adding an analyzer, either:
 To apply mapping changes, either:
 
 - Use a [zero-downtime reindexing migration](#zero-downtime-reindex-migration).
-- Use an [update mapping migration](#elasticmigrationupdatemappingshelper) to change the mapping for the existing index and optionally a follow-up [backfill migration](#elasticmigrationbackfillhelper) to ensure all documents in the index has this field populated.
+- Use an [update mapping migration](#elasticmigrationupdatemappingshelper) to change the mapping for the existing index and optionally a follow-up [backfill migration](#searchelasticmigrationbackfillhelper) to ensure all documents in the index has this field populated.
 
 #### Zero-downtime reindex migration
 
@@ -123,7 +123,7 @@ end
 
 The following migration helpers are available in `ee/app/workers/concerns/elastic/`:
 
-#### `Elastic::MigrationBackfillHelper`
+#### `Search::Elastic::MigrationBackfillHelper`
 
 Backfills a specific field in an index. In most cases, the mapping for the field should already be added.
 
@@ -131,7 +131,7 @@ Requires the `field_name` method and `DOCUMENT_TYPE` constant to backfill a sing
 
 ```ruby
 class MigrationName < Elastic::Migration
-  include Elastic::MigrationBackfillHelper
+  include ::Search::Elastic::MigrationBackfillHelper
 
   DOCUMENT_TYPE = Issue
 
@@ -147,7 +147,7 @@ Requires the `field_names` method and `DOCUMENT_TYPE` constant to backfill multi
 
 ```ruby
 class MigrationName < Elastic::Migration
-  include Elastic::MigrationBackfillHelper
+  include ::Search::Elastic::MigrationBackfillHelper
 
   DOCUMENT_TYPE = Issue
 
@@ -390,7 +390,7 @@ end
 
 - `batch_size` - Sets the number of documents modified during a `batched!` migration run. This size should be set to a value which allows the updates
   enough time to finish. This can be tuned in combination with the `throttle_delay` option described below. The batching
-  must be handled in a custom `migrate` method or by using the [`Elastic::MigrationBackfillHelper`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/concerns/elastic/migration_backfill_helper.rb)
+  must be handled in a custom `migrate` method or by using the [`Search::Elastic::MigrationBackfillHelper`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/concerns/elastic/migration_backfill_helper.rb)
   `migrate` method which uses this setting. Default value is 1000 documents.
 
 - `throttle_delay` - Sets the wait time in between batch runs. This time should be set high enough to allow each migration batch
@@ -485,7 +485,7 @@ Follow these best practices for best results:
 - Order all migrations for each document type so that any migrations that use
   [`Elastic::MigrationUpdateMappingsHelper`](#elasticmigrationupdatemappingshelper)
   are executed before migrations that use the
-  [`Elastic::MigrationBackfillHelper`](#elasticmigrationbackfillhelper). This avoids
+  [`Search::Elastic::MigrationBackfillHelper`](#searchelasticmigrationbackfillhelper). This avoids
   reindexing the same documents multiple times if all of the migrations are unapplied
   and reduces the backfill time.
 - When working in batches, keep the batch size under 9,000 documents.

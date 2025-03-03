@@ -13,7 +13,6 @@ FactoryBot.define do
       package_file { association(:conan_package_file, :conan_package, without_loaded_metadatum: true) }
       conan_file_type { 'package_file' }
       package_reference { association(:conan_package_reference) }
-      conan_package_reference { package_reference.reference }
     end
   end
 end

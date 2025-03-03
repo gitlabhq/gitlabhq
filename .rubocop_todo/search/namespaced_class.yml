@@ -42,7 +42,6 @@ Search/NamespacedClass:
     - 'ee/app/services/elastic/process_initial_bookkeeping_service.rb'
     - 'ee/app/services/protected_environments/search_service.rb'
     - 'ee/app/workers/concerns/elastic/bulk_cron_worker.rb'
-    - 'ee/app/workers/concerns/elastic/migration_backfill_helper.rb'
     - 'ee/app/workers/concerns/elastic/migration_create_index.rb'
     - 'ee/app/workers/concerns/elastic/migration_helper.rb'
     - 'ee/app/workers/concerns/elastic/migration_obsolete.rb'

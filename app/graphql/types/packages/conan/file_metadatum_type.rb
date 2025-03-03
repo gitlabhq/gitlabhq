@@ -14,7 +14,8 @@ module Types
         field :conan_file_type, ::Types::Packages::Conan::MetadatumFileTypeEnum, null: false,
           description: 'Type of the Conan file.'
         field :conan_package_reference, GraphQL::Types::String, null: true,
-          description: 'Reference of the Conan package.'
+          description: 'Reference of the Conan package.',
+          method: :package_reference_value
         field :id, ::Types::GlobalIDType[::Packages::Conan::FileMetadatum], null: false,
           description: 'ID of the metadatum.'
         field :package_revision, GraphQL::Types::String, null: true, description: 'Revision of the package.',

@@ -97,6 +97,9 @@ RSpec.describe Packages::Conan::PackageReference, type: :model, feature_category
           expect(package_reference).to be_valid
         end
       end
+
+      it { is_expected.to allow_value('abc123').for(:reference) }
+      it { is_expected.not_to allow_value('abc-123').for(:reference) }
     end
 
     context 'on info' do

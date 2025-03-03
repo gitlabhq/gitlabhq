@@ -20,7 +20,7 @@ module Tooling
     ].freeze
 
     def initialize
-      missing_env_variables = REQUIRED_ENV_VARIABLES.select { |key| ENV[key.to_s] == '' }
+      missing_env_variables = REQUIRED_ENV_VARIABLES.select { |key| ENV[key.to_s].to_s.empty? }
       unless missing_env_variables.empty?
         raise "[predictive tests] Missing ENV variable(s): #{missing_env_variables.join(',')}."
       end

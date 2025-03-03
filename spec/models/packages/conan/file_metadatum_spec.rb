@@ -28,46 +28,6 @@ RSpec.describe Packages::Conan::FileMetadatum, type: :model do
     it { is_expected.to validate_presence_of(:package_file) }
     it { is_expected.to validate_absence_of(:package_revision) }
 
-    describe '#conan_package_reference' do
-      context 'recipe file' do
-        let_it_be(:conan_file_metadatum) { build(:conan_file_metadatum, :recipe_file, package_file: package_file) }
-
-        it 'is valid with empty value' do
-          conan_file_metadatum.conan_package_reference = nil
-
-          expect(conan_file_metadatum).to be_valid
-        end
-
-        it 'is invalid with value' do
-          conan_file_metadatum.conan_package_reference = '123456789'
-
-          expect(conan_file_metadatum).to be_invalid
-        end
-      end
-
-      context 'package file' do
-        let_it_be(:conan_file_metadatum) { build(:conan_file_metadatum, :package_file, package_file: package_file) }
-
-        it 'is valid with acceptable value' do
-          conan_file_metadatum.conan_package_reference = '123456asdf'
-
-          expect(conan_file_metadatum).to be_valid
-        end
-
-        it 'is invalid with invalid value' do
-          conan_file_metadatum.conan_package_reference = 'foo@bar'
-
-          expect(conan_file_metadatum).to be_invalid
-        end
-
-        it 'is invalid when nil' do
-          conan_file_metadatum.conan_package_reference = nil
-
-          expect(conan_file_metadatum).to be_invalid
-        end
-      end
-    end
-
     describe '#package_reference' do
       let_it_be(:package_reference) { build(:conan_package_reference) }
 
@@ -88,38 +48,16 @@ RSpec.describe Packages::Conan::FileMetadatum, type: :model do
       end
 
       context 'package file' do
-        context 'on create' do
-          let(:conan_file_metadatum) { build(:conan_file_metadatum, :package_file, package_file: package_file) }
+        let(:conan_file_metadatum) { build(:conan_file_metadatum, :package_file, package_file: package_file) }
 
-          it 'is valid when package_reference is present' do
-            conan_file_metadatum.package_reference = package_reference
-
-            expect(conan_file_metadatum).to be_valid
-          end
-
-          it 'is invalid when package_reference is absent' do
-            conan_file_metadatum.package_reference = nil
-
-            expect(conan_file_metadatum).to be_invalid
-          end
+        it 'is valid when package_reference is present' do
+          expect(conan_file_metadatum).to be_valid
         end
 
-        context 'on update' do
-          let_it_be_with_reload(:existing_metadatum) do
-            create(:conan_file_metadatum, :package_file, package_file: package_file)
-          end
+        it 'is invalid when package_reference is absent' do
+          conan_file_metadatum.package_reference = nil
 
-          it 'is valid when package_reference is absent' do
-            existing_metadatum.package_reference = nil
-
-            expect(existing_metadatum).to be_valid
-          end
-
-          it 'is valid when package_reference is present' do
-            existing_metadatum.package_reference = package_reference
-
-            expect(existing_metadatum).to be_valid
-          end
+          expect(conan_file_metadatum).to be_invalid
         end
       end
     end
@@ -174,6 +112,28 @@ RSpec.describe Packages::Conan::FileMetadatum, type: :model do
         expect(conan_file_metadatum.package_revision_value).to eq(
           Packages::Conan::FileMetadatum::DEFAULT_REVISION)
       end
+    end
+  end
+
+  describe '#package_reference_value' do
+    let(:package_reference) { build(:conan_package_reference) }
+
+    subject { conan_file_metadatum.package_reference_value }
+
+    context 'when package_reference is present' do
+      let(:conan_file_metadatum) do
+        build(:conan_file_metadatum, :package_file, package_file: package_file, package_reference: package_reference)
+      end
+
+      it { is_expected.to eq(package_reference.reference) }
+    end
+
+    context 'when package_reference is nil' do
+      let(:conan_file_metadatum) do
+        build(:conan_file_metadatum, :recipe_file, package_file: package_file)
+      end
+
+      it { is_expected.to be_nil }
     end
   end
 end

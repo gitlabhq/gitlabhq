@@ -13,7 +13,6 @@ ee/spec/frontend/analytics/cycle_analytics/components/value_stream_aggregation_s
 ee/spec/frontend/analytics/cycle_analytics/vsa_settings/components/value_stream_form_content_spec.js
 ee/spec/frontend/analytics/dashboards/ai_impact/components/metric_table_spec.js
 ee/spec/frontend/analytics/devops_reports/devops_adoption/components/devops_adoption_app_spec.js
-ee/spec/frontend/analytics/devops_reports/devops_adoption/components/devops_adoption_overview_table_spec.js
 ee/spec/frontend/analytics/group_ci_cd_analytics/components/release_stats_card_spec.js
 ee/spec/frontend/analytics/merge_request_analytics/components/filter_bar_spec.js
 ee/spec/frontend/analytics/merge_request_analytics/components/throughput_chart_spec.js

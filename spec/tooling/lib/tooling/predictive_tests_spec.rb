@@ -70,7 +70,7 @@ RSpec.describe Tooling::PredictiveTests, feature_category: :tooling do
     context 'when ENV variables are missing' do
       before do
         stub_env(
-          'RSPEC_CHANGED_FILES_PATH' => '',
+          'RSPEC_CHANGED_FILES_PATH' => nil,
           'FRONTEND_FIXTURES_MAPPING_PATH' => ''
         )
       end

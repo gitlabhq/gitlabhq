@@ -43,7 +43,6 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
         expect(package_file.conan_file_metadatum.package_revision_value).to eq('0')
         expect(package_file.conan_file_metadatum.recipe_revision_id).to be_nil
         expect(package_file.conan_file_metadatum.package_revision_id).to be_nil
-        expect(package_file.conan_file_metadatum.conan_package_reference).to eq(conan_package_reference)
         expect(package_file.conan_file_metadatum.package_reference.reference).to eq(conan_package_reference)
         expect(package_file.conan_file_metadatum.conan_file_type).to eq('package_file')
         expect(package_file.file.read).to eq('content')
@@ -82,7 +81,6 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
         expect(package_file.conan_file_metadatum.package_revision_value).to be_nil
         expect(package_file.conan_file_metadatum.recipe_revision_id).to be_nil
         expect(package_file.conan_file_metadatum.package_revision_id).to be_nil
-        expect(package_file.conan_file_metadatum.conan_package_reference).to be_nil
         expect(package_file.conan_file_metadatum.package_reference).to be_nil
         expect(package_file.conan_file_metadatum.conan_file_type).to eq('recipe_file')
         expect(package_file.file.read).to eq('content')
@@ -205,8 +203,7 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
         response = subject
 
         expect(response).to be_error
-        expect(response.message).to include('Validation failed: ' \
-          'Conan file metadatum conan package reference is invalid')
+        expect(response.message).to include('Validation failed: Reference is invalid')
         expect(response.reason).to eq(:invalid_package_file)
         expect { response }.not_to change { Packages::PackageFile.count }
         expect { response }.not_to change { Packages::Conan::FileMetadatum.count }

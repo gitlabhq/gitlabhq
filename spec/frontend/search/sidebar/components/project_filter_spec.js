@@ -85,6 +85,7 @@ describe('ProjectFilter', () => {
             include_archived: null,
             project_id: null,
             nav_source: null,
+            repository_ref: null,
             scope: CURRENT_SCOPE,
           });
           expect(visitUrl).toHaveBeenCalled();

@@ -312,7 +312,7 @@ export default {
       return this.currentPath?.trim().length;
     },
     crumbs() {
-      return this.pathLinks.map(({ name, url, ...rest }) => ({ text: name, to: url, ...rest }));
+      return this.pathLinks.map(({ name, url, ...rest }) => ({ text: name, href: url, ...rest }));
     },
   },
   methods: {
