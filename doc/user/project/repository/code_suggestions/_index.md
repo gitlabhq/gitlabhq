@@ -304,8 +304,9 @@ This API connection securely transmits a context window from your IDE/editor to 
 
 ### Streaming
 
-Streaming of Code Generation responses is supported in VS Code, leading to faster average response times.
-Other supported IDEs offer slower response times and will return the generated code in a single block.
+Streaming of Code Generation responses is supported in JetBrains and Visual Studio, leading to
+perceived faster response times.
+Other supported IDEs will return the generated code in a single block.
 
 ### Direct and indirect connections
 

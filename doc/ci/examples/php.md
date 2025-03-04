@@ -192,7 +192,7 @@ phpenv config-add my_config.ini
 
 ### Install custom extensions
 
-Since this is a pretty bare installation of the PHP environment, you may need
+Because this is a pretty bare installation of the PHP environment, you may need
 some extensions that are not currently present on the build machine.
 
 To install additional extensions, execute:

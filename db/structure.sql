@@ -17067,6 +17067,7 @@ CREATE TABLE namespace_settings (
     extended_grat_expiry_webhooks_execute boolean DEFAULT false NOT NULL,
     jwt_ci_cd_job_token_enabled boolean DEFAULT false NOT NULL,
     jwt_ci_cd_job_token_opted_out boolean DEFAULT false NOT NULL,
+    require_dpop_for_manage_api_endpoints boolean DEFAULT true NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))

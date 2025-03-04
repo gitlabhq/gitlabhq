@@ -82,25 +82,25 @@ export default {
       :selected="activeItemLabel"
       :disabled="!activeItem"
       :data-qa-text-style="activeItemLabel"
-      size="small"
-      toggle-class="btn-default-tertiary"
       @select="execute"
     >
       <template #toggle>
         <gl-button
           v-gl-tooltip="$options.i18n.placeholder"
-          data-testid="selected-date-range"
+          size="small"
+          category="tertiary"
+          variant="default"
           :aria-label="`${$options.i18n.placeholder} ${activeItemLabel}`"
           :title="$options.i18n.placeholder"
           class="gl-w-full"
-          button-text-classes="gl-mr-[-4px] !gl-flex !gl-justify-between gl-w-full"
+          button-text-classes="gl-mr-[-2px] !gl-flex !gl-justify-between gl-w-full"
           ><span class="gl-flex-grow-1 gl-text-left">{{ activeItemLabel }}</span>
           <gl-icon
             aria-hidden="true"
             name="chevron-down"
             :size="16"
             variant="current"
-            class="gl-flex-shrink-0"
+            class="gl-ml-2 gl-flex-shrink-0"
         /></gl-button>
       </template>
     </gl-collapsible-listbox>

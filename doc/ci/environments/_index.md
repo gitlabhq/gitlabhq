@@ -1021,7 +1021,7 @@ deploy:
   environment: production/$ENVIRONMENT
 ```
 
-Since `$ENVIRONMENT` variable does not exist in the pipeline, GitLab tries to
+Because the `$ENVIRONMENT` variable does not exist in the pipeline, GitLab tries to
 create an environment with a name `production/`, which is invalid in
 [the environment name constraint](../yaml/_index.md#environmentname).
 
@@ -1046,7 +1046,7 @@ review:
 When you create a new merge request with a branch name `bug-fix!`,
 the `review` job tries to create an environment with `review/bug-fix!`.
 However, the `!` is an invalid character for environments, so the
-deployment job fails since it was about to run without an environment.
+deployment job fails because it was about to run without an environment.
 
 To fix this, use one of the following solutions:
 

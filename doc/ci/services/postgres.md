@@ -21,7 +21,7 @@ do this with the Docker and Shell executors of GitLab Runner.
 To pass variables set in the GitLab UI to service containers, you must [define the variables](../variables/_index.md#define-a-cicd-variable-in-the-ui).
 You must define your variables as either Group or Project, then call the variables in your job as shown in the following workaround.
 
-In Postgres 15.4 and later, Postgres does not substitute a schema or owner name into an extension script if the name contains a quote, backslash, or dollar sign.
+Postgres 15.4 and later versions do not substitute schemas or owner names into extension scripts if they include quote ("), backslash (\), or dollar sign ($) symbols.
 If the CI variables are not configured, the value uses the environment variable name as a string instead. For example, `POSTGRES_USER: $USER` results in the
 `POSTGRES_USER` variable being set to '$USER', which causes Postgres to show the following error:
 
@@ -110,9 +110,8 @@ template1=# CREATE USER runner WITH PASSWORD '$password' CREATEDB;
 ```
 
 The created user has the privilege to create databases (`CREATEDB`). The
-following steps describe how to create a database explicitly for that user, but
-having that privilege can be useful if in your testing framework you have tools
-that drop and create databases.
+following steps describe how to create a database explicitly for that user.
+Privileges allow your testing framework to create and drop databases as needed.
 
 Create the database and grant all privileges to it for the user `runner`:
 
@@ -151,5 +150,5 @@ We have set up an [Example PostgreSQL Project](https://gitlab.com/gitlab-example
 convenience that runs on [GitLab.com](https://gitlab.com) using our publicly
 available [instance runners](../runners/_index.md).
 
-Want to hack on it? Fork it, commit, and push your changes. Within a few
-moments the changes are picked by a public runner and the job begins.
+Want to hack on it? Fork it, commit, and push your changes. In a few
+moments, the changes are picked by a public runner and the job begins.

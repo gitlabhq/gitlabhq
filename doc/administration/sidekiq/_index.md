@@ -31,7 +31,7 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
       # Make Gitaly accept connections on all network interfaces
       listen_addr: '0.0.0.0:8075',
       auth: {
-         ## Set up the Gitaly token as a form of authentication since you are accessing Gitaly over the network
+         ## Set up the Gitaly token as a form of authentication because you are accessing Gitaly over the network
          ## https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#about-the-gitaly-token
          token: 'abc123secret',
       },

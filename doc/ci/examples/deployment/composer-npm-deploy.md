@@ -76,7 +76,8 @@ In order, this means that:
 1. We check if the `ssh-agent` is available and we install it if it's not.
 1. We create the `~/.ssh` folder.
 1. We make sure we're running bash.
-1. We disable host checking (we don't ask for user accept when we first connect to a server, and since every job equals a first connect, we need this).
+1. We disable host checking (we don't ask the user to accept when we first connect to a server and,
+   because every job equals a first connect, we need this).
 
 And this is basically all you need in the `before_script` section.
 
@@ -125,7 +126,7 @@ Therefore, for a production environment we use additional steps to ensure that a
 
 ## Where to go next
 
-Since this was a WordPress project, it includes real code snippets. Some further ideas you can pursue:
+Because this was a WordPress project, it includes real code snippets. Some further ideas you can pursue:
 
 - Having a slightly different script for the default branch allows you to deploy to a production server from that branch and to a stage server from any other branches.
 - Instead of pushing it live, you can push it to WordPress official repository.

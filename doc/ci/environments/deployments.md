@@ -94,7 +94,7 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 
 When a new deployment happens in your project,
 GitLab creates [a special Git-ref to the deployment](#check-out-deployments-locally).
-Since these Git-refs are populated from the remote GitLab repository,
+Because these Git-refs are populated from the remote GitLab repository,
 you could find that some Git operations, such as `git-fetch` and `git-pull`,
 become slower as the number of deployments in your project increases.
 

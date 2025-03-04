@@ -408,7 +408,7 @@ default:
     - virtualenv venv
     - source venv/bin/activate
 
-variables:  # Change pip's cache directory to be inside the project directory since we can only cache local items.
+variables:  # Change pip's cache directory to be inside the project directory because we can only cache local items.
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
 test:
