@@ -43285,6 +43285,9 @@ msgstr ""
 msgid "Pipeline|Variable"
 msgstr ""
 
+msgid "Pipeline|Variable type"
+msgstr ""
+
 msgid "Pipeline|Variables"
 msgstr ""
 

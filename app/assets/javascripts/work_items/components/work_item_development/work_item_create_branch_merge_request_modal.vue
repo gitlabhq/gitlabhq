@@ -221,7 +221,7 @@ export default {
             ? confidentialMergeRequestState.selectedProject.pathWithNamespace
             : this.workItemFullPath,
           workItemIid: this.workItemIid,
-          sourceBranch: this.defaultBranch,
+          sourceBranch: this.sourceName,
           targetBranch: this.branchName,
         });
 
@@ -260,7 +260,7 @@ export default {
           : this.workItemFullPath,
         workItemIid: this.workItemIid,
         sourceBranch: this.branchName,
-        targetBranch: this.defaultBranch,
+        targetBranch: this.sourceName,
       });
 
       /** open the merge request once we have it created */
@@ -383,6 +383,7 @@ export default {
           <gl-form-input
             id="source-name-id"
             v-model.trim="sourceName"
+            data-testid="source-name"
             :state="!invalidSource"
             required
             name="source-name"
@@ -405,6 +406,7 @@ export default {
           <gl-form-input
             id="branch-name-id"
             v-model.trim="branchName"
+            data-testid="target-name"
             :state="!invalidBranch"
             :disabled="isLoading || creatingBranch"
             required

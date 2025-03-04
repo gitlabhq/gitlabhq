@@ -46,7 +46,6 @@ Search/NamespacedClass:
     - 'ee/app/workers/concerns/elastic/migration_helper.rb'
     - 'ee/app/workers/concerns/elastic/migration_obsolete.rb'
     - 'ee/app/workers/concerns/elastic/migration_options.rb'
-    - 'ee/app/workers/concerns/elastic/migration_remove_fields_helper.rb'
     - 'ee/app/workers/concerns/elastic/migration_state.rb'
     - 'ee/app/workers/concerns/elastic/migration_update_mappings_helper.rb'
     - 'ee/app/workers/elastic/migration_worker.rb'

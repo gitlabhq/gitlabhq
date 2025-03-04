@@ -57,6 +57,43 @@ RSpec.describe Ci::PipelineCreation::Inputs::SpecInputs, feature_category: :pipe
     end
   end
 
+  describe '#all_inputs' do
+    context 'when inputs exists' do
+      let(:specs) do
+        {
+          'string_param' => string_input_spec,
+          'number_param' => number_input_spec,
+          'boolean_param' => boolean_input_spec,
+          'array_param' => array_input_spec
+        }
+      end
+
+      it 'returns all inputs' do
+        inputs = described_class.new(specs).all_inputs
+
+        expect(inputs.map(&:name)).to eq(specs.keys)
+        expect(inputs[0]).to be_an_instance_of(Ci::PipelineCreation::Inputs::StringInput)
+        expect(inputs[0].default).to eq('test')
+
+        expect(inputs[1]).to be_an_instance_of(Ci::PipelineCreation::Inputs::NumberInput)
+        expect(inputs[1].default).to eq(42)
+
+        expect(inputs[2]).to be_an_instance_of(Ci::PipelineCreation::Inputs::BooleanInput)
+        expect(inputs[2].default).to be(true)
+
+        expect(inputs[3]).to be_an_instance_of(Ci::PipelineCreation::Inputs::ArrayInput)
+        expect(inputs[3].default).to eq(['item1'])
+      end
+    end
+
+    context 'when inputs do not exist' do
+      it 'returns empty array' do
+        expect(described_class.new(nil).all_inputs).to be_empty
+        expect(described_class.new({}).all_inputs).to be_empty
+      end
+    end
+  end
+
   describe '#input_names' do
     let(:specs) do
       {

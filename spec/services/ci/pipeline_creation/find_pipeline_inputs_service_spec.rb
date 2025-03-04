@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineCreation::FindCiConfigSpecService, feature_category: :pipeline_composition do
+RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category: :pipeline_composition do
   let(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
@@ -33,10 +33,6 @@ RSpec.describe Ci::PipelineCreation::FindCiConfigSpecService, feature_category: 
       YAML
     end
 
-    let(:expected_spec) do
-      { inputs: { foo: { default: 'bar' } } }
-    end
-
     shared_examples 'successful response without spec' do
       let(:config_yaml) { config_yaml_without_inputs }
 
@@ -44,7 +40,11 @@ RSpec.describe Ci::PipelineCreation::FindCiConfigSpecService, feature_category: 
         result = service.execute
 
         expect(result).to be_success
-        expect(result.payload).to eq(spec: {})
+
+        spec_inputs = result.payload.fetch(:inputs)
+        expect(spec_inputs).to be_a(::Ci::PipelineCreation::Inputs::SpecInputs)
+        expect(spec_inputs.errors).to be_empty
+        expect(spec_inputs.all_inputs).to be_empty
       end
     end
 
@@ -53,7 +53,15 @@ RSpec.describe Ci::PipelineCreation::FindCiConfigSpecService, feature_category: 
         result = service.execute
 
         expect(result).to be_success
-        expect(result.payload).to eq(spec: expected_spec)
+
+        spec_inputs = result.payload.fetch(:inputs)
+        expect(spec_inputs).to be_a(::Ci::PipelineCreation::Inputs::SpecInputs)
+        expect(spec_inputs.errors).to be_empty
+
+        input = spec_inputs.all_inputs.first
+        expect(input.name).to eq(:foo)
+        expect(input).to be_a(::Ci::PipelineCreation::Inputs::StringInput)
+        expect(input.default).to eq('bar')
       end
     end
 
@@ -138,18 +146,18 @@ RSpec.describe Ci::PipelineCreation::FindCiConfigSpecService, feature_category: 
             expect(result.message).to eq('invalid YAML config')
           end
         end
+      end
 
-        context 'when an error occurs during yaml loading' do
-          it 'returns error response' do
-            allow(::Gitlab::Ci::Config::Yaml)
-              .to receive(:load!)
-              .and_raise(::Gitlab::Ci::Config::Yaml::LoadError)
+      context 'when an error occurs during yaml loading' do
+        it 'returns error response' do
+          allow(::Gitlab::Ci::Config::Yaml)
+            .to receive(:load!)
+            .and_raise(::Gitlab::Ci::Config::Yaml::LoadError)
 
-            result = service.execute
+          result = service.execute
 
-            expect(result).to be_error
-            expect(result.message).to match(/YAML load error/)
-          end
+          expect(result).to be_error
+          expect(result.message).to match(/YAML load error/)
         end
       end
 
@@ -179,11 +187,11 @@ RSpec.describe Ci::PipelineCreation::FindCiConfigSpecService, feature_category: 
           end
         end
 
-        it 'returns success response with empty spec' do
+        it 'returns error response' do
           result = service.execute
 
-          expect(result).to be_success
-          expect(result.payload).to eq({ spec: {} })
+          expect(result).to be_error
+          expect(result.message).to eq('inputs not supported for this CI config source')
         end
       end
     end

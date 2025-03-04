@@ -183,6 +183,9 @@ export const workItemQueryResponse = {
       iid: '1',
       archived: false,
       title: 'Test',
+      movedToWorkItemUrl: null,
+      duplicatedToWorkItemUrl: null,
+      promotedToEpicUrl: null,
       state: 'OPEN',
       description: 'description',
       confidential: false,
@@ -313,6 +316,9 @@ export const updateWorkItemMutationResponse = {
         iid: '1',
         archived: false,
         title: 'Updated title',
+        movedToWorkItemUrl: null,
+        duplicatedToWorkItemUrl: null,
+        promotedToEpicUrl: null,
         state: 'OPEN',
         description: 'description',
         confidential: false,
@@ -452,6 +458,9 @@ export const convertWorkItemMutationResponse = {
         iid: '1',
         archived: false,
         title: 'Updated title',
+        movedToWorkItemUrl: null,
+        duplicatedToWorkItemUrl: null,
+        promotedToEpicUrl: null,
         state: 'OPEN',
         description: 'description',
         webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
@@ -1438,6 +1447,7 @@ export const workItemResponseFactory = ({
   discussionLocked = false,
   canInviteMembers = false,
   labelsWidgetPresent = true,
+  errorTrackingWidgetPresent = true,
   hierarchyWidgetPresent = true,
   linkedItemsWidgetPresent = true,
   crmContactsWidgetPresent = true,
@@ -1471,6 +1481,9 @@ export const workItemResponseFactory = ({
   developmentWidgetPresent = false,
   customFieldsWidgetPresent = true,
   customFieldValues = null,
+  movedToWorkItemUrl = null,
+  duplicatedToWorkItemUrl = null,
+  promotedToEpicUrl = null,
 } = {}) => ({
   data: {
     workItem: {
@@ -1487,6 +1500,9 @@ export const workItemResponseFactory = ({
       updatedAt,
       closedAt: null,
       author,
+      movedToWorkItemUrl,
+      duplicatedToWorkItemUrl,
+      promotedToEpicUrl,
       project: {
         id: 'gid://gitlab/Project/7',
         __typename: 'Project',
@@ -1682,6 +1698,13 @@ export const workItemResponseFactory = ({
               },
             }
           : { type: 'MOCK TYPE' },
+        errorTrackingWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetErrorTracking',
+              type: 'ERROR_TRACKING',
+              identifier: '1',
+            }
+          : { type: 'MOCK TYPE' },
         hierarchyWidgetPresent
           ? {
               __typename: 'WorkItemWidgetHierarchy',
@@ -1850,6 +1873,9 @@ export const createWorkItemMutationResponse = {
         archived: false,
         title: 'Updated title',
         state: 'OPEN',
+        movedToWorkItemUrl: null,
+        duplicatedToWorkItemUrl: null,
+        promotedToEpicUrl: null,
         description: 'description',
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
@@ -1939,6 +1965,9 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
       iid: '1',
       archived: false,
       state: 'OPEN',
+      movedToWorkItemUrl: null,
+      duplicatedToWorkItemUrl: null,
+      promotedToEpicUrl: null,
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/6',
         name: 'Issue',
@@ -3146,6 +3175,9 @@ export const changeWorkItemParentMutationResponse = {
         iid: '2',
         archived: false,
         state: 'OPEN',
+        movedToWorkItemUrl: null,
+        duplicatedToWorkItemUrl: null,
+        promotedToEpicUrl: null,
         title: 'Foo',
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
@@ -5601,6 +5633,9 @@ export const createWorkItemQueryResponse = {
         iid: NEW_WORK_ITEM_IID,
         archived: false,
         title: '',
+        movedToWorkItemUrl: null,
+        duplicatedToWorkItemUrl: null,
+        promotedToEpicUrl: null,
         state: 'OPEN',
         description: '',
         confidential: false,

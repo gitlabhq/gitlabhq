@@ -36,6 +36,7 @@ import {
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_DEVELOPMENT,
   STATE_OPEN,
+  WIDGET_TYPE_ERROR_TRACKING,
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_MILESTONE,
   WORK_ITEM_TYPE_VALUE_INCIDENT,
@@ -73,6 +74,7 @@ import WorkItemDescription from './work_item_description.vue';
 import WorkItemNotes from './work_item_notes.vue';
 import WorkItemAwardEmoji from './work_item_award_emoji.vue';
 import WorkItemRelationships from './work_item_relationships/work_item_relationships.vue';
+import WorkItemErrorTracking from './work_item_error_tracking.vue';
 import WorkItemStickyHeader from './work_item_sticky_header.vue';
 import WorkItemAncestors from './work_item_ancestors/work_item_ancestors.vue';
 import WorkItemTitle from './work_item_title.vue';
@@ -115,6 +117,7 @@ export default {
     WorkItemTree,
     WorkItemNotes,
     WorkItemRelationships,
+    WorkItemErrorTracking,
     WorkItemStickyHeader,
     WorkItemAncestors,
     WorkItemTitle,
@@ -397,6 +400,9 @@ export default {
     },
     workItemAwardEmoji() {
       return this.findWidget(WIDGET_TYPE_AWARD_EMOJI);
+    },
+    workItemErrorTrackingIdentifier() {
+      return this.findWidget(WIDGET_TYPE_ERROR_TRACKING)?.identifier;
     },
     workItemHierarchy() {
       return this.findWidget(WIDGET_TYPE_HIERARCHY);
@@ -1035,6 +1041,12 @@ export default {
                 @attributesUpdated="$emit('attributesUpdated', $event)"
               />
             </aside>
+
+            <work-item-error-tracking
+              v-if="workItemErrorTrackingIdentifier"
+              :full-path="workItemFullPath"
+              :identifier="workItemErrorTrackingIdentifier"
+            />
 
             <design-widget
               v-if="hasDesignWidget"

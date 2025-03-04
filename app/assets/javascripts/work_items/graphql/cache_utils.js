@@ -569,6 +569,9 @@ export const setNewWorkItemCache = async (
           webUrl: `${baseURL}/groups/gitlab-org/-/work_items/new`,
           reference: '',
           createNoteEmail: null,
+          movedToWorkItemUrl: null,
+          duplicatedToWorkItemUrl: null,
+          promotedToEpicUrl: null,
           project: null,
           namespace: {
             id: newWorkItemPath,

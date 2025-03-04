@@ -1,4 +1,4 @@
-#import "./work_item.fragment.graphql"
+#import "ee_else_ce/work_items/graphql/work_item.fragment.graphql"
 
 subscription workItemUpdated($id: WorkItemID!) {
   workItemUpdated(workItemId: $id) {

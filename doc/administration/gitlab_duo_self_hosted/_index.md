@@ -44,9 +44,23 @@ This setup ensures enterprise-level privacy and flexibility, allowing seamless i
 
 ### Supported GitLab Duo features
 
-#### Supported Code Suggestions features
+The following table lists the GitLab Duo features, and whether they are available on GitLab Duo Self-Hosted or not.
 
-For GitLab Duo Code Suggestions, you can use both [code generation and code completion](../../user/project/repository/code_suggestions/_index.md#code-completion-and-generation) with GitLab Duo Self-Hosted.
+| Feature                                                                                                                                | Available on GitLab Duo Self-Hosted | GitLab version |
+|----------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------|----|
+| [GitLab Duo Chat](../../user/gitlab_duo_chat/_index.md)                                                                                | {{< icon name="check-circle-filled" >}} Yes    | GitLab 17.9 and later |
+| [Code Suggestions](../../user/project/repository/code_suggestions/_index.md)                                                           | {{< icon name="check-circle-filled" >}} Yes    | GitLab 17.9 and later |
+| [Code Explanation](../../user/project/repository/code_explain.md)                                                                      | {{< icon name="check-circle-filled" >}} Yes    | GitLab 17.9 and later |
+| [Test Generation](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                                       | {{< icon name="check-circle-filled" >}} Yes    | GitLab 17.9 and later |
+| [Refactor Code](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                                       | {{< icon name="check-circle-filled" >}} Yes    | GitLab 17.9 and later |
+| [Fix Code](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)                                                                 | {{< icon name="check-circle-filled" >}} Yes    | GitLab 17.9 and later |
+| [AI Impact Dashboard](../../user/analytics/ai_impact_analytics.md)                                                                     | {{< icon name="check-circle-dashed" >}} Beta | GitLab 17.9 and later |
+| [Discussion Summary](../../user/discussions/_index.md#summarize-issue-discussions-with-duo-chat)                                       | {{< icon name="dash-circle" >}} No      | Not applicable |
+| [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli)                                          | {{< icon name="dash-circle" >}} No      | Not applicable |
+| [Merge Commit Message Generation](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message)          | {{< icon name="dash-circle" >}} No      | Not applicable |
+| [Root Cause Analysis](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)                   | {{< icon name="dash-circle" >}} No      | Not applicable |
+| [Vulnerability Explanation](../../user/application_security/vulnerabilities/_index.md#explaining-a-vulnerability)                      | {{< icon name="dash-circle" >}} No      | Not applicable |
+| [Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution)                         | {{< icon name="dash-circle" >}} No      | Not applicable |
 
 #### Supported Duo Chat features
 
@@ -63,11 +77,7 @@ You can use the following GitLab Duo Chat features with GitLab Duo Self-Hosted:
 - [Ask follow up questions](../../user/gitlab_duo_chat/examples.md#ask-follow-up-questions)
 - [Ask about errors](../../user/gitlab_duo_chat/examples.md#ask-about-errors)
 - [Ask about specific files](../../user/gitlab_duo_chat/examples.md#ask-about-specific-files)
-- [Refactor code in the IDE](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)
-- [Fix code in the IDE](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)
-- [Write tests in the IDE](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)
 - [Ask about CI/CD](../../user/gitlab_duo_chat/examples.md#ask-about-cicd)
-- [Use IDE slash commands](../../user/gitlab_duo_chat/examples.md#ide)
 
 ### Prerequisites
 

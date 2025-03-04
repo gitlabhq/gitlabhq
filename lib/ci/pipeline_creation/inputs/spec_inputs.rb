@@ -23,22 +23,26 @@ module Ci
           build_inputs!(specs.to_h)
         end
 
+        def all_inputs
+          @inputs
+        end
+
         def input_names
-          @inputs.map(&:name)
+          all_inputs.map(&:name)
         end
 
         def errors
-          @errors + @inputs.flat_map(&:errors)
+          @errors + all_inputs.flat_map(&:errors)
         end
 
         def validate_input_params!(params)
-          @inputs.each do |input|
+          all_inputs.each do |input|
             input.validate_param!(params[input.name])
           end
         end
 
         def to_params(params)
-          @inputs.inject({}) do |hash, input|
+          all_inputs.inject({}) do |hash, input|
             hash.merge(input.name => input.actual_value(params[input.name]))
           end
         end

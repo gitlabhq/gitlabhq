@@ -2,7 +2,7 @@
 
 module Ci
   module PipelineCreation
-    class FindCiConfigSpecService
+    class FindPipelineInputsService
       include Gitlab::Utils::StrongMemoize
 
       # This service is used by the frontend to display inputs as an HTML form
@@ -34,15 +34,14 @@ module Ci
           # We need to read the uninterpolated YAML of the included file.
           yaml_content = ::Gitlab::Ci::Config::Yaml.load!(project_config.content)
           yaml_result = yaml_result_of_internal_include(yaml_content)
-
           return error_response('invalid YAML config') unless yaml_result&.valid?
 
-          success_response(yaml_result.spec)
+          spec_inputs = Ci::PipelineCreation::Inputs::SpecInputs.new(yaml_result.spec[:inputs])
+          return error_response(spec_inputs.errors.join(', ')) if spec_inputs.errors.any?
+
+          success_response(spec_inputs)
         else
-          # For now we do nothing. The unsupported case is `ProjectConfig::SecurityPolicyDefault`
-          # which is used when the project has no CI config explicitly defined but it's enforced
-          # by default using policies.
-          success_response({})
+          error_response('inputs not supported for this CI config source')
         end
       rescue ::Gitlab::Ci::Config::Yaml::LoadError => e
         error_response("YAML load error: #{e.message}")
@@ -52,8 +51,8 @@ module Ci
 
       attr_reader :current_user, :project, :ref, :pipeline_source
 
-      def success_response(spec)
-        ServiceResponse.success(payload: { spec: spec })
+      def success_response(inputs)
+        ServiceResponse.success(payload: { inputs: inputs })
       end
 
       def error_response(message)

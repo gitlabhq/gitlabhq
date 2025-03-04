@@ -41,9 +41,9 @@ module Ci
 
         override :validate_regex
         def validate_regex(value, default)
-          return unless spec.key?(:regex) && value.is_a?(String)
+          return unless regex_provided? && value.is_a?(String)
 
-          safe_regex = ::Gitlab::UntrustedRegexp.new(spec[:regex])
+          safe_regex = ::Gitlab::UntrustedRegexp.new(regex)
 
           return if safe_regex.match?(value)
 

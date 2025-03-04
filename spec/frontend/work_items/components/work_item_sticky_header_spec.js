@@ -20,11 +20,20 @@ describe('WorkItemStickyHeader', () => {
     canUpdate = true,
     features = {},
     parentId = null,
+    movedToWorkItemUrl = null,
+    duplicatedToWorkItemUrl = null,
+    promotedToEpicUrl = null,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemStickyHeader, {
       propsData: {
-        workItem: workItemResponseFactory({ canUpdate, confidential, discussionLocked }).data
-          .workItem,
+        workItem: workItemResponseFactory({
+          canUpdate,
+          confidential,
+          discussionLocked,
+          movedToWorkItemUrl,
+          duplicatedToWorkItemUrl,
+          promotedToEpicUrl,
+        }).data.workItem,
         fullPath: '/test',
         isStickyHeaderShowing: true,
         workItemNotificationsSubscribed: true,
@@ -122,6 +131,27 @@ describe('WorkItemStickyHeader', () => {
         expect(findWorkItemActions().props().hideSubscribe).toBe(expected);
       },
     );
+  });
+
+  describe('WorkItemStateBadge props', () => {
+    it('passes URL props correctly when they exist', async () => {
+      // We'll never populate all of these attributes because
+      // a work item can only have one closed reason.
+      // For simplicity we're passing all of them to easily assert
+      // that the props are passed correctly.
+      const workItemAttributes = {
+        movedToWorkItemUrl: 'http://example.com/moved',
+        duplicatedToWorkItemUrl: 'http://example.com/duplicated',
+        promotedToEpicUrl: 'http://example.com/epic',
+      };
+
+      await createComponent(workItemAttributes);
+
+      const stateBadgeProps = findWorkItemStateBadge().props();
+      Object.entries(workItemAttributes).forEach(([prop, url]) => {
+        expect(stateBadgeProps[prop]).toBe(url);
+      });
+    });
   });
 
   describe('confidential badge', () => {

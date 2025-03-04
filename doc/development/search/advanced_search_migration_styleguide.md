@@ -183,7 +183,7 @@ class MigrationName < Elastic::Migration
 end
 ```
 
-#### `Elastic::MigrationRemoveFieldsHelper`
+#### `Search::Elastic::MigrationRemoveFieldsHelper`
 
 Removes specified fields from an index.
 
@@ -193,7 +193,7 @@ Checks in batches if any documents that match `document_type` have the fields sp
 
 ```ruby
 class MigrationName < Elastic::Migration
-  include Elastic::MigrationRemoveFieldsHelper
+  include ::Search::Elastic::MigrationRemoveFieldsHelper
 
   batched!
   throttle_delay 1.minute
@@ -218,7 +218,7 @@ The default batch size is `10_000`. You can override this value by specifying `B
 
 ```ruby
 class MigrationName < Elastic::Migration
-  include Elastic::MigrationRemoveFieldsHelper
+  include ::Search::Elastic::MigrationRemoveFieldsHelper
 
   batched!
   BATCH_SIZE = 100

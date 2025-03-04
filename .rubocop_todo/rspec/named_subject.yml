@@ -1038,7 +1038,6 @@ RSpec/NamedSubject:
     - 'ee/spec/workers/concerns/elastic/migration_helper_spec.rb'
     - 'ee/spec/workers/concerns/elastic/migration_obsolete_spec.rb'
     - 'ee/spec/workers/concerns/elastic/migration_options_spec.rb'
-    - 'ee/spec/workers/concerns/elastic/migration_remove_fields_helper_spec.rb'
     - 'ee/spec/workers/create_github_webhook_worker_spec.rb'
     - 'ee/spec/workers/deployments/auto_rollback_worker_spec.rb'
     - 'ee/spec/workers/dora/daily_metrics/refresh_worker_spec.rb'

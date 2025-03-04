@@ -9,7 +9,6 @@ module Gitlab
         class Mapper
           # Fetches file contents and verifies them
           class Verifier < Base
-            # TODO: remove with https://gitlab.com/gitlab-org/gitlab/-/issues/520828
             def skip_load_content!
               tap { @skip_load_content = true }
             end

@@ -146,7 +146,13 @@ export default {
         <div
           class="work-item-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-3 gl-px-5 xl:gl-px-6"
         >
-          <work-item-state-badge v-if="workItemState" :work-item-state="workItemState" />
+          <work-item-state-badge
+            v-if="workItemState"
+            :work-item-state="workItemState"
+            :promoted-to-epic-url="workItem.promotedToEpicUrl"
+            :duplicated-to-work-item-url="workItem.duplicatedToWorkItemUrl"
+            :moved-to-work-item-url="workItem.movedToWorkItemUrl"
+          />
           <gl-loading-icon v-if="updateInProgress" />
           <confidentiality-badge
             v-if="workItem.confidential"

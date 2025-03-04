@@ -749,4 +749,47 @@ describeSkipVue3(skipReason, () => {
       expect(findIssuableList().props('issuables')).toEqual([]);
     });
   });
+
+  describe('group filter', () => {
+    describe('filtering by group', () => {
+      it('query excludes descendants and excludes projects', async () => {
+        mountComponent();
+        await waitForPromises();
+
+        findIssuableList().vm.$emit('filter', [
+          {
+            type: TOKEN_TYPE_GROUP,
+            value: { data: 'path/to/another/group', operator: OPERATOR_IS },
+          },
+        ]);
+        await nextTick();
+
+        expect(defaultQueryHandler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            excludeProjects: true,
+            includeDescendants: false,
+          }),
+        );
+      });
+    });
+
+    describe('not filtering by group', () => {
+      it('query includes descendants and includes projects', async () => {
+        mountComponent();
+        await waitForPromises();
+
+        findIssuableList().vm.$emit('filter', [
+          { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+        ]);
+        await nextTick();
+
+        expect(defaultQueryHandler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            excludeProjects: false,
+            includeDescendants: true,
+          }),
+        );
+      });
+    });
+  });
 });

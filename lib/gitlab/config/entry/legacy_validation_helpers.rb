@@ -45,7 +45,7 @@ module Gitlab
         def validate_array_value_variables(variables)
           variables.is_a?(Hash) &&
             variables.keys.all?(&method(:validate_alphanumeric)) &&
-            variables.values.all?(&:present?) &&
+            variables.values.all? { |v| !v.nil? } &&
             variables.values.flatten(1).all?(&method(:validate_alphanumeric))
         end
 

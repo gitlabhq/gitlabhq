@@ -255,6 +255,7 @@ export default {
       return this.isGroup ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
     },
     queryVariables() {
+      const hasGroupFilter = Boolean(this.urlFilterParams.group_path);
       return {
         fullPath: this.fullPath,
         sort: this.sortKey,
@@ -262,8 +263,8 @@ export default {
         search: this.searchQuery,
         ...this.apiFilterParams,
         ...this.pageParams,
-        excludeProjects: this.isEpicsList,
-        includeDescendants: !this.apiFilterParams.fullPath,
+        excludeProjects: hasGroupFilter || this.isEpicsList,
+        includeDescendants: !hasGroupFilter,
         types: this.apiFilterParams.types || this.workItemType || this.defaultWorkItemTypes,
         isGroup: this.isGroup,
       };

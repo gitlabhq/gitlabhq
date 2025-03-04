@@ -13,6 +13,7 @@ import WorkItemAncestors from '~/work_items/components/work_item_ancestors/work_
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemCreatedUpdated from '~/work_items/components/work_item_created_updated.vue';
 import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
+import WorkItemErrorTracking from '~/work_items/components/work_item_error_tracking.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemRelationships from '~/work_items/components/work_item_relationships/work_item_relationships.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
@@ -116,6 +117,7 @@ describe('WorkItemDetail component', () => {
   const findAncestors = () => wrapper.findComponent(WorkItemAncestors);
   const findCloseButton = () => wrapper.findByTestId('work-item-close');
   const findWorkItemType = () => wrapper.findByTestId('work-item-type');
+  const findErrorTrackingWidget = () => wrapper.findComponent(WorkItemErrorTracking);
   const findHierarchyTree = () => wrapper.findComponent(WorkItemTree);
   const findWorkItemRelationships = () => wrapper.findComponent(WorkItemRelationships);
   const findNotesWidget = () => wrapper.findComponent(WorkItemNotes);
@@ -277,10 +279,7 @@ describe('WorkItemDetail component', () => {
       expect(workItemUpdatedSubscriptionHandler).toHaveBeenCalledWith({ id });
     });
 
-    it('fetches allowed children types for current work item', async () => {
-      createComponent();
-      await waitForPromises();
-
+    it('fetches allowed children types for current work item', () => {
       expect(allowedChildrenTypesHandler).toHaveBeenCalled();
     });
 
@@ -290,6 +289,13 @@ describe('WorkItemDetail component', () => {
       );
 
       expect(findHierarchyTree().props('parentMilestone')).toEqual(milestone);
+    });
+
+    it('renders error tracking widget', () => {
+      expect(findErrorTrackingWidget().props()).toEqual({
+        fullPath: 'group/project',
+        identifier: '1',
+      });
     });
   });
 

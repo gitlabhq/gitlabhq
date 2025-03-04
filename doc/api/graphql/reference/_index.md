@@ -21834,6 +21834,22 @@ CI/CD variables for a group.
 | <a id="cigroupvariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
 | <a id="cigroupvariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |
 
+### `CiInputSpec`
+
+Input for pipeline creation.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciinputspecdefault"></a>`default` | [`CiInputsValueInputType`](#ciinputsvalueinputtype) | Default value for the input, if provided. |
+| <a id="ciinputspecdescription"></a>`description` | [`String`](#string) | Description of the input. |
+| <a id="ciinputspecname"></a>`name` | [`String!`](#string) | Name of the input. |
+| <a id="ciinputspecoptions"></a>`options` | [`CiInputsValueInputType`](#ciinputsvalueinputtype) | Possible values that the input can take, if provided. |
+| <a id="ciinputspecregex"></a>`regex` | [`String`](#string) | Regular expression pattern that the input value must match if provided. |
+| <a id="ciinputspecrequired"></a>`required` | [`Boolean!`](#boolean) | Indicates whether the input is required. |
+| <a id="ciinputspectype"></a>`type` | [`CiInputType!`](#ciinputtype) | Input data type. |
+
 ### `CiInstanceVariable`
 
 CI/CD variables for a GitLab instance.
@@ -33884,6 +33900,23 @@ Returns [`[CiConfigVariable!]`](#ciconfigvariable).
 | ---- | ---- | ----------- |
 | <a id="projectciconfigvariablesref"></a>`ref` | [`String!`](#string) | Ref. |
 
+##### `Project.ciPipelineCreationInputs`
+
+Inputs to create a pipeline.
+
+{{< details >}}
+**Introduced** in GitLab 17.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`[CiInputSpec!]`](#ciinputspec).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcipipelinecreationinputsref"></a>`ref` | [`String!`](#string) | Ref where to create the pipeline. |
+
 ##### `Project.ciPipelineCreationRequest`
 
 Get information about an asynchronous pipeline creation request.
@@ -40851,6 +40884,17 @@ Values for sorting inherited variables.
 | <a id="cigroupvariablessortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
 | <a id="cigroupvariablessortkey_asc"></a>`KEY_ASC` | Key by ascending order. |
 | <a id="cigroupvariablessortkey_desc"></a>`KEY_DESC` | Key by descending order. |
+
+### `CiInputType`
+
+Available input types.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="ciinputtypearray"></a>`ARRAY` | Array input. |
+| <a id="ciinputtypeboolean"></a>`BOOLEAN` | Boolean input. |
+| <a id="ciinputtypenumber"></a>`NUMBER` | Number input. |
+| <a id="ciinputtypestring"></a>`STRING` | String input. |
 
 ### `CiJobFailureReason`
 

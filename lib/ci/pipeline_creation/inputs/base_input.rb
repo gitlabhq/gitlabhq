@@ -41,6 +41,10 @@ module Ci
           param.nil? ? default : param
         end
 
+        def type
+          self.class.type_name
+        end
+
         # An input specification without a default value is required.
         # For example:
         # ```yaml
@@ -58,6 +62,16 @@ module Ci
 
         def options
           spec[:options]
+        end
+
+        def description
+          spec[:description]
+        end
+
+        def regex
+          return unless regex_provided?
+
+          spec[:regex]
         end
 
         private
@@ -82,9 +96,13 @@ module Ci
 
         # Regex can be only be a StringInput and is validated accordingly.
         def validate_regex(_value, _default)
-          return unless spec.key?(:regex)
+          return unless regex_provided?
 
           error('RegEx validation can only be used with string inputs')
+        end
+
+        def regex_provided?
+          spec.key?(:regex)
         end
 
         def error(message)

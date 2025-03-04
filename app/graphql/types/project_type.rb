@@ -40,6 +40,17 @@ module Types
         description: 'ID of the pipeline creation request.'
     end
 
+    field :ci_pipeline_creation_inputs, [Types::Ci::Inputs::InputSpecType],
+      authorize: :create_pipeline,
+      null: true,
+      calls_gitaly: true,
+      experiment: { milestone: '17.10' },
+      description: 'Inputs to create a pipeline.' do
+      argument :ref, GraphQL::Types::String,
+        required: true,
+        description: 'Ref where to create the pipeline.'
+    end
+
     field :full_path, GraphQL::Types::ID,
       null: false,
       description: 'Full path of the project.'
@@ -912,6 +923,17 @@ module Types
 
     def container_repositories_count
       project.container_repositories.size
+    end
+
+    def ci_pipeline_creation_inputs(ref:)
+      response = ::Ci::PipelineCreation::FindPipelineInputsService.new(
+        current_user: context[:current_user],
+        project: object,
+        ref: ref).execute
+
+      raise Gitlab::Graphql::Errors::ArgumentError, response.message if response.error?
+
+      response.payload[:inputs].all_inputs
     end
 
     def ci_config_variables(ref:)

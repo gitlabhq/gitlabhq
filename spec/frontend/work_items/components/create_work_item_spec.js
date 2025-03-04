@@ -327,6 +327,11 @@ describe('Create work item component', () => {
 
   describe('Create work item', () => {
     it('emits workItemCreated on successful mutation', async () => {
+      const workItem = { ...createWorkItemMutationResponse.data.workItemCreate.workItem };
+      // there is a mismatch between the response and the expected workItem object between CE and EE fixture
+      // so we need to remove the `promotedToEpicUrl` property from the expected workItem object
+      delete workItem.promotedToEpicUrl;
+
       createComponent();
       await waitForPromises();
 
@@ -337,7 +342,7 @@ describe('Create work item component', () => {
       expect(wrapper.emitted('workItemCreated')).toEqual([
         [
           {
-            workItem: createWorkItemMutationResponse.data.workItemCreate.workItem,
+            workItem: expect.objectContaining(workItem),
             numberOfDiscussionsResolved: '1',
           },
         ],
