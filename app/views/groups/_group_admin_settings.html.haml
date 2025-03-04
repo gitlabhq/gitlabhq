@@ -8,7 +8,7 @@
     - c.with_help_text do
       = _('This setting can be overridden in each project.')
 .form-group.gl-form-group{ role: 'group' }
-  = f.label s_('ProjectCreationLevel|Roles allowed to create projects'), class: 'gl-block col-form-label'
+  = f.label s_('ProjectCreationLevel|Minimum role required to create projects'), class: 'gl-block col-form-label'
   = f.select :project_creation_level, options_for_select(::Gitlab::Access.project_creation_options, @group.project_creation_level), {}, class: 'gl-form-select custom-select'
 
 .form-group.gl-form-group{ role: 'group' }

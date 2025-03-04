@@ -146,7 +146,7 @@ In our case, `data-testid="login-field"`, `data-testid="password-field"` and `da
 
 `app/views/my/view.html.haml`
 
-```haml
+```ruby
 = f.text_field :login, class: "form-control top", autofocus: "autofocus", autocapitalize: "off", autocorrect: "off", required: true, title: "This field is required.", data: { testid: 'login_field' }
 = f.password_field :password, class: "form-control bottom", required: true, title: "This field is required.", data: { testid: 'password_field' }
 = f.submit "Sign in", class: "btn btn-confirm", data: { testid: 'sign_in_button' }
@@ -187,7 +187,7 @@ We got around this by adding the `data-qa-*` extensible selection mechanism.
 
 Given the following Rails view (using GitLab Issues as an example):
 
-```haml
+```ruby
 %ul.issues-list
  - @issues.each do |issue|
    %li.issue{data: { testid: 'issue', qa_issue_title: issue.title } }= link_to issue
@@ -219,7 +219,7 @@ end
 
 *By an index...*
 
-```haml
+```ruby
 %ol
   - @some_model.each_with_index do |model, idx|
     %li.model{ data: { testid: 'model', qa_index: idx } }

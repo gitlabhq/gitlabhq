@@ -301,7 +301,7 @@ end
 
 Next, define the element `closed-status-box` within your view, so your Page Object can see it.
 
-```haml
+```ruby
 -#=> app/views/projects/issues/show.html.haml
 .issuable-status-box.status-box.status-box-issue-closed{ ..., data: { testid: 'closed-status-box' } }
 ```

@@ -41,7 +41,7 @@ export default {
     InstallAgentModal,
   },
   mixins: [trackingMixin],
-  inject: ['displayClusterAgents', 'certificateBasedClustersEnabled'],
+  inject: ['displayClusterAgents', 'certificateBasedClustersEnabled', 'isGroup'],
   props: {
     defaultBranchName: {
       default: '.noBranch',
@@ -158,6 +158,7 @@ export default {
       </template>
     </gl-tabs>
     <install-agent-modal
+      v-if="!isGroup"
       ref="installAgentModal"
       :kas-disabled="kasDisabled"
       @clusterAgentCreated="clusterAgentCreated"

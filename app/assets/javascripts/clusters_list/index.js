@@ -21,7 +21,8 @@ export default () => {
   const {
     emptyStateImage,
     defaultBranchName,
-    projectPath,
+    fullPath,
+    isGroup,
     kasAddress,
     addClusterPath,
     newClusterDocsPath,
@@ -39,7 +40,8 @@ export default () => {
     apolloProvider: new VueApollo({ defaultClient }),
     provide: {
       emptyStateImage,
-      projectPath,
+      fullPath,
+      isGroup: parseBoolean(isGroup),
       kasAddress,
       addClusterPath,
       newClusterDocsPath,

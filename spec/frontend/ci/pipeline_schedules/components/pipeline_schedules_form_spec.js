@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { GlForm, GlLoadingIcon } from '@gitlab/ui';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
@@ -9,6 +9,7 @@ import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import PipelineSchedulesForm from '~/ci/pipeline_schedules/components/pipeline_schedules_form.vue';
+import PipelineVariablesFormGroup from '~/ci/pipeline_schedules/components/pipeline_variables_form_group.vue';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
@@ -21,7 +22,6 @@ import {
   createScheduleMutationResponse,
   updateScheduleMutationResponse,
   mockSinglePipelineScheduleNode,
-  mockSinglePipelineScheduleNodeNoVars,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -52,9 +52,6 @@ describe('Pipeline schedules form', () => {
   const dailyLimit = '';
 
   const querySuccessHandler = jest.fn().mockResolvedValue(mockSinglePipelineScheduleNode);
-  const querySuccessEmptyVarsHandler = jest
-    .fn()
-    .mockResolvedValue(mockSinglePipelineScheduleNodeNoVars);
   const queryFailedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 
   const createMutationHandlerSuccess = jest.fn().mockResolvedValue(createScheduleMutationResponse);
@@ -95,22 +92,7 @@ describe('Pipeline schedules form', () => {
   const findSubmitButton = () => wrapper.findByTestId('schedule-submit-button');
   const findCancelButton = () => wrapper.findByTestId('schedule-cancel-button');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  // Variables
-  const findVariableRows = () => wrapper.findAllByTestId('ci-variable-row');
-  const findVariableTypes = () => wrapper.findAllByTestId('pipeline-form-ci-variable-type');
-  const findKeyInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-key');
-  const findValueInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-value');
-  const findHiddenValueInputs = () =>
-    wrapper.findAllByTestId('pipeline-form-ci-variable-hidden-value');
-  const findVariableSecurityBtn = () => wrapper.findByTestId('variable-security-btn');
-
-  const findRemoveIcons = () => wrapper.findAllByTestId('remove-ci-variable-row');
-
-  const addVariableToForm = () => {
-    const input = findKeyInputs().at(0);
-    input.element.value = 'test_var_2';
-    input.trigger('change');
-  };
+  const findPipelineVariables = () => wrapper.findComponent(PipelineVariablesFormGroup);
 
   describe('Form elements', () => {
     beforeEach(() => {
@@ -162,69 +144,18 @@ describe('Pipeline schedules form', () => {
       });
     });
 
+    it('displays variable list', () => {
+      expect(findPipelineVariables().exists()).toBe(true);
+      expect(findPipelineVariables().props()).toEqual({
+        initialVariables: [],
+        editing: false,
+      });
+    });
+
     it('displays the submit and cancel buttons', () => {
       expect(findSubmitButton().exists()).toBe(true);
       expect(findCancelButton().exists()).toBe(true);
       expect(findCancelButton().attributes('href')).toBe('/root/ci-project/-/pipeline_schedules');
-    });
-  });
-
-  describe('CI variables', () => {
-    let mock;
-
-    beforeEach(() => {
-      // mock is needed when we fully mount
-      // downstream components request needs to be mocked
-      mock = new MockAdapter(axios);
-      createComponent(mountExtended);
-    });
-
-    afterEach(() => {
-      mock.restore();
-    });
-
-    it('changes variable type', async () => {
-      expect(findVariableTypes().at(0).props('selected')).toBe('ENV_VAR');
-
-      findVariableTypes().at(0).vm.$emit('select', 'FILE');
-
-      await nextTick();
-
-      expect(findVariableTypes().at(0).props('selected')).toBe('FILE');
-    });
-
-    it('creates blank variable on input change event', async () => {
-      expect(findVariableRows()).toHaveLength(1);
-
-      addVariableToForm();
-
-      await nextTick();
-
-      expect(findVariableRows()).toHaveLength(2);
-      expect(findKeyInputs().at(1).element.value).toBe('');
-      expect(findValueInputs().at(1).element.value).toBe('');
-    });
-
-    it('does not display remove icon for last row', async () => {
-      addVariableToForm();
-
-      await nextTick();
-
-      expect(findRemoveIcons()).toHaveLength(1);
-    });
-
-    it('removes ci variable row on remove icon button click', async () => {
-      addVariableToForm();
-
-      await nextTick();
-
-      expect(findVariableRows()).toHaveLength(2);
-
-      findRemoveIcons().at(0).trigger('click');
-
-      await nextTick();
-
-      expect(findVariableRows()).toHaveLength(1);
     });
   });
 
@@ -260,10 +191,13 @@ describe('Pipeline schedules form', () => {
       expect(findLoadingIcon().exists()).toBe(false);
     });
 
-    it('does not show variable security button', () => {
+    it('displays empty variable list', () => {
       createComponent();
 
-      expect(findVariableSecurityBtn().exists()).toBe(false);
+      expect(findPipelineVariables().props()).toEqual({
+        initialVariables: [],
+        editing: false,
+      });
     });
 
     describe('schedule creation success', () => {
@@ -291,7 +225,13 @@ describe('Pipeline schedules form', () => {
 
         findIntervalComponent().vm.$emit('cronValue', '0 16 * * *');
 
-        addVariableToForm();
+        findPipelineVariables().vm.$emit('update-variables', [
+          {
+            key: 'test_var_2',
+            value: 'value_2',
+            variableType: 'ENV_VAR',
+          },
+        ]);
 
         findSubmitButton().vm.$emit('click');
 
@@ -308,7 +248,7 @@ describe('Pipeline schedules form', () => {
             variables: [
               {
                 key: 'test_var_2',
-                value: '',
+                value: 'value_2',
                 variableType: 'ENV_VAR',
               },
             ],
@@ -361,24 +301,14 @@ describe('Pipeline schedules form', () => {
       expect(findLoadingIcon().exists()).toBe(false);
     });
 
-    it('shows variable security button', async () => {
+    it('provides variables to the variable list', async () => {
       createComponent(shallowMountExtended, true, [
         [getPipelineSchedulesQuery, querySuccessHandler],
       ]);
-
       await waitForPromises();
 
-      expect(findVariableSecurityBtn().exists()).toBe(true);
-    });
-
-    it('does not show variable security button with no present variables', async () => {
-      createComponent(shallowMountExtended, true, [
-        [getPipelineSchedulesQuery, querySuccessEmptyVarsHandler],
-      ]);
-
-      await waitForPromises();
-
-      expect(findVariableSecurityBtn().exists()).toBe(false);
+      expect(findPipelineVariables().props('editing')).toBe(true);
+      expect(findPipelineVariables().props('initialVariables')).toHaveLength(variables.length);
     });
 
     describe('schedule fetch success', () => {
@@ -393,16 +323,9 @@ describe('Pipeline schedules form', () => {
         expect(findIntervalComponent().props('initialCronInterval')).toBe(schedule.cron);
         expect(findTimezoneDropdown().props('value')).toBe(schedule.cronTimezone);
         expect(findRefSelector().props('value')).toBe(schedule.ref);
-        expect(findVariableRows()).toHaveLength(3);
-        expect(findKeyInputs().at(0).element.value).toBe(variables[0].key);
-        expect(findKeyInputs().at(1).element.value).toBe(variables[1].key);
-        // values are hidden on load when editing a schedule
-        expect(findHiddenValueInputs().at(0).element.value).toBe('*****************');
-        expect(findHiddenValueInputs().at(1).element.value).toBe('*****************');
-        expect(findHiddenValueInputs().at(0).attributes('disabled')).toBe('disabled');
-        expect(findHiddenValueInputs().at(1).attributes('disabled')).toBe('disabled');
-        // empty placeholder to create a new variable
-        expect(findValueInputs()).toHaveLength(1);
+        expect(findPipelineVariables().props('initialVariables')).toHaveLength(3);
+        expect(findPipelineVariables().props('initialVariables')[0].key).toBe(variables[0].key);
+        expect(findPipelineVariables().props('initialVariables')[1].key).toBe(variables[1].key);
       });
     });
 
@@ -432,7 +355,22 @@ describe('Pipeline schedules form', () => {
       findIntervalComponent().vm.$emit('cronValue', '0 22 16 * *');
 
       // Ensures variable is sent with destroy property set true
-      findRemoveIcons().at(0).vm.$emit('click');
+      findPipelineVariables().vm.$emit('update-variables', [
+        {
+          id: variables[0].id,
+          key: variables[0].key,
+          value: variables[0].value,
+          variableType: variables[0].variableType,
+          destroy: true,
+        },
+        {
+          id: variables[1].id,
+          key: variables[1].key,
+          value: variables[1].value,
+          variableType: variables[1].variableType,
+          destroy: false,
+        },
+      ]);
 
       findSubmitButton().vm.$emit('click');
 
@@ -481,24 +419,6 @@ describe('Pipeline schedules form', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred while updating the pipeline schedule.',
       });
-    });
-
-    it('hides/shows variable values', async () => {
-      createComponent(mountExtended, true, [[getPipelineSchedulesQuery, querySuccessHandler]]);
-
-      await waitForPromises();
-
-      // shows two hidden values and one placeholder
-      expect(findHiddenValueInputs()).toHaveLength(2);
-      expect(findValueInputs()).toHaveLength(1);
-
-      findVariableSecurityBtn().vm.$emit('click');
-
-      await nextTick();
-
-      // shows all variable values
-      expect(findHiddenValueInputs()).toHaveLength(0);
-      expect(findValueInputs()).toHaveLength(3);
     });
   });
 });

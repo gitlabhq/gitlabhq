@@ -23,8 +23,7 @@ module Sidebars
         def render?
           clusterable = context.group
 
-          clusterable.certificate_based_clusters_enabled? &&
-            can?(context.current_user, :read_cluster, clusterable)
+          can?(context.current_user, :read_cluster, clusterable)
         end
 
         override :extra_container_html_options

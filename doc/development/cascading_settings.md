@@ -230,7 +230,7 @@ This function should be imported and called in the [page-specific JavaScript](fe
 
 ### Put it all together
 
-```haml
+```ruby
 -# app/views/groups/edit.html.haml
 
 = render 'shared/namespaces/cascading_settings/lock_tooltips'

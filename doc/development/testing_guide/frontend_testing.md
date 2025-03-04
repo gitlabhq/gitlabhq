@@ -1558,7 +1558,7 @@ it('makes the name look pretty', () => {
 
 When this test runs the first time a fresh `.snap` file will be created. It will look something like this:
 
-```txt
+```plaintext
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`makes the name look pretty`] = `

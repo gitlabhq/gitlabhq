@@ -37,11 +37,13 @@ export function removeAgentFromStore(store, deleteClusterAgent, query, variables
       variables,
     });
 
+    const type = variables.isGroup ? 'group' : 'project';
+
     const data = produce(sourceData, (draftData) => {
-      draftData.project.clusterAgents.nodes = draftData.project.clusterAgents.nodes.filter(
+      draftData[type].clusterAgents.nodes = draftData[type].clusterAgents.nodes.filter(
         ({ id }) => id !== deleteClusterAgent.id,
       );
-      draftData.project.clusterAgents.count -= 1;
+      draftData[type].clusterAgents.count -= 1;
     });
 
     store.writeQuery({

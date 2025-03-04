@@ -717,7 +717,7 @@ The disadvantage of this:
 The `render_if_exists` view path argument must be relative to `app/views/` and `ee/app/views`.
 Resolving an EE template path that is relative to the CE view path doesn't work.
 
-```haml
+```ruby
 - # app/views/projects/index.html.haml
 
 = render_if_exists 'button' # Will not render `ee/app/views/projects/_button` and will quietly fail
@@ -745,7 +745,7 @@ In this case, we could as well just use `render_ce` which would ignore any EE
 partials. One example would be
 `ee/app/views/projects/settings/_archive.html.haml`:
 
-```haml
+```ruby
 - return if @project.marked_for_deletion?
 = render_ce 'projects/settings/archive'
 ```

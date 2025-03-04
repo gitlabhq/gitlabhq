@@ -1462,7 +1462,7 @@ you can use the `have_tracking` matcher method to assert if expected data attrib
 
 For example, if we need to test the below Haml,
 
-```haml
+```ruby
 %div{ data: { testid: '_testid_', track_action: 'render', track_label: '_tracking_label_' } }
 ```
 

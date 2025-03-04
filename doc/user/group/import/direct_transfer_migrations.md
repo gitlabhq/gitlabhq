@@ -76,7 +76,7 @@ GitLab 16.8.
 - To import items stored in object storage, you must either:
   - [Configure `proxy_download`](../../../administration/object_storage.md#configure-the-common-parameters).
   - Ensure that the destination GitLab instance has access to the object storage of the source GitLab instance.
-- You cannot import groups with projects when the source instance or group has **Default project creation protection** set
+- You cannot import groups with projects when the source instance or group has **Default minimum role required to create projects** set
   to **No one**. If required, this setting can be changed:
   - For [a whole instance](../../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
   - For [specific groups](../_index.md#specify-who-can-add-projects-to-a-group).

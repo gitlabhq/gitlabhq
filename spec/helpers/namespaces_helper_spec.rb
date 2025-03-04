@@ -25,7 +25,7 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
       :group,
       :private,
       parent: admin_group,
-      project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
+      project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS
     )
   end
 

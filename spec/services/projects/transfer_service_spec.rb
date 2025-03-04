@@ -583,7 +583,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
   end
 
   context 'when user can create projects in the target namespace' do
-    let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+    let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
 
     context 'but has only developer permissions in the target namespace' do
       before do

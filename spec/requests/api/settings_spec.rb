@@ -232,7 +232,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['default_ci_config_path']).to eq('debian/salsa-ci.yml')
         expect(json_response['default_projects_limit']).to eq(3)
-        expect(json_response['default_project_creation']).to eq(::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
+        expect(json_response['default_project_creation']).to eq(::Gitlab::Access::DEVELOPER_PROJECT_ACCESS)
         expect(json_response['password_authentication_enabled_for_web']).to be_falsey
         expect(json_response['repository_storages_weighted']).to eq({ 'default' => 100, 'custom' => 0 })
         expect(json_response['plantuml_enabled']).to be_truthy

@@ -541,8 +541,8 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
     end
 
     context 'Namespace selector' do
-      context 'with group with DEVELOPER_MAINTAINER_PROJECT_ACCESS project_creation_level' do
-        let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+      context 'with group with DEVELOPER_PROJECT_ACCESS project_creation_level' do
+        let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
 
         before do
           group.add_developer(user)

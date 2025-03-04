@@ -115,11 +115,8 @@ For user contributions to be mapped, each user must complete the following befor
 1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Import project**.
 1. Select **Bitbucket Cloud**.
-1. Sign in to Bitbucket and grant GitLab access to your Bitbucket account.
-
-   ![Grant access](img/bitbucket_import_grant_access_v8.png)
-
-1. Select the projects that you'd like to import or import all projects.
+1. Sign in to Bitbucket, then select **Grant access** to give GitLab access to your Bitbucket account.
+1. Select the projects you want to import, or import all projects.
    You can filter projects by name and select the namespace
    each project is imported for.
 

@@ -314,7 +314,7 @@ Valid starting       Expires              Service principal
 
 The DAST scanner will also output the following, indicating success:
 
-```log
+```plaintext
 2024-11-08T17:03:09.226 INF AUTH  attempting to authenticate find_auth_fields="basic-digest"
 2024-11-08T17:03:09.226 INF AUTH  loading login page LoginURL="https://target.example.com"
 2024-11-08T17:03:10.619 INF AUTH  verifying if login attempt was successful true_when="HTTP status code < 400 and has authentication token and no login form found (auto-detected)"

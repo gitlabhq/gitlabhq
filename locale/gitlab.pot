@@ -13315,6 +13315,9 @@ msgstr ""
 msgid "ClusterAgents|Give feedback"
 msgstr ""
 
+msgid "ClusterAgents|Group agents"
+msgstr ""
+
 msgid "ClusterAgents|How do I update an agent?"
 msgstr ""
 
@@ -13387,6 +13390,9 @@ msgid "ClusterAgents|Optionally, for additional configuration settings, a %{link
 msgstr ""
 
 msgid "ClusterAgents|Premium"
+msgstr ""
+
+msgid "ClusterAgents|Project"
 msgstr ""
 
 msgid "ClusterAgents|Project agents"
@@ -17371,6 +17377,9 @@ msgstr ""
 msgid "CreateValueStreamForm|Create from no template"
 msgstr ""
 
+msgid "CreateValueStreamForm|Default stage"
+msgstr ""
+
 msgid "CreateValueStreamForm|Default stages"
 msgstr ""
 
@@ -17471,6 +17480,9 @@ msgid "CreateValueStreamForm|Update stage"
 msgstr ""
 
 msgid "CreateValueStreamForm|Value Stream name"
+msgstr ""
+
+msgid "CreateValueStreamForm|Value stream stages"
 msgstr ""
 
 msgid "Created"
@@ -43198,9 +43210,6 @@ msgstr ""
 msgid "Pipeline|Source|Security Policy"
 msgstr ""
 
-msgid "Pipeline|Specify variable values to be used in this run. The values specified in %{linkStart}CI/CD settings%{linkEnd} will be used by default."
-msgstr ""
-
 msgid "Pipeline|Specify variable values to be used in this run. The variables specified in the configuration file as well as %{linkStart}CI/CD settings%{linkEnd} are used by default."
 msgstr ""
 
@@ -43274,9 +43283,6 @@ msgid "Pipeline|Trigger author"
 msgstr ""
 
 msgid "Pipeline|Variable"
-msgstr ""
-
-msgid "Pipeline|Variable type"
 msgstr ""
 
 msgid "Pipeline|Variables"
@@ -45126,22 +45132,22 @@ msgstr ""
 msgid "ProjectCreationLevel|Administrators"
 msgstr ""
 
-msgid "ProjectCreationLevel|Default project creation protection"
+msgid "ProjectCreationLevel|Default minimum role required to create projects"
 msgstr ""
 
-msgid "ProjectCreationLevel|Developers + Maintainers"
+msgid "ProjectCreationLevel|Developers"
 msgstr ""
 
 msgid "ProjectCreationLevel|Maintainers"
+msgstr ""
+
+msgid "ProjectCreationLevel|Minimum role required to create projects"
 msgstr ""
 
 msgid "ProjectCreationLevel|No one"
 msgstr ""
 
 msgid "ProjectCreationLevel|Owners"
-msgstr ""
-
-msgid "ProjectCreationLevel|Roles allowed to create projects"
 msgstr ""
 
 msgid "ProjectFileTree|Name"

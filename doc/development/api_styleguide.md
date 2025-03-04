@@ -308,7 +308,7 @@ helper usage must be in wrapped into the `expose_path` helper call.
 
 For instance:
 
-```haml
+```ruby
 - endpoint = expose_path(api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: @issue.iid))
 ```
 

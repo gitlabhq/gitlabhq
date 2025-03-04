@@ -256,7 +256,7 @@ This error message occurs when pulling an image from a container registry that r
 
 In the job console output the error looks like:
 
-```log
+```plaintext
 Running with gitlab-runner 15.6.0~beta.186.ga889181a (a889181a)
   on blue-2.shared.runners-manager.gitlab.com/default XxUrkriX
 Resolving secrets
@@ -418,13 +418,13 @@ This issue can be identified by two error messages. The first error message is s
 
 _Error message from job console:_
 
-```log
+```plaintext
 05:48:38 [ERR] API Security: Testing failed: An unexpected exception occurred: Index was outside the bounds of the array.
 ```
 
 _Error message from `gl_api_security-scanner.log`:_
 
-```log
+```plaintext
 08:45:43.616 [ERR] <Peach.Web.Core.Services.WebRunnerMachine> Unexpected exception in WebRunnerMachine::Run()
 System.IndexOutOfRangeException: Index was outside the bounds of the array.
    at Peach.Web.Runner.Services.RunnerOptions.GetHeaders() in /builds/gitlab-org/security-products/analyzers/api-fuzzing-src/web/PeachWeb/Runner/Services/[RunnerOptions.cs:line 362

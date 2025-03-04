@@ -217,7 +217,7 @@ bundle exec rake "duo_pro:bulk_user_assignment['path/to/your/file.csv']"
 
 The CSV file should have the following format:
 
-```csv
+```plaintext
 username
 user1
 user2

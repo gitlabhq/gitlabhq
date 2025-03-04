@@ -32,14 +32,16 @@ export default {
       query: getAgentsQuery,
       variables() {
         return {
-          projectPath: this.projectPath,
+          fullPath: this.fullPath,
+          isGroup: this.isGroup,
         };
       },
       update(data) {
         this.updateAgentsList(data);
       },
       result({ data }) {
-        this.agentsCount = data?.project?.clusterAgents?.count;
+        const agentsData = data?.project?.clusterAgents || data?.group?.clusterAgents;
+        this.agentsCount = agentsData?.count;
         this.$emit('onAgentsLoad', this.agentsCount);
       },
       error(error) {
@@ -54,11 +56,14 @@ export default {
       query: getSharedAgentsQuery,
       variables() {
         return {
-          projectPath: this.projectPath,
+          fullPath: this.fullPath,
         };
       },
       update(data) {
         return data;
+      },
+      skip() {
+        return this.isGroup;
       },
       error() {
         this.sharedAgentsQueryErrored = true;
@@ -70,12 +75,15 @@ export default {
       variables() {
         return {
           defaultBranchName: this.defaultBranchName,
-          projectPath: this.projectPath,
+          projectPath: this.fullPath,
         };
       },
       update(data) {
         this.updateTreeList(data);
         return data;
+      },
+      skip() {
+        return this.isGroup;
       },
     },
   },
@@ -91,7 +99,7 @@ export default {
     LocalStorageSync,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['projectPath'],
+  inject: ['fullPath', 'isGroup'],
   props: {
     defaultBranchName: {
       default: '.noBranch',
@@ -133,7 +141,7 @@ export default {
       const filteredList = sharedAgents.filter((node, index, list) => {
         if (!node?.agent) return false;
         const isDuplicate = index !== list.findIndex((agent) => agent.agent.id === node.agent.id);
-        const isSameProject = node.agent.project.fullPath === this.projectPath;
+        const isSameProject = node.agent.project?.fullPath === this.fullPath;
         return !isDuplicate && !isSameProject;
       });
 
@@ -178,7 +186,9 @@ export default {
       const tabs = [];
 
       const projectAgents = {
-        name: s__('ClusterAgents|Project agents'),
+        name: this.isGroup
+          ? s__('ClusterAgents|Group agents')
+          : s__('ClusterAgents|Project agents'),
         count: this.agentsCount,
         agents: this.agentList,
         error: this.queryErrored,
@@ -220,8 +230,9 @@ export default {
         this.updateConfigFolders();
       }
     },
-    updateAgentsList(data) {
-      const agents = data?.project?.clusterAgents?.nodes || [];
+    updateAgentsList({ project, group }) {
+      const agentsData = project?.clusterAgents || group?.clusterAgents;
+      const agents = agentsData?.nodes || [];
       this.agentList = agents
         .map((agent) => {
           const lastContact = getAgentLastContact(agent?.tokens?.nodes);

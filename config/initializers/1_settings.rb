@@ -183,7 +183,7 @@ Settings['issues_tracker'] ||= {}
 # GitLab
 #
 Settings['gitlab'] ||= {}
-Settings.gitlab['default_project_creation'] ||= ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
+Settings.gitlab['default_project_creation'] ||= ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS
 Settings.gitlab['default_project_deletion_protection'] ||= false
 Settings.gitlab['default_projects_limit'] ||= 100000
 Settings.gitlab['default_branch_protection'] ||= 2

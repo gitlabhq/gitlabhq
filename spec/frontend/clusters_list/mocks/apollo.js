@@ -8,6 +8,7 @@ export const agent = {
   project: {
     id: '1',
     fullPath: 'path/to/project',
+    webUrl: 'https://gdk.test/path/to/project',
   },
 };
 const token = {

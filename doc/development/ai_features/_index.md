@@ -48,7 +48,7 @@ and check the subscription plan.
 Run the Rake task to set up Duo features for a group:
 
 ```shell
-GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup[test-group-name]'
+GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup'
 ```
 
 ```shell
@@ -71,7 +71,7 @@ This Rake task creates Duo Enterprise add-on attached to that group.
 In case you need Duo Pro add-on attached, please use:
 
 ```shell
-GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup[test-group-name,duo_pro]'
+GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup[duo_pro]'
 ```
 
 Duo Pro add-on serves smaller scope of features. Usage of add-on depends on what features you want to use.

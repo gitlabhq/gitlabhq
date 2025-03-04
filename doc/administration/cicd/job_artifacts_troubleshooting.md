@@ -475,7 +475,7 @@ gitlab-rake gitlab:refresh_project_statistics_build_artifacts_size[https://examp
 The `https://example.com/path/file.csv` file must list the project IDs for
 all projects for which you want to recalculate artifact storage usage. Use this format for the file:
 
-```csv
+```plaintext
 PROJECT_ID
 1
 2

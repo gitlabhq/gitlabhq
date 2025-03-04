@@ -2,7 +2,11 @@
 
 module QA
   RSpec.describe 'Verify' do
-    describe 'Pipeline with prefill variables', product_group: :pipeline_authoring do
+    describe 'Pipeline with prefill variables', product_group: :pipeline_authoring,
+      quarantine: {
+        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/523094',
+        type: :investigating
+      } do
       let(:prefill_variable_description1) { Faker::Lorem.sentence }
       let(:prefill_variable_value1) { Faker::Lorem.word }
       let(:prefill_variable_value5) { Faker::Lorem.word }

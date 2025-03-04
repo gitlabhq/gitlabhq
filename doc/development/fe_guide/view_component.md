@@ -41,13 +41,13 @@ The `Pajamas::AlertComponent` follows the [Pajamas Alert](https://design.gitlab.
 
 By default this creates a dismissible info alert with icon:
 
-```haml
+```ruby
 = render Pajamas::AlertComponent.new(title: "Almost done!")
 ```
 
 You can set variant, hide the icons and more:
 
-```haml
+```ruby
 = render Pajamas::AlertComponent.new(title: "All done!",
   variant: :success,
   dismissible: :false,
@@ -65,7 +65,7 @@ The `Pajamas::BannerComponent` follows the [Pajamas Banner](https://design.gitla
 
 In its simplest form the banner component looks like this:
 
-```haml
+```ruby
 = render Pajamas::BannerComponent.new(button_text: 'Learn more', button_link: example_path,
   svg_path: 'illustrations/example.svg') do |c|
   - c.with_title { 'Hello world!' }
@@ -75,7 +75,7 @@ In its simplest form the banner component looks like this:
 If you have a need for more control, you can also use the `illustration` slot
 instead of `svg_path` and the `primary_action` slot instead of `button_text` and `button_link`:
 
-```haml
+```ruby
 = render Pajamas::BannerComponent.new do |c|
   - c.with_illustration do
     = custom_icon('my_inline_svg')
@@ -97,14 +97,14 @@ The `Pajamas::ButtonComponent` follows the [Pajamas Button](https://design.gitla
 The button component has a lot of options but all of them have good defaults,
 so the simplest button looks like this:
 
-```haml
+```ruby
 = render Pajamas::ButtonComponent.new do |c|
   = _('Button text goes here')
 ```
 
 The following example shows most of the available options:
 
-```haml
+```ruby
 = render Pajamas::ButtonComponent.new(category: :secondary,
   variant: :danger,
   size: :small,
@@ -117,7 +117,7 @@ The following example shows most of the available options:
 
 You can also create button-like looking `<a>` tags, like this:
 
-```haml
+```ruby
 = render Pajamas::ButtonComponent.new(href: root_path) do |c|
   Go home
 ```
@@ -133,7 +133,7 @@ The `Pajamas::CardComponent` follows the [Pajamas Card](https://design.gitlab.co
 
 The card has one mandatory `body` slot and optional `header` and `footer` slots:
 
-```haml
+```ruby
 = render Pajamas::CardComponent.new do |c|
   - c.with_header do
     I'm the header.
@@ -146,7 +146,7 @@ The card has one mandatory `body` slot and optional `header` and `footer` slots:
 
 If you want to add custom attributes to any of these or the card itself, use the following options:
 
-```haml
+```ruby
 = render Pajamas::CardComponent.new(card_options: {id: "my-id"}, body_options: {data: { count: 1 }})
 ```
 
@@ -163,7 +163,7 @@ The `name` argument and `label` slot are required.
 
 For example:
 
-```haml
+```ruby
 = render Pajamas::CheckboxTagComponent.new(name: 'project[initialize_with_sast]',
   checkbox_options: { data: { testid: 'initialize-with-sast-checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' } }) do |c|
   - c.with_label do
@@ -195,7 +195,7 @@ For the full list of options, see its
 
 The `Pajamas::ToggleComponent` follows the [Pajamas Toggle](https://design.gitlab.com/components/toggle/) specification.
 
-```haml
+```ruby
 = render Pajamas::ToggleComponent.new(classes: 'js-force-push-toggle',
   label: s_("ProtectedBranch|Toggle allowed to force push"),
   is_checked: protected_branch.allow_force_push,
@@ -225,7 +225,7 @@ A standard page header with a page title and optional actions.
 
 **Example:**
 
-```haml
+```ruby
 = render ::Layouts::PageHeadingComponent.new(_('Page title')) do |c|
   - c.with_actions do
     = buttons
@@ -240,7 +240,7 @@ A list container being used to host a table or list with user actions such as cr
 
 **Example:**
 
-```haml
+```ruby
 = render ::Layouts::CrudComponent.new(_('CRUD title'), icon: 'ICONNAME', count: COUNT) do |c|
   - c.with_description do
     = description
@@ -265,7 +265,7 @@ Many of the settings pages use a layout where the title and description are on t
 
 **Example:**
 
-```haml
+```ruby
 = render ::Layouts::HorizontalSectionComponent.new(options: { class: 'gl-mb-6' }) do |c|
   - c.with_title { _('Naming, visibility') }
   - c.with_description do
@@ -286,7 +286,7 @@ A settings block (accordion) to group related settings.
 
 **Example:**
 
-```haml
+```ruby
 = render ::Layouts::SettingsBlock.new(_('Settings block heading')) do |c|
   - c.with_description do
     = description
@@ -303,7 +303,7 @@ Similar to SettingsBlock (see above) this component is used to group related set
 
 **Example:**
 
-```haml
+```ruby
 = render ::Layouts::SettingsSection.new(_('Settings section heading')) do |c|
   - c.with_description do
     = description

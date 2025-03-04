@@ -72,7 +72,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   condition(:developer_project_creation_level, scope: :subject) do
-    @subject.project_creation_level == ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
+    @subject.project_creation_level == ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS
   end
 
   condition(:maintainer_can_create_group, scope: :subject) do

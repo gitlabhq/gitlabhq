@@ -376,7 +376,7 @@ This attribute ensures that if we want to track GitLab internal events for a but
 
 #### Haml
 
-```haml
+```ruby
 = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle',  data: { event_tracking: 'click_previous_blame_on_blob_page' }}) do
 ```
 
@@ -384,7 +384,7 @@ This attribute ensures that if we want to track GitLab internal events for a but
 
 Sometimes we want to send internal events when the component is rendered or loaded. In these cases, we can add the `data-event-tracking-load="true"` attribute:
 
-```haml
+```ruby
 = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking_load: 'true', event_tracking: 'click_previous_blame_on_blob_page' } }) do
         = _("New project")
 ```
@@ -435,7 +435,7 @@ For data-event attributes:
 
 For Haml:
 
-```haml
+```ruby
 = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle',  data: { event_tracking: 'action', event_label: 'group_runner_form', event_property: dynamic_property_var, event_value: 2, event_additional: '{"key1": "value1", "key2": "value2"}' }}) do
 ```
 
@@ -593,7 +593,7 @@ you can use the [`trigger_internal_events` matcher](#composable-matchers) to ass
 
 For example, if you need to test the below Haml,
 
-```haml
+```ruby
 %div{ data: { testid: '_testid_', event_tracking: 'some_event', event_label: 'some_label' } }
 ```
 

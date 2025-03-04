@@ -755,7 +755,7 @@ gitaly['configuration'] = {
 After you have made this change, your [Prometheus query](#verify-authentication-monitoring)
 should return something like:
 
-```prometheus
+```promql
 {enforced="false",status="would be ok"}  4424.985419441742
 ```
 
@@ -825,7 +825,7 @@ Without completing this step, you have **no Gitaly authentication**.
 Refresh your [Prometheus query](#verify-authentication-monitoring). You should now see a similar
 result as you did at the start. For example:
 
-```prometheus
+```promql
 {enforced="true",status="ok"}  4424.985419441742
 ```
 

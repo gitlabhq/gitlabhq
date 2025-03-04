@@ -3434,7 +3434,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
 
         context 'and user is a reporter of target group' do
-          let_it_be_with_reload(:target_group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+          let_it_be_with_reload(:target_group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
           let_it_be_with_reload(:project_fork_target) { create(:project, namespace: target_group) }
 
           before do
@@ -3450,7 +3450,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
 
         context 'and user is a developer of target group' do
-          let_it_be_with_reload(:target_group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+          let_it_be_with_reload(:target_group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
           let_it_be_with_reload(:project_fork_target) { create(:project, namespace: target_group) }
 
           before do
@@ -5895,7 +5895,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
 
       context 'target namespace allows developers to create projects' do
-        let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+        let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
 
         it 'fails transferring the project to the target namespace' do
           put api(path, user), params: { namespace: group.id }

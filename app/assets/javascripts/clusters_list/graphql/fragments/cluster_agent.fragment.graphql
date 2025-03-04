@@ -6,6 +6,7 @@ fragment ClusterAgentFragment on ClusterAgent {
   project {
     id
     fullPath
+    webUrl
   }
   userAccessAuthorizations {
     config

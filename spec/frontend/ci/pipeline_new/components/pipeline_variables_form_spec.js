@@ -26,10 +26,9 @@ describe('PipelineVariablesForm', () => {
   let mockCiConfigVariables;
 
   const defaultProps = {
-    defaultBranch: 'main',
     isMaintainer: true,
     projectPath: 'group/project',
-    refParam: 'feature',
+    refParam: 'refs/heads/feature',
     settingsLink: 'link/to/settings',
   };
 

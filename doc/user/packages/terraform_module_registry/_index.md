@@ -254,7 +254,7 @@ To reference a Terraform module using a project-level source, use the [fetching 
 
 You can provide authentication tokens (job tokens, personal access tokens, or deploy tokens) for `terraform` in your `~/.netrc` file:
 
-```netrc
+```plaintext
 machine gitlab.com
 login <USERNAME>
 password <TOKEN>

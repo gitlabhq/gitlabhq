@@ -33,7 +33,7 @@ sprite_icon(icon_name, size: nil, css_class: '')
 
 **Example**
 
-```haml
+```ruby
 = sprite_icon('issues', size: 72, css_class: 'icon-danger')
 ```
 
@@ -89,7 +89,7 @@ Use the following function inside JS to render an icon:
 
 To insert a loading spinner in HAML or Rails use the `gl_loading_icon` helper:
 
-```haml
+```ruby
 = gl_loading_icon
 ```
 
@@ -106,7 +106,7 @@ by the examples that follow:
 The following HAML expression generates a loading icon's markup and
 centers the icon.
 
-```haml
+```ruby
 = gl_loading_icon
 ```
 
@@ -115,7 +115,7 @@ centers the icon.
 The following HAML expression generates an inline loading icon's markup
 with a custom size. It also appends a margin utility class.
 
-```haml
+```ruby
 = gl_loading_icon(inline: true, size: 'lg', css_class: 'gl-mr-2')
 ```
 
@@ -156,7 +156,7 @@ Using the class `svg-content` around it ensures nice rendering.
 
 **Example**
 
-```haml
+```ruby
 .svg-content
   = image_tag 'illustrations/merge_requests.svg'
 ```

@@ -79,6 +79,72 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
 
       it { is_expected.to validate_absence_of(:reassign_to_user_id) }
     end
+
+    context 'for validate_source_hostname' do
+      let(:namespace) { create(:namespace) }
+      let(:placeholder_user) { create(:import_source_user, namespace: namespace).placeholder_user }
+      let(:import_source_user) do
+        build(:import_source_user, placeholder_user: placeholder_user, namespace: namespace,
+          source_hostname: 'example.com')
+      end
+
+      context 'when source_hostname is changed' do
+        it 'validates the format of source_hostname' do
+          expect(import_source_user).not_to be_valid
+          expect(import_source_user.errors[:source_hostname]).to include(
+            "must contain scheme and host, and not path"
+          )
+        end
+
+        it 'passes validation for correct hostname' do
+          import_source_user.source_hostname = 'http://example.com:8080'
+          expect(import_source_user).to be_valid
+        end
+      end
+
+      context 'when source_hostname is not changed' do
+        it 'skips validation' do
+          # First save with invalid hostname but skip validation
+          import_source_user.save!(validate: false)
+
+          # Now update a different attribute
+          import_source_user.source_name = 'New Name'
+
+          # Validation should be skipped since source_hostname didn't change
+          expect(import_source_user).to be_valid
+        end
+      end
+
+      context 'when updating an existing record with the same source_hostname' do
+        it 'skips validation' do
+          # First save with invalid hostname but skip validation
+          import_source_user.save!(validate: false)
+
+          # Reload and try to save again without changing source_hostname
+          reloaded_user = described_class.find(import_source_user.id)
+
+          # Should be valid because source_hostname_changed? is false
+          expect(reloaded_user).to be_valid
+        end
+      end
+
+      context 'when updating an existing record with a new invalid source_hostname' do
+        it 'fails validation' do
+          # First save with valid hostname
+          import_source_user.source_hostname = 'http://example.com'
+          import_source_user.save!
+
+          # Now update to an invalid hostname
+          import_source_user.source_hostname = 'example.com'
+
+          # Should fail validation because source_hostname_changed? is true
+          expect(import_source_user).not_to be_valid
+          expect(import_source_user.errors[:source_hostname]).to include(
+            "must contain scheme and host, and not path"
+          )
+        end
+      end
+    end
   end
 
   describe 'scopes' do

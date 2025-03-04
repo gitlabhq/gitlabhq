@@ -63,6 +63,7 @@ export default {
   configHelpLink: helpPagePath('user/clusters/agent/install/_index', {
     anchor: 'create-an-agent-configuration-file',
   }),
+  inject: ['isGroup'],
   props: {
     agents: {
       required: true,
@@ -122,12 +123,23 @@ export default {
           tdClass,
           thClass,
         },
-        {
-          key: 'configuration',
-          label: this.$options.i18n.configurationLabel,
-          tdClass,
-          thClass,
-        },
+        ...(this.isGroup
+          ? [
+              {
+                key: 'project',
+                label: this.$options.i18n.projectLabel,
+                tdClass,
+                thClass,
+              },
+            ]
+          : [
+              {
+                key: 'configuration',
+                label: this.$options.i18n.configurationLabel,
+                tdClass,
+                thClass,
+              },
+            ]),
         {
           key: 'options',
           label: '',
@@ -386,6 +398,16 @@ export default {
               ><help-icon /></gl-link
           ></span>
         </span>
+      </template>
+
+      <template #cell(project)="{ item }">
+        <gl-link
+          v-if="item.project"
+          :href="item.project.webUrl"
+          data-testid="cluster-agent-project-link"
+        >
+          {{ item.project.fullPath }}
+        </gl-link>
       </template>
 
       <template #cell(options)="{ item }">

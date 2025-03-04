@@ -72,6 +72,8 @@ To enable remote development in the agent configuration, set `enabled` to `true`
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   enabled: true
 ```
 
@@ -86,6 +88,8 @@ Use this setting to define the DNS zone of the URL where workspaces are availabl
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   dns_zone: "<workspaces.example.dev>"
 ```
 
@@ -99,6 +103,8 @@ The default value for `gitlab_workspaces_proxy.namespace` is `gitlab-workspaces`
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   gitlab_workspaces_proxy:
     namespace: "<custom-gitlab-workspaces-proxy-namespace>"
 ```
@@ -112,6 +118,8 @@ The default value is:
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   network_policy:
     enabled: true
     egress:
@@ -159,6 +167,8 @@ Each element of the list defines an `allow` attribute with an optional `except` 
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   network_policy:
     egress:
       - allow: "0.0.0.0/0"
@@ -193,6 +203,8 @@ For more information about possible CPU and memory values, see [Resource units i
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   default_resources_per_workspace_container:
     requests:
       cpu: "0.5"
@@ -225,6 +237,8 @@ Workspaces fail when they exceed the values you set for `requests` and `limits`.
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   max_resources_per_workspace:
     requests:
       cpu: "1"
@@ -262,6 +276,8 @@ Possible values are greater than or equal to `-1`.
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   workspaces_quota: 10
 ```
 
@@ -290,6 +306,8 @@ Possible values are greater than or equal to `-1`.
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   workspaces_per_user_quota: 3
 ```
 
@@ -312,6 +330,8 @@ The default value is `false`. Before you set the value to `true`, ensure your Ku
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   use_kubernetes_user_namespaces: true
 ```
 
@@ -334,6 +354,8 @@ The default value is `""`, which denotes the absence of a value.
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   default_runtime_class: "example-runtime-class-name"
 ```
 
@@ -369,6 +391,8 @@ The default value is `false`. The value can be set to `true` only if either:
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   default_runtime_class: "example-runtime-class-name"
   allow_privilege_escalation: true
 ```
@@ -393,6 +417,8 @@ The default value is `[]`.
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   image_pull_secrets:
     - name: "image-pull-secret-name"
       namespace: "image-pull-secret-namespace"
@@ -424,6 +450,8 @@ The default value is `{}`.
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   annotations:
     "example.com/key": "value"
 ```
@@ -457,6 +485,8 @@ The default value is `{}`.
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   labels:
     "example.com/key": "value"
 ```
@@ -501,6 +531,8 @@ the user's typical working hours.
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   max_active_hours_before_stop: 60
 ```
 
@@ -531,6 +563,8 @@ The default value is `722`, or approximately one month.
 
 ```yaml
 remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
   max_stopped_hours_before_termination: 4332
 ```
 

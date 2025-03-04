@@ -50,10 +50,6 @@ export default {
     VariableValuesListbox,
   },
   props: {
-    defaultBranch: {
-      type: String,
-      required: true,
-    },
     fileParams: {
       type: Object,
       required: false,
@@ -86,13 +82,6 @@ export default {
       ciConfigVariables: null,
       configVariablesWithDescription: {},
       form: {},
-      refValue: {
-        shortName: this.refParam,
-        // this is needed until we add support for ref type in url query strings
-        // ensure default branch is called with full ref on load
-        // https://gitlab.com/gitlab-org/gitlab/-/issues/287815
-        fullName: this.refParam === this.defaultBranch ? `refs/heads/${this.refParam}` : undefined,
-      },
     };
   },
   apollo: {
@@ -100,12 +89,12 @@ export default {
       fetchPolicy: fetchPolicies.NO_CACHE,
       query: ciConfigVariablesQuery,
       skip() {
-        return Object.keys(this.form).includes(this.refFullName);
+        return Object.keys(this.form).includes(this.refParam);
       },
       variables() {
         return {
           fullPath: this.projectPath,
-          ref: this.refQueryParam,
+          ref: this.refParam,
         };
       },
       update({ project }) {
@@ -137,7 +126,7 @@ export default {
   },
   computed: {
     descriptions() {
-      return this.form[this.refFullName]?.descriptions ?? {};
+      return this.form[this.refParam]?.descriptions ?? {};
     },
     isFetchingCiConfigVariables() {
       return this.ciConfigVariables === null;
@@ -148,20 +137,11 @@ export default {
     isMobile() {
       return ['sm', 'xs'].includes(GlBreakpointInstance.getBreakpointSize());
     },
-    refFullName() {
-      return this.refValue.fullName;
-    },
-    refQueryParam() {
-      return this.refFullName || this.refShortName;
-    },
-    refShortName() {
-      return this.refValue.shortName;
-    },
     removeButtonCategory() {
       return this.isMobile ? 'secondary' : 'tertiary';
     },
     variables() {
-      return this.form[this.refFullName]?.variables ?? [];
+      return this.form[this.refParam]?.variables ?? [];
     },
     variableTypeListboxItems() {
       return [
@@ -232,7 +212,7 @@ export default {
 
       this.form = {
         ...this.form,
-        [this.refFullName]: {
+        [this.refParam]: {
           descriptions: this.configVariablesWithDescription.descriptions,
           variables: [],
         },
@@ -240,28 +220,28 @@ export default {
 
       // Add default variables from yml
       this.setVariableParams(
-        this.refFullName,
+        this.refParam,
         CI_VARIABLE_TYPE_ENV_VAR,
         this.configVariablesWithDescription.values,
       );
 
       // Add/update variables, e.g. from query string
       if (this.variableParams) {
-        this.setVariableParams(this.refFullName, CI_VARIABLE_TYPE_ENV_VAR, this.variableParams);
+        this.setVariableParams(this.refParam, CI_VARIABLE_TYPE_ENV_VAR, this.variableParams);
       }
 
       if (this.fileParams) {
-        this.setVariableParams(this.refFullName, CI_VARIABLE_TYPE_FILE, this.fileParams);
+        this.setVariableParams(this.refParam, CI_VARIABLE_TYPE_FILE, this.fileParams);
       }
 
       // Adds empty var at the end of the form
-      this.addEmptyVariable(this.refFullName);
+      this.addEmptyVariable(this.refParam);
     },
     removeVariable(index) {
       this.variables.splice(index, 1);
     },
     setVariableAttribute(key, attribute, value) {
-      const { variables } = this.form[this.refFullName];
+      const { variables } = this.form[this.refParam];
       const variable = variables.find((v) => v.key === key);
       variable[attribute] = value;
     },
@@ -296,7 +276,7 @@ export default {
 <template>
   <div>
     <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="md" />
-    <gl-form-group v-else :label="s__('Pipeline|Variables')">
+    <gl-form-group v-else :label="s__('Pipeline|Variables')" class="gl-mb-0">
       <div
         v-for="(variable, index) in variables"
         :key="variable.uniqueId"
@@ -319,7 +299,7 @@ export default {
             :placeholder="s__('CiVariables|Input variable key')"
             :class="$options.formElementClasses"
             data-testid="pipeline-form-ci-variable-key-field"
-            @change="addEmptyVariable(refFullName)"
+            @change="addEmptyVariable(refParam)"
           />
           <variable-values-listbox
             v-if="shouldShowValuesDropdown(variable.key)"

@@ -2,7 +2,7 @@
   = form_errors(@application_setting)
 
   %fieldset
-    = render 'shared/project_creation_levels', f: f, method: :default_project_creation, legend: s_('ProjectCreationLevel|Default project creation protection')
+    = render 'shared/project_creation_levels', f: f, method: :default_project_creation, legend: s_('ProjectCreationLevel|Default minimum role required to create projects')
     = render_if_exists 'admin/application_settings/default_project_deletion_protection_setting', form: f
     = render_if_exists 'admin/application_settings/deletion_protection_settings', form: f
     .form-group.visibility-level-setting

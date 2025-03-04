@@ -377,7 +377,7 @@ yarn config set '//gitlab.example.com/api/v4/packages/npm/:_authToken' '<token>'
 
 If you use `yarn install` from a Dockerfile, when you build the Dockerfile you might get an error like this:
 
-```log
+```plaintext
 ...
 #6 8.621 fatal: unable to access 'https://gitlab.com/path/to/project/': Problem with the SSL CA cert (path? access rights?)
 #6 8.621 info Visit https://yarnpkg.com/en/docs/cli/install for documentation about this command.

@@ -584,7 +584,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
 
       it_behaves_like 'not allowed to transfer projects' do
-        let(:project_creation_level) { ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS }
+        let(:project_creation_level) { ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS }
       end
     end
 
@@ -604,7 +604,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
 
       it_behaves_like 'not allowed to transfer projects' do
-        let(:project_creation_level) { ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS }
+        let(:project_creation_level) { ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS }
       end
     end
 
@@ -624,7 +624,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
 
       it_behaves_like 'allowed to transfer projects' do
-        let(:project_creation_level) { ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS }
+        let(:project_creation_level) { ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS }
       end
     end
 
@@ -644,7 +644,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
 
       it_behaves_like 'allowed to transfer projects' do
-        let(:project_creation_level) { ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS }
+        let(:project_creation_level) { ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS }
       end
     end
   end
@@ -676,12 +676,12 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { maintainer } | true
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { owner }      | true
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS            | lazy { admin }      | true
-        ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { planner }    | false
-        ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { reporter }   | false
-        ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { developer }  | true
-        ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { maintainer } | true
-        ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { owner }      | true
-        ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS  | lazy { admin }      | true
+        ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS             | lazy { planner }    | false
+        ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS             | lazy { reporter }   | false
+        ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS             | lazy { developer }  | true
+        ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS             | lazy { maintainer } | true
+        ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS             | lazy { owner }      | true
+        ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS             | lazy { admin }      | true
         ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS         | lazy { planner }    | false
         ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS         | lazy { reporter }   | false
         ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS         | lazy { developer }  | false
@@ -897,7 +897,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
 
     context 'when group has project creation level set to developers + maintainer' do
-      let(:project_creation_level) { ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS }
+      let(:project_creation_level) { ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS }
 
       context 'planner' do
         let(:current_user) { planner }

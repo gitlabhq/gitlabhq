@@ -2854,7 +2854,7 @@ RSpec.describe User, feature_category: :user_profile do
 
       describe '#forkable_namespaces' do
         it 'includes all the namespaces the user can fork into' do
-          developer_group = create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
+          developer_group = create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS)
           developer_group.add_developer(user)
 
           expect(user.forkable_namespaces).to contain_exactly(user.namespace, group, subgroup, developer_group)
@@ -2876,9 +2876,20 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       describe '#manageable_groups' do
+        let(:developer_group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
+
+        before do
+          developer_group.add_developer(user)
+        end
+
         shared_examples 'manageable groups examples' do
           it 'includes all the namespaces the user can manage' do
             expect(user.manageable_groups).to contain_exactly(group, subgroup)
+          end
+
+          it 'includes all the namespaces the user can manage, including developer project access' do
+            expect(user.manageable_groups(include_groups_with_developer_access: true))
+              .to contain_exactly(group, subgroup, developer_group)
           end
 
           it 'does not include duplicates if a membership was added for the subgroup' do
@@ -8619,7 +8630,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe '#groups_with_developer_maintainer_project_access' do
+  describe '#groups_with_developer_project_access' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group1) { create(:group) }
 
@@ -8630,24 +8641,24 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     let_it_be(:developer_group2) do
-      create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS).tap do |g|
+      create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS).tap do |g|
         g.add_developer(user)
       end
     end
 
     let_it_be(:guest_group1) do
-      create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS).tap do |g|
+      create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS).tap do |g|
         g.add_guest(user)
       end
     end
 
     let_it_be(:developer_group1) do
-      create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS).tap do |g|
+      create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS).tap do |g|
         g.add_maintainer(user)
       end
     end
 
-    subject { user.send(:groups_with_developer_maintainer_project_access) }
+    subject { user.send(:groups_with_developer_project_access) }
 
     it { is_expected.to contain_exactly(developer_group2) }
   end

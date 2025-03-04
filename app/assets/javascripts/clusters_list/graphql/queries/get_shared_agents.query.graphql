@@ -1,7 +1,7 @@
 #import "../fragments/cluster_agent.fragment.graphql"
 
-query getSharedAgents($projectPath: ID!) {
-  project(fullPath: $projectPath) {
+query getSharedAgents($fullPath: ID!) {
+  project(fullPath: $fullPath) {
     id
 
     ciAccessAuthorizedAgents {

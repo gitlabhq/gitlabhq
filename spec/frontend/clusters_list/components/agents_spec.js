@@ -18,6 +18,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import {
   clusterAgentsResponse,
+  clusterAgentsGroupResponse,
   treeListResponseData,
   expectedAgentsList,
   sharedAgentsResponse,
@@ -32,7 +33,7 @@ describe('Agents', () => {
     defaultBranchName: 'default',
   };
   const provideData = {
-    projectPath: 'path/to/project',
+    fullPath: 'path/to/project/group',
   };
 
   const projectId = 'gid://gitlab/Project/1';
@@ -74,6 +75,7 @@ describe('Agents', () => {
   const createWrapper = async ({
     props = {},
     glFeatures = {},
+    isGroup = false,
     agentQueryResponse = jest.fn().mockResolvedValue(clusterAgentsResponse),
     treeListQueryResponse = jest.fn().mockResolvedValue(emptyTreeListResponse),
     sharedAgentsQueryResponse = jest.fn().mockResolvedValue(emptySharedAgentsResponse),
@@ -97,6 +99,7 @@ describe('Agents', () => {
       },
       provide: {
         ...provideData,
+        isGroup,
         glFeatures,
       },
       stubs: {
@@ -107,6 +110,7 @@ describe('Agents', () => {
     });
 
     await nextTick();
+    await waitForPromises();
   };
 
   const findAgentTabs = () => wrapper.findComponent(GlTabs);
@@ -116,49 +120,47 @@ describe('Agents', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findBanner = () => wrapper.findComponent(GlBanner);
 
+  const getAllTabTitles = () => findTab().wrappers.map((tab) => tab.attributes('title'));
+
   afterEach(() => {
     localStorage.removeItem(AGENT_FEEDBACK_KEY);
   });
 
   describe('when there is a list of agents', () => {
     it('should not render empty state', async () => {
-      createWrapper();
-      await waitForPromises();
+      await createWrapper();
 
       expect(findEmptyState().exists()).toBe(false);
     });
 
     it('should render agent tabs', async () => {
-      createWrapper();
-      await waitForPromises();
+      await createWrapper();
 
       expect(findAgentTabs().exists()).toBe(true);
     });
 
     it('should render agent table', async () => {
-      createWrapper();
-      await waitForPromises();
+      await createWrapper();
 
       expect(findAgentTable().exists()).toBe(true);
     });
 
     it('should pass agent and folder info to table component', async () => {
-      createWrapper({ treeListQueryResponse: jest.fn().mockResolvedValue(treeListResponseData) });
-      await waitForPromises();
+      await createWrapper({
+        treeListQueryResponse: jest.fn().mockResolvedValue(treeListResponseData),
+      });
 
       expect(findAgentTable().props('agents')).toMatchObject(expectedAgentsList);
     });
 
     it('should emit agents count to the parent component', async () => {
-      createWrapper();
-      await waitForPromises();
+      await createWrapper();
 
       expect(wrapper.emitted().onAgentsLoad).toEqual([[expectedAgentsList.length]]);
     });
 
     it('should render a slot for alerts if provided', async () => {
-      createWrapper({ slots: { alerts: 'slotContent' } });
-      await waitForPromises();
+      await createWrapper({ slots: { alerts: 'slotContent' } });
 
       expect(wrapper.text()).toContain('slotContent');
     });
@@ -208,50 +210,44 @@ describe('Agents', () => {
 
     describe('agent tabs', () => {
       it('should render project agents tab when the agents query has returned data', async () => {
-        createWrapper();
-        await waitForPromises();
+        await createWrapper();
 
         expect(findTab().at(0).attributes('title')).toBe('Project agents');
       });
 
       it('should render project agents tab with alert when the agents query has errored', async () => {
-        createWrapper({ agentQueryResponse: jest.fn().mockRejectedValue({}) });
-        await waitForPromises();
+        await createWrapper({ agentQueryResponse: jest.fn().mockRejectedValue({}) });
 
         expect(findTab().at(0).attributes('title')).toBe('Project agents');
         expect(findTab().at(0).text()).toBe('An error occurred while loading your agents');
       });
 
       it('should not render shared agents tab when the query has not returned data', async () => {
-        createWrapper();
-        await waitForPromises();
+        await createWrapper();
 
         expect(findTab()).toHaveLength(1);
       });
 
       it('should render shared agents tab when the query has returned data', async () => {
-        createWrapper({
+        await createWrapper({
           sharedAgentsQueryResponse: jest.fn().mockResolvedValue(sharedAgentsResponse),
         });
-        await waitForPromises();
 
         expect(findTab()).toHaveLength(2);
         expect(findTab().at(1).attributes('title')).toBe('Shared agents');
       });
 
       it('should render shared agents tab with alert when the agents query has errored', async () => {
-        createWrapper({ sharedAgentsQueryResponse: jest.fn().mockRejectedValue({}) });
-        await waitForPromises();
+        await createWrapper({ sharedAgentsQueryResponse: jest.fn().mockRejectedValue({}) });
 
         expect(findTab().at(1).attributes('title')).toBe('Shared agents');
         expect(findTab().at(1).text()).toBe('An error occurred while loading your agents');
       });
 
       it('should render configurations tab when the query has returned data', async () => {
-        createWrapper({
+        await createWrapper({
           treeListQueryResponse: jest.fn().mockResolvedValue(treeListResponseData),
         });
-        await waitForPromises();
 
         expect(findTab()).toHaveLength(2);
         expect(findTab().at(1).attributes('title')).toBe('Available configurations');
@@ -277,17 +273,19 @@ describe('Agents', () => {
       const sameProjectAgent = {
         agent: {
           ...userAccessAgent.agent,
-          project: { id: projectId, fullPath: provideData.projectPath },
+          project: {
+            id: projectId,
+            fullPath: provideData.fullPath,
+            webUrl: `https://gdl.test/${provideData.fullPath}`,
+          },
         },
       };
 
       const updatedResponse = createSharedAgentsResponse([ciAccessAgent], [sameProjectAgent]);
 
-      createWrapper({
+      await createWrapper({
         sharedAgentsQueryResponse: jest.fn().mockResolvedValue(updatedResponse),
       });
-
-      await waitForPromises();
 
       expect(findTab()).toHaveLength(2);
       expect(findTab().at(1).attributes('title')).toBe('Shared agents');
@@ -301,11 +299,9 @@ describe('Agents', () => {
         [ciAccessAgent, userAccessAgent],
       );
 
-      createWrapper({
+      await createWrapper({
         sharedAgentsQueryResponse: jest.fn().mockResolvedValue(updatedResponse),
       });
-
-      await waitForPromises();
 
       expect(findTab()).toHaveLength(2);
       expect(findTab().at(1).attributes('title')).toBe('Shared agents');
@@ -338,12 +334,10 @@ describe('Agents', () => {
         .mockResolvedValueOnce(initialResponse)
         .mockResolvedValueOnce(updatedResponse);
 
-      createWrapper({ agentQueryResponse });
+      return createWrapper({ agentQueryResponse });
     });
 
     it('should update the agent table when query data changes', async () => {
-      await waitForPromises();
-
       expect(findAgentTable().props('agents')).toHaveLength(expectedAgentsList.length);
 
       await wrapper.vm.$apollo.queries.agents.refetch();
@@ -354,7 +348,6 @@ describe('Agents', () => {
 
     it('should navigate to the project agents tab', async () => {
       // The project agents tab is opened by default
-      await waitForPromises();
       expect(findAgentTabs().props('value')).toBe(0);
 
       // Open the second tab
@@ -370,12 +363,10 @@ describe('Agents', () => {
   });
 
   describe('when the agent list and configuration list are empty', () => {
-    beforeEach(async () => {
-      createWrapper({
+    beforeEach(() => {
+      return createWrapper({
         agentQueryResponse: jest.fn().mockResolvedValue(emptyAgentsResponse),
       });
-      await waitForPromises();
-      await nextTick();
     });
 
     it('should render empty state', () => {
@@ -390,20 +381,18 @@ describe('Agents', () => {
 
   describe('when agents query has errored', () => {
     it('displays an alert message', async () => {
-      createWrapper({
+      await createWrapper({
         agentQueryResponse: jest.fn().mockRejectedValue({}),
       });
-      await waitForPromises();
 
       expect(findAlert().text()).toBe('An error occurred while loading your agents');
     });
 
     it('emits `kasDisabled` event if the error is related to KAS being disabled', async () => {
       const error = new Error(KAS_DISABLED_ERROR);
-      createWrapper({
+      await createWrapper({
         agentQueryResponse: jest.fn().mockRejectedValue(error),
       });
-      await waitForPromises();
 
       expect(wrapper.emitted().kasDisabled).toEqual([[true]]);
     });
@@ -418,6 +407,81 @@ describe('Agents', () => {
 
     it('displays a loading icon', () => {
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+    });
+  });
+
+  describe('when on group page', () => {
+    const agentQueryResponse = jest.fn().mockReturnValue(new Promise(() => {}));
+    const sharedAgentsQueryResponse = jest.fn().mockReturnValue(new Promise(() => {}));
+    const treeListQueryResponse = jest.fn().mockReturnValue(new Promise(() => {}));
+
+    describe('request data', () => {
+      beforeEach(() => {
+        return createWrapper({
+          isGroup: true,
+          agentQueryResponse,
+          sharedAgentsQueryResponse,
+          treeListQueryResponse,
+        });
+      });
+
+      it('should request agents with correct variables', () => {
+        expect(agentQueryResponse).toHaveBeenCalledWith(
+          expect.objectContaining({
+            fullPath: 'path/to/project/group',
+            isGroup: true,
+          }),
+        );
+      });
+
+      it('should skip sharedAgents query', () => {
+        expect(sharedAgentsQueryResponse).not.toHaveBeenCalled();
+      });
+
+      it('should skip treeList query', () => {
+        expect(treeListQueryResponse).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('agent tabs', () => {
+      it('should render group agents tab when the agents query has returned data', async () => {
+        await createWrapper({
+          isGroup: true,
+          agentQueryResponse: jest.fn().mockResolvedValue(clusterAgentsGroupResponse),
+        });
+
+        expect(findTab().at(0).attributes('title')).toBe('Group agents');
+      });
+
+      it('should render group agents tab with alert when the agents query has errored', async () => {
+        await createWrapper({
+          isGroup: true,
+          agentQueryResponse: jest.fn().mockRejectedValue({}),
+        });
+
+        expect(findTab().at(0).attributes('title')).toBe('Group agents');
+        expect(findTab().at(0).text()).toBe('An error occurred while loading your agents');
+      });
+
+      it('should not render shared agents tab', async () => {
+        await createWrapper({
+          isGroup: true,
+          agentQueryResponse: jest.fn().mockResolvedValue(clusterAgentsGroupResponse),
+          sharedAgentsQueryResponse: jest.fn().mockRejectedValue({}),
+        });
+
+        expect(findTab()).toHaveLength(1);
+        expect(getAllTabTitles()).not.toContain('Shared agents');
+      });
+
+      it('should not render configurations tab', async () => {
+        await createWrapper({
+          isGroup: true,
+        });
+
+        expect(findTab()).toHaveLength(1);
+        expect(getAllTabTitles()).not.toContain('Available configurations');
+      });
     });
   });
 });

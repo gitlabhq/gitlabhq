@@ -409,7 +409,7 @@ class Group < Namespace
     # the group owner and is a placeholder value for inheriting the value from the ApplicationSetting.
     def project_creation_levels_for_user(user)
       project_creation_allowed_on_levels = [
-        ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS,
+        ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS,
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
         ::Gitlab::Access::OWNER_PROJECT_ACCESS,
         nil

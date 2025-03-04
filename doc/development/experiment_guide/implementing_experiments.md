@@ -61,7 +61,7 @@ This command creates a scenario where half of everyone who encounters
 the experiment would be assigned the _control_, 25% would be assigned the _red_
 variant, and 25% would be assigned the _blue_ variant:
 
-```slack
+```plaintext
 /chatops run feature set pill_color 50 --actors
 ```
 
@@ -85,7 +85,7 @@ handled.
 
 We can also implement this experiment in a HAML file with HTML wrappings:
 
-```haml
+```ruby
 #cta-interface
   - experiment(:pill_color, actor: current_user) do |e|
     - e.control do

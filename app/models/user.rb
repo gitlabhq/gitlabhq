@@ -1595,7 +1595,7 @@ class User < ApplicationRecord
     union_sql = ::Gitlab::SQL::Union.new(
       [owned_groups,
         maintainers_groups,
-        groups_with_developer_maintainer_project_access]).to_sql
+        groups_with_developer_project_access]).to_sql
 
     ::Group.from("(#{union_sql}) #{::Group.table_name}").any?
   end
@@ -2000,13 +2000,13 @@ class User < ApplicationRecord
     end
   end
 
-  def manageable_groups(include_groups_with_developer_maintainer_access: false)
+  def manageable_groups(include_groups_with_developer_access: false)
     owned_and_maintainer_group_hierarchy = owned_or_maintainers_groups.self_and_descendants
 
-    if include_groups_with_developer_maintainer_access
+    if include_groups_with_developer_access
       union_sql = ::Gitlab::SQL::Union.new(
         [owned_and_maintainer_group_hierarchy,
-          groups_with_developer_maintainer_project_access]).to_sql
+          groups_with_developer_project_access]).to_sql
 
       ::Group.from("(#{union_sql}) #{::Group.table_name}")
     else
@@ -2824,10 +2824,10 @@ class User < ApplicationRecord
     end
   end
 
-  def groups_with_developer_maintainer_project_access
-    project_creation_levels = [::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS]
+  def groups_with_developer_project_access
+    project_creation_levels = [::Gitlab::Access::DEVELOPER_PROJECT_ACCESS]
 
-    if ::Gitlab::CurrentSettings.default_project_creation == ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
+    if ::Gitlab::CurrentSettings.default_project_creation == ::Gitlab::Access::DEVELOPER_PROJECT_ACCESS
       project_creation_levels << nil
     end
 

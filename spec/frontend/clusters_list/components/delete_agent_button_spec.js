@@ -16,7 +16,7 @@ import { clusterAgentsResponse } from './mock_data';
 
 Vue.use(VueApollo);
 
-const projectPath = 'path/to/project';
+const fullPath = 'path/to/project';
 const defaultBranchName = 'default';
 const agent = {
   id: 'agent-id',
@@ -52,8 +52,9 @@ describe('DeleteAgentButton', () => {
     apolloProvider.clients.defaultClient.cache.writeQuery({
       query: getAgentsQuery,
       variables: {
-        projectPath,
+        fullPath,
         defaultBranchName,
+        isGroup: false,
       },
       data: clusterAgentsResponse.data,
     });
@@ -65,8 +66,9 @@ describe('DeleteAgentButton', () => {
   } = {}) => {
     apolloProvider = createMockApolloProvider({ mutationResponse });
     const defaultProvide = {
-      projectPath,
+      fullPath,
       canAdminCluster: true,
+      isGroup: false,
     };
     const propsData = {
       defaultBranchName,

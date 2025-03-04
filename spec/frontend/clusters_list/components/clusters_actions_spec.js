@@ -22,6 +22,7 @@ describe('ClustersActionsComponent', () => {
     canAddCluster: true,
     displayClusterAgents: true,
     certificateBasedClustersEnabled: true,
+    isGroup: false,
   };
 
   const findButtonGroup = () => wrapper.findComponent(GlButtonGroup);
@@ -51,11 +52,11 @@ describe('ClustersActionsComponent', () => {
     });
   };
 
-  beforeEach(() => {
-    createWrapper();
-  });
-
   describe('when the certificate based clusters are enabled', () => {
+    beforeEach(() => {
+      createWrapper();
+    });
+
     it('renders actions menu button group with dropdown', () => {
       expect(findButtonGroup().exists()).toBe(true);
       expect(findButton().exists()).toBe(true);
@@ -115,7 +116,47 @@ describe('ClustersActionsComponent', () => {
       });
     });
 
-    describe('when on group or admin level', () => {
+    describe('when on group level', () => {
+      beforeEach(() => {
+        createWrapper({ isGroup: true });
+      });
+
+      it(`displays default action as ${CLUSTERS_ACTIONS.createCluster}`, () => {
+        expect(findButton().text()).toBe(CLUSTERS_ACTIONS.createCluster);
+      });
+
+      it('renders correct href attribute for the button', () => {
+        expect(findButton().attributes('href')).toBe(newClusterDocsPath);
+      });
+
+      it('renders a dropdown with 1 action item', () => {
+        expect(findDropdownItemIds()).toEqual(['connect-cluster-link']);
+      });
+
+      it('renders correct text for the dropdown item', () => {
+        expect(findDropdownItemTexts()).toEqual([CLUSTERS_ACTIONS.connectClusterCertificate]);
+      });
+
+      it('renders correct href attribute for the link', () => {
+        expect(findConnectClusterLink().attributes('href')).toBe(addClusterPath);
+      });
+
+      describe('when user cannot add clusters', () => {
+        beforeEach(() => {
+          createWrapper({ isGroup: true, canAddCluster: false });
+        });
+
+        it('disables action button', () => {
+          expect(findButton().props('disabled')).toBe(true);
+        });
+
+        it('shows tooltip explaining why dropdown is disabled', () => {
+          expect(findTooltip().attributes('title')).toBe(CLUSTERS_ACTIONS.actionsDisabledHint);
+        });
+      });
+    });
+
+    describe('when on admin level', () => {
       beforeEach(() => {
         createWrapper({ displayClusterAgents: false });
       });
@@ -124,7 +165,7 @@ describe('ClustersActionsComponent', () => {
         expect(findDropdown().exists()).toBe(false);
       });
 
-      it('render an action button', () => {
+      it('renders an action button', () => {
         expect(findButton().exists()).toBe(true);
       });
 

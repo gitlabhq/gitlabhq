@@ -11,7 +11,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   let_it_be(:organization) { create(:organization) }
   let!(:group) { create(:group) }
 
-  let(:developer_access) { Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS }
+  let(:developer_access) { Gitlab::Access::DEVELOPER_PROJECT_ACCESS }
   let(:maintainer_access) { Gitlab::Access::MAINTAINER_PROJECT_ACCESS }
   let(:owner_access) { Gitlab::Access::OWNER_PROJECT_ACCESS }
   let(:admin_access) { Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS }
@@ -1308,7 +1308,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     describe '.with_project_creation_levels' do
       let_it_be(:group_1) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
-      let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+      let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
       let_it_be(:group_3) { create(:group, project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS) }
       let_it_be(:group_4) { create(:group, project_creation_level: Gitlab::Access::OWNER_PROJECT_ACCESS) }
       let_it_be(:group_5) { create(:group, project_creation_level: nil) }
@@ -1364,7 +1364,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     describe '.project_creation_allowed' do
       let_it_be(:group_1) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
-      let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+      let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
       let_it_be(:group_3) { create(:group, project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS) }
       let_it_be(:group_4) { create(:group, project_creation_level: Gitlab::Access::OWNER_PROJECT_ACCESS) }
       let_it_be(:group_5) { create(:group, project_creation_level: Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS) }
@@ -1375,17 +1375,17 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         false | false | Gitlab::Access::NO_ONE_PROJECT_ACCESS               | lazy { [group_2, group_3, group_4] }
         false | false | Gitlab::Access::OWNER_PROJECT_ACCESS                | lazy { [group_2, group_3, group_4, group_6] }
         false | false | Gitlab::Access::MAINTAINER_PROJECT_ACCESS           | lazy { [group_2, group_3, group_4, group_6] }
-        false | false | Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS | lazy { [group_2, group_3, group_4, group_6] }
+        false | false | Gitlab::Access::DEVELOPER_PROJECT_ACCESS            | lazy { [group_2, group_3, group_4, group_6] }
         false | false | Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS        | lazy { [group_2, group_3, group_4] }
         true  | false | Gitlab::Access::NO_ONE_PROJECT_ACCESS               | lazy { [group_2, group_3, group_4] }
         true  | false | Gitlab::Access::OWNER_PROJECT_ACCESS                | lazy { [group_2, group_3, group_4, group_6] }
         true  | false | Gitlab::Access::MAINTAINER_PROJECT_ACCESS           | lazy { [group_2, group_3, group_4, group_6] }
-        true  | false | Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS | lazy { [group_2, group_3, group_4, group_6] }
+        true  | false | Gitlab::Access::DEVELOPER_PROJECT_ACCESS            | lazy { [group_2, group_3, group_4, group_6] }
         true  | false | Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS        | lazy { [group_2, group_3, group_4] }
         true  | true  | Gitlab::Access::NO_ONE_PROJECT_ACCESS               | lazy { [group_2, group_3, group_4, group_5] }
         true  | true  | Gitlab::Access::OWNER_PROJECT_ACCESS                | lazy { [group_2, group_3, group_4, group_5, group_6] }
         true  | true  | Gitlab::Access::MAINTAINER_PROJECT_ACCESS           | lazy { [group_2, group_3, group_4, group_5, group_6] }
-        true  | true  | Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS | lazy { [group_2, group_3, group_4, group_5, group_6] }
+        true  | true  | Gitlab::Access::DEVELOPER_PROJECT_ACCESS            | lazy { [group_2, group_3, group_4, group_5, group_6] }
         true  | true  | Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS        | lazy { [group_2, group_3, group_4, group_5, group_6] }
       end
 

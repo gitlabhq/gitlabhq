@@ -50,7 +50,7 @@ You can import a hand-raise lead button in the following ways:
 
 For Haml:
 
-```haml
+```ruby
 .js-hand-raise-lead-trigger{ data: discover_page_hand_raise_lead_data(group) }
 ```
 

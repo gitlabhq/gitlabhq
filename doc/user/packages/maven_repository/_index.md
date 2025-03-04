@@ -1270,7 +1270,7 @@ This usually indicates an authentication issue. Check that:
 
 GitLab has specific requirements for version strings. Ensure your version follows the format:
 
-```regex
+```plaintext
 ^(?!.*\.\.)(?!.*\.$)[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*(\+[0-9A-Za-z-]+)?$
 ```
 

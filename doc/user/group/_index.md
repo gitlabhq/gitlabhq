@@ -522,12 +522,12 @@ By default, users with at least the:
 - Maintainer role can fork projects into a group. This default prevents users with the Developer role from forking projects that
   contain protected branches and cannot be changed.
 
-To change the role that can create projects under a group:
+To specify which roles can create projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. From **Roles allowed to create projects**, select an option.
+1. From **Minimum role required to create projects**, select an option.
 1. Select **Save changes**.
 
-To change this setting globally, see [Default project creation protection](../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
+For more information about changing this setting globally, see [default minimum role required to create projects](../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).

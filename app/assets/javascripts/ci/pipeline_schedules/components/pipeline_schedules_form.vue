@@ -1,12 +1,10 @@
 <script>
 import {
   GlButton,
-  GlCollapsibleListbox,
   GlFormCheckbox,
   GlForm,
   GlFormGroup,
   GlFormInput,
-  GlFormTextarea,
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
@@ -19,23 +17,22 @@ import IntervalPatternInput from '~/pages/projects/pipeline_schedules/shared/com
 import createPipelineScheduleMutation from '../graphql/mutations/create_pipeline_schedule.mutation.graphql';
 import updatePipelineScheduleMutation from '../graphql/mutations/update_pipeline_schedule.mutation.graphql';
 import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules.query.graphql';
-import { VARIABLE_TYPE, FILE_TYPE } from '../constants';
+import PipelineVariablesFormGroup from './pipeline_variables_form_group.vue';
 
 const scheduleId = queryToObject(window.location.search).id;
 
 export default {
   components: {
     GlButton,
-    GlCollapsibleListbox,
     GlForm,
     GlFormCheckbox,
     GlFormGroup,
     GlFormInput,
-    GlFormTextarea,
     GlLoadingIcon,
     RefSelector,
     TimezoneDropdown,
     IntervalPatternInput,
+    PipelineVariablesFormGroup,
   },
   inject: ['fullPath', 'projectId', 'defaultBranch', 'dailyLimit', 'settingsLink', 'schedulesPath'],
   props: {
@@ -89,7 +86,6 @@ export default {
               destroy: false,
             };
           });
-          this.addEmptyVariable();
           this.activated = schedule.active;
         }
       },
@@ -110,7 +106,7 @@ export default {
       cronTimezone: '',
       variables: [],
       schedule: {},
-      showVarValues: false,
+      updatedVariables: [],
     };
   },
   i18n: {
@@ -125,11 +121,7 @@ export default {
     cancel: __('Cancel'),
     targetBranchTag: __('Select target branch or tag'),
     intervalPattern: s__('PipelineSchedules|Interval Pattern'),
-    variablesDescription: s__(
-      'Pipeline|Specify variable values to be used in this run. The values specified in %{linkStart}CI/CD settings%{linkEnd} will be used by default.',
-    ),
-    removeVariableLabel: s__('CiVariables|Remove variable'),
-    variables: s__('Pipeline|Variables'),
+
     scheduleCreateError: s__(
       'PipelineSchedules|An error occurred while creating the pipeline schedule.',
     ),
@@ -139,35 +131,18 @@ export default {
     scheduleFetchError: s__(
       'PipelineSchedules|An error occurred while trying to fetch the pipeline schedule.',
     ),
-    revealText: __('Reveal values'),
-    hideText: __('Hide values'),
   },
-  formElementClasses: 'md:gl-mr-3 gl-mb-3 gl-basis-1/4 gl-shrink-0 gl-flex-grow-0',
-  // it's used to prevent the overwrite if 'gl-h-7' or '!gl-h-7' were used
-  textAreaStyle: { height: '32px' },
   computed: {
     dropdownTranslations() {
       return {
         dropdownHeader: this.$options.i18n.targetBranchTag,
       };
     },
-    typeOptions() {
-      return [
-        {
-          text: __('Variable'),
-          value: VARIABLE_TYPE,
-        },
-        {
-          text: __('File'),
-          value: FILE_TYPE,
-        },
-      ];
-    },
     getEnabledRefTypes() {
       return [REF_TYPE_BRANCHES, REF_TYPE_TAGS];
     },
     filledVariables() {
-      return this.variables.filter((variable) => variable.key !== '' && !variable.empty);
+      return this.updatedVariables.filter((variable) => variable.key !== '' && !variable.empty);
     },
     preparedVariablesUpdate() {
       return this.filledVariables.map((variable) => {
@@ -181,7 +156,7 @@ export default {
       });
     },
     preparedVariablesCreate() {
-      const vars = this.variables.filter((variable) => variable.key !== '');
+      const vars = this.updatedVariables.filter((variable) => variable.key !== '');
 
       return vars.map((variable) => {
         return {
@@ -199,45 +174,8 @@ export default {
         ? this.$options.i18n.saveScheduleBtnText
         : this.$options.i18n.createScheduleBtnText;
     },
-    varSecurityBtnText() {
-      return this.showVarValues ? this.$options.i18n.hideText : this.$options.i18n.revealText;
-    },
-    hasExistingScheduleVariables() {
-      return this.schedule?.variables?.nodes.length > 0;
-    },
-    showVarSecurityBtn() {
-      return this.editing && this.hasExistingScheduleVariables;
-    },
-  },
-  created() {
-    this.addEmptyVariable();
   },
   methods: {
-    addEmptyVariable() {
-      const lastVar = this.variables[this.variables.length - 1];
-
-      if (lastVar?.key === '' && lastVar?.value === '') {
-        return;
-      }
-
-      this.variables.push({
-        variableType: VARIABLE_TYPE,
-        key: '',
-        value: '',
-        destroy: false,
-        empty: true,
-      });
-    },
-    setVariableType(typeValue, key) {
-      const variable = this.variables.find((v) => v.key === key);
-      variable.variableType = typeValue;
-    },
-    removeVariable(index) {
-      this.variables[index].destroy = true;
-    },
-    canRemove(index) {
-      return index < this.variables.length - 1;
-    },
     async createPipelineSchedule() {
       try {
         const {
@@ -311,14 +249,6 @@ export default {
     setTimezone(timezone) {
       this.cronTimezone = timezone.identifier || '';
     },
-    displayHiddenChars(variable) {
-      return (
-        this.editing && this.hasExistingScheduleVariables && !this.showVarValues && !variable.empty
-      );
-    },
-    resetVariable(index) {
-      this.variables[index].empty = false;
-    },
   },
 };
 </script>
@@ -372,81 +302,11 @@ export default {
         />
       </gl-form-group>
       <!--Variable List-->
-      <gl-form-group class="gl-mb-0" :label="$options.i18n.variables">
-        <div v-for="(variable, index) in variables" :key="`var-${index}`">
-          <div
-            v-if="!variable.destroy"
-            class="gl-mb-3 gl-flex gl-flex-col gl-items-stretch gl-pb-2 md:gl-flex-row md:gl-items-start"
-            data-testid="ci-variable-row"
-          >
-            <gl-collapsible-listbox
-              :items="typeOptions"
-              :selected="variable.variableType"
-              :class="$options.formElementClasses"
-              block
-              data-testid="pipeline-form-ci-variable-type"
-              @select="setVariableType($event, variable.key)"
-            />
-
-            <gl-form-input
-              v-model="variable.key"
-              :placeholder="s__('CiVariables|Input variable key')"
-              :class="$options.formElementClasses"
-              data-testid="pipeline-form-ci-variable-key"
-              @change="addEmptyVariable(variable)"
-            />
-
-            <gl-form-textarea
-              v-if="displayHiddenChars(variable)"
-              value="*****************"
-              disabled
-              class="gl-mb-3 !gl-h-7"
-              data-testid="pipeline-form-ci-variable-hidden-value"
-            />
-
-            <gl-form-textarea
-              v-else
-              v-model="variable.value"
-              :placeholder="s__('CiVariables|Input variable value')"
-              class="gl-mb-3 gl-min-h-7"
-              :style="$options.textAreaStyle"
-              :no-resize="false"
-              data-testid="pipeline-form-ci-variable-value"
-              @change="resetVariable(index)"
-            />
-
-            <template v-if="variables.length > 1">
-              <gl-button
-                v-if="canRemove(index)"
-                class="gl-mb-3 md:gl-ml-3"
-                data-testid="remove-ci-variable-row"
-                variant="danger"
-                category="secondary"
-                icon="clear"
-                :aria-label="$options.i18n.removeVariableLabel"
-                @click="removeVariable(index)"
-              />
-              <gl-button
-                v-else
-                class="gl-invisible gl-mb-3 gl-hidden md:gl-ml-3 md:gl-block"
-                icon="clear"
-                :aria-label="$options.i18n.removeVariableLabel"
-              />
-            </template>
-          </div>
-        </div>
-      </gl-form-group>
-
-      <gl-button
-        v-if="showVarSecurityBtn"
-        class="gl-mb-5"
-        category="secondary"
-        variant="confirm"
-        data-testid="variable-security-btn"
-        @click="showVarValues = !showVarValues"
-      >
-        {{ varSecurityBtnText }}
-      </gl-button>
+      <pipeline-variables-form-group
+        :initial-variables="variables"
+        :editing="editing"
+        @update-variables="updatedVariables = $event"
+      />
 
       <!--Activated-->
       <gl-form-checkbox id="schedule-active" v-model="activated" class="gl-mb-3">
