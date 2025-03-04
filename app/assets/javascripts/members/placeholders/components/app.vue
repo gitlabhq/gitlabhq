@@ -32,6 +32,7 @@ import {
   PLACEHOLDER_SORT_STATUS_ASC,
   PLACEHOLDER_SORT_SOURCE_NAME_ASC,
   PLACEHOLDER_SORT_SOURCE_NAME_DESC,
+  PLACEHOLDER_SORT_VALUES,
   PLACEHOLDER_TAB_AWAITING,
   PLACEHOLDER_TAB_REASSIGNED,
 } from '~/import_entities/import_groups/constants';
@@ -198,7 +199,7 @@ export default {
 
       this.filterParams = { ...queryParams };
 
-      if (sort) {
+      if (sort && PLACEHOLDER_SORT_VALUES.includes(sort)) {
         this.sort = sort || PLACEHOLDER_SORT_SOURCE_NAME_ASC;
       }
 

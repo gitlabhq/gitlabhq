@@ -1017,6 +1017,39 @@ rspec system pg16:
     - .rspec-base-pg16
     - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-system-parallel
+
+# PG17
+rspec migration pg17:
+  extends:
+    - .rspec-base-pg17
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-migration-parallel
+
+rspec background_migration pg17:
+  extends:
+    - .rspec-base-pg17
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-background-migration-parallel
+
+rspec unit pg17:
+  extends:
+    - .rspec-base-pg17
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-unit-parallel
+
+rspec integration pg17:
+  extends:
+    - .rspec-base-pg16
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-integration-parallel
+
+rspec system pg17:
+  extends:
+    - .rspec-base-pg17
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-system-parallel
 # EE/FOSS: default branch nightly scheduled jobs #
 ##########################################
 
@@ -1142,6 +1175,41 @@ rspec-ee integration pg16 es8:
 rspec-ee system pg16 es8:
   extends:
     - .rspec-ee-base-pg16-es8
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-system-parallel
+
+# PG17
+# Note: PG17 brought us close to the limit of nightly jobs, with 1946 out of 2000.
+# Adding new job families can cause the nightly pipeline to fail.
+rspec-ee migration pg17:
+  extends:
+    - .rspec-ee-base-pg17
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-migration-parallel
+
+rspec-ee background_migration pg17:
+  extends:
+    - .rspec-ee-base-pg17
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-background-migration-parallel
+
+rspec-ee unit pg17:
+  extends:
+    - .rspec-ee-base-pg17
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-unit-parallel
+
+rspec-ee integration pg17:
+  extends:
+    - .rspec-ee-base-pg17
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-integration-parallel
+
+rspec-ee system pg17:
+  extends:
+    - .rspec-ee-base-pg17
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-system-parallel
 # EE: default branch nightly scheduled jobs #

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require './keeps/overdue_finalize_background_migration'
 
-MigrationRecord = Struct.new(:id, :finished_at, :updated_at)
+MigrationRecord = Struct.new(:id, :finished_at, :updated_at, :gitlab_schema)
 
 RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :tooling do
   subject(:keep) { described_class.new }
@@ -11,7 +11,10 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
   describe '#initialize_change' do
     let(:migration) { { 'feature_category' => 'shared' } }
     let(:feature_category) { migration['feature_category'] }
-    let(:migration_record) { MigrationRecord.new(id: 1, finished_at: "2020-04-01 12:00:01") }
+    let(:migration_record) do
+      MigrationRecord.new(id: 1, finished_at: "2020-04-01 12:00:01", gitlab_schema: 'gitlab_main')
+    end
+
     let(:job_name) { "test_background_migration" }
     let(:last_migration_file) { "db/post_migrate/20200331140101_queue_test_background_migration.rb" }
     let(:groups_helper) { instance_double(::Keeps::Helpers::Groups) }
@@ -41,9 +44,13 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
   end
 
   describe '#change_description' do
-    let(:migration_record) { MigrationRecord.new(id: 1, finished_at: "2020-04-01 12:00:01") }
+    let(:migration_record) do
+      MigrationRecord.new(id: 1, finished_at: "2020-04-01 12:00:01", gitlab_schema: 'gitlab_main')
+    end
+
     let(:job_name) { "test_background_migration" }
     let(:last_migration_file) { "db/post_migrate/20200331140101_queue_test_background_migration.rb" }
+    let(:chatops_command) { %r{/chatops run batched_background_migrations status \d+ --database main} }
 
     subject(:description) { keep.change_description(migration_record, job_name, last_migration_file) }
 
@@ -54,6 +61,10 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
 
       it 'does not contain a warning' do
         expect(description).not_to match(/^### Warning/)
+      end
+
+      it 'contains the database name' do
+        expect(description).to match(chatops_command)
       end
     end
 

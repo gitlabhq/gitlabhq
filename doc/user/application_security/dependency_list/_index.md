@@ -79,6 +79,7 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) dependency filtering for groups in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `group_level_dependencies_filtering`. Disabled by default.
 - Dependency filtering for group [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) in GitLab 16.10. Feature flag `group_level_dependencies_filtering` removed.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513320) dependency filtering for projects in GitLab 17.9 with a flag named [`project_component_filter`](../../../administration/feature_flags.md). Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/513321) in GitLab 17.10. Feature flag `project_component_filter` removed.
 
 {{< /history >}}
 

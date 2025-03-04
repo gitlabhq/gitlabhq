@@ -21,10 +21,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Manual, feature_category: :continuous_
       context 'when the job has not been played' do
         it 'instructs the user about possible actions' do
           expect(subject.illustration[:content]).to eq(
-            _(
-              'This job does not start automatically and must be started manually. ' \
-              'You can add CI/CD variables below for last-minute configuration changes before starting the job.'
-            )
+            _('This job does not start automatically and must be started manually.')
           )
         end
       end

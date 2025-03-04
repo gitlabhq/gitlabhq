@@ -348,6 +348,14 @@ class ApplicationSetting < ApplicationRecord
     length: { maximum: 20, message: N_('is too long (maximum is %{count} characters)') },
     allow_blank: true
 
+  jsonb_accessor :token_prefixes,
+    instance_token_prefix: [:string, { default: 'gl' }]
+
+  validates :instance_token_prefix,
+    format: { with: %r{\A[a-zA-Z0-9-]+\z} },
+    length: { maximum: 20, message: N_('is too long (maximum is %{count} characters)') },
+    allow_blank: true
+
   validates :commit_email_hostname, format: { with: /\A[^@]+\z/ }
 
   validates :archive_builds_in_seconds,

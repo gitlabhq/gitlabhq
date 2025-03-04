@@ -2910,7 +2910,15 @@ class User < ApplicationRecord
   end
 
   def prefix_for_feed_token
-    FEED_TOKEN_PREFIX
+    self.class.prefix_for_feed_token
+  end
+
+  def self.prefix_for_feed_token
+    return FEED_TOKEN_PREFIX unless Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
+
+    # Manually remove gl - we'll add this from the configuration.
+    # Once the feature flag has been removed, we can change FEED_TOKEN_PREFIX to `ft-`
+    ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(FEED_TOKEN_PREFIX.delete_prefix('gl'))
   end
 
   # method overridden in EE

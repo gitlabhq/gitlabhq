@@ -238,6 +238,11 @@ include:
     - .rspec-base
     - .use-pg16
 
+.rspec-base-pg17:
+  extends:
+    - .rspec-base
+    - .use-pg17
+
 .rspec-ee-base-pg14:
   extends:
     - .rspec-base
@@ -270,6 +275,11 @@ include:
     - .rspec-base
     - .use-pg16-opensearch2-ee
     - .rails:rules:run-search-tests
+
+.rspec-ee-base-pg17:
+  extends:
+    - .rspec-base
+    - .use-pg17-es7-ee
 
 .ci-config-validation-base:
   extends:

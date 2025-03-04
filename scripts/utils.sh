@@ -515,9 +515,6 @@ function log_disk_usage() {
   section_start "log_disk_usage" "Disk usage detail" "true"
   echo -e "df -h"
   df -h
-
-  echo -e "du -h -d 1"
-  du -h -d 1
   section_end "log_disk_usage"
 
   if [[ "$exit_on_low_space" = "true" ]]; then

@@ -8,7 +8,7 @@ import { JOB_GRAPHQL_ERRORS } from '~/ci/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import { visitUrl } from '~/lib/utils/url_utility';
-import ManualVariablesForm from '~/ci/job_details/components/manual_variables_form.vue';
+import ManualJobForm from '~/ci/job_details/components/manual_job_form.vue';
 import playJobMutation from '~/ci/job_details/graphql/mutations/job_play_with_variables.mutation.graphql';
 import retryJobMutation from '~/ci/job_details/graphql/mutations/job_retry_with_variables.mutation.graphql';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -29,6 +29,13 @@ jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
 }));
+
+const defaultProps = {
+  jobId: mockId,
+  jobName: 'job-name',
+  isRetryable: false,
+  canViewPipelineVariables: true,
+};
 
 const defaultProvide = {
   projectPath: mockFullPath,
@@ -59,11 +66,9 @@ describe('Manual Variables Form', () => {
       apolloProvider: mockApollo,
     };
 
-    wrapper = shallowMountExtended(ManualVariablesForm, {
+    wrapper = shallowMountExtended(ManualJobForm, {
       propsData: {
-        jobId: mockId,
-        jobName: 'job-name',
-        isRetryable: false,
+        ...defaultProps,
         ...props,
       },
       provide: {
@@ -251,6 +256,18 @@ describe('Manual Variables Form', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: JOB_GRAPHQL_ERRORS.jobMutationErrorText,
       });
+    });
+  });
+
+  describe('when the user is not allowed to see the pipeline variables', () => {
+    beforeEach(() => {
+      createComponent({
+        props: { canViewPipelineVariables: false },
+      });
+    });
+
+    it('does not render job variables form', () => {
+      expect(findVariablesForm().exists()).toBe(false);
     });
   });
 });

@@ -484,6 +484,7 @@ title: Application Settings analysis
 | `throttle_unauthenticated_period_in_seconds` | `false` | `integer` | `integer` | `true` | `3600` | `true` | `false`| `true` |
 | `throttle_unauthenticated_requests_per_period` | `false` | `integer` | `integer` | `true` | `3600` | `true` | `false`| `true` |
 | `time_tracking_limit_to_hours` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
+| `token_prefixes` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `transactional_emails` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `two_factor_grace_period` | `false` | `integer` | `integer` | `false` | `48` | `true` | `false`| `true` |
 | `unconfirmed_users_delete_after_days` | `false` | `integer` | `integer` | `true` | `7` | `true` | `true`| `true` |

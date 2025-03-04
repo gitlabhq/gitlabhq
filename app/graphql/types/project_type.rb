@@ -680,6 +680,11 @@ module Types
       resolver: Resolvers::Projects::ForkDetailsResolver,
       description: 'Details of the fork project compared to its upstream project.'
 
+    field :forked_from, Types::ProjectType,
+      null: true,
+      description: 'Project this project was forked from.',
+      method: :forked_from_project
+
     field :branch_rules, Types::Projects::BranchRuleType.connection_type,
       null: true,
       description: "Branch rules configured for the project.",

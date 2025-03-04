@@ -41,7 +41,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       cluster_agent cluster_agents agent_configurations ci_access_authorized_agents user_access_authorized_agents
       ci_template timelogs merge_commit_template squash_commit_template work_item_types
       recent_issue_boards ci_config_path_or_default packages_cleanup_policy ci_variables
-      timelog_categories fork_targets branch_rules ci_config_variables pipeline_schedules languages
+      timelog_categories fork_targets forked_from branch_rules ci_config_variables pipeline_schedules languages
       incident_management_timeline_event_tags visible_forks inherited_ci_variables autocomplete_users
       ci_cd_settings detailed_import_status value_streams ml_models
       allows_multiple_merge_request_assignees allows_multiple_merge_request_reviewers is_forked

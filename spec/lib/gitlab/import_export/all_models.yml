@@ -1130,6 +1130,7 @@ resource_milestone_events:
   - work_item
   - merge_request
   - milestone
+  - namespace
 resource_state_events:
   - user
   - issue

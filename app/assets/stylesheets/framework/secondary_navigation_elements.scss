@@ -13,19 +13,13 @@
 
     a,
     button {
-      padding: $gl-spacing-scale-5 $gl-spacing-scale-4;
-      font-size: $gl-font-size;
-      line-height: $gl-line-height-16;
-      @apply gl-text-subtle;
-      border: 0;
-      white-space: nowrap;
+      @apply gl-py-5 gl-px-4 gl-text-default gl-text-base gl-leading-normal gl-border-0 gl-whitespace-nowrap;
 
       &:hover,
       &:active,
       &:focus {
-        text-decoration: none;
-        color: $black;
-        box-shadow: inset 0 -2px 0 0 $gray-200;
+        @apply gl-text-default gl-no-underline;
+        box-shadow: inset 0 -2px 0 0 var(--gl-border-color-strong);
       }
     }
 
@@ -37,12 +31,11 @@
     &.active a,
     &.active button,
     a.active {
-      color: $black;
-      font-weight: $gl-font-weight-bold;
-      box-shadow: inset 0 -2px 0 0 $blue-500;
+      @apply gl-text-default gl-font-bold;
+      box-shadow: inset 0 -2px 0 0 var(--gl-tab-selected-indicator-color-default);
 
       .badge.badge-pill {
-        font-weight: $gl-font-weight-bold;
+        @apply gl-font-bold;
         color: var(--gl-badge-neutral-text-color-default);
         background-color: var(--gl-badge-neutral-background-color-default);
       }

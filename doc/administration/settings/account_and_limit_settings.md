@@ -107,6 +107,43 @@ To change the default global prefix:
 You can also configure the prefix by using the
 [settings API](../../api/settings.md).
 
+## Instance token prefix
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179852) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `custom_prefix_for_all_token_types`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+You can set a custom prefix for all tokens generated on your instance.
+By default, GitLab uses `gl` as the instance prefix.
+
+{{< alert type="note" >}}
+
+Custom token prefixes apply only to feed tokens.
+
+{{< /alert >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To set a custom token prefix:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand the **Account and limit** section.
+1. In the **Instance token prefix** field, enter your custom prefix.
+1. Select **Save changes**.
+
 ## Repository size limit
 
 {{< details >}}

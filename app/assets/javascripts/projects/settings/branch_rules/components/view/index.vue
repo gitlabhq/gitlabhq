@@ -230,8 +230,11 @@ export default {
     isAllBranchesRule() {
       return this.branch === this.$options.i18n.allBranches;
     },
+    isAllProtectedBranchesRule() {
+      return this.branch === this.$options.i18n.allProtectedBranches;
+    },
     isPredefinedRule() {
-      return this.isAllBranchesRule || this.branch === this.$options.i18n.allProtectedBranches;
+      return this.isAllBranchesRule || this.isAllProtectedBranchesRule;
     },
     hasPushAccessLevelSet() {
       return this.pushAccessLevels?.total > 0;
@@ -251,7 +254,11 @@ export default {
       return this.showApprovers || this.showSquashSetting;
     },
     showSquashSetting() {
-      return this.glFeatures.branchRuleSquashSettings && !this.branch?.includes('*'); // Squash settings are not available for wildcards
+      return (
+        this.glFeatures.branchRuleSquashSettings &&
+        !this.branch?.includes('*') &&
+        !this.isAllProtectedBranchesRule
+      ); // Squash settings are not available for wildcards or All protected branches
     },
     showEditSquashSetting() {
       return (

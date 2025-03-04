@@ -170,9 +170,9 @@ export default {
         data-testid="delete-variable-btn"
         @click="deleteVariable(variable.id)"
       />
-      <!-- Placeholder button to keep the layout fixed -->
       <gl-button
         v-else
+        aria-hidden="true"
         class="gl-pointer-events-none gl-opacity-0"
         :class="$options.clearBtnSharedClasses"
         data-testid="delete-variable-btn-placeholder"

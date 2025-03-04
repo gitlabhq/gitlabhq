@@ -33540,6 +33540,7 @@ Project-level settings for product analytics provider.
 | <a id="projectduoworkflowstatuscheck"></a>`duoWorkflowStatusCheck` {{< icon name="warning-solid" >}} | [`DuoWorkflowEnablement`](#duoworkflowenablement) | **Introduced** in GitLab 17.7. **Status**: Experiment. Indicates whether GitLab Duo Workflow is enabled for the project. |
 | <a id="projectexplorecatalogpath"></a>`exploreCatalogPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. Path to the project catalog resource. |
 | <a id="projectflowmetrics"></a>`flowMetrics` {{< icon name="warning-solid" >}} | [`ProjectValueStreamAnalyticsFlowMetrics`](#projectvaluestreamanalyticsflowmetrics) | **Introduced** in GitLab 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
+| <a id="projectforkedfrom"></a>`forkedFrom` | [`Project`](#project) | Project this project was forked from. |
 | <a id="projectforkingaccesslevel"></a>`forkingAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for forking access. |
 | <a id="projectforkscount"></a>`forksCount` | [`Int!`](#int) | Number of times the project has been forked. |
 | <a id="projectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |

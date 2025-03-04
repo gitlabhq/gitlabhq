@@ -149,6 +149,7 @@ module ApplicationSettingImplementation
         password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
         performance_bar_allowed_group_id: nil,
         personal_access_token_prefix: 'glpat-',
+        instance_token_prefix: 'gl',
         plantuml_enabled: false,
         plantuml_url: nil,
         product_usage_data_enabled: true, # TODO : this setting should come from instance instalation, see https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8897

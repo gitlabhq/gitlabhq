@@ -12486,6 +12486,9 @@ msgstr ""
 msgid "CiVariables|Learn how to %{linkStart}restrict CI/CD variables to specific environments%{linkEnd} for better security."
 msgstr ""
 
+msgid "CiVariables|Manual job empty state image"
+msgstr ""
+
 msgid "CiVariables|Masked"
 msgstr ""
 
@@ -12576,6 +12579,9 @@ msgstr ""
 msgid "CiVariables|The value must have %{charsAmount} characters."
 msgstr ""
 
+msgid "CiVariables|There was a problem fetching the CI/CD settings."
+msgstr ""
+
 msgid "CiVariables|There was a problem fetching the pipeline variables default role."
 msgstr ""
 
@@ -12625,6 +12631,9 @@ msgid "CiVariables|Visible"
 msgstr ""
 
 msgid "CiVariables|What are pipeline variables?"
+msgstr ""
+
+msgid "CiVariables|You can add CI/CD variables below for last-minute configuration changes before starting the job."
 msgstr ""
 
 msgid "CiVariables|You can use CI/CD variables with the same name in different places, but the variables might overwrite each other. %{linkStart}What is the order of precedence for variables?%{linkEnd}"
@@ -30891,6 +30900,9 @@ msgid "Instance overview"
 msgstr ""
 
 msgid "Instance runners help link"
+msgstr ""
+
+msgid "Instance token prefix"
 msgstr ""
 
 msgid "Insufficient permission to modify user organizations"
@@ -59455,7 +59467,7 @@ msgstr ""
 msgid "This job does not run automatically and must be started manually, but you do not have access to it."
 msgstr ""
 
-msgid "This job does not start automatically and must be started manually. You can add CI/CD variables below for last-minute configuration changes before starting the job."
+msgid "This job does not start automatically and must be started manually."
 msgstr ""
 
 msgid "This job has been canceled"
@@ -68422,6 +68434,9 @@ msgid "can't be nil"
 msgstr ""
 
 msgid "can't be solely blank"
+msgstr ""
+
+msgid "can't be specified if a merge request was already provided"
 msgstr ""
 
 msgid "can't be specified if a project was already provided"

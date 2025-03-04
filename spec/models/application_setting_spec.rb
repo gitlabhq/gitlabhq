@@ -46,6 +46,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.project_api_limit).to eq(400) }
     it { expect(setting.project_invited_groups_api_limit).to eq(60) }
     it { expect(setting.projects_api_limit).to eq(2000) }
+    it { expect(setting.instance_token_prefix).to eq('gl') }
     it { expect(setting.user_contributed_projects_api_limit).to eq(100) }
     it { expect(setting.user_projects_api_limit).to eq(300) }
     it { expect(setting.user_starred_projects_api_limit).to eq(100) }

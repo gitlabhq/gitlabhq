@@ -2454,6 +2454,32 @@ RSpec.describe User, feature_category: :user_profile do
       expect(user.feed_token).to start_with('glft-')
     end
 
+    context 'with instance prefix configured' do
+      let(:instance_prefix) { 'instance-prefix-' }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+      end
+
+      it 'returns feed token with instance prefix' do
+        user = create(:user)
+
+        expect(user.feed_token).to start_with("#{instance_prefix}ft-")
+      end
+    end
+
+    context 'with feature flag custom_prefix_for_all_token_types disabled' do
+      before do
+        stub_feature_flags(custom_prefix_for_all_token_types: false)
+      end
+
+      it 'returns feed token with gl as instance prefix' do
+        user = create(:user)
+
+        expect(user.feed_token).to start_with('glft-')
+      end
+    end
+
     it 'ensures no feed token when disabled' do
       allow(Gitlab::CurrentSettings).to receive(:disable_feed_token).and_return(true)
 

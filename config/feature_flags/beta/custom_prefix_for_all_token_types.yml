@@ -1,0 +1,9 @@
+---
+name: custom_prefix_for_all_token_types
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388379
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179852
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/522940
+milestone: '17.10'
+group: group::authentication
+type: beta
+default_enabled: false

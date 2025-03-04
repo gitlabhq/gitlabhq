@@ -742,17 +742,19 @@ Ruby version only:
 Our test suite runs against PostgreSQL 14 as GitLab.com runs on PostgreSQL 14 and
 [Omnibus defaults to PG14 for new installs and upgrades](../../administration/package_information/postgresql_versions.md).
 
-We run our test suite against PostgreSQL 14, 15 and 16 on nightly scheduled pipelines.
+We run our test suite against PostgreSQL 14, 15, 16, and 17 on nightly scheduled pipelines.
+
+NOTE: With the addition of PG17, we are close to the limit of nightly jobs, with 1946 out of 2000 jobs per pipeline. Adding new job families could cause the nightly pipeline to fail.
 
 #### Current versions testing
 
-| Where?                                                                                        | PostgreSQL version           | Ruby version          |
-|-----------------------------------------------------------------------------------------------|------------------------------|-----------------------|
-| Merge requests                                                                                | 14 (default version)         | 3.2 (default version) |
-| `master` branch commits                                                                       | 14 (default version)         | 3.2 (default version) |
-| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05) | 14 (default version)         | 3.2 (default version) |
-| `maintenance` scheduled pipelines for the `ruby-next` branch (every odd-numbered hour at XX:10) | 14 (default version)         | 3.3                   |
-| `nightly` scheduled pipelines for the `master` branch                                         | 14 (default version), 15, 16 | 3.2 (default version) |
+| Where?                                                                                          | PostgreSQL version                  | Ruby version          |
+|-------------------------------------------------------------------------------------------------|-------------------------------------|-----------------------|
+| Merge requests                                                                                  | 14 (default version)                | 3.2 (default version) |
+| `master` branch commits                                                                         | 14 (default version)                | 3.2 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)   | 14 (default version)                | 3.2 (default version) |
+| `maintenance` scheduled pipelines for the `ruby-next` branch (every odd-numbered hour at XX:10) | 14 (default version)                | 3.3                   |
+| `nightly` scheduled pipelines for the `master` branch                                           | 14 (default version), 15, 16 and 17 | 3.2 (default version) |
 
 For the next Ruby versions we're testing against with, we run
 maintenance scheduled pipelines every 2 hours on the `ruby-next` branch.

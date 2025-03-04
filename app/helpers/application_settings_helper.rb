@@ -371,6 +371,7 @@ module ApplicationSettingsHelper
       :performance_bar_allowed_group_path,
       :performance_bar_enabled,
       :personal_access_token_prefix,
+      :instance_token_prefix,
       :kroki_enabled,
       :kroki_url,
       :kroki_formats,

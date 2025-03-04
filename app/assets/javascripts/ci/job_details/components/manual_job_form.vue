@@ -16,7 +16,7 @@ import JobVariablesForm from './job_variables_form.vue';
 // It is meant to fetch/update the job information via GraphQL instead of REST API.
 
 export default {
-  name: 'ManualVariablesForm',
+  name: 'ManualJobForm',
   components: {
     GlButton,
     JobVariablesForm,
@@ -38,6 +38,11 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    canViewPipelineVariables: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -130,7 +135,11 @@ export default {
 </script>
 <template>
   <div>
-    <job-variables-form :job-id="jobId" @update-variables="onVariablesUpdate" />
+    <job-variables-form
+      v-if="canViewPipelineVariables"
+      :job-id="jobId"
+      @update-variables="onVariablesUpdate"
+    />
 
     <div class="gl-mt-5 gl-flex gl-justify-center gl-gap-x-2">
       <gl-button

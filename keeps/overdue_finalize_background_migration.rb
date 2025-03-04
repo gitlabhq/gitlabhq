@@ -93,7 +93,7 @@ module Keeps
         To confirm it is finished you can run:
 
         ```
-      /chatops run batched_background_migrations status #{migration_record.id}
+      /chatops run batched_background_migrations status #{migration_record.id} --database #{database_name(migration_record)}
       ```
 
       The last time this background migration was triggered was in [#{last_migration_file}](https://gitlab.com/gitlab-org/gitlab/-/blob/master/#{last_migration_file})
@@ -270,6 +270,12 @@ module Keeps
       File.exist?(
         Rails.root.join(*%w[ee lib ee gitlab background_migration]).join(file_name)
       )
+    end
+
+    private
+
+    def database_name(migration_record)
+      migration_record.gitlab_schema.split("_").last
     end
   end
 end

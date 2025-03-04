@@ -141,6 +141,17 @@ describe('PlaceholdersTabApp', () => {
       });
     });
 
+    describe('with invalid sort query', () => {
+      beforeEach(() => {
+        setWindowLocation('?sort=last_joined');
+        createComponent();
+      });
+
+      it('falls back to default sort for FilteredSearchBar', () => {
+        expect(findFilteredSearchBar().props('initialSortBy')).toBe('SOURCE_NAME_ASC');
+      });
+    });
+
     describe('with status, search and sort queries present on load', () => {
       beforeEach(() => {
         setWindowLocation('?status=failed&search=foo&sort=STATUS_ASC');

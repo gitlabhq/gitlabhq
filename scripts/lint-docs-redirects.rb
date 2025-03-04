@@ -55,10 +55,22 @@ class LintDocsRedirect
 
   def navigation_file
     @navigation_file ||= begin
-      url = URI('https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/raw/main/data/navigation.yaml')
+      # Temporary handling for multiple navigation locations.
+      # The navigation YAML file will move when this merges:
+      # https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/merge_requests/307.
+      #
+      # We are not able to control these changes merging at exactly the same time,
+      # so this temporarily supports both the new and old file location.
+      url = URI('https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/raw/main/data/en-us/navigation.yaml')
       response = Net::HTTP.get_response(url)
 
-      raise "Could not download navigation.yaml. Response code: #{response.code}" if response.code != '200'
+      # If new URL fails, try the old URL
+      if response.code != '200'
+        url = URI('https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/raw/main/data/navigation.yaml')
+        response = Net::HTTP.get_response(url)
+
+        raise "Could not download navigation.yaml. Response code: #{response.code}" if response.code != '200'
+      end
 
       # response.body should be memoized in a method, so that it doesn't
       # need to be downloaded multiple times in one CI job.

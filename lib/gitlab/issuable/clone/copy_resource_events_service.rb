@@ -58,7 +58,8 @@ module Gitlab
             .merge(entity_key => new_entity.id,
               'milestone_id' => milestone_id,
               'action' => ResourceMilestoneEvent.actions[event.action],
-              'state' => ResourceMilestoneEvent.states[event.state])
+              'state' => ResourceMilestoneEvent.states[event.state],
+              'namespace_id' => new_entity.namespace_id)
         end
 
         def copy_events(table_name, events_to_copy)

@@ -39,7 +39,7 @@ RSpec.describe Gitlab::Issuable::Clone::CopyResourceEventsService, feature_categ
       create_event(milestone3_project1)
     end
 
-    it 'copies existing resource milestone events' do
+    it 'copies existing resource milestone events', :aggregate_failures do
       subject.execute
 
       new_issue_milestone_events = new_issue.reload.resource_milestone_events
@@ -50,6 +50,7 @@ RSpec.describe Gitlab::Issuable::Clone::CopyResourceEventsService, feature_categ
         milestone: milestone1_project1,
         action: 'add',
         state: 'opened',
+        namespace_id: new_issue.namespace_id,
         imported_from: 'bitbucket'
       )
       expect_milestone_event(
@@ -57,19 +58,22 @@ RSpec.describe Gitlab::Issuable::Clone::CopyResourceEventsService, feature_categ
         milestone: milestone2_project1,
         action: 'add',
         state: 'opened',
+        namespace_id: new_issue.namespace_id,
         imported_from: 'github'
       )
       expect_milestone_event(
         new_issue_milestone_events.third,
         milestone: nil,
         action: 'remove',
-        state: 'opened'
+        state: 'opened',
+        namespace_id: new_issue.namespace_id
       )
       expect_milestone_event(
         new_issue_milestone_events.fourth,
         milestone: milestone3_project1,
         action: 'add',
         state: 'opened',
+        namespace_id: new_issue.namespace_id,
         imported_from: 'github'
       )
     end
@@ -82,6 +86,7 @@ RSpec.describe Gitlab::Issuable::Clone::CopyResourceEventsService, feature_categ
       expect(event.milestone_id).to eq(expected_attrs[:milestone]&.id)
       expect(event.action).to eq(expected_attrs[:action])
       expect(event.state).to eq(expected_attrs[:state])
+      expect(event.namespace_id).to eq(expected_attrs[:namespace_id])
       expect(event.imported_from).to eq('none')
     end
   end

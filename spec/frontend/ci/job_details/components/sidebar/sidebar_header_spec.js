@@ -23,6 +23,7 @@ describe('Sidebar Header', () => {
         ...props,
         jobId: mockId,
         restJob: {
+          name: 'My job',
           status: {
             action: {
               confirmation_message: null,
