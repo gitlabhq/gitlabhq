@@ -109,6 +109,24 @@ RSpec.describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab
     let(:milestone_hash) { importer.build_attributes(milestone) }
     let(:milestone_hash2) { importer.build_attributes(milestone2) }
 
+    context 'when the description is processed for formatting' do
+      let(:milestone) do
+        super().merge(description: "I said to @sam_allen\0 the code should follow @bob's\0 advice. @.ali-ce/group#9?\0")
+      end
+
+      let(:expected_text) { "I said to `@sam_allen` the code should follow `@bob`'s advice. `@.ali-ce/group#9`?" }
+
+      before do
+        allow(Gitlab::GithubImport::MarkdownText).to receive(:format).and_call_original
+        milestone_hash
+      end
+
+      it 'verify that the formatted description using MarkdownText equals the expected description' do
+        expect(Gitlab::GithubImport::MarkdownText).to have_received(:format)
+        expect(milestone_hash[:description]).to eq(expected_text)
+      end
+    end
+
     it 'returns the attributes of the milestone as a Hash' do
       expect(milestone_hash).to be_an_instance_of(Hash)
     end
@@ -120,10 +138,6 @@ RSpec.describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab
 
       it 'includes the milestone title' do
         expect(milestone_hash[:title]).to eq('1.0')
-      end
-
-      it 'includes the milestone description' do
-        expect(milestone_hash[:description]).to eq('The first release')
       end
 
       it 'includes the project ID' do

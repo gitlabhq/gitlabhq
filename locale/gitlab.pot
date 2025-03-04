@@ -48166,6 +48166,9 @@ msgstr ""
 msgid "Remove milestone"
 msgstr ""
 
+msgid "Remove number"
+msgstr ""
+
 msgid "Remove parent"
 msgstr ""
 
@@ -48194,6 +48197,9 @@ msgid "Remove spent time"
 msgstr ""
 
 msgid "Remove summary"
+msgstr ""
+
+msgid "Remove text"
 msgstr ""
 
 msgid "Remove time estimate"

@@ -5,7 +5,6 @@ module Gitlab
     module Importer
       class ReleasesImporter
         include BulkImporting
-        include Gitlab::Import::UsernameMentionRewriter
         include Gitlab::GithubImport::PushPlaceholderReferences
 
         # rubocop: disable CodeReuse/ActiveRecord
@@ -53,10 +52,7 @@ module Gitlab
         def build_attributes(release)
           existing_tags.add(release[:tag_name])
           # when release author is nil (deleted on github) we assign the ghost user
-          github_users.push(
-            id: release.dig(:author, :id) || Gitlab::GithubImport.ghost_user_id,
-            login: release.dig(:author, :login) || 'ghost'
-          )
+          github_users.push(map_github_user_info(release))
 
           {
             name: release[:name],
@@ -71,14 +67,22 @@ module Gitlab
           }
         end
 
+        def map_github_user_info(release)
+          {
+            id: release.dig(:author, :id) || Gitlab::GithubImport.ghost_user_id,
+            login: release.dig(:author, :login) || 'ghost'
+          }
+        end
+
         def each_release
           client.releases(project.import_source)
         end
 
         def description_for(release)
           description = release[:body].presence || "Release for tag #{release[:tag_name]}"
+          user = map_github_user_info(release)
 
-          wrap_mentions_in_backticks(description)
+          MarkdownText.format(description, user, user[:id], project: project)
         end
 
         def object_type

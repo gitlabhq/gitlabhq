@@ -36,13 +36,17 @@ module Gitlab
           {
             iid: milestone[:number],
             title: milestone[:title],
-            description: milestone[:description],
+            description: description_for(milestone),
             project_id: project.id,
             state: state_for(milestone),
             due_date: milestone[:due_on]&.to_date,
             created_at: milestone[:created_at],
             updated_at: milestone[:updated_at]
           }
+        end
+
+        def description_for(milestone)
+          MarkdownText.format(milestone[:description], project: project)
         end
 
         def state_for(milestone)

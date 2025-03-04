@@ -127,12 +127,17 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
       ])
     end
 
-    context 'when the description has user mentions' do
+    context 'when the description is processed for formatting' do
       let(:description) { 'You can ask @knejad by emailing xyz@gitlab.com' }
 
-      it 'adds backticks to the username' do
-        importer.execute
+      before do
+        allow(Gitlab::GithubImport::MarkdownText).to receive(:format).and_call_original
 
+        importer.execute
+      end
+
+      it 'verify that the formatted description using MarkdownText equals the expected description' do
+        expect(Gitlab::GithubImport::MarkdownText).to have_received(:format)
         expect(Issue.last.description).to eq("You can ask `@knejad` by emailing xyz@gitlab.com")
       end
     end
@@ -229,17 +234,6 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
           importer.execute
 
           expect(Issue.last.assignee_ids).to match_array([user.id, user_2.id])
-        end
-      end
-
-      context 'when the description has user mentions' do
-        let(:description) { 'You can ask @knejad by emailing xyz@gitlab.com' }
-
-        it 'adds backticks to the username' do
-          importer.execute
-
-          expect(Issue.last.description)
-            .to eq("*Created by: alice*\n\nYou can ask `@knejad` by emailing xyz@gitlab.com")
         end
       end
     end

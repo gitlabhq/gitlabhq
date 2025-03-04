@@ -38,7 +38,7 @@ RSpec.describe Gitlab::GithubImport::MarkdownText, feature_category: :importers 
       TEXT
     end
 
-    it { expect(described_class.convert_ref_links(text_in, project)).to eq text_out }
+    it { expect(described_class.format(text_in, project: project)).to eq text_out }
 
     context 'when Github EE with custom domain name' do
       let(:github_domain) { 'https://custom.github.com/' }
@@ -56,7 +56,7 @@ RSpec.describe Gitlab::GithubImport::MarkdownText, feature_category: :importers 
           .to receive(:config_for).with('github').and_return({ 'url' => github_domain })
       end
 
-      it { expect(described_class.convert_ref_links(text_in, project)).to eq text_out }
+      it { expect(described_class.format(text_in, project: project)).to eq text_out }
     end
   end
 
@@ -143,6 +143,19 @@ RSpec.describe Gitlab::GithubImport::MarkdownText, feature_category: :importers 
       text = described_class.format("\u0000Hello", author)
 
       expect(text.to_s).to eq("*Created by: Alice*\n\nHello")
+    end
+
+    context "when the to_s is called" do
+      let_it_be(:project) { create(:project) }
+      let(:text) { "I said to @sam_allen\0 the code" }
+      let(:instance) { described_class.new(text, project:) }
+
+      it 'calls wrap_mentions_in_backticks and convert_ref_links method as a cleaning step' do
+        expect(instance).to receive(:wrap_mentions_in_backticks)
+        expect(instance).to receive(:convert_ref_links)
+
+        instance.to_s
+      end
     end
   end
 end

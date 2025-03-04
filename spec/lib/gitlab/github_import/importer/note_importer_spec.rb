@@ -240,24 +240,22 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
       expect(project.notes.take).to be_valid
     end
 
-    context 'when the description has user mentions' do
-      let(:note_body) { 'You can ask @knejad by emailing xyz@gitlab.com' }
+    context 'when the description is processed for formatting' do
+      let(:issue_row) { create(:issue, project: project, iid: 1) }
+      let(:note_body) { "I said to @sam_allen\0 the code should follow @bob's\0 advice. @.ali-ce/group#9?\0" }
+      let(:expected_note_body) { "I said to `@sam_allen` the code should follow `@bob`'s advice. `@.ali-ce/group#9`?" }
 
-      it 'adds backticks to the username' do
-        issue_row = create(:issue, project: project, iid: 1)
-
-        allow(importer)
-          .to receive(:find_noteable_id)
-          .and_return(issue_row.id)
-
-        allow(importer.user_finder)
-          .to receive(:author_id_for)
-          .with(github_note)
-          .and_return([user.id, true])
+      before do
+        allow(importer).to receive(:find_noteable_id).and_return(issue_row.id)
+        allow(importer.user_finder).to receive(:author_id_for).with(github_note).and_return([user.id, true])
+        allow(Gitlab::GithubImport::MarkdownText).to receive(:format).and_call_original
 
         importer.execute
+      end
 
-        expect(project.notes.last.note).to eq("You can ask `@knejad` by emailing xyz@gitlab.com")
+      it 'verify that the formatted description using MarkdownText equals the expected description' do
+        expect(Gitlab::GithubImport::MarkdownText).to have_received(:format)
+        expect(project.notes.last.note).to eq(expected_note_body)
       end
     end
   end

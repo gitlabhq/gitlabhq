@@ -34,6 +34,22 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, feature_category:
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
 
   shared_examples 'a DiffNote representation' do
+    context 'when note body is present' do
+      let(:note_body) { "I said to @sam_allen\0 the code should follow @bob's\0 advice. @.ali-ce/group#9?\0" }
+      let(:expected_note_body) { "I said to `@sam_allen` the code should follow `@bob`'s advice. `@.ali-ce/group#9`?" }
+
+      before do
+        allow(Gitlab::GithubImport::MarkdownText).to receive(:format).and_call_original
+
+        note
+      end
+
+      it 'verify that the formatted description using MarkdownText equals the expected description' do
+        expect(Gitlab::GithubImport::MarkdownText).to have_received(:format)
+        expect(note.note).to eq(expected_note_body)
+      end
+    end
+
     it 'returns an instance of DiffNote' do
       expect(note).to be_an_instance_of(described_class)
     end

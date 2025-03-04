@@ -41704,6 +41704,7 @@ The status of the workflow.
 | <a id="duoworkflowstatusfinished"></a>`FINISHED` | The workflow is finished. |
 | <a id="duoworkflowstatusinput_required"></a>`INPUT_REQUIRED` | The workflow is input_required. |
 | <a id="duoworkflowstatuspaused"></a>`PAUSED` | The workflow is paused. |
+| <a id="duoworkflowstatusplan_approval_required"></a>`PLAN_APPROVAL_REQUIRED` | The workflow is plan_approval_required. |
 | <a id="duoworkflowstatusrunning"></a>`RUNNING` | The workflow is running. |
 | <a id="duoworkflowstatusstopped"></a>`STOPPED` | The workflow is stopped. |
 
