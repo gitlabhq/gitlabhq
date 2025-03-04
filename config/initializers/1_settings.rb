@@ -744,6 +744,9 @@ Settings.cron_jobs['merge_requests_process_scheduled_merge']['job_class'] = 'Mer
 Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker'] ||= {}
 Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker']['cron'] ||= '*/11 * * * *'
 Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker']['job_class'] = 'Ci::ScheduleOldPipelinesRemovalCronWorker'
+Settings.cron_jobs['version_version_check_cron'] ||= {}
+Settings.cron_jobs['version_version_check_cron']['cron'] ||= "#{rand(60)} #{rand(24)} * * *"
+Settings.cron_jobs['version_version_check_cron']['job_class'] = 'Gitlab::Version::VersionCheckCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}

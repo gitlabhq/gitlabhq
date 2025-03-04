@@ -142,6 +142,10 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       expect(metadata['ArchivePath']).to eq(expected_path)
     end
 
+    it 'sets StoragePath to the config' do
+      expect(metadata['StoragePath']).to eq(storage_path)
+    end
+
     context 'path is set' do
       let(:path) { 'foo/bar' }
 

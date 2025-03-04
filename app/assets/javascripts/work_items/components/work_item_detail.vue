@@ -1114,6 +1114,7 @@ export default {
               :work-item-iid="workItem.iid"
               :work-item-type="workItemType"
               :is-modal="isModal"
+              :is-drawer="isDrawer"
               :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
               :can-set-work-item-metadata="canAssignUnassignUser"
               :can-summarize-comments="canSummarizeComments"

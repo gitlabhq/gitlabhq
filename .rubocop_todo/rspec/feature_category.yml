@@ -3098,7 +3098,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/system_check/simple_executor_spec.rb'
     - 'spec/lib/system_check_spec.rb'
     - 'spec/lib/unnested_in_filters/dsl_spec.rb'
-    - 'spec/lib/version_check_spec.rb'
     - 'spec/mailers/abuse_report_mailer_spec.rb'
     - 'spec/mailers/email_rejection_mailer_spec.rb'
     - 'spec/mailers/emails/admin_notification_spec.rb'

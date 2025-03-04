@@ -12,7 +12,10 @@ module VersionCheckHelper
   def gitlab_version_check
     return unless show_version_check?
 
-    VersionCheck.new.response
+    version = Rails.cache.fetch('version_check')
+    Gitlab::Version::VersionCheckCronWorker.perform_async if version.nil?
+
+    version
   end
   strong_memoize_attr :gitlab_version_check
 

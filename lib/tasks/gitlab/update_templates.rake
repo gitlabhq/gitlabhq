@@ -123,6 +123,7 @@ namespace :gitlab do
 
     if tmp_organization
       puts "Destroying temporary organization #{tmp_organization_path}"
+      tmp_organization.users.delete_all
       tmp_organization.destroy
     end
 

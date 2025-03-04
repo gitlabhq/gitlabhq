@@ -311,6 +311,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Gitlab::JiraImport::Stage::ImportLabelsWorker' => 6,
         'Gitlab::JiraImport::Stage::ImportNotesWorker' => 6,
         'Gitlab::JiraImport::Stage::StartImportWorker' => 6,
+        'Gitlab::Version::VersionCheckCronWorker' => 3,
         'GitlabPerformanceBarStatsWorker' => 3,
         'GitlabSubscriptions::RefreshSeatsWorker' => 0,
         'GitlabSubscriptions::AddOnPurchases::BulkRefreshUserAssignmentsWorker' => 0,

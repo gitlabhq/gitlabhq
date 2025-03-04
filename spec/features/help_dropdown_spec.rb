@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe "Help Dropdown", :js, feature_category: :shared do
+  include VersionCheckHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:admin) }
 
@@ -29,9 +31,7 @@ RSpec.describe "Help Dropdown", :js, feature_category: :shared do
         sign_in(admin)
         enable_admin_mode!(admin)
 
-        allow_next_instance_of(VersionCheck) do |instance|
-          allow(instance).to receive(:response).and_return({ "severity" => severity })
-        end
+        stub_version_check({ "severity" => severity })
         visit root_path
       end
 

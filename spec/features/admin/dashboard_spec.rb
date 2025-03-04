@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'admin visits dashboard' do
   include ProjectForksHelper
+  include VersionCheckHelpers
 
   before do
     admin = create(:admin)
@@ -55,6 +56,10 @@ RSpec.describe 'admin visits dashboard' do
   end
 
   describe 'Version check', :js, feature_category: :deployment_management do
+    before do
+      stub_version_check({ "severity" => "success" })
+    end
+
     it 'shows badge on CE' do
       visit admin_root_path
 

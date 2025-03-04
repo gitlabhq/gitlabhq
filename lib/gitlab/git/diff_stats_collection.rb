@@ -22,8 +22,7 @@ module Gitlab
         @collection.map(&:path)
       end
 
-      def real_size
-        max_files = ::Commit.diff_max_files
+      def real_size(max_files: ::Commit.diff_max_files)
         if paths.size > max_files
           "#{max_files}+"
         else

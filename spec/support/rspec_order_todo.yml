@@ -5743,7 +5743,6 @@
 - './spec/lib/unnested_in_filters/dsl_spec.rb'
 - './spec/lib/unnested_in_filters/rewriter_spec.rb'
 - './spec/lib/uploaded_file_spec.rb'
-- './spec/lib/version_check_spec.rb'
 - './spec/mailers/abuse_report_mailer_spec.rb'
 - './spec/mailers/devise_mailer_spec.rb'
 - './spec/mailers/email_rejection_mailer_spec.rb'

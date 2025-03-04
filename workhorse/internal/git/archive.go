@@ -28,7 +28,11 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 )
 
-type archive struct{ senddata.Prefix }
+type archive struct {
+	senddata.Prefix
+	cleaner *archiveCleaner
+}
+
 type archiveParams struct {
 	ArchivePath       string
 	ArchivePrefix     string
@@ -37,10 +41,12 @@ type archiveParams struct {
 	GitalyRepository  gitalypb.Repository
 	DisableCache      bool
 	GetArchiveRequest []byte
+	StoragePath       string
+	UseArchiveCleaner bool
 }
 
 var (
-	SendArchive     = &archive{"git-archive:"}
+	SendArchive     = newArchive("git-archive:")
 	gitArchiveCache = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_git_archive_cache",
@@ -49,6 +55,13 @@ var (
 		[]string{"result"},
 	)
 )
+
+func newArchive(prefix string) *archive {
+	return &archive{
+		Prefix:  senddata.Prefix(prefix),
+		cleaner: newArchiveCleaner(),
+	}
+}
 
 func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string) {
 	var params archiveParams
@@ -68,6 +81,10 @@ func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string
 	archiveFilename := path.Base(params.ArchivePath)
 
 	if cacheEnabled {
+		if params.UseArchiveCleaner {
+			a.cleaner.RegisterPath(params.StoragePath)
+		}
+
 		cachedArchive, err := os.Open(params.ArchivePath)
 		if err == nil {
 			defer cachedArchive.Close()

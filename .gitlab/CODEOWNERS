@@ -30,13 +30,14 @@
 
 ## Technical writing files that do not need `*` rule approval,
 ## but still require an approval from a TW team DRI for each file.
-/data/deprecations/templates/ @marcel.amirault @sarahgerman @gitlab-org/tw-leadership
 .markdownlint-cli2.yaml @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
+/data/deprecations/templates/ @marcel.amirault @gitlab-org/tw-leadership
 /doc/.markdownlint/ @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
 /doc/.vale/ @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
-/lib/tasks/gitlab/tw/codeowners.rake @aqualls @gitlab-org/tw-leadership
-/scripts/lint-doc.sh @marcel.amirault @eread @axil @sarahgerman @gitlab-org/tw-leadership
-/scripts/lint-docs-metadata.sh @marcel.amirault @eread @axil @sarahgerman @gitlab-org/tw-leadership
+/lib/tasks/gitlab/tw/codeowners.rake @marcel.amirault @aqualls @gitlab-org/tw-leadership
+/scripts/lint-doc.sh @marcel.amirault @eread @axil @gitlab-org/tw-leadership
+/scripts/lint-docs-metadata.sh @marcel.amirault @eread @axil @gitlab-org/tw-leadership
+/scripts/lint-docs-redirects.rb @marcel.amirault @eread @axil @gitlab-org/tw-leadership
 
 config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tkuah
 
@@ -108,7 +109,7 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 [Pipeline configuration] @gl-dx/pipeline-maintainers
 /.gitlab-ci.yml
 /.gitlab/ci/
-/.gitlab/ci/docs.gitlab-ci.yml @gl-dx/pipeline-maintainers @gl-docsteam
+/.gitlab/ci/docs.gitlab-ci.yml @gl-dx/pipeline-maintainers @marcel.amirault @axil @eread @gitlab-org/tw-leadership
 /.gitlab/ci/frontend.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-org/maintainers/frontend
 /.gitlab/ci/test-on-omnibus/ @gl-dx/pipeline-maintainers @gl-dx/maintainers
 /.gitlab/ci/qa.gitlab-ci.yml @gl-dx/pipeline-maintainers @gl-dx/maintainers
@@ -555,19 +556,27 @@ ee/lib/ee/gitlab/git_access_*.rb
 ee/lib/ee/gitlab/checks/**
 lib/gitlab/checks/**
 
-^[Documentation Directories] @gl-docsteam
+^[Technical writing] @marcel.amirault @eread @axil @gitlab-org/tw-leadership
+/.gitlab/ci/docs.gitlab-ci.yaml
+/lib/tasks/gitlab/docs/
+/rubocop/cop/gitlab/documentation_links/
+/scripts/frontend/lint_docs_links.mjs
+/scripts/lint/check_mermaid.mjs
+/tooling/audit_events/docs/
+/tooling/ci/job_tokens/docs/
+/tooling/custom_roles/docs/
+/tooling/eslint-config/eslint-local-rules/require_valid_help_page_path.js
+/tooling/graphql/docs/
+
+^[Documentation Pages] @gl-docsteam
 /doc/
 /data/deprecations/
-
-^[Documentation Pages]
 # This block is managed by the rake script at lib/tasks/gitlab/tw/codeowners.rake, manual updates will be overwritten!
 # Begin rake-managed-docs-block
 /doc/administration/_index.md @axil
 /doc/administration/analytics.md @lciutacu
 /doc/administration/analytics/ @lciutacu
 /doc/administration/application_settings_cache.md @jglassman1
-/doc/administration/audit_event_reports.md @eread
-/doc/administration/audit_event_streaming/ @eread
 /doc/administration/auditor_users.md @idurham
 /doc/administration/auth/ @idurham
 /doc/administration/backup_restore/ @axil
@@ -576,7 +585,7 @@ lib/gitlab/checks/**
 /doc/administration/cicd/ @lyspin
 /doc/administration/cicd/job_logs.md @rsarangadharan
 /doc/administration/clusters/ @z_painter
-/doc/administration/compliance.md @eread
+/doc/administration/compliance/ @eread
 /doc/administration/configure.md @axil
 /doc/administration/consul.md @axil
 /doc/administration/credentials_inventory.md @idurham
@@ -647,7 +656,9 @@ lib/gitlab/checks/**
 /doc/administration/raketasks/ @axil
 /doc/administration/raketasks/ldap.md @idurham
 /doc/administration/raketasks/praefect.md @eread
+/doc/administration/raketasks/spdx.md @rdickenson
 /doc/administration/raketasks/tokens/ @idurham
+/doc/administration/raketasks/x509_signatures.md @brendan777
 /doc/administration/read_only_gitlab.md @axil
 /doc/administration/redis/ @axil
 /doc/administration/reference_architectures/ @axil
@@ -922,6 +933,7 @@ lib/gitlab/checks/**
 /doc/ci/gitlab_google_cloud_integration/ @lyspin
 /doc/ci/interactive_web_terminal/ @rsarangadharan
 /doc/ci/jobs/ @marcel.amirault
+/doc/ci/jobs/fine_grained_permissions.md @idurham
 /doc/ci/jobs/job_artifacts.md @lyspin
 /doc/ci/jobs/job_artifacts_troubleshooting.md @lyspin
 /doc/ci/jobs/job_logs.md @lyspin
@@ -954,6 +966,7 @@ lib/gitlab/checks/**
 /doc/ci/yaml/ @marcel.amirault
 /doc/ci/yaml/artifacts_reports.md @lyspin
 /doc/development/advanced_search.md @gitlab-org/search-team/migration-maintainers
+/doc/development/advanced_search/ @gitlab-org/search-team/migration-maintainers
 /doc/development/ai_architecture.md @gitlab-org/ai-powered
 /doc/development/ai_features/ @gitlab-org/ai-powered
 /doc/development/ai_features/embeddings.md @gitlab-org/search-team/migration-maintainers
@@ -968,7 +981,7 @@ lib/gitlab/checks/**
 /doc/development/database/ @OmarQunsulGitlab @bmarjanovic
 /doc/development/distributed_tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/distribution/ @gitlab-org/distribution
-/doc/development/documentation/ @fneill
+/doc/development/documentation/ @fneill @sselhorn
 /doc/development/duo_workflow/ @gitlab-org/ai-powered
 /doc/development/fe_guide/analytics_dashboards.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/fe_guide/keyboard_shortcuts.md @gitlab-org/foundations/engineering
@@ -1022,9 +1035,6 @@ lib/gitlab/checks/**
 /doc/operations/ @lciutacu
 /doc/operations/feature_flags.md @z_painter
 /doc/policy/ @axil
-/doc/raketasks/ @axil
-/doc/raketasks/spdx.md @rdickenson
-/doc/raketasks/x509_signatures.md @brendan777
 /doc/security/ @idurham
 /doc/security/hardening_nist_800_53.md @emily.sahlani
 /doc/solutions/ @jfullam @Darwinjs @sbrightwell

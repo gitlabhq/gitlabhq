@@ -224,6 +224,7 @@ RSpec.configure do |config|
   include StubFeatureFlags
   include StubSnowplow
   include StubMember
+  include VersionCheckHelpers
 
   if ENV['CI'] || ENV['RETRIES']
     # Gradually stop using rspec-retry
@@ -497,7 +498,7 @@ RSpec.configure do |config|
 
   # Ensures that any Javascript script that tries to make the external VersionCheck API call skips it and returns a response
   config.before(:each, :js) do
-    allow_any_instance_of(VersionCheck).to receive(:response).and_return({ "severity" => "success" })
+    stub_version_check({ "severity" => "success" })
   end
 
   [:migration, :delete].each do |spec_type|

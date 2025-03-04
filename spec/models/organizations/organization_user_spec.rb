@@ -83,10 +83,14 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     end
   end
 
-  context 'with loose foreign key on organization_users.organization_id' do
-    it_behaves_like 'cleanup by a loose foreign key' do
-      let_it_be(:parent) { create(:organization) }
-      let_it_be(:model) { create(:organization_user, organization: parent) }
+  context 'with foreign key on organization_users.organization_id' do
+    let!(:organization) { create(:organization) }
+    let!(:organization_user) { create(:organization_user, organization: organization) }
+
+    context 'and organization is attempted to be destroyed' do
+      it 'prevents destroying the organization' do
+        expect { organization.destroy! }.to raise_error(ActiveRecord::InvalidForeignKey)
+      end
     end
   end
 

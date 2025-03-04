@@ -228,7 +228,6 @@ Lint/UnusedBlockArgument:
     - 'lib/tasks/gitlab/uploads/sanitize.rake'
     - 'lib/tasks/gitlab/user_management.rake'
     - 'lib/tasks/gitlab/workhorse.rake'
-    - 'lib/version_check.rb'
     - 'qa/qa/service/praefect_manager.rb'
     - 'qa/qa/specs/features/api/12_systems/gitaly/distributed_reads_spec.rb'
     - 'qa/qa/support/matchers/eventually_matcher.rb'

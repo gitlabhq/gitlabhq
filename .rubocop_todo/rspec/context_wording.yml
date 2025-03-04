@@ -1862,7 +1862,6 @@ RSpec/ContextWording:
     - 'spec/lib/system_check/base_check_spec.rb'
     - 'spec/lib/system_check/incoming_email/imap_authentication_check_spec.rb'
     - 'spec/lib/uploaded_file_spec.rb'
-    - 'spec/lib/version_check_spec.rb'
     - 'spec/mailers/devise_mailer_spec.rb'
     - 'spec/mailers/emails/profile_spec.rb'
     - 'spec/mailers/emails/projects_spec.rb'

@@ -4121,6 +4121,5 @@ Gitlab/BoundedContexts:
     - 'lib/unnested_in_filters/dsl.rb'
     - 'lib/unnested_in_filters/rewriter.rb'
     - 'lib/uploaded_file.rb'
-    - 'lib/version_check.rb'
     - 'lib/vite_gdk.rb'
     - 'lib/vs_code/settings.rb'

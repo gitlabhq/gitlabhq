@@ -215,16 +215,14 @@ describe('WorkItemDetail component', () => {
     isDrawer | expected
     ${true}  | ${true}
     ${false} | ${false}
-  `(
-    'when isDrawer=$isDrawer, passes hideFullscreenMarkdownButton=$expected to workItemDescription and workItemNotes',
-    async ({ isDrawer, expected }) => {
-      createComponent({ isDrawer });
-      await waitForPromises();
+  `('passes isDrawer prop to child component props', async ({ isDrawer, expected }) => {
+    createComponent({ isDrawer });
+    await waitForPromises();
 
-      expect(findWorkItemDescription().props('hideFullscreenMarkdownButton')).toBe(expected);
-      expect(findNotesWidget().props('hideFullscreenMarkdownButton')).toBe(expected);
-    },
-  );
+    expect(findWorkItemDescription().props('hideFullscreenMarkdownButton')).toBe(expected);
+    expect(findNotesWidget().props('hideFullscreenMarkdownButton')).toBe(expected);
+    expect(findNotesWidget().props('isDrawer')).toBe(expected);
+  });
 
   describe('when there is no `workItemIid` prop', () => {
     beforeEach(async () => {

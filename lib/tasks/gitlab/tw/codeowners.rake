@@ -105,7 +105,7 @@ namespace :tw do
       CodeOwnerRule.new('Composition Analysis',
         '@gitlab-org/secure/composition-analysis-be @gitlab-org/secure/static-analysis'),
       CodeOwnerRule.new('Distribution', '@gitlab-org/distribution'),
-      CodeOwnerRule.new('Documentation Guidelines', '@fneill'),
+      CodeOwnerRule.new('Documentation Guidelines', '@fneill @sselhorn'),
       CodeOwnerRule.new('Duo Workflow', '@gitlab-org/ai-powered'),
       CodeOwnerRule.new('Engineering Productivity', '@gl-dx/eng-prod'),
       CodeOwnerRule.new('Personal Productivity', '@gitlab-org/foundations/engineering'),
