@@ -214,6 +214,21 @@ Instead, focus on facts and achievable goals. Be specific. For example:
 - You can use this feature to save time when you create a project. The API creates the file and you
   do not need to manually intervene.
 
+### Self-referential writing
+
+Avoid writing about the document itself. For example, do not use:
+
+- This page shows...
+- This guide explains...
+
+These phrases slow the user down. Instead, get right to the point. For example, instead of:
+
+- This page explains different types of pipelines.
+
+Use:
+
+- GitLab has different types of pipelines to help address your development needs.
+
 ### Capitalization
 
 As a company, we tend toward lowercase.

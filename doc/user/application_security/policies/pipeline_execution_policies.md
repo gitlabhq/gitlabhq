@@ -339,7 +339,7 @@ Result: The pipeline contains the following stages: `[build, test, policy-stage,
 
 Special cases:
 
-- If the `.gitlab-ci.yml` specified the stages as `[build, deploy, test]`, the pipeline would fail because the constraints cannot be satisfied. In order to fix the failure, the project configuration must be adjusted to align the stages with the policies.
+- If the `.gitlab-ci.yml` specified the stages as `[build, deploy, test]`, the pipeline would fail with the error `Cyclic dependencies detected when enforcing policies` because the constraints cannot be satisfied. In order to fix the failure, the project configuration must be adjusted to align the stages with the policies.
 - If the `.gitlab-ci.yml` specified stages as `[build]`, the resulting pipeline has the following stages: `[build, policy-stage]`.
 
 ##### Example 2

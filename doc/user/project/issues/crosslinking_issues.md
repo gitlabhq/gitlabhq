@@ -77,10 +77,11 @@ collaborators know that there are opened issues regarding the same topic.
 You do that as explained above, when [mentioning an issue from a commit message](#from-commit-messages).
 
 When mentioning issue `#111` in issue `#222`, issue `#111` also displays a notification
-in its tracker. That is, you only need to mention the relationship once for it to
+in its **Activity** feed. That is, you only need to mention the relationship once for it to
 display in both issues. The same is valid when mentioning issues in [merge requests](#from-merge-requests).
 
-![issue mentioned in issue](img/mention_in_issue_v9_3.png)
+When the activity feed for an issue is filtered to **Show history only** or **Show all activity**,
+crosslinks are shown as `(Username) mentioned in issue #(number) (time ago)`.
 
 ## From merge requests
 
@@ -92,7 +93,8 @@ When you mention an issue in a merge request description, it
 you can also [set an issue to close automatically](managing_issues.md#closing-issues-automatically)
 as soon as the merge request is merged.
 
-![issue mentioned in MR](img/mention_in_merge_request_v9_3.png)
+When the activity feed for an issue is filtered to **Show history only** or **Show all activity**,
+crosslinks are shown as `(Username) mentioned in merge request !(number) (time ago)`.
 
 ## From branch names
 

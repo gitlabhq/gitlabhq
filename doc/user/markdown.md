@@ -33,6 +33,7 @@ You can use GitLab Flavored Markdown in:
 - Snippets (the snippet must be named with a `.md` extension)
 - Wiki pages
 - Markdown documents inside repositories
+- Releases
 
 You can also use other rich text files in GitLab. You might have to install a dependency
 to do so. For more information, see the [`gitlab-markup` gem project](https://gitlab.com/gitlab-org/gitlab-markup).

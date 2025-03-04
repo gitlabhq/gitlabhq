@@ -21,8 +21,8 @@ GitLab Duo is designed to provide contextually relevant information during the l
 
 {{< details >}}
 
-- Status: Beta
-- LLM: Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison)
+- Status: Experiment
+- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 {{< /details >}}
 
@@ -106,7 +106,7 @@ Interactions with GitLab Duo can help to improve the suggestions and feedback as
 {{< details >}}
 
 - Status: Experiment
-- LLM: Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison)
+- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 {{< /details >}}
 
