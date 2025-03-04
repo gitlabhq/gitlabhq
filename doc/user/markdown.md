@@ -1646,37 +1646,37 @@ Alerts can be used to highlight or call attention to something. The alert syntax
 uses the Markdown blockquote syntax followed by the type of alert.
 You can use alerts in any text box that supports Markdown.
 
-There are 5 alert types:
+You can use the following types of alerts:
 
-- Note: Calls attention to information that may be useful to the user:
+- Note: information that users should take into account, even when skimming:
 
   ```markdown
   > [!note]
   > The following information is useful.
   ```
 
-- Tip: Advice that may be useful:
+- Tip: Optional information to help a user be more successful:
 
   ```markdown
   > [!tip]
   > Tip of the day.
   ```
 
-- Important: Information that is important to know:
+- Important: Crucial information necessary for users to succeed:
 
   ```markdown
   > [!important]
   > This is something important you should know.
   ```
 
-- Caution: There are possible negative consequences:
+- Caution: Negative potential consequences of an action:
 
   ```markdown
   > [!caution]
   > You need to be very careful about the following.
   ```
 
-- Warning: Something is potentially dangerous or risky:
+- Warning: Critical potential risks:
 
   ```markdown
   > [!warning]
@@ -1684,7 +1684,7 @@ There are 5 alert types:
   ```
 
 The title text shown for an alert defaults to the name of the alert. For example,
-`> [!warning]` alert will have the title `Warning`.
+`> [!warning]` alert has the title `Warning`.
 
 To override an alert block's title, enter any text on the same line.
 For example, to use the warning color but have `Data deletion` as the title:
@@ -1705,6 +1705,10 @@ You should consider the following ramifications:
 1. consideration 2
 >>>
 ```
+
+The alerts render as:
+
+![How Markdown alerts are rendered in GitLab](img/markdown_alerts_v17_10.png)
 
 ## Colors
 

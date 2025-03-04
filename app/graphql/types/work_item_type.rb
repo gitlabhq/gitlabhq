@@ -60,7 +60,19 @@ module Types
     field :widgets,
       [Types::WorkItems::WidgetInterface],
       null: true,
-      description: 'Collection of widgets that belong to the work item.'
+      description: 'Collection of widgets that belong to the work item.' do
+        argument :except_types, [::Types::WorkItems::WidgetTypeEnum],
+          required: false,
+          default_value: nil,
+          description: 'Except widgets of the given types.'
+        argument :only_types, [::Types::WorkItems::WidgetTypeEnum],
+          required: false,
+          default_value: nil,
+          description: 'Only widgets of the given types.'
+
+        validates mutually_exclusive: %i[except_types only_types]
+      end
+
     field :work_item_type, Types::WorkItems::TypeType, null: false,
       description: 'Type assigned to the work item.'
 

@@ -320,6 +320,10 @@ external_pull_requests:
   - table: projects
     column: project_id
     on_delete: async_delete
+fork_networks:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
 group_security_exclusions:
   - table: namespaces
     column: group_id

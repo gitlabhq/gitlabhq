@@ -1412,7 +1412,7 @@
   resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.3.0.tgz#df89c1bb6714e4a8a5d3272568aa4de7fb337267"
   integrity sha512-DoMUIN3DqjEn7wvcxBg/b7Ite5fTdF5EmuOZoBRo2j0UBGweDXmNBi+9HrTZs4cBU660dOxcf1hATFcG3npbPg==
 
-"@gitlab/noop@^1.0.1", jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
+"@gitlab/noop@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
   integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
@@ -1436,10 +1436,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.123.0.tgz#1fa3b1a709755ff7c8ef67e18c0442101655ebf0"
   integrity sha512-yjVn+utOTIKk8d9JlvGo6EgJ4TQ+CKpe3RddflAqtsQqQuL/2MlVdtaUePybxYzWIaumFuh5LouQ6BrWyw1niQ==
 
-"@gitlab/ui@108.9.0":
-  version "108.9.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-108.9.0.tgz#bfc2e48d79fea22b1c3b0bf20e89cbe46f46e32b"
-  integrity sha512-6wcSK040l9+7ppHzx4ab78oGpJmT5cjOtytoezA9plBq1tpbbFd7ENt7DH0ZWxP9A8M8wVR7D8N1EzGKjesahQ==
+"@gitlab/ui@108.10.0":
+  version "108.10.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-108.10.0.tgz#9434054c9e44b395604b2d55416c83c84fdd09ac"
+  integrity sha512-xfrDcA/UKlhVEGJAhvdiK1qLy7GEABiRWhJmjkoBZRMjr4Q6dpjqVlr8s7hQf9FMdI6tMVbbV3bGBuMPsGNzLA==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     echarts "^5.3.2"
@@ -7389,10 +7389,10 @@ eslint-plugin-local-rules@^3.0.2:
   resolved "https://registry.yarnpkg.com/eslint-plugin-local-rules/-/eslint-plugin-local-rules-3.0.2.tgz#84c02ea1d604ecb00970779ad27f00738ff361ae"
   integrity sha512-IWME7GIYHXogTkFsToLdBCQVJ0U4kbSuVyDT+nKoR4UgtnVrrVeNWuAZkdEu1nxkvi9nsPccGehEEF6dgA28IQ==
 
-eslint-plugin-no-jquery@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-no-jquery/-/eslint-plugin-no-jquery-3.1.0.tgz#5eb669405a0b3b6924cf63b8549349cf41235619"
-  integrity sha512-Ze+eRlAbLAoceBqMXI2E9s6o3dC7zE75niP2Sy4D8I/u1TyLegrIpjc4emPN90dH0IA+uXNUmQbzBuCaihxwIQ==
+eslint-plugin-no-jquery@3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-no-jquery/-/eslint-plugin-no-jquery-3.1.1.tgz#5fbd5a1b769f03bbd6dbe19f6c7769669759d75a"
+  integrity sha512-LTLO3jH/Tjr1pmxCEqtV6qmt+OChv8La4fwgG470JRpgxyFF4NOzoC9CRy92GIWD3Yjl0qLEgPmD2FLQWcNEjg==
 
 eslint-plugin-no-unsanitized@^4.1.2:
   version "4.1.2"
@@ -9392,6 +9392,11 @@ iterall@^1.2.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.3.0.tgz#afcb08492e2915cbd8a0884eb93a8c94d0d72fea"
   integrity sha512-QZ9qOMdF+QLHxy1QIpUHUU1D5pS2CG2P69LF6L6CPjPYA/XMOmKV3PZpawHoAjHNyB0swdVTRxdYT4tbBbxqwg==
+
+jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
+  integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
 
 jed@^1.1.1:
   version "1.1.1"

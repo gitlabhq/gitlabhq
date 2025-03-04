@@ -180,7 +180,7 @@ For more information about overriding security jobs, see:
 - [Overriding SAST jobs](../sast/_index.md#overriding-sast-jobs).
 - [Overriding Dependency Scanning jobs](../dependency_scanning/_index.md#overriding-dependency-scanning-jobs).
 - [Overriding Container Scanning jobs](../container_scanning/_index.md#overriding-the-container-scanning-template).
-- [Overriding Secret Detection jobs](../secret_detection/pipeline/_index.md#configuration).
+- [Overriding Secret Detection jobs](../secret_detection/pipeline/configure.md).
 - [Overriding DAST jobs](../dast/browser/_index.md).
 
 All the security scanning tools define their stage, so this error can occur with all of them.

@@ -113,7 +113,7 @@ To run secret detection automatically in the pipeline as the enforced global pol
    ```
 
 The UI configuration is shown in this screen: ![Security Dashboard](img/secret_detection_policy_v17_9.png)
-For detailed information about this CI variable, see [this document for details](../../user/application_security/secret_detection/pipeline/_index.md#with-a-remote-ruleset).
+For detailed information about this CI variable, see [this document for details](../../user/application_security/secret_detection/pipeline/configure.md#with-a-remote-ruleset).
 
 1. Click **Create policy**.
 

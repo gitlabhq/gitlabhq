@@ -1777,6 +1777,6 @@ RSpec.describe Integration, feature_category: :integrations do
   describe '.instance_specific_integration_types' do
     subject { described_class.instance_specific_integration_types }
 
-    it { is_expected.to eq(['Integrations::BeyondIdentity']) }
+    it { is_expected.to include('Integrations::BeyondIdentity') }
   end
 end

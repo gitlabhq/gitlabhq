@@ -146,10 +146,17 @@ class WorkItem < Issue
     %w[Issue WorkItem]
   end
 
-  def widgets
-    strong_memoize(:widgets) do
-      work_item_type.widgets(resource_parent).map do |widget_definition|
-        widget_definition.widget_class.new(self, widget_definition: widget_definition)
+  def widgets(except_types: [], only_types: nil)
+    raise ArgumentError, 'Only one filter is allowed' if only_types.present? && except_types.present?
+
+    strong_memoize_with(:widgets, only_types, except_types) do
+      except_types = Array.wrap(except_types)
+
+      widget_definitions.keys.filter_map do |type|
+        next if except_types.include?(type)
+        next if only_types&.exclude?(type)
+
+        get_widget(type)
       end
     end
   end
@@ -157,12 +164,20 @@ class WorkItem < Issue
   # Returns widget object if available
   # type parameter can be a symbol, for example, `:description`.
   def get_widget(type)
-    widgets.find do |widget|
-      widget.instance_of?(WorkItems::Widgets.const_get(type.to_s.camelize, false))
+    strong_memoize_with(type) do
+      break unless widget_definitions.key?(type.to_sym)
+
+      widget_definitions[type].build_widget(self)
     end
-  rescue NameError
-    nil
   end
+
+  def widget_definitions
+    work_item_type
+      .widgets(resource_parent)
+      .index_by(&:widget_type)
+      .symbolize_keys
+  end
+  strong_memoize_attr :widget_definitions
 
   def ancestors
     hierarchy.ancestors(hierarchy_order: :asc)

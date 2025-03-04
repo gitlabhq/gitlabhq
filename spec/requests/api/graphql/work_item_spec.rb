@@ -791,6 +791,64 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           )
         end
       end
+
+      context 'when filtering' do
+        context 'when selecting widgets' do
+          let(:work_item_fields) do
+            <<~GRAPHQL
+              id
+              widgets(onlyTypes: [DESCRIPTION]) {
+                type
+              }
+            GRAPHQL
+          end
+
+          it 'only returns selected widgets' do
+            expect(work_item_data).to include(
+              'id' => work_item.to_gid.to_s,
+              'widgets' => [{
+                'type' => 'DESCRIPTION'
+              }]
+            )
+          end
+        end
+
+        context 'when excluding widgets' do
+          let(:work_item_fields) do
+            <<~GRAPHQL
+              id
+              widgets(exceptTypes: [DESCRIPTION]) {
+                type
+              }
+            GRAPHQL
+          end
+
+          it 'does not return excluded widgets' do
+            expect(work_item_data).to include(
+              'id' => work_item.to_gid.to_s,
+              'widgets' => [
+                { "type" => "ASSIGNEES" },
+                { "type" => "AWARD_EMOJI" },
+                { "type" => "CRM_CONTACTS" },
+                { "type" => "CURRENT_USER_TODOS" },
+                { "type" => "DESIGNS" },
+                { "type" => "DEVELOPMENT" },
+                { "type" => "EMAIL_PARTICIPANTS" },
+                { "type" => "ERROR_TRACKING" },
+                { "type" => "HIERARCHY" },
+                { "type" => "LABELS" },
+                { "type" => "LINKED_ITEMS" },
+                { "type" => "MILESTONE" },
+                { "type" => "NOTES" },
+                { "type" => "NOTIFICATIONS" },
+                { "type" => "PARTICIPANTS" },
+                { "type" => "START_AND_DUE_DATE" },
+                { "type" => "TIME_TRACKING" }
+              ]
+            )
+          end
+        end
+      end
     end
 
     describe 'notes widget' do

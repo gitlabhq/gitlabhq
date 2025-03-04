@@ -24,6 +24,7 @@ Use CI/CD pipelines to automatically build, test, and deploy your code.
 | [Use Auto DevOps to deploy an application](../topics/autodevops/cloud_deployments/auto_devops_with_gke.md)  | Deploy an application to Google Kubernetes Engine (GKE). | |
 | [Using Buildah in a rootless container with GitLab Runner Operator on OpenShift](../ci/docker/buildah_rootless_tutorial.md)  | Learn how to set up GitLab Runner Operator on OpenShift to build Docker images with Buildah in a rootless container | |
 | [Automatically build and publish packages with CI/CD](../user/packages/pypi_repository/auto_publish_tutorial.md) | Learn how to automatically build, test, and publish a PyPI package to the package registry. | |
+| [Structure the package registry for enterprise scale](../user/packages/package_registry/enterprise_structure_tutorial.md) | Set up your organization to upload, manage, and consume packages at scale. | | 
 | [Set up CI/CD steps](setup_steps/_index.md)  | Learn how to set up the steps component and configure a CI/CD pipeline to use the step in a job. | |
 | [Build and sign Python packages with GitLab CI/CD](../user/packages/package_registry/pypi_cosign_tutorial.md)  | Learn how to build a secure pipeline for Python packages using GitLab CI/CD and Sigstore Cosign. | |
 

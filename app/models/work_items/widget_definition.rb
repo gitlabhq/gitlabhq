@@ -69,5 +69,9 @@ module WorkItems
     rescue NameError
       nil
     end
+
+    def build_widget(work_item)
+      widget_class.new(work_item, widget_definition: self)
+    end
   end
 end

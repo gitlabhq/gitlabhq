@@ -51,6 +51,10 @@ export default {
       import(
         /* webpackChunkName: 'IntegrationSectionGoogleCloudIAM' */ 'ee_component/integrations/edit/components/sections/google_cloud_iam.vue'
       ),
+    IntegrationSectionAmazonQ: () =>
+      import(
+        /* webpackChunkName: 'IntegrationSectionAmazonQ' */ 'ee_component/integrations/edit/components/sections/amazon_q.vue'
+      ),
   },
   directives: {
     SafeHtml,

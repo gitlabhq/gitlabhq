@@ -13822,7 +13822,8 @@ ALTER SEQUENCE fork_network_members_id_seq OWNED BY fork_network_members.id;
 CREATE TABLE fork_networks (
     id bigint NOT NULL,
     root_project_id bigint,
-    deleted_root_project_name character varying
+    deleted_root_project_name character varying,
+    organization_id bigint
 );
 
 CREATE SEQUENCE fork_networks_id_seq
@@ -16286,7 +16287,8 @@ CREATE TABLE merge_request_reviewers (
     merge_request_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     state smallint DEFAULT 0 NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_fb72c99774 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE merge_request_reviewers_id_seq
@@ -27415,9 +27417,6 @@ ALTER TABLE web_hook_logs
 ALTER TABLE projects
     ADD CONSTRAINT check_fa75869cb1 CHECK ((project_namespace_id IS NOT NULL)) NOT VALID;
 
-ALTER TABLE merge_request_reviewers
-    ADD CONSTRAINT check_fb72c99774 CHECK ((project_id IS NOT NULL)) NOT VALID;
-
 ALTER TABLE ONLY ci_build_needs
     ADD CONSTRAINT ci_build_needs_pkey PRIMARY KEY (id);
 
@@ -33124,6 +33123,8 @@ CREATE INDEX index_fork_network_members_on_fork_network_id ON fork_network_membe
 CREATE INDEX index_fork_network_members_on_forked_from_project_id ON fork_network_members USING btree (forked_from_project_id);
 
 CREATE UNIQUE INDEX index_fork_network_members_on_project_id ON fork_network_members USING btree (project_id);
+
+CREATE INDEX index_fork_networks_on_organization_id ON fork_networks USING btree (organization_id);
 
 CREATE UNIQUE INDEX index_fork_networks_on_root_project_id ON fork_networks USING btree (root_project_id);
 

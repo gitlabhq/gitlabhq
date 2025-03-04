@@ -39583,7 +39583,6 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="workitemuserdiscussionscount"></a>`userDiscussionsCount` | [`Int!`](#int) | Number of user discussions in the work item. |
 | <a id="workitemuserpermissions"></a>`userPermissions` | [`WorkItemPermissions!`](#workitempermissions) | Permissions for the current user on the resource. |
 | <a id="workitemweburl"></a>`webUrl` | [`String`](#string) | URL of this object. |
-| <a id="workitemwidgets"></a>`widgets` | [`[WorkItemWidget!]`](#workitemwidget) | Collection of widgets that belong to the work item. |
 | <a id="workitemworkitemtype"></a>`workItemType` | [`WorkItemType!`](#workitemtype) | Type assigned to the work item. |
 
 #### Fields with arguments
@@ -39599,6 +39598,19 @@ Returns [`String!`](#string).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemreferencefull"></a>`full` | [`Boolean`](#boolean) | Boolean option specifying whether the reference should be returned in full. |
+
+##### `WorkItem.widgets`
+
+Collection of widgets that belong to the work item.
+
+Returns [`[WorkItemWidget!]`](#workitemwidget).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetsexcepttypes"></a>`exceptTypes` | [`[WorkItemWidgetType!]`](#workitemwidgettype) | Except widgets of the given types. |
+| <a id="workitemwidgetsonlytypes"></a>`onlyTypes` | [`[WorkItemWidgetType!]`](#workitemwidgettype) | Only widgets of the given types. |
 
 ### `WorkItemClosingMergeRequest`
 
