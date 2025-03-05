@@ -420,6 +420,10 @@ module Gitlab
         case detailed_error.try(:error)
         when :out_of_range, :path_not_found
           raise ArgumentError, e.details
+        when :invalid_ignore_revs_format
+          raise Gitlab::Git::Blame::IgnoreRevsFormatError, e.details
+        when :resolve_ignore_revs
+          raise Gitlab::Git::Blame::IgnoreRevsFileError, e.details
         else
           raise e
         end

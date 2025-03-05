@@ -4,7 +4,7 @@ import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions
 import { slugify } from '~/lib/utils/text_utility';
 import { LIST_ITEM_TYPE_PROJECT, LIST_ITEM_TYPE_GROUP } from './constants';
 
-const makeGroup = ({ name, fullName, children = [] }) => {
+const makeGroup = ({ name, fullName, childrenToLoad = [] }) => {
   const fullPath = slugify(fullName);
 
   return {
@@ -32,7 +32,10 @@ const makeGroup = ({ name, fullName, children = [] }) => {
     editPath: `/${fullPath}/edit`,
     availableActions: [ACTION_EDIT, ACTION_DELETE],
     actionLoadingStates: { [ACTION_DELETE]: false },
-    children,
+    children: [],
+    childrenToLoad,
+    hasChildren: childrenToLoad.length,
+    childrenLoading: false,
   };
 };
 
@@ -100,13 +103,13 @@ export const projectB = makeProject({
 export const nestedSubgroup = makeGroup({
   name: 'Nested subgroup',
   fullName: 'Subgroup A / Nested subgroup',
-  children: [projectA],
+  childrenToLoad: [projectA],
 });
 
 export const subgroupA = makeGroup({
   name: 'Subgroup A',
   fullName: 'Subgroup A',
-  children: [nestedSubgroup, projectB],
+  childrenToLoad: [nestedSubgroup, projectB],
 });
 
 export const subgroupB = makeGroup({

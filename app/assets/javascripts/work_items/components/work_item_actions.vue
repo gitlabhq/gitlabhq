@@ -357,11 +357,7 @@ export default {
       return WORK_ITEM_TYPE_VALUE_MAP[this.workItemType];
     },
     showMoveButton() {
-      return (
-        this.workItemType === WORK_ITEM_TYPE_VALUE_ISSUE &&
-        this.canMove &&
-        this.glFeatures.workItemsAlpha
-      );
+      return this.workItemType === WORK_ITEM_TYPE_VALUE_ISSUE && this.canMove;
     },
   },
   methods: {

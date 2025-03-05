@@ -36,7 +36,8 @@ describe('ListItem', () => {
         'avatar-meta': '<div data-testid="avatar-meta"></div>',
         stats: '<div data-testid="stats"></div>',
         footer: '<div data-testid="footer"></div>',
-        'nested-items': '<div data-testid="nested-items"></div>',
+        'children-toggle': '<div data-testid="children-toggle"></div>',
+        children: '<div data-testid="children"></div>',
         ...scopedSlots,
       },
       stubs,
@@ -84,10 +85,16 @@ describe('ListItem', () => {
     expect(wrapper.findByTestId('footer').exists()).toBe(true);
   });
 
-  it('renders nested-items slot', () => {
+  it('renders children-toggle slot', () => {
     createComponent();
 
-    expect(wrapper.findByTestId('nested-items').exists()).toBe(true);
+    expect(wrapper.findByTestId('children-toggle').exists()).toBe(true);
+  });
+
+  it('renders children slot', () => {
+    createComponent();
+
+    expect(wrapper.findByTestId('children').exists()).toBe(true);
   });
 
   describe('when avatar-default slot is provided', () => {

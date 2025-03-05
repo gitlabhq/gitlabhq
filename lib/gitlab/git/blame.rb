@@ -5,6 +5,9 @@ module Gitlab
     class Blame
       include Gitlab::EncodingHelper
 
+      IgnoreRevsFormatError = Class.new(StandardError)
+      IgnoreRevsFileError = Class.new(StandardError)
+
       attr_reader :lines, :blames, :range
 
       def initialize(repository, sha, path, range: nil)

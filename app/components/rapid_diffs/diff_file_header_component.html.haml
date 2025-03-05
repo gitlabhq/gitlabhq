@@ -48,3 +48,6 @@
     %span.rd-lines-removed
       %span>= "&#x2212;".html_safe
       %span{ "data-testid" => "js-file-deletion-line" }= @diff_file.removed_lines
+  .rd-diff-file-options-menu.gl-ml-2
+    .js-options-menu
+      = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'ellipsis_v', button_options: { class: 'js-options-button', data: { click: 'toggleOptionsMenu' }, aria: { label: _('Options') } })

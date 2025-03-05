@@ -57,10 +57,8 @@ module WorkItems
           end
         end
 
-        def cleanup_work_item
-          close_service = Issues::CloseService.new(container: work_item.namespace, current_user: current_user)
-          close_service.execute(work_item, notifications: false, system_note: true)
-        end
+        # this will handle work item deletion
+        def cleanup_work_item; end
       end
     end
   end

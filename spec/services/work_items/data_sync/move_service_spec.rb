@@ -21,6 +21,13 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
     )
   end
 
+  before_all do
+    # Ensure support bot user is created so creation doesn't count towards query limit
+    # and we don't try to obtain an exclusive lease within a transaction.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+    Users::Internal.support_bot_id
+  end
+
   context 'when user does not have permissions' do
     context 'when user cannot read original work item' do
       let_it_be(:current_user) { target_project_member }
@@ -85,16 +92,48 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
       it_behaves_like 'fails to transfer work item', 'Cannot move work items of \'Task\' type'
     end
 
-    context 'when moving work item raises an error' do
+    context 'when moving work item raises an error', :aggregate_failures do
       let(:error_message) { 'Something went wrong' }
 
-      before do
-        allow_next_instance_of(::WorkItems::DataSync::BaseCreateService) do |create_service|
-          allow(create_service).to receive(:execute).and_return(ServiceResponse.error(message: error_message))
+      context 'when create service raises error' do
+        before do
+          allow_next_instance_of(::WorkItems::DataSync::BaseCreateService) do |create_service|
+            allow(create_service).to receive(:execute).and_return(ServiceResponse.error(message: error_message))
+          end
+        end
+
+        it_behaves_like 'fails to transfer work item', 'Something went wrong'
+      end
+
+      context 'when a widget that is handled within transaction raises error' do
+        before do
+          allow_next_instance_of(::WorkItems::DataSync::Widgets::Notes) do |create_service|
+            allow(create_service).to receive(:after_create).and_raise(error_message)
+          end
+        end
+
+        it 'raises error and does not move work item' do
+          expect { service.execute }.to raise_error('Something went wrong').and(not_change { WorkItem.count }).and(
+            not_change { Note.where(system: true).count })
+          expect(original_work_item.state).to eq('opened')
+          expect(original_work_item.moved_to).to be_nil
         end
       end
 
-      it_behaves_like 'fails to transfer work item', 'Something went wrong'
+      context 'when a widget that is handled outside transaction raises error' do
+        before do
+          allow_next_instance_of(::WorkItems::DataSync::Widgets::Designs) do |create_service|
+            allow(create_service).to receive(:after_save_commit).and_raise(error_message)
+          end
+        end
+
+        it 'raises error and does not move work item' do
+          expect { service.execute }.to raise_error('Something went wrong').and(
+            change { WorkItem.count }.from(1).to(2)).and(change { Note.where(system: true).count }.by(2))
+          expect(original_work_item.state).to eq('closed')
+          expect(original_work_item.moved_to).not_to be_nil
+        end
+      end
     end
 
     context 'when moving work item with success', :freeze_time do

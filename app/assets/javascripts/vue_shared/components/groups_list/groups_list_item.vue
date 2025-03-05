@@ -133,6 +133,9 @@ export default {
     :list-item-class="listItemClass"
     :timestamp-type="timestampType"
   >
+    <template #children-toggle>
+      <slot name="children-toggle"></slot>
+    </template>
     <template #avatar-meta>
       <gl-icon
         v-if="visibility"
@@ -187,8 +190,8 @@ export default {
       />
     </template>
 
-    <template #nested-items>
-      <slot name="nested-items"></slot>
+    <template #children>
+      <slot name="children"></slot>
     </template>
   </list-item>
 </template>

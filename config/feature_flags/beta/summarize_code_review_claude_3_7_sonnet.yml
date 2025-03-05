@@ -1,0 +1,9 @@
+---
+name: summarize_code_review_claude_3_7_sonnet
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/521383
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183213
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/522987
+milestone: '17.10'
+group: group::code review
+type: beta
+default_enabled: false

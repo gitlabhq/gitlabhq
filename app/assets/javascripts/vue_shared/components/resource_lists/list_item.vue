@@ -99,6 +99,7 @@ export default {
 <template>
   <li>
     <div class="gl-border-b gl-flex gl-items-start gl-py-4" :class="listItemClass">
+      <slot name="children-toggle"></slot>
       <div class="gl-grow gl-items-start md:gl-flex">
         <div class="gl-flex gl-grow" :data-testid="contentTestid">
           <div v-if="showIcon" class="gl-mr-3 gl-flex gl-h-7 gl-shrink-0 gl-items-center">
@@ -153,6 +154,6 @@ export default {
     </div>
 
     <slot name="footer"></slot>
-    <slot name="nested-items"></slot>
+    <slot name="children"></slot>
   </li>
 </template>

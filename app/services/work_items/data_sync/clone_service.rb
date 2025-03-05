@@ -3,6 +3,33 @@
 module WorkItems
   module DataSync
     class CloneService < ::WorkItems::DataSync::BaseService
+      class << self
+        def transaction_callback(new_work_item, work_item, current_user)
+          clone_system_notes(current_user, new_work_item, work_item)
+        end
+
+        private
+
+        def clone_system_notes(current_user, new_work_item, work_item)
+          SystemNoteService.noteable_cloned(
+            new_work_item,
+            new_work_item.project,
+            work_item,
+            current_user,
+            direction: :from,
+            created_at: new_work_item.created_at
+          )
+
+          SystemNoteService.noteable_cloned(
+            work_item,
+            work_item.project,
+            new_work_item,
+            current_user,
+            direction: :to
+          )
+        end
+      end
+
       private
 
       def verify_work_item_action_permission
@@ -10,15 +37,7 @@ module WorkItems
       end
 
       def data_sync_action
-        service_response = clone_work_item
-        new_work_item = service_response[:work_item]
-
-        # this may need to be moved inside `BaseCopyDataService` so that this would be the first system note after
-        # clone action started, followed by some other system notes related to data that was not copied over for
-        # various reasons, e.g. labels or milestone not being copied/set due to not being found in the target namespace
-        clone_system_notes(new_work_item) if service_response.success? && new_work_item.present?
-
-        service_response
+        clone_work_item
       end
 
       def verify_can_clone_work_item(work_item, target_namespace)
@@ -68,25 +87,6 @@ module WorkItems
             state_id: WorkItem.available_states[:opened]
           }
         ).execute
-      end
-
-      def clone_system_notes(new_work_item)
-        SystemNoteService.noteable_cloned(
-          new_work_item,
-          new_work_item.project,
-          work_item,
-          current_user,
-          direction: :from,
-          created_at: new_work_item.created_at
-        )
-
-        SystemNoteService.noteable_cloned(
-          work_item,
-          work_item.project,
-          new_work_item,
-          current_user,
-          direction: :to
-        )
       end
     end
   end

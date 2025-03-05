@@ -28,4 +28,14 @@ describe('NestedGroupsProjectsList', () => {
       })),
     );
   });
+
+  describe('when `NestedGroupsProjectsListItem emits load-children event', () => {
+    it('emits load-children event', () => {
+      createComponent();
+
+      wrapper.findComponent(NestedGroupsProjectsListItem).vm.$emit('load-children', 1);
+
+      expect(wrapper.emitted('load-children')).toEqual([[1]]);
+    });
+  });
 });

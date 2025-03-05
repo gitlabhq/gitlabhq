@@ -1157,7 +1157,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       shared_examples 'raises error with message' do |error_class, message|
         it "raises #{error_class} with correct message" do
           expect { blame }.to raise_error(error_class) do |error|
-            expect(error.details).to eq(message)
+            expect(error.message).to eq(message)
           end
         end
       end
@@ -1188,7 +1188,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
           let(:file_content) { 'invalid_content' }
 
           include_examples 'raises error with message',
-            GRPC::NotFound,
+            Gitlab::Git::Blame::IgnoreRevsFormatError,
             'invalid object name'
         end
       end
@@ -1197,7 +1197,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         let(:ignore_revisions_blob) { "refs/heads/invalid" }
 
         include_examples 'raises error with message',
-          GRPC::NotFound,
+          Gitlab::Git::Blame::IgnoreRevsFileError,
           'cannot resolve ignore-revs blob'
       end
 
@@ -1205,7 +1205,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         let(:ignore_revisions_blob) { "refs/heads/#{revision}:files" }
 
         include_examples 'raises error with message',
-          GRPC::InvalidArgument,
+          Gitlab::Git::Blame::IgnoreRevsFileError,
           'ignore revision is not a blob'
       end
     end

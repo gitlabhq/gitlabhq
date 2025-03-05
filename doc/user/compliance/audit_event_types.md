@@ -129,9 +129,17 @@ Audit event types belong to the following product categories.
 | [`merge_request_invalid_approver_rules`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100496) | An invalid rule when merge request is approved | {{< icon name="check-circle" >}} Yes | GitLab [15.5](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100496) | Project |
 | [`merge_request_merged_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120927) | A merge request is merged using a project access token | {{< icon name="check-circle" >}} Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`merge_request_reopened_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120927) | A merge request is reopened using a project access token | {{< icon name="check-circle" >}} Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
+| [`project_merge_method_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83922) | A project's merge request method is updated | {{< icon name="check-circle" >}} Yes | GitLab [14.10](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) | Project |
+| [`project_merge_requests_author_approval_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's MR author approval setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369288) | Project |
+| [`project_merge_requests_disable_committers_approval_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's setting for disabling committers approval on merge requests is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369277) | Project |
 | [`project_merge_requests_template_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84624) | A merge request template for a project is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) | Project |
+| [`project_only_allow_merge_if_all_discussions_are_resolved_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's setting for allowing merge only when all discussions are resolved is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369286) | Project |
+| [`project_only_allow_merge_if_pipeline_succeeds_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's only allow merge if pipeline succeeds setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369288) | Project |
 | [`project_remove_source_branch_after_merge_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83922) | A project has its setting to remove branches after merges updated | {{< icon name="check-circle" >}} Yes | GitLab [14.10](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) | Project |
+| [`project_require_password_to_approve_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's setting for requiring a user's password for approval of merge request is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369280) | Project |
 | [`project_reset_approvals_on_push_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66234) | A project has its setting on whether approvals are reset on a push is updated | {{< icon name="check-circle" >}} Yes | GitLab [14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) | Project |
+| [`project_resolve_outdated_diff_discussions_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's resolve outdated diff discussions setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369288) | Project |
+| [`show_diff_preview_in_email_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Email notification to include diff preview is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group, Project |
 | [`selective_code_owner_removals_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148743) | Selective code owner removal is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/327562) | Project |
 
 ### Code suggestions
@@ -182,13 +190,12 @@ Audit event types belong to the following product categories.
 | [`project_deletion_marked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117546) | A project is marked for deletion | {{< icon name="check-circle" >}} Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374105) | Project |
 | [`project_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117546) | A project is destroyed | {{< icon name="check-circle" >}} Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374105) | Group |
 | [`project_export_file_download_started`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117528) | A download of a project export file is started | {{< icon name="check-circle" >}} Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374105) | Project |
+| [`project_feature_security_and_compliance_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's security and compliance access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369302) | Project |
 | [`project_group_link_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108918) | A group is invited to a project | {{< icon name="check-circle" >}} Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374114) | Group |
 | [`project_group_link_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108918) | A project group link is deleted | {{< icon name="check-circle" >}} Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374114) | Group |
 | [`project_group_link_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108918) | A project group link is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374114) | Project |
 | [`project_imported`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117528) | A project is imported | {{< icon name="check-circle" >}} Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374105) | Group |
 | [`project_restored`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117528) | A project is restored | {{< icon name="check-circle" >}} Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374105) | Project |
-| [`project_topics_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154158) | A project's topics assignments are changed | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/343204) | Project |
-| [`project_unarchived`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117528) | A project is unarchived | {{< icon name="check-circle" >}} Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374105) | Project |
 | [`protected_branch_allow_force_push_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68869) | A protected branch has its ability to allow force pushes is updated | {{< icon name="check-circle" >}} Yes | GitLab [14.3](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) | Project |
 | [`public_repository_download_operation`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149842) | A Git repository for a public project is downloaded | {{< icon name="dotted-circle" >}} No | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/383218) | Project |
 | [`registration_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123080) | A user registers for instance access | {{< icon name="check-circle" >}} Yes | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/374107) | User |
@@ -219,6 +226,7 @@ Audit event types belong to the following product categories.
 | [`container_repository_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152967) | A project's container registry is deleted | {{< icon name="check-circle" >}} Yes | GitLab [17.2](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
 | [`container_repository_deletion_marked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152967) | A project's container repository is marked for deletion | {{< icon name="check-circle" >}} Yes | GitLab [17.2](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
 | [`container_repository_tags_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156066) | A project's container repository tag is deleted | {{< icon name="check-circle" >}} Yes | GitLab [17.2](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
+| [`project_feature_container_registry_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's container registry access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369303) | Project |
 
 ### Continuous-integration
 
@@ -259,6 +267,13 @@ Audit event types belong to the following product categories.
 | [`ci_variable_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | A CI/CD variable is deleted for a project | {{< icon name="check-circle" >}} Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Project |
 | [`ci_variable_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | A CI/CD variable is updated for a project | {{< icon name="check-circle" >}} Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Project |
 | [`destroy_pipeline`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135255) | A pipeline is deleted | {{< icon name="check-circle" >}} Yes | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339041) | Project |
+| [`project_cicd_merge_pipelines_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107428) | The CI/CD merge pipelines setting for a project is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/369317) | Project |
+
+### Delivery
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`project_feature_releases_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's releases access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369308) | Project |
 
 ### Deployment management
 
@@ -270,6 +285,12 @@ Audit event types belong to the following product categories.
 | [`cluster_agent_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159593) | A user deletes a cluster agent | {{< icon name="check-circle" >}} Yes | GitLab [17.3](https://gitlab.com/gitlab-org/gitlab/-/issues/462749) | Project |
 | [`cluster_agent_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112036) | A user creates a cluster agent token | {{< icon name="check-circle" >}} Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/382133) | Project |
 | [`cluster_agent_token_revoked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112036) | A user revokes a cluster agent token | {{< icon name="check-circle" >}} Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/382133) | Project |
+
+### Dora metrics
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`project_feature_metrics_dashboard_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's metrics dashboard access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369289) | Project |
 
 ### GitLab Duo Workflow
 
@@ -299,6 +320,7 @@ Audit event types belong to the following product categories.
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`environment_protected`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108247) | A protected environment is created | {{< icon name="check-circle" >}} Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/216164) | Group, Project |
 | [`environment_unprotected`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108247) | A protected environment is unprotected | {{< icon name="check-circle" >}} Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/216164) | Group, Project |
+| [`project_feature_environments_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's environments access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369307) | Project |
 | [`protected_environment_approval_rule_added`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131484) | An approval rule is added to a protected environment | {{< icon name="check-circle" >}} Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/415603) | Group, Project |
 | [`protected_environment_approval_rule_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131484) | An approval rule is removed from a protected environment | {{< icon name="check-circle" >}} Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/415603) | Project, Group |
 | [`protected_environment_approval_rule_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131484) | An approval rule of a protected environment is updated | {{< icon name="check-circle" >}} Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/415603) | Project, Group |
@@ -311,6 +333,7 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
+| [`project_feature_feature_flags_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's feature flags access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369306) | Project |
 | [`feature_flag_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113453) | A feature flag is created | {{< icon name="check-circle" >}} Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/374109) | Project |
 | [`feature_flag_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113453) | A feature flag is deleted | {{< icon name="check-circle" >}} Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/374109) | Project |
 | [`feature_flag_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113453) | A feature flag is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/374109) | Project |
@@ -355,58 +378,19 @@ Audit event types belong to the following product categories.
 | [`group_share_with_group_link_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112719) | You update a group's access settings to another group by using the group's membership page | {{< icon name="check-circle" >}} Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/327909) | Group |
 | [`group_shared_with_group_lock_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973/) | Group can be shared with other group setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
 | [`group_visibility_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106079) | A group's visibility level is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369322) | Group |
-| [`merge_commit_template_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107533) | Merge commit template is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/369314) | Project |
-| [`new_user_signups_cap_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Number of users for user cap is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
-| [`prevent_forking_outside_group_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting for Prevent forking outside current group is changed | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
 | [`prevent_sharing_groups_outside_hierarchy_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | A group's setting to Members cannot invite groups outside of group and its subgroup updated | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
-| [`project_cicd_merge_pipelines_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107428) | The CI/CD merge pipelines setting for a project is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/369317) | Project |
-| [`project_cicd_merge_trains_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107428) | The CI/CD merge trains settings for a project is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/369317) | Project |
 | [`project_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117543) | A project is created | {{< icon name="check-circle" >}} Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/374105) | Project |
-| [`project_default_branch_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117543) | Default branch of a project's repository is updated | {{< icon name="check-circle" >}} Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/374105) | Project |
 | [`project_description_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128978) | A project's description is updated | {{< icon name="dotted-circle" >}} No | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/377769) | Project |
-| [`project_disable_overriding_approvers_per_merge_request_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | The disable overriding approvers per MR setting for a project is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369288) | Project |
-| [`project_feature_analytics_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's analytics access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369299) | Project |
-| [`project_feature_builds_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's builds access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369294) | Project |
-| [`project_feature_container_registry_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's container registry access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369303) | Project |
-| [`project_feature_environments_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's environments access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369307) | Project |
-| [`project_feature_feature_flags_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's feature flags access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369306) | Project |
-| [`project_feature_forking_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's feature forking access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369290) | Project |
-| [`project_feature_infrastructure_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's infrastructure access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369305) | Project |
-| [`project_feature_issues_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's issues access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369289) | Project |
-| [`project_feature_merge_requests_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's merge request access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369289) | Project |
-| [`project_feature_metrics_dashboard_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's metrics dashboard access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369289) | Project |
-| [`project_feature_monitor_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's monitor access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369304) | Project |
 | [`project_feature_operations_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's operation access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369300) | Project |
-| [`project_feature_package_registry_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's package registry access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369296) | Project |
-| [`project_feature_pages_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's page access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369297) | Project |
-| [`project_feature_releases_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's releases access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369308) | Project |
-| [`project_feature_repository_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's repository access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369295) | Project |
 | [`project_feature_requirements_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's requirements access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369301) | Project |
-| [`project_feature_security_and_compliance_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's security and compliance access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369302) | Project |
-| [`project_feature_snippets_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's snippet access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369293) | Project |
-| [`project_feature_wiki_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's wiki access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369292) | Project |
-| [`project_merge_method_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83922) | A project's merge request method is updated | {{< icon name="check-circle" >}} Yes | GitLab [14.10](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) | Project |
-| [`project_merge_requests_author_approval_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's MR author approval setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369288) | Project |
-| [`project_merge_requests_disable_committers_approval_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's setting for disabling committers approval on merge requests is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369277) | Project |
 | [`project_name_updated`](https://gitlab.com/gitlab-org/gitlab/-/commit/8c0b52247e717cf84bc7b248d817f8baa55b18a4) | A project has its name updated | {{< icon name="check-circle" >}} Yes | GitLab [10.2](https://gitlab.com/gitlab-org/gitlab/-/commit/8c0b52247e717cf84bc7b248d817f8baa55b18a4) | Project |
 | [`project_namespace_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's namespace is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369288) | Project |
-| [`project_only_allow_merge_if_all_discussions_are_resolved_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's setting for allowing merge only when all discussions are resolved is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369286) | Project |
-| [`project_only_allow_merge_if_pipeline_succeeds_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's only allow merge if pipeline succeeds setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369288) | Project |
-| [`project_packages_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7962) | The setting that controls packages for a project is updated | {{< icon name="check-circle" >}} Yes | GitLab [11.5](https://gitlab.com/gitlab-org/gitlab/-/issues/369288) | Project |
 | [`project_path_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100770) | A project's path is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/369271) | Project |
-| [`project_printing_merge_request_link_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | The setting for projects for enabling printing merge request link is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369283) | Project |
-| [`project_repository_size_limit_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | The repository size limit of a project is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369274) | Project |
-| [`project_require_password_to_approve_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's setting for requiring a user's password for approval of merge request is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369280) | Project |
-| [`project_resolve_outdated_diff_discussions_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's resolve outdated diff discussions setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369288) | Project |
-| [`project_security_setting_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150767) | A project's security setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/457024) | Project |
+| [`project_topics_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154158) | A project's topics assignments are changed | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/343204) | Project |
+| [`project_unarchived`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117528) | A project is unarchived | {{< icon name="check-circle" >}} Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374105) | Project |
 | [`project_visibility_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | A project's visibility level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369288) | Project |
 | [`remove_dormant_members_period_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Days of inactivity before removal is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
 | [`remove_dormant_members_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Dormant members is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
-| [`seat_control_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Seat control is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
-| [`service_access_tokens_expiration_enforced_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Service account token expiration is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
-| [`show_diff_preview_in_email_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Email notification to include diff preview is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group, Project |
-| [`squash_commit_template_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107533) | The merge request squash commit template for a project is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/369314) | Project |
-| [`squash_option_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84624) | Squash option setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) | Project |
 
 ### Importers
 
@@ -422,6 +406,12 @@ Audit event types belong to the following product categories.
 | [`incident_closed_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An incident is closed using a project access token | {{< icon name="check-circle" >}} Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`incident_created_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An incident is created using a project access token | {{< icon name="check-circle" >}} Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`incident_reopened_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An incident is reopened using a project access token | {{< icon name="check-circle" >}} Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
+
+### Merge trains
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`project_cicd_merge_trains_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107428) | The CI/CD merge trains settings for a project is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/369317) | Project |
 
 ### MLOps
 
@@ -440,12 +430,26 @@ Audit event types belong to the following product categories.
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`experiment_features_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) | Enabling experiment AI features setting is toggled | {{< icon name="check-circle" >}} Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/404856/) | Group |
 
+### Observability
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`project_feature_monitor_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's monitor access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369304) | Project |
+
 ### Package registry
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`package_registry_package_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178181) | A package was deleted from GitLab package registry. Available only when the feature flag `package_registry_audit_events` is enabled and the namespace's package setting `audit_events_enabled` is true. | {{< icon name="check-circle" >}} Yes | GitLab [17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/329588) | Project, Group |
 | [`package_registry_package_published`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178181) | A package was published to GitLab package registry. Available only when the feature flag `package_registry_audit_events` is enabled and the namespace's package setting `audit_events_enabled` is true. | {{< icon name="check-circle" >}} Yes | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/329588) | Project, Group |
+| [`project_feature_package_registry_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's package registry access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369296) | Project |
+| [`project_packages_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7962) | The setting that controls packages for a project is updated | {{< icon name="check-circle" >}} Yes | GitLab [11.5](https://gitlab.com/gitlab-org/gitlab/-/issues/369288) | Project |
+
+### Pages
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`project_feature_pages_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's page access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369297) | Project |
 
 ### Permissions
 
@@ -492,6 +496,12 @@ Audit event types belong to the following product categories.
 | [`runner_registration_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Runner registration is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
 | [`set_runner_associated_projects`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97666) | Associated projects are successfully assigned to a CI/CD runner | {{< icon name="check-circle" >}} Yes | GitLab [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/359958) | Project |
 
+### Seat cost management
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`seat_control_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Seat control is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
+
 ### Secret detection
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
@@ -501,6 +511,7 @@ Audit event types belong to the following product categories.
 | [`project_security_exclusion_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166511) | A project security exclusion is created | {{< icon name="check-circle" >}} Yes | GitLab [17.5](https://gitlab.com/gitlab-org/gitlab/-/issues/492464) | Project |
 | [`project_security_exclusion_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166511) | A project security exclusion is deleted | {{< icon name="check-circle" >}} Yes | GitLab [17.5](https://gitlab.com/gitlab-org/gitlab/-/issues/492464) | Project |
 | [`project_security_exclusion_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166511) | A project security exclusion is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.5](https://gitlab.com/gitlab-org/gitlab/-/issues/492464) | Project |
+| [`project_security_setting_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150767) | A project's security setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/457024) | Project |
 | [`skip_secret_push_protection`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147855) | Secret push protection is skipped by the user | {{< icon name="check-circle" >}} Yes | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/441185) | Project |
 
 ### Secrets management
@@ -545,17 +556,30 @@ Audit event types belong to the following product categories.
 | [`group_push_rules_reject_non_dco_commits_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86046) | A group's push rule setting is updated for reject non DCO certified commits | {{< icon name="check-circle" >}} Yes | GitLab [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/227629) | Group |
 | [`group_push_rules_reject_unsigned_commits_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86046) | A group push's rule setting is updated for reject unsigned commits | {{< icon name="check-circle" >}} Yes | GitLab [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/227629) | Group |
 | [`group_repository_size_limit_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106079) | A group's repository size limit is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369322) | Group |
+| [`merge_commit_template_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107533) | Merge commit template is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/369314) | Project |
 | [`merged_merge_request_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118793) | A merged merge request is deleted | {{< icon name="dotted-circle" >}} No | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/408288) | Project |
 | [`merged_merge_request_deletion_started`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118793) | A merged merge request's deletion is started | {{< icon name="dotted-circle" >}} No | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/408288) | Project |
+| [`prevent_forking_outside_group_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting for Prevent forking outside current group is changed | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
+| [`project_default_branch_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117543) | Default branch of a project's repository is updated | {{< icon name="check-circle" >}} Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/374105) | Project |
+| [`project_disable_overriding_approvers_per_merge_request_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | The disable overriding approvers per MR setting for a project is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369288) | Project |
+| [`project_feature_builds_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's builds access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369294) | Project |
+| [`project_feature_forking_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's feature forking access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369290) | Project |
+| [`project_feature_merge_requests_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's merge request access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369289) | Project |
+| [`project_feature_repository_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's repository access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369295) | Project |
+| [`project_feature_snippets_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's snippet access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369293) | Project |
 | [`project_fork_operation`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90916) | A project is forked | {{< icon name="check-circle" >}} Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90916) | Project |
 | [`project_fork_relationship_removed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101017) | A project's fork relationship is successfully removed | {{< icon name="check-circle" >}} Yes | GitLab [15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/272532) | Project |
+| [`project_printing_merge_request_link_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | The setting for projects for enabling printing merge request link is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369283) | Project |
 | [`project_push_rules_commit_committer_check_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132157) | A project's push rule setting for reject unverified users is updated | {{< icon name="check-circle" >}} Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/268116) | Project |
+| [`project_repository_size_limit_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106652) | The repository size limit of a project is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369274) | Project |
 | [`protected_branch_code_owner_approval_required_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107530) | The protected branch code owner approval required setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/369318) | Project |
 | [`protected_branch_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92074) | A protected branch is created | {{< icon name="check-circle" >}} Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363091) | Project |
 | [`protected_branch_removed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92074) | A protected branch is removed | {{< icon name="check-circle" >}} Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363091) | Project |
 | [`protected_branch_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107530) | The setting for protected branches is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/369318) | Project |
 | [`repository_git_operation`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76719) | Authenticated users push, pull, or clone a project using SSH, HTTP(S), or the UI | {{< icon name="dotted-circle" >}} No | GitLab [14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/373950) | Project |
 | [`require_reauthentication_to_approve_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150710) | The setting for requiring reauthentication for merge request approvals is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/431346) | Group, Project |
+| [`squash_commit_template_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107533) | The merge request squash commit template for a project is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/369314) | Project |
+| [`squash_option_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84624) | Squash option setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) | Project |
 | [`manually_trigger_housekeeping`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112095) | Manually triggering housekeeping via API or admin UI | {{< icon name="check-circle" >}} Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/390761) | Project |
 | [`project_blobs_removal`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152522) | Removing blobs by using the GraphQL API or project settings UI | {{< icon name="check-circle" >}} Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) | Project |
 | [`project_text_replacement`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152522) | Replacing text by using the GraphQL API or project settings UI | {{< icon name="check-circle" >}} Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) | Project |
@@ -580,11 +604,13 @@ Audit event types belong to the following product categories.
 | [`login_failed_with_otp_authentication`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129595) | Sign-in fails because of an incorrect OTP | {{< icon name="check-circle" >}} Yes | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/377758) | User |
 | [`login_failed_with_standard_authentication`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129595) | Sign-in to GitLab fails with standard authentication, such as password | {{< icon name="check-circle" >}} Yes | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/377758) | Instance |
 | [`login_failed_with_webauthn_authentication`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129595) | Sign-in fails when using a WebAuthn device | {{< icon name="check-circle" >}} Yes | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/377758) | User |
+| [`new_user_signups_cap_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Number of users for user cap is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
 | [`project_access_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | A project access token is created | {{< icon name="check-circle" >}} Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Project |
 | [`project_access_token_creation_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | Creating a project access token fails | {{< icon name="check-circle" >}} Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Project |
 | [`project_access_token_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | A project access token is deleted | {{< icon name="check-circle" >}} Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Project |
 | [`project_access_token_deletion_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | Deleting a project access token fails | {{< icon name="check-circle" >}} Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Project |
 | [`resource_access_token_creation_allowed_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting for Users can create project access tokens and group access tokens in this group is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group, Project |
+| [`service_access_tokens_expiration_enforced_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Service account token expiration is updated | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
 | [`update_mismatched_group_saml_extern_uid`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104791) | The external UID is changed on a SAML identity | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/382256) | User |
 | [`user_access_locked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124169) | User access to the instance is locked | {{< icon name="check-circle" >}} Yes | GitLab [16.2](https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/244) | User |
 | [`user_access_unlocked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124973) | User access to the instance is unlocked | {{< icon name="check-circle" >}} Yes | GitLab [16.2](https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/244) | User |
@@ -601,6 +627,7 @@ Audit event types belong to the following product categories.
 | [`issue_closed_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An issue is closed using a project access token | {{< icon name="check-circle" >}} Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`issue_created_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An issue is created using a project access token | {{< icon name="check-circle" >}} Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`issue_reopened_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An issue is reopened using a project access token | {{< icon name="check-circle" >}} Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
+| [`project_feature_issues_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's issues access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369289) | Project |
 | [`task_closed_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | A task is closed using a project access token | {{< icon name="check-circle" >}} Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`task_created_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | A task is created using a project access token | {{< icon name="check-circle" >}} Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`task_reopened_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | A task is reopened using a project access token | {{< icon name="check-circle" >}} Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
@@ -641,6 +668,12 @@ Audit event types belong to the following product categories.
 | [`user_profile_visiblity_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129149) | User toggles private profile user setting | {{< icon name="dotted-circle" >}} No | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129149) | User |
 | [`user_username_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106086) | A user's username is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369329) | User |
 
+### Value stream management
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`project_feature_analytics_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's analytics access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369299) | Project |
+
 ### Verify security
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
@@ -652,9 +685,21 @@ Audit event types belong to the following product categories.
 | [`secure_ci_job_token_project_added`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115350) | Project added to inbound CI_JOB_TOKEN scope | {{< icon name="check-circle" >}} Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338255) | Project |
 | [`secure_ci_job_token_project_removed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115350) | Project removed from inbound CI_JOB_TOKEN scope | {{< icon name="check-circle" >}} Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338255) | Project |
 
+### Vulnerability management
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`project_feature_infrastructure_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's infrastructure access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369305) | Project |
+
 ### Webhooks
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`webhook_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154046) | A webhook is created | {{< icon name="check-circle" >}} Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/8068) | Project, Group, Instance |
 | [`webhook_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102342) | A webhook is destroyed | {{< icon name="check-circle" >}} Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/458817) | Project, Group, Instance |
+
+### Wiki
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`project_feature_wiki_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's wiki access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369292) | Project |

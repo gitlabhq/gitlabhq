@@ -28835,6 +28835,9 @@ msgstr ""
 msgid "Groups|Save changes"
 msgstr ""
 
+msgid "Groups|Show children of %{avatarLabel}"
+msgstr ""
+
 msgid "Groups|Subgroup URL"
 msgstr ""
 

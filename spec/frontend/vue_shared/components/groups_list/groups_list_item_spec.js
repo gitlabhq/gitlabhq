@@ -33,7 +33,8 @@ describe('GroupsListItem', () => {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
       scopedSlots: {
-        'nested-items': '<div data-testid="nested-items"></div>',
+        'children-toggle': '<div data-testid="children-toggle"></div>',
+        children: '<div data-testid="children"></div>',
       },
     });
   };
@@ -391,9 +392,15 @@ describe('GroupsListItem', () => {
     expect(wrapper.element.firstChild.classList).toContain('foo');
   });
 
-  it('renders nested-items slot', () => {
+  it('renders children-toggle slot', () => {
     createComponent();
 
-    expect(wrapper.findByTestId('nested-items').exists()).toBe(true);
+    expect(wrapper.findByTestId('children-toggle').exists()).toBe(true);
+  });
+
+  it('renders children slot', () => {
+    createComponent();
+
+    expect(wrapper.findByTestId('children').exists()).toBe(true);
   });
 });

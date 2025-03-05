@@ -22,6 +22,7 @@ export default {
       v-for="item in items"
       :key="`${item.type}-${item.id}`"
       :item="item"
+      @load-children="$emit('load-children', $event)"
     />
   </ul>
 </template>
