@@ -1407,6 +1407,31 @@ Update your API integration to handle the `422` status code when making pipeline
 
 </div>
 
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### PostgreSQL 14 and 15 no longer supported
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/521663).
+
+</div>
+
+GitLab follows an [annual upgrade cadence for PostgreSQL](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/postgresql-upgrade-cadence/).
+
+Support for PostgreSQL 14 and 15 is scheduled for removal in GitLab 18.0.
+In GitLab 18.0, PostgreSQL 16 becomes the minimum required PostgreSQL version.
+
+PostgreSQL 14 and 15 will be supported for the full GitLab 17 release cycle.
+PostgreSQL 16 will also be supported for instances that want to upgrade prior to GitLab 18.0.
+
+If you are running a single PostgreSQL instance you installed by using an Omnibus Linux package, an automatic upgrade may be attempted with 17.11.
+Make sure you have enough disk space to accommodate the upgrade. For more information, see the [Omnibus database documentation](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server).
+
+</div>
+
 <div class="deprecation " data-milestone="18.0">
 
 ### Project page in group settings is deprecated

@@ -1549,6 +1549,7 @@ application provides example diagrams that you can edit to suit your needs.
 To create a diagram by using the Draw.io web application:
 
 1. In the [Draw.io](https://draw.io) web application, create the diagram.
+   Follow the [style guidelines](#style-guidelines).
 1. Save the diagram:
    1. In the Draw.io web application, select **File** > **Export as** > **SVG**.
    1. Select the **Include a copy of my diagram: All pages** checkbox, then select **Export**. Use
@@ -1563,11 +1564,38 @@ To create a diagram by using the Draw.io Integration extension for VS Code:
 1. In the directory that will contain the diagram, create an empty file with the suffix
    `drawio.svg`.
 1. Open the file in VS Code then create the diagram.
+   Follow the [style guidelines](#style-guidelines).
 1. Save the file.
 
    The diagram's definition is stored in Draw.io-compatible format in the SVG file.
 1. [Add the SVG to the docs as an image](#add-the-image-link-to-content).
    These SVGs use the same Markdown as other non-SVG images.
+
+##### Style guidelines
+
+When you create a diagram in Draw.io, it should be visually consistent with a diagram you would create with Mermaid.
+The following rules are an addition to the general [style guidelines](#guidelines).
+
+Fonts:
+
+- Use the Inter font for all text. This font is not included in the default fonts.
+  To add Inter font as a custom font:
+  1. From the font dropdown list, select **Custom**.
+  1. Select **Google fonts** and in the **Font name** text box, enter `Inter`.
+
+Shapes:
+
+- For elements, use the rectangle shape.
+- For flowcharts, use shapes from the **Flowchart** shape collection.
+- Shapes that represent the same element should have the same shape and size.
+- For elements that have text, ensure adequate white space exists between the text and the
+  shape's outline. If required, increase the size of the shape and **all** similar shapes in the diagram.
+
+Colors:
+
+- Use colors in the [GitLab Design System color range](https://design.gitlab.com/brand-design/color/) only.
+- For all elements, shapes, arrows, and text, follow the
+  [Pajamas guidelines for illustration](https://design.gitlab.com/product-foundations/illustration/).
 
 ## Emoji
 

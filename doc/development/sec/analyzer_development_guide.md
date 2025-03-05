@@ -495,6 +495,59 @@ This process only applies to the images used in versions of GitLab matching the 
 
 The implementation of the rebuild process may vary [depending on the project](../../user/application_security/_index.md#vulnerability-scanner-maintenance), though a shared CI configuration is available in our [development ci-templates project](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker.yml) to help achieving this.
 
+## Adding new language support to GitLab Advanced SAST (GLAS)
+
+This guide helps engineers evaluate and add new language support to GLAS. These guidelines ensure consistent quality when expanding language coverage, rather than serving as strict requirements.
+
+### Language support readiness criteria
+
+Adapt these guidelines to your specific language while maintaining our analyzer quality standards.
+
+These guidelines come from our experience adding PHP support to GLAS (see [issue #514210](https://gitlab.com/gitlab-org/gitlab/-/issues/514210)) and help determine when new language support is ready for production.
+
+#### Quality readiness
+
+##### Cross-file analysis capability
+
+- Support the most common dependency management patterns in the target language
+- Support common inclusion mechanisms specific to the language
+
+##### Detection quality
+
+- Precision Rate ≥ 80% across supported CWEs
+- Comprehensive test corpus for each supported CWE
+- Testing against popular frameworks in the language ecosystem
+
+#### Coverage readiness
+
+##### Priority-based coverage
+
+- Must cover critical injection vulnerabilities relevant to the language
+- Must cover common security misconfigurations
+- Must align with industry standards (OWASP Top 10, SANS CWE Top 25)
+- Focus on high-impact vulnerabilities commonly found in the language
+
+#### Support readiness
+
+##### Documentation requirements
+
+- Language listed and described in supported languages documentation
+- CWE coverage table updated with new language column
+- All supported CWEs properly marked
+- Known limitations clearly documented
+
+#### Performance readiness
+
+##### Standard performance criteria
+
+- Medium-sized applications: < 10 minutes
+- Very large applications: < 30 minutes with multi-core options
+
+##### Benchmark definition
+
+- Define representative codebases for benchmarking
+- Include common frameworks and libraries
+
 ## Security and Build fixes of Go
 
 The `Dockerfile` of the Secure analyzers implemented in Go must reference a `MAJOR` release of Go, and not a `MINOR` revision.
