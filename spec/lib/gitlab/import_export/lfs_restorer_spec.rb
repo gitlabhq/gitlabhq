@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::LfsRestorer do
+RSpec.describe Gitlab::ImportExport::LfsRestorer, :clean_gitlab_redis_shared_state, feature_category: :importers do
   include UploadHelpers
 
   let(:export_path) { "#{Dir.tmpdir}/lfs_object_restorer_spec" }
@@ -114,6 +114,29 @@ RSpec.describe Gitlab::ImportExport::LfsRestorer do
           expect(
             project.lfs_objects_projects.pluck(:repository_type)
           ).to contain_exactly('project')
+        end
+      end
+
+      describe 'progress tracking' do
+        it 'tracks processed lfs objects' do
+          restorer.restore
+
+          expect(
+            restorer.processed_entry?(
+              scope: { project_id: project.id },
+              data: lfs_object.oid
+            )
+          ).to be(true)
+        end
+
+        context 'when lfs object is already processed' do
+          it 'does not process lfs object again' do
+            restorer.restore
+
+            expect(restorer).not_to receive(:save_processed_entry)
+
+            restorer.restore
+          end
         end
       end
     end

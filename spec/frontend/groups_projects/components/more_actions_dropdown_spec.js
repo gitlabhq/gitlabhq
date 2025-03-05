@@ -44,46 +44,30 @@ describe('moreActionsDropdown', () => {
   const findProjectSettings = () => wrapper.findByTestId('settings-project-link');
 
   describe('copy id', () => {
-    describe('project namespace type', () => {
-      beforeEach(async () => {
+    it.each`
+      isGroup  | id    | expectedTestId       | unexpectedTestId     | expectedText
+      ${false} | ${22} | ${'copy-project-id'} | ${'copy-group-id'}   | ${'Copy project ID: 22'}
+      ${true}  | ${11} | ${'copy-group-id'}   | ${'copy-project-id'} | ${'Copy group ID: 11'}
+    `(
+      'when isGroup is $isGroup',
+      async ({ isGroup, id, expectedTestId, unexpectedTestId, expectedText }) => {
         createComponent({
           provideData: {
-            groupOrProjectId: 22,
+            isGroup,
+            groupOrProjectId: id,
           },
         });
+
         await showDropdown();
-      });
 
-      it('has correct test id `copy-project-id`', () => {
-        expect(wrapper.findByTestId('copy-project-id').exists()).toBe(true);
-        expect(wrapper.findByTestId('copy-group-id').exists()).toBe(false);
-      });
+        const element = wrapper.findByTestId(expectedTestId);
+        const nonexistentElement = wrapper.findByTestId(unexpectedTestId);
 
-      it('renders copy project id with correct id', () => {
-        expect(wrapper.findByTestId('copy-project-id').text()).toBe('Copy project ID: 22');
-      });
-    });
-
-    describe('group namespace type', () => {
-      beforeEach(async () => {
-        createComponent({
-          provideData: {
-            isGroup: true,
-            groupOrProjectId: 11,
-          },
-        });
-        await showDropdown();
-      });
-
-      it('has correct test id `copy-group-id`', () => {
-        expect(wrapper.findByTestId('copy-project-id').exists()).toBe(false);
-        expect(wrapper.findByTestId('copy-group-id').exists()).toBe(true);
-      });
-
-      it('renders copy group id with correct id', () => {
-        expect(wrapper.findByTestId('copy-group-id').text()).toBe('Copy group ID: 11');
-      });
-    });
+        expect(element.exists()).toBe(true);
+        expect(nonexistentElement.exists()).toBe(false);
+        expect(element.text()).toBe(expectedText);
+      },
+    );
   });
 
   describe('dropdown group', () => {

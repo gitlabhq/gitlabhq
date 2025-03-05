@@ -72,11 +72,25 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
     it_behaves_like 'variables collection'
 
     context 'when the pipeline has a trigger request' do
-      let!(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline) }
+      let!(:trigger) { create(:ci_trigger, project: project) }
+      let(:pipeline) { create(:ci_pipeline, trigger: trigger, project: project, user: user) }
 
       it 'includes trigger variables' do
         expect(variables).to include('CI_PIPELINE_TRIGGERED' => 'true')
-        expect(variables).to include('CI_TRIGGER_SHORT_TOKEN' => trigger_request.trigger_short_token)
+        expect(variables).to include('CI_TRIGGER_SHORT_TOKEN' => trigger.trigger_short_token)
+      end
+
+      context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
+        before do
+          stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
+        end
+
+        let!(:trigger_request) { create(:ci_trigger_request, trigger: trigger, pipeline: pipeline) }
+
+        it 'includes trigger variables' do
+          expect(variables).to include('CI_PIPELINE_TRIGGERED' => 'true')
+          expect(variables).to include('CI_TRIGGER_SHORT_TOKEN' => trigger_request.trigger_short_token)
+        end
       end
     end
 

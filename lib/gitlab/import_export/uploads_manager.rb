@@ -4,8 +4,11 @@ module Gitlab
   module ImportExport
     class UploadsManager
       include Gitlab::ImportExport::CommandLineUtil
+      include ::Import::Framework::ProgressTracking
 
       UPLOADS_BATCH_SIZE = 100
+
+      attr_reader :project
 
       def initialize(project:, shared:, relative_export_path: 'uploads')
         @project = project
@@ -26,7 +29,9 @@ module Gitlab
         Dir["#{uploads_export_path}/**/*"].each do |upload|
           next if File.directory?(upload)
 
-          add_upload(upload)
+          with_progress_tracking(**progress_tracking_options(upload)) do
+            add_upload(upload)
+          end
         end
 
         true
@@ -91,6 +96,16 @@ module Gitlab
         # (e.g. downloaded file has filename that exceeds 255 characters).
         # Ignore raised exception, skip such upload, log the error and keep going with the export instead.
         Gitlab::ErrorTracking.log_exception(e, project_id: @project.id)
+      end
+
+      def progress_tracking_options(upload_path)
+        { scope: { project_id: project.id }, data: filename_with_object_id(upload_path) }
+      end
+
+      # Returns filename and the dir name the upload is in
+      # e.g. 72a497a02fe3ee09edae2ed06d390038/image.png
+      def filename_with_object_id(upload_path)
+        upload_path.split('/').last(2).join('/')
       end
     end
   end

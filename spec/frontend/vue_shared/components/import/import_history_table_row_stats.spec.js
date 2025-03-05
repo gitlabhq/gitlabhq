@@ -4,7 +4,7 @@ import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import ImportHistoryTableRowStats from '~/vue_shared/components/import/import_history_table_row_stats.vue';
-import { apiItems } from './mock_data';
+import { apiItems } from './history_mock_data';
 
 describe('ImportHistoryTableRowStats component', () => {
   let wrapper;

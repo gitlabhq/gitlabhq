@@ -76,7 +76,6 @@ Rails/EnumSyntax:
     - 'app/models/key.rb'
     - 'app/models/list.rb'
     - 'app/models/loose_foreign_keys/deleted_record.rb'
-    - 'app/models/members/members/member_approval.rb'
     - 'app/models/merge_request_diff.rb'
     - 'app/models/ml/candidate.rb'
     - 'app/models/namespace/root_storage_statistics.rb'

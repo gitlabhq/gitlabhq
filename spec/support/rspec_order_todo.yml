@@ -2364,7 +2364,6 @@
 - './ee/spec/workers/ci/upstream_projects_subscriptions_cleanup_worker_spec.rb'
 - './ee/spec/workers/compliance_management/chain_of_custody_report_worker_spec.rb'
 - './ee/spec/workers/compliance_management/merge_requests/compliance_violations_worker_spec.rb'
-- './ee/spec/workers/concerns/elastic/migration_obsolete_spec.rb'
 - './ee/spec/workers/concerns/elastic/migration_options_spec.rb'
 - './ee/spec/workers/concerns/update_orchestration_policy_configuration_spec.rb'
 - './ee/spec/workers/create_github_webhook_worker_spec.rb'

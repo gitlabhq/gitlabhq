@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::AvatarRestorer do
+RSpec.describe Gitlab::ImportExport::AvatarRestorer, :clean_gitlab_redis_shared_state, feature_category: :importers do
   include UploadHelpers
 
   let(:shared) { project.import_export_shared }
@@ -27,6 +27,31 @@ RSpec.describe Gitlab::ImportExport::AvatarRestorer do
       described_class.new(project: project, shared: shared).restore
 
       expect(project.reload.avatar.file.exists?).to be true
+    end
+
+    describe 'progress tracking' do
+      subject(:restorer) { described_class.new(project: project, shared: shared) }
+
+      it 'tracks processed avatar' do
+        restorer.restore
+
+        expect(
+          restorer.processed_entry?(
+            scope: { project_id: project.id },
+            data: 'avatar'
+          )
+        ).to be(true)
+      end
+
+      context 'when avatar is already processed' do
+        it 'does not process avatar again' do
+          restorer.restore
+
+          expect(restorer).not_to receive(:save_processed_entry)
+
+          restorer.restore
+        end
+      end
     end
   end
 

@@ -150,14 +150,26 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
       end
 
       context 'when passing inputs' do
-        let(:inputs) { { 'foo' => 'bar' } }
+        let(:inputs) do
+          {
+            'string' => 'bar',
+            boolean: true,
+            'array' => [{ 'foo' => 'bar' }],
+            number: 1
+          }
+        end
+
         let(:config_content_result) do
           <<~CICONFIG
             ---
             include:
             - local: ".gitlab-ci.yml"
               inputs:
-                foo: bar
+                string: bar
+                boolean: true
+                array:
+                - foo: bar
+                number: 1
           CICONFIG
         end
 
@@ -168,6 +180,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
           expect(pipeline.pipeline_config.content).to eq(config_content_result)
           expect(command.config_content).to eq(config_content_result)
           expect(command.pipeline_config.internal_include_prepended?).to eq(true)
+          expect(command.pipeline_config.inputs_for_pipeline_creation).to eq({})
         end
       end
     end
@@ -217,7 +230,15 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
       end
 
       context 'when passing inputs' do
-        let(:inputs) { { 'foo' => 'bar' } }
+        let(:content) do
+          <<~EOY
+            ---
+            stages:
+              - $[[ inputs.stage ]]
+          EOY
+        end
+
+        let(:inputs) { { stage: 'bar' } }
 
         it 'uses the parameter content with inputs' do
           subject.perform!
@@ -226,6 +247,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
           expect(pipeline.pipeline_config.content).to eq(content)
           expect(command.config_content).to eq(content)
           expect(command.pipeline_config.internal_include_prepended?).to eq(false)
+          expect(command.pipeline_config.inputs_for_pipeline_creation).to eq(inputs)
         end
       end
     end

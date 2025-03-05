@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::RepoRestorer do
+RSpec.describe Gitlab::ImportExport::RepoRestorer, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:project_with_repo) do
     create(:project, :repository, :wiki_repo, name: 'test-repo-restorer', path: 'test-repo-restorer').tap do |p|
       p.wiki.create_page('page', 'foobar', :markdown, 'created page')
@@ -22,6 +22,31 @@ RSpec.describe Gitlab::ImportExport::RepoRestorer do
 
   after do
     FileUtils.rm_rf(export_path)
+  end
+
+  shared_examples 'progress tracking' do
+    it 'tracks processed repo' do
+      subject.restore
+
+      expect(
+        subject.processed_entry?(
+          scope: {
+            "#{subject.importable.class.name.to_s.downcase}_id" => subject.importable.id
+          },
+          data: File.basename(bundle_path)
+        )
+      ).to be(true)
+    end
+
+    context 'when repo is already processed' do
+      it 'does not process repo again' do
+        subject.restore
+
+        expect(subject).not_to receive(:save_processed_entry)
+
+        subject.restore
+      end
+    end
   end
 
   describe 'bundle a project Git repo' do
@@ -57,6 +82,8 @@ RSpec.describe Gitlab::ImportExport::RepoRestorer do
         expect(subject.restore).to be_truthy
       end
     end
+
+    include_examples 'progress tracking'
   end
 
   describe 'restore a wiki Git repo' do
@@ -99,5 +126,7 @@ RSpec.describe Gitlab::ImportExport::RepoRestorer do
         expect(shared.errors).to be_empty
       end
     end
+
+    include_examples 'progress tracking'
   end
 end

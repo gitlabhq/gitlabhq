@@ -61,7 +61,9 @@ module Gitlab
         end
 
         def include_inputs
-          { 'inputs' => inputs }.compact_blank
+          { inputs: inputs }
+            .compact_blank
+            .deep_stringify_keys # to avoid symbols in the YAML
         end
       end
     end

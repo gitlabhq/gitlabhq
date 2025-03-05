@@ -345,6 +345,25 @@ To update the OAuth callback URL:
 1. Enter the OAuth callback URL.
    You can enter multiple URLs separated by newlines.
 
+### Access token lifetime cannot be less than 5 minutes
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+You might encounter an error message stating that the access token lifetime cannot be less
+than 5 minutes.
+
+This error occurs when your GitLab instance is configured with an access token expiry time of
+less than 5 minutes. The Web IDE requires access tokens with a minimum lifetime of
+5 minutes to function properly.
+
+To resolve this issue, increase the access token lifetime to at least 5 minutes in your
+instance configuration. For more information about configuring access token expiration,
+see [access token expiration](../../../integration/oauth_provider.md#access-token-expiration).
+
 ### Workhorse dependency
 
 {{< details >}}

@@ -31,6 +31,7 @@ module API
             documentation: { example: '6d056f63e50fe6f8c5f8f4aa10edb7' }
           optional :variables, type: Hash, desc: 'The list of variables to be injected into build',
             documentation: { example: { VAR1: "value1", VAR2: "value2" } }
+          optional :inputs, type: Hash, desc: 'The list of inputs to be used to create the pipeline.'
         end
         post ":id/(ref/:ref/)trigger/pipeline", requirements: { ref: /.+/ } do
           Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20758')

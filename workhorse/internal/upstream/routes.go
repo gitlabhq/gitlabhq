@@ -58,7 +58,7 @@ type routeOptions struct {
 const (
 	apiPattern           = `^/api/`
 	gitProjectPattern    = `^/.+\.git/`
-	geoGitProjectPattern = `^/[^-].+\.git/` // Prevent matching routes like /-/push_from_secondary
+	geoGitProjectPattern = `^/[^-].+\.git/` // Prevent matching routes like /-/from_secondary
 	projectPattern       = `^/([^/]+/){1,}[^/]+/`
 	groupPattern         = `^/groups/([^/]+/){0,}[^/]+/`
 	apiProjectPattern    = apiPattern + `v4/projects/[^/]+` // API: Projects can be encoded via group%2Fsubgroup%2Fproject

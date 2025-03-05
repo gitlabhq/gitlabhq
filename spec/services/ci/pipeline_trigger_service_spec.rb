@@ -45,6 +45,33 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
       end
     end
 
+    shared_examples 'accepting inputs' do
+      let(:inputs) do
+        {
+          deploy_strategy: 'blue-green',
+          job_stage: 'deploy',
+          test_script: ['echo "test"'],
+          test_rules: [
+            { if: '$CI_PIPELINE_SOURCE == "web"' }
+          ]
+        }
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(
+          File.read(Rails.root.join('spec/lib/gitlab/ci/config/yaml/fixtures/complex-included-ci.yml'))
+        )
+      end
+
+      it 'triggers a pipeline using inputs' do
+        expect { result }.to change { Ci::Pipeline.count }.by(1)
+
+        expect(result.payload[:pipeline].builds.map(&:name)).to contain_exactly(
+          'my-job-build 1/2', 'my-job-build 2/2', 'my-job-test', 'my-job-deploy'
+        )
+      end
+    end
+
     context 'with a trigger token' do
       let(:trigger) { create(:ci_trigger, project: project, owner: user) }
 
@@ -150,6 +177,12 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
           expect(result).to be_nil
         end
       end
+
+      context 'when using inputs' do
+        let(:params) { { token: trigger.token, ref: 'master', inputs: inputs } }
+
+        it_behaves_like 'accepting inputs'
+      end
     end
 
     context 'with a pipeline job token' do
@@ -252,6 +285,12 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
           expect { result }.not_to change { Ci::Pipeline.count }
           expect(result).to be_nil
         end
+      end
+
+      context 'when using inputs' do
+        let(:params) { { token: job.token, ref: 'master', inputs: inputs } }
+
+        it_behaves_like 'accepting inputs'
       end
     end
   end

@@ -1,4 +1,4 @@
-import { basic } from 'jest/vue_shared/components/import_history_table/mock_data';
+import { basic } from 'jest/vue_shared/components/import/history_mock_data';
 
 import ImportHistoryTableSource from './import_history_table_source.vue';
 

@@ -33,8 +33,6 @@ class Member < ApplicationRecord
 
   delegate :name, :username, :email, :last_activity_on, to: :user, prefix: true
 
-  has_many :member_approvals, inverse_of: :member, class_name: 'Members::MemberApproval'
-
   validates :expires_at, allow_blank: true, future_date: true
   validates :user, presence: true, unless: :invite?
   validates :source, presence: true

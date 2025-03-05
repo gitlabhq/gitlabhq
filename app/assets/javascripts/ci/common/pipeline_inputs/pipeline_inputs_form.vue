@@ -16,16 +16,43 @@ export default {
           name: 'username',
           description: __('This is a username.'),
           type: 'string',
-          value: 'testuser',
+          value: 'test',
+        },
+        {
+          name: 'priority',
+          description: '',
+          type: 'string',
+          options: ['1', '2', '3'],
+          value: '2',
+        },
+        {
+          name: 'thisOrThat',
+          description: __('testing a boolean'),
+          type: 'boolean',
+          value: 'false',
+          required: true,
+        },
+        {
+          name: 'lalala',
+          description: __('This is something else.'),
+          type: 'number',
+          value: 0,
         },
         {
           name: 'userID',
           description: __('This is an ID.'),
-          type: 'number',
-          value: '001',
+          type: 'array',
+          value: [{ hello: '2' }, '4', '6'],
         },
       ],
     };
+  },
+  methods: {
+    handleInputUpdated(updatedInput) {
+      this.inputs = this.inputs.map((input) =>
+        input.name === updatedInput.name ? updatedInput : input,
+      );
+    },
   },
 };
 </script>
@@ -37,6 +64,6 @@ export default {
     :title="s__('Pipelines|Inputs')"
     icon="code"
   >
-    <pipeline-inputs-table :inputs="inputs" />
+    <pipeline-inputs-table :inputs="inputs" @update="handleInputUpdated" />
   </crud-component>
 </template>

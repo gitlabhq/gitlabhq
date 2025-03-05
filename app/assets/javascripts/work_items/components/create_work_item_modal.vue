@@ -226,7 +226,8 @@ export default {
             if (
               this.useVueRouter &&
               WORK_ITEM_TYPE_VALUE_MAP[workItem?.workItemType?.name] !==
-                WORK_ITEM_TYPE_ENUM_INCIDENT
+                WORK_ITEM_TYPE_ENUM_INCIDENT &&
+              this.$router.getRoutes().some((route) => route.name === 'workItem')
             ) {
               this.$router.push({ name: 'workItem', params: { iid: workItem.iid } });
             } else {

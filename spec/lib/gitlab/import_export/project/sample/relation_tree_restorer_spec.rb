@@ -9,7 +9,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Project::Sample::RelationTreeRestorer do
+RSpec.describe Gitlab::ImportExport::Project::Sample::RelationTreeRestorer, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:importable) { create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project') }
 
   include_context 'relation tree restorer shared context' do

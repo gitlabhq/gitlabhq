@@ -64,6 +64,7 @@ export default {
       return {
         text: this.leaveTitle,
         href: this.leavePath,
+        variant: 'danger',
         extraAttrs: {
           'aria-label': this.leaveTitle,
           'data-method': 'delete',
@@ -71,7 +72,7 @@ export default {
           'data-confirm-btn-variant': 'danger',
           'data-testid': `leave-${this.namespaceType}-link`,
           rel: 'nofollow',
-          class: '!gl-text-danger js-leave-link',
+          class: 'js-leave-link',
         },
       };
     },

@@ -48,6 +48,7 @@ module Ci
     def short_token
       token.delete_prefix(TRIGGER_TOKEN_PREFIX)[0...4] if token.present?
     end
+    alias_method :trigger_short_token, :short_token
 
     def can_access_project?
       Ability.allowed?(self.owner, :create_build, project)

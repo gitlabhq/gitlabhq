@@ -156,7 +156,7 @@ module Keeps
       ast = source.ast
       klass_name = ast.children[0].source
 
-      File.open(file, 'a') { |f| f.write("\n#{klass_name}.prepend ::Elastic::MigrationObsolete\n") }
+      File.open(file, 'a') { |f| f.write("\n#{klass_name}.prepend ::Search::Elastic::MigrationObsolete\n") }
     end
 
     def add_obsolete_to_migration_spec(version, file, name)

@@ -370,7 +370,6 @@ class Project < ApplicationRecord
     primary_key: :project_namespace_id, foreign_key: :member_namespace_id, inverse_of: :project, class_name: 'ProjectMember'
 
   has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
-  has_many :member_approvals, through: :members_and_requesters
 
   has_many :namespace_members_and_requesters, -> { unscope(where: %i[source_id source_type]) },
     primary_key: :project_namespace_id, foreign_key: :member_namespace_id, inverse_of: :project,

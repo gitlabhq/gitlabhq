@@ -114,6 +114,34 @@ RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer, feature_catego
               .to eq("Label can't be blank, Position can't be blank, and Position is not a number")
           end
         end
+
+        describe 'progress tracking' do
+          let(:board) { { 'name' => 'test', 'group_id' => importable.id } }
+
+          it 'tracks processed entry' do
+            restore_relations
+
+            expect(
+              relation_tree_restorer.processed_entry?(
+                scope: {
+                  "#{importable.class.to_s.downcase}_id" => importable.id,
+                  'relation_key' => 'boards'
+                },
+                data: 0
+              )
+            ).to be(true)
+          end
+
+          context 'when entry is already processed' do
+            it 'does not process entry again' do
+              restore_relations
+
+              expect(relation_tree_restorer).not_to receive(:save_processed_entry)
+
+              restore_relations
+            end
+          end
+        end
       end
 
       context 'when invalid relation object has a loggable external identifier' do

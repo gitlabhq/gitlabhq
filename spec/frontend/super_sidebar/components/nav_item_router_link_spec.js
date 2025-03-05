@@ -13,6 +13,7 @@ describe('NavItemRouterLink component', () => {
       stubs: {
         RouterLink: {
           ...RouterLinkStub,
+          props: ['custom', 'activeClass', 'to'],
           render() {
             const children = this.$scopedSlots.default({
               href: '/foo',
@@ -20,20 +21,22 @@ describe('NavItemRouterLink component', () => {
               navigate: jest.fn(),
               ...routerLinkSlotProps,
             });
-            return children;
+            return children[0];
           },
         },
       },
     });
   };
 
+  const findRouterLink = () => wrapper.findComponent(RouterLinkStub);
+
   describe('when `RouterLink` is not active', () => {
     it('renders an anchor tag without active CSS class and `aria-current` attribute', () => {
       createWrapper({ item: { title: 'foo', to: { name: 'foo' } } });
 
-      expect(wrapper.attributes()).toEqual({
+      expect(findRouterLink().props('custom')).toEqual('');
+      expect(findRouterLink().attributes()).toMatchObject({
         href: '/foo',
-        custom: '',
       });
     });
   });
@@ -45,13 +48,13 @@ describe('NavItemRouterLink component', () => {
         routerLinkSlotProps: { isActive: true },
       });
 
-      expect(wrapper.findComponent(RouterLinkStub).props('activeClass')).toBe(
-        'super-sidebar-nav-item-current',
-      );
-      expect(wrapper.attributes()).toEqual({
+      expect(findRouterLink().props()).toMatchObject({
+        activeClass: 'super-sidebar-nav-item-current',
+        custom: '',
+      });
+      expect(findRouterLink().attributes()).toEqual({
         href: '/foo',
         'aria-current': 'page',
-        custom: '',
       });
     });
   });

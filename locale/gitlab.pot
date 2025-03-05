@@ -20898,6 +20898,12 @@ msgstr ""
 msgid "Designs"
 msgstr ""
 
+msgid "Destination"
+msgstr ""
+
+msgid "Destination path"
+msgstr ""
+
 msgid "Destroy"
 msgstr ""
 
@@ -40284,6 +40290,9 @@ msgstr ""
 msgid "Once imported, repositories can be mirrored over SSH. Read more %{link_start}here%{link_end}."
 msgstr ""
 
+msgid "Once you reach the number of seats in your subscription, you can no longer invite or add users to the namespace."
+msgstr ""
+
 msgid "One and only one of %{params} is required"
 msgstr ""
 
@@ -56112,6 +56121,9 @@ msgstr ""
 msgid "Source is not available"
 msgstr ""
 
+msgid "Source name"
+msgstr ""
+
 msgid "Source name is required"
 msgstr ""
 
@@ -59522,6 +59534,9 @@ msgid "This is really just a warning"
 msgstr ""
 
 msgid "This is some information. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "This is something else."
 msgstr ""
 
 msgid "This is the highest peak of users on your installation since the license started."
@@ -63020,9 +63035,6 @@ msgid "User Settings"
 msgstr ""
 
 msgid "User and IP rate limits"
-msgstr ""
-
-msgid "User cap cannot be turned on. The group or one of its subgroups or projects is shared externally."
 msgstr ""
 
 msgid "User caps is enabled for this group. You can manage members on the %{pending_members_link_start}pending members%{pending_members_link_end} page."
@@ -70571,6 +70583,9 @@ msgid "terraform states"
 msgstr ""
 
 msgid "test case"
+msgstr ""
+
+msgid "testing a boolean"
 msgstr ""
 
 msgid "the correct format."

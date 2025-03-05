@@ -159,7 +159,7 @@ func TestGeoProxyFeatureDisabledOnGeoSecondarySite(t *testing.T) {
 
 func TestGeoProxyFeatureEnabledOnGeoSecondarySite(t *testing.T) {
 	testCases := []testCase{
-		{"push from secondary is forwarded", "/-/push_from_secondary/foo/bar.git/info/refs", "Geo primary received request to path /-/push_from_secondary/foo/bar.git/info/refs"},
+		{"request from secondary is forwarded", "/-/from_secondary/foo/bar.git/info/refs", "Geo primary received request to path /-/from_secondary/foo/bar.git/info/refs"},
 		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
 		{"jobs request is forwarded", "/api/v4/jobs/request", "Geo primary received request to path /api/v4/jobs/request"},
 		{"health check is served locally", "/-/health", "Local Rails server received request to path /-/health"},
@@ -237,7 +237,7 @@ func TestGeoProxyFeatureEnablingAndDisabling(t *testing.T) {
 	}
 
 	testCasesProxied := []testCase{
-		{"push from secondary is forwarded", "/-/push_from_secondary/foo/bar.git/info/refs", "Geo primary received request to path /-/push_from_secondary/foo/bar.git/info/refs"},
+		{"request from secondary is forwarded", "/-/from_secondary/foo/bar.git/info/refs", "Geo primary received request to path /-/from_secondary/foo/bar.git/info/refs"},
 		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
 		{"jobs request is forwarded", "/api/v4/jobs/request", "Geo primary received request to path /api/v4/jobs/request"},
 		{"health check is served locally", "/-/health", "Local Rails server received request to path /-/health"},

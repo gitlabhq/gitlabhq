@@ -126,10 +126,23 @@ However, the query matches all possible variations of the string (for example, `
 
 ## Autocomplete suggestions
 
+{{< history >}}
+
+- Showing only users from authorized projects and groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442091) in GitLab 17.10 [with flags](../../administration/feature_flags.md) named `users_search_scoped_to_authorized_namespaces_advanced_search` and `users_search_scoped_to_authorized_namespaces_basic_search`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by feature flags.
+For more information, see the history.
+
+{{< /alert >}}
+
 As you type in the search box, autocomplete suggestions are displayed for:
 
 - [Projects](#search-for-a-project-by-full-path) and groups
-- Users
+- Users from authorized projects and groups
 - Help pages
 - Project features (for example, milestones)
 - Settings (for example, user settings)

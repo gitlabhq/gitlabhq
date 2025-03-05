@@ -425,7 +425,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/models/integrations/drone_ci_spec.rb'
     - 'spec/models/integrations/jira_cloud_app_spec.rb'
     - 'spec/models/list_user_preference_spec.rb'
-    - 'spec/models/members/members/member_approval_spec.rb'
     - 'spec/models/merge_request_diff_spec.rb'
     - 'spec/models/merge_request_spec.rb'
     - 'spec/models/ml/candidate_spec.rb'

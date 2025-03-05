@@ -55,8 +55,8 @@ func TestApiGeoPathsWithGeoProxy(t *testing.T) {
 func TestProjectNotExistingGitHttpPullWithGeoProxy(t *testing.T) {
 	testCases := []testCase{
 		{"secondary info/refs", "/group/project.git/info/refs", "Local Rails server received request to path /group/project.git/info/refs"},
-		{"primary info/refs", "/-/push_from_secondary/2/group/project.git/info/refs", "Geo primary received request to path /-/push_from_secondary/2/group/project.git/info/refs"},
-		{"primary upload-pack", "/-/push_from_secondary/2/group/project.git/git-upload-pack", "Geo primary received request to path /-/push_from_secondary/2/group/project.git/git-upload-pack"},
+		{"primary info/refs", "/-/from_secondary/2/group/project.git/info/refs", "Geo primary received request to path /-/from_secondary/2/group/project.git/info/refs"},
+		{"primary upload-pack", "/-/from_secondary/2/group/project.git/git-upload-pack", "Geo primary received request to path /-/from_secondary/2/group/project.git/git-upload-pack"},
 	}
 
 	runTestCasesWithGeoProxyEnabled(t, testCases)
@@ -65,8 +65,8 @@ func TestProjectNotExistingGitHttpPullWithGeoProxy(t *testing.T) {
 func TestProjectNotExistingGitHttpPushWithGeoProxy(t *testing.T) {
 	testCases := []testCase{
 		{"secondary info/refs", "/group/project.git/info/refs", "Local Rails server received request to path /group/project.git/info/refs"},
-		{"primary info/refs", "/-/push_from_secondary/2/group/project.git/info/refs", "Geo primary received request to path /-/push_from_secondary/2/group/project.git/info/refs"},
-		{"primary receive-pack", "/-/push_from_secondary/2/group/project.git/git-receive-pack", "Geo primary received request to path /-/push_from_secondary/2/group/project.git/git-receive-pack"},
+		{"primary info/refs", "/-/from_secondary/2/group/project.git/info/refs", "Geo primary received request to path /-/from_secondary/2/group/project.git/info/refs"},
+		{"primary receive-pack", "/-/from_secondary/2/group/project.git/git-receive-pack", "Geo primary received request to path /-/from_secondary/2/group/project.git/git-receive-pack"},
 	}
 
 	runTestCasesWithGeoProxyEnabled(t, testCases)

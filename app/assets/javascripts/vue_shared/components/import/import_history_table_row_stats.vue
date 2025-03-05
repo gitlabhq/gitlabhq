@@ -52,7 +52,10 @@ export default {
         return RELATION_STATUS_DATA.complete;
       }
 
-      if (this.item.status_name === IMPORT_HISTORY_TABLE_STATUS.complete) {
+      if (
+        this.item.status_name === IMPORT_HISTORY_TABLE_STATUS.complete ||
+        this.item.status_name === IMPORT_HISTORY_TABLE_STATUS.failed
+      ) {
         return RELATION_STATUS_DATA.failed;
       }
 

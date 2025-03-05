@@ -366,6 +366,37 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         )
       end
     end
+
+    context 'when pipeline has trigger request' do
+      let_it_be(:trigger) { create(:ci_trigger, project: project) }
+
+      before do
+        pipeline.update!(trigger: trigger)
+      end
+
+      it 'includes CI_PIPELINE_TRIGGERED and CI_TRIGGER_SHORT_TOKEN' do
+        expect(subject.to_hash).to include(
+          'CI_PIPELINE_TRIGGERED' => 'true',
+          'CI_TRIGGER_SHORT_TOKEN' => trigger.trigger_short_token
+        )
+      end
+
+      context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
+        let!(:trigger_request) { create(:ci_trigger_request, trigger: trigger, pipeline: pipeline) }
+
+        before do
+          stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
+          job.update!(trigger_request: trigger_request)
+        end
+
+        it 'includes CI_PIPELINE_TRIGGERED and CI_TRIGGER_SHORT_TOKEN' do
+          expect(subject.to_hash).to include(
+            'CI_PIPELINE_TRIGGERED' => 'true',
+            'CI_TRIGGER_SHORT_TOKEN' => trigger_request.trigger_short_token
+          )
+        end
+      end
+    end
   end
 
   describe '#unprotected_scoped_variables' do
@@ -398,7 +429,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
     let(:environment_name) { 'test/master' }
     let(:kubernetes_namespace) { nil }
     let(:extra_attributes) { {} }
-    let(:trigger_request) { nil }
+    let(:trigger_or_request) { nil }
     let(:yaml_variables) { [{ key: 'YAML_VARIABLE', value: 'value' }] }
 
     let(:predefined_variables) do
@@ -486,7 +517,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         environment: environment_name,
         kubernetes_namespace: kubernetes_namespace,
         user: user,
-        trigger_request: trigger_request
+        trigger_or_request: trigger_or_request
       )
     end
 
@@ -627,13 +658,26 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
     end
 
     context 'when pipeline has trigger request' do
-      let!(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline) }
+      context 'for trigger' do
+        let!(:trigger_or_request) { create(:ci_trigger, project: project) }
 
-      it 'includes CI_PIPELINE_TRIGGERED and CI_TRIGGER_SHORT_TOKEN' do
-        expect(subject.to_hash).to include(
-          'CI_PIPELINE_TRIGGERED' => 'true',
-          'CI_TRIGGER_SHORT_TOKEN' => trigger_request.trigger_short_token
-        )
+        it 'includes CI_PIPELINE_TRIGGERED and CI_TRIGGER_SHORT_TOKEN' do
+          expect(subject.to_hash).to include(
+            'CI_PIPELINE_TRIGGERED' => 'true',
+            'CI_TRIGGER_SHORT_TOKEN' => trigger_or_request.trigger_short_token
+          )
+        end
+      end
+
+      context 'for trigger_request' do
+        let!(:trigger_or_request) { create(:ci_trigger_request, pipeline: pipeline) }
+
+        it 'includes CI_PIPELINE_TRIGGERED and CI_TRIGGER_SHORT_TOKEN' do
+          expect(subject.to_hash).to include(
+            'CI_PIPELINE_TRIGGERED' => 'true',
+            'CI_TRIGGER_SHORT_TOKEN' => trigger_or_request.trigger_short_token
+          )
+        end
       end
     end
 

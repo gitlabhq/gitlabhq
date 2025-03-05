@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
@@ -6,15 +7,9 @@ import PipelineInputsTable from '~/ci/common/pipeline_inputs/pipeline_inputs_tab
 describe('PipelineInputsForm', () => {
   let wrapper;
 
-  const mockInputs = [
-    { name: 'input1', value: 'value1' },
-    { name: 'input2', value: 'value2' },
-  ];
-
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMount(PipelineInputsForm, {
       propsData: {
-        inputs: mockInputs,
         ...props,
       },
     });
@@ -38,13 +33,45 @@ describe('PipelineInputsForm', () => {
           title: 'Inputs',
           icon: 'code',
           description: 'Specify the input values to use in this pipeline.',
-          count: mockInputs.length,
+          // This will be changed to use inputs from the query data
+          count: wrapper.vm.inputs.length,
         });
       });
     });
 
-    it('renders a table', () => {
-      expect(findInputsTable().exists()).toBe(true);
+    describe('table', () => {
+      it('renders a table', () => {
+        expect(findInputsTable().exists()).toBe(true);
+      });
+
+      it('sends the correct props to the table', () => {
+        // This will be changed to use inputs from the query data
+        const { inputs } = wrapper.vm;
+        expect(findInputsTable().props()).toMatchObject({ inputs });
+      });
+    });
+
+    describe('event handling', () => {
+      it('updates inputs when input is modified', () => {
+        const firstInput = wrapper.vm.inputs[0];
+        const updatedInput = { ...firstInput, value: 'newValue' };
+
+        wrapper.vm.handleInputUpdated(updatedInput);
+
+        expect(wrapper.vm.inputs.find((input) => input.name === firstInput.name).value).toBe(
+          'newValue',
+        );
+      });
+
+      it('processes update events from the table component', async () => {
+        const updatedInput = { ...wrapper.vm.inputs[0], value: 'updated-value' };
+        findInputsTable().vm.$emit('update', updatedInput);
+        await nextTick();
+
+        expect(wrapper.vm.inputs.find((input) => input.name === updatedInput.name).value).toBe(
+          'updated-value',
+        );
+      });
     });
   });
 });

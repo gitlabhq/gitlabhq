@@ -35,7 +35,7 @@ module Gitlab
                   triggered_for_branch: @pipeline.branch?,
                   ref: @pipeline.ref,
                   pipeline_policy_context: @command.pipeline_policy_context,
-                  inputs: @command.inputs
+                  inputs: ::Ci::PipelineCreation::Inputs.parse_params(@command.inputs)
                 )
               end
             end

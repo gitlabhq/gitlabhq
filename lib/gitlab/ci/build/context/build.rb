@@ -21,9 +21,9 @@ module Gitlab
               .scoped_variables_for_pipeline_seed(
                 attributes,
                 user: pipeline.user,
-                trigger_request: pipeline.legacy_trigger,
                 environment: seed_environment,
-                kubernetes_namespace: seed_kubernetes_namespace
+                kubernetes_namespace: seed_kubernetes_namespace,
+                trigger_or_request: trigger_or_request
               )
           end
           strong_memoize_attr :variables
@@ -57,10 +57,21 @@ module Gitlab
           def simple_variables
             pipeline.variables_builder.scoped_variables_for_pipeline_seed(
               attributes,
-              environment: nil, kubernetes_namespace: nil, user: pipeline.user, trigger_request: pipeline.legacy_trigger
+              user: pipeline.user,
+              environment: nil,
+              kubernetes_namespace: nil,
+              trigger_or_request: trigger_or_request
             )
           end
           strong_memoize_attr :simple_variables
+
+          def trigger_or_request
+            if Feature.enabled?(:ci_read_trigger_from_ci_pipeline, pipeline.project)
+              pipeline.trigger
+            else
+              pipeline.legacy_trigger
+            end
+          end
         end
       end
     end

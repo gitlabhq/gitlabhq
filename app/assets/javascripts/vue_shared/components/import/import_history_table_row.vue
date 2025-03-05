@@ -65,7 +65,7 @@ export default {
       :class="appliedGridClasses"
     >
       <div
-        class="gl-flex gl-items-start gl-gap-3"
+        class="gl-flex gl-min-w-0 gl-items-start gl-gap-3"
         :class="[$options.defaultClasses, isNested && 'gl-pl-7']"
       >
         <gl-button
@@ -85,12 +85,12 @@ export default {
           <!-- @slot Optionally use to provide a checkbox to show when `showToggle` is false for selecting the row -->
           <slot name="checkbox"></slot>
         </div>
-        <div class="gl-flex-grow">
+        <div class="gl-min-w-0 gl-flex-grow">
           <!-- @slot The content of the 1st column -->
           <slot name="column-1"></slot>
         </div>
       </div>
-      <div :class="$options.defaultClasses">
+      <div :class="$options.defaultClasses" class="gl-min-w-0">
         <div>
           <!-- @slot The content of the 2nd column -->
           <slot name="column-2"></slot>

@@ -856,6 +856,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             end
 
             let(:trigger) { create(:ci_trigger, project: project) }
+            let(:pipeline) { create(:ci_pipeline, trigger: trigger, project: project, ref: 'master') }
             let!(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, builds: [job], trigger: trigger) }
 
             before do

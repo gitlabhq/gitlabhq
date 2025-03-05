@@ -2,7 +2,7 @@ import { GlAlert, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import ImportHistoryTableRowErrors from '~/vue_shared/components/import/import_history_table_row_errors.vue';
-import { apiItems } from './mock_data';
+import { apiItems } from './history_mock_data';
 
 describe('ImportHistoryTableRowStats component', () => {
   let wrapper;

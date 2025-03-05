@@ -1036,7 +1036,6 @@ RSpec/NamedSubject:
     - 'ee/spec/workers/ci/runners/stale_group_runners_prune_cron_worker_spec.rb'
     - 'ee/spec/workers/compliance_management/chain_of_custody_report_worker_spec.rb'
     - 'ee/spec/workers/concerns/elastic/migration_helper_spec.rb'
-    - 'ee/spec/workers/concerns/elastic/migration_obsolete_spec.rb'
     - 'ee/spec/workers/concerns/elastic/migration_options_spec.rb'
     - 'ee/spec/workers/create_github_webhook_worker_spec.rb'
     - 'ee/spec/workers/deployments/auto_rollback_worker_spec.rb'
