@@ -79,9 +79,9 @@ export default {
           action: () => {
             this.openModal();
           },
+          variant: 'danger',
           extraAttrs: {
             'data-testid': 'delete-merged-branches-button',
-            class: '!gl-text-red-500',
           },
         },
       ];

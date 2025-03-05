@@ -91,6 +91,7 @@ module Gitlab
       push_frontend_feature_flag(:search_button_top_right, current_user)
       push_frontend_feature_flag(:merge_request_dashboard, current_user, type: :wip)
       push_frontend_feature_flag(:new_project_creation_form, current_user, type: :wip)
+      push_frontend_feature_flag(:work_items_client_side_boards, current_user)
     end
 
     # Exposes the state of a feature flag to the frontend code.

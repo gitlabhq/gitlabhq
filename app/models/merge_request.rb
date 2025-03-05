@@ -1886,6 +1886,7 @@ class MergeRequest < ApplicationRecord
     diff_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:test))
   end
 
+  # rubocop: disable Metrics/AbcSize -- Despite being long, this method is quite straightforward. Splitting it in smaller chunks would likely reduce readability.
   def predefined_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       variables.append(key: 'CI_MERGE_REQUEST_ID', value: id.to_s)
@@ -1897,6 +1898,7 @@ class MergeRequest < ApplicationRecord
       variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_NAME', value: target_branch.to_s)
       variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_PROTECTED', value: ProtectedBranch.protected?(target_project, target_branch).to_s)
       variables.append(key: 'CI_MERGE_REQUEST_TITLE', value: title)
+      variables.append(key: 'CI_MERGE_REQUEST_DRAFT', value: work_in_progress?.to_s)
 
       mr_description, mr_description_truncated = truncate_mr_description
       variables.append(key: 'CI_MERGE_REQUEST_DESCRIPTION', value: mr_description)
@@ -1908,6 +1910,7 @@ class MergeRequest < ApplicationRecord
       variables.concat(source_project_variables)
     end
   end
+  # rubocop: enable Metrics/AbcSize
 
   def compare_test_reports
     unless has_test_reports?

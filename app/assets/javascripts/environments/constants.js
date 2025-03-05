@@ -224,7 +224,6 @@ export const DELETE_POD_ACTION = {
   text: s__('KubernetesDashboard|Delete pod'),
   icon: 'remove',
   variant: 'danger',
-  class: '!gl-text-red-500',
 };
 
 export const FLUX_RECONCILE_ACTION = {

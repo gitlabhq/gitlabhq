@@ -68,8 +68,8 @@ export default {
         {
           text: this.$options.i18n.deletePackage,
           action: () => this.$emit('delete'),
+          variant: 'danger',
           extraAttrs: {
-            class: '!gl-text-red-500',
             'data-testid': 'action-delete',
           },
         },

@@ -1,5 +1,5 @@
 <script>
-import { GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
+import { GlFilteredSearchToken, GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
@@ -92,6 +92,7 @@ const LabelToken = () =>
 const MilestoneToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
+const LocalBoard = () => import('./local_board.vue');
 
 const statusMap = {
   [STATUS_OPEN]: STATE_OPEN,
@@ -103,6 +104,7 @@ export default {
   sortOptions,
   components: {
     GlLoadingIcon,
+    GlButton,
     IssuableList,
     IssueCardStatistics,
     IssueCardTimeInfo,
@@ -110,6 +112,7 @@ export default {
     WorkItemHealthStatus,
     EmptyStateWithoutAnyIssues,
     CreateWorkItemModal,
+    LocalBoard,
   },
   mixins: [glFeatureFlagMixin()],
   inject: [
@@ -167,6 +170,7 @@ export default {
       isRefetching: false,
       hasStateToken: false,
       initialLoadWasFiltered: false,
+      showLocalBoard: false,
     };
   },
   apollo: {
@@ -469,6 +473,9 @@ export default {
       }
       return [];
     },
+    enableClientSideBoardsExperiment() {
+      return this.glFeatures.workItemClientSideBoards;
+    },
     workItemTypeName() {
       return this.workItemType === WORK_ITEM_TYPE_ENUM_EPIC
         ? WORK_ITEM_TYPE_ENUM_EPIC
@@ -718,94 +725,101 @@ export default {
   <gl-loading-icon v-if="!isInitialLoadComplete && !error" class="gl-mt-5" size="lg" />
 
   <div v-else-if="hasAnyIssues || error || initialLoadWasFiltered">
-    <work-item-drawer
-      v-if="workItemDrawerEnabled"
-      :active-item="activeItem"
-      :open="isItemSelected"
-      :issuable-type="activeWorkItemType"
-      :new-comment-template-paths="newCommentTemplatePaths"
-      click-outside-exclude-selector=".issuable-list"
-      @close="activeItem = null"
-      @addChild="refetchItems"
-      @workItemDeleted="deleteItem"
-      @work-item-updated="handleStatusChange"
-    />
-    <issuable-list
-      :active-issuable="activeItem"
-      :add-padding="!withTabs"
-      :current-tab="state"
-      :default-page-size="pageSize"
-      :error="error"
-      :has-next-page="pageInfo.hasNextPage"
-      :has-previous-page="pageInfo.hasPreviousPage"
-      :initial-filter-value="filterTokens"
-      :initial-sort-by="sortKey"
-      :issuables="workItems"
-      :issuables-loading="isLoading"
-      :show-bulk-edit-sidebar="showBulkEditSidebar"
-      namespace="work-items"
-      :full-path="fullPath"
-      recent-searches-storage-key="issues"
-      :search-tokens="searchTokens"
-      show-filtered-search-friendly-text
-      :show-page-size-selector="showPageSizeSelector"
-      :show-pagination-controls="showPaginationControls"
-      show-work-item-type-icon
-      :sort-options="$options.sortOptions"
-      sync-filter-and-sort
-      :tab-counts="tabCounts"
-      :tabs="tabs"
-      use-keyset-pagination
-      :prevent-redirect="workItemDrawerEnabled"
-      @click-tab="handleClickTab"
-      @dismiss-alert="error = undefined"
-      @filter="handleFilter"
-      @next-page="handleNextPage"
-      @page-size-change="handlePageSizeChange"
-      @previous-page="handlePreviousPage"
-      @sort="handleSort"
-      @select-issuable="handleSelect"
-    >
-      <template #nav-actions>
-        <slot name="nav-actions"></slot>
-      </template>
+    <div v-if="showLocalBoard">
+      <local-board :work-item-list-data="workItems" @back="showLocalBoard = false" />
+    </div>
+    <template v-else>
+      <work-item-drawer
+        v-if="workItemDrawerEnabled"
+        :active-item="activeItem"
+        :open="isItemSelected"
+        :issuable-type="activeWorkItemType"
+        :new-comment-template-paths="newCommentTemplatePaths"
+        click-outside-exclude-selector=".issuable-list"
+        @close="activeItem = null"
+        @addChild="refetchItems"
+        @workItemDeleted="deleteItem"
+        @work-item-updated="handleStatusChange"
+      />
+      <issuable-list
+        :active-issuable="activeItem"
+        :add-padding="!withTabs"
+        :current-tab="state"
+        :default-page-size="pageSize"
+        :error="error"
+        :has-next-page="pageInfo.hasNextPage"
+        :has-previous-page="pageInfo.hasPreviousPage"
+        :initial-filter-value="filterTokens"
+        :initial-sort-by="sortKey"
+        :issuables="workItems"
+        :issuables-loading="isLoading"
+        :show-bulk-edit-sidebar="showBulkEditSidebar"
+        namespace="work-items"
+        :full-path="fullPath"
+        recent-searches-storage-key="issues"
+        :search-tokens="searchTokens"
+        show-filtered-search-friendly-text
+        :show-page-size-selector="showPageSizeSelector"
+        :show-pagination-controls="showPaginationControls"
+        show-work-item-type-icon
+        :sort-options="$options.sortOptions"
+        sync-filter-and-sort
+        :tab-counts="tabCounts"
+        :tabs="tabs"
+        use-keyset-pagination
+        :prevent-redirect="workItemDrawerEnabled"
+        @click-tab="handleClickTab"
+        @dismiss-alert="error = undefined"
+        @filter="handleFilter"
+        @next-page="handleNextPage"
+        @page-size-change="handlePageSizeChange"
+        @previous-page="handlePreviousPage"
+        @sort="handleSort"
+        @select-issuable="handleSelect"
+      >
+        <template #nav-actions>
+          <gl-button
+            v-if="enableClientSideBoardsExperiment"
+            data-testid="show-local-board-button"
+            @click="showLocalBoard = true"
+            >{{ __('Launch board') }}</gl-button
+          >
+          <slot name="nav-actions"> </slot>
+        </template>
 
-      <template v-if="!withTabs" #title>
-        <h2>{{ s__('WorkItem|Work items') }}</h2>
-      </template>
+        <template #timeframe="{ issuable = {} }">
+          <issue-card-time-info :issue="issuable" :is-work-item-list="true" />
+        </template>
 
-      <template #timeframe="{ issuable = {} }">
-        <issue-card-time-info :issue="issuable" :is-work-item-list="true" />
-      </template>
+        <template #status="{ issuable }">
+          {{ getStatus(issuable) }}
+        </template>
 
-      <template #status="{ issuable }">
-        {{ getStatus(issuable) }}
-      </template>
+        <template #statistics="{ issuable = {} }">
+          <issue-card-statistics :issue="issuable" />
+        </template>
 
-      <template #statistics="{ issuable = {} }">
-        <issue-card-statistics :issue="issuable" />
-      </template>
+        <template #empty-state>
+          <slot name="list-empty-state" :has-search="hasSearch" :is-open-tab="isOpenTab"></slot>
+        </template>
 
-      <template #empty-state>
-        <slot name="list-empty-state" :has-search="hasSearch" :is-open-tab="isOpenTab"></slot>
-      </template>
+        <template #list-body>
+          <slot name="list-body"></slot>
+        </template>
 
-      <template #list-body>
-        <slot name="list-body"></slot>
-      </template>
+        <template #bulk-edit-actions="{ checkedIssuables }">
+          <slot name="bulk-edit-actions" :checked-issuables="checkedIssuables"></slot>
+        </template>
 
-      <template #bulk-edit-actions="{ checkedIssuables }">
-        <slot name="bulk-edit-actions" :checked-issuables="checkedIssuables"></slot>
-      </template>
+        <template #sidebar-items="{ checkedIssuables }">
+          <slot name="sidebar-items" :checked-issuables="checkedIssuables"></slot>
+        </template>
 
-      <template #sidebar-items="{ checkedIssuables }">
-        <slot name="sidebar-items" :checked-issuables="checkedIssuables"></slot>
-      </template>
-
-      <template #health-status="{ issuable = {} }">
-        <work-item-health-status :issue="issuable" />
-      </template>
-    </issuable-list>
+        <template #health-status="{ issuable = {} }">
+          <work-item-health-status :issue="issuable" />
+        </template>
+      </issuable-list>
+    </template>
   </div>
 
   <div v-else>

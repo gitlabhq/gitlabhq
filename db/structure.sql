@@ -21238,6 +21238,7 @@ CREATE TABLE scan_result_policies (
     custom_roles bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     licenses jsonb DEFAULT '{}'::jsonb NOT NULL,
     namespace_id bigint,
+    approval_policy_rule_id bigint,
     CONSTRAINT age_value_null_or_positive CHECK (((age_value IS NULL) OR (age_value >= 0))),
     CONSTRAINT check_scan_result_policies_rule_idx_positive CHECK (((rule_idx IS NULL) OR (rule_idx >= 0))),
     CONSTRAINT custom_roles_array_check CHECK ((array_position(custom_roles, NULL::bigint) IS NULL))
@@ -35129,6 +35130,8 @@ CREATE INDEX index_scan_execution_policy_rules_on_policy_mgmt_project_id ON scan
 
 CREATE UNIQUE INDEX index_scan_execution_policy_rules_on_unique_policy_rule_index ON scan_execution_policy_rules USING btree (security_policy_id, rule_index);
 
+CREATE INDEX index_scan_result_policies_on_approval_policy_rule_id ON scan_result_policies USING btree (approval_policy_rule_id);
+
 CREATE UNIQUE INDEX index_scan_result_policies_on_configuration_action_and_rule_idx ON scan_result_policies USING btree (security_orchestration_policy_configuration_id, project_id, orchestration_policy_idx, rule_idx, action_idx);
 
 CREATE INDEX index_scan_result_policies_on_namespace_id ON scan_result_policies USING btree (namespace_id);
@@ -39079,6 +39082,9 @@ ALTER TABLE ONLY catalog_resource_versions
 
 ALTER TABLE ONLY merge_request_blocks
     ADD CONSTRAINT fk_1551efdd17 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY scan_result_policies
+    ADD CONSTRAINT fk_159e8f8f79 FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY protected_branch_push_access_levels
     ADD CONSTRAINT fk_15d2a7a4ae FOREIGN KEY (deploy_key_id) REFERENCES keys(id) ON DELETE CASCADE;

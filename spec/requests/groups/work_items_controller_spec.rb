@@ -33,6 +33,32 @@ RSpec.describe 'Group Level Work Items', feature_category: :team_planning do
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
+
+      context 'for work_items_client_side_boards feature flag' do
+        before do
+          stub_feature_flags(work_items_client_side_boards: current_user)
+        end
+
+        it 'provides the feature flag set to true' do
+          get work_items_path
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to have_pushed_frontend_feature_flags(workItemsClientSideBoards: true)
+        end
+
+        context 'when disabled' do
+          before do
+            stub_feature_flags(work_items_client_side_boards: false)
+          end
+
+          it 'provides the feature flag set to false' do
+            get work_items_path
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.body).to have_pushed_frontend_feature_flags(workItemsClientSideBoards: false)
+          end
+        end
+      end
     end
 
     context 'when the user cannot read the group' do

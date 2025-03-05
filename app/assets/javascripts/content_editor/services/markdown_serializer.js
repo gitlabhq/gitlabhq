@@ -52,6 +52,7 @@ import tableCell from './serializer/table_cell';
 import tableHeader from './serializer/table_header';
 import tableRow from './serializer/table_row';
 import table from './serializer/table';
+import time from './serializer/time';
 import htmlNode from './serializer/html_node';
 
 const defaultSerializerConfig = {
@@ -109,6 +110,7 @@ const defaultSerializerConfig = {
     [extensions.TaskItem.name]: taskItem,
     [extensions.TaskList.name]: taskList,
     [extensions.Text.name]: text,
+    [extensions.Time.name]: time,
     [extensions.Video.name]: video,
     [extensions.WordBreak.name]: wordBreak,
     ...extensions.HTMLNodes.reduce((acc, { name }) => ({ ...acc, [name]: htmlNode(name) }), {}),

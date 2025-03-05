@@ -5002,14 +5002,18 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#archived?' do
+    before do
+      pipeline.update!(created_at: 1.day.ago)
+    end
+
     context 'when build is degenerated' do
-      subject { create(:ci_build, :degenerated, pipeline: pipeline) }
+      subject { build_stubbed(:ci_build, :degenerated, pipeline: pipeline) }
 
       it { is_expected.to be_archived }
     end
 
-    context 'for old build' do
-      subject { create(:ci_build, created_at: 1.day.ago, pipeline: pipeline) }
+    context 'for old pipelines' do
+      subject { build_stubbed(:ci_build, pipeline: pipeline) }
 
       context 'when archive_builds_in is set' do
         before do

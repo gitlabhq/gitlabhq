@@ -46,6 +46,8 @@ export default {
 <template>
   <gl-link
     ref="reference"
+    :class="`gfm gfm-${type}`"
+    :data-original="`${data.reference}+`"
     :data-reference-type="type"
     :title="data.title"
     :href="data.webUrl"

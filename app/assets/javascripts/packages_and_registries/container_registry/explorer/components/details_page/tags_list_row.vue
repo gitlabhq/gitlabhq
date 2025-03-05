@@ -99,8 +99,8 @@ export default {
       return [
         {
           text: this.$options.i18n.REMOVE_TAG_BUTTON_TITLE,
+          variant: 'danger',
           extraAttrs: {
-            class: '!gl-text-red-500',
             'data-testid': 'single-delete-button',
           },
           action: () => {

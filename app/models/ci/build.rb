@@ -484,10 +484,7 @@ module Ci
     end
 
     def archived?
-      return true if degenerated?
-
-      archive_builds_older_than = Gitlab::CurrentSettings.current_application_settings.archive_builds_older_than
-      archive_builds_older_than.present? && created_at < archive_builds_older_than
+      degenerated? || super
     end
 
     def playable?

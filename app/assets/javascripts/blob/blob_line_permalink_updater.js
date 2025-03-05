@@ -1,4 +1,4 @@
-import { getLocationHash } from '../lib/utils/url_utility';
+import { getLocationHash } from '~/lib/utils/url_utility';
 import { getPageParamValue, getPageSearchString } from './utils';
 
 const lineNumberRe = /^(L|LC)[0-9]+/;

@@ -161,9 +161,7 @@ export default {
           action: () => {
             this.$emit('delete-note', this.note);
           },
-          extraAttrs: {
-            class: '!gl-text-red-500',
-          },
+          variant: 'danger',
         },
       ];
     },

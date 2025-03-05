@@ -98,6 +98,7 @@ describeSkipVue3(skipReason, () => {
       ...window.gon,
       features: {
         workItemsViewPreference,
+        workItemsClientSideBoards: false,
       },
       current_user_use_work_items_view: workItemsToggleEnabled,
     };

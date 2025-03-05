@@ -41,9 +41,7 @@ describe('ListActions', () => {
       },
       {
         text: 'Delete',
-        extraAttrs: {
-          class: '!gl-text-red-500',
-        },
+        variant: 'danger',
         action: expect.any(Function),
         order: 3,
       },
@@ -78,9 +76,7 @@ describe('ListActions', () => {
       },
       {
         text: 'Delete',
-        extraAttrs: {
-          class: '!gl-text-red-500',
-        },
+        variant: 'danger',
         action: expect.any(Function),
         order: 3,
       },
@@ -113,9 +109,7 @@ describe('ListActions', () => {
     expect(getDropdownItemsProp()).toEqual([
       {
         text: 'Delete',
-        extraAttrs: {
-          class: '!gl-text-red-500',
-        },
+        variant: 'danger',
         action: expect.any(Function),
         order: 3,
       },

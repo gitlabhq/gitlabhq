@@ -19,6 +19,10 @@ export default {
     isScopedLabel() {
       return isScopedLabel({ title: this.data.title });
     },
+    labelMarkdown() {
+      if (this.isScopedLabel || /\W/.test(this.data.title)) return `~"${this.data.title}"`;
+      return `~${this.data.title}`;
+    },
     labelUrl() {
       const { group, project } = extractGroupOrProject();
 
@@ -34,6 +38,9 @@ export default {
 </script>
 <template>
   <gl-label
+    data-reference-type="label"
+    class="gfm gfm-label"
+    :data-original="labelMarkdown"
     :scoped="isScopedLabel"
     :background-color="data.color"
     :title="data.title"

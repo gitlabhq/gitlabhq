@@ -191,12 +191,8 @@ Disabling the personal access tokens of a group's [enterprise users](../enterpri
 - Stops the enterprise users from creating new personal access tokens. This behavior applies
   even if an enterprise user is also an administrator of the group.
 - Disables the existing personal access tokens of the enterprise users.
-- Disables OAuth tokens.
 
 {{< alert type="warning" >}}
-
-Disabling personal access tokens for enterprise users prevents usage of the [Web IDE](../project/web_ide/_index.md),
-limits access to GitLab Pages, and disrupts third-party integrations that use GitLab as an OAuth provider.
 
 Disabling personal access tokens for enterprise users does not disable personal access tokens for [service accounts](service_accounts.md).
 
@@ -204,7 +200,7 @@ Disabling personal access tokens for enterprise users does not disable personal 
 
 To disable the enterprise users' personal access tokens:
 
-1. On the left sidebar, select **Search or go to** and find your group or subgroup.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Under **Personal access tokens**, select **Disable personal access tokens**.

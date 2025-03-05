@@ -11464,6 +11464,9 @@ msgstr ""
 msgid "CVS|Only a project maintainer or owner can toggle this feature."
 msgstr ""
 
+msgid "Cadence"
+msgstr ""
+
 msgid "Cadence is not automated"
 msgstr ""
 
@@ -16822,6 +16825,9 @@ msgstr ""
 msgid "Copy link URL"
 msgstr ""
 
+msgid "Copy permalink"
+msgstr ""
+
 msgid "Copy reference"
 msgstr ""
 
@@ -18403,6 +18409,9 @@ msgid "DPoP preference updated."
 msgstr ""
 
 msgid "DSN"
+msgstr ""
+
+msgid "Daily"
 msgstr ""
 
 msgid "Dashboard"
@@ -29307,6 +29316,9 @@ msgstr ""
 msgid "Hide details"
 msgstr ""
 
+msgid "Hide empty"
+msgstr ""
+
 msgid "Hide file browser"
 msgstr ""
 
@@ -33975,6 +33987,9 @@ msgstr ""
 msgid "Launch a ready-to-code development environment for your project."
 msgstr ""
 
+msgid "Launch board"
+msgstr ""
+
 msgid "Layout|Fixed"
 msgstr ""
 
@@ -37392,6 +37407,9 @@ msgstr ""
 msgid "Month"
 msgstr ""
 
+msgid "Monthly"
+msgstr ""
+
 msgid "Months"
 msgstr ""
 
@@ -38358,6 +38376,9 @@ msgstr ""
 msgid "No AI gateway available."
 msgstr ""
 
+msgid "No Author"
+msgstr ""
+
 msgid "No Epic"
 msgstr ""
 
@@ -38515,6 +38536,9 @@ msgid "No groups or projects found"
 msgstr ""
 
 msgid "No issues found"
+msgstr ""
+
+msgid "No items"
 msgstr ""
 
 msgid "No iteration"
@@ -42188,6 +42212,9 @@ msgid "Period in seconds"
 msgstr ""
 
 msgid "Permalink"
+msgstr ""
+
+msgid "Permalink copied to clipboard."
 msgstr ""
 
 msgid "Permissions"
@@ -52980,7 +53007,7 @@ msgstr ""
 msgid "SecurityOrchestration|Schedule a new"
 msgstr ""
 
-msgid "SecurityOrchestration|Schedules"
+msgid "SecurityOrchestration|Schedule a pipeline on a %{cadenceSelector} cadence for branches"
 msgstr ""
 
 msgid "SecurityOrchestration|Scope"
@@ -55071,6 +55098,9 @@ msgid "Show current status of indexing"
 msgstr ""
 
 msgid "Show details"
+msgstr ""
+
+msgid "Show empty"
 msgstr ""
 
 msgid "Show file browser"
@@ -61419,90 +61449,6 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
-msgid "TrialDiscoverPage|A single application eliminates complex integrations, data checkpoints, and toolchain maintenance, resulting in greater productivity and lower cost."
-msgstr ""
-
-msgid "TrialDiscoverPage|Break down silos to coordinate seamlessly across development, operations, and security with a consistent experience across the development lifecycle."
-msgstr ""
-
-msgid "TrialDiscoverPage|Burn down charts"
-msgstr ""
-
-msgid "TrialDiscoverPage|Code owners"
-msgstr ""
-
-msgid "TrialDiscoverPage|Code review analytics"
-msgstr ""
-
-msgid "TrialDiscoverPage|Collaborate on high-level ideas that share a common theme. Use epics to group issues that cross milestones and projects."
-msgstr ""
-
-msgid "TrialDiscoverPage|Collaboration made easy"
-msgstr ""
-
-msgid "TrialDiscoverPage|Create a more advanced workflow for issues, merge requests, and epics by using scoped, mutually exclusive labels."
-msgstr ""
-
-msgid "TrialDiscoverPage|Dependency scanning"
-msgstr ""
-
-msgid "TrialDiscoverPage|Dynamic application security testing (DAST)"
-msgstr ""
-
-msgid "TrialDiscoverPage|Epics"
-msgstr ""
-
-msgid "TrialDiscoverPage|Find and fix bottlenecks in your code review process by understanding how long open merge requests have been in review."
-msgstr ""
-
-msgid "TrialDiscoverPage|Free guest users"
-msgstr ""
-
-msgid "TrialDiscoverPage|GitLab is infrastructure agnostic. GitLab supports GCP, AWS, OpenShift, VMware, on-premises, bare metal, and more."
-msgstr ""
-
-msgid "TrialDiscoverPage|Keep your application secure by checking your deployed environments for vulnerabilities."
-msgstr ""
-
-msgid "TrialDiscoverPage|Keep your application secure by checking your libraries for vulnerabilities."
-msgstr ""
-
-msgid "TrialDiscoverPage|Let users view what GitLab has to offer without using a subscription seat."
-msgstr ""
-
-msgid "TrialDiscoverPage|Lower cost of development"
-msgstr ""
-
-msgid "TrialDiscoverPage|Maintain high quality code by requiring approval from specific users on your merge requests."
-msgstr ""
-
-msgid "TrialDiscoverPage|Merge request approval rule"
-msgstr ""
-
-msgid "TrialDiscoverPage|Premium"
-msgstr ""
-
-msgid "TrialDiscoverPage|Roadmaps"
-msgstr ""
-
-msgid "TrialDiscoverPage|Scoped Labels"
-msgstr ""
-
-msgid "TrialDiscoverPage|Target the right approvers for your merge request by assigning owners to specific files."
-msgstr ""
-
-msgid "TrialDiscoverPage|Track your development progress by viewing issues in a burndown chart."
-msgstr ""
-
-msgid "TrialDiscoverPage|Ultimate"
-msgstr ""
-
-msgid "TrialDiscoverPage|Visualize your epics and milestones in a timeline."
-msgstr ""
-
-msgid "TrialDiscoverPage|Your software, deployed your way"
-msgstr ""
-
 msgid "TrialDiscover|Deliver value faster with metrics derived from a unified data store to increase revenue, accelerate speed."
 msgstr ""
 
@@ -65409,6 +65355,9 @@ msgid "Week"
 msgstr ""
 
 msgid "Weekday"
+msgstr ""
+
+msgid "Weekly"
 msgstr ""
 
 msgid "Weeks"

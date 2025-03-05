@@ -212,6 +212,7 @@ export default {
     </gl-button>
 
     <gl-button
+      v-if="!glFeatures.blobOverflowMenu"
       v-gl-tooltip.html="permalinkTooltip"
       :aria-keyshortcuts="permalinkShortcutKey"
       data-testid="permalink"

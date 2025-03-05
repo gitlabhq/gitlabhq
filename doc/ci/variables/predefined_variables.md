@@ -202,6 +202,7 @@ and the merge request must be open.
 | `CI_MERGE_REQUEST_TARGET_BRANCH_PROTECTED`  | `true` when the target branch of the merge request is [protected](../../user/project/repository/branches/protected.md). Introduced in GitLab 15.2. |
 | `CI_MERGE_REQUEST_TARGET_BRANCH_SHA`        | The HEAD SHA of the target branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../pipelines/merged_results_pipelines.md). |
 | `CI_MERGE_REQUEST_TITLE`                    | The title of the merge request. |
+| `CI_MERGE_REQUEST_DRAFT`                    | `true` if the merge request is a draft. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275981) in GitLab 17.10. |
 
 ## Predefined variables for external pull request pipelines
 

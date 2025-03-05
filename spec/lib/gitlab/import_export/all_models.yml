@@ -1206,6 +1206,7 @@ vulnerabilities:
   - external_issue_links
   - issue_links
   - related_issues
+  - latest_severity_override
   - severity_overrides
   - state_transitions
   - notes

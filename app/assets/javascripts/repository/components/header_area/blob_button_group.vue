@@ -110,7 +110,7 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown-group>
+  <gl-disclosure-dropdown-group bordered>
     <lock-file-dropdown-item
       v-if="glFeatures.fileLocks"
       :name="blobInfo.name"

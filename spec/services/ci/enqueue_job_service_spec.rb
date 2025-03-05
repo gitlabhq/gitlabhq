@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Ci::EnqueueJobService, '#execute', feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
-  let(:user) { create(:user, developer_of: project) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
-  let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project, created_at: 1.day.ago) }
+  let_it_be_with_reload(:build) { create(:ci_build, :manual, pipeline: pipeline) }
 
   let(:service) do
     described_class.new(build, current_user: user)
@@ -31,7 +31,7 @@ RSpec.describe Ci::EnqueueJobService, '#execute', feature_category: :continuous_
     execute
   end
 
-  it 'returns the job' do
+  it 'returns a service response with a job payload' do
     expect(execute).to eq(build)
   end
 

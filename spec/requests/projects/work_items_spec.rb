@@ -61,6 +61,33 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
       end
     end
 
+    context 'for work_items_client_side_boards feature flag' do
+      before do
+        sign_in(current_user)
+        stub_feature_flags(work_items_client_side_boards: current_user, work_item_planning_view: true)
+      end
+
+      it 'provides the feature flag set to true' do
+        get project_work_items_url(work_item.project)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to have_pushed_frontend_feature_flags(workItemsClientSideBoards: true)
+      end
+
+      context 'when disabled' do
+        before do
+          stub_feature_flags(work_items_client_side_boards: false, work_item_planning_view: true)
+        end
+
+        it 'provides the feature flag set to false' do
+          get project_work_items_url(work_item.project)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to have_pushed_frontend_feature_flags(workItemsClientSideBoards: false)
+        end
+      end
+    end
+
     context 'when the user cannot read the group' do
       before do
         sign_in(current_user)

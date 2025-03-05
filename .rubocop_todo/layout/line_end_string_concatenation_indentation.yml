@@ -114,7 +114,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/app/graphql/types/vulnerability_state_enum.rb'
     - 'ee/app/graphql/types/vulnerability_type.rb'
     - 'ee/app/helpers/ee/members_helper.rb'
-    - 'ee/app/helpers/groups/discovers_helper.rb'
     - 'ee/app/helpers/namespaces/free_user_cap_helper.rb'
     - 'ee/app/helpers/push_rules_helper.rb'
     - 'ee/app/helpers/users/identity_verification_helper.rb'
