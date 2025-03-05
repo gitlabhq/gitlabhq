@@ -804,6 +804,20 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(by_commit_sha).to be_empty
       end
     end
+
+    context 'when commit_sha_scope_logger is disabled' do
+      let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+
+      before do
+        stub_feature_flags(commit_sha_scope_logger: false)
+      end
+
+      it 'does not log' do
+        expect(Gitlab::AppLogger).not_to receive(:info)
+
+        by_commit_sha
+      end
+    end
   end
 
   describe '.by_merged_commit_sha' do
@@ -937,6 +951,20 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       it { is_expected.to eq([merge_request]) }
+    end
+
+    context 'when commit_sha_scope_logger is disabled' do
+      let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+
+      before do
+        stub_feature_flags(commit_sha_scope_logger: false)
+      end
+
+      it 'does not log' do
+        expect(Gitlab::AppLogger).not_to receive(:info)
+
+        subject
+      end
     end
   end
 

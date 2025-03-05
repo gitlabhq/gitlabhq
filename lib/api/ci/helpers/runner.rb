@@ -242,8 +242,6 @@ module API
         end
 
         def get_runner_features_from_request
-          return {} unless Feature.enabled?(:ci_runner_manager_runtime_features, current_runner)
-
           { runtime_features: attributes_for_keys(%w[features], params['info'])['features'] }.compact
         end
 

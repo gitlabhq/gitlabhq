@@ -781,17 +781,32 @@ describe('IssuableItem', () => {
 
     const testCases = [
       {
-        type: 'incident',
+        type: 'Work item incident',
         item: {
           ...mockIssuable,
           workItemType: { name: 'Incident' },
         },
       },
       {
-        type: 'Service Desk issue',
+        type: 'Work item Service Desk issue',
         item: {
           ...mockIssuable,
           workItemType: { name: 'Issue' },
+          author: { username: 'support-bot' },
+        },
+      },
+      {
+        type: 'Legacy incident',
+        item: {
+          ...mockIssuable,
+          type: 'INCIDENT',
+        },
+      },
+      {
+        type: 'Legacy Service Desk issue',
+        item: {
+          ...mockIssuable,
+          type: 'ISSUE',
           author: { username: 'support-bot' },
         },
       },
@@ -813,18 +828,5 @@ describe('IssuableItem', () => {
         });
       });
     });
-  });
-
-  it('redirects to incident webUrl on row click when issuable item is not a work item', async () => {
-    wrapper = createComponent({
-      preventRedirect: true,
-      showCheckbox: false,
-      issuable: { ...mockIssuable, type: 'INCIDENT', namespace: { fullPath: 'gitlab-org/gitlab' } },
-    });
-
-    await findIssuableItemWrapper().trigger('click');
-
-    expect(wrapper.emitted('select-issuable')).not.toBeDefined();
-    expect(visitUrl).toHaveBeenCalledWith(mockIssuable.webUrl);
   });
 });

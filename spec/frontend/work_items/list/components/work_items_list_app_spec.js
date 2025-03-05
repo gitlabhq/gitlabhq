@@ -8,6 +8,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import WorkItemHealthStatus from '~/work_items/components/work_item_health_status.vue';
+import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -82,6 +83,7 @@ describeSkipVue3(skipReason, () => {
   const findIssueCardTimeInfo = () => wrapper.findComponent(IssueCardTimeInfo);
   const findWorkItemHealthStatus = () => wrapper.findComponent(WorkItemHealthStatus);
   const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
+  const findEmptyStateWithoutAnyIssues = () => wrapper.findComponent(EmptyStateWithoutAnyIssues);
 
   const mountComponent = ({
     provide = {},
@@ -722,31 +724,45 @@ describeSkipVue3(skipReason, () => {
     });
   });
 
-  describe('when filters are applied and no work items match', () => {
-    beforeEach(async () => {
-      const emptyWorkItemsQueryResponse = cloneDeep(groupWorkItemsQueryResponse);
-      emptyWorkItemsQueryResponse.data.group.workItems.nodes = [];
+  describe('empty states', () => {
+    const emptyWorkItemsResponse = cloneDeep(groupWorkItemsQueryResponse);
+    emptyWorkItemsResponse.data.group.workItems.nodes = [];
 
-      const emptyWorkItemStateCountsResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
-      emptyWorkItemStateCountsResponse.data.group.workItemStateCounts = {
-        all: 0,
-        closed: 0,
-        opened: 0,
-      };
+    const emptyCountsResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
+    emptyCountsResponse.data.group.workItemStateCounts = {
+      all: 0,
+      closed: 0,
+      opened: 0,
+    };
 
-      setWindowLocation('?label_name=bug');
-
-      mountComponent({
-        queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsQueryResponse),
-        countsQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemStateCountsResponse),
+    describe('when filters are applied and no work items match', () => {
+      beforeEach(async () => {
+        setWindowLocation('?label_name=bug');
+        mountComponent({
+          queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
+          countsQueryHandler: jest.fn().mockResolvedValue(emptyCountsResponse),
+        });
+        await waitForPromises();
       });
 
-      await waitForPromises();
+      it('renders IssuableList component with empty results', () => {
+        expect(findIssuableList().exists()).toBe(true);
+        expect(findIssuableList().props('issuables')).toEqual([]);
+      });
     });
 
-    it('renders IssuableList component with empty results', () => {
-      expect(findIssuableList().exists()).toBe(true);
-      expect(findIssuableList().props('issuables')).toEqual([]);
+    describe('when there are no work items', () => {
+      beforeEach(async () => {
+        mountComponent({
+          queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
+          countsQueryHandler: jest.fn().mockResolvedValue(emptyCountsResponse),
+        });
+        await waitForPromises();
+      });
+
+      it('renders the list empty state', () => {
+        expect(findEmptyStateWithoutAnyIssues().exists()).toBe(true);
+      });
     });
   });
 

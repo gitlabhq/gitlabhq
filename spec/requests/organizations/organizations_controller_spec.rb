@@ -208,6 +208,33 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
         end
       end
 
+      context 'when organization has multiple projects' do
+        let_it_be(:stale_project) do
+          create(:project, organization: organization, last_activity_at: Date.yesterday)
+        end
+
+        let_it_be(:recently_updated_project) do
+          create(:project, organization: organization, last_activity_at: Date.current)
+        end
+
+        before_all do
+          stale_project.add_developer(user)
+          recently_updated_project.add_developer(user)
+
+          sign_in(user)
+        end
+
+        it 'returns events from the projects with the most recent activities' do
+          stub_const("#{described_class}::DEFAULT_RESOURCE_LIMIT", 1)
+
+          get activity_organization_path(organization, format: :json)
+
+          expect(json_response['events'].size).to eq(1)
+          expect(json_response['events'].first["resource_parent"]["full_path"])
+            .to eq(recently_updated_project.full_path)
+        end
+      end
+
       context 'when most recent activities are from groups inaccessible to user' do
         let_it_be(:limit) { 5 }
 

@@ -5,6 +5,8 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import WorkItemHealthStatus from '~/work_items/components/work_item_health_status.vue';
+import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
+import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import {
   convertToApiParams,
   convertToSearchQuery,
@@ -74,6 +76,7 @@ import {
   STATE_CLOSED,
   STATE_OPEN,
   WORK_ITEM_TYPE_ENUM_EPIC,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
 } from '../constants';
 import getWorkItemsQuery from '../graphql/list/get_work_items.query.graphql';
@@ -105,6 +108,8 @@ export default {
     IssueCardTimeInfo,
     WorkItemDrawer,
     WorkItemHealthStatus,
+    EmptyStateWithoutAnyIssues,
+    CreateWorkItemModal,
   },
   mixins: [glFeatureFlagMixin()],
   inject: [
@@ -464,6 +469,11 @@ export default {
       }
       return [];
     },
+    workItemTypeName() {
+      return this.workItemType === WORK_ITEM_TYPE_ENUM_EPIC
+        ? WORK_ITEM_TYPE_ENUM_EPIC
+        : WORK_ITEM_TYPE_ENUM_ISSUE;
+    },
   },
   watch: {
     eeWorkItemUpdateCount() {
@@ -695,6 +705,11 @@ export default {
     checkIfStateTokenExists() {
       return this.filterTokens.some((filterToken) => filterToken.type === TOKEN_TYPE_STATE);
     },
+    handleWorkItemCreated() {
+      this.isInitialLoadComplete = false;
+      this.$apollo.queries.workItems.refetch();
+      this.$apollo.queries.workItemStateCounts.refetch();
+    },
   },
 };
 </script>
@@ -794,6 +809,16 @@ export default {
   </div>
 
   <div v-else>
-    <slot name="page-empty-state"></slot>
+    <slot name="page-empty-state">
+      <empty-state-without-any-issues>
+        <template #new-issue-button>
+          <create-work-item-modal
+            :is-group="isGroup"
+            :work-item-type-name="workItemTypeName"
+            @workItemCreated="handleWorkItemCreated"
+          />
+        </template>
+      </empty-state-without-any-issues>
+    </slot>
   </div>
 </template>

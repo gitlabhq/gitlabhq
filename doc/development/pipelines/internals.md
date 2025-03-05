@@ -274,6 +274,8 @@ The table below lists current exit codes and their meanings:
 |165        | segmentation fault                    |
 |166        | EEXIST: file already exists           |
 |167        | `gitlab.com` overloaded               |
+|168        | gRPC resource exhausted               |
+|169        | SQL query limit exceeded              |
 
 This list can be expanded as new failure patterns emerge. To avoid conflicts with standard Bash exit codes, new custom codes must be 160 or higher.
 

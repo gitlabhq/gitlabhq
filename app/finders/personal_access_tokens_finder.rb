@@ -147,7 +147,6 @@ class PersonalAccessTokensFinder
 
   def by_organization(tokens)
     return tokens unless params[:organization]
-    return tokens unless Feature.enabled?('pat_organization_filter', current_user)
 
     tokens.for_organization(params[:organization])
   end

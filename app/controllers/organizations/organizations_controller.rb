@@ -86,7 +86,8 @@ module Organizations
         # limit + 1 allows us to determine if we have another page.
         # This will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/382473
         limit: activity_query_limit + 1,
-        groups: groups
+        groups: groups,
+        preserve_projects_order: true
       ).to_a.map(&:present)
 
       Events::RenderService.new(current_user).execute(@events)

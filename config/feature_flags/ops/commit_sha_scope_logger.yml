@@ -1,0 +1,9 @@
+---
+name: commit_sha_scope_logger
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183498
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/523367
+milestone: '17.10'
+group: group::code review
+type: ops
+default_enabled: false

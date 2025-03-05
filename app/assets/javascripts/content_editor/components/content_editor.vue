@@ -19,6 +19,7 @@ import CodeBlockBubbleMenu from './bubble_menus/code_block_bubble_menu.vue';
 import LinkBubbleMenu from './bubble_menus/link_bubble_menu.vue';
 import MediaBubbleMenu from './bubble_menus/media_bubble_menu.vue';
 import ReferenceBubbleMenu from './bubble_menus/reference_bubble_menu.vue';
+import TableBubbleMenu from './bubble_menus/table_bubble_menu.vue';
 import FormattingToolbar from './formatting_toolbar.vue';
 import LoadingIndicator from './loading_indicator.vue';
 
@@ -36,6 +37,7 @@ export default {
     MediaBubbleMenu,
     EditorStateObserver,
     ReferenceBubbleMenu,
+    TableBubbleMenu,
     EditorModeSwitcher,
   },
   directives: {
@@ -294,6 +296,7 @@ export default {
         <link-bubble-menu />
         <media-bubble-menu />
         <reference-bubble-menu />
+        <table-bubble-menu />
       </div>
       <div
         class="gl-border-t gl-flex gl-flex-row gl-items-center gl-justify-between gl-rounded-bl-base gl-rounded-br-base gl-border-default gl-px-2"

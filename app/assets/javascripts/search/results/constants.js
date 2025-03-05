@@ -22,3 +22,6 @@ export const HIGHLIGHT_MARK = '​';
 export const HIGHLIGHT_MARK_REGEX = '\u200b';
 export const HIGHLIGHT_HTML_START = '<b class="hll">';
 export const HIGHLIGHT_HTML_END = '</b>';
+export const MAXIMUM_LINE_LENGTH = 3000;
+export const ELLIPSIS = '…';
+export const MAX_GAP = 800;

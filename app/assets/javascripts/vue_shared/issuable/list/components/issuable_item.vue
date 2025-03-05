@@ -26,6 +26,7 @@ import {
   WORK_ITEM_TYPE_VALUE_INCIDENT,
   WORK_ITEM_TYPE_VALUE_ISSUE,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
 } from '~/work_items/constants';
 import {
   isAssigneesWidget,
@@ -122,12 +123,13 @@ export default {
     isIncident() {
       return (
         this.issuable.workItemType?.name === WORK_ITEM_TYPE_VALUE_INCIDENT ||
-        this.issuable.type === WORK_ITEM_TYPE_ENUM_INCIDENT
+        this.issuable?.type === WORK_ITEM_TYPE_ENUM_INCIDENT
       );
     },
     isServiceDeskIssue() {
       return (
-        this.issuable.workItemType?.name === WORK_ITEM_TYPE_VALUE_ISSUE &&
+        (this.issuable?.type === WORK_ITEM_TYPE_ENUM_ISSUE ||
+          this.issuable.workItemType?.name === WORK_ITEM_TYPE_VALUE_ISSUE) &&
         this.issuable?.author?.username === SUPPORT_BOT_USERNAME
       );
     },

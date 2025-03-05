@@ -54,8 +54,8 @@ Prerequisites:
 To configure a self-hosted model:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Self-hosted models**.
-   - If the **Self-hosted models** menu item is not available, synchronize your
+1. Select **GitLab Duo Self-Hosted**.
+   - If the **GitLab Duo Self-Hosted** menu item is not available, synchronize your
      subscription after purchase:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
@@ -115,8 +115,8 @@ Prerequisites:
 ### View configured features
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Self-hosted models**.
-   - If the **Self-hosted models** menu item is not available, synchronize your
+1. Select **GitLab Duo Self-Hosted**.
+   - If the **GitLab Duo Self-Hosted** menu item is not available, synchronize your
      subscription after purchase:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
@@ -128,6 +128,6 @@ Prerequisites:
 Configure the GitLab Duo feature to send queries to the configured self-hosted model:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Self-hosted models**.
-1. Select the **AI-powered features** tab.
+1. Select **GitLab Duo Self-Hosted**.
+1. Select the **GitLab Duo Self-Hosted** tab.
 1. For the feature you want to configure, from the dropdown list, choose the self-hosted model you want to use. For example, `Mistral`.

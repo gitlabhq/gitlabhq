@@ -162,6 +162,20 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         expect(by_commit_sha).to be_empty
       end
     end
+
+    context 'when commit_sha_scope_logger is disabled' do
+      let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+
+      before do
+        stub_feature_flags(commit_sha_scope_logger: false)
+      end
+
+      it 'does not log' do
+        expect(Gitlab::AppLogger).not_to receive(:info)
+
+        by_commit_sha
+      end
+    end
   end
 
   describe '.ids_for_external_storage_migration' do

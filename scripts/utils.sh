@@ -80,7 +80,7 @@ function section_end () {
 
 function rspec_section() {
   section_start "rspec" "RSpec" "false"
-  "$@"
+  run_with_custom_exit_code "$@"
   section_end "rspec"
 }
 
@@ -639,6 +639,14 @@ function find_custom_exit_code() {
     echoerr "Detected GitLab overload error in job trace. Changing exit code to 167."
     exit_code=167
     alert_job_in_slack "$exit_code" "gitlab.com overload"
+
+  elif grep -i -q -e "GRPC::ResourceExhausted" "$trace_file"; then
+    echoerr "Detected GRPC::ResourceExhausted. Changing exit code to 168."
+    exit_code=168
+
+  elif grep -i -q -e "Gitlab::QueryLimiting::Transaction::ThresholdExceededError" "$trace_file"; then
+    echoerr "Detected Gitlab::QueryLimiting::Transaction::ThresholdExceededError. Changing exit code to 169."
+    exit_code=169
 
   else
     echoinfo "not changing exit code"

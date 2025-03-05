@@ -122,6 +122,33 @@ RSpec.describe EventCollection do
       end
     end
 
+    context 'with multiple projects' do
+      let_it_be(:project_1) { create(:project_empty_repo, name: 'Project Z') }
+      let_it_be(:project_1_event) { create(:wiki_page_event, project: project_1) }
+
+      let_it_be(:project_2) { create(:project_empty_repo, name: 'Project A') }
+      let_it_be(:project_2_event) { create(:wiki_page_event, project: project_2) }
+
+      context 'when projects param has an order by clause' do
+        let_it_be(:projects_sorted_by_name) do
+          Project.where(id: [project_1.id, project_2.id]).limit(1).order(:name)
+        end
+
+        context 'when preserve_projects_order is true' do
+          subject(:events) do
+            described_class.new(
+              projects_sorted_by_name,
+              preserve_projects_order: true
+            ).to_a
+          end
+
+          it 'returns events from the first project with respect to the order by column' do
+            expect(events).to contain_exactly(project_2_event)
+          end
+        end
+      end
+    end
+
     context 'with group events' do
       let(:groups) { group.self_and_descendants.public_or_visible_to_user(user) }
       let(:subject) { described_class.new(projects, groups: groups).to_a }

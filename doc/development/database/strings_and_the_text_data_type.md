@@ -35,8 +35,8 @@ validations and index creation while it allows reads and writes).
 
 {{< alert type="note" >}}
 
-Don't use text columns for `attr_encrypted` attributes. Use a
-[`:binary` column](../migration_style_guide.md#encrypted-attributes) instead.
+Don't use text columns for `encrypts` attributes. Use a
+[`:jsonb` column](../migration_style_guide.md#encrypted-attributes) instead
 
 {{< /alert >}}
 

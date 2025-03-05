@@ -3,9 +3,13 @@
 module EventForward
   class EventForwardController < BaseActionController
     def forward
-      process_events
+      if ::Feature.enabled?('collect_product_usage_events', :instance)
+        process_events
 
-      head :ok
+        head :ok
+      else
+        head :not_found
+      end
     end
 
     private

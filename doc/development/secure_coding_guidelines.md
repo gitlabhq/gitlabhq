@@ -1546,8 +1546,7 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
 
 ### At rest
 
-- Credentials must be encrypted while at rest (database or file) with `attr_encrypted`. See [issue #26243](https://gitlab.com/gitlab-org/gitlab/-/issues/26243) before using `attr_encrypted`.
-  - Store the encryption keys separately from the encrypted credentials with proper access control. For instance, store the keys in a vault, KMS, or file. Here is an [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/user.rb#L70-74) use of `attr_encrypted` for encryption with keys stored in separate access controlled file.
+- Credentials must be encrypted while at rest (database or file) with `encrypts`.
   - When the intention is to only compare secrets, store only the salted hash of the secret instead of the encrypted value.
 - Salted hashes should be used to store any sensitive value where the plaintext value itself does not need to be retrieved.
 - Never commit credentials to repositories.
@@ -1586,21 +1585,17 @@ Add the new prefix to:
 
 ### Examples
 
-Encrypting a token with `attr_encrypted` so that the plaintext can be retrieved
-and used later. Use a binary column to store `attr_encrypted` attributes in the database,
-and then set both `encode` and `encode_iv` to `false`. For recommended algorithms, see
-the [GitLab Cryptography Standard](https://handbook.gitlab.com/handbook/security/cryptographic-standard/#algorithmic-standards).
+Encrypting a token with `encrypts` so that the plaintext can be retrieved
+and used later. Use a JSONB to store `encrypts` attributes in the database, and add a length validation that
+[follows the Active Record Encryption recommendations](https://guides.rubyonrails.org/active_record_encryption.html#important-about-storage-and-column-size).
+For most encrypted attributes, a 510 max length should be enough.
 
 ```ruby
 module AlertManagement
   class HttpIntegration < ApplicationRecord
 
-    attr_encrypted :token,
-      mode: :per_attribute_iv,
-      key: Settings.attr_encrypted_db_key_base_32,
-      algorithm: 'aes-256-gcm',
-      encode: false,
-      encode_iv: false
+    encrypts :token
+    validates :token, length: { maximum: 510 }
 ```
 
 Hashing a sensitive value with `CryptoHelper` so that it can be compared in future, but the plaintext is irretrievable:

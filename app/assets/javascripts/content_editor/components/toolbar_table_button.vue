@@ -85,7 +85,6 @@ export default {
       no-caret
       :aria-label="__('Insert table')"
       :toggle-text="__('Insert table')"
-      positioning-strategy="fixed"
       class="content-editor-table-dropdown gl-mr-2"
       text-sr-only
       :fluid-width="true"

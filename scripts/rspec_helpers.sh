@@ -206,27 +206,20 @@ function handle_retry_rspec_in_new_process() {
 function change_exit_code_if_applicable() {
   local previous_exit_status=$1
   local found_known_flaky_test=$previous_exit_status
-  local found_infra_error=$previous_exit_status
   local new_exit_code=$previous_exit_status
 
   # We need to call the GitLab API for those functions.
   if [[ -n "$TEST_FAILURES_PROJECT_TOKEN" ]]; then
     change_exit_code_if_known_flaky_tests $previous_exit_status || found_known_flaky_test=$?
-    change_exit_code_if_known_infra_error $previous_exit_status || found_infra_error=$?
   else
     echoinfo "TEST_FAILURES_PROJECT_TOKEN is not set. We won't try to change the exit code."
   fi
 
   # Update new_exit_code if either of the checks changed the values
-  # Ensure infra error exit code takes precedence because we want to retry it if possible
   echo
   echo "found_known_flaky_test: $found_known_flaky_test"
-  echo "found_infra_error: $found_infra_error"
 
-  if [[ $found_infra_error -ne $previous_exit_status ]]; then
-    new_exit_code=$found_infra_error
-    alert_job_in_slack $new_exit_code "Known infra error caused this job to fail"
-  elif [[ $found_known_flaky_test -ne $previous_exit_status ]]; then
+  if [[ $found_known_flaky_test -ne $previous_exit_status ]]; then
     new_exit_code=$found_known_flaky_test
   fi
 
@@ -258,34 +251,6 @@ function change_exit_code_if_known_flaky_tests() {
   return "${new_exit_code}"
 }
 
-function change_exit_code_if_known_infra_error() {
-  exit_code=$1
-
-  if [[ "${DETECT_INFRA_ERRORS}" != "true" ]]; then
-    echoinfo "Auto-retrying infrastructure errors is disabled. Exiting with exit code ${exit_code}".
-  elif [[ $exit_code -ne 0 ]]; then
-    echo
-    echo "*******************************************************"
-    echo "Checking whether known infra error failed the job"
-    echo "*******************************************************"
-
-    found_infrastructure_error_status=0
-    found_known_flaky_tests_output=$(found_infrastructure_error) || found_infrastructure_error_status=$?
-
-    if [[ $found_infrastructure_error_status -eq 0 ]]; then
-      echo
-      echo "Changing the CI/CD job exit code to 110."
-
-      exit_code=110
-    else
-      echo
-      echo "Not changing the CI/CD job exit code."
-    fi
-  fi
-
-  return $exit_code
-}
-
 function found_known_flaky_tests() {
   # For the input files, we want to get both rspec-${CI_JOB_ID}.json (first RSpec run)
   # and rspec-retry-${CI_JOB_ID}.json (second RSpec run).
@@ -297,13 +262,6 @@ function found_known_flaky_tests() {
     --project "gitlab-org/gitlab" \
     --input-files "rspec/rspec-*${CI_JOB_ID}.json" \
     --health-problem-type failures;
-}
-
-function found_infrastructure_error() {
-  bundle exec detect-infrastructure-failures \
-    --job-id "${CI_JOB_ID}" \
-    --project "${CI_PROJECT_ID}" \
-    --token "${TEST_FAILURES_PROJECT_TOKEN}"
 }
 
 function rspec_parallelized_job() {
