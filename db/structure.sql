@@ -10554,7 +10554,8 @@ CREATE TABLE ci_job_token_authorizations (
     id bigint NOT NULL,
     accessed_project_id bigint NOT NULL,
     origin_project_id bigint NOT NULL,
-    last_authorized_at timestamp with time zone NOT NULL
+    last_authorized_at timestamp with time zone NOT NULL,
+    job_token_policies jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE SEQUENCE ci_job_token_authorizations_id_seq

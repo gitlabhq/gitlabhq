@@ -2,6 +2,7 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Create and maintain a custom feature flag for your GitLab application.
 title: Feature flags
 ---
 
@@ -16,6 +17,8 @@ With feature flags, you can deploy your application's new features to production
 You can toggle a feature on and off to subsets of users, helping you achieve Continuous Delivery.
 Feature flags help reduce risk, allowing you to do controlled testing, and separate feature
 delivery from customer launch.
+
+A [complete list of feature flags](../user/feature_flags.md) in GitLab is also available.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an example of feature flags in action, see [Eliminating risk with feature flags](https://www.youtube.com/watch?v=U9WqoK9froI).

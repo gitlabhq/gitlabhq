@@ -36,8 +36,13 @@ module Ci
 
       def policies_allowed?(accessed_project, policies)
         return true if self_referential?(accessed_project)
-        return true unless accessed_project.ci_inbound_job_token_scope_enabled?
         return false unless inbound_accessible?(accessed_project)
+
+        # We capture policies even if the inbound scopes are disabled or the feature flag is disabled
+        Ci::JobToken::Authorization.capture_job_token_policies(policies) if policies.present?
+
+        return true unless accessed_project.ci_inbound_job_token_scope_enabled?
+        return true unless Feature.enabled?(:add_policies_to_ci_job_token, accessed_project)
 
         policies_allowed_for_accessed_project?(accessed_project, policies)
       end

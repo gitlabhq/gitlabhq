@@ -246,9 +246,17 @@ The following operational features are not available:
 
 ### Feature flags
 
-[Feature flags](../../administration/feature_flags.md) are not available for GitLab Dedicated.
+GitLab uses [feature flags](../../user/feature_flags.md) to support the development and rollout of new or experimental features.
+In GitLab Dedicated:
 
-Feature flags support the development and rollout of new or experimental features on GitLab.com. Features behind feature flags are not considered ready for production use, are experimental and therefore unsafe for GitLab Dedicated. Stability and SLAs may be affected by changing default settings.
+- Features using feature flags that are **enabled by default** are available.
+- Features using feature flags that are **disabled by default** are not available and cannot be enabled by administrators.
+
+Features behind flags that are disabled by default are not ready for production use and therefore unsafe for GitLab Dedicated.
+
+When a feature becomes generally available and the flag is enabled or removed, the feature becomes available in
+GitLab Dedicated in the same GitLab version. GitLab Dedicated follows its own
+[release schedule](../gitlab_dedicated/maintenance.md) for version deployments.
 
 ## Migrate to GitLab Dedicated
 

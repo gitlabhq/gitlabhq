@@ -221,19 +221,37 @@ After you [specify a user cap for the group](../../group/manage.md#specify-a-use
 
 ## Sharing groups
 
-When you want a group to have access to your group,
-you can invite another [group](../../group/_index.md) to the group.
-The invited group's direct members get access to the group.
+When you want another group's members to have access to your group,
+you can invite the [group](../../group/_index.md) to your group.
+The group's direct members get access to the group, which becomes a **shared group**.
+
+Only direct members of the invited group get access to the shared group, not inherited or subgroup members. To grant subgroup members access, invite the subgroup directly.
+
+The following table provides an overview of the group members that get access to a shared group:
+
+| Group member source                                          | Access to shared group |
+|--------------------------------------------------------------|------------------------|
+| Direct member of the group that is invited                   | {{< icon name="check-circle" >}} Yes   |
+| Inherited member of the group that is invited                | {{< icon name="dotted-circle" >}} No    |
+| Member of a subgroup, but not of the group that is invited    | {{< icon name="dotted-circle" >}} No    |
+
+### Member access and roles
+
+Each member's access is based on the:
+
+- Role they're assigned in the invited group.
+- Maximum role you choose when you invite the group.
+
+If a group member has a role for the invited group with fewer permissions than the maximum role for your group,
+the member keeps the permissions of their invited group role.
+The least access is granted between the access in the invited group and the access in the inviting group.
 
 After you invite a group to your group:
 
-- The **Groups** tab of the group's **Members** page lists the invited group. This list includes both public and private groups.
-- The **Members** tab of the group's **Members** page lists the members of the invited group.
-- All direct members of the invited group have access to the inviting group.
-  The least access is granted between the access in the invited group and the access in the inviting group.
-- Inherited members of the invited group do not gain access to the inviting group.
-- On the group's usage quota page, direct members of the invited group who have the **Group Invite** badge
-  next to their profile count towards the billable members of the inviting group.
+- On the group's overview page, groups that this group has been shared with are listed on the **Shared groups** tab.
+- On the group's **Members** page, the invited group is listed on the **Groups** tab. This list includes both public and private groups.
+- On the group's **Members** page, the members of the invited group are listed on the **Members** tab.
+- On the group's usage quota page, direct members of the invited group who have the **Group Invite** badge next to their profile count towards the billable members of the inviting group.
 
 [In GitLab 16.11 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144638),
 the invited group's name and membership source are masked on the **Members** and the **Groups** tabs,

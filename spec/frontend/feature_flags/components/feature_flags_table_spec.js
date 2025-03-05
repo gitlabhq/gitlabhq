@@ -126,9 +126,10 @@ describe('Feature flag table', () => {
       expect(wrapper.findByTestId('flags-table-action-buttons').exists()).toBe(true);
       expect(wrapper.findByTestId('feature-flag-delete-button').exists()).toBe(true);
       expect(wrapper.findByTestId('feature-flag-edit-button').exists()).toBe(true);
-      expect(wrapper.findByTestId('feature-flag-edit-button').attributes('href')).toEqual(
-        'edit/path',
-      );
+      expect(wrapper.findByTestId('feature-flag-edit-button').attributes()).toMatchObject({
+        'aria-label': 'Edit flag name',
+        href: 'edit/path',
+      });
     });
   });
 

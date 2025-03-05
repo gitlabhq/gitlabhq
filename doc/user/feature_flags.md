@@ -2,14 +2,17 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Complete list of flags.
+description: Complete list of all feature flags in GitLab.
 title: All feature flags in GitLab
 layout: feature_flags
 ---
 
-The following feature flags exist in GitLab. These flags determine the availability of each feature.
+GitLab provides feature flags to turn specific features on or off.
+This page contains a list of all feature flags provided by GitLab. In GitLab Self-Managed,
+GitLab administrators can [change the state of these feature flags](../administration/feature_flags.md).
 
-For self-managed instances, [GitLab administrators can change the state of the flag](../administration/feature_flags.md).
+For help developing custom feature flags, see
+[Create a feature flag](../operations/feature_flags.md#create-a-feature-flag).
 
 <!-- markdownlint-disable MD044 -->
 <!-- MD044/proper-names test disabled after this line to make page compatible with markdownlint-cli 0.29.0. -->

@@ -499,24 +499,37 @@ Now that we have mitmproxy and Docker running, we can attempt to sign in and
 push a container image. You may need to run as root to do this. For example:
 
 ```shell
-docker login s3-testing.myregistry.com:5050
-docker push s3-testing.myregistry.com:5050/root/docker-test/docker-image
+docker login example.s3.amazonaws.com:5050
+docker push example.s3.amazonaws.com:5050/root/docker-test/docker-image
 ```
 
 In the example above, we see the following trace on the mitmproxy window:
 
-![mitmproxy output from Docker](img/mitmproxy_docker_v8_11.png)
+```plaintext
+PUT https://example.s3.amazonaws.com:4567/v2/root/docker-test/blobs/uploads/(UUID)/(QUERYSTRING)
+    ← 201 text/plain [no content] 661ms
+HEAD https://example.s3.amazonaws.com:4567/v2/root/docker-test/blobs/sha256:(SHA)
+    ← 307 application/octet-stream [no content] 93ms
+HEAD https://example.s3.amazonaws.com:4567/v2/root/docker-test/blobs/sha256:(SHA)
+    ← 307 application/octet-stream [no content] 101ms
+HEAD https://example.s3.amazonaws.com:4567/v2/root/docker-test/blobs/sha256:(SHA)
+    ← 307 application/octet-stream [no content] 87ms
+HEAD https://amazonaws.example.com/docker/registry/vs/blobs/sha256/dd/(UUID)/data(QUERYSTRING)
+    ← 403 application/xml [no content] 80ms
+HEAD https://amazonaws.example.com/docker/registry/vs/blobs/sha256/dd/(UUID)/data(QUERYSTRING)
+    ← 403 application/xml [no content] 62ms
+```
 
-The above image shows:
+This output shows:
 
-- The initial PUT requests went through fine with a 201 status code.
-- The 201 redirected the client to the S3 bucket.
-- The HEAD request to the AWS bucket reported a 403 Unauthorized.
+- The initial PUT requests went through fine with a `201` status code.
+- The `201` redirected the client to the Amazon S3 bucket.
+- The HEAD request to the AWS bucket reported a `403 Unauthorized`.
 
 What does this mean? This strongly suggests that the S3 user does not have the right
 [permissions to perform a HEAD request](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadObject.html).
 The solution: check the [IAM permissions again](https://distribution.github.io/distribution/storage-drivers/s3/).
-Once the right permissions were set, the error goes away.
+After the right permissions were set, the error went away.
 
 ## Missing `gitlab-registry.key` prevents container repository deletion
 

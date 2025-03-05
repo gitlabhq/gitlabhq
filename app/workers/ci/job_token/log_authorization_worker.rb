@@ -12,10 +12,11 @@ module Ci
       idempotent!
       deduplicate :until_executed, including_scheduled: true, if_deduplicated: :reschedule_once
 
-      def perform(accessed_project_id, origin_project_id)
+      def perform(accessed_project_id, origin_project_id, policies = [])
         Ci::JobToken::Authorization.log_captures!(
           accessed_project_id: accessed_project_id,
-          origin_project_id: origin_project_id
+          origin_project_id: origin_project_id,
+          policies: policies.map(&:to_sym)
         )
       end
     end
