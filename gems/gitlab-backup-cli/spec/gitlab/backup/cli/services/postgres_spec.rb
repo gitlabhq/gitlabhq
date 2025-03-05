@@ -5,6 +5,10 @@ RSpec.describe Gitlab::Backup::Cli::Services::Postgres do
 
   subject(:postgres) { described_class.new(context) }
 
+  after do
+    context.cleanup!
+  end
+
   describe '#entries' do
     context 'with missing database configuration' do
       it 'raises an error' do

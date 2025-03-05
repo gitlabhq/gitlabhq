@@ -7,6 +7,10 @@ RSpec.describe Gitlab::Backup::Cli::Targets::Database do
   let(:database) { described_class.new(context) }
   let(:pipeline_success) { instance_double(Gitlab::Backup::Cli::Shell::Pipeline::Result, success?: true) }
 
+  after do
+    context.cleanup!
+  end
+
   describe '#dump', :silence_output do
     let(:destination) { Pathname(Dir.mktmpdir('database-target', temp_path)) }
 
@@ -17,7 +21,7 @@ RSpec.describe Gitlab::Backup::Cli::Targets::Database do
     it 'creates the destination directory' do
       mock_database_dump!
 
-      expect(FileUtils).to receive(:mkdir_p).with(destination)
+      expect(destination).to be_directory
 
       database.dump(destination)
     end
@@ -99,18 +103,16 @@ RSpec.describe Gitlab::Backup::Cli::Targets::Database do
           pipeline_success
         )
 
-        mock_databases_collection('main') do |db|
+        mock_databases_collection('main') do |_|
           FileUtils.touch(source.join('database.sql.gz'))
-
-          expect(database).to receive(:drop_tables).with(db)
         end
+
+        expect(database).to receive(:drop_tables!)
 
         database.restore(source)
       end
 
       it 'restores the database' do
-        allow(database).to receive(:drop_tables)
-
         mock_databases_collection('main') do |db|
           filepath = source.join('database.sql.gz')
           FileUtils.touch(filepath)

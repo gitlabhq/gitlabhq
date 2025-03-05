@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+namespace :gitlab do
+  namespace :db do
+    task :drop_tables do |_|
+      exit 0
+    end
+  end
+end
+
+task :current_pwd do |_|
+  puts Dir.getwd
+end

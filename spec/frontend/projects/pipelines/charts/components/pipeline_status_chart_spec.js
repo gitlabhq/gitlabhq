@@ -2,6 +2,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { GlStackedColumnChart } from '@gitlab/ui/dist/charts';
 import { shallowMount } from '@vue/test-utils';
 import PipelineStatusChart from '~/projects/pipelines/charts/components/pipeline_status_chart.vue';
+import { stubComponent } from 'helpers/stub_component';
 
 describe('PipelineStatusChart', () => {
   let wrapper;
@@ -9,11 +10,12 @@ describe('PipelineStatusChart', () => {
   const findStackedColumnChart = () => wrapper.findComponent(GlStackedColumnChart);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
-  const createComponent = ({ props } = {}) => {
+  const createComponent = ({ props, ...options } = {}) => {
     wrapper = shallowMount(PipelineStatusChart, {
       propsData: {
         ...props,
       },
+      ...options,
     });
   };
 
@@ -61,5 +63,26 @@ describe('PipelineStatusChart', () => {
       { data: [20, 21], name: 'Failed' },
       { data: [30, 31], name: 'Other' },
     ]);
+  });
+
+  describe('formats tooltip', () => {
+    it.each`
+      date            | expectedTooltip
+      ${'2021-12-01'} | ${'Dec 1, 2021'}
+      ${'2022-12-15'} | ${'Dec 15, 2022'}
+      ${'2023-12-31'} | ${'Dec 31, 2023'}
+    `('$expectedTooltip', ({ date, expectedTooltip }) => {
+      createComponent({
+        stubs: {
+          GlStackedColumnChart: stubComponent(GlStackedColumnChart, {
+            template: `<div>
+                        <slot name="tooltip-title" :params="{ value: '${date}' }"></slot>
+                      </div>`,
+          }),
+        },
+      });
+
+      expect(findStackedColumnChart().text()).toMatchInterpolatedText(expectedTooltip);
+    });
   });
 });

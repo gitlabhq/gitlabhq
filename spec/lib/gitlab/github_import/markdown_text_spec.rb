@@ -124,13 +124,6 @@ RSpec.describe Gitlab::GithubImport::MarkdownText, feature_category: :importers 
       expect(text.to_s).to eq('Hello')
     end
 
-    it 'returns empty text when it receives nil' do
-      author = double(:author, login: nil)
-      text = described_class.new(nil, author, true)
-
-      expect(text.to_s).to eq('')
-    end
-
     it 'returns the text with an extra header when the author was not found' do
       author = double(:author, login: 'Alice')
       text = described_class.new('Hello', author)
@@ -150,11 +143,28 @@ RSpec.describe Gitlab::GithubImport::MarkdownText, feature_category: :importers 
       let(:text) { "I said to @sam_allen\0 the code" }
       let(:instance) { described_class.new(text, project:) }
 
+      subject(:format) { instance.to_s }
+
       it 'calls wrap_mentions_in_backticks and convert_ref_links method as a cleaning step' do
         expect(instance).to receive(:wrap_mentions_in_backticks)
         expect(instance).to receive(:convert_ref_links)
 
-        instance.to_s
+        format
+      end
+
+      context "when the text is blank?" do
+        let(:text) { nil }
+
+        it "skips formatting" do
+          expect(instance).not_to receive(:wrap_mentions_in_backticks)
+          expect(instance).not_to receive(:convert_ref_links)
+
+          format
+        end
+
+        it "returns nil as response" do
+          expect(format).to be_nil
+        end
       end
     end
   end

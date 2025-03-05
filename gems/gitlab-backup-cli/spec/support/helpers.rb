@@ -34,7 +34,16 @@ module GitlabBackupHelpers
   end
 
   def build_test_context
-    TestContext.new
+    TestContext.new.tap do |context|
+      # config/database.yml
+      db = context.gitlab_original_basepath.join('config/database.yml')
+      test_db = context.gitlab_basepath.join('config/database.yml')
+      FileUtils.mkdir_p(File.dirname(test_db))
+      FileUtils.copy(db, test_db)
+
+      # Mocked Rakefile and Gemfile
+      FileUtils.cp_r(fixtures_path.join('gitlab_fake').glob('*'), context.gitlab_basepath)
+    end
   end
 end
 

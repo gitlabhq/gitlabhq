@@ -11,6 +11,7 @@ module Gitlab
       include CronjobQueue
       # rubocop:enable Scalability/CronWorkerContext
 
+      deduplicate :until_executed
       feature_category :importers
       data_consistency :sticky
       idempotent!

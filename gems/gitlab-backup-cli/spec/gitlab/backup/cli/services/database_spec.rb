@@ -1,16 +1,20 @@
 # frozen_string_literal: true
 
 RSpec.describe Gitlab::Backup::Cli::Services::Database do
-  let(:database_yml) { YAML.load_file(fixtures_path.join('config/database.yml'), aliases: true) }
+  let(:context) { build_test_context }
+  let(:connection) { database.send(:connection) }
   let(:mocked_configuration) do
+    database_yml = YAML.load_file(fixtures_path.join('config/database.yml'), aliases: true)
     ActiveRecord::DatabaseConfigurations.new(database_yml).configs_for(env_name: 'test', include_hidden: false).first
   end
 
   let(:test_configuration) do
-    Gitlab::Backup::Cli::Services::Postgres.new(build_test_context).send(:database_configurations).first
+    Gitlab::Backup::Cli::Services::Postgres.new(context).send(:database_configurations).first
   end
 
-  let(:connection) { database.send(:connection) }
+  after do
+    context.cleanup!
+  end
 
   context 'with mocked configuration' do
     subject(:database) { described_class.new(mocked_configuration) }

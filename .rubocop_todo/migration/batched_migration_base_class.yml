@@ -11,7 +11,6 @@ Migration/BatchedMigrationBaseClass:
     - 'lib/gitlab/background_migration/backfill_snippet_repositories.rb'
     - 'lib/gitlab/background_migration/backfill_topics_title.rb'
     - 'lib/gitlab/background_migration/create_security_setting.rb'
-    - 'lib/gitlab/background_migration/fix_first_mentioned_in_commit_at.rb'
     - 'lib/gitlab/background_migration/fix_projects_without_project_feature.rb'
     - 'lib/gitlab/background_migration/fix_projects_without_prometheus_service.rb'
     - 'lib/gitlab/background_migration/legacy_upload_mover.rb'

@@ -2,7 +2,6 @@
 import { GlAlert, GlLink, GlModal, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __, s__, sprintf } from '~/locale';
-import autopopulateAllowlistMutation from '../graphql/mutations/autopopulate_allowlist.mutation.graphql';
 
 export default {
   name: 'AutopopulateAllowlistModal',
@@ -33,12 +32,6 @@ export default {
     },
   },
   apollo: {},
-  data() {
-    return {
-      errorMessage: false,
-      isAutopopulating: false,
-    };
-  },
   computed: {
     authLogExceedsLimitMessage() {
       return sprintf(
@@ -56,14 +49,12 @@ export default {
           text: __('Add entries'),
           attributes: {
             variant: 'confirm',
-            loading: this.isAutopopulating,
           },
         },
         actionSecondary: {
           text: __('Cancel'),
           attributes: {
             variant: 'default',
-            disabled: this.isAutopopulating,
           },
         },
       };
@@ -77,48 +68,15 @@ export default {
     },
   },
   methods: {
-    async autopopulateAllowlist() {
-      this.isAutopopulating = true;
-      this.errorMessage = null;
-
-      try {
-        const {
-          data: {
-            ciJobTokenScopeAutopopulateAllowlist: { errors },
-          },
-        } = await this.$apollo.mutate({
-          mutation: autopopulateAllowlistMutation,
-          variables: {
-            projectPath: this.fullPath,
-          },
-        });
-
-        if (errors.length) {
-          throw new Error(errors[0]);
-        }
-
-        this.$emit('refetch-allowlist');
-        this.hideModal();
-        this.$toast.show(
-          s__('CICD|Authentication log entries were successfully added to the allowlist.'),
-        );
-      } catch (error) {
-        this.errorMessage =
-          error?.message ||
-          s__(
-            'CICD|An error occurred while adding the authentication log entries. Please try again.',
-          );
-      } finally {
-        this.isAutopopulating = false;
-      }
+    autopopulateAllowlist() {
+      this.$emit('autopopulate-allowlist');
     },
     hideModal() {
-      this.errorMessage = null;
       this.$emit('hide');
     },
   },
   compactionAlgorithmHelpPage: helpPagePath('ci/jobs/ci_job_token', {
-    anchor: 'auto-populate-a-projects-allowlist',
+    anchor: 'allowlist-compaction',
   }),
 };
 </script>
@@ -135,9 +93,6 @@ export default {
     @canceled="hideModal"
     @hidden="hideModal"
   >
-    <gl-alert v-if="errorMessage" variant="danger" class="gl-mb-3" :dismissible="false">
-      {{ errorMessage }}
-    </gl-alert>
     <div v-if="authLogExceedsLimit">
       <gl-alert variant="warning" class="gl-mb-3" :dismissible="false">
         {{ authLogExceedsLimitMessage }}
@@ -163,12 +118,15 @@ export default {
         <gl-sprintf
           :message="
             s__(
-              `CICD|You're about to add all entries from the authentication log to the allowlist for %{projectName}. Duplicate entries will be ignored.`,
+              `CICD|You're about to add all entries from the authentication log to the allowlist for %{projectName}. This will also update the Job Token setting to %{codeStart}This project and any groups and projects in the allowlist%{codeEnd}, if not already set. Duplicate entries will be ignored.`,
             )
           "
         >
           <template #projectName>
             <b>{{ projectName }}</b>
+          </template>
+          <template #code="{ content }">
+            <code>{{ content }}</code>
           </template>
         </gl-sprintf>
       </p>
@@ -182,7 +140,7 @@ export default {
       <p>
         {{
           s__(
-            'CICD|The process to add entries could take a moment to complete with large logs or allowlists.',
+            'CICD|The process might take a moment to complete for large authentication logs or allowlists.',
           )
         }}
       </p>

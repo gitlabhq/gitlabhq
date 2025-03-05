@@ -60,6 +60,8 @@ module Gitlab
       end
 
       def to_s
+        return if text.blank?
+
         # Gitlab::EncodingHelper#clean remove `null` chars from the string
         text = clean(format)
         text = convert_ref_links(text, project) if project.present?

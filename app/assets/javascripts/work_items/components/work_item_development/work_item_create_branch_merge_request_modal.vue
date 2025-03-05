@@ -302,8 +302,8 @@ export default {
           cancelToken: this.refCancelToken.token,
         })
         .then(({ data }) => {
-          const branches = data.Branches;
-          const tags = data.Tags;
+          const branches = data?.Branches || [];
+          const tags = data?.Tags || [];
 
           if (target === WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE) {
             this.invalidSource = !(

@@ -163,6 +163,12 @@ it [compacts the allowlist](#allowlist-compaction) to stay under the 200 entry l
 
 #### With the UI
 
+{{< history >}}
+
+- Introduced in [GitLab 17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/498125). [Deployed behind the `:authentication_logs_migration_for_allowlist` feature flag](../../user/feature_flags.md), disabled by default.
+
+{{< /history >}}
+
 To auto-populate the allowlist through the UI:
 
 1. On the left sidebar, select **Search or go** to and find your project.

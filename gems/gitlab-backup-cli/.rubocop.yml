@@ -11,3 +11,6 @@ Rails/Exit:
 RSpec/MultipleMemoizedHelpers:
   Max: 25
   AllowSubject: true
+
+Rails/RakeEnvironment:
+  Enabled: false

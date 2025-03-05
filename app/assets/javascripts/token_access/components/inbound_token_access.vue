@@ -23,6 +23,7 @@ import inboundRemoveGroupCIJobTokenScopeMutation from '../graphql/mutations/inbo
 import inboundUpdateCIJobTokenScopeMutation from '../graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
 import inboundGetCIJobTokenScopeQuery from '../graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
 import inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery from '../graphql/queries/inbound_get_groups_and_projects_with_ci_job_token_scope.query.graphql';
+import autopopulateAllowlistMutation from '../graphql/mutations/autopopulate_allowlist.mutation.graphql';
 import getCiJobTokenScopeAllowlistQuery from '../graphql/queries/get_ci_job_token_scope_allowlist.query.graphql';
 import getAuthLogCountQuery from '../graphql/queries/get_auth_log_count.query.graphql';
 import removeAutopopulatedEntriesMutation from '../graphql/mutations/remove_autopopulated_entries.mutation.graphql';
@@ -69,16 +70,6 @@ export default {
     {
       value: true,
       text: s__('CICD|Only this project and any groups and projects in the allowlist'),
-    },
-  ],
-  crudFormActions: [
-    {
-      text: __('Group or project'),
-      value: JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT,
-    },
-    {
-      text: __('All projects in authentication log'),
-      value: JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG,
     },
   ],
   components: {
@@ -206,6 +197,23 @@ export default {
         anchor: 'control-job-token-access-to-your-project',
       });
     },
+    crudFormActions() {
+      const actions = [
+        {
+          text: __('Group or project'),
+          value: JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT,
+        },
+      ];
+
+      if (this.authLogCount > 0) {
+        actions.push({
+          text: __('All projects in authentication log'),
+          value: JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG,
+        });
+      }
+
+      return actions;
+    },
     allowlist() {
       const { groups, projects } = this.groupsAndProjectsWithAccess;
       return [...groups, ...projects];
@@ -223,6 +231,9 @@ export default {
           },
         },
       ];
+    },
+    hasAutoPopulatedEntries() {
+      return this.allowlist.filter((entry) => entry.autopopulated).length > 0;
     },
     groupCount() {
       return this.groupsAndProjectsWithAccess.groups.length;
@@ -317,6 +328,43 @@ export default {
       this.refetchGroupsAndProjects();
       return Promise.resolve();
     },
+    async autopopulateAllowlist() {
+      this.hideSelectedAction();
+      this.autopopulationErrorMessage = null;
+      this.allowlistLoadingMessage = s__(
+        'CICD|Auto-populating allowlist entries. Please wait while the action completes.',
+      );
+
+      try {
+        const {
+          data: {
+            ciJobTokenScopeAutopopulateAllowlist: { errors },
+          },
+        } = await this.$apollo.mutate({
+          mutation: autopopulateAllowlistMutation,
+          variables: {
+            projectPath: this.fullPath,
+          },
+        });
+
+        if (errors.length) {
+          this.autopopulationErrorMessage = errors[0].message;
+          return;
+        }
+
+        this.$apollo.queries.inboundJobTokenScopeEnabled.refetch();
+        this.refetchAllowlist();
+        this.$toast.show(
+          s__('CICD|Authentication log entries were successfully added to the allowlist.'),
+        );
+      } catch {
+        this.autopopulationErrorMessage = s__(
+          'CICD|An error occurred while adding the authentication log entries. Please try again.',
+        );
+      } finally {
+        this.allowlistLoadingMessage = '';
+      }
+    },
     async removeAutopopulatedEntries() {
       this.hideSelectedAction();
       this.autopopulationErrorMessage = null;
@@ -388,7 +436,7 @@ export default {
       :project-name="projectName"
       :show-modal="showAutopopulateModal"
       @hide="hideSelectedAction"
-      @refetch-allowlist="refetchAllowlist"
+      @autopopulate-allowlist="autopopulateAllowlist"
     />
     <remove-autopopulated-entries-modal
       :show-modal="showRemoveAutopopulatedEntriesModal"
@@ -451,13 +499,14 @@ export default {
       <template v-if="canAutopopulateAuthLog" #actions="{ showForm }">
         <gl-collapsible-listbox
           v-model="selectedAction"
-          :items="$options.crudFormActions"
+          :items="crudFormActions"
           :toggle-text="$options.i18n.add"
           data-testid="form-selector"
           size="small"
           @select="selectAction($event, showForm)"
         />
         <gl-disclosure-dropdown
+          v-if="hasAutoPopulatedEntries"
           category="tertiary"
           icon="ellipsis_v"
           no-caret

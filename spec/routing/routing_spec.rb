@@ -115,8 +115,8 @@ RSpec.describe HelpController, "routing" do
     path = '/help/user/markdown.md'
     expect(get(path)).to route_to('help#show', path: 'user/markdown', format: 'md')
 
-    path = '/help/user/markdown/markdown_logo.png'
-    expect(get(path)).to route_to('help#show', path: 'user/markdown/markdown_logo', format: 'png')
+    path = '/help/user/markdown/markdown_logo_v17_11.png'
+    expect(get(path)).to route_to('help#show', path: 'user/markdown/markdown_logo_v17_11', format: 'png')
   end
 end
 

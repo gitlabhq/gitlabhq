@@ -18,6 +18,10 @@ module Gitlab
           ].freeze
           IGNORED_ERRORS_REGEXP = Regexp.union(IGNORED_ERRORS).freeze
 
+          # Rake task used to drop all tables from GitLab databases
+          # This task is executed before restoring data
+          DROP_TABLES_TASK = "gitlab:db:drop_tables"
+
           attr_reader :errors
 
           def initialize(context)
@@ -66,6 +70,10 @@ module Gitlab
           def restore(source)
             databases = Gitlab::Backup::Cli::Services::Postgres.new(context)
 
+            # Drop all tables Load the schema to ensure we don't have any newer tables
+            # hanging out from a failed upgrade
+            drop_tables!
+
             databases.each do |db|
               database_name = db.configuration.name
               pg_database_name = db.configuration.database
@@ -88,10 +96,6 @@ module Gitlab
 
                 next
               end
-
-              # Drop all tables Load the schema to ensure we don't have any newer tables
-              # hanging out from a failed upgrade
-              drop_tables(db)
 
               Gitlab::Backup::Cli::Output.info "Restoring PostgreSQL database #{pg_database_name} ... "
 
@@ -151,18 +155,22 @@ module Gitlab
             Gitlab::Backup::Cli::Output.print_tag(status ? :success : :failure)
           end
 
-          def drop_tables(database)
-            pg_database_name = database.configuration.database
-            Gitlab::Backup::Cli::Output.print_info "Cleaning the '#{pg_database_name}' database ... "
+          def drop_tables!
+            Gitlab::Backup::Cli::Output.print_info "Cleaning existing databases ... "
 
-            if Rake::Task.task_defined? "gitlab:db:drop_tables:#{database.configuration.name}"
-              Rake::Task["gitlab:db:drop_tables:#{database.configuration.name}"].invoke
-            else
-              # In single database (single or two connections)
-              Rake::Task["gitlab:db:drop_tables"].invoke
+            gitlab_path = context.gitlab_basepath
+
+            # Drop existing tables from configured databases before restoring from a backup
+            rake = Utils::Rake.new(DROP_TABLES_TASK, chdir: gitlab_path).execute
+
+            unless rake.success?
+              Gitlab::Backup::Cli::Output.print_tag(:failure)
+
+              raise Errors::DatabaseCleanupError.new(task: DROP_TABLES_TASK, path: gitlab_path, error: rake.stderr)
             end
 
             Gitlab::Backup::Cli::Output.print_tag(:success)
+            Gitlab::Backup::Cli::Output.info(rake.output) unless rake.output.empty?
           end
 
           def restore_tables(database:, filepath:)

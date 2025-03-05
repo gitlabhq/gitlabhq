@@ -1007,6 +1007,7 @@ An automated process migrates results from previous scanners after the first sca
 
 Because it scans your project in more detail, Advanced SAST may take more time to scan your project.
 If needed, you can [disable GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast#disable-gitlab-advanced-sast-scanning) by setting the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `false`.
+You can set this variable in your project, group, or policy now to prevent Advanced SAST from being enabled by default in GitLab 18.0.
 
 </div>
 

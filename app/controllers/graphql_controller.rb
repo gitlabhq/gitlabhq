@@ -135,6 +135,7 @@ class GraphqlController < ApplicationController
   private
 
   def check_dpop!
+    return unless !!sessionless_user? # DPoP is only enforced on token-based authentication
     return unless current_user && Feature.enabled?(:dpop_authentication, current_user)
 
     token = extract_personal_access_token

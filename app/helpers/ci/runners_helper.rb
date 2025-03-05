@@ -81,6 +81,15 @@ module Ci
       })
     end
 
+    def admin_runners_fleet_dashboard_data
+      {
+        admin_runners_path: admin_runners_path,
+        new_runner_path: new_admin_runner_path,
+        clickhouse_ci_analytics_available: ::Gitlab::ClickHouse.configured?.to_s,
+        can_admin_runners: current_user.can_admin_all_resources?.to_s
+      }
+    end
+
     def group_shared_runners_settings_data(group)
       data = {
         group_id: group.id,

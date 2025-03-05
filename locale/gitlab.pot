@@ -11251,6 +11251,9 @@ msgstr ""
 msgid "CICD|Auto DevOps"
 msgstr ""
 
+msgid "CICD|Auto-populating allowlist entries. Please wait while the action completes."
+msgstr ""
+
 msgid "CICD|Automatic deployment to staging, manual deployment to production"
 msgstr ""
 
@@ -11371,7 +11374,7 @@ msgstr ""
 msgid "CICD|The allowlist can contain a maximum of %{projectAllowlistLimit} groups and projects."
 msgstr ""
 
-msgid "CICD|The process to add entries could take a moment to complete with large logs or allowlists."
+msgid "CICD|The process might take a moment to complete for large authentication logs or allowlists."
 msgstr ""
 
 msgid "CICD|There are several CI/CD limits in place."
@@ -11398,7 +11401,7 @@ msgstr ""
 msgid "CICD|When enabled, all projects must use their allowlist to control CI/CD job token access between projects. The option to allow access from all groups and projects is hidden. %{link_start}Learn More.%{link_end}"
 msgstr ""
 
-msgid "CICD|You're about to add all entries from the authentication log to the allowlist for %{projectName}. Duplicate entries will be ignored."
+msgid "CICD|You're about to add all entries from the authentication log to the allowlist for %{projectName}. This will also update the Job Token setting to %{codeStart}This project and any groups and projects in the allowlist%{codeEnd}, if not already set. Duplicate entries will be ignored."
 msgstr ""
 
 msgid "CICD|group enabled"
@@ -21671,6 +21674,18 @@ msgstr ""
 msgid "DuoChat|Give feedback"
 msgstr ""
 
+msgid "DuoChat|How do I change my password in GitLab?"
+msgstr ""
+
+msgid "DuoChat|How do I clone a repository?"
+msgstr ""
+
+msgid "DuoChat|How do I create a template?"
+msgstr ""
+
+msgid "DuoChat|How do I fork a project?"
+msgstr ""
+
 msgid "DuoChat|How to use GitLab"
 msgstr ""
 
@@ -29280,22 +29295,10 @@ msgstr ""
 msgid "How can I make my variables more secure?"
 msgstr ""
 
-msgid "How do I change my password in GitLab?"
-msgstr ""
-
-msgid "How do I clone a repository?"
-msgstr ""
-
 msgid "How do I configure Akismet?"
 msgstr ""
 
 msgid "How do I configure this integration?"
-msgstr ""
-
-msgid "How do I create a template?"
-msgstr ""
-
-msgid "How do I fork a project?"
 msgstr ""
 
 msgid "How do I generate it?"

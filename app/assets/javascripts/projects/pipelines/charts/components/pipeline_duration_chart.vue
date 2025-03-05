@@ -2,6 +2,8 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { GlLineChart } from '@gitlab/ui/dist/charts';
 import { s__ } from '~/locale';
+import { stringifyTime, parseSeconds } from '~/lib/utils/datetime/date_format_utility';
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 
 export default {
   components: {
@@ -35,6 +37,17 @@ export default {
       return durationSeries;
     },
   },
+  methods: {
+    formatDate(isoDateStr) {
+      if (isoDateStr) {
+        return localeDateFormat.asDate.format(new Date(isoDateStr));
+      }
+      return '';
+    },
+    formatDuration(seconds) {
+      return stringifyTime(parseSeconds(seconds, { daysPerWeek: 7, hoursPerDay: 24 }));
+    },
+  },
   lineChartOptions: {
     yAxis: {
       name: s__('Pipeline|Seconds'),
@@ -55,6 +68,13 @@ export default {
       :data="data"
       :option="$options.lineChartOptions"
       :include-legend-avg-max="false"
-    />
+    >
+      <template #tooltip-title="{ params }">
+        <template v-if="params && params.value">{{ formatDate(params.value) }}</template>
+      </template>
+      <template #tooltip-value="{ value }">
+        {{ formatDuration(value) }}
+      </template>
+    </gl-line-chart>
   </div>
 </template>

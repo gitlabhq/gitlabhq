@@ -349,7 +349,7 @@ RSpec.describe HelpController do
     context 'for image formats' do
       context 'when requested file exists' do
         it 'renders the raw file' do
-          get :show, params: { path: 'user/img/markdown_logo' }, format: :png
+          get :show, params: { path: 'user/img/markdown_logo_v17_11' }, format: :png
 
           aggregate_failures do
             expect(response).to be_successful

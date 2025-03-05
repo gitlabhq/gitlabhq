@@ -10,7 +10,6 @@ Migration/BackgroundMigrationRecord:
     - 'lib/gitlab/background_migration/backfill_draft_status_on_merge_requests.rb'
     - 'lib/gitlab/background_migration/backfill_project_repositories.rb'
     - 'lib/gitlab/background_migration/backfill_topics_title.rb'
-    - 'lib/gitlab/background_migration/fix_first_mentioned_in_commit_at.rb'
     - 'lib/gitlab/background_migration/fix_projects_without_prometheus_service.rb'
     - 'lib/gitlab/background_migration/migrate_null_private_profile_to_false.rb'
     - 'lib/gitlab/background_migration/populate_latest_pipeline_ids.rb'
