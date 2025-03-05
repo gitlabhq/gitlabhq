@@ -93,7 +93,7 @@ describe('content_editor/components/toolbar_button', () => {
 
       buildWrapper({ editorCommand });
 
-      await findButton().trigger('click');
+      await findButton().vm.$emit('click');
 
       expect(mockCommands[editorCommand]).toHaveBeenCalled();
       expect(mockCommands.focus).toHaveBeenCalled();
@@ -107,7 +107,7 @@ describe('content_editor/components/toolbar_button', () => {
 
       buildWrapper();
 
-      await findButton().trigger('click');
+      await findButton().vm.$emit('click');
 
       expect(mockCommands[editorCommand]).not.toHaveBeenCalled();
       expect(wrapper.emitted().execute).toHaveLength(1);

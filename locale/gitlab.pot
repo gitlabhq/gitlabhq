@@ -6878,6 +6878,9 @@ msgstr ""
 msgid "Analytics settings"
 msgstr ""
 
+msgid "AnalyticsDashboards|Failed to load namespace metadata."
+msgstr ""
+
 msgid "Analytics| Last updated: %{recordedAt}"
 msgstr ""
 
@@ -18453,6 +18456,12 @@ msgstr ""
 msgid "DastProfiles|A cookie name and value to be added to every request."
 msgstr ""
 
+msgid "DastProfiles|A list of modules and their intended logging level for use in the console log."
+msgstr ""
+
+msgid "DastProfiles|A list of modules and their intended logging level for use in the file log."
+msgstr ""
+
 msgid "DastProfiles|A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities."
 msgstr ""
 
@@ -18462,7 +18471,16 @@ msgstr ""
 msgid "DastProfiles|A selector describing an element whose presence is used to determine if authentication has succeeded after the login form is submitted."
 msgstr ""
 
+msgid "DastProfiles|A selector describing the element clicked on to submit the login form for a single-page login form, or the password form for a multi-page login form."
+msgstr ""
+
 msgid "DastProfiles|A selector describing the element that is clicked on to submit the username form of a multi-page login process."
+msgstr ""
+
+msgid "DastProfiles|A selector describing the element used to enter the password on the login form."
+msgstr ""
+
+msgid "DastProfiles|A selector describing the element used to enter the username on the login form."
 msgstr ""
 
 msgid "DastProfiles|A site profile defines the attributes and configuration details of your deployed application, website, or API. %{linkStart}Learn more%{linkEnd}."
@@ -18537,6 +18555,12 @@ msgstr ""
 msgid "DastProfiles|Clear input fields"
 msgstr ""
 
+msgid "DastProfiles|Comma-separated list of check identifiers to exclude from the scan. For identifiers, see [vulnerability checks](../checks/_index.md)."
+msgstr ""
+
+msgid "DastProfiles|Comma-separated list of check identifiers to use for the scan. For identifiers, see [vulnerability checks](../checks/_index.md)."
+msgstr ""
+
 msgid "DastProfiles|Comma-separated list of selectors that are ignored when scanning."
 msgstr ""
 
@@ -18600,6 +18624,9 @@ msgstr ""
 msgid "DastProfiles|Disables clearing of username and password fields before attempting manual login. Set to false by default."
 msgstr ""
 
+msgid "DastProfiles|Docker registry"
+msgstr ""
+
 msgid "DastProfiles|Edit DAST variable"
 msgstr ""
 
@@ -18642,6 +18669,9 @@ msgstr ""
 msgid "DastProfiles|Excluded URLs (optional)"
 msgstr ""
 
+msgid "DastProfiles|Excluded checks"
+msgstr ""
+
 msgid "DastProfiles|Excluded elements"
 msgstr ""
 
@@ -18663,6 +18693,15 @@ msgstr ""
 msgid "DastProfiles|First submit field"
 msgstr ""
 
+msgid "DastProfiles|Full scan"
+msgstr ""
+
+msgid "DastProfiles|Generate authentication report"
+msgstr ""
+
+msgid "DastProfiles|Generate graph"
+msgstr ""
+
 msgid "DastProfiles|Hide debug messages"
 msgstr ""
 
@@ -18681,7 +18720,25 @@ msgstr ""
 msgid "DastProfiles|Include debug messages in the DAST console output."
 msgstr ""
 
+msgid "DastProfiles|Included checks"
+msgstr ""
+
 msgid "DastProfiles|Loading element"
+msgstr ""
+
+msgid "DastProfiles|Log browser output"
+msgstr ""
+
+msgid "DastProfiles|Log file levels"
+msgstr ""
+
+msgid "DastProfiles|Log file path"
+msgstr ""
+
+msgid "DastProfiles|Log levels"
+msgstr ""
+
+msgid "DastProfiles|Log messages"
 msgstr ""
 
 msgid "DastProfiles|Manage %{profileType} profiles"
@@ -18765,6 +18822,9 @@ msgstr ""
 msgid "DastProfiles|Password"
 msgstr ""
 
+msgid "DastProfiles|Password field"
+msgstr ""
+
 msgid "DastProfiles|Password form field"
 msgstr ""
 
@@ -18840,16 +18900,40 @@ msgstr ""
 msgid "DastProfiles|Selector that, when no longer visible on the page, indicates to the analyzer that the page has finished loading and the scan can continue. Cannot be used with `DAST_PAGE_IS_READY_ELEMENT`."
 msgstr ""
 
+msgid "DastProfiles|Set the Docker registry base address from which to download the analyzer."
+msgstr ""
+
 msgid "DastProfiles|Set to `false` to disable caching. Default: `true`. **Note:** Disabling cache can cause OOM events or DAST job timeouts."
 msgstr ""
 
-msgid "DastProfiles|Set to `true` to add a `Via` header to every request sent, advertising that the request was sent as part of a GitLab DAST scan. Default: `false`."
+msgid "DastProfiles|Set to `true` to add a `Via: GitLab DAST %{version}` header to every request sent, advertising that the request was sent as part of a GitLab DAST scan. Default: `false`."
+msgstr ""
+
+msgid "DastProfiles|Set to `true` to generate a report detailing steps taken during the authentication process. You must also define `gl-dast-debug-auth-report.html` as a CI job artifact to be able to access the generated report. The report's content aids when debugging authentication failures. Defaults to `false`."
+msgstr ""
+
+msgid "DastProfiles|Set to `true` to generate an SVG graph of navigation paths visited during crawl phase of the scan. You must also define `gl-dast-crawl-graph.svg` as a CI job artifact to be able to access the generated graph. Defaults to `false`."
+msgstr ""
+
+msgid "DastProfiles|Set to `true` to log Chromium `STDOUT` and `STDERR`."
 msgstr ""
 
 msgid "DastProfiles|Set to `true` to prevent DAST from checking that the target is available before scanning. Default: `false`."
 msgstr ""
 
+msgid "DastProfiles|Set to `true` to run both passive and active checks. Default is `false`."
+msgstr ""
+
 msgid "DastProfiles|Set to a comma-separated list of cookie names to specify which cookies are used for authentication."
+msgstr ""
+
+msgid "DastProfiles|Set to a comma-separated list of request header names and values. The following headers are not supported: `content-length`, `cookie2`, `keep-alive`, `hosts`, `trailer`, `transfer-encoding`, and all headers with a `proxy-` prefix."
+msgstr ""
+
+msgid "DastProfiles|Set to log protocol messages between DAST and the Chromium browser."
+msgstr ""
+
+msgid "DastProfiles|Set to the path of the file log. Default is `gl-dast-scan.log`."
 msgstr ""
 
 msgid "DastProfiles|Show debug messages"
@@ -18874,6 +18958,9 @@ msgid "DastProfiles|Submit button"
 msgstr ""
 
 msgid "DastProfiles|Submit button (optional)"
+msgstr ""
+
+msgid "DastProfiles|Submit field"
 msgstr ""
 
 msgid "DastProfiles|Success URL"
@@ -18901,6 +18988,15 @@ msgid "DastProfiles|Target timeout"
 msgstr ""
 
 msgid "DastProfiles|The PKCS12 certificate used for sites that require Mutual TLS. Must be encoded as base64 text."
+msgstr ""
+
+msgid "DastProfiles|The URL of the page containing the login form on the target website. DAST_AUTH_USERNAME and DAST_AUTH_PASSWORD are submitted with the login form to create an authenticated scan."
+msgstr ""
+
+msgid "DastProfiles|The URL of the website to scan."
+msgstr ""
+
+msgid "DastProfiles|The URLs to skip during the authenticated scan; comma-separated. Regular expression syntax can be used to match multiple URLs. For example, `.*` matches an arbitrary character sequence."
 msgstr ""
 
 msgid "DastProfiles|The authentication type to use."
@@ -18951,7 +19047,13 @@ msgstr ""
 msgid "DastProfiles|The number of active checks to run in parallel. Defaults to 3."
 msgstr ""
 
-msgid "DastProfiles|The password of the certificate used in `DAST_PKCS12_CERTIFICATE_BASE64`. Create sensitive %{linkStart}custom CI/CI variables%{linkEnd} using the GitLab UI."
+msgid "DastProfiles|The password of the certificate used in `DAST_PKCS12_CERTIFICATE_BASE64`. Create sensitive [custom CI/CI variables](%{documentation_link}) using the GitLab UI."
+msgstr ""
+
+msgid "DastProfiles|The password to authenticate to in the website."
+msgstr ""
+
+msgid "DastProfiles|The username to authenticate to in the website."
 msgstr ""
 
 msgid "DastProfiles|This profile is currently being used in a policy."
@@ -18984,6 +19086,9 @@ msgstr ""
 msgid "DastProfiles|Username"
 msgstr ""
 
+msgid "DastProfiles|Username field"
+msgstr ""
+
 msgid "DastProfiles|Username form field"
 msgstr ""
 
@@ -19014,7 +19119,7 @@ msgstr ""
 msgid "DastProfiles|What does each method do?"
 msgstr ""
 
-msgid "DastProfiles|Which servers should be allowed for integrated authentication and delegation."
+msgid "DastProfiles|Which servers should be allowed for integrated authentication and delegation. This property sets two Chromium policies: [AuthServerAllowlist](https://chromeenterprise.google/policies/#AuthServerAllowlist) and [AuthNegotiateDelegateAllowlist](https://chromeenterprise.google/policies/#AuthNegotiateDelegateAllowlist). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/502476) in GitLab 17.6."
 msgstr ""
 
 msgid "DastProfiles|Worker count"

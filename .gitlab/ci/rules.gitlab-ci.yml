@@ -1669,6 +1669,11 @@
     - <<: *if-merge-request
       changes: *code-patterns
 
+.qa:rules:code-merge-request-targeting-stable-branch:
+  rules:
+    - <<: *if-merge-request-targeting-stable-branch
+      changes: *code-patterns
+
 .qa:rules:code-merge-request-allowed-to-fail:
   rules:
     - <<: *if-merge-request

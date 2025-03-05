@@ -373,7 +373,7 @@ export default {
                 <div v-if="isEmoji" class="gl-flex gl-items-center">
                   <div class="gl-pr-4 gl-text-lg">
                     <gl-emoji
-                      :key="item.emoji.e"
+                      :key="item.emoji.name"
                       :data-name="item.emoji.name"
                       :title="item.emoji.d"
                       :data-unicode-version="item.emoji.u"

@@ -91,6 +91,17 @@ include:
     - !reference [.qa:rules:code-merge-request, rules]
     - *default-branch
 
+.rules:test:update-patch:
+  rules:
+    # skip upgrade jobs if gitlab version is not in semver compatible format
+    # these jobs need gitlab version because we can't reliably detect it from just the image
+    - if: $GITLAB_SEMVER_VERSION !~ /^\d+\.\d+\.\d+/
+      when: never
+    # update jobs are only relevant in testing app updates that can be affected by code changes only
+    # by checking code patterns, skip running job on changes that can't affect the outcome
+    # subset of update jobs only applicable for backport MRs to verify patch upgrade paths
+    - !reference [.qa:rules:code-merge-request-targeting-stable-branch, rules]
+
 .rules:test:never-schedule-pipeline:
   rules:
     - <<: *if-schedule-pipeline

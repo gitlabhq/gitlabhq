@@ -196,7 +196,6 @@ Style/IfUnlessModifier:
     - 'config/initializers/direct_upload_support.rb'
     - 'config/initializers/doorkeeper.rb'
     - 'config/initializers/google_api_client.rb'
-    - 'config/initializers/jira.rb'
     - 'config/initializers/kaminari_active_record_relation_methods_with_limit.rb'
     - 'config/initializers/remove_active_job_execute_callback.rb'
     - 'config/initializers/stackprof.rb'

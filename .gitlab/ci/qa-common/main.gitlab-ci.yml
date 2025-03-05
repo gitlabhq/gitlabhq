@@ -63,14 +63,7 @@ stages:
 .update-script:
   script:
     - !reference [.bundle-prefix]
-    - export QA_COMMAND="$BUNDLE_PREFIX gitlab-qa Test::Omnibus::UpdateFromPrevious $RELEASE $GITLAB_SEMVER_VERSION $UPDATE_TYPE $UPDATE_FROM_EDITION -- $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
-    - echo "Running - '$QA_COMMAND'"
-    - eval "$QA_COMMAND"
-
-.update-with-ai-components-script:
-  script:
-    - !reference [.bundle-prefix]
-    - export QA_COMMAND="$BUNDLE_PREFIX gitlab-qa Test::Omnibus::UpdateFromPreviousAi $RELEASE $GITLAB_SEMVER_VERSION $UPDATE_TYPE $UPDATE_FROM_EDITION -- $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
+    - export QA_COMMAND="$BUNDLE_PREFIX gitlab-qa ${QA_SCENARIO:-Test::Omnibus::UpdateFromPrevious} $RELEASE $GITLAB_SEMVER_VERSION $UPDATE_TYPE $UPDATE_FROM_EDITION -- $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
     - echo "Running - '$QA_COMMAND'"
     - eval "$QA_COMMAND"
 

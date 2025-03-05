@@ -400,6 +400,28 @@ update-major:
     - !reference [.rules:test:dependency-update-never, rules]
     - !reference [.rules:test:update, rules]
 
+update-patch:
+  extends:
+    - .qa
+    - .update-script
+  variables:
+    UPDATE_TYPE: patch
+    QA_RSPEC_TAGS: --tag health_check
+  rules:
+    - !reference [.rules:test:dependency-update-never, rules]
+    - !reference [.rules:test:update-patch, rules]
+
+update-from-patch-to-stable:
+  extends:
+    - .qa
+    - .update-script
+  variables:
+    QA_RSPEC_TAGS: --tag health_check
+    QA_SCENARIO: Test::Omnibus::UpdateToNext
+  rules:
+    - !reference [.rules:test:dependency-update-never, rules]
+    - !reference [.rules:test:update-patch, rules]
+
 update-ee-to-ce:
   extends:
     - .qa

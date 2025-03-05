@@ -28,7 +28,7 @@ export default {
       'gl-border-dashed gl-border-default': !selected,
     }"
   >
-    <span contenteditable="false" class="!gl-whitespace-pre-wrap gl-italic gl-text-subtle">{{
+    <span :contenteditable="false" class="!gl-whitespace-pre-wrap gl-italic gl-text-subtle">{{
       node.attrs.description
     }}</span>
   </node-view-wrapper>

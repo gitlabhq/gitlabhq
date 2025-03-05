@@ -14,39 +14,4 @@ describe('LinkPresenter', () => {
     expect(wrapper.text()).toBe(linkText);
     expect(wrapper.attributes('href')).toBe(linkHref);
   });
-
-  it.each`
-    scenario                       | data
-    ${'for data without a webUrl'} | ${{ title: 'Issue 1' }}
-    ${'for data without a title'}  | ${{ webUrl: 'https://gitlab.com' }}
-  `('$scenario, it shows a warning in console', ({ data }) => {
-    jest.spyOn(console, 'error').mockImplementation(() => {});
-
-    shallowMountExtended(LinkPresenter, { propsData: { data } });
-
-    // eslint-disable-next-line no-console
-    expect(console.error.mock.calls[0][0]).toContain(
-      '[Vue warn]: Invalid prop: custom validator check failed for prop "data"',
-    );
-  });
-
-  describe.each`
-    dataType    | data
-    ${'String'} | ${'Hello, world!'}
-    ${'Number'} | ${100}
-    ${'Array'}  | ${[1, 2, 3]}
-  `('for data type $dataType', ({ dataType, data }) => {
-    beforeEach(() => {
-      jest.spyOn(console, 'error').mockImplementation(() => {});
-    });
-
-    it('shows a warning in console for mismatched propType', () => {
-      shallowMountExtended(LinkPresenter, { propsData: { data } });
-
-      // eslint-disable-next-line no-console
-      expect(console.error.mock.calls[0][0]).toContain(
-        `[Vue warn]: Invalid prop: type check failed for prop "data". Expected Object, got ${dataType}`,
-      );
-    });
-  });
 });

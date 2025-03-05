@@ -187,9 +187,10 @@ gitlab-pages:
 update-minor-ee-ai-components:
   extends:
     - .qa
-    - .update-with-ai-components-script
+    - .update-script
     - .with-ignored-runtime-data
   variables:
+    QA_SCENARIO: Test::Omnibus::UpdateFromPreviousAi
     UPDATE_TYPE: minor
     UPDATE_FROM_EDITION: ee
     QA_RSPEC_TAGS: --tag ai_gateway

@@ -1,0 +1,20 @@
+---
+description: Tracks the delete button clicked in the error packages alert
+internal_events: true
+action: click_delete_package_button
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: package_errors_alert
+product_group: package_registry
+product_categories:
+- package_registry
+milestone: '17.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170748
+tiers:
+- free
+- premium
+- ultimate

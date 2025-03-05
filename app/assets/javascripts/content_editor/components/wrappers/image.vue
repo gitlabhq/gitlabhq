@@ -116,7 +116,7 @@ export default {
     ></span>
     <img
       ref="image"
-      draggable="true"
+      :draggable="true"
       data-drag-handle
       :src="node.attrs.src"
       :alt="node.attrs.alt"
