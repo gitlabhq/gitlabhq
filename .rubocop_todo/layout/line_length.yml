@@ -2253,7 +2253,6 @@ Layout/LineLength:
     - 'lib/gitlab/repository_size_error_message.rb'
     - 'lib/gitlab/sample_data_template.rb'
     - 'lib/gitlab/sanitizers/svg/whitelist.rb'
-    - 'lib/gitlab/search/abuse_detection.rb'
     - 'lib/gitlab/setup_helper.rb'
     - 'lib/gitlab/sidekiq_config.rb'
     - 'lib/gitlab/sidekiq_config/worker_router.rb'

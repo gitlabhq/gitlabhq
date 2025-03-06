@@ -113,7 +113,6 @@ Performance/StringIdentifierArgument:
     - 'lib/gitlab/reference_extractor.rb'
     - 'lib/gitlab/repository_cache_adapter.rb'
     - 'lib/gitlab/runtime.rb'
-    - 'lib/gitlab/search/abuse_detection.rb'
     - 'lib/gitlab/throttle.rb'
     - 'lib/gitlab/utils/lazy_attributes.rb'
     - 'lib/kramdown/parser/atlassian_document_format.rb'

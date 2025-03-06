@@ -5449,7 +5449,6 @@
 - './spec/lib/gitlab/sanitizers/exception_message_spec.rb'
 - './spec/lib/gitlab/sanitizers/exif_spec.rb'
 - './spec/lib/gitlab/sanitizers/svg_spec.rb'
-- './spec/lib/gitlab/search/abuse_detection_spec.rb'
 - './spec/lib/gitlab/search/abuse_validators/no_abusive_coercion_from_string_validator_spec.rb'
 - './spec/lib/gitlab/search/abuse_validators/no_abusive_term_length_validator_spec.rb'
 - './spec/lib/gitlab/search_context/builder_spec.rb'

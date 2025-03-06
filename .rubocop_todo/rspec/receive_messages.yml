@@ -158,7 +158,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/services/resource_access_tokens/create_service_spec.rb'
     - 'ee/spec/services/search/elastic/cluster_reindexing_service_spec.rb'
     - 'ee/spec/services/search/project_service_spec.rb'
-    - 'ee/spec/services/search_service_spec.rb'
     - 'ee/spec/services/security/orchestration/assign_service_spec.rb'
     - 'ee/spec/services/security/scan_result_policies/generate_policy_violation_comment_service_spec.rb'
     - 'ee/spec/services/security/training_providers/base_url_service_spec.rb'

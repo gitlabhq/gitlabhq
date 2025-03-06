@@ -264,6 +264,8 @@ class SearchController < ApplicationController
 
     payload[:metadata]['abuse.confidence'] = Gitlab::Abuse.confidence(:certain)
     payload[:metadata]['abuse.messages'] = search_service.abuse_messages
+  rescue ActiveRecord::QueryCanceled # rubocop:disable Database/RescueQueryCanceled -- Safetynet on timeout during instrumentation
+    payload
   end
 
   def payload_metadata

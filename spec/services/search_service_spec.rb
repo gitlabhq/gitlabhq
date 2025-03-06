@@ -441,12 +441,12 @@ RSpec.describe SearchService, feature_category: :global_search do
     end
 
     it 'returns an empty array when not abusive' do
-      allow(params).to receive(:abusive?).and_return false
+      allow(search_service).to receive(:abuse_detected?).and_return false
       expect(search_service.abuse_messages).to be_empty
     end
 
     it 'calls on abuse_detection.errors.full_messages when abusive' do
-      allow(params).to receive(:abusive?).and_return true
+      allow(search_service).to receive(:abuse_detected?).and_return true
       expect(params).to receive_message_chain(:abuse_detection, :errors, :full_messages)
       search_service.abuse_messages
     end
@@ -460,7 +460,7 @@ RSpec.describe SearchService, feature_category: :global_search do
     let(:search_service_double) { instance_double(Search::GlobalService) }
 
     before do
-      allow(search_service).to receive(:search_service).and_return search_service_double
+      allow(search_service).to receive_messages(search_service: search_service_double, search_type: 'basic')
 
       allow(Gitlab::Search::Params).to receive(:new)
         .with(raw_params, detect_abuse: true).and_call_original
@@ -518,13 +518,51 @@ RSpec.describe SearchService, feature_category: :global_search do
       it 'returns false when feature_flag is not enabled' do
         stub_application_setting(global_search_snippet_titles_enabled: false)
 
-        expect(search_service.global_search_enabled_for_scope?).to eq false
+        expect(search_service.global_search_enabled_for_scope?).to be false
       end
 
       it 'returns true when feature_flag is enabled' do
         stub_application_setting(global_search_snippet_titles_enabled: true)
 
-        expect(search_service.global_search_enabled_for_scope?).to eq true
+        expect(search_service.global_search_enabled_for_scope?).to be true
+      end
+    end
+  end
+
+  describe '#abuse_detected?' do
+    let(:instance) { described_class.new(nil, params) }
+    let(:params) do
+      { search: search }
+    end
+
+    context 'when params are abusive' do
+      let(:search) { 'f' }
+
+      it 'returns true and not checks for abusive_pipes' do
+        expect(instance).not_to receive(:abusive_pipes?)
+        expect(instance.abuse_detected?).to be true
+      end
+    end
+
+    context 'when params are not abusive' do
+      context 'when abuse_detection.abusive_pipes? returns true' do
+        let(:search) { 'foo|f' }
+
+        it 'returns true' do
+          allow_next_instance_of(Gitlab::Search::AbuseDetection) do |instance|
+            allow(instance).to receive(:abusive_pipes?).and_return(true)
+          end
+          expect(instance.abuse_detected?).to be true
+        end
+      end
+
+      context 'when abuse_detection.abusive_pipes? returns false' do
+        let(:search) { 'foo|bar' }
+
+        it 'returns false' do
+          allow(instance.params.abuse_detection).to receive(:abusive_pipes?).and_return(false)
+          expect(instance.abuse_detected?).to be false
+        end
       end
     end
   end

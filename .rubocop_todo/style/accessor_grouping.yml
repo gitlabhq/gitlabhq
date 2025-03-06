@@ -53,7 +53,6 @@ Style/AccessorGrouping:
     - 'lib/gitlab/graphql/connection_redaction.rb'
     - 'lib/gitlab/http_io.rb'
     - 'lib/gitlab/import_export/project/tree_restorer.rb'
-    - 'lib/gitlab/search/abuse_detection.rb'
     - 'lib/gitlab/sidekiq_middleware/duplicate_jobs/duplicate_job.rb'
     - 'lib/gitlab/suggestions/file_suggestion.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/base_metric.rb'

@@ -20,7 +20,6 @@ Performance/CollectionLiteralInLoop:
     - 'spec/lib/banzai/reference_parser/base_parser_spec.rb'
     - 'spec/lib/gitlab/database/migration_helpers/restrict_gitlab_schema_spec.rb'
     - 'spec/lib/gitlab/file_detector_spec.rb'
-    - 'spec/lib/gitlab/search/abuse_detection_spec.rb'
     - 'spec/models/ci/build_spec.rb'
     - 'spec/models/ci/pipeline_spec.rb'
     - 'spec/models/namespace_statistics_spec.rb'
