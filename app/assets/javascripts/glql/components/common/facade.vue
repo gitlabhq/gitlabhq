@@ -35,6 +35,7 @@ export default {
       presenterPreview: null,
       presenterComponent: null,
       error: {
+        variant: 'warning',
         title: null,
         message: null,
         action: null,
@@ -43,6 +44,11 @@ export default {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       preClasses: `code highlight ${gon.user_color_scheme}`,
     };
+  },
+  computed: {
+    hasError() {
+      return this.error.title || this.error.message;
+    },
   },
   async mounted() {
     this.loadOnClick = this.glFeatures.glqlLoadOnClick;
@@ -71,7 +77,16 @@ export default {
         this.presenterComponent = await executeAndPresentQuery(this.query);
         this.trackRender();
       } catch (error) {
-        this.handleQueryError(error.message);
+        switch (error.networkError?.statusCode) {
+          case 503:
+            this.handleTimeoutError();
+            break;
+          case 403:
+            this.handleForbiddenError();
+            break;
+          default:
+            this.handleQueryError(error.message);
+        }
       }
     },
 
@@ -101,8 +116,14 @@ export default {
     handleLimitError() {
       this.error = this.$options.i18n.glqlLimitError;
     },
+    handleTimeoutError() {
+      this.error = this.$options.i18n.glqlTimeoutError;
+    },
+    handleForbiddenError() {
+      this.error = this.$options.i18n.glqlForbiddenError;
+    },
     dismissAlert() {
-      this.error = {};
+      this.error = { variant: 'warning' };
     },
     renderMarkdown,
     async trackRender() {
@@ -116,9 +137,11 @@ export default {
   safeHtmlConfig: { ALLOWED_TAGS: ['code'] },
   i18n: {
     glqlDisplayError: {
+      variant: 'warning',
       title: __('An error occurred when trying to display this GLQL view:'),
     },
     glqlLimitError: {
+      variant: 'warning',
       title: sprintf(
         __(
           'Only %{n} GLQL views can be automatically displayed on a page. Click the button below to manually display this block.',
@@ -127,6 +150,17 @@ export default {
       ),
       action: __('Display block'),
     },
+    glqlTimeoutError: {
+      variant: 'warning',
+      title: sprintf(__('GLQL view timed out. Add more filters to reduce the number of results.'), {
+        n: MAX_GLQL_BLOCKS,
+      }),
+      action: __('Retry'),
+    },
+    glqlForbiddenError: {
+      variant: 'danger',
+      title: __('GLQL view timed out. Try again later.'),
+    },
     loadGlqlView: __('Load GLQL view'),
   },
   numGlqlBlocks: new Counter(MAX_GLQL_BLOCKS),
@@ -134,9 +168,9 @@ export default {
 </script>
 <template>
   <div data-testid="glql-facade">
-    <template v-if="error.title || error.message">
+    <template v-if="hasError">
       <gl-alert
-        variant="warning"
+        :variant="error.variant"
         class="gl-mb-3"
         :primary-button-text="error.action"
         @dismiss="dismissAlert"
@@ -159,8 +193,8 @@ export default {
     </div>
     <gl-intersection-observer v-else @appear="loadGlqlBlock">
       <component :is="presenterComponent" v-if="presenterComponent" />
-      <component :is="presenterPreview" v-else-if="presenterPreview" />
-      <div v-else class="markdown-code-block gl-relative">
+      <component :is="presenterPreview" v-else-if="presenterPreview && !hasError" />
+      <div v-else-if="hasError" class="markdown-code-block gl-relative">
         <pre :class="preClasses"><code>{{ query.trim() }}</code></pre>
       </div>
     </gl-intersection-observer>

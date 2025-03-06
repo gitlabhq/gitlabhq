@@ -8,7 +8,7 @@ export default class Executor {
   #client;
   static taskQueue;
 
-  init(client = createDefaultClient()) {
+  init(client = createDefaultClient({}, { path: '/api/glql' })) {
     Executor.taskQueue = Executor.taskQueue || new TaskQueue(CONCURRENCY_LIMIT);
     this.#client = client;
     return this;

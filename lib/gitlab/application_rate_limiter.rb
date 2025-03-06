@@ -96,7 +96,8 @@ module Gitlab
           downstream_pipeline_trigger: {
             threshold: -> { application_settings.downstream_pipeline_trigger_limit_per_project_user_sha }, interval: 1.minute
           },
-          expanded_diff_files: { threshold: 6, interval: 1.minute }
+          expanded_diff_files: { threshold: 6, interval: 1.minute },
+          glql: { threshold: 1, interval: 15.minutes }
         }.freeze
       end
 

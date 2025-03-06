@@ -25769,6 +25769,12 @@ msgstr ""
 msgid "GCP region configured"
 msgstr ""
 
+msgid "GLQL view timed out. Add more filters to reduce the number of results."
+msgstr ""
+
+msgid "GLQL view timed out. Try again later."
+msgstr ""
+
 msgid "GPG Key ID:"
 msgstr ""
 

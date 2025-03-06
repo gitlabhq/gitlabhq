@@ -87,7 +87,56 @@ describe('GlqlFacade', () => {
     });
   });
 
-  describe('when the query results in an error', () => {
+  describe('when the query results in a timeout (503) error', () => {
+    beforeEach(async () => {
+      presentPreview.mockResolvedValue({ render: (h) => h(GlSkeletonLoader) });
+      executeAndPresentQuery.mockRejectedValue({ networkError: { statusCode: 503 } });
+
+      await createComponent();
+      await triggerIntersectionObserver();
+    });
+
+    it('displays timeout error alert', () => {
+      const alert = wrapper.findComponent(GlAlert);
+      expect(alert.exists()).toBe(true);
+      expect(alert.props('variant')).toBe('warning');
+      expect(alert.text()).toContain(
+        'GLQL view timed out. Add more filters to reduce the number of results.',
+      );
+      expect(alert.props('primaryButtonText')).toBe('Retry');
+    });
+
+    it('retries query execution when primary action of timeout error alert is triggered', async () => {
+      presentPreview.mockClear();
+      executeAndPresentQuery.mockClear();
+      executeAndPresentQuery.mockResolvedValue({ render: (h) => h('div') });
+
+      const alert = wrapper.findComponent(GlAlert);
+      alert.vm.$emit('primaryAction');
+      await nextTick();
+
+      expect(executeAndPresentQuery).toHaveBeenCalledWith('assignee = "foo"');
+    });
+  });
+
+  describe('when the query results in a forbidden (403) error', () => {
+    beforeEach(async () => {
+      presentPreview.mockResolvedValue({ render: (h) => h(GlSkeletonLoader) });
+      executeAndPresentQuery.mockRejectedValue({ networkError: { statusCode: 403 } });
+
+      await createComponent();
+      await triggerIntersectionObserver();
+    });
+
+    it('displays forbidden error alert', () => {
+      const alert = wrapper.findComponent(GlAlert);
+      expect(alert.exists()).toBe(true);
+      expect(alert.props('variant')).toBe('danger');
+      expect(alert.text()).toContain('GLQL view timed out. Try again later.');
+    });
+  });
+
+  describe('when the query results in a syntax error', () => {
     beforeEach(async () => {
       presentPreview.mockRejectedValue(new Error('Syntax error: Unexpected `=`'));
       executeAndPresentQuery.mockRejectedValue(new Error('Syntax error: Unexpected `=`'));
@@ -99,6 +148,7 @@ describe('GlqlFacade', () => {
     it('displays error alert on query failure, formatted by marked', () => {
       const alert = wrapper.findComponent(GlAlert);
       expect(alert.exists()).toBe(true);
+      expect(alert.props('variant')).toBe('warning');
       expect(alert.find('ul li').html()).toMatchInlineSnapshot(`
 <li>
   Syntax error: Unexpected
@@ -138,6 +188,7 @@ describe('GlqlFacade', () => {
     it('displays limit error alert after exceeding GLQL block limit', () => {
       const alert = wrapper.findComponent(GlAlert);
       expect(alert.exists()).toBe(true);
+      expect(alert.props('variant')).toBe('warning');
       expect(alert.text()).toContain(
         'Only 20 GLQL views can be automatically displayed on a page. Click the button below to manually display this block.',
       );
