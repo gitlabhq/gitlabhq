@@ -474,6 +474,14 @@ curl --request POST \
   --url "https://gitlab.com/api/v4/projects/42/repository/changelog"
 ```
 
+To specify a branch as a parameter, use the `to` attribute:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: token" \
+  --url "https://gitlab.com/api/v4/projects/42/repository/changelog?version=1.0.0&to=release/x.x.x"
+```
+
 ## Generate changelog data
 
 {{< history >}}

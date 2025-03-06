@@ -2539,6 +2539,26 @@ another RHEL-compatible operating system.
 
 ## GitLab 17.7
 
+<div class="deprecation breaking-change" data-milestone="17.7">
+
+### Error handling for `/repository/tree` REST API endpoint returns `404`
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">16.5</span>
+- Removal in GitLab <span class="milestone">17.7</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420865).
+
+</div>
+
+In GitLab 17.7, the error handling behavior for the list repository tree API endpoint, `/projects/:id/repository/tree`, is updated when a requested path is not found. The endpoint now returns a status code `404 Not Found`. Previously, the status code was `200 OK`.
+
+This change was enabled on GitLab.com in GitLab 16.5, and will be available for self-managed instances in GitLab 17.7.
+
+If your implementation relies on receiving a `200` status code with an empty array for missing paths, you must update your error handling to handle the new `404` responses.
+
+</div>
+
 <div class="deprecation " data-milestone="17.7">
 
 ### TLS 1.0 and 1.1 no longer supported

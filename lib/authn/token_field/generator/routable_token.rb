@@ -12,7 +12,7 @@ module Authn
         MAXIMUM_SIZE_OF_ROUTING_PAYLOAD = 159
         DEFAULT_ROUTING_PAYLOAD_HASH =
           {
-            c: ->(_) { Settings.cell[:id] }
+            c: ->(_) { Gitlab.config.cell.id }
           }.freeze
 
         PayloadTooLarge = Class.new(RuntimeError)

@@ -706,7 +706,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
         .to receive(:random_bytes).with(Authn::TokenField::Generator::RoutableToken::RANDOM_BYTES_LENGTH)
         .and_return(random_bytes)
       allow(Devise).to receive(:friendly_token).and_return(devise_token)
-      allow(Settings).to receive(:cell).and_return({ id: 1 })
+      stub_config(cell: { enabled: true, id: 1 })
     end
 
     context 'when :routable_pat feature flag is disabled' do

@@ -7,8 +7,8 @@ namespace :gitlab do
     task :alter_cell_sequences_range, [:minval, :maxval] => :environment do |_t, args|
       next unless Gitlab.com_except_jh? || Gitlab.dev_or_test_env?
 
-      # This is a safety check to ensure this rake does not alters the sequences for the Legacy Cell
-      next if Gitlab.config.skip_sequence_alteration?
+      # This is a safety check to ensure this rake does not alter the sequences for the Legacy Cell
+      next if Gitlab.config.cell.database.skip_sequence_alteration
 
       Gitlab::Database::EachDatabase.each_connection do |connection, _database_name|
         Gitlab::Database::AlterCellSequencesRange.new(args.minval&.to_i, args.maxval&.to_i, connection).execute

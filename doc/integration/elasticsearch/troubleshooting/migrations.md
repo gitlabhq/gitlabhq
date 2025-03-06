@@ -23,16 +23,6 @@ For more information, see [advanced search migrations](../../advanced_search/ela
 If you have a similar exception, ensure you have the correct Elasticsearch version and you meet the [system requirements](../../advanced_search/elasticsearch.md#system-requirements).
 You can also check the version automatically by using the `sudo gitlab-rake gitlab:check` command.
 
-## Error: `Elasticsearch::Transport::Transport::Errors::RequestEntityTooLarge`
-
-```plaintext
-[413] {"Message":"Request size exceeded 10485760 bytes"}
-```
-
-This exception is seen when your Elasticsearch cluster is configured to reject requests above a certain size (10 MiB in this case). This corresponds to the `http.max_content_length` setting in `elasticsearch.yml`. Increase it to a larger size and restart your Elasticsearch cluster.
-
-AWS has [network limits](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/limits.html#network-limits) on the maximum size of HTTP request payloads based on the size of the underlying instance. Set the maximum bulk request size to a value lower than 10 MiB.
-
 ## Error: `Faraday::TimeoutError (execution expired)`
 
 When you use a proxy, set a custom `gitlab_rails['env']` environment variable

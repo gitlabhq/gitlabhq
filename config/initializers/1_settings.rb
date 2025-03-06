@@ -1072,16 +1072,17 @@ Settings.workhorse['secret_file'] ||= Rails.root.join('.gitlab_workhorse_secret'
 # Cells
 #
 Settings['cell'] ||= {}
+Settings.cell['enabled'] ||= false # All Cells Features are disabled by default
 Settings.cell['id'] ||= nil
 Settings.cell['database'] ||= {}
 Settings.cell.database['skip_sequence_alteration'] ||= false
-# This ternary operation expression to be removed when we merge https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/4382
-Settings.cell['topology_service'] ||= Settings.respond_to?(:topology_service) ? Settings.topology_service || {} : {}
-Settings.cell.topology_service['enabled'] ||= false
-Settings.cell.topology_service['address'] ||= 'topology-service.gitlab.example.com:443'
-Settings.cell.topology_service['ca_file'] ||= '/home/git/gitlab/config/topology-service-ca.pem'
-Settings.cell.topology_service['certificate_file'] ||= '/home/git/gitlab/config/topology-service-cert.pem'
-Settings.cell.topology_service['private_key_file'] ||= '/home/git/gitlab/config/topology-service-key.pem'
+
+# Topology Service Client Settings
+Settings.cell['topology_service_client'] ||= Settings.respond_to?(:topology_service) ? Settings.topology_service || {} : {}
+Settings.cell.topology_service_client['address'] ||= 'topology-service.gitlab.example.com:443'
+Settings.cell.topology_service_client['ca_file'] ||= '/home/git/gitlab/config/topology-service-ca.pem'
+Settings.cell.topology_service_client['certificate_file'] ||= '/home/git/gitlab/config/topology-service-cert.pem'
+Settings.cell.topology_service_client['private_key_file'] ||= '/home/git/gitlab/config/topology-service-key.pem'
 
 #
 # GitLab KAS

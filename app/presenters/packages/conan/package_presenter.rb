@@ -80,7 +80,7 @@ module Packages
       def package_files
         return unless @package
 
-        @package.installable_package_files.preload_conan_file_metadata
+        @package.installable_package_files.without_conan_recipe_revision.preload_conan_file_metadata
       end
       strong_memoize_attr :package_files
 

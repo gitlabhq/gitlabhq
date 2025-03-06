@@ -65054,6 +65054,12 @@ msgstr ""
 msgid "WebIDE|You need permission to edit files directly in this project."
 msgstr ""
 
+msgid "WebIdeOAuthCallback|Close tab"
+msgstr ""
+
+msgid "WebIdeOAuthCallback|Unable to authorize GitLab Web IDE access. For more information, see the developer console."
+msgstr ""
+
 msgid "WebexTeamsService|Send notifications about project events to Webex Teams."
 msgstr ""
 

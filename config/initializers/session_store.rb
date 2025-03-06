@@ -18,7 +18,9 @@ raw_config = if File.exist?(Rails.root.join('config/session_store.yml'))
                {}
              end
 
-cell_id = Gitlab.config.cell.id
+# If session_cookie_token_prefix is not set, we fall back to cell id
+# only if the instance was enabled as a cell
+cell_id = Gitlab.config.cell.id if Gitlab.config.cell.enabled
 session_cookie_token_prefix = if raw_config.fetch(:session_cookie_token_prefix, '').present?
                                 raw_config.fetch(:session_cookie_token_prefix)
                               elsif cell_id.present?

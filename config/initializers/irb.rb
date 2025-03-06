@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'irb'
+
 if Gitlab::Runtime.console?
   # Stop irb from writing a history file by default.
   module IrbNoHistory

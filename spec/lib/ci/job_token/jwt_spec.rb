@@ -63,7 +63,7 @@ RSpec.describe Ci::JobToken::Jwt, feature_category: :secrets_management do
     subject(:decoded_token) { described_class.decode(encoded_token) }
 
     before do
-      allow(Gitlab.config.cell).to receive(:id).and_return(cell_id)
+      stub_config(cell: { enabled: true, id: cell_id })
     end
 
     context 'with a valid token' do
@@ -212,12 +212,24 @@ RSpec.describe Ci::JobToken::Jwt, feature_category: :secrets_management do
     let(:encoded_token) { described_class.encode(job) }
     let(:decoded_token) { described_class.decode(encoded_token) }
 
-    before do
-      allow(Gitlab.config.cell).to receive(:id).and_return(cell_id)
+    context 'when cell is enabled' do
+      before do
+        stub_config(cell: { enabled: true, id: cell_id })
+      end
+
+      it 'encodes the cell_id in the JWT payload' do
+        expect(decoded_token.cell_id).to eq(cell_id)
+      end
     end
 
-    it 'encodes the cell_id in the JWT payload' do
-      expect(decoded_token.cell_id).to eq(cell_id)
+    context 'when cell is disabled' do
+      before do
+        stub_config(cell: { enabled: false, id: nil })
+      end
+
+      it 'cell_id should not be encoded' do
+        expect(decoded_token.cell_id).to be_nil
+      end
     end
   end
 

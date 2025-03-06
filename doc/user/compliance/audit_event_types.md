@@ -526,6 +526,12 @@ Audit event types belong to the following product categories.
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`policy_project_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102154) | The security policy project is updated for a project | {{< icon name="check-circle" >}} Yes | GitLab [15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) | Group, Project |
 
+### Security testing configuration
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`vulnerability_severity_override`](https://gitlab.com/gitlab-org/gitlab/-/issues/515327) | When user overrides vulnerability severity | {{< icon name="check-circle" >}} Yes | GitLab [17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/515327) | Project |
+
 ### Self-hosted models
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |

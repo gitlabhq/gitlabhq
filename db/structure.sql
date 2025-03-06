@@ -3251,6 +3251,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_c52d215d50a1() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issues"
+  WHERE "issues"."id" = NEW."issue_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_c59fe6f31e71() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -4324,7 +4340,8 @@ CREATE TABLE incident_management_pending_issue_escalations (
     issue_id bigint NOT NULL,
     process_at timestamp with time zone NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    namespace_id bigint
 )
 PARTITION BY RANGE (process_at);
 
@@ -11248,9 +11265,9 @@ CREATE TABLE ci_runners_e59bb2812d (
     maintainer_note text,
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
     allowed_plan_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    CONSTRAINT check_030ad0773d CHECK ((char_length(token_encrypted) <= 512)),
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
-    CONSTRAINT check_31c16b2a99 CHECK ((char_length(token_encrypted) <= 128)),
     CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_af25130d5a CHECK ((char_length(token) <= 128))
 )
@@ -14487,9 +14504,9 @@ CREATE TABLE group_type_ci_runners_e59bb2812d (
     maintainer_note text,
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
     allowed_plan_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    CONSTRAINT check_030ad0773d CHECK ((char_length(token_encrypted) <= 512)),
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
-    CONSTRAINT check_31c16b2a99 CHECK ((char_length(token_encrypted) <= 128)),
     CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_af25130d5a CHECK ((char_length(token) <= 128)),
     CONSTRAINT check_sharding_key_id_nullness CHECK ((sharding_key_id IS NOT NULL))
@@ -15084,9 +15101,9 @@ CREATE TABLE instance_type_ci_runners_e59bb2812d (
     maintainer_note text,
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
     allowed_plan_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    CONSTRAINT check_030ad0773d CHECK ((char_length(token_encrypted) <= 512)),
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
-    CONSTRAINT check_31c16b2a99 CHECK ((char_length(token_encrypted) <= 128)),
     CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_af25130d5a CHECK ((char_length(token) <= 128)),
     CONSTRAINT check_sharding_key_id_nullness CHECK ((sharding_key_id IS NULL))
@@ -20272,9 +20289,9 @@ CREATE TABLE project_type_ci_runners_e59bb2812d (
     maintainer_note text,
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
     allowed_plan_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    CONSTRAINT check_030ad0773d CHECK ((char_length(token_encrypted) <= 512)),
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
-    CONSTRAINT check_31c16b2a99 CHECK ((char_length(token_encrypted) <= 128)),
     CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_af25130d5a CHECK ((char_length(token) <= 128)),
     CONSTRAINT check_sharding_key_id_nullness CHECK ((sharding_key_id IS NOT NULL))
@@ -31233,6 +31250,8 @@ CREATE INDEX idx_import_source_user_placeholder_references_on_user_model_id ON i
 
 CREATE INDEX idx_incident_management_pending_alert_escalations_on_project_id ON ONLY incident_management_pending_alert_escalations USING btree (project_id);
 
+CREATE INDEX idx_incident_management_pending_issue_esc_on_namespace_id ON ONLY incident_management_pending_issue_escalations USING btree (namespace_id);
+
 CREATE INDEX idx_incident_management_timeline_event_tag_links_on_project_id ON incident_management_timeline_event_tag_links USING btree (project_id);
 
 CREATE INDEX idx_installable_conan_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id) WHERE ((package_type = 3) AND (status = ANY (ARRAY[0, 1])));
@@ -38749,6 +38768,8 @@ CREATE TRIGGER trigger_b9839c6d713f BEFORE INSERT ON application_settings FOR EA
 
 CREATE TRIGGER trigger_c17a166692a2 BEFORE INSERT OR UPDATE ON audit_events_streaming_headers FOR EACH ROW EXECUTE FUNCTION trigger_c17a166692a2();
 
+CREATE TRIGGER trigger_c52d215d50a1 BEFORE INSERT OR UPDATE ON incident_management_pending_issue_escalations FOR EACH ROW EXECUTE FUNCTION trigger_c52d215d50a1();
+
 CREATE TRIGGER trigger_c59fe6f31e71 BEFORE INSERT OR UPDATE ON security_orchestration_policy_rule_schedules FOR EACH ROW EXECUTE FUNCTION trigger_c59fe6f31e71();
 
 CREATE TRIGGER trigger_c5eec113ea76 BEFORE INSERT OR UPDATE ON dast_pre_scan_verifications FOR EACH ROW EXECUTE FUNCTION trigger_c5eec113ea76();
@@ -41913,6 +41934,9 @@ ALTER TABLE ONLY clusters_kubernetes_namespaces
 
 ALTER TABLE ONLY security_policies
     ADD CONSTRAINT fk_rails_802ceea0c8 FOREIGN KEY (security_orchestration_policy_configuration_id) REFERENCES security_orchestration_policy_configurations(id) ON DELETE CASCADE;
+
+ALTER TABLE incident_management_pending_issue_escalations
+    ADD CONSTRAINT fk_rails_8069e80242 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dependency_proxy_manifest_states
     ADD CONSTRAINT fk_rails_806cf07a3c FOREIGN KEY (dependency_proxy_manifest_id) REFERENCES dependency_proxy_manifests(id) ON DELETE CASCADE;

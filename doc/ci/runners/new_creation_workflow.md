@@ -15,15 +15,14 @@ title: Migrating to the new runner registration workflow
 {{< alert type="disclaimer" />}}
 
 In GitLab 16.0, we introduced a new runner creation workflow that uses runner authentication tokens to register
-runners. The legacy workflow that uses registration tokens is deprecated and will be removed in GitLab 18.0.
+runners. The legacy workflow that uses registration tokens is deprecated and is scheduled for removal in GitLab 18.0.
 
 For information about the current development status of the new workflow, see [epic 7663](https://gitlab.com/groups/gitlab-org/-/epics/7663).
 
 For information about the technical design and reasons for the new architecture, see [Next GitLab Runner Token Architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/runner_tokens/).
 
 If you experience problems or have concerns about the new runner registration workflow,
-or if the following information is not sufficient,
-you can let us know in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387993).
+or need more information, let us know in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387993).
 
 ## The new runner registration workflow
 
@@ -49,13 +48,11 @@ The new runner registration workflow has the following benefits:
 
 ## Prevent your runner registration workflow from breaking
 
-Until GitLab 17.0, you can still use the legacy runner registration workflow.
+In GitLab 16.11 and earlier, you can use the legacy runner registration workflow.
 
-In GitLab 17.0, the legacy runner registration workflow will be disabled automatically. You will be able to manually re-enable the legacy runner registration workflow for a limited time. For more information, see
-[Using registration tokens after GitLab 17.0](#using-registration-tokens-after-gitlab-170).
+In GitLab 17.0, the legacy runner registration workflow is disabled by default. You can temporarily re-enable the legacy runner registration workflow. For more information, see [Using registration tokens after GitLab 17.0](#using-registration-tokens-after-gitlab-170).
 
-If no action is taken before your GitLab instance is upgraded to GitLab 17.0, then your runner registration
-workflow will break, and the `gitlab-runner register` command will receive a `410 Gone - runner registration disallowed` error.
+If you don't migrate to the new workflow when you upgrade to GitLab 17.0, the runner registration breaks and the `gitlab-runner register` command returns a `410 Gone - runner registration disallowed` error.
 
 To avoid a broken workflow, you must:
 
@@ -82,7 +79,7 @@ To continue using registration tokens after GitLab 17.0:
 
 ## Impact on existing runners
 
-Existing runners will continue to work as usual even after 18.0. This change only affects registration of new runners.
+Existing runners will continue to work as usual after upgrading to GitLab 18.0. This change only affects registration of new runners.
 
 The [GitLab Runner Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html) generates new runner pods every time a job is executed.
 For these runners, [enable legacy runner registration](#using-registration-tokens-after-gitlab-170) to use registration tokens.
@@ -90,8 +87,8 @@ In GitLab 18.0 and later, you must migrate to the [new runner registration workf
 
 ## Changes to the `gitlab-runner register` command syntax
 
-The `gitlab-runner register` command will stop accepting registration tokens and instead accept new runner
-authentication tokens generated in the GitLab runners administration page.
+The `gitlab-runner register` command accepts runner authentication tokens instead of registration tokens.
+You can generate tokens from the **Runners** page in the **Admin** area.
 The runner authentication tokens are recognizable by their `glrt-` prefix.
 
 When you create a runner in the GitLab UI, you specify configuration values that were previously command-line options
@@ -128,7 +125,7 @@ gitlab-runner register \
     --registration-token "REDACTED"
 ```
 
-In GitLab 15.10 and later, you create the runner and some of the attributes in the UI, like the
+In GitLab 15.10 and later, you can create the runner and set attributes in the UI, like
 tag list, locked status, and access level.
 In GitLab 15.11 and later, these attributes are no longer accepted as arguments to `register` when a runner authentication token with the `glrt-` prefix is specified.
 
@@ -145,7 +142,7 @@ gitlab-runner register \
 ## Impact on autoscaling
 
 In autoscaling scenarios such as GitLab Runner Operator or GitLab Runner Helm Chart, the
-registration token is replaced with the runner authentication token generated from the UI.
+runner authentication token generated from the UI replaces the registration token.
 This means that the same runner configuration is reused across jobs, instead of creating a runner
 for each job.
 The specific runner can be identified by the unique system ID that is generated when the runner
@@ -182,7 +179,7 @@ runUntagged: true
 protected: true
 ```
 
-The replacement field for the invalid `runnerRegistrationToken` field is the `runnerToken` field. In the context of the GitLab Runner on Kubernetes, Helm deploy passes the runner `authentication token` to the runner worker pod and the runner configuration is created. If you continue to use the `runnerRegistrationToken` token field on Kubernetes hosted runners attached to GitLab.com, then the runner worker pod tries, on creation, to use the Registration API method that is no longer supported as of GitLab 17.0.
+The `runnerRegistrationToken` field replaces the `runnerToken` field. For GitLab Runner on Kubernetes, Helm deploy passes the runner `authentication token` to the runner worker pod and creates the runner configuration. In GitLab 17.0, if Kubernetes hosted runners attached to GitLab.com use `runnerRegistrationToken`, the runner worker pod uses an unsupported Registration API method at creation.
 
 If you store the runner authentication token in `secrets`, you must also modify them.
 
@@ -215,7 +212,7 @@ data:
 {{< alert type="note" >}}
 
 If your secret management solution doesn't allow you to set an empty string for `runner-registration-token`,
-you can set it to any string - it will be ignored when `runner-token` is present.
+you can set it to any string. This value is ignored when `runner-token` is present.
 
 {{< /alert >}}
 
@@ -223,24 +220,24 @@ you can set it to any string - it will be ignored when `runner-token` is present
 
 ### Pod name is not visible in runner details page
 
-When you use the new registration workflow to register your runners with the Helm chart, the pod name is not visible
-in the runner details page.
+When you use the new registration workflow to register your runners with Helm chart, the pod name doesn't appear
+on the runner details page.
 For more information, see [issue 423523](https://gitlab.com/gitlab-org/gitlab/-/issues/423523).
 
 ### Runner authentication token does not update when rotated
 
 #### Token rotation with the same runner registered in multiple runner managers
 
-When you use the new workflow to register your runners on multiple host machines and
-the runner authentication token rotates automatically, only the first runner manager
-to handle the token renewal request receives the new token.
+When you register runners on multiple host machines through the new workflow with
+automatic token rotation, only the first runner manager receives the new token.
 The remaining runner managers continue to use the invalid token and become disconnected.
 You must update these managers manually to use the new token.
 
 #### Token rotation in GitLab Operator
 
-When you use the new registration workflow to register your runners with the GitLab Operator,
-the runner authentication token referenced by the Custom Resource Definition does not update when the token is rotated.
+During runner registration with GitLab Operator through the new workflow,
+the runner authentication token in the Custom Resource Definition doesn't update
+during token rotation.
 This occurs when:
 
 - You're using a runner authentication token (prefixed with `glrt-`) in a secret

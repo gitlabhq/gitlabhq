@@ -34,26 +34,26 @@ The cells related configuration in `config/gitlab.yml` is in this format:
 
 ```yaml
   cell:
+    enabled: true
     id: 1
     database:
       skip_sequence_alteration: false
-    topology_service:
-      enabled: true
+    topology_service_client:
       address: topology-service.gitlab.example.com:443
       ca_file: /home/git/gitlab/config/topology-service-ca.pem
       certificate_file: /home/git/gitlab/config/topology-service-cert.pem
       private_key_file: /home/git/gitlab/config/topology-service-key.pem
 ```
 
-| Configuration | Default value | Description                                                                                                                               |
-| ------ |---------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| `cell.id` | `nil`         | Unique integer identifier for the cell in a cluster. For use when the instance is part of a cell cluster. |
-| `database.skip_sequence_alteration` | `false`       | When `true`, skips database sequence alteration for the cell. Enable for the legacy cell (`cell-1`) before the monolith cell is available for use, being tracked in this epic: [Phase 6: Monolith Cell](https://gitlab.com/groups/gitlab-org/-/epics/14513). |
-| `topology_service.enabled` | `false`       | When `true`, enables the topology service client to connect to the topology service, which is required to be considered a cell. |
-| `topology_service.address` | `nil`         | Address and port of the topology service.                                                                                                        |
-| `topology_service.ca_file` | `nil`         | Path to the CA certificate file for secure communication.                                                                                                        |
-| `topology_service.certificate_file` | `nil`         | Path to the client certificate file.                                                                                                        |
-| `topology_service.private_key_file` | `nil`         | Path to the private key file.                                                                                                        |
+| Configuration                              | Default value                                         | Description                                                                                                                                                                                                                                                                                                                    |
+|--------------------------------------------|-------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `cell.enabled`                             | `false`                                               | To configure whether the instance is a Cell or not. `false` means all Cell features are disabled. `session_cookie_prefix_token` is not affected, and can be set separately.                                                                                                                                                    |
+| `cell.id`                                  | `nil`                                                 | Required to be a positive integer when `cell.enabled` is `true`. Otherwise, it must be `nil`. This is the unique integer identifier for the cell in a cluster. This ID is used inside the routable tokens. When `cell.id` is `nil`, the other attributes inside the routable tokens, like `organization_id` will still be used |
+| `cell.database.skip_sequence_alteration`        | `false`                                               | When `true`, skips database sequence alteration for the cell. Enable for the legacy cell (`cell-1`) before the monolith cell is available for use, being tracked in this epic: [Phase 6: Monolith Cell](https://gitlab.com/groups/gitlab-org/-/epics/14513).                                                                   |
+| `cell.topology_service_client.address`          | `"topology-service.gitlab.example.com:443"`           | Required when `cell.enabled` is `true`. Address and port of the topology service server.                                                                                                                                                                                                                                       |
+| `cell.topology_service_client.ca_file`          | `"/home/git/gitlab/config/topology-service-ca.pem"`   | Required when `cell.enabled` is `true`. Path to the CA certificate file for secure communication.                                                                                                                                                                                                                              |
+| `cell.topology_service_client.certificate_file` | `"/home/git/gitlab/config/topology-service-cert.pem"` | Required when `cell.enabled` is `true`. Path to the client certificate file.                                                                                                                                                                                                                                                   |
+| `cell.topology_service_client.private_key_file` | `"/home/git/gitlab/config/topology-service-key.pem"`  | Required when `cell.enabled` is `true`. Path to the private key file.                                                                                                                                                                                                                                                          |
 
 ## Related configuration
 
