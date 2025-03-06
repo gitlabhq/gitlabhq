@@ -51,7 +51,7 @@ RSpec.describe 'Moving an issue', feature_category: :team_planning do
           post_graphql_mutation(mutation, current_user: user)
 
           expect(response).to have_gitlab_http_status(:success)
-          expect(mutation_response['errors'][0]).to eq(error)
+          expect(mutation_response['errors'][0]).to eq(permissions_error_message)
         end
       end
     end
@@ -75,7 +75,7 @@ RSpec.describe 'Moving an issue', feature_category: :team_planning do
 
   context 'with work_item_move_and_clone disabled' do
     it_behaves_like 'move work item mutation request' do
-      let(:error) { "Cannot move issue due to insufficient permissions!" }
+      let(:permissions_error_message) { "Cannot move issue due to insufficient permissions." }
 
       before do
         stub_feature_flags(work_item_move_and_clone: false)
@@ -85,7 +85,7 @@ RSpec.describe 'Moving an issue', feature_category: :team_planning do
 
   context 'with work_item_move_and_clone enabled' do
     it_behaves_like 'move work item mutation request' do
-      let(:error) { "Cannot move work item due to insufficient permissions." }
+      let(:permissions_error_message) { "Unable to move. You have insufficient permissions." }
 
       before do
         stub_feature_flags(work_item_move_and_clone: true)

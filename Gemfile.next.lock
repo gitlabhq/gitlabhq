@@ -736,7 +736,7 @@ GEM
     git (1.19.1)
       addressable (~> 2.8)
       rchardet (~> 1.8)
-    gitaly (17.8.3)
+    gitaly (17.8.4)
       grpc (~> 1.0)
     gitlab (4.19.0)
       httparty (~> 0.20)

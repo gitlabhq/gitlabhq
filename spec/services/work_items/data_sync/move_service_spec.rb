@@ -32,13 +32,13 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
     context 'when user cannot read original work item' do
       let_it_be(:current_user) { target_project_member }
 
-      it_behaves_like 'fails to transfer work item', 'Cannot move work item due to insufficient permissions'
+      it_behaves_like 'fails to transfer work item', 'Unable to move. You have insufficient permissions.'
     end
 
     context 'when user cannot create work items in target namespace' do
       let_it_be(:current_user) { source_project_member }
 
-      it_behaves_like 'fails to transfer work item', 'Cannot move work item due to insufficient permissions'
+      it_behaves_like 'fails to transfer work item', 'Unable to move. You have insufficient permissions.'
     end
 
     context 'when work item is already moved once' do
@@ -48,29 +48,18 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
         original_work_item.update!(moved_to: create(:issue))
       end
 
-      it_behaves_like 'fails to transfer work item', 'Cannot move work item due to insufficient permissions'
+      it_behaves_like 'fails to transfer work item', 'Unable to move. You have insufficient permissions.'
     end
   end
 
   context 'when user has permission to move work item' do
     let_it_be(:current_user) { projects_member }
 
-    context 'when moving a project level work item to same project' do
-      let(:target_namespace) { project }
-
-      it_behaves_like 'fails to transfer work item', 'Cannot move work item to same project or group it originates from'
-    end
-
-    context 'when moving a project level work item to same project, using project namespace' do
-      let(:target_namespace) { project.project_namespace }
-
-      it_behaves_like 'fails to transfer work item', 'Cannot move work item to same project or group it originates from'
-    end
-
     context 'when moving project level work item to a group' do
       let(:target_namespace) { group }
 
-      it_behaves_like 'fails to transfer work item', 'Cannot move work item between Projects and Groups'
+      it_behaves_like 'fails to transfer work item',
+        'Unable to move. Moving across projects and groups is not supported.'
     end
 
     context 'when moving to a pending delete project' do
@@ -82,14 +71,13 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
         target_namespace.project.update!(pending_delete: false)
       end
 
-      it_behaves_like 'fails to transfer work item',
-        'Cannot move work item to target namespace as it is pending deletion'
+      it_behaves_like 'fails to transfer work item', 'Unable to move. Target namespace is pending deletion.'
     end
 
     context 'when moving unsupported work item type' do
       let_it_be_with_reload(:original_work_item) { create(:work_item, :task, project: project) }
 
-      it_behaves_like 'fails to transfer work item', 'Cannot move work items of \'Task\' type'
+      it_behaves_like 'fails to transfer work item', 'Unable to move. Moving \'Task\' is not supported.'
     end
 
     context 'when moving work item raises an error', :aggregate_failures do
@@ -174,6 +162,28 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
       end
 
       it_behaves_like 'cloneable and moveable work item'
+
+      context 'when moving a project level work item to same project' do
+        let(:target_namespace) { project }
+
+        it 'does nothing' do
+          expect(service).to receive(:data_sync_action).and_call_original
+          expect(service).not_to receive(:move_work_item)
+
+          service.execute
+        end
+      end
+
+      context 'when moving a project level work item to same project, using project namespace' do
+        let(:target_namespace) { project.project_namespace }
+
+        it 'does nothing' do
+          expect(service).to receive(:data_sync_action).and_call_original
+          expect(service).not_to receive(:move_work_item)
+
+          service.execute
+        end
+      end
 
       context 'when cleanup original data is enabled' do
         before do

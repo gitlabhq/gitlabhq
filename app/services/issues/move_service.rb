@@ -59,11 +59,11 @@ module Issues
       end
 
       unless issue.can_move?(current_user, @target_project)
-        raise MoveError, s_('MoveIssue|Cannot move issue due to insufficient permissions!')
+        raise MoveError, s_('MoveIssue|Cannot move issue due to insufficient permissions.')
       end
 
       if @project == @target_project
-        raise MoveError, s_('MoveIssue|Cannot move issue to project it originates from!')
+        raise MoveError, s_('MoveIssue|Cannot move issue to project it originates from.')
       end
     end
 

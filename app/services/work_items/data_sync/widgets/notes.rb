@@ -4,6 +4,8 @@ module WorkItems
   module DataSync
     module Widgets
       class Notes < Base
+        ALLOWED_PARAMS = %i[clone_with_notes].freeze
+
         def after_create
           return if params[:operation] == :clone && !params[:clone_with_notes]
 

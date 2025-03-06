@@ -4,6 +4,8 @@ module WorkItems
   module DataSync
     module Widgets
       class Milestone < Base
+        include ::Gitlab::Utils::StrongMemoize
+
         def before_create
           return unless target_work_item.get_widget(:milestone)
           return if work_item.milestone_id.blank?
@@ -56,8 +58,10 @@ module WorkItems
         end
 
         def find_milestone(params)
-          milestones = MilestonesFinder.new(params).execute
-          milestones.first
+          strong_memoize_with(:find_milestone, params) do
+            milestones = MilestonesFinder.new(params).execute
+            milestones.first
+          end
         end
 
         def ancestors

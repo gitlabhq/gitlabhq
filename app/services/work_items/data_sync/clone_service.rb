@@ -42,26 +42,26 @@ module WorkItems
 
       def verify_can_clone_work_item(work_item, target_namespace)
         unless work_item.namespace.instance_of?(target_namespace.class)
-          error_message = s_('CloneWorkItem|Cannot clone work item between Projects and Groups.')
+          error_message = s_('CloneWorkItem|Unable to clone. Cloning across projects and groups is not supported.')
 
           return error(error_message, :unprocessable_entity)
         end
 
         unless work_item.supports_move_and_clone?
-          error_message = format(s_('CloneWorkItem|Cannot clone work items of \'%{work_item_type}\' type.'),
+          error_message = format(s_('CloneWorkItem|Unable to clone. Cloning \'%{work_item_type}\' is not supported.'),
             { work_item_type: work_item.work_item_type.name })
 
           return error(error_message, :unprocessable_entity)
         end
 
         unless work_item.can_clone?(current_user, target_namespace)
-          error_message = s_('CloneWorkItem|Cannot clone work item due to insufficient permissions.')
+          error_message = s_('CloneWorkItem|Unable to clone. You have insufficient permissions.')
 
           return error(error_message, :unprocessable_entity)
         end
 
         if target_namespace.pending_delete?
-          error_message = s_('CloneWorkItem|Cannot clone work item to target namespace as it is pending deletion.')
+          error_message = s_('CloneWorkItem|Unable to clone. Target namespace is pending deletion.')
 
           return error(error_message, :unprocessable_entity)
         end

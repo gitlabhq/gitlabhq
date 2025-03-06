@@ -155,7 +155,17 @@ module Issues
 
       # we've pre-empted this from running in #execute, so let's go ahead and update the Issue now.
       update(issue)
-      Issues::CloneService.new(container: project, current_user: current_user).execute(issue, target_project, with_notes: with_notes)
+
+      if Feature.enabled?(:work_item_move_and_clone, project)
+        ::WorkItems::DataSync::CloneService.new(
+          work_item: issue, current_user: current_user, target_namespace: target_project.project_namespace,
+          params: { clone_with_notes: with_notes }
+        ).execute[:work_item]
+      else
+        Issues::CloneService.new(container: project, current_user: current_user).execute(
+          issue, target_project, with_notes: with_notes
+        )
+      end
     end
 
     def create_merge_request_from_quick_action

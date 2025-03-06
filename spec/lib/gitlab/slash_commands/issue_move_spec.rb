@@ -31,7 +31,6 @@ RSpec.describe Gitlab::SlashCommands::IssueMove, :service, feature_category: :te
 
       before do
         [project, other_project].each { |prj| prj.add_maintainer(user) }
-        stub_feature_flags(work_item_move_and_clone: false)
       end
 
       subject { described_class.new(project, chat_name) }
@@ -41,12 +40,18 @@ RSpec.describe Gitlab::SlashCommands::IssueMove, :service, feature_category: :te
       end
 
       context 'when the user can move the issue' do
-        context 'when the move fails' do
+        context 'when moving within same project' do
           it 'returns the error message' do
             message = "issue move #{issue.iid} #{project.full_path}"
 
-            expect(process_message(message)).to include(response_type: :ephemeral,
-              text: a_string_matching(error1))
+            if Feature.enabled?(:work_item_move_and_clone, issue.project)
+              process_message(message)
+              # move does not happen, as moving issue to same project results in same issue, but we do not show an error
+              expect(issue.reload.moved_to).to be_nil
+            else
+              expect(process_message(message)).to include(response_type: :ephemeral,
+                text: a_string_matching(same_project_error_message))
+            end
           end
         end
 
@@ -114,30 +119,29 @@ RSpec.describe Gitlab::SlashCommands::IssueMove, :service, feature_category: :te
           other_project.team.add_guest(user)
 
           expect(process_message(message)).to include(response_type: :ephemeral,
-            text: a_string_matching(error2))
+            text: a_string_matching(permissions_error_message))
         end
       end
     end
 
     context 'with work_item_move_and_clone disabled' do
-      it_behaves_like 'move issue slash command' do
-        let(:error1) { "Cannot move issue to project it originates from!" }
-        let(:error2) { "Cannot move issue due to insufficient permissions!" }
+      before do
+        stub_feature_flags(work_item_move_and_clone: false)
+      end
 
-        before do
-          stub_feature_flags(work_item_move_and_clone: false)
-        end
+      it_behaves_like 'move issue slash command' do
+        let(:same_project_error_message) { "Cannot move issue to project it originates from." }
+        let(:permissions_error_message) { "Cannot move issue due to insufficient permissions." }
       end
     end
 
     context 'with work_item_move_and_clone enabled' do
-      it_behaves_like 'move issue slash command' do
-        let(:error1) { "Cannot move work item to same project or group it originates from." }
-        let(:error2) { "Cannot move work item due to insufficient permissions." }
+      before do
+        stub_feature_flags(work_item_move_and_clone: true)
+      end
 
-        before do
-          stub_feature_flags(work_item_move_and_clone: true)
-        end
+      it_behaves_like 'move issue slash command' do
+        let(:permissions_error_message) { "Unable to move. You have insufficient permissions." }
       end
     end
   end

@@ -13,7 +13,6 @@ module WorkItems
 
         @original_work_item = original_work_item
         @operation = operation
-        @sync_data_params = params.delete(:sync_data_params) || {}
       end
 
       def initialize_callbacks!(work_item)
@@ -24,7 +23,7 @@ module WorkItems
           callback_params = {}
 
           if sync_data_callback_class.const_defined?(:ALLOWED_PARAMS)
-            callback_params = sync_data_params.slice(*sync_data_callback_class::ALLOWED_PARAMS)
+            callback_params.merge!(params.extract!(*sync_data_callback_class::ALLOWED_PARAMS))
           end
 
           sync_data_callback_class.new(

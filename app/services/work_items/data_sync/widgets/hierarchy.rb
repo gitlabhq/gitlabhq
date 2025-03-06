@@ -74,14 +74,13 @@ module WorkItems
           # We iterate over "new work item" child links now, because we have relinked child items from moved work item
           # to the new work item in `relink_children_to_target_work_item`.
           target_work_item.child_links.each do |link|
-            execution_arguments = { parent_work_item_id: target_work_item.id, skip_work_item_type_check: true }
-
             # This is going to be moved to an async worker. This is planned as a follow-up up iteration for a bunch of
             # other work item association data. The async implementation for move will be tracked in:
             # https://gitlab.com/groups/gitlab-org/-/epics/15934
             ::WorkItems::DataSync::MoveService.new(
-              work_item: link.work_item, target_namespace: target_work_item.namespace, current_user: current_user
-            ).execute(**execution_arguments)
+              work_item: link.work_item, target_namespace: target_work_item.namespace, current_user: current_user,
+              params: { parent_work_item_id: target_work_item.id, skip_work_item_type_check: true }
+            ).execute
           end
         end
       end

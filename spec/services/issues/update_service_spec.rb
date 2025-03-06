@@ -1445,6 +1445,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
             new_issue = update_issue(target_project: target_project)
 
             expect(new_issue.project).to eq(target_project)
+            expect(new_issue.title).to eq(issue.title)
           end
         end
       end
@@ -1471,41 +1472,58 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
     end
 
     context 'clone an issue' do
-      context 'valid project' do
-        let(:target_project) { create(:project) }
+      shared_examples 'clone an issue' do
+        context 'clone' do
+          let_it_be(:target_project) { create(:project) }
 
-        before do
-          target_project.add_maintainer(user)
-        end
+          before do
+            target_project.add_maintainer(user)
+          end
 
-        it 'calls the move service with the proper issue and project' do
-          clone_stub = instance_double(Issues::CloneService)
-          allow(Issues::CloneService).to receive(:new).and_return(clone_stub)
-          allow(clone_stub).to receive(:execute).with(issue, target_project, with_notes: nil).and_return(issue)
+          it 'calls the move service with the proper issue and project' do
+            expect_next_instance_of(clone_service_class) do |service|
+              expect(service).to receive(:execute).and_call_original
+            end
 
-          expect(clone_stub).to receive(:execute).with(issue, target_project, with_notes: nil)
+            new_issue = update_issue(target_clone_project: target_project)
 
-          update_issue(target_clone_project: target_project)
+            expect(new_issue.project).to eq(target_project)
+            expect(new_issue.title).to eq(issue.title)
+          end
+
+          context 'clone an issue with notes' do
+            it 'calls the move service with the proper issue and project' do
+              expect_next_instance_of(clone_service_class) do |service|
+                expect(service).to receive(:execute).and_call_original
+              end
+
+              new_issue = update_issue(target_clone_project: target_project, clone_with_notes: true)
+
+              expect(new_issue.project).to eq(target_project)
+              expect(new_issue.title).to eq(issue.title)
+              expect(new_issue.notes.count).to eq(issue.notes.count)
+            end
+          end
         end
       end
-    end
 
-    context 'clone an issue with notes' do
-      context 'valid project' do
-        let(:target_project) { create(:project) }
-
+      context 'with work_item_move_and_clone disabled' do
         before do
-          target_project.add_maintainer(user)
+          stub_feature_flags(work_item_move_and_clone: false)
         end
 
-        it 'calls the move service with the proper issue and project' do
-          clone_stub = instance_double(Issues::CloneService)
-          allow(Issues::CloneService).to receive(:new).and_return(clone_stub)
-          allow(clone_stub).to receive(:execute).with(issue, target_project, with_notes: true).and_return(issue)
+        it_behaves_like 'clone an issue' do
+          let(:clone_service_class) { Issues::CloneService }
+        end
+      end
 
-          expect(clone_stub).to receive(:execute).with(issue, target_project, with_notes: true)
+      context 'with work_item_move_and_clone enabled' do
+        before do
+          stub_feature_flags(work_item_move_and_clone: true)
+        end
 
-          update_issue(target_clone_project: target_project, clone_with_notes: true)
+        it_behaves_like 'clone an issue' do
+          let(:clone_service_class) { ::WorkItems::DataSync::CloneService }
         end
       end
     end

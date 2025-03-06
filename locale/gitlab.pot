@@ -12842,7 +12842,7 @@ msgstr ""
 msgid "Clone with SSH"
 msgstr ""
 
-msgid "CloneIssue|Cannot clone issue due to insufficient permissions!"
+msgid "CloneIssue|Cannot clone issue due to insufficient permissions."
 msgstr ""
 
 msgid "CloneIssue|Cannot clone issue to target project as it is pending deletion."
@@ -12851,16 +12851,16 @@ msgstr ""
 msgid "CloneIssue|Cannot clone issues of '%{issue_type}' type."
 msgstr ""
 
-msgid "CloneWorkItem|Cannot clone work item between Projects and Groups."
+msgid "CloneWorkItem|Unable to clone. Cloning '%{work_item_type}' is not supported."
 msgstr ""
 
-msgid "CloneWorkItem|Cannot clone work item due to insufficient permissions."
+msgid "CloneWorkItem|Unable to clone. Cloning across projects and groups is not supported."
 msgstr ""
 
-msgid "CloneWorkItem|Cannot clone work item to target namespace as it is pending deletion."
+msgid "CloneWorkItem|Unable to clone. Target namespace is pending deletion."
 msgstr ""
 
-msgid "CloneWorkItem|Cannot clone work items of '%{work_item_type}' type."
+msgid "CloneWorkItem|Unable to clone. You have insufficient permissions."
 msgstr ""
 
 msgid "Cloned this issue to %{path_to_project}."
@@ -37488,28 +37488,25 @@ msgstr ""
 msgid "Move up"
 msgstr ""
 
-msgid "MoveIssue|Cannot move issue due to insufficient permissions!"
+msgid "MoveIssue|Cannot move issue due to insufficient permissions."
 msgstr ""
 
-msgid "MoveIssue|Cannot move issue to project it originates from!"
+msgid "MoveIssue|Cannot move issue to project it originates from."
 msgstr ""
 
 msgid "MoveIssue|Cannot move issues of '%{issue_type}' type."
 msgstr ""
 
-msgid "MoveWorkItem|Cannot move work item between Projects and Groups."
+msgid "MoveWorkItem|Unable to move. Moving '%{work_item_type}' is not supported."
 msgstr ""
 
-msgid "MoveWorkItem|Cannot move work item due to insufficient permissions."
+msgid "MoveWorkItem|Unable to move. Moving across projects and groups is not supported."
 msgstr ""
 
-msgid "MoveWorkItem|Cannot move work item to same project or group it originates from."
+msgid "MoveWorkItem|Unable to move. Target namespace is pending deletion."
 msgstr ""
 
-msgid "MoveWorkItem|Cannot move work item to target namespace as it is pending deletion."
-msgstr ""
-
-msgid "MoveWorkItem|Cannot move work items of '%{issue_type}' type."
+msgid "MoveWorkItem|Unable to move. You have insufficient permissions."
 msgstr ""
 
 msgid "Moved issue to %{label} column in the board."

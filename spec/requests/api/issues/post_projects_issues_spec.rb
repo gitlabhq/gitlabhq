@@ -480,8 +480,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
       end
 
       it 'moves an issue' do
-        post api(path, user),
-          params: { to_project_id: target_project.id }
+        post api(path, user), params: { to_project_id: target_project.id }
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['project_id']).to eq(target_project.id)
@@ -492,8 +491,12 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
           post api(path, user),
             params: { to_project_id: project.id }
 
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to eq(error1)
+          if Feature.enabled?(:work_item_move_and_clone, issue.project)
+            expect(json_response['id']).to eq(issue.id)
+          else
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq(same_project_error_message)
+          end
         end
       end
 
@@ -503,7 +506,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
             params: { to_project_id: target_project2.id }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to eq(error2)
+          expect(json_response['message']).to eq(permissions_error_message)
         end
       end
 
@@ -557,8 +560,8 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
 
     context 'with work_item_move_and_clone disabled' do
       it_behaves_like 'move work item api requests' do
-        let(:error1) { "Cannot move issue to project it originates from!" }
-        let(:error2) { "Cannot move issue due to insufficient permissions!" }
+        let(:same_project_error_message) { "Cannot move issue to project it originates from." }
+        let(:permissions_error_message) { "Cannot move issue due to insufficient permissions." }
 
         before do
           stub_feature_flags(work_item_move_and_clone: false)
@@ -568,8 +571,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
 
     context 'with work_item_move_and_clone enabled' do
       it_behaves_like 'move work item api requests' do
-        let(:error1) { "Cannot move work item to same project or group it originates from." }
-        let(:error2) { "Cannot move work item due to insufficient permissions." }
+        let(:permissions_error_message) { "Unable to move. You have insufficient permissions." }
 
         before do
           stub_feature_flags(work_item_move_and_clone: true)
@@ -579,110 +581,137 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
   end
 
   describe '/projects/:id/issues/:issue_iid/clone' do
-    let_it_be(:valid_target_project) { create(:project) }
-    let_it_be(:invalid_target_project) { create(:project) }
+    shared_examples 'clone work item api requests' do
+      let_it_be(:valid_target_project) { create(:project) }
+      let_it_be(:invalid_target_project) { create(:project) }
 
-    before_all do
-      valid_target_project.add_maintainer(user)
-    end
+      before_all do
+        valid_target_project.add_maintainer(user)
+      end
 
-    context 'when user can admin the issue' do
-      context 'when the user can admin the target project' do
-        it 'clones the issue' do
-          expect do
-            post_clone_issue(user, issue, valid_target_project)
-          end.to change { valid_target_project.issues.count }.by(1)
-
-          cloned_issue = Issue.last
-
-          expect(cloned_issue.notes.count).to eq(2)
-          expect(cloned_issue.notes.pluck(:note)).not_to include(issue.notes.first.note)
-          expect(response).to have_gitlab_http_status(:created)
-          expect(json_response['id']).to eq(cloned_issue.id)
-          expect(json_response['project_id']).to eq(valid_target_project.id)
-        end
-
-        context 'when target project is the same source project' do
+      context 'when user can admin the issue' do
+        shared_examples 'clones the issue' do
           it 'clones the issue' do
             expect do
-              post_clone_issue(user, issue, issue.project)
-            end.to change { issue.reset.project.issues.count }.by(1)
+              post_clone_issue(user, issue, target_project)
+            end.to change { target_project.issues.count }.by(1)
 
             cloned_issue = Issue.last
 
-            expect(cloned_issue.notes.count).to eq(2)
+            # legacy clone adds an extra note for assignees, even though assignees are cloned from original issue and,
+            # in case of cloning notes, along with cloning assignments system notes as well
+            notes_count = 2
+            notes_count -= 1 if Feature.enabled?(:work_item_move_and_clone, issue.project)
+
+            expect(cloned_issue.notes.count).to eq(notes_count)
             expect(cloned_issue.notes.pluck(:note)).not_to include(issue.notes.first.note)
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response['id']).to eq(cloned_issue.id)
-            expect(json_response['project_id']).to eq(issue.project.id)
+            expect(json_response['project_id']).to eq(target_project.id)
+          end
+        end
+
+        context 'when the user can admin the target project' do
+          it_behaves_like 'clones the issue' do
+            let(:target_project) { valid_target_project }
+          end
+
+          context 'when target project is the same source project' do
+            it_behaves_like 'clones the issue' do
+              let(:target_project) { issue.project }
+            end
           end
         end
       end
-    end
 
-    context 'when the user does not have the permission to clone issues' do
-      it 'returns 400' do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/clone", user),
-          params: { to_project_id: invalid_target_project.id }
+      context 'when the user does not have the permission to clone issues' do
+        it 'returns 400' do
+          post api("/projects/#{project.id}/issues/#{issue.iid}/clone", user),
+            params: { to_project_id: invalid_target_project.id }
 
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']).to eq(s_('CloneIssue|Cannot clone issue due to insufficient permissions!'))
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq(permissions_error_message)
+        end
+      end
+
+      context 'when using the issue ID instead of iid' do
+        it 'returns 404', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/341520' do
+          post api("/projects/#{project.id}/issues/#{issue.id}/clone", user),
+            params: { to_project_id: valid_target_project.id }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq('404 Issue Not Found')
+        end
+      end
+
+      context 'when issue does not exist' do
+        it 'returns 404' do
+          post api("/projects/#{project.id}/issues/12300/clone", user),
+            params: { to_project_id: valid_target_project.id }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq('404 Issue Not Found')
+        end
+      end
+
+      context 'when source project does not exist' do
+        it 'returns 404' do
+          post api("/projects/0/issues/#{issue.iid}/clone", user),
+            params: { to_project_id: valid_target_project.id }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq('404 Project Not Found')
+        end
+      end
+
+      context 'when target project does not exist' do
+        it 'returns 404' do
+          post api("/projects/#{project.id}/issues/#{issue.iid}/clone", user),
+            params: { to_project_id: 0 }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq('404 Project Not Found')
+        end
+      end
+
+      it 'clones the issue with notes when with_notes is true' do
+        expect do
+          post api("/projects/#{project.id}/issues/#{issue.iid}/clone", user),
+            params: { to_project_id: valid_target_project.id, with_notes: true }
+        end.to change { valid_target_project.issues.count }.by(1)
+
+        cloned_issue = Issue.last
+
+        # legacy clone adds an extra note for assignees, even though those we cloned from original issue
+        notes_count = issue.notes.count + 1
+        notes_count -= 1 if Feature.enabled?(:work_item_move_and_clone, issue.project)
+
+        expect(cloned_issue.notes.count).to eq(notes_count)
+        expect(cloned_issue.notes.pluck(:note)).to include(issue.notes.first.note)
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['id']).to eq(cloned_issue.id)
+        expect(json_response['project_id']).to eq(valid_target_project.id)
       end
     end
 
-    context 'when using the issue ID instead of iid' do
-      it 'returns 404', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/341520' do
-        post api("/projects/#{project.id}/issues/#{issue.id}/clone", user),
-          params: { to_project_id: valid_target_project.id }
+    context 'with work_item_move_and_clone disabled' do
+      before do
+        stub_feature_flags(work_item_move_and_clone: false)
+      end
 
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['message']).to eq('404 Issue Not Found')
+      it_behaves_like 'clone work item api requests' do
+        let(:permissions_error_message) { "Cannot clone issue due to insufficient permissions." }
       end
     end
 
-    context 'when issue does not exist' do
-      it 'returns 404' do
-        post api("/projects/#{project.id}/issues/12300/clone", user),
-          params: { to_project_id: valid_target_project.id }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['message']).to eq('404 Issue Not Found')
+    context 'with work_item_move_and_clone enabled' do
+      before do
+        stub_feature_flags(work_item_move_and_clone: true)
       end
-    end
 
-    context 'when source project does not exist' do
-      it 'returns 404' do
-        post api("/projects/0/issues/#{issue.iid}/clone", user),
-          params: { to_project_id: valid_target_project.id }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['message']).to eq('404 Project Not Found')
+      it_behaves_like 'clone work item api requests' do
+        let(:permissions_error_message) { "Unable to clone. You have insufficient permissions." }
       end
-    end
-
-    context 'when target project does not exist' do
-      it 'returns 404' do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/clone", user),
-          params: { to_project_id: 0 }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response['message']).to eq('404 Project Not Found')
-      end
-    end
-
-    it 'clones the issue with notes when with_notes is true' do
-      expect do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/clone", user),
-          params: { to_project_id: valid_target_project.id, with_notes: true }
-      end.to change { valid_target_project.issues.count }.by(1)
-
-      cloned_issue = Issue.last
-
-      expect(cloned_issue.notes.count).to eq(3)
-      expect(cloned_issue.notes.pluck(:note)).to include(issue.notes.first.note)
-      expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['id']).to eq(cloned_issue.id)
-      expect(json_response['project_id']).to eq(valid_target_project.id)
     end
   end
 
