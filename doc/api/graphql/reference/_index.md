@@ -39901,9 +39901,11 @@ Represents Custom Status widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetcustomstatusiconname"></a>`iconName` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Icon name of the Custom Status. |
-| <a id="workitemwidgetcustomstatusid"></a>`id` {{< icon name="warning-solid" >}} | [`WorkItemsWidgetsCustomStatusID!`](#workitemswidgetscustomstatusid) | **Introduced** in GitLab 17.8. **Status**: Experiment. ID of the Custom Status. |
-| <a id="workitemwidgetcustomstatusname"></a>`name` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Name of the Custom Status. |
+| <a id="workitemwidgetcustomstatuscolor"></a>`color` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.10. **Status**: Experiment. Color of the custom status. |
+| <a id="workitemwidgetcustomstatusiconname"></a>`iconName` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Icon name of the custom status. |
+| <a id="workitemwidgetcustomstatusid"></a>`id` {{< icon name="warning-solid" >}} | [`GlobalID`](#globalid) | **Introduced** in GitLab 17.8. **Status**: Experiment. ID of the custom status. |
+| <a id="workitemwidgetcustomstatusname"></a>`name` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Name of the custom status. |
+| <a id="workitemwidgetcustomstatusposition"></a>`position` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.10. **Status**: Experiment. Position of the custom status within its category. |
 | <a id="workitemwidgetcustomstatustype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetDefinitionAssignees`
@@ -45392,12 +45394,6 @@ An example `WorkItemsRelatedWorkItemLinkID` is: `"gid://gitlab/WorkItems::Relate
 A `WorkItemsTypeID` is a global ID. It is encoded as a string.
 
 An example `WorkItemsTypeID` is: `"gid://gitlab/WorkItems::Type/1"`.
-
-### `WorkItemsWidgetsCustomStatusID`
-
-A `WorkItemsWidgetsCustomStatusID` is a global ID. It is encoded as a string.
-
-An example `WorkItemsWidgetsCustomStatusID` is: `"gid://gitlab/WorkItems::Widgets::CustomStatus/1"`.
 
 ## Abstract types
 

@@ -5767,9 +5767,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#predefined_project_variables' do
-    let_it_be(:project) { create(:project, :repository) }
+    let(:project_with_pre_defined_var) { create(:project, :repository) }
 
-    subject { project.predefined_project_variables.to_runner_variables }
+    subject { project_with_pre_defined_var.predefined_project_variables.to_runner_variables }
 
     specify do
       expect(subject).to include(
@@ -5779,7 +5779,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'when ci config path is overridden' do
       before do
-        project.update!(ci_config_path: 'random.yml')
+        project_with_pre_defined_var.update!(ci_config_path: 'random.yml')
       end
 
       it do
@@ -9161,6 +9161,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let(:feature_flag_method) { :work_items_alpha_feature_flag_enabled? }
       let(:feature_flag) { :work_items_alpha }
       let(:subject_project) { group_project }
+    end
+  end
+
+  describe '#work_item_status_feature_available?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
+
+    it "return false" do
+      expect(group_project.work_item_status_feature_available?).to be false
     end
   end
 

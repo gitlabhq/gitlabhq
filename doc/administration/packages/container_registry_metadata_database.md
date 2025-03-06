@@ -32,7 +32,7 @@ By using a database to store this data, many new features are possible, includin
 which removes old data automatically with zero downtime.
 
 This database works in conjunction with the object storage already used by the registry, but does not replace object storage.
-You must continue to maintain an object storage solution even after migrating to a metadata database.
+You must continue to maintain an object storage solution even after migrating to the metadata database.
 
 For Helm Charts installations, see [Manage the container registry metadata database](https://docs.gitlab.com/charts/charts/registry/metadata_database.html#create-the-database)
 in the Helm Charts documentation.
@@ -103,7 +103,7 @@ To enable the database:
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-1. [Apply schema migrations](#apply-schema-migrations).
+1. [Apply database migrations](#apply-database-migrations).
 1. Enable the database by editing `/etc/gitlab/gitlab.rb` and setting `enabled` to `true`:
 
    ```ruby
@@ -195,7 +195,7 @@ and your registry contains a relatively small amount of data.
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-1. [Apply schema migrations](#apply-schema-migrations) if you have not done so.
+1. [Apply database migrations](#apply-database-migrations) if you have not done so.
 1. Run the following command:
 
    ```shell
@@ -283,7 +283,7 @@ If you must halt the operation, you have to restart this step.
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-1. [Apply schema migrations](#apply-schema-migrations) if you have not done so.
+1. [Apply database migrations](#apply-database-migrations) if you have not done so.
 1. Run the first step to begin the migration:
 
    ```shell
@@ -389,43 +389,50 @@ delay ensures that online garbage collection does not interfere with image pushe
 Check out the [monitor online garbage collection](#online-garbage-collection-monitoring) section
 to see how to monitor the progress and health of the online garbage collector.
 
-## Manage schema migrations
+## Database migrations
 
-Use the following commands to run the schema migrations for the Container registry metadata database.
-The registry must be enabled and the configuration section must have the database section filled.
+The container registry supports two types of migrations:
 
-### Apply schema migrations
+- **Regular schema migrations**: Changes to the database structure that must run before deploying new application code. These should be fast (no more than a few minutes) to avoid deployment delays.
+      
+- **Post-deployment migrations**: Changes to the database structure that can run while the application is running. Used for longer operations like creating indexes on large tables, avoiding startup delays and extended upgrade downtimes.
 
-1. Run the registry database schema migrations
+By default, the registry applies both regular schema and post-deployment migrations simultaneously. To reduce downtime during upgrades, you can skip post-deployment migrations and apply them manually after the application starts.
+
+### Apply database migrations
+
+To apply both regular schema and post-deployment migrations before the application starts:
+
+1. Run database migrations:
 
    ```shell
    sudo gitlab-ctl registry-database migrate up
    ```
 
-1. The registry must stop if it's running. Type `y` to confirm and wait for the process to finish.
+To skip post-deployment migrations:
+
+1. Run regular schema migrations only:
+
+   ```shell
+   sudo gitlab-ctl registry-database migrate up --skip-post-deployment
+   ```
+
+   As an alternative to the `--skip-post-deployment` flag, you can also set the `SKIP_POST_DEPLOYMENT_MIGRATIONS` environment variable to `true`:
+
+   ```shell
+   SKIP_POST_DEPLOYMENT_MIGRATIONS=true sudo gitlab-ctl registry-database migrate up
+   ```
+
+1. After starting the application, apply any pending post-deployment migrations:
+
+   ```shell
+   sudo gitlab-ctl registry-database migrate up
+   ```
 
 {{< alert type="note" >}}
 
 The `migrate up` command offers some extra flags that can be used to control how the migrations are applied.
 Run `sudo gitlab-ctl registry-database migrate up --help` for details.
-
-{{< /alert >}}
-
-### Undo schema migrations
-
-You can undo schema migrations in case anything goes wrong, but this is a non-recoverable action.
-If you pushed new images while the database was in use, they will no longer be accessible
-after this.
-
-1. Undo the registry database schema migrations:
-
-   ```shell
-   sudo gitlab-ctl registry-database migrate down
-   ```
-
-{{< alert type="note" >}}
-
-The `migrate down` command offers some extra flags. Run `sudo gitlab-ctl registry-database migrate down --help` for details.
 
 {{< /alert >}}
 
@@ -597,7 +604,7 @@ the registry fails to start with the following error message:
 FATA[0000] configuring application: there are pending database migrations, use the 'registry database migrate' CLI command to check and apply them
 ```
 
-To fix this issue, follow the steps to [apply schema migrations](#apply-schema-migrations).
+To fix this issue, follow the steps to [apply database migrations](#apply-database-migrations).
 
 ### Error: `offline garbage collection is no longer possible`
 
@@ -617,7 +624,7 @@ You must either:
 
 ### Error: `cannot execute <STATEMENT> in a read-only transaction`
 
-The registry could fail to [apply schema migrations](#apply-schema-migrations)
+The registry could fail to [apply database migrations](#apply-database-migrations)
 with the following error message:
 
 ```shell
@@ -658,7 +665,7 @@ If either of these values is set to `on`, you must disable it:
    ```
 
 1. Restart your Postgres server to apply these settings.
-1. Try to [apply schema migrations](#apply-schema-migrations) again, if applicable.
+1. Try to [apply database migrations](#apply-database-migrations) again, if applicable.
 1. Restart the registry `sudo gitlab-ctl restart registry`.
 
 ### Error: `cannot import all repositories while the tags table has entries`

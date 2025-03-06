@@ -19,6 +19,14 @@ title: Requirements
     - dast
   ```
 
+- A network connection between the runner and your target application.
+
+  How you connect depends on your DAST configuration:
+  - If `DAST_TARGET_URL` and `DAST_AUTH_URL` specify port numbers, use those ports.
+  - If ports are not specified, use the standard port numbers for HTTP and HTTPS.
+
+  You might need to open both an HTTP and HTTPS port. For example, if the target URL uses HTTP, but the application links to resources using HTTPS. Always test your connection when you configure a scan.
+
 ## Recommendations
 
 - Take care if your pipeline is configured to deploy to the same web server in each run. Running a DAST scan while a server is being updated leads to inaccurate and non-deterministic results.

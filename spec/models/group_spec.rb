@@ -4063,6 +4063,12 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#work_item_status_feature_available?' do
+    subject { group.work_item_status_feature_available? }
+
+    it { is_expected.to be false }
+  end
+
   describe '#continue_indented_text_feature_flag_enabled?' do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :continue_indented_text }

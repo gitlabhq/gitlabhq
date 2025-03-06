@@ -7,10 +7,11 @@ module Resolvers
         type ::Types::WorkItems::Widgets::CustomStatusType.connection_type, null: true
 
         def resolve
-          # Implement during https://gitlab.com/gitlab-org/gitlab/-/issues/498393
-          [::WorkItems::Widgets::CustomStatus.new(nil), ::WorkItems::Widgets::CustomStatus.new(nil)]
+          []
         end
       end
     end
   end
 end
+
+Resolvers::WorkItems::Widgets::CustomStatusResolver.prepend_mod

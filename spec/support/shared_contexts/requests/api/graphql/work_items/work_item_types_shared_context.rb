@@ -21,7 +21,7 @@ RSpec.shared_context 'with work item types request context' do
         }
         ... on WorkItemWidgetDefinitionCustomStatus {
           allowedCustomStatuses {
-            nodes { id name iconName }
+            nodes { id name iconName color position }
           }
         }
       }
@@ -72,7 +72,7 @@ RSpec.shared_context 'with work item types request context' do
 
       if widget == WorkItems::Widgets::CustomStatus
         next custom_status_widget_attributes(work_item_type,
-          base_attributes)
+          base_attributes, resource_parent)
       end
 
       next base_attributes unless widget_attributes[widget.type]
@@ -96,17 +96,46 @@ RSpec.shared_context 'with work item types request context' do
       .merge({ 'allowedChildTypes' => { 'nodes' => child_types }, 'allowedParentTypes' => { 'nodes' => parent_types } })
   end
 
-  def custom_status_widget_attributes(_work_item_type, base_attributes)
+  def custom_status_widget_attributes(_work_item_type, base_attributes, resource_parent)
+    unless resource_parent&.root_ancestor&.try(:work_item_status_feature_available?)
+      return base_attributes.merge({ 'allowedCustomStatuses' => { 'nodes' => [] } })
+    end
+
     statuses = [
       {
-        'id' => 'gid://gitlab/WorkItems::Widgets::CustomStatus/10',
-        'name' => 'Custom Status',
-        'iconName' => 'custom_status icon'
+        'id' => 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+        'name' => 'To do',
+        'iconName' => 'status-waiting',
+        'color' => '#535158',
+        'position' => 0
       },
       {
-        'id' => 'gid://gitlab/WorkItems::Widgets::CustomStatus/10',
-        'name' => 'Custom Status',
-        'iconName' => 'custom_status icon'
+        'id' => 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/2',
+        'name' => 'In progress',
+        'iconName' => 'status-running',
+        'color' => '#0b5cad',
+        'position' => 0
+      },
+      {
+        'id' => 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/3',
+        'name' => 'Done',
+        'iconName' => 'status-success',
+        'color' => '#23663b',
+        'position' => 0
+      },
+      {
+        'id' => 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/4',
+        'name' => "Won't do",
+        'iconName' => 'status-cancelled',
+        'color' => '#ae1901',
+        'position' => 0
+      },
+      {
+        'id' => 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/5',
+        'name' => 'Duplicate',
+        'iconName' => 'status-cancelled',
+        'color' => '#ae1901',
+        'position' => 10
       }
     ]
 

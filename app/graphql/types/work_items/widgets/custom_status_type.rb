@@ -12,22 +12,30 @@ module Types
 
         implements ::Types::WorkItems::WidgetInterface
 
-        # TODO change the ID to CustomStatus model ID while implementing
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/498393
-        field :id, ::Types::GlobalIDType[::WorkItems::Widgets::CustomStatus],
-          null: false,
+        field :id, Types::GlobalIDType,
+          null: true,
           experiment: { milestone: '17.8' },
-          description: 'ID of the Custom Status.'
+          description: 'ID of the custom status.'
 
         field :name, GraphQL::Types::String,
           null: true,
           experiment: { milestone: '17.8' },
-          description: 'Name of the Custom Status.'
+          description: 'Name of the custom status.'
 
         field :icon_name, GraphQL::Types::String,
           null: true,
           experiment: { milestone: '17.8' },
-          description: 'Icon name of the Custom Status.'
+          description: 'Icon name of the custom status.'
+
+        field :color, GraphQL::Types::String,
+          null: true,
+          experiment: { milestone: '17.10' },
+          description: 'Color of the custom status.'
+
+        field :position, GraphQL::Types::Int,
+          null: true,
+          experiment: { milestone: '17.10' },
+          description: 'Position of the custom status within its category.'
       end
       # rubocop:enable Graphql/AuthorizeTypes
     end
