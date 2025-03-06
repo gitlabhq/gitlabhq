@@ -23,6 +23,9 @@
 # 4. Debug mode:
 #    $ ruby scripts/database/migrate.rb --debug
 #    This will run the script with additional debug output for troubleshooting.
+# 5. Custom base branch:
+#    $ BASE_REF=origin/master ruby scripts/database/migrate.rb
+#    This will run the script with origin/master as the base branch for migrations retrieval
 #
 # The script checks for changed migration files in both 'db/migrate' and 'db/post_migrate' directories,
 # and executes the selected migrations for both the main and CI databases.
@@ -32,7 +35,7 @@ require 'optparse'
 SCRIPT_NAME = File.basename($PROGRAM_NAME)
 MIGRATIONS_DIR = 'db/migrate'
 POST_DEPLOY_MIGRATIONS_DIR = 'db/post_migrate'
-BRANCH_NAME = 'master'
+BRANCH_NAME = ENV.fetch('BASE_REF', 'master')
 
 def require_commands!(*commands)
   missing_commands = commands.reject { |command| system("command", "-v", command, out: File::NULL) }

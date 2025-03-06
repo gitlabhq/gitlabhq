@@ -41,7 +41,6 @@ RSpec/RepeatedExampleGroupDescription:
     - 'spec/lib/gitlab/auth/atlassian/auth_hash_spec.rb'
     - 'spec/lib/gitlab/auth/blocked_user_tracker_spec.rb'
     - 'spec/lib/gitlab/auth/ldap/dn_spec.rb'
-    - 'spec/lib/gitlab/ci/config/edge_stages_injector_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/jobs_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/needs_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/policy_spec.rb'

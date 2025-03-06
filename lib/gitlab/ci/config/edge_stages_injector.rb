@@ -21,13 +21,9 @@ module Gitlab
         end
 
         def to_hash
-          if config.key?(:stages)
-            process(:stages)
-          elsif config.key?(:types)
-            process(:types)
-          else
-            config
-          end
+          return config unless config.key?(:stages)
+
+          inject_edges
         end
 
         private
@@ -36,17 +32,17 @@ module Gitlab
 
         delegate :wrap_stages, to: :class
 
-        def process(keyword)
-          stages = extract_stages(keyword)
+        def inject_edges
+          stages = extract_stages
           return config if stages.empty?
 
           stages = wrap_stages(stages)
-          config[keyword] = stages
+          config[:stages] = stages
           config
         end
 
-        def extract_stages(keyword)
-          stages = config[keyword]
+        def extract_stages
+          stages = config[:stages]
           return [] unless stages.is_a?(Array)
 
           stages

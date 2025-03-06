@@ -134,23 +134,33 @@ class MergeRequestDiffCommit < ApplicationRecord
   end
 
   def message
-    Gitlab::AppLogger.info(
-      event: 'mrdc_message_method',
-      message: "mrdc#message called via #{caller_locations.reject { |line| line.path.include?('/gems/') }.first}"
-    )
+    if ::Feature.enabled?(:commit_message_logger, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor  -- TODO: No actor needed
+      Gitlab::AppLogger.info(
+        event: 'mrdc_message_method',
+        message: "mrdc#message called via #{caller_locations.reject { |line| line.path.include?('/gems/') }.first(4)}"
+      )
+    end
 
+    fetch_message
+  end
+
+  def to_hash
+    super(exclude_keys: [:message]).merge({
+      'id' => sha,
+      message: fetch_message,
+      log_message: ::Feature.enabled?(:commit_message_logger, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor  -- TODO: No actor needed
+    })
+  end
+
+  private
+
+  def fetch_message
     if ::Feature.enabled?(:disable_message_attribute_on_mr_diff_commits, project)
       ""
     else
       read_attribute("message")
     end
   end
-
-  def to_hash
-    super.merge({ 'id' => sha })
-  end
-
-  private
 
   # As of %17.10, we still don't have `project_id` on merge_request_diff_commit
   #   records. Until we do, we have to fetch it from merge_request_diff.

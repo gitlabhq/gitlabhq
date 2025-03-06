@@ -4349,7 +4349,6 @@
 - './spec/lib/gitlab/ci/build/status/reason_spec.rb'
 - './spec/lib/gitlab/ci/build/step_spec.rb'
 - './spec/lib/gitlab/ci/charts_spec.rb'
-- './spec/lib/gitlab/ci/config/edge_stages_injector_spec.rb'
 - './spec/lib/gitlab/ci/config/entry/allow_failure_spec.rb'
 - './spec/lib/gitlab/ci/config/entry/artifacts_spec.rb'
 - './spec/lib/gitlab/ci/config/entry/bridge_spec.rb'

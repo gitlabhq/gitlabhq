@@ -1,11 +1,18 @@
 <script>
-import { GlLoadingIcon, GlIcon, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlCard,
+  GlLoadingIcon,
+  GlIcon,
+  GlIntersectionObserver,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { n__, __ } from '~/locale';
 import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
 import { ROUTES } from '../../constants';
 
 export default {
   components: {
+    GlCard,
     GlLoadingIcon,
     GlIntersectionObserver,
     GlIcon,
@@ -55,14 +62,14 @@ export default {
       required: false,
       default: null,
     },
+    useRouter: {
+      type: Boolean,
+      required: true,
+    },
     isDragging: {
       type: Boolean,
       required: false,
       default: false,
-    },
-    useRouter: {
-      type: Boolean,
-      required: true,
     },
     workItemWebUrl: {
       type: String,
@@ -162,65 +169,70 @@ export default {
     :is="linkComponent"
     :to="routerLinkProps"
     :href="nonRouterHref"
-    class="card js-design-list-item design-list-item gl-mb-0 gl-cursor-pointer gl-text-default hover:gl-text-default"
+    class="gl-block gl-rounded-base gl-text-default hover:gl-text-default focus:gl-focus"
   >
-    <div
-      class="card-body gl-relative gl-flex gl-items-center gl-justify-center gl-overflow-hidden gl-rounded-t-base gl-p-0"
+    <gl-card
+      class="js-design-list-item design-list-item gl-mb-0"
+      header-class="gl-bg-subtle dark:gl-bg-gray-100 gl-p-0 gl-flex gl-grow gl-items-center gl-justify-center gl-overflow-hidden gl-relative gl-rounded-t-base"
+      body-class="gl-p-0 gl-flex gl-w-full gl-bg-default gl-py-3 gl-px-4 gl-rounded-base"
       @click="onTileClick"
     >
-      <div
-        v-if="icon.name"
-        data-testid="design-event"
-        class="gl-absolute gl-right-3 gl-top-3 gl-mr-1"
-      >
-        <span :title="icon.tooltip" :aria-label="icon.tooltip">
-          <gl-icon
-            :name="icon.name"
-            :size="16"
-            :class="icon.classes"
-            data-testid="design-status-icon"
-            :data-qa-status="icon.name"
-          />
-        </span>
-      </div>
-      <gl-intersection-observer
-        class="gl-flex gl-grow gl-justify-center"
-        data-testid="design-image"
-        :data-qa-filename="filename"
-        @appear="onAppear"
-      >
-        <gl-loading-icon v-if="showLoadingSpinner" size="lg" />
-        <gl-icon v-else-if="showImageErrorIcon" name="media-broken" :size="32" variant="subtle" />
-        <img
-          v-show="showImage"
-          :src="imageLink"
-          :alt="filename"
-          class="design-img gl-mx-auto gl-block gl-max-h-full gl-w-auto gl-max-w-full"
-          :data-testid="`design-img-${id}`"
-          @load="onImageLoad"
-          @error="onImageError"
-        />
-      </gl-intersection-observer>
-    </div>
-    <div class="card-footer gl-flex gl-w-full gl-bg-white gl-px-4 gl-py-3">
-      <div class="str-truncated-100 gl-flex gl-flex-col">
-        <span
-          v-gl-tooltip
-          class="str-truncated-100 gl-text-sm"
-          :data-testid="`design-img-filename-${id}`"
-          :title="filename"
-          >{{ filename }}</span
+      <template #header>
+        <div
+          v-if="icon.name"
+          data-testid="design-event"
+          class="gl-absolute gl-right-3 gl-top-2 gl-mr-1 gl-mt-1"
         >
-        <span v-if="updatedAt" class="str-truncated-100">
-          {{ __('Updated') }} <timeago :time="updatedAt" tooltip-placement="bottom" />
-        </span>
-      </div>
-      <div v-if="notesCount" class="gl-ml-auto gl-flex gl-items-center gl-text-subtle">
-        <gl-icon name="comments" class="gl-ml-2" />
-        <span :aria-label="notesLabel" class="gl-ml-2 gl-text-sm">
-          {{ notesCount }}
-        </span>
-      </div>
-    </div>
+          <span :title="icon.tooltip" :aria-label="icon.tooltip">
+            <gl-icon
+              :name="icon.name"
+              :size="16"
+              :class="icon.classes"
+              data-testid="design-status-icon"
+              :data-qa-status="icon.name"
+            />
+          </span>
+        </div>
+        <gl-intersection-observer
+          class="gl-flex gl-grow gl-items-center gl-justify-center"
+          data-testid="design-image"
+          :data-qa-filename="filename"
+          @appear="onAppear"
+        >
+          <gl-loading-icon v-if="showLoadingSpinner" size="md" />
+          <gl-icon v-else-if="showImageErrorIcon" name="media-broken" :size="32" variant="subtle" />
+          <img
+            v-show="showImage"
+            :src="imageLink"
+            :alt="filename"
+            class="design-img gl-mx-auto gl-block gl-max-h-full gl-w-auto gl-max-w-full"
+            :data-testid="`design-img-${id}`"
+            @load="onImageLoad"
+            @error="onImageError"
+          />
+        </gl-intersection-observer>
+      </template>
+
+      <template #default>
+        <div class="gl-flex gl-flex-col gl-truncate">
+          <span
+            v-gl-tooltip
+            class="gl-truncate gl-text-sm"
+            :data-testid="`design-img-filename-${id}`"
+            :title="filename"
+            >{{ filename }}</span
+          >
+          <span v-if="updatedAt" class="gl-truncate">
+            {{ __('Updated') }} <timeago :time="updatedAt" tooltip-placement="bottom" />
+          </span>
+        </div>
+        <div v-if="notesCount" class="gl-ml-auto gl-flex gl-items-center gl-text-subtle">
+          <gl-icon name="comments" class="gl-ml-2" />
+          <span :aria-label="notesLabel" class="gl-ml-2 gl-text-sm">
+            {{ notesCount }}
+          </span>
+        </div>
+      </template>
+    </gl-card>
   </component>
 </template>

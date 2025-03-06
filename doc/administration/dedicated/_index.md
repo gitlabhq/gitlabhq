@@ -75,6 +75,7 @@ To learn more, see [GitLab Dedicated Architecture](architecture.md).
 | [Application logs](monitor.md) | GitLab delivers logs to your AWS S3 bucket. You can request access to monitor instance activity through these logs. | Support ticket |
 | [Email service](configure_instance/users_notifications.md#smtp-email-service) | GitLab provides AWS SES by default to send emails from your GitLab Dedicated instance. You can also configure your own SMTP email service. | Support ticket for <br/>custom service  |
 | [Switchboard access and <br>notifications](configure_instance/users_notifications.md) | You manage Switchboard permissions and notification settings. GitLab maintains the Switchboard infrastructure. | Switchboard |
+| [Switchboard SSO](configure_instance/users_notifications.md#configure-single-sign-on-for-switchboard) | You configure your organization's identity provider and supply GitLab with the necessary details. GitLab configures single-sign-on (SSO) for Switchboard. | Support ticket |
 
 ## Get started
 

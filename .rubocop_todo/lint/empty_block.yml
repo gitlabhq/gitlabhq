@@ -61,7 +61,6 @@ Lint/EmptyBlock:
     - 'spec/lib/gitlab/chat_name_token_spec.rb'
     - 'spec/lib/gitlab/ci/build/rules/rule/clause/changes_spec.rb'
     - 'spec/lib/gitlab/ci/build/rules/rule/clause/exists_spec.rb'
-    - 'spec/lib/gitlab/ci/config/edge_stages_injector_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/retry_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/root_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/rules/rule/changes_spec.rb'

@@ -88,7 +88,7 @@ module QA
         end
 
         def select_design(filename)
-          click_element('design-checkbox', design: filename)
+          check_element('design-checkbox', true, design: filename)
         end
 
         def archive_selected_designs

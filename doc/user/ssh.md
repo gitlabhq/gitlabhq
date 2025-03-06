@@ -63,6 +63,12 @@ suggests that [ED25519](https://ed25519.cr.yp.to/) keys are more secure and perf
 OpenSSH 6.5 introduced ED25519 SSH keys in 2014, and they should be available on most
 operating systems.
 
+{{< alert type="note" >}}
+
+ED25519 keys might not be fully supported by all FIPS systems. For more information, see [issue 367429](https://gitlab.com/gitlab-org/gitlab/-/issues/367429).
+
+{{< /alert >}}
+
 ### ED25519_SK SSH keys
 
 To use ED25519_SK SSH keys on GitLab, your local client and GitLab server

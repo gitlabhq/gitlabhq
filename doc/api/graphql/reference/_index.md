@@ -34215,7 +34215,7 @@ Returns [`[DependencyPath!]`](#dependencypath).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectdependencypathscomponent"></a>`component` | [`SbomComponentID!`](#sbomcomponentid) | Dependency path for component. |
+| <a id="projectdependencypathsoccurrence"></a>`occurrence` | [`SbomOccurrenceID!`](#sbomoccurrenceid) | Dependency path for occurrence. |
 
 ##### `Project.deployment`
 
@@ -45253,6 +45253,12 @@ An example `RemoteDevelopmentWorkspacesAgentConfigID` is: `"gid://gitlab/RemoteD
 A `SbomComponentID` is a global ID. It is encoded as a string.
 
 An example `SbomComponentID` is: `"gid://gitlab/Sbom::Component/1"`.
+
+### `SbomOccurrenceID`
+
+A `SbomOccurrenceID` is a global ID. It is encoded as a string.
+
+An example `SbomOccurrenceID` is: `"gid://gitlab/Sbom::Occurrence/1"`.
 
 ### `SecurityProjectSecurityExclusionID`
 

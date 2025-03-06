@@ -32,6 +32,12 @@ You can only configure one SAML IdP with Switchboard. If you configured a SAML I
 
 {{< /alert >}}
 
+{{< alert type="note" >}}
+
+These instructions apply only to SSO for your GitLab Dedicated instance. For Switchboard, see [configure single sign-on for Switchboard](users_notifications.md#configure-single-sign-on-for-switchboard).
+
+{{< /alert >}}
+
 ## Activate SAML with Switchboard
 
 To activate SAML for your GitLab Dedicated instance:

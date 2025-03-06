@@ -232,7 +232,7 @@ All new indexes must have:
 1. Add a new [advanced search migration](search/advanced_search_migration_styleguide.md) to create the index
    by executing `scripts/elastic-migration` and following the instructions.
    The migration name must be in the format `Create<Name>Index`.
-1. Use the [`Elastic::MigrationCreateIndex`](search/advanced_search_migration_styleguide.md#elasticmigrationcreateindex)
+1. Use the [`Search::Elastic::MigrationCreateIndexHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationcreateindexhelper)
    helper and the `'migration creates a new index'` shared example for the specification file created.
 1. Add the target class to `Gitlab::Elastic::Helper::ES_SEPARATE_CLASSES`.
 1. To test the index creation, run `Elastic::MigrationWorker.new.perform` in a console and check that the index

@@ -262,7 +262,7 @@ When marking a skippable migration as obsolete, you must keep the `skip_if` cond
 You can test this migration with the `'a deprecated Advanced Search migration'`
 shared examples. Follow the [process for marking migrations as obsolete](#process-for-marking-migrations-as-obsolete).
 
-#### `Elastic::MigrationCreateIndex`
+#### `Search::Elastic::MigrationCreateIndexHelper`
 
 Creates a new index.
 
@@ -279,7 +279,7 @@ You must perform a follow-up migration to populate the index in the same milesto
 
 ```ruby
 class MigrationName < Elastic::Migration
-  include Elastic::MigrationCreateIndex
+  include ::Search::Elastic::MigrationCreateIndexHelper
 
   retry_on_failure
 
@@ -291,6 +291,12 @@ class MigrationName < Elastic::Migration
     Epic
   end
 end
+```
+
+You can test this migration with the `'migration creates a new index'` shared examples.
+
+```ruby
+it_behaves_like 'migration creates a new index', 20240501134252, WorkItem
 ```
 
 #### `Search::Elastic::MigrationReindexTaskHelper`

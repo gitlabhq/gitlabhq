@@ -3,8 +3,8 @@
 module CachedCommit
   extend ActiveSupport::Concern
 
-  def to_hash
-    Gitlab::Git::Commit::SERIALIZE_KEYS.index_with do |key|
+  def to_hash(exclude_keys: [])
+    (Gitlab::Git::Commit::SERIALIZE_KEYS - exclude_keys).index_with do |key|
       public_send(key) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
