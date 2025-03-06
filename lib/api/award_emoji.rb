@@ -6,13 +6,15 @@ module API
 
     helpers ::API::Helpers::AwardEmoji
 
+    AWARD_EMOJI_TAG = %w[award_emoji].freeze
+
     Helpers::AwardEmoji.awardables.each do |awardable_params|
       resource awardable_params[:resource], requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         awardable_string = awardable_params[:type].pluralize
         awardable_id_string = "#{awardable_params[:type]}_#{awardable_params[:find_by]}"
 
         params do
-          requires :id, type: String, desc: "The ID of a #{awardable_params[:resource] == :projects ? 'project' : 'group'}"
+          requires :id, types: [String, Integer], desc: "The ID or URL-encoded path of the #{awardable_params[:resource] == :projects ? 'project' : 'group'}"
           requires :"#{awardable_id_string}", type: Integer, desc: Helpers::AwardEmoji.awardable_id_desc
         end
 
@@ -20,9 +22,12 @@ module API
           ":id/#{awardable_string}/:#{awardable_id_string}/award_emoji",
           ":id/#{awardable_string}/:#{awardable_id_string}/notes/:note_id/award_emoji"
         ].each do |endpoint|
-          desc 'Get a list of project +awardable+ award emoji' do
-            detail 'This feature was introduced in 8.9'
+          desc "List an awardable's emoji reactions for #{awardable_params[:resource]}" do
+            detail 'Get a list of all emoji reactions for a specified awardable. This feature was introduced in 8.9'
             success Entities::AwardEmoji
+            failure [{ code: 404, message: 'Not Found' }]
+            is_array true
+            tags AWARD_EMOJI_TAG
           end
           params do
             use :pagination
@@ -36,12 +41,14 @@ module API
             end
           end
 
-          desc 'Get a specific award emoji' do
-            detail 'This feature was introduced in 8.9'
+          desc 'Get a single emoji reaction' do
+            detail 'Get a single emoji reaction from an issue, snippet, or merge request. This feature was introduced in 8.9'
             success Entities::AwardEmoji
+            failure [{ code: 404, message: 'Not Found' }]
+            tags AWARD_EMOJI_TAG
           end
           params do
-            requires :award_id, type: Integer, desc: 'The ID of the award'
+            requires :award_id, type: Integer, desc: 'ID of the emoji reaction.'
           end
           get "#{endpoint}/:award_id", feature_category: awardable_params[:feature_category] do
             if can_read_awardable?
@@ -51,12 +58,14 @@ module API
             end
           end
 
-          desc 'Award a new Emoji' do
-            detail 'This feature was introduced in 8.9'
+          desc 'Add a new emoji reaction' do
+            detail 'Add an emoji reaction on the specified awardable. This feature was introduced in 8.9'
             success Entities::AwardEmoji
+            failure [{ code: 400, message: 'Bad Request' }, { code: 404, message: 'Not Found' }]
+            tags AWARD_EMOJI_TAG
           end
           params do
-            requires :name, type: String, desc: 'The name of a award_emoji (without colons)'
+            requires :name, type: String, desc: 'Name of the emoji without colons.'
           end
           post endpoint, feature_category: awardable_params[:feature_category] do
             not_found!('Award Emoji') unless can_read_awardable? && can_award_awardable?
@@ -70,12 +79,14 @@ module API
             end
           end
 
-          desc 'Delete a +awardables+ award emoji' do
-            detail 'This feature was introduced in 8.9'
-            success Entities::AwardEmoji
+          desc 'Delete an emoji reaction' do
+            detail 'Only an administrator or the author of the reaction can delete an emoji reaction. This feature was introduced in 8.9'
+            success code: 204
+            failure [{ code: 401, message: 'Unauthorized' }, { code: 404, message: 'Not Found' }]
+            tags AWARD_EMOJI_TAG
           end
           params do
-            requires :award_id, type: Integer, desc: 'The ID of an award emoji'
+            requires :award_id, type: Integer, desc: 'ID of an emoji reaction.'
           end
           delete "#{endpoint}/:award_id", feature_category: awardable_params[:feature_category] do
             award = awardable.award_emoji.find(params[:award_id])

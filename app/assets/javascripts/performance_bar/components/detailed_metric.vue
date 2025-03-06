@@ -166,6 +166,7 @@ export default {
       :title="header"
       size="lg"
       scrollable
+      :static="true"
       hide-backdrop
       hide-footer
       no-focus-on-show

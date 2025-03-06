@@ -5,6 +5,7 @@ import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { s__ } from '~/locale';
 import Translate from '~/vue_shared/translate';
 
+import { transformRootToHostRules } from '~/performance_bar/transform_root_to_host_rules';
 import initPerformanceBarLog from './performance_bar_log';
 import PerformanceBarService from './services/performance_bar_service';
 import PerformanceBarStore from './stores/performance_bar_store';
@@ -163,7 +164,18 @@ const initPerformanceBar = (el) => {
   });
 };
 
-initPerformanceBar(document.querySelector('#js-peek'));
-initPerformanceBarLog();
+export function getPerformanceBarNode() {
+  const shadowDomRoot = document.querySelector('#performance-bar-root')?.shadowRoot;
+  if (shadowDomRoot) {
+    transformRootToHostRules(shadowDomRoot);
+    return shadowDomRoot.querySelector('#js-peek');
+  }
+  return document.querySelector('#js-peek');
+}
 
-export default initPerformanceBar;
+export default function initPerformanceBarAndLog() {
+  const app = initPerformanceBar(getPerformanceBarNode());
+  initPerformanceBarLog();
+
+  return app;
+}

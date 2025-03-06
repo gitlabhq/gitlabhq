@@ -62,7 +62,7 @@ To enable [exact code search](../../user/search/exact_code_search.md) in GitLab:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Exact code search configuration**.
-1. Select the **Enable indexing for exact code search** and **Enable exact code search** checkboxes.
+1. Select the **Enable indexing** and **Enable searching** checkboxes.
 1. Select **Save changes**.
 
 ## Check indexing status
@@ -94,7 +94,7 @@ To delete offline nodes automatically:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Exact code search configuration**.
-1. Select the **Delete offline nodes automatically after 12 hours** checkbox.
+1. Select the **Delete offline nodes after 12 hours** checkbox.
 1. Select **Save changes**.
 
 ## Index root namespaces automatically
@@ -135,7 +135,7 @@ To pause indexing for [exact code search](../../user/search/exact_code_search.md
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Exact code search configuration**.
-1. Select the **Pause indexing for exact code search** checkbox.
+1. Select the **Pause indexing** checkbox.
 1. Select **Save changes**.
 
 When you pause indexing for exact code search, all changes in your repository are queued.

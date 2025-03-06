@@ -20645,7 +20645,8 @@ CREATE TABLE redirect_routes (
     source_type character varying NOT NULL,
     path character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE redirect_routes_id_seq
@@ -34948,6 +34949,8 @@ CREATE INDEX index_raw_usage_data_on_organization_id ON raw_usage_data USING btr
 
 CREATE UNIQUE INDEX index_raw_usage_data_on_recorded_at ON raw_usage_data USING btree (recorded_at);
 
+CREATE INDEX index_redirect_routes_on_namespace_id ON redirect_routes USING btree (namespace_id);
+
 CREATE UNIQUE INDEX index_redirect_routes_on_path ON redirect_routes USING btree (path);
 
 CREATE UNIQUE INDEX index_redirect_routes_on_path_unique_text_pattern_ops ON redirect_routes USING btree (lower((path)::text) varchar_pattern_ops);
@@ -39102,6 +39105,9 @@ ALTER TABLE ONLY catalog_resource_versions
 
 ALTER TABLE ONLY merge_request_blocks
     ADD CONSTRAINT fk_1551efdd17 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY redirect_routes
+    ADD CONSTRAINT fk_157ba4733c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY scan_result_policies
     ADD CONSTRAINT fk_159e8f8f79 FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE NOT VALID;

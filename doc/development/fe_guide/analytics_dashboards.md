@@ -99,6 +99,8 @@ You're not limited to these options though - you can create new visualization ty
 A data source is a connection to a database, an endpoint or a collection of data which can be used by your dashboard to query, retrieve, filter, and visualize results.
 While there's a core set of supported data sources (see `Data.type` enum in [`analytics_visualizations`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json)), you can add new ones to meet your needs.
 
+To support all visualization types, ensure your data source returns data as a single aggregated value and a time series with a value for each point in time.
+
 Note that each panel fetches data from the data source separately and independently from other panels.
 
 ## Create a built-in dashboard

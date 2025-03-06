@@ -100,21 +100,6 @@ describe('createDataSource', () => {
         { name: 'abc', description: 'xyz' },
       ]);
     });
-
-    describe('if filterOnBackend: true', () => {
-      it('fetches data from source, passing a `search` param', async () => {
-        const dataSource = createDataSource({
-          ...dataSourceParams,
-          filterOnBackend: true,
-        });
-
-        const results = await dataSource.search('bcd');
-        expect(mock.history.get[0].params).toEqual({ search: 'bcd' });
-
-        // results are still filtered out on frontend, on top of backend filtering
-        expect(results).toEqual([{ name: 'bcd', description: 'wxy' }]);
-      });
-    });
   });
 
   it('handles source fetch errors', async () => {
@@ -328,5 +313,15 @@ describe('AutocompleteHelper', () => {
     results = await dataSource.search('');
 
     expect(results.map(({ username }) => username)).toMatchSnapshot();
+  });
+
+  describe('if filterOnBackend: true', () => {
+    it('fetches data passing a `search` param', async () => {
+      const dataSource = autocompleteHelper.getDataSource('user', { filterOnBackend: true });
+
+      await dataSource.search('bcd');
+
+      expect(mock.history.get[0].params).toEqual({ search: 'bcd' });
+    });
   });
 });

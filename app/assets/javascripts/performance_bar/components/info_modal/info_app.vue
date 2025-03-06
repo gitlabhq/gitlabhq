@@ -51,6 +51,7 @@ export default {
       modal-id="environment-info"
       :title="s__('PerformanceBar|Debugging information')"
       size="sm"
+      :static="true"
       hide-backdrop
       hide-footer
       no-focus-on-show

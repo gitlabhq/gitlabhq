@@ -3427,7 +3427,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/workers/click_house/rebuild_materialized_view_cron_worker.rb'
     - 'ee/app/workers/concerns/elastic/bulk_cron_worker.rb'
     - 'ee/app/workers/concerns/elastic/migration_create_index.rb'
-    - 'ee/app/workers/concerns/elastic/migration_helper.rb'
     - 'ee/app/workers/concerns/elastic/migration_options.rb'
     - 'ee/app/workers/concerns/elastic/migration_state.rb'
     - 'ee/app/workers/concerns/geo_backoff_delay.rb'

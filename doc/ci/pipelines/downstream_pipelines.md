@@ -680,7 +680,8 @@ all jobs in a pipeline, including trigger jobs, inherit [default `variables`](..
 #### Prevent default variables from being passed
 
 You can stop default CI/CD variables from reaching the downstream pipeline with
-[`inherit:variables:false`](../yaml/_index.md#inheritvariables).
+[`inherit:variables`](../yaml/_index.md#inheritvariables). You can list specific variables to inherit,
+or block all default variables.
 
 For example:
 

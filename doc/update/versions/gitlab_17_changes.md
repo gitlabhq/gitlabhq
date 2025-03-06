@@ -22,6 +22,8 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 ## Issues to be aware of when upgrading from 16.11
 
+- Background migration `AlterWebhookDeletedAuditEvent: audit_events` can take several hours to finish. You can read more in [merge request 161320](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161320).
+
 - You must remove references to the [now deprecated bundled Grafana](../deprecations.md#bundled-grafana-deprecated-and-disabled) key from `gitlab.rb` before upgrading to GitLab 17.0 or later. After upgrading, any references to the key in `gitlab.rb` will cause `gitlab-ctl reconfigure` to fail.
 
 - You should [migrate to the new runner registration workflow](../../ci/runners/new_creation_workflow.md) before upgrading to GitLab 17.0.

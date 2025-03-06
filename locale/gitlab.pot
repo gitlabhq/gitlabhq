@@ -19657,7 +19657,7 @@ msgstr ""
 msgid "Delete label: %{labelName}"
 msgstr ""
 
-msgid "Delete offline nodes automatically after %{label}"
+msgid "Delete offline nodes after %{label}"
 msgstr ""
 
 msgid "Delete one-time password authenticator"
@@ -22657,9 +22657,6 @@ msgstr ""
 msgid "Enable epics tab in global search results"
 msgstr ""
 
-msgid "Enable exact code search"
-msgstr ""
-
 msgid "Enable feature to choose access level"
 msgstr ""
 
@@ -22675,7 +22672,7 @@ msgstr ""
 msgid "Enable incident management inbound alert limit"
 msgstr ""
 
-msgid "Enable indexing for exact code search"
+msgid "Enable indexing"
 msgstr ""
 
 msgid "Enable instance runners for all projects and subgroups in this group."
@@ -22721,6 +22718,9 @@ msgid "Enable reCAPTCHA for login."
 msgstr ""
 
 msgid "Enable repository checks"
+msgstr ""
+
+msgid "Enable searching"
 msgstr ""
 
 msgid "Enable security training"
@@ -42058,7 +42058,7 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-msgid "Pause indexing for exact code search"
+msgid "Pause indexing"
 msgstr ""
 
 msgid "Pause time (ms)"

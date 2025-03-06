@@ -293,6 +293,51 @@ class MigrationName < Elastic::Migration
 end
 ```
 
+#### `Search::Elastic::MigrationReindexTaskHelper`
+
+Creates a reindex task which creates a new index and copies data over to the new index.
+
+Requires:
+
+- The `targets` method.
+
+```ruby
+class MigrationName < Elastic::Migration
+  include ::Search::Elastic::MigrationReindexTaskHelper
+
+  def targets
+    %w[MergeRequest]
+  end
+end
+```
+
+You can test this migration with the following specs.
+
+```ruby
+let(:migration) { described_class.new(version) }
+let(:task) { Search::Elastic::ReindexingTask.last }
+let(:targets) { %w[MergeRequest] }
+
+it 'does not have migration options set', :aggregate_failures do
+  expect(migration).not_to be_batched
+  expect(migration).not_to be_retry_on_failure
+end
+
+describe '#migrate', :aggregate_failures do
+  it 'creates reindexing task with correct target and options' do
+    expect { migration.migrate }.to change { Search::Elastic::ReindexingTask.count }.by(1)
+    expect(task.targets).to eq(targets)
+    expect(task.options).to eq('skip_pending_migrations_check' => true)
+  end
+end
+
+describe '#completed?' do
+  it 'always returns true' do
+    expect(migration.completed?).to be(true)
+  end
+end
+```
+
 #### `Search::Elastic::MigrationReindexBasedOnSchemaVersion`
 
 Reindexes all documents in the index that stores the specified document type and updates `schema_version`.
@@ -373,13 +418,13 @@ class MigrationName < Elastic::Migration
 end
 ```
 
-#### `Elastic::MigrationHelper`
+#### `Search::Elastic::MigrationHelper`
 
 Contains methods you can use when a migration doesn't fit the previous examples.
 
 ```ruby
 class MigrationName < Elastic::Migration
-  include Elastic::MigrationHelper
+  include ::Search::Elastic::MigrationHelper
 
   def migrate
   ...

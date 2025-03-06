@@ -332,7 +332,6 @@ Style/IfUnlessModifier:
     - 'ee/app/validators/password/complexity_validator.rb'
     - 'ee/app/workers/app_sec/dast/profile_schedule_worker.rb'
     - 'ee/app/workers/audit_events/audit_event_streaming_worker.rb'
-    - 'ee/app/workers/concerns/elastic/migration_helper.rb'
     - 'ee/app/workers/ee/ci/build_finished_worker.rb'
     - 'ee/app/workers/epics/new_epic_issue_worker.rb'
     - 'ee/app/workers/geo/secondary/registry_consistency_worker.rb'
