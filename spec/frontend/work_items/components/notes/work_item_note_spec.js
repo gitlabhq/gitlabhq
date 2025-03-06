@@ -219,6 +219,28 @@ describe('Work Item Note', () => {
     });
   });
 
+  describe('when toggling a checkbox in a note', () => {
+    it('calls mutation to update the description', () => {
+      const commentText = `beginning
+
+- [x] one
+- [ ] two
+- [ ] three
+
+end`;
+      createComponent();
+
+      findNoteBody().vm.$emit('updateNote', { commentText });
+
+      expect(successHandler).toHaveBeenCalledWith({
+        input: {
+          id: mockWorkItemCommentNote.id,
+          body: commentText,
+        },
+      });
+    });
+  });
+
   describe('when not editing', () => {
     it('should not render a comment form', () => {
       createComponent();

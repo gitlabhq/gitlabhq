@@ -15,6 +15,8 @@ import PipelineNewForm from '~/ci/pipeline_new/components/pipeline_new_form.vue'
 import PipelineVariablesForm from '~/ci/pipeline_new/components/pipeline_variables_form.vue';
 import pipelineCreateMutation from '~/ci/pipeline_new/graphql/mutations/create_pipeline.mutation.graphql';
 import RefsDropdown from '~/ci/pipeline_new/components/refs_dropdown.vue';
+import { mockPipelineVariablesPermissions } from 'jest/ci/job_details/mock_data';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { mockProjectId, mockPipelineConfigButtonText } from '../mock_data';
 
 Vue.directive('safe-html', {
@@ -36,12 +38,18 @@ const defaultProps = {
   pipelinesPath: '/root/project/-/pipelines',
   pipelinesEditorPath: '/root/project/-/ci/editor',
   canViewPipelineEditor: true,
-  projectPath: '/root/project/-/pipelines/config_variables',
   defaultBranch: 'main',
   refParam: 'main',
   settingsLink: '',
   maxWarnings: 25,
   isMaintainer: true,
+};
+
+const defaultProvide = {
+  projectPath: '/root/project/-/pipelines/config_variables',
+  userRole: 'Maintainer',
+  identityVerificationRequired: true,
+  identityVerificationPath: '/test',
 };
 
 describe('Pipeline New Form', () => {
@@ -74,14 +82,14 @@ describe('Pipeline New Form', () => {
     mountFn = shallowMountExtended,
     stubs = {},
     ciInputsForPipelines = false,
+    pipelineVariablesPermissionsMixin = mockPipelineVariablesPermissions(true),
   } = {}) => {
     const handlers = [[pipelineCreateMutation, pipelineCreateMutationHandler]];
     mockApollo = createMockApollo(handlers);
     wrapper = mountFn(PipelineNewForm, {
       apolloProvider: mockApollo,
       provide: {
-        identityVerificationRequired: true,
-        identityVerificationPath: '/test',
+        ...defaultProvide,
         glFeatures: {
           ciInputsForPipelines,
         },
@@ -91,6 +99,7 @@ describe('Pipeline New Form', () => {
         ...props,
       },
       stubs,
+      mixins: [glFeatureFlagMixin(), pipelineVariablesPermissionsMixin],
     });
 
     await waitForPromises();
@@ -147,33 +156,47 @@ describe('Pipeline New Form', () => {
   });
 
   describe('Pipeline variables form', () => {
-    beforeEach(async () => {
-      pipelineCreateMutationHandler.mockResolvedValue(mockPipelineCreateMutationResponse);
-      await createComponentWithApollo();
-    });
+    describe('when user has permission to view variables', () => {
+      beforeEach(async () => {
+        pipelineCreateMutationHandler.mockResolvedValue(mockPipelineCreateMutationResponse);
+        await createComponentWithApollo();
+      });
 
-    it('renders the pipeline variables form component', () => {
-      expect(findPipelineVariablesForm().exists()).toBe(true);
-      expect(findPipelineVariablesForm().props()).toMatchObject({
-        isMaintainer: true,
-        projectPath: defaultProps.projectPath,
-        refParam: `refs/heads/${defaultProps.refParam}`,
-        settingsLink: '',
+      it('renders the pipeline variables form component', () => {
+        expect(findPipelineVariablesForm().exists()).toBe(true);
+        expect(findPipelineVariablesForm().props()).toMatchObject({
+          isMaintainer: true,
+          refParam: `refs/heads/${defaultProps.refParam}`,
+          settingsLink: '',
+        });
+      });
+
+      it('passes variables to the create mutation', async () => {
+        const variables = [{ key: 'TEST_VAR', value: 'test_value' }];
+        findPipelineVariablesForm().vm.$emit('variables-updated', variables);
+        findForm().vm.$emit('submit', dummySubmitEvent);
+        await waitForPromises();
+
+        expect(pipelineCreateMutationHandler).toHaveBeenCalledWith({
+          input: {
+            ref: 'main',
+            projectPath: '/root/project/-/pipelines/config_variables',
+            variables,
+          },
+        });
       });
     });
 
-    it('passes variables to the create mutation', async () => {
-      const variables = [{ key: 'TEST_VAR', value: 'test_value' }];
-      findPipelineVariablesForm().vm.$emit('variables-updated', variables);
-      findForm().vm.$emit('submit', dummySubmitEvent);
-      await waitForPromises();
+    describe('when user does not have permission to view variables', () => {
+      beforeEach(async () => {
+        pipelineCreateMutationHandler.mockResolvedValue(mockPipelineCreateMutationResponse);
+        await createComponentWithApollo({
+          pipelineVariablesPermissionsMixin: mockPipelineVariablesPermissions(false),
+        });
+      });
 
-      expect(pipelineCreateMutationHandler).toHaveBeenCalledWith({
-        input: {
-          ref: 'main',
-          projectPath: '/root/project/-/pipelines/config_variables',
-          variables,
-        },
+      it('does not render the pipeline variables form component', () => {
+        expect(findPipelineVariablesForm().exists()).toBe(false);
       });
     });
   });

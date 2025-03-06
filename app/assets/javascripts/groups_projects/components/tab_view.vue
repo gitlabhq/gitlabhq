@@ -9,14 +9,15 @@ import { createAlert } from '~/alert';
 import { TIMESTAMP_TYPES } from '~/vue_shared/components/resource_lists/constants';
 import { FILTERED_SEARCH_TERM_KEY } from '~/projects/filtered_search_and_sort/constants';
 import { ACCESS_LEVELS_INTEGER_TO_STRING } from '~/access_level/constants';
+import { formatProjects } from '~/projects/your_work/utils';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
 } from '../constants';
-import { formatProjects } from '../utils';
 
+// Will be made more generic to work with groups and projects in future commits
 export default {
-  name: 'YourWorkProjectsTabView',
+  name: 'TabView',
   i18n: {
     errorMessage: __(
       'An error occurred loading the projects. Please refresh the page to try again.',

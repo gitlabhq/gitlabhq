@@ -49,6 +49,7 @@ export default {
     GlSprintf,
     VariableValuesListbox,
   },
+  inject: ['projectPath'],
   props: {
     fileParams: {
       type: Object,
@@ -57,10 +58,6 @@ export default {
     },
     isMaintainer: {
       type: Boolean,
-      required: true,
-    },
-    projectPath: {
-      type: String,
       required: true,
     },
     refParam: {

@@ -67,6 +67,7 @@ module LooksAhead
 
   def node_selection(selection = lookahead)
     return selection unless selection&.selected?
+    return selection if selection.field.type.list?
     return selection.selection(:edges).selection(:node) if selection.selects?(:edges)
 
     # Will return a NullSelection object if :nodes is not a selection. This

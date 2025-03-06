@@ -24,6 +24,7 @@ export default (selector, editing = false) => {
     defaultBranch,
     settingsLink,
     schedulesPath,
+    userRole,
   } = containerEl.dataset;
 
   return new Vue({
@@ -37,6 +38,7 @@ export default (selector, editing = false) => {
       dailyLimit: dailyLimit ?? '',
       settingsLink,
       schedulesPath,
+      userRole,
     },
     render(createElement) {
       return createElement(PipelineSchedulesForm, {

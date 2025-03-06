@@ -2,12 +2,17 @@
 
 module Gitlab
   class Blame
+    include Gitlab::Utils::StrongMemoize
+
+    IGNORE_REVS_FILE_NAME = '.git-blame-ignore-revs'
+
     attr_accessor :blob, :commit, :range
 
-    def initialize(blob, commit, range: nil)
+    def initialize(blob, commit, range: nil, ignore_revs: nil)
       @blob = blob
       @commit = commit
       @range = range
+      @ignore_revs = ignore_revs
     end
 
     def first_line
@@ -41,9 +46,23 @@ module Gitlab
 
     private
 
+    attr_reader :ignore_revs
+
     def blame
-      @blame ||= Gitlab::Git::Blame.new(repository, @commit.id, @blob.path, range: range)
+      Gitlab::Git::Blame.new(
+        repository,
+        @commit.id,
+        @blob.path,
+        range: range,
+        ignore_revisions_blob: ignore_revs ? default_ignore_revisions_ref : nil
+      )
     end
+    strong_memoize_attr :blame
+
+    def default_ignore_revisions_ref
+      "refs/heads/#{project.default_branch}:#{IGNORE_REVS_FILE_NAME}"
+    end
+    strong_memoize_attr :default_ignore_revisions_ref
 
     def highlighted_lines
       @blob.load_all_data!

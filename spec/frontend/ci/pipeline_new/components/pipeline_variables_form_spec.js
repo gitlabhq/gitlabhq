@@ -27,10 +27,11 @@ describe('PipelineVariablesForm', () => {
 
   const defaultProps = {
     isMaintainer: true,
-    projectPath: 'group/project',
     refParam: 'refs/heads/feature',
     settingsLink: 'link/to/settings',
   };
+
+  const defaultProvide = { projectPath: 'group/project' };
 
   const configVariablesWithOptions = [
     {
@@ -62,6 +63,7 @@ describe('PipelineVariablesForm', () => {
     wrapper = shallowMountExtended(PipelineVariablesForm, {
       apolloProvider: mockApollo,
       propsData: { ...defaultProps, ...props },
+      provide: { ...defaultProvide },
     });
 
     await waitForPromises();
@@ -146,7 +148,7 @@ describe('PipelineVariablesForm', () => {
       await createComponent();
 
       expect(mockCiConfigVariables).toHaveBeenCalledWith({
-        fullPath: defaultProps.projectPath,
+        fullPath: defaultProvide.projectPath,
         ref: defaultProps.refParam,
       });
     });

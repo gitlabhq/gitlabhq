@@ -3767,6 +3767,15 @@ msgstr ""
 msgid "Adds this %{issuable_type} as related to the %{issuable_type} it was created from"
 msgstr ""
 
+msgid "AdherenceReport|Have questions or thoughts on the new improvements we made? %{linkStart}Please provide feedback on your experience%{linkEnd}."
+msgstr ""
+
+msgid "AdherenceReport|Learn more about the changes in our %{linkStart}documentation%{linkEnd}."
+msgstr ""
+
+msgid "AdherenceReport|We've updated the Adherence Report with new features to enhance your compliance workflow."
+msgstr ""
+
 msgid "Adjust how frequently the GitLab UI polls for updates."
 msgstr ""
 
@@ -33124,6 +33133,9 @@ msgid "Jobs|Search or filter jobs..."
 msgstr ""
 
 msgid "Jobs|Stage"
+msgstr ""
+
+msgid "Jobs|Status for job %{id}"
 msgstr ""
 
 msgid "Jobs|There was a problem fetching the failed jobs."

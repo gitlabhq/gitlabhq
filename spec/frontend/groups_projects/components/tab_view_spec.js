@@ -7,7 +7,7 @@ import personalProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your
 import membershipProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/membership_projects.query.graphql.json';
 import contributedProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/contributed_projects.query.graphql.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import TabView from '~/projects/your_work/components/tab_view.vue';
+import TabView from '~/groups_projects/components/tab_view.vue';
 import { formatProjects } from '~/projects/your_work/utils';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import ProjectsListEmptyState from '~/vue_shared/components/projects_list/projects_list_empty_state.vue';
@@ -19,9 +19,11 @@ import {
   MEMBER_TAB,
   STARRED_TAB,
   INACTIVE_TAB,
+} from '~/projects/your_work/constants';
+import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
-} from '~/projects/your_work/constants';
+} from '~/groups_projects/constants';
 import { FILTERED_SEARCH_TERM_KEY } from '~/projects/filtered_search_and_sort/constants';
 import { ACCESS_LEVEL_OWNER_INTEGER, ACCESS_LEVEL_OWNER_STRING } from '~/access_level/constants';
 import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';

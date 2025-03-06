@@ -48,18 +48,18 @@ describe('Pipeline New Form', () => {
       provide: {
         identityVerificationRequired: true,
         identityVerificationPath: '/test',
+        projectPath,
+        userRole: 'Maintainer',
       },
       propsData: {
         projectId: mockProjectId,
         pipelinesPath,
         pipelinesEditorPath,
         canViewPipelineEditor: true,
-        projectPath,
         defaultBranch,
         refParam: defaultBranch,
         settingsLink: '',
         maxWarnings: 25,
-        isMaintainer: false,
         ...props,
       },
     });

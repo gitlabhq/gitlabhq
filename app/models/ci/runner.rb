@@ -551,7 +551,7 @@ module Ci
     def registration_available?
       authenticated_user_registration_type? &&
         created_at > REGISTRATION_AVAILABILITY_TIME.ago &&
-        !runner_managers.any?
+        started_creation_state?
     end
 
     # CI_JOB_JWT_V2 that uses this method is deprecated

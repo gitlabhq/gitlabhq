@@ -8,6 +8,8 @@ const mountPipelineNewForm = (el) => {
     // provide/inject
     projectRefsEndpoint,
     identityVerificationPath,
+    projectPath,
+    userRole,
 
     // props
     defaultBranch,
@@ -17,11 +19,9 @@ const mountPipelineNewForm = (el) => {
     pipelinesEditorPath,
     canViewPipelineEditor,
     projectId,
-    projectPath,
     refParam,
     settingsLink,
     varParam,
-    isMaintainer,
   } = el.dataset;
 
   const variableParams = JSON.parse(varParam);
@@ -44,6 +44,8 @@ const mountPipelineNewForm = (el) => {
       // rendered if a specific error is returned from the backend after
       // the create pipeline XHR request completes
       identityVerificationRequired: true,
+      projectPath,
+      userRole,
     },
     render(createElement) {
       return createElement(PipelineNewForm, {
@@ -55,11 +57,9 @@ const mountPipelineNewForm = (el) => {
           pipelinesEditorPath,
           canViewPipelineEditor,
           projectId,
-          projectPath,
           refParam,
           settingsLink,
           variableParams,
-          isMaintainer,
         },
       });
     },

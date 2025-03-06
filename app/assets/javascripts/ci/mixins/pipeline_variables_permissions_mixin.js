@@ -10,7 +10,11 @@ const ROLE_OWNER = 'owner';
 export default {
   USER_ROLES: Object.freeze([ROLE_DEVELOPER, ROLE_MAINTAINER, ROLE_OWNER]),
 
-  inject: ['projectPath', 'userRole'],
+  inject: {
+    projectPath: { default: '' },
+    fullPath: { default: '' },
+    userRole: { default: '' },
+  },
 
   data() {
     return {
@@ -24,7 +28,7 @@ export default {
       query: getPipelineVariablesMinimumOverrideRoleQuery,
       variables() {
         return {
-          fullPath: this.projectPath,
+          fullPath: this.projectPath || this.fullPath,
         };
       },
       update({ project }) {
@@ -53,7 +57,7 @@ export default {
         return false;
       }
 
-      const userRoleIndex = this.$options.USER_ROLES.indexOf(this.userRole);
+      const userRoleIndex = this.$options.USER_ROLES.indexOf(this.userRole?.toLowerCase());
       const minRoleIndex = this.$options.USER_ROLES.indexOf(this.minimumRole);
 
       return userRoleIndex >= minRoleIndex || false;

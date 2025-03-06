@@ -101,6 +101,16 @@ You can mention `@GitLabDuo` in comments to interact with GitLab Duo on your mer
 
 Interactions with GitLab Duo can help to improve the suggestions and feedback as you work to improve your merge request.
 
+### Automatic reviews from GitLab Duo
+
+To enable `@GitLabDuo` to automatically review merge requests, edit your
+[merge request template](../../../user/project/description_templates.md#create-a-merge-request-template)
+and add the line `/assign_reviewer @GitLabDuo`. Add this line to your default template,
+and any other templates in your project where you want `@GitLabDuo` to perform a review.
+
+Additional settings and configuration are planned. To that work, see
+[issue 506537](https://gitlab.com/gitlab-org/gitlab/-/issues/506537).
+
 ## Summarize a code review
 
 {{< details >}}

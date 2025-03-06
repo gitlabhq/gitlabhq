@@ -14,6 +14,7 @@ import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
 import IntervalPatternInput from '~/pages/projects/pipeline_schedules/shared/components/interval_pattern_input.vue';
+import PipelineVariablesPermissionsMixin from '~/ci/mixins/pipeline_variables_permissions_mixin';
 import createPipelineScheduleMutation from '../graphql/mutations/create_pipeline_schedule.mutation.graphql';
 import updatePipelineScheduleMutation from '../graphql/mutations/update_pipeline_schedule.mutation.graphql';
 import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules.query.graphql';
@@ -34,7 +35,16 @@ export default {
     IntervalPatternInput,
     PipelineVariablesFormGroup,
   },
-  inject: ['fullPath', 'projectId', 'defaultBranch', 'dailyLimit', 'settingsLink', 'schedulesPath'],
+  mixins: [PipelineVariablesPermissionsMixin],
+  inject: [
+    'fullPath',
+    'projectId',
+    'defaultBranch',
+    'dailyLimit',
+    'settingsLink',
+    'schedulesPath',
+    'userRole',
+  ],
   props: {
     timezoneData: {
       type: Array,
@@ -303,6 +313,7 @@ export default {
       </gl-form-group>
       <!--Variable List-->
       <pipeline-variables-form-group
+        v-if="canViewPipelineVariables"
         :initial-variables="variables"
         :editing="editing"
         @update-variables="updatedVariables = $event"

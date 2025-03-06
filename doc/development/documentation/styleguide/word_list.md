@@ -210,7 +210,8 @@ Use **offline environment** to describe installations that have physical barrier
 
 ## allow, enable
 
-Try to avoid **allow** and **enable**, unless you are talking about security-related features.
+Try to avoid **allow** and **enable**, unless you are talking about security-related features or the
+state of a feature flag.
 
 Use:
 

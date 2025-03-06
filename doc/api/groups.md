@@ -12,9 +12,9 @@ title: Groups API
 
 {{< /details >}}
 
-Interact with [groups](../user/group/_index.md) by using the REST API.
+Use the Groups API to list and manage GitLab groups through REST API calls. For more information, see [groups](../user/group/_index.md).
 
-The fields returned in responses vary based on the [permissions](../user/permissions.md) of the authenticated user.
+Endpoint responses might vary based on the [permissions](../user/permissions.md) of the authenticated user in the group.
 
 ## Get a single group
 

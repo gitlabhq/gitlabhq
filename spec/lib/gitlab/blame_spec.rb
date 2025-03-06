@@ -2,15 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Blame do
+RSpec.describe Gitlab::Blame, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
 
   let(:path) { 'files/ruby/popen.rb' }
   let(:commit) { project.commit('master') }
   let(:blob) { project.repository.blob_at(commit.id, path) }
   let(:range) { nil }
+  let(:ignore_revs) { nil }
 
-  subject(:blame) { described_class.new(blob, commit, range: range) }
+  subject(:blame) { described_class.new(blob, commit, range: range, ignore_revs: ignore_revs) }
 
   describe '#first_line' do
     subject { blame.first_line }
@@ -112,6 +113,23 @@ RSpec.describe Gitlab::Blame do
 
         expect(subject[1][:previous_path]).to eq('files/plain_text/initial-commit')
         expect(subject[1][:lines]).to match_array(['Renamed as "filename"'])
+      end
+    end
+
+    context 'with ignore_revs' do
+      let(:ignore_revs) { true }
+      let(:git_blame_double) { instance_double(Gitlab::Git::Blame, each: nil) }
+
+      it 'requests for a blame with the default ignore revs file' do
+        expect(Gitlab::Git::Blame).to receive(:new).with(
+          project.repository,
+          commit.id,
+          blob.path,
+          range: range,
+          ignore_revisions_blob: 'refs/heads/master:.git-blame-ignore-revs'
+        ).and_return(git_blame_double)
+
+        subject
       end
     end
   end

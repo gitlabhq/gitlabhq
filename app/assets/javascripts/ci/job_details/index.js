@@ -59,7 +59,7 @@ export const initJobDetails = () => {
       aiRootCauseAnalysisAvailable: parseBoolean(aiRootCauseAnalysisAvailable),
       duoFeaturesEnabled: parseBoolean(duoFeaturesEnabled),
       pipelineTestReportUrl,
-      userRole: userRole?.toLowerCase(),
+      userRole,
     },
     render(h) {
       return h(JobApp, {

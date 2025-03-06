@@ -26884,7 +26884,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupcustomfieldsactive"></a>`active` | [`Boolean`](#boolean) | Filter for active fields. If `false`, excludes active fields. If `true`, returns only active fields. |
 | <a id="groupcustomfieldsfieldtype"></a>`fieldType` | [`CustomFieldType`](#customfieldtype) | Filter for selected field type. |
 | <a id="groupcustomfieldssearch"></a>`search` | [`String`](#string) | Search query for custom field name. |
-| <a id="groupcustomfieldsworkitemtypeids"></a>`workItemTypeIds` | [`[WorkItemsTypeID!]`](#workitemstypeid) | Filter custom fields associated to the given work item types. If empty, returns custom fields not associated to any work item type. |
+| <a id="groupcustomfieldsworkitemtypeids"></a>`workItemTypeIds` | [`[WorkItemsTypeID!]`](#workitemstypeid) | Filter custom fields associated to any of the given work item types. If empty, returns custom fields not associated to any work item type. |
 
 ##### `Group.customizableDashboardVisualizations`
 
@@ -39918,6 +39918,17 @@ Represents an assignees widget definition.
 | <a id="workitemwidgetdefinitionassigneescaninvitemembers"></a>`canInviteMembers` | [`Boolean!`](#boolean) | Indicates whether the current user can invite members to the work item's parent. |
 | <a id="workitemwidgetdefinitionassigneestype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
 
+### `WorkItemWidgetDefinitionCustomFields`
+
+Represents a custom fields widget definition.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetdefinitioncustomfieldscustomfields"></a>`customFields` {{< icon name="warning-solid" >}} | [`[CustomField!]`](#customfield) | **Introduced** in GitLab 17.10. **Status**: Experiment. Custom fields available for the work item type. Available only when feature flag `custom_fields_feature` is enabled. |
+| <a id="workitemwidgetdefinitioncustomfieldstype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
+
 ### `WorkItemWidgetDefinitionCustomStatus`
 
 Represents an Custom Status widget definition.
@@ -46631,6 +46642,7 @@ Implementations:
 Implementations:
 
 - [`WorkItemWidgetDefinitionAssignees`](#workitemwidgetdefinitionassignees)
+- [`WorkItemWidgetDefinitionCustomFields`](#workitemwidgetdefinitioncustomfields)
 - [`WorkItemWidgetDefinitionCustomStatus`](#workitemwidgetdefinitioncustomstatus)
 - [`WorkItemWidgetDefinitionGeneric`](#workitemwidgetdefinitiongeneric)
 - [`WorkItemWidgetDefinitionHierarchy`](#workitemwidgetdefinitionhierarchy)

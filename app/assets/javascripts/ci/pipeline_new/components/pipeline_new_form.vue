@@ -7,6 +7,7 @@ import { createAlert } from '~/alert';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
+import PipelineVariablesPermissionsMixin from '~/ci/mixins/pipeline_variables_permissions_mixin';
 import { IDENTITY_VERIFICATION_REQUIRED_ERROR } from '../constants';
 import createPipelineMutation from '../graphql/mutations/create_pipeline.mutation.graphql';
 import RefsDropdown from './refs_dropdown.vue';
@@ -24,6 +25,7 @@ const i18n = {
 export default {
   name: 'PipelineNewForm',
   i18n,
+  ROLE_MAINTAINER: 'maintainer',
   components: {
     GlAlert,
     GlButton,
@@ -37,7 +39,8 @@ export default {
       import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
   },
   directives: { SafeHtml },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), PipelineVariablesPermissionsMixin],
+  inject: ['projectPath', 'userRole'],
   props: {
     pipelinesPath: {
       type: String,
@@ -68,10 +71,6 @@ export default {
       required: false,
       default: () => ({}),
     },
-    projectPath: {
-      type: String,
-      required: true,
-    },
     refParam: {
       type: String,
       required: false,
@@ -84,10 +83,6 @@ export default {
     },
     maxWarnings: {
       type: Number,
-      required: true,
-    },
-    isMaintainer: {
-      type: Boolean,
       required: true,
     },
   },
@@ -115,6 +110,9 @@ export default {
     },
     isPipelineInputsFeatureAvailable() {
       return this.glFeatures.ciInputsForPipelines;
+    },
+    isMaintainer() {
+      return this.userRole?.toLowerCase() === this.$options.ROLE_MAINTAINER;
     },
     overMaxWarningsLimit() {
       return this.totalWarnings > this.maxWarnings;
@@ -246,7 +244,7 @@ export default {
         </p>
       </details>
     </gl-alert>
-    <div class="gl-flex gl-flex-col gl-gap-7">
+    <div class="gl-flex gl-flex-col gl-gap-5">
       <gl-form-group :label="s__('Pipeline|Run for branch name or tag')" class="gl-mb-0">
         <refs-dropdown
           v-model="refValue"
@@ -256,6 +254,7 @@ export default {
       </gl-form-group>
       <pipeline-inputs-form v-if="isPipelineInputsFeatureAvailable" />
       <pipeline-variables-form
+        v-if="canViewPipelineVariables"
         :file-params="fileParams"
         :is-maintainer="isMaintainer"
         :project-path="projectPath"

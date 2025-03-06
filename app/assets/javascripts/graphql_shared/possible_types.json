@@ -302,6 +302,7 @@
   ],
   "WorkItemWidgetDefinition": [
     "WorkItemWidgetDefinitionAssignees",
+    "WorkItemWidgetDefinitionCustomFields",
     "WorkItemWidgetDefinitionCustomStatus",
     "WorkItemWidgetDefinitionGeneric",
     "WorkItemWidgetDefinitionHierarchy",

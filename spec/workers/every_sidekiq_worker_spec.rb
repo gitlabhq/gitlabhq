@@ -465,6 +465,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Search::Zoekt::TaskFailedEventWorker' => 1,
         'Search::Zoekt::UpdateIndexUsedStorageBytesEventWorker' => 1,
         'Search::Zoekt::SaasRolloutEventWorker' => 1,
+        'Security::ProcessScanEventsWorker' => 3,
         'Security::StoreScansWorker' => 3,
         'Security::TrackSecureScansWorker' => 1,
         'ServiceDeskEmailReceiverWorker' => 3,

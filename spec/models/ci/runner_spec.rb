@@ -2248,6 +2248,54 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
   end
 
+  describe '#registration_available?' do
+    subject { runner.registration_available? }
+
+    let(:runner) { build(:ci_runner, *runner_traits, registration_type: registration_type) }
+
+    context 'with runner created in UI' do
+      let(:registration_type) { :authenticated_user }
+
+      context 'with runner created within registration deadline' do
+        let(:runner_traits) { [:online, :created_before_registration_deadline] + extra_runner_traits }
+
+        context 'with runner creation not finished' do
+          let(:extra_runner_traits) { [:unregistered] }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'with runner creation finished' do
+          let(:extra_runner_traits) { [] }
+
+          it { is_expected.to be_falsy }
+        end
+      end
+
+      context 'with runner created almost too long ago' do
+        let(:runner_traits) { [:unregistered, :created_before_registration_deadline] }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'with runner created too long ago' do
+        let(:runner_traits) { [:unregistered, :created_after_registration_deadline] }
+
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'with runner registered from command line' do
+      let(:registration_type) { :registration_token }
+
+      context 'with runner created within registration deadline' do
+        let(:runner_traits) { [:created_before_registration_deadline] }
+
+        it { is_expected.to be_falsy }
+      end
+    end
+  end
+
   describe '#dot_com_gitlab_hosted?' do
     subject(:dot_com_gitlab_hosted) { runner.dot_com_gitlab_hosted? }
 

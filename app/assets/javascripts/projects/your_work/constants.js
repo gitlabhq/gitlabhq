@@ -95,5 +95,3 @@ export const CUSTOM_DASHBOARD_ROUTE_NAMES = [
 
 export const FILTERED_SEARCH_NAMESPACE = 'dashboard';
 export const FILTERED_SEARCH_TERM_KEY = 'name';
-export const FILTERED_SEARCH_TOKEN_LANGUAGE = 'language';
-export const FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL = 'min_access_level';

@@ -229,6 +229,8 @@ Use:
 
 - GitLab has different types of pipelines to help address your development needs.
 
+Tested in [`SelfReferential.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SelfReferential.yml).
+
 ### Capitalization
 
 As a company, we tend toward lowercase.

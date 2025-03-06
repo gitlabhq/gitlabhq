@@ -53,9 +53,15 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
     end
   end
 
-  describe '#register' do
+  describe '#register', :freeze_time do
     subject(:register) do
       get :register, params: { namespace_id: project.namespace, project_id: project, id: new_runner }
+    end
+
+    let(:new_runner) do
+      create(
+        :ci_runner, :unregistered, *runner_traits, :project, projects: [project], registration_type: :authenticated_user
+      )
     end
 
     context 'when user is maintainer' do
@@ -64,9 +70,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
       end
 
       context 'when runner can be registered after creation' do
-        let_it_be(:new_runner) do
-          create(:ci_runner, :project, projects: [project], registration_type: :authenticated_user)
-        end
+        let(:runner_traits) { [:created_before_registration_deadline] }
 
         it 'renders a :register template' do
           register
@@ -77,7 +81,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
       end
 
       context 'when runner cannot be registered after creation' do
-        let_it_be(:new_runner) { runner }
+        let(:runner_traits) { [:created_after_registration_deadline] }
 
         it 'returns :not_found' do
           register
@@ -93,9 +97,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
       end
 
       context 'when runner can be registered after creation' do
-        let_it_be(:new_runner) do
-          create(:ci_runner, :project, projects: [project], registration_type: :authenticated_user)
-        end
+        let(:runner_traits) { [:created_before_registration_deadline] }
 
         it 'returns :not_found' do
           register

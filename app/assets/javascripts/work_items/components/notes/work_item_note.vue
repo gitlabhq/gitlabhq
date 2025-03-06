@@ -120,6 +120,7 @@ export default {
   data() {
     return {
       isEditing: false,
+      isUpdating: false,
       workItem: {},
     };
   },
@@ -241,9 +242,11 @@ export default {
       this.isEditing = true;
       updateDraft(this.autosaveKey, this.note.body);
     },
-    async updateNote({ commentText }) {
+    async updateNote({ commentText, executeOptimisticResponse = true }) {
       try {
         this.isEditing = false;
+        this.isUpdating = true;
+
         await this.$apollo.mutate({
           mutation: updateWorkItemNoteMutation,
           variables: {
@@ -252,15 +255,18 @@ export default {
               body: commentText,
             },
           },
-          optimisticResponse: {
-            updateNote: {
-              errors: [],
-              note: {
-                ...this.note,
-                bodyHtml: renderMarkdown(commentText),
-              },
-            },
-          },
+          // Ignore this when toggling checkbox https://gitlab.com/gitlab-org/gitlab/-/issues/521723
+          optimisticResponse: executeOptimisticResponse
+            ? {
+                updateNote: {
+                  errors: [],
+                  note: {
+                    ...this.note,
+                    bodyHtml: renderMarkdown(commentText),
+                  },
+                },
+              }
+            : undefined,
         });
         clearDraft(this.autosaveKey);
       } catch (error) {
@@ -268,6 +274,8 @@ export default {
         this.isEditing = true;
         this.$emit('error', __('Something went wrong when updating a comment. Please try again'));
         Sentry.captureException(error);
+      } finally {
+        this.isUpdating = false;
       }
     },
     getNewAssigneesAndWidget() {
@@ -428,7 +436,13 @@ export default {
             @submitForm="updateNote"
           />
           <div v-else class="timeline-discussion-body">
-            <note-body ref="noteBody" :note="note" :has-replies="hasReplies" />
+            <note-body
+              ref="noteBody"
+              :note="note"
+              :has-replies="hasReplies"
+              :is-updating="isUpdating"
+              @updateNote="updateNote"
+            />
           </div>
           <edited-at
             v-if="note.lastEditedBy && !isEditing"

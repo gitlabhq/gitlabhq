@@ -10,7 +10,8 @@ module Ci
         project_id: project.id,
         default_branch: project.default_branch,
         settings_link: project_settings_ci_cd_path(project),
-        schedules_path: pipeline_schedules_path(project)
+        schedules_path: pipeline_schedules_path(project),
+        user_role: current_user ? project.team.human_max_access(current_user.id) : nil
       }
     end
   end

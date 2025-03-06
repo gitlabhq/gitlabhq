@@ -29,7 +29,6 @@ describe('Pipeline Variables Permissions Mixin', () => {
   const ROLE_NO_ONE = 'no_one_allowed';
   const ROLE_DEVELOPER = 'developer';
   const ROLE_MAINTAINER = 'maintainer';
-  const ROLE_OWNER = 'owner';
 
   const defaultProvide = {
     userRole: ROLE_DEVELOPER,
@@ -67,6 +66,24 @@ describe('Pipeline Variables Permissions Mixin', () => {
   const findErrorState = () => wrapper.findByTestId('error-state');
 
   describe('on load', () => {
+    describe('provide data', () => {
+      beforeEach(() => {
+        minimumRoleHandler = jest.fn().mockResolvedValue(generateSettingsResponse());
+      });
+
+      it('uses `projectPath` for the query if provided', async () => {
+        await createComponent();
+        expect(minimumRoleHandler).toHaveBeenCalledWith({ fullPath: 'project/path' });
+      });
+
+      it('uses `fullPath` for the query if provided', async () => {
+        await createComponent({
+          provide: { fullPath: 'project/another/path', projectPath: undefined },
+        });
+        expect(minimumRoleHandler).toHaveBeenCalledWith({ fullPath: 'project/another/path' });
+      });
+    });
+
     describe('when settings query is successful', () => {
       beforeEach(async () => {
         minimumRoleHandler = jest.fn().mockResolvedValue(generateSettingsResponse());
@@ -110,11 +127,12 @@ describe('Pipeline Variables Permissions Mixin', () => {
 
   describe('permissions calculations based on user roles', () => {
     it.each`
-      scenario                                   | userRole           | minimumRole        | isAuthorized
-      ${'user role is lower than minimum role'}  | ${ROLE_DEVELOPER}  | ${ROLE_MAINTAINER} | ${false}
-      ${'user role is equal to minimum role'}    | ${ROLE_MAINTAINER} | ${ROLE_MAINTAINER} | ${true}
-      ${'user role is higher than minimum role'} | ${ROLE_OWNER}      | ${ROLE_MAINTAINER} | ${true}
-      ${'minimum role is no_one_allowed'}        | ${ROLE_OWNER}      | ${ROLE_NO_ONE}     | ${false}
+      scenario                                   | userRole        | minimumRole        | isAuthorized
+      ${'user role is lower than minimum role'}  | ${'Developer'}  | ${ROLE_MAINTAINER} | ${false}
+      ${'user role is equal to minimum role'}    | ${'Maintainer'} | ${ROLE_MAINTAINER} | ${true}
+      ${'user role is higher than minimum role'} | ${'Owner'}      | ${ROLE_MAINTAINER} | ${true}
+      ${'user role is higher than minimum role'} | ${''}           | ${ROLE_MAINTAINER} | ${false}
+      ${'minimum role is no_one_allowed'}        | ${'Owner'}      | ${ROLE_NO_ONE}     | ${false}
     `(
       'when $scenario, authorization is $isAuthorized',
       async ({ userRole, minimumRole, isAuthorized }) => {

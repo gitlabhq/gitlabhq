@@ -1,6 +1,9 @@
 <script>
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { toggleMarkCheckboxes } from '~/behaviors/markdown/utils';
+
+const isCheckbox = (target) => target?.classList.contains('task-list-item-checkbox');
 
 export default {
   name: 'WorkItemNoteBody',
@@ -17,6 +20,11 @@ export default {
       required: false,
       default: false,
     },
+    isUpdating: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   watch: {
     'note.bodyHtml': {
@@ -27,6 +35,12 @@ export default {
         }
         await this.$nextTick();
         this.renderGFM();
+        this.disableCheckboxes(false);
+      },
+    },
+    isUpdating: {
+      handler(isUpdating) {
+        this.disableCheckboxes(isUpdating);
       },
     },
   },
@@ -34,6 +48,32 @@ export default {
     renderGFM() {
       renderGFM(this.$refs['note-body']);
       gl?.lazyLoader?.searchLazyImages();
+    },
+    disableCheckboxes(disabled) {
+      this.$el.querySelectorAll('.task-list-item-checkbox').forEach((checkbox) => {
+        checkbox.disabled = disabled; // eslint-disable-line no-param-reassign
+      });
+    },
+    toggleCheckboxes(event) {
+      const { target } = event;
+
+      if (!isCheckbox(target)) {
+        return;
+      }
+
+      const { sourcepos } = target.parentElement.dataset;
+
+      if (!sourcepos) {
+        return;
+      }
+
+      const commentText = toggleMarkCheckboxes({
+        rawMarkdown: this.note.body,
+        checkboxChecked: target.checked,
+        sourcepos,
+      });
+
+      this.$emit('updateNote', { commentText, executeOptimisticResponse: false });
     },
   },
   safeHtmlConfig: {
@@ -48,6 +88,7 @@ export default {
       v-safe-html:[$options.safeHtmlConfig]="note.bodyHtml"
       class="note-text md"
       data-testid="work-item-note-body"
+      @change="toggleCheckboxes"
     ></div>
   </div>
 </template>

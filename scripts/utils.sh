@@ -543,7 +543,7 @@ function log_disk_usage() {
 
 # all functions below are for customizing CI job exit code
 function run_with_custom_exit_code() {
-  set +e # temprorarily disable exit on error to prevent premature exit
+  set +e # temporarily disable exit on error to prevent premature exit
 
   # runs command passed in as argument, save standard error and standard output
   output=$("$@" 2>&1)
@@ -600,6 +600,9 @@ function find_custom_exit_code() {
     -e "500 Internal Server Error" \
     -e "Internal Server Error 500" \
     -e "502 Bad Gateway" \
+    -e "502 Server Error" \
+    -e "502 \"Bad Gateway\"" \
+    -e "status code: 502" \
     -e "503 Service Unavailable" "$trace_file"; then
     echoerr "Detected 5XX error. Changing exit code to 161."
     exit_code=161
@@ -648,6 +651,10 @@ function find_custom_exit_code() {
     echoerr "Detected Gitlab::QueryLimiting::Transaction::ThresholdExceededError. Changing exit code to 169."
     exit_code=169
 
+  elif grep -i -q -e \
+    "is write protected within this Gitlab database" "$trace_file"; then
+    echoerr "Detected SQL table is write-protected error in job trace. Changing exit code to 170."
+    exit_code=170
   else
     echoinfo "not changing exit code"
   fi

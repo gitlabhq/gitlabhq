@@ -20,6 +20,7 @@ To choose the packages you want to synchronize with the GitLab Package Metadata 
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Security and compliance**.
+1. Expand **License Compliance**.
 1. In **Package registry metadata to sync**, select or clear checkboxes for the
    package registries that you want to sync.
 1. Select **Save changes**.
