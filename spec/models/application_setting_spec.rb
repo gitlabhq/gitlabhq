@@ -25,6 +25,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.kroki_formats).to eq({}) }
     it { expect(setting.default_branch_protection_defaults).to eq({}) }
     it { expect(setting.enforce_email_subaddress_restrictions).to be(false) }
+    it { expect(setting.helm_max_packages_count).to eq(1000) }
     it { expect(setting.max_decompressed_archive_size).to eq(25600) }
     it { expect(setting.decompress_archive_file_timeout).to eq(210) }
     it { expect(setting.bulk_import_concurrent_pipeline_batch_limit).to eq(25) }
@@ -335,6 +336,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     context 'for non-null integer attributes starting from 1' do
       where(:attribute) do
         %i[
+          helm_max_packages_count
           bulk_import_concurrent_pipeline_batch_limit
           code_suggestions_api_rate_limit
           concurrent_bitbucket_import_jobs_limit

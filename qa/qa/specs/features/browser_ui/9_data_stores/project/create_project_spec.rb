@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Data Stores', :smoke, product_group: :tenant_scale, feature_flag: {
+  RSpec.describe 'Data Stores', :smoke, product_group: :organizations, feature_flag: {
     name: 'new_project_creation_form'
   } do
     describe 'Project' do

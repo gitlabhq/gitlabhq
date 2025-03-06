@@ -742,7 +742,15 @@ class ApplicationSetting < ApplicationRecord
 
   validates :importers, json_schema: { filename: "application_setting_importers" }
 
-  jsonb_accessor :package_registry, nuget_skip_metadata_url_validation: [:boolean, { default: false }]
+  DEFAULT_HELM_MAX_PACKAGES_COUNT = 1000
+
+  jsonb_accessor :package_registry,
+    nuget_skip_metadata_url_validation: [:boolean, { default: false }],
+    helm_max_packages_count: [:integer, { default: DEFAULT_HELM_MAX_PACKAGES_COUNT }]
+
+  validates :helm_max_packages_count,
+    presence: true,
+    numericality: { only_integer: true, greater_than: 0 }
 
   jsonb_accessor :oauth_provider, ropc_without_client_credentials: [:boolean, { default: true }]
 

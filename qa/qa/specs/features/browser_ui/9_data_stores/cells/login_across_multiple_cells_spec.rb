@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Data Stores', :skip_live_env, :requires_admin, product_group: :tenant_scale do
+  RSpec.describe 'Data Stores', :skip_live_env, :requires_admin, product_group: :cells_infrastructure do
     describe 'Multiple Cells' do
       let(:url) { 'gitlab-cells.bridge' }
 

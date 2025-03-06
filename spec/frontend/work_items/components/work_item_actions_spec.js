@@ -133,6 +133,7 @@ describe('WorkItemActions component', () => {
     canCreateRelatedItem = true,
     workItemsBeta = true,
     parentId = null,
+    projectId = 'gid://gitlab/Project/1',
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemActions, {
       isLoggedIn: isLoggedIn(),
@@ -168,7 +169,7 @@ describe('WorkItemActions component', () => {
         hasChildren,
         canCreateRelatedItem,
         parentId,
-        projectId: 'gid://gitlab/Project/1',
+        projectId,
       },
       mocks: {
         $toast,
@@ -755,6 +756,17 @@ describe('WorkItemActions component', () => {
   });
 
   describe('move modal', () => {
+    it('does not render move modal when there is no projectId', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        projectId: null,
+      });
+
+      await waitForPromises();
+
+      expect(findMoveModal().exists()).toBe(false);
+    });
+
     it('renders move modal when move button is clicked', async () => {
       createComponent({
         workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,

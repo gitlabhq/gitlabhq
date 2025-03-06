@@ -185,6 +185,7 @@ namespace :admin do
   end
 
   resources :plan_limits, only: :create
+  resource :packages_limits, only: :update
 
   resources :labels
 

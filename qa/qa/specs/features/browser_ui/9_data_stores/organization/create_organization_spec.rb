@@ -4,7 +4,7 @@ module QA
   RSpec.describe 'Data Stores',
     :skip_live_env,
     :requires_admin,
-    product_group: :tenant_scale,
+    product_group: :organizations,
     feature_flag: {
       name: 'ui_for_organizations',
       scope: :global

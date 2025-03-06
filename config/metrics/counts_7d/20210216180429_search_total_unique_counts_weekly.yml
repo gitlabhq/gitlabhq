@@ -1,12 +1,15 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.search.search_total_unique_counts_weekly
-description: Calculated unique users to perform Basic or Advanced searches by week
+description: Calculated unique users to perform Basic or Advanced searches by
+  week. This metric is redundant because advanced will be a subset of paid and
+  paid will be a subset of total. i_search_total is more appropriate if you just
+  want the total
 product_group: global_search
 product_categories:
 - global_search
 value_type: number
-status: active
+status: removed
 time_frame: 7d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
@@ -24,3 +27,5 @@ tiers:
 performance_indicator_type: []
 milestone: "<13.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54332
+milestone_removed: "17.10"
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182470

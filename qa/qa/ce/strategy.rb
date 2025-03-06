@@ -11,7 +11,7 @@ module QA
           log_browser_versions
 
           # Perform app readiness check before continuing with the whole test suite
-          Tools::ReadinessCheck.perform(wait: 120)
+          Tools::ReadinessCheck.perform(wait: 180)
 
           # Initialize global api admin client
           initialize_admin_api_client!

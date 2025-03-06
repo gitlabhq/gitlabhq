@@ -309,6 +309,7 @@ module ApplicationSettingImplementation
         users_api_limit_gpg_keys: 120,
         users_api_limit_gpg_key: 120,
         nuget_skip_metadata_url_validation: false,
+        helm_max_packages_count: 1000,
         ai_action_api_rate_limit: 160,
         code_suggestions_api_rate_limit: 60,
         require_personal_access_token_expiry: true,

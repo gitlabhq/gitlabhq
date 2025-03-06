@@ -35447,8 +35447,6 @@ CREATE INDEX index_timelogs_on_user_id ON timelogs USING btree (user_id);
 
 CREATE INDEX index_todos_coalesced_snoozed_until_created_at ON todos USING btree (user_id, state, timestamp_coalesce(snoozed_until, created_at));
 
-CREATE INDEX index_todos_on_author_id ON todos USING btree (author_id);
-
 CREATE INDEX index_todos_on_author_id_and_created_at ON todos USING btree (author_id, created_at);
 
 CREATE INDEX index_todos_on_commit_id ON todos USING btree (commit_id);

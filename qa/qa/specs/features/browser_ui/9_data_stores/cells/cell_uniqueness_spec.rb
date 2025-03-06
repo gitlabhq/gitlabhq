@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Data Stores', :skip_live_env, :requires_admin, product_group: :tenant_scale do
+  RSpec.describe 'Data Stores', :skip_live_env, :requires_admin, product_group: :cells_infrastructure do
     describe 'Multiple Cells' do
       # set the gdk paths to where you have your gdk folders are
       let(:cell1_gdk_path) { ENV.fetch('CELL1_GDK_PATH', '~/src/gitlab-development-kit/') }

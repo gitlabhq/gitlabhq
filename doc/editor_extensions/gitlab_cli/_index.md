@@ -21,7 +21,7 @@ switching between windows and browser tabs.
 - Work with merge requests.
 - Watch running pipelines directly from your CLI.
 
-![command example](img/glabgettingstarted.gif)
+![command example](img/glabgettingstarted_v15_7.gif)
 
 The GitLab CLI uses commands structured like `glab <command> <subcommand> [flags]`
 to perform many of the actions you usually do from the GitLab user interface:

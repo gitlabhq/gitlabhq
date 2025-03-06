@@ -128,6 +128,8 @@ To enable the (deprecated) Gemnasium analyzer please refer to the enablement ins
 The Dependency Scanning analyzer produces a CycloneDX SBOM report compatible with GitLab. If your
 application can't generate such a report, you can use the GitLab analyzer to produce one.
 
+Please share any feedback on the new Dependency Scanning analyzer in this [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523458).
+
 Prerequisites:
 
 - A [supported lock file or dependency graph](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files)
@@ -299,6 +301,7 @@ build:
   stage: build
   image: "python:latest"
   script:
+    - "pip install -r requirements.txt"
     - "pip install pipdeptree"
     - "pipdeptree --json > pipdeptree.json"
   artifacts:

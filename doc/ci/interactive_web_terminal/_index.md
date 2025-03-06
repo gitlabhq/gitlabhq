@@ -86,4 +86,4 @@ the job doesn't finish until after the configured
 [`[session_server].session_timeout`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section)
 duration. To avoid this, you can close the terminal after the job finishes.
 
-![finished job with terminal open](img/finished_job_with_terminal_open_v11_2.png)
+![Job complete with active terminal session](img/finished_job_with_terminal_open_v11_2.png)

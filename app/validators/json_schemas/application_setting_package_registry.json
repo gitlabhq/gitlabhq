@@ -6,6 +6,11 @@
     "nuget_skip_metadata_url_validation": {
       "type": "boolean",
       "description": "Indicates whether to skip metadata URL validation for the NuGet package"
+    },
+    "helm_max_packages_count": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "description": "Maximum number of Helm packages that can be listed per channel. If null, defaults to 1000"
     }
   },
   "additionalProperties": false

@@ -272,6 +272,7 @@ module API
         mount ::API::GroupExport
         mount ::API::GroupImport
         mount ::API::GroupPackages
+        mount ::API::GroupPlaceholderReassignments
         mount ::API::GroupVariables
         mount ::API::HelmPackages
         mount ::API::ImportBitbucket

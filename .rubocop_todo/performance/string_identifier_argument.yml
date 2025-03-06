@@ -117,7 +117,6 @@ Performance/StringIdentifierArgument:
     - 'qa/qa/page/component/note.rb'
     - 'qa/qa/resource/integrations/web_hook/smockerable.rb'
     - 'qa/qa/runtime/address.rb'
-    - 'qa/qa/specs/features/ee/browser_ui/9_data_stores/group/prevent_forking_outside_group_spec.rb'
     - 'qa/qa/support/matchers/have_matcher.rb'
     - 'scripts/perf/gc/print_gc_stats.rb'
     - 'spec/config/inject_enterprise_edition_module_spec.rb'

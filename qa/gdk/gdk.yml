@@ -19,6 +19,15 @@ gdk:
 gitlab:
   cache_classes: true
   lefthook_enabled: false
+  rails_background_jobs:
+    enabled: true
+    sidekiq_routing_rules:
+      - ["queue_namespace=cronjob", "cronjob"]
+      - ["tags=cronjob_child", "cronjob"]
+      - ["*", "default"]
+  sidekiq_cron:
+    enabled: true
+
   rails:
     bootsnap: false
     hostname: gdk.test

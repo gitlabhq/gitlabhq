@@ -118,6 +118,8 @@ In the following sections, you'll find detailed instructions for each supported 
 - What specific files you need to provide
 - How to generate these files if they're not already part of your workflow
 
+Please share any feedback on the new Dependency Scanning analyzer in this [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523458).
+
 ### Bundler
 
 **Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports Bundler projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `Gemfile.lock` file (`gems.locked` alternate filename is also supported). The combination of supported versions of Bundler and the `Gemfile.lock` file are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).

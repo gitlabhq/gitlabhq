@@ -314,7 +314,10 @@ export default {
       result() {
         const isDirty = this.descriptionText !== this.workItemDescription?.description;
         const isUnchangedTemplate = this.descriptionText === this.appliedTemplate;
-        const hasContent = this.descriptionText !== '';
+        const hasContent = this.descriptionText.trim() !== '';
+        if (this.descriptionTemplate === this.descriptionText) {
+          return;
+        }
         if (!isUnchangedTemplate && (isDirty || hasContent)) {
           this.showTemplateApplyWarning = true;
         } else {

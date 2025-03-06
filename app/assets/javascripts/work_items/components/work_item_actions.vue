@@ -103,7 +103,8 @@ export default {
     },
     projectId: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     canUpdate: {
       type: Boolean,
@@ -685,6 +686,7 @@ export default {
       @error="$emit('error', $event)"
     />
     <move-work-item-modal
+      v-if="projectId"
       :visible="isMoveWorkItemModalVisible"
       :work-item-id="workItemId"
       :work-item-iid="workItemIid"

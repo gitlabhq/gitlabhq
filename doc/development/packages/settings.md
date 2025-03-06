@@ -35,6 +35,7 @@ This page includes an exhaustive list of settings related to and maintained by t
 | `rubygems_max_file_size` | `plan_limits` | Maximum file size for a RubyGems package file. |
 | `terraform_module_max_file_size` | `plan_limits` | Maximum file size for a Terraform package file. |
 | `helm_max_file_size` | `plan_limits` | Maximum file size for a Helm package file. |
+| `helm_max_packages_count` | `application_settings` | Maximum number of Helm packages that can be listed per channel. Must be at least 1. Default is 1000. |
 
 ### Container registry
 

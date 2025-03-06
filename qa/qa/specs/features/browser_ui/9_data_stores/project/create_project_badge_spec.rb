@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Data Stores' do
-    describe 'Project badge', product_group: :tenant_scale do
+    describe 'Project badge', product_group: :organizations do
       let(:badge_name) { "project-badge-#{SecureRandom.hex(8)}" }
       let(:expected_badge_link_url) { "#{Runtime::Scenario.gitlab_address}/#{project.path_with_namespace}" }
       let(:expected_badge_image_url) do

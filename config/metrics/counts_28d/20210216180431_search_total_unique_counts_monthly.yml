@@ -9,7 +9,7 @@ product_group: global_search
 product_categories:
 - global_search
 value_type: number
-status: active
+status: removed
 time_frame: 28d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
@@ -28,3 +28,5 @@ performance_indicator_type:
 - gmau
 milestone: "<13.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54332
+milestone_removed: "17.10"
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182470

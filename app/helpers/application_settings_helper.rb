@@ -593,6 +593,7 @@ module ApplicationSettingsHelper
         settings << :deactivate_dormant_users
         settings << :deactivate_dormant_users_period
         settings << :nuget_skip_metadata_url_validation
+        settings << :helm_max_packages_count
       end
     end
   end

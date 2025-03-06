@@ -23,14 +23,14 @@ if [ -z "$CI" ]; then
 
   exec "$@" | tee -a ${HOME}/gitlab-development-kit/gitlab/log/gdk-container.log
 else
-  logs=("gitaly" "gitlab-workhorse" "postgresql" "rails-background-jobs" "redis" "sshd" "vite" "rails-web" "webpack" "gitlab-http-router")
+  logs=("gitaly" "gitlab-workhorse" "postgresql" "rails-background-jobs" "redis" "sshd" "vite" "rails-web" "sidekiq-cron" "webpack" "gitlab-http-router")
   for log in "${logs[@]}"; do
     gdk tail $log &>${CI_BUILDS_DIR}/gdk.${log}.log &
   done
 
   # TODO: Check if we can reconfigure gitlab to write logs directly to `BUILDS_DIR`
   for logfile in ${HOME}/gitlab-development-kit/gitlab/log/*.log; do
-    tail -f $logfile &>${CI_BUILDS_DIR}/$(basename $logfile) &
+    tail -f "$logfile" &>"${CI_BUILDS_DIR}"/$(basename "$logfile") &
   done
 
   gdk start

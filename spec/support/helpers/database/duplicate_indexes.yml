@@ -91,9 +91,6 @@ taggings:
 term_agreements:
   term_agreements_unique_index:
   - index_term_agreements_on_user_id
-todos:
-  index_todos_on_author_id_and_created_at:
-  - index_todos_on_author_id
 work_item_hierarchy_restrictions:
   index_work_item_hierarchy_restrictions_on_parent_and_child:
   - index_work_item_hierarchy_restrictions_on_parent_type_id

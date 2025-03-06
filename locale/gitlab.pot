@@ -35293,6 +35293,12 @@ msgstr ""
 msgid "Maximum number of %{name} (%{count}) exceeded"
 msgstr ""
 
+msgid "Maximum number of Helm packages per channel"
+msgstr ""
+
+msgid "Maximum number of Helm packages that can be listed per channel. Must be at least 1."
+msgstr ""
+
 msgid "Maximum number of changes (branches or tags) in a single push above which a bulk push event is created (default is 3). Setting to 0 does not disable throttling."
 msgstr ""
 
@@ -41066,6 +41072,9 @@ msgstr ""
 msgid "Package forwarding"
 msgstr ""
 
+msgid "Package limits"
+msgstr ""
+
 msgid "Package name of the app in Google Play."
 msgstr ""
 
@@ -41168,7 +41177,7 @@ msgstr ""
 msgid "PackageRegistry|Configure in settings"
 msgstr ""
 
-msgid "PackageRegistry|Configure package forwarding and package file size limits."
+msgid "PackageRegistry|Configure package forwarding, package limits, and package file size limits."
 msgstr ""
 
 msgid "PackageRegistry|Copy .pypirc content"
@@ -54957,6 +54966,9 @@ msgid "Setting"
 msgstr ""
 
 msgid "Setting enforced"
+msgstr ""
+
+msgid "Setting high package limits can impact database performance. Consider the size of your instance when configuring these values."
 msgstr ""
 
 msgid "Settings"
