@@ -42,7 +42,7 @@ and that users who pull from the cache have the necessary authentication:
 1. In the global configuration, if the following features are disabled, enable them:
    - The [`package` feature](../../../../administration/packages/_index.md#enable-or-disable-the-package-registry). Enabled by default.
    - The [`dependency_proxy` feature](../../../../administration/packages/dependency_proxy.md#turn-on-the-dependency-proxy). Enabled by default.
-1. In the project settings, if the [`package` feature](../_index.md#disable-the-package-registry)
+1. In the project settings, if the [`package` feature](../_index.md#turn-off-the-package-registry)
    is disabled, enable it. It is enabled by default.
 1. [Add an authentication method](#configure-a-client). The dependency proxy supports the same [authentication methods](../_index.md#authenticate-with-the-registry) as the package registry:
    - [Personal access token](../../../profile/personal_access_tokens.md)

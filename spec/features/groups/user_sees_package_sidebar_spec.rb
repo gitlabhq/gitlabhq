@@ -21,7 +21,7 @@ RSpec.describe 'Groups > sidebar', :js, feature_category: :groups_and_projects d
       it 'shows main menu' do
         within_testid 'super-sidebar' do
           click_button 'Deploy'
-          expect(page).to have_link(_('Package Registry'))
+          expect(page).to have_link(_('Package registry'))
         end
       end
 

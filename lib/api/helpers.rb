@@ -1036,6 +1036,7 @@ module API
 
     def job_token_policies_authorized?(project)
       return true unless current_user&.from_ci_job_token?
+      return true unless Feature.enabled?(:add_policies_to_ci_job_token, project)
       return true if skip_job_token_policies?
       return true if publicly_accessible_feature?(project)
 

@@ -21,7 +21,7 @@ module Packages
         end
 
         if result&.success?
-          ::Packages::TerraformModule::Metadata::CreateService.new(package_file.package, result.payload).execute
+          ::Packages::TerraformModule::Metadata::UpdateService.new(package_file.package, result.payload).execute
         end
 
         ServiceResponse.success

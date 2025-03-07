@@ -1,5 +1,5 @@
 - if Gitlab.config.packages.enabled
-  = render ::Layouts::SettingsBlockComponent.new(_('Package Registry'),
+  = render ::Layouts::SettingsBlockComponent.new(_('Package registry'),
     id: 'js-package-settings',
     expanded: expanded_by_default?) do |c|
     - c.with_description do

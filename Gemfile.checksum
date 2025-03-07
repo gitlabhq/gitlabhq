@@ -783,7 +783,7 @@
 {"name":"vite_ruby","version":"3.9.1","platform":"ruby","checksum":"e4584a4ba1578602f13a3ac73402007aed044bd660daaac220523a97c49a4cc4"},
 {"name":"vmstat","version":"2.3.1","platform":"ruby","checksum":"5587cb430a54dbfc4a5c29dd01bd6a4031b2ff4c1d387504d74ff246f3b39104"},
 {"name":"warden","version":"1.2.9","platform":"ruby","checksum":"46684f885d35a69dbb883deabf85a222c8e427a957804719e143005df7a1efd0"},
-{"name":"warning","version":"1.3.0","platform":"ruby","checksum":"23695a5d8e50bd5c46068931b529bee0b28e4982cbcefbe77d867800dde8069e"},
+{"name":"warning","version":"1.5.0","platform":"ruby","checksum":"0f12c49fea0c06757778eefdcc7771e4fd99308901e3d55c504d87afdd718c53"},
 {"name":"webauthn","version":"3.0.0","platform":"ruby","checksum":"3f77d422c2a8a4b31e56cf42f83414bd066e0506e9896936e1730262dc4a20e6"},
 {"name":"webfinger","version":"2.1.3","platform":"ruby","checksum":"567a52bde77fb38ca6b67e55db755f988766ec4651c1d24916a65aa70540695c"},
 {"name":"webmock","version":"3.25.0","platform":"ruby","checksum":"573c23fc4887008c830f22da588db339ca38b6d59856fd57f5a068959474198e"},

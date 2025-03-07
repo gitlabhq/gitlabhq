@@ -7,7 +7,6 @@ ee/spec/frontend/ai/settings/components/duo_experiment_beta_features_form_spec.j
 ee/spec/frontend/analytics/analytics_dashboards/components/analytics_dashboards_breadcrumbs_spec.js
 ee/spec/frontend/analytics/analytics_dashboards/components/analytics_data_explorer_spec.js
 ee/spec/frontend/analytics/analytics_dashboards/components/list/feature_list_item_spec.js
-ee/spec/frontend/analytics/cycle_analytics/components/value_stream_aggregation_status_spec.js
 ee/spec/frontend/analytics/cycle_analytics/vsa_settings/components/value_stream_form_content_spec.js
 ee/spec/frontend/analytics/dashboards/ai_impact/components/metric_table_spec.js
 ee/spec/frontend/analytics/devops_reports/devops_adoption/components/devops_adoption_app_spec.js

@@ -41122,15 +41122,6 @@ msgstr ""
 msgid "PQL|Thank you for reaching out! Our sales team will get back to you soon."
 msgstr ""
 
-msgid "Package Registry"
-msgstr ""
-
-msgid "Package Registry: authenticated API requests"
-msgstr ""
-
-msgid "Package Registry: unauthenticated API requests"
-msgstr ""
-
 msgid "Package already exists"
 msgstr ""
 
@@ -41152,10 +41143,19 @@ msgstr ""
 msgid "Package recipe already exists"
 msgstr ""
 
+msgid "Package registry"
+msgstr ""
+
 msgid "Package registry rate limits"
 msgstr ""
 
 msgid "Package registry types for which metadata is stored, required for License Compliance for CycloneDX files."
+msgstr ""
+
+msgid "Package registry: authenticated API requests"
+msgstr ""
+
+msgid "Package registry: unauthenticated API requests"
 msgstr ""
 
 msgid "Package type"
@@ -41592,10 +41592,10 @@ msgstr ""
 msgid "PackageRegistry|Published to %{projectName}, %{date}"
 msgstr ""
 
-msgid "PackageRegistry|Published to the %{project} Package Registry %{datetime}"
+msgid "PackageRegistry|Published to the %{project} Terraform Module Registry %{datetime}"
 msgstr ""
 
-msgid "PackageRegistry|Published to the %{project} Terraform Module Registry %{datetime}"
+msgid "PackageRegistry|Published to the %{project} package registry %{datetime}"
 msgstr ""
 
 msgid "PackageRegistry|PyPI"
@@ -45821,7 +45821,7 @@ msgstr ""
 msgid "ProjectSettings|Allow"
 msgstr ""
 
-msgid "ProjectSettings|Allow anyone to pull from Package Registry"
+msgid "ProjectSettings|Allow anyone to pull from package registry"
 msgstr ""
 
 msgid "ProjectSettings|Allow skipping the merge train"
@@ -59019,7 +59019,7 @@ msgstr ""
 msgid "There are running deployments on the environment. Please retry later."
 msgstr ""
 
-msgid "There are several file size limits in place for the Package Registry."
+msgid "There are several file size limits in place for the package registry."
 msgstr ""
 
 msgid "There are several rate limits in place to protect the system."

@@ -681,7 +681,7 @@ And the `.npmrc` file should look like:
 
 If you get this error, ensure that:
 
-- The package registry is enabled in your project settings. Although the package registry is enabled by default, it's possible to [disable it](../package_registry/_index.md#disable-the-package-registry).
+- The package registry is enabled in your project settings. Although the package registry is enabled by default, it's possible to [disable it](../package_registry/_index.md#turn-off-the-package-registry).
 - Your token is not expired and has appropriate permissions.
 - A package with the same name or version doesn't already exist within the given scope.
 - The scoped packages URL includes a trailing slash:

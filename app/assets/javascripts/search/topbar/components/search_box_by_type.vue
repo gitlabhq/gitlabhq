@@ -1,7 +1,3 @@
-<!--
-  this component should be here only temporary until this MR gets sorted:
-  https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/3969
- -->
 <script>
 import { GlFormInput, GlIcon, GlLoadingIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
@@ -115,12 +111,6 @@ export default {
     showClearButton() {
       return this.hasValue && !this.disabled;
     },
-    regexButtonHighlightClass() {
-      return {
-        '!gl-bg-blue-50': this.regexButtonState,
-        '!gl-shadow-none': !this.regexButtonState,
-      };
-    },
   },
   methods: {
     isInputOrClearButton(element) {
@@ -194,8 +184,8 @@ export default {
           :title="$options.i18n.label"
           :aria-label="$options.i18n.label"
           class="gl-ml-2 gl-hidden sm:gl-block"
-          :class="regexButtonHighlightClass"
-          category="secondary"
+          :selected="regexButtonState"
+          category="tertiary"
           variant="default"
           size="small"
           icon="regular-expression"

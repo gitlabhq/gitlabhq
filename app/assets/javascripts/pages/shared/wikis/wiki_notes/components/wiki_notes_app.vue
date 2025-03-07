@@ -1,6 +1,7 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
+import { produce } from 'immer';
 import { __ } from '~/locale';
 import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
 import SkeletonNote from '~/vue_shared/components/notes/skeleton_note.vue';
@@ -87,17 +88,29 @@ export default {
       this.placeholderNote = {};
     },
     async updateDiscussions(discussion) {
-      this.discussions = [
-        ...this.discussions,
-        {
+      // apollo does not update cache when a discussion is added so we have to do it manually
+      if (!this.$apollo.provider) return;
+      const { defaultClient: cache } = this.$apollo.provider.clients;
+      const queryData = cache.readQuery({
+        query: wikiPageQuery,
+        variables: this.queryVariables,
+      });
+      const data = produce(queryData, (draft) => {
+        draft.wikiPage.discussions.nodes.push({
           ...discussion,
-          replyId: discussion.id,
+          replyId: null,
           resolvable: false,
           resolved: false,
           resolvedAt: null,
           resolvedBy: null,
-        },
-      ];
+        });
+      });
+
+      cache.writeQuery({
+        query: wikiPageQuery,
+        variables: this.queryVariables,
+        data,
+      });
     },
     getDiscussionKey(key, stringModifier) {
       return [key, stringModifier].join('-');

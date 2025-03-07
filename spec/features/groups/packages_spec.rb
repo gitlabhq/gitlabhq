@@ -33,7 +33,7 @@ RSpec.describe 'Group Packages', feature_category: :package_registry do
 
     it 'sidebar menu is open' do
       sidebar = find_by_testid('super-sidebar')
-      expect(sidebar).to have_link _('Package Registry')
+      expect(sidebar).to have_link _('Package registry')
     end
 
     context 'when there are packages' do

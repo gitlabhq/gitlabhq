@@ -30,6 +30,10 @@ By deploying GitLab Duo Self-Hosted, you can manage the entire lifecycle of requ
 For a click-through demo, see [GitLab Duo Self-Hosted product tour](https://gitlab.navattic.com/gitlab-duo-self-hosted).
 <!-- Demo published on 2025-02-13 -->
 
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For an overview, see [GitLab Duo Self-Hosted: AI in your private environment](https://youtu.be/TQoO3sFnb28?si=uD-ps6aRnE28xNv3).
+<!-- Video published on 2025-02-20 -->
+
 ## Why use GitLab Duo Self-Hosted
 
 With GitLab Duo Self-Hosted, you can:

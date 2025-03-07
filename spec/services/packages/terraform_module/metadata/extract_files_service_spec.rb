@@ -172,7 +172,7 @@ RSpec.describe Packages::TerraformModule::Metadata::ExtractFilesService, feature
         it_behaves_like 'extracting metadata'
       end
 
-      context 'when a processing error occurs druing HCL file parsing' do
+      context 'when a processing error occurs during HCL file parsing' do
         it_behaves_like 'extracting metadata from README files only'
       end
     end

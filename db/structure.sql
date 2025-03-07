@@ -1140,6 +1140,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_0af180e1ec89() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "packages_debian_project_components"
+  WHERE "packages_debian_project_components"."id" = NEW."component_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_0c326daf67cf() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -13711,7 +13727,8 @@ CREATE TABLE evidences (
     updated_at timestamp with time zone NOT NULL,
     summary_sha bytea,
     summary jsonb DEFAULT '{}'::jsonb NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_32e833c325 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE evidences_id_seq
@@ -18099,6 +18116,7 @@ CREATE TABLE packages_debian_project_component_files (
     file_store smallint DEFAULT 1 NOT NULL,
     file text NOT NULL,
     file_sha256 bytea NOT NULL,
+    project_id bigint,
     CONSTRAINT check_e5af03fa2d CHECK ((char_length(file) <= 255))
 );
 
@@ -18602,6 +18620,11 @@ CREATE TABLE packages_terraform_module_metadata (
     package_id bigint NOT NULL,
     project_id bigint NOT NULL,
     fields jsonb NOT NULL,
+    semver_major integer,
+    semver_minor integer,
+    semver_patch integer,
+    semver_prerelease text,
+    CONSTRAINT check_46aa6c883a CHECK ((char_length(semver_prerelease) <= 255)),
     CONSTRAINT chk_rails_49f7b485ae CHECK ((char_length((fields)::text) <= 10485760))
 );
 
@@ -34409,6 +34432,8 @@ CREATE INDEX index_packages_debian_project_architectures_on_project_id ON packag
 
 CREATE INDEX index_packages_debian_project_component_files_on_component_id ON packages_debian_project_component_files USING btree (component_id);
 
+CREATE INDEX index_packages_debian_project_component_files_on_project_id ON packages_debian_project_component_files USING btree (project_id);
+
 CREATE INDEX index_packages_debian_project_components_on_project_id ON packages_debian_project_components USING btree (project_id);
 
 CREATE INDEX index_packages_debian_project_distribution_keys_on_project_id ON packages_debian_project_distribution_keys USING btree (project_id);
@@ -38503,6 +38528,8 @@ CREATE TRIGGER trigger_0a29d4d42b62 BEFORE INSERT OR UPDATE ON approval_project_
 
 CREATE TRIGGER trigger_0aea02e5a699 BEFORE INSERT OR UPDATE ON protected_branch_merge_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_0aea02e5a699();
 
+CREATE TRIGGER trigger_0af180e1ec89 BEFORE INSERT OR UPDATE ON packages_debian_project_component_files FOR EACH ROW EXECUTE FUNCTION trigger_0af180e1ec89();
+
 CREATE TRIGGER trigger_0c326daf67cf BEFORE INSERT OR UPDATE ON analytics_cycle_analytics_value_stream_settings FOR EACH ROW EXECUTE FUNCTION trigger_0c326daf67cf();
 
 CREATE TRIGGER trigger_0d96daa4d734 BEFORE INSERT OR UPDATE ON bulk_import_export_uploads FOR EACH ROW EXECUTE FUNCTION trigger_0d96daa4d734();
@@ -40700,6 +40727,9 @@ ALTER TABLE ONLY ml_candidate_metrics
 
 ALTER TABLE ONLY approval_merge_request_rules
     ADD CONSTRAINT fk_e33a9aaf67 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_debian_project_component_files
+    ADD CONSTRAINT fk_e4ff7d8a8b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY abuse_events
     ADD CONSTRAINT fk_e5ce49c215 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;

@@ -4,7 +4,7 @@ module Types
   module Packages
     class PackageType < Types::Packages::PackageBaseType
       graphql_name 'Package'
-      description 'Represents a package with pipelines in the Package Registry'
+      description 'Represents a package with pipelines in the package registry'
 
       authorize :read_package
 

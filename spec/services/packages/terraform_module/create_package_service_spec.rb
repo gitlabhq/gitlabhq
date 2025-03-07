@@ -6,9 +6,9 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
   let_it_be_with_reload(:namespace) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, namespace: namespace) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:sha256) { '440e5e148a25331bbd7991575f7d54933c0ebf6cc735a18ee5066ac1381bb590' }
   let_it_be_with_reload(:package_settings) { create(:namespace_package_setting, namespace: namespace) }
 
+  let(:sha256) { '440e5e148a25331bbd7991575f7d54933c0ebf6cc735a18ee5066ac1381bb590' }
   let(:overrides) { {} }
 
   let(:params) do
@@ -24,11 +24,12 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
   subject { described_class.new(project, user, params).execute }
 
   describe '#execute' do
-    shared_examples 'creating a package' do
-      it 'creates a package' do
+    shared_examples 'creating a package and its metadatum' do
+      it 'creates a package and its metadatum' do
         expect(::Packages::TerraformModule::ProcessPackageFileWorker).to receive(:perform_async).once
 
         expect { subject }.to change { ::Packages::TerraformModule::Package.count }.by(1)
+          .and change { ::Packages::TerraformModule::Metadatum.count }.by(1)
       end
     end
 
@@ -49,7 +50,7 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
       context 'when regex matches' do
         let(:regex) { ".*#{existing_package.name.last(3)}.*" }
 
-        it_behaves_like 'creating a package'
+        it_behaves_like 'creating a package and its metadatum'
       end
 
       context 'when regex does not match' do
@@ -73,18 +74,19 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
       context 'when regex does not match' do
         let(:regex) { '.*not-a-match.*' }
 
-        it_behaves_like 'creating a package'
+        it_behaves_like 'creating a package and its metadatum'
       end
     end
 
     context 'when valid package' do
-      it_behaves_like 'creating a package'
+      it_behaves_like 'creating a package and its metadatum'
     end
 
     context 'when package already exists elsewhere' do
-      let(:project2) { create(:project, namespace: namespace) }
+      let_it_be(:project2) { create(:project, namespace: namespace) }
       let!(:existing_package) do
-        create(:terraform_module_package, project: project2, name: 'foo/bar', version: '1.0.0')
+        create(:terraform_module_package, project: project2, name: 'foo/bar', version: '1.0.0',
+          without_package_files: true)
       end
 
       context 'when duplicates not allowed' do
@@ -101,7 +103,7 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
           package_settings.update_column(:terraform_module_duplicates_allowed, true)
         end
 
-        it_behaves_like 'creating a package'
+        it_behaves_like 'creating a package and its metadatum'
         it_behaves_like 'with duplicate regex exception, prevent creation of matching package'
       end
 
@@ -118,7 +120,7 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
             package_settings.update_column(:terraform_module_duplicates_allowed, true)
           end
 
-          it_behaves_like 'creating a package'
+          it_behaves_like 'creating a package and its metadatum'
         end
 
         context 'when duplicates allowed in an ancestor with exception' do
@@ -138,12 +140,15 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
           existing_package.pending_destruction!
         end
 
-        it_behaves_like 'creating a package'
+        it_behaves_like 'creating a package and its metadatum'
       end
     end
 
     context 'when version already exists' do
-      let!(:existing_version) { create(:terraform_module_package, project: project, name: 'foo/bar', version: '1.0.1') }
+      let_it_be_with_reload(:existing_version) do
+        create(:terraform_module_package, project: project, name: 'foo/bar', version: '1.0.1',
+          without_package_files: true)
+      end
 
       it 'returns error' do
         is_expected.to be_error.and have_attributes(
@@ -157,7 +162,7 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
           existing_version.pending_destruction!
         end
 
-        it_behaves_like 'creating a package'
+        it_behaves_like 'creating a package and its metadatum'
       end
     end
 

@@ -158,7 +158,7 @@ export const ERRORED_PACKAGE_TEXT = s__(
 export const ERROR_PUBLISHING = s__('PackageRegistry|Error publishing');
 export const WARNING_TEXT = __('Warning');
 
-export const PACKAGE_REGISTRY_TITLE = __('Package Registry');
+export const PACKAGE_REGISTRY_TITLE = __('Package registry');
 
 export const PACKAGE_ERROR_STATUS = 'ERROR';
 export const PACKAGE_DEFAULT_STATUS = 'DEFAULT';

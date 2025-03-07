@@ -169,7 +169,7 @@ describe('search box by type component', () => {
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
-  describe('regular expression button', () => {
+  describe('regular expression button active', () => {
     const regexButtonHandlerSpy = jest.fn();
     beforeEach(() => {
       createComponent({
@@ -181,10 +181,6 @@ describe('search box by type component', () => {
 
     it('renders regular expression button', () => {
       expect(findRegulareExpressionToggle().exists()).toBe(true);
-    });
-
-    it('renders regular expression button state correctly', () => {
-      expect(findRegulareExpressionToggle().classes('!gl-bg-blue-50')).toBe(true);
     });
 
     it('triggers correct action when clicked', () => {

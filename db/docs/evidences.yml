@@ -8,14 +8,6 @@ description: https://docs.gitlab.com/ee/user/project/releases/#release-evidence
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17217
 milestone: '12.4'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: release_id
-        table: releases
-        sharding_key: project_id
-        belongs_to: release
-desired_sharding_key_migration_job_name: BackfillEvidencesProjectId
 table_size: small
+sharding_key:
+  project_id: projects

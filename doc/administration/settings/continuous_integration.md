@@ -444,8 +444,8 @@ To disable forwarding Maven requests:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
-1. Expand the **Package Registry** section.
-1. Clear the checkbox **Forward Maven package requests to the Maven Registry if the packages are not found in the GitLab Package Registry**.
+1. Expand the **Package registry** section.
+1. Clear the checkbox **Forward Maven package requests to the Maven registry if the packages are not found in the GitLab Package registry**.
 1. Select **Save changes**.
 
 ### npm Forwarding
@@ -463,8 +463,8 @@ To disable it:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
-1. Expand the **Package Registry** section.
-1. Clear the checkbox **Forward npm package requests to the npm Registry if the packages are not found in the GitLab Package Registry**.
+1. Expand the **Package registry** section.
+1. Clear the checkbox **Forward npm package requests to the npm registry if the packages are not found in the GitLab package registry**.
 1. Select **Save changes**.
 
 ### PyPI Forwarding
@@ -482,8 +482,8 @@ To disable it:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
-1. Expand the **Package Registry** section.
-1. Clear the checkbox **Forward PyPI package requests to the PyPI Registry if the packages are not found in the GitLab Package Registry**.
+1. Expand the **Package registry** section.
+1. Clear the checkbox **Forward PyPI package requests to the PyPI registry if the packages are not found in the GitLab package registry**.
 1. Select **Save changes**.
 
 ### Package file size limits
@@ -494,7 +494,7 @@ To set the maximum file size:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
-1. Expand the **Package Registry** section.
+1. Expand the **Package registry** section.
 1. Find the package type you would like to adjust.
 1. Enter the maximum file size, in bytes.
 1. Select **Save size limits**.

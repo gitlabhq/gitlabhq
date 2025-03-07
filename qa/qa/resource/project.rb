@@ -470,6 +470,10 @@ module QA
         jobs.find { |job| job[:name] == job_name }
       end
 
+      def has_job?(job_name)
+        !!job_by_name(job_name)
+      end
+
       def visit_job(job_name)
         url = job_by_name(job_name)[:web_url]
         Runtime::Logger.info("Visiting #{Rainbow(self.class.name).black.bg(:white)}'s job #{job_name} at #{url}")

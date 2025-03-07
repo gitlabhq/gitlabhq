@@ -726,36 +726,6 @@ RSpec.describe Note, feature_category: :team_planning do
     end
   end
 
-  describe '#last_edited_by' do
-    let(:user) { build(:user) }
-
-    context 'when last_edited_at is nil' do
-      let(:note) { build(:note, last_edited_at: nil, updated_by: user) }
-
-      it 'returns nil' do
-        expect(note.last_edited_by).to be_nil
-      end
-    end
-
-    context 'when last_edited_at is set' do
-      context 'when updated_by is set' do
-        let(:note) { build(:note, last_edited_at: Time.current, updated_by: user) }
-
-        it 'returns the updated_by user' do
-          expect(note.last_edited_by).to eq(user)
-        end
-      end
-
-      context 'when updated_by is not set' do
-        let(:note) { build(:note, last_edited_at: Time.current, updated_by: nil) }
-
-        it 'returns the ghost user' do
-          expect(note.last_edited_by).to eq(Users::Internal.ghost)
-        end
-      end
-    end
-  end
-
   describe '#confidential?' do
     context 'when note is not confidential' do
       context 'when include_noteable is set to true' do

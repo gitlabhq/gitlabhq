@@ -73,7 +73,7 @@ export default {
     ),
     packageRegistryLabel: s__('ProjectSettings|Package registry'),
     packageRegistryForEveryoneLabel: s__(
-      'ProjectSettings|Allow anyone to pull from Package Registry',
+      'ProjectSettings|Allow anyone to pull from package registry',
     ),
     modelExperimentsLabel: s__('ProjectSettings|Model experiments'),
     modelExperimentsHelpText: s__(

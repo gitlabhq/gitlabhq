@@ -471,7 +471,7 @@ group :opentelemetry do
   gem 'opentelemetry-instrumentation-sidekiq', feature_category: :observability
 end
 
-gem 'warning', '~> 1.3.0', feature_category: :shared
+gem 'warning', '~> 1.5.0', feature_category: :shared
 
 group :development do
   gem 'lefthook', '~> 1.11.0', require: false, feature_category: :tooling

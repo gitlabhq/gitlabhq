@@ -4,6 +4,7 @@ module Packages
   module TerraformModule
     class Metadatum < ApplicationRecord
       include Gitlab::Utils::StrongMemoize
+      include SemanticVersionable
 
       self.primary_key = :package_id
 
@@ -12,9 +13,11 @@ module Packages
       belongs_to :package, class_name: 'Packages::TerraformModule::Package', inverse_of: :terraform_module_metadatum
       belongs_to :project
 
-      validates :package, presence: true
-      validates :project, :fields, presence: true
-      validates :fields, json_schema: { filename: 'terraform_module_metadata', detail_errors: true }
+      attribute :fields, default: -> { {} }
+
+      validates :package, :project, presence: true
+      validates :fields, json_schema: { filename: 'terraform_module_metadata', detail_errors: true },
+        if: -> { fields.present? }
       validate :ensure_fields_size
 
       private

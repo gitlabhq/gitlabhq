@@ -53,7 +53,7 @@ Provide feedback on this feature in [issue 443236](https://gitlab.com/gitlab-org
 
 {{< details >}}
 
-- Status: Experiment
+- Status: Beta
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 {{< /details >}}
@@ -61,7 +61,8 @@ Provide feedback on this feature in [issue 443236](https://gitlab.com/gitlab-org
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14825) in GitLab 17.5 as an [experiment](../../../policy/development_stages_support.md#experiment) behind two feature flags named [`ai_review_merge_request`](https://gitlab.com/gitlab-org/gitlab/-/issues/456106) and [`duo_code_review_chat`](https://gitlab.com/gitlab-org/gitlab/-/issues/508632), both disabled by default.
-- Feature flags [`ai_review_merge_request`](https://gitlab.com/gitlab-org/gitlab/-/issues/456106) and [`duo_code_review_chat`](https://gitlab.com/gitlab-org/gitlab/-/issues/508632) enabled for GitLab.com in 17.10.
+- Feature flags [`ai_review_merge_request`](https://gitlab.com/gitlab-org/gitlab/-/issues/456106) and [`duo_code_review_chat`](https://gitlab.com/gitlab-org/gitlab/-/issues/508632) enabled by default on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in 17.10.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/516234) to beta in GitLab 17.10.
 
 {{< /history >}}
 
@@ -69,12 +70,6 @@ Provide feedback on this feature in [issue 443236](https://gitlab.com/gitlab-org
 
 The availability of this feature is controlled by two feature flags.
 For more information, see the history.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-This feature is considered [experimental](../../../policy/development_stages_support.md) and breaking changes may still be made to this feature.
 
 {{< /alert >}}
 

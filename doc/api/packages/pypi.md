@@ -22,7 +22,7 @@ and is generally not meant for manual consumption.
 {{< /alert >}}
 
 For instructions on how to upload and install PyPI packages from the GitLab
-Package Registry, see the [PyPI package registry documentation](../../user/packages/pypi_repository/_index.md).
+package registry, see the [PyPI package registry documentation](../../user/packages/pypi_repository/_index.md).
 
 {{< alert type="note" >}}
 
