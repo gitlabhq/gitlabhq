@@ -11,7 +11,6 @@ jest.mock('~/rapid_diffs/app/file_browser.vue', () => ({
     return h('div', {
       attrs: {
         'data-file-browser-component': true,
-        'data-loaded-files': JSON.stringify(this.loadedFiles),
       },
       on: {
         click: () => {
@@ -55,12 +54,6 @@ describe('Init file browser', () => {
   it('fetches metadata', () => {
     initFileBrowser();
     expect(dispatch).toHaveBeenCalledWith('diffs/fetchDiffFilesMeta');
-  });
-
-  it('provides already loaded files', async () => {
-    initFileBrowser();
-    await waitForPromises();
-    expect(JSON.parse(getFileBrowser().dataset.loadedFiles)).toStrictEqual({ first: true });
   });
 
   it('handles file clicks', async () => {

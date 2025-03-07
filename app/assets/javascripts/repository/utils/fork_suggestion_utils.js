@@ -1,31 +1,4 @@
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import { createAlert, VARIANT_INFO } from '~/alert';
-import { __ } from '~/locale';
-
-export function showForkSuggestionAlert(forkAndViewPath) {
-  const i18n = {
-    forkSuggestion: __(
-      "You can't edit files directly in this project. Fork this project and submit a merge request with your changes.",
-    ),
-    fork: __('Fork'),
-    cancel: __('Cancel'),
-  };
-
-  const alert = createAlert({
-    message: i18n.forkSuggestion,
-    variant: VARIANT_INFO,
-    primaryButton: {
-      text: i18n.fork,
-      link: forkAndViewPath,
-    },
-    secondaryButton: {
-      text: i18n.cancel,
-      clickHandler: () => alert.dismiss(),
-    },
-  });
-
-  return alert;
-}
 
 /**
  * Checks if the user can fork the project

@@ -35,9 +35,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
 
 const defaultProps = {
   projectId: mockProjectId,
-  pipelinesPath: '/root/project/-/pipelines',
-  pipelinesEditorPath: '/root/project/-/ci/editor',
-  canViewPipelineEditor: true,
   defaultBranch: 'main',
   refParam: 'main',
   settingsLink: '',
@@ -46,10 +43,13 @@ const defaultProps = {
 };
 
 const defaultProvide = {
-  projectPath: '/root/project/-/pipelines/config_variables',
-  userRole: 'Maintainer',
+  canViewPipelineEditor: true,
   identityVerificationRequired: true,
   identityVerificationPath: '/test',
+  pipelineEditorPath: '/root/project/-/ci/editor',
+  pipelinesPath: '/root/project/-/pipelines',
+  projectPath: '/root/project/-/pipelines/config_variables',
+  userRole: 'Maintainer',
 };
 
 describe('Pipeline New Form', () => {
@@ -79,6 +79,7 @@ describe('Pipeline New Form', () => {
 
   const createComponentWithApollo = async ({
     props = {},
+    provide = {},
     mountFn = shallowMountExtended,
     stubs = {},
     ciInputsForPipelines = false,
@@ -90,6 +91,7 @@ describe('Pipeline New Form', () => {
       apolloProvider: mockApollo,
       provide: {
         ...defaultProvide,
+        ...provide,
         glFeatures: {
           ciInputsForPipelines,
         },
@@ -180,7 +182,7 @@ describe('Pipeline New Form', () => {
         expect(pipelineCreateMutationHandler).toHaveBeenCalledWith({
           input: {
             ref: 'main',
-            projectPath: '/root/project/-/pipelines/config_variables',
+            projectPath: defaultProvide.projectPath,
             variables,
           },
         });
@@ -237,7 +239,7 @@ describe('Pipeline New Form', () => {
       expect(pipelineCreateMutationHandler).toHaveBeenCalledWith({
         input: {
           ref: 'main',
-          projectPath: '/root/project/-/pipelines/config_variables',
+          projectPath: defaultProvide.projectPath,
           variables: [],
         },
       });
@@ -305,7 +307,7 @@ describe('Pipeline New Form', () => {
 
       it('does not show pipeline configuration button for user who cannot view', async () => {
         await createComponentWithApollo({
-          props: { canViewPipelineEditor: false },
+          provide: { canViewPipelineEditor: false },
         });
 
         expect(findPipelineConfigButton().exists()).toBe(false);

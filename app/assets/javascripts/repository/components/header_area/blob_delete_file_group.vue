@@ -2,7 +2,8 @@
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { sprintf, __ } from '~/locale';
-import { isLoggedIn } from '~/lib/utils/common_utils';
+import { showForkSuggestion } from '~/repository/utils/fork_suggestion_utils';
+import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import DeleteBlobModal from '~/repository/components/delete_blob_modal.vue';
 import { DEFAULT_BLOB_INFO } from '~/repository/constants';
 
@@ -10,6 +11,7 @@ export default {
   components: {
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
+    ForkSuggestionModal,
     DeleteBlobModal,
   },
   inject: {
@@ -45,7 +47,7 @@ export default {
   },
   data() {
     return {
-      isLoggedIn: isLoggedIn(),
+      isModalVisible: false,
     };
   },
   computed: {
@@ -54,8 +56,6 @@ export default {
         text: __('Delete'),
         extraAttrs: {
           'data-testid': 'delete',
-          // a temporary solution before resolving https://gitlab.com/gitlab-org/gitlab/-/issues/450774#note_2319974833
-          disabled: this.showForkSuggestion,
         },
       };
     },
@@ -65,25 +65,14 @@ export default {
     deleteModalCommitMessage() {
       return sprintf(__('Delete %{name}'), { name: this.blobInfo.name });
     },
-    canFork() {
-      const { createMergeRequestIn, forkProject } = this.userPermissions;
-
-      return this.isLoggedIn && !this.isUsingLfs && createMergeRequestIn && forkProject;
-    },
-    showSingleFileEditorForkSuggestion() {
-      return this.canFork && !this.blobInfo.canModifyBlob;
-    },
-    showWebIdeForkSuggestion() {
-      return this.canFork && !this.blobInfo.canModifyBlobWithWebIde;
-    },
-    showForkSuggestion() {
-      return this.showSingleFileEditorForkSuggestion || this.showWebIdeForkSuggestion;
+    shouldShowForkSuggestion() {
+      return showForkSuggestion(this.userPermissions, this.isUsingLfs, this.blobInfo);
     },
   },
   methods: {
     showModal() {
-      if (this.showForkSuggestion) {
-        this.$emit('fork', 'view');
+      if (this.shouldShowForkSuggestion) {
+        this.isModalVisible = true;
         return;
       }
 
@@ -96,6 +85,11 @@ export default {
 <template>
   <gl-disclosure-dropdown-group bordered>
     <gl-disclosure-dropdown-item :item="deleteFileItem" variant="danger" @action="showModal" />
+    <fork-suggestion-modal
+      :visible="isModalVisible"
+      :fork-path="blobInfo.forkAndViewPath"
+      @hide="isModalVisible = false"
+    />
     <delete-blob-modal
       :ref="deleteModalId"
       :delete-path="blobInfo.webPath"

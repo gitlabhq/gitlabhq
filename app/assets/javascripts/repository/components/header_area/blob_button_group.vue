@@ -1,10 +1,11 @@
 <script>
 import { GlDisclosureDropdownItem, GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
-import { isLoggedIn } from '~/lib/utils/common_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { showForkSuggestion } from '~/repository/utils/fork_suggestion_utils';
 import { DEFAULT_BLOB_INFO } from '~/repository/constants';
 import getRefMixin from '~/repository/mixins/get_ref';
+import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 
 const REPLACE_BLOB_MODAL_ID = 'modal-replace-blob';
@@ -17,6 +18,7 @@ export default {
   components: {
     GlDisclosureDropdownItem,
     GlDisclosureDropdownGroup,
+    ForkSuggestionModal,
     UploadBlobModal,
     LockFileDropdownItem: () =>
       import('ee_component/repository/components/header_area/lock_file_dropdown_item.vue'),
@@ -64,7 +66,7 @@ export default {
   },
   data() {
     return {
-      isLoggedIn: isLoggedIn(),
+      isForkSuggestionModalVisible: false,
     };
   },
   computed: {
@@ -73,33 +75,20 @@ export default {
         text: this.$options.i18n.replace,
         extraAttrs: {
           'data-testid': 'replace',
-          // a temporary solution before resolving https://gitlab.com/gitlab-org/gitlab/-/issues/450774#note_2319974833
-          disabled: this.showForkSuggestion,
         },
       };
     },
     replaceCommitMessage() {
       return sprintf(__('Replace %{name}'), { name: this.blobInfo.name });
     },
-    canFork() {
-      const { createMergeRequestIn, forkProject } = this.userPermissions;
-
-      return this.isLoggedIn && !this.isUsingLfs && createMergeRequestIn && forkProject;
-    },
-    showSingleFileEditorForkSuggestion() {
-      return this.canFork && !this.blobInfo.canModifyBlob;
-    },
-    showWebIdeForkSuggestion() {
-      return this.canFork && !this.blobInfo.canModifyBlobWithWebIde;
-    },
-    showForkSuggestion() {
-      return this.showSingleFileEditorForkSuggestion || this.showWebIdeForkSuggestion;
+    shouldShowForkSuggestion() {
+      return showForkSuggestion(this.userPermissions, this.isUsingLfs, this.blobInfo);
     },
   },
   methods: {
     showModal() {
-      if (this.showForkSuggestion) {
-        this.$emit('fork', 'view');
+      if (this.shouldShowForkSuggestion) {
+        this.isForkSuggestionModalVisible = true;
         return;
       }
 
@@ -121,6 +110,11 @@ export default {
       :is-loading="isLoading"
     />
     <gl-disclosure-dropdown-item :item="replaceFileItem" @action="showModal" />
+    <fork-suggestion-modal
+      :visible="isForkSuggestionModalVisible"
+      :fork-path="blobInfo.forkAndViewPath"
+      @hide="isForkSuggestionModalVisible = false"
+    />
     <upload-blob-modal
       :ref="$options.replaceBlobModalId"
       :modal-id="$options.replaceBlobModalId"

@@ -40,20 +40,14 @@ export default {
   },
   directives: { SafeHtml },
   mixins: [glFeatureFlagsMixin(), PipelineVariablesPermissionsMixin],
-  inject: ['projectPath', 'userRole'],
+  inject: [
+    'canViewPipelineEditor',
+    'pipelineEditorPath',
+    'pipelinesPath',
+    'projectPath',
+    'userRole',
+  ],
   props: {
-    pipelinesPath: {
-      type: String,
-      required: true,
-    },
-    pipelinesEditorPath: {
-      type: String,
-      required: true,
-    },
-    canViewPipelineEditor: {
-      type: Boolean,
-      required: true,
-    },
     defaultBranch: {
       type: String,
       required: true,
@@ -211,7 +205,7 @@ export default {
         data-testid="ci-cd-pipeline-configuration"
         variant="confirm"
         :aria-label="$options.i18n.configButtonTitle"
-        :href="pipelinesEditorPath"
+        :href="pipelineEditorPath"
       >
         {{ $options.i18n.configButtonTitle }}
       </gl-button>

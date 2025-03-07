@@ -10,7 +10,8 @@
 - if local_assigns.has_key?(:projects) && projects.present?
   = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0' }) do |c|
     - c.with_header do
-      = _('Personal projects')
+      %h2.gl-text-base.gl-text-default.gl-leading-reset.gl-my-0.gl-font-normal
+        = _('Personal projects')
     - c.with_body do
       = render 'shared/projects/list',
         projects: projects.sort_by(&:star_count).reverse,

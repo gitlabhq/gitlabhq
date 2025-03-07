@@ -202,9 +202,11 @@ describe('Blob controls component', () => {
   });
 
   describe('BlobOverflow dropdown', () => {
-    it('renders BlobOverflow component with correct props', async () => {
+    beforeEach(async () => {
       await createComponent({ glFeatures: { blobOverflowMenu: true } });
+    });
 
+    it('renders BlobOverflow component with correct props', () => {
       expect(findOverflowMenu().exists()).toBe(true);
       expect(findOverflowMenu().props()).toEqual({
         projectPath: 'some/project',
@@ -234,9 +236,7 @@ describe('Blob controls component', () => {
       expect(findOverflowMenu().props('isBinary')).toBe(true);
     });
 
-    it('copies to clipboard raw blob text, when receives copy event', async () => {
-      await createComponent({ glFeatures: { blobOverflowMenu: true } });
-
+    it('copies to clipboard raw blob text, when receives copy event', () => {
       jest.spyOn(navigator.clipboard, 'writeText');
       findOverflowMenu().vm.$emit('copy');
 

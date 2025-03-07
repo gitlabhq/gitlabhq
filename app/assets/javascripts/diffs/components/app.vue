@@ -767,7 +767,7 @@ export default {
       <div class="gl-flex gl-flex-wrap">
         <compare-versions :toggle-file-tree-visible="hasChanges" />
         <diff-app-controls
-          class="gl-ml-auto"
+          class="gl-ml-auto gl-px-5 gl-pb-2 gl-pt-3"
           :has-changes="hasChanges"
           :diffs-count="numTotalFiles"
           :added-lines="addedLines"

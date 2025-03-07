@@ -663,7 +663,7 @@ The initial replication might take some time.
 You can monitor the synchronization process on each Geo site from the primary
 site **Geo Sites** dashboard in your browser.
 
-![Geo dashboard](../replication/img/geo_dashboard_v14_0.png)
+![The Geo Sites dashboard displaying the synchronization status.](../replication/img/geo_dashboard_v14_0.png)
 
 ## Related topics
 

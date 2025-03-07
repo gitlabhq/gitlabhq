@@ -14,7 +14,7 @@ RSpec.describe Ci::PipelineSchedulesHelper, feature_category: :continuous_integr
 
   describe '#js_pipeline_schedules_form_data' do
     before do
-      allow(helper).to receive_messages(timezone_data: timezones, current_user: user)
+      allow(helper).to receive_messages(timezone_data: timezones, current_user: user, can_view_pipeline_editor?: true)
       allow(project.team).to receive(:human_max_access).with(user.id).and_return('Owner')
     end
 
@@ -43,8 +43,10 @@ RSpec.describe Ci::PipelineSchedulesHelper, feature_category: :continuous_integr
 
     it 'returns pipeline schedule form data' do
       expect(helper.js_pipeline_schedules_form_data(project, pipeline_schedule)).to include({
-        full_path: project.full_path,
+        can_view_pipeline_editor: 'true',
         daily_limit: nil,
+        full_path: project.full_path,
+        pipeline_editor_path: project_ci_pipeline_editor_path(project),
         project_id: project.id,
         schedules_path: pipeline_schedules_path(project),
         settings_link: project_settings_ci_cd_path(project),

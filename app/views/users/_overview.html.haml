@@ -22,7 +22,7 @@
       .gl-flex.gl-items-baseline
         %h2.gl-heading-3.gl-grow{ class: '!gl-mt-5 !gl-mb-3' }
           = s_('UserProfile|Activity')
-        = link_to s_('UserProfile|View all'), user_activity_path, class: "hide js-view-all"
+        = link_to s_('UserProfile|View all'), user_activity_path, class: "hide js-view-all", aria: { label: _('View all activity') }
 
       .user-calendar.gl-border.light.gl-rounded-base.gl-px-3.gl-pt-4.gl-text-center{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: local_timezone_instance(@user.timezone).now.utc_offset } }
         = gl_loading_icon(size: 'md', css_class: 'gl-my-8')
@@ -40,6 +40,6 @@
     .gl-flex.gl-items-baseline
       %h2.gl-heading-3.gl-grow{ class: '!gl-mt-5 !gl-mb-3' }
         = s_('UserProfile|Personal projects')
-      = link_to s_('UserProfile|View all'), user_projects_path, class: "hide js-view-all"
+      = link_to s_('UserProfile|View all'), user_projects_path, class: "hide js-view-all", aria: { label: _('View all personal projects') }
     .overview-content-list{ data: { href: user_projects_path } }
       = gl_loading_icon(size: 'md', css_class: 'loading')

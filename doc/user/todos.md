@@ -175,6 +175,12 @@ In the To-Do List, in the upper-right corner, select **Mark all as done**.
 
 ## Snooze to-do items
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17712) in GitLab 17.10.
+
+{{< /history >}}
+
 You can snooze to-do items to temporarily hide them from your main To-Do List. This allows you to focus on more urgent tasks and return to snoozed items later.
 
 To snooze a to-do item:
@@ -191,6 +197,12 @@ Snoozed to-do items are removed from your main To-Do List and appear in a separa
 When the snooze period ends, the to-do item automatically returns to your main To-Do List. It appears with an indicator showing when it was originally created.
 
 ## View snoozed to-do items
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17712) in GitLab 17.10.
+
+{{< /history >}}
 
 To view or manage your snoozed to-do items:
 

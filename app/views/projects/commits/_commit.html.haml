@@ -17,6 +17,7 @@
 - commit_status     = commit.detailed_status_for(ref)
 - show_legacy_ci_icon = local_assigns.fetch(:show_legacy_ci_icon, true)
 - is_blob_page = local_assigns.fetch(:is_blob_page, false)
+- is_commits_page = local_assigns.fetch(:is_commits_page, false)
 - tags              = commit.tags_for_display
 - collapsible       = local_assigns.fetch(:collapsible, true)
 - link_data_attrs   = local_assigns.fetch(:link_data_attrs, {})
@@ -49,13 +50,14 @@
           = commit.short_id
         - if commit.description? && collapsible
           = render Pajamas::ButtonComponent.new(icon: 'ellipsis_h',
-            button_options: { class: 'button-ellipsis-horizontal js-toggle-button', data: { toggle: 'tooltip', container: 'body', collapse_title: toggle_commit_message, expand_title: toggle_commit_message }, title: toggle_commit_message, aria: { label: toggle_commit_message }})
+            button_options: { class: 'button-ellipsis-horizontal js-toggle-button', data: { toggle: 'tooltip', container: 'body', collapse_title: toggle_commit_message, expand_title: toggle_commit_message, commit_id: commit.id }, title: toggle_commit_message, aria: { label: toggle_commit_message }})
         = render partial: 'projects/commits/committer', locals: { commit: commit }
         = render_if_exists 'projects/commits/project_namespace', show_project_name: show_project_name, project: project
 
         - if commit.description?
-          %pre{ class: ["commit-row-description gl-whitespace-pre-wrap", (collapsible ? "js-toggle-content" : "!gl-block")] }
-            = preserve(markdown_field(commit, :description))
+          %pre{ class: ["commit-row-description gl-whitespace-pre-wrap", (collapsible ? "js-toggle-content" : "!gl-block")], data: { commit_id: commit.id } }
+            - if !Feature.enabled?(:load_commit_details_async, @project) || !is_commits_page
+              = preserve(markdown_field(commit, :description))
 
     .commit-actions.gl-flex.gl-items-center.gl-gap-3
       %div{ class: is_blob_page ? "gl-hidden sm:gl-flex gl-items-center gl-gap-3": "gl-flex gl-items-center gl-gap-3" }

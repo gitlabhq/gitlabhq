@@ -191,6 +191,7 @@ Settings.gitlab['default_branch_protection_defaults'] ||= ::Gitlab::Access::Bran
 # `default_can_create_group` is deprecated since GitLab 15.5 in favour of the `can_create_group` column on `ApplicationSetting`.
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
 Settings.gitlab['default_theme'] = Gitlab::Themes::APPLICATION_DEFAULT if Settings.gitlab['default_theme'].nil?
+Settings.gitlab['default_color_mode'] = Gitlab::ColorModes::APPLICATION_DEFAULT if Settings.gitlab['default_color_mode'].nil?
 Settings.gitlab['dns_rebinding_protection_enabled'] ||= !Gitlab.http_proxy_env?
 Settings.gitlab['custom_html_header_tags'] ||= Settings.gitlab['custom_html_header_tags'] || ''
 Settings.gitlab['host'] ||= ENV['GITLAB_HOST'] || 'localhost'

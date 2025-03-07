@@ -14,7 +14,9 @@ import { uniqueId } from 'lodash';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { reportToSentry } from '~/ci/utils';
+import InputsAdoptionBanner from '~/ci/common/pipeline_inputs/inputs_adoption_banner.vue';
 import { fetchPolicies } from '~/lib/graphql';
 import filterVariables from '../utils/filter_variables';
 import {
@@ -47,8 +49,10 @@ export default {
     GlLink,
     GlLoadingIcon,
     GlSprintf,
+    InputsAdoptionBanner,
     VariableValuesListbox,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['projectPath'],
   props: {
     fileParams: {
@@ -133,6 +137,9 @@ export default {
     },
     isMobile() {
       return ['sm', 'xs'].includes(GlBreakpointInstance.getBreakpointSize());
+    },
+    isPipelineInputsFeatureAvailable() {
+      return this.glFeatures.ciInputsForPipelines;
     },
     removeButtonCategory() {
       return this.isMobile ? 'secondary' : 'tertiary';
@@ -272,8 +279,10 @@ export default {
 
 <template>
   <div>
+    <h4>{{ s__('Pipeline|Variables') }}</h4>
+    <inputs-adoption-banner v-if="isPipelineInputsFeatureAvailable" />
     <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="md" />
-    <gl-form-group v-else :label="s__('Pipeline|Variables')" class="gl-mb-0">
+    <gl-form-group v-else class="gl-mb-0">
       <div
         v-for="(variable, index) in variables"
         :key="variable.uniqueId"

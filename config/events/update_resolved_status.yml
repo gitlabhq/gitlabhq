@@ -1,5 +1,6 @@
 ---
 description: Tracks updates to the resolved status of items.
+internal_events: true
 action: update_resolved_status
 product_group: platform_insights
 milestone: '16.1'

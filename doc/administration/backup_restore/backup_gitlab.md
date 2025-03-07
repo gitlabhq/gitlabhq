@@ -12,7 +12,31 @@ title: Back up GitLab
 
 {{< /details >}}
 
-The exact procedure for backing up GitLab depends on many factors. Your particular deployment's usage and configuration determine what kind of data exists, where it is located, and how much there is. These factors influence your options for how to perform a backup, how to store it, and how to restore it.
+GitLab backups protect your data and help with disaster recovery.
+
+The optimal backup strategy depends on your GitLab deployment configuration,
+data volume, and storage locations. These factors determine which backup
+methods to use,
+where to store backups, and how to structure your backup schedule.
+
+For larger GitLab instances, alternative backup strategies include:
+
+- Incremental backups.
+- Backups of specific repositories.
+- Backups across multiple storage locations.
+
+## Data included in a backup
+
+By default, the backup creates an archive in a single compressed tar file.
+This file includes:
+
+- Database data and configuration
+- Git repositories, container registry images, and uploaded content
+- Package registry data and CI/CD artifacts
+- Account and group settings
+- Project and group wikis
+- Project-level secure files
+- External merge request diffs
 
 ## Simple backup procedure
 

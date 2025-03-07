@@ -13,7 +13,8 @@
   - if @user.groups.any?
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0 gl-px-0'}) do |c|
       - c.with_header do
-        = _('Groups')
+        %h2.gl-text-base.gl-text-default.gl-leading-reset.gl-my-0.gl-font-normal
+          = _('Groups')
       - c.with_body do
         %ul.hover-list
           - @user.group_members.includes(:source).find_each do |group_member|
@@ -33,7 +34,8 @@
     - if @joined_projects.present?
       = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0 gl-px-0'}) do |c|
         - c.with_header do
-          = _('Joined projects (%{projects_count})') % { projects_count: @joined_projects.count }
+          %h2.gl-text-base.gl-text-default.gl-leading-reset.gl-my-0.gl-font-normal
+            = _('Joined projects (%{projects_count})') % { projects_count: @joined_projects.count }
         - c.with_body do
           %ul.hover-list
             - @joined_projects.sort_by(&:full_name).each do |project|

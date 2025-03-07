@@ -1,20 +1,25 @@
 import { shallowMount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import Vue, { nextTick } from 'vue';
+import { PiniaVuePlugin } from 'pinia';
 import FileBrowser from '~/rapid_diffs/app/file_browser.vue';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 import store from '~/mr_notes/stores';
 import * as types from '~/diffs/store/mutation_types';
+import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
+
+Vue.use(PiniaVuePlugin);
 
 describe('FileBrowser', () => {
   let wrapper;
   let commit;
 
-  const createComponent = ({ loadedFiles = {}, ...rest } = {}) => {
+  const createComponent = () => {
+    const pinia = createTestingPinia();
+    useDiffsList();
     wrapper = shallowMount(FileBrowser, {
       store,
-      propsData: {
-        loadedFiles,
-        ...rest,
-      },
+      pinia,
     });
   };
 
@@ -22,9 +27,11 @@ describe('FileBrowser', () => {
     commit = jest.spyOn(store, 'commit');
   });
 
-  it('passes down loaded files', () => {
+  it('passes down loaded files', async () => {
     const loadedFiles = { foo: 1 };
-    createComponent({ loadedFiles });
+    createComponent();
+    useDiffsList().loadedFiles = loadedFiles;
+    await nextTick();
     expect(wrapper.findComponent(DiffsFileTree).props('loadedFiles')).toStrictEqual(loadedFiles);
   });
 

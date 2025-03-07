@@ -122,7 +122,7 @@ RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
         :project_id,
         :pipelines_path,
         :default_branch,
-        :pipelines_editor_path,
+        :pipeline_editor_path,
         :can_view_pipeline_editor,
         :ref_param,
         :var_param,

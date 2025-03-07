@@ -103,7 +103,7 @@ routing configurations. To create a traffic policy:
 1. Select **Create traffic policy**.
 1. Fill in **Policy record DNS name** with `gitlab`.
 
-   ![Create policy records with traffic policy](img/single_url_create_policy_records_with_traffic_policy_v14_5.png)
+   ![Web form for creating DNS policy records with fields for traffic policy, version, hosted zone, and DNS configuration settings](img/single_url_create_policy_records_with_traffic_policy_v14_5.png)
 
 1. Select **Create policy records**.
 

@@ -1,5 +1,6 @@
 ---
 description: Tracks when a user views an epic on the roadmap.
+internal_events: true
 action: view_epic_on_roadmap
 product_group: product_planning
 milestone: '17.4'

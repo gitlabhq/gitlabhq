@@ -313,5 +313,31 @@ RSpec.describe ::Ml::CreateModelVersionService, feature_category: :mlops do
         expect(Gitlab::Audit::Auditor).not_to have_received(:audit)
       end
     end
+
+    context 'when a RecordInvalid error occurs' do
+      before do
+        allow_next_instance_of(::Ml::ModelVersion) do |model_version|
+          allow(model_version).to receive(:add_metadata).and_raise(ActiveRecord::RecordInvalid.new(model_version))
+        end
+      end
+
+      it 'returns an error response with the exception message' do
+        expect(service).to be_error
+        expect(service.message).to include('Validation failed: ')
+        expect(service.payload[:model_version]).to be_nil
+      end
+
+      it 'does not create model version or package' do
+        expect { service }.to not_change { Ml::ModelVersion.count }
+                                .and not_change { Packages::MlModel::Package.count }
+      end
+
+      it 'does not track events or audit' do
+        service
+
+        expect(Gitlab::InternalEvents).not_to have_received(:track_event)
+        expect(Gitlab::Audit::Auditor).not_to have_received(:audit)
+      end
+    end
   end
 end

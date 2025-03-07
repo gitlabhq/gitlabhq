@@ -49,7 +49,9 @@ export default {
     class="gl-m-3"
   >
     <template v-if="!hasRevsFile">
-      <gl-disclosure-dropdown-item>{{ $options.i18n.learnToIgnore }}</gl-disclosure-dropdown-item>
+      <div class="gl-m-3">
+        <gl-disclosure-dropdown-item>{{ $options.i18n.learnToIgnore }}</gl-disclosure-dropdown-item>
+      </div>
     </template>
 
     <template v-else>

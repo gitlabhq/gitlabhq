@@ -12,11 +12,21 @@ title: Back up and restore large reference architectures
 
 {{< /details >}}
 
-This document describes how to:
+GitLab backups preserve data consistency and enable disaster recovery for
+large-scale GitLab deployments. This process:
 
-- [Configure daily backups](#configure-daily-backups)
-- Take a backup now (planned)
-- [Restore a backup](#restore-a-backup)
+- Coordinates data backups across distributed storage components
+- Preserves PostgreSQL databases up to multiple terabytes in size
+- Protects object storage data in external services
+- Maintains backup integrity for large Git repository collections
+- Creates recoverable copies of configuration and secret files
+- Enables restoration of system data with minimal downtime
+
+Follow these procedures for GitLab environments running reference architectures
+that support 3,000+ users, with special considerations for cloud-based
+databases and object storage.
+
+{{< alert type="note" >}}
 
 This document is intended for environments using:
 
@@ -24,6 +34,8 @@ This document is intended for environments using:
 - [Amazon RDS](https://aws.amazon.com/rds/) for PostgreSQL data
 - [Amazon S3](https://aws.amazon.com/s3/) for object storage
 - [Object storage](../object_storage.md) to store everything possible, including [blobs](backup_gitlab.md#blobs) and [container registry](backup_gitlab.md#container-registry)
+
+{{< /alert >}}
 
 ## Configure daily backups
 

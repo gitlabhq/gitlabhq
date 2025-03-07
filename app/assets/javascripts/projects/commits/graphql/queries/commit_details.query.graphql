@@ -1,0 +1,11 @@
+query getCommitDetails($projectPath: ID!, $ref: String!) {
+  project(fullPath: $projectPath) {
+    id
+    repository {
+      commit(ref: $ref) {
+        id
+        descriptionHtml
+      }
+    }
+  }
+}

@@ -19,9 +19,7 @@
   - c.with_header do
     - if avatar
       .project-avatar-container.gl-relative.gl-pb-4
-        = link_to project_path(project), class: dom_class(project) do
-          %span.gl-sr-only
-            = project_avatar_link_label
+        = link_to project_path(project), class: dom_class(project), aria: { hidden: "true" }, tabindex: "-1" do
           - if project.creator && use_creator_avatar
             = render Pajamas::AvatarComponent.new(project.creator, size: 48, alt: '', avatar_options: { aria: { hidden: "true" } })
           - else
@@ -29,8 +27,8 @@
 
     .gl-w-full.gl-pt-2.gl-break-anywhere
       .gl-flex.gl-items-center.gl-flex-wrap
-        %h2.gl-text-base.gl-leading-20.gl-my-0
-          = link_to project_path(project), class: 'gl-text-default hover:gl-text-default gl-mr-3 js-prefetch-document', title: project.name do
+        %h3.gl-text-base.gl-leading-20.gl-my-0
+          = link_to project_path(project), class: 'gl-text-default hover:gl-text-default gl-mr-3 js-prefetch-document', title: project.name, aria: { label: project_avatar_link_label } do
             %span.namespace-name.gl-font-normal
               - if project.namespace && !skip_namespace
                 = project.namespace.human_name
@@ -63,19 +61,19 @@
       .gl-flex.gl-items-center.gl-gap-2.gl-mb-2.gl-justify-between.gl-flex-wrap
         .controls.gl-flex.gl-items-center.gl-gap-4.gl-flex-wrap{ class: "#{css_controls_class} !gl-pr-0" }
           - if stars
-            = link_to project_starrers_path(project), class: "#{css_metadata_classes} stars", title: _('Stars'), data: { container: 'body', placement: 'top' } do
+            = link_to project_starrers_path(project), class: "#{css_metadata_classes} stars", title: _('Stars'), data: { container: 'body', placement: 'top' }, aria: { label: format(n_('%{project} has %{number} star', '%{project} has %{number} stars', project.star_count), number: project.star_count, project: project.name) } do
               = sprite_icon('star-o', size: 14, css_class: 'gl-mr-2')
               = badge_count(project.star_count)
           - if show_count?(disabled: !forks, compact_mode: compact_mode)
-            = link_to project_forks_path(project), class: "#{css_metadata_classes} forks", title: _('Forks'), data: { container: 'body', placement: 'top' } do
+            = link_to project_forks_path(project), class: "#{css_metadata_classes} forks", title: _('Forks'), data: { container: 'body', placement: 'top' }, aria: { label: format(n_('%{project} has %{number} fork', '%{project} has %{number} forks', project.forks_count), number: project.forks_count, project: project.name) } do
               = sprite_icon('fork', size: 14, css_class: 'gl-mr-2')
               = badge_count(project.forks_count)
           - if show_count?(disabled: !merge_requests, compact_mode: compact_mode)
-            = link_to project_merge_requests_path(project), class: "#{css_metadata_classes} merge-requests", title: _('Merge requests'), data: { container: 'body', placement: 'top' } do
+            = link_to project_merge_requests_path(project), class: "#{css_metadata_classes} merge-requests", title: _('Merge requests'), data: { container: 'body', placement: 'top' }, aria: { label: format(n_('%{project} has %{number} merge request', '%{project} has %{number} merge requests', project.open_merge_requests_count), number: project.open_merge_requests_count, project: project.name) } do
               = sprite_icon('merge-request', size: 14, css_class: 'gl-mr-2')
               = badge_count(project.open_merge_requests_count)
           - if show_count?(disabled: !issues, compact_mode: compact_mode)
-            = link_to project_issues_path(project), class: "#{css_metadata_classes} issues", title: _('Issues'), data: { container: 'body', placement: 'top' } do
+            = link_to project_issues_path(project), class: "#{css_metadata_classes} issues", title: _('Issues'), data: { container: 'body', placement: 'top' }, aria: { label: format(n_('%{project} has %{number} open issues', '%{project} has %{number} open issues', project.open_issues_count), number: project.open_issues_count, project: project.name) } do
               = sprite_icon('issues', size: 14, css_class: 'gl-mr-2')
               = badge_count(project.open_issues_count)
 

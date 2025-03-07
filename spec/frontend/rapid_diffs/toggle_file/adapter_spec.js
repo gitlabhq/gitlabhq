@@ -1,5 +1,6 @@
 import { DiffFile } from '~/rapid_diffs/diff_file';
 import { ToggleFileAdapter } from '~/rapid_diffs/toggle_file/adapter';
+import { COLLAPSE_FILE, EXPAND_FILE } from '~/rapid_diffs/events';
 
 describe('Diff File Toggle Behavior', () => {
   // In our version of Jest/JSDOM we cannot use
@@ -62,5 +63,15 @@ describe('Diff File Toggle Behavior', () => {
 
     expect(body.hidden).toEqual(true);
     expect(document.activeElement).toEqual(show);
+  });
+
+  it('collapses file', () => {
+    get('file').trigger(COLLAPSE_FILE);
+    expect(get('body').hidden).toEqual(true);
+  });
+
+  it('expands file', () => {
+    get('file').trigger(EXPAND_FILE);
+    expect(get('body').hidden).toEqual(false);
   });
 });

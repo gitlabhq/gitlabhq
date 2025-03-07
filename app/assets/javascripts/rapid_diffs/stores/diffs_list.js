@@ -2,11 +2,22 @@ import { defineStore } from 'pinia';
 import { debounce } from 'lodash';
 import { renderHtmlStreams } from '~/streaming/render_html_streams';
 import { toPolyfillReadable } from '~/streaming/polyfills';
+import { DiffFile } from '~/rapid_diffs/diff_file';
+import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
+
+export const statuses = {
+  idle: 'idle',
+  fetching: 'fetching',
+  error: 'error',
+  streaming: 'streaming',
+};
 
 export const useDiffsList = defineStore('diffsList', {
   state() {
     return {
+      status: statuses.idle,
       loadingController: undefined,
+      loadedFiles: {},
     };
   },
   actions: {
@@ -17,7 +28,10 @@ export const useDiffsList = defineStore('diffsList', {
         try {
           await action(this.loadingController, previousController);
         } catch (error) {
-          if (error.name !== 'AbortError') throw error;
+          if (error.name !== 'AbortError') {
+            this.status = statuses.error;
+            throw error;
+          }
         } finally {
           this.loadingController = undefined;
         }
@@ -25,23 +39,54 @@ export const useDiffsList = defineStore('diffsList', {
       500,
       { leading: true },
     ),
+    addLoadedFile({ target }) {
+      this.loadedFiles = { ...this.loadedFiles, [target.id]: true };
+    },
+    fillInLoadedFiles() {
+      this.loadedFiles = Object.fromEntries(DiffFile.getAll().map((file) => [file.id, true]));
+    },
+    async renderDiffsStream(stream, container, signal) {
+      this.status = statuses.streaming;
+      const addLoadedFile = this.addLoadedFile.bind(this);
+      document.addEventListener(DIFF_FILE_MOUNTED, addLoadedFile);
+      try {
+        await renderHtmlStreams([stream], container, { signal });
+      } finally {
+        document.removeEventListener(DIFF_FILE_MOUNTED, addLoadedFile);
+      }
+      this.status = statuses.idle;
+    },
     streamRemainingDiffs(url) {
       return this.withDebouncedAbortController(async ({ signal }, previousController) => {
-        const container = document.querySelector('#js-stream-container');
+        this.status = statuses.fetching;
         const { body } = await fetch(url, { signal });
         if (previousController) previousController.abort();
-        await renderHtmlStreams([toPolyfillReadable(body)], container, { signal });
+        await this.renderDiffsStream(
+          toPolyfillReadable(body),
+          document.querySelector('#js-stream-container'),
+          signal,
+        );
       });
     },
     reloadDiffs(url) {
       return this.withDebouncedAbortController(async ({ signal }, previousController) => {
-        const container = document.querySelector('[data-diffs-list]');
         // TODO: handle loading state
+        this.status = statuses.fetching;
         const { body } = await fetch(url, { signal });
         if (previousController) previousController.abort();
+        this.loadedFiles = {};
+        const container = document.querySelector('[data-diffs-list]');
         container.innerHTML = '';
-        await renderHtmlStreams([toPolyfillReadable(body)], container, { signal });
+        await this.renderDiffsStream(toPolyfillReadable(body), container, signal);
       });
+    },
+  },
+  getters: {
+    isEmpty() {
+      return this.status === statuses.idle && Object.keys(this.loadedFiles).length === 0;
+    },
+    isLoading() {
+      return this.status !== statuses.idle && this.status !== statuses.error;
     },
   },
 });

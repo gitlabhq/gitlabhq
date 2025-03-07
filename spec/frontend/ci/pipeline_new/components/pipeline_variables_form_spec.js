@@ -10,6 +10,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { reportToSentry } from '~/ci/utils';
 import ciConfigVariablesQuery from '~/ci/pipeline_new/graphql/queries/ci_config_variables.graphql';
 import { VARIABLE_TYPE } from '~/ci/pipeline_new/constants';
+import InputsAdoptionBanner from '~/ci/common/pipeline_inputs/inputs_adoption_banner.vue';
 import PipelineVariablesForm from '~/ci/pipeline_new/components/pipeline_variables_form.vue';
 
 Vue.use(VueApollo);
@@ -48,7 +49,11 @@ describe('PipelineVariablesForm', () => {
     },
   ];
 
-  const createComponent = async ({ props = {}, configVariables = [] } = {}) => {
+  const createComponent = async ({
+    props = {},
+    configVariables = [],
+    ciInputsForPipelines = false,
+  } = {}) => {
     mockCiConfigVariables = jest.fn().mockResolvedValue({
       data: {
         project: {
@@ -63,7 +68,12 @@ describe('PipelineVariablesForm', () => {
     wrapper = shallowMountExtended(PipelineVariablesForm, {
       apolloProvider: mockApollo,
       propsData: { ...defaultProps, ...props },
-      provide: { ...defaultProvide },
+      provide: {
+        ...defaultProvide,
+        glFeatures: {
+          ciInputsForPipelines,
+        },
+      },
     });
 
     await waitForPromises();
@@ -71,6 +81,7 @@ describe('PipelineVariablesForm', () => {
 
   const findForm = () => wrapper.findComponent(GlFormGroup);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findInputsAdoptionBanner = () => wrapper.findComponent(InputsAdoptionBanner);
   const findVariableRows = () => wrapper.findAllByTestId('ci-variable-row-container');
   const findKeyInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-key-field');
   const findRemoveButton = () => wrapper.findByTestId('remove-ci-variable-row');
@@ -82,6 +93,28 @@ describe('PipelineVariablesForm', () => {
           ciConfigVariables: [],
         },
       },
+    });
+  });
+
+  describe('Feature flag', () => {
+    describe('when the ciInputsForPipelines flag is disabled', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not display the inputs adoption banner', () => {
+        expect(findInputsAdoptionBanner().exists()).toBe(false);
+      });
+    });
+
+    describe('when the ciInputsForPipelines flag is enabled', () => {
+      beforeEach(() => {
+        createComponent({ ciInputsForPipelines: true });
+      });
+
+      it('displays the inputs adoption banner', () => {
+        expect(findInputsAdoptionBanner().exists()).toBe(true);
+      });
     });
   });
 

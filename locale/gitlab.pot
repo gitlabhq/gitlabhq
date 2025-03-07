@@ -1228,6 +1228,26 @@ msgstr ""
 msgid "%{project_path} is a project that you can use to add a README to your GitLab profile. Create a public project and initialize the repository with a README to get started. %{help_link_start}Learn more%{help_link_end}."
 msgstr ""
 
+msgid "%{project} has %{number} fork"
+msgid_plural "%{project} has %{number} forks"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{project} has %{number} merge request"
+msgid_plural "%{project} has %{number} merge requests"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{project} has %{number} open issues"
+msgid_plural "%{project} has %{number} open issues"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{project} has %{number} star"
+msgid_plural "%{project} has %{number} stars"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{redirect_link_start} Click here to redirect to %{redirect_uri_val} %{redirect_link_end}"
 msgstr ""
 
@@ -14572,6 +14592,9 @@ msgstr ""
 msgid "Commits|No related merge requests found"
 msgstr ""
 
+msgid "Commits|Something went wrong while fetching commit details"
+msgstr ""
+
 msgid "Committed by"
 msgstr ""
 
@@ -25558,6 +25581,9 @@ msgid "Fork project"
 msgstr ""
 
 msgid "Fork project?"
+msgstr ""
+
+msgid "Fork to make changes"
 msgstr ""
 
 msgid "ForkProject|A fork is a copy of a project."
@@ -36891,9 +36917,6 @@ msgstr ""
 msgid "MlExperimentTracking|Create an experiment using MLflow"
 msgstr ""
 
-msgid "MlExperimentTracking|Created at"
-msgstr ""
-
 msgid "MlExperimentTracking|Creating an experiment"
 msgstr ""
 
@@ -36949,9 +36972,6 @@ msgid "MlExperimentTracking|Last activity"
 msgstr ""
 
 msgid "MlExperimentTracking|Model experiments"
-msgstr ""
-
-msgid "MlExperimentTracking|Model removed"
 msgstr ""
 
 msgid "MlExperimentTracking|Name"
@@ -37225,6 +37245,9 @@ msgid "MlModelRegistry|Model name"
 msgstr ""
 
 msgid "MlModelRegistry|Model registry"
+msgstr ""
+
+msgid "MlModelRegistry|Model removed"
 msgstr ""
 
 msgid "MlModelRegistry|Model version %{versionName} deleted successfully"
@@ -43250,6 +43273,9 @@ msgid "Pipelines|Use a template based on your project's language or framework to
 msgstr ""
 
 msgid "Pipelines|Use template"
+msgstr ""
+
+msgid "Pipelines|Using %{codeStart}inputs%{codeEnd} to control pipeline behavior offers improved security and flexibility. Consider updating your pipelines to use %{codeStart}inputs%{codeEnd} instead."
 msgstr ""
 
 msgid "Pipelines|Validate"
@@ -64129,10 +64155,16 @@ msgstr ""
 msgid "View all"
 msgstr ""
 
+msgid "View all activity"
+msgstr ""
+
 msgid "View all environments."
 msgstr ""
 
 msgid "View all issues"
+msgstr ""
+
+msgid "View all personal projects"
 msgstr ""
 
 msgid "View blame"
@@ -67402,9 +67434,6 @@ msgstr ""
 msgid "You can't approve because you added one or more commits to this merge request."
 msgstr ""
 
-msgid "You can't edit files directly in this project. Fork this project and submit a merge request with your changes."
-msgstr ""
-
 msgid "You can't follow more than %{limit} users. To follow more users, unfollow some others."
 msgstr ""
 
@@ -67850,6 +67879,9 @@ msgid "You're not allowed to make changes to this project directly. A fork of th
 msgstr ""
 
 msgid "You're not allowed to make changes to this project directly. A fork of this project is being created that you can make changes in, so you can submit a merge request."
+msgstr ""
+
+msgid "You're not allowed to make changes to this project directly. Create a fork to make changes and submit a merge request."
 msgstr ""
 
 msgid "You're receiving this email because of your account on %{host}."

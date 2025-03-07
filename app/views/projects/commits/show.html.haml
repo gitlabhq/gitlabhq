@@ -36,7 +36,7 @@
 
   %div{ id: dom_id(@project) }
     %ol#commits-list.list-unstyled.content_list
-      = render 'commits', project: @project, ref: @ref
+      = render 'commits', project: @project, ref: @ref, is_commits_page: true
   = gl_loading_icon(size: 'lg', css_class: 'loading hide')
 
 -# https://gitlab.com/gitlab-org/gitlab/-/issues/408388#note_1578533983

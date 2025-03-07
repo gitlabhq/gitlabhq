@@ -11,8 +11,6 @@ export async function initFileBrowser() {
   store.state.diffs.endpointMetadata = metadataEndpoint;
   await store.dispatch('diffs/fetchDiffFilesMeta');
 
-  const loadedFiles = Object.fromEntries(DiffFile.getAll().map((file) => [file.id, true]));
-
   // eslint-disable-next-line no-new
   new Vue({
     el,
@@ -20,9 +18,6 @@ export async function initFileBrowser() {
     pinia,
     render(h) {
       return h(FileBrowser, {
-        props: {
-          loadedFiles,
-        },
         on: {
           clickFile(file) {
             DiffFile.findByFileHash(file.fileHash).selectFile();

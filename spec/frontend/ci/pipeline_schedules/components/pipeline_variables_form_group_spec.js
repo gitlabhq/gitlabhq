@@ -1,5 +1,6 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import InputsAdoptionBanner from '~/ci/common/pipeline_inputs/inputs_adoption_banner.vue';
 import PipelineVariablesFormGroup from '~/ci/pipeline_schedules/components/pipeline_variables_form_group.vue';
 import { VARIABLE_TYPE, FILE_TYPE } from '~/ci/pipeline_schedules/constants';
 
@@ -12,12 +13,19 @@ describe('Pipeline variables form group', () => {
       initialVariables: [],
       editing: false,
     },
+    ciInputsForPipelines = false,
   ) => {
     wrapper = mountFn(PipelineVariablesFormGroup, {
       propsData: props,
+      provide: {
+        glFeatures: {
+          ciInputsForPipelines,
+        },
+      },
     });
   };
 
+  const findInputsAdoptionBanner = () => wrapper.findComponent(InputsAdoptionBanner);
   const findVariableRows = () => wrapper.findAllByTestId('ci-variable-row');
   const findVariableTypes = () => wrapper.findAllByTestId('pipeline-form-ci-variable-type');
   const findKeyInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-key');
@@ -32,6 +40,28 @@ describe('Pipeline variables form group', () => {
     input.setValue('test_var');
     input.trigger('change');
   };
+
+  describe('Feature flag', () => {
+    describe('when the ciInputsForPipelines flag is disabled', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not display the inputs adoption banner', () => {
+        expect(findInputsAdoptionBanner().exists()).toBe(false);
+      });
+    });
+
+    describe('when the ciInputsForPipelines flag is enabled', () => {
+      beforeEach(() => {
+        createComponent(undefined, undefined, true);
+      });
+
+      it('displays the inputs adoption banner', () => {
+        expect(findInputsAdoptionBanner().exists()).toBe(true);
+      });
+    });
+  });
 
   describe('Initial state and watchers', () => {
     it('creates an empty variable row when initialVariables is set', () => {

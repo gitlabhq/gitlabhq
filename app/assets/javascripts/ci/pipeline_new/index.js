@@ -1,23 +1,24 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import PipelineNewForm from './components/pipeline_new_form.vue';
 
 const mountPipelineNewForm = (el) => {
   const {
     // provide/inject
-    projectRefsEndpoint,
+    canViewPipelineEditor,
     identityVerificationPath,
+    pipelineEditorPath,
+    pipelinesPath,
     projectPath,
+    projectRefsEndpoint,
     userRole,
 
     // props
     defaultBranch,
     fileParam,
     maxWarnings,
-    pipelinesPath,
-    pipelinesEditorPath,
-    canViewPipelineEditor,
     projectId,
     refParam,
     settingsLink,
@@ -37,14 +38,17 @@ const mountPipelineNewForm = (el) => {
     el,
     apolloProvider,
     provide: {
-      projectRefsEndpoint,
+      canViewPipelineEditor: parseBoolean(canViewPipelineEditor),
       identityVerificationPath,
       // Normally this will have a value from a helper. In this case, this is
       // set to true because the alert that uses this field is dynamically
       // rendered if a specific error is returned from the backend after
       // the create pipeline XHR request completes
       identityVerificationRequired: true,
+      pipelineEditorPath,
+      pipelinesPath,
       projectPath,
+      projectRefsEndpoint,
       userRole,
     },
     render(createElement) {
@@ -53,9 +57,6 @@ const mountPipelineNewForm = (el) => {
           defaultBranch,
           fileParams,
           maxWarnings: Number(maxWarnings),
-          pipelinesPath,
-          pipelinesEditorPath,
-          canViewPipelineEditor,
           projectId,
           refParam,
           settingsLink,

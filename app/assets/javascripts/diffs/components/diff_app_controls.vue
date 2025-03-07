@@ -50,6 +50,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     expandButtonInfo() {
@@ -79,9 +84,11 @@ export default {
   },
   methods: {
     expandAllFiles() {
+      if (this.isLoading) return;
       this.$emit('expandAllFiles');
     },
     collapseAllFiles() {
+      if (this.isLoading) return;
       this.$emit('collapseAllFiles');
     },
   },
@@ -89,9 +96,10 @@ export default {
 </script>
 
 <template>
-  <div class="gl-hidden gl-items-center gl-px-5 gl-pb-2 gl-pt-3 md:gl-flex">
+  <div class="gl-hidden gl-items-center md:gl-flex">
     <template v-if="hasChanges">
       <diff-stats
+        v-if="diffsCount !== ''"
         class="inline-parallel-buttons ml-auto gl-hidden md:gl-flex"
         :diffs-count="diffsCount"
         :added-lines="addedLines"
@@ -104,6 +112,7 @@ export default {
           variant="default"
           :aria-label="expandButtonInfo.title"
           :aria-keyshortcuts="expandButtonInfo.keys[0]"
+          :disabled="isLoading"
           @click="$emit('expandAllFiles')"
         />
         <gl-button
@@ -112,6 +121,7 @@ export default {
           variant="default"
           :aria-label="collapseButtonInfo.title"
           :aria-keyshortcuts="collapseButtonInfo.keys[0]"
+          :disabled="isLoading"
           @click="$emit('collapseAllFiles')"
         />
       </gl-button-group>

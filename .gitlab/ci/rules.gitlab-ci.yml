@@ -1824,6 +1824,8 @@
     # this rule needs to be synced with .notify:rules:notify-test-on-omnibus-failure to produce failure notification in stable branch merge requests
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
+      variables:
+        MR_STABLE_BRANCH_CODE_PATTERNS: "true"
     # add option to trigger test-on-omnibus manually on qa changes ahead of tier-2
     - <<: *if-merge-request
       changes: *qa-patterns
@@ -1840,6 +1842,8 @@
       changes: *code-qa-patterns
       when: manual
       allow_failure: true
+      variables:
+        MR_CODE_PATTERNS: "true"
     - !reference [".qa:rules:e2e-schedule-blocking", rules]
 
 # Note: If any changes are made to this rule, the following should also be updated - .qa:rules:test-on-omnibus-ce:follow-up

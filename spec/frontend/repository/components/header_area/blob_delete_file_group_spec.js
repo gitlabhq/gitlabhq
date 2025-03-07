@@ -1,9 +1,11 @@
+import { nextTick } from 'vue';
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { blobControlsDataMock } from 'ee_else_ce_jest/repository/mock_data';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import BlobDeleteFileGroup from '~/repository/components/header_area/blob_delete_file_group.vue';
+import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 
 jest.mock('~/lib/utils/common_utils', () => ({
@@ -54,6 +56,7 @@ describe('BlobDeleteFileGroup component', () => {
 
   const findDeleteItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findDeleteBlobModal = () => wrapper.findComponent(CommitChangesModal);
+  const findForkSuggestionModal = () => wrapper.findComponent(ForkSuggestionModal);
 
   beforeEach(async () => {
     await createComponent();
@@ -99,13 +102,21 @@ describe('BlobDeleteFileGroup component', () => {
       it('does not trigger the DeleteBlobModal from the delete item', () => {
         findDeleteItem().vm.$emit('action');
 
-        expect(findDeleteItem().props('item')).toMatchObject({
-          extraAttrs: { disabled: true },
-        });
-
         expect(showDeleteBlobModalMock).not.toHaveBeenCalled();
-        expect(wrapper.emitted('fork')).toEqual([['view']]);
       });
+
+      it('changes ForkSuggestionModal visibility', async () => {
+        findDeleteItem().vm.$emit('action');
+        await nextTick();
+
+        expect(findForkSuggestionModal().props('visible')).toBe(true);
+      });
+    });
+  });
+
+  it('renders ForkSuggestionModal', () => {
+    expect(findForkSuggestionModal().props()).toMatchObject({
+      forkPath: 'fork/view/path',
     });
   });
 

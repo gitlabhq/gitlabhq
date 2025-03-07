@@ -26,6 +26,7 @@ query getBlobControls($projectPath: ID!, $filePath: String!, $ref: String!, $ref
           canCurrentUserPushToBranch
           canModifyBlob
           canModifyBlobWithWebIde
+          forkAndViewPath
           simpleViewer {
             __typename
             fileType

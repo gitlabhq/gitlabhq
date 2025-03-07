@@ -11,9 +11,6 @@ workflow:
   rules:
     - when: always
 
-.mr-code-patterns: &mr-code-patterns
-  if: $MR_CODE_PATTERNS == "true"
-
 .default-branch: &default-branch
   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
@@ -142,7 +139,7 @@ cng-qa-min-redis-version:
       export EXTRA_DEPLOY_VALUES="--set redis.image.tag=${redis_version%.*}"
     - !reference [.cng-test, before_script]
   rules:
-    - *mr-code-patterns  # run validation for minimal supported redis version only on application code changes
+    - !reference [.rules:test:mr-code-patterns, rules]  # run validation for minimal supported redis version only on application code changes
     - *default-branch
 
 # ==========================================

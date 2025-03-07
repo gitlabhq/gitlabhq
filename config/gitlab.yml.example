@@ -139,6 +139,11 @@ production: &base
     ##   10 - Light Red
     ##   11 - Dark Mode (alpha)
     # default_theme: 1 # default: 1
+    ## Default color mode ID
+    ##   1 - Light
+    ##   2 - Dark
+    ##   3 - Automatic
+    # default_color_mode: 1 # default: 1
 
     ## Custom html header tags
     # In some cases some custom header tags are needed
