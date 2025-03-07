@@ -100,7 +100,6 @@ export default {
       prevCurrentUserTodos: null,
       maxScale: DEFAULT_MAX_SCALE,
       workItemId: '',
-      workItemTitle: '',
       isSidebarOpen: true,
     };
   },
@@ -360,7 +359,6 @@ export default {
   >
     <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden">
       <design-toolbar
-        :work-item-title="workItemTitle"
         :design="design"
         :design-filename="$route.params.id"
         :is-loading="isLoading"

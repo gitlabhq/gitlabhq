@@ -28,7 +28,7 @@ export const LENGTH_OF_AVATAR_TOOLTIP = 17;
 export const DIFF_FILE_SYMLINK_MODE = '120000';
 export const DIFF_FILE_DELETED_MODE = '0';
 
-export const MR_TREE_SHOW_KEY = 'mr_tree_show';
+export const FILE_BROWSER_VISIBLE = 'file_browser_visible';
 
 export const TREE_TYPE = 'tree';
 export const TREE_LIST_STORAGE_KEY = 'mr_diff_tree_list';

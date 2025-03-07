@@ -13,7 +13,6 @@ jest.mock('~/lib/utils/common_utils');
 
 describe('DesignToolbar', () => {
   let wrapper;
-  const workItemTitle = 'Test title';
 
   function createComponent({
     isLoading = false,
@@ -22,7 +21,6 @@ describe('DesignToolbar', () => {
   } = {}) {
     wrapper = shallowMountExtended(DesignToolbar, {
       propsData: {
-        workItemTitle,
         isLoading,
         design,
         isSidebarOpen: true,
@@ -57,7 +55,7 @@ describe('DesignToolbar', () => {
   it('renders issue title and design filename', () => {
     createComponent();
 
-    expect(findDesignTitle()).toContain(workItemTitle);
+    expect(findDesignTitle()).toContain('My precious issue');
     expect(findDesignTitle()).toContain(mockDesign.filename);
   });
 

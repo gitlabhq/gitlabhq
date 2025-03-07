@@ -14,6 +14,8 @@ module API
           check_api_write! unless request.get? || request.head?
         end
 
+        CANDIDATE_STATES = ::Ml::Candidate.statuses.keys.map(&:upcase).freeze
+
         resource :runs do
           desc 'Creates a Run.' do
             success Entities::Ml::Mlflow::Run
@@ -93,9 +95,9 @@ module API
           params do
             requires :run_id, type: String, desc: 'UUID of the candidate.'
             optional :status, type: String,
-              values: ::Ml::Candidate.statuses.keys.map(&:upcase),
+              values: CANDIDATE_STATES,
               desc: "Status of the run. Accepts: " \
-                    "#{::Ml::Candidate.statuses.keys.map(&:upcase)}."
+                    "#{CANDIDATE_STATES}."
             optional :end_time, type: Integer, desc: 'Ending time of the run'
           end
           post 'update', urgency: :low do

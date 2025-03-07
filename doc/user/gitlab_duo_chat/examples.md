@@ -344,7 +344,6 @@ Programming languages that require compiling the source code may throw cryptic e
 
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-GitLab.com customers must contact their Customer Success Manager to enable this feature.
 
 {{< /alert >}}
 

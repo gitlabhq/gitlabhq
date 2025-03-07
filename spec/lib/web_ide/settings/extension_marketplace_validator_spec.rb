@@ -7,7 +7,7 @@ RSpec.describe WebIde::Settings::ExtensionMarketplaceValidator, feature_category
 
   let(:service_url) { "https://open-vsx.org/vscode/gallery" }
   let(:item_url) { "https://open-vsx.org/vscode/item" }
-  let(:resource_url_template) { "https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}" }
+  let(:resource_url_template) { "https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}" }
   let(:vscode_extension_marketplace) do
     {
       service_url: service_url,

@@ -36,7 +36,6 @@ export const useLegacyDiffs = defineStore('legacyDiffs', {
       diffViewType: INLINE_DIFF_VIEW_TYPE,
       tree: [],
       treeEntries: {},
-      showTreeList: true,
       currentDiffFileId: '',
       projectPath: '',
       viewedDiffFileIds: {},

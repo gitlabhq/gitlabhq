@@ -4024,6 +4024,7 @@ Input type: `CreateComplianceRequirementInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatecompliancerequirementclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatecompliancerequirementcomplianceframeworkid"></a>`complianceFrameworkId` | [`ComplianceManagementFrameworkID!`](#compliancemanagementframeworkid) | Global ID of the compliance framework of the new requirement. |
+| <a id="mutationcreatecompliancerequirementcontrols"></a>`controls` | [`[ComplianceRequirementsControlInput!]`](#compliancerequirementscontrolinput) | Controls to add to the compliance requirement. |
 | <a id="mutationcreatecompliancerequirementparams"></a>`params` | [`ComplianceRequirementInput!`](#compliancerequirementinput) | Parameters to update the compliance requirement with. |
 
 #### Fields
@@ -26427,7 +26428,7 @@ GPG signature for a signed commit.
 | <a id="groupdescendantgroupscount"></a>`descendantGroupsCount` | [`Int!`](#int) | Count of direct descendant groups of this group. |
 | <a id="groupdescription"></a>`description` | [`String`](#string) | Description of the namespace. |
 | <a id="groupdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
-| <a id="groupdora"></a>`dora` | [`Dora`](#dora) | Group's DORA metrics. |
+| <a id="groupdora"></a>`dora` | [`GroupDora`](#groupdora) | Group's DORA metrics. |
 | <a id="groupduofeaturesenabled"></a>`duoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.10. **Status**: Experiment. Indicates whether GitLab Duo features are enabled for the group. |
 | <a id="groupemailsdisabled"></a>`emailsDisabled` | [`Boolean`](#boolean) | Indicates if a group has email notifications disabled. |
 | <a id="groupemailsenabled"></a>`emailsEnabled` | [`Boolean`](#boolean) | Indicates if a group has email notifications enabled. |
@@ -28174,6 +28175,58 @@ Represents an external destination to stream group level audit events.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupdatatransferegressnodes"></a>`egressNodes` | [`EgressNodeConnection`](#egressnodeconnection) | Data nodes. (see [Connections](#connections)) |
+
+### `GroupDora`
+
+All information related to group DORA metrics.
+
+#### Fields with arguments
+
+##### `GroupDora.metrics`
+
+DORA metrics for the current group or project.
+
+Returns [`[DoraMetric!]`](#dorametric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupdorametricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the current date. |
+| <a id="groupdorametricsenvironmenttiers"></a>`environmentTiers` | [`[DeploymentTier!]`](#deploymenttier) | Deployment tiers of the environments to return. Defaults to `[PRODUCTION]`. |
+| <a id="groupdorametricsinterval"></a>`interval` | [`DoraMetricBucketingInterval`](#dorametricbucketinginterval) | How the metric should be aggregated. Defaults to `DAILY`. In the case of `ALL`, the `date` field in the response will be `null`. |
+| <a id="groupdorametricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is 3 months ago. |
+
+##### `GroupDora.projects`
+
+Projects within this group with at least 1 DORA metric for given period.
+
+Returns [`ProjectConnection!`](#projectconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupdoraprojectscomplianceframeworkfilters"></a>`complianceFrameworkFilters` | [`ComplianceFrameworkFilters`](#complianceframeworkfilters) | Filters applied when selecting a compliance framework. |
+| <a id="groupdoraprojectsenddate"></a>`endDate` | [`Date!`](#date) | Date range to end DORA lookup at. |
+| <a id="groupdoraprojectshascodecoverage"></a>`hasCodeCoverage` | [`Boolean`](#boolean) | Returns only the projects which have code coverage. |
+| <a id="groupdoraprojectshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only the projects which have vulnerabilities. |
+| <a id="groupdoraprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
+| <a id="groupdoraprojectsincludearchived"></a>`includeArchived` | [`Boolean`](#boolean) | Include also archived projects. |
+| <a id="groupdoraprojectsincludesiblingprojects"></a>`includeSiblingProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.2. **Status**: Experiment. Include also projects from parent group. |
+| <a id="groupdoraprojectsincludesubgroups"></a>`includeSubgroups` | [`Boolean`](#boolean) | Include also subgroup projects. |
+| <a id="groupdoraprojectsnotaimedfordeletion"></a>`notAimedForDeletion` | [`Boolean`](#boolean) | Include projects that are not aimed for deletion. |
+| <a id="groupdoraprojectssbomcomponentid"></a>`sbomComponentId` | [`ID`](#id) | Return only the projects related to the specified SBOM component. |
+| <a id="groupdoraprojectssearch"></a>`search` | [`String`](#string) | Search project with most similar names or paths. |
+| <a id="groupdoraprojectssort"></a>`sort` | [`NamespaceProjectSort`](#namespaceprojectsort) | Sort projects by the criteria. |
+| <a id="groupdoraprojectsstartdate"></a>`startDate` | [`Date!`](#date) | Date range to start DORA lookup from. |
+| <a id="groupdoraprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
+| <a id="groupdoraprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
+| <a id="groupdoraprojectswithnamespacedomainpages"></a>`withNamespaceDomainPages` | [`Boolean`](#boolean) | Return only projects that use the namespace domain for pages projects. |
 
 ### `GroupMember`
 
@@ -46915,9 +46968,9 @@ Attributes for defining a CI/CD variable.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="compliancerequirementscontrolinputcontroltype"></a>`controlType` | [`String`](#string) | Type of the compliance control. |
-| <a id="compliancerequirementscontrolinputexpression"></a>`expression` | [`String`](#string) | Expression of the compliance control. |
+| <a id="compliancerequirementscontrolinputexpression"></a>`expression` | [`String!`](#string) | Expression of the compliance control. |
 | <a id="compliancerequirementscontrolinputexternalurl"></a>`externalUrl` | [`String`](#string) | URL of the external control. |
-| <a id="compliancerequirementscontrolinputname"></a>`name` | [`String`](#string) | New name for the compliance requirement control. |
+| <a id="compliancerequirementscontrolinputname"></a>`name` | [`String!`](#string) | New name for the compliance requirement control. |
 | <a id="compliancerequirementscontrolinputsecrettoken"></a>`secretToken` | [`String`](#string) | Secret token for an external control. |
 
 ### `ComplianceStandardsAdherenceInput`

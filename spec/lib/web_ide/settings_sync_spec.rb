@@ -29,6 +29,15 @@ RSpec.describe WebIde::SettingsSync, feature_category: :web_ide do
           vscode_settings: {
             service_url: 'https://open-vsx.org/vscode/gallery',
             item_url: 'https://open-vsx.org/vscode/item',
+            resource_url_template: 'https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}'
+          },
+          expectation: '2e0d3e8c1107f9ccc5ea'
+        },
+        "default vscode settings (compatability)" => {
+          enabled: true,
+          vscode_settings: {
+            service_url: 'https://open-vsx.org/vscode/gallery',
+            item_url: 'https://open-vsx.org/vscode/item',
             resource_url_template: 'https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}'
           },
           expectation: '2e0d3e8c1107f9ccc5ea'

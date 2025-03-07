@@ -293,9 +293,6 @@ export default {
   [types.TREE_ENTRY_DIFF_LOADING]({ path, loading = true }) {
     this.treeEntries[path].diffLoading = loading;
   },
-  [types.SET_SHOW_TREE_LIST](showTreeList) {
-    this.showTreeList = showTreeList;
-  },
   [types.SET_CURRENT_DIFF_FILE](fileId) {
     this.currentDiffFileId = fileId;
   },

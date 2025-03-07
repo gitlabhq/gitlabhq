@@ -16913,6 +16913,24 @@ CREATE TABLE namespace_ci_cd_settings (
     allow_stale_runner_pruning boolean DEFAULT false NOT NULL
 );
 
+CREATE TABLE namespace_cluster_agent_mappings (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    namespace_id bigint NOT NULL,
+    cluster_agent_id bigint NOT NULL,
+    creator_id bigint
+);
+
+CREATE SEQUENCE namespace_cluster_agent_mappings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE namespace_cluster_agent_mappings_id_seq OWNED BY namespace_cluster_agent_mappings.id;
+
 CREATE TABLE namespace_commit_emails (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -18100,7 +18118,8 @@ CREATE TABLE packages_debian_project_components (
     distribution_id bigint NOT NULL,
     name text NOT NULL,
     project_id bigint,
-    CONSTRAINT check_517559f298 CHECK ((char_length(name) <= 255))
+    CONSTRAINT check_517559f298 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_6c727037a7 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE packages_debian_project_components_id_seq
@@ -18247,7 +18266,8 @@ CREATE TABLE packages_maven_metadata (
     app_name character varying NOT NULL,
     app_version character varying,
     path character varying(512) NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_bf287ce98c CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE packages_maven_metadata_id_seq
@@ -20744,24 +20764,6 @@ CREATE SEQUENCE releases_id_seq
     CACHE 1;
 
 ALTER SEQUENCE releases_id_seq OWNED BY releases.id;
-
-CREATE TABLE remote_development_namespace_cluster_agent_mappings (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    namespace_id bigint NOT NULL,
-    cluster_agent_id bigint NOT NULL,
-    creator_id bigint
-);
-
-CREATE SEQUENCE remote_development_namespace_cluster_agent_mappings_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE remote_development_namespace_cluster_agent_mappings_id_seq OWNED BY remote_development_namespace_cluster_agent_mappings.id;
 
 CREATE TABLE remote_mirrors (
     id bigint NOT NULL,
@@ -25891,6 +25893,8 @@ ALTER TABLE ONLY namespace_admin_notes ALTER COLUMN id SET DEFAULT nextval('name
 
 ALTER TABLE ONLY namespace_bans ALTER COLUMN id SET DEFAULT nextval('namespace_bans_id_seq'::regclass);
 
+ALTER TABLE ONLY namespace_cluster_agent_mappings ALTER COLUMN id SET DEFAULT nextval('namespace_cluster_agent_mappings_id_seq'::regclass);
+
 ALTER TABLE ONLY namespace_commit_emails ALTER COLUMN id SET DEFAULT nextval('namespace_commit_emails_id_seq'::regclass);
 
 ALTER TABLE ONLY namespace_import_users ALTER COLUMN id SET DEFAULT nextval('namespace_import_users_id_seq'::regclass);
@@ -26166,8 +26170,6 @@ ALTER TABLE ONLY relation_import_trackers ALTER COLUMN id SET DEFAULT nextval('r
 ALTER TABLE ONLY release_links ALTER COLUMN id SET DEFAULT nextval('release_links_id_seq'::regclass);
 
 ALTER TABLE ONLY releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq'::regclass);
-
-ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings ALTER COLUMN id SET DEFAULT nextval('remote_development_namespace_cluster_agent_mappings_id_seq'::regclass);
 
 ALTER TABLE ONLY remote_mirrors ALTER COLUMN id SET DEFAULT nextval('remote_mirrors_id_seq'::regclass);
 
@@ -28470,6 +28472,9 @@ ALTER TABLE ONLY namespace_bans
 ALTER TABLE ONLY namespace_ci_cd_settings
     ADD CONSTRAINT namespace_ci_cd_settings_pkey PRIMARY KEY (namespace_id);
 
+ALTER TABLE ONLY namespace_cluster_agent_mappings
+    ADD CONSTRAINT namespace_cluster_agent_mappings_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY namespace_commit_emails
     ADD CONSTRAINT namespace_commit_emails_pkey PRIMARY KEY (id);
 
@@ -29018,9 +29023,6 @@ ALTER TABLE releases
 
 ALTER TABLE ONLY releases
     ADD CONSTRAINT releases_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
-    ADD CONSTRAINT remote_development_namespace_cluster_agent_mappings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY remote_mirrors
     ADD CONSTRAINT remote_mirrors_pkey PRIMARY KEY (id);
@@ -31095,9 +31097,9 @@ CREATE UNIQUE INDEX i_duo_workflows_events_on_correlation_id ON duo_workflows_ev
 
 CREATE INDEX i_gitlab_subscription_histories_on_namespace_change_type_plan ON gitlab_subscription_histories USING btree (namespace_id, change_type, hosted_plan_id);
 
-CREATE INDEX i_namespace_cluster_agent_mappings_on_cluster_agent_id ON remote_development_namespace_cluster_agent_mappings USING btree (cluster_agent_id);
+CREATE INDEX i_namespace_cluster_agent_mappings_on_cluster_agent_id ON namespace_cluster_agent_mappings USING btree (cluster_agent_id);
 
-CREATE INDEX i_namespace_cluster_agent_mappings_on_creator_id ON remote_development_namespace_cluster_agent_mappings USING btree (creator_id);
+CREATE INDEX i_namespace_cluster_agent_mappings_on_creator_id ON namespace_cluster_agent_mappings USING btree (creator_id);
 
 CREATE INDEX i_organization_cluster_agent_mappings_on_creator_id ON organization_cluster_agent_mappings USING btree (creator_id);
 
@@ -32981,7 +32983,7 @@ CREATE UNIQUE INDEX index_dora_configurations_on_project_id ON dora_configuratio
 
 CREATE UNIQUE INDEX index_dora_daily_metrics_on_environment_id_and_date ON dora_daily_metrics USING btree (environment_id, date);
 
-CREATE INDEX index_dora_daily_metrics_on_project_id ON dora_daily_metrics USING btree (project_id);
+CREATE INDEX index_dora_daily_metrics_on_project_id_and_date ON dora_daily_metrics USING btree (project_id, date);
 
 CREATE UNIQUE INDEX index_dora_performance_scores_on_project_id_and_date ON dora_performance_scores USING btree (project_id, date);
 
@@ -36441,7 +36443,7 @@ CREATE UNIQUE INDEX unique_merge_request_metrics_by_merge_request_id ON merge_re
 
 CREATE INDEX unique_ml_model_versions_on_model_id_and_id ON ml_model_versions USING btree (model_id, id DESC);
 
-CREATE UNIQUE INDEX unique_namespace_cluster_agent_mappings_for_agent_association ON remote_development_namespace_cluster_agent_mappings USING btree (namespace_id, cluster_agent_id);
+CREATE UNIQUE INDEX unique_namespace_cluster_agent_mappings_for_agent_association ON namespace_cluster_agent_mappings USING btree (namespace_id, cluster_agent_id);
 
 CREATE UNIQUE INDEX unique_organizations_on_path_case_insensitive ON organizations USING btree (lower(path));
 
@@ -39016,7 +39018,7 @@ ALTER TABLE ONLY audit_events_amazon_s3_configurations
 ALTER TABLE ONLY issue_customer_relations_contacts
     ADD CONSTRAINT fk_0c0037f723 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
+ALTER TABLE ONLY namespace_cluster_agent_mappings
     ADD CONSTRAINT fk_0c483ecb9d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY zoekt_replicas
@@ -39067,7 +39069,7 @@ ALTER TABLE ONLY protected_environment_deploy_access_levels
 ALTER TABLE ONLY cluster_agent_migrations
     ADD CONSTRAINT fk_1211a345fb FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
+ALTER TABLE ONLY namespace_cluster_agent_mappings
     ADD CONSTRAINT fk_124d8167c5 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY cluster_agent_url_configurations
@@ -40441,7 +40443,7 @@ ALTER TABLE ONLY ci_sources_pipelines
 ALTER TABLE ONLY packages_maven_metadata
     ADD CONSTRAINT fk_be88aed360 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
+ALTER TABLE ONLY namespace_cluster_agent_mappings
     ADD CONSTRAINT fk_be8e9c740f FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY oauth_device_grants

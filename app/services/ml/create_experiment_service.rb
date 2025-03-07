@@ -2,7 +2,7 @@
 
 module Ml
   class CreateExperimentService
-    def initialize(project, experiment_name, user = nil)
+    def initialize(project, experiment_name, user)
       @project = project
       @name = experiment_name
       @user = user

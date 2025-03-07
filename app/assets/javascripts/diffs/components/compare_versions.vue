@@ -10,6 +10,7 @@ import {
 } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions as mapPiniaActions, mapState as mapPiniaState } from 'pinia';
 import { __ } from '~/locale';
 import { setUrlParams } from '~/lib/utils/url_utility';
 import {
@@ -20,6 +21,7 @@ import {
 } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { sanitize } from '~/lib/dompurify';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 import CompareDropdownLayout from './compare_dropdown_layout.vue';
 
 export default {
@@ -47,12 +49,13 @@ export default {
       'diffCompareDropdownTargetVersions',
       'diffCompareDropdownSourceVersions',
     ]),
-    ...mapState('diffs', ['commit', 'showTreeList', 'startVersion', 'latestVersionPath']),
+    ...mapState('diffs', ['commit', 'startVersion', 'latestVersionPath']),
+    ...mapPiniaState(useFileBrowser, ['fileBrowserVisible']),
     toggleFileBrowserShortcutKey() {
       return shouldDisableShortcuts() ? null : keysFor(MR_TOGGLE_FILE_BROWSER)[0];
     },
     toggleFileBrowserTitle() {
-      return this.showTreeList ? __('Hide file browser') : __('Show file browser');
+      return this.fileBrowserVisible ? __('Hide file browser') : __('Show file browser');
     },
     toggleFileBrowserTooltip() {
       const description = this.toggleFileBrowserTitle;
@@ -113,7 +116,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['setShowTreeList']),
+    ...mapPiniaActions(useFileBrowser, ['toggleFileBrowserVisibility']),
     ...mapActions('diffs', ['moveToNeighboringCommit']),
   },
 };
@@ -130,10 +133,10 @@ export default {
         data-testid="file-tree-button"
         :aria-label="toggleFileBrowserTitle"
         :aria-keyshortcuts="toggleFileBrowserShortcutKey"
-        :selected="showTreeList"
-        @click="setShowTreeList({ showTreeList: !showTreeList })"
+        :selected="fileBrowserVisible"
+        @click="toggleFileBrowserVisibility"
       >
-        <gl-animated-sidebar-icon :is-on="showTreeList" />
+        <gl-animated-sidebar-icon :is-on="fileBrowserVisible" />
       </gl-button>
       <div v-if="commit">
         {{ __('Viewing commit') }}

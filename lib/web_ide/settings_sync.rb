@@ -7,10 +7,13 @@ module WebIde
       # "web_ide_https://open-vsx.org/vscode/gallery_https://open-vsx.org/vscode/item_"
       # This hash is used out in the wild, so we don't want to change it...
       # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178491
-      CURRENT_DEFAULT_SETTINGS_HASH = "2e0d3e8c1107f9ccc5ea"
-
-      # The actual hash we calculate for default settings, but needs to be mapped to the CURRENT one for compatability
-      DEFAULT_SETTINGS_HASH = "e36c431c0e2e1ee82c86"
+      HASH_CONVERSION = {
+        # 2e0d3e8c1107f9ccc5ea is the hash of "web_ide_https://open-vsx.org/vscode/gallery_https://open-vsx.org/vscode/item_"
+        # e36c431c0e2e1ee82c86 is the hash of "web_ide_https://open-vsx.org/vscode/gallery_https://open-vsx.org/vscode/item_https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}"
+        # 55b10685e181429abe78 is the hash of "web_ide_https://open-vsx.org/vscode/gallery_https://open-vsx.org/vscode/item_https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}"
+        "e36c431c0e2e1ee82c86" => "2e0d3e8c1107f9ccc5ea",
+        "55b10685e181429abe78" => "2e0d3e8c1107f9ccc5ea"
+      }.freeze
 
       def settings_context_hash(extension_marketplace_settings:)
         return unless extension_marketplace_settings[:enabled]
@@ -29,9 +32,7 @@ module WebIde
       private
 
       def optionally_transform_hash(hash)
-        return CURRENT_DEFAULT_SETTINGS_HASH if hash == DEFAULT_SETTINGS_HASH
-
-        hash
+        HASH_CONVERSION.fetch(hash, hash)
       end
     end
   end

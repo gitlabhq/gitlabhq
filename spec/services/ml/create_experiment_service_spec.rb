@@ -30,5 +30,16 @@ RSpec.describe ::Ml::CreateExperimentService, feature_category: :mlops do
         expect(create_experiment).to be_error
       end
     end
+
+    context 'with invalid parameters' do
+      let(:name) { '' }
+
+      it 'returns validation errors' do
+        response = create_experiment
+
+        expect(response).to be_error
+        expect(response.message).to include("Name can't be blank")
+      end
+    end
   end
 end

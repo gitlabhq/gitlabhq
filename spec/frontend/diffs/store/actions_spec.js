@@ -1419,34 +1419,6 @@ describe('DiffsStoreActions', () => {
     });
   });
 
-  describe('setShowTreeList', () => {
-    it('commits toggle', () => {
-      return testAction(
-        diffActions.setShowTreeList,
-        { showTreeList: true },
-        {},
-        [{ type: types.SET_SHOW_TREE_LIST, payload: true }],
-        [],
-      );
-    });
-
-    it('updates localStorage', () => {
-      jest.spyOn(localStorage, 'setItem').mockImplementation(() => {});
-
-      diffActions.setShowTreeList({ commit() {} }, { showTreeList: true });
-
-      expect(localStorage.setItem).toHaveBeenCalledWith('mr_tree_show', true);
-    });
-
-    it('does not update localStorage', () => {
-      jest.spyOn(localStorage, 'setItem').mockImplementation(() => {});
-
-      diffActions.setShowTreeList({ commit() {} }, { showTreeList: true, saving: false });
-
-      expect(localStorage.setItem).not.toHaveBeenCalled();
-    });
-  });
-
   describe('renderFileForDiscussionId', () => {
     const rootState = {
       notes: {

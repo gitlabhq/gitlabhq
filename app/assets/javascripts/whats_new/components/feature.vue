@@ -3,6 +3,7 @@
 import { GlBadge, GlIcon, GlLink, GlButton } from '@gitlab/ui';
 import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { slugify } from '~/lib/utils/text_utility';
 
 export default {
   components: {
@@ -27,6 +28,9 @@ export default {
       }
       return localeDateFormat.asDate.format(newDate(this.feature.published_at));
     },
+    descriptionId() {
+      return `${slugify(this.feature.name)}-feature-description`;
+    },
   },
 };
 </script>
@@ -40,6 +44,8 @@ export default {
       class="gl-block"
       data-testid="whats-new-image-link"
       data-track-action="click_whats_new_item"
+      :aria-hidden="true"
+      tabindex="-1"
       :data-track-label="feature.name"
       :data-track-property="feature.documentation_link"
     >
@@ -76,6 +82,7 @@ export default {
       </gl-badge>
     </div>
     <div
+      :id="descriptionId"
       v-safe-html:[$options.safeHtmlConfig]="feature.description"
       class="gl-pt-3 gl-leading-20"
     ></div>
@@ -85,6 +92,7 @@ export default {
       data-track-action="click_whats_new_item"
       :data-track-label="feature.name"
       :data-track-property="feature.documentation_link"
+      :aria-describedby="descriptionId"
     >
       {{ __('Learn more') }} <gl-icon name="arrow-right" />
     </gl-button>

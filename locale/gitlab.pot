@@ -17008,6 +17008,9 @@ msgstr ""
 msgid "Could not draw the lines for job relationships"
 msgstr ""
 
+msgid "Could not fetch all changes. Try reloading the page."
+msgstr ""
+
 msgid "Could not fetch policy because existing policy YAML is invalid"
 msgstr ""
 
@@ -22136,6 +22139,9 @@ msgstr ""
 msgid "DuoProTrial|You have successfully started a Duo Pro trial that will expire on %{exp_date}. To give members access to new GitLab Duo Pro features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Pro seats."
 msgstr ""
 
+msgid "Duplicate entries found for compliance controls for the requirement."
+msgstr ""
+
 msgid "Duplicate packages"
 msgstr ""
 
@@ -24532,6 +24538,9 @@ msgid "Failed to add a Zoom meeting"
 msgstr ""
 
 msgid "Failed to add a resource link"
+msgstr ""
+
+msgid "Failed to add compliance requirement control %{control_name}: %{error_message}"
 msgstr ""
 
 msgid "Failed to add emoji. Please try again"
@@ -37476,6 +37485,9 @@ msgstr ""
 msgid "More options"
 msgstr ""
 
+msgid "More than %{control_count} controls not allowed for a requirement."
+msgstr ""
+
 msgid "More than %{number_commits_distance} commits different with %{default_branch}"
 msgstr ""
 
@@ -38889,6 +38901,9 @@ msgid "Not in use"
 msgstr ""
 
 msgid "Not permitted to create compliance control"
+msgstr ""
+
+msgid "Not permitted to create requirement"
 msgstr ""
 
 msgid "Not permitted to destroy framework"

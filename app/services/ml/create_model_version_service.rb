@@ -45,7 +45,7 @@ module Ml
 
         ServiceResponse.success(message: [], payload: { model_version: @model_version })
       end
-    rescue ActiveRecord::RecordInvalid => e
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
       ServiceResponse.error(message: [e.message], payload: { model_version: nil })
     rescue ModelVersionCreationError => e
       ServiceResponse.error(message: e.errors, payload: { model_version: nil })
