@@ -906,13 +906,13 @@ RSpec.shared_examples 'protected package main example' do
   end
 end
 
-RSpec.shared_examples 'workhorse recipe file upload endpoint' do
+RSpec.shared_examples 'workhorse recipe file upload endpoint' do |recipe_revision: false|
   let(:file_name) { 'conanfile.py' }
   let(:params) { { file: temp_file(file_name) } }
 
   subject(:request) do
     workhorse_finalize(
-      url,
+      api(url),
       method: :put,
       file_key: :file,
       params: params,
@@ -930,6 +930,8 @@ RSpec.shared_examples 'workhorse recipe file upload endpoint' do
   it_behaves_like 'handling empty values for username and channel'
   it_behaves_like 'handling validation error for package'
   it_behaves_like 'protected package main example'
+
+  it { expect { request }.to change { Packages::Conan::RecipeRevision.count }.by(1) } if recipe_revision
 end
 
 RSpec.shared_examples 'workhorse package file upload endpoint' do
@@ -938,7 +940,7 @@ RSpec.shared_examples 'workhorse package file upload endpoint' do
 
   subject(:request) do
     workhorse_finalize(
-      url,
+      api(url),
       method: :put,
       file_key: :file,
       params: params,
@@ -1025,6 +1027,7 @@ RSpec.shared_examples 'uploads a package file' do
 
         package_file = project.packages.last.package_files.reload.last
         expect(package_file.file_name).to eq(params[:file].original_filename)
+        expect(package_file.conan_file_metadatum.recipe_revision_value).to eq(recipe_revision)
       end
 
       context 'with existing package' do

@@ -46,6 +46,7 @@ module API
             before do
               not_found! if Gitlab::FIPS.enabled?
               require_packages_enabled!
+              authenticate_non_get!
             end
 
             namespace 'users' do

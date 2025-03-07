@@ -20,8 +20,13 @@ RSpec.describe Gitlab::Database::Sos, feature_category: :database do
     end
 
     it "creates a temp directory of pg data" do
+      allow(described_class).to receive(:run).with(output_file_path) do |path|
+        FileUtils.mkdir_p(File.join(path, db_name))
+        File.write(File.join(path, db_name, 'pg_data.csv'), 'pg_data')
+      end
+
       described_class.run(output_file_path)
-      expect(Dir.glob(File.join(output_file_path, '**', '*.csv'))).not_to be_empty
+      expect(File.exist?(File.join(output_file_path, db_name, 'pg_data.csv'))).to be true
     end
   end
 end

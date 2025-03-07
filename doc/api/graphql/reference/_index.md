@@ -12536,9 +12536,9 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdateprogresswidget"></a>`progressWidget` | [`WorkItemWidgetProgressInput`](#workitemwidgetprogressinput) | Input for progress widget. |
 | <a id="mutationworkitemupdatestartandduedatewidget"></a>`startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](#workitemwidgetstartandduedateupdateinput) | Input for start and due date widget. |
 | <a id="mutationworkitemupdatestateevent"></a>`stateEvent` | [`WorkItemStateEvent`](#workitemstateevent) | Close or reopen a work item. |
-| <a id="mutationworkitemupdatestatuswidget"></a>`statusWidget` | [`StatusInput`](#statusinput) | Input for status widget. |
 | <a id="mutationworkitemupdatetimetrackingwidget"></a>`timeTrackingWidget` | [`WorkItemWidgetTimeTrackingInput`](#workitemwidgettimetrackinginput) | Input for time tracking widget. |
 | <a id="mutationworkitemupdatetitle"></a>`title` | [`String`](#string) | Title of the work item. |
+| <a id="mutationworkitemupdateverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusInput`](#verificationstatusinput) | Input for verification status widget. |
 | <a id="mutationworkitemupdateweightwidget"></a>`weightWidget` | [`WorkItemWidgetWeightInput`](#workitemwidgetweightinput) | Input for weight widget. |
 
 #### Fields
@@ -28040,11 +28040,11 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="groupworkitemstatecountssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="groupworkitemstatecountssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
 | <a id="groupworkitemstatecountsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
-| <a id="groupworkitemstatecountsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_alpha` is disabled. |
 | <a id="groupworkitemstatecountssubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Work items the current user is subscribed to. |
 | <a id="groupworkitemstatecountstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 | <a id="groupworkitemstatecountsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Work items updated after the timestamp. |
 | <a id="groupworkitemstatecountsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Work items updated before the timestamp. |
+| <a id="groupworkitemstatecountsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. Ignored if `work_items_alpha` is disabled. |
 | <a id="groupworkitemstatecountsweight"></a>`weight` | [`String`](#string) | Weight applied to the work item, "none" and "any" values are supported. |
 
 ##### `Group.workItemTypes`
@@ -28109,11 +28109,11 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="groupworkitemssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
 | <a id="groupworkitemsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
-| <a id="groupworkitemsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_alpha` is disabled. |
 | <a id="groupworkitemssubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Work items the current user is subscribed to. |
 | <a id="groupworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 | <a id="groupworkitemsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Work items updated after the timestamp. |
 | <a id="groupworkitemsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Work items updated before the timestamp. |
+| <a id="groupworkitemsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. Ignored if `work_items_alpha` is disabled. |
 | <a id="groupworkitemsweight"></a>`weight` | [`String`](#string) | Weight applied to the work item, "none" and "any" values are supported. |
 
 ##### `Group.workspacesClusterAgents`
@@ -35695,11 +35695,11 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="projectworkitemstatecountssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="projectworkitemstatecountssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
 | <a id="projectworkitemstatecountsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
-| <a id="projectworkitemstatecountsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_alpha` is disabled. |
 | <a id="projectworkitemstatecountssubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Work items the current user is subscribed to. |
 | <a id="projectworkitemstatecountstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 | <a id="projectworkitemstatecountsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Work items updated after the timestamp. |
 | <a id="projectworkitemstatecountsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Work items updated before the timestamp. |
+| <a id="projectworkitemstatecountsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. Ignored if `work_items_alpha` is disabled. |
 | <a id="projectworkitemstatecountsweight"></a>`weight` | [`String`](#string) | Weight applied to the work item, "none" and "any" values are supported. |
 
 ##### `Project.workItemTypes`
@@ -35761,11 +35761,11 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectworkitemssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="projectworkitemssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
 | <a id="projectworkitemsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
-| <a id="projectworkitemsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_alpha` is disabled. |
 | <a id="projectworkitemssubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Work items the current user is subscribed to. |
 | <a id="projectworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 | <a id="projectworkitemsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Work items updated after the timestamp. |
 | <a id="projectworkitemsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Work items updated before the timestamp. |
+| <a id="projectworkitemsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. Ignored if `work_items_alpha` is disabled. |
 | <a id="projectworkitemsweight"></a>`weight` | [`String`](#string) | Weight applied to the work item, "none" and "any" values are supported. |
 
 ### `ProjectCiCdSetting`
@@ -40280,17 +40280,6 @@ Represents a start and due date widget.
 | <a id="workitemwidgetstartandduedatestartdatesourcingworkitem"></a>`startDateSourcingWorkItem` | [`WorkItem`](#workitem) | Indicates which work_item sources the rolled up start date. |
 | <a id="workitemwidgetstartandduedatetype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
-### `WorkItemWidgetStatus`
-
-Represents a status widget.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="workitemwidgetstatusstatus"></a>`status` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 15.5. **Status**: Experiment. Status of the work item. |
-| <a id="workitemwidgetstatustype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
-
 ### `WorkItemWidgetTestReports`
 
 Represents a test reports widget.
@@ -40314,6 +40303,17 @@ Represents a time tracking widget.
 | <a id="workitemwidgettimetrackingtimelogs"></a>`timelogs` | [`WorkItemTimelogConnection`](#workitemtimelogconnection) | Timelogs on the work item. (see [Connections](#connections)) |
 | <a id="workitemwidgettimetrackingtotaltimespent"></a>`totalTimeSpent` | [`Int`](#int) | Total time (in seconds) reported as spent on the work item. |
 | <a id="workitemwidgettimetrackingtype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
+### `WorkItemWidgetVerificationStatus`
+
+Represents a verification status widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetverificationstatustype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+| <a id="workitemwidgetverificationstatusverificationstatus"></a>`verificationStatus` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 15.5. **Status**: Experiment. Verification status of the work item. |
 
 ### `WorkItemWidgetWeight`
 
@@ -44221,9 +44221,9 @@ Type of a work item widget.
 | <a id="workitemwidgettypeprogress"></a>`PROGRESS` | Progress widget. |
 | <a id="workitemwidgettyperequirement_legacy"></a>`REQUIREMENT_LEGACY` | Requirement Legacy widget. |
 | <a id="workitemwidgettypestart_and_due_date"></a>`START_AND_DUE_DATE` | Start And Due Date widget. |
-| <a id="workitemwidgettypestatus"></a>`STATUS` | Status widget. |
 | <a id="workitemwidgettypetest_reports"></a>`TEST_REPORTS` | Test Reports widget. |
 | <a id="workitemwidgettypetime_tracking"></a>`TIME_TRACKING` | Time Tracking widget. |
+| <a id="workitemwidgettypeverification_status"></a>`VERIFICATION_STATUS` | Verification Status widget. |
 | <a id="workitemwidgettypeweight"></a>`WEIGHT` | Weight widget. |
 
 ### `WorkspaceVariableInputType`
@@ -46628,9 +46628,9 @@ Implementations:
 - [`WorkItemWidgetProgress`](#workitemwidgetprogress)
 - [`WorkItemWidgetRequirementLegacy`](#workitemwidgetrequirementlegacy)
 - [`WorkItemWidgetStartAndDueDate`](#workitemwidgetstartandduedate)
-- [`WorkItemWidgetStatus`](#workitemwidgetstatus)
 - [`WorkItemWidgetTestReports`](#workitemwidgettestreports)
 - [`WorkItemWidgetTimeTracking`](#workitemwidgettimetracking)
+- [`WorkItemWidgetVerificationStatus`](#workitemwidgetverificationstatus)
 - [`WorkItemWidgetWeight`](#workitemwidgetweight)
 
 ##### Fields
@@ -47436,22 +47436,6 @@ Represents an action to perform over a snippet file.
 | <a id="snippetblobactioninputtypefilepath"></a>`filePath` | [`String!`](#string) | Path of the snippet file. |
 | <a id="snippetblobactioninputtypepreviouspath"></a>`previousPath` | [`String`](#string) | Previous path of the snippet file. |
 
-### `StatusFilterInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="statusfilterinputstatus"></a>`status` | [`RequirementStatusFilter!`](#requirementstatusfilter) | Status of the work item. |
-
-### `StatusInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="statusinputstatus"></a>`status` | [`TestReportState!`](#testreportstate) | Status to assign to the work item. |
-
 ### `Timeframe`
 
 A time-frame defined as a closed inclusive range of two dates.
@@ -47553,6 +47537,22 @@ Attributes for value stream stage.
 | <a id="valuestreamstageinputname"></a>`name` | [`String!`](#string) | Name of the stage. |
 | <a id="valuestreamstageinputstarteventidentifier"></a>`startEventIdentifier` | [`ValueStreamStageEvent`](#valuestreamstageevent) | Start event identifier. |
 | <a id="valuestreamstageinputstarteventlabelid"></a>`startEventLabelId` | [`LabelID`](#labelid) | Label ID associated with the start event identifier. |
+
+### `VerificationStatusFilterInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="verificationstatusfilterinputverificationstatus"></a>`verificationStatus` | [`RequirementStatusFilter!`](#requirementstatusfilter) | Verification status of the work item. |
+
+### `VerificationStatusInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="verificationstatusinputverificationstatus"></a>`verificationStatus` | [`TestReportState!`](#testreportstate) | Verification status of the work item. |
 
 ### `VulnerabilityIdentifierInput`
 

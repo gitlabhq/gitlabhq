@@ -11,13 +11,19 @@ module Gitlab::Ci
       class Template < Badge::Template
         STATUS_RENAME = { 'success' => 'passed' }.freeze
         STATUS_COLOR = {
-          success: '#4c1',
-          failed: '#e05d44',
-          running: '#dfb317',
-          pending: '#dfb317',
-          preparing: '#a7a7a7',
-          canceled: '#9f9f9f',
+          created: '#9f9f9f',
+          waiting_for_resource: '#9f9f9f',
+          preparing: '#9f9f9f',
+          waiting_for_callback: '#9f9f9f',
+          pending: '#d99530',
+          running: '#428fdc',
+          failed: '#dd2b0e',
+          success: '#2da160',
+          canceling: '#737278',
+          canceled: '#737278',
           skipped: '#9f9f9f',
+          manual: '#737278',
+          scheduled: '#9f9f9f',
           unknown: '#9f9f9f'
         }.freeze
 

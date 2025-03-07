@@ -362,11 +362,14 @@ export default {
         <span>{{ __('None') }}</span>
         <template v-if="currentUser && canUpdate">
           <span>-</span>
-          <gl-button variant="link" data-testid="assign-self" @click.stop="assignToCurrentUser"
-            ><span class="gl-text-subtle hover:gl-text-blue-800">{{
-              __('assign yourself')
-            }}</span></gl-button
+          <gl-button
+            class="!gl-text-inherit hover:!gl-text-link"
+            variant="link"
+            data-testid="assign-self"
+            @click.stop="assignToCurrentUser"
           >
+            {{ __('assign yourself') }}
+          </gl-button>
         </template>
       </div>
     </template>

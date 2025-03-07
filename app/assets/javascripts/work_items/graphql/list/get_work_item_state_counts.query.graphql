@@ -18,6 +18,10 @@ query getWorkItemStateCounts(
   $in: [IssuableSearchableField!]
   $not: NegatedWorkItemFilterInput
   $or: UnionedWorkItemFilterInput
+  $createdAfter: Time
+  $createdBefore: Time
+  $closedAfter: Time
+  $closedBefore: Time
 ) {
   group(fullPath: $fullPath) @include(if: $isGroup) {
     id
@@ -39,6 +43,10 @@ query getWorkItemStateCounts(
       in: $in
       not: $not
       or: $or
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
     ) {
       all
       closed
@@ -63,6 +71,10 @@ query getWorkItemStateCounts(
       in: $in
       not: $not
       or: $or
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
     ) {
       all
       closed

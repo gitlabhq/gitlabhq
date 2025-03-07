@@ -792,6 +792,8 @@ Plan.default.actual_limits.update!(dast_profile_schedules: 50)
 
 ### Maximum size of the CI artifacts archive
 
+This setting is used to restrict YAML sizes for [dynamic child pipelines](../ci/pipelines/downstream_pipelines.md#dynamic-child-pipelines).
+
 The default maximum size of the CI artifacts archive is 5 megabytes.
 
 You can change this limit by using the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).

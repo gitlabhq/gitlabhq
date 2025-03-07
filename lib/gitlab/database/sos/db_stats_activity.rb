@@ -59,12 +59,16 @@ module Gitlab
             SELECT 'System information', version();
           SQL
 
-          collation_check: <<~SQL
+          collation_check: <<~SQL,
             SELECT collname AS collation_name,
               collversion AS version,
               pg_collation_actual_version(oid) AS actual_version
             FROM pg_collation
             WHERE collprovider = 'c';
+          SQL
+
+          pg_class_settings: <<~SQL
+            SELECT * FROM pg_class;
           SQL
         }.freeze
 

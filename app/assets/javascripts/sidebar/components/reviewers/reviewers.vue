@@ -70,13 +70,12 @@ export default {
         <template v-if="editable">
           -
           <gl-button
-            category="tertiary"
+            class="gl-ml-2 !gl-text-inherit hover:!gl-text-link"
             variant="link"
-            class="gl-ml-2"
             data-testid="assign-yourself"
             @click="assignSelf"
           >
-            <span class="gl-text-subtle hover:gl-text-blue-800">{{ __('assign yourself') }}</span>
+            {{ __('assign yourself') }}
           </gl-button>
         </template>
       </span>

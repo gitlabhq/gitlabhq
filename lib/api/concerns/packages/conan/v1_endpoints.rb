@@ -24,9 +24,6 @@ module API
                 ['revisions']
               end
             end
-            before do
-              authenticate_non_get!
-            end
 
             desc 'Ping the Conan API' do
               detail 'This feature was introduced in GitLab 12.2'

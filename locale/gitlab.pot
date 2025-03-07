@@ -1840,6 +1840,9 @@ msgstr ""
 msgid "."
 msgstr ""
 
+msgid ".git-blame-ignore-revs is not a file"
+msgstr ""
+
 msgid ".gitlab-ci.yml with aliases/anchors is not supported. Please change the CI configuration manually."
 msgstr ""
 
@@ -33177,6 +33180,9 @@ msgstr ""
 msgid "Job|Are you sure you want to erase this job log and artifacts?"
 msgstr ""
 
+msgid "Job|Are you sure you want to force cancel this job? This will immediately mark the job as canceled, even if the runner is unresponsive."
+msgstr ""
+
 msgid "Job|Browse"
 msgstr ""
 
@@ -33211,6 +33217,12 @@ msgid "Job|Failed"
 msgstr ""
 
 msgid "Job|Finished at"
+msgstr ""
+
+msgid "Job|Force cancel"
+msgstr ""
+
+msgid "Job|Force cancel a job stuck in `canceling` state"
 msgstr ""
 
 msgid "Job|Full log viewer"
@@ -34835,6 +34847,9 @@ msgid "Make sure you trust %{strong_start}%{client_name}%{strong_end} before aut
 msgstr ""
 
 msgid "Makes this %{type} confidential."
+msgstr ""
+
+msgid "Malformed .git-blame-ignore-revs"
 msgstr ""
 
 msgid "Manage"
@@ -64695,6 +64710,9 @@ msgid "Vulnerability|Code flow helps trace and flag risky data ('tainted data') 
 msgstr ""
 
 msgid "Vulnerability|Comments"
+msgstr ""
+
+msgid "Vulnerability|Component"
 msgstr ""
 
 msgid "Vulnerability|Crash address:"

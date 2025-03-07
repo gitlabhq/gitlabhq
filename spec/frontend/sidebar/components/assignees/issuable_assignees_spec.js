@@ -31,7 +31,7 @@ describe('IssuableAssignees', () => {
       'renders "$message" when signedIn is $signedIn and editable is $editable',
       ({ signedIn, editable, message }) => {
         createComponent({ signedIn, editable });
-        expect(findEmptyAssignee().text()).toBe(message);
+        expect(findEmptyAssignee().text().replace(/\s\s+/g, ' ')).toBe(message);
       },
     );
   });

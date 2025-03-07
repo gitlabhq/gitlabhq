@@ -57,6 +57,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     hasLinkedItemsEpicsFeature,
     canCreateProjects,
     newProjectPath,
+    hasIssueDateFilterFeature,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -131,6 +132,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       canCreateProjects: parseBoolean(canCreateProjects),
       newIssuePath: '',
       newProjectPath,
+      hasIssueDateFilterFeature: parseBoolean(hasIssueDateFilterFeature),
     },
     mounted() {
       performanceMarkAndMeasure({

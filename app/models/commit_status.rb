@@ -172,6 +172,10 @@ class CommitStatus < Ci::ApplicationRecord
       transition CANCELABLE_STATUSES.map(&:to_sym) + [:manual] => :canceled
     end
 
+    event :force_cancel do
+      transition canceling: :canceled, if: :supports_force_cancel?
+    end
+
     before_transition [
       :created,
       :waiting_for_resource,
@@ -257,6 +261,10 @@ class CommitStatus < Ci::ApplicationRecord
     false
   end
 
+  def supports_force_cancel?
+    false
+  end
+
   # Time spent running.
   def duration
     calculate_duration(started_at, finished_at)
@@ -280,6 +288,10 @@ class CommitStatus < Ci::ApplicationRecord
   end
 
   def cancelable?
+    false
+  end
+
+  def force_cancelable?
     false
   end
 

@@ -30,7 +30,7 @@ RSpec.describe WorkItems::WidgetDefinition, feature_category: :team_planning do
       list += [
         ::WorkItems::Widgets::Iteration,
         ::WorkItems::Widgets::Weight,
-        ::WorkItems::Widgets::Status,
+        ::WorkItems::Widgets::VerificationStatus,
         ::WorkItems::Widgets::HealthStatus,
         ::WorkItems::Widgets::Progress,
         ::WorkItems::Widgets::RequirementLegacy,

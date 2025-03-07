@@ -369,6 +369,14 @@ When adding the parameter `statistics=true` and the authenticated user is an adm
 GET /groups?statistics=true
 ```
 
+When the parameter `statistics=true` is used and the authenticated user is an administrator, the response includes information about container registry storage size:
+
+- `container_registry_size`: Total storage size in bytes used by all container repositories in the group and its subgroups. Calculated as the sum of all repository sizes within the group's projects and subgroups. Available only when the container registry metadata database is enabled.
+
+- `container_registry_size_is_estimated`: Indicates whether the size is an exact calculation based on actual data from all repositories (`false`) or estimated due to performance constraints (`true`).
+
+For self-managed instances, the [container registry metadata database](../administration/packages/container_registry_metadata_database.md) must be enabled to include the container registry size attributes.
+
 ```json
 [
   {

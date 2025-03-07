@@ -28,7 +28,7 @@ module WorkItems
       weight: 8, # EE-only
       iteration: 9, # EE-only
       progress: 10, # EE-only
-      status: 11, # EE-only
+      verification_status: 11, # EE-only
       requirement_legacy: 12, # EE-only
       test_reports: 13, # EE-only
       notifications: 14,

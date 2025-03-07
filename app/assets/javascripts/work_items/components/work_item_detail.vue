@@ -516,6 +516,39 @@ export default {
     isModalOrDrawer() {
       return this.isModal || this.isDrawer;
     },
+    workItemActionProps() {
+      return {
+        fullPath: this.workItemFullPath,
+        workItemId: this.workItem.id,
+        hideSubscribe: this.newTodoAndNotificationsEnabled,
+        subscribedToNotifications: this.workItemNotificationsSubscribed,
+        workItemType: this.workItemType,
+        workItemIid: this.iid,
+        projectId: this.workItemProjectId,
+        canDelete: this.canDelete,
+        canReportSpam: this.canReportSpam,
+        canUpdate: this.canUpdate,
+        canUpdateMetadata: this.canUpdateMetadata,
+        canMove: this.canMove,
+        isConfidential: this.workItem.confidential,
+        isDiscussionLocked: this.isDiscussionLocked,
+        isParentConfidential: this.parentWorkItemConfidentiality,
+        workItemReference: this.workItem.reference,
+        workItemWebUrl: this.workItem.webUrl,
+        workItemCreateNoteEmail: this.workItem.createNoteEmail,
+        isModal: this.isModalOrDrawer,
+        workItemState: this.workItem.state,
+        hasChildren: this.hasChildren,
+        hasParent: this.shouldShowAncestors,
+        parentId: this.parentWorkItemId,
+        workItemAuthorId: this.workItemAuthorId,
+        canCreateRelatedItem: this.workItemLinkedItems !== undefined,
+        isGroup: this.isGroupWorkItem,
+        widgets: this.widgets,
+        allowedChildTypes: this.allowedChildTypes,
+        namespaceFullName: this.namespaceFullName,
+      };
+    },
   },
   mounted() {
     addShortcutsExtension(ShortcutsWorkItems);
@@ -825,7 +858,22 @@ export default {
       @workItemStateUpdated="$emit('workItemStateUpdated')"
       @toggleReportAbuseModal="toggleReportAbuseModal"
       @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
-    />
+    >
+      <template #actions>
+        <work-item-actions
+          v-if="workItemPresent"
+          v-bind="workItemActionProps"
+          @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
+          @toggleWorkItemConfidentiality="toggleConfidentiality"
+          @error="updateError = $event"
+          @promotedToObjective="$emit('promotedToObjective', iid)"
+          @workItemStateUpdated="$emit('workItemStateUpdated')"
+          @workItemTypeChanged="workItemTypeChanged"
+          @toggleReportAbuseModal="toggleReportAbuseModal"
+          @workItemCreated="handleWorkItemCreated"
+        />
+      </template>
+    </work-item-sticky-header>
     <section class="work-item-view">
       <component :is="isModalOrDrawer ? 'h2' : 'h1'" v-if="editMode" class="gl-sr-only">{{
         s__('WorkItem|Edit work item')
@@ -906,35 +954,7 @@ export default {
               />
               <work-item-actions
                 v-if="workItemPresent"
-                :full-path="workItemFullPath"
-                :work-item-id="workItem.id"
-                :hide-subscribe="newTodoAndNotificationsEnabled"
-                :subscribed-to-notifications="workItemNotificationsSubscribed"
-                :work-item-type="workItemType"
-                :work-item-iid="iid"
-                :project-id="workItemProjectId"
-                :can-delete="canDelete"
-                :can-report-spam="canReportSpam"
-                :can-update="canUpdate"
-                :can-update-metadata="canUpdateMetadata"
-                :can-move="canMove"
-                :is-confidential="workItem.confidential"
-                :is-discussion-locked="isDiscussionLocked"
-                :is-parent-confidential="parentWorkItemConfidentiality"
-                :work-item-reference="workItem.reference"
-                :work-item-web-url="workItem.webUrl"
-                :work-item-create-note-email="workItem.createNoteEmail"
-                :is-modal="isModalOrDrawer"
-                :work-item-state="workItem.state"
-                :has-children="hasChildren"
-                :has-parent="shouldShowAncestors"
-                :parent-id="parentWorkItemId"
-                :work-item-author-id="workItemAuthorId"
-                :can-create-related-item="workItemLinkedItems !== undefined"
-                :is-group="isGroupWorkItem"
-                :widgets="widgets"
-                :allowed-child-types="allowedChildTypes"
-                :namespace-full-name="namespaceFullName"
+                v-bind="workItemActionProps"
                 @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
                 @toggleWorkItemConfidentiality="toggleConfidentiality"
                 @error="updateError = $event"

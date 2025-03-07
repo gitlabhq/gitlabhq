@@ -29,6 +29,14 @@ module Ci
       )
     end
 
+    expose :force_cancel_path, if: ->(*) { force_cancelable? } do |job|
+      path_to(
+        :cancel_namespace_project_job,
+        job,
+        { continue: { to: job_path(job) }, force: true }
+      )
+    end
+
     expose :play_path, if: ->(*) { playable? } do |job|
       path_to(:play_namespace_project_job, job)
     end
@@ -54,6 +62,16 @@ module Ci
 
     def cancelable?
       job.cancelable? && can?(request.current_user, :cancel_build, job)
+    end
+
+    def authorized_to_force_cancel?
+      can?(request.current_user, :cancel_build, job) && can?(request.current_user, :maintainer_access, job)
+    end
+
+    def force_cancelable?
+      return false unless Feature.enabled?(:force_cancel_build, request.current_user)
+
+      job.force_cancelable? && authorized_to_force_cancel?
     end
 
     def retryable?

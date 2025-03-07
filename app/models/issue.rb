@@ -70,6 +70,7 @@ class Issue < ApplicationRecord
   ignore_column :project_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
   ignore_column :promoted_to_epic_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
   ignore_column :updated_by_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
+  ignore_column :correct_work_item_type_id, remove_with: '18.0', remove_after: '2025-04-17'
 
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues
@@ -77,13 +78,6 @@ class Issue < ApplicationRecord
   belongs_to :duplicated_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'
   belongs_to :work_item_type, class_name: 'WorkItems::Type'
-
-  # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
-  belongs_to :correct_work_item_type, # rubocop:disable Rails/InverseOf -- Temp association to the same record
-    class_name: 'WorkItems::Type',
-    foreign_key: :correct_work_item_type_id,
-    primary_key: :correct_id
-
   belongs_to :moved_to, class_name: 'Issue', inverse_of: :moved_from
   has_one :moved_from, class_name: 'Issue', foreign_key: :moved_to_id, inverse_of: :moved_to
 

@@ -225,25 +225,9 @@ module Gitlab
           response[:"instances_#{name}_active"] = count(Integration.active.where(instance: true, type: type))
           response[:"projects_inheriting_#{name}_active"] = count(Integration.active.where.not(project: nil).where.not(inherit_from_id: nil).where(type: type))
           response[:"groups_inheriting_#{name}_active"] = count(Integration.active.where.not(group: nil).where.not(inherit_from_id: nil).where(type: type))
-        end.merge(jira_import_usage)
-        # rubocop: enable UsageData/LargeTable:
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
-
-      def jira_import_usage
-        # rubocop: disable UsageData/LargeTable
-        finished_jira_imports = JiraImportState.finished
-
-        {
-          jira_imports_total_imported_count: count(finished_jira_imports),
-          jira_imports_projects_count: distinct_count(finished_jira_imports, :project_id),
-          jira_imports_total_imported_issues_count: add_metric('JiraImportsTotalImportedIssuesCountMetric')
-        }
-        # rubocop: enable UsageData/LargeTable
+        end
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
-      # rubocop: disable UsageData/LargeTable
       def successful_deployments_with_cluster(scope)
         scope
           .joins(cluster: :deployments)

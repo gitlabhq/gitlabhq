@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Ci::Badge::Pipeline::Template do
   describe '#value_color' do
     context 'when status is success' do
       it 'has expected color' do
-        expect(template.value_color).to eq '#4c1'
+        expect(template.value_color).to eq '#2da160'
       end
     end
 
@@ -43,7 +43,17 @@ RSpec.describe Gitlab::Ci::Badge::Pipeline::Template do
       end
 
       it 'has expected color' do
-        expect(template.value_color).to eq '#e05d44'
+        expect(template.value_color).to eq '#dd2b0e'
+      end
+    end
+
+    context 'when status is canceled' do
+      before do
+        allow(badge).to receive(:status).and_return('canceled')
+      end
+
+      it 'has expected color' do
+        expect(template.value_color).to eq '#737278'
       end
     end
 
@@ -53,7 +63,7 @@ RSpec.describe Gitlab::Ci::Badge::Pipeline::Template do
       end
 
       it 'has expected color' do
-        expect(template.value_color).to eq '#dfb317'
+        expect(template.value_color).to eq '#428fdc'
       end
     end
 
@@ -63,7 +73,47 @@ RSpec.describe Gitlab::Ci::Badge::Pipeline::Template do
       end
 
       it 'has expected color' do
-        expect(template.value_color).to eq '#a7a7a7'
+        expect(template.value_color).to eq '#9f9f9f'
+      end
+    end
+
+    context 'when status is waiting_for_resource' do
+      before do
+        allow(badge).to receive(:status).and_return('waiting_for_resource')
+      end
+
+      it 'has expected color' do
+        expect(template.value_color).to eq '#9f9f9f'
+      end
+    end
+
+    context 'when status is created' do
+      before do
+        allow(badge).to receive(:status).and_return('created')
+      end
+
+      it 'has expected color' do
+        expect(template.value_color).to eq '#9f9f9f'
+      end
+    end
+
+    context 'when status is pending' do
+      before do
+        allow(badge).to receive(:status).and_return('pending')
+      end
+
+      it 'has expected color' do
+        expect(template.value_color).to eq '#d99530'
+      end
+    end
+
+    context 'when status is scheduled' do
+      before do
+        allow(badge).to receive(:status).and_return('scheduled')
+      end
+
+      it 'has expected color' do
+        expect(template.value_color).to eq '#9f9f9f'
       end
     end
 

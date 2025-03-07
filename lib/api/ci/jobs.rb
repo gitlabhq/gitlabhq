@@ -123,6 +123,7 @@ module API
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
+          optional :force, type: Boolean, desc: 'Whether to force cancellation for a job in `canceling` state', documentation: { example: true }
         end
         post ':id/jobs/:job_id/cancel', urgency: :low, feature_category: :continuous_integration do
           authorize_cancel_builds!
@@ -130,7 +131,12 @@ module API
           build = find_build!(params[:job_id])
           authorize!(:cancel_build, build)
 
-          build.cancel
+          if params[:force] && Feature.enabled?(:force_cancel_build, current_user)
+            authorize!(:maintainer_access, build)
+            build.force_cancel
+          else
+            build.cancel
+          end
 
           present build, with: Entities::Ci::Job
         end

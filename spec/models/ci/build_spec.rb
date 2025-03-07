@@ -1822,6 +1822,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
           it { is_expected.to be_cancelable }
         end
+
+        context 'when build is canceling' do
+          let(:build) { create(:ci_build, :canceling, pipeline: pipeline) }
+
+          it { is_expected.to be_force_cancelable }
+        end
       end
 
       context 'when build is not cancelable' do
@@ -5792,6 +5798,17 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it 'returns true' do
         expect(job.supports_canceling?).to be true
+      end
+    end
+  end
+
+  describe '#supports_force_cancel?' do
+    let(:job) { create(:ci_build, :canceling, project: project) }
+
+    context 'when the builds runner supports canceling' do
+      include_context 'when canceling support'
+      it 'returns true' do
+        expect(job.supports_force_cancel?).to be true
       end
     end
   end

@@ -19,6 +19,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
   let(:user) { create(:user) }
   let(:api_user) { user }
+  let(:maintainer) { create(:project_member, :maintainer, project: project).user }
   let(:reporter) { create(:project_member, :reporter, project: project).user }
   let(:guest) { create(:project_member, :guest, project: project).user }
 
@@ -26,6 +27,17 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     create(
       :ci_build,
       :running,
+      project: project,
+      user: user,
+      pipeline: pipeline,
+      artifacts_expire_at: 1.day.since
+    )
+  end
+
+  let(:canceling_job) do
+    create(
+      :ci_build,
+      :canceling,
       project: project,
       user: user,
       pipeline: pipeline,
@@ -832,14 +844,15 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
   describe 'POST /projects/:id/jobs/:job_id/cancel' do
     before do
-      post api("/projects/#{project.id}/jobs/#{job.id}/cancel", api_user)
+      post api("/projects/#{project.id}/jobs/#{running_job.id}/cancel", api_user)
     end
 
     context 'authorized user' do
       context 'user with :cancel_build permission' do
-        it 'cancels running or pending job' do
+        it 'cancels running job' do
           expect(response).to have_gitlab_http_status(:created)
-          expect(project.builds.first.status).to eq('success')
+          json_response = Gitlab::Json.parse(response.body)
+          expect(json_response['status']).to eq('canceled')
         end
       end
 
@@ -857,6 +870,61 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
       it 'does not cancel job' do
         expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
+
+  [
+    [:job, false, 'success', true, :user, :created],
+    [:running_job, false, 'canceled', true, :user, :created],
+    [:canceling_job, false, 'canceling', true, :user, :created],
+    [:job, true, 'success', true, :user, :forbidden],
+    [:running_job, true, 'running', true, :user, :forbidden],
+    [:running_job, true, 'running', true, :maintainer, :created], # Force cancel does not default to regular cancel
+    [:canceling_job, true, 'canceling', true, :user, :forbidden],
+    [:canceling_job, true, 'canceled', true, :maintainer, :created],
+    [:running_job, true, 'canceled', false, :user, :created],          # With flag disabled, force flag is ignored,
+    [:running_job, true, 'canceled', false, :maintainer, :created],    # so behaves as if force=false
+    [:canceling_job, true, 'canceling', false, :user, :created],
+    [:canceling_job, true, 'canceling', false, :maintainer, :created]
+  ].each do |job, force_param, expected_job_status, flag_state, user_sym, http_status|
+    describe "POST /projects/:id/jobs/:#{job}_id/cancel?force=#{force_param}" do
+      context "with :force_cancel_build flag #{flag_state ? 'enabled' : 'disabled'}" do
+        let(:api_user) { send(user_sym) }
+
+        before do
+          stub_feature_flags(force_cancel_build: flag_state)
+          post api("/projects/#{project.id}/jobs/#{send(job).id}/cancel?force=#{force_param}", api_user)
+        end
+
+        context 'authorized user' do
+          context "#{user_sym} with :cancel_build permission" do
+            it "cancels :#{job}" do
+              expect(response).to have_gitlab_http_status(http_status)
+
+              if http_status != :forbidden
+                json_response = Gitlab::Json.parse(response.body)
+                expect(json_response['status']).to eq(expected_job_status)
+              end
+            end
+          end
+
+          context 'user without :cancel_build permission' do
+            let(:api_user) { reporter }
+
+            it 'does not cancel job' do
+              expect(response).to have_gitlab_http_status(:forbidden)
+            end
+          end
+        end
+
+        context 'unauthorized user' do
+          let(:api_user) { nil }
+
+          it 'does not cancel job' do
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
+        end
       end
     end
   end

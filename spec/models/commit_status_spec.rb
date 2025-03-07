@@ -204,6 +204,12 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     end
   end
 
+  describe '#supports_force_cancel?' do
+    subject { commit_status.supports_force_cancel? }
+
+    it { is_expected.to eq(false) }
+  end
+
   describe '#started?' do
     subject { commit_status.started? }
 

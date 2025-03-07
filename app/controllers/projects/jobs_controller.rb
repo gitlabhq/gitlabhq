@@ -23,6 +23,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :verify_proxy_request!, only: :proxy_websocket_authorize
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:erase]
   before_action :push_filter_by_name, only: [:index]
+  before_action :push_force_cancel_build, only: [:cancel, :show]
   layout 'project'
 
   feature_category :continuous_integration
@@ -107,7 +108,11 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def cancel
-    service_response = Ci::BuildCancelService.new(@build, current_user).execute
+    service_response = if Feature.enabled?(:force_cancel_build, current_user)
+                         Ci::BuildCancelService.new(@build, current_user, force_param).execute
+                       else
+                         Ci::BuildCancelService.new(@build, current_user).execute
+                       end
 
     if service_response.success?
       destination = continue_params[:to].presence || builds_project_pipeline_path(@project, @build.pipeline.id)
@@ -235,6 +240,10 @@ class Projects::JobsController < Projects::ApplicationController
     { query: { 'response-content-type' => 'text/plain; charset=utf-8', 'response-content-disposition' => 'inline' } }
   end
 
+  def force_param
+    %w[1 t true y yes].include?(params[:force].to_s.downcase)
+  end
+
   def play_params
     params.permit(job_variables_attributes: %i[key secret_value])
   end
@@ -287,6 +296,10 @@ class Projects::JobsController < Projects::ApplicationController
 
   def push_filter_by_name
     push_frontend_feature_flag(:fe_search_build_by_name, @project)
+  end
+
+  def push_force_cancel_build
+    push_frontend_feature_flag(:force_cancel_build, current_user)
   end
 end
 

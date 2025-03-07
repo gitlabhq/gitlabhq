@@ -25,6 +25,10 @@ query getWorkItems(
   $beforeCursor: String
   $firstPageSize: Int
   $lastPageSize: Int
+  $createdAfter: Time
+  $createdBefore: Time
+  $closedAfter: Time
+  $closedBefore: Time
 ) {
   group(fullPath: $fullPath) @include(if: $isGroup) {
     id
@@ -51,6 +55,10 @@ query getWorkItems(
       before: $beforeCursor
       first: $firstPageSize
       last: $lastPageSize
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
     ) {
       pageInfo {
         ...PageInfo
@@ -113,6 +121,10 @@ query getWorkItems(
       before: $beforeCursor
       first: $firstPageSize
       last: $lastPageSize
+      createdAfter: $createdAfter
+      createdBefore: $createdBefore
+      closedAfter: $closedAfter
+      closedBefore: $closedBefore
     ) {
       pageInfo {
         ...PageInfo

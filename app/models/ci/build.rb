@@ -47,7 +47,7 @@ module Ci
 
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
     RUNNERS_STATUS_CACHE_EXPIRATION = 1.minute
-
+    CANCELABLE_STATUSES = (HasStatus::CANCELABLE_STATUSES + ['canceling']).freeze
     DEPLOYMENT_NAMES = %w[deploy release rollout].freeze
 
     TOKEN_PREFIX = 'glcbt-'
@@ -419,6 +419,10 @@ module Ci
       cancel_gracefully?
     end
 
+    def supports_force_cancel?
+      true
+    end
+
     def build_matcher
       strong_memoize(:build_matcher) do
         Gitlab::Ci::Matching::BuildMatcher.new({
@@ -516,6 +520,10 @@ module Ci
 
     def cancelable?
       (active? || created?) && !canceling?
+    end
+
+    def force_cancelable?
+      canceling? && supports_force_cancel?
     end
 
     def retries_count

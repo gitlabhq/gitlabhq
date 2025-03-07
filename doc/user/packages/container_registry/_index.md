@@ -48,6 +48,12 @@ and the manifest and configuration digests.
 You can search, sort (by tag name), and [delete](delete_container_registry_images.md#use-the-gitlab-ui)
 tags on this page. You can share a filtered view by copying the URL from your browser.
 
+### Storage usage
+
+View container registry storage usage to track and manage the size of your container repositories across projects and groups.
+
+For more information, see [View container registry usage](../../../user/packages/container_registry/reduce_container_registry_storage.md#view-container-registry-usage).
+
 ## Use container images from the container registry
 
 To download and run a container image hosted in the container registry:

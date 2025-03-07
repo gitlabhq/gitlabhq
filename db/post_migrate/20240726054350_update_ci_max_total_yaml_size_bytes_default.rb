@@ -3,7 +3,7 @@
 class UpdateCiMaxTotalYamlSizeBytesDefault < Gitlab::Database::Migration[2.2]
   milestone '17.3'
 
-  OLD_DEFAULT_MAX_YAML_SIZE_BYTES = 1.megabytes
+  OLD_DEFAULT_MAX_YAML_SIZE_BYTES = 1.megabyte
   NEW_DEFAULT_MAX_YAML_SIZE_BYTES = 2.megabytes
   DEFAULT_CI_MAX_INCLUDES = 150
 

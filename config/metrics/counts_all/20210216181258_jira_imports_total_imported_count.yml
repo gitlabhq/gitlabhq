@@ -9,6 +9,7 @@ value_type: number
 status: active
 time_frame: all
 data_source: database
+instrumentation_class: JiraImportsFinishedMetric
 tiers:
 - free
 - premium

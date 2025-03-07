@@ -16,7 +16,7 @@ module Gitlab
           weight: 'Weight',
           health_status: 'Health status',
           progress: 'Progress',
-          status: 'Status',
+          verification_status: 'Verification status',
           requirement_legacy: 'Requirement legacy',
           test_reports: 'Test reports',
           notifications: 'Notifications',
@@ -100,7 +100,7 @@ module Gitlab
             :notifications,
             :participants,
             :requirement_legacy,
-            :status,
+            :verification_status,
             :test_reports,
             :time_tracking
           ],
@@ -174,7 +174,7 @@ module Gitlab
             :notifications,
             :participants,
             :start_and_due_date,
-            :status,
+            :verification_status,
             :time_tracking,
             [:weight, { editable: false, rollup: true }]
           ],

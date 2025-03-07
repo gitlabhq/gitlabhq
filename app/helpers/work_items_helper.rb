@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module WorkItemsHelper
+  include IssuesHelper
+
   def work_items_show_data(resource_parent, current_user)
     group = resource_parent.is_a?(Group) ? resource_parent : resource_parent.group
 
@@ -23,7 +25,8 @@ module WorkItemsHelper
       show_new_issue_link: can?(current_user, :create_work_item, group).to_s,
       can_create_projects: can?(current_user, :create_projects, group).to_s,
       new_project_path: new_project_path(namespace_id: group&.id),
-      group_id: group&.id
+      group_id: group&.id,
+      has_issue_date_filter_feature: has_issue_date_filter_feature?(resource_parent, current_user).to_s
     }
   end
 

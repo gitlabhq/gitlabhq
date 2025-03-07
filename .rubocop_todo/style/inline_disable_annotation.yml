@@ -1175,7 +1175,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/graphql/types/work_items/widgets/iteration_type.rb'
     - 'ee/app/graphql/types/work_items/widgets/progress_type.rb'
     - 'ee/app/graphql/types/work_items/widgets/requirement_legacy_type.rb'
-    - 'ee/app/graphql/types/work_items/widgets/status_type.rb'
     - 'ee/app/graphql/types/work_items/widgets/test_reports_type.rb'
     - 'ee/app/graphql/types/work_items/widgets/weight_type.rb'
     - 'ee/app/helpers/admin/application_settings_helper.rb'

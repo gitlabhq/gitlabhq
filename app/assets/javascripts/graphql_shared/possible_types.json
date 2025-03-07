@@ -295,9 +295,9 @@
     "WorkItemWidgetProgress",
     "WorkItemWidgetRequirementLegacy",
     "WorkItemWidgetStartAndDueDate",
-    "WorkItemWidgetStatus",
     "WorkItemWidgetTestReports",
     "WorkItemWidgetTimeTracking",
+    "WorkItemWidgetVerificationStatus",
     "WorkItemWidgetWeight"
   ],
   "WorkItemWidgetDefinition": [
