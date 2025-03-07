@@ -59,10 +59,10 @@ export default {
   i18n: {
     actionPrimaryText: s__('MlModelRegistry|Delete model'),
     deleteConfirmationText: s__(
-      'MlExperimentTracking|Are you sure you would like to delete this model?',
+      'MlModelRegistry|Are you sure you would like to delete this model?',
     ),
     deleteConfirmationNote: s__(
-      'MlExperimentTracking|Deleting this model also deletes all its versions, including any imported or uploaded artifacts, and their associated settings.',
+      'MlModelRegistry|Deleting this model also deletes all its versions, including any imported or uploaded artifacts, and their associated settings.',
     ),
   },
 };

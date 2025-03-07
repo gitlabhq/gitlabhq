@@ -8,9 +8,9 @@ PATH
       rake (~> 13.0)
 
 PATH
-  remote: gems/gitlab-cng
+  remote: gems/gitlab-orchestrator
   specs:
-    gitlab-cng (0.0.1)
+    gitlab-orchestrator (0.0.1)
       activesupport (>= 7)
       rainbow (~> 3.1)
       require_all (~> 3.0)
@@ -366,7 +366,7 @@ DEPENDENCIES
   faraday-retry (~> 2.2, >= 2.2.1)
   fog-core (= 2.1.0)
   fog-google (~> 1.24, >= 1.24.1)
-  gitlab-cng!
+  gitlab-orchestrator!
   gitlab-qa (~> 15, >= 15.3.0)
   gitlab-utils!
   gitlab_quality-test_tooling (~> 2.8.0)

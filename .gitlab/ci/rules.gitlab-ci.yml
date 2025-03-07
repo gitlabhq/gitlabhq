@@ -760,8 +760,8 @@
   - "tooling/ci/job_tokens/docs/templates/fine_grained_permissions.md.erb"
 
 .cng-orchestrator-patterns: &cng-orchestrator-patterns
-  - "qa/gems/gitlab-cng/**/*.rb"
-  - "qa/gems/gitlab-cng/{Gemfile,Gemfile.lock}"
+  - "qa/gems/gitlab-orchestrator/**/*.rb"
+  - "qa/gems/gitlab-orchestrator/{Gemfile,Gemfile.lock}"
 
 .observability-code-patterns: &observability-code-patterns
   # backend

@@ -2,7 +2,7 @@
   = s_('UsageQuota|Usage of resources across your projects')
 
 - content_for :usage_quotas_alerts do
-  = render 'shared/shared_runners_minutes_limit', namespace: @namespace, usage_quotas_link_hidden: true, classes: 'gl-my-3'
+  = render_if_exists 'shared/shared_runners_minutes_limit', namespace: @namespace, usage_quotas_link_hidden: true, classes: 'gl-my-3'
 
 - content_for :usage_quotas_tabs do
   = render_if_exists 'shared/usage_quotas/tabs_content/pipelines'

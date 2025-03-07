@@ -579,7 +579,8 @@ reconfigure the GitLab application servers to remove the `default` storage becau
 
 To work around the limitation:
 
-1. Define an additional storage location on the new Gitaly service and configure the additional storage to be `default`.
+1. Define an additional storage location on the new Gitaly service and configure the additional storage to be `default`. The storage location must have a
+   Gitaly service running and available to avoid issues with database migrations that expect working storages.
 1. In the [**Admin** area](../repository_storage_paths.md#configure-where-new-repositories-are-stored), set `default` to a weight of zero
    to prevent repositories being stored there.
 

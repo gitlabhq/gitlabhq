@@ -26,6 +26,32 @@ If you are not sure, ask for help in the [`#f_real-time` internal Slack channel]
 
 {{< /alert >}}
 
+## Working Safely with WebSockets
+
+WebSockets are a relatively new technology at GitLab and you should code defensively when
+using a WebSocket connection.
+
+### Backwards Compatibility
+
+Treat the connection as ephemeral and ensure the feature you're building is backwards compatible. Ensure critical functionality degrades gracefully when a WebSocket connection isn't available.
+
+You can work on the frontend and backend at the same time because updates over WebSockets
+are difficult to simulate without the necessary backend code in place.
+
+However, always deploy backend changes first. It is strongly advised to package the backend
+and frontend changes in separate releases or to manage rollout with a Feature Flag, especially
+where a new connection is introduced.
+
+This ensures that when the frontend starts subscribing to events, the backend is already prepared
+to service them.
+
+### New Connections at Scale
+
+Introducing a new WebSocket connection is particularly risky at scale. If you need to establish a
+connection on a new area of the site, perform the steps detailed in the
+[Introduce a new WebSocket Connection](#introduce-a-new-websocket-connection) section before going
+further.
+
 ## Build real-time view components
 
 Prerequisites:
@@ -330,20 +356,7 @@ of the issue's fields changing, we could extend `Issues::UpdateService` to call 
 
 The real-time view component is now functional. Updates to an issue should now propagate immediately into the GitLab UI.
 
-## Deploy real-time view components
-
-WebSockets are a relatively new technology at GitLab, and supporting them at
-scale introduces some challenges. For that reason, new features should be rolled
-out using the instructions below.
-
-### Shipping a real-time component
-
-You can work on the frontend and backend at the same time, because updates over WebSockets
-are difficult to simulate without the necessary backend code in place.
-
-However, it is safer to send changes in separate merge requests and deploy the backend changes first.
-This ensures that when the frontend starts subscribing to events, the backend is already prepared
-to service them.
+## Shipping a real-time component
 
 ### Reuse an existing WebSocket connection
 
@@ -363,7 +376,7 @@ connections and on downstream services; such as Redis and the primary database.
 The first real-time feature to be fully enabled on GitLab.com was
 [real-time assignees](https://gitlab.com/gitlab-org/gitlab/-/issues/17589). By comparing
 peak throughput to the issue page against peak simultaneous WebSocket connections it is
-possible to crudely estimate that each 1 request per second adds
+possible to crudely estimate that each 1 request per second to a page adds
 approximately 4200 WebSocket connections.
 
 To understand the impact a new feature might have, sum the peak throughput (RPS)
@@ -373,12 +386,12 @@ to the pages it originates from (`n`) and apply the formula:
 (n * 4200) / peak_active_connections
 ```
 
-Current active connections are visible on
-[this Grafana chart](https://dashboards.gitlab.net/d/websockets-main/websockets-overview?viewPanel=1357460996&orgId=1).
-
 This calculation is crude, and should be revised as new features are
 deployed. It yields a rough estimate of the capacity that must be
 supported, as a proportion of existing capacity.
+
+Current active connections are visible on
+[this Grafana chart](https://dashboards.gitlab.net/d/websockets-main/websockets-overview?viewPanel=1357460996&orgId=1).
 
 ### Graduated roll-out
 
@@ -398,16 +411,6 @@ of the feature flag ensures that effects can be observed on the
 1. Add the estimated new connections required under the **What are we expecting to happen** section.
 1. Copy in a member of the Plan and Scalability teams to estimate a percentage-based
    roll-out plan.
-
-### Backward compatibility
-
-For the duration of the feature flag roll-out and indefinitely thereafter,
-real-time features must be backward-compatible, or at least degrade
-gracefully. Not all customers have Action Cable enabled, and further work
-needs to be done before Action Cable can be enabled by default.
-
-Making real-time a requirement represents a breaking change, so the next
-opportunity to do this is version 15.0.
 
 ### Real-time infrastructure on GitLab.com
 

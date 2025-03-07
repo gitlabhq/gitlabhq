@@ -181,7 +181,7 @@ describe('HelpCenter component', () => {
       let button;
 
       beforeEach(() => {
-        button = findButton('Keyboard shortcuts ?');
+        button = findButton('Keyboard shortcuts');
       });
 
       it('shows the keyboard shortcuts modal', () => {
@@ -191,7 +191,7 @@ describe('HelpCenter component', () => {
       });
 
       it('should have Snowplow tracking attributes', () => {
-        expect(findButton('Keyboard shortcuts ?').dataset).toEqual(
+        expect(findButton('Keyboard shortcuts').dataset).toEqual(
           expect.objectContaining({
             trackAction: 'click_button',
             trackLabel: 'keyboard_shortcuts_help',
@@ -205,7 +205,7 @@ describe('HelpCenter component', () => {
       beforeEach(() => {
         createWrapper({ ...sidebarData, show_version_check: true });
 
-        findButton("What's new 5").click();
+        findButton("What's new").click();
       });
 
       it('shows the "What\'s new" slideout', () => {
@@ -221,7 +221,7 @@ describe('HelpCenter component', () => {
       it('should have Snowplow tracking attributes', () => {
         createWrapper({ ...sidebarData, display_whats_new: true });
 
-        expect(findButton("What's new 5").dataset).toEqual(
+        expect(findButton("What's new").dataset).toEqual(
           expect.objectContaining({
             trackAction: 'click_button',
             trackLabel: 'whats_new',
@@ -255,7 +255,7 @@ describe('HelpCenter component', () => {
 
         describe('when "What\'s new" drawer got opened', () => {
           beforeEach(() => {
-            findButton("What's new 5").click();
+            findButton("What's new").click();
           });
 
           it('does not render notification dot', () => {

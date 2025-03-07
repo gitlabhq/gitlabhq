@@ -239,7 +239,7 @@ export default {
         <span class="gl-flex gl-flex-col gl-leading-24">
           <span class="gl-text-sm gl-font-bold">
             {{ item.text }}
-            <gl-emoji data-name="rocket" />
+            <gl-emoji data-name="rocket" aria-hidden="true" />
           </span>
           <span>
             <span class="gl-mr-2">{{ item.version }}</span>
@@ -258,8 +258,10 @@ export default {
       <template #list-item="{ item }">
         <span class="-gl-my-1 gl-flex gl-items-center gl-justify-between">
           {{ item.text }}
-          <gl-badge v-if="item.count" pill variant="info">{{ item.count }}</gl-badge>
-          <kbd v-else-if="item.shortcut" class="flat">?</kbd>
+          <gl-badge v-if="item.count" pill variant="info" aria-hidden="true">{{
+            item.count
+          }}</gl-badge>
+          <kbd v-else-if="item.shortcut" aria-hidden="true" class="flat">?</kbd>
         </span>
       </template>
     </gl-disclosure-dropdown-group>

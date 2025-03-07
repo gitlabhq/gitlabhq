@@ -430,7 +430,7 @@ end
 
 To override a method present in the CE codebase, use `prepend`. It
 lets you override a method in a class with a method from a module, while
-still having access the class's implementation with `super`.
+still having access to the class's implementation with `super`.
 
 There are a few gotchas with it:
 

@@ -93,11 +93,11 @@ export default {
   sortableFields: [
     {
       orderBy: LIST_KEY_VERSION,
-      label: s__('MlExperimentTracking|Version'),
+      label: s__('MlModelRegistry|Version'),
     },
     {
       orderBy: LIST_KEY_CREATED_AT,
-      label: s__('MlExperimentTracking|Created'),
+      label: s__('MlModelRegistry|Created'),
     },
   ],
   emptyState: {

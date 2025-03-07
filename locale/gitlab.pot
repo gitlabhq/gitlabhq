@@ -36867,13 +36867,7 @@ msgstr ""
 msgid "MissingSSHKeyWarningLink|You won't be able to pull or push repositories via SSH until you add an SSH key to your profile"
 msgstr ""
 
-msgid "MlExperimentTracking|Are you sure you would like to delete this model?"
-msgstr ""
-
 msgid "MlExperimentTracking|Create an experiment using MLflow"
-msgstr ""
-
-msgid "MlExperimentTracking|Created"
 msgstr ""
 
 msgid "MlExperimentTracking|Created at"
@@ -36898,9 +36892,6 @@ msgid "MlExperimentTracking|Delete run?"
 msgstr ""
 
 msgid "MlExperimentTracking|Deleting this experiment will also delete its runs and their associated metadata."
-msgstr ""
-
-msgid "MlExperimentTracking|Deleting this model also deletes all its versions, including any imported or uploaded artifacts, and their associated settings."
 msgstr ""
 
 msgid "MlExperimentTracking|Deleting this run will delete the associated parameters, metrics, and metadata."
@@ -36981,9 +36972,6 @@ msgstr ""
 msgid "MlExperimentTracking|Value"
 msgstr ""
 
-msgid "MlExperimentTracking|Version"
-msgstr ""
-
 msgid "MlExperimentTracking|by %{author}"
 msgstr ""
 
@@ -37009,6 +36997,9 @@ msgid "MlModelRegistry|All artifact uploads failed or were canceled."
 msgstr ""
 
 msgid "MlModelRegistry|Are you sure you want to delete this model version?"
+msgstr ""
+
+msgid "MlModelRegistry|Are you sure you would like to delete this model?"
 msgstr ""
 
 msgid "MlModelRegistry|Artifact file creation failed"
@@ -37062,6 +37053,9 @@ msgstr ""
 msgid "MlModelRegistry|Create/Import model"
 msgstr ""
 
+msgid "MlModelRegistry|Created"
+msgstr ""
+
 msgid "MlModelRegistry|Creating a model"
 msgstr ""
 
@@ -37084,6 +37078,9 @@ msgid "MlModelRegistry|Delete version"
 msgstr ""
 
 msgid "MlModelRegistry|Delete version %{versionName}"
+msgstr ""
+
+msgid "MlModelRegistry|Deleting this model also deletes all its versions, including any imported or uploaded artifacts, and their associated settings."
 msgstr ""
 
 msgid "MlModelRegistry|Deleting this version also deletes all of its imported or uploaded artifacts and its settings."
@@ -37222,6 +37219,9 @@ msgid "MlModelRegistry|Must be a semantic version. Latest version is %{latestVer
 msgstr ""
 
 msgid "MlModelRegistry|Must be unique. May not contain spaces."
+msgstr ""
+
+msgid "MlModelRegistry|Name"
 msgstr ""
 
 msgid "MlModelRegistry|New version"

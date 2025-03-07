@@ -26,7 +26,7 @@
   extends:
     - .qa-job-base
   variables:
-    WORKING_DIR: qa/gems/gitlab-cng
+    WORKING_DIR: qa/gems/gitlab-orchestrator
   cache: *qa-ruby-cng-gems-cache
 
 .e2e-trigger-base:

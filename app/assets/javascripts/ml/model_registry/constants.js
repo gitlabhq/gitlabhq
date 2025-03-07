@@ -9,11 +9,11 @@ export const SORT_KEY_ORDER = 'DESC';
 export const BASE_SORT_FIELDS = Object.freeze([
   {
     orderBy: 'name',
-    label: s__('MlExperimentTracking|Name'),
+    label: s__('MlModelRegistry|Name'),
   },
   {
     orderBy: LIST_KEY_CREATED_AT,
-    label: s__('MlExperimentTracking|Created'),
+    label: s__('MlModelRegistry|Created'),
   },
 ]);
 

@@ -23,7 +23,7 @@ workflow:
     - echo "${EXTRA_DEPLOY_VALUES}" > $CI_PROJECT_DIR/EXTRA_DEPLOY_VALUES
     - export GITLAB_DOMAIN="$(getent hosts docker | awk '{ print $1 }' | head -n1).nip.io"
     - |
-      bundle exec cng create deployment "${DEPLOYMENT_TYPE:-kind}" \
+      bundle exec orchestrator create deployment "${DEPLOYMENT_TYPE:-kind}" \
         --gitlab-domain "${GITLAB_DOMAIN}" \
         --timeout 5m \
         --chart-sha "${GITLAB_HELM_CHART_REF}" \
@@ -69,11 +69,11 @@ workflow:
         echo "SUITE_FAILED=true" >> "$QA_SUITE_STATUS_ENV_FILE"
       fi
     - cd qa
-    - bundle exec cng log events --save
-    - bundle exec cng log pods --save --containers all --no-fail-on-missing-pods
+    - bundle exec orchestrator log events --save
+    - bundle exec orchestrator log pods --save --containers all --no-fail-on-missing-pods
     # This command prints all the necessary arguments to be able to recreate the same deployment as on CI
     - |
-      bundle exec cng create deployment "${DEPLOYMENT_TYPE}" \
+      bundle exec orchestrator create deployment "${DEPLOYMENT_TYPE}" \
         --chart-sha "${GITLAB_HELM_CHART_REF}" \
         --ci \
         --print-deploy-args \
@@ -126,7 +126,7 @@ cng-helm-cache:
       allow_failure: true
       changes:
         - .gitlab/ci/qa-common/variables.gitlab-ci.yml
-        - qa/gems/gitlab-cng/lib/gitlab/cng/lib/kind/cluster.rb
+        - qa/gems/gitlab-orchestrator/lib/gitlab/orchestrator/lib/kind/cluster.rb
 
 cng-instance:
   extends:
