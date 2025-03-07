@@ -1,0 +1,18 @@
+query getOpenMrCountsForBlobPath(
+  $projectPath: ID!
+  $targetBranch: [String!]
+  $blobPath: String!
+  $createdAfter: Time!
+) {
+  project(fullPath: $projectPath) {
+    id
+    mergeRequests(
+      state: opened
+      targetBranches: $targetBranch
+      blobPath: $blobPath
+      createdAfter: $createdAfter
+    ) {
+      count
+    }
+  }
+}

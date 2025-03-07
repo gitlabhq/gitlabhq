@@ -46,6 +46,9 @@
   }
 }
 
+.system-note-dot {
+  background-color: var(--gl-status-neutral-icon-color);
+}
 
 // Vertical line gradient for specific system note icons
 .system-note-icon {
@@ -53,22 +56,22 @@
   background-color: var(--system-note-icon-background-color);
 
   &.system-note-icon-success {
-    --system-note-icon-color: var(--gl-status-success-text-color);
+    --system-note-icon-color: var(--gl-status-success-icon-color);
     --system-note-icon-background-color: var(--gl-status-success-background-color);
   }
 
   &.system-note-icon-danger {
-    --system-note-icon-color: var(--gl-status-danger-text-color);
+    --system-note-icon-color: var(--gl-status-danger-icon-color);
     --system-note-icon-background-color: var(--gl-status-danger-background-color);
   }
 
   &.system-note-icon-info {
-    --system-note-icon-color: var(--gl-status-info-text-color);
+    --system-note-icon-color: var(--gl-status-info-icon-color);
     --system-note-icon-background-color: var(--gl-status-info-background-color);
   }
 
   &.system-note-icon-warning {
-    --system-note-icon-color: var(--gl-status-warning-text-color);
+    --system-note-icon-color: var(--gl-status-warning-icon-color);
     --system-note-icon-background-color: var(--gl-status-warning-background-color);
   }
 

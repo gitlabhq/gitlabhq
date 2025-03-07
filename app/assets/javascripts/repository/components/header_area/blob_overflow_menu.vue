@@ -126,6 +126,7 @@ export default {
     data-testid="default-actions-container"
     :toggle-text="$options.i18n.dropdownLabel"
     text-sr-only
+    category="tertiary"
   >
     <permalink-dropdown-item :permalink-path="blobInfo.permalinkPath" />
     <blob-button-group

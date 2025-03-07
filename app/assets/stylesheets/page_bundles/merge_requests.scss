@@ -364,11 +364,11 @@
 }
 
 .diff-file-row.is-active {
-  background-color: var(--gray-50, $gray-50);
+  @apply gl-bg-strong;
 }
 
 .diff-file-row.is-loading {
-  color: var(--gl-text-color-disabled);
+  @apply gl-text-disabled;
 }
 
 .mr-info-list {

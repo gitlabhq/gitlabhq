@@ -32,6 +32,15 @@ module Resolvers
         "for example: `id_desc` or `name_asc`",
       default_value: 'name_asc'
 
+    argument :all_available, GraphQL::Types::Boolean,
+      required: false,
+      default_value: true,
+      replace_null_with_default: true,
+      description: <<~DESC
+        When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member.
+        Unauthenticated requests always return all public groups. The `owned_only` argument takes precedence.
+      DESC
+
     private
 
     def resolve_groups(**args)

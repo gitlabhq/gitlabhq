@@ -495,9 +495,14 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
     shared_examples_for "creates a new pipeline" do
       it "creates a new pipeline" do
-        expect(MergeRequests::CreatePipelineWorker)
-          .to receive(:perform_async)
-          .with(project.id, user.id, merge_request.id, { "allow_duplicate" => true })
+        service = instance_double(MergeRequests::CreatePipelineService)
+
+        expect(MergeRequests::CreatePipelineService)
+          .to receive(:new)
+          .with(project: project, current_user: user, params: { allow_duplicate: true })
+          .and_return(service)
+
+        expect(service).to receive(:execute_async).with(merge_request)
 
         update_merge_request(target_branch: new_target_branch)
       end

@@ -299,7 +299,7 @@ Parameters:
 | Attribute                | Type              | Required | Description |
 |--------------------------|-------------------|----------|-------------|
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
-| `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators); Attributes `owned` and `min_access_level` have precedence |
+| `all_available`          | boolean           | no       | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Defaults to `false` for users, `true` for administrators. Unauthenticated requests always return all public groups. The `owned` and `min_access_level` attributes take precedence. |
 | `search`                 | string            | no       | Return the list of authorized groups matching the search criteria |
 | `order_by`               | string            | no       | Order groups by `name`, `path`, `id`, or `similarity`. Default is `name` |
 | `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
@@ -928,6 +928,7 @@ Parameters:
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
+| `all_available`          | boolean           | no       | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Defaults to `false` for users, `true` for administrators. Unauthenticated requests always return all public groups. The `owned` and `min_access_level` attributes take precedence. |
 
 ```plaintext
 GET /groups/:id/subgroups
@@ -997,7 +998,7 @@ Parameters:
 | ------------------------ | ----------------- | -------- | ----------- |
 | `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) of the immediate parent group |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
-| `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators). Attributes `owned` and `min_access_level` have precedence |
+| `all_available`          | boolean           | no       | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Defaults to `false` for users, `true` for administrators. Unauthenticated requests always return all public groups. The `owned` and `min_access_level` attributes take precedence. |
 | `search`                 | string            | no       | Return the list of authorized groups matching the search criteria. Only descendant group short paths are searched (not full paths) |
 | `order_by`               | string            | no       | Order groups by `name`, `path`, or `id`. Default is `name` |
 | `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |

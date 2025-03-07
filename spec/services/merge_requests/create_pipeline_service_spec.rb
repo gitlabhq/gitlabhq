@@ -301,7 +301,9 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
 
   describe '#execute_async' do
     it 'queues a merge request pipeline creation' do
-      expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async)
+      expect(MergeRequests::CreatePipelineWorker).to receive(:perform_async).with(
+        project.id, user.id, merge_request.id, { 'pipeline_creation_request' => anything }
+      )
       expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(merge_request)
 
       service.execute_async(merge_request)

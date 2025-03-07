@@ -26,9 +26,9 @@ import { __ } from '~/locale';
 import NoteHeader from '~/notes/components/note_header.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 
-const ALLOWED_ICONS = ['issue-close'];
 const ICON_COLORS = {
-  'issue-close': '!gl-bg-blue-100 gl-text-blue-700 icon-info',
+  'issue-close': 'system-note-icon-info',
+  issues: 'system-note-icon-success',
 };
 
 export default {
@@ -75,7 +75,7 @@ export default {
       return ICON_COLORS[this.note.systemNoteIconName] || '';
     },
     isAllowedIcon() {
-      return ALLOWED_ICONS.includes(this.note.systemNoteIconName);
+      return Object.keys(ICON_COLORS).includes(this.note.systemNoteIconName);
     },
     isTargetNote() {
       return this.targetNoteHash === this.noteAnchorId;
@@ -100,6 +100,13 @@ export default {
     },
     deleteButtonClasses() {
       return this.singleLineDescription ? 'gl-top-5 gl-right-2 gl-mt-2' : 'gl-top-6 gl-right-3';
+    },
+    systemNoteIconName() {
+      let icon = this.note.systemNoteIconName;
+      if (this.note.systemNoteIconName === 'issues') {
+        icon = 'issue-open-m';
+      }
+      return icon;
     },
   },
   mounted() {
@@ -126,13 +133,13 @@ export default {
         getIconColor,
         {
           'system-note-icon -gl-mt-1 gl-ml-2 gl-h-6 gl-w-6': isAllowedIcon,
-          'system-note-dot -gl-top-1 gl-ml-4 gl-mt-3 gl-h-3 gl-w-3 gl-border-2 gl-border-solid gl-border-subtle gl-bg-gray-900':
+          'system-note-dot -gl-top-1 gl-ml-4 gl-mt-3 gl-h-3 gl-w-3 gl-border-2 gl-border-solid gl-border-subtle':
             !isAllowedIcon,
         },
       ]"
       class="gl-relative gl-float-left gl-flex gl-items-center gl-justify-center gl-rounded-full"
     >
-      <gl-icon v-if="isAllowedIcon" :size="14" :name="note.systemNoteIconName" />
+      <gl-icon v-if="isAllowedIcon" :size="14" :name="systemNoteIconName" />
     </div>
     <div class="gl-ml-7">
       <div class="gl-flex gl-items-start gl-justify-between">

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects do
+  using RSpec::Parameterized::TableSyntax
+
   include GraphqlHelpers
 
   describe '#resolve' do
@@ -72,6 +74,24 @@ RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects
 
         it 'return only owned groups' do
           expect(subject).to contain_exactly(owned_group)
+        end
+      end
+    end
+
+    context 'with `all_available` argument' do
+      where :args, :expected_param do
+        {}                       | { all_available: true }
+        { all_available: nil }   | { all_available: true }
+        { all_available: true }  | { all_available: true }
+        { all_available: false } | { all_available: false }
+      end
+
+      with_them do
+        it 'pass the correct parameter to the GroupsFinder' do
+          expect(GroupsFinder).to receive(:new)
+            .with(user, hash_including(**expected_param)).and_call_original
+
+          resolve(described_class, args: args, ctx: { current_user: user })
         end
       end
     end

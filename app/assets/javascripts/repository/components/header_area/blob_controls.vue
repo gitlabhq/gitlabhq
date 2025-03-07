@@ -23,6 +23,7 @@ import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
 import { updateElementsVisibility } from '~/repository/utils/dom';
 import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql';
 import { getRefType } from '~/repository/utils/ref_type';
+import OpenMrBadge from '~/repository/components/header_area/open_mr_badge.vue';
 import { TEXT_FILE_TYPE, DEFAULT_BLOB_INFO } from '../../constants';
 import OverflowMenu from './blob_overflow_menu.vue';
 
@@ -36,6 +37,7 @@ export default {
   },
   buttonClassList: 'sm:gl-w-auto gl-w-full sm:gl-mt-0 gl-mt-3',
   components: {
+    OpenMrBadge,
     GlButton,
     OverflowMenu,
   },
@@ -192,6 +194,11 @@ export default {
 </script>
 <template>
   <div v-if="showBlobControls" class="gl-flex gl-flex-wrap gl-items-center gl-gap-3">
+    <open-mr-badge
+      v-if="glFeatures.filterBlobPath"
+      :project-path="projectPath"
+      :blob-path="filePath"
+    />
     <gl-button
       v-gl-tooltip.html="findFileTooltip"
       :aria-keyshortcuts="findFileShortcutKey"

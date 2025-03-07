@@ -870,18 +870,17 @@ table.code {
   }
 }
 
-.diff-file.linked-file .file-title {
-  background-color: $blue-50;
-  border-color: $blue-200;
-}
+.diff-file.linked-file {
+  border-color: var(--blue-200);
 
-.diff-file.linked-file .diff-content {
-  border-color: $blue-200;
+  .file-title {
+    @apply gl-bg-feedback-info;
+  }
 }
 
 // This is not inside page_bundles because then it won't receive a proper color value for the dark theme
 .diff-file-row.is-active.is-linked {
-  background-color: $blue-50;
+  @apply gl-bg-feedback-info;
 }
 
 .collapsed-file-warning {

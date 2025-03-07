@@ -36,12 +36,18 @@ module Ci
 
       def policies_allowed?(accessed_project, policies)
         return true if self_referential?(accessed_project)
+
+        unless accessed_project.ci_inbound_job_token_scope_enabled?
+          # We capture policies even if the inbound scopes are disabled
+          capture_job_token_policies(policies)
+          return true
+        end
+
         return false unless inbound_accessible?(accessed_project)
 
-        # We capture policies even if the inbound scopes are disabled or the feature flag is disabled
-        Ci::JobToken::Authorization.capture_job_token_policies(policies) if policies.present?
+        # We capture policies even if the feature flag is disabled
+        capture_job_token_policies(policies)
 
-        return true unless accessed_project.ci_inbound_job_token_scope_enabled?
         return true unless Feature.enabled?(:add_policies_to_ci_job_token, accessed_project)
 
         policies_allowed_for_accessed_project?(accessed_project, policies)
@@ -139,6 +145,12 @@ module Ci
       # User created list of projects that can be accessed from the current project
       def outbound_allowlist
         Ci::JobToken::Allowlist.new(current_project, direction: :outbound)
+      end
+
+      def capture_job_token_policies(policies)
+        return if policies.blank?
+
+        Ci::JobToken::Authorization.capture_job_token_policies(policies)
       end
     end
   end

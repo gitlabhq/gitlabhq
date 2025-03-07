@@ -114,6 +114,8 @@ For more information about our plans for language support in SAST, see the [cate
 | Scala                                   | {{< icon name="dotted-circle" >}} No; tracked in [epic 15174](https://gitlab.com/groups/gitlab-org/-/epics/15174) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
 | Swift (iOS)                             | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
 | TypeScript                              | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
+| YAML                                    | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
+| Java Properties                         | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
 
 **Footnotes:**
 
@@ -819,7 +821,7 @@ flags are added to the scanner's CLI options.
         <code>--multi-core</code>
       </td>
       <td>
-        Specify the number of CPU cores to utilize for scanning. This can significantly improve scan performance on multi-core systems. When setting this value, ensure that the number of cores specified does not exceed the total number of cores available to the container. Note that multi-core execution will require proportionally more memory than single-core execution. Exceeding the available cores or memory resources may lead to resource contention and suboptimal performance. Defaults to <code>1</code>.
+        Multi-core scanning is enabled by default, automatically detecting and utilizing available CPU cores based on container information. On self-hosted runners, the maximum number of cores is capped at 4. You can override the automatic core detection by explicitly setting <code>--multi-core</code> to a specific value. Multi-core execution requires proportionally more memory than single-core execution. To disable multi-core scanning, set the environment variable <code>DISABLE_MULTI_CORE</code>. Note that exceeding available cores or memory resources may lead to resource contention and suboptimal performance.
       </td>
     </tr>
     <tr>

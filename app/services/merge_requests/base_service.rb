@@ -233,17 +233,14 @@ module MergeRequests
 
     def create_pipeline_for(merge_request, user, async: false, allow_duplicate: false)
       create_pipeline_params = params.slice(:push_options).merge(allow_duplicate: allow_duplicate)
+      service = MergeRequests::CreatePipelineService.new(
+        project: project, current_user: user, params: create_pipeline_params
+      )
 
       if async
-        MergeRequests::CreatePipelineWorker.perform_async(
-          project.id,
-          user.id,
-          merge_request.id,
-          create_pipeline_params.deep_stringify_keys)
+        service.execute_async(merge_request)
       else
-        MergeRequests::CreatePipelineService
-          .new(project: project, current_user: user, params: create_pipeline_params)
-          .execute(merge_request)
+        service.execute(merge_request)
       end
     end
 

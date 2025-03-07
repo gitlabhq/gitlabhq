@@ -785,6 +785,9 @@ msgstr ""
 msgid "%{count} of %{total}"
 msgstr ""
 
+msgid "%{count} open"
+msgstr ""
+
 msgid "%{count} project"
 msgid_plural "%{count} projects"
 msgstr[0] ""
@@ -21932,10 +21935,10 @@ msgstr ""
 msgid "DuoEnterpriseTrial|Gain deeper insights into GitLab Duo usage patterns"
 msgstr ""
 
-msgid "DuoEnterpriseTrial|GitLab Duo Enterprise is is your end-to-end AI partner for faster, more secure software development."
+msgid "DuoEnterpriseTrial|GitLab Duo Enterprise is only available for purchase for Ultimate customers."
 msgstr ""
 
-msgid "DuoEnterpriseTrial|GitLab Duo Enterprise is only available for purchase for Ultimate customers."
+msgid "DuoEnterpriseTrial|GitLab Duo Enterprise is your end-to-end AI partner for faster, more secure software development."
 msgstr ""
 
 msgid "DuoEnterpriseTrial|Maintain control and keep your data safe"

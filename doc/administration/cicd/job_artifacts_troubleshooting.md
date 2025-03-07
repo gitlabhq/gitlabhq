@@ -170,6 +170,148 @@ which causes the worker to process `unknown` artifacts
 [in batches that are five times larger](https://gitlab.com/gitlab-org/gitlab/-/issues/356319).
 This flag is not recommended for use.
 
+#### `@final` artifacts not deleted from object store
+
+An issue in GitLab 16.1 and 16.2 caused [`@final` artifacts to not be deleted from object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/419920).
+
+Administrators of GitLab instances that ran GitLab 16.1 or 16.2 for some time could see an increase 
+in object storage used by artifacts. Follow this procedure to check for and remove these artifacts.
+
+Removing the files is a two stage process:
+
+1. [Identify which files have been orphaned](#list-orphaned-job-artifacts).
+1. [Delete the identified files from object storage](#delete-orphaned-job-artifacts).
+
+##### List orphaned job artifacts
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+```shell
+sudo gitlab-rake gitlab:cleanup:list_orphan_job_artifact_final_objects
+```
+
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
+
+```shell
+docker exec -it <container-id> bash
+gitlab-rake gitlab:cleanup:list_orphan_job_artifact_final_objects
+```
+
+Either write to a persistent volume mounted in the container, or when the command completes: copy the output file out of the session.
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo -u git -H bundle exec rake gitlab:cleanup:list_orphan_job_artifact_final_objects RAILS_ENV=production
+```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+```shell
+# find the pod
+kubectl get pods --namespace <namespace> -lapp=toolbox
+
+# open the Rails console
+kubectl exec -it -c toolbox <toolbox-pod-name> bash
+gitlab-rake gitlab:cleanup:list_orphan_job_artifact_final_objects
+```
+
+When the command complete, copy the file out of the session onto persistent storage.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+The Rake task has some additional features that apply to all types of GitLab deployment:
+
+- Scanning object storage can be interrupted. Progress is recorded in Redis, this is used to resume
+  scanning artifacts from that point.
+- By default, the Rake task generates a CSV file:
+  `/opt/gitlab/embedded/service/gitlab-rails/tmp/orphan_job_artifact_final_objects.csv`
+- Set an environment variable to specify a different filename:
+
+  ```shell
+  # Packaged GitLab
+  sudo su -
+  FILENAME='custom_filename.csv' gitlab-rake gitlab:cleanup:list_orphan_job_artifact_final_objects
+  ```
+
+- If the output file exists already (the default, or the specified file) it appends entries to the file.
+- Each row contains the fields `object_path,object_size` comma separated, with no file header. For example:
+
+  ```plaintext
+  35/13/35135aaa6cc23891b40cb3f378c53a17a1127210ce60e125ccf03efcfdaec458/@final/1a/1a/5abfa4ec66f1cc3b681a4d430b8b04596cbd636f13cdff44277211778f26,201
+  ```
+
+##### Delete orphaned job artifacts
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+```shell
+sudo gitlab-rake gitlab:cleanup:delete_orphan_job_artifact_final_objects
+```
+
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
+
+```shell
+docker exec -it <container-id> bash
+gitlab-rake gitlab:cleanup:delete_orphan_job_artifact_final_objects
+```
+
+- Copy the output file out of the session when the command completes, or write it to a volume that has been mounted by the container.
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo -u git -H bundle exec rake gitlab:cleanup:delete_orphan_job_artifact_final_objects RAILS_ENV=production
+```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+```shell
+# find the pod
+kubectl get pods --namespace <namespace> -lapp=toolbox
+
+# open the Rails console
+kubectl exec -it -c toolbox <toolbox-pod-name> bash
+gitlab-rake gitlab:cleanup:delete_orphan_job_artifact_final_objects
+```
+
+- When the command complete, copy the file out of the session onto persistent storage.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+The following applies to all types of GitLab deployment: 
+
+- Specify the input filename using the `FILENAME` variable. By default the script looks for:
+  `/opt/gitlab/embedded/service/gitlab-rails/tmp/orphan_job_artifact_final_objects.csv`
+- As the script deletes files, it writes out a CSV file with the deleted files:
+  - the file is in the same directory as the input file
+  - the filename is prefixed with `deleted_from--`. For example: `deleted_from--orphan_job_artifact_final_objects.csv`.
+  - The rows in the file are: `object_path,object_size,object_generation/version`, for example:
+
+    ```plaintext
+    35/13/35135aaa6cc23891b40cb3f378c53a17a1127210ce60e125ccf03efcfdaec458/@final/1a/1a/5abfa4ec66f1cc3b681a4d430b8b04596cbd636f13cdff44277211778f26,201,1711616743796587
+    ```
+
 ### List projects and builds with artifacts with a specific expiration (or no expiration)
 
 Using a [Rails console](../operations/rails_console.md), you can find projects that have job artifacts with either:

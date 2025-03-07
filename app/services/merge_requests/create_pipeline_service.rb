@@ -17,7 +17,7 @@ module MergeRequests
 
       ::MergeRequests::CreatePipelineWorker.perform_async(
         project.id, current_user.id, merge_request.id,
-        params.merge(pipeline_creation_request: pipeline_creation_request)
+        params.merge(pipeline_creation_request: pipeline_creation_request).deep_stringify_keys
       )
     end
 

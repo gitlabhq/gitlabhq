@@ -120,8 +120,8 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       end
 
       it 'triggers mergeRequestMergeStatusUpdated GraphQL subscription conditionally' do
-        expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(@merge_request)
-        expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(@another_merge_request)
+        expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).twice.with(@merge_request)
+        expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).twice.with(@another_merge_request)
         expect(GraphqlTriggers).not_to receive(:merge_request_merge_status_updated).with(@fork_merge_request)
 
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')

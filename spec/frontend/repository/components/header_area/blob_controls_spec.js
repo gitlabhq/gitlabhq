@@ -14,6 +14,7 @@ import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
 import OverflowMenu from '~/repository/components/header_area/blob_overflow_menu.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import OpenMrBadge from '~/repository/components/header_area/open_mr_badge.vue';
 import { blobControlsDataMock, refMock } from '../../mock_data';
 
 jest.mock('~/repository/utils/dom');
@@ -24,17 +25,22 @@ let router;
 let wrapper;
 let mockResolver;
 
-const createComponent = async (
+const createComponent = async ({
   props = {},
   blobInfoOverrides = {},
   glFeatures = { blobOverflowMenu: false },
-) => {
+  routerOverride = {},
+} = {}) => {
   Vue.use(VueApollo);
 
   const projectPath = 'some/project';
   router = createRouter(projectPath, refMock);
 
-  await router.push({ name: 'blobPathDecoded', params: { path: '/some/file.js' } });
+  await router.push({
+    name: 'blobPathDecoded',
+    params: { path: '/some/file.js' },
+    ...routerOverride,
+  });
 
   mockResolver = jest.fn().mockResolvedValue({
     data: {
@@ -75,6 +81,7 @@ const createComponent = async (
 };
 
 describe('Blob controls component', () => {
+  const findOpenMrBadge = () => wrapper.findComponent(OpenMrBadge);
   const findFindButton = () => wrapper.findByTestId('find');
   const findBlameButton = () => wrapper.findByTestId('blame');
   const findPermalinkButton = () => wrapper.findByTestId('permalink');
@@ -83,6 +90,36 @@ describe('Blob controls component', () => {
 
   beforeEach(async () => {
     await createComponent();
+  });
+
+  describe('MR badge', () => {
+    it('should render the baadge if `filter_blob_path` flag is on', async () => {
+      await createComponent({ glFeatures: { filterBlobPath: true } });
+      expect(findOpenMrBadge().exists()).toBe(true);
+      expect(findOpenMrBadge().props('blobPath')).toBe('/some/file.js');
+      expect(findOpenMrBadge().props('projectPath')).toBe('some/project');
+    });
+
+    it('should not render the baadge if `filter_blob_path` flag is off', async () => {
+      await createComponent({ glFeatures: { filterBlobPath: false } });
+      expect(findOpenMrBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('showBlobControls', () => {
+    it('should not render blob controls when filePath does not exist', async () => {
+      await createComponent({
+        routerOverride: { name: 'blobPathDecoded', params: null },
+      });
+      expect(wrapper.element).not.toBeVisible();
+    });
+
+    it('should not render blob controls when route name is not blobPathDecoded', async () => {
+      await createComponent({
+        routerOverride: { name: 'blobPath', params: { path: '/some/file.js' } },
+      });
+      expect(wrapper.element).not.toBeVisible();
+    });
   });
 
   describe('FindFile button', () => {
@@ -114,13 +151,15 @@ describe('Blob controls component', () => {
     });
 
     it('does not render blame button when blobInfo.storedExternally is true', async () => {
-      await createComponent({}, { storedExternally: true });
+      await createComponent({ blobInfoOverrides: { storedExternally: true } });
 
       expect(findBlameButton().exists()).toBe(false);
     });
 
     it('does not render blame button when blobInfo.externalStorage is "lfs"', async () => {
-      await createComponent({}, { storedExternally: true, externalStorage: 'lfs' });
+      await createComponent({
+        blobInfoOverrides: { storedExternally: true, externalStorage: 'lfs' },
+      });
 
       expect(findBlameButton().exists()).toBe(false);
     });
@@ -164,7 +203,7 @@ describe('Blob controls component', () => {
 
   describe('BlobOverflow dropdown', () => {
     it('renders BlobOverflow component with correct props', async () => {
-      await createComponent({}, {}, { blobOverflowMenu: true });
+      await createComponent({ glFeatures: { blobOverflowMenu: true } });
 
       expect(findOverflowMenu().exists()).toBe(true);
       expect(findOverflowMenu().props()).toEqual({
@@ -177,22 +216,26 @@ describe('Blob controls component', () => {
     });
 
     it('passes the correct isBinary value to BlobOverflow when viewing a binary file', async () => {
-      await createComponent(
-        { isBinary: true },
-        {
+      await createComponent({
+        props: {
+          isBinary: true,
+        },
+        blobInfoOverrides: {
           simpleViewer: {
             ...blobControlsDataMock.repository.blobs.nodes[0].simpleViewer,
             fileType: 'podfile',
           },
         },
-        { blobOverflowMenu: true },
-      );
+        glFeatures: {
+          blobOverflowMenu: true,
+        },
+      });
 
       expect(findOverflowMenu().props('isBinary')).toBe(true);
     });
 
     it('copies to clipboard raw blob text, when receives copy event', async () => {
-      await createComponent({}, {}, { blobOverflowMenu: true });
+      await createComponent({ glFeatures: { blobOverflowMenu: true } });
 
       jest.spyOn(navigator.clipboard, 'writeText');
       findOverflowMenu().vm.$emit('copy');

@@ -109,30 +109,32 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
       end
     end
 
-    context 'async: true' do
-      it 'enques a CreatePipelineWorker' do
-        expect(MergeRequests::CreatePipelineService).not_to receive(:new)
-        expect(MergeRequests::CreatePipelineWorker)
-          .to receive(:perform_async)
-          .with(project.id, user.id, merge_request.id, { "allow_duplicate" => false })
-          .and_call_original
+    context 'when async: true' do
+      it 'executes MergeRequests::CreatePipelineService async' do
+        service = instance_double(MergeRequests::CreatePipelineService)
 
-        Sidekiq::Testing.fake! do
-          expect { subject.execute(merge_request, async: true) }.to change(MergeRequests::CreatePipelineWorker.jobs, :size).by(1)
-        end
+        expect(MergeRequests::CreatePipelineService)
+          .to receive(:new)
+          .with(project: project, current_user: user, params: { allow_duplicate: false })
+          .and_return(service)
+
+        expect(service).to receive(:execute_async).with(merge_request)
+
+        subject.execute(merge_request, async: true)
       end
 
-      context 'allow_duplicate: true' do
+      context 'when allow_duplicate: true' do
         it 'passes :allow_duplicate as true' do
-          expect(MergeRequests::CreatePipelineService).not_to receive(:new)
-          expect(MergeRequests::CreatePipelineWorker)
-            .to receive(:perform_async)
-            .with(project.id, user.id, merge_request.id, { "allow_duplicate" => true })
-            .and_call_original
+          service = instance_double(MergeRequests::CreatePipelineService)
 
-          Sidekiq::Testing.fake! do
-            expect { subject.execute(merge_request, async: true, allow_duplicate: true) }.to change(MergeRequests::CreatePipelineWorker.jobs, :size).by(1)
-          end
+          expect(MergeRequests::CreatePipelineService)
+            .to receive(:new)
+            .with(project: project, current_user: user, params: { allow_duplicate: true })
+            .and_return(service)
+
+          expect(service).to receive(:execute_async).with(merge_request)
+
+          subject.execute(merge_request, async: true, allow_duplicate: true)
         end
       end
     end
