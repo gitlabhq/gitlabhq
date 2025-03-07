@@ -19972,6 +19972,12 @@ msgstr ""
 msgid "Dependencies|This link will expire in %{number} days."
 msgstr ""
 
+msgid "Dependencies|To filter by version, filter by one component first"
+msgstr ""
+
+msgid "Dependencies|To filter by version, select exactly one component first"
+msgstr ""
+
 msgid "Dependencies|Toggle vulnerability list"
 msgstr ""
 

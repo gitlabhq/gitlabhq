@@ -3,7 +3,7 @@
 module WorkItemsHelper
   include IssuesHelper
 
-  def work_items_show_data(resource_parent, current_user)
+  def work_items_data(resource_parent, current_user)
     group = resource_parent.is_a?(Group) ? resource_parent : resource_parent.group
 
     {
@@ -30,24 +30,10 @@ module WorkItemsHelper
     }
   end
 
-  # overriden in EE
+  # overridden in EE
   def add_work_item_show_breadcrumb(resource_parent, _iid)
     path = resource_parent.is_a?(Group) ? issues_group_path(resource_parent) : project_issues_path(resource_parent)
 
     add_to_breadcrumbs(_('Issues'), path)
-  end
-
-  def work_items_list_data(group, current_user)
-    {
-      autocomplete_award_emojis_path: autocomplete_award_emojis_path,
-      full_path: group.full_path,
-      initial_sort: current_user&.user_preference&.issues_sort,
-      is_signed_in: current_user.present?.to_s,
-      show_new_issue_link: can?(current_user, :create_work_item, group).to_s,
-      issues_list_path: issues_group_path(group),
-      report_abuse_path: add_category_abuse_reports_path,
-      labels_manage_path: group_labels_path(group),
-      can_admin_label: can?(current_user, :admin_label, group).to_s
-    }
   end
 end

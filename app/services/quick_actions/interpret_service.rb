@@ -122,12 +122,19 @@ module QuickActions
       end
     end
 
-    def find_milestones(project, params = {})
-      return [] unless project
+    def find_milestones(container, params = {})
+      return [] unless container
 
-      group_ids = project.group.self_and_ancestors.select(:id) if project.group
+      group_ids =
+        if container.is_a?(Group)
+          group.self_and_ancestors.select(:id)
+        elsif container.is_a?(Project) && container.group
+          container.group.self_and_ancestors.select(:id)
+        else
+          []
+        end
 
-      MilestonesFinder.new(params.merge(project_ids: [project.id], group_ids: group_ids)).execute
+      MilestonesFinder.new(params.merge(project_ids: [project&.id], group_ids: group_ids)).execute
     end
 
     def parent

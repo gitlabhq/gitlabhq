@@ -18,6 +18,7 @@ import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_ex
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import activeDiscussionQuery from '~/work_items/components/design_management/graphql/client/active_design_discussion.query.graphql';
 import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
+import { preserveDetailsState } from '~/work_items/utils';
 
 export const config = {
   typeDefs,
@@ -63,6 +64,21 @@ export const config = {
       Namespace: {
         fields: {
           merge: true,
+        },
+      },
+      WorkItemWidgetDescription: {
+        fields: {
+          descriptionHtml: {
+            merge(_, incoming) {
+              const el = document.querySelector('.work-item-description');
+              if (!el) {
+                return incoming;
+              }
+
+              const descriptionHtml = preserveDetailsState(el, incoming);
+              return descriptionHtml || incoming;
+            },
+          },
         },
       },
       WorkItemWidgetNotes: {

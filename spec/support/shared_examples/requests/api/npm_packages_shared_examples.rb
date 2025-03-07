@@ -163,7 +163,7 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
     end
 
     context 'with a job token for a completed job' do
-      let(:headers) { build_token_auth_header(job.token) }
+      let(:headers) { job_token_auth_header(job) }
 
       before do
         job.update!(status: :success)

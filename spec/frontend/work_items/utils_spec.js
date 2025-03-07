@@ -1,10 +1,10 @@
 import {
   NEW_WORK_ITEM_IID,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_ENUM_EPIC,
-  STATE_OPEN,
   STATE_CLOSED,
+  STATE_OPEN,
+  WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_REQUIREMENTS,
@@ -36,6 +36,7 @@ import {
   getItems,
   canRouterNav,
   formatSelectOptionForCustomField,
+  preserveDetailsState,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
@@ -400,5 +401,52 @@ describe('formatSelectOptionForCustomField', () => {
     };
 
     expect(formatSelectOptionForCustomField(data)).toEqual(result);
+  });
+});
+
+describe('preserveDetailsState', () => {
+  const descriptionHtml = '<details><summary>Test</summary><p>Content</p></details>';
+  let element;
+
+  beforeEach(() => {
+    element = document.createElement('div');
+  });
+
+  it('returns null when there are no open details elements', () => {
+    element.innerHTML = '<details><summary>Test</summary><p>Content</p></details>';
+
+    expect(preserveDetailsState(element, descriptionHtml)).toBe(null);
+  });
+
+  it('returns null when number of details elements does not match', () => {
+    element.innerHTML = '<details open><summary>Test</summary><p>Content</p></details>';
+    const newDescriptionHtml =
+      '<details><summary>Test</summary><p>Content</p></details><details><summary>Test 2</summary><p>Content 2</p></details>';
+
+    expect(preserveDetailsState(element, newDescriptionHtml)).toBe(null);
+  });
+
+  it('preserves open state of details elements', () => {
+    element.innerHTML = '<details open><summary>Test</summary><p>Content</p></details>';
+
+    expect(preserveDetailsState(element, descriptionHtml)).toBe(
+      '<details open="true"><summary>Test</summary><p>Content</p></details>',
+    );
+  });
+
+  it('handles multiple details elements', () => {
+    element.innerHTML = `
+      <details open><summary>Test 1</summary><p>Content 1</p></details>
+      <details><summary>Test 2</summary><p>Content 2</p></details>
+    `;
+    const newDescriptionHtml = `
+      <details><summary>Test 1</summary><p>Content 1</p></details>
+      <details><summary>Test 2</summary><p>Content 2</p></details>
+    `;
+
+    expect(preserveDetailsState(element, newDescriptionHtml)).toBe(`
+      <details open="true"><summary>Test 1</summary><p>Content 1</p></details>
+      <details><summary>Test 2</summary><p>Content 2</p></details>
+    `);
   });
 });

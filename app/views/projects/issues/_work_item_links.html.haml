@@ -1,6 +1,6 @@
 .js-work-item-links-root{ data: { issuable_id: @issue.id,
   issuable_iid: @issue.iid,
   full_path: @project.full_path,
-  wi: work_items_show_data(@project, current_user),
+  wi: work_items_data(@project, current_user),
   register_path: new_user_registration_path(redirect_to_referer: 'yes'),
   sign_in_path: new_session_path(:user, redirect_to_referer: 'yes') } }

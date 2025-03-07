@@ -59,6 +59,8 @@ Development guides that are specific to CI/CD are listed here:
 - If you are adding a new keyword or changing the CI schema, refer to the following guides:
   - [The CI configuration guide](configuration.md)
   - [The CI schema guide](schema.md)
+- If you are making a change to core CI/CD process such as linting or pipeline creation, refer to the
+    [CI/CD testing guide](testing.md)
 
 See the [CI/CD YAML reference documentation guide](cicd_reference_documentation_guide.md)
 to learn how to update the [CI/CD YAML syntax reference page](../../ci/yaml/_index.md).

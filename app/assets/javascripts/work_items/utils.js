@@ -8,6 +8,7 @@ import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import {
   NEW_WORK_ITEM_IID,
   WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_DESIGNS,
   WIDGET_TYPE_HEALTH_STATUS,
   WIDGET_TYPE_HIERARCHY,
@@ -44,6 +45,9 @@ export const isWeightWidget = (widget) => widget.type === WIDGET_TYPE_WEIGHT;
 
 export const findHierarchyWidgets = (widgets) =>
   widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
+
+export const findDescriptionWidget = (workItem) =>
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESCRIPTION);
 
 export const findLinkedItemsWidget = (workItem) =>
   workItem.widgets?.find((widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS);
@@ -351,3 +355,35 @@ export const formatSelectOptionForCustomField = ({ id, value }) => ({
   text: value,
   value: id,
 });
+
+/**
+ * This function takes the `descriptionHtml` property of a work item and updates any `<details>`
+ * elements within it with an `open=true` attribute to match the current state in the DOM.
+ *
+ * This is necessary for scenarios such as toggling a checkbox with an opened `<details>` element,
+ * which causes the `<details>` element to close when the frontend receives the backend response.
+ *
+ * @param {HTMLElement} element DOM element containing <details> elements
+ * @param {string} descriptionHtml The incoming HTML description
+ * @returns {string|null} The updated HTML for the incoming description that preserves the state of the <details> elements
+ */
+export const preserveDetailsState = (element, descriptionHtml) => {
+  const previousDetails = Array.from(element.getElementsByTagName('details'));
+  if (!previousDetails.some((details) => details.open)) {
+    return null;
+  }
+
+  const nextTemplate = document.createElement('div');
+  nextTemplate.innerHTML = descriptionHtml; // eslint-disable-line no-unsanitized/property
+  const nextDetails = nextTemplate.getElementsByTagName('details');
+  if (previousDetails.length !== nextDetails.length) {
+    return null;
+  }
+
+  Array.from(nextDetails).forEach((details, i) => {
+    if (previousDetails[i].open) {
+      details.setAttribute('open', 'true');
+    }
+  });
+  return nextTemplate.innerHTML;
+};

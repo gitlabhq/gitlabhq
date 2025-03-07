@@ -103,15 +103,15 @@ module Gitlab
           _("Set the milestone to %{milestone_reference}.") % { milestone_reference: milestone.to_reference } if milestone
         end
         params '%"milestone"'
-        types Issue, MergeRequest
+        types Issue, MergeRequest, WorkItem
         condition do
           quick_action_target.supports_milestone? &&
             current_user.can?(:"set_#{quick_action_target.to_ability_name}_metadata", quick_action_target) &&
-            find_milestones(project, state: 'active').any?
+            find_milestones(container, state: 'active').any?
         end
         parse_params do |milestone_param|
           extract_references(milestone_param, :milestone).first ||
-            find_milestones(project, title: milestone_param.strip).first
+            find_milestones(container, title: milestone_param.strip).first
         end
         command :milestone do |milestone|
           @updates[:milestone_id] = milestone.id if milestone
