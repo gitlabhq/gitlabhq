@@ -1,8 +1,9 @@
+@use 'constants';
 @import 'framework/variables';
 
 .rd-diff-file-component {
   // TODO: this must be defined using CSS Custom Properties to work across all pages
-  scroll-margin-top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{12px});
+  scroll-margin-top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{constants.$diff-file-sticky-offset});
 }
 
 .rd-diff-file {

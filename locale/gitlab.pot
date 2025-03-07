@@ -18324,6 +18324,9 @@ msgstr ""
 msgid "DORA4Metrics|No data available for Group: %{fullPath}"
 msgstr ""
 
+msgid "DORA4Metrics|No deployments during this period"
+msgstr ""
+
 msgid "DORA4Metrics|No incidents during this period"
 msgstr ""
 
@@ -54308,10 +54311,10 @@ msgstr ""
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By %{link_open}@johnsmith%{link_close}\"). It will also associate and/or assign these issues and comments with the selected user."
 msgstr ""
 
-msgid "Self hosted AI Gateway URL is not set.To set it, in a rails console run: `Ai::Setting.instance.update!(ai_gateway_url: URL)`"
+msgid "Self hosted AI Gateway URL is not set. It can be changed in the Gitlab Duo configuration."
 msgstr ""
 
-msgid "Self hosted AI Gateway URL is set to %{url}.To change it, in a rails console run: `Ai::Setting.instance.update!(ai_gateway_url: URL)`"
+msgid "Self hosted AI Gateway URL is set to %{url}. It can be changed in the Gitlab Duo configuration."
 msgstr ""
 
 msgid "Send"

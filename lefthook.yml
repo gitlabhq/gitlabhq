@@ -12,6 +12,11 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{js,vue}'
       run: yarn run lint:eslint {files}
+    circular-dependencies:
+      tags: frontend
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '*.{js,mjs,cjs,vue}'
+      run: yarn run deps:check {files}
     jsonlint:
       tags: style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD

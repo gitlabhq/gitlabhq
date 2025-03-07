@@ -16,10 +16,11 @@ include:
       gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
       allure_job_name: "${QA_RUN_TYPE}"
   - project: gitlab-org/quality/pipeline-common
-    ref: 9.11.1
+    ref: 9.13.0
     file:
-      - /ci/base.gitlab-ci.yml
-      - /ci/knapsack-report.yml
+      - /ci/notify-slack.gitlab-ci.yml
+      - /ci/qa-report.gitlab-ci.yml
+      - /ci/junit.gitlab-ci.yml
 
 stages:
   - test
@@ -43,29 +44,16 @@ stages:
   # image path and registry needs to be defined explicitly
   image: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
 
-.bundler-variables:
+.qa-install:
+  extends:
+    - .ruby-image
   variables:
     BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
     BUNDLE_SILENCE_ROOT_WARNING: "true"
     BUNDLE_WITHOUT: development
-
-.qa-run-e2e-with-bundler:
-  script:
-    - source $CI_PROJECT_DIR/scripts/utils.sh
-    - source $CI_PROJECT_DIR/scripts/rspec_helpers.sh
-    - run_e2e_specs "${QA_GITLAB_URL}" "${QA_TESTS}" "${QA_RSPEC_TAGS}"
-
-.qa-install:
-  extends:
-    - .bundler-variables
-    - .gitlab-qa-install
-
-.update-script:
-  script:
-    - !reference [.bundle-prefix]
-    - export QA_COMMAND="$BUNDLE_PREFIX gitlab-qa ${QA_SCENARIO:-Test::Omnibus::UpdateFromPrevious} $RELEASE $GITLAB_SEMVER_VERSION $UPDATE_TYPE $UPDATE_FROM_EDITION -- $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
-    - echo "Running - '$QA_COMMAND'"
-    - eval "$QA_COMMAND"
+  before_script:
+    - echo "SUITE_RAN=true" > $QA_SUITE_STATUS_ENV_FILE
+    - cd qa && bundle install
 
 .docker-in-docker:
   services:
@@ -76,28 +64,38 @@ stages:
     DOCKER_TLS_VERIFY: 1
     DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
 
-.qa:
-  extends:
-    - .bundler-variables
-    - .qa-base
-  stage: test
-  tags:
-    - e2e
+.e2e-test-variables:
   variables:
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
     QA_INTERCEPT_REQUESTS: "true"
+    QA_ARTIFACTS_DIR: $CI_PROJECT_DIR
+    QA_SUITE_STATUS_ENV_FILE: $CI_PROJECT_DIR/suite_status.env
+    QA_ALLOW_LOCAL_REQUESTS: "true"
     GITLAB_LICENSE_MODE: test
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
-  # Allow QA jobs to fail as they are flaky. The top level `package-and-e2e:ee`
-  # pipeline is not allowed to fail, so without allowing QA to fail, we will be
-  # blocking merges due to flaky tests.
-  allow_failure: true
+    FF_NETWORK_PER_BUILD: "true"
+
+.e2e-test-base:
+  extends:
+    - .docker-in-docker
+    - .qa-install
+    - .e2e-test-variables
+  image: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}:git-${GIT_VERSION}-lfs-${LFS_VERSION}-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-kubectl-${KUBECTL_VERSION}-helm-${HELM_VERSION}-kind-${KIND_VERSION}"
+  variables:
+    # variables related to failure issue reporting
+    # default values from /ci/qa-report.gitlab-ci.yml will work with gitlab-qa orchestrator but not with cng and gdk tests
+    QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.json
+    QA_TEST_METRICS_JSON_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/test-metrics-*.json
+    QA_SYSTEM_LOG_FILE_PATTERN: $CI_PROJECT_DIR/test_output/logs
+  script:
+    - source $CI_PROJECT_DIR/scripts/utils.sh
+    - source $CI_PROJECT_DIR/scripts/rspec_helpers.sh
+    - run_e2e_specs "${QA_GITLAB_URL}" "${QA_TESTS}" "${QA_RSPEC_TAGS}"
 
 .upload-test-runtime-data:
   extends:
     - .qa-install
-    - .ruby-image
   stage: report
   when: on_success
   variables:
@@ -108,33 +106,32 @@ stages:
 .export-test-metrics:
   extends:
     - .qa-install
-    - .ruby-image
   stage: report
   when: always
   variables:
-    QA_METRICS_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/gitlab-qa-run-*/**/test-metrics-*.json
+    QA_METRICS_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/test-metrics-*.json
   script:
     - bundle exec rake "ci:export_test_metrics[$QA_METRICS_REPORT_FILE_PATTERN]"
 
 .export-code-paths-mapping:
   extends:
     - .qa-install
-    - .ruby-image
   stage: report
   when: always
   variables:
-    QA_CODE_PATHS_MAPPING_FILE_PATTERN: $CI_PROJECT_DIR/gitlab-qa-run-*/**/test-code-paths-mapping-*.json
+    QA_CODE_PATHS_MAPPING_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/test-code-paths-mapping-*.json
   script:
     - bundle exec rake "ci:export_code_paths_mapping[$QA_CODE_PATHS_MAPPING_FILE_PATTERN]"
+  rules:
+    - if: '$COVERBAND_ENABLED == "true"'
 
 .notify-slack:
   extends:
-    - .notify-slack-qa
+    - .post-to-slack
     - .qa-install
-    - .ruby-image
   stage: notify
   variables:
-    QA_RSPEC_XML_FILE_PATTERN: "${CI_PROJECT_DIR}/gitlab-qa-run-*/**/rspec-*.xml"
+    QA_RSPEC_XML_FILE_PATTERN: "$CI_PROJECT_DIR/qa/tmp/rspec-*.xml"
     GITLAB_API_TOKEN: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE
     SLACK_ICON_EMOJI: ci_failing
     STATUS_SYM: ☠️
@@ -149,7 +146,7 @@ stages:
         exit 0
       fi
     - bundle exec prepare-stage-reports --input-files "${QA_RSPEC_XML_FILE_PATTERN}"
-    - !reference [.notify-slack-qa, script]
+    - !reference [.post-to-slack, script]
 
 .failure-videos:
   variables:
@@ -160,17 +157,6 @@ stages:
 # ==========================================
 # Pre stage
 # ==========================================
-.check-release-set:
-  stage: .pre
-  script:
-    - |
-      if [ -z "$RELEASE" ]; then
-        echo "E2E test pipeline requires omnibus installation docker image to be set via $RELEASE environment variable"
-        exit 1
-      else
-        echo "Omnibus installation image is set to '$RELEASE'"
-      fi
-
 dont-interrupt-me:
   stage: .pre
   interruptible: false

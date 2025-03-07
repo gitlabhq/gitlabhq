@@ -1,4 +1,3 @@
-import initUsageQuotas from '~/usage_quotas';
-import { PROJECT_VIEW_TYPE } from '~/usage_quotas/constants';
+import initUsageQuotasProjectView from 'ee_else_ce/usage_quotas/project_view_metadata';
 
-initUsageQuotas(PROJECT_VIEW_TYPE);
+initUsageQuotasProjectView();

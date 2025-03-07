@@ -64,7 +64,9 @@ module QA
 
           updated_pipeline_definitions(pipeline_types).each do |type, yaml|
             file_name = generated_yml_file_name(type)
-            File.write(file_name, yaml)
+            # mark pipeline as gitlab project pipeline due to issue with variables not working with 'include' keyword
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/378717
+            File.write(file_name, yaml.gsub("$GITLAB_PROJECT_PIPELINE", '"true"'))
             logger.info("Pipeline definition file created: '#{file_name}'")
           end
         end
@@ -154,11 +156,10 @@ module QA
         # @return [String]
         def variables_section
           @pipeline_variables ||= "variables:\n".then do |variables|
-            qa_cache_digest = Digest::MD5.file("Gemfile.lock").hexdigest # rubocop:disable Fips/MD5 -- CI specific digest does not require FIPS compliance
             ruby_version = File.read(File.join(project_root, ".ruby-version")).strip
             vars = {
+              "RUBY_VERSION" => ENV["RUBY_VERSION"] || ruby_version,
               "GITLAB_SEMVER_VERSION" => File.read(File.join(project_root, "VERSION")),
-              "GITLAB_QA_CACHE_KEY" => "qa-e2e-ruby-#{ENV['RUBY_VERSION'] || ruby_version}-#{qa_cache_digest}",
               "FEATURE_FLAGS" => env["QA_FEATURE_FLAGS"],
               # QA_SUITES is only used by test-on-omnibus due to pipeline being reusable in external projects
               "QA_SUITES" => executable_qa_suites,

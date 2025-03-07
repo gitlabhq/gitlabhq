@@ -148,6 +148,29 @@ RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_ana
       it_behaves_like 'masked url'
     end
 
+    context 'with username in path parameters' do
+      let(:masked_url) { "http://localhost/username" }
+      let(:request) do
+        double(
+          :Request,
+          path_parameters: {
+            controller: 'users',
+            action: 'show',
+            username: 'someuser'
+          },
+          protocol: 'http',
+          host: 'localhost',
+          query_string: ''
+        )
+      end
+
+      before do
+        allow(helper).to receive(:request).and_return(request)
+      end
+
+      it_behaves_like 'masked url'
+    end
+
     context 'when assignee_username is present' do
       let(:masked_url) { "http://localhost/dashboard/issues?assignee_username=masked_assignee_username" }
       let(:request) do
@@ -363,6 +386,21 @@ RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_ana
       let(:masked_url) { 'http://localhost/admin/groups/id' }
 
       it 'masks sensitive parameters in the URL for group admin page' do
+        expect(helper.masked_referrer_url(original_url)).to eq(masked_url)
+      end
+    end
+
+    context 'with controller for users' do
+      let(:original_url) { "http://localhost/someuser" }
+      let(:masked_url) { 'http://localhost/username' }
+
+      it 'masks username in the URL for users controller' do
+        allow(Rails.application.routes).to receive(:recognize_path)
+          .with(original_url)
+          .and_return({ controller: 'users', action: 'show', username: 'someuser' })
+
+        stub_feature_flags(mask_page_urls: true)
+
         expect(helper.masked_referrer_url(original_url)).to eq(masked_url)
       end
     end

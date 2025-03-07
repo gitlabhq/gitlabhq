@@ -127,6 +127,9 @@ export default [
     rules: {
       'import/no-commonjs': 'error',
       'import/no-default-export': 'off',
+      // Use dependency-cruiser to get an accurate analysis on circular dependencies
+      // and for better performance
+      'import/no-cycle': 'off',
 
       'no-underscore-dangle': [
         'error',
@@ -662,29 +665,11 @@ export default [
     },
   },
 
-  // Circular dependencies overrides
-  {
-    files: [
-      // https://gitlab.com/gitlab-org/gitlab/issues/37987
-      'ee/app/assets/javascripts/vue_shared/**/*.{js,vue}',
-      // https://gitlab.com/gitlab-org/gitlab/issues/28716
-      '{,ee/}app/assets/javascripts/filtered_search/**/*.js',
-      // https://gitlab.com/gitlab-org/gitlab/issues/28719
-      'app/assets/javascripts/image_diff/**/*.js',
-    ],
-
-    rules: {
-      'import/no-cycle': 'off',
-    },
-  },
-
   // Web IDE config
   {
     files: ['app/assets/javascripts/ide/**/*.{js,vue}'],
 
     rules: {
-      // https://gitlab.com/gitlab-org/gitlab/issues/28717
-      'import/no-cycle': 'off',
       // https://gitlab.com/gitlab-org/gitlab/issues/33024
       'promise/no-nesting': 'off',
     },

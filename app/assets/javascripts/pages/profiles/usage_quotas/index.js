@@ -1,4 +1,3 @@
-import initUsageQuotas from '~/usage_quotas';
-import { PROFILE_VIEW_TYPE } from '~/usage_quotas/constants';
+import initUsageQuotasProfileView from 'ee_else_ce/usage_quotas/profile_view_metadata';
 
-initUsageQuotas(PROFILE_VIEW_TYPE);
+initUsageQuotasProfileView();

@@ -1,10 +1,18 @@
-# E2E tests pipeline loaded dynamically by script: scripts/generate-e2e-pipeline
-# For adding new tests, refer to: doc/development/testing_guide/end_to_end/test_pipelines.md
 include:
-  - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/omnibus.gitlab-ci.yml
+  # Variable $GITLAB_PROJECT_PIPELINE is set to a literal value by dynamically generated pipeline due to an issue
+  # where include is not supporting variables in dynamically generated pipelines: https://gitlab.com/gitlab-org/gitlab/-/issues/378717
+  - local: .gitlab/ci/test-on-omnibus/internal.gitlab-ci.yml
+    rules:
+      - if: '$GITLAB_PROJECT_PIPELINE'
+  # External e2e test job definitions are required for project including omnibus tests directly without access to gitlab repo code
+  - local: .gitlab/ci/test-on-omnibus/external.gitlab-ci.yml
+    rules:
+      - if: '$GITLAB_PROJECT_PIPELINE'
+        when: never
+      - when: always
 
 variables:
   QA_PARALLEL_PROCESSES: 6
@@ -30,7 +38,7 @@ check-release-set:
 #   and optionally QA_TESTS to run specific quarantined tests
 _quarantine:
   extends:
-    - .qa
+    - .omnibus-e2e
   stage: test
   variables:
     QA_RSPEC_TAGS: --tag quarantine
@@ -52,7 +60,7 @@ _quarantine:
 # Execute smallest test suite to validate omnibus package in dependency update merge request pipelines
 health-check:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RUN_IN_PARALLEL: true
@@ -64,7 +72,7 @@ health-check:
 instance:
   extends:
     - .parallel
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RUN_IN_PARALLEL: true
@@ -77,7 +85,7 @@ instance:
 praefect:
   extends:
     - .parallel
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::Praefect
     QA_SUITE_CLASS_NAME: Test::Instance::Create # overrides default 'All' suite to only run 'Create' group specs
@@ -93,7 +101,7 @@ praefect:
 gitaly-transactions:
   extends:
     - .parallel
-    - .qa
+    - .omnibus-e2e
     - .with-ignored-runtime-data
   variables:
     QA_SCENARIO: Test::Integration::Praefect
@@ -112,7 +120,7 @@ gitaly-transactions:
 gitaly-reftables-backend:
   extends:
     - .parallel
-    - .qa
+    - .omnibus-e2e
     - .with-ignored-runtime-data
   variables:
     QA_SCENARIO: Test::Integration::Praefect
@@ -128,7 +136,7 @@ git-sha256-repositories:
   when: manual
   extends:
     - .parallel
-    - .qa
+    - .omnibus-e2e
     - .with-ignored-runtime-data
   variables:
     QA_SCENARIO: Test::Instance::Image
@@ -139,7 +147,7 @@ git-sha256-repositories:
     - if: $QA_SUITES =~ /Test::Instance::All/
 
 gitaly-cluster:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::GitalyCluster
   rules:
@@ -147,7 +155,7 @@ gitaly-cluster:
     - if: $QA_SUITES =~ /Test::Integration::GitalyCluster/
 
 group-saml:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::GroupSAML
   rules:
@@ -155,7 +163,7 @@ group-saml:
 
 oauth:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_GITLAB_HOSTNAME: "gitlab"
@@ -167,7 +175,7 @@ oauth:
     - if: $QA_SUITES =~ /Test::Integration::OAuth/
 
 instance-saml:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::InstanceSAML
   rules:
@@ -176,7 +184,7 @@ instance-saml:
 
 jira:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::Jira
   rules:
@@ -184,7 +192,7 @@ jira:
     - if: $QA_SUITES =~ /Test::Integration::Jira/
 
 integrations:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::Integrations
   rules:
@@ -192,7 +200,7 @@ integrations:
     - if: $QA_SUITES =~ /Test::Integration::Integrations/
 
 ldap-no-server:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoServer
   rules:
@@ -200,7 +208,7 @@ ldap-no-server:
     - if: $QA_SUITES =~ /Test::Integration::LDAPNoServer/
 
 ldap-tls:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::LDAPTLS
   rules:
@@ -208,7 +216,7 @@ ldap-tls:
     - if: $QA_SUITES =~ /Test::Integration::LDAPTLS/
 
 ldap-no-tls:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoTLS
   rules:
@@ -216,7 +224,7 @@ ldap-no-tls:
     - if: $QA_SUITES =~ /Test::Integration::LDAPNoTLS/
 
 mtls:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::MTLS
   rules:
@@ -225,7 +233,7 @@ mtls:
 
 mattermost:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::Mattermost
   rules:
@@ -234,7 +242,7 @@ mattermost:
 
 registry:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::Registry
   rules:
@@ -243,7 +251,7 @@ registry:
 
 repository-storage:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Instance::RepositoryStorage
   rules:
@@ -252,7 +260,7 @@ repository-storage:
 
 service-ping-disabled:
   extends:
-    - .qa
+    - .omnibus-e2e
     - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::ServicePingDisabled
@@ -262,7 +270,7 @@ service-ping-disabled:
 
 smtp:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::SMTP
   rules:
@@ -271,7 +279,7 @@ smtp:
 
 cloud-activation:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag cloud_activation
@@ -280,7 +288,7 @@ cloud-activation:
     - if: $QA_SUITES =~ /Test::Instance::CloudActivation/
 
 metrics:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::Metrics
   rules:
@@ -288,12 +296,12 @@ metrics:
     - if: $QA_SUITES =~ /Test::Integration::Metrics/
 
 elasticsearch:
-  extends: .qa
+  extends: .omnibus-e2e
   variables:
     QA_SCENARIO: "Test::Integration::Elasticsearch"
     ELASTIC_URL: "http://elastic68:9200"
   before_script:
-    - !reference [.qa, before_script]
+    - !reference [.omnibus-e2e, before_script]
   rules:
     - !reference [.rules:test:dependency-update-never, rules]
     - !reference [.rules:test:ee-only, rules]
@@ -301,7 +309,7 @@ elasticsearch:
 
 importers:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::Import
     QA_MOCK_GITHUB: "true"
@@ -311,7 +319,7 @@ importers:
 
 import-with-smtp:
   extends:
-    - .qa
+    - .omnibus-e2e
     - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::ImportWithSMTP
@@ -322,7 +330,7 @@ import-with-smtp:
 # ========== ai-gateway ===========
 ai-gateway:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::AiGateway
   rules:
@@ -331,7 +339,7 @@ ai-gateway:
 
 ai-gateway-no-seat-assigned:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::AiGatewayNoSeatAssigned
   rules:
@@ -340,24 +348,24 @@ ai-gateway-no-seat-assigned:
 
 ai-gateway-no-add-on:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::AiGatewayNoAddOn
   before_script:
     - export QA_EE_ACTIVATION_CODE=$QA_EE_ACTIVATION_CODE_NO_ADD_ON
-    - !reference [.qa, before_script]
+    - !reference [.omnibus-e2e, before_script]
   rules:
     - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoAddOn/
 
 ai-gateway-no-license:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::AiGatewayNoLicense
   before_script:
     - unset QA_EE_LICENSE
-    - !reference [.qa, before_script]
+    - !reference [.omnibus-e2e, before_script]
   rules:
     - !reference [.rules:test:dependency-update-never, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoLicense/
@@ -366,7 +374,7 @@ ai-gateway-no-license:
 
 continuous-vulnerabiity-scanning:
   extends:
-    - .qa
+    - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::ContinuousVulnerabilityScanning
     QA_MOCK_GITHUB: "true"
@@ -380,7 +388,7 @@ continuous-vulnerabiity-scanning:
 # ------------------------------------------
 update-minor:
   extends:
-    - .qa
+    - .omnibus-e2e
     - .update-script
   variables:
     UPDATE_TYPE: minor
@@ -391,7 +399,7 @@ update-minor:
 
 update-major:
   extends:
-    - .qa
+    - .omnibus-e2e
     - .update-script
   variables:
     UPDATE_TYPE: major
@@ -402,7 +410,7 @@ update-major:
 
 update-patch:
   extends:
-    - .qa
+    - .omnibus-e2e
     - .update-script
   variables:
     UPDATE_TYPE: patch
@@ -413,7 +421,7 @@ update-patch:
 
 update-from-patch-to-stable:
   extends:
-    - .qa
+    - .omnibus-e2e
     - .update-script
   variables:
     QA_RSPEC_TAGS: --tag health_check
@@ -424,7 +432,7 @@ update-from-patch-to-stable:
 
 update-ee-to-ce:
   extends:
-    - .qa
+    - .omnibus-e2e
     - .update-script
   variables:
     UPDATE_TYPE: minor
@@ -454,8 +462,12 @@ export-test-metrics:
   extends:
     - .export-test-metrics
     - .rules:report:process-results
+  variables:
+    QA_METRICS_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/gitlab-qa-run-*/**/test-metrics-*.json
 
 notify-slack:
   extends:
     - .notify-slack
     - .rules:report:process-results
+  variables:
+    QA_RSPEC_XML_FILE_PATTERN: "${CI_PROJECT_DIR}/gitlab-qa-run-*/**/rspec-*.xml"

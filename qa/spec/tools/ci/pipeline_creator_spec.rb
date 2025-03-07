@@ -97,8 +97,8 @@ module QA
 
       let(:variables) do
         {
+          "RUBY_VERSION" => ruby_version,
           "GITLAB_SEMVER_VERSION" => gitlab_version,
-          "GITLAB_QA_CACHE_KEY" => "qa-e2e-ruby-#{ruby_version}-#{md5_sum.hexdigest}",
           "FEATURE_FLAGS" => env["QA_FEATURE_FLAGS"],
           "QA_SUITES" => scenario_class.to_s
         }.compact

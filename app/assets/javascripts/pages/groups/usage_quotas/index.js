@@ -1,4 +1,3 @@
-import initUsageQuotas from '~/usage_quotas';
-import { GROUP_VIEW_TYPE } from '~/usage_quotas/constants';
+import initUsageQuotasGroupView from 'ee_else_ce/usage_quotas/group_view_metadata';
 
-initUsageQuotas(GROUP_VIEW_TYPE);
+initUsageQuotasGroupView();
