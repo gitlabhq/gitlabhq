@@ -20052,6 +20052,28 @@ CREATE SEQUENCE project_repository_storage_moves_id_seq
 
 ALTER SEQUENCE project_repository_storage_moves_id_seq OWNED BY project_repository_storage_moves.id;
 
+CREATE TABLE project_requirement_compliance_statuses (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    compliance_requirement_id bigint NOT NULL,
+    compliance_framework_id bigint NOT NULL,
+    pass_count integer DEFAULT 0 NOT NULL,
+    fail_count integer DEFAULT 0 NOT NULL,
+    pending_count integer DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE project_requirement_compliance_statuses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_requirement_compliance_statuses_id_seq OWNED BY project_requirement_compliance_statuses.id;
+
 CREATE VIEW project_routes_view AS
  SELECT p.id,
     p.repository_storage,
@@ -26136,6 +26158,8 @@ ALTER TABLE ONLY project_repositories ALTER COLUMN id SET DEFAULT nextval('proje
 
 ALTER TABLE ONLY project_repository_storage_moves ALTER COLUMN id SET DEFAULT nextval('project_repository_storage_moves_id_seq'::regclass);
 
+ALTER TABLE ONLY project_requirement_compliance_statuses ALTER COLUMN id SET DEFAULT nextval('project_requirement_compliance_statuses_id_seq'::regclass);
+
 ALTER TABLE ONLY project_saved_replies ALTER COLUMN id SET DEFAULT nextval('project_saved_replies_id_seq'::regclass);
 
 ALTER TABLE ONLY project_secrets_managers ALTER COLUMN id SET DEFAULT nextval('project_secrets_managers_id_seq'::regclass);
@@ -28939,6 +28963,9 @@ ALTER TABLE ONLY project_repositories
 ALTER TABLE ONLY project_repository_storage_moves
     ADD CONSTRAINT project_repository_storage_moves_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY project_requirement_compliance_statuses
+    ADD CONSTRAINT project_requirement_compliance_statuses_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY project_saved_replies
     ADD CONSTRAINT project_saved_replies_pkey PRIMARY KEY (id);
 
@@ -31459,6 +31486,10 @@ CREATE INDEX idx_project_control_statuses_on_project_id ON project_control_compl
 CREATE INDEX idx_project_control_statuses_on_requirement_id ON project_control_compliance_statuses USING btree (compliance_requirement_id);
 
 CREATE INDEX idx_project_repository_check_partial ON projects USING btree (repository_storage, created_at) WHERE (last_repository_check_at IS NULL);
+
+CREATE INDEX idx_project_requirement_statuses_on_framework_id ON project_requirement_compliance_statuses USING btree (compliance_framework_id);
+
+CREATE INDEX idx_project_requirement_statuses_on_namespace_id ON project_requirement_compliance_statuses USING btree (namespace_id);
 
 CREATE INDEX idx_projects_api_created_at_id_for_archived ON projects USING btree (created_at, id) WHERE ((archived = true) AND (pending_delete = false) AND (hidden = false));
 
@@ -34776,6 +34807,8 @@ CREATE INDEX index_project_repositories_on_shard_id_and_project_id ON project_re
 
 CREATE INDEX index_project_repository_storage_moves_on_project_id ON project_repository_storage_moves USING btree (project_id);
 
+CREATE INDEX index_project_requirement_compliance_statuses_on_project_id ON project_requirement_compliance_statuses USING btree (project_id);
+
 CREATE INDEX index_project_saved_replies_on_project_id ON project_saved_replies USING btree (project_id);
 
 CREATE UNIQUE INDEX index_project_secrets_managers_on_project_id ON project_secrets_managers USING btree (project_id);
@@ -36347,6 +36380,8 @@ CREATE UNIQUE INDEX uniq_audit_instance_event_filters_destination_id_and_event_t
 CREATE UNIQUE INDEX uniq_compliance_controls_requirement_id_and_name ON compliance_requirements_controls USING btree (compliance_requirement_id, name) WHERE (control_type <> 1);
 
 CREATE UNIQUE INDEX uniq_compliance_statuses_control_project_id ON project_control_compliance_statuses USING btree (compliance_requirements_control_id, project_id);
+
+CREATE UNIQUE INDEX uniq_compliance_statuses_requirement_project_id ON project_requirement_compliance_statuses USING btree (compliance_requirement_id, project_id);
 
 CREATE UNIQUE INDEX uniq_google_cloud_logging_configuration_namespace_id_and_name ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, name);
 
@@ -38973,6 +39008,9 @@ ALTER TABLE ONLY design_management_designs_versions
 ALTER TABLE ONLY external_status_checks_protected_branches
     ADD CONSTRAINT fk_0480f2308c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY project_requirement_compliance_statuses
+    ADD CONSTRAINT fk_04ffb1e9ab FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE RESTRICT;
+
 ALTER TABLE ONLY requirements_management_test_reports
     ADD CONSTRAINT fk_05094e3d87 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -40773,6 +40811,9 @@ ALTER TABLE ONLY error_tracking_error_events
 ALTER TABLE ONLY ml_candidates
     ADD CONSTRAINT fk_e86e0bfa5a FOREIGN KEY (model_version_id) REFERENCES ml_model_versions(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY project_requirement_compliance_statuses
+    ADD CONSTRAINT fk_e8e4ff037d FOREIGN KEY (compliance_requirement_id) REFERENCES compliance_requirements(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT fk_e8fe908a34 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -40913,6 +40954,9 @@ ALTER TABLE ONLY cluster_agents
 
 ALTER TABLE ONLY protected_tag_create_access_levels
     ADD CONSTRAINT fk_f7dfda8c51 FOREIGN KEY (protected_tag_id) REFERENCES protected_tags(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_requirement_compliance_statuses
+    ADD CONSTRAINT fk_f9109a4712 FOREIGN KEY (compliance_framework_id) REFERENCES compliance_management_frameworks(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY application_settings
     ADD CONSTRAINT fk_f9867b3540 FOREIGN KEY (web_ide_oauth_application_id) REFERENCES oauth_applications(id) ON DELETE SET NULL;
@@ -41069,6 +41113,9 @@ ALTER TABLE ai_code_suggestion_events
 
 ALTER TABLE ONLY audit_events_external_audit_event_destinations
     ADD CONSTRAINT fk_rails_0bc80a4edc FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_requirement_compliance_statuses
+    ADD CONSTRAINT fk_rails_0beca284a6 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE RESTRICT;
 
 ALTER TABLE ONLY operations_user_lists
     ADD CONSTRAINT fk_rails_0c716e079b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
