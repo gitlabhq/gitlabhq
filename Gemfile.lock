@@ -763,7 +763,7 @@ GEM
       pg_query (>= 5.1.0, < 7.0)
       redis (> 3.0.0, < 6.0.0)
     gitlab-license (2.6.0)
-    gitlab-mail_room (0.0.25)
+    gitlab-mail_room (0.0.27)
       jwt (>= 2.0)
       net-imap (>= 0.2.1)
       oauth2 (>= 1.4.4, < 3)
