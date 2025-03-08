@@ -431,7 +431,7 @@ run:
 ```
 
 Steps only have access to a subset of environment variables from the runner environment.
-Follow [epic 15073](https://gitlab.com/groups/gitlab-org/-/epics/15073+) to track
+Follow [epic 15073](https://gitlab.com/groups/gitlab-org/-/epics/15073) to track
 when steps can access all environment variables.
 
 #### Execute a command

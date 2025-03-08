@@ -165,32 +165,6 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
       end
     end
 
-    describe 'showing recaptcha on group creation when it is enabled' do
-      before do
-        stub_application_setting(recaptcha_enabled: true)
-        allow(Gitlab::Recaptcha).to receive(:load_configurations!)
-        visit new_group_path
-        click_link 'Create group'
-      end
-
-      it 'renders recaptcha' do
-        expect(page).to have_css('.recaptcha')
-      end
-    end
-
-    describe 'not showing recaptcha on group creation when it is disabled' do
-      before do
-        stub_feature_flags(recaptcha_on_top_level_group_creation: false)
-        stub_application_setting(recaptcha_enabled: true)
-        visit new_group_path
-        click_link 'Create group'
-      end
-
-      it 'does not render recaptcha' do
-        expect(page).not_to have_css('.recaptcha')
-      end
-    end
-
     describe 'showing personalization questions on group creation when it is enabled' do
       before do
         stub_application_setting(hide_third_party_offers: false)
@@ -259,23 +233,6 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
 
         expect(page).to have_current_path(group_path('foo/bar'), ignore_query: true)
         expect(page).to have_selector 'h1', text: 'bar'
-      end
-    end
-
-    context 'when recaptcha is enabled' do
-      before do
-        stub_application_setting(recaptcha_enabled: true)
-        allow(Gitlab::Recaptcha).to receive(:load_configurations!)
-      end
-
-      context 'when creating subgroup' do
-        let(:path) { new_group_path(parent_id: group.id, anchor: 'create-group-pane') }
-
-        it 'does not render recaptcha' do
-          visit path
-
-          expect(page).not_to have_css('.recaptcha')
-        end
       end
     end
 

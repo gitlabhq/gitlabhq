@@ -24,10 +24,6 @@
     .col-sm-4
       = render_if_exists 'shared/groups/invite_members'
 
-  - if captcha_required?
-    .row.recaptcha
-      .col-sm-4
-        = recaptcha_tags nonce: content_security_policy_nonce
 .row
   .col-sm-12.gl-flex.gl-gap-3
     = f.submit submit_label, pajamas_button: true, data: { testid: 'create-group-button' }

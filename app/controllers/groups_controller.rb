@@ -9,14 +9,12 @@ class GroupsController < Groups::ApplicationController
   include RecordUserLastActivity
   include SendFileUpload
   include FiltersEvents
-  include Recaptcha::Adapters::ControllerMethods
   extend ::Gitlab::Utils::Override
 
   respond_to :html
 
   prepend_before_action(only: [:show, :issues]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }
-  prepend_before_action :check_captcha, only: :create, if: -> { captcha_enabled? }
 
   before_action :authenticate_user!, only: [:new, :create]
   before_action :group, except: [:index, :new, :create]
@@ -26,7 +24,6 @@ class GroupsController < Groups::ApplicationController
   before_action :authorize_view_edit_page!, only: :edit
   before_action :authorize_remove_group!, only: :destroy
   before_action :authorize_create_group!, only: [:new]
-  before_action :load_recaptcha, only: [:new], if: -> { captcha_required? }
 
   before_action :group_projects, only: [:projects, :activity, :issues, :merge_requests]
   before_action :event_filter, only: [:activity]
@@ -48,8 +45,6 @@ class GroupsController < Groups::ApplicationController
   before_action only: :merge_requests do
     push_frontend_feature_flag(:mr_approved_filter, type: :ops)
   end
-
-  helper_method :captcha_required?
 
   skip_cross_project_access_check :index, :new, :create, :edit, :update, :destroy, :projects
   # When loading show as an atom feed, we render events that could leak cross
@@ -345,24 +340,6 @@ class GroupsController < Groups::ApplicationController
 
   private
 
-  def load_recaptcha
-    Gitlab::Recaptcha.load_configurations!
-  end
-
-  def check_captcha
-    return if group_params[:parent_id].present? # Only require for top-level groups
-
-    load_recaptcha
-
-    return if verify_recaptcha
-
-    flash[:alert] = _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
-    flash.delete :recaptcha_error
-    @group = Group.new(group_params)
-    add_gon_variables
-    render action: 'new'
-  end
-
   def successful_creation_hooks
     update_user_setup_for_company
   end
@@ -386,14 +363,6 @@ class GroupsController < Groups::ApplicationController
   override :has_project_list?
   def has_project_list?
     %w[details show index].include?(action_name)
-  end
-
-  def captcha_enabled?
-    helpers.recaptcha_enabled? && Feature.enabled?(:recaptcha_on_top_level_group_creation, type: :ops)
-  end
-
-  def captcha_required?
-    captcha_enabled? && !params[:parent_id]
   end
 end
 
