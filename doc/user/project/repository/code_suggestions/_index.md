@@ -184,6 +184,12 @@ For more information, see the history.
 
 {{< /alert >}}
 
+{{< alert type="note" >}}
+
+GitLab recently refactored the Open Tabs internal logic for Duo Code Suggestions. Users who want to use Open Tabs must update their Editor Extensions version to 7.17.1 or later to restore functionality.
+
+{{< /alert >}}
+
 As well as using files from your repository, Code Suggestions can use the files
 open in tabs in your IDE as context.
 

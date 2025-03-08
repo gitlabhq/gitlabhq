@@ -1,6 +1,10 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
+import {
+  TIMESTAMP_TYPES,
+  TIMESTAMP_TYPE_CREATED_AT,
+} from '~/vue_shared/components/resource_lists/constants';
 import ProjectsListItem from '../projects_list/projects_list_item.vue';
 import GroupsListItem from '../groups_list/groups_list_item.vue';
 import NestedGroupsProjectsList from './nested_groups_projects_list.vue';
@@ -15,6 +19,14 @@ export default {
     item: {
       type: Object,
       required: true,
+    },
+    timestampType: {
+      type: String,
+      required: false,
+      default: TIMESTAMP_TYPE_CREATED_AT,
+      validator(value) {
+        return TIMESTAMP_TYPES.includes(value);
+      },
     },
   },
   data() {
@@ -32,6 +44,7 @@ export default {
     itemProps() {
       const sharedProps = {
         listItemClass: this.item.hasChildren ? null : 'gl-pl-7',
+        timestampType: this.timestampType,
       };
 
       return this.item.type === LIST_ITEM_TYPE_PROJECT
@@ -90,6 +103,7 @@ export default {
       <nested-groups-projects-list
         :id="nestedItemsContainerId"
         :items="nestedGroupsProjectsListItems"
+        :timestamp-type="timestampType"
         class="gl-pl-6"
         @load-children="$emit('load-children', $event)"
       />

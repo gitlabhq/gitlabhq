@@ -868,7 +868,7 @@ For example:
 
 Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/LatinTerms.yml))
 
-## ellipsis
+## ellipsis, ellipses
 
 When documenting UI text, if the UI includes an ellipsis, do not include the ellipsis in the documentation.
 For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/punctuation/ellipses).

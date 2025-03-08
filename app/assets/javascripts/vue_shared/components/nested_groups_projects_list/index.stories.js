@@ -1,3 +1,7 @@
+import {
+  TIMESTAMP_TYPE_UPDATED_AT,
+  TIMESTAMP_TYPES,
+} from '~/vue_shared/components/resource_lists/constants';
 import NestedGroupsProjectsList from './nested_groups_projects_list.vue';
 import { items as mockItems } from './mock_data';
 import { LIST_ITEM_TYPE_GROUP } from './constants';
@@ -5,15 +9,25 @@ import { LIST_ITEM_TYPE_GROUP } from './constants';
 export default {
   component: NestedGroupsProjectsList,
   title: 'vue_shared/nested_groups_projects_list',
+  argTypes: {
+    timestampType: {
+      control: {
+        type: 'select',
+        options: TIMESTAMP_TYPES,
+      },
+    },
+    items: {
+      control: false,
+    },
+    'load-children': {
+      control: false,
+    },
+  },
 };
 
-const Template = () => ({
+const Template = (args, { argTypes }) => ({
   components: { NestedGroupsProjectsList },
-  data() {
-    return {
-      items: mockItems,
-    };
-  },
+  props: Object.keys(argTypes),
   methods: {
     findItemById(items, id) {
       if (!items?.length) {
@@ -55,8 +69,17 @@ const Template = () => ({
       item.children = item.childrenToLoad;
     },
   },
-  template: `<nested-groups-projects-list :items="items" @load-children="onLoadChildren" />`,
+  template: `
+    <nested-groups-projects-list
+      :items="items"
+      :timestamp-type="timestampType"
+      @load-children="onLoadChildren"
+    />
+  `,
 });
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  items: mockItems,
+  timestampType: TIMESTAMP_TYPE_UPDATED_AT,
+};

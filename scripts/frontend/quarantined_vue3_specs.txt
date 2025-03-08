@@ -246,5 +246,4 @@ spec/frontend/vue_shared/directives/tooltip_on_truncate_spec.js
 spec/frontend/vue_shared/directives/track_event_spec.js
 spec/frontend/vue_shared/issuable/sidebar/components/issuable_sidebar_root_spec.js
 spec/frontend/webhooks/components/push_events_spec.js
-spec/frontend/work_items/components/work_item_assignees_spec.js
 spec/frontend/work_items/components/work_item_description_rendered_spec.js

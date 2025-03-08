@@ -117,7 +117,9 @@ export default {
         if (!data) {
           return;
         }
-        this.localUsers = unionBy(this.localUsers, [data.currentUser], 'id');
+
+        const currentUsers = data.currentUser ? [data.currentUser] : [];
+        this.localUsers = unionBy(this.localUsers, currentUsers, 'id');
       },
     },
   },

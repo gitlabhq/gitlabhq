@@ -62,12 +62,13 @@ that get installed with the script.
 
 1. Install a Docker container engine, such as [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/).
 1. Set the Docker socket path and Docker settings in VS Code:
-   1. Open VS Code, then open its settings:
+   1. Open VS Code, then open the [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette):
       - On macOS: <kbd>Cmd</kbd> + <kbd>,</kbd>
       - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>,</kbd>
-   1. In the upper-right corner, select the **Open Settings (JSON)** icon.
-   1. Add the Docker socket path setting `gitlab.duoWorkflow.dockerSocket`, according to your container manager, and save your settings file.
-   Some examples for common container managers on macOS, where you would replace `<your_user>` with your user's home folder:
+   1. In the open Command Palette search for `settings.json`.
+   1. Add a line to `settings.json` that defines the Docker socket path setting `gitlab.duoWorkflow.dockerSocket`,
+      according to your container manager, and save your settings file. Some examples for common container
+      managers on macOS, where you would replace `<your_user>` with your user's home folder:
 
       - Rancher Desktop:
 

@@ -4,17 +4,19 @@ import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_proj
 import NestedGroupsProjectsListItem from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list_item.vue';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
 import GroupsListItem from '~/vue_shared/components/groups_list/groups_list_item.vue';
+import { TIMESTAMP_TYPE_UPDATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import {
   projectA,
-  subgroupA,
-  subgroupB,
+  topLevelGroupA,
+  topLevelGroupB,
 } from '~/vue_shared/components/nested_groups_projects_list/mock_data';
 
 describe('NestedGroupsProjectsListItem', () => {
   let wrapper;
 
   const defaultPropsData = {
-    item: subgroupA,
+    item: topLevelGroupA,
+    timestampType: TIMESTAMP_TYPE_UPDATED_AT,
   };
 
   const createComponent = ({ propsData = {} } = {}) => {
@@ -32,8 +34,9 @@ describe('NestedGroupsProjectsListItem', () => {
 
       expect(wrapper.findComponent(GroupsListItem).props()).toMatchObject({
         showGroupIcon: true,
-        group: subgroupA,
+        group: topLevelGroupA,
         listItemClass: null,
+        timestampType: defaultPropsData.timestampType,
       });
     });
 
@@ -42,8 +45,11 @@ describe('NestedGroupsProjectsListItem', () => {
         createComponent();
       });
 
-      it('renders NestedGroupsProjectsList component', () => {
-        expect(findNestedGroupsProjectsList().exists()).toBe(true);
+      it('renders NestedGroupsProjectsList component with correct props', () => {
+        expect(findNestedGroupsProjectsList().props()).toMatchObject({
+          timestampType: defaultPropsData.timestampType,
+          items: [],
+        });
       });
 
       describe('when NestedGroupsProjectsList emits load-children event', () => {
@@ -59,7 +65,7 @@ describe('NestedGroupsProjectsListItem', () => {
       beforeEach(() => {
         createComponent({
           propsData: {
-            item: subgroupB,
+            item: topLevelGroupB,
           },
         });
       });
@@ -80,6 +86,7 @@ describe('NestedGroupsProjectsListItem', () => {
         showProjectIcon: true,
         project: projectA,
         listItemClass: 'gl-pl-7',
+        timestampType: defaultPropsData.timestampType,
       });
     });
   });
@@ -92,14 +99,14 @@ describe('NestedGroupsProjectsListItem', () => {
       });
 
       it('emits load-children event', () => {
-        expect(wrapper.emitted('load-children')).toEqual([[subgroupA.id]]);
+        expect(wrapper.emitted('load-children')).toEqual([[topLevelGroupA.id]]);
       });
 
       describe('when children are loading', () => {
         beforeEach(async () => {
           await wrapper.setProps({
             item: {
-              ...subgroupA,
+              ...topLevelGroupA,
               childrenLoading: true,
             },
           });
@@ -114,15 +121,15 @@ describe('NestedGroupsProjectsListItem', () => {
         beforeEach(async () => {
           await wrapper.setProps({
             item: {
-              ...subgroupA,
-              children: subgroupA.childrenToLoad,
+              ...topLevelGroupA,
+              children: topLevelGroupA.childrenToLoad,
             },
           });
         });
 
         it('passes children to NestedGroupsProjectsList component', () => {
-          expect(findNestedGroupsProjectsList().props()).toEqual({
-            items: subgroupA.childrenToLoad,
+          expect(findNestedGroupsProjectsList().props()).toMatchObject({
+            items: topLevelGroupA.childrenToLoad,
           });
         });
 
@@ -137,8 +144,8 @@ describe('NestedGroupsProjectsListItem', () => {
         createComponent({
           propsData: {
             item: {
-              ...subgroupA,
-              children: subgroupA.childrenToLoad,
+              ...topLevelGroupA,
+              children: topLevelGroupA.childrenToLoad,
             },
           },
         });

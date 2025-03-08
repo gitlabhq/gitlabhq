@@ -1,9 +1,22 @@
 <script>
+import {
+  TIMESTAMP_TYPES,
+  TIMESTAMP_TYPE_CREATED_AT,
+} from '~/vue_shared/components/resource_lists/constants';
+
 export default {
   props: {
     items: {
       type: Array,
       required: true,
+    },
+    timestampType: {
+      type: String,
+      required: false,
+      default: TIMESTAMP_TYPE_CREATED_AT,
+      validator(value) {
+        return TIMESTAMP_TYPES.includes(value);
+      },
     },
   },
   beforeCreate() {
@@ -22,6 +35,7 @@ export default {
       v-for="item in items"
       :key="`${item.type}-${item.id}`"
       :item="item"
+      :timestamp-type="timestampType"
       @load-children="$emit('load-children', $event)"
     />
   </ul>

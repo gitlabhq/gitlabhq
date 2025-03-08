@@ -6,6 +6,7 @@ import { LIST_ITEM_TYPE_PROJECT, LIST_ITEM_TYPE_GROUP } from './constants';
 
 const makeGroup = ({ name, fullName, childrenToLoad = [] }) => {
   const fullPath = slugify(fullName);
+  const id = parseInt(uniqueId(), 10);
 
   return {
     type: LIST_ITEM_TYPE_GROUP,
@@ -23,17 +24,16 @@ const makeGroup = ({ name, fullName, childrenToLoad = [] }) => {
     createdAt: '2024-09-05T11:04:39Z',
     updatedAt: '2024-10-03T18:09:02Z',
     isLinkedToSubscription: true,
-    id: parseInt(uniqueId(), 10),
+    id,
     avatarLabel: name,
     fullName,
     webUrl: `https://gdk.test:3443/${fullPath}`,
-    parent: null,
     accessLevel: { integerValue: 50 },
     editPath: `/${fullPath}/edit`,
     availableActions: [ACTION_EDIT, ACTION_DELETE],
     actionLoadingStates: { [ACTION_DELETE]: false },
     children: [],
-    childrenToLoad,
+    childrenToLoad: childrenToLoad.map((child) => ({ ...child, parent: { id } })),
     hasChildren: childrenToLoad.length,
     childrenLoading: false,
   };
@@ -92,29 +92,35 @@ const makeProject = ({ name, nameWithNamespace }) => {
 
 export const projectA = makeProject({
   name: 'Project A',
-  nameWithNamespace: 'Subgroup A / Nested subgroup / Project A',
+  nameWithNamespace: 'Top-level group A / Subgroup / Nested subgroup / Project A',
 });
 
 export const projectB = makeProject({
   name: 'Project B',
-  nameWithNamespace: 'Subgroup A / Project B',
+  nameWithNamespace: 'Top-level group A / Project B',
 });
 
 export const nestedSubgroup = makeGroup({
   name: 'Nested subgroup',
-  fullName: 'Subgroup A / Nested subgroup',
+  fullName: 'Top-level group A / Subgroup / Nested subgroup',
   childrenToLoad: [projectA],
 });
 
-export const subgroupA = makeGroup({
-  name: 'Subgroup A',
-  fullName: 'Subgroup A',
-  childrenToLoad: [nestedSubgroup, projectB],
+export const subgroup = makeGroup({
+  name: 'Subgroup',
+  fullName: 'Top-level group A / Subgroup',
+  childrenToLoad: [nestedSubgroup],
 });
 
-export const subgroupB = makeGroup({
-  name: 'Subgroup B',
-  fullName: 'Subgroup B',
+export const topLevelGroupA = makeGroup({
+  name: 'Top-level group A',
+  fullName: 'Top-level group A',
+  childrenToLoad: [subgroup, projectB],
 });
 
-export const items = [subgroupA, subgroupB];
+export const topLevelGroupB = makeGroup({
+  name: 'Top-level group B',
+  fullName: 'Top-level group B',
+});
+
+export const items = [topLevelGroupA, topLevelGroupB];

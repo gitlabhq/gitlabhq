@@ -23,7 +23,7 @@ module Keeps
 
     GROUP_LABEL = 'group::global search'
 
-    def initialize(logger: nil)
+    def initialize(...)
       @migrations_to_be_marked_obsolete = {}
       @search_team_map = group_data['backend_engineers'].index_with(0)
 

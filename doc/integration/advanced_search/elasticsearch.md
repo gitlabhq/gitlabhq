@@ -271,7 +271,8 @@ use AWS OpenSearch Service with IAM credentials on your GitLab instance:
 
       {{< alert type="note" >}}
 
-      For GitLab deployments on EC2 instances, you do not have to enter access keys.
+      GitLab deployments that run directly on EC2 instances (not in containers)
+      don't have to enter access keys.
       Your GitLab instance obtains these keys automatically from the
       [AWS Instance Metadata Service (IMDS)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html).
 
