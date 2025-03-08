@@ -21071,7 +21071,9 @@ CREATE TABLE saml_group_links (
     member_role_id bigint,
     assign_duo_seats boolean DEFAULT false NOT NULL,
     scim_group_uid uuid,
-    CONSTRAINT check_1b3fc49d1e CHECK ((char_length(saml_group_name) <= 255))
+    provider text,
+    CONSTRAINT check_1b3fc49d1e CHECK ((char_length(saml_group_name) <= 255)),
+    CONSTRAINT check_59e993f34e CHECK ((char_length(provider) <= 255))
 );
 
 CREATE SEQUENCE saml_group_links_id_seq
