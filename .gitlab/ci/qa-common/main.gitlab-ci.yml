@@ -52,7 +52,7 @@ stages:
     BUNDLE_SILENCE_ROOT_WARNING: "true"
     BUNDLE_WITHOUT: development
   before_script:
-    - echo "SUITE_RAN=true" > $QA_SUITE_STATUS_ENV_FILE
+    - echo "SUITE_RAN=true" > "${QA_SUITE_STATUS_ENV_FILE}"
     - cd qa && bundle install
 
 .docker-in-docker:
@@ -70,7 +70,7 @@ stages:
     QA_CAN_TEST_PRAEFECT: "false"
     QA_INTERCEPT_REQUESTS: "true"
     QA_ARTIFACTS_DIR: $CI_PROJECT_DIR
-    QA_SUITE_STATUS_ENV_FILE: $CI_PROJECT_DIR/suite_status.env
+    QA_SUITE_STATUS_ENV_FILE: "${CI_PROJECT_DIR}/suite_status.env"
     QA_ALLOW_LOCAL_REQUESTS: "true"
     GITLAB_LICENSE_MODE: test
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
