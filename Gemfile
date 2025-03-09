@@ -327,8 +327,8 @@ gem 'js_regex', '~> 3.8', feature_category: :shared
 gem 'device_detector', feature_category: :shared
 
 # Redis
-gem 'redis', '~> 5.3.0', feature_category: :redis
-gem 'redis-clustering', '~> 5.3.0', feature_category: :redis
+gem 'redis', '~> 5.4.0', feature_category: :redis
+gem 'redis-clustering', '~> 5.4.0', feature_category: :redis
 gem 'connection_pool', '~> 2.4', feature_category: :shared
 
 # Redis session store
