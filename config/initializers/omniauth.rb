@@ -20,12 +20,6 @@ end
 
 OmniAuth.config.logger = Gitlab::AppLogger
 
-omniauth_login_counter =
-  Gitlab::Metrics.counter(
-    :gitlab_omniauth_login_total,
-    'Counter of initiated OmniAuth login attempts')
-
 OmniAuth.config.before_request_phase do |env|
-  provider = env['omniauth.strategy']&.name
-  omniauth_login_counter.increment(omniauth_provider: provider, status: 'initiated')
+  Gitlab::Auth::OAuth::BeforeRequestPhaseOauthLoginCounterIncrement.call(env)
 end

@@ -12757,7 +12757,10 @@ CREATE TABLE dependency_proxy_group_settings (
     group_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    enabled boolean DEFAULT true NOT NULL
+    enabled boolean DEFAULT true NOT NULL,
+    identity jsonb,
+    secret jsonb,
+    CONSTRAINT check_7ed6c2f608 CHECK (((num_nonnulls(identity, secret) = 2) OR (num_nulls(identity, secret) = 2)))
 );
 
 CREATE SEQUENCE dependency_proxy_group_settings_id_seq

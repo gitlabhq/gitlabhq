@@ -11239,6 +11239,8 @@ Input type: `UpdateDependencyProxySettingsInput`
 | <a id="mutationupdatedependencyproxysettingsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatedependencyproxysettingsenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether the policy is enabled or disabled. |
 | <a id="mutationupdatedependencyproxysettingsgrouppath"></a>`groupPath` | [`ID!`](#id) | Group path for the group dependency proxy. |
+| <a id="mutationupdatedependencyproxysettingsidentity"></a>`identity` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
+| <a id="mutationupdatedependencyproxysettingssecret"></a>`secret` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
 
 #### Fields
 
@@ -24418,6 +24420,7 @@ Group-level Dependency Proxy settings.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="dependencyproxysettingenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the dependency proxy is enabled for the group. |
+| <a id="dependencyproxysettingidentity"></a>`identity` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.10. **Status**: Experiment. Identity credential used to authenticate with Docker Hub when pulling images. Can be a username (for password or PAT) or organization name (for OAT). Returns null if `dependency_proxy_containers_docker_hub_credentials` feature flag is disabled. |
 
 ### `Deployment`
 

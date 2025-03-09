@@ -4,23 +4,38 @@ require 'spec_helper'
 RSpec.describe DependencyProxy::RequestTokenService, feature_category: :virtual_registry do
   include DependencyProxyHelpers
 
+  let_it_be_with_reload(:dependency_proxy_setting) { create(:dependency_proxy_group_setting) }
+
   let(:image) { 'alpine:3.9' }
   let(:token) { Digest::SHA256.hexdigest('123') }
 
-  subject { described_class.new(image).execute }
+  subject { described_class.new(image:, dependency_proxy_setting:).execute }
 
   context 'remote request is successful' do
-    before do
-      stub_registry_auth(image, token)
+    context 'with identity and secret set' do
+      before do
+        dependency_proxy_setting.update!(identity: 'i', secret: 's')
+        stub_registry_auth(image, token, request_headers: dependency_proxy_setting.authorization_header)
+      end
+
+      it { expect(subject[:status]).to eq(:success) }
+      it { expect(subject[:token]).to eq(token) }
     end
 
-    it { expect(subject[:status]).to eq(:success) }
-    it { expect(subject[:token]).to eq(token) }
+    context 'with identity and secret are not set' do
+      before do
+        dependency_proxy_setting.update!(identity: nil, secret: nil)
+        stub_registry_auth(image, token, request_headers: dependency_proxy_setting.authorization_header)
+      end
+
+      it { expect(subject[:status]).to eq(:success) }
+      it { expect(subject[:token]).to eq(token) }
+    end
   end
 
   context 'remote request is not found' do
     before do
-      stub_registry_auth(image, token, 404)
+      stub_registry_auth(image, token, status: 404, request_headers: dependency_proxy_setting.authorization_header)
     end
 
     it { expect(subject[:status]).to eq(:error) }
@@ -30,7 +45,13 @@ RSpec.describe DependencyProxy::RequestTokenService, feature_category: :virtual_
 
   context 'failed to parse response body' do
     before do
-      stub_registry_auth(image, token, 200, 'dasd1321: wow')
+      stub_registry_auth(
+        image,
+        token,
+        status: 200,
+        body: 'dasd1321: wow',
+        request_headers: dependency_proxy_setting.authorization_header
+      )
     end
 
     it { expect(subject[:status]).to eq(:error) }
