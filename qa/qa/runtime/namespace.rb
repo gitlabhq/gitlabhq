@@ -15,7 +15,7 @@ module QA
         #
         # @return [String]
         def group_name
-          Env.namespace_name || "qa-test-#{time.strftime('%Y-%m-%d-%H-%M-%S')}-#{SecureRandom.hex(8)}"
+          Env.namespace_name || "e2e-test-#{time.strftime('%Y-%m-%d-%H-%M-%S')}-#{SecureRandom.hex(8)}"
         end
 
         # Top level group name
@@ -24,7 +24,7 @@ module QA
         def sandbox_name
           return "gitlab-qa-sandbox-group-#{Time.now.wday + 1}" if live_env?
 
-          "qa-sandbox-#{SecureRandom.hex(6)}"
+          "e2e-sandbox-#{SecureRandom.hex(6)}"
         end
 
         private

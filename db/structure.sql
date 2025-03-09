@@ -2963,6 +2963,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_9b944f36fdac() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "approval_merge_request_rules"
+  WHERE "approval_merge_request_rules"."id" = NEW."approval_merge_request_rule_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_9e137c16de79() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -8726,7 +8742,8 @@ ALTER SEQUENCE approval_merge_request_rules_id_seq OWNED BY approval_merge_reque
 CREATE TABLE approval_merge_request_rules_users (
     id bigint NOT NULL,
     approval_merge_request_rule_id bigint NOT NULL,
-    user_id bigint NOT NULL
+    user_id bigint NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE approval_merge_request_rules_users_id_seq
@@ -38799,6 +38816,8 @@ CREATE TRIGGER trigger_96a76ee9f147 BEFORE INSERT OR UPDATE ON design_management
 CREATE TRIGGER trigger_979e7f45114f BEFORE INSERT OR UPDATE ON ml_candidate_metrics FOR EACH ROW EXECUTE FUNCTION trigger_979e7f45114f();
 
 CREATE TRIGGER trigger_97e9245e767d BEFORE INSERT OR UPDATE ON issue_assignees FOR EACH ROW EXECUTE FUNCTION trigger_97e9245e767d();
+
+CREATE TRIGGER trigger_9b944f36fdac BEFORE INSERT OR UPDATE ON approval_merge_request_rules_users FOR EACH ROW EXECUTE FUNCTION trigger_9b944f36fdac();
 
 CREATE TRIGGER trigger_9e137c16de79 BEFORE INSERT OR UPDATE ON vulnerability_findings_remediations FOR EACH ROW EXECUTE FUNCTION trigger_9e137c16de79();
 
