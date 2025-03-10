@@ -619,12 +619,12 @@ If the log doesn't appear in the `.npm/_logs/` directory, you can copy the
 log to your root directory and view it there:
 
 ```yaml
-script:
+  script:
     - npm install --loglevel verbose
     - cp -r /root/.npm/_logs/ .
   artifacts:
-      paths:
-        - './_logs
+    paths:
+      - './_logs'
 ```
 
 The npm log is copied to `/root/.npm/_logs/` as an artifact.

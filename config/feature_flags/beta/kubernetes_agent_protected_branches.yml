@@ -1,9 +1,0 @@
----
-name: kubernetes_agent_protected_branches
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388323
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156626
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517093
-milestone: '17.3'
-group: group::environments
-type: beta
-default_enabled: false

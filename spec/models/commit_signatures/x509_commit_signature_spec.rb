@@ -9,7 +9,7 @@ RSpec.describe CommitSignatures::X509CommitSignature do
   let_it_be(:commit_sha) { '189a6c924013fc3fe40d6f1ec1dc20214183bc97' }
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:commit) { create(:commit, project: project, sha: commit_sha) }
-  let_it_be(:x509_certificate) { create(:x509_certificate) }
+  let_it_be(:x509_certificate) { create(:x509_certificate, email: 'r.meier@siemens.com') }
   let_it_be(:verification_status) { "verified" }
 
   let(:attributes) do
@@ -49,16 +49,16 @@ RSpec.describe CommitSignatures::X509CommitSignature do
     end
   end
 
-  describe '#reverified_status' do
+  describe '#verification_status' do
     let_it_be(:matching_email) { 'r.meier@siemens.com' }
 
-    subject(:reverified_status) { described_class.safe_create!(attributes).reverified_status }
+    subject(:signature) { described_class.safe_create!(attributes) }
 
     context 'when the commit email matches the x509 certificate emails' do
       let_it_be(:x509_certificate) { create(:x509_certificate, email: matching_email) }
 
       it 'returns verified' do
-        expect(reverified_status).to eq('verified')
+        expect(signature.verification_status).to eq('verified')
       end
     end
 
@@ -71,7 +71,7 @@ RSpec.describe CommitSignatures::X509CommitSignature do
       end
 
       it 'returns verified' do
-        expect(reverified_status).to eq('verified')
+        expect(signature.verification_status).to eq('verified')
       end
     end
 
@@ -84,7 +84,7 @@ RSpec.describe CommitSignatures::X509CommitSignature do
       end
 
       it 'returns unverified_author_email' do
-        expect(reverified_status).to eq('unverified_author_email')
+        expect(signature.verification_status).to eq('unverified_author_email')
       end
     end
 
@@ -94,7 +94,7 @@ RSpec.describe CommitSignatures::X509CommitSignature do
       end
 
       it 'verification status is unmodified' do
-        expect(reverified_status).to eq('verified')
+        expect(signature.verification_status).to eq('verified')
       end
     end
   end

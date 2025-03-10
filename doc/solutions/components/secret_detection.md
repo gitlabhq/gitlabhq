@@ -50,7 +50,7 @@ The rules can be defined using `regex`
 
 The extended rules for PII data element detection
 
-```yaml
+```toml
 [[rules]]
 id = "ssn"
 description = "Social Security Number"
@@ -63,7 +63,7 @@ keywords = ["ssn"]
 
 The extended rules for password in plain text
 
-```yaml
+```toml
 [[rules]]
 id = "password-secret"
 description = "Detect secrets starting with Password or PASSWORD"

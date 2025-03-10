@@ -505,7 +505,7 @@ When the collection loops remove the object locks, the script deletes the job ar
             # age = calculate_age(job.created_at)
 
             for a in artifacts:
-                # ... removed analysis collection code for readability
+                # Analysis collection code removed for readability
 
                 # Advanced filtering: match job artifacts age and size against thresholds
                 if (float(age) > float(threshold_age)) or (float(a['size']) > float(threshold_size)):

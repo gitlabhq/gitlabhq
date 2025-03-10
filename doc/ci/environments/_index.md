@@ -32,17 +32,16 @@ Prerequisites:
 There are a few ways to view a list of environments for a given project:
 
 - On the project's overview page, if at least one environment is available (that is, not stopped).
-  ![Number of Environments](img/environments_project_home_v15_9.png "Incremental counter of available Environments")
+   ![A project overview page displaying the number of available environments as an incremental counter.](img/environments_project_home_v15_9.png)
 
 - On the left sidebar, select **Operate > Environments**.
   The environments are displayed.
 
-  ![Environments list](img/environments_list_v14_8.png)
+  ![A list of available environments in a GitLab project, showing environment names, statuses, and other relevant details.](img/environments_list_v14_8.png)
 
 - To view a list of deployments for an environment, select the environment name,
   for example, `staging`.
-
-  ![Deployments list](img/deployments_list_v13_10.png)
+  ![A list of deployments for a selected environment, displaying deployment history and related details.](img/deployments_list_v13_10.png)
 
   Deployments show up in this list only after a deployment job has created them.
 

@@ -202,14 +202,14 @@ deploy-pages:
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}"
   variables:
-    PAGES_PREFIX: "" # no prefix by default (master)
+    PAGES_PREFIX: "" # no prefix by default (run on the default branch)
   pages:  # specifies that this is a Pages job and publishes the default public directory
     path_prefix: "$PAGES_PREFIX"
   environment:
     name: "Pages ${PAGES_PREFIX}"
     url: $CI_PAGES_URL
   rules:
-    - if: $CI_COMMIT_BRANCH == "staging" # ensure to run on master (with default PAGES_PREFIX)
+    - if: $CI_COMMIT_BRANCH == "staging" # ensure to run on the default branch (with default PAGES_PREFIX)
       variables:
         PAGES_PREFIX: '_stg' # prefix with _stg for the staging branch
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" # conditionally change the prefix on Merge Requests

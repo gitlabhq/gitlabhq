@@ -12,6 +12,7 @@ export const verificationStatuses = {
   MULTIPLE_SIGNATURES: 'MULTIPLE_SIGNATURES',
   REVOKED_KEY: 'REVOKED_KEY',
   VERIFIED_SYSTEM: 'VERIFIED_SYSTEM',
+  UNVERIFIED_AUTHOR_EMAIL: 'UNVERIFIED_AUTHOR_EMAIL',
 };
 
 export const signatureTypes = {
@@ -29,6 +30,13 @@ const UNVERIFIED_CONFIG = {
   description: __('This commit was signed with an unverified signature.'),
 };
 
+export const REVERIFIED_CONFIG = {
+  variant: 'warning',
+  icon: 'warning',
+  label: __('Verified'),
+  title: __('Verified commit with unverified email'),
+};
+
 export const VERIFIED_CONFIG = {
   variant: 'success',
   label: __('Verified'),
@@ -40,6 +48,12 @@ export const statusConfig = {
     ...VERIFIED_CONFIG,
     description: __(
       'This commit was signed with a verified signature and the committer email was verified to belong to the same user.',
+    ),
+  },
+  [verificationStatuses.UNVERIFIED_AUTHOR_EMAIL]: {
+    ...REVERIFIED_CONFIG,
+    description: __(
+      'This commit was previously signed with a verified signature and verified committer email address. However the committer email address is no longer verified to the same user.',
     ),
   },
   [verificationStatuses.VERIFIED_SYSTEM]: {

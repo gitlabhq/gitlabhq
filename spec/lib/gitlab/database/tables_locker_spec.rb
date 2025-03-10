@@ -215,6 +215,7 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
   context 'when running on multiple databases' do
     before do
       skip_if_shared_database(:ci)
+      skip_if_shared_database(:sec)
     end
 
     describe '#lock_writes' do
@@ -309,14 +310,11 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
       subject { described_class.new.lock_writes }
 
       before do
-        # Some spec in this file currently fails when a sec database is configured. We plan to ensure it all functions
-        # and passes prior to the sec db rollout.
-        # Consult https://gitlab.com/gitlab-org/gitlab/-/issues/520270 for more info.
-        skip_if_multiple_databases_are_setup(:sec)
-
         allow(::Gitlab::Database).to receive(:db_config_share_with).and_return(nil)
-        ci_db_config = Ci::ApplicationRecord.connection_db_config
-        allow(::Gitlab::Database).to receive(:db_config_share_with).with(ci_db_config).and_return('main')
+        (Gitlab::Database.database_base_models.values - [ActiveRecord::Base]).each do |db_record_class|
+          db_config = db_record_class.connection_db_config
+          allow(::Gitlab::Database).to receive(:db_config_share_with).with(db_config).and_return('main')
+        end
       end
 
       it 'does not lock any tables if the ci database is shared with main database' do

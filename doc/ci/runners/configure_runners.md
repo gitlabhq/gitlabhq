@@ -1063,7 +1063,7 @@ The following fields are populated by default:
 
 An example of provenance metadata that the GitLab Runner might generate is as follows:
 
-```yaml
+```json
 {
  "_type": "https://in-toto.io/Statement/v0.1",
  "predicateType": "https://slsa.dev/provenance/v1",

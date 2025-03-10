@@ -15,11 +15,8 @@ module Clusters
 
           def execute
             filtered_authorizations = filter_by_environment(authorizations)
-            if Feature.enabled?(:kubernetes_agent_protected_branches, project)
-              filtered_authorizations = filter_protected_ref(filtered_authorizations)
-            end
 
-            filtered_authorizations
+            filter_protected_ref(filtered_authorizations)
           end
 
           private

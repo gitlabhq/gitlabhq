@@ -454,7 +454,7 @@ when you include the file. For example:
 include:
   - component: $CI_SERVER_FQDN/project/path/component@1.0.0
     inputs:
-      test_job_needs: [ my-other-job ]
+      test_job_needs: [my-other-job]
 
 my-other-job:
   script:

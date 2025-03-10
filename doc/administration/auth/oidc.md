@@ -833,7 +833,7 @@ Example configuration for self-compiled installations (file path: `config/gitlab
       label: 'Casdoor', # optional label for login button, defaults to "Openid Connect"
       args: {
         name: 'openid_connect',
-        scope: ['openid','profile','email'],
+        scope: ['openid', 'profile', 'email'],
         response_type: 'code',
         issuer: 'https://<CASDOOR_HOSTNAME>',
         discovery: true,
@@ -919,7 +919,7 @@ For self-compiled installations:
       args: {
         name: 'openid_connect',
         strategy_class: "OmniAuth::Strategies::OpenIDConnect",
-        scope: ['openid','profile','email'],
+        scope: ['openid', 'profile', 'email'],
         response_type: 'code',
         issuer: '<your_oidc_url>',
         discovery: true,
@@ -940,7 +940,7 @@ For self-compiled installations:
       args: {
         name: 'openid_connect_2fa',
         strategy_class: "OmniAuth::Strategies::OpenIDConnect",
-        scope: ['openid','profile','email'],
+        scope: ['openid', 'profile', 'email'],
         response_type: 'code',
         issuer: '<your_oidc_url>',
         discovery: true,

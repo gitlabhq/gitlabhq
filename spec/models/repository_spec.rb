@@ -10,7 +10,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be_with_refind(:project) { create(:project, :repository) }
 
   let(:repository) { project.repository }
   let(:broken_repository) { create(:project, :broken_storage).repository }
@@ -4431,5 +4431,34 @@ RSpec.describe Repository, feature_category: :source_code_management do
         end
       end
     end
+  end
+
+  describe '#ignore_revs_file_blob' do
+    subject { repository.ignore_revs_file_blob }
+
+    context 'when there is a ignore revs file on the default branch' do
+      let(:file_content) { project.commit.id }
+      let(:project_files) do
+        { Gitlab::Blame::IGNORE_REVS_FILE_NAME => file_content }
+      end
+
+      around do |example|
+        create_and_delete_files(project, project_files) do
+          example.run
+        end
+      end
+
+      it { is_expected.to be_a_kind_of(Blob) }
+
+      context 'when the blame_ignore_revs is not enabled' do
+        before do
+          stub_feature_flags(blame_ignore_revs: false)
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
+
+    it { is_expected.to be_nil }
   end
 end

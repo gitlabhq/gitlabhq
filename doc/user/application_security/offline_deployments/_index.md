@@ -175,7 +175,7 @@ template:
 
 | CI/CD variable                            | Description                                   | Default value                     |
 |-------------------------------------------|-----------------------------------------------|-----------------------------------|
-| `SECURE_BINARIES_ANALYZERS`               | Comma-separated list of analyzers to download | `"bandit, brakeman, gosec, and so on..."` |
+| `SECURE_BINARIES_ANALYZERS`               | Comma-separated list of analyzers to download | `"bandit, brakeman, gosec, ..."` |
 | `SECURE_BINARIES_DOWNLOAD_IMAGES`         | Used to disable jobs                          | `"true"`                          |
 | `SECURE_BINARIES_PUSH_IMAGES`             | Push files to the project registry            | `"true"`                          |
 | `SECURE_BINARIES_SAVE_ARTIFACTS`          | Also save image archives as artifacts         | `"false"`                         |

@@ -182,7 +182,7 @@ table_name: security_findings
 classes:
 - Security::Finding
 
-...
+# ...
 
 desired_sharding_key:
   project_id:

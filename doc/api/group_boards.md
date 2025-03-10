@@ -40,6 +40,8 @@ Example response:
   {
     "id": 1,
     "name": "group issue board",
+    "hide_backlog_list": false,
+    "hide_closed_list": false,
     "group": {
       "id": 5,
       "name": "Documentcloud",
@@ -92,6 +94,8 @@ Example response:
   {
     "id": 1,
     "name": "group issue board",
+    "hide_backlog_list": false,
+    "hide_closed_list": false,
     "group": {
       "id": 5,
       "name": "Documentcloud",
@@ -157,6 +161,8 @@ Example response:
   {
     "id": 1,
     "name": "group issue board",
+    "hide_backlog_list": false,
+    "hide_closed_list": false,
     "group": {
       "id": 5,
       "name": "Documentcloud",
@@ -207,6 +213,8 @@ Example response:
   {
     "id": 1,
     "name": "group issue board",
+    "hide_backlog_list": false,
+    "hide_closed_list": false,
     "group": {
       "id": 5,
       "name": "Documentcloud",
@@ -278,6 +286,8 @@ Example response:
   {
     "id": 1,
     "name": "newboard",
+    "hide_backlog_list": false,
+    "hide_closed_list": false,
     "project": null,
     "lists" : [],
     "group": {
@@ -321,9 +331,11 @@ Example response:
 ```json
   {
     "id": 1,
+    "name": "new_name",
+    "hide_backlog_list": false,
+    "hide_closed_list": false,
     "project": null,
     "lists": [],
-    "name": "new_name",
     "group": {
       "id": 5,
       "name": "Documentcloud",
@@ -480,10 +492,13 @@ POST /groups/:id/boards/:board_id/lists
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
-| `label_id` | integer | yes | The ID of a label. |
+| `label_id` | integer | no | The ID of a label. |
+| `assignee_id` | integer | no | The ID of a user. Premium and Ultimate only. |
+| `milestone_id` | integer | no | The ID of a milestone. Premium and Ultimate only. |
+| `iteration_id` | integer | no | The ID of a iteration. Premium and Ultimate only. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4/boards/12/lists?milestone_id=7"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards/12/lists?milestone_id=7"
 ```
 
 Example response:

@@ -349,8 +349,8 @@ file for the right database ID. For example, for an LFS object, the
 request must also include the SHA256 sum of the file. An example JWT
 payload looks like:
 
-```yaml
-{"data": {sha256: "31806bb23580caab78040f8c45d329f5016b0115"}, iat: "1234567890"}
+```json
+{"data": {"sha256": "31806bb23580caab78040f8c45d329f5016b0115"}, "iat": "1234567890"}
 ```
 
 If the requested file matches the requested SHA256 sum, then the Geo
@@ -366,8 +366,8 @@ the Git repository request. This ensures that the **secondary** site downloads
 the right Git repository for the right database ID. An example JWT
 payload looks like:
 
-```yaml
-{"data": {scope: "mygroup/myproject"}, iat: "1234567890"}
+```json
+{"data": {"scope": "mygroup/myproject"}, "iat": "1234567890"}
 ```
 
 ## Git Push to Geo secondary

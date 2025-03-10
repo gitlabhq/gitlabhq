@@ -10,7 +10,8 @@ module Types
 
     field :verification_status, CommitSignatures::VerificationStatusEnum,
       null: true,
-      description: 'Indicates verification status of the associated key or certificate.'
+      description: 'Indicates verification status of the associated key or certificate.',
+      calls_gitaly: true
 
     field :commit_sha, GraphQL::Types::String,
       null: true,

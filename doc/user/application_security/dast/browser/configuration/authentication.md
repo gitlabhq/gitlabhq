@@ -256,7 +256,7 @@ dast:
     DAST_TARGET_URL: https://target.example.com
     DAST_AUTH_URL: https://target.example.com
     DAST_AUTH_TYPE: basic-digest
-    DAST_AUTH_NEGOTIATE_DELEGATION: *.example.com,example.com,*.EXAMPLE.COM,EXAMPLE.COM
+    DAST_AUTH_NEGOTIATE_DELEGATION: '*.example.com,example.com,*.EXAMPLE.COM,EXAMPLE.COM'
     # Not shown -- DAST_AUTH_USERNAME, DAST_AUTH_PASSWORD set via Settings -> CI -> Variables
   before_script:
     - KRB5_CONF='

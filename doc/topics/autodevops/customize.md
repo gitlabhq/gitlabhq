@@ -93,7 +93,7 @@ For example, to build a Docker image based on based on the
    ARG RUBY_VERSION=latest
    FROM ruby:$RUBY_VERSION
 
-   # ... put your stuff here
+   # Include your content here
    ```
 
 To pass complex values like spaces and newlines, use Base64 encoding.

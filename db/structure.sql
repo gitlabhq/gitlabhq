@@ -13339,7 +13339,7 @@ CREATE TABLE duo_workflows_events (
     message text,
     correlation_id_value text,
     CONSTRAINT check_5e35596b00 CHECK ((char_length(correlation_id_value) <= 128)),
-    CONSTRAINT check_d96965e118 CHECK ((char_length(message) <= 255))
+    CONSTRAINT check_9422e6deb0 CHECK ((char_length(message) <= 4096))
 );
 
 CREATE SEQUENCE duo_workflows_events_id_seq
@@ -23794,6 +23794,30 @@ CREATE SEQUENCE vulnerability_namespace_historical_statistics_id_seq
 
 ALTER SEQUENCE vulnerability_namespace_historical_statistics_id_seq OWNED BY vulnerability_namespace_historical_statistics.id;
 
+CREATE TABLE vulnerability_namespace_statistics (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    namespace_id bigint NOT NULL,
+    total integer DEFAULT 0 NOT NULL,
+    critical integer DEFAULT 0 NOT NULL,
+    high integer DEFAULT 0 NOT NULL,
+    medium integer DEFAULT 0 NOT NULL,
+    low integer DEFAULT 0 NOT NULL,
+    unknown integer DEFAULT 0 NOT NULL,
+    info integer DEFAULT 0 NOT NULL,
+    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+);
+
+CREATE SEQUENCE vulnerability_namespace_statistics_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vulnerability_namespace_statistics_id_seq OWNED BY vulnerability_namespace_statistics.id;
+
 CREATE TABLE vulnerability_occurrence_identifiers (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -26516,6 +26540,8 @@ ALTER TABLE ONLY vulnerability_management_policy_rules ALTER COLUMN id SET DEFAU
 ALTER TABLE ONLY vulnerability_merge_request_links ALTER COLUMN id SET DEFAULT nextval('vulnerability_merge_request_links_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_namespace_historical_statistics ALTER COLUMN id SET DEFAULT nextval('vulnerability_namespace_historical_statistics_id_seq'::regclass);
+
+ALTER TABLE ONLY vulnerability_namespace_statistics ALTER COLUMN id SET DEFAULT nextval('vulnerability_namespace_statistics_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_occurrence_identifiers ALTER COLUMN id SET DEFAULT nextval('vulnerability_occurrence_identifiers_id_seq'::regclass);
 
@@ -29550,6 +29576,9 @@ ALTER TABLE ONLY vulnerability_merge_request_links
 
 ALTER TABLE ONLY vulnerability_namespace_historical_statistics
     ADD CONSTRAINT vulnerability_namespace_historical_statistics_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY vulnerability_namespace_statistics
+    ADD CONSTRAINT vulnerability_namespace_statistics_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY vulnerability_occurrence_identifiers
     ADD CONSTRAINT vulnerability_occurrence_identifiers_pkey PRIMARY KEY (id);
@@ -35825,6 +35854,10 @@ CREATE UNIQUE INDEX index_vuln_mgmt_policy_rules_on_unique_policy_rule_index ON 
 CREATE INDEX index_vuln_namespace_hist_statistics_for_traversal_ids_update ON vulnerability_namespace_historical_statistics USING btree (namespace_id, id);
 
 CREATE UNIQUE INDEX index_vuln_namespace_historical_statistics_traversal_ids_date ON vulnerability_namespace_historical_statistics USING btree (traversal_ids, date);
+
+CREATE INDEX index_vuln_namespace_statistics_gin_traversal_ids ON vulnerability_namespace_statistics USING gin (traversal_ids);
+
+CREATE UNIQUE INDEX index_vuln_namespace_statistics_on_namespace_id ON vulnerability_namespace_statistics USING btree (namespace_id);
 
 CREATE INDEX index_vuln_reads_common_query_on_resolved_on_default_branch ON vulnerability_reads USING btree (project_id, state, report_type, vulnerability_id DESC) WHERE (resolved_on_default_branch IS TRUE);
 

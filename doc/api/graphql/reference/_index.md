@@ -44000,6 +44000,7 @@ Verification status of a GPG, X.509 or SSH signature for a commit.
 | <a id="verificationstatussame_user_different_email"></a>`SAME_USER_DIFFERENT_EMAIL` | same_user_different_email verification status. |
 | <a id="verificationstatusunknown_key"></a>`UNKNOWN_KEY` | unknown_key verification status. |
 | <a id="verificationstatusunverified"></a>`UNVERIFIED` | unverified verification status. |
+| <a id="verificationstatusunverified_author_email"></a>`UNVERIFIED_AUTHOR_EMAIL` | unverified_author_email verification status. |
 | <a id="verificationstatusunverified_key"></a>`UNVERIFIED_KEY` | unverified_key verification status. |
 | <a id="verificationstatusverified"></a>`VERIFIED` | verified verification status. |
 | <a id="verificationstatusverified_ca"></a>`VERIFIED_CA` | verified_ca verification status. |

@@ -219,7 +219,7 @@ requirements, add a rule which checks `CI_HAS_OPEN_REQUIREMENTS` CI/CD variable.
 ```yaml
 requirements_confirmation:
   rules:
-    - if: "$CI_HAS_OPEN_REQUIREMENTS" == "true"
+    - if: '$CI_HAS_OPEN_REQUIREMENTS == "true"'
       when: manual
     - when: never
   allow_failure: false

@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::Ml::Mlflow::GetRun, feature_category: :mlops do
-  let_it_be(:candidate) { build(:ml_candidates, :with_metrics_and_params) }
+  let_it_be(:candidate) { create(:ml_candidates, :with_metrics_and_params) }
+  let_it_be(:metrics) { candidate.latest_metrics }
 
   subject { described_class.new(candidate).as_json }
 
@@ -16,12 +17,12 @@ RSpec.describe API::Entities::Ml::Mlflow::GetRun, feature_category: :mlops do
   end
 
   it 'presents the metrics' do
-    expect(subject.dig(:run, :data, :metrics).size).to eq(candidate.metrics.size)
+    expect(subject.dig(:run, :data, :metrics).size).to eq(metrics.size)
   end
 
   it 'presents metrics correctly' do
     presented_metric = subject.dig(:run, :data, :metrics)[0]
-    metric = candidate.metrics[0]
+    metric = metrics[0]
 
     expect(presented_metric[:key]).to eq(metric.name)
     expect(presented_metric[:value]).to eq(metric.value)
@@ -43,7 +44,7 @@ RSpec.describe API::Entities::Ml::Mlflow::GetRun, feature_category: :mlops do
 
   context 'when candidate has no metrics' do
     before do
-      allow(candidate).to receive(:metrics).and_return([])
+      allow(candidate).to receive(:latest_metrics).and_return([])
     end
 
     it 'returns empty data' do

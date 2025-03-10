@@ -148,15 +148,15 @@ to be compatible with each other:
 Valid configuration example:
 
 ```yaml
-  - `override-policy-1` stages: `[build, test, policy-test, deploy]`
-  - `override-policy-2` stages: `[test, deploy]`
+  - override-policy-1 stages: [build, test, policy-test, deploy]
+  - override-policy-2 stages: [test, deploy]
 ```
 
 Invalid configuration example:
 
 ```yaml
-  - `override-policy-1` stages: `[build, test, policy-test, deploy]`
-  - `override-policy-2` stages: `[deploy, test]`
+  - override-policy-1 stages: [build, test, policy-test, deploy]
+  - override-policy-2 stages: [deploy, test]
 ```
 
 The pipeline fails if one or more `override_project_ci` policies has an invalid `stages` configuration.

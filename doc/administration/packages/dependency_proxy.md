@@ -60,9 +60,9 @@ global:
     dependencyProxy:
       enabled: false
       bucket: gitlab-dependency-proxy
-      connection: {}
-       secret:
-       key:
+      connection:
+        secret:
+        key:
 ```
 
 For more information, see [Configure Charts using Globals](https://docs.gitlab.com/charts/charts/globals.html#configure-appconfig-settings).

@@ -122,15 +122,14 @@ The rules we are using in the `apifuzzer_v1` and `apifuzzer_v2` jobs are copied 
 # Disable the main apifuzzer_fuzz job
 apifuzzer_fuzz:
   rules:
-  - if: $CI_COMMIT_BRANCH
-    when: never
+    - if: $CI_COMMIT_BRANCH
+      when: never
 
 apifuzzer_v1:
   extends: apifuzzer_fuzz
   variables:
     FUZZAPI_EXCLUDE_PATHS: /api/v1/**
   rules:
-    rules:
     - if: $API_FUZZING_DISABLED == 'true' || $API_FUZZING_DISABLED == '1'
       when: never
     - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH == 'true' &&
@@ -149,7 +148,6 @@ apifuzzer_v2:
   variables:
     FUZZAPI_EXCLUDE_PATHS: /api/v2/**
   rules:
-    rules:
     - if: $API_FUZZING_DISABLED == 'true' || $API_FUZZING_DISABLED == '1'
       when: never
     - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
@@ -185,8 +183,8 @@ To verify the operation is excluded, run the API Fuzzing job and review the job 
 # different names
 apifuzzer_fuzz:
   rules:
-  - if: $CI_COMMIT_BRANCH
-    when: never
+    - if: $CI_COMMIT_BRANCH
+      when: never
 
 # API Fuzzing for feature branch work, excludes /api/large_response_json
 apifuzzer_branch:
@@ -194,7 +192,6 @@ apifuzzer_branch:
   variables:
     FUZZAPI_EXCLUDE_PATHS: /api/large_response_json
   rules:
-    rules:
     - if: $API_FUZZING_DISABLED == 'true' || $API_FUZZING_DISABLED == '1'
       when: never
     - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
@@ -212,7 +209,7 @@ apifuzzer_branch:
 # Includes the long running operations
 apifuzzer_main:
   extends: apifuzzer_fuzz
-    rules:
+  rules:
     - if: $API_FUZZING_DISABLED == 'true' || $API_FUZZING_DISABLED == '1'
       when: never
     - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&

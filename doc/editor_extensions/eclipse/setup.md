@@ -54,7 +54,7 @@ If you are on a GitLab Self-Managed instance, create a personal access token.
 
 After you configure the plugin in your IDE, connect it to your GitLab account:
 
-1. In your IDE, select **Eclipse > Settings...**.
+1. In your IDE, select **Eclipse > Settings**.
 1. On the left sidebar, select **GitLab**.
 1. Provide the **Connection URL**. For GitLab.com, use `https://gitlab.com`.
 1. For **GitLab Personal Access Token**, paste in the personal access token you created.

@@ -46,6 +46,8 @@ Example response:
   {
     "id": 1,
     "name": "group epic board",
+    "hide_backlog_list": false,
+    "hide_closed_list": false,
     "group": {
       "id": 5,
       "name": "Documentcloud",
@@ -129,6 +131,8 @@ Example response:
   {
     "id": 1,
     "name": "group epic board",
+    "hide_backlog_list": false,
+    "hide_closed_list": false,
     "group": {
       "id": 5,
       "name": "Documentcloud",

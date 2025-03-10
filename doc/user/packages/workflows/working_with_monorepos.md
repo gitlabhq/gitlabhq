@@ -72,15 +72,12 @@ After you publish the package for `ChildProject`, you should see the package in 
 A package is associated with a project on GitLab. But, a package is not associated
 with the code in that project.
 
-For example, when configuring a package for npm or Maven, the `project_id` sets the registry URL that the package publishes to:
+For example, when configuring a package for npm or Maven, the `project_id` sets the registry URL that the package publishes to.
 
-```yaml
-# npm
-https://gitlab.example.com/api/v4/projects/<project_id>/packages/npm/
+For example:
 
-# maven
-https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven/
-```
+- npm: `https://gitlab.example.com/api/v4/projects/<project_id>/packages/npm/`
+- maven: `https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven/`
 
 If you change the `project_id` in the registry URL to another project, your package publishes to that project.
 

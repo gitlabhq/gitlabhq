@@ -1049,7 +1049,7 @@ msgstr ""
 msgid "%{labelStart}Project:%{labelEnd} %{project}"
 msgstr ""
 
-msgid "%{labelStart}Report Type:%{labelEnd} %{reportType}"
+msgid "%{labelStart}Report type:%{labelEnd} %{reportType}"
 msgstr ""
 
 msgid "%{labelStart}Scanner:%{labelEnd} %{scanner}"
@@ -48861,7 +48861,7 @@ msgstr ""
 msgid "Reports|New"
 msgstr ""
 
-msgid "Reports|Report Type"
+msgid "Reports|Report type"
 msgstr ""
 
 msgid "Reports|See test results while the pipeline is running"
@@ -53921,10 +53921,10 @@ msgstr ""
 msgid "SecurityReports|Remove project from dashboard"
 msgstr ""
 
-msgid "SecurityReports|Report Type"
+msgid "SecurityReports|Report has expired"
 msgstr ""
 
-msgid "SecurityReports|Report has expired"
+msgid "SecurityReports|Report type"
 msgstr ""
 
 msgid "SecurityReports|Results show vulnerability findings from the latest successful %{helpPageLinkStart}pipeline%{helpPageLinkEnd}."

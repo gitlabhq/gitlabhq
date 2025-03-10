@@ -485,7 +485,7 @@ tests:
   script:
   - command_1
   - command_2
-...
+  # ...
   - command_n
   tags:
     - my-custom-tag
@@ -505,7 +505,7 @@ tests:
   script:
   - cpu_intensive_command_1
   - cpu_intensive_command_2
-...
+  # ...
   - cpu_intensive_command_n
   tags:
     - my-custom-tag

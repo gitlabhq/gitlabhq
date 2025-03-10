@@ -236,15 +236,15 @@ gitlab_rails['omniauth_providers'] = [
 
 ```yaml
 - { name: 'PROVIDER_NAME',
-  ...
+  # ...
   args: { gitlab_username_claim: 'sub' }
 }
 - { name: 'github',
-  ...
+  # ...
   args: { gitlab_username_claim: 'name' }
 }
 - { name: 'kerberos',
-  ...
+  # ...
   args: { gitlab_username_claim: 'uid' }
 }
 ```
@@ -607,9 +607,9 @@ then override the icon in one of two ways:
      ```yaml
      omniauth:
        providers:
-         - { name: '...'
+         - { name: 'myIcon'
              icon: 'data:image/png;base64,<base64-data>'
-             ...
+             # ...
            }
      ```
 

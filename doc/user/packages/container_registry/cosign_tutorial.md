@@ -96,7 +96,7 @@ In the `script` section of the `.gitlab-ci.yml` file, enter the following comman
   cosign sign "$IMAGE_DIGEST" \
     --annotations "com.gitlab.ci.user.name=$GITLAB_USER_NAME" \
     --annotations "com.gitlab.ci.pipeline.id=$CI_PIPELINE_ID" \
-    # ... (other annotations) ...
+    # Additional annotations
     --annotations "tag=$IMAGE_TAG"
 ```
 

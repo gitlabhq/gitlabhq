@@ -163,7 +163,7 @@ A typical job definition in one of the e2e test pipeline definition YAML files w
 
 ```yaml
 my-new-test-job:
-  ...
+  # ...
   variables:
     QA_SCENARIO: Test::Integration::MyNewTestScenario
 ```

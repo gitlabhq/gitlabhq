@@ -176,7 +176,7 @@
 }
 
 .job-log-line-number {
-  @apply gl-text-subtle;
+  @apply gl-text-neutral-400 dark:gl-text-neutral-300;
   padding-right: $gl-padding-8;
   margin-right: $gl-padding-8;
   min-width: $job-line-number-width;
@@ -187,14 +187,14 @@
   &:active,
   &:visited {
     text-decoration: underline;
-    @apply gl-text-subtle;
+    @apply gl-text-neutral-400 dark:gl-text-neutral-300;
   }
 }
 
 .job-log-time {
   padding-right: $gl-padding-8;
   margin-right: $gl-padding-8;
-  @apply gl-text-subtle;
+  @apply gl-text-neutral-400 dark:gl-text-neutral-300;
   user-select: none;
   flex-shrink: 0;
 

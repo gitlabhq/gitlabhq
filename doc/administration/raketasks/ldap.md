@@ -90,7 +90,7 @@ main:
   host: '_your_ldap_server'
   port: 389
   uid: 'sAMAccountName'
-  ...
+  # ...
 ```
 
 `main` is the LDAP server ID. Together, the unique provider is `ldapmain`.

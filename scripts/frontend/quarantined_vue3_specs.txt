@@ -86,7 +86,6 @@ ee/spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_containe
 ee/spec/frontend/vue_shared/components/groups_list/groups_list_item_spec.js
 ee/spec/frontend/vue_shared/components/projects_list/projects_list_item_spec.js
 ee/spec/frontend/vulnerabilities/generic_report/report_item_graphql_spec.js
-ee/spec/frontend/vulnerabilities/related_issues_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/access_tokens/index_spec.js
 spec/frontend/admin/abuse_report/components/reported_content_spec.js
@@ -211,7 +210,6 @@ spec/frontend/sidebar/components/confidential/confidentiality_dropdown_spec.js
 spec/frontend/sidebar/components/confidential/sidebar_confidentiality_widget_spec.js
 spec/frontend/sidebar/components/incidents/escalation_status_spec.js
 spec/frontend/sidebar/components/labels/labels_select_vue/dropdown_contents_labels_view_spec.js
-spec/frontend/sidebar/components/labels/labels_select_vue/labels_select_root_spec.js
 spec/frontend/sidebar/components/milestone/milestone_dropdown_spec.js
 spec/frontend/sidebar/components/subscriptions/subscriptions_dropdown_spec.js
 spec/frontend/sidebar/components/todo_toggle/sidebar_todo_widget_spec.js

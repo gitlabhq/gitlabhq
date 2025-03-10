@@ -19,7 +19,8 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
         :raw_commit,
         signature: signature,
         sha: commit_sha,
-        committer_email: committer_email
+        committer_email: committer_email,
+        author_email: committer_email
       )
 
       allow(raw_commit).to receive :save!

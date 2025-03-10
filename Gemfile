@@ -384,7 +384,7 @@ gem 'terser', '1.0.2', feature_category: :shared
 gem 'click_house-client', path: 'gems/click_house-client', require: 'click_house/client', feature_category: :database
 gem 'addressable', '~> 2.8', feature_category: :shared
 gem 'gon', '~> 6.4.0', feature_category: :shared
-gem 'request_store', '~> 1.5.1', feature_category: :shared
+gem 'request_store', '~> 1.7.0', feature_category: :shared
 gem 'base32', '~> 0.3.0', feature_category: :shared
 gem 'gitlab-license', '~> 2.6', feature_category: :shared
 

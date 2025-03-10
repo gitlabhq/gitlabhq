@@ -729,6 +729,10 @@ vulnerability_namespace_historical_statistics:
   - table: namespaces
     column: namespace_id
     on_delete: async_delete
+vulnerability_namespace_statistics:
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
 vulnerability_occurrences:
   - table: ci_pipelines
     column: initial_pipeline_id
