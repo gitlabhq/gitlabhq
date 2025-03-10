@@ -1,0 +1,9 @@
+---
+name: enforce_abilities_check_for_dependency_proxy
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520313
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182559
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/521193
+milestone: '17.10'
+group: group::container registry
+type: wip
+default_enabled: false

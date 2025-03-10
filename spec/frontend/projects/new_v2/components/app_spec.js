@@ -11,18 +11,18 @@ jest.mock('~/lib/utils/url_utility');
 describe('New project creation app', () => {
   let wrapper;
 
-  const createComponent = (props = {}, provide = {}) => {
+  const createComponent = (provide = {}) => {
     wrapper = shallowMountExtended(App, {
-      propsData: {
+      provide: {
+        userNamespaceId: '1',
+        canCreateProject: true,
         rootPath: '/',
         projectsUrl: '/dashboard/projects',
         userProjectLimit: 10000,
         canSelectNamespace: true,
-        ...props,
-      },
-      provide: {
-        userNamespaceId: '1',
-        canCreateProject: true,
+        isCiCdAvailable: true,
+        canImportProjects: true,
+        importSourcesEnabled: true,
         ...provide,
       },
       stubs: {
@@ -110,7 +110,7 @@ describe('New project creation app', () => {
     });
 
     it('renders error when user reached a limit of projects', () => {
-      createComponent({}, { canCreateProject: false });
+      createComponent({ canCreateProject: false });
 
       expect(findSingleChoiceSelector().exists()).toBe(false);
       expect(findAlert().text()).toBe(
@@ -119,7 +119,7 @@ describe('New project creation app', () => {
     });
 
     it('renders error when user can not create personal projects', () => {
-      createComponent({ userProjectLimit: 0 }, { canCreateProject: false });
+      createComponent({ userProjectLimit: 0, canCreateProject: false });
 
       expect(findSingleChoiceSelector().exists()).toBe(false);
       expect(findAlert().text()).toBe(

@@ -611,7 +611,7 @@ class User < ApplicationRecord
       user.class.temporary_ignore_cross_database_tables(
         %w[projects], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424278'
       ) do
-        user.starred_projects.update_counters(star_count: -1)
+        user.starred_projects.where('star_count > 0').update_counters(star_count: -1)
       end
     end
   end

@@ -45416,6 +45416,33 @@ msgstr ""
 msgid "ProjectFileTree|Show more"
 msgstr ""
 
+msgid "ProjectImport|Bitbucket Cloud"
+msgstr ""
+
+msgid "ProjectImport|Bitbucket Server"
+msgstr ""
+
+msgid "ProjectImport|FogBugz"
+msgstr ""
+
+msgid "ProjectImport|GitHub"
+msgstr ""
+
+msgid "ProjectImport|GitLab"
+msgstr ""
+
+msgid "ProjectImport|Gitea"
+msgstr ""
+
+msgid "ProjectImport|Import repository by URL"
+msgstr ""
+
+msgid "ProjectImport|Manifest file"
+msgstr ""
+
+msgid "ProjectImport|Project URL"
+msgstr ""
+
 msgid "ProjectList|Starred"
 msgstr ""
 
@@ -46640,6 +46667,9 @@ msgid "ProjectsNew|Import"
 msgstr ""
 
 msgid "ProjectsNew|Import project"
+msgstr ""
+
+msgid "ProjectsNew|Import project from"
 msgstr ""
 
 msgid "ProjectsNew|Import projects from FogBugz"

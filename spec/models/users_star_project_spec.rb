@@ -73,6 +73,14 @@ RSpec.describe UsersStarProject, type: :model do
         it 'decrements star count of project' do
           expect { users_star_project.destroy! }.to change { project2.reload.star_count }.by(-1)
         end
+
+        context 'when star count of project is 0' do
+          it 'does not decrement star count of project' do
+            project2.reload.update!(star_count: 0)
+
+            expect { users_star_project.destroy! }.not_to change { project2.reload.star_count }
+          end
+        end
       end
 
       context 'if user is not active' do

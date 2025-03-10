@@ -628,16 +628,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         group => 'FOR NO KEY UPDATE'
       )
     end
-
-    context 'when shared_namespace_locks is disabled' do
-      before do
-        stub_feature_flags(shared_namespace_locks: false)
-      end
-
-      it 'locks root ancestor', :lock_recorder do
-        expect { subject }.to lock_rows(root => 'FOR NO KEY UPDATE')
-      end
-    end
   end
 
   context 'when creating a new project' do

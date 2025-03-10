@@ -5,17 +5,19 @@ module Auth
     AUDIENCE = 'dependency_proxy'
     HMAC_KEY = 'gitlab-dependency-proxy'
     DEFAULT_EXPIRE_TIME = 1.minute
-    REQUIRED_ABILITIES = %i[read_container_image create_container_image].freeze
+    REQUIRED_CI_ABILITIES = %i[build_read_container_image build_create_container_image].freeze
+    REQUIRED_USER_ABILITIES = %i[read_container_image create_container_image].freeze
 
     MISSING_ABILITIES_MESSAGE = 'Dependency proxy missing authentication abilities'
 
     def execute(authentication_abilities:)
-      return error('dependency proxy not enabled', 404) unless ::Gitlab.config.dependency_proxy.enabled
-      return error('access forbidden', 403) unless valid_user_actor?(authentication_abilities)
+      @authentication_abilities = authentication_abilities
 
-      unless deploy_token || has_required_abilities?(authentication_abilities)
-        log_missing_authentication_abilities(authentication_abilities)
-      end
+      return error('dependency proxy not enabled', 404) unless ::Gitlab.config.dependency_proxy.enabled
+      return error('access forbidden', 403) unless valid_user_actor?
+
+      # TODO: Remove this when enforce_abilities_check_for_dependency_proxy is permanently enabled
+      log_missing_authentication_abilities unless deploy_token || has_required_abilities?
 
       { token: authorized_token.encoded }
     end
@@ -40,23 +42,35 @@ module Auth
 
     private
 
-    def valid_user_actor?(authentication_abilities)
+    attr_reader :authentication_abilities
+
+    def valid_user_actor?
       feature_user = deploy_token&.user || current_user
+      # TODO: Cleanup code related to packages_dependency_proxy_containers_scope_check
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/520321
       if Feature.enabled?(:packages_dependency_proxy_containers_scope_check, feature_user)
-        if deploy_token
-          deploy_token.valid_for_dependency_proxy?
-        elsif current_user&.project_bot?
-          group_access_token&.active? && has_required_abilities?(authentication_abilities)
-        else
-          current_user
-        end
+        dependency_proxy_containers_scope_check
+      elsif Feature.enabled?(:enforce_abilities_check_for_dependency_proxy, feature_user)
+        has_required_abilities?
       else
         current_user || valid_deploy_token?
       end
     end
 
-    def has_required_abilities?(authentication_abilities)
-      (REQUIRED_ABILITIES & authentication_abilities).size == REQUIRED_ABILITIES.size
+    def dependency_proxy_containers_scope_check
+      if deploy_token
+        deploy_token.valid_for_dependency_proxy?
+      elsif current_user&.project_bot?
+        group_access_token&.active? && has_required_abilities?
+      else
+        current_user
+      end
+    end
+
+    def has_required_abilities?
+      [REQUIRED_CI_ABILITIES, REQUIRED_USER_ABILITIES].any? do |required_abilities|
+        (required_abilities & authentication_abilities).size == required_abilities.size
+      end
     end
 
     def group_access_token
@@ -95,7 +109,7 @@ module Auth
       raw_token && current_user && (current_user.human? || current_user.service_account?)
     end
 
-    def log_missing_authentication_abilities(authentication_abilities)
+    def log_missing_authentication_abilities
       log_info = {
         message: MISSING_ABILITIES_MESSAGE,
         authentication_abilities: authentication_abilities,

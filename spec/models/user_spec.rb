@@ -3073,6 +3073,14 @@ RSpec.describe User, feature_category: :user_profile do
       it 'decrements star count of project' do
         expect { user.block }.to change { project.reload.star_count }.by(-1)
       end
+
+      context 'when star count of project is 0' do
+        it 'does not decrement star count of project' do
+          project.update!(star_count: 0)
+
+          expect { user.block }.not_to change { project.reload.star_count }
+        end
+      end
     end
 
     context 'when activating a user' do

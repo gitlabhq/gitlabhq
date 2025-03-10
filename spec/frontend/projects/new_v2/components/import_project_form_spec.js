@@ -8,14 +8,17 @@ describe('Import Project Form', () => {
   const defaultProps = {
     option: {
       title: 'Import project',
+      namespaceId: '',
     },
   };
 
-  const createComponent = (props = {}) => {
+  const createComponent = () => {
     wrapper = shallowMountExtended(ImportProjectForm, {
       propsData: {
         ...defaultProps,
-        ...props,
+      },
+      provide: {
+        importGitlabEnabled: true,
       },
     });
   };
@@ -32,7 +35,7 @@ describe('Import Project Form', () => {
     expect(findMultiStepFormTemplate().props()).toMatchObject({
       title: defaultProps.option.title,
       currentStep: 2,
-      stepsTotal: 2,
+      stepsTotal: 3,
     });
   });
 

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import createDefaultClient from '~/lib/graphql';
 import NewProjectFormApp from './components/app.vue';
 
 export function initNewProjectForm() {
@@ -12,63 +12,90 @@ export function initNewProjectForm() {
   }
 
   const {
-    pushToCreateProjectCommand,
-    projectHelpPath,
-    hasErrors,
-    isCiCdAvailable,
-    parentGroupUrl,
-    parentGroupName,
-    rootPath,
-    projectsUrl,
-    canImportProjects,
-    importSourcesEnabled,
     namespaceFullPath,
     namespaceId,
     userNamespaceId,
+    newProjectGuidelines,
+    pushToCreateProjectCommand,
+    rootPath,
+    projectsUrl,
+    parentGroupUrl,
+    parentGroupName,
+    projectHelpPath,
+    isCiCdAvailable,
+    canImportProjects,
+    importSourcesEnabled,
     trackLabel,
     canSelectNamespace,
     canCreateProject,
     userProjectLimit,
-    newProjectGuidelines,
+    importHistoryPath,
+    importGitlabEnabled,
+    importGitlabImportPath,
+    importGithubEnabled,
+    importGithubImportPath,
+    importBitbucketEnabled,
+    importBitbucketImportPath,
+    importBitbucketImportConfigured,
+    importBitbucketDisabledMessage,
+    importBitbucketServerEnabled,
+    importBitbucketServerImportPath,
+    importFogbugzEnabled,
+    importFogbugzImportPath,
+    importGiteaEnabled,
+    importGiteaImportPath,
+    importGitEnabled,
+    importManifestEnabled,
+    importManifestImportPath,
   } = el.dataset;
 
-  const props = {
-    hasErrors: parseBoolean(hasErrors),
-    isCiCdAvailable: parseBoolean(isCiCdAvailable),
-    parentGroupUrl,
-    parentGroupName,
-    rootPath,
-    projectsUrl,
-    canImportProjects: parseBoolean(canImportProjects),
-    importSourcesEnabled: parseBoolean(importSourcesEnabled),
+  const provide = {
     namespaceFullPath,
     namespaceId,
-    trackLabel,
-    canSelectNamespace: parseBoolean(canSelectNamespace),
-    userProjectLimit: parseInt(userProjectLimit, 10),
-    newProjectGuidelines,
-  };
-
-  const provide = {
-    canCreateProject: parseBoolean(canCreateProject),
-    projectHelpPath,
-    pushToCreateProjectCommand,
-    namespaceId,
     userNamespaceId,
+    newProjectGuidelines,
+    pushToCreateProjectCommand,
     rootPath,
+    projectsUrl,
     parentGroupUrl,
     parentGroupName,
-    projectsUrl,
+    projectHelpPath,
+    trackLabel,
+    isCiCdAvailable: parseBoolean(isCiCdAvailable),
+    importSourcesEnabled: parseBoolean(importSourcesEnabled),
+    canImportProjects: parseBoolean(canImportProjects),
+    canSelectNamespace: parseBoolean(canSelectNamespace),
+    canCreateProject: parseBoolean(canCreateProject),
+    userProjectLimit,
+    importHistoryPath,
+    importGitlabEnabled: parseBoolean(importGitlabEnabled),
+    importGitlabImportPath,
+    importGithubEnabled: parseBoolean(importGithubEnabled),
+    importGithubImportPath,
+    importBitbucketEnabled: parseBoolean(importBitbucketEnabled),
+    importBitbucketImportPath,
+    importBitbucketImportConfigured: parseBoolean(importBitbucketImportConfigured),
+    importBitbucketDisabledMessage,
+    importBitbucketServerEnabled: parseBoolean(importBitbucketServerEnabled),
+    importBitbucketServerImportPath,
+    importFogbugzEnabled: parseBoolean(importFogbugzEnabled),
+    importFogbugzImportPath,
+    importGiteaEnabled: parseBoolean(importGiteaEnabled),
+    importGiteaImportPath,
+    importGitEnabled: parseBoolean(importGitEnabled),
+    importManifestEnabled: parseBoolean(importManifestEnabled),
+    importManifestImportPath,
   };
 
   return new Vue({
     el,
+    name: 'NewProjectFormRoot',
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
     }),
     provide,
     render(h) {
-      return h(NewProjectFormApp, { props });
+      return h(NewProjectFormApp);
     },
   });
 }

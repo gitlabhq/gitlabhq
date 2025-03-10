@@ -2715,6 +2715,18 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     describe 'add_email command' do
       let_it_be(:issuable) { issue }
 
+      shared_examples 'command available' do
+        it 'is not part of the available commands' do
+          expect(service.available_commands(issuable)).to include(a_hash_including(name: :add_email))
+        end
+      end
+
+      shared_examples 'command not available' do
+        it 'is not part of the available commands' do
+          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :add_email))
+        end
+      end
+
       it_behaves_like 'failed command', "No email participants were added. Either none were provided, or they already exist." do
         let(:content) { '/add_email' }
       end
@@ -2829,19 +2841,31 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         end
       end
 
-      it 'is part of the available commands' do
-        expect(service.available_commands(issuable)).to include(a_hash_including(name: :add_email))
+      it_behaves_like 'command available'
+
+      context 'when issuable is work item of type issue' do
+        let(:issuable) { create(:work_item, :issue, project: project) }
+
+        it_behaves_like 'command available'
+      end
+
+      context 'when the issuable is a work item of type incident' do
+        let(:issuable) { create(:work_item, :incident, project: project) }
+
+        it_behaves_like 'command available'
+      end
+
+      context 'when issuable is a work item of type task' do
+        let(:issuable) { create(:work_item, :task, project: project) }
+
+        it_behaves_like 'command not available'
       end
 
       context 'with non-persisted issue' do
         let(:issuable) { build(:issue) }
 
-        it 'is not part of the available commands' do
-          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :add_email))
-        end
+        it_behaves_like 'command not available'
       end
-
-      it_behaves_like 'only available when issue_or_work_item_feature_flag_enabled', '/add_email'
     end
 
     describe 'remove_email command' do
