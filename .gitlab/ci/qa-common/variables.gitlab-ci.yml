@@ -15,7 +15,9 @@ variables:
   QA_OMNIBUS_MR_TESTS: "only-smoke"
   # Retry failed specs in separate process
   QA_RETRY_FAILED_SPECS: "true"
-  # helm chart ref used by test-on-cng pipeline
+  # Helm chart ref used by test-on-cng pipeline
   GITLAB_HELM_CHART_REF: "3f89420cf319778195403711af12c57b4aab6511"
-  # makes sure some of the common scripts from pipeline-common use bundler to execute commands
+  # Makes sure some of the common scripts from pipeline-common use bundler to execute commands
   RUN_WITH_BUNDLE: "true"
+  # Makes sure reporting script defined in .gitlab-qa-report from pipeline-common is executed from correct folder
+  QA_PATH: "qa"

@@ -500,7 +500,7 @@ module ApplicationHelper
     form_with(**args.merge({ builder: ::Gitlab::FormBuilders::GitlabUiFormBuilder }), &block)
   end
 
-  def hidden_resource_icon(resource, css_class: nil)
+  def hidden_resource_icon(resource, css_class: nil, variant: nil)
     issuable_title = _('This %{issuable} is hidden because its author has been banned.')
 
     case resource
@@ -515,7 +515,7 @@ module ApplicationHelper
     return unless title
 
     content_tag(:span, class: 'has-tooltip', title: title) do
-      sprite_icon('spam', css_class: ['gl-align-text-bottom', css_class].compact_blank.join(' '))
+      sprite_icon('spam', css_class: ['gl-align-text-bottom', css_class].compact_blank.join(' '), variant: variant)
     end
   end
 

@@ -787,7 +787,7 @@ variables:
 
 When configured correctly, a CI/CD pipeline contains a `dast` stage and an `dast_api` job. The job only fails when an invalid configuration is provided. During typical operation, the job always succeeds even if vulnerabilities are identified during testing.
 
-Vulnerabilities are displayed on the **Security** pipeline tab with the suite name. When testing against the repositories default branch, the API security testing vulnerabilities are also shown on the Security and compliance's Vulnerability Report page.
+Vulnerabilities are displayed on the **Security** pipeline tab with the suite name. When testing against the repositories default branch, the API security testing vulnerabilities are also shown on the Security and compliance's vulnerability report.
 
 To prevent an excessive number of reported vulnerabilities, the API security testing scanner limits the number of vulnerabilities it reports per operation.
 

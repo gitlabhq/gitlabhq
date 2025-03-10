@@ -136,7 +136,7 @@ To learn more about SAST analyzers that are no longer supported, see [Analyzers 
 {{< /details >}}
 
 Source code is volatile; as developers make changes, source code may move within files or between files.
-Security analyzers may have already reported vulnerabilities that are being tracked in the [Vulnerability Report](../vulnerability_report/_index.md).
+Security analyzers may have already reported vulnerabilities that are being tracked in the [vulnerability report](../vulnerability_report/_index.md).
 These vulnerabilities are linked to specific problematic code fragments so that they can be found and fixed.
 If the code fragments are not tracked reliably as they move, vulnerability management is harder because the same vulnerability could be reported again.
 

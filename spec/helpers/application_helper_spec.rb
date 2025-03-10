@@ -915,7 +915,7 @@ RSpec.describe ApplicationHelper do
 
     shared_examples 'returns icon with tooltip' do
       before do
-        allow(helper).to receive(:sprite_icon).with('spam', css_class: 'gl-align-text-bottom').and_return(mock_svg)
+        allow(helper).to receive(:sprite_icon).with('spam', css_class: 'gl-align-text-bottom', variant: nil).and_return(mock_svg)
       end
 
       it 'returns icon with tooltip' do
@@ -949,9 +949,18 @@ RSpec.describe ApplicationHelper do
       let_it_be(:resource) { build(:issue) }
 
       it 'passes the value to sprite_icon' do
-        expect(helper).to receive(:sprite_icon).with('spam', css_class: 'gl-align-text-bottom extra-class').and_return(mock_svg)
+        expect(helper).to receive(:sprite_icon).with('spam', css_class: 'gl-align-text-bottom extra-class', variant: nil).and_return(mock_svg)
 
         helper.hidden_resource_icon(resource, css_class: 'extra-class')
+      end
+    end
+
+    context 'when variant is provided' do
+      let_it_be(:resource) { build(:issue) }
+
+      it 'passes the value to sprite_icon' do
+        expect(helper).to receive(:sprite_icon).with('spam', css_class: 'gl-align-text-bottom', variant: 'subtle').and_return(mock_svg)
+        helper.hidden_resource_icon(resource, variant: 'subtle')
       end
     end
   end

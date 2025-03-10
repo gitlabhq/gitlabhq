@@ -442,7 +442,7 @@ To link a vulnerability to existing GitLab issues:
 The selected GitLab issues are added to the **Linked items** section, and the linked issues counter is
 updated.
 
-GitLab issues linked to a vulnerability are shown in the Vulnerability Report and the vulnerability's page.
+GitLab issues linked to a vulnerability are shown in the vulnerability report and the vulnerability's page.
 
 Be aware of the following conditions between a vulnerability and a linked GitLab issue:
 

@@ -861,7 +861,7 @@ typical operation, the job always succeeds even if faults are identified during 
 
 Faults are displayed on the **Security** pipeline tab with the suite name. When testing against the
 repositories default branch, the fuzzing faults are also shown on the Security and compliance's
-Vulnerability Report page.
+vulnerability report.
 
 To prevent an excessive number of reported faults, the API fuzzing scanner limits the number of
 faults it reports.

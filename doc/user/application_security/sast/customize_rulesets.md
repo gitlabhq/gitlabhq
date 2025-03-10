@@ -52,7 +52,7 @@ to configure this behavior.
 You can override certain attributes of predefined rules for any SAST analyzer. This
 can be useful when adapting SAST to your existing workflow or tools. For example, you
 might want to override the severity of a vulnerability based on organizational policy,
-or choose a different message to display in the Vulnerability Report.
+or choose a different message to display in the vulnerability report.
 
 See the [Schema](#schema) and [Examples](#examples) sections for information on how
 to configure this behavior.

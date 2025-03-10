@@ -1827,7 +1827,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         expected_result = "<button class=\"has-tooltip gl-border-0 gl-bg-transparent gl-p-0 gl-leading-0 gl-text-inherit extra-class\" data-container=\"body\" data-placement=\"top\" title=\"#{description}\" type=\"button\" aria-label=\"#{description}\">#{icon}</button>"
 
         expect(helper).to receive(:visibility_level_icon)
-          .with(anything, options: { class: 'extra-icon-class' })
+          .with(anything, options: { class: 'extra-icon-class', variant: nil })
           .and_return(icon)
         result = helper.visibility_level_content(project, css_class: 'extra-class', icon_css_class: 'extra-icon-class')
         expect(result).to eq(expected_result)

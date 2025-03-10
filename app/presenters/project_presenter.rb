@@ -22,12 +22,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   AnchorData = Struct.new(:is_link, :label, :link, :class_modifier, :icon, :itemprop, :data)
   MAX_TOPICS_TO_SHOW = 3
 
-  def statistic_default_class_list
-    'icon gl-mr-3 gl-text-subtle'
-  end
-
-  def statistic_icon(icon_name = 'plus', class_list = statistic_default_class_list)
-    sprite_icon(icon_name, css_class: class_list)
+  def statistic_icon(icon_name = 'plus', variant = 'info')
+    sprite_icon(icon_name, css_class: 'gl-mr-3', variant: variant)
   end
 
   def statistics_anchors(show_auto_devops_callout:)
@@ -173,7 +169,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
     AnchorData.new(
       true,
-      statistic_icon('disk') + storage_anchor_text,
+      statistic_icon('disk', 'subtle') + storage_anchor_text,
       project_usage_quotas_path(project)
     )
   end
@@ -186,7 +182,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
     AnchorData.new(
       true,
-      statistic_icon('rocket-launch') +
+      statistic_icon('rocket-launch', 'subtle') +
       safe_format(n_('%{strong_start}%{release_count}%{strong_end} Release', '%{strong_start}%{release_count}%{strong_end} Releases', releases_count), release_count: number_with_delimiter(releases_count), strong_start: '<strong class="project-stat-value">'.html_safe, strong_end: '</strong>'.html_safe),
       project_releases_path(project)
     )
@@ -200,7 +196,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
     AnchorData.new(
       true,
-      statistic_icon('environment') +
+      statistic_icon('environment', 'subtle') +
       safe_format(n_('%{strong_start}%{count}%{strong_end} Environment', '%{strong_start}%{count}%{strong_end} Environments', environments_count), count: number_with_delimiter(environments_count), strong_start: '<strong class="project-stat-value">'.html_safe, strong_end: '</strong>'.html_safe),
       project_environments_path(project)
     )
@@ -209,7 +205,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def commits_anchor_data
     AnchorData.new(
       true,
-      statistic_icon('commit') +
+      statistic_icon('commit', 'subtle') +
       safe_format(n_('%{strong_start}%{commit_count}%{strong_end} Commit', '%{strong_start}%{commit_count}%{strong_end} Commits', statistics.commit_count), commit_count: number_with_delimiter(statistics.commit_count), strong_start: '<strong class="project-stat-value">'.html_safe, strong_end: '</strong>'.html_safe),
       empty_repo? ? nil : project_commits_path(project, default_branch_or_main)
     )
@@ -218,7 +214,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def branches_anchor_data
     AnchorData.new(
       true,
-      statistic_icon('branch') +
+      statistic_icon('branch', 'subtle') +
       safe_format(n_('%{strong_start}%{branch_count}%{strong_end} Branch', '%{strong_start}%{branch_count}%{strong_end} Branches', repository.branch_count), branch_count: number_with_delimiter(repository.branch_count), strong_start: '<strong class="project-stat-value">'.html_safe, strong_end: '</strong>'.html_safe),
       empty_repo? ? nil : project_branches_path(project)
     )
@@ -235,7 +231,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
       AnchorData.new(
         true,
-        statistic_icon('terraform') +
+        statistic_icon('terraform', 'subtle') +
         safe_format(n_('%{strong_start}%{terraform_states_count}%{strong_end} Terraform State', '%{strong_start}%{terraform_states_count}%{strong_end} Terraform States', project.terraform_states.count), terraform_states_count: number_with_delimiter(project.terraform_states.count), strong_start: '<strong class="project-stat-value">'.html_safe, strong_end: '</strong>'.html_safe) + terraform_warn_icon,
         project_terraform_index_path(project)
       )
@@ -245,7 +241,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def tags_anchor_data
     AnchorData.new(
       true,
-      statistic_icon('label') +
+      statistic_icon('label', 'subtle') +
       safe_format(n_('%{strong_start}%{tag_count}%{strong_end} Tag', '%{strong_start}%{tag_count}%{strong_end} Tags', repository.tag_count), tag_count: number_with_delimiter(repository.tag_count), strong_start: '<strong class="project-stat-value">'.html_safe, strong_end: '</strong>'.html_safe),
       empty_repo? ? nil : project_tags_path(project)
     )
@@ -257,7 +253,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
       AnchorData.new(
         false,
-        statistic_icon('upload') + _('Upload file'),
+        statistic_icon('upload', 'subtle') + _('Upload file'),
         '#modal-upload-blob',
         'js-upload-file-trigger',
         nil,
@@ -278,19 +274,19 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if can_current_user_push_to_default_branch?
       new_file_path = empty_repo? ? ide_edit_path(project, default_branch_or_main) : project_new_blob_path(project, default_branch_or_main)
 
-      AnchorData.new(false, statistic_icon('plus', 'gl-mr-3') + _('New file'), new_file_path)
+      AnchorData.new(false, statistic_icon('plus', 'info') + _('New file'), new_file_path)
     end
   end
 
   def readme_anchor_data
     if can_current_user_push_to_default_branch? && readme_path.nil?
-      icon = statistic_icon('plus', 'gl-mr-3')
+      icon = statistic_icon('plus', 'info')
       label = icon + _('Add README')
       AnchorData.new(false, label, empty_repo? ? add_readme_ide_path : add_readme_path)
     elsif readme_path
       AnchorData.new(
         false,
-        statistic_icon('doc-text') + _('README'),
+        statistic_icon('doc-text', 'subtle') + _('README'),
         default_view != 'readme' ? readme_path : '#readme',
         'btn-default',
         'doc-text'
@@ -300,7 +296,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def changelog_anchor_data
     if can_current_user_push_to_default_branch? && repository.changelog.blank?
-      icon = statistic_icon('plus', 'gl-mr-3')
+      icon = statistic_icon('plus', 'info')
       label = icon + _('Add CHANGELOG')
       AnchorData.new(
         false,
@@ -310,7 +306,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     elsif repository.changelog.present?
       AnchorData.new(
         false,
-        statistic_icon('doc-text') + _('CHANGELOG'),
+        statistic_icon('doc-text', 'subtle') + _('CHANGELOG'),
         changelog_path,
         'btn-default'
       )
@@ -318,7 +314,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def license_anchor_data
-    icon = statistic_icon('scale')
+    icon = statistic_icon('scale', 'subtle')
 
     if repository.license_blob.present?
       AnchorData.new(
@@ -330,7 +326,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
         'license'
       )
     elsif can_current_user_push_to_default_branch?
-      icon = statistic_icon('plus', 'gl-mr-3')
+      icon = statistic_icon('plus', 'info')
       label = icon + _('Add LICENSE')
       AnchorData.new(
         false,
@@ -342,7 +338,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def contribution_guide_anchor_data
     if can_current_user_push_to_default_branch? && repository.contribution_guide.blank?
-      icon = statistic_icon('plus', 'gl-mr-3')
+      icon = statistic_icon('plus', 'info')
       label = icon + _('Add CONTRIBUTING')
       AnchorData.new(
         false,
@@ -352,7 +348,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     elsif repository.contribution_guide.present?
       AnchorData.new(
         false,
-        statistic_icon('doc-text') + _('CONTRIBUTING'),
+        statistic_icon('doc-text', 'subtle') + _('CONTRIBUTING'),
         contribution_guide_path,
         'btn-default'
       )
@@ -366,14 +362,14 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       if auto_devops_enabled?
         AnchorData.new(
           false,
-          statistic_icon('settings') + _('Auto DevOps enabled'),
+          statistic_icon('settings', 'subtle') + _('Auto DevOps enabled'),
           project_settings_ci_cd_path(project, anchor: 'autodevops-settings'),
           'btn-default'
         )
       else
         AnchorData.new(
           false,
-          content_tag(:span, statistic_icon('plus', 'gl-mr-3') + _('Enable Auto DevOps')),
+          content_tag(:span, statistic_icon('plus', 'info') + _('Enable Auto DevOps')),
           project_settings_ci_cd_path(project, anchor: 'autodevops-settings')
         )
       end
@@ -385,7 +381,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def kubernetes_cluster_anchor_data
     if can_instantiate_cluster?
       if clusters.empty?
-        AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'gl-mr-3') + _('Add Kubernetes cluster')), project_clusters_path(project))
+        AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'info') + _('Add Kubernetes cluster')), project_clusters_path(project))
       else
         cluster_link = clusters.count == 1 ? project_cluster_path(project, clusters.first) : project_clusters_path(project)
 
@@ -398,9 +394,9 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     return unless can_view_pipeline_editor?(project)
 
     if cicd_missing?
-      AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'gl-mr-3') + _('Set up CI/CD')), project_ci_pipeline_editor_path(project))
+      AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'info') + _('Set up CI/CD')), project_ci_pipeline_editor_path(project))
     elsif project.has_ci_config_file?
-      AnchorData.new(false, statistic_icon('rocket') + _('CI/CD configuration'), project_ci_pipeline_editor_path(project), 'btn-default')
+      AnchorData.new(false, statistic_icon('rocket', 'subtle') + _('CI/CD configuration'), project_ci_pipeline_editor_path(project), 'btn-default')
     end
   end
 
@@ -408,9 +404,9 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     return unless project.wiki_enabled? && can_read_wiki?
 
     if project.wiki.has_home_page?
-      AnchorData.new(false, statistic_icon('book') + _('Wiki'), project_wiki_path, 'btn-default', nil, nil)
+      AnchorData.new(false, statistic_icon('book', 'subtle') + _('Wiki'), project_wiki_path, 'btn-default', nil, nil)
     elsif can_create_wiki?
-      icon = statistic_icon('plus', 'gl-mr-3')
+      icon = statistic_icon('plus', 'info')
       label = icon + _('Add Wiki')
       AnchorData.new(false, label, project_create_wiki_path, nil, nil, nil)
     end
@@ -456,7 +452,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     return unless project.pages_deployed? && can?(current_user, :read_pages_content, project)
 
     pages_url = build_pages_url(project)
-    AnchorData.new(false, statistic_icon('external-link') + _('GitLab Pages'), pages_url, 'btn-default', nil)
+    AnchorData.new(false, statistic_icon('external-link', 'subtle') + _('GitLab Pages'), pages_url, 'btn-default', nil)
   end
 
   private
@@ -464,7 +460,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def integrations_anchor_data
     return unless can?(current_user, :admin_project, project)
 
-    AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'gl-blue-500! gl-mr-3') + _('Configure Integrations')), project_settings_integrations_path(project), nil, nil, nil)
+    AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'info') + _('Configure Integrations')), project_settings_integrations_path(project), nil, nil, nil)
   end
 
   def cicd_missing?

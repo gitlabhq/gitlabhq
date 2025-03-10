@@ -119,7 +119,7 @@ pipeline.
 
 {{< /history >}}
 
-When developers make changes to a file with identified secrets, it's likely that the positions of these secrets will also change. Pipeline secret detection may have already flagged these secrets as vulnerabilities, tracked in the [Vulnerability Report](../../vulnerability_report/_index.md). These vulnerabilities are associated with specific secrets for easy identification and action. However, if the detected secrets aren't accurately tracked as they shift, managing vulnerabilities becomes challenging, potentially resulting in duplicate vulnerability reports.
+When developers make changes to a file with identified secrets, it's likely that the positions of these secrets will also change. Pipeline secret detection may have already flagged these secrets as vulnerabilities, tracked in the [vulnerability report](../../vulnerability_report/_index.md). These vulnerabilities are associated with specific secrets for easy identification and action. However, if the detected secrets aren't accurately tracked as they shift, managing vulnerabilities becomes challenging, potentially resulting in duplicate vulnerability reports.
 
 Pipeline secret detection uses an advanced vulnerability tracking algorithm to more accurately identify when the same secret has moved within a file due to refactoring or unrelated changes.
 

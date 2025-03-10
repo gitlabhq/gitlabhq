@@ -671,9 +671,9 @@ module ProjectsHelper
     project_settings_repository_path(@project, anchor: 'js-branch-rules')
   end
 
-  def visibility_level_content(project, css_class: nil, icon_css_class: nil)
+  def visibility_level_content(project, css_class: nil, icon_css_class: nil, icon_variant: nil)
     if project.created_and_owned_by_banned_user? && Feature.enabled?(:hide_projects_of_banned_users)
-      return hidden_resource_icon(project, css_class: css_class)
+      return hidden_resource_icon(project, css_class: css_class, variant: icon_variant)
     end
 
     title = visibility_icon_description(project)
@@ -690,7 +690,7 @@ module ProjectsHelper
       title: title,
       type: 'button',
       aria: { label: title }) do
-      visibility_level_icon(project.visibility_level, options: { class: icon_css_class })
+      visibility_level_icon(project.visibility_level, options: { class: icon_css_class, variant: icon_variant })
     end
   end
 

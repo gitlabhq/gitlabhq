@@ -25,7 +25,8 @@ RSpec.describe Metrics::PatchedFilesWorker, feature_category: :delivery do
           S.5....T.    /opt/gitlab/embedded/cookbooks/gitlab-pages/libraries/gitlab_pages.rb
           ..?......    /opt/gitlab/embedded/lib/ruby/gems/3.2.0/gems/ruby-fogbugz-0.3.0/.codeclimate.yml
           S.5....T.    /opt/gitlab/embedded/service/gitlab-rails/app/views/projects/issues/_details_content.html.haml
-          .....U...    /opt/gitlab/embedded/service/gitlab-rails/db/structure.sql
+          .....U...    /opt/gitlab/embedded/service/gitlab-rails/ee/db/geo/structure.sql
+          ....L....    /opt/gitlab/embedded/bin/pg_ctl
         OUTPUT
       end
 

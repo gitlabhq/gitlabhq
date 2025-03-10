@@ -52,7 +52,6 @@ stages:
     BUNDLE_SILENCE_ROOT_WARNING: "true"
     BUNDLE_WITHOUT: development
   before_script:
-    - echo "SUITE_RAN=true" > "${QA_SUITE_STATUS_ENV_FILE}"
     - cd qa && bundle install
 
 .docker-in-docker:
@@ -91,6 +90,7 @@ stages:
   script:
     - source $CI_PROJECT_DIR/scripts/utils.sh
     - source $CI_PROJECT_DIR/scripts/rspec_helpers.sh
+    - echo "SUITE_RAN=true" > "${QA_SUITE_STATUS_ENV_FILE}"
     - run_e2e_specs "${QA_GITLAB_URL}" "${QA_TESTS}" "${QA_RSPEC_TAGS}"
 
 .upload-test-runtime-data:

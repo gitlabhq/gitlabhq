@@ -14,6 +14,7 @@
     max: 2
     when: runner_system_failure
   script:
+    - echo "SUITE_RAN=true" > "${QA_SUITE_STATUS_ENV_FILE}"
     - export QA_COMMAND="bundle exec gitlab-qa ${QA_SCENARIO:=Test::Instance::Image} $RELEASE $GITLAB_QA_OPTS -- $QA_TESTS $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
     - echo "Running - '$QA_COMMAND'"
     - eval "$QA_COMMAND"

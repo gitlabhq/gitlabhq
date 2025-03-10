@@ -44,7 +44,7 @@ workflow:
     KUBECONFIG: /root/.kube/config
     BUNDLE_WITHOUT: development
     RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
-    CNG_FORCE_COLOR: "true"
+    ORCHESTRATOR_FORCE_COLOR: "true"
     DEPLOYMENT_TYPE: kind
     QA_DOCKER_NETWORK: host
     QA_RUN_IN_PARALLEL: "true"
