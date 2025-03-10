@@ -9,21 +9,45 @@ See https://docs.gitlab.com/ee/development/database/batched_background_migration
 ERROR
 
   def migration_out_of_test_window?(migration_class)
-    # Skip unless database migration (e.g background migration)
-    return false unless migration_class < Gitlab::Database::Migration[1.0]
-
     return false if ENV.fetch('RUN_ALL_MIGRATION_TESTS', false)
 
-    milestone = migration_class.try(:milestone)
-
-    # Missing milestone indicates that the migration is pre-16.7,
-    # which is old enough not to execute its tests
-    return true unless milestone
-
-    migration_milestone = Gitlab::VersionInfo.parse_from_milestone(milestone)
     min_milestone = Gitlab::Database.min_schema_gitlab_version
 
-    migration_milestone < min_milestone
+    if migration_class < Gitlab::Database::Migration[1.0]
+      # Skip unless database migration older than min_schema_gitlab_version
+      milestone = migration_class.try(:milestone)
+
+      # Missing milestone indicates that the migration is pre-16.7,
+      # which is old enough not to execute its tests
+      return true unless milestone
+
+      migration_milestone = Gitlab::VersionInfo.parse_from_milestone(milestone)
+
+      migration_milestone < min_milestone
+    elsif migration_class < Gitlab::BackgroundMigration::BatchedMigrationJob
+      finalized_by = finalized_by_version.presence
+
+      # Execute tests for batched background migrations that are not yet finalized
+      return false unless finalized_by
+
+      finalize_migration_class = migration_class_for(finalized_by)
+
+      # Execute tests if we can't find migration class
+      return false unless finalize_migration_class
+
+      milestone = finalize_migration_class.try(:milestone)
+
+      # Missing milestone indicates that the migration is pre-16.7,
+      # which is old enough not to execute its tests
+      return true unless milestone
+
+      migration_milestone = Gitlab::VersionInfo.parse_from_milestone(milestone)
+
+      # Skip tests if finalized before the last required stop
+      migration_milestone < min_milestone
+    else
+      false
+    end
   end
 
   def active_record_base(database: nil)
@@ -244,6 +268,33 @@ ERROR
     schema_migrate_down!
 
     tests.before_up.call
+  end
+
+  private
+
+  def migration_class_for(timestamp)
+    migration_file = Dir[
+      *Rails.application.config.paths['db/migrate'].paths
+      .map { |dir| File.join(dir, "#{timestamp}_*.rb") }
+    ].first
+
+    return unless migration_file
+
+    begin
+      require Rails.root.join(migration_file).to_s
+    rescue LoadError
+      return
+    end
+
+    matches = File.basename(migration_file).match(/\A\d+_(?<name>.*)\.rb\z/)
+
+    return unless matches[:name]
+
+    begin
+      matches[:name].classify.constantize
+    rescue NameError
+      nil
+    end
   end
 end
 

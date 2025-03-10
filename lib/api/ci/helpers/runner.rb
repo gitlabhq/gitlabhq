@@ -16,11 +16,6 @@ module API
           track_runner_authentication
           forbidden! unless current_runner
 
-          # TODO: Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/504963 (when ci_runners is swapped)
-          # This is because the new table will have check constraints for these scenarios, and therefore
-          # any orphaned runners will be missing
-          forbidden!('Runner is orphaned') if current_runner.sharding_key_id.nil? && !current_runner.instance_type?
-
           current_runner.heartbeat if update_contacted_at
           return unless ensure_runner_manager
 

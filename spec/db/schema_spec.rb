@@ -121,10 +121,10 @@ RSpec.describe 'Database schema',
       ci_runner_taggings: %w[runner_id sharding_key_id], # The sharding_key_id value is meant to populate the partitioned table, no other usage. The runner_id FK exists at the partition level
       ci_runner_taggings_instance_type: %w[sharding_key_id], # This field is always NULL in this partition
       ci_runners: %w[sharding_key_id], # This value is meant to populate the partitioned table, no other usage
-      ci_runners_e59bb2812d: %w[sharding_key_id], # This field is only used in the partitions, and has the appropriate FKs
-      instance_type_ci_runners_e59bb2812d: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners_e59bb2812d routing table.
-      group_type_ci_runners_e59bb2812d: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners_e59bb2812d routing table.
-      project_type_ci_runners_e59bb2812d: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners_e59bb2812d routing table.
+      ci_runners_archived: %w[sharding_key_id creator_id], # This field is only used in the partitions, and has the appropriate FKs. We don't need the LFK for creator_id since that is already mirrored from ci_runners
+      instance_type_ci_runners: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table.
+      group_type_ci_runners: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table.
+      project_type_ci_runners: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table.
       ci_runner_machines: %w[sharding_key_id], # This value is meant to populate the partitioned table, no other usage
       ci_runner_machines_687967fa8a: %w[runner_id sharding_key_id], # The sharding_key_id field is only used in the partitions, and has the appropriate FKs. The runner_id field will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/503749.
       instance_type_ci_runner_machines_687967fa8a: %w[sharding_key_id], # This field is always NULL in this partition.
@@ -271,13 +271,13 @@ RSpec.describe 'Database schema',
       approval_merge_request_rules: 17,
       ci_builds: 27,
       ci_pipelines: 24,
-      ci_runners: 17,
-      ci_runners_e59bb2812d: 16,
+      ci_runners: 16,
+      ci_runners_archived: 17,
       deployments: 18,
       epics: 19,
       events: 16,
-      group_type_ci_runners_e59bb2812d: 17,
-      instance_type_ci_runners_e59bb2812d: 17,
+      group_type_ci_runners: 17,
+      instance_type_ci_runners: 17,
       issues: 39,
       members: 21,
       merge_requests: 33,
@@ -286,7 +286,7 @@ RSpec.describe 'Database schema',
       p_ci_pipelines: 24,
       packages_package_files: 16,
       packages_packages: 27,
-      project_type_ci_runners_e59bb2812d: 17,
+      project_type_ci_runners: 17,
       projects: 55,
       sbom_occurrences: 25,
       users: 32,

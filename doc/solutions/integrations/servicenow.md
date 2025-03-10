@@ -25,7 +25,7 @@ projects, groups, users, issues, merge requests, branches, and repositories.
 For a full list of features, see the
 [GitLab spoke documentation (Xanadu Release)](https://docs.servicenow.com/bundle/xanadu-integrate-applications/page/administer/integrationhub-store-spokes/concept/gitlab-spoke.html).
 
-You must [configure GitLab as an OAuth2 authentication service provider](../../integration/oauth_provider.md),
+You must [configure GitLab as an OAuth 2.0 authentication service provider](../../integration/oauth_provider.md),
 which involves creating an application and then providing the Application ID
 and Secret in ServiceNow.
 

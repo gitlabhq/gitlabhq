@@ -183,7 +183,12 @@ module Gitlab
       end
 
       def supports_parent?
-        ::WorkItems::HierarchyRestriction.find_by_child_type_id(quick_action_target.work_item_type_id).present?
+        target_item = quick_action_target
+
+        return false if target_item.work_item_type&.issue? &&
+          !(target_item.project || target_item.namespace)&.licensed_feature_available?(:epics)
+
+        ::WorkItems::HierarchyRestriction.find_by_child_type_id(target_item.work_item_type_id).present?
       end
 
       def supports_children?

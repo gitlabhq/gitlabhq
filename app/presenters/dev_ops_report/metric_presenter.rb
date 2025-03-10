@@ -82,7 +82,7 @@ module DevOpsReport
           description: 'issues created per active user',
           feature: 'service_desk_issues',
           blog: 'http://blogs.forrester.com/kate_leggett/17-01-30-top_trends_for_customer_service_in_2017_operations_become_smarter_and_more_strategic',
-          docs: 'https://docs.gitlab.com/ee/user/project/service_desk.html'
+          docs: 'https://docs.gitlab.com/user/project/service_desk/'
         )
       ]
     end

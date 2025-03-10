@@ -46,6 +46,9 @@ ci_instance_runner_monthly_usages:
   - table: projects
     column: project_id
     on_delete: async_nullify
+  - table: ci_runners
+    column: runner_id
+    on_delete: async_nullify
 ci_job_token_authorizations:
   - table: projects
     column: origin_project_id
@@ -153,14 +156,13 @@ ci_runners:
   - table: users
     column: creator_id
     on_delete: async_nullify
-ci_runners_e59bb2812d:
-  - table: users
-    column: creator_id
-    on_delete: async_nullify
 ci_running_builds:
   - table: projects
     column: project_id
     on_delete: async_delete
+  - table: ci_runners
+    column: runner_id
+    on_delete: async_nullify
 ci_secure_files:
   - table: projects
     column: project_id

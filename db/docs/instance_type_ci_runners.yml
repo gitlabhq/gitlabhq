@@ -1,5 +1,5 @@
 ---
-table_name: instance_type_ci_runners_e59bb2812d
+table_name: instance_type_ci_runners
 classes:
 - Ci::Runner
 feature_categories:

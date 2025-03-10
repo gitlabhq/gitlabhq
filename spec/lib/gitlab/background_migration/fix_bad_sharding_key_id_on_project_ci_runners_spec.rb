@@ -9,8 +9,8 @@ RSpec.describe Gitlab::BackgroundMigration::FixBadShardingKeyIdOnProjectCiRunner
   let(:connection) { Ci::ApplicationRecord.connection }
 
   describe '#perform' do
-    let(:runners) { table(:ci_runners) }
-    let(:runner_projects) { table(:ci_runner_projects) }
+    let(:runners) { table(:ci_runners, primary_key: :id) }
+    let(:runner_projects) { table(:ci_runner_projects, primary_key: :id) }
     let(:instance_runner) { runners.create!(runner_type: 1) }
     let(:project_id) { 1000 }
     let(:project2_id) { 1001 }

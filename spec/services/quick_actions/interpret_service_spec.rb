@@ -3312,21 +3312,52 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
     context '/set_parent command' do
       let_it_be(:parent) { create(:work_item, :issue, project: project) }
-      let_it_be(:work_item) { create(:work_item, :task, project: project) }
+      let_it_be(:task_work_item) { create(:work_item, :task, project: project) }
+      let_it_be(:issue_work_item) { create(:work_item, :issue, project: project) }
       let_it_be(:parent_ref) { parent.to_reference(project) }
 
-      let(:content) { "/set_parent #{parent_ref}" }
+      context 'on a work item' do
+        let(:content) { "/set_parent #{parent_ref}" }
 
-      it 'returns success message' do
-        _, _, message = service.execute(content, work_item)
+        it 'returns success message' do
+          _, _, message = service.execute(content, task_work_item)
 
-        expect(message).to eq(_('Parent set successfully'))
+          expect(message).to eq(_('Parent set successfully'))
+        end
+
+        it 'sets correct update params' do
+          _, updates, _ = service.execute(content, task_work_item)
+
+          expect(updates).to eq(set_parent: parent)
+        end
+
+        context 'when epics are disabled' do
+          before do
+            stub_licensed_features(epics: false)
+          end
+
+          it 'does not contain command for issue work item types' do
+            expect(service.available_commands(issue_work_item)).not_to include(a_hash_including(name: :set_parent))
+          end
+
+          it 'contains command for task work item types' do
+            expect(service.available_commands(task_work_item)).to include(a_hash_including(name: :set_parent))
+          end
+        end
       end
 
-      it 'sets correct update params' do
-        _, updates, _ = service.execute(content, work_item)
+      context 'on an issue' do
+        context 'when epics are disabled' do
+          before do
+            stub_licensed_features(epics: false)
+          end
 
-        expect(updates).to eq(set_parent: parent)
+          let_it_be(:issue) { create(:issue, project: project) }
+
+          it 'does not contain command' do
+            expect(service.available_commands(issue)).not_to include(a_hash_including(name: :set_parent))
+          end
+        end
       end
     end
 

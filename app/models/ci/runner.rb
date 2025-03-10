@@ -18,6 +18,8 @@ module Ci
 
     extend ::Gitlab::Utils::Override
 
+    self.primary_key = :id
+
     add_authentication_token_field :token,
       encrypted: :optional,
       expires_at: :compute_token_expiration,
@@ -668,7 +670,7 @@ module Ci
     def partition_id_prefix_in_16_bit_encode
       # Prefix with t1 / t2 / t3 (`t` as in runner type, to allow us to easily detect how a token got prefixed).
       # This is needed in order to ensure that tokens have unique values across partitions
-      # in the new ci_runners_e59bb2812d partitioned table.
+      # in the new ci_runners partitioned table.
       "t#{self.class.runner_types[runner_type].to_s(16)}_"
     end
 

@@ -852,82 +852,82 @@ CREATE FUNCTION table_sync_function_686d6c7993() RETURNS trigger
     AS $$
 BEGIN
 IF (TG_OP = 'DELETE') THEN
-  DELETE FROM ci_runners_e59bb2812d where "id" = OLD."id";
+  DELETE FROM ci_runners_archived where "id" = OLD."id";
 ELSIF (TG_OP = 'UPDATE') THEN
-  UPDATE ci_runners_e59bb2812d
-  SET "creator_id" = NEW."creator_id",
-    "sharding_key_id" = NEW."sharding_key_id",
+  UPDATE ci_runners_archived
+  SET "token" = NEW."token",
     "created_at" = NEW."created_at",
     "updated_at" = NEW."updated_at",
+    "description" = NEW."description",
     "contacted_at" = NEW."contacted_at",
-    "token_expires_at" = NEW."token_expires_at",
-    "public_projects_minutes_cost_factor" = NEW."public_projects_minutes_cost_factor",
-    "private_projects_minutes_cost_factor" = NEW."private_projects_minutes_cost_factor",
+    "active" = NEW."active",
+    "name" = NEW."name",
+    "run_untagged" = NEW."run_untagged",
+    "locked" = NEW."locked",
     "access_level" = NEW."access_level",
     "maximum_timeout" = NEW."maximum_timeout",
     "runner_type" = NEW."runner_type",
-    "registration_type" = NEW."registration_type",
-    "creation_state" = NEW."creation_state",
-    "active" = NEW."active",
-    "run_untagged" = NEW."run_untagged",
-    "locked" = NEW."locked",
-    "name" = NEW."name",
     "token_encrypted" = NEW."token_encrypted",
-    "token" = NEW."token",
-    "description" = NEW."description",
+    "public_projects_minutes_cost_factor" = NEW."public_projects_minutes_cost_factor",
+    "private_projects_minutes_cost_factor" = NEW."private_projects_minutes_cost_factor",
     "maintainer_note" = NEW."maintainer_note",
+    "token_expires_at" = NEW."token_expires_at",
     "allowed_plans" = NEW."allowed_plans",
-    "allowed_plan_ids" = NEW."allowed_plan_ids"
-  WHERE ci_runners_e59bb2812d."id" = NEW."id";
+    "registration_type" = NEW."registration_type",
+    "creator_id" = NEW."creator_id",
+    "creation_state" = NEW."creation_state",
+    "allowed_plan_ids" = NEW."allowed_plan_ids",
+    "sharding_key_id" = NEW."sharding_key_id"
+  WHERE ci_runners_archived."id" = NEW."id";
 ELSIF (TG_OP = 'INSERT') THEN
-  INSERT INTO ci_runners_e59bb2812d ("id",
-    "creator_id",
-    "sharding_key_id",
+  INSERT INTO ci_runners_archived ("id",
+    "token",
     "created_at",
     "updated_at",
+    "description",
     "contacted_at",
-    "token_expires_at",
-    "public_projects_minutes_cost_factor",
-    "private_projects_minutes_cost_factor",
+    "active",
+    "name",
+    "run_untagged",
+    "locked",
     "access_level",
     "maximum_timeout",
     "runner_type",
-    "registration_type",
-    "creation_state",
-    "active",
-    "run_untagged",
-    "locked",
-    "name",
     "token_encrypted",
-    "token",
-    "description",
+    "public_projects_minutes_cost_factor",
+    "private_projects_minutes_cost_factor",
     "maintainer_note",
+    "token_expires_at",
     "allowed_plans",
-    "allowed_plan_ids")
+    "registration_type",
+    "creator_id",
+    "creation_state",
+    "allowed_plan_ids",
+    "sharding_key_id")
   VALUES (NEW."id",
-    NEW."creator_id",
-    NEW."sharding_key_id",
+    NEW."token",
     NEW."created_at",
     NEW."updated_at",
+    NEW."description",
     NEW."contacted_at",
-    NEW."token_expires_at",
-    NEW."public_projects_minutes_cost_factor",
-    NEW."private_projects_minutes_cost_factor",
+    NEW."active",
+    NEW."name",
+    NEW."run_untagged",
+    NEW."locked",
     NEW."access_level",
     NEW."maximum_timeout",
     NEW."runner_type",
-    NEW."registration_type",
-    NEW."creation_state",
-    NEW."active",
-    NEW."run_untagged",
-    NEW."locked",
-    NEW."name",
     NEW."token_encrypted",
-    NEW."token",
-    NEW."description",
+    NEW."public_projects_minutes_cost_factor",
+    NEW."private_projects_minutes_cost_factor",
     NEW."maintainer_note",
+    NEW."token_expires_at",
     NEW."allowed_plans",
-    NEW."allowed_plan_ids");
+    NEW."registration_type",
+    NEW."creator_id",
+    NEW."creation_state",
+    NEW."allowed_plan_ids",
+    NEW."sharding_key_id");
 END IF;
 RETURN NULL;
 
@@ -2175,6 +2175,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "operations_strategies"
   WHERE "operations_strategies"."id" = NEW."strategy_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_5ed68c226e97() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "approval_merge_request_rules"
+  WHERE "approval_merge_request_rules"."id" = NEW."approval_merge_request_rule_id";
 END IF;
 
 RETURN NEW;
@@ -8703,7 +8719,8 @@ CREATE TABLE approval_merge_request_rules (
 CREATE TABLE approval_merge_request_rules_approved_approvers (
     id bigint NOT NULL,
     approval_merge_request_rule_id bigint NOT NULL,
-    user_id bigint NOT NULL
+    user_id bigint NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE approval_merge_request_rules_approved_approvers_id_seq
@@ -11245,36 +11262,6 @@ CREATE TABLE ci_runner_versions (
 
 CREATE TABLE ci_runners (
     id bigint NOT NULL,
-    token character varying,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    description character varying,
-    contacted_at timestamp without time zone,
-    active boolean DEFAULT true NOT NULL,
-    name character varying,
-    run_untagged boolean DEFAULT true NOT NULL,
-    locked boolean DEFAULT false NOT NULL,
-    access_level integer DEFAULT 0 NOT NULL,
-    maximum_timeout integer,
-    runner_type smallint NOT NULL,
-    token_encrypted character varying,
-    public_projects_minutes_cost_factor double precision DEFAULT 1.0 NOT NULL,
-    private_projects_minutes_cost_factor double precision DEFAULT 1.0 NOT NULL,
-    maintainer_note text,
-    token_expires_at timestamp with time zone,
-    allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
-    registration_type smallint DEFAULT 0 NOT NULL,
-    creator_id bigint,
-    creation_state smallint DEFAULT 0 NOT NULL,
-    allowed_plan_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
-    sharding_key_id bigint,
-    CONSTRAINT check_46c685e76f CHECK ((char_length((description)::text) <= 1024)),
-    CONSTRAINT check_91230910ec CHECK ((char_length((name)::text) <= 256)),
-    CONSTRAINT check_ce275cee06 CHECK ((char_length(maintainer_note) <= 1024))
-);
-
-CREATE TABLE ci_runners_e59bb2812d (
-    id bigint NOT NULL,
     creator_id bigint,
     sharding_key_id bigint,
     created_at timestamp with time zone,
@@ -11305,6 +11292,36 @@ CREATE TABLE ci_runners_e59bb2812d (
     CONSTRAINT check_af25130d5a CHECK ((char_length(token) <= 128))
 )
 PARTITION BY LIST (runner_type);
+
+CREATE TABLE ci_runners_archived (
+    id bigint NOT NULL,
+    token character varying,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    description character varying,
+    contacted_at timestamp without time zone,
+    active boolean DEFAULT true NOT NULL,
+    name character varying,
+    run_untagged boolean DEFAULT true NOT NULL,
+    locked boolean DEFAULT false NOT NULL,
+    access_level integer DEFAULT 0 NOT NULL,
+    maximum_timeout integer,
+    runner_type smallint NOT NULL,
+    token_encrypted character varying,
+    public_projects_minutes_cost_factor double precision DEFAULT 1.0 NOT NULL,
+    private_projects_minutes_cost_factor double precision DEFAULT 1.0 NOT NULL,
+    maintainer_note text,
+    token_expires_at timestamp with time zone,
+    allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
+    registration_type smallint DEFAULT 0 NOT NULL,
+    creator_id bigint,
+    creation_state smallint DEFAULT 0 NOT NULL,
+    allowed_plan_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    sharding_key_id bigint,
+    CONSTRAINT check_46c685e76f CHECK ((char_length((description)::text) <= 1024)),
+    CONSTRAINT check_91230910ec CHECK ((char_length((name)::text) <= 256)),
+    CONSTRAINT check_ce275cee06 CHECK ((char_length(maintainer_note) <= 1024))
+);
 
 CREATE SEQUENCE ci_runners_id_seq
     START WITH 1
@@ -14516,8 +14533,8 @@ CREATE TABLE group_type_ci_runner_machines_687967fa8a (
     CONSTRAINT check_sharding_key_id_nullness CHECK ((sharding_key_id IS NOT NULL))
 );
 
-CREATE TABLE group_type_ci_runners_e59bb2812d (
-    id bigint NOT NULL,
+CREATE TABLE group_type_ci_runners (
+    id bigint DEFAULT nextval('ci_runners_id_seq'::regclass) NOT NULL,
     creator_id bigint,
     sharding_key_id bigint,
     created_at timestamp with time zone,
@@ -15113,8 +15130,8 @@ CREATE TABLE instance_type_ci_runner_machines_687967fa8a (
     CONSTRAINT check_sharding_key_id_nullness CHECK ((sharding_key_id IS NULL))
 );
 
-CREATE TABLE instance_type_ci_runners_e59bb2812d (
-    id bigint NOT NULL,
+CREATE TABLE instance_type_ci_runners (
+    id bigint DEFAULT nextval('ci_runners_id_seq'::regclass) NOT NULL,
     creator_id bigint,
     sharding_key_id bigint,
     created_at timestamp with time zone,
@@ -20349,8 +20366,8 @@ CREATE TABLE project_type_ci_runner_machines_687967fa8a (
     CONSTRAINT check_sharding_key_id_nullness CHECK ((sharding_key_id IS NOT NULL))
 );
 
-CREATE TABLE project_type_ci_runners_e59bb2812d (
-    id bigint NOT NULL,
+CREATE TABLE project_type_ci_runners (
+    id bigint DEFAULT nextval('ci_runners_id_seq'::regclass) NOT NULL,
     creator_id bigint,
     sharding_key_id bigint,
     created_at timestamp with time zone,
@@ -25182,15 +25199,15 @@ ALTER TABLE ONLY p_ci_stages ATTACH PARTITION ci_stages FOR VALUES IN ('100', '1
 
 ALTER TABLE ONLY ci_runner_machines_687967fa8a ATTACH PARTITION group_type_ci_runner_machines_687967fa8a FOR VALUES IN ('2');
 
-ALTER TABLE ONLY ci_runners_e59bb2812d ATTACH PARTITION group_type_ci_runners_e59bb2812d FOR VALUES IN ('2');
+ALTER TABLE ONLY ci_runners ATTACH PARTITION group_type_ci_runners FOR VALUES IN ('2');
 
 ALTER TABLE ONLY ci_runner_machines_687967fa8a ATTACH PARTITION instance_type_ci_runner_machines_687967fa8a FOR VALUES IN ('1');
 
-ALTER TABLE ONLY ci_runners_e59bb2812d ATTACH PARTITION instance_type_ci_runners_e59bb2812d FOR VALUES IN ('1');
+ALTER TABLE ONLY ci_runners ATTACH PARTITION instance_type_ci_runners FOR VALUES IN ('1');
 
 ALTER TABLE ONLY ci_runner_machines_687967fa8a ATTACH PARTITION project_type_ci_runner_machines_687967fa8a FOR VALUES IN ('3');
 
-ALTER TABLE ONLY ci_runners_e59bb2812d ATTACH PARTITION project_type_ci_runners_e59bb2812d FOR VALUES IN ('3');
+ALTER TABLE ONLY ci_runners ATTACH PARTITION project_type_ci_runners FOR VALUES IN ('3');
 
 ALTER TABLE ONLY abuse_events ALTER COLUMN id SET DEFAULT nextval('abuse_events_id_seq'::regclass);
 
@@ -27524,13 +27541,13 @@ ALTER TABLE security_scans
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
-ALTER TABLE ONLY instance_type_ci_runners_e59bb2812d
+ALTER TABLE ONLY instance_type_ci_runners
     ADD CONSTRAINT check_5c34a3c1db UNIQUE (id);
 
-ALTER TABLE ONLY project_type_ci_runners_e59bb2812d
+ALTER TABLE ONLY project_type_ci_runners
     ADD CONSTRAINT check_619c71f3a2 UNIQUE (id);
 
-ALTER TABLE ONLY group_type_ci_runners_e59bb2812d
+ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
 
 ALTER TABLE approvals
@@ -27716,11 +27733,11 @@ ALTER TABLE ONLY ci_runner_taggings_project_type
 ALTER TABLE ONLY ci_runner_versions
     ADD CONSTRAINT ci_runner_versions_pkey PRIMARY KEY (version);
 
-ALTER TABLE ONLY ci_runners_e59bb2812d
-    ADD CONSTRAINT ci_runners_e59bb2812d_pkey PRIMARY KEY (id, runner_type);
+ALTER TABLE ONLY ci_runners_archived
+    ADD CONSTRAINT ci_runners_archived_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_runners
-    ADD CONSTRAINT ci_runners_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT ci_runners_pkey PRIMARY KEY (id, runner_type);
 
 ALTER TABLE ONLY ci_running_builds
     ADD CONSTRAINT ci_running_builds_pkey PRIMARY KEY (id);
@@ -28193,8 +28210,8 @@ ALTER TABLE ONLY group_ssh_certificates
 ALTER TABLE ONLY group_type_ci_runner_machines_687967fa8a
     ADD CONSTRAINT group_type_ci_runner_machines_687967fa8a_pkey PRIMARY KEY (id, runner_type);
 
-ALTER TABLE ONLY group_type_ci_runners_e59bb2812d
-    ADD CONSTRAINT group_type_ci_runners_e59bb2812d_pkey PRIMARY KEY (id, runner_type);
+ALTER TABLE ONLY group_type_ci_runners
+    ADD CONSTRAINT group_type_ci_runners_pkey PRIMARY KEY (id, runner_type);
 
 ALTER TABLE ONLY group_wiki_repositories
     ADD CONSTRAINT group_wiki_repositories_pkey PRIMARY KEY (group_id);
@@ -28283,8 +28300,8 @@ ALTER TABLE ONLY instance_integrations
 ALTER TABLE ONLY instance_type_ci_runner_machines_687967fa8a
     ADD CONSTRAINT instance_type_ci_runner_machines_687967fa8a_pkey PRIMARY KEY (id, runner_type);
 
-ALTER TABLE ONLY instance_type_ci_runners_e59bb2812d
-    ADD CONSTRAINT instance_type_ci_runners_e59bb2812d_pkey PRIMARY KEY (id, runner_type);
+ALTER TABLE ONLY instance_type_ci_runners
+    ADD CONSTRAINT instance_type_ci_runners_pkey PRIMARY KEY (id, runner_type);
 
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT integrations_pkey PRIMARY KEY (id);
@@ -29018,8 +29035,8 @@ ALTER TABLE ONLY project_topics
 ALTER TABLE ONLY project_type_ci_runner_machines_687967fa8a
     ADD CONSTRAINT project_type_ci_runner_machines_687967fa8a_pkey PRIMARY KEY (id, runner_type);
 
-ALTER TABLE ONLY project_type_ci_runners_e59bb2812d
-    ADD CONSTRAINT project_type_ci_runners_e59bb2812d_pkey PRIMARY KEY (id, runner_type);
+ALTER TABLE ONLY project_type_ci_runners
+    ADD CONSTRAINT project_type_ci_runners_pkey PRIMARY KEY (id, runner_type);
 
 ALTER TABLE ONLY project_wiki_repositories
     ADD CONSTRAINT project_wiki_repositories_pkey PRIMARY KEY (id);
@@ -31073,65 +31090,65 @@ CREATE UNIQUE INDEX idx_uniq_ci_runner_machines_687967fa8a_on_runner_id_system_x
 
 CREATE UNIQUE INDEX group_type_ci_runner_machines_runner_id_runner_type_system__idx ON group_type_ci_runner_machines_687967fa8a USING btree (runner_id, runner_type, system_xid);
 
-CREATE UNIQUE INDEX index_uniq_ci_runners_e59bb2812d_on_token_encrypted_and_type ON ONLY ci_runners_e59bb2812d USING btree (token_encrypted, runner_type);
+CREATE UNIQUE INDEX index_uniq_ci_runners_e59bb2812d_on_token_encrypted_and_type ON ONLY ci_runners USING btree (token_encrypted, runner_type);
 
-CREATE UNIQUE INDEX group_type_ci_runners_e59bb2812_token_encrypted_runner_type_idx ON group_type_ci_runners_e59bb2812d USING btree (token_encrypted, runner_type);
+CREATE UNIQUE INDEX group_type_ci_runners_e59bb2812_token_encrypted_runner_type_idx ON group_type_ci_runners USING btree (token_encrypted, runner_type);
 
-CREATE INDEX index_ci_runners_e59bb2812d_on_active_and_id ON ONLY ci_runners_e59bb2812d USING btree (active, id);
+CREATE INDEX index_ci_runners_e59bb2812d_on_active_and_id ON ONLY ci_runners USING btree (active, id);
 
-CREATE INDEX group_type_ci_runners_e59bb2812d_active_id_idx ON group_type_ci_runners_e59bb2812d USING btree (active, id);
+CREATE INDEX group_type_ci_runners_e59bb2812d_active_id_idx ON group_type_ci_runners USING btree (active, id);
 
-CREATE INDEX index_ci_runners_e59bb2812d_on_contacted_at_and_id_desc ON ONLY ci_runners_e59bb2812d USING btree (contacted_at, id DESC);
+CREATE INDEX index_ci_runners_e59bb2812d_on_contacted_at_and_id_desc ON ONLY ci_runners USING btree (contacted_at, id DESC);
 
-CREATE INDEX group_type_ci_runners_e59bb2812d_contacted_at_id_idx ON group_type_ci_runners_e59bb2812d USING btree (contacted_at, id DESC);
+CREATE INDEX group_type_ci_runners_e59bb2812d_contacted_at_id_idx ON group_type_ci_runners USING btree (contacted_at, id DESC);
 
-CREATE INDEX idx_ci_runners_e59bb2812d_on_contacted_at_and_id_where_inactive ON ONLY ci_runners_e59bb2812d USING btree (contacted_at DESC, id DESC) WHERE (active = false);
+CREATE INDEX idx_ci_runners_e59bb2812d_on_contacted_at_and_id_where_inactive ON ONLY ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
 
-CREATE INDEX group_type_ci_runners_e59bb2812d_contacted_at_id_idx1 ON group_type_ci_runners_e59bb2812d USING btree (contacted_at DESC, id DESC) WHERE (active = false);
+CREATE INDEX group_type_ci_runners_e59bb2812d_contacted_at_id_idx1 ON group_type_ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
 
-CREATE INDEX index_ci_runners_e59bb2812d_on_contacted_at_desc_and_id_desc ON ONLY ci_runners_e59bb2812d USING btree (contacted_at DESC, id DESC);
+CREATE INDEX index_ci_runners_e59bb2812d_on_contacted_at_desc_and_id_desc ON ONLY ci_runners USING btree (contacted_at DESC, id DESC);
 
-CREATE INDEX group_type_ci_runners_e59bb2812d_contacted_at_id_idx2 ON group_type_ci_runners_e59bb2812d USING btree (contacted_at DESC, id DESC);
+CREATE INDEX group_type_ci_runners_e59bb2812d_contacted_at_id_idx2 ON group_type_ci_runners USING btree (contacted_at DESC, id DESC);
 
-CREATE INDEX index_ci_runners_e59bb2812d_on_created_at_and_id_desc ON ONLY ci_runners_e59bb2812d USING btree (created_at, id DESC);
+CREATE INDEX index_ci_runners_e59bb2812d_on_created_at_and_id_desc ON ONLY ci_runners USING btree (created_at, id DESC);
 
-CREATE INDEX group_type_ci_runners_e59bb2812d_created_at_id_idx ON group_type_ci_runners_e59bb2812d USING btree (created_at, id DESC);
+CREATE INDEX group_type_ci_runners_e59bb2812d_created_at_id_idx ON group_type_ci_runners USING btree (created_at, id DESC);
 
-CREATE INDEX index_ci_runners_e59bb2812d_on_created_at_and_id_where_inactive ON ONLY ci_runners_e59bb2812d USING btree (created_at DESC, id DESC) WHERE (active = false);
+CREATE INDEX index_ci_runners_e59bb2812d_on_created_at_and_id_where_inactive ON ONLY ci_runners USING btree (created_at DESC, id DESC) WHERE (active = false);
 
-CREATE INDEX group_type_ci_runners_e59bb2812d_created_at_id_idx1 ON group_type_ci_runners_e59bb2812d USING btree (created_at DESC, id DESC) WHERE (active = false);
+CREATE INDEX group_type_ci_runners_e59bb2812d_created_at_id_idx1 ON group_type_ci_runners USING btree (created_at DESC, id DESC) WHERE (active = false);
 
-CREATE INDEX index_ci_runners_e59bb2812d_on_created_at_desc_and_id_desc ON ONLY ci_runners_e59bb2812d USING btree (created_at DESC, id DESC);
+CREATE INDEX index_ci_runners_e59bb2812d_on_created_at_desc_and_id_desc ON ONLY ci_runners USING btree (created_at DESC, id DESC);
 
-CREATE INDEX group_type_ci_runners_e59bb2812d_created_at_id_idx2 ON group_type_ci_runners_e59bb2812d USING btree (created_at DESC, id DESC);
+CREATE INDEX group_type_ci_runners_e59bb2812d_created_at_id_idx2 ON group_type_ci_runners USING btree (created_at DESC, id DESC);
 
-CREATE INDEX index_ci_runners_e59bb2812d_on_creator_id_where_not_null ON ONLY ci_runners_e59bb2812d USING btree (creator_id) WHERE (creator_id IS NOT NULL);
+CREATE INDEX index_ci_runners_e59bb2812d_on_creator_id_where_not_null ON ONLY ci_runners USING btree (creator_id) WHERE (creator_id IS NOT NULL);
 
-CREATE INDEX group_type_ci_runners_e59bb2812d_creator_id_idx ON group_type_ci_runners_e59bb2812d USING btree (creator_id) WHERE (creator_id IS NOT NULL);
+CREATE INDEX group_type_ci_runners_e59bb2812d_creator_id_idx ON group_type_ci_runners USING btree (creator_id) WHERE (creator_id IS NOT NULL);
 
-CREATE INDEX index_ci_runners_e59bb2812d_on_description_trigram ON ONLY ci_runners_e59bb2812d USING gin (description gin_trgm_ops);
+CREATE INDEX index_ci_runners_e59bb2812d_on_description_trigram ON ONLY ci_runners USING gin (description gin_trgm_ops);
 
-CREATE INDEX group_type_ci_runners_e59bb2812d_description_idx ON group_type_ci_runners_e59bb2812d USING gin (description gin_trgm_ops);
+CREATE INDEX group_type_ci_runners_e59bb2812d_description_idx ON group_type_ci_runners USING gin (description gin_trgm_ops);
 
-CREATE INDEX index_ci_runners_e59bb2812d_on_locked ON ONLY ci_runners_e59bb2812d USING btree (locked);
+CREATE INDEX index_ci_runners_e59bb2812d_on_locked ON ONLY ci_runners USING btree (locked);
 
-CREATE INDEX group_type_ci_runners_e59bb2812d_locked_idx ON group_type_ci_runners_e59bb2812d USING btree (locked);
+CREATE INDEX group_type_ci_runners_e59bb2812d_locked_idx ON group_type_ci_runners USING btree (locked);
 
-CREATE INDEX index_ci_runners_e59bb2812d_on_sharding_key_id_where_not_null ON ONLY ci_runners_e59bb2812d USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
+CREATE INDEX index_ci_runners_e59bb2812d_on_sharding_key_id_where_not_null ON ONLY ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
 
-CREATE INDEX group_type_ci_runners_e59bb2812d_sharding_key_id_idx ON group_type_ci_runners_e59bb2812d USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
+CREATE INDEX group_type_ci_runners_e59bb2812d_sharding_key_id_idx ON group_type_ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
 
-CREATE INDEX index_ci_runners_e59bb2812d_on_token_expires_at_and_id_desc ON ONLY ci_runners_e59bb2812d USING btree (token_expires_at, id DESC);
+CREATE INDEX index_ci_runners_e59bb2812d_on_token_expires_at_and_id_desc ON ONLY ci_runners USING btree (token_expires_at, id DESC);
 
-CREATE INDEX group_type_ci_runners_e59bb2812d_token_expires_at_id_idx ON group_type_ci_runners_e59bb2812d USING btree (token_expires_at, id DESC);
+CREATE INDEX group_type_ci_runners_e59bb2812d_token_expires_at_id_idx ON group_type_ci_runners USING btree (token_expires_at, id DESC);
 
-CREATE INDEX idx_ci_runners_e59bb2812d_on_token_expires_at_desc_and_id_desc ON ONLY ci_runners_e59bb2812d USING btree (token_expires_at DESC, id DESC);
+CREATE INDEX idx_ci_runners_e59bb2812d_on_token_expires_at_desc_and_id_desc ON ONLY ci_runners USING btree (token_expires_at DESC, id DESC);
 
-CREATE INDEX group_type_ci_runners_e59bb2812d_token_expires_at_id_idx1 ON group_type_ci_runners_e59bb2812d USING btree (token_expires_at DESC, id DESC);
+CREATE INDEX group_type_ci_runners_e59bb2812d_token_expires_at_id_idx1 ON group_type_ci_runners USING btree (token_expires_at DESC, id DESC);
 
-CREATE UNIQUE INDEX idx_uniq_ci_runners_e59bb2812d_on_token_and_type_where_not_null ON ONLY ci_runners_e59bb2812d USING btree (token, runner_type) WHERE (token IS NOT NULL);
+CREATE UNIQUE INDEX idx_uniq_ci_runners_e59bb2812d_on_token_and_type_where_not_null ON ONLY ci_runners USING btree (token, runner_type) WHERE (token IS NOT NULL);
 
-CREATE UNIQUE INDEX group_type_ci_runners_e59bb2812d_token_runner_type_idx ON group_type_ci_runners_e59bb2812d USING btree (token, runner_type) WHERE (token IS NOT NULL);
+CREATE UNIQUE INDEX group_type_ci_runners_e59bb2812d_token_runner_type_idx ON group_type_ci_runners USING btree (token, runner_type) WHERE (token IS NOT NULL);
 
 CREATE UNIQUE INDEX i_affected_packages_unique_for_upsert ON pm_affected_packages USING btree (pm_advisory_id, purl_type, package_name, distro_version);
 
@@ -31210,6 +31227,8 @@ CREATE INDEX idx_alert_management_alerts_on_created_at_project_id_with_issue ON 
 CREATE INDEX idx_analytics_devops_adoption_segments_on_namespace_id ON analytics_devops_adoption_segments USING btree (namespace_id);
 
 CREATE INDEX idx_analytics_devops_adoption_snapshots_finalized ON analytics_devops_adoption_snapshots USING btree (namespace_id, end_time) WHERE (recorded_at >= end_time);
+
+CREATE INDEX idx_approval_merge_request_rules_approved_approvers_project_id ON approval_merge_request_rules_approved_approvers USING btree (project_id);
 
 CREATE INDEX idx_approval_merge_request_rules_on_mr_id_config_id_and_id ON approval_merge_request_rules USING btree (merge_request_id, security_orchestration_policy_configuration_id, id);
 
@@ -32577,33 +32596,33 @@ CREATE INDEX index_ci_runner_projects_on_project_id ON ci_runner_projects USING 
 
 CREATE UNIQUE INDEX index_ci_runner_versions_on_unique_status_and_version ON ci_runner_versions USING btree (status, version);
 
-CREATE INDEX index_ci_runners_on_active ON ci_runners USING btree (active, id);
+CREATE INDEX index_ci_runners_on_active ON ci_runners_archived USING btree (active, id);
 
-CREATE INDEX index_ci_runners_on_contacted_at_and_id_desc ON ci_runners USING btree (contacted_at, id DESC);
+CREATE INDEX index_ci_runners_on_contacted_at_and_id_desc ON ci_runners_archived USING btree (contacted_at, id DESC);
 
-CREATE INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ON ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
+CREATE INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ON ci_runners_archived USING btree (contacted_at DESC, id DESC) WHERE (active = false);
 
-CREATE INDEX index_ci_runners_on_contacted_at_desc_and_id_desc ON ci_runners USING btree (contacted_at DESC, id DESC);
+CREATE INDEX index_ci_runners_on_contacted_at_desc_and_id_desc ON ci_runners_archived USING btree (contacted_at DESC, id DESC);
 
-CREATE INDEX index_ci_runners_on_created_at_and_id_desc ON ci_runners USING btree (created_at, id DESC);
+CREATE INDEX index_ci_runners_on_created_at_and_id_desc ON ci_runners_archived USING btree (created_at, id DESC);
 
-CREATE INDEX index_ci_runners_on_created_at_and_id_where_inactive ON ci_runners USING btree (created_at DESC, id DESC) WHERE (active = false);
+CREATE INDEX index_ci_runners_on_created_at_and_id_where_inactive ON ci_runners_archived USING btree (created_at DESC, id DESC) WHERE (active = false);
 
-CREATE INDEX index_ci_runners_on_created_at_desc_and_id_desc ON ci_runners USING btree (created_at DESC, id DESC);
+CREATE INDEX index_ci_runners_on_created_at_desc_and_id_desc ON ci_runners_archived USING btree (created_at DESC, id DESC);
 
-CREATE INDEX index_ci_runners_on_creator_id_where_creator_id_not_null ON ci_runners USING btree (creator_id) WHERE (creator_id IS NOT NULL);
+CREATE INDEX index_ci_runners_on_creator_id_where_creator_id_not_null ON ci_runners_archived USING btree (creator_id) WHERE (creator_id IS NOT NULL);
 
-CREATE INDEX index_ci_runners_on_description_trigram ON ci_runners USING gin (description gin_trgm_ops);
+CREATE INDEX index_ci_runners_on_description_trigram ON ci_runners_archived USING gin (description gin_trgm_ops);
 
-CREATE INDEX index_ci_runners_on_locked ON ci_runners USING btree (locked);
+CREATE INDEX index_ci_runners_on_locked ON ci_runners_archived USING btree (locked);
 
-CREATE INDEX index_ci_runners_on_runner_type_and_id ON ci_runners USING btree (runner_type, id);
+CREATE INDEX index_ci_runners_on_runner_type_and_id ON ci_runners_archived USING btree (runner_type, id);
 
-CREATE INDEX index_ci_runners_on_sharding_key_id_when_not_null ON ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
+CREATE INDEX index_ci_runners_on_sharding_key_id_when_not_null ON ci_runners_archived USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
 
-CREATE INDEX index_ci_runners_on_token_expires_at_and_id_desc ON ci_runners USING btree (token_expires_at, id DESC);
+CREATE INDEX index_ci_runners_on_token_expires_at_and_id_desc ON ci_runners_archived USING btree (token_expires_at, id DESC);
 
-CREATE INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ON ci_runners USING btree (token_expires_at DESC, id DESC);
+CREATE INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ON ci_runners_archived USING btree (token_expires_at DESC, id DESC);
 
 CREATE UNIQUE INDEX index_ci_running_builds_on_build_id ON ci_running_builds USING btree (build_id);
 
@@ -35599,9 +35618,9 @@ CREATE INDEX index_unarchived_occurrences_on_version_id_and_traversal_ids ON sbo
 
 CREATE INDEX index_unarchived_sbom_occurrences_for_aggregations ON sbom_occurrences USING btree (traversal_ids, component_id, component_version_id) WHERE (archived = false);
 
-CREATE UNIQUE INDEX index_uniq_ci_runners_on_token ON ci_runners USING btree (token);
+CREATE UNIQUE INDEX index_uniq_ci_runners_on_token ON ci_runners_archived USING btree (token);
 
-CREATE UNIQUE INDEX index_uniq_ci_runners_on_token_encrypted ON ci_runners USING btree (token_encrypted);
+CREATE UNIQUE INDEX index_uniq_ci_runners_on_token_encrypted ON ci_runners_archived USING btree (token_encrypted);
 
 CREATE UNIQUE INDEX index_uniq_im_issuable_escalation_statuses_on_issue_id ON incident_management_issuable_escalation_statuses USING btree (issue_id);
 
@@ -36203,35 +36222,35 @@ CREATE INDEX instance_type_ci_runner_machines_687967fa8a_sharding_key_id_idx ON 
 
 CREATE INDEX instance_type_ci_runner_machines_687967fa8a_version_idx ON instance_type_ci_runner_machines_687967fa8a USING btree (version);
 
-CREATE INDEX instance_type_ci_runners_e59bb2812d_active_id_idx ON instance_type_ci_runners_e59bb2812d USING btree (active, id);
+CREATE INDEX instance_type_ci_runners_e59bb2812d_active_id_idx ON instance_type_ci_runners USING btree (active, id);
 
-CREATE INDEX instance_type_ci_runners_e59bb2812d_contacted_at_id_idx ON instance_type_ci_runners_e59bb2812d USING btree (contacted_at, id DESC);
+CREATE INDEX instance_type_ci_runners_e59bb2812d_contacted_at_id_idx ON instance_type_ci_runners USING btree (contacted_at, id DESC);
 
-CREATE INDEX instance_type_ci_runners_e59bb2812d_contacted_at_id_idx1 ON instance_type_ci_runners_e59bb2812d USING btree (contacted_at DESC, id DESC) WHERE (active = false);
+CREATE INDEX instance_type_ci_runners_e59bb2812d_contacted_at_id_idx1 ON instance_type_ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
 
-CREATE INDEX instance_type_ci_runners_e59bb2812d_contacted_at_id_idx2 ON instance_type_ci_runners_e59bb2812d USING btree (contacted_at DESC, id DESC);
+CREATE INDEX instance_type_ci_runners_e59bb2812d_contacted_at_id_idx2 ON instance_type_ci_runners USING btree (contacted_at DESC, id DESC);
 
-CREATE INDEX instance_type_ci_runners_e59bb2812d_created_at_id_idx ON instance_type_ci_runners_e59bb2812d USING btree (created_at, id DESC);
+CREATE INDEX instance_type_ci_runners_e59bb2812d_created_at_id_idx ON instance_type_ci_runners USING btree (created_at, id DESC);
 
-CREATE INDEX instance_type_ci_runners_e59bb2812d_created_at_id_idx1 ON instance_type_ci_runners_e59bb2812d USING btree (created_at DESC, id DESC) WHERE (active = false);
+CREATE INDEX instance_type_ci_runners_e59bb2812d_created_at_id_idx1 ON instance_type_ci_runners USING btree (created_at DESC, id DESC) WHERE (active = false);
 
-CREATE INDEX instance_type_ci_runners_e59bb2812d_created_at_id_idx2 ON instance_type_ci_runners_e59bb2812d USING btree (created_at DESC, id DESC);
+CREATE INDEX instance_type_ci_runners_e59bb2812d_created_at_id_idx2 ON instance_type_ci_runners USING btree (created_at DESC, id DESC);
 
-CREATE INDEX instance_type_ci_runners_e59bb2812d_creator_id_idx ON instance_type_ci_runners_e59bb2812d USING btree (creator_id) WHERE (creator_id IS NOT NULL);
+CREATE INDEX instance_type_ci_runners_e59bb2812d_creator_id_idx ON instance_type_ci_runners USING btree (creator_id) WHERE (creator_id IS NOT NULL);
 
-CREATE INDEX instance_type_ci_runners_e59bb2812d_description_idx ON instance_type_ci_runners_e59bb2812d USING gin (description gin_trgm_ops);
+CREATE INDEX instance_type_ci_runners_e59bb2812d_description_idx ON instance_type_ci_runners USING gin (description gin_trgm_ops);
 
-CREATE INDEX instance_type_ci_runners_e59bb2812d_locked_idx ON instance_type_ci_runners_e59bb2812d USING btree (locked);
+CREATE INDEX instance_type_ci_runners_e59bb2812d_locked_idx ON instance_type_ci_runners USING btree (locked);
 
-CREATE INDEX instance_type_ci_runners_e59bb2812d_sharding_key_id_idx ON instance_type_ci_runners_e59bb2812d USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
+CREATE INDEX instance_type_ci_runners_e59bb2812d_sharding_key_id_idx ON instance_type_ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
 
-CREATE INDEX instance_type_ci_runners_e59bb2812d_token_expires_at_id_idx ON instance_type_ci_runners_e59bb2812d USING btree (token_expires_at, id DESC);
+CREATE INDEX instance_type_ci_runners_e59bb2812d_token_expires_at_id_idx ON instance_type_ci_runners USING btree (token_expires_at, id DESC);
 
-CREATE INDEX instance_type_ci_runners_e59bb2812d_token_expires_at_id_idx1 ON instance_type_ci_runners_e59bb2812d USING btree (token_expires_at DESC, id DESC);
+CREATE INDEX instance_type_ci_runners_e59bb2812d_token_expires_at_id_idx1 ON instance_type_ci_runners USING btree (token_expires_at DESC, id DESC);
 
-CREATE UNIQUE INDEX instance_type_ci_runners_e59bb2812d_token_runner_type_idx ON instance_type_ci_runners_e59bb2812d USING btree (token, runner_type) WHERE (token IS NOT NULL);
+CREATE UNIQUE INDEX instance_type_ci_runners_e59bb2812d_token_runner_type_idx ON instance_type_ci_runners USING btree (token, runner_type) WHERE (token IS NOT NULL);
 
-CREATE UNIQUE INDEX instance_type_ci_runners_e59bb2_token_encrypted_runner_type_idx ON instance_type_ci_runners_e59bb2812d USING btree (token_encrypted, runner_type);
+CREATE UNIQUE INDEX instance_type_ci_runners_e59bb2_token_encrypted_runner_type_idx ON instance_type_ci_runners USING btree (token_encrypted, runner_type);
 
 CREATE UNIQUE INDEX issue_user_mentions_on_issue_id_and_note_id_index ON issue_user_mentions USING btree (issue_id, note_id);
 
@@ -36293,35 +36312,35 @@ CREATE INDEX project_type_ci_runner_machines_687967fa8a_version_idx ON project_t
 
 CREATE INDEX project_type_ci_runner_machines_substring_version_runner_id_idx ON project_type_ci_runner_machines_687967fa8a USING btree ("substring"(version, '^\d+\.'::text), version, runner_id);
 
-CREATE INDEX project_type_ci_runners_e59bb2812d_active_id_idx ON project_type_ci_runners_e59bb2812d USING btree (active, id);
+CREATE INDEX project_type_ci_runners_e59bb2812d_active_id_idx ON project_type_ci_runners USING btree (active, id);
 
-CREATE INDEX project_type_ci_runners_e59bb2812d_contacted_at_id_idx ON project_type_ci_runners_e59bb2812d USING btree (contacted_at, id DESC);
+CREATE INDEX project_type_ci_runners_e59bb2812d_contacted_at_id_idx ON project_type_ci_runners USING btree (contacted_at, id DESC);
 
-CREATE INDEX project_type_ci_runners_e59bb2812d_contacted_at_id_idx1 ON project_type_ci_runners_e59bb2812d USING btree (contacted_at DESC, id DESC) WHERE (active = false);
+CREATE INDEX project_type_ci_runners_e59bb2812d_contacted_at_id_idx1 ON project_type_ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
 
-CREATE INDEX project_type_ci_runners_e59bb2812d_contacted_at_id_idx2 ON project_type_ci_runners_e59bb2812d USING btree (contacted_at DESC, id DESC);
+CREATE INDEX project_type_ci_runners_e59bb2812d_contacted_at_id_idx2 ON project_type_ci_runners USING btree (contacted_at DESC, id DESC);
 
-CREATE INDEX project_type_ci_runners_e59bb2812d_created_at_id_idx ON project_type_ci_runners_e59bb2812d USING btree (created_at, id DESC);
+CREATE INDEX project_type_ci_runners_e59bb2812d_created_at_id_idx ON project_type_ci_runners USING btree (created_at, id DESC);
 
-CREATE INDEX project_type_ci_runners_e59bb2812d_created_at_id_idx1 ON project_type_ci_runners_e59bb2812d USING btree (created_at DESC, id DESC) WHERE (active = false);
+CREATE INDEX project_type_ci_runners_e59bb2812d_created_at_id_idx1 ON project_type_ci_runners USING btree (created_at DESC, id DESC) WHERE (active = false);
 
-CREATE INDEX project_type_ci_runners_e59bb2812d_created_at_id_idx2 ON project_type_ci_runners_e59bb2812d USING btree (created_at DESC, id DESC);
+CREATE INDEX project_type_ci_runners_e59bb2812d_created_at_id_idx2 ON project_type_ci_runners USING btree (created_at DESC, id DESC);
 
-CREATE INDEX project_type_ci_runners_e59bb2812d_creator_id_idx ON project_type_ci_runners_e59bb2812d USING btree (creator_id) WHERE (creator_id IS NOT NULL);
+CREATE INDEX project_type_ci_runners_e59bb2812d_creator_id_idx ON project_type_ci_runners USING btree (creator_id) WHERE (creator_id IS NOT NULL);
 
-CREATE INDEX project_type_ci_runners_e59bb2812d_description_idx ON project_type_ci_runners_e59bb2812d USING gin (description gin_trgm_ops);
+CREATE INDEX project_type_ci_runners_e59bb2812d_description_idx ON project_type_ci_runners USING gin (description gin_trgm_ops);
 
-CREATE INDEX project_type_ci_runners_e59bb2812d_locked_idx ON project_type_ci_runners_e59bb2812d USING btree (locked);
+CREATE INDEX project_type_ci_runners_e59bb2812d_locked_idx ON project_type_ci_runners USING btree (locked);
 
-CREATE INDEX project_type_ci_runners_e59bb2812d_sharding_key_id_idx ON project_type_ci_runners_e59bb2812d USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
+CREATE INDEX project_type_ci_runners_e59bb2812d_sharding_key_id_idx ON project_type_ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
 
-CREATE INDEX project_type_ci_runners_e59bb2812d_token_expires_at_id_idx ON project_type_ci_runners_e59bb2812d USING btree (token_expires_at, id DESC);
+CREATE INDEX project_type_ci_runners_e59bb2812d_token_expires_at_id_idx ON project_type_ci_runners USING btree (token_expires_at, id DESC);
 
-CREATE INDEX project_type_ci_runners_e59bb2812d_token_expires_at_id_idx1 ON project_type_ci_runners_e59bb2812d USING btree (token_expires_at DESC, id DESC);
+CREATE INDEX project_type_ci_runners_e59bb2812d_token_expires_at_id_idx1 ON project_type_ci_runners USING btree (token_expires_at DESC, id DESC);
 
-CREATE UNIQUE INDEX project_type_ci_runners_e59bb2812d_token_runner_type_idx ON project_type_ci_runners_e59bb2812d USING btree (token, runner_type) WHERE (token IS NOT NULL);
+CREATE UNIQUE INDEX project_type_ci_runners_e59bb2812d_token_runner_type_idx ON project_type_ci_runners USING btree (token, runner_type) WHERE (token IS NOT NULL);
 
-CREATE UNIQUE INDEX project_type_ci_runners_e59bb28_token_encrypted_runner_type_idx ON project_type_ci_runners_e59bb2812d USING btree (token_encrypted, runner_type);
+CREATE UNIQUE INDEX project_type_ci_runners_e59bb28_token_encrypted_runner_type_idx ON project_type_ci_runners USING btree (token_encrypted, runner_type);
 
 CREATE INDEX releases_published_at_index ON releases USING btree (release_published_at);
 
@@ -38249,8 +38268,6 @@ ALTER INDEX index_ci_runners_e59bb2812d_on_description_trigram ATTACH PARTITION 
 
 ALTER INDEX index_ci_runners_e59bb2812d_on_locked ATTACH PARTITION group_type_ci_runners_e59bb2812d_locked_idx;
 
-ALTER INDEX ci_runners_e59bb2812d_pkey ATTACH PARTITION group_type_ci_runners_e59bb2812d_pkey;
-
 ALTER INDEX index_ci_runners_e59bb2812d_on_sharding_key_id_where_not_null ATTACH PARTITION group_type_ci_runners_e59bb2812d_sharding_key_id_idx;
 
 ALTER INDEX index_ci_runners_e59bb2812d_on_token_expires_at_and_id_desc ATTACH PARTITION group_type_ci_runners_e59bb2812d_token_expires_at_id_idx;
@@ -38258,6 +38275,8 @@ ALTER INDEX index_ci_runners_e59bb2812d_on_token_expires_at_and_id_desc ATTACH P
 ALTER INDEX idx_ci_runners_e59bb2812d_on_token_expires_at_desc_and_id_desc ATTACH PARTITION group_type_ci_runners_e59bb2812d_token_expires_at_id_idx1;
 
 ALTER INDEX idx_uniq_ci_runners_e59bb2812d_on_token_and_type_where_not_null ATTACH PARTITION group_type_ci_runners_e59bb2812d_token_runner_type_idx;
+
+ALTER INDEX ci_runners_pkey ATTACH PARTITION group_type_ci_runners_pkey;
 
 ALTER INDEX p_ci_job_artifacts_job_id_file_type_partition_id_idx ATTACH PARTITION idx_ci_job_artifacts_on_job_id_file_type_and_partition_id_uniq;
 
@@ -38433,8 +38452,6 @@ ALTER INDEX index_ci_runners_e59bb2812d_on_description_trigram ATTACH PARTITION 
 
 ALTER INDEX index_ci_runners_e59bb2812d_on_locked ATTACH PARTITION instance_type_ci_runners_e59bb2812d_locked_idx;
 
-ALTER INDEX ci_runners_e59bb2812d_pkey ATTACH PARTITION instance_type_ci_runners_e59bb2812d_pkey;
-
 ALTER INDEX index_ci_runners_e59bb2812d_on_sharding_key_id_where_not_null ATTACH PARTITION instance_type_ci_runners_e59bb2812d_sharding_key_id_idx;
 
 ALTER INDEX index_ci_runners_e59bb2812d_on_token_expires_at_and_id_desc ATTACH PARTITION instance_type_ci_runners_e59bb2812d_token_expires_at_id_idx;
@@ -38444,6 +38461,8 @@ ALTER INDEX idx_ci_runners_e59bb2812d_on_token_expires_at_desc_and_id_desc ATTAC
 ALTER INDEX idx_uniq_ci_runners_e59bb2812d_on_token_and_type_where_not_null ATTACH PARTITION instance_type_ci_runners_e59bb2812d_token_runner_type_idx;
 
 ALTER INDEX index_uniq_ci_runners_e59bb2812d_on_token_encrypted_and_type ATTACH PARTITION instance_type_ci_runners_e59bb2_token_encrypted_runner_type_idx;
+
+ALTER INDEX ci_runners_pkey ATTACH PARTITION instance_type_ci_runners_pkey;
 
 ALTER INDEX p_ci_builds_scheduled_at_idx ATTACH PARTITION partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs;
 
@@ -38485,8 +38504,6 @@ ALTER INDEX index_ci_runners_e59bb2812d_on_description_trigram ATTACH PARTITION 
 
 ALTER INDEX index_ci_runners_e59bb2812d_on_locked ATTACH PARTITION project_type_ci_runners_e59bb2812d_locked_idx;
 
-ALTER INDEX ci_runners_e59bb2812d_pkey ATTACH PARTITION project_type_ci_runners_e59bb2812d_pkey;
-
 ALTER INDEX index_ci_runners_e59bb2812d_on_sharding_key_id_where_not_null ATTACH PARTITION project_type_ci_runners_e59bb2812d_sharding_key_id_idx;
 
 ALTER INDEX index_ci_runners_e59bb2812d_on_token_expires_at_and_id_desc ATTACH PARTITION project_type_ci_runners_e59bb2812d_token_expires_at_id_idx;
@@ -38496,6 +38513,8 @@ ALTER INDEX idx_ci_runners_e59bb2812d_on_token_expires_at_desc_and_id_desc ATTAC
 ALTER INDEX idx_uniq_ci_runners_e59bb2812d_on_token_and_type_where_not_null ATTACH PARTITION project_type_ci_runners_e59bb2812d_token_runner_type_idx;
 
 ALTER INDEX index_uniq_ci_runners_e59bb2812d_on_token_encrypted_and_type ATTACH PARTITION project_type_ci_runners_e59bb28_token_encrypted_runner_type_idx;
+
+ALTER INDEX ci_runners_pkey ATTACH PARTITION project_type_ci_runners_pkey;
 
 ALTER INDEX p_ci_job_artifacts_expire_at_job_id_idx1 ATTACH PARTITION tmp_index_ci_job_artifacts_on_expire_at_where_locked_unknown;
 
@@ -38531,11 +38550,15 @@ CREATE TRIGGER ci_pipelines_loose_fk_trigger AFTER DELETE ON ci_pipelines REFERE
 
 CREATE TRIGGER ci_runner_machines_loose_fk_trigger AFTER DELETE ON ci_runner_machines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
-CREATE TRIGGER ci_runners_loose_fk_trigger AFTER DELETE ON ci_runners REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER ci_runners_loose_fk_trigger AFTER DELETE ON ci_runners REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('ci_runners');
 
 CREATE TRIGGER cluster_agents_loose_fk_trigger AFTER DELETE ON cluster_agents REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER clusters_loose_fk_trigger AFTER DELETE ON clusters REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+CREATE TRIGGER group_type_ci_runners_loose_fk_trigger AFTER DELETE ON group_type_ci_runners REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('ci_runners');
+
+CREATE TRIGGER instance_type_ci_runners_loose_fk_trigger AFTER DELETE ON instance_type_ci_runners REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('ci_runners');
 
 CREATE TRIGGER issues_loose_fk_trigger AFTER DELETE ON issues REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
@@ -38556,6 +38579,8 @@ CREATE TRIGGER p_ci_pipelines_loose_fk_trigger AFTER DELETE ON p_ci_pipelines RE
 CREATE TRIGGER plans_loose_fk_trigger AFTER DELETE ON plans REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER prevent_delete_of_default_organization_before_destroy BEFORE DELETE ON organizations FOR EACH ROW EXECUTE FUNCTION prevent_delete_of_default_organization();
+
+CREATE TRIGGER project_type_ci_runners_loose_fk_trigger AFTER DELETE ON project_type_ci_runners REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('ci_runners');
 
 CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
@@ -38714,6 +38739,8 @@ CREATE TRIGGER trigger_589db52d2d69 BEFORE INSERT OR UPDATE ON sentry_issues FOR
 CREATE TRIGGER trigger_5ca97b87ee30 BEFORE INSERT OR UPDATE ON merge_request_context_commits FOR EACH ROW EXECUTE FUNCTION trigger_5ca97b87ee30();
 
 CREATE TRIGGER trigger_5cf44cd40f22 BEFORE INSERT OR UPDATE ON operations_scopes FOR EACH ROW EXECUTE FUNCTION trigger_5cf44cd40f22();
+
+CREATE TRIGGER trigger_5ed68c226e97 BEFORE INSERT OR UPDATE ON approval_merge_request_rules_approved_approvers FOR EACH ROW EXECUTE FUNCTION trigger_5ed68c226e97();
 
 CREATE TRIGGER trigger_5f6432d2dccc BEFORE INSERT OR UPDATE ON operations_strategies_user_lists FOR EACH ROW EXECUTE FUNCTION trigger_5f6432d2dccc();
 
@@ -39129,7 +39156,7 @@ ALTER TABLE ONLY approval_project_rules_users
     ADD CONSTRAINT fk_0dfcd9e339 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_runner_projects
-    ADD CONSTRAINT fk_0e743433ff FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_0e743433ff FOREIGN KEY (runner_id) REFERENCES ci_runners_archived(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY security_policy_project_links
     ADD CONSTRAINT fk_0eba4d5d71 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -39186,7 +39213,7 @@ ALTER TABLE ONLY ldap_group_links
     ADD CONSTRAINT fk_14a86de4b3 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY ci_runner_namespaces
-    ADD CONSTRAINT fk_14d16929fa FOREIGN KEY (runner_id) REFERENCES group_type_ci_runners_e59bb2812d(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_14d16929fa FOREIGN KEY (runner_id) REFERENCES group_type_ci_runners(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY incident_management_timeline_event_tag_links
     ADD CONSTRAINT fk_152216ca4f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -40115,6 +40142,9 @@ ALTER TABLE ONLY subscription_seat_assignments
 ALTER TABLE ONLY organization_users
     ADD CONSTRAINT fk_8d9b20725d FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE NOT VALID;
 
+ALTER TABLE ONLY approval_merge_request_rules_approved_approvers
+    ADD CONSTRAINT fk_8dfb93b836 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY raw_usage_data
     ADD CONSTRAINT fk_8e21125854 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
@@ -40179,7 +40209,7 @@ ALTER TABLE ONLY required_code_owners_sections
     ADD CONSTRAINT fk_98c3f48741 FOREIGN KEY (protected_branch_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_runner_projects
-    ADD CONSTRAINT fk_98f08fcaf7 FOREIGN KEY (runner_id) REFERENCES project_type_ci_runners_e59bb2812d(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_98f08fcaf7 FOREIGN KEY (runner_id) REFERENCES project_type_ci_runners(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY protected_branch_merge_access_levels
     ADD CONSTRAINT fk_98f3d044fe FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -40245,7 +40275,7 @@ ALTER TABLE ONLY alert_management_alerts
     ADD CONSTRAINT fk_9e49e5c2b7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_cost_settings
-    ADD CONSTRAINT fk_9e5e051839 FOREIGN KEY (runner_id) REFERENCES instance_type_ci_runners_e59bb2812d(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_9e5e051839 FOREIGN KEY (runner_id) REFERENCES instance_type_ci_runners(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issue_tracker_data
     ADD CONSTRAINT fk_9e6e0e7d23 FOREIGN KEY (instance_integration_id) REFERENCES instance_integrations(id) ON DELETE CASCADE;
@@ -41484,7 +41514,7 @@ ALTER TABLE ONLY namespace_settings
     ADD CONSTRAINT fk_rails_3896d4fae5 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_instance_runner_monthly_usages
-    ADD CONSTRAINT fk_rails_38b9dcccc9 FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE SET NULL;
+    ADD CONSTRAINT fk_rails_38b9dcccc9 FOREIGN KEY (runner_id) REFERENCES ci_runners_archived(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY packages_cleanup_policies
     ADD CONSTRAINT fk_rails_393ba98591 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -41538,13 +41568,13 @@ ALTER TABLE ONLY board_assignees
     ADD CONSTRAINT fk_rails_3f6f926bd5 FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY instance_type_ci_runner_machines_687967fa8a
-    ADD CONSTRAINT fk_rails_3f92913d27 FOREIGN KEY (runner_id, runner_type) REFERENCES instance_type_ci_runners_e59bb2812d(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_rails_3f92913d27 FOREIGN KEY (runner_id, runner_type) REFERENCES instance_type_ci_runners(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY group_type_ci_runner_machines_687967fa8a
-    ADD CONSTRAINT fk_rails_3f92913d27 FOREIGN KEY (runner_id, runner_type) REFERENCES group_type_ci_runners_e59bb2812d(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_rails_3f92913d27 FOREIGN KEY (runner_id, runner_type) REFERENCES group_type_ci_runners(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY project_type_ci_runner_machines_687967fa8a
-    ADD CONSTRAINT fk_rails_3f92913d27 FOREIGN KEY (runner_id, runner_type) REFERENCES project_type_ci_runners_e59bb2812d(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_rails_3f92913d27 FOREIGN KEY (runner_id, runner_type) REFERENCES project_type_ci_runners(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY description_versions
     ADD CONSTRAINT fk_rails_3ff658220b FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
@@ -41766,7 +41796,7 @@ ALTER TABLE ONLY reviews
     ADD CONSTRAINT fk_rails_5ca11d8c31 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_running_builds
-    ADD CONSTRAINT fk_rails_5ca491d360 FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_5ca491d360 FOREIGN KEY (runner_id) REFERENCES ci_runners_archived(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_approval_metrics
     ADD CONSTRAINT fk_rails_5cb1ca73f8 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
@@ -41877,7 +41907,7 @@ ALTER TABLE ONLY namespace_admin_notes
     ADD CONSTRAINT fk_rails_666166ea7b FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_runner_machines
-    ADD CONSTRAINT fk_rails_666b61f04f FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_666b61f04f FOREIGN KEY (runner_id) REFERENCES ci_runners_archived(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_group_rules
     ADD CONSTRAINT fk_rails_6727675176 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -41898,7 +41928,7 @@ ALTER TABLE ONLY plan_limits
     ADD CONSTRAINT fk_rails_69f8b6184f FOREIGN KEY (plan_id) REFERENCES plans(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_cost_settings
-    ADD CONSTRAINT fk_rails_6a70651f75 FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_6a70651f75 FOREIGN KEY (runner_id) REFERENCES ci_runners_archived(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY operations_feature_flags_issues
     ADD CONSTRAINT fk_rails_6a8856ca4f FOREIGN KEY (feature_flag_id) REFERENCES operations_feature_flags(id) ON DELETE CASCADE;
@@ -42087,13 +42117,13 @@ ALTER TABLE ONLY zentao_tracker_data
     ADD CONSTRAINT fk_rails_84efda7be0 FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_runner_taggings_instance_type
-    ADD CONSTRAINT fk_rails_84f15fe4c6 FOREIGN KEY (runner_id, runner_type) REFERENCES instance_type_ci_runners_e59bb2812d(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_84f15fe4c6 FOREIGN KEY (runner_id, runner_type) REFERENCES instance_type_ci_runners(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_runner_taggings_group_type
-    ADD CONSTRAINT fk_rails_84f15fe4c6 FOREIGN KEY (runner_id, runner_type) REFERENCES group_type_ci_runners_e59bb2812d(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_84f15fe4c6 FOREIGN KEY (runner_id, runner_type) REFERENCES group_type_ci_runners(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_runner_taggings_project_type
-    ADD CONSTRAINT fk_rails_84f15fe4c6 FOREIGN KEY (runner_id, runner_type) REFERENCES project_type_ci_runners_e59bb2812d(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_84f15fe4c6 FOREIGN KEY (runner_id, runner_type) REFERENCES project_type_ci_runners(id, runner_type) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY audit_events_amazon_s3_configurations
     ADD CONSTRAINT fk_rails_84f4b10a16 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -42123,7 +42153,7 @@ ALTER TABLE ONLY boards_epic_boards
     ADD CONSTRAINT fk_rails_874c573878 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_runner_namespaces
-    ADD CONSTRAINT fk_rails_8767676b7a FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_8767676b7a FOREIGN KEY (runner_id) REFERENCES ci_runners_archived(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY service_desk_custom_email_credentials
     ADD CONSTRAINT fk_rails_878b562d12 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -42597,7 +42627,7 @@ ALTER TABLE p_ci_job_artifacts
     ADD CONSTRAINT fk_rails_c5137cb2c1_p FOREIGN KEY (partition_id, job_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_hosted_runners
-    ADD CONSTRAINT fk_rails_c550bc493e FOREIGN KEY (runner_id) REFERENCES instance_type_ci_runners_e59bb2812d(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_c550bc493e FOREIGN KEY (runner_id) REFERENCES instance_type_ci_runners(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY organization_settings
     ADD CONSTRAINT fk_rails_c56e4690c0 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

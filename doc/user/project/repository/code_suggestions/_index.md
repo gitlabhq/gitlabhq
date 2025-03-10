@@ -26,12 +26,6 @@ title: Code Suggestions
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded. You should [upgrade to the latest version of GitLab](../../../../update/_index.md#upgrade-gitlab) for the best experience.
-
-{{< /alert >}}
-
 Use GitLab Duo Code Suggestions to write code more efficiently by using generative AI to suggest code while you're developing.
 
 Before you start using Code Suggestions, decide if you want to use the default GitLab-hosted LLM to manage Code Suggestions requests, or [deploy a self-hosted model](../../../../administration/gitlab_duo_self_hosted/_index.md). Self-hosted models maximize security and privacy by making sure nothing is sent to an external model.
@@ -39,6 +33,12 @@ Before you start using Code Suggestions, decide if you want to use the default G
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 [View a click-through demo](https://gitlab.navattic.com/code-suggestions).
 <!-- Video published on 2023-12-09 --> <!-- Demo published on 2024-02-01 -->
+
+{{< alert type="note" >}}
+
+GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded. You should [upgrade to the latest version of GitLab](../../../../update/_index.md#upgrade-gitlab) for the best experience.
+
+{{< /alert >}}
 
 ## Use Code Suggestions
 

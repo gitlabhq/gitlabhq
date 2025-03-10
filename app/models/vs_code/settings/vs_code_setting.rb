@@ -40,9 +40,16 @@ module VsCode
       private
 
       def settings_context_hash_check
-        return unless setting_type != EXTENSIONS && !settings_context_hash.nil?
+        case setting_type
+        when EXTENSIONS
+          return unless settings_context_hash.nil?
 
-        errors.add(:settings_context_hash, 'must be blank for non extensions setting type')
+          errors.add(:settings_context_hash, 'cannot be blank for extensions setting type')
+        else
+          return if settings_context_hash.nil?
+
+          errors.add(:settings_context_hash, 'must be blank for non extensions setting type')
+        end
       end
     end
   end

@@ -85,7 +85,7 @@ To contribute to GitLab Shell:
 
 1. Check if GitLab API access, and Redis with the internal API, can be reached: `make check`
 1. Compile the `gitlab-shell` binaries, placing them into `bin/`: `make compile`
-1. Run `make install` to build the `gitlab-shell` binaries and install. them onto the file system.
+1. Run `make install` to build the `gitlab-shell` binaries and install them onto the file system.
    The default location is `/usr/local`. To change it, set the `PREFIX` and `DESTDIR` environment variables.
 1. To install GitLab from source on a single machine, run `make setup`.
    It compiles the GitLab Shell binaries, and ensures that various paths on the file system

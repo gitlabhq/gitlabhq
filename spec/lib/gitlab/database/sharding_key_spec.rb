@@ -92,6 +92,19 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     ]
   end
 
+  let(:allowed_lfk_to_tables_exempted_from_sharding) do
+    {
+      # instance runners are exempted from sharding, but Ci::Build is prepared to handle missing runners
+      "p_ci_builds" => %w[ci_runners],
+      # instance runners are exempted from sharding, but Ci::Minutes::InstanceRunnerMonthlyUsage is prepared to handle
+      # missing runners
+      "ci_instance_runner_monthly_usages" => %w[ci_runners],
+      # we only care about the LFK for group and project-type runners. Instance type runners might be missing in a cell
+      # but Ci::RunningBuild is a short-lived model that will eventually be deleted
+      "ci_running_builds" => %w[ci_runners]
+    }
+  end
+
   let(:starting_from_milestone) { 16.6 }
 
   let(:allowed_sharding_key_referenced_tables) { %w[projects namespaces organizations] }
@@ -303,6 +316,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
 
       lfks = referenced_loose_foreign_keys(entry.table_name)
       lfks.reject! { |lfk| lfk.from_table.in?(tables_exempted_from_sharding_table_names) }
+      lfks.reject! { |lfk| allowed_lfk_to_tables_exempted_from_sharding[lfk.from_table]&.include?(lfk.to_table) }
 
       # rubocop:disable Layout/LineLength -- sorry, long URL
       expect(lfks).to be_empty,

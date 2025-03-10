@@ -106,33 +106,6 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
       it 'does not update the contacted_at field' do
         expect(current_runner_manager.contacted_at).to eq 1.hour.ago
       end
-
-      # TODO Remove when https://gitlab.com/gitlab-org/gitlab/-/issues/503749 is merged
-      context 'with nil sharding_key_id' do
-        let!(:existing_runner_manager) do
-          Ci::ApplicationRecord.connection.execute <<~SQL
-            ALTER TABLE ci_runner_machines DISABLE TRIGGER ALL;
-
-            INSERT INTO ci_runner_machines
-               (created_at, updated_at, contacted_at, runner_id, runner_type, system_xid, sharding_key_id)
-              VALUES(NOW(), NOW(), '#{1.hour.ago}', #{runner.id}, 2, 'bar', NULL);
-
-            ALTER TABLE ci_runner_machines ENABLE TRIGGER ALL;
-          SQL
-
-          Ci::RunnerManager.for_runner(runner).with_system_xid('bar').first
-        end
-
-        it 'reuses existing runner manager', :aggregate_failures do
-          expect { current_runner_manager }.not_to raise_error
-
-          expect(current_runner_manager).not_to be_nil
-          expect(current_runner_manager).to eq existing_runner_manager
-          expect(current_runner_manager.reload.contacted_at).to eq 1.hour.ago
-          expect(current_runner_manager.runner_type).to eq runner.runner_type
-          expect(current_runner_manager.sharding_key_id).to be_nil
-        end
-      end
     end
 
     context 'when runner manager cannot be found' do

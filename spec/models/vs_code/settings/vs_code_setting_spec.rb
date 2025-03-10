@@ -39,7 +39,7 @@ RSpec.describe VsCode::Settings::VsCodeSetting, feature_category: :web_ide do
     context 'when setting type is extensions' do
       subject { build(:vscode_setting, setting_type: VsCode::Settings::EXTENSIONS) }
 
-      it { is_expected.to allow_value(nil).for(:settings_context_hash) }
+      it { is_expected.not_to allow_value(nil).for(:settings_context_hash) }
       it { is_expected.to allow_value('some_value').for(:settings_context_hash) }
     end
   end
@@ -53,10 +53,6 @@ RSpec.describe VsCode::Settings::VsCodeSetting, feature_category: :web_ide do
 
     context 'when setting type is extensions' do
       let_it_be(:extension) do
-        create(:vscode_setting, setting_type: VsCode::Settings::EXTENSIONS, settings_context_hash: nil)
-      end
-
-      let_it_be(:extension_a) do
         create(:vscode_setting, setting_type: VsCode::Settings::EXTENSIONS, settings_context_hash: 'a')
       end
 
@@ -66,7 +62,7 @@ RSpec.describe VsCode::Settings::VsCodeSetting, feature_category: :web_ide do
 
       subject { described_class.by_setting_types([VsCode::Settings::EXTENSIONS], 'a') }
 
-      it { is_expected.to contain_exactly(extension_a) }
+      it { is_expected.to contain_exactly(extension) }
     end
   end
 

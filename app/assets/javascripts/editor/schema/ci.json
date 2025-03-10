@@ -2161,7 +2161,7 @@
           "oneOf": [
             {
               "type": "object",
-              "markdownDescription": "Trigger a multi-project pipeline. [Learn More](https://docs.gitlab.com/ee/ci/pipelines/multi_project_pipelines.html#specify-a-downstream-pipeline-branch).",
+              "markdownDescription": "Trigger a multi-project pipeline. [Learn More](https://docs.gitlab.com/ci/pipelines/downstream_pipelines/#multi-project-pipelines).",
               "additionalProperties": false,
               "properties": {
                 "project": {
@@ -2209,7 +2209,7 @@
             },
             {
               "type": "object",
-              "description": "Trigger a child pipeline. [Learn More](https://docs.gitlab.com/ee/ci/pipelines/parent_child_pipelines.html).",
+              "description": "Trigger a child pipeline. [Learn More](https://docs.gitlab.com/ci/pipelines/downstream_pipelines/#parent-child-pipelines).",
               "additionalProperties": false,
               "properties": {
                 "include": {
