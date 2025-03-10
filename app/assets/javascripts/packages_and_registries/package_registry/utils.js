@@ -1,7 +1,6 @@
 import { capitalize } from 'lodash';
 import { s__ } from '~/locale';
 import {
-  GRAPHQL_PAGE_SIZE,
   PACKAGE_TYPE_CONAN,
   PACKAGE_TYPE_MAVEN,
   PACKAGE_TYPE_NPM,
@@ -50,26 +49,3 @@ export const packageTypeToTrackCategory = (type) => `UI::${capitalize(type)}Pack
 
 export const sortableFields = (isGroupPage) =>
   SORT_FIELDS.filter((f) => f.orderBy !== LIST_KEY_PROJECT || isGroupPage);
-
-export const getNextPageParams = (cursor) => ({
-  after: cursor,
-  first: GRAPHQL_PAGE_SIZE,
-});
-
-export const getPreviousPageParams = (cursor) => ({
-  first: null,
-  before: cursor,
-  last: GRAPHQL_PAGE_SIZE,
-});
-
-export const getPageParams = (pageInfo = {}) => {
-  if (pageInfo.before) {
-    return getPreviousPageParams(pageInfo.before);
-  }
-
-  if (pageInfo.after) {
-    return getNextPageParams(pageInfo.after);
-  }
-
-  return {};
-};

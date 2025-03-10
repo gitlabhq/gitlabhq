@@ -569,14 +569,12 @@ describe('List Page', () => {
         expect(resolver).toHaveBeenCalledWith(
           expect.objectContaining({
             before: pageInfo.startCursor,
-            first: null,
             last: GRAPHQL_PAGE_SIZE,
           }),
         );
         expect(detailsResolver).toHaveBeenCalledWith(
           expect.objectContaining({
             before: pageInfo.startCursor,
-            first: null,
             last: GRAPHQL_PAGE_SIZE,
           }),
         );
@@ -600,7 +598,6 @@ describe('List Page', () => {
           expect.objectContaining({
             sort: 'UPDATED_DESC',
             before: pageInfo.startCursor,
-            first: null,
             last: GRAPHQL_PAGE_SIZE,
           }),
         );
@@ -608,7 +605,6 @@ describe('List Page', () => {
           expect.objectContaining({
             sort: 'UPDATED_DESC',
             before: pageInfo.startCursor,
-            first: null,
             last: GRAPHQL_PAGE_SIZE,
           }),
         );
@@ -672,7 +668,7 @@ describe('List Page', () => {
       describe('with metadata database enabled', () => {
         it.each`
           event     | expected
-          ${'prev'} | ${{ before: pageInfo.startCursor, first: null, last: GRAPHQL_PAGE_SIZE_METADATA_ENABLED }}
+          ${'prev'} | ${{ before: pageInfo.startCursor, last: GRAPHQL_PAGE_SIZE_METADATA_ENABLED }}
           ${'next'} | ${{ after: pageInfo.endCursor, first: GRAPHQL_PAGE_SIZE_METADATA_ENABLED }}
         `('$event event triggers correct page request', async ({ event, expected }) => {
           const resolver = jest.fn().mockResolvedValue(graphQLImageListMock);
@@ -696,7 +692,7 @@ describe('List Page', () => {
 
         it.each`
           cursor                              | expected
-          ${{ before: pageInfo.startCursor }} | ${{ sort: 'UPDATED_DESC', before: pageInfo.startCursor, first: null, last: GRAPHQL_PAGE_SIZE_METADATA_ENABLED }}
+          ${{ before: pageInfo.startCursor }} | ${{ sort: 'UPDATED_DESC', before: pageInfo.startCursor, last: GRAPHQL_PAGE_SIZE_METADATA_ENABLED }}
           ${{ after: pageInfo.endCursor }}    | ${{ sort: 'UPDATED_DESC', after: pageInfo.endCursor, first: GRAPHQL_PAGE_SIZE_METADATA_ENABLED }}
         `(
           'calls resolver correctly when persisted search returns $cursor',

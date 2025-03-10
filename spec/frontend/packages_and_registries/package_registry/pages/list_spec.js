@@ -266,7 +266,6 @@ describe('PackagesListApp', () => {
 
       expect(resolver).toHaveBeenCalledWith(
         expect.objectContaining({
-          first: null,
           before: pagination().startCursor,
           last: GRAPHQL_PAGE_SIZE,
         }),

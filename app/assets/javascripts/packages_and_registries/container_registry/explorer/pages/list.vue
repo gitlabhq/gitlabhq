@@ -18,6 +18,11 @@ import PersistedPagination from '~/packages_and_registries/shared/components/per
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import MetadataDatabaseAlert from '~/packages_and_registries/shared/components/container_registry_metadata_database_alert.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  getPageParams,
+  getNextPageParams,
+  getPreviousPageParams,
+} from '~/packages_and_registries/shared/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import DeleteImage from '../components/delete_image.vue';
 import RegistryHeader from '../components/list_page/registry_header.vue';
@@ -36,7 +41,6 @@ import {
   SETTINGS_TEXT,
 } from '../constants/index';
 import getContainerRepositoriesDetails from '../graphql/queries/get_container_repositories_details.query.graphql';
-import { getPageParams, getNextPageParams, getPreviousPageParams } from '../utils';
 
 export default {
   name: 'RegistryListPage',
