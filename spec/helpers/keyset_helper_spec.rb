@@ -9,7 +9,7 @@ RSpec.describe KeysetHelper, type: :controller do
         .order(id: :desc)
         .keyset_paginate(cursor: params[:cursor], per_page: 2)
 
-      render inline: "<%= keyset_paginate @users %>", layout: false # rubocop: disable Rails/RenderInline
+      render inline: "<%= keyset_paginate @users %>", layout: false
     end
   end
 

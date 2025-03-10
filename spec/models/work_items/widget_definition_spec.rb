@@ -36,7 +36,8 @@ RSpec.describe WorkItems::WidgetDefinition, feature_category: :team_planning do
         ::WorkItems::Widgets::RequirementLegacy,
         ::WorkItems::Widgets::TestReports,
         ::WorkItems::Widgets::Color,
-        ::WorkItems::Widgets::CustomFields
+        ::WorkItems::Widgets::CustomFields,
+        ::WorkItems::Widgets::Vulnerabilities
       ]
     end
 

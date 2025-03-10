@@ -15,6 +15,9 @@ module Ml
       return error(experiment.errors.full_messages) unless experiment.persisted?
 
       success(experiment)
+
+    rescue ActiveRecord::RecordNotUnique => e
+      error([e.message])
     end
 
     private

@@ -69,7 +69,7 @@ class ApplicationSetting < ApplicationRecord
   # disabled in 17.0
   # https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html
   add_authentication_token_field :runners_registration_token, encrypted: :required
-  add_authentication_token_field :health_check_access_token # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/376751
+  add_authentication_token_field :health_check_access_token, insecure: true # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/376751
   add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :required # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
   add_authentication_token_field :error_tracking_access_token, encrypted: :required # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
 

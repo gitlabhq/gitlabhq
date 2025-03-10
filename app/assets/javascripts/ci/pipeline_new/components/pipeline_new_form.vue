@@ -239,10 +239,15 @@ export default {
       </details>
     </gl-alert>
     <div class="gl-flex gl-flex-col gl-gap-5">
-      <gl-form-group :label="s__('Pipeline|Run for branch name or tag')" class="gl-mb-0">
+      <gl-form-group
+        id="pipeline-ref-label"
+        :label="s__('Pipeline|Run for branch name or tag')"
+        class="gl-mb-0"
+      >
         <refs-dropdown
           v-model="refValue"
           :project-id="projectId"
+          toggle-aria-labelled-by="pipeline-ref-label"
           @loadingError="onRefsLoadingError"
         />
       </gl-form-group>

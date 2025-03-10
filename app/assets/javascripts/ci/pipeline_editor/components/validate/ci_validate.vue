@@ -196,12 +196,13 @@ export default {
   <div>
     <div class="gl-mt-3 gl-flex gl-justify-between">
       <div>
-        <label>{{ $options.i18n.pipelineSource }}</label>
+        <label id="pipeline-source-dropdown-label">{{ $options.i18n.pipelineSource }}</label>
         <gl-disclosure-dropdown
           v-gl-tooltip.hover
           class="gl-ml-3"
           :title="$options.i18n.pipelineSourceTooltip"
           :toggle-text="$options.i18n.pipelineSourceDefault"
+          toggle-aria-labelled-by="pipeline-source-dropdown-label"
           disabled
         />
         <validate-pipeline-popover />

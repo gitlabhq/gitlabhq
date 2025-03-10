@@ -32,7 +32,8 @@ module Gitlab
           email_participants: 'Email participants',
           custom_status: 'Custom status',
           custom_fields: 'Custom fields',
-          error_tracking: 'Error tracking'
+          error_tracking: 'Error tracking',
+          vulnerabilities: 'Vulnerabilities'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -58,6 +59,7 @@ module Gitlab
             :participants,
             :start_and_due_date,
             :time_tracking,
+            :vulnerabilities,
             [:weight, { editable: true, rollup: false }]
           ],
           incident: [

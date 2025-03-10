@@ -121,9 +121,12 @@ export default {
 
 <template>
   <div>
-    <h4>{{ s__('Pipeline|Variables') }}</h4>
-    <inputs-adoption-banner v-if="isPipelineInputsFeatureAvailable" />
-    <gl-form-group class="gl-mb-0">
+    <gl-form-group
+      id="pipeline-form-ci-variable-type"
+      class="gl-mb-0"
+      :label="s__('Pipeline|Variables')"
+    >
+      <inputs-adoption-banner v-if="isPipelineInputsFeatureAvailable" class="gl-mt-0" />
       <div v-for="(variable, index) in variables" :key="`var-${index}`">
         <div
           v-if="!variable.destroy"
@@ -135,6 +138,7 @@ export default {
             :selected="variable.variableType"
             :class="$options.formElementClasses"
             :aria-label="s__('Pipeline|Variable type')"
+            toggle-aria-labelled-by="pipeline-form-ci-variable-type"
             block
             data-testid="pipeline-form-ci-variable-type"
             @select="setVariableType($event, variable.key)"
@@ -143,6 +147,7 @@ export default {
           <gl-form-input
             v-model="variable.key"
             :placeholder="s__('CiVariables|Input variable key')"
+            :aria-label="s__('CiVariables|Input variable key')"
             :class="$options.formElementClasses"
             data-testid="pipeline-form-ci-variable-key"
             @change="addEmptyVariable()"
@@ -160,6 +165,7 @@ export default {
             v-else
             v-model="variable.value"
             :placeholder="s__('CiVariables|Input variable value')"
+            :aria-label="s__('CiVariables|Input variable value')"
             class="gl-mb-3 gl-min-h-7"
             :style="$options.textAreaStyle"
             :no-resize="false"

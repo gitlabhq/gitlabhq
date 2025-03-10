@@ -375,6 +375,11 @@ Rails/RakeEnvironment:
   # Context on why it's disabled: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93419#note_1048223982
   Enabled: false
 
+Rails/RenderInline:
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+
 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94064#note_1157289970
 Rails/SquishedSQLHeredocs:
   Enabled: false

@@ -52959,6 +52959,9 @@ msgstr ""
 msgid "SecurityOrchestration|No linked groups"
 msgstr ""
 
+msgid "SecurityOrchestration|No policies found"
+msgstr ""
+
 msgid "SecurityOrchestration|No policies in the security policy project will be enforced until the invalid policies are fixed."
 msgstr ""
 

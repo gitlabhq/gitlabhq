@@ -342,7 +342,8 @@
   min-width: 1rem !important;
 
   &.active {
-    border-color: $blue-500 !important;
+    border-color: var(--gl-feedback-info-text-color) !important;
+    background-color: var(--gl-feedback-info-background-color) !important;
     border-width: 2px;
   }
 

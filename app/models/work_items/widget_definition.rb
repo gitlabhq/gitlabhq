@@ -45,7 +45,8 @@ module WorkItems
       custom_status: 26,
       linked_resources: 27,
       custom_fields: 28, # EE-only
-      error_tracking: 29
+      error_tracking: 29,
+      vulnerabilities: 30 # EE-only
     }
 
     attribute :widget_options, ::Gitlab::Database::Type::IndifferentJsonb.new

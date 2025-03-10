@@ -41,5 +41,28 @@ RSpec.describe ::Ml::CreateExperimentService, feature_category: :mlops do
         expect(response.message).to include("Name can't be blank")
       end
     end
+
+    context 'when a RecordNotUnique error occurs' do
+      let_it_be(:pg_error) { 'PG::UniqueViolation: ERROR: duplicate key value violates unique constraint' }
+
+      before do
+        allow_next_instance_of(::Ml::Experiment) do |experiment|
+          allow(experiment).to receive(:save).and_raise(
+            ActiveRecord::RecordNotUnique.new(pg_error)
+          )
+        end
+      end
+
+      it 'returns an error response with the exception message' do
+        response = create_experiment
+
+        expect(response).to be_error
+        expect(response.message).to include(pg_error)
+      end
+
+      it 'does not persist the experiment' do
+        expect { create_experiment }.not_to change { Ml::Experiment.count }
+      end
+    end
   end
 end

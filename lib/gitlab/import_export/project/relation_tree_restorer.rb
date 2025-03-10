@@ -7,9 +7,9 @@ module Gitlab
         # Relations which cannot be saved at project level (and have a group assigned)
         GROUP_MODELS = [GroupLabel, Milestone, Epic].freeze
 
-        def restore_single_relation(relation_key)
+        def restore_single_relation(relation_key, extra_track_scope: {})
           bulk_insert_without_cache_or_touch do
-            process_relation!(relation_key, relations[relation_key])
+            process_relation!(relation_key, relations[relation_key], extra_track_scope: extra_track_scope)
           end
         end
 

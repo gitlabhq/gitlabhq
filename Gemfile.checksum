@@ -638,7 +638,6 @@
 {"name":"ruby-lsp-rails","version":"0.3.31","platform":"ruby","checksum":"670aed466e54b5632e4907b8dedb91d8b144917c42513e013d656af175bf8c76"},
 {"name":"ruby-lsp-rspec","version":"0.1.22","platform":"ruby","checksum":"e982edf5cd6ec1530c3f5fa7e423624ad00532ebeff7fc94e02c7516a9b759c0"},
 {"name":"ruby-magic","version":"0.6.0","platform":"ruby","checksum":"7b2138877b7d23aff812c95564eba6473b74b815ef85beb0eb792e729a2b6101"},
-{"name":"ruby-openai","version":"3.7.0","platform":"ruby","checksum":"fb735d4c055e282ade264cab9864944c05a8a10e0cddd45a0551e8a9851b1850"},
 {"name":"ruby-progressbar","version":"1.11.0","platform":"ruby","checksum":"cc127db3866dc414ffccbf92928a241e585b3aa2b758a5563e74a6ee0f57d50a"},
 {"name":"ruby-saml","version":"1.17.0","platform":"ruby","checksum":"0419839ba3312d255e35fe3cc7ae155e4a241fd468796caebcf61164aa01b8a9"},
 {"name":"ruby-statistics","version":"4.1.0","platform":"ruby","checksum":"7d697abd5dc4e6141d21ecb4165482807564f11bbe154cf1c60a2677b507f2a9"},

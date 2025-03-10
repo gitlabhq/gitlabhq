@@ -298,6 +298,7 @@
     "WorkItemWidgetTestReports",
     "WorkItemWidgetTimeTracking",
     "WorkItemWidgetVerificationStatus",
+    "WorkItemWidgetVulnerabilities",
     "WorkItemWidgetWeight"
   ],
   "WorkItemWidgetDefinition": [

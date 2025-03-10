@@ -15,7 +15,7 @@ RSpec.describe "Flash message", :js, feature_category: :design_system do
       def kill
         flash[params[:flash_type]] = safe_format(params[:flash_text])
 
-        render inline: 'rendering flash', layout: true # rubocop:disable Rails/RenderInline -- It's fine to render inline in specs.
+        render inline: 'rendering flash', layout: true
       end
     end
   end

@@ -272,6 +272,7 @@ export default {
           v-model="nodePoolLabel.key"
           :class="$options.formElementClasses"
           :placeholder="s__('Runners|Node pool label key')"
+          :aria-label="s__('Runners|Node pool label key')"
           data-testid="node-pool-label-key-field"
           @change="addEmptyVariable"
         />

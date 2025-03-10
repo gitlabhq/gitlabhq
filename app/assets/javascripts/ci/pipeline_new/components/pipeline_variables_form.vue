@@ -303,6 +303,7 @@ export default {
           <gl-form-input
             v-model="variable.key"
             :placeholder="s__('CiVariables|Input variable key')"
+            :aria-label="s__('CiVariables|Input variable key')"
             :class="$options.formElementClasses"
             data-testid="pipeline-form-ci-variable-key-field"
             @change="addEmptyVariable(refParam)"
@@ -320,6 +321,7 @@ export default {
             v-else
             v-model="variable.value"
             :placeholder="s__('CiVariables|Input variable value')"
+            :aria-label="s__('CiVariables|Input variable value')"
             :style="$options.textAreaStyle"
             :no-resize="false"
             data-testid="pipeline-form-ci-variable-value-field"

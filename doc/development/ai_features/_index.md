@@ -88,7 +88,7 @@ also works for our self-managed customers.
 Run the Rake task to set up Duo features for the instance:
 
 ```shell
-GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup_instance'
+GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup'
 ```
 
 ```shell
@@ -100,7 +100,7 @@ This Rake task creates Duo Enterprise add-on attached to your instance.
 In case you need Duo Pro add-on attached, please use:
 
 ```shell
-GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup_instance[duo_pro]'
+GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup[duo_pro]'
 ```
 
 Duo Pro add-on serves smaller scope of features. Usage of add-on depends on what features you want to use.
