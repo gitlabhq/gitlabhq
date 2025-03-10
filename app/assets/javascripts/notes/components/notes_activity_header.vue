@@ -53,7 +53,7 @@ export default {
   <div
     class="gl-flex gl-flex-col gl-justify-between gl-pb-3 gl-pt-5 sm:gl-flex-row sm:gl-items-center"
   >
-    <h2 class="gl-m-0 gl-text-size-h1">{{ __('Activity') }}</h2>
+    <h2 class="gl-heading-2 gl-m-0">{{ __('Activity') }}</h2>
     <div class="gl-mt-3 gl-flex gl-w-full gl-gap-3 sm:gl-mt-0 sm:gl-w-auto">
       <ai-summarize-notes
         v-if="showAiActions"

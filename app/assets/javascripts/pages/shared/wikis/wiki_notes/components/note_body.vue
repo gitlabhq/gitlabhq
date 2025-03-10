@@ -100,8 +100,9 @@ export default {
         <note-edited-text
           v-if="edited"
           :edited-at="updatedNote.lastEditedAt"
+          :edited-by="updatedNote.lastEditedBy"
           :action-text="editedText"
-          class-name="gl-text-subtle gl-text-sm gl-display-block gl-mt-4"
+          class-name="gl-text-subtle gl-text-sm gl-display-block gl-mt-5"
         />
       </template>
 

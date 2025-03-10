@@ -10,7 +10,7 @@ title: GitLab Duo Workflow
 - Tier: Ultimate
 - Offering: GitLab.com
 - Status: Experiment
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+- LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 
 {{< /details >}}
 

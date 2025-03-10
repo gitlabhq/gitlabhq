@@ -110,9 +110,9 @@ export default {
           'internal-note': this.note.internal,
         },
         noteParent: {
-          card: !this.replyNote,
+          'gl-rounded-base gl-border gl-border-section': !this.replyNote,
           'gl-ml-7': this.replyNote,
-          'gl-ml-8': !this.replyNote,
+          'gl-bg-section gl-ml-8': !this.replyNote,
         },
       };
     },
@@ -286,6 +286,7 @@ export default {
             <span class="gl-hidden sm:gl-inline">&middot;</span>
           </note-header>
           <note-actions
+            :class="{ '-gl-mr-5': replyNote }"
             :author-id="authorId"
             :show-edit="canEdit"
             :show-reply="canReply"
@@ -325,7 +326,7 @@ export default {
         />
       </div>
 
-      <slot name="note-footer"> </slot>
+      <slot name="note-footer"></slot>
     </div>
   </timeline-entry-item>
 </template>

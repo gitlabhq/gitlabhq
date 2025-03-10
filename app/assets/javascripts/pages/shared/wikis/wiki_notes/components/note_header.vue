@@ -131,6 +131,7 @@ export default {
     </template>
     <span v-else>{{ __('A deleted user') }}</span>
     <span class="note-headline-light note-healine-meta">
+      <span class="gl-hidden sm:gl-inline">·</span>
       <template v-if="createdAt">
         <time-ago-tooltip ref="noteTimestamp" :time="createdAt" tooltip-placement="bottom" />
       </template>

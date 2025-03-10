@@ -51,6 +51,10 @@ module Gitlab
             tools = data.dig('metadata', 'tools')
             authors = data.dig('metadata', 'authors')
 
+            component_data = data.dig('metadata', 'component')
+            component = CyclonedxMetadataComponent.parse(component_data)
+            report.set_metadata_component(component) if component
+
             report.metadata = ::Gitlab::Ci::Reports::Sbom::Metadata.new.tap do |metadata|
               metadata.tools = tools if tools
               metadata.authors = authors if authors

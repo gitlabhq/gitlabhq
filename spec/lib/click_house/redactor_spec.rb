@@ -107,6 +107,42 @@ RSpec.describe ClickHouse::Redactor, feature_category: :database do
 
         expect(redacted_query).to eq(expected_redacted_sql)
       end
+
+      context 'when condition is a named function' do
+        let(:function_name) { 'randomFunction' }
+        let(:expressions) { [Arel.sql("'traversal_path'"), Arel.sql('42')] }
+        let(:function_node) do
+          Arel::Nodes::NamedFunction.new(
+            function_name,
+            expressions
+          )
+        end
+
+        subject(:redacted_query) do
+          new_builder = builder.where(function_node)
+          described_class.redact(new_builder)
+        end
+
+        it 'redacts all condition expressions' do
+          expected_redacted_sql = <<~SQL.lines(chomp: true).join(' ')
+            SELECT * FROM "test_table" WHERE randomFunction($1, $2)
+          SQL
+
+          expect(redacted_query).to eq(expected_redacted_sql)
+        end
+
+        context 'when using startsWith function' do
+          let(:function_name) { 'startsWith' }
+
+          it 'redacts only value argument' do
+            expected_redacted_sql = <<~SQL.lines(chomp: true).join(' ')
+              SELECT * FROM "test_table" WHERE startsWith('traversal_path', $1)
+            SQL
+
+            expect(redacted_query).to eq(expected_redacted_sql)
+          end
+        end
+      end
     end
 
     context 'with unsupported arel nodes' do

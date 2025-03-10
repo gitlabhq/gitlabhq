@@ -64,4 +64,19 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Report, feature_category: :dependency_
       expect(component_last.ancestors).to match_array([expected_value])
     end
   end
+
+  describe '#add_metadata_component' do
+    let_it_be(:metadata_component) { create(:ci_reports_sbom_component) }
+    let_it_be(:component) { create(:ci_reports_sbom_component) }
+
+    it 'sets empty hash into ancestors' do
+      report.set_metadata_component(metadata_component)
+      report.add_component(component)
+      report.add_dependency(metadata_component.ref, component.ref)
+
+      report.ensure_ancestors!
+
+      expect(component.ancestors).to match_array([{}])
+    end
+  end
 end

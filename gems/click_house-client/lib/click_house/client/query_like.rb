@@ -14,6 +14,11 @@ module ClickHouse
       def to_redacted_sql(bind_index_manager = BindIndexManager.new)
         raise NotImplementedError
       end
+
+      # Override when placeholders should be supported
+      def placeholders
+        {}
+      end
     end
   end
 end

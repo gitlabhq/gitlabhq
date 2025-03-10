@@ -28,7 +28,7 @@ module Ci
       return if status_groups.exclude?(:any)
 
       all_query = query.select(query.count_pipelines_function.as('all'))
-      result[:any] = ::ClickHouse::Client.select(all_query.to_sql, :main).first['all']
+      result[:any] = ::ClickHouse::Client.select(all_query, :main).first['all']
     end
 
     def calculate_aggregate_status_group_counts(query, result)
@@ -39,7 +39,7 @@ module Ci
         .by_status(selected_statuses)
         .group_by_status
 
-      result_by_status = ::ClickHouse::Client.select(query.to_sql, :main).map(&:values).to_h
+      result_by_status = ::ClickHouse::Client.select(query, :main).map(&:values).to_h
       result_by_status.each_pair { |status, count| result[STATUS_TO_STATUS_GROUP[status]] += count }
     end
 
@@ -47,7 +47,7 @@ module Ci
       return if duration_percentiles.empty?
 
       duration_query = query.select(*duration_percentiles.map { |p| query.duration_quantile_function(p) })
-      duration_result = ::ClickHouse::Client.select(duration_query.to_sql, :main)
+      duration_result = ::ClickHouse::Client.select(duration_query, :main)
       result[:duration_statistics] = duration_result.first.symbolize_keys.transform_values do |interval|
         interval.to_f.round(3).seconds
       end

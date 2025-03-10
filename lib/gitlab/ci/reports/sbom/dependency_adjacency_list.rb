@@ -14,8 +14,8 @@ module Gitlab
             adjacency_list[child] << parent
           end
 
-          def add_component_info(ref, name, version)
-            component_info[ref] = { name: name, version: version }
+          def add_component_info(ref, name = nil, version = nil)
+            component_info[ref] = { name: name, version: version }.compact
           end
 
           def ancestors_for(child)

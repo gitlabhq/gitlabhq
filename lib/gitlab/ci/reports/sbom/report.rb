@@ -44,6 +44,10 @@ module Gitlab
             dependencies.add_component_info(component.ref, component.name, component.version)
           end
 
+          def set_metadata_component(component)
+            dependencies.add_component_info(component.ref)
+          end
+
           def add_dependency(parent, child)
             dependencies.add_edge(parent, child)
           end

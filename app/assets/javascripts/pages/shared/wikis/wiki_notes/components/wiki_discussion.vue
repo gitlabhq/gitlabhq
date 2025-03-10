@@ -128,7 +128,7 @@ export default {
       <template v-if="replies.length || isReplying" #note-footer>
         <div
           data-testid="wiki-note-footer"
-          class="gl-border-t-1 gl-border-t-[#dcdcde] gl-bg-subtle gl-border-t-solid"
+          class="gl-border-t gl-rounded-b-base gl-border-t-subtle gl-bg-subtle dark:gl-border-t-section"
         >
           <toggle-replies-widget
             v-if="replies.length"
@@ -139,7 +139,7 @@ export default {
 
           <div
             v-if="!collapsed"
-            class="note-footer discussion-reply-holder clearfix gl-px-5 gl-py-4"
+            class="note-footer discussion-reply-holder clearfix gl-px-5 gl-pb-4 gl-pt-2"
           >
             <div v-for="reply in replies" :key="reply.id">
               <wiki-note

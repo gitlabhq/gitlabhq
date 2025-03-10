@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ClickHouse::Client::QueryLike do
+RSpec.describe ClickHouse::Client::QueryLike, feature_category: :database do
   subject(:query) { described_class.new }
 
   describe '#to_sql' do
@@ -11,5 +11,9 @@ RSpec.describe ClickHouse::Client::QueryLike do
 
   describe '#to_redacted_sql' do
     it { expect { query.to_redacted_sql }.to raise_error(NotImplementedError) }
+  end
+
+  describe '#placeholders' do
+    it { expect(query.placeholders).to eq({}) }
   end
 end

@@ -21868,6 +21868,9 @@ msgstr ""
 msgid "DuoChat|Included references"
 msgstr ""
 
+msgid "DuoChat|New chat conversation."
+msgstr ""
+
 msgid "DuoChat|No results found"
 msgstr ""
 

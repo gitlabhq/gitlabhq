@@ -894,7 +894,7 @@ If you deploy to your environments with the help of a deployment service (for ex
 the [Kubernetes integration](../../user/infrastructure/clusters/_index.md)), GitLab can open
 a terminal session to your environment. You can then debug issues without leaving your web browser.
 
-The Web terminal is a container-based deployment, which often lack basic tools (like an editor),
+The Web terminal is a container-based deployment, which often lacks basic tools (like an editor),
 and can be stopped or restarted at any time. If this happens, you lose all your
 changes. Treat the Web terminal as a debugging tool, not a comprehensive online IDE.
 
@@ -903,19 +903,16 @@ Web terminals:
 - Are available to project Maintainers and Owners only.
 - Must [be enabled](../../administration/integration/terminal.md).
 
-In the UI, you can view the Web terminal by selecting **Terminal** from the actions menu:
+In the UI, to view the Web terminal, either:
 
-![Terminal button on environment index](img/environments_terminal_button_on_index_v14_3.png)
+- From the **Actions** menu, select **Terminal**:
 
-You can also access the terminal button from the page for a specific environment:
+  ![Terminal button on environment index](img/environments_terminal_button_on_index_v14_3.png)
 
-![Terminal button for an environment](img/environments_terminal_button_on_show_v13_10.png)
+- On the page for a specific environment, on the right, select **Terminal** ({{< icon name="terminal">}}).
 
-Select the button to establish the terminal session:
-
-![Terminal page](../img/environments_terminal_page_v8_15.png)
-
-This works like any other terminal. You're in the container created
+Select the button to establish the terminal session.
+It works like any other terminal. You're in the container created
 by your deployment so you can:
 
 - Run shell commands and get responses in real time.

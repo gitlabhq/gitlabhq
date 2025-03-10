@@ -172,35 +172,43 @@ you can allow runner registration tokens. This setting and support for runner re
 
 ### Maximum artifacts size
 
-An administrator can set the maximum size of the
-[job artifacts](../cicd/job_artifacts.md) for:
+You can set the maximum size of distinct [job artifacts](../cicd/job_artifacts.md) for:
 
-- The entire instance
-- Each project
-- Each group
+- An instance
+- Projects
+- Groups
 
-For the setting on GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/_index.md#gitlab-cicd).
+The default maximum size for each artifact file in a job is 100 MB.
+For GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/_index.md#gitlab-cicd).
 
-The value is in MB, and the default value is 100 MB per job. An administrator can change the default value for the:
+Job artifacts defined with `artifacts:reports` can have [different limits](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact).
+In this case, the smaller value is used.
 
-- Instance:
+{{< alert type="note" >}}
+
+This setting applies to individual artifacts in a job, not the final archive file.
+
+{{< /alert >}}
+
+To modify the maximum artifacts size:
+
+- For an instance:
 
   1. On the left sidebar, at the bottom, select **Admin**.
-  1. On the left sidebar, select **Settings > CI/CD > Continuous Integration and Deployment**.
+  1. Select **Settings > CI/CD**.
+  1. Expand **Continuous Integration and Deployment**.
   1. Change the value of **Maximum artifacts size (MB)**.
-  1. Select **Save changes** for the changes to take effect.
+  1. Select **Save changes**.
 
-- Group (this overrides the instance setting):
+- For a group or project:
 
-  1. Go to the group's **Settings > CI/CD > General Pipelines**.
+  Group settings override instance settings. Project settings override both instance and group settings.
+
+  1. On the left sidebar, select **Search or go to** and find your project or group.
+  1. Select **Settings > CI/CD**.
+  1. Expand **General pipelines**
   1. Change the value of **Maximum artifacts size** (in MB).
-  1. Select **Save changes** for the changes to take effect.
-
-- Project (this overrides the instance and group settings):
-
-  1. Go to the project's **Settings > CI/CD > General Pipelines**.
-  1. Change the value of **Maximum artifacts size** (in MB).
-  1. Select **Save changes** for the changes to take effect.
+  1. Select **Save changes**.
 
 ### Default artifacts expiration
 

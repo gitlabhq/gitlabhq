@@ -1,6 +1,20 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples_for 'a pipeline analytics service' do
+  it 'does not execute raw sql queries' do
+    allow(::ClickHouse::Client).to receive(:select).and_call_original
+
+    expect(::ClickHouse::Client)
+      .not_to receive(:select)
+      .with(instance_of(String), instance_of(Symbol))
+
+    expect(::ClickHouse::Client)
+      .to receive(:select)
+      .with(kind_of(ClickHouse::Client::QueryLike), instance_of(Symbol))
+
+    result
+  end
+
   context 'when ClickHouse database is not configured' do
     before do
       allow(::Gitlab::ClickHouse).to receive(:configured?).and_return(false)

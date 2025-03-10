@@ -37,6 +37,7 @@ const mockDiscussion = (...children) => {
         bodyHtml: c,
         createdAt: '2023-05-18T14:24:07.000+00:00',
         lastEditedAt: null,
+        lastEditedBy: null,
         url: 'https://path/to/2/',
         awardEmoji: null,
         userPermissions: {

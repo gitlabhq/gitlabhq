@@ -428,4 +428,44 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
       parse!
     end
   end
+
+  context 'when metadata component is present' do
+    let(:ref) { 'urn:uuid:bbd321e1-f802-4fc1-ab0d-0cc629c3d53a' }
+    let(:type) { 'application' }
+    let(:name) { 'Root Application' }
+
+    let(:component) do
+      {
+        'type' => type,
+        'name' => name,
+        'bom-ref' => ref
+      }
+    end
+
+    let(:report_data) do
+      base_report_data.merge({ 'metadata' => { 'component' => component } })
+    end
+
+    it 'sets report metadata component' do
+      expect(report).to receive(:set_metadata_component)
+        .with(an_object_having_attributes(ref: ref, name: name, type: type))
+
+      parse!
+    end
+
+    context 'with incomplete component' do
+      let(:component) do
+        {
+          'type' => type,
+          'name' => name
+        }
+      end
+
+      it 'doesnt set report metadata component' do
+        expect(report).not_to receive(:set_metadata_component)
+
+        parse!
+      end
+    end
+  end
 end

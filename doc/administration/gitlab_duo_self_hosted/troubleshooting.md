@@ -88,7 +88,7 @@ We provide two debugging scripts to help administrators verify their self-hosted
      ```shell
      poetry run troubleshoot \
        --model-family=claude_3 \
-       --model-identifier=bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0
+       --model-identifier=bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0
      ```
 
      For a `mixtral` model running on vLLM:

@@ -43,9 +43,25 @@ module ClickHouse
         condition.left.gt(Arel.sql(bind_manager.next_bind_str))
       when Arel::Nodes::GreaterThanOrEqual
         condition.left.gteq(Arel.sql(bind_manager.next_bind_str))
+      when Arel::Nodes::NamedFunction
+        redact_named_function(condition, bind_manager)
       else
         raise ArgumentError, "Unsupported Arel node type for Redactor: #{condition.class}"
       end
+    end
+
+    def self.redact_named_function(condition, bind_manager)
+      redacted_condition =
+        Arel::Nodes::NamedFunction.new(condition.name, condition.expressions.dup)
+
+      case redacted_condition.name
+      when 'startsWith'
+        redacted_condition.expressions[1] = Arel.sql(bind_manager.next_bind_str)
+      else
+        redacted_condition.expressions = redacted_condition.expressions.map { Arel.sql(bind_manager.next_bind_str) }
+      end
+
+      redacted_condition
     end
   end
 end
