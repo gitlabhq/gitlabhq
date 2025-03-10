@@ -17649,9 +17649,6 @@ msgstr ""
 msgid "Creating epic"
 msgstr ""
 
-msgid "Creation of member role is allowed only for root groups"
-msgstr ""
-
 msgid "Creator"
 msgstr ""
 
@@ -68717,9 +68714,6 @@ msgstr ""
 msgid "cannot be changed to %{new_type} with these child item types."
 msgstr ""
 
-msgid "cannot be enabled"
-msgstr ""
-
 msgid "cannot be enabled because parent group does not allow it"
 msgstr ""
 
@@ -68733,6 +68727,9 @@ msgid "cannot be enabled until identity verification is completed"
 msgstr ""
 
 msgid "cannot be linked to the epic. This epic already has maximum number of child issues & epics."
+msgstr ""
+
+msgid "cannot be set to user cap"
 msgstr ""
 
 msgid "cannot be used because it belongs to a compromised private key. Stop using this key and generate a new one."

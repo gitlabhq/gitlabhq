@@ -1,7 +1,6 @@
 # This pipeline runs E2E tests against CNG build which is deployed via helm chart on a job local kind kubernetes cluster
 
 include:
-  - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/cng/main.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml

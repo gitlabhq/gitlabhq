@@ -259,11 +259,10 @@ Project permissions for [tasks](tasks.md):
 | ------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
 | View tasks                                                          |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Create tasks                                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can create tasks for issues they authored. |
-| Edit tasks, including metadata, item locking, and resolving threads |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can modify the title and description that they authored or are assigned to. |
+| Edit tasks, including metadata, item locking, and resolving threads |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can modify the title and description that they authored or are assigned to. |
 | Add a linked item                                                   |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Convert to another item type                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Convert to another item type                                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Remove from issue                                                   |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Edit tasks                                                          |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Add internal note                                                   |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Delete tasks                                                        |       |    ✓    |          |           |            |   ✓   | Users who don't have the Planner or Owner role can delete the tasks they authored. |
 

@@ -1,5 +1,4 @@
 include:
-  - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
@@ -31,7 +30,6 @@ workflow:
 .gdk-qa-base:
   extends:
     - .e2e-test-base
-    - .qa-cache
     # ignore runtime data from gdk because it's significantly slower than cng and runtime data for
     # optimizing parallel distribution should be geared towards test-on-cng
     - .with-ignored-runtime-data

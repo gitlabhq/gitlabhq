@@ -204,41 +204,45 @@ export default {
       this.searchStarted = true;
     },
     async updateParent() {
-      if (this.parent?.id === this.localSelectedItem) return;
-
-      this.updateInProgress = true;
-
-      if (this.workItemId === newWorkItemId(this.workItemType)) {
-        const visibleWorkItems = this.workItemsByReference.concat(this.workspaceWorkItems);
-
-        this.$apollo
-          .mutate({
-            mutation: updateNewWorkItemMutation,
-            variables: {
-              input: {
-                fullPath: this.fullPath,
-                parent:
-                  this.localSelectedItem && visibleWorkItems.length
-                    ? {
-                        ...visibleWorkItems?.find(({ id }) => id === this.localSelectedItem),
-                        webUrl: this.parentWebUrl ?? null,
-                      }
-                    : null,
-                workItemType: this.workItemType,
-              },
-            },
-          })
-          .catch((error) => {
-            Sentry.captureException(error);
-          })
-          .finally(() => {
-            this.searchStarted = false;
-            this.updateInProgress = false;
-          });
-        return;
-      }
-
       try {
+        if (this.parent?.id === this.localSelectedItem) return;
+
+        this.updateInProgress = true;
+
+        if (this.workItemId === newWorkItemId(this.workItemType)) {
+          const visibleWorkItems = this.workItemsByReference.concat(this.workspaceWorkItems);
+
+          this.$apollo
+            .mutate({
+              mutation: updateNewWorkItemMutation,
+              variables: {
+                input: {
+                  fullPath: this.fullPath,
+                  parent:
+                    this.localSelectedItem && visibleWorkItems.length
+                      ? {
+                          ...visibleWorkItems?.find(({ id }) => id === this.localSelectedItem),
+                          webUrl: this.parentWebUrl ?? null,
+                        }
+                      : null,
+                  workItemType: this.workItemType,
+                },
+              },
+            })
+            .catch((error) => {
+              this.$emit(
+                'error',
+                sprintfWorkItem(I18N_WORK_ITEM_ERROR_UPDATING, this.workItemType),
+              );
+              Sentry.captureException(error);
+            })
+            .finally(() => {
+              this.searchStarted = false;
+              this.updateInProgress = false;
+            });
+          return;
+        }
+
         const {
           data: {
             workItemUpdate: { errors },

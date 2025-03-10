@@ -6,6 +6,7 @@ workflow:
 
 include:
   - local: .gitlab/ci/version.yml
+  - local: .gitlab/ci/global.gitlab-ci.yml
   - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@9.11.1"
     inputs:
       job_name: "e2e-test-report"
@@ -47,6 +48,7 @@ stages:
 .qa-install:
   extends:
     - .ruby-image
+    - .qa-cache
   variables:
     BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
     BUNDLE_SILENCE_ROOT_WARNING: "true"

@@ -48,6 +48,12 @@ describe('WorkItemTokenInput', () => {
           iid: '2',
           title: 'Task 1',
           confidential: false,
+          workItemType: {
+            id: 'gid://gitlab/WorkItems::Type/5',
+            name: 'Task',
+            iconName: 'issue-type-task',
+            __typename: 'WorkItemType',
+          },
           __typename: 'WorkItem',
         },
         {
@@ -55,6 +61,12 @@ describe('WorkItemTokenInput', () => {
           iid: '3',
           title: 'Task 2',
           confidential: false,
+          workItemType: {
+            id: 'gid://gitlab/WorkItems::Type/5',
+            name: 'Task',
+            iconName: 'issue-type-task',
+            __typename: 'WorkItemType',
+          },
           __typename: 'WorkItem',
         },
         {
@@ -62,6 +74,12 @@ describe('WorkItemTokenInput', () => {
           iid: '4',
           title: 'Task 3',
           confidential: false,
+          workItemType: {
+            id: 'gid://gitlab/WorkItems::Type/5',
+            name: 'Task',
+            iconName: 'issue-type-task',
+            __typename: 'WorkItemType',
+          },
           __typename: 'WorkItem',
         },
       ],
@@ -157,6 +175,12 @@ describe('WorkItemTokenInput', () => {
     iid: '3',
     title: 'Task 2',
     confidential: false,
+    workItemType: {
+      id: 'gid://gitlab/WorkItems::Type/5',
+      name: 'Task',
+      iconName: 'issue-type-task',
+      __typename: 'WorkItemType',
+    },
     __typename: 'WorkItem',
   };
 
@@ -165,6 +189,12 @@ describe('WorkItemTokenInput', () => {
     iid: 'Task 2 <svg><use href=#/></svg>',
     title: 'Task 2 <svg><use href=#/></svg>',
     confidential: false,
+    workItemType: {
+      id: 'gid://gitlab/WorkItems::Type/5',
+      name: 'Task',
+      iconName: 'issue-type-task',
+      __typename: 'WorkItemType',
+    },
     __typename: 'WorkItem',
   };
 
@@ -298,6 +328,12 @@ describe('WorkItemTokenInput', () => {
       iid: '101',
       title: 'Task 3',
       confidential: false,
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/5',
+        name: 'Task',
+        iconName: 'issue-type-task',
+        __typename: 'WorkItemType',
+      },
       __typename: 'WorkItem',
     };
     const mockWorkItemResponseItem2 = {
@@ -305,6 +341,12 @@ describe('WorkItemTokenInput', () => {
       iid: '3',
       title: 'Task 123',
       confidential: false,
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/5',
+        name: 'Task',
+        iconName: 'issue-type-task',
+        __typename: 'WorkItemType',
+      },
       __typename: 'WorkItem',
     };
     const mockWorkItemResponseItem3 = {
@@ -312,6 +354,12 @@ describe('WorkItemTokenInput', () => {
       iid: '123',
       title: 'Task 2',
       confidential: false,
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/5',
+        name: 'Task',
+        iconName: 'issue-type-task',
+        __typename: 'WorkItemType',
+      },
       __typename: 'WorkItem',
     };
 

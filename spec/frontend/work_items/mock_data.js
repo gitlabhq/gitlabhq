@@ -429,6 +429,12 @@ export const mockworkItemReferenceQueryResponse = {
           iid: '111',
           title: 'Objective linked items 104',
           confidential: false,
+          workItemType: {
+            iconName: 'issue-type-objective',
+            id: 'gid://gitlab/WorkItems::Type/6',
+            name: 'Objective',
+            __typename: 'WorkItemType',
+          },
           __typename: 'WorkItem',
         },
       ],
@@ -3232,6 +3238,12 @@ export const availableWorkItemsResponse = {
             iid: '2',
             title: 'Task 1',
             confidential: false,
+            workItemType: {
+              iconName: 'issue-type-task',
+              id: 'gid://gitlab/WorkItems::Type/5',
+              name: 'Task',
+              __typename: 'WorkItemType',
+            },
             __typename: 'WorkItem',
           },
           {
@@ -3239,6 +3251,12 @@ export const availableWorkItemsResponse = {
             iid: '3',
             title: 'Task 2',
             confidential: false,
+            workItemType: {
+              iconName: 'issue-type-task',
+              id: 'gid://gitlab/WorkItems::Type/5',
+              name: 'Task',
+              __typename: 'WorkItemType',
+            },
             __typename: 'WorkItem',
           },
           {
@@ -3246,6 +3264,12 @@ export const availableWorkItemsResponse = {
             iid: '4',
             title: 'Task 3',
             confidential: false,
+            workItemType: {
+              iconName: 'issue-type-task',
+              id: 'gid://gitlab/WorkItems::Type/5',
+              name: 'Task',
+              __typename: 'WorkItemType',
+            },
             __typename: 'WorkItem',
           },
         ],
@@ -3266,6 +3290,12 @@ export const availableObjectivesResponse = {
             iid: '122',
             title: 'Objective 101',
             confidential: false,
+            workItemType: {
+              iconName: 'issue-type-objective',
+              id: 'gid://gitlab/WorkItems::Type/6',
+              name: 'Objective',
+              __typename: 'WorkItemType',
+            },
             __typename: 'WorkItem',
           },
           {
@@ -3273,6 +3303,12 @@ export const availableObjectivesResponse = {
             iid: '118',
             title: 'Objective 103',
             confidential: false,
+            workItemType: {
+              iconName: 'issue-type-objective',
+              id: 'gid://gitlab/WorkItems::Type/6',
+              name: 'Objective',
+              __typename: 'WorkItemType',
+            },
             __typename: 'WorkItem',
           },
           {
@@ -3280,6 +3316,12 @@ export const availableObjectivesResponse = {
             iid: '117',
             title: 'Objective 102',
             confidential: false,
+            workItemType: {
+              iconName: 'issue-type-objective',
+              id: 'gid://gitlab/WorkItems::Type/6',
+              name: 'Objective',
+              __typename: 'WorkItemType',
+            },
             __typename: 'WorkItem',
           },
         ],
@@ -3300,6 +3342,12 @@ export const searchedObjectiveResponse = {
             iid: '122',
             title: 'Objective 101',
             confidential: false,
+            workItemType: {
+              iconName: 'issue-type-objective',
+              id: 'gid://gitlab/WorkItems::Type/6',
+              name: 'Objective',
+              __typename: 'WorkItemType',
+            },
             __typename: 'WorkItem',
           },
         ],

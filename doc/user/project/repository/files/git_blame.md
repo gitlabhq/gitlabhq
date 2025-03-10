@@ -60,6 +60,38 @@ To see earlier revisions of a specific line:
 1. Select **View blame prior to this change** ({{< icon name="doc-versions" >}})
    until you've found the changes you're interested in viewing.
 
+### Ignore specific revisions
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514684) in GitLab 17.10 [with a flag](../../../../administration/feature_flags.md) named `blame_ignore_revs`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
+
+To configure Git blame to ignore specific revisions:
+
+1. In the root of your repository, create a `.git-blame-ignore-revs` file.
+1. Add the commit hashes you want to ignore, one per line.
+   For example:
+
+   ```plaintext
+   a24cb33c0e1390b0719e9d9a4a4fc0e4a3a069cc
+   676c1c7e8b9e2c9c93e4d5266c6f3a50ad602a4c
+   ```
+
+1. Open a file in the blame view.
+1. Select the **Blame preferences** dropdown list.
+1. Select **Ignore specific revisions**.
+
+The blame view refreshes and skips the revisions specified in the `.git-blame-ignore-revs` file,
+showing the previous meaningful changes instead.
+
 ## Related topics
 
 - [Git file blame REST API](../../../../api/repository_files.md#get-file-blame-from-repository)

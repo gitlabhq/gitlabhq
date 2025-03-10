@@ -25,3 +25,6 @@ module Mutations
     end
   end
 end
+
+# JH required
+Mutations::WorkItems::Widgetable.prepend_mod

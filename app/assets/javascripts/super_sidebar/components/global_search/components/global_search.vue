@@ -131,7 +131,7 @@ export default {
       return !this.searchText;
     },
     searchTermOverMin() {
-      return this.searchText?.length > SEARCH_SHORTCUTS_MIN_CHARACTERS;
+      return this.searchText?.length >= SEARCH_SHORTCUTS_MIN_CHARACTERS;
     },
     showScopedSearchItems() {
       return this.searchTermOverMin && this.scopedSearchOptions.length > 0;

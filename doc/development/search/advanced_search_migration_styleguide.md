@@ -159,6 +159,19 @@ class MigrationName < Elastic::Migration
 end
 ```
 
+You can test this migration with the `'migration backfills fields'` shared examples.
+
+```ruby
+describe 'migration', :elastic_delete_by_query, :sidekiq_inline do
+  include_examples 'migration backfills fields' do
+    let(:expected_throttle_delay) { 1.minute }
+    let(:expected_batch_size) { 9000 }
+    let(:objects) { create_list(:issues, 3) }
+    let(:expected_fields) { schema_version: '25_09' }
+  end
+end
+```
+
 #### `Search::Elastic::MigrationUpdateMappingsHelper`
 
 Updates a mapping in an index by calling `put_mapping` with the mapping specified.
@@ -371,6 +384,16 @@ class MigrationName < Elastic::Migration
 end
 ```
 
+You can test this migration with the `'migration reindex based on schema_version'` shared examples.
+
+```ruby
+include_examples 'migration reindex based on schema_version' do
+  let(:expected_throttle_delay) { 1.minute }
+  let(:expected_batch_size) { 9_000 }
+  let(:objects) { create_list(:project, 3) }
+end
+```
+
 #### `Search::Elastic::MigrationDeleteBasedOnSchemaVersion`
 
 Deletes all documents in the index that stores the specified document type and has `schema_version` less than the given value.
@@ -398,6 +421,16 @@ class MigrationName < Elastic::Migration
   def schema_version
     23_12
   end
+end
+```
+
+You can test this migration with the `'migration deletes documents based on schema version'` shared examples.
+
+```ruby
+include_examples 'migration deletes documents based on schema version' do
+  let(:objects) { create_list(:issue, 3) }
+  let(:expected_throttle_delay) { 1.minute }
+  let(:expected_batch_size) { 20000 }
 end
 ```
 

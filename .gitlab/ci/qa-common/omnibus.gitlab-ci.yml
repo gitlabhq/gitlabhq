@@ -1,5 +1,4 @@
 include:
-  - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
 
 .check-release-set:

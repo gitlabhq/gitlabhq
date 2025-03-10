@@ -104,7 +104,7 @@ Learn how to set up GitLab CI/CD for specific use cases.
 
 ### `.gitlab-ci.yml` for plain HTML websites
 
-Supposed your repository contained the following files:
+Suppose your repository contained the following files:
 
 ```plaintext
 ├── index.html

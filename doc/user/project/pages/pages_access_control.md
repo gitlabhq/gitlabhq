@@ -35,7 +35,7 @@ For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v
      - **Everyone**: Everyone, both logged into and logged out of GitLab, is able to browse the website, no matter their project membership.
    - If your project is internal:
      - **Only project members**: Only project members are able to browse the website.
-     - **Everyone with access**: Everyone logged into GitLab is able to browse the website, no matter their project membership.
+     - **Everyone with access**: Everyone logged into GitLab is able to browse the website, no matter their project membership. [External users](../../../administration/external_users.md) can access the website only if they have a membership in the project.
      - **Everyone**: Everyone, both logged into and logged out of GitLab, is able to browse the website, no matter their project membership.
    - If your project is public:
      - **Only project members**: Only project members are able to browse the website.

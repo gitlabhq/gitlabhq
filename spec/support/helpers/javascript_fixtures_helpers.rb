@@ -92,7 +92,7 @@ module JavaScriptFixturesHelpers
   end
 
   def parse_html(fixture)
-    if respond_to?(:use_full_html) && public_send(:use_full_html)
+    if respond_to?(:use_full_html) && use_full_html
       Nokogiri::HTML::Document.parse(fixture)
     else
       Nokogiri::HTML::DocumentFragment.parse(fixture)
