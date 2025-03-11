@@ -22368,6 +22368,9 @@ msgstr ""
 msgid "Edit release"
 msgstr ""
 
+msgid "Edit release (%{title})"
+msgstr ""
+
 msgid "Edit single file"
 msgstr ""
 
@@ -55748,13 +55751,13 @@ msgstr ""
 msgid "Snippets with non-text files can only be edited via Git."
 msgstr ""
 
-msgid "SnippetsEmptyState|Code snippets"
+msgid "SnippetsEmptyState|Get started with snippets"
 msgstr ""
 
 msgid "SnippetsEmptyState|New snippet"
 msgstr ""
 
-msgid "SnippetsEmptyState|Store, share, and embed small pieces of code and text."
+msgid "SnippetsEmptyState|Store, share, and embed bits of code and text."
 msgstr ""
 
 msgid "SnippetsEmptyState|There are no snippets found"

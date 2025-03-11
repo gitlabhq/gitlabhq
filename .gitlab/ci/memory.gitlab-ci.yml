@@ -20,7 +20,7 @@ memory-on-boot:
   extends:
     - .only-code-memory-job-base
     - .production
-    - .use-pg14
+    - .use-pg16
   stage: test
   needs: ["setup-test-env", "compile-test-assets"]
   variables:

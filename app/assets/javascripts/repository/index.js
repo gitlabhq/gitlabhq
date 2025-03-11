@@ -188,10 +188,9 @@ export default function setupVueRepositoryList() {
     const { sshUrl, httpUrl, kerberosUrl, xcodeUrl, directoryDownloadLinks } =
       codeDropdownEl.dataset;
 
-    const CodeDropdownComponent =
-      gon.features.directoryCodeDropdownUpdates && gon.features.blobRepositoryVueHeaderApp
-        ? CompactCodeDropdown
-        : CodeDropdown;
+    const CodeDropdownComponent = gon.features.directoryCodeDropdownUpdates
+      ? CompactCodeDropdown
+      : CodeDropdown;
 
     return new Vue({
       el: codeDropdownEl,

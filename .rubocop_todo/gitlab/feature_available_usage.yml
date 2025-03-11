@@ -27,7 +27,6 @@ Gitlab/FeatureAvailableUsage:
     - 'ee/app/helpers/ee/form_helper.rb'
     - 'ee/app/helpers/ee/graph_helper.rb'
     - 'ee/app/helpers/ee/issues_helper.rb'
-    - 'ee/app/helpers/ee/lock_helper.rb'
     - 'ee/app/helpers/ee/operations_helper.rb'
     - 'ee/app/helpers/ee/projects/incidents_helper.rb'
     - 'ee/app/helpers/ee/projects_helper.rb'

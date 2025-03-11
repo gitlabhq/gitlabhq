@@ -6,10 +6,10 @@ import {
   GlDropdownDivider,
 } from '@gitlab/ui';
 import { getParameterByName, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
-import { s__, __ } from '~/locale';
+import { s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 const i18n = {
-  learnMore: __('Learn more'),
   blamePreferences: s__('Blame|Blame preferences'),
   ignoreSpecificRevs: s__('Blame|Ignore specific revisions'),
   learnToIgnore: s__('Blame|Learn to ignore specific revisions'),
@@ -17,6 +17,9 @@ const i18n = {
 
 export default {
   i18n,
+  docsLink: helpPagePath('user/project/repository/files/git_blame.md', {
+    anchor: 'ignore-specific-revisions',
+  }),
   components: { GlDisclosureDropdown, GlDisclosureDropdownItem, GlFormCheckbox, GlDropdownDivider },
   props: {
     hasRevsFile: {
@@ -36,7 +39,7 @@ export default {
       visitUrl(setUrlParams({ ignore_revs: this.isIgnoring }));
     },
     visitDocs() {
-      // TODO: link to docs page once docs is ready
+      visitUrl(this.$options.docsLink);
     },
   },
 };
@@ -50,7 +53,9 @@ export default {
   >
     <template v-if="!hasRevsFile">
       <div class="gl-m-3">
-        <gl-disclosure-dropdown-item>{{ $options.i18n.learnToIgnore }}</gl-disclosure-dropdown-item>
+        <gl-disclosure-dropdown-item @action="visitDocs">{{
+          $options.i18n.learnToIgnore
+        }}</gl-disclosure-dropdown-item>
       </div>
     </template>
 
@@ -63,8 +68,8 @@ export default {
       >
 
       <gl-dropdown-divider />
-      <gl-disclosure-dropdown-item class="gl-p-4">{{
-        $options.i18n.learnMore
+      <gl-disclosure-dropdown-item class="gl-p-4" @action="visitDocs">{{
+        $options.i18n.learnToIgnore
       }}</gl-disclosure-dropdown-item>
     </template>
   </gl-disclosure-dropdown>

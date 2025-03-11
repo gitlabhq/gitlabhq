@@ -1,2 +1,6 @@
 @import 'mixins_and_variables_and_functions';
 @import 'components/rapid_diffs';
+
+.rd-app {
+  --rd-diff-file-sticky-top-padding: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height});
+}

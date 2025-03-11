@@ -1035,8 +1035,8 @@ class MergeRequest < ApplicationRecord
   # We use these attributes to force these to the intended values.
   attr_writer :target_branch_sha, :source_branch_sha
 
-  def source_branch_ref
-    return @source_branch_sha if @source_branch_sha
+  def source_branch_ref(or_sha: true)
+    return @source_branch_sha if @source_branch_sha && or_sha
     return unless source_branch
 
     Gitlab::Git::BRANCH_REF_PREFIX + source_branch
@@ -1754,7 +1754,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def fetch_ref!
-    target_project.repository.fetch_source_branch!(source_project.repository, source_branch, ref_path)
+    target_project.repository.fetch_source_branch!(source_project.repository, source_branch_ref(or_sha: false), ref_path)
     expire_ancestor_cache
   end
 

@@ -13,7 +13,7 @@ RSpec.describe FailedTests do
       'suites' => [
         {
           'failed_count' => 1,
-          'name' => 'rspec unit pg14 10/12',
+          'name' => 'rspec unit pg16 10/12',
           'test_cases' => [
             {
               'status' => 'failed',
@@ -23,7 +23,7 @@ RSpec.describe FailedTests do
         },
         {
           'failed_count' => 1,
-          'name' => 'rspec-ee unit pg14',
+          'name' => 'rspec-ee unit pg16',
           'test_cases' => [
             {
               'status' => 'failed',
@@ -33,7 +33,7 @@ RSpec.describe FailedTests do
         },
         {
           'failed_count' => 1,
-          'name' => 'rspec unit pg15 10/12',
+          'name' => 'rspec unit pg17 10/12',
           'test_cases' => [
             {
               'status' => 'failed',

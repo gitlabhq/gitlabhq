@@ -4,9 +4,14 @@ import BlamePreferences from '~/blame/preferences/blame_preferences.vue';
 import * as urlUtils from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
   getParameterByName: jest.fn(),
   setUrlParams: jest.fn(),
   visitUrl: jest.fn(),
+}));
+
+jest.mock('~/helpers/help_page_helper', () => ({
+  helpPagePath: jest.fn().mockReturnValue('/help/page'),
 }));
 
 describe('BlamePreferences', () => {
@@ -36,7 +41,7 @@ describe('BlamePreferences', () => {
     });
 
     it('shows learn more button', () => {
-      expect(findLearnToIgnoreItem().text()).toBe('Learn more');
+      expect(findLearnToIgnoreItem().text()).toBe('Learn to ignore specific revisions');
     });
   });
 
@@ -79,6 +84,24 @@ describe('BlamePreferences', () => {
       createComponent();
 
       expect(findCheckbox().attributes('checked')).toBe('false');
+    });
+  });
+
+  describe('docs link functionality', () => {
+    const mockDocsUrl = '/help/page';
+
+    it('navigates to docs when learn more is clicked with revs file', async () => {
+      createComponent({ hasRevsFile: true });
+      await findLearnToIgnoreItem().vm.$emit('action');
+
+      expect(urlUtils.visitUrl).toHaveBeenCalledWith(mockDocsUrl);
+    });
+
+    it('navigates to docs when learn to ignore is clicked without revs file', async () => {
+      createComponent({ hasRevsFile: false });
+      await findLearnToIgnoreItem().vm.$emit('action');
+
+      expect(urlUtils.visitUrl).toHaveBeenCalledWith(mockDocsUrl);
     });
   });
 });

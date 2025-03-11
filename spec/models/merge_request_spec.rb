@@ -1489,6 +1489,29 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#source_branch_ref' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:or_sha, :source_branch, :source_branch_sha, :expected) do
+      true | nil | 'sha' | 'sha'
+      true | 'branch' | 'sha' | 'sha'
+      true | 'branch' | nil | 'refs/heads/branch'
+      false | nil | 'sha' | nil
+      false | 'branch' | 'sha' | 'refs/heads/branch'
+      false | 'branch' | 'sha' | 'refs/heads/branch'
+    end
+
+    with_them do
+      specify do
+        merge_request = build(:merge_request, source_branch:)
+        merge_request.source_branch_sha = source_branch_sha
+        result = merge_request.source_branch_ref(or_sha:)
+
+        expect(result).to eq(expected)
+      end
+    end
+  end
+
   describe '#source_branch_sha' do
     let(:last_branch_commit) { subject.source_project.repository.commit(Gitlab::Git::BRANCH_REF_PREFIX + subject.source_branch) }
 
@@ -5009,19 +5032,36 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#fetch_ref!' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
 
-    subject { create(:merge_request, source_project: project) }
+    before_all do
+      repository = project.repository
+      repository.add_branch(project.creator, 'ambiguous', 'feature')
+      repository.add_tag(project.creator, 'ambiguous', 'master')
+    end
 
     it 'fetches the ref and expires the ancestor cache' do
-      expect { subject.target_project.repository.delete_refs(subject.ref_path) }.not_to raise_error
+      expect { merge_request.target_project.repository.delete_refs(merge_request.ref_path) }.not_to raise_error
 
-      expect(project.repository).to receive(:expire_ancestor_cache).with(subject.target_branch_sha, subject.diff_head_sha).and_call_original
-      expect(subject).to receive(:expire_ancestor_cache).and_call_original
+      expect(project.repository).to receive(:expire_ancestor_cache).with(merge_request.target_branch_sha, merge_request.diff_head_sha).and_call_original
+      expect(merge_request).to receive(:expire_ancestor_cache).and_call_original
 
-      subject.fetch_ref!
+      merge_request.fetch_ref!
 
-      expect(subject.target_project.repository.ref_exists?(subject.ref_path)).to be_truthy
+      expect(merge_request.target_project.repository.ref_exists?(merge_request.ref_path)).to be_truthy
+    end
+
+    context 'when source branch is ambiguous' do
+      let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'ambiguous') }
+
+      it 'fetches the branch, not the tag' do
+        merge_request.fetch_ref!
+
+        ref_path_sha = merge_request.target_project.commit(merge_request.ref_path).sha
+        expect(ref_path_sha).to eq(merge_request.source_branch_sha)
+        expect(ref_path_sha).not_to eq(project.commit('refs/tags/ambiguous').sha)
+      end
     end
   end
 

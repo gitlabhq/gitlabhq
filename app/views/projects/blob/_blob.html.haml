@@ -6,10 +6,7 @@
 - if blob.rich_viewer && blob.extension != 'geojson'
   - add_page_startup_api_call local_assigns.fetch(:viewer_url) { url_for(safe_params.merge(viewer: blob.rich_viewer.type, format: :json)) }
 
-- if Feature.enabled?(:blob_repository_vue_header_app, project)
-  #js-repository-blob-header-app{ data: vue_blob_header_app_data(project, blob, ref) }
-- else
-  = render "projects/blob/breadcrumb", blob: blob
+#js-repository-blob-header-app{ data: vue_blob_header_app_data(project, blob, ref) }
 
 - if project.forked?
   #js-fork-info{ data: vue_fork_divergence_data(project, ref) }

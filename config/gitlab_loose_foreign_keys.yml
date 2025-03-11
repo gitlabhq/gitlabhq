@@ -110,6 +110,10 @@ ci_pipeline_metadata:
   - table: projects
     column: project_id
     on_delete: async_delete
+ci_pipeline_schedule_inputs:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 ci_pipeline_schedules:
   - table: users
     column: owner_id

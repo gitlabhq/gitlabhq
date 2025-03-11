@@ -761,7 +761,7 @@ module Ci
     end
 
     def coverage
-      coverage_array = latest_statuses.map(&:coverage).compact
+      coverage_array = latest_statuses.filter_map(&:coverage)
       coverage_array.sum / coverage_array.size if coverage_array.size >= 1
     end
 

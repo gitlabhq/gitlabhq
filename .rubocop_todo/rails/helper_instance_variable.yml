@@ -59,7 +59,6 @@ Rails/HelperInstanceVariable:
     - 'ee/app/helpers/ee/integrations_helper.rb'
     - 'ee/app/helpers/ee/kerberos_helper.rb'
     - 'ee/app/helpers/ee/labels_helper.rb'
-    - 'ee/app/helpers/ee/lock_helper.rb'
     - 'ee/app/helpers/ee/mirror_helper.rb'
     - 'ee/app/helpers/ee/notes_helper.rb'
     - 'ee/app/helpers/ee/operations_helper.rb'

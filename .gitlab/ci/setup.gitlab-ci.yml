@@ -110,7 +110,7 @@ verify-approvals:
 generate-frontend-fixtures-mapping:
   extends:
     - .setup:rules:generate-frontend-fixtures-mapping
-    - .use-pg14
+    - .use-pg16
     - .ruby-cache
   needs: ["setup-test-env"]
   stage: prepare

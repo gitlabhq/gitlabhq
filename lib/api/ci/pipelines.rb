@@ -88,10 +88,10 @@ module API
 
           pipeline_params = declared_params(include_missing: false)
             .merge(variables_attributes: params[:variables])
-            .except(:variables)
+            .except(:variables, :inputs)
 
           response = ::Ci::CreatePipelineService.new(user_project, current_user, pipeline_params)
-            .execute(:api, ignore_skip_ci: true, save_on_errors: false)
+            .execute(:api, ignore_skip_ci: true, save_on_errors: false, inputs: params[:inputs])
           new_pipeline = response.payload
 
           if response.success?

@@ -3,7 +3,7 @@
     - .default-retry
     - .ruby-cache
     - .default-before_script
-    - .use-pg14
+    - .use-pg16
   stage: test
   needs: ["setup-test-env"]
   variables:
@@ -31,7 +31,7 @@ run-dev-fixtures-ee:
   extends:
     - .run-dev-fixtures
     - .dev-fixtures:rules:ee-only
-    - .use-pg14-es7-ee
+    - .use-pg16-es7-ee
   script:
     - cp ee/db/fixtures/development/* $FIXTURE_PATH
     - *run-dev-fixtures-script

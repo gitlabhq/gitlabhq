@@ -209,34 +209,35 @@ include:
   after_script:
     - !reference [.rspec-base, after_script]
 
-.rspec-base-pg14:
+# Current PG version for CI
+.rspec-base-pg16:
   needs:
     - !reference [.rspec-base, needs]
-    - job: "db:setup pg14"
+    - job: "db:setup pg16"
       optional: true
   extends:
     - .rspec-base
-    - .use-pg14
+    - .use-pg16
 
-.rspec-base-pg14-clickhouse23:
+.rspec-base-pg16-clickhouse23:
   extends:
     - .rspec-base
-    - .use-pg14-clickhouse23
+    - .use-pg16-clickhouse23
   script:
     - cp config/click_house.yml.example config/click_house.yml
     - 'sed -i "s|url:.*$|url: http://clickhouse:8123|g" config/click_house.yml'
     - !reference [.base-script, script]
     - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag click_house"
 
+.rspec-base-pg14:
+  extends:
+    - .rspec-base
+    - .use-pg14
+
 .rspec-base-pg15:
   extends:
     - .rspec-base
     - .use-pg15
-
-.rspec-base-pg16:
-  extends:
-    - .rspec-base
-    - .use-pg16
 
 .rspec-base-pg17:
   extends:
@@ -283,7 +284,7 @@ include:
 
 .ci-config-validation-base:
   extends:
-    - .rspec-base-pg14
+    - .rspec-base-pg16
     - .rails:rules:rspec-ci-config-validation
   stage: test
   after_script: []  # override after_script from .rspec-base
@@ -292,7 +293,7 @@ include:
   extends:
     - .rails-job-base
     - .rails:rules:ee-and-foss-migration
-    - .use-pg14
+    - .use-pg16
   stage: test
   needs: ["setup-test-env"]
 # rspec job base specs

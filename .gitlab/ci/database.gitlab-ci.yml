@@ -1,11 +1,11 @@
 include:
   - local: .gitlab/ci/rails/shared.gitlab-ci.yml
 
-db:setup pg14:
+db:setup pg16:
   stage: prepare
   needs: []
   extends:
-    - .use-pg14
+    - .use-pg16
     - .default-before_script
     - .ruby-cache
     - .rails:rules:setup-test-env

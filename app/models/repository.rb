@@ -1351,6 +1351,14 @@ class Repository
     blob_at(project.default_branch, Gitlab::Blame::IGNORE_REVS_FILE_NAME, limit: 0)
   end
 
+  def diffs_by_changed_paths(diff_refs, offset = 0, batch_size = 30)
+    Gitlab::Git::BlobPairsDiffs
+      .new(self)
+      .diffs_by_changed_paths(diff_refs, offset, batch_size) do |diff_files|
+        yield diff_files
+      end
+  end
+
   private
 
   # Increase the limit by number of excluded refs

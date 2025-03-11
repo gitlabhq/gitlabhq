@@ -649,14 +649,14 @@ to receive sub-addressed mail.
 
 To enable sub-addressing:
 
-1. Download and install the `ExchangeOnlineManagement` module from the [PowerShell gallery](https://www.powershellgallery.com/packages/ExchangeOnlineManagement/2.0.5).
+1. Download and install the `ExchangeOnlineManagement` module from the [PowerShell gallery](https://www.powershellgallery.com/packages/ExchangeOnlineManagement/3.7.1).
 1. In PowerShell, run the following commands:
 
    ```powershell
    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
    Import-Module ExchangeOnlineManagement
    Connect-ExchangeOnline
-   Set-OrganizationConfig -AllowPlusAddressInRecipients $true
+   Set-OrganizationConfig -DisablePlusAddressInRecipients $false
    Disconnect-ExchangeOnline
    ```
 

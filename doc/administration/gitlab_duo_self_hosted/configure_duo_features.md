@@ -129,5 +129,5 @@ Configure the GitLab Duo feature to send queries to the configured self-hosted m
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo Self-Hosted**.
-1. Select the **GitLab Duo Self-Hosted** tab.
+1. Select the **AI-powered features** tab.
 1. For the feature you want to configure, from the dropdown list, choose the self-hosted model you want to use. For example, `Mistral`.

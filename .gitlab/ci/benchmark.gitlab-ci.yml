@@ -2,7 +2,7 @@ benchmark-markdown:
   extends:
     - .single-db-ci-connection
     - .rails-job-base
-    - .use-pg14
+    - .use-pg16
     - .benchmark:rules:benchmark-markdown
   stage: benchmark
   needs:

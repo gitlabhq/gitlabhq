@@ -119,6 +119,12 @@ RSpec.describe Resolvers::Ci::PipelineAnalyticsResolver, :click_house, feature_c
             project.update!(public_builds: true)
           end
 
+          context 'when user is anonymous' do
+            let(:current_user) { nil }
+
+            it_behaves_like 'returns the pipeline analytics for a given container'
+          end
+
           context 'when user is not a member' do
             let(:current_user) { create(:user) }
 

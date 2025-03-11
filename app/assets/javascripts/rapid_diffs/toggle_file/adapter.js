@@ -9,33 +9,30 @@ function getOppositeToggleButton(clicked) {
     : parent.querySelector('button[data-opened]');
 }
 
-function getElements(diffElement) {
-  const fileBody = diffElement.querySelector('[data-file-body]');
-  const button = diffElement.querySelector('[data-click="toggleFile"]');
-  const oppositeToggleButton = getOppositeToggleButton(button);
-  return { fileBody, oppositeToggleButton };
+function collapse(root = this.diffElement) {
+  // eslint-disable-next-line no-param-reassign
+  root.dataset.collapsed = true;
+  // eslint-disable-next-line no-param-reassign
+  root.querySelector('[data-file-body]').hidden = true;
 }
 
-function collapse(fileBody = this.diffElement.querySelector('[data-file-body]')) {
+function expand(root = this.diffElement) {
   // eslint-disable-next-line no-param-reassign
-  fileBody.hidden = true;
-}
-
-function expand(fileBody = this.diffElement.querySelector('[data-file-body]')) {
+  delete root.dataset.collapsed;
   // eslint-disable-next-line no-param-reassign
-  fileBody.hidden = false;
+  root.querySelector('[data-file-body]').hidden = false;
 }
 
 export const ToggleFileAdapter = {
   clicks: {
-    toggleFile() {
-      const { fileBody, oppositeToggleButton } = getElements(this.diffElement);
-      if (fileBody.hidden) {
-        expand.call(this, fileBody);
+    toggleFile(event, button) {
+      const collapsed = this.diffElement.dataset.collapsed === 'true';
+      if (collapsed) {
+        expand.call(this);
       } else {
-        collapse.call(this, fileBody);
+        collapse.call(this);
       }
-      oppositeToggleButton.focus();
+      getOppositeToggleButton(button).focus();
     },
   },
   [EXPAND_FILE]() {

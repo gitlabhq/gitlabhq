@@ -453,7 +453,6 @@
     ES_SETTING_XPACK_SECURITY_ENABLED: "false"
     ES_SETTING_CLUSTER_ROUTING_ALLOCATION_DISK_THRESHOLD__ENABLED: "false"
 
-
 .use-pg14-es8-ee:
   extends:
     - .use-pg14
@@ -568,8 +567,8 @@
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.os2-services, services]
 
-.use-pg14-clickhouse23:
-  extends: .use-pg14
+.use-pg16-clickhouse23:
+  extends: .use-pg16
   services:
     - !reference [.db-services-with-auto-explain, services]
     - name: clickhouse/clickhouse-server:23.11.3.23-alpine

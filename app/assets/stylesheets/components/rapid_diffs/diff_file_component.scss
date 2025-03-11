@@ -2,22 +2,20 @@
 @import 'framework/variables';
 
 .rd-diff-file-component {
-  // TODO: this must be defined using CSS Custom Properties to work across all pages
-  scroll-margin-top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{constants.$diff-file-sticky-offset});
+  --rd-diff-file-sticky-top-offset: calc(var(--rd-diff-file-sticky-top-padding, 0) + #{constants.$diff-file-sticky-top-margin});
+  scroll-margin-top: var(--rd-diff-file-sticky-top-offset);
 }
 
 .rd-diff-file {
   padding-bottom: $gl-padding;
 
   --rd-diff-file-border-radius: #{calc($gl-border-radius-base - 1px)};
-
-  &:has([data-file-body][hidden]) .rd-diff-file-toggle [data-opened],
-  &:not(:has([data-file-body][hidden])) .rd-diff-file-toggle [data-closed] {
-    display: none;
-  }
 }
 
 .rd-diff-file-header {
+  position: sticky;
+  // 1px offset to hide top border
+  top: calc(var(--rd-diff-file-sticky-top-padding, 1px) - 1px);
   display: flex;
   background-color: var(--gl-background-color-subtle);
   border: 1px solid var(--gl-border-color-default);
@@ -25,9 +23,53 @@
   min-height: px-to-rem($file-header-height);
   border-radius: var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius) 0 0;
   word-break: break-word;
+  z-index: 1;
+}
+
+.rd-diff-file[data-collapsed] .rd-diff-file-header {
+  border-radius: var(--rd-diff-file-border-radius);
+}
+
+.rd-diff-file-title {
+  position: relative;
+  display: flex;
+  align-items: center;
+  // extra spacing to avoid accidental file collapse clicks
+  padding: $gl-spacing-scale-3;
+  margin: -$gl-spacing-scale-3;
+  gap: $gl-padding-4;
+  z-index: 1;
+}
+
+.rd-diff-file-toggle {
+  margin-right: $gl-spacing-scale-2;
+}
+
+.rd-diff-file[data-collapsed] .rd-diff-file-toggle-button[data-opened],
+.rd-diff-file:not([data-collapsed]) .rd-diff-file-toggle-button[data-closed] {
+  display: none;
+}
+
+.rd-diff-file-toggle-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.rd-diff-file-info {
+  position: relative;
+  display: flex;
+  // extra spacing to avoid accidental file collapse clicks
+  padding: $gl-spacing-scale-3;
+  margin: -$gl-spacing-scale-3;
+  margin-left: auto;
+  gap: $gl-padding;
+  z-index: 1;
 }
 
 .rd-diff-file-stats {
+  display: flex;
+  align-items: center;
   margin-left: auto;
 }
 
@@ -37,7 +79,7 @@
 
 .rd-lines-removed {
   @apply gl-text-danger;
-  margin-left: $gl-padding-4;
+  margin-left: $gl-padding-8;
 }
 
 .rd-diff-file-body {
@@ -50,9 +92,12 @@
   }
 }
 
-[data-file-body][hidden] {
-  display: block !important;
-  // https://web.dev/articles/content-visibility#hide_content_with_content-visibility_hidden
-  // content-visibility: hidden preserves element's rendering state which improves performance for larger diffs
-  content-visibility: hidden;
+@supports (content-visibility: hidden) {
+  [data-file-body][hidden] {
+    display: block !important;
+    // https://web.dev/articles/content-visibility#hide_content_with_content-visibility_hidden
+    // content-visibility: hidden preserves element's rendering state which improves performance for larger diffs
+    content-visibility: hidden;
+  }
 }
+

@@ -53,7 +53,16 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(container['data-diffs-stream-url']).to eq(stream_url)
   end
 
-  def render_component
+  it "renders diffs_list slot" do
+    result = render_component do |c|
+      c.with_diffs_list do
+        'custom_list'
+      end
+    end
+    expect(result).to have_text('custom_list')
+  end
+
+  def render_component(&block)
     render_inline(described_class.new(
       diffs_slice:,
       stream_url:,
@@ -62,6 +71,6 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
       diff_view:,
       update_user_endpoint:,
       metadata_endpoint:
-    ))
+    ), &block)
   end
 end

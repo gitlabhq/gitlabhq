@@ -51,6 +51,14 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
 
         go
       end
+
+      it 'renders merge request diff file component' do
+        expect_any_instance_of(::RapidDiffs::MergeRequestDiffFileComponent) do |component|
+          expect(component).to receive(:render_in).and_call_original
+        end
+
+        go
+      end
     end
 
     context 'when offset is not given' do

@@ -13,6 +13,7 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
 
   it { is_expected.to have_many(:pipelines).dependent(:nullify) }
   it { is_expected.to have_many(:variables) }
+  it { is_expected.to have_many(:inputs) }
 
   it { is_expected.to respond_to(:ref) }
   it { is_expected.to respond_to(:cron) }

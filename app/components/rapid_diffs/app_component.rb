@@ -2,6 +2,8 @@
 
 module RapidDiffs
   class AppComponent < ViewComponent::Base
+    renders_one :diffs_list
+
     def initialize(
       diffs_slice:,
       reload_stream_url:,

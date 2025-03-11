@@ -14053,6 +14053,20 @@ The connection type for [`CiSecureFileRegistry`](#cisecurefileregistry).
 | <a id="cisecurefileregistryconnectionnodes"></a>`nodes` | [`[CiSecureFileRegistry]`](#cisecurefileregistry) | A list of nodes. |
 | <a id="cisecurefileregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 
+##### Fields with arguments
+
+###### `CiSecureFileRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cisecurefileregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
 #### `CiSecureFileRegistryEdge`
 
 The edge type for [`CiSecureFileRegistry`](#cisecurefileregistry).
@@ -14565,6 +14579,20 @@ The connection type for [`ContainerRepositoryRegistry`](#containerrepositoryregi
 | <a id="containerrepositoryregistryconnectionnodes"></a>`nodes` | [`[ContainerRepositoryRegistry]`](#containerrepositoryregistry) | A list of nodes. |
 | <a id="containerrepositoryregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 
+##### Fields with arguments
+
+###### `ContainerRepositoryRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerrepositoryregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
 #### `ContainerRepositoryRegistryEdge`
 
 The edge type for [`ContainerRepositoryRegistry`](#containerrepositoryregistry).
@@ -15005,6 +15033,20 @@ The connection type for [`DependencyProxyBlobRegistry`](#dependencyproxyblobregi
 | <a id="dependencyproxyblobregistryconnectionnodes"></a>`nodes` | [`[DependencyProxyBlobRegistry]`](#dependencyproxyblobregistry) | A list of nodes. |
 | <a id="dependencyproxyblobregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 
+##### Fields with arguments
+
+###### `DependencyProxyBlobRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxyblobregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
 #### `DependencyProxyBlobRegistryEdge`
 
 The edge type for [`DependencyProxyBlobRegistry`](#dependencyproxyblobregistry).
@@ -15050,6 +15092,20 @@ The connection type for [`DependencyProxyManifestRegistry`](#dependencyproxymani
 | <a id="dependencyproxymanifestregistryconnectionedges"></a>`edges` | [`[DependencyProxyManifestRegistryEdge]`](#dependencyproxymanifestregistryedge) | A list of edges. |
 | <a id="dependencyproxymanifestregistryconnectionnodes"></a>`nodes` | [`[DependencyProxyManifestRegistry]`](#dependencyproxymanifestregistry) | A list of nodes. |
 | <a id="dependencyproxymanifestregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `DependencyProxyManifestRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxymanifestregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
 
 #### `DependencyProxyManifestRegistryEdge`
 
@@ -15142,6 +15198,20 @@ The connection type for [`DesignManagementRepositoryRegistry`](#designmanagement
 | <a id="designmanagementrepositoryregistryconnectionedges"></a>`edges` | [`[DesignManagementRepositoryRegistryEdge]`](#designmanagementrepositoryregistryedge) | A list of edges. |
 | <a id="designmanagementrepositoryregistryconnectionnodes"></a>`nodes` | [`[DesignManagementRepositoryRegistry]`](#designmanagementrepositoryregistry) | A list of nodes. |
 | <a id="designmanagementrepositoryregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `DesignManagementRepositoryRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="designmanagementrepositoryregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
 
 #### `DesignManagementRepositoryRegistryEdge`
 
@@ -15817,6 +15887,20 @@ The connection type for [`GroupWikiRepositoryRegistry`](#groupwikirepositoryregi
 | <a id="groupwikirepositoryregistryconnectionnodes"></a>`nodes` | [`[GroupWikiRepositoryRegistry]`](#groupwikirepositoryregistry) | A list of nodes. |
 | <a id="groupwikirepositoryregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 
+##### Fields with arguments
+
+###### `GroupWikiRepositoryRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupwikirepositoryregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
 #### `GroupWikiRepositoryRegistryEdge`
 
 The edge type for [`GroupWikiRepositoryRegistry`](#groupwikirepositoryregistry).
@@ -16210,6 +16294,20 @@ The connection type for [`JobArtifactRegistry`](#jobartifactregistry).
 | <a id="jobartifactregistryconnectionnodes"></a>`nodes` | [`[JobArtifactRegistry]`](#jobartifactregistry) | A list of nodes. |
 | <a id="jobartifactregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 
+##### Fields with arguments
+
+###### `JobArtifactRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="jobartifactregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
 #### `JobArtifactRegistryEdge`
 
 The edge type for [`JobArtifactRegistry`](#jobartifactregistry).
@@ -16279,6 +16377,20 @@ The connection type for [`LfsObjectRegistry`](#lfsobjectregistry).
 | <a id="lfsobjectregistryconnectionedges"></a>`edges` | [`[LfsObjectRegistryEdge]`](#lfsobjectregistryedge) | A list of edges. |
 | <a id="lfsobjectregistryconnectionnodes"></a>`nodes` | [`[LfsObjectRegistry]`](#lfsobjectregistry) | A list of nodes. |
 | <a id="lfsobjectregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `LfsObjectRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="lfsobjectregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
 
 #### `LfsObjectRegistryEdge`
 
@@ -16502,6 +16614,20 @@ The connection type for [`MergeRequestDiffRegistry`](#mergerequestdiffregistry).
 | <a id="mergerequestdiffregistryconnectionedges"></a>`edges` | [`[MergeRequestDiffRegistryEdge]`](#mergerequestdiffregistryedge) | A list of edges. |
 | <a id="mergerequestdiffregistryconnectionnodes"></a>`nodes` | [`[MergeRequestDiffRegistry]`](#mergerequestdiffregistry) | A list of nodes. |
 | <a id="mergerequestdiffregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MergeRequestDiffRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestdiffregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
 
 #### `MergeRequestDiffRegistryEdge`
 
@@ -17244,6 +17370,20 @@ The connection type for [`PackageFileRegistry`](#packagefileregistry).
 | <a id="packagefileregistryconnectionnodes"></a>`nodes` | [`[PackageFileRegistry]`](#packagefileregistry) | A list of nodes. |
 | <a id="packagefileregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 
+##### Fields with arguments
+
+###### `PackageFileRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagefileregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
 #### `PackageFileRegistryEdge`
 
 The edge type for [`PackageFileRegistry`](#packagefileregistry).
@@ -17337,6 +17477,20 @@ The connection type for [`PagesDeploymentRegistry`](#pagesdeploymentregistry).
 | <a id="pagesdeploymentregistryconnectionnodes"></a>`nodes` | [`[PagesDeploymentRegistry]`](#pagesdeploymentregistry) | A list of nodes. |
 | <a id="pagesdeploymentregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 
+##### Fields with arguments
+
+###### `PagesDeploymentRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pagesdeploymentregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
 #### `PagesDeploymentRegistryEdge`
 
 The edge type for [`PagesDeploymentRegistry`](#pagesdeploymentregistry).
@@ -17405,6 +17559,20 @@ The connection type for [`PipelineArtifactRegistry`](#pipelineartifactregistry).
 | <a id="pipelineartifactregistryconnectionedges"></a>`edges` | [`[PipelineArtifactRegistryEdge]`](#pipelineartifactregistryedge) | A list of edges. |
 | <a id="pipelineartifactregistryconnectionnodes"></a>`nodes` | [`[PipelineArtifactRegistry]`](#pipelineartifactregistry) | A list of nodes. |
 | <a id="pipelineartifactregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `PipelineArtifactRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineartifactregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
 
 #### `PipelineArtifactRegistryEdge`
 
@@ -17663,6 +17831,20 @@ The connection type for [`ProjectRepositoryRegistry`](#projectrepositoryregistry
 | <a id="projectrepositoryregistryconnectionnodes"></a>`nodes` | [`[ProjectRepositoryRegistry]`](#projectrepositoryregistry) | A list of nodes. |
 | <a id="projectrepositoryregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 
+##### Fields with arguments
+
+###### `ProjectRepositoryRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectrepositoryregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
 #### `ProjectRepositoryRegistryEdge`
 
 The edge type for [`ProjectRepositoryRegistry`](#projectrepositoryregistry).
@@ -17779,6 +17961,20 @@ The connection type for [`ProjectWikiRepositoryRegistry`](#projectwikirepository
 | <a id="projectwikirepositoryregistryconnectionedges"></a>`edges` | [`[ProjectWikiRepositoryRegistryEdge]`](#projectwikirepositoryregistryedge) | A list of edges. |
 | <a id="projectwikirepositoryregistryconnectionnodes"></a>`nodes` | [`[ProjectWikiRepositoryRegistry]`](#projectwikirepositoryregistry) | A list of nodes. |
 | <a id="projectwikirepositoryregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ProjectWikiRepositoryRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectwikirepositoryregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
 
 #### `ProjectWikiRepositoryRegistryEdge`
 
@@ -18381,6 +18577,20 @@ The connection type for [`SnippetRepositoryRegistry`](#snippetrepositoryregistry
 | <a id="snippetrepositoryregistryconnectionnodes"></a>`nodes` | [`[SnippetRepositoryRegistry]`](#snippetrepositoryregistry) | A list of nodes. |
 | <a id="snippetrepositoryregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 
+##### Fields with arguments
+
+###### `SnippetRepositoryRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="snippetrepositoryregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
 #### `SnippetRepositoryRegistryEdge`
 
 The edge type for [`SnippetRepositoryRegistry`](#snippetrepositoryregistry).
@@ -18496,6 +18706,20 @@ The connection type for [`TerraformStateVersionRegistry`](#terraformstateversion
 | <a id="terraformstateversionregistryconnectionedges"></a>`edges` | [`[TerraformStateVersionRegistryEdge]`](#terraformstateversionregistryedge) | A list of edges. |
 | <a id="terraformstateversionregistryconnectionnodes"></a>`nodes` | [`[TerraformStateVersionRegistry]`](#terraformstateversionregistry) | A list of nodes. |
 | <a id="terraformstateversionregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `TerraformStateVersionRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="terraformstateversionregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
 
 #### `TerraformStateVersionRegistryEdge`
 
@@ -18800,6 +19024,20 @@ The connection type for [`UploadRegistry`](#uploadregistry).
 | <a id="uploadregistryconnectionedges"></a>`edges` | [`[UploadRegistryEdge]`](#uploadregistryedge) | A list of edges. |
 | <a id="uploadregistryconnectionnodes"></a>`nodes` | [`[UploadRegistry]`](#uploadregistry) | A list of nodes. |
 | <a id="uploadregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `UploadRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="uploadregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
 
 #### `UploadRegistryEdge`
 
@@ -28031,6 +28269,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="groupworkitemstatecountsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter for confidential work items. If `false`, excludes confidential work items. If `true`, returns only confidential work items. |
 | <a id="groupworkitemstatecountscreatedafter"></a>`createdAfter` | [`Time`](#time) | Work items created after the timestamp. |
 | <a id="groupworkitemstatecountscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Work items created before the timestamp. |
+| <a id="groupworkitemstatecountscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
 | <a id="groupworkitemstatecountsdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
 | <a id="groupworkitemstatecountsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="groupworkitemstatecountsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. |
@@ -28100,6 +28339,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter for confidential work items. If `false`, excludes confidential work items. If `true`, returns only confidential work items. |
 | <a id="groupworkitemscreatedafter"></a>`createdAfter` | [`Time`](#time) | Work items created after the timestamp. |
 | <a id="groupworkitemscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Work items created before the timestamp. |
+| <a id="groupworkitemscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
 | <a id="groupworkitemsdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
 | <a id="groupworkitemsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="groupworkitemsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. |
@@ -35746,6 +35986,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="projectworkitemstatecountsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter for confidential work items. If `false`, excludes confidential work items. If `true`, returns only confidential work items. |
 | <a id="projectworkitemstatecountscreatedafter"></a>`createdAfter` | [`Time`](#time) | Work items created after the timestamp. |
 | <a id="projectworkitemstatecountscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Work items created before the timestamp. |
+| <a id="projectworkitemstatecountscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
 | <a id="projectworkitemstatecountsdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
 | <a id="projectworkitemstatecountsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="projectworkitemstatecountshealthstatus"></a>`healthStatus` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
@@ -35812,6 +36053,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectworkitemsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter for confidential work items. If `false`, excludes confidential work items. If `true`, returns only confidential work items. |
 | <a id="projectworkitemscreatedafter"></a>`createdAfter` | [`Time`](#time) | Work items created after the timestamp. |
 | <a id="projectworkitemscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Work items created before the timestamp. |
+| <a id="projectworkitemscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
 | <a id="projectworkitemsdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
 | <a id="projectworkitemsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
 | <a id="projectworkitemshealthstatus"></a>`healthStatus` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
@@ -46887,6 +47129,7 @@ Field that are available while modifying the custom mapping attributes for an HT
 | <a id="boardissueinputassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee wildcard. Incompatible with assigneeUsername and assigneeUsernames. |
 | <a id="boardissueinputauthorusername"></a>`authorUsername` | [`String`](#string) | Filter by author username. |
 | <a id="boardissueinputconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter by confidentiality. |
+| <a id="boardissueinputcustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
 | <a id="boardissueinputepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **Deprecated:** This will be replaced by WorkItem hierarchyWidget. Deprecated in GitLab 17.5. |
 | <a id="boardissueinputepicwildcardid"></a>`epicWildcardId` | [`EpicWildcardId`](#epicwildcardid) | Filter by epic ID wildcard. Incompatible with epicId. |
 | <a id="boardissueinputhealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the issue, "none" and "any" values are supported. |

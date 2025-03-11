@@ -665,7 +665,6 @@
 - './ee/spec/helpers/ee/issuables_helper_spec.rb'
 - './ee/spec/helpers/ee/issues_helper_spec.rb'
 - './ee/spec/helpers/ee/labels_helper_spec.rb'
-- './ee/spec/helpers/ee/lock_helper_spec.rb'
 - './ee/spec/helpers/ee/namespaces_helper_spec.rb'
 - './ee/spec/helpers/ee/namespace_user_cap_reached_alert_helper_spec.rb'
 - './ee/spec/helpers/ee/operations_helper_spec.rb'

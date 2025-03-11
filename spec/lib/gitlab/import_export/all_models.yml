@@ -517,6 +517,7 @@ pipeline_schedules:
 - pipelines
 - last_pipeline
 - variables
+- inputs
 pipeline_schedule:
 - pipelines
 pipeline_schedule_variables:

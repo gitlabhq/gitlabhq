@@ -3872,6 +3872,37 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe '#diffs_by_changed_paths' do
+    let(:diff_refs) do
+      Gitlab::Diff::DiffRefs.new(
+        base_sha: "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        head_sha: "874797c3a73b60d2187ed6e2fcabd289ff75171e"
+      )
+    end
+
+    it 'delegates diffs retrieval to BlobPairsService and verifies the returned diff files' do
+      expected_diff_files = [
+        instance_double(Gitlab::Diff::File, new_path: 'a.md'),
+        instance_double(Gitlab::Diff::File, new_path: 'b.md')
+      ]
+
+      allow_next_instance_of(Gitlab::Git::BlobPairsDiffs) do |svc|
+        allow(svc)
+          .to receive(:diffs_by_changed_paths)
+          .with(diff_refs, 0, 10)
+          .and_yield(expected_diff_files)
+      end
+
+      retrieved_diff_files = []
+
+      repository.diffs_by_changed_paths(diff_refs, 0, 10) do |diff_files|
+        retrieved_diff_files.concat(diff_files)
+      end
+
+      expect(retrieved_diff_files).to eq(expected_diff_files)
+    end
+  end
+
   describe '#change_head' do
     let_it_be(:project) { create(:project, :repository) }
 

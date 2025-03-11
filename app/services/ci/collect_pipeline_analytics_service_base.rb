@@ -38,7 +38,7 @@ module Ci
     private
 
     def allowed?
-      current_user&.can?(:read_ci_cd_analytics, container)
+      Ability.allowed?(current_user, :read_ci_cd_analytics, container)
     end
 
     def clickhouse_model

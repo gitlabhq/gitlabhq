@@ -154,7 +154,7 @@ retrieve-frontend-fixtures:
     - .default-retry
     - .default-before_script
     - .ruby-cache
-    - .use-pg14
+    - .use-pg16
     - .repo-from-artifacts
   stage: fixtures
   needs:

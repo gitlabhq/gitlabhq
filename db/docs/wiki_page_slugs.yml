@@ -17,5 +17,15 @@ desired_sharding_key:
         table: wiki_page_meta
         sharding_key: project_id
         belongs_to: wiki_page_meta
-desired_sharding_key_migration_job_name: BackfillWikiPageSlugsProjectId
+  namespace_id:
+    references: namespaces
+    backfill_via:
+      parent:
+        foreign_key: wiki_page_meta_id
+        table: wiki_page_meta
+        sharding_key: namespace_id
+        belongs_to: wiki_page_meta
 table_size: small
+desired_sharding_key_migration_job_name:
+- BackfillWikiPageSlugsNamespaceId
+- BackfillWikiPageSlugsProjectId

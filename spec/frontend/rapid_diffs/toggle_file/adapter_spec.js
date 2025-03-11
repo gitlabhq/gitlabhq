@@ -68,10 +68,12 @@ describe('Diff File Toggle Behavior', () => {
   it('collapses file', () => {
     get('file').trigger(COLLAPSE_FILE);
     expect(get('body').hidden).toEqual(true);
+    expect(get('file').diffElement.dataset.collapsed).toEqual('true');
   });
 
   it('expands file', () => {
     get('file').trigger(EXPAND_FILE);
     expect(get('body').hidden).toEqual(false);
+    expect(get('file').diffElement.dataset.collapsed).not.toEqual('true');
   });
 });

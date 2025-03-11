@@ -604,14 +604,14 @@ module Ci
 
     def compute_token_expiration_group
       ::Group.id_in(runner_namespaces.map(&:namespace_id))
-        .map(&:effective_runner_token_expiration_interval)
-        .compact.min&.from_now
+        .filter_map(&:effective_runner_token_expiration_interval)
+        .min&.from_now
     end
 
     def compute_token_expiration_project
       Project.id_in(runner_projects.map(&:project_id))
-        .map(&:effective_runner_token_expiration_interval)
-        .compact.min&.from_now
+        .filter_map(&:effective_runner_token_expiration_interval)
+        .min&.from_now
     end
 
     def cleanup_runner_queue

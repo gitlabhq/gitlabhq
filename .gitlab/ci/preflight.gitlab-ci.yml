@@ -24,7 +24,7 @@
     - .production
     - .ruby-cache
     - .preflight:rules:rails-production-server-boot
-    - .use-pg14
+    - .use-pg16
   artifacts:
     expire_in: 7d
     when: always

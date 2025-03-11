@@ -9,7 +9,7 @@ import { BACK_URL_PARAM, CREATED_ASC } from '~/releases/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import EvidenceBlock from './evidence_block.vue';
 import ReleaseBlockAssets from './release_block_assets.vue';
 import ReleaseBlockFooter from './release_block_footer.vue';
@@ -120,6 +120,7 @@ export default {
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
   i18n: {
     editButton: __('Edit release'),
+    editButtonAriaLabel: (title) => sprintf(__('Edit release (%{title})'), { title }),
   },
   commonCssClasses: 'gl-border-b-1 gl-pb-5 gl-border-b-solid',
 };
@@ -144,6 +145,7 @@ export default {
         size="small"
         variant="default"
         class="js-edit-button"
+        :aria-label="$options.i18n.editButtonAriaLabel(release.name)"
         :href="editLink"
       >
         {{ $options.i18n.editButton }}

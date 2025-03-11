@@ -9,6 +9,9 @@
     .rd-app-content{ data: { sidebar_visible: true } }
       .code{ class: helpers.user_color_scheme }
         %div{ data: { diffs_list: true } }
-          = render RapidDiffs::DiffFileComponent.with_collection(@diffs_slice, parallel_view: @diff_view == :parallel)
+          - if diffs_list?
+            = diffs_list
+          - else
+            = render RapidDiffs::DiffFileComponent.with_collection(@diffs_slice, parallel_view: @diff_view == :parallel)
           - if @stream_url
             #js-stream-container{ data: { diffs_stream_url: @stream_url } }

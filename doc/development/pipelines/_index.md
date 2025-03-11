@@ -205,8 +205,8 @@ This number can be overridden by setting a CI/CD variable named `RSPEC_FAIL_FAST
 
 ## Re-run previously failed tests in merge request pipelines
 
-In order to reduce the feedback time after resolving failed tests for a merge request, the `rspec rspec-pg14-rerun-previous-failed-tests`
-and `rspec rspec-ee-pg14-rerun-previous-failed-tests` jobs run the failed tests from the previous MR pipeline.
+In order to reduce the feedback time after resolving failed tests for a merge request, the `rspec rspec-pg16-rerun-previous-failed-tests`
+and `rspec rspec-ee-pg16-rerun-previous-failed-tests` jobs run the failed tests from the previous MR pipeline.
 
 This was introduced on August 25th 2021, with <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69053>.
 
@@ -214,7 +214,7 @@ This was introduced on August 25th 2021, with <https://gitlab.com/gitlab-org/git
 
 1. The `detect-previous-failed-tests` job (`prepare` stage) detects the test files associated with failed RSpec
    jobs from the previous MR pipeline.
-1. The `rspec rspec-pg14-rerun-previous-failed-tests` and `rspec rspec-ee-pg14-rerun-previous-failed-tests` jobs
+1. The `rspec rspec-pg16-rerun-previous-failed-tests` and `rspec rspec-ee-pg16-rerun-previous-failed-tests` jobs
    will run the test files gathered by the `detect-previous-failed-tests` job.
 
 ```mermaid
@@ -224,8 +224,8 @@ graph LR
     end
 
     subgraph "test stage";
-        B["rspec rspec-pg14-rerun-previous-failed-tests"];
-        C["rspec rspec-ee-pg14-rerun-previous-failed-tests"];
+        B["rspec rspec-pg16-rerun-previous-failed-tests"];
+        C["rspec rspec-ee-pg16-rerun-previous-failed-tests"];
     end
 
     A --"artifact: list of test files"--> B & C
@@ -739,7 +739,7 @@ Ruby version only:
 
 ### PostgreSQL versions testing
 
-Our test suite runs against PostgreSQL 14 as GitLab.com runs on PostgreSQL 14 and
+Our test suite runs against PostgreSQL 16 as GitLab.com runs on PostgreSQL 16 and
 [Omnibus defaults to PG14 for new installs and upgrades](../../administration/package_information/postgresql_versions.md).
 
 We run our test suite against PostgreSQL 14, 15, 16, and 17 on nightly scheduled pipelines.
@@ -750,11 +750,11 @@ NOTE: With the addition of PG17, we are close to the limit of nightly jobs, with
 
 | Where?                                                                                          | PostgreSQL version                  | Ruby version          |
 |-------------------------------------------------------------------------------------------------|-------------------------------------|-----------------------|
-| Merge requests                                                                                  | 14 (default version)                | 3.2 (default version) |
-| `master` branch commits                                                                         | 14 (default version)                | 3.2 (default version) |
-| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)   | 14 (default version)                | 3.2 (default version) |
-| `maintenance` scheduled pipelines for the `ruby-next` branch (every odd-numbered hour at XX:10) | 14 (default version)                | 3.3                   |
-| `nightly` scheduled pipelines for the `master` branch                                           | 14 (default version), 15, 16 and 17 | 3.2 (default version) |
+| Merge requests                                                                                  | 16 (default version)                | 3.2 (default version) |
+| `master` branch commits                                                                         | 16 (default version)                | 3.2 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)   | 16 (default version)                | 3.2 (default version) |
+| `maintenance` scheduled pipelines for the `ruby-next` branch (every odd-numbered hour at XX:10) | 16 (default version)                | 3.3                   |
+| `nightly` scheduled pipelines for the `master` branch                                           | 16 (default version), 14, 15 and 17 | 3.2 (default version) |
 
 For the next Ruby versions we're testing against with, we run
 maintenance scheduled pipelines every 2 hours on the `ruby-next` branch.
