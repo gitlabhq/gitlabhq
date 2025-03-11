@@ -61,7 +61,6 @@ export default {
       if (project.id) {
         this.setFrequentProject(project);
       }
-
       // This determines if we need to update the group filter or not
       const queryParams = {
         ...(project.namespace?.id && { [GROUP_DATA.queryParam]: project.namespace.id }),
@@ -70,6 +69,10 @@ export default {
         scope: this.currentScope,
         [INCLUDE_ARCHIVED_FILTER_PARAM]: null,
       };
+
+      if (project.id === null) {
+        queryParams.repository_ref = null;
+      }
 
       visitUrl(setUrlParams(queryParams));
     },

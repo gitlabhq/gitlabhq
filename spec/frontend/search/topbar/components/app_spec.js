@@ -35,12 +35,7 @@ describe('GlobalSearchTopbar', () => {
     currentScope: jest.fn(),
   };
 
-  const createComponent = ({
-    initialState = {},
-    defaultBranchName = '',
-    stubs = {},
-    featureFlag = {},
-  } = {}) => {
+  const createComponent = ({ initialState = {}, stubs = {}, featureFlag = {} } = {}) => {
     const store = new Vuex.Store({
       state: {
         query: MOCK_QUERY,
@@ -52,7 +47,6 @@ describe('GlobalSearchTopbar', () => {
 
     wrapper = shallowMount(GlobalSearchTopbar, {
       store,
-      propsData: { defaultBranchName },
       stubs,
       provide: {
         glFeatures: featureFlag,
@@ -153,36 +147,32 @@ describe('GlobalSearchTopbar', () => {
     });
 
     describe.each`
-      state                                                                                                                   | hasSyntaxOptions
-      ${{ query: { repository_ref: '' }, searchType: 'basic', searchLevel: 'project', defaultBranchName: 'master' }}          | ${false}
-      ${{ query: { repository_ref: 'v0.1' }, searchType: 'basic', searchLevel: 'project', defaultBranchName: '' }}            | ${false}
-      ${{ query: { repository_ref: 'master' }, searchType: 'basic', searchLevel: 'project', defaultBranchName: 'master' }}    | ${false}
-      ${{ query: { repository_ref: 'master' }, searchType: 'advanced', searchLevel: 'project', defaultBranchName: '' }}       | ${false}
-      ${{ query: { repository_ref: '' }, searchType: 'advanced', searchLevel: 'project', defaultBranchName: 'master' }}       | ${true}
-      ${{ query: { repository_ref: 'v0.1' }, searchType: 'advanced', searchLevel: 'project', defaultBranchName: '' }}         | ${false}
-      ${{ query: { repository_ref: 'master' }, searchType: 'advanced', searchLevel: 'project', defaultBranchName: 'master' }} | ${true}
-      ${{ query: { repository_ref: 'master' }, searchType: 'zoekt', searchLevel: 'project', defaultBranchName: 'master' }}    | ${true}
-    `(
-      `the syntax option based on component state`,
-      ({ state, defaultBranchName, hasSyntaxOptions }) => {
-        beforeEach(() => {
-          createComponent({
-            initialState: { ...state },
-            defaultBranchName,
-          });
+      state                                                                                                                                                  | hasSyntaxOptions
+      ${{ query: { repository_ref: '' }, searchType: 'basic', searchLevel: 'project', defaultBranchName: 'master' }}                                         | ${false}
+      ${{ query: { repository_ref: 'v0.1' }, searchType: 'basic', searchLevel: 'project', defaultBranchName: '' }}                                           | ${false}
+      ${{ query: { repository_ref: 'master' }, searchType: 'basic', searchLevel: 'project', defaultBranchName: 'master' }}                                   | ${false}
+      ${{ query: { repository_ref: 'test' }, searchType: 'advanced', searchLevel: 'project', defaultBranchName: '', projectInitialJson: { id: 1 } }}         | ${false}
+      ${{ query: { repository_ref: '' }, searchType: 'advanced', searchLevel: 'project', defaultBranchName: 'master', projectInitialJson: { id: 1 } }}       | ${true}
+      ${{ query: { repository_ref: 'v0.1' }, searchType: 'advanced', searchLevel: 'project', defaultBranchName: '', projectInitialJson: { id: 1 } }}         | ${false}
+      ${{ query: { repository_ref: 'master' }, searchType: 'advanced', searchLevel: 'project', defaultBranchName: 'master', projectInitialJson: { id: 1 } }} | ${true}
+      ${{ query: { repository_ref: 'master' }, searchType: 'zoekt', searchLevel: 'project', defaultBranchName: 'master', projectInitialJson: { id: 1 } }}    | ${true}
+    `(`the syntax option based on component state`, ({ state, hasSyntaxOptions }) => {
+      beforeEach(() => {
+        createComponent({
+          initialState: { ...state },
+        });
+      });
+
+      describe(`repository: ${state.query.repository_ref}, searchType: ${state.searchType}, defaultBranchName: ${state.defaultBranchName}`, () => {
+        it(`renders correctly button`, () => {
+          expect(findSyntaxOptionButton().exists()).toBe(hasSyntaxOptions);
         });
 
-        describe(`repository: ${state.query.repository_ref}, searchType: ${state.searchType}`, () => {
-          it(`renders correctly button`, () => {
-            expect(findSyntaxOptionButton().exists()).toBe(hasSyntaxOptions);
-          });
-
-          it(`renders correctly drawer when branch name is ${state.query.repository_ref}`, () => {
-            expect(findSyntaxOptionDrawer().exists()).toBe(hasSyntaxOptions);
-          });
+        it(`renders correctly drawer when branch name is ${state.query.repository_ref}`, () => {
+          expect(findSyntaxOptionDrawer().exists()).toBe(hasSyntaxOptions);
         });
-      },
-    );
+      });
+    });
   });
 
   describe('actions', () => {
