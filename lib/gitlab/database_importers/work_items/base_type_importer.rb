@@ -30,7 +30,7 @@ module Gitlab
           development: 'Development',
           crm_contacts: 'CRM contacts',
           email_participants: 'Email participants',
-          custom_status: 'Custom status',
+          status: 'Status',
           custom_fields: 'Custom fields',
           error_tracking: 'Error tracking',
           vulnerabilities: 'Vulnerabilities'
@@ -125,7 +125,7 @@ module Gitlab
             :start_and_due_date,
             :time_tracking,
             [:weight, { editable: true, rollup: false }],
-            :custom_status
+            :status
           ],
           objective: [
             :assignees,

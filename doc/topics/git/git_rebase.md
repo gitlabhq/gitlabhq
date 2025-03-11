@@ -19,9 +19,11 @@ When you rebase:
 
 1. Git imports all the commits submitted to your target branch after you initially created
    your branch from it.
-1. Git applies the commits from your branch on top of the imported commits:
+1. Git applies the commits from your branch on top of the imported commits. In this example, after
+   a branch named `feature` is created (in orange), four commits from `main` (in purple) are
+   imported into the `feature` branch:
 
-   ![Git rebase illustration](img/git_rebase_illustration.png)
+   ![Git rebase illustration](img/rebase_v17_10.drawio.svg)
 
 While most rebases are performed against `main`, you can rebase against any other
 branch. You can also specify a different remote repository.

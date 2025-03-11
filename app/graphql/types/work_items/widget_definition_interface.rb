@@ -15,13 +15,13 @@ module Types
         ::Types::WorkItems::WidgetDefinitions::AssigneesType,
         ::Types::WorkItems::WidgetDefinitions::GenericType,
         ::Types::WorkItems::WidgetDefinitions::HierarchyType,
-        ::Types::WorkItems::WidgetDefinitions::CustomStatusType
+        ::Types::WorkItems::WidgetDefinitions::StatusType
       ].freeze
 
       TYPE_MAPPING = {
         ::WorkItems::Widgets::Assignees => ::Types::WorkItems::WidgetDefinitions::AssigneesType,
         ::WorkItems::Widgets::Hierarchy => ::Types::WorkItems::WidgetDefinitions::HierarchyType,
-        ::WorkItems::Widgets::CustomStatus => ::Types::WorkItems::WidgetDefinitions::CustomStatusType
+        ::WorkItems::Widgets::Status => ::Types::WorkItems::WidgetDefinitions::StatusType
       }.freeze
 
       def self.ce_orphan_types

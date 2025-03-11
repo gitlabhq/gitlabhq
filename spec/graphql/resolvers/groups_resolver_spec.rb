@@ -10,7 +10,7 @@ RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects
   describe '#resolve' do
     let_it_be(:user) { create(:user) }
     let_it_be(:public_group) { create(:group, name: 'public-group') }
-    let_it_be(:private_group) { create(:group, :private, name: 'private-group') }
+    let_it_be_with_reload(:private_group) { create(:group, :private, name: 'private-group') }
 
     let(:params) { {} }
 
@@ -74,6 +74,41 @@ RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects
 
         it 'return only owned groups' do
           expect(subject).to contain_exactly(owned_group)
+        end
+      end
+    end
+
+    context 'with `parent_path` argument' do
+      let_it_be(:parent_group) { private_group }
+      let_it_be(:child_group) { create(:group, :private, parent: parent_group) }
+
+      let(:params) { { parent_path: parent_group.full_path } }
+
+      context 'when user has access to parent group' do
+        it 'returns child group' do
+          parent_group.add_developer(user)
+
+          is_expected.to contain_exactly(child_group)
+        end
+      end
+
+      context 'when user has no access to parent group' do
+        it 'generates error' do
+          expect_graphql_error_to_be_created(
+            ::Gitlab::Graphql::Errors::ResourceNotAvailable,
+            format(_('Could not find parent group with path %{path}'), path: parent_group.full_path)
+          ) { subject }
+        end
+      end
+
+      context 'when parent_path has no match' do
+        let(:params) { { parent_path: 'non-existent-group' } }
+
+        it 'generates error' do
+          expect_graphql_error_to_be_created(
+            ::Gitlab::Graphql::Errors::ResourceNotAvailable,
+            format(_('Could not find parent group with path %{path}'), path: 'non-existent-group')
+          ) { subject }
         end
       end
     end

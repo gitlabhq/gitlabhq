@@ -509,7 +509,7 @@ RSpec.describe Admin::UsersController, :with_current_organization, feature_categ
 
         user.reload
         expect(user.banned?).to be_falsey
-        expect(flash[:alert]).to eq _('Error occurred. User was not banned')
+        expect(flash[:alert]).to eq _('Error occurred. You cannot ban blocked users.')
       end
     end
   end

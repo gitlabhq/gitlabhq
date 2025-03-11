@@ -46,6 +46,7 @@ export default {
   i18n: {
     button: {
       revoke: s__('AccessTokens|Revoke'),
+      revokeAriaLabel: (name) => sprintf(s__('AccessTokens|Revoke %{name}'), { name }).trim(),
       rotate: s__('AccessTokens|Rotate'),
     },
     emptyDateField: __('Never'),
@@ -309,7 +310,7 @@ export default {
               v-if="revokePath"
               category="tertiary"
               :title="$options.i18n.button.revoke"
-              :aria-label="$options.i18n.button.revoke"
+              :aria-label="$options.i18n.button.revokeAriaLabel(name)"
               :data-confirm="modalMessage(name, 'revoke')"
               data-confirm-btn-variant="danger"
               data-testid="revoke-button"

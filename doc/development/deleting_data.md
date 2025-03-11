@@ -12,54 +12,30 @@ Generally, there are two ways to delete data:
 - Mark for deletion: Identifies data for removal at a future date. This is the preferred approach.
 - Hard deletion: Immediately and permanently removes data.
 
-## Mark for deletion
+## Avoid direct hard deletion
 
-You should avoid direct calls to hard delete classes, as this can lead to unintended data loss.
+Direct calls to hard delete classes should be avoided because it can lead to unintended data loss.
+Specifically, avoid invoking the following classes:
 
-{{< tabs >}}
+- `Projects::DestroyService`
+- `ProjectDestroyWorker`
+- `Groups::DestroyService`
+- `GroupDestroyWorker`
 
-{{< tab title="Projects" >}}
+## Recommended approach
+
+### For projects
+
+Instead of using `Projects::DestroyService`, use `Projects::MarkForDeletionService`. 
 
 ```ruby
 Projects::MarkForDeletionService.new(project, current_user).execute
 ```
 
-{{< /tab >}}
+### For groups
 
-{{< tab title="Groups" >}}
-
-```ruby
-Groups::MarkForDeletionService.new(group, current_user).execute
-```
-
-{{< /tab >}}
-
-{{< /tabs >}}
-
-## Hard deletion
-
-If you must delete data, use the following classes to hard delete from the codebase.
-
-{{< tabs >}}
-
-{{< tab title="Projects" >}}
-
-```ruby
-Projects::DestroyService.new(project, user, {}).execute
-
-ProjectDestroyWorker.perform_async(project_id, user_id, params)
-```
-
-{{< /tab >}}
-
-{{< tab title="Groups" >}}
+Instead of using `Groups::DestroyService`, use `Groups::MarkForDeletionService`. 
 
 ```ruby
 Groups::MarkForDeletionService.new(group, current_user).execute
-
-GroupDestroyWorker.new.perform(group_id, user_id)
 ```
-
-{{< /tab >}}
-
-{{< /tabs >}}

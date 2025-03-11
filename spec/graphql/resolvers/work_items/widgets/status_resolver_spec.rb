@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::WorkItems::Widgets::CustomStatusResolver, feature_category: :team_planning do
+RSpec.describe Resolvers::WorkItems::Widgets::StatusResolver, feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }
@@ -10,12 +10,12 @@ RSpec.describe Resolvers::WorkItems::Widgets::CustomStatusResolver, feature_cate
   let_it_be(:current_user) { create(:user) }
   let_it_be(:task_type) { create(:work_item_type, :task) }
   let_it_be(:widget_definition) do
-    create(:widget_definition, widget_type: :custom_status, work_item_type: task_type, name: 'TesT Widget')
+    create(:widget_definition, widget_type: :status, work_item_type: task_type, name: 'TesT Widget')
   end
 
   shared_examples 'does not return system defined statuses' do
     it 'returns an empty array' do
-      expect(resolve_custom_statuses&.items).to eq([])
+      expect(resolve_statuses&.items).to eq([])
     end
   end
 
@@ -47,7 +47,7 @@ RSpec.describe Resolvers::WorkItems::Widgets::CustomStatusResolver, feature_cate
     end
   end
 
-  def resolve_custom_statuses(args = {}, context = { current_user: current_user, resource_parent: resource_parent })
+  def resolve_statuses(args = {}, context = { current_user: current_user, resource_parent: resource_parent })
     resolve(described_class, obj: widget_definition, args: args, ctx: context)
   end
 end

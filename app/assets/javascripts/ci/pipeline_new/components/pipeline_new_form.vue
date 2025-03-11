@@ -8,7 +8,6 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
 import PipelineVariablesPermissionsMixin from '~/ci/mixins/pipeline_variables_permissions_mixin';
-import { IDENTITY_VERIFICATION_REQUIRED_ERROR } from '../constants';
 import createPipelineMutation from '../graphql/mutations/create_pipeline.mutation.graphql';
 import RefsDropdown from './refs_dropdown.vue';
 import PipelineVariablesForm from './pipeline_variables_form.vue';
@@ -100,7 +99,7 @@ export default {
   },
   computed: {
     identityVerificationRequiredError() {
-      return this.error === IDENTITY_VERIFICATION_REQUIRED_ERROR;
+      return this.error === __('Identity verification is required in order to run CI jobs');
     },
     isPipelineInputsFeatureAvailable() {
       return this.glFeatures.ciInputsForPipelines;

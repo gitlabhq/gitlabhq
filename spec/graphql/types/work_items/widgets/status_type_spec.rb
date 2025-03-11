@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::WorkItems::Widgets::CustomStatusType, feature_category: :team_planning do
+RSpec.describe Types::WorkItems::Widgets::StatusType, feature_category: :team_planning do
   it 'exposes the expected fields' do
     expected_fields = %i[id name icon_name color position]
 

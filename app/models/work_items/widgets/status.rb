@@ -2,7 +2,7 @@
 
 module WorkItems
   module Widgets
-    class CustomStatus < Base
+    class Status < Base
       # TODO - remove this once the widget table is implementeed
       # https://gitlab.com/gitlab-org/gitlab/-/issues/498393
       include GlobalID::Identification
@@ -14,11 +14,11 @@ module WorkItems
       end
 
       def name
-        'Custom Status'
+        'Status'
       end
 
       def icon_name
-        'custom_status icon'
+        'status icon'
       end
     end
   end

@@ -276,7 +276,6 @@
     "WorkItemWidgetCrmContacts",
     "WorkItemWidgetCurrentUserTodos",
     "WorkItemWidgetCustomFields",
-    "WorkItemWidgetCustomStatus",
     "WorkItemWidgetDescription",
     "WorkItemWidgetDesigns",
     "WorkItemWidgetDevelopment",
@@ -295,6 +294,7 @@
     "WorkItemWidgetProgress",
     "WorkItemWidgetRequirementLegacy",
     "WorkItemWidgetStartAndDueDate",
+    "WorkItemWidgetStatus",
     "WorkItemWidgetTestReports",
     "WorkItemWidgetTimeTracking",
     "WorkItemWidgetVerificationStatus",
@@ -304,10 +304,10 @@
   "WorkItemWidgetDefinition": [
     "WorkItemWidgetDefinitionAssignees",
     "WorkItemWidgetDefinitionCustomFields",
-    "WorkItemWidgetDefinitionCustomStatus",
     "WorkItemWidgetDefinitionGeneric",
     "WorkItemWidgetDefinitionHierarchy",
     "WorkItemWidgetDefinitionLabels",
+    "WorkItemWidgetDefinitionStatus",
     "WorkItemWidgetDefinitionWeight"
   ]
 }

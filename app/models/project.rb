@@ -2647,7 +2647,9 @@ class Project < ApplicationRecord
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       break unless pages_enabled?
 
-      variables.append(key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host)
+      variables
+        .append(key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host)
+        .append(key: 'CI_PAGES_HOSTNAME', value: pages_hostname)
     end
   end
 

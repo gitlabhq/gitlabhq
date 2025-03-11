@@ -1513,7 +1513,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       end
     end
 
-    describe 'custom status widget' do
+    describe 'status widget' do
       let_it_be(:task_work_item) { create(:work_item, :task, project: project) }
       let_it_be(:global_id) { task_work_item.to_global_id }
       let(:work_item_fields) do
@@ -1521,7 +1521,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           id
           widgets {
             type
-            ... on WorkItemWidgetCustomStatus {
+            ... on WorkItemWidgetStatus {
               id
               name
               iconName
@@ -1530,14 +1530,14 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
         GRAPHQL
       end
 
-      it 'returns mock custom status data' do
+      it 'returns mock status data' do
         expect(work_item_data).to include(
           'widgets' => array_including(
             hash_including(
-              'type' => 'CUSTOM_STATUS',
-              'id' => 'gid://gitlab/WorkItems::Widgets::CustomStatus/10',
-              'name' => 'Custom Status',
-              'iconName' => 'custom_status icon'
+              'type' => 'STATUS',
+              'id' => 'gid://gitlab/WorkItems::Widgets::Status/10',
+              'name' => 'Status',
+              'iconName' => 'status icon'
             )
           )
         )

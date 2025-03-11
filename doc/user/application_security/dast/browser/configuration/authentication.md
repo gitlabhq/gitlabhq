@@ -37,6 +37,45 @@ When choosing authentication credentials:
 - Note the credentials' expiry date, if any, for future reference. For example, with a password
   manager such as 1Password.
 
+The following diagram illustrates the usage of authentication variables at different stages of authentication:
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+sequenceDiagram
+    accTitle: Authentication variables
+    accDescr: A sequence diagram showing authentication variables at different stages of authentication.
+    participant DAST
+    participant Browser
+    participant Target
+
+    Note over DAST,Target: Initialization
+    DAST->>Browser: Initialize browser with proxy
+    DAST->>Browser: Navigate to DAST_AUTH_URL
+    Browser->>Target: Load initial page
+    Target-->>Browser: Return page content (may not contain login form)
+
+    Note over DAST,Target: Process before-login actions
+    DAST->>Browser: Click elements specified in DAST_AUTH_BEFORE_LOGIN_ACTIONS
+    Browser->>Target: Send click actions
+    Target-->>Browser: Render login form (modal/page)
+
+    Note over DAST,Target: Authentication
+    DAST->>Browser: Fill DAST_AUTH_USERNAME & DAST_AUTH_PASSWORD
+    DAST->>Browser: Click "submit"
+    Browser->>Target: Submit form
+    Target-->>Browser: Process authentication
+    Target-->>Browser: Set auth tokens
+
+    Note over DAST,Target: Process after-login actions (if specified)
+    DAST->>Browser: Execute DAST_AUTH_AFTER_LOGIN_ACTIONS
+    Browser->>Target: Actions after login but before login verification
+
+    Note over DAST,Target: Verification
+    DAST->>Browser: Check URL matches DAST_AUTH_SUCCESS_IF_AT_URL (if configured)
+    DAST->>Browser: Check element exists DAST_AUTH_SUCCESS_IF_ELEMENT_FOUND (if configured)
+    DAST->>Browser: Check login form absent DAST_AUTH_SUCCESS_IF_NO_LOGIN_FORM (default is true)
+```
+
 ## Getting started
 
 {{< alert type="note" >}}

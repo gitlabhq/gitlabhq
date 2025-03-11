@@ -245,6 +245,7 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
           iterationWildcardId
           weight
           weightWildcardId
+          customField
         ]
       end
 

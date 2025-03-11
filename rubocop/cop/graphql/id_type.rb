@@ -9,7 +9,7 @@ module RuboCop
 
         ALLOWLISTED_ARGUMENTS = %i[
           full_path project_path group_path target_project_path target_group_path target_path namespace_path
-          context_namespace_path
+          context_namespace_path parent_path
         ].freeze
 
         def_node_matcher :iid_with_id?, <<~PATTERN

@@ -19,8 +19,8 @@ RSpec.shared_context 'with work item types request context' do
             nodes { id name }
           }
         }
-        ... on WorkItemWidgetDefinitionCustomStatus {
-          allowedCustomStatuses {
+        ... on WorkItemWidgetDefinitionStatus {
+          allowedStatuses {
             nodes { id name iconName color position }
           }
         }
@@ -70,8 +70,8 @@ RSpec.shared_context 'with work item types request context' do
         next hierarchy_widget_attributes(work_item_type, base_attributes, resource_parent)
       end
 
-      if widget == WorkItems::Widgets::CustomStatus
-        next custom_status_widget_attributes(work_item_type,
+      if widget == WorkItems::Widgets::Status
+        next status_widget_attributes(work_item_type,
           base_attributes, resource_parent)
       end
 
@@ -96,9 +96,9 @@ RSpec.shared_context 'with work item types request context' do
       .merge({ 'allowedChildTypes' => { 'nodes' => child_types }, 'allowedParentTypes' => { 'nodes' => parent_types } })
   end
 
-  def custom_status_widget_attributes(_work_item_type, base_attributes, resource_parent)
+  def status_widget_attributes(_work_item_type, base_attributes, resource_parent)
     unless resource_parent&.root_ancestor&.try(:work_item_status_feature_available?)
-      return base_attributes.merge({ 'allowedCustomStatuses' => { 'nodes' => [] } })
+      return base_attributes.merge({ 'allowedStatuses' => { 'nodes' => [] } })
     end
 
     statuses = [
@@ -139,6 +139,6 @@ RSpec.shared_context 'with work item types request context' do
       }
     ]
 
-    base_attributes.merge({ 'allowedCustomStatuses' => { 'nodes' => statuses } })
+    base_attributes.merge({ 'allowedStatuses' => { 'nodes' => statuses } })
   end
 end

@@ -222,7 +222,8 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       let buttons = cells.at(8).findAllComponents(GlButton);
       expect(buttons).toHaveLength(2);
       expect(buttons.at(0).attributes()).toMatchObject({
-        'aria-label': 'Revoke',
+        'aria-label': `Revoke ${defaultActiveAccessTokens[0].name}`,
+        title: 'Revoke',
         'data-testid': 'revoke-button',
         href: '/-/user_settings/personal_access_tokens/1/revoke',
         'data-confirm': sprintf(

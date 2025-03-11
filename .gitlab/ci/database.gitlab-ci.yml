@@ -11,7 +11,7 @@ db:setup pg14:
     - .rails:rules:setup-test-env
   script:
     - source scripts/utils.sh
-    - run_timed_command "pg_dumpall -h postgres -U postgres > pg_dumpall.sql"
+    - run_with_custom_exit_code run_timed_command "pg_dumpall -h postgres -U postgres > pg_dumpall.sql"
   artifacts:
     paths:
       - pg_dumpall.sql
@@ -81,8 +81,13 @@ db:rollback:
     - .db-job-base
     - .rails:rules:db-rollback
   script:
-    - bundle exec rake db:migrate VERSION=20231220225325 # First 16-9-stable-ee migration
-    - bundle exec rake db:migrate
+    - |
+      function db_rollback() {
+        bundle exec rake db:migrate VERSION=20231220225325 # First 16-9-stable-ee migration
+        bundle exec rake db:migrate
+      }
+
+      run_with_custom_exit_code db_rollback
 
 db:rollback single-db:
   extends:
@@ -99,12 +104,17 @@ db:migrate:multi-version-upgrade:
   variables:
     UPGRADE_STOP_DUMP_URL: "https://gitlab.com/gitlab-org/quality/pg-dump-generator/-/raw/main/pg_dumps/ee/latest_upgrade_stop.gz"
   script:
-    - curl -o latest_upgrade_stop.gz $UPGRADE_STOP_DUMP_URL
-    - gunzip -c latest_upgrade_stop.gz > gitlabhq_production
-    - bundle exec rake db:drop db:create
-    - apt-get update -qq && apt-get install -y -qq postgresql-client
-    - psql --output /dev/null -v "ON_ERROR_STOP=1" -h postgres -U postgres -d gitlabhq_test < gitlabhq_production
-    - bundle exec rake gitlab:db:configure
+    - |
+      function db_migrate_multi_version_upgrade() {
+        curl -o latest_upgrade_stop.gz $UPGRADE_STOP_DUMP_URL
+        gunzip -c latest_upgrade_stop.gz > gitlabhq_production
+        bundle exec rake db:drop db:create
+        apt-get update -qq && apt-get install -y -qq postgresql-client
+        psql --output /dev/null -v "ON_ERROR_STOP=1" -h postgres -U postgres -d gitlabhq_test < gitlabhq_production
+        bundle exec rake gitlab:db:configure
+      }
+
+      run_with_custom_exit_code db_migrate_multi_version_upgrade
 
 # Validate minimum PG version supported by GitLab
 db:migrate:multi-version-upgrade-pg14:
@@ -115,7 +125,7 @@ db:migrate:multi-version-upgrade-pg14:
 db:migrate:reset:
   extends: .db-job-base
   script:
-    - bundle exec rake db:migrate:reset
+    - run_with_custom_exit_code bundle exec rake db:migrate:reset
 
 db:migrate:reset single-db:
   extends:
@@ -128,8 +138,13 @@ db:check-schema:
     - .db-job-base
     - .rails:rules:db:check-schema
   script:
-    - run_timed_command "bundle exec rake db:drop db:create db:migrate"
-    - run_timed_command "scripts/validate_migration_timestamps"
+    - |
+      function db_check_schema() {
+        run_timed_command "bundle exec rake db:drop db:create db:migrate"
+        run_timed_command "scripts/validate_migration_timestamps"
+      }
+
+      run_with_custom_exit_code db_check_schema
 
 db:check-schema-single-db:
   extends:
@@ -143,8 +158,13 @@ db:check-migrations:
     - .use-pg14  # Should match the db same version used by GDK
     - .rails:rules:ee-and-foss-mr-with-migration
   script:
-    - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20
-    - scripts/validate_migration_schema
+    - |
+      function db_check_migrations() {
+        git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20
+        scripts/validate_migration_schema
+      }
+
+      run_with_custom_exit_code db_check_migrations
 
 db:check-migrations-single-db:
   extends:
@@ -157,8 +177,13 @@ db:post_deployment_migrations_validator:
     - .db-job-base
     - .rails:rules:ee-and-foss-mr-with-migration
   script:
-    - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20
-    - scripts/post_deployment_migrations_validator
+    - |
+      function db_post_deployment_migrations_validator() {
+        git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20
+        scripts/post_deployment_migrations_validator
+      }
+
+      run_with_custom_exit_code db_post_deployment_migrations_validator
   allow_failure: true
 
 db:post_deployment_migrations_validator-single-db:
@@ -172,7 +197,7 @@ db:migrate-non-superuser:
     - .db-job-base
     - .rails:rules:ee-and-foss-mr-with-migration
   script:
-    - bundle exec rake gitlab:db:reset_as_non_superuser
+    - run_with_custom_exit_code bundle exec rake gitlab:db:reset_as_non_superuser
 
 db:gitlabcom-database-testing:
   extends: .rails:rules:db:gitlabcom-database-testing
@@ -182,8 +207,13 @@ db:gitlabcom-database-testing:
   allow_failure: true
   script:
     - source scripts/utils.sh
-    - install_gitlab_gem
-    - ./scripts/trigger-build.rb gitlab-com-database-testing
+    - |
+      function db_gitlab_com_database_testing() {
+        install_gitlab_gem
+        ./scripts/trigger-build.rb gitlab-com-database-testing
+      }
+
+      run_with_custom_exit_code db_gitlab_com_database_testing
 
 db:backup_and_restore:
   extends:
@@ -193,12 +223,17 @@ db:backup_and_restore:
     SETUP_DB: "false"
     GITLAB_ASSUME_YES: "1"
   script:
-    - . scripts/prepare_build.sh
-    - bundle exec rake db:drop db:create db:schema:load db:seed_fu
-    - mkdir -p tmp/tests/public/uploads tmp/tests/{artifacts,pages,lfs-objects,terraform_state,registry,packages,ci_secure_files,external-diffs}
-    - bundle exec rake gitlab:backup:create
-    - date
-    - bundle exec rake gitlab:backup:restore
+    - |
+      function db_back_and_restore() {
+        . scripts/prepare_build.sh
+        bundle exec rake db:drop db:create db:schema:load db:seed_fu
+        mkdir -p tmp/tests/public/uploads tmp/tests/{artifacts,pages,lfs-objects,terraform_state,registry,packages,ci_secure_files,external-diffs}
+        bundle exec rake gitlab:backup:create
+        date
+        bundle exec rake gitlab:backup:restore
+      }
+
+      run_with_custom_exit_code db_back_and_restore
 
 db:backup_and_restore single-db:
   extends:
@@ -211,13 +246,23 @@ db:rollback geo:
     - db:rollback
     - .rails:rules:ee-only-migration
   script:
-    - bundle exec rake db:migrate:geo VERSION=20170627195211
-    - bundle exec rake db:migrate:geo
+    - |
+      function db_rollback_geo() {
+        bundle exec rake db:migrate:geo VERSION=20170627195211
+        bundle exec rake db:migrate:geo
+      }
+
+      run_with_custom_exit_code db_rollback_geo
 
 db:docs-up-to-date:
   extends:
     - .db-job-base
     - .db:rules:docs-up-to-date
   script:
-    - bundle exec rake gitlab:db:dictionary:generate
-    - git diff --exit-code db/docs
+    - |
+      function db_docs_up_to_date() {
+        bundle exec rake gitlab:db:dictionary:generate
+        git diff --exit-code db/docs
+      }
+
+      run_with_custom_exit_code db_docs_up_to_date

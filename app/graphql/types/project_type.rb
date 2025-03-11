@@ -805,9 +805,9 @@ module Types
       connection: true,
       description: "List of the project's Pages Deployments."
 
-    field :allowed_custom_statuses, Types::WorkItems::Widgets::CustomStatusType.connection_type,
-      null: true, description: 'Allowed custom statuses for the project.',
-      experiment: { milestone: '17.8' }, resolver: Resolvers::WorkItems::Widgets::CustomStatusResolver
+    field :allowed_statuses, Types::WorkItems::Widgets::StatusType.connection_type,
+      null: true, description: 'Allowed statuses for the project.',
+      experiment: { milestone: '17.8' }, resolver: Resolvers::WorkItems::Widgets::StatusResolver
 
     field :pages_force_https, GraphQL::Types::Boolean,
       null: false,

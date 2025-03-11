@@ -3071,6 +3071,9 @@ msgstr ""
 msgid "AccessTokens|Revoke"
 msgstr ""
 
+msgid "AccessTokens|Revoke %{name}"
+msgstr ""
+
 msgid "AccessTokens|Revoke the token \"%{tokenName}\"?"
 msgstr ""
 
@@ -17046,6 +17049,9 @@ msgstr ""
 msgid "Could not find iteration"
 msgstr ""
 
+msgid "Could not find parent group with path %{path}"
+msgstr ""
+
 msgid "Could not load the user chart. Please refresh the page to try again."
 msgstr ""
 
@@ -23694,13 +23700,13 @@ msgstr ""
 msgid "Error occurred while updating the issue status"
 msgstr ""
 
+msgid "Error occurred. %{message}"
+msgstr ""
+
 msgid "Error occurred. A blocked user cannot be deactivated"
 msgstr ""
 
 msgid "Error occurred. A blocked user must be unblocked to be activated"
-msgstr ""
-
-msgid "Error occurred. User was not banned"
 msgstr ""
 
 msgid "Error occurred. User was not blocked"
@@ -67489,6 +67495,9 @@ msgid "You cannot approve your own deployment. This configuration can be adjuste
 msgstr ""
 
 msgid "You cannot assign or unassign frameworks to a project that has more than one associated framework."
+msgstr ""
+
+msgid "You cannot ban paid users."
 msgstr ""
 
 msgid "You cannot change the access of the last owner from the organization"

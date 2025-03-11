@@ -13,6 +13,7 @@ module Gitlab
         STATEMENT_TIMEOUT = 1.hour
         MANAGEMENT_LEASE_KEY = 'database_partition_management_%s'
         RETAIN_DETACHED_PARTITIONS_FOR = 1.week
+        MAX_PARTITION_SIZE = 150.gigabytes
 
         def initialize(model, connection: nil)
           @model = model
@@ -120,8 +121,7 @@ module Gitlab
 
           connection.execute partition.to_detach_sql
 
-          Postgresql::DetachedPartition.create!(table_name: partition.partition_name,
-            drop_after: RETAIN_DETACHED_PARTITIONS_FOR.from_now)
+          schedule_detached_partition_cleanup(partition)
 
           Gitlab::AppLogger.info(
             message: "Detached Partition",
@@ -245,6 +245,33 @@ module Gitlab
           has_loose_foreign_key?(model.table_name)
         end
         strong_memoize_attr :parent_table_has_loose_foreign_key?
+
+        def schedule_detached_partition_cleanup(partition)
+          identifier = identifier(partition)
+
+          if above_threshold?(identifier)
+            Postgresql::DetachedPartition.create!(
+              table_name: partition.partition_name,
+              drop_after: RETAIN_DETACHED_PARTITIONS_FOR.from_now.next_occurring(:saturday)
+            )
+          else
+            Postgresql::DetachedPartition.create!(
+              table_name: partition.partition_name,
+              drop_after: RETAIN_DETACHED_PARTITIONS_FOR.from_now
+            )
+          end
+        end
+
+        def above_threshold?(identifier)
+          Gitlab::Database::PostgresPartition
+            .for_identifier(identifier)
+            .above_threshold(MAX_PARTITION_SIZE)
+            .exists?
+        end
+
+        def identifier(partition)
+          "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{partition.partition_name}"
+        end
       end
     end
   end

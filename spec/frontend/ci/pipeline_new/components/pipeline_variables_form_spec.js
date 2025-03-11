@@ -1,7 +1,7 @@
 import { GlFormGroup, GlLoadingIcon } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import VueApollo from 'vue-apollo';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -98,8 +98,8 @@ describe('PipelineVariablesForm', () => {
 
   describe('Feature flag', () => {
     describe('when the ciInputsForPipelines flag is disabled', () => {
-      beforeEach(() => {
-        createComponent();
+      beforeEach(async () => {
+        await createComponent();
       });
 
       it('does not display the inputs adoption banner', () => {
@@ -108,8 +108,8 @@ describe('PipelineVariablesForm', () => {
     });
 
     describe('when the ciInputsForPipelines flag is enabled', () => {
-      beforeEach(() => {
-        createComponent({ ciInputsForPipelines: true });
+      beforeEach(async () => {
+        await createComponent({ ciInputsForPipelines: true });
       });
 
       it('displays the inputs adoption banner', () => {
@@ -119,18 +119,35 @@ describe('PipelineVariablesForm', () => {
   });
 
   describe('loading states', () => {
-    it('is loading when query is in flight', () => {
+    it('shows loading when ciConfigVariables is null', () => {
       createComponent();
 
       expect(findLoadingIcon().exists()).toBe(true);
       expect(findForm().exists()).toBe(false);
     });
 
-    it('is not loading after query completes', async () => {
+    it('hides loading after data is received', async () => {
       await createComponent();
 
       expect(findLoadingIcon().exists()).toBe(false);
       expect(findForm().exists()).toBe(true);
+      expect(wrapper.vm.isFetchingCiConfigVariables).toBe(false);
+    });
+
+    it('hides loading when polling reaches max time', async () => {
+      mockCiConfigVariables = jest.fn().mockResolvedValue({
+        data: { project: { ciConfigVariables: null } },
+      });
+
+      await createComponent();
+
+      // Simulate max polling timeout
+      jest.advanceTimersByTime(10000);
+      await nextTick();
+
+      expect(findLoadingIcon().exists()).toBe(false);
+      expect(findForm().exists()).toBe(true);
+      expect(wrapper.vm.ciConfigVariables).toEqual([]);
     });
   });
 
@@ -192,6 +209,45 @@ describe('PipelineVariablesForm', () => {
       wrapper.vm.$options.apollo.ciConfigVariables.error.call(wrapper.vm, error);
 
       expect(reportToSentry).toHaveBeenCalledWith('PipelineVariablesForm', error);
+    });
+  });
+
+  describe('polling behavior', () => {
+    it('configures Apollo with the correct polling interval', () => {
+      expect(PipelineVariablesForm.apollo.ciConfigVariables.pollInterval).toBe(2000);
+    });
+
+    it('refetches and updates on ref change', async () => {
+      await createComponent();
+
+      wrapper.setProps({ refParam: 'new-ref-param' });
+      await nextTick();
+
+      expect(wrapper.vm.ciConfigVariables).toBe(null);
+    });
+
+    it('sets ciConfigVariables to empty array on query error', async () => {
+      await createComponent();
+
+      const error = new Error('GraphQL error');
+      wrapper.vm.$options.apollo.ciConfigVariables.error.call(wrapper.vm, error);
+
+      expect(wrapper.vm.ciConfigVariables).toEqual([]);
+      expect(reportToSentry).toHaveBeenCalledWith('PipelineVariablesForm', error);
+    });
+
+    it('stops polling when data is received', async () => {
+      await createComponent({ configVariables: configVariablesWithOptions });
+
+      const stopPollingSpy = jest.spyOn(
+        wrapper.vm.$apollo.queries.ciConfigVariables,
+        'stopPolling',
+      );
+
+      const mockData = { data: { project: { ciConfigVariables: configVariablesWithOptions } } };
+      wrapper.vm.$options.apollo.ciConfigVariables.result.call(wrapper.vm, mockData);
+
+      expect(stopPollingSpy).toHaveBeenCalled();
     });
   });
 

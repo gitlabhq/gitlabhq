@@ -39,14 +39,14 @@ RSpec.shared_examples 'graphql work item type list request spec' do |context_nam
         post_graphql(query, current_user: current_user)
 
         work_item_types = graphql_data_at(parent_key, :workItemTypes, :nodes)
-        custom_status_widgets = work_item_types.flat_map do |work_item_type|
-          work_item_type['widgetDefinitions'].select { |widget| widget['type'] == 'CUSTOM_STATUS' }
+        status_widgets = work_item_types.flat_map do |work_item_type|
+          work_item_type['widgetDefinitions'].select { |widget| widget['type'] == 'STATUS' }
         end
 
-        expect(custom_status_widgets).to be_present
-        custom_status_widgets.each do |widget|
-          expect(widget['allowedCustomStatuses']).to be_present
-          expect(widget['allowedCustomStatuses']['nodes']).to all(include('id', 'name', 'iconName', 'color',
+        expect(status_widgets).to be_present
+        status_widgets.each do |widget|
+          expect(widget['allowedStatuses']).to be_present
+          expect(widget['allowedStatuses']['nodes']).to all(include('id', 'name', 'iconName', 'color',
             'position'))
         end
       end

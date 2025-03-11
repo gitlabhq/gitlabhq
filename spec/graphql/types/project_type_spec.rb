@@ -46,7 +46,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       ci_cd_settings detailed_import_status value_streams ml_models
       allows_multiple_merge_request_assignees allows_multiple_merge_request_reviewers is_forked
       protectable_branches available_deploy_keys explore_catalog_path
-      container_protection_tag_rules allowed_custom_statuses
+      container_protection_tag_rules allowed_statuses
       pages_force_https pages_use_unique_domain ci_pipeline_creation_request ci_pipeline_creation_inputs
     ]
 

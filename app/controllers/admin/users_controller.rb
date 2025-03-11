@@ -148,7 +148,8 @@ class Admin::UsersController < Admin::ApplicationController
     if result[:status] == :success
       redirect_back_or_admin_user(notice: _("Successfully banned"))
     else
-      redirect_back_or_admin_user(alert: _("Error occurred. User was not banned"))
+      alert = format(_("Error occurred. %{message}"), message: result[:message])
+      redirect_back_or_admin_user(alert: alert)
     end
   end
 

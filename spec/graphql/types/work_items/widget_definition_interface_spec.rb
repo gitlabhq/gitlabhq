@@ -26,10 +26,10 @@ RSpec.describe Types::WorkItems::WidgetDefinitionInterface, feature_category: :t
       it { is_expected.to eq(Types::WorkItems::WidgetDefinitions::HierarchyType) }
     end
 
-    context 'for custom status widget' do
-      let(:object) { build(:widget_definition, widget_type: 'custom_status') }
+    context 'for status widget' do
+      let(:object) { build(:widget_definition, widget_type: 'status') }
 
-      it { is_expected.to eq(Types::WorkItems::WidgetDefinitions::CustomStatusType) }
+      it { is_expected.to eq(Types::WorkItems::WidgetDefinitions::StatusType) }
     end
 
     context 'for other widgets' do

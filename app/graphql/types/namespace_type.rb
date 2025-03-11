@@ -133,9 +133,9 @@ module Types
       calls_gitaly: true,
       description: 'Work item description templates available to the namespace.'
 
-    field :allowed_custom_statuses, Types::WorkItems::Widgets::CustomStatusType.connection_type,
-      null: true, description: 'Allowed custom statuses for the namespace.',
-      experiment: { milestone: '17.8' }, resolver: Resolvers::WorkItems::Widgets::CustomStatusResolver
+    field :allowed_statuses, Types::WorkItems::Widgets::StatusType.connection_type,
+      null: true, description: 'Allowed statuses for the namespace.',
+      experiment: { milestone: '17.8' }, resolver: Resolvers::WorkItems::Widgets::StatusResolver
 
     markdown_field :description_html, null: true
 
