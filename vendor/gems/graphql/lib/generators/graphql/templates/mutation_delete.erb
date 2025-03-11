@@ -1,0 +1,20 @@
+# frozen_string_literal: true
+
+<% module_namespacing_when_supported do -%>
+module Mutations
+  class <%= class_name %>Delete < BaseMutation
+    description "Deletes a <%= file_name %> by ID"
+
+    field :<%= file_name %>, Types::<%= options[:namespaced_types] ? 'Objects::' : '' %><%= class_name %>Type, null: false
+
+    argument :id, ID, required: true
+
+    def resolve(id:)
+      <%= singular_table_name %> = ::<%= orm_class.find(class_name, "id") %>
+      raise GraphQL::ExecutionError.new "Error deleting <%= file_name %>", extensions: <%= singular_table_name %>.errors.to_hash unless <%= orm_instance.destroy %>
+
+      { <%= file_name %>: <%= singular_table_name %> }
+    end
+  end
+end
+<% end -%>

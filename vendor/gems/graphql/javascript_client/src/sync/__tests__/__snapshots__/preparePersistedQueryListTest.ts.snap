@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`reads generate-persisted-query-manifest output 1`] = `
+[
+  {
+    "alias": "4a29162b05ee4d82ad02e8f50af4bf112f47181ec558a7100a",
+    "body": "query TestQuery1 {
+  testing {
+  id
+  label
+  description
+  __typename
+} }",
+    "name": "TestQuery1",
+  },
+  {
+    "alias": "xyz-123",
+    "body": "query TestQuery2 {
+  testing2 {
+  id2
+  label
+  description2
+  __typename
+} }",
+    "name": "TestQuery2",
+  },
+]
+`;

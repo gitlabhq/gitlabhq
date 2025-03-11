@@ -1,0 +1,11 @@
+# frozen_string_literal: true
+
+<% module_namespacing_when_supported do -%>
+module Types
+  module NodeType
+    include Types::BaseInterface
+    # Add the `id` field
+    include GraphQL::Types::Relay::NodeBehaviors
+  end
+end
+<% end -%>

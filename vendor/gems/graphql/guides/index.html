@@ -1,0 +1,109 @@
+---
+title: Welcome
+fullwidth: false
+---
+<div class="hero">
+  <div class="hero-title">
+    <img class="graphql-ruby-img" src="{{ site.baseurl }}/graphql-ruby.png" alt="GraphQL Ruby Logo"/>
+    <h1>GraphQL Ruby</h1>
+  </div>
+  <div class="hero-subtitle">
+    <p>The <code>graphql</code> gem implements the <a href="https://spec.graphql.org/draft/">GraphQL Server Specification</a> in Ruby.</p>
+    <p>Use it to add a GraphQL API to your Ruby or Rails app.</p>
+  </div>
+  <div class="hero-part shaded">
+    <div class="hero-feature">
+      <h2>Install the Gem</h2>
+      <p>
+        <a href="{{ site.baseurl}}/getting_started">Get going fast</a> with the <code><a href="https://rubygems.org/gems/graphql">graphql</a></code> gem,
+        battle-tested and trusted by <a href="https://githubengineering.com/the-github-graphql-api/#open-source">GitHub</a>, <a href="https://www.graphql.com/articles/graphql-at-shopify">Shopify</a>, <a href="https://flexport.com">Flexport</a>, </a><a href="https://www.chime.com">Chime</a>, and <a href="https://www.kickstarter.com/">Kickstarter</a>.
+      </p>
+{% highlight bash %}
+# Download the gem:
+bundle add graphql
+# Setup with Rails:
+rails generate graphql:install
+{% endhighlight %}
+    </div>
+    <div class="hero-feature">
+      <h2>Define Your Schema</h2>
+      <p>
+        Describe your application with a
+        <a href="{{ site.baseurl }}/schema/definition">GraphQL schema</a>
+        to create a self-documenting, strongly-typed API.
+      </p>
+{% highlight ruby %}
+# app/graphql/types/profile_type.rb
+class Types::ProfileType < Types::BaseObject
+  field :id, ID, null: false
+  field :name, String, null: false
+  field :avatar, Types::PhotoType
+end
+{% endhighlight %}
+    </div>
+  </div>
+  <div class="hero-part">
+    <div class="hero-feature">
+      <h2>Serve Queries</h2>
+      <p>
+        Provide custom data to clients and extend your API with
+        {% internal_link "mutations", "/mutations/mutation_root" %},
+        {% internal_link "subscriptions", "/subscriptions/overview" %},
+        {% internal_link "streaming responses", "/defer/overview" %},
+        and {% internal_link "multiplexing", "/queries/multiplex" %}.
+      </p>
+{% highlight ruby %}
+# app/controllers/graphql_controller.rb
+result = MySchema.execute(
+  params[:query],
+  variables: params[:variables],
+  context: { current_user: current_user },
+)
+render json: result
+{% endhighlight %}
+    </div>
+    <div class="hero-feature">
+      <h2>Harden Your API</h2>
+      <p>
+        Confidently deploy GraphQL with GraphQL-Ruby:
+        <ul>
+          <li>{% internal_link "Testing helpers", "/testing/overview" %} to validate your system</li>
+          <li>{% internal_link "Authorization", "/authorization/overview" %} integrates with your app's permission system</li>
+          <li>{% internal_link "GraphQL::Dataloader", "/dataloader/overview" %} optimizes access to data sources</li>
+          <li>{% internal_link "Complexity limits", "/queries/complexity_and_depth" %}, {% internal_link "timeouts", "/queries/timeout" %}, and {% internal_link "rate limits", "/limiters/overview" %} to protect your server resources</li>
+          <li>{% internal_link "Tracing", "/queries/tracing" %} for integration with your APM or custom usage</li>
+          <li>{% internal_link "API versioning", "/changesets/overview" %} to roll out changes while preserving client experience</li>
+          <li>{% internal_link "Persisted queries", "/operation_store/overview" %} to guarantee approved API usage </li>
+          <li>{% internal_link "Caching", "/object_cache/overview" %} to serve repeated data requests</li>
+        </ul>
+      </p>
+    </div>
+  </div>
+  <div class="hero-part shaded">
+    <div class="hero-feature">
+      <h2>Integrate with Client Libraries</h2>
+      <p>
+        <code>{% internal_link "graphql-ruby-client", "/javascript_client/overview" %}</code> provides integration with
+        {% internal_link "Apollo Client", "/javascript_client/apollo_subscriptions" %},
+        {% internal_link "Relay", "/javascript_client/relay_subscriptions" %},
+        {% internal_link "GraphiQL", "/javascript_client/graphiql_subscriptions" %},
+        {% internal_link "urql", "/javascript_client/urql_subscriptions" %}, or custom JavaScript.
+      </p>
+    </div>
+    <div class="hero-feature">
+      <h2>Going Beyond</h2>
+      <p>
+        Customize your GraphQL API:
+        <ul>
+          <li>{% internal_link "Language tooling", "/language_tools/visitor/ %} for manipulating GraphQL documents</li>
+          <li>{% internal_link "Type system extensions", "/type_definitions/extensions/ %} for customizing your schema definition</li>
+          <li>{% internal_link "Query analysis", "/queries/ast_analysis" %} for ahead-of-time query inspection</li>
+        </ul>
+      </p>
+    </div>
+  </div>
+</div>
+
+<h3 style="text-align: center; margin: 50px auto;">
+  Add <a href="https://graphql.org">GraphQL</a> to your Ruby app. <a href="/getting_started">Get Started!</a>
+</h3>
