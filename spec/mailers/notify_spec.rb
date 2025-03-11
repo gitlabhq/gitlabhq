@@ -2265,6 +2265,56 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         is_expected.to have_body_text project_merge_request_path(project, merge_request)
       end
     end
+
+    context 'with internal notes' do
+      let!(:review) { create(:review, project: project, merge_request: merge_request) }
+      let!(:notes) { nil } # This was done to avoid the creation of notes defined in the parent context
+
+      before do
+        create(:note, :internal, note: 'Internal note 1', review: review, project: project, author: reviewer, noteable: merge_request)
+        create(:note, :internal, note: 'Internal note 2', review: review, project: project, author: reviewer, noteable: merge_request)
+      end
+
+      subject { described_class.new_review_email(recipient.id, review.id).text_part }
+
+      context 'when the review contains both public and internal notes' do
+        before do
+          create(:note, note: 'Public note 1', review: review, project: project, author: reviewer, noteable: merge_request)
+        end
+
+        context 'when the recipient can read internal notes' do
+          before do
+            project.add_maintainer(recipient)
+          end
+
+          it 'includes all notes', :aggregate_failures do
+            expect(subject).to have_body_text 'Internal note 1'
+            expect(subject).to have_body_text 'Internal note 2'
+            expect(subject).to have_body_text 'Public note 1'
+          end
+        end
+
+        context 'when the recipient cannot read internal notes' do
+          let(:recipient) { create(:user, guest_of: project) }
+
+          it 'does not include internal notes', :aggregate_failures do
+            expect(subject).not_to have_body_text 'Internal note 1'
+            expect(subject).not_to have_body_text 'Internal note 2'
+            expect(subject).to have_body_text 'Public note 1'
+          end
+        end
+      end
+
+      context 'when the review contains internal notes only' do
+        context 'when the recipient cannot read internal notes' do
+          let(:recipient) { create(:user, guest_of: project) }
+
+          it 'does not send an email' do
+            expect(subject).to be_nil
+          end
+        end
+      end
+    end
   end
 
   describe 'rate limiting', :freeze_time, :clean_gitlab_redis_rate_limiting do
