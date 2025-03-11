@@ -1,0 +1,42 @@
+title: GraphQL Ruby
+baseurl: ""
+url: "https://graphql-ruby.org"
+
+exclude:
+  - .gitignore
+
+keep_files: ["api-doc", ".git"]
+# Build settings
+markdown:         kramdown
+highlighter:      rouge
+
+kramdown:
+  auto_ids: true
+  hard_wrap: false
+  input: GFM
+
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: "default"
+      fullwidth: true
+
+algolia:
+  application_id: '8VO8708WUV'
+  index_name:     'prod_graphql_ruby'
+  settings:
+    searchableAttributes:
+      - section
+      - title
+      - headings
+      - content
+    customRanking:
+      - desc(title)
+      - desc(headings)
+      - desc(content)
+
+plugins:
+  - jekyll-algolia
+  - jekyll-redirect-from
