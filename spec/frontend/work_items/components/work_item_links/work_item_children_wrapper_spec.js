@@ -128,6 +128,7 @@ describe('WorkItemChildrenWrapper', () => {
     createComponent();
     const event = {
       childItem: 'gid://gitlab/WorkItem/2',
+      stopPropagation: jest.fn(),
     };
 
     findFirstWorkItemLinkChildItem().vm.$emit('click', event);
@@ -137,11 +138,14 @@ describe('WorkItemChildrenWrapper', () => {
 
   it('emits `click` event when clicking on nested child', () => {
     createComponent({ isTopLevel: false });
-    const event = expect.anything();
+    const event = {
+      childItem: 'gid://gitlab/WorkItem/2',
+      stopPropagation: jest.fn(),
+    };
 
     findFirstWorkItemLinkChildItem().vm.$emit('click', event);
 
-    expect(wrapper.emitted('click')).toEqual([[{ event, childItem: 'gid://gitlab/WorkItem/2' }]]);
+    expect(wrapper.emitted('click')).toEqual([[event]]);
   });
 
   it.each`

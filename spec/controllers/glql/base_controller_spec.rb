@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Glql::BaseController, feature_category: :integrations do
+  let(:query) { 'query GLQL { __typename }' }
+  let(:query_sha) { Digest::SHA256.hexdigest(query) }
+
   describe 'POST #execute' do
     let(:user) { create(:user, last_activity_on: 2.days.ago.to_date) }
-    let(:query) { 'query GLQL { __typename }' }
-    let(:operation_name) { 'GLQL' }
-    let(:query_sha) { Digest::SHA256.hexdigest(query) }
 
     before do
       sign_in(user)
@@ -102,6 +102,42 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
     end
   end
 
+  describe '#append_info_to_payload' do
+    let(:log_payload) { {} }
+    let(:expected_logs) do
+      [
+        {
+          operation_name: 'GLQL',
+          complexity: 1,
+          depth: 1,
+          used_deprecated_arguments: [],
+          used_deprecated_fields: [],
+          used_fields: ['Query.__typename'],
+          variables: '{}',
+          glql_referer: 'path',
+          glql_query_sha: query_sha
+        }
+      ]
+    end
+
+    before do
+      RequestStore.clear!
+
+      request.headers['Referer'] = 'path'
+
+      allow(controller).to receive(:append_info_to_payload).and_wrap_original do |method, *|
+        method.call(log_payload)
+      end
+    end
+
+    it 'appends glql-related metadata for logging' do
+      execute_request
+
+      expect(controller).to have_received(:append_info_to_payload)
+      expect(log_payload.dig(:metadata, :graphql)).to match_array(expected_logs)
+    end
+  end
+
   describe 'rescue_from' do
     let(:error_message) do
       'Query execution is locked due to repeated failures.'
@@ -121,7 +157,7 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
   end
 
   def execute_request
-    post :execute, params: { query: query, operationName: operation_name }
+    post :execute, params: { query: query, operationName: 'GLQL' }
   end
 
   def current_rate_limit_value(sha)

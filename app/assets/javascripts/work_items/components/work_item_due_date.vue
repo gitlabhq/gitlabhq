@@ -1,11 +1,9 @@
 <script>
-import { GlButton, GlDatepicker, GlFormGroup, GlOutsideDirective as Outside } from '@gitlab/ui';
+import { GlDatepicker, GlFormGroup } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { formatDate, newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
-import { Mousetrap } from '~/lib/mousetrap';
-import { keysFor, SIDEBAR_CLOSE_WIDGET } from '~/behaviors/shortcuts/keybindings';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   sprintfWorkItem,
@@ -13,25 +11,17 @@ import {
   WIDGET_TYPE_START_AND_DUE_DATE,
 } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import WorkItemSidebarWidget from './shared/work_item_sidebar_widget.vue';
 
 const nullObjectDate = new Date(0);
 
 export default {
-  i18n: {
-    dates: s__('WorkItem|Dates'),
-    dueDate: s__('WorkItem|Due'),
-    none: s__('WorkItem|None'),
-    startDate: s__('WorkItem|Start'),
-  },
   dueDateInputId: 'due-date-input',
   startDateInputId: 'start-date-input',
   components: {
-    GlButton,
     GlDatepicker,
     GlFormGroup,
-  },
-  directives: {
-    Outside,
+    WorkItemSidebarWidget,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -64,7 +54,6 @@ export default {
       dirtyDueDate: null,
       dirtyStartDate: null,
       isUpdating: false,
-      isEditing: false,
     };
   },
   computed: {
@@ -103,10 +92,10 @@ export default {
     startDateValue() {
       return this.startDate
         ? formatDate(this.startDate, 'mmm d, yyyy', true)
-        : this.$options.i18n.none;
+        : s__('WorkItem|None');
     },
     dueDateValue() {
-      return this.dueDate ? formatDate(this.dueDate, 'mmm d, yyyy', true) : this.$options.i18n.none;
+      return this.dueDate ? formatDate(this.dueDate, 'mmm d, yyyy', true) : s__('WorkItem|None');
     },
     optimisticResponse() {
       const workItemDatesWidget = this.workItem.widgets.find(
@@ -146,12 +135,6 @@ export default {
       },
       immediate: true,
     },
-  },
-  mounted() {
-    Mousetrap.bind(keysFor(SIDEBAR_CLOSE_WIDGET), this.collapseWidget);
-  },
-  beforeDestroy() {
-    Mousetrap.unbind(keysFor(SIDEBAR_CLOSE_WIDGET));
   },
   methods: {
     clearDueDatePicker() {
@@ -202,114 +185,75 @@ export default {
           this.isUpdating = false;
         });
     },
-    expandWidget() {
-      this.isEditing = true;
-    },
-    collapseWidget(event = {}) {
-      // This prevents outside directive from treating
-      // a click on a select element within datepicker as an outside click,
-      // therefore allowing user to select a month and a year without
-      // triggering the mutation and immediately closing the dropdown
-      if (event.target?.classList.contains('pika-select', 'pika-select-month', 'pika-select-year'))
-        return;
-      this.isEditing = false;
-      this.updateDates();
-    },
   },
 };
 </script>
 
 <template>
-  <section data-testid="work-item-start-due-dates">
-    <div class="gl-flex gl-items-center gl-gap-3">
-      <h3 :class="{ 'gl-sr-only': isEditing }" class="gl-heading-5 !gl-mb-0">
-        {{ $options.i18n.dates }}
-      </h3>
-      <gl-button
-        v-if="canUpdate && !isEditing"
-        data-testid="edit-button"
-        category="tertiary"
-        size="small"
-        class="gl-ml-auto"
-        :disabled="isUpdating"
-        @click="expandWidget"
-        >{{ __('Edit') }}</gl-button
-      >
-    </div>
-    <fieldset v-if="isEditing" data-testid="datepicker-wrapper">
-      <div class="gl-flex gl-items-center gl-justify-between">
-        <legend class="gl-mb-0 gl-border-b-0 gl-text-base gl-font-bold">
-          {{ $options.i18n.dates }}
-        </legend>
-        <gl-button
-          data-testid="apply-button"
-          category="tertiary"
-          size="small"
-          class="gl-flex-shrink-0"
-          :disabled="isUpdating"
-          @click="collapseWidget"
-          >{{ __('Apply') }}</gl-button
-        >
-      </div>
-      <div
-        v-outside="collapseWidget"
-        class="gl-flex gl-flex-col gl-flex-wrap gl-gap-x-5 gl-gap-y-3 gl-pt-2 sm:gl-flex-row md:gl-flex-col"
-      >
-        <gl-form-group
-          class="gl-m-0 gl-flex gl-items-center gl-gap-3"
-          :label="$options.i18n.startDate"
-          :label-for="$options.startDateInputId"
-          label-class="!gl-font-normal !gl-pb-0 gl-min-w-7 sm:gl-min-w-fit md:gl-min-w-7 gl-break-words"
-        >
-          <gl-datepicker
-            ref="startDatePicker"
-            v-model="dirtyStartDate"
-            container="body"
-            :disabled="isDatepickerDisabled"
-            :input-id="$options.startDateInputId"
-            :target="null"
-            show-clear-button
-            class="work-item-date-picker gl-max-w-20"
-            @clear="clearStartDatePicker"
-            @close="handleStartDateInput"
-            @keydown.esc.native="collapseWidget"
-          />
-        </gl-form-group>
-        <gl-form-group
-          class="gl-m-0 gl-flex gl-items-center gl-gap-3"
-          :label="$options.i18n.dueDate"
-          :label-for="$options.dueDateInputId"
-          label-class="!gl-font-normal !gl-pb-0 gl-min-w-7 sm:gl-min-w-fit md:gl-min-w-7 gl-break-words"
-        >
-          <gl-datepicker
-            v-model="dirtyDueDate"
-            container="body"
-            :disabled="isDatepickerDisabled"
-            :input-id="$options.dueDateInputId"
-            :min-date="dirtyStartDate"
-            :target="null"
-            show-clear-button
-            class="work-item-date-picker gl-max-w-20"
-            data-testid="due-date-picker"
-            @clear="clearDueDatePicker"
-            @keydown.esc.native="collapseWidget"
-          />
-        </gl-form-group>
-      </div>
-    </fieldset>
-    <template v-else>
+  <work-item-sidebar-widget
+    :can-update="canUpdate"
+    :is-updating="isUpdating"
+    data-testid="work-item-start-due-dates"
+    @stopEditing="updateDates"
+  >
+    <template #title>
+      {{ s__('WorkItem|Dates') }}
+    </template>
+    <template #content>
       <p class="gl-m-0 gl-pb-1">
-        <span class="gl-inline-block gl-min-w-8">{{ $options.i18n.startDate }}:</span>
+        <span class="gl-inline-block gl-min-w-8">{{ s__('WorkItem|Start') }}:</span>
         <span data-testid="start-date-value" :class="{ 'gl-text-subtle': !startDate }">
           {{ startDateValue }}
         </span>
       </p>
       <p class="gl-m-0 gl-pt-1">
-        <span class="gl-inline-block gl-min-w-8">{{ $options.i18n.dueDate }}:</span>
+        <span class="gl-inline-block gl-min-w-8">{{ s__('WorkItem|Due') }}:</span>
         <span data-testid="due-date-value" :class="{ 'gl-text-subtle': !dueDate }">
           {{ dueDateValue }}
         </span>
       </p>
     </template>
-  </section>
+    <template #editing-content="{ stopEditing }">
+      <gl-form-group
+        class="gl-m-0 gl-flex gl-items-center gl-gap-3"
+        :label="s__('WorkItem|Start')"
+        :label-for="$options.startDateInputId"
+        label-class="!gl-font-normal !gl-pb-0 gl-min-w-7 sm:gl-min-w-fit md:gl-min-w-7 gl-break-words"
+      >
+        <gl-datepicker
+          v-model="dirtyStartDate"
+          container="body"
+          :disabled="isDatepickerDisabled"
+          :input-id="$options.startDateInputId"
+          :target="null"
+          show-clear-button
+          class="work-item-date-picker gl-max-w-20"
+          data-testid="start-date-picker"
+          @clear="clearStartDatePicker"
+          @close="handleStartDateInput"
+          @keydown.esc.native="stopEditing"
+        />
+      </gl-form-group>
+      <gl-form-group
+        class="gl-m-0 gl-flex gl-items-center gl-gap-3"
+        :label="s__('WorkItem|Due')"
+        :label-for="$options.dueDateInputId"
+        label-class="!gl-font-normal !gl-pb-0 gl-min-w-7 sm:gl-min-w-fit md:gl-min-w-7 gl-break-words"
+      >
+        <gl-datepicker
+          v-model="dirtyDueDate"
+          container="body"
+          :disabled="isDatepickerDisabled"
+          :input-id="$options.dueDateInputId"
+          :min-date="dirtyStartDate"
+          :target="null"
+          show-clear-button
+          class="work-item-date-picker gl-max-w-20"
+          data-testid="due-date-picker"
+          @clear="clearDueDatePicker"
+          @keydown.esc.native="stopEditing"
+        />
+      </gl-form-group>
+    </template>
+  </work-item-sidebar-widget>
 </template>

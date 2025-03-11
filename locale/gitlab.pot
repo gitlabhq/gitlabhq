@@ -42486,7 +42486,7 @@ msgstr ""
 msgid "PipelineCharts|Last week"
 msgstr ""
 
-msgid "PipelineCharts|Mean duration"
+msgid "PipelineCharts|Median duration"
 msgstr ""
 
 msgid "PipelineCharts|Pipelines"
@@ -43398,7 +43398,7 @@ msgstr ""
 msgid "Pipeline|Manual"
 msgstr ""
 
-msgid "Pipeline|Mean (50th percentile)"
+msgid "Pipeline|Median (50th percentile)"
 msgstr ""
 
 msgid "Pipeline|Merge request pipeline"

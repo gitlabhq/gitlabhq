@@ -672,6 +672,30 @@ describe('WorkItemDetail component', () => {
         expect(findDrawer().props('activeItem')).toEqual(modalWorkItem);
       });
 
+      it('closes the drawer when `close-drawer` is emitted from the selected work item', async () => {
+        createComponent({ handler: objectiveHandler, workItemsAlphaEnabled: true });
+        await waitForPromises();
+
+        const event = {
+          preventDefault: jest.fn(),
+        };
+        const modalWorkItem = { id: 'childWorkItemId' };
+
+        findHierarchyTree().vm.$emit('show-modal', {
+          event,
+          modalWorkItem,
+        });
+        await waitForPromises();
+
+        findHierarchyTree().vm.$emit('show-modal', {
+          event,
+          modalWorkItem,
+        });
+        await waitForPromises();
+
+        expect(findDrawer().props('activeItem')).toEqual(null);
+      });
+
       describe('work item is rendered in a modal and has children', () => {
         beforeEach(async () => {
           createComponent({

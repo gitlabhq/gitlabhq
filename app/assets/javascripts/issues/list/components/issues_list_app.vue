@@ -881,9 +881,24 @@ export default {
       this.viewType = ISSUES_LIST_VIEW_KEY;
     },
     handleSelectIssuable(issuable) {
-      this.activeIssuable = {
-        ...issuable,
-      };
+      if (
+        this.issuesDrawerEnabled &&
+        this.activeIssuable &&
+        this.activeIssuable.iid === issuable.iid
+      ) {
+        this.activeIssuable = null;
+
+        const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
+        if (queryParam) {
+          updateHistory({
+            url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]),
+          });
+        }
+      } else {
+        this.activeIssuable = {
+          ...issuable,
+        };
+      }
     },
     updateIssuablesCache(workItem) {
       const client = this.$apollo.provider.clients.defaultClient;

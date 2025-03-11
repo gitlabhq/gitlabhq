@@ -52,11 +52,11 @@ export default {
         },
       ];
 
-      if (this.counts.meanDuration) {
+      if (this.counts.medianDuration) {
         statistics.splice(1, 0, {
-          label: s__('PipelineCharts|Mean duration'),
-          identifier: 'mean-duration',
-          value: formatTimeSpent(this.counts.meanDuration),
+          label: s__('PipelineCharts|Median duration'),
+          identifier: 'median-duration',
+          value: formatTimeSpent(this.counts.medianDuration),
         });
       }
 

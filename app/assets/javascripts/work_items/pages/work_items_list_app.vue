@@ -534,8 +534,18 @@ export default {
     this.autocompleteCache = new AutocompleteCache();
   },
   methods: {
-    handleSelect(item) {
-      this.activeItem = item;
+    handleToggle(item) {
+      if (item && this.activeItem?.iid === item.iid) {
+        this.activeItem = null;
+        const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
+        if (queryParam) {
+          updateHistory({
+            url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]),
+          });
+        }
+      } else {
+        this.activeItem = item;
+      }
     },
     calculateDocumentTitle(data) {
       const middleCrumb = this.isGroup ? data.group.name : data.project.name;
@@ -802,7 +812,7 @@ export default {
         @page-size-change="handlePageSizeChange"
         @previous-page="handlePreviousPage"
         @sort="handleSort"
-        @select-issuable="handleSelect"
+        @select-issuable="handleToggle"
       >
         <template #nav-actions>
           <gl-button

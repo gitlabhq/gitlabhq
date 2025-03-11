@@ -706,8 +706,7 @@ class ApplicationSetting < ApplicationRecord
     users_api_limit_gpg_key: [:integer, { default: 120 }]
 
   jsonb_accessor :service_ping_settings,
-    gitlab_environment_toolkit_instance: [:boolean, { default: false }],
-    product_usage_data_enabled: [:boolean, { default: false }]
+    gitlab_environment_toolkit_instance: [:boolean, { default: false }]
 
   jsonb_accessor :rate_limits_unauthenticated_git_http,
     throttle_unauthenticated_git_http_enabled: [:boolean, { default: false }],

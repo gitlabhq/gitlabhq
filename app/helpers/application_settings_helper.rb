@@ -481,7 +481,6 @@ module ApplicationSettingsHelper
       :snowplow_cookie_domain,
       :snowplow_database_collector_hostname,
       :snowplow_enabled,
-      :product_usage_data_enabled,
       :snowplow_app_id,
       :push_event_hooks_limit,
       :push_event_activities_limit,

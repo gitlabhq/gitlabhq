@@ -173,7 +173,6 @@ export default {
         if (this.hasNextPage && this.children.length === 0) {
           this.fetchNextPage();
         }
-        this.checkDrawerParams();
       },
     },
     workItemTypes: {
@@ -300,6 +299,16 @@ export default {
         '!gl-pl-6': this.hasIndirectChildren,
         '!gl-px-3 gl-pb-3 gl-pt-2': !this.hasAllChildItemsHidden,
       };
+    },
+  },
+  watch: {
+    'workItem.id': {
+      // we only want to open the drawer on initial widget load and not from drawer widget
+      handler(newValue, oldValue) {
+        if (!oldValue && newValue && !this.isDrawer) {
+          this.checkDrawerParams();
+        }
+      },
     },
   },
   mounted() {

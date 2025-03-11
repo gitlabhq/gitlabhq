@@ -75,7 +75,7 @@ export default {
         this.pipelineAnalytics.aggregate;
       return {
         total: count === null ? '-' : count,
-        meanDuration: durationStatistics.p50,
+        medianDuration: durationStatistics.p50,
         successRatio: Number(count) ? (successCount / count) * 100 : 0,
         failureRatio: Number(count) ? (failedCount / count) * 100 : 0,
       };

@@ -152,7 +152,6 @@ module ApplicationSettingImplementation
         instance_token_prefix: 'gl',
         plantuml_enabled: false,
         plantuml_url: nil,
-        product_usage_data_enabled: true, # TODO : this setting should come from instance instalation, see https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8897
         diagramsnet_enabled: true,
         diagramsnet_url: 'https://embed.diagrams.net',
         polling_interval_multiplier: 1,
@@ -584,6 +583,10 @@ module ApplicationSettingImplementation
 
   def allow_signup?
     signup_enabled? && password_authentication_enabled_for_web?
+  end
+
+  def product_usage_data_enabled?
+    true
   end
 
   def password_authentication_enabled?

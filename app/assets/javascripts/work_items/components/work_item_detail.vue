@@ -619,7 +619,11 @@ export default {
         return;
       }
 
-      this.activeChildItem = modalWorkItem;
+      if (this.activeChildItem && this.activeChildItem.iid === modalWorkItem.iid) {
+        this.activeChildItem = null;
+      } else {
+        this.activeChildItem = modalWorkItem;
+      }
     },
     openReportAbuseModal(reply) {
       if (this.isModal) {

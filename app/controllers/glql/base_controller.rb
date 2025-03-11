@@ -31,6 +31,15 @@ module Glql
 
     private
 
+    def logs
+      super.map do |log|
+        log.merge(
+          glql_referer: request.headers["Referer"],
+          glql_query_sha: query_sha
+        )
+      end
+    end
+
     def check_rate_limit
       return unless Gitlab::ApplicationRateLimiter.peek(:glql, scope: query_sha)
 

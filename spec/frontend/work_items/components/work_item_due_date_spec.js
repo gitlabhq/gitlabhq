@@ -1,33 +1,30 @@
-import { GlDatepicker } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
-import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { Mousetrap } from '~/lib/mousetrap';
 import { newDate } from '~/lib/utils/datetime/date_calculation_utility';
 import WorkItemDueDate from '~/work_items/components/work_item_due_date.vue';
+import WorkItemSidebarWidget from '~/work_items/components/shared/work_item_sidebar_widget.vue';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import { updateWorkItemMutationResponse, updateWorkItemMutationErrorResponse } from '../mock_data';
+import { updateWorkItemMutationErrorResponse, updateWorkItemMutationResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 
 describe('WorkItemDueDate component', () => {
   let wrapper;
 
-  const startDateShowSpy = jest.fn();
-
   const workItemId = 'gid://gitlab/WorkItem/1';
   const updateWorkItemMutationHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
 
-  const findStartDatePicker = () => wrapper.findComponent({ ref: 'startDatePicker' });
+  const findWorkItemSidebarWidget = () => wrapper.findComponent(WorkItemSidebarWidget);
+  const findStartDatePicker = () => wrapper.findByTestId('start-date-picker');
   const findDueDatePicker = () => wrapper.findByTestId('due-date-picker');
   const findApplyButton = () => wrapper.findByTestId('apply-button');
   const findEditButton = () => wrapper.findByTestId('edit-button');
-  const findDatepickerWrapper = () => wrapper.findByTestId('datepicker-wrapper');
   const findStartDateValue = () => wrapper.findByTestId('start-date-value');
   const findDueDateValue = () => wrapper.findByTestId('due-date-value');
 
@@ -47,11 +44,7 @@ describe('WorkItemDueDate component', () => {
         workItem: updateWorkItemMutationResponse.data.workItemUpdate.workItem,
       },
       stubs: {
-        GlDatepicker: stubComponent(GlDatepicker, {
-          methods: {
-            show: startDateShowSpy,
-          },
-        }),
+        WorkItemSidebarWidget,
       },
     });
   };
@@ -65,7 +58,7 @@ describe('WorkItemDueDate component', () => {
         expect(findStartDateValue().classes('gl-text-subtle')).toBe(false);
       });
 
-      it('renders `None` when it is  not passed to the component`', () => {
+      it('renders `None` when it is not passed to the component`', () => {
         createComponent();
 
         expect(findStartDateValue().text()).toBe('None');
@@ -81,7 +74,7 @@ describe('WorkItemDueDate component', () => {
         expect(findDueDateValue().classes('gl-text-subtle')).toBe(false);
       });
 
-      it('renders `None` when it is  not passed to the component`', () => {
+      it('renders `None` when it is not passed to the component`', () => {
         createComponent();
 
         expect(findDueDateValue().text()).toContain('None');
@@ -96,41 +89,14 @@ describe('WorkItemDueDate component', () => {
       expect(findDueDatePicker().exists()).toBe(false);
     });
 
-    it('does not render edit button when user cannot update work item', () => {
-      createComponent();
-
-      expect(findEditButton().exists()).toBe(false);
-    });
-
-    it('renders edit button when user can update work item', () => {
+    it('passes edit permission to WorkItemSidebarWidget', () => {
       createComponent({ canUpdate: true });
 
-      expect(findEditButton().exists()).toBe(true);
-    });
-
-    it('expands the widget when edit button is clicked', async () => {
-      createComponent({ canUpdate: true });
-      findEditButton().vm.$emit('click');
-      await nextTick();
-
-      expect(findDatepickerWrapper().exists()).toBe(true);
-      expect(findStartDateValue().exists()).toBe(false);
-      expect(findDueDateValue().exists()).toBe(false);
+      expect(findWorkItemSidebarWidget().props('canUpdate')).toBe(true);
     });
   });
 
   describe('when in editing state', () => {
-    it('collapses the widget when apply button is clicked', async () => {
-      createComponent({ canUpdate: true });
-      findEditButton().vm.$emit('click');
-      await nextTick();
-
-      findApplyButton().vm.$emit('click');
-      await nextTick();
-
-      expect(findDatepickerWrapper().exists()).toBe(false);
-    });
-
     it('updates datepicker props when component startDate and dueDate props are updated', async () => {
       createComponent({ canUpdate: true });
       findEditButton().vm.$emit('click');

@@ -580,6 +580,14 @@ describeSkipVue3(skipReason, () => {
             expect(findDrawer().props('activeItem')).toEqual(payload);
           });
 
+          it('closes drawer when work item is clicked again', async () => {
+            findIssuableList().vm.$emit('select-issuable', payload);
+            await nextTick();
+
+            expect(findDrawer().props('open')).toBe(false);
+            expect(findDrawer().props('activeItem')).toBeNull();
+          });
+
           const checkThatDrawerPropsAreEmpty = () => {
             expect(findDrawer().props('activeItem')).toBeNull();
             expect(findDrawer().props('open')).toBe(false);

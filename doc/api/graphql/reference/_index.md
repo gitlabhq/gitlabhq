@@ -25101,6 +25101,7 @@ Events that describe the history and progress of a Duo Workflow.
 | ---- | ---- | ----------- |
 | <a id="duoworkfloweventcheckpoint"></a>`checkpoint` | [`JsonString`](#jsonstring) | Checkpoint of the event. |
 | <a id="duoworkfloweventerrors"></a>`errors` | [`[String!]`](#string) | Message errors. |
+| <a id="duoworkfloweventexecutionstatus"></a>`executionStatus` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 17.10. **Status**: Experiment. Granular status of workflow execution. |
 | <a id="duoworkfloweventmetadata"></a>`metadata` | [`JsonString`](#jsonstring) | Metadata associated with the event. |
 | <a id="duoworkfloweventparenttimestamp"></a>`parentTimestamp` | [`Time`](#time) | Time of the parent event. |
 | <a id="duoworkfloweventtimestamp"></a>`timestamp` | [`Time`](#time) | Time of the event. |

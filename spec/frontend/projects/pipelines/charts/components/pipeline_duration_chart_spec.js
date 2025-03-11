@@ -44,7 +44,7 @@ describe('PipelineDurationChart', () => {
         },
       },
       data: [
-        { data: [], name: 'Mean (50th percentile)' },
+        { data: [], name: 'Median (50th percentile)' },
         { data: [], name: '95th percentile' },
       ],
     });
@@ -66,7 +66,7 @@ describe('PipelineDurationChart', () => {
           ['2021-12-01', 100],
           ['2021-12-02', 101],
         ],
-        name: 'Mean (50th percentile)',
+        name: 'Median (50th percentile)',
       },
       {
         data: [

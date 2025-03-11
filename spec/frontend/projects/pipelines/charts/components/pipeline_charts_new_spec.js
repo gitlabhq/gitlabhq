@@ -104,7 +104,7 @@ describe('~/projects/pipelines/charts/components/pipeline_charts_new.vue', () =>
 
       expect(findStatisticsList().props('counts')).toEqual({
         failureRatio: 0,
-        meanDuration: 0,
+        medianDuration: 0,
         successRatio: 0,
         total: '0',
       });
@@ -123,13 +123,13 @@ describe('~/projects/pipelines/charts/components/pipeline_charts_new.vue', () =>
 
       expect(findStatisticsList().props('counts')).toEqual({
         failureRatio: 25,
-        meanDuration: 1800,
+        medianDuration: 1800,
         successRatio: 25,
         total: '8',
       });
 
       expect(findAllSingleStats().at(0).text()).toBe('Total pipeline runs 8');
-      expect(findAllSingleStats().at(1).text()).toBe('Mean duration 30m');
+      expect(findAllSingleStats().at(1).text()).toBe('Median duration 30m');
       expect(findAllSingleStats().at(2).text()).toBe('Failure rate 25%');
       expect(findAllSingleStats().at(3).text()).toBe('Success rate 25%');
     });

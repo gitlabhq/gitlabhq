@@ -25,7 +25,7 @@ export default {
   computed: {
     data() {
       const durationSeries = [
-        { name: s__('Pipeline|Mean (50th percentile)'), data: [] },
+        { name: s__('Pipeline|Median (50th percentile)'), data: [] },
         { name: s__('Pipeline|95th percentile'), data: [] },
       ];
 

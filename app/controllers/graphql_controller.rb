@@ -330,13 +330,7 @@ class GraphqlController < ApplicationController
   end
 
   def logs
-    graphql_logs = RequestStore.store[:graphql_logs]
-
-    Array(graphql_logs).map do |log|
-      next log unless log[:operation_name] == 'GLQL'
-
-      log.merge(glql_referer: request.headers["Referer"])
-    end
+    RequestStore.store[:graphql_logs].to_a
   end
 
   def execute_introspection_query
