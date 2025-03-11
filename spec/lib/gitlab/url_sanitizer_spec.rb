@@ -2,54 +2,100 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::UrlSanitizer do
+RSpec.describe Gitlab::UrlSanitizer, feature_category: :shared do
   using RSpec::Parameterized::TableSyntax
 
   describe '.sanitize' do
-    def sanitize_url(url)
-      # We want to try with multi-line content because is how error messages are formatted
-      described_class.sanitize(%(
-         remote: Not Found
-         fatal: repository `#{url}` not found
-      ))
-    end
+    context 'when username and password is not passed' do
+      where(:url, :sanitized_url) do
+        # http(s), ssh, git, relative, and schemeless URLs should all be masked correctly
+        urls = ['http://', 'https://', 'ssh://', 'git://', '//', ''].flat_map do |protocol|
+          [
+            ["#{protocol}test.com", "#{protocol}test.com"],
+            ["#{protocol}test.com/", "#{protocol}test.com/"],
+            ["#{protocol}test.com/path/to/repo.git", "#{protocol}test.com/path/to/repo.git"],
+            ["#{protocol}user@test.com", "#{protocol}*****@test.com"],
+            ["#{protocol}user:pass@test.com", "#{protocol}*****:*****@test.com"],
+            ["#{protocol}user:@test.com", "#{protocol}*****@test.com"],
+            ["#{protocol}:pass@test.com", "#{protocol}:*****@test.com"]
+          ]
+        end
 
-    where(:input, :output) do
-      # http(s), ssh, git, relative, and schemeless URLs should all be masked correctly
-      urls = ['http://', 'https://', 'ssh://', 'git://', '//', ''].flat_map do |protocol|
-        [
-          ["#{protocol}test.com", "#{protocol}test.com"],
-          ["#{protocol}test.com/", "#{protocol}test.com/"],
-          ["#{protocol}test.com/path/to/repo.git", "#{protocol}test.com/path/to/repo.git"],
-          ["#{protocol}user@test.com", "#{protocol}*****@test.com"],
-          ["#{protocol}user:pass@test.com", "#{protocol}*****:*****@test.com"],
-          ["#{protocol}user:@test.com", "#{protocol}*****@test.com"],
-          ["#{protocol}:pass@test.com", "#{protocol}:*****@test.com"]
-        ]
+        # SCP-style URLs are left unmodified
+        urls << ['user@server:project.git', 'user@server:project.git']
+        urls << ['user:@server:project.git', 'user:@server:project.git']
+        urls << [':pass@server:project.git', ':pass@server:project.git']
+        urls << ['user:pass@server:project.git', 'user:pass@server:project.git']
+        urls << ['user:pass@server:123project.git', 'user:pass@server:123project.git']
+        urls << ['user:pass@server:1project3.git', 'user:pass@server:1project3.git']
+        urls << ['user:pass@server:project123.git', 'user:pass@server:project123.git']
+        urls << ['root@host:/root/ids/rules.tar.gz', 'root@host:/root/ids/rules.tar.gz']
+        urls << ['user:pass@server.com:/3000/path.git', 'user:pass@server.com:/3000/path.git']
+
+        # actual URLs that look like SCP-styled URLS
+        urls << ['username:password@test.com', '*****:*****@test.com']
+        urls << ['username:password@test.com:1234', '*****:*****@test.com:1234']
+        urls << ['username:password@test.com:1234/org/project', '*****:*****@test.com:1234/org/project']
+        urls << ['username:password@test.com:1234/org/project.git', '*****:*****@test.com:1234/org/project.git']
       end
 
-      # SCP-style URLs are left unmodified
-      urls << ['user@server:project.git', 'user@server:project.git']
-      urls << ['user:@server:project.git', 'user:@server:project.git']
-      urls << [':pass@server:project.git', ':pass@server:project.git']
-      urls << ['user:pass@server:project.git', 'user:pass@server:project.git']
-      urls << ['user:pass@server:123project.git', 'user:pass@server:123project.git']
-      urls << ['user:pass@server:1project3.git', 'user:pass@server:1project3.git']
-      urls << ['user:pass@server:project123.git', 'user:pass@server:project123.git']
-      urls << ['root@host:/root/ids/rules.tar.gz', 'root@host:/root/ids/rules.tar.gz']
+      with_them do
+        subject do
+          # We want to try with multi-line content because is how error messages are formatted
+          described_class.sanitize(<<~CONTENT)
+            remote: Not Found
+            fatal: repository `#{url}` not found
+          CONTENT
+        end
 
-      # actual URLs that look like SCP-styled URLS
-      urls << ['username:password@test.com', '*****:*****@test.com']
-      urls << ['username:password@test.com:1234', '*****:*****@test.com:1234']
-      urls << ['username:password@test.com:1234/org/project', '*****:*****@test.com:1234/org/project']
-      urls << ['username:password@test.com:1234/org/project.git', '*****:*****@test.com:1234/org/project.git']
+        let(:sanitized_output) do
+          <<~CONTENT
+            remote: Not Found
+            fatal: repository `#{sanitized_url}` not found
+          CONTENT
+        end
 
-      # return an empty string for invalid URLs
-      urls << ['ssh://', '']
+        it { is_expected.to eq(sanitized_output) }
+      end
     end
 
-    with_them do
-      it { expect(sanitize_url(input)).to include("repository `#{output}` not found") }
+    context 'when username and password is passed' do
+      where(:url, :user, :password, :sanitized_url) do
+        # http(s), ssh, git, relative, and schemeless URLs should all be masked correctly
+        urls = ['http://', 'https://', 'ssh://', 'git://', '//', ''].flat_map do |protocol|
+          [
+            ["#{protocol}user@@test.com", 'user@', nil, "#{protocol}*****@test.com"],
+            ["#{protocol}user@#:pass !@test.com", 'user@#', 'pass !', "#{protocol}*****:*****@test.com"],
+            ["#{protocol};/?:@&=+$,\\[\\]:@test.com", ";/?:@&=+$,\\[\\]", '', "#{protocol}*****@test.com"],
+            ["#{protocol}:;/?:@&=+$,\\[\\]@test.com", '', ';/?:@&=+$,\\[\\]', "#{protocol}:*****@test.com"]
+          ]
+        end
+
+        # actual URLs that look like SCP-styled URLS
+        urls << ["user@@test.com", 'user@', '', "*****@test.com"]
+        urls << ["user@#:pass !@test.com", 'user@#', 'pass !', "*****:*****@test.com"]
+        urls << [";/?:@&=+$,\\[\\]:@test.com", ";/?:@&=+$,\\[\\]", nil, "*****@test.com"]
+        urls << [":;/?:@&=+$,\\[\\]@test.com", nil, ';/?:@&=+$,\\[\\]', ":*****@test.com"]
+      end
+
+      with_them do
+        subject do
+          # We want to try with multi-line content because that is how error messages are formatted
+          described_class.sanitize(<<~CONTENT, user: user, password: password)
+            remote: Not Found
+            fatal: repository `#{url}` not found
+          CONTENT
+        end
+
+        let(:sanitized_output) do
+          <<~CONTENT
+            remote: Not Found
+            fatal: repository `#{sanitized_url}` not found
+          CONTENT
+        end
+
+        it { is_expected.to eq(sanitized_output) }
+      end
     end
   end
 

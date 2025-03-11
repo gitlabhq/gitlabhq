@@ -399,6 +399,9 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { can?(:admin_group_member) }.policy do
     # ability to read, approve or reject member access requests of other users
     enable :admin_member_access_request
+
+    # ability to activate group members
+    enable :activate_group_member
   end
 
   rule { support_bot & has_project_with_service_desk_enabled }.policy do
