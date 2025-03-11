@@ -539,6 +539,23 @@ Get information about current user.
 
 Returns [`CurrentUser`](#currentuser).
 
+### `Query.customField`
+
+Find a custom field by its ID. Available only when feature flag `custom_fields_feature` is enabled.
+
+{{< details >}}
+**Introduced** in GitLab 17.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`CustomField`](#customfield).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querycustomfieldid"></a>`id` | [`IssuablesCustomFieldID!`](#issuablescustomfieldid) | Global ID of the custom field. |
+
 ### `Query.designManagement`
 
 Fields related to design management.
@@ -27803,6 +27820,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupprojectsarchivedonly"></a>`archivedOnly` | [`Boolean`](#boolean) | Return only archived projects. |
 | <a id="groupprojectscomplianceframeworkfilters"></a>`complianceFrameworkFilters` | [`ComplianceFrameworkFilters`](#complianceframeworkfilters) | Filters applied when selecting a compliance framework. |
 | <a id="groupprojectshascodecoverage"></a>`hasCodeCoverage` | [`Boolean`](#boolean) | Returns only the projects which have code coverage. |
 | <a id="groupprojectshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only the projects which have vulnerabilities. |
@@ -28459,6 +28477,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupdoraprojectsarchivedonly"></a>`archivedOnly` | [`Boolean`](#boolean) | Return only archived projects. |
 | <a id="groupdoraprojectscomplianceframeworkfilters"></a>`complianceFrameworkFilters` | [`ComplianceFrameworkFilters`](#complianceframeworkfilters) | Filters applied when selecting a compliance framework. |
 | <a id="groupdoraprojectsenddate"></a>`endDate` | [`Date!`](#date) | Date range to end DORA lookup at. |
 | <a id="groupdoraprojectshascodecoverage"></a>`hasCodeCoverage` | [`Boolean`](#boolean) | Returns only the projects which have code coverage. |
@@ -32133,6 +32152,30 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespacecomplianceframeworksids"></a>`ids` | [`[ComplianceManagementFrameworkID!]`](#compliancemanagementframeworkid) | List of Global IDs of compliance frameworks to return. |
 | <a id="namespacecomplianceframeworkssearch"></a>`search` | [`String`](#string) | Search framework with most similar names. |
 
+##### `Namespace.customFields`
+
+Custom fields configured for the namespace. Available only when feature flag `custom_fields_feature` is enabled.
+
+{{< details >}}
+**Introduced** in GitLab 17.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`CustomFieldConnection`](#customfieldconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespacecustomfieldsactive"></a>`active` | [`Boolean`](#boolean) | Filter for active fields. If `false`, excludes active fields. If `true`, returns only active fields. |
+| <a id="namespacecustomfieldsfieldtype"></a>`fieldType` | [`CustomFieldType`](#customfieldtype) | Filter for selected field type. |
+| <a id="namespacecustomfieldssearch"></a>`search` | [`String`](#string) | Search query for custom field name. |
+| <a id="namespacecustomfieldsworkitemtypeids"></a>`workItemTypeIds` | [`[WorkItemsTypeID!]`](#workitemstypeid) | Filter custom fields associated to any of the given work item types. If empty, returns custom fields not associated to any work item type. |
+
 ##### `Namespace.importSourceUsers`
 
 Import source users of the namespace. This field can only be resolved for one namespace in any single request.
@@ -32205,6 +32248,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="namespaceprojectsarchivedonly"></a>`archivedOnly` | [`Boolean`](#boolean) | Return only archived projects. |
 | <a id="namespaceprojectscomplianceframeworkfilters"></a>`complianceFrameworkFilters` | [`ComplianceFrameworkFilters`](#complianceframeworkfilters) | Filters applied when selecting a compliance framework. |
 | <a id="namespaceprojectshascodecoverage"></a>`hasCodeCoverage` | [`Boolean`](#boolean) | Returns only the projects which have code coverage. |
 | <a id="namespaceprojectshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only the projects which have vulnerabilities. |

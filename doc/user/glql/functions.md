@@ -146,6 +146,6 @@ To include the `labels` function in a GLQL view:
 display: list
 fields: title, health, due, labels("workflow::*"), labels
 limit: 5
-query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND opened = true
+query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND state = opened
 ```
 ````

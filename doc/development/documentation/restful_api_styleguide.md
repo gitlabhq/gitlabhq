@@ -36,7 +36,7 @@ In the Markdown doc for a resource (AKA endpoint):
   description also has both offering and tier, combine them. For
   example: _GitLab Self-Managed, Premium and Ultimate only._
 
-After a new API documentation page is added, [add an entry in the global navigation](site_architecture/global_nav.md#add-a-navigation-entry). [Examples](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/commits/main/data/navigation.yaml).
+After a new API documentation page is added, [add an entry in the global navigation](site_architecture/global_nav.md#add-a-navigation-entry). [Examples](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/commits/main/data/en-us/navigation.yaml).
 
 ## API topic template
 

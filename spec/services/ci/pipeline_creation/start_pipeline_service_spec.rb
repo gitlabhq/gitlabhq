@@ -28,5 +28,13 @@ RSpec.describe Ci::PipelineCreation::StartPipelineService, feature_category: :co
 
       service.execute
     end
+
+    it 'calls ProjectWithPipelineVariablei.upsert_for_pipeline' do
+      expect(Ci::ProjectWithPipelineVariable)
+        .to receive(:upsert_for_pipeline)
+        .with(pipeline).and_call_original
+
+      service.execute
+    end
   end
 end

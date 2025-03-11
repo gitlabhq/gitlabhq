@@ -26,7 +26,7 @@ RSpec.describe Gitlab::Checks::ChangesAccess, feature_category: :source_code_man
       end
 
       it 'calls file size check' do
-        expect_next_instance_of(Gitlab::Checks::GlobalFileSizeCheck) do |instance|
+        expect_next_instance_of(Gitlab::Checks::FileSizeLimitCheck) do |instance|
           expect(instance).to receive(:validate!)
         end
 

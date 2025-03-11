@@ -120,7 +120,7 @@ module Gitlab
 
       def bulk_access_checks!
         Gitlab::Checks::LfsCheck.new(self).validate!
-        Gitlab::Checks::GlobalFileSizeCheck.new(self).validate!
+        Gitlab::Checks::FileSizeLimitCheck.new(self).validate!
         Gitlab::Checks::IntegrationsCheck.new(self).validate!
       end
 

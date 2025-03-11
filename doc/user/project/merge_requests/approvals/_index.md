@@ -82,7 +82,7 @@ Use cases include:
 
 {{< history >}}
 
-- More granular approver display [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178005) in GitLab 17.9 [with a flag](../../../../administration/feature_flags.md) named `mr_approvers_filter_hidden_users`. Enabled by default.
+- More granular approver display [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183058) in GitLab 17.10. Feature flag `mr_approvers_filter_hidden_users` removed.
 
 {{< /history >}}
 
@@ -110,8 +110,7 @@ The widget displays one of these statuses:
 
 To check if your approval satisfies Code Owner requirements, select **Expand eligible approvers** ({{< icon name="chevron-lg-down" >}}).
 
-If you have enabled the `mr_approvers_filter_hidden_users` feature flag, introduced in GitLab 17.9,
-approver visibility depends on your project membership, and group privacy:
+Approver visibility depends on your project membership, and group privacy:
 
 - Project members see all approvers.
 - Project non-members see:

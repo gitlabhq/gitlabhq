@@ -23,10 +23,13 @@ export default {
       return this.cell.source || '';
     },
     hasOutput() {
-      return this.cell.outputs.length;
+      return this.cell.outputs?.length;
     },
     outputs() {
       return this.cell.outputs;
+    },
+    language() {
+      return this.cell.cell_type === 'raw' ? 'txt' : 'python';
     },
   },
 };
@@ -34,7 +37,12 @@ export default {
 
 <template>
   <div class="cell">
-    <code-output :raw-code="rawInputCode" :count="cell.execution_count" type="input" />
+    <code-output
+      :raw-code="rawInputCode"
+      :count="cell.execution_count"
+      type="input"
+      :language="language"
+    />
     <output-cell
       v-if="hasOutput"
       :count="cell.execution_count"

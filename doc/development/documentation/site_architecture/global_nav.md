@@ -40,7 +40,7 @@ as helpful as **Get started with runners**.
 ## Add a navigation entry
 
 The global nav is stored in the `gitlab-org/technical-writing/docs-gitlab-com` project, in the
-`data/navigation.yaml` file. The documentation website at `docs.gitlab.com` is built using Hugo and assembles documentation
+`data/en-us/navigation.yaml` file. The documentation website at `docs.gitlab.com` is built using Hugo and assembles documentation
 content from several projects (including `charts`, `gitlab`, `gitlab-runner`, and `omnibus-gitlab`).
 
 **Do not** add items to the global nav without
@@ -48,7 +48,7 @@ the consent of one of the technical writers.
 
 To add a topic to the global navigation:
 
-1. In the [`navigation.yaml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/navigation.yaml)
+1. In the [`navigation.yaml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/navigation.yaml)
    file, add the item.
 1. Assign the MR to a technical writer for review and merge.
 
@@ -90,7 +90,6 @@ mechanics of what is required is [documented below](#data-file) but, in principl
 Exclude these pages from the global nav:
 
 - Legal notices.
-- Pages in the `architecture/blueprints` directory.
 - Pages in the `user/application_security/dast/checks/` directory.
 
 The following pages should probably be in the global nav, but the technical writers
@@ -105,18 +104,6 @@ All other pages should be in the global nav.
 
 The technical writing team runs a report to determine which pages are not in the nav.
 The team reviews this list each month.
-
-## Navigation structure
-
-The global nav has five levels:
-
-- Section
-  - Category
-    - Doc
-      - Doc
-        - Doc
-
-You can view this structure in the [`navigation.yml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/navigation.yaml?ref_type=heads) file.
 
 ### Use GitLab section
 
@@ -148,7 +135,7 @@ The layout organizes the data among the nav in containers properly [styled](#css
 ### Data file
 
 The data file describes the structure of the navigation for the applicable project.
-It is stored at <https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/navigation.yaml>.
+It is stored at <https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/navigation.yaml>.
 
 Each entry comprises of three main components:
 
@@ -187,7 +174,7 @@ For all components, **respect the indentation** and the following syntax rules.
 - Use sentence case, capitalizing feature names.
 - There's no need to wrap the titles, unless there's a special character in it. For example,
   in `GitLab CI/CD`, there's a `/` present, therefore, it must be wrapped in quotes.
-  As convention, wrap the titles in double quotes: `category_title: "GitLab CI/CD"`.
+  As convention, wrap the titles in double quotes: `title: "GitLab CI/CD"`.
 
 ##### URLs
 
@@ -198,8 +185,7 @@ URLs must be relative. In addition:
 - Match the path you see on the website.
 - As convention, always wrap URLs in single quotes `'url'`.
   To find the global nav link, from the full URL remove `https://docs.gitlab.com/`.
-- Do not link to external URLs. We don't have link checking for external URLs, and
-  leaving the documentation site by clicking the left navigation is a confusing user experience.
+- Do not link to external URLs. Leaving the documentation site by clicking the left navigation is a confusing user experience.
 
 Examples of relative URLs:
 
@@ -230,13 +216,8 @@ The [global nav URL](#urls) has a different prefix depending on the documentatio
 
 ### CSS classes
 
-The nav is styled in the general `stylesheet.scss`. To change
+The nav is styled in the general `main.css` file. To change
 its styles, keep them grouped for better development among the team.
-
-The URL components have their unique styles set by the CSS classes `.level-0`,
-`.level-1`, and `.level-2`. To adjust the link's font size, padding, color, etc,
-use these classes. This way we guarantee that the rules for each link do not conflict
- with other rules in the stylesheets.
 
 ## Testing
 

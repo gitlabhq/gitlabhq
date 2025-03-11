@@ -305,27 +305,23 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
         next
       end
 
-      # rubocop:disable Layout/LineLength -- sorry, long URL
       expect(fks).to be_empty,
         "#{entry.table_name} is exempted from sharding, but has foreign key references to it.\n" \
           "For more information, see " \
-          "https://docs.gitlab.com/ee/development/database/multiple_databases.html#exempting-certain-tables-from-having-sharding-keys.\n" \
+          "https://docs.gitlab.com/development/cells/#exempting-certain-tables-from-having-sharding-keys.\n" \
           "The tables with foreign key references are:\n\n" \
           "#{fks.map(&:constrained_table_name).join("\n")}"
-      # rubocop:enable Layout/LineLength
 
       lfks = referenced_loose_foreign_keys(entry.table_name)
       lfks.reject! { |lfk| lfk.from_table.in?(tables_exempted_from_sharding_table_names) }
       lfks.reject! { |lfk| allowed_lfk_to_tables_exempted_from_sharding[lfk.from_table]&.include?(lfk.to_table) }
 
-      # rubocop:disable Layout/LineLength -- sorry, long URL
       expect(lfks).to be_empty,
         "#{entry.table_name} is exempted from sharding, but has loose foreign key references to it.\n" \
           "For more information, see " \
-          "https://docs.gitlab.com/ee/development/database/multiple_databases.html#exempting-certain-tables-from-having-sharding-keys.\n" \
+          "https://docs.gitlab.com/development/cells/#exempting-certain-tables-from-having-sharding-keys.\n" \
           "The tables with loose foreign key references are:\n\n" \
           "#{lfks.map(&:from_table).join("\n")}"
-      # rubocop:enable Layout/LineLength
     end
   end
 

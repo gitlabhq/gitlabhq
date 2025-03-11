@@ -17,6 +17,7 @@ module Ci
 
         Ci::UpdateBuildNamesWorker.perform_async(pipeline.id)
         Ci::ProcessPipelineService.new(pipeline).execute
+        Ci::ProjectWithPipelineVariable.upsert_for_pipeline(pipeline)
       end
     end
   end

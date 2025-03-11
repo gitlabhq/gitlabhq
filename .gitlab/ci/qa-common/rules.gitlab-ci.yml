@@ -87,6 +87,7 @@
     # by checking code patterns, skip running job on changes that can't affect the outcome
     - *mr-code-patterns
     - *default-branch
+    - *mr-stable-branch-code-patterns
 
 .rules:test:update-patch:
   rules:

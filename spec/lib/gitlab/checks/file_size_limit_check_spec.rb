@@ -2,8 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Checks::GlobalFileSizeCheck, feature_category: :source_code_management do
+RSpec.describe Gitlab::Checks::FileSizeLimitCheck, feature_category: :source_code_management do
   include_context 'changes access checks context'
+
+  subject(:file_size_check) { described_class.new(changes_access) }
 
   describe '#validate!' do
     it 'checks for file sizes' do
@@ -14,10 +16,10 @@ RSpec.describe Gitlab::Checks::GlobalFileSizeCheck, feature_category: :source_co
       ) do |check|
         expect(check).to receive(:find).and_call_original
       end
-      expect(subject.logger).to receive(:log_timed).with('Checking for blobs over the file size limit')
+      expect(file_size_check.logger).to receive(:log_timed).with('Checking for blobs over the file size limit')
         .and_call_original
       expect(Gitlab::AppJsonLogger).to receive(:info).with('Checking for blobs over the file size limit')
-      subject.validate!
+      file_size_check.validate!
     end
 
     context 'when there are oversized blobs' do
@@ -43,7 +45,7 @@ RSpec.describe Gitlab::Checks::GlobalFileSizeCheck, feature_category: :source_co
           blob_details: [{ "id" => mock_blob_id, "size" => mock_blob_size }]
         )
         expect do
-          subject.validate!
+          file_size_check.validate!
         end.to raise_exception(Gitlab::GitAccess::ForbiddenError,
           /- #{mock_blob_id} \(#{size_msg} MiB\)/)
       end

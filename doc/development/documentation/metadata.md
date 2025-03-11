@@ -84,7 +84,7 @@ See the Google [Best practices for creating quality meta descriptions](https://d
 ## Avoid pages being added to global navigation
 
 If a specific page shouldn't be added to the global navigation (have an entry added to
-[`navigation.yaml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/navigation.yaml), add
+[`navigation.yaml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/navigation.yaml), add
 the following to the page's metadata:
 
 ```yaml

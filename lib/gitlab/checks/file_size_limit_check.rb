@@ -2,7 +2,7 @@
 
 module Gitlab
   module Checks
-    class GlobalFileSizeCheck < BaseBulkChecker
+    class FileSizeLimitCheck < BaseBulkChecker
       include ActionView::Helpers::NumberHelper
 
       LOG_MESSAGE = 'Checking for blobs over the file size limit'
@@ -52,3 +52,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Checks::FileSizeLimitCheck.prepend_mod

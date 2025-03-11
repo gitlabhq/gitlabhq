@@ -6,6 +6,15 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
+  i18n: {
+    addIntegrationTitle: s__('Integrations|Add integration'),
+    addIntegrationAriaLabel: (title) =>
+      sprintf(s__('Integrations|Add new %{title} integration'), { title }),
+    addIntegrationText: __('Add'),
+    configureIntegrationText: __('Configure'),
+    configureIntegrationAriaLabel: (title) =>
+      sprintf(s__('Integrations|Configure %{title}'), { title }),
+  },
   components: {
     GlAvatar,
     GlAvatarLink,
@@ -50,8 +59,8 @@ export default {
       fields.push(
         {
           key: 'active',
-          label: '',
-          thClass: 'gl-w-7',
+          label: __('Active'),
+          thClass: 'gl-w-7 gl-sr-only',
           tdClass: '!gl-border-b-0 !gl-align-middle',
         },
         {
@@ -74,8 +83,8 @@ export default {
 
       fields.push({
         key: 'edit_path',
-        label: '',
-        thClass: 'gl-w-15',
+        label: __('Actions'),
+        thClass: 'gl-w-15 gl-sr-only',
         tdClass: '!gl-border-b-0 gl-text-right !gl-align-middle',
       });
 
@@ -140,12 +149,15 @@ export default {
           :entity-name="item.title"
           :alt="item.title"
           :size="48"
+          aria-hidden="true"
           shape="rect"
           class="integration-logo"
         />
         <div class="gl-flex gl-flex-col gl-gap-2">
           <h3 class="gl-heading-4 gl-my-1">{{ item.title }}</h3>
-          <p class="gl-mb-0 gl-text-subtle">{{ item.description }}</p>
+          <p :id="`${item.edit_path}-description`" class="gl-mb-0 gl-text-subtle">
+            {{ item.description }}
+          </p>
         </div>
       </gl-avatar-link>
     </template>
@@ -166,8 +178,10 @@ export default {
         :href="item.edit_path"
         category="secondary"
         icon="plus"
-        :title="s__('Integrations|Add integration')"
-        >{{ __('Add') }}</gl-button
+        :title="$options.i18n.addIntegrationTitle"
+        :aria-label="$options.i18n.addIntegrationAriaLabel(item.title)"
+        :aria-describedby="`${item.edit_path}-description`"
+        >{{ $options.i18n.addIntegrationText }}</gl-button
       >
       <gl-button
         v-else
@@ -175,8 +189,10 @@ export default {
         tabindex="-1"
         :href="item.edit_path"
         category="secondary"
+        :aria-describedby="`${item.edit_path}-description`"
         icon="settings"
-        :title="__('Configure')"
+        :title="$options.i18n.configureIntegrationText"
+        :aria-label="$options.i18n.configureIntegrationAriaLabel(item.title)"
       />
     </template>
   </gl-table>

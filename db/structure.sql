@@ -16299,7 +16299,8 @@ CREATE TABLE merge_request_diff_files (
     external_diff_offset integer,
     external_diff_size integer,
     generated boolean,
-    encoded_file_path boolean DEFAULT false NOT NULL
+    encoded_file_path boolean DEFAULT false NOT NULL,
+    project_id bigint
 );
 
 CREATE TABLE merge_request_diffs (
@@ -20554,6 +20555,10 @@ CREATE SEQUENCE projects_visits_id_seq
 
 ALTER SEQUENCE projects_visits_id_seq OWNED BY projects_visits.id;
 
+CREATE TABLE projects_with_pipeline_variables (
+    project_id bigint NOT NULL
+);
+
 CREATE TABLE protected_branch_merge_access_levels (
     id bigint NOT NULL,
     protected_branch_id bigint NOT NULL,
@@ -24083,6 +24088,7 @@ CREATE TABLE vulnerability_state_transitions (
     comment text,
     dismissal_reason smallint,
     project_id bigint,
+    CONSTRAINT check_b6338547d4 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_fe2eb6a0f3 CHECK ((char_length(comment) <= 50000))
 );
 
@@ -29183,6 +29189,9 @@ ALTER TABLE ONLY projects_sync_events
 
 ALTER TABLE ONLY projects_visits
     ADD CONSTRAINT projects_visits_pkey PRIMARY KEY (id, visited_at);
+
+ALTER TABLE ONLY projects_with_pipeline_variables
+    ADD CONSTRAINT projects_with_pipeline_variables_pkey PRIMARY KEY (project_id);
 
 ALTER TABLE ONLY protected_branch_merge_access_levels
     ADD CONSTRAINT protected_branch_merge_access_levels_pkey PRIMARY KEY (id);
@@ -39314,6 +39323,9 @@ ALTER TABLE ONLY subscription_user_add_on_assignments
 ALTER TABLE ONLY approval_project_rules_users
     ADD CONSTRAINT fk_0dfcd9e339 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY merge_request_diff_files
+    ADD CONSTRAINT fk_0e3ba01603 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ci_runner_projects
     ADD CONSTRAINT fk_0e743433ff FOREIGN KEY (runner_id) REFERENCES ci_runners_archived(id) ON DELETE CASCADE;
 
@@ -43093,6 +43105,9 @@ ALTER TABLE ONLY audit_events_streaming_event_type_filters
 
 ALTER TABLE ONLY description_versions
     ADD CONSTRAINT fk_rails_e8f4caf9c7 FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY projects_with_pipeline_variables
+    ADD CONSTRAINT fk_rails_e9080b2336 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_blocks
     ADD CONSTRAINT fk_rails_e9387863bc FOREIGN KEY (blocking_merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;

@@ -332,6 +332,7 @@ export default {
       :work-item-type="workItemType"
       :full-path="fullPath"
       :can-update="canUpdateMetadata"
+      :is-group="isGroup"
       @error="$emit('error', $event)"
     />
     <work-item-parent

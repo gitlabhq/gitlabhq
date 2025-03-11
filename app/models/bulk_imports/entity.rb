@@ -41,16 +41,13 @@ class BulkImports::Entity < ApplicationRecord
     inverse_of: :entity,
     foreign_key: :bulk_import_entity_id
 
-  validates :project, absence: true, if: :group
-  validates :group, absence: true, if: :project
   validates :source_type, presence: true
   validates :source_full_path, presence: true
   validates :destination_name, presence: true, if: -> { group || project }
   validates :destination_namespace, exclusion: [nil], if: :group
   validates :destination_namespace, presence: true, if: :project?
 
-  # TODO: Remove `on: :create` once the post migration SetOrganizationIdForBulkImportEntities has run
-  validate :validate_only_one_sharding_key_present, on: :create
+  validate :validate_only_one_sharding_key_present
   validate :validate_parent_is_a_group, if: :parent
   validate :validate_imported_entity_type
   validate :validate_destination_namespace_ascendency, if: :group_entity?

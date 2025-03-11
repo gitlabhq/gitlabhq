@@ -31,6 +31,7 @@ RSpec.describe 'Database schema',
       ci_sources_pipelines: [%w[source_partition_id source_pipeline_id], %w[partition_id pipeline_id]],
       ci_sources_projects: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
       ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
+      merge_request_diff_files: [%w[project_id]], # async index to be created - https://gitlab.com/gitlab-org/gitlab/-/issues/523103
       notes: %w[namespace_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
       p_ci_build_trace_metadata: [%w[partition_id build_id], %w[partition_id trace_artifact_id]], # the index on build_id is enough
       p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081

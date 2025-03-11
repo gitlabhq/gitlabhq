@@ -135,7 +135,7 @@ To remove a page:
    Use [feature X](link-to-docs.md) instead.
    ```
 
-1. Edit the [`navigation.yaml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/navigation.yaml) in `docs-gitlab-com`
+1. Edit the [`navigation.yaml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/navigation.yaml) in `docs-gitlab-com`
    to remove the page's entry from the global navigation.
 1. Search the [Deprecations and Removals](../../../update/deprecations.md) page for
    links to the removed page. The links use full URLs like: `https://docs.gitlab.com/user/deprecated_page/`.

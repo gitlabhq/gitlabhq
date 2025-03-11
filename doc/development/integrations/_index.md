@@ -460,7 +460,7 @@ Add documentation for the integration:
 - Add a page in `doc/user/project/integrations`.
 - Link it from the [Integrations overview](../../user/project/integrations/_index.md).
 - After the documentation has merged, [add an entry](../documentation/site_architecture/global_nav.md#add-a-navigation-entry)
-  to the documentation navigation under [Integrations](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/navigation.yaml?ref_type=heads#L2936).
+  to the documentation navigation under [Integrations](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/navigation.yaml?ref_type=heads#L2936).
 
 You can also refer to our general [documentation guidelines](../documentation/_index.md).
 

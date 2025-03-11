@@ -43,7 +43,9 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
         entity = build(:bulk_import_entity, group: build(:group), project: build(:project))
 
         expect(entity).not_to be_valid
-        expect(entity.errors).to include(:base, :project, :group)
+
+        expect(entity.errors[:base])
+          .to include('Import failed: Must have exactly one of organization, group or project.')
       end
     end
 

@@ -80,26 +80,26 @@ describe('Markdown component', () => {
     expect(wrapper.vm.$el.querySelector('.markdown h1')).not.toBeNull();
   });
 
-  it('sanitizes Markdown output', async () => {
-    Object.assign(cell, {
+  it('sanitizes Markdown output', () => {
+    wrapper = buildCellComponent({
+      cell_type: 'markdown',
       source: [
         '[XSS](data:text/html;base64,PHNjcmlwdD5hbGVydChkb2N1bWVudC5kb21haW4pPC9zY3JpcHQ+Cg==)\n',
       ],
     });
 
-    await nextTick();
-    expect(wrapper.vm.$el.querySelector('a').getAttribute('href')).toBeNull();
+    expect(wrapper.find('a').attributes('href')).toBeUndefined();
   });
 
-  it('sanitizes HTML', async () => {
-    const findLink = () => wrapper.vm.$el.querySelector('.xss-link');
-    Object.assign(cell, {
+  it('sanitizes HTML', () => {
+    wrapper = buildCellComponent({
+      cell_type: 'markdown',
       source: ['<a href="test.js" data-remote=true data-type="script" class="xss-link">XSS</a>\n'],
     });
 
-    await nextTick();
-    expect(findLink().dataset.remote).toBeUndefined();
-    expect(findLink().dataset.type).toBeUndefined();
+    const sanitizedLinkAttributes = wrapper.find('.xss-link').attributes();
+    expect(sanitizedLinkAttributes['data-remote']).toBeUndefined();
+    expect(sanitizedLinkAttributes['data-type']).toBeUndefined();
   });
 
   describe('When parsing images', () => {

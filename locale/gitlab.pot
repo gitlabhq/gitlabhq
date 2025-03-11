@@ -14159,6 +14159,9 @@ msgstr ""
 msgid "CodeSuggestions|Enhance your coding experience with intelligent recommendations. %{linkStart}GitLab Duo%{linkEnd} offers features that use generative AI to suggest code."
 msgstr ""
 
+msgid "CodeSuggestions|Enterprise"
+msgstr ""
+
 msgid "CodeSuggestions|Get started with GitLab Duo Pro today to boost your efficiency and effectiveness by reducing the time required to write and understand code."
 msgstr ""
 
@@ -14193,6 +14196,9 @@ msgid "CodeSuggestions|Not operational. Resolve issues to use GitLab Duo."
 msgstr ""
 
 msgid "CodeSuggestions|Outbound and inbound connections from clients to the GitLab instance must be allowed."
+msgstr ""
+
+msgid "CodeSuggestions|Pro"
 msgstr ""
 
 msgid "CodeSuggestions|Problems detected with setup"
@@ -31243,6 +31249,9 @@ msgstr ""
 msgid "Integrations|Add integration"
 msgstr ""
 
+msgid "Integrations|Add new %{title} integration"
+msgstr ""
+
 msgid "Integrations|All details"
 msgstr ""
 
@@ -31277,6 +31286,9 @@ msgid "Integrations|Comment detail:"
 msgstr ""
 
 msgid "Integrations|Comment settings:"
+msgstr ""
+
+msgid "Integrations|Configure %{title}"
 msgstr ""
 
 msgid "Integrations|Configure the scope of notifications."
@@ -51350,9 +51362,6 @@ msgstr ""
 msgid "ScanResultPolicy|Attributes are automatically applied by the scanners"
 msgstr ""
 
-msgid "ScanResultPolicy|Automatically make approval rules optional when scan artifacts are missing from the target branch and a scan is required by a scan execution policy. This option only works with an existing scan execution policy that has matching scanners."
-msgstr ""
-
 msgid "ScanResultPolicy|Block the merge request until all criteria are met"
 msgstr ""
 
@@ -51455,7 +51464,7 @@ msgstr ""
 msgid "ScanResultPolicy|License type"
 msgstr ""
 
-msgid "ScanResultPolicy|Make approval rules optional using scan execution policies"
+msgid "ScanResultPolicy|Make approval rules optional using execution policies"
 msgstr ""
 
 msgid "ScanResultPolicy|Matching"
@@ -51585,6 +51594,9 @@ msgid "ScanResultPolicy|When %{scanners} find scanner specified conditions in an
 msgstr ""
 
 msgid "ScanResultPolicy|When a security policy fails for an unspecified reason."
+msgstr ""
+
+msgid "ScanResultPolicy|When enabled, approval rules do not block merge requests when a scan is required by a scan execution policy or a pipeline execution policy but a required scan artifact is missing from the target branch. This option only works when the project or group has an existing scan execution policy or pipeline execution policy with matching scanners."
 msgstr ""
 
 msgid "ScanResultPolicy|When enabled, if an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required."
@@ -54239,9 +54251,6 @@ msgid "See vulnerability %{vulnerability_link} for any Solution details."
 msgstr ""
 
 msgid "Select"
-msgstr ""
-
-msgid "Select %{name}"
 msgstr ""
 
 msgid "Select Git revision"
@@ -66087,6 +66096,15 @@ msgid "Work item type %{work_item_type_name} can only have a maximum of %{limit}
 msgstr ""
 
 msgid "Work items"
+msgstr ""
+
+msgid "WorkItemCustomFields|Options could not be loaded for field: %{dropdownLabel}. Please try again."
+msgstr ""
+
+msgid "WorkItemCustomFields|Select one"
+msgstr ""
+
+msgid "WorkItemCustomFields|Select one or more"
 msgstr ""
 
 msgid "WorkItemCustomField|Add option"

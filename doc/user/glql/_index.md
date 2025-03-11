@@ -127,7 +127,7 @@ For example:
 display: table
 fields: title, state, health, epic, milestone, weight, updated
 limit: 5
-query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND opened = true
+query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND state = opened
 ```
 ````
 
@@ -156,7 +156,7 @@ project as a list, displaying fields `title`, `health`, and `due`:
 display: list
 fields: title, health, due
 limit: 5
-query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND opened = true
+query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND state = opened
 ```
 ````
 
