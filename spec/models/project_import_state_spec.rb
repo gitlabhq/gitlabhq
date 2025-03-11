@@ -80,7 +80,8 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
   end
 
   describe '#mark_as_failed' do
-    let(:error_message) { 'some message' }
+    let(:error_message) { 'http://user:password@gitlab.com/group/project.git failed to download' }
+    let(:sanitized_error_message) { 'http://*****:*****@gitlab.com/group/project.git failed to download' }
 
     it 'logs error when update column fails' do
       allow(import_state).to receive(:update_column).and_raise(ActiveRecord::ActiveRecordError)
@@ -90,7 +91,7 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
           {
             error: 'ActiveRecord::ActiveRecordError',
             message: 'Error setting import status to failed',
-            original_error: error_message
+            original_error: sanitized_error_message
           }
         )
       end
@@ -101,7 +102,7 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
     it 'updates last_error with error message' do
       import_state.mark_as_failed(error_message)
 
-      expect(import_state.last_error).to eq(error_message)
+      expect(import_state.last_error).to eq(sanitized_error_message)
     end
 
     it 'removes project import data' do

@@ -105,6 +105,7 @@ RSpec.shared_context 'GroupPolicy context' do
       view_edit_page
       manage_merge_request_settings
       admin_integrations
+      activate_group_member
     ]
   end
 

@@ -372,10 +372,15 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def new_review_email
-    review = Review.last
-    mr_author = review.merge_request.author
+    mr_author = merge_request.author
 
-    Notify.new_review_email(mr_author.id, review.id).message
+    cleanup do
+      review = Review.create!(project: project, merge_request: merge_request, author: mr_author)
+      Note.create!(review: review, project: project, noteable: merge_request, author: mr_author, note: 'Example note 1')
+      Note.create!(review: review, project: project, noteable: merge_request, author: mr_author, note: 'Example note 2')
+
+      Notify.new_review_email(mr_author.id, review.id).message
+    end
   end
 
   def project_was_moved_email
