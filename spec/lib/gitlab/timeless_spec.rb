@@ -21,7 +21,7 @@ RSpec.describe Gitlab::Timeless, feature_category: :shared do
       model.save!(username: "#{model.username}-a")
     end
 
-    expect(model.created_at).to be(nil)
+    expect(model.created_at).to be_nil
   end
 
   it 'does not record updated_at' do

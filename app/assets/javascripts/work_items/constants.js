@@ -72,46 +72,11 @@ export const I18N_WORK_ITEM_ERROR_UPDATING = s__(
 export const I18N_WORK_ITEM_ERROR_DELETING = s__(
   'WorkItem|Something went wrong when deleting the %{workItemType}. Please try again.',
 );
-
-export const I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR = s__(
-  'WorkItem|Something went wrong while fetching work item award emojis. Please try again.',
-);
-
-export const I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER = s__(
-  'WorkItem|Search existing items, paste URL, or enter reference ID',
-);
 export const I18N_WORK_ITEM_SEARCH_ERROR = s__(
   'WorkItem|Something went wrong while fetching the %{workItemType}. Please try again.',
 );
-export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL = s__(
-  'WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least the Planner role',
-);
-export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP = s__(
-  'WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}.',
-);
 
 export const MAX_WORK_ITEMS = 10;
-
-export const I18N_MAX_WORK_ITEMS_ERROR_MESSAGE = sprintf(
-  s__('WorkItem|Only %{MAX_WORK_ITEMS} items can be added at a time.'),
-  { MAX_WORK_ITEMS },
-);
-export const I18N_MAX_WORK_ITEMS_NOTE_LABEL = sprintf(
-  s__('WorkItem|Add up to %{MAX_WORK_ITEMS} items at a time.'),
-  { MAX_WORK_ITEMS },
-);
-
-export const I18N_WORK_ITEM_CHANGE_TYPE_PARENT_ERROR = s__(
-  'WorkItem|Parent item type %{parentWorkItemType} is not supported on %{workItemType}. Remove the parent item to change type.',
-);
-
-export const I18N_WORK_ITEM_CHANGE_TYPE_CHILD_ERROR = s__(
-  'WorkItem|%{workItemType} does not support the %{childItemType} child item types. Remove child items to change type.',
-);
-
-export const I18N_WORK_ITEM_CHANGE_TYPE_MISSING_FIELDS_ERROR = s__(
-  'WorkItem|Some fields are not present in %{workItemType}. If you change type now, this information will be lost.',
-);
 
 export const sprintfWorkItem = (msg, workItemTypeArg, parentWorkItemType = '') => {
   const workItemType = workItemTypeArg || s__('WorkItem|item');
@@ -121,15 +86,6 @@ export const sprintfWorkItem = (msg, workItemTypeArg, parentWorkItemType = '') =
       parentWorkItemType: parentWorkItemType.toLocaleLowerCase(),
     }),
   );
-};
-
-export const WIDGET_ICONS = {
-  TASK: 'issue-type-task',
-};
-
-export const WORK_ITEM_STATUS_TEXT = {
-  CLOSED: s__('WorkItem|Closed'),
-  OPEN: s__('WorkItem|Open'),
 };
 
 export const WORK_ITEMS_TYPE_MAP = {

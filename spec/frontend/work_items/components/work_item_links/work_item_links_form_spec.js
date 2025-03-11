@@ -17,12 +17,9 @@ import {
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_VALUE_EPIC,
   WORK_ITEM_TYPE_VALUE_ISSUE,
-  I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL,
-  I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP,
   SEARCH_DEBOUNCE,
   WORK_ITEM_TYPE_ENUM_EPIC,
   MAX_WORK_ITEMS,
-  I18N_MAX_WORK_ITEMS_ERROR_MESSAGE,
 } from '~/work_items/constants';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
@@ -342,12 +339,9 @@ describe('WorkItemLinksForm', () => {
       it('renders confidentiality checkbox', () => {
         const confidentialCheckbox = findConfidentialCheckbox();
 
-        expect(confidentialCheckbox.exists()).toBe(true);
         expect(findTooltip().exists()).toBe(false);
         expect(confidentialCheckbox.text()).toBe(
-          sprintf(I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL, {
-            workItemType: WORK_ITEM_TYPE_ENUM_TASK.toLocaleLowerCase(),
-          }),
+          'This task is confidential and should only be visible to team members with at least the Planner role',
         );
       });
 
@@ -358,12 +352,8 @@ describe('WorkItemLinksForm', () => {
 
         expect(confidentialCheckbox.attributes('disabled')).toBeDefined();
         expect(confidentialCheckbox.attributes('checked')).toBe('true');
-        expect(findTooltip().exists()).toBe(true);
         expect(findTooltip().text()).toBe(
-          sprintf(I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP, {
-            workItemType: WORK_ITEM_TYPE_ENUM_TASK.toLocaleLowerCase(),
-            parentWorkItemType: WORK_ITEM_TYPE_VALUE_ISSUE.toLocaleLowerCase(),
-          }),
+          'A non-confidential task cannot be assigned to a confidential parent issue.',
         );
       });
     });
@@ -502,7 +492,7 @@ describe('WorkItemLinksForm', () => {
       expect(findAddChildButton().attributes().disabled).toBe('true');
       expect(findWorkItemLimitValidationMessage().exists()).toBe(true);
       expect(findWorkItemLimitValidationMessage().text()).toContain(
-        I18N_MAX_WORK_ITEMS_ERROR_MESSAGE,
+        'Only 10 items can be added at a time.',
       );
     });
 

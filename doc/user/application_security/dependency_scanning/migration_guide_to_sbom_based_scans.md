@@ -30,7 +30,33 @@ Follow this migration guide if you use GitLab Dependency Scanning and any of the
 
 ## Understand the changes
 
-Before you migrate your project to Dependency Scanning using SBOM, you should understand the fundamental changes being introduced. The transition represents both a technical evolution and a new approach to how Dependency Scanning works in GitLab.
+Before you migrate your project to Dependency Scanning using SBOM, you should
+understand the fundamental changes being introduced. The transition represents a
+technical evolution, a new approach to how Dependency Scanning works in GitLab,
+and various improvements to the user experience, some of which include, but are
+not limited to, the following:
+
+- Increased language support.
+  The deprecated Gemnasium analyzers are constrained to a small subset of Python
+  and Java versions. The new analyzer gives organizations the necessary
+  flexibility to use older versions of these toolchains with older projects,
+  and the option to try newer versions without waiting on a major update to the
+  analyzer's image. Additionally, the new analyzer benefits from increased
+  [file coverage](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning#supported-files).
+- Increased performance.
+  Depending on the application, builds invoked by the
+  Gemnasium analyzers can last for almost an hour, and be a duplicate effort. The
+  new analyzer no longer invokes build systems directly. Instead, it re-uses previously
+  defined build jobs to improve overall scan performance.
+- Smaller attack surface.
+  To support its build capabilities, the Gemnasium analyzers are preloaded with
+  a variety of dependencies. The new analyzer removes a large amount of these
+  dependencies which results in a smaller attack surface.
+- Simpler configuration.
+  The deprecated Gemnasium analyzers frequently require the configuration of
+  proxies, Certificate Authority (CA) certificate bundles, and various other utilities
+  to function correctly. The new solution removes many of these requirements, resulting
+  in a robust tool that is simpler to configure.
 
 ### A new approach to security scanning
 

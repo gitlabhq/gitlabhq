@@ -597,8 +597,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       {
         message: 'Application_Rate_Limiter_Request',
         env: type,
+        method: 'GET',
         remote_ip: request.ip,
-        request_method: 'GET',
         path: request.filtered_path
       }
     end

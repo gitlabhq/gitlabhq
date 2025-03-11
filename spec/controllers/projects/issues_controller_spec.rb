@@ -1409,7 +1409,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
             message: 'Application_Rate_Limiter_Request',
             env: :issues_create_request_limit,
             remote_ip: '0.0.0.0',
-            request_method: 'POST',
+            method: 'POST',
             path: "/#{project.full_path}/-/issues",
             user_id: user.id,
             username: user.username

@@ -17418,6 +17418,9 @@ msgstr ""
 msgid "CreateTimelogForm|Time spent"
 msgstr ""
 
+msgid "CreateValueStreamForm|%{action} stage %{index}"
+msgstr ""
+
 msgid "CreateValueStreamForm|%{name} (default)"
 msgstr ""
 
@@ -66085,7 +66088,7 @@ msgstr ""
 msgid "WorkItem|Add a to-do item"
 msgstr ""
 
-msgid "WorkItem|Add up to %{MAX_WORK_ITEMS} items at a time."
+msgid "WorkItem|Add up to 10 items at a time."
 msgstr ""
 
 msgid "WorkItem|All activity"
@@ -66481,10 +66484,7 @@ msgstr ""
 msgid "WorkItem|One or more items cannot be shown. If you're using SAML authentication, this could mean your session has expired."
 msgstr ""
 
-msgid "WorkItem|Only %{MAX_WORK_ITEMS} items can be added at a time."
-msgstr ""
-
-msgid "WorkItem|Open"
+msgid "WorkItem|Only 10 items can be added at a time."
 msgstr ""
 
 msgid "WorkItem|Options:"

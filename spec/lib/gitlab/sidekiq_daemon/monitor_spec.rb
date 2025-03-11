@@ -296,13 +296,13 @@ RSpec.describe Gitlab::SidekiqDaemon::Monitor do
     subject { monitor.send(:notification_channel_enabled?) }
 
     it 'return nil when SIDEKIQ_MONITOR_WORKER is not set' do
-      expect(subject).to be nil
+      expect(subject).to be_nil
     end
 
     it 'return nil when SIDEKIQ_MONITOR_WORKER set to 0' do
       allow(ENV).to receive(:fetch).with('SIDEKIQ_MONITOR_WORKER', 0).and_return("0")
 
-      expect(subject).to be nil
+      expect(subject).to be_nil
     end
 
     it 'return 1 when SIDEKIQ_MONITOR_WORKER set to 1' do

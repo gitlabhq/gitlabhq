@@ -5,6 +5,7 @@ import { debounce, escape } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isNumeric } from '~/lib/utils/number_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { s__ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isValidURL } from '~/lib/utils/url_utility';
 import { highlighter } from 'ee_else_ce/gfm_auto_complete';
@@ -13,12 +14,7 @@ import workItemAncestorsQuery from '../../graphql/work_item_ancestors.query.grap
 import groupWorkItemsQuery from '../../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../../graphql/project_work_items.query.graphql';
 import workItemsByReferencesQuery from '../../graphql/work_items_by_references.query.graphql';
-import {
-  WORK_ITEMS_TYPE_MAP,
-  I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER,
-  I18N_WORK_ITEM_SEARCH_ERROR,
-  sprintfWorkItem,
-} from '../../constants';
+import { WORK_ITEMS_TYPE_MAP, I18N_WORK_ITEM_SEARCH_ERROR, sprintfWorkItem } from '../../constants';
 import { formatAncestors, isReference } from '../../utils';
 
 export default {
@@ -126,7 +122,7 @@ export default {
       error: '',
       textInputAttrs: {
         class: '!gl-min-w-fit',
-        'aria-label': I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER,
+        'aria-label': s__('WorkItem|Search existing items, paste URL, or enter reference ID'),
       },
     };
   },
@@ -230,9 +226,6 @@ export default {
       );
     },
   },
-  i18n: {
-    addInputPlaceholder: I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER,
-  },
   safeHtmlConfig: { ADD_TAGS: ['strong', 'span'] },
 };
 </script>
@@ -246,7 +239,7 @@ export default {
       v-model="workItemsToAdd"
       :dropdown-items="availableWorkItems"
       :loading="isLoading"
-      :placeholder="$options.i18n.addInputPlaceholder"
+      :placeholder="s__('WorkItem|Search existing items, paste URL, or enter reference ID')"
       menu-class="gl-dropdown-menu-wide dropdown-reduced-height !gl-min-h-7"
       :container-class="tokenSelectorContainerClass"
       data-testid="work-item-token-select-input"

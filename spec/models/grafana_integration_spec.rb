@@ -62,7 +62,7 @@ RSpec.describe GrafanaIntegration do
       it 'returns nil' do
         grafana_integration.update!(enabled: false)
 
-        expect(grafana_integration.client).to be(nil)
+        expect(grafana_integration.client).to be_nil
       end
     end
   end

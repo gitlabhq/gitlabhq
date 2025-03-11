@@ -3562,7 +3562,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let(:import_export_upload) { create(:import_export_upload, group: group) }
 
       it 'returns nil' do
-        expect(group.import_export_upload_by_user(user)).to be nil
+        expect(group.import_export_upload_by_user(user)).to be_nil
       end
     end
   end
@@ -4208,7 +4208,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it 'returns nil if no readme project is present' do
       create(:project, :repository, namespace: group)
 
-      expect(group.group_readme).to be(nil)
+      expect(group.group_readme).to be_nil
     end
   end
 

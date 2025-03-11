@@ -164,7 +164,7 @@ RSpec.shared_examples 'rate-limited token requests' do
         status: 429,
         env: :throttle,
         remote_ip: '127.0.0.1',
-        request_method: request_method,
+        method: request_method,
         path: a_string_including(request_args.first.split('?').first),
         matched: matched
       }.merge(log_data))
@@ -344,7 +344,7 @@ RSpec.shared_examples 'rate-limited web authenticated requests' do
         status: 429,
         env: :throttle,
         remote_ip: '127.0.0.1',
-        request_method: request_method,
+        method: request_method,
         path: url_that_requires_authentication,
         user_id: user.id,
         'meta.user' => user.username,
@@ -624,7 +624,7 @@ RSpec.shared_examples 'rate-limited unauthenticated requests' do
         status: 429,
         env: :throttle,
         remote_ip: '127.0.0.1',
-        request_method: 'GET',
+        method: 'GET',
         path: url_that_does_not_require_authentication,
         matched: throttle_name
       })

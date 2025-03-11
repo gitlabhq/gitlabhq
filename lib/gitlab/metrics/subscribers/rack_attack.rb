@@ -61,7 +61,7 @@ module Gitlab
             message: 'Rack_Attack',
             env: req.env['rack.attack.match_type'],
             remote_ip: req.ip,
-            request_method: req.request_method,
+            method: req.request_method,
             path: req_path,
             matched: req.env['rack.attack.matched']
           }

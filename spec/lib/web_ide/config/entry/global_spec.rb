@@ -56,7 +56,7 @@ RSpec.describe WebIde::Config::Entry::Global, feature_category: :web_ide do
       context 'when not composed' do
         describe '#terminal_value' do
           it 'returns nil' do
-            expect(global.terminal_value).to be nil
+            expect(global.terminal_value).to be_nil
           end
         end
 

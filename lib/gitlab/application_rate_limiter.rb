@@ -226,7 +226,7 @@ module Gitlab
           message: 'Application_Rate_Limiter_Request',
           env: type,
           remote_ip: request.ip,
-          request_method: request.request_method,
+          method: request.request_method,
           path: request_path(request)
         }
 

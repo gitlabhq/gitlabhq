@@ -10,8 +10,6 @@ import {
   LINK_ITEM_FORM_HEADER_LABEL,
   LINKED_ITEM_TYPE_VALUE,
   MAX_WORK_ITEMS,
-  I18N_MAX_WORK_ITEMS_ERROR_MESSAGE,
-  I18N_MAX_WORK_ITEMS_NOTE_LABEL,
 } from '../../constants';
 
 export default {
@@ -175,8 +173,6 @@ export default {
     addLinkedItemErrorMessage: s__(
       'WorkItem|Something went wrong when trying to link a item. Please try again.',
     ),
-    maxItemsNoteLabel: I18N_MAX_WORK_ITEMS_NOTE_LABEL,
-    maxItemsErrorMessage: I18N_MAX_WORK_ITEMS_ERROR_MESSAGE,
   },
 };
 </script>
@@ -215,10 +211,10 @@ export default {
         @searching="searchInProgress = $event"
       />
       <div v-if="errorMessage" class="gl-mb-2 gl-text-danger">
-        {{ $options.i18n.maxItemsErrorMessage }}
+        {{ s__('WorkItem|Only 10 items can be added at a time.') }}
       </div>
       <div v-if="!errorMessage" data-testid="max-work-item-note" class="gl-text-subtle">
-        {{ $options.i18n.maxItemsNoteLabel }}
+        {{ s__('WorkItem|Add up to 10 items at a time.') }}
       </div>
       <div
         v-if="showWorkItemsToAddInvalidMessage"

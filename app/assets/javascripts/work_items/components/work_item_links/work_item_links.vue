@@ -15,8 +15,6 @@ import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import {
   FORM_TYPES,
-  WIDGET_ICONS,
-  WORK_ITEM_STATUS_TEXT,
   TASKS_ANCHOR,
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -283,8 +281,6 @@ export default {
     createChildOptionLabel: s__('WorkItem|New task'),
     noChildItemsOpen: s__('WorkItem|No child items are currently open.'),
   },
-  WIDGET_TYPE_TASK_ICON: WIDGET_ICONS.TASK,
-  WORK_ITEM_STATUS_TEXT,
   FORM_TYPES,
 };
 </script>
@@ -294,7 +290,7 @@ export default {
     ref="workItemsLinks"
     :anchor-id="widgetName"
     :title="$options.i18n.title"
-    :icon="$options.WIDGET_TYPE_TASK_ICON"
+    icon="issue-type-task"
     :count="childrenCountLabel"
     :is-loading="isLoading && !fetchNextPageInProgress"
     is-collapsible

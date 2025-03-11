@@ -180,13 +180,13 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
     context 'if id has no match' do
       let(:id) { non_existing_record_id }
 
-      it { is_expected.to be(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'if project id does not match' do
       let(:project_id) { non_existing_record_id }
 
-      it { is_expected.to be(nil) }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -205,19 +205,19 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
     context 'if id has no match' do
       let(:version) { non_existing_record_id }
 
-      it { is_expected.to be(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'if project id does not match' do
       let(:project_id) { non_existing_record_id }
 
-      it { is_expected.to be(nil) }
+      it { is_expected.to be_nil }
     end
 
     context 'if model name does not match' do
       let(:model_name) { non_existing_record_id }
 
-      it { is_expected.to be(nil) }
+      it { is_expected.to be_nil }
     end
   end
 

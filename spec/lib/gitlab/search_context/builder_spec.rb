@@ -136,7 +136,7 @@ RSpec.describe Gitlab::SearchContext::Builder, type: :controller do
         end
 
         it 'returns nil without groups controller action' do
-          expect(subject.scope).to be(nil)
+          expect(subject.scope).to be_nil
         end
 
         context 'when on issues scope' do

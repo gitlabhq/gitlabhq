@@ -94,7 +94,7 @@ RSpec.describe Gitlab::Suggestions::SuggestionSet do
       end
 
       it 'returns nil if no errors are found' do
-        expect(suggestion_set.error_message).to be(nil)
+        expect(suggestion_set.error_message).to be_nil
       end
     end
 

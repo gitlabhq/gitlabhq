@@ -104,7 +104,7 @@ RSpec.describe Ci::SecureFile, factory_default: :keep, feature_category: :mobile
 
     it 'returns nil if there is no file extension' do
       file = build(:ci_secure_file, name: 'file1')
-      expect(file.file_extension).to be nil
+      expect(file.file_extension).to be_nil
     end
   end
 
@@ -144,7 +144,7 @@ RSpec.describe Ci::SecureFile, factory_default: :keep, feature_category: :mobile
 
     it 'returns nil when the file type is not supported by any parsers' do
       file = build(:ci_secure_file, name: 'file1.foo')
-      expect(file.metadata_parser).to be nil
+      expect(file.metadata_parser).to be_nil
     end
   end
 

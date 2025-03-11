@@ -12,9 +12,6 @@ import {
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_VALUE_EPIC,
   sprintfWorkItem,
-  I18N_WORK_ITEM_CHANGE_TYPE_PARENT_ERROR,
-  I18N_WORK_ITEM_CHANGE_TYPE_CHILD_ERROR,
-  I18N_WORK_ITEM_CHANGE_TYPE_MISSING_FIELDS_ERROR,
   WORK_ITEM_WIDGETS_NAME_MAP,
   WIDGET_TYPE_DESIGNS,
 } from '../constants';
@@ -313,7 +310,9 @@ export default {
 
       if (this.hasParent) {
         this.warningMessage = sprintfWorkItem(
-          I18N_WORK_ITEM_CHANGE_TYPE_PARENT_ERROR,
+          s__(
+            'WorkItem|Parent item type %{parentWorkItemType} is not supported on %{workItemType}. Remove the parent item to change type.',
+          ),
           this.selectedWorkItemType.value === WORK_ITEM_TYPE_ENUM_EPIC
             ? WORK_ITEM_TYPE_VALUE_EPIC
             : this.selectedWorkItemType.text,
@@ -325,14 +324,19 @@ export default {
       }
 
       if (this.hasChildren) {
-        this.warningMessage = sprintf(I18N_WORK_ITEM_CHANGE_TYPE_CHILD_ERROR, {
-          workItemType: capitalizeFirstCharacter(
-            this.selectedWorkItemType.value === WORK_ITEM_TYPE_ENUM_EPIC
-              ? WORK_ITEM_TYPE_VALUE_EPIC.toLocaleLowerCase()
-              : this.selectedWorkItemType.text.toLocaleLowerCase(),
+        this.warningMessage = sprintf(
+          s__(
+            'WorkItem|%{workItemType} does not support the %{childItemType} child item types. Remove child items to change type.',
           ),
-          childItemType: this.allowedChildTypes?.[0]?.name?.toLocaleLowerCase(),
-        });
+          {
+            workItemType: capitalizeFirstCharacter(
+              this.selectedWorkItemType.value === WORK_ITEM_TYPE_ENUM_EPIC
+                ? WORK_ITEM_TYPE_VALUE_EPIC.toLocaleLowerCase()
+                : this.selectedWorkItemType.text.toLocaleLowerCase(),
+            ),
+            childItemType: this.allowedChildTypes?.[0]?.name?.toLocaleLowerCase(),
+          },
+        );
 
         this.changeTypeDisabled = true;
         return;
@@ -341,7 +345,9 @@ export default {
       // Compare the widget definitions of both types
       if (this.hasWidgetDifference) {
         this.warningMessage = sprintfWorkItem(
-          I18N_WORK_ITEM_CHANGE_TYPE_MISSING_FIELDS_ERROR,
+          s__(
+            'WorkItem|Some fields are not present in %{workItemType}. If you change type now, this information will be lost.',
+          ),
           this.selectedWorkItemType.value === WORK_ITEM_TYPE_ENUM_EPIC
             ? WORK_ITEM_TYPE_VALUE_EPIC
             : this.selectedWorkItemType.text,

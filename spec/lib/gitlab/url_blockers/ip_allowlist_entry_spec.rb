@@ -10,7 +10,7 @@ RSpec.describe Gitlab::UrlBlockers::IpAllowlistEntry, feature_category: :shared 
       ip_allowlist_entry = described_class.new(ipv4)
 
       expect(ip_allowlist_entry.ip).to eq(ipv4)
-      expect(ip_allowlist_entry.port).to be(nil)
+      expect(ip_allowlist_entry.port).to be_nil
     end
 
     it 'initializes with port' do

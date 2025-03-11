@@ -159,12 +159,10 @@ describe('Pipeline New Form', () => {
 
   describe('Pipeline variables form', () => {
     describe('when user has permission to view variables', () => {
-      beforeEach(async () => {
+      it('renders the pipeline variables form component', async () => {
         pipelineCreateMutationHandler.mockResolvedValue(mockPipelineCreateMutationResponse);
         await createComponentWithApollo();
-      });
 
-      it('renders the pipeline variables form component', () => {
         expect(findPipelineVariablesForm().exists()).toBe(true);
         expect(findPipelineVariablesForm().props()).toMatchObject({
           isMaintainer: true,
@@ -174,6 +172,9 @@ describe('Pipeline New Form', () => {
       });
 
       it('passes variables to the create mutation', async () => {
+        pipelineCreateMutationHandler.mockResolvedValue(mockPipelineCreateMutationResponse);
+        await createComponentWithApollo();
+
         const variables = [{ key: 'TEST_VAR', value: 'test_value' }];
         findPipelineVariablesForm().vm.$emit('variables-updated', variables);
         findForm().vm.$emit('submit', dummySubmitEvent);
@@ -185,6 +186,24 @@ describe('Pipeline New Form', () => {
             projectPath: defaultProvide.projectPath,
             variables,
           },
+        });
+      });
+
+      describe('ref param', () => {
+        it('provides refParam as ref.fullName when available', async () => {
+          pipelineCreateMutationHandler.mockResolvedValue(mockPipelineCreateMutationResponse);
+          await createComponentWithApollo();
+
+          expect(findPipelineVariablesForm().props('refParam')).toBe(
+            `refs/heads/${defaultProps.refParam}`,
+          );
+        });
+
+        it('provides refParam as ref.shortName when available', async () => {
+          pipelineCreateMutationHandler.mockResolvedValue(mockPipelineCreateMutationResponse);
+          await createComponentWithApollo({ props: { refParam: 'another-branch' } });
+
+          expect(findPipelineVariablesForm().props('refParam')).toBe('another-branch');
         });
       });
     });

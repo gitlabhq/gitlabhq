@@ -28,13 +28,13 @@ RSpec.describe SelfHostedSentNotificationsCleanup, feature_category: :database d
             migration.before -> {
               sent_notifications.reset_column_information
 
-              expect(sent_notifications.columns.find { |c| c.name == 'id_convert_to_bigint' }).to be nil
+              expect(sent_notifications.columns.find { |c| c.name == 'id_convert_to_bigint' }).to be_nil
             }
 
             migration.after -> {
               sent_notifications.reset_column_information
 
-              expect(sent_notifications.columns.find { |c| c.name == 'id_convert_to_bigint' }).to be nil
+              expect(sent_notifications.columns.find { |c| c.name == 'id_convert_to_bigint' }).to be_nil
             }
           end
         end
@@ -59,7 +59,7 @@ RSpec.describe SelfHostedSentNotificationsCleanup, feature_category: :database d
         end
 
         expect(sent_notifications.columns.find { |c| c.name == 'id' }.sql_type).to eq('bigint')
-        expect(sent_notifications.columns.find { |c| c.name == 'id_convert_to_bigint' }).to be nil
+        expect(sent_notifications.columns.find { |c| c.name == 'id_convert_to_bigint' }).to be_nil
       end
     end
 
@@ -88,7 +88,7 @@ RSpec.describe SelfHostedSentNotificationsCleanup, feature_category: :database d
           sent_notifications.reset_column_information
 
           expect(sent_notifications.columns.find { |c| c.name == 'id' }.sql_type).to eq('bigint')
-          expect(sent_notifications.columns.find { |c| c.name == 'id_convert_to_bigint' }).to be nil
+          expect(sent_notifications.columns.find { |c| c.name == 'id_convert_to_bigint' }).to be_nil
         end
       end
     end

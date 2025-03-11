@@ -8204,7 +8204,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let(:import_export_upload) { create(:import_export_upload, project: project) }
 
       it 'returns nil' do
-        expect(project.import_export_upload_by_user(user)).to be nil
+        expect(project.import_export_upload_by_user(user)).to be_nil
       end
     end
   end
@@ -8238,7 +8238,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'when no jira imports' do
       it 'returns nil' do
-        expect(project.latest_jira_import).to be nil
+        expect(project.latest_jira_import).to be_nil
       end
     end
 

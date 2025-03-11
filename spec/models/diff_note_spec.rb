@@ -583,7 +583,7 @@ RSpec.describe DiffNote do
       it "does not validate diff line" do
         diff_line = subject.diff_line
 
-        expect(diff_line).to be nil
+        expect(diff_line).to be_nil
         expect(subject).to be_valid
       end
 
