@@ -1,0 +1,9 @@
+# frozen_string_literal: true
+
+<% module_namespacing_when_supported do -%>
+module Types
+  class <%= ruby_class_name %> < Types::BaseInputObject
+<% normalized_fields.each do |f| %>    <%= f.to_input_argument %>
+<% end %>  end
+end
+<% end -%>

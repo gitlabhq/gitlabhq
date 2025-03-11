@@ -172,6 +172,14 @@ PATH
       grpc
 
 PATH
+  remote: vendor/gems/graphql
+  specs:
+    graphql (2.4.11)
+      base64
+      fiber-storage
+      logger
+
+PATH
   remote: vendor/gems/mail-smtp_pool
   specs:
     mail-smtp_pool (0.1.0)
@@ -508,7 +516,7 @@ GEM
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
-    date (3.3.3)
+    date (3.4.1)
     dead_end (3.1.1)
     deb_version (1.0.2)
     debug_inspector (1.1.0)
@@ -948,9 +956,6 @@ GEM
       faraday (~> 2.0)
       graphql-client
     graphlyte (1.0.0)
-    graphql (2.4.8)
-      base64
-      fiber-storage
     graphql-client (0.23.0)
       activesupport (>= 3.0)
       graphql (>= 1.13.0)
@@ -2164,7 +2169,7 @@ DEPENDENCIES
   grape_logging (~> 1.8, >= 1.8.4)
   graphlient (~> 0.8.0)
   graphlyte (~> 1.0.0)
-  graphql (~> 2.4.1)
+  graphql (= 2.4.11)!
   graphql-docs (~> 5.0.0)
   grpc (= 1.63.0)
   gssapi (~> 1.3.1)

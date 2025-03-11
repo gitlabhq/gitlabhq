@@ -1,0 +1,5 @@
+query GetStuff2 {
+  stuff
+  ...Frag1
+  ...Frag2
+}

@@ -1,0 +1,9 @@
+# frozen_string_literal: true
+
+<% module_namespacing_when_supported do -%>
+module Types
+  class BaseObject < GraphQL::Schema::Object
+    field_class Types::BaseField
+  end
+end
+<% end -%>
