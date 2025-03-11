@@ -36,17 +36,17 @@ module Keeps
 
     def table_sizes
       table_sizes = {}
+      active_connection = Gitlab::Database::SharedModel.connection
 
       database_entries.each do |entry|
         connection = Gitlab::Database.schemas_to_base_models[entry.gitlab_schema]&.first&.connection
         next unless connection
+        next unless Gitlab::Database.db_config_name(connection) == Gitlab::Database.db_config_name(active_connection)
 
-        with_shared_connection(connection) do
-          table_size = Gitlab::Database::PostgresTableSize.by_table_name(entry.table_name)
-          next unless table_size
+        table_size = Gitlab::Database::PostgresTableSize.by_table_name(entry.table_name)
+        next unless table_size
 
-          table_sizes[table_size.table_name] = table_size.size_classification
-        end
+        table_sizes[table_size.table_name] = table_size.size_classification
       end
 
       table_sizes
@@ -163,10 +163,6 @@ module Keeps
 
     def change_identifiers
       [self.class.name.demodulize, Date.current.iso8601, SecureRandom.alphanumeric]
-    end
-
-    def with_shared_connection(connection, &block)
-      Gitlab::Database::SharedModel.using_connection(connection, &block)
     end
 
     def reviewer(role)

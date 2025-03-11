@@ -99,7 +99,6 @@ describe('TokenAccess component', () => {
     wrapper.findAllComponents(GlDisclosureDropdownItem).at(index).find('button');
   const findFormSelector = () => wrapper.findByTestId('form-selector');
   const findRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
-  const findToggleFormBtn = () => wrapper.findByTestId('crud-form-toggle');
   const findTokenDisabledAlert = () => wrapper.findComponent(GlAlert);
   const findNamespaceForm = () => wrapper.findComponent(NamespaceForm);
   const findSaveChangesBtn = () => wrapper.findByTestId('save-ci-job-token-scope-changes-btn');
@@ -115,7 +114,6 @@ describe('TokenAccess component', () => {
     requestHandlers,
     {
       addPoliciesToCiJobToken = false,
-      authenticationLogsMigrationForAllowlist = false,
       enforceAllowlist = false,
       projectAllowlistLimit = 2,
       stubs = {},
@@ -127,7 +125,7 @@ describe('TokenAccess component', () => {
         fullPath: projectPath,
         enforceAllowlist,
         projectAllowlistLimit,
-        glFeatures: { addPoliciesToCiJobToken, authenticationLogsMigrationForAllowlist },
+        glFeatures: { addPoliciesToCiJobToken },
       },
       apolloProvider: createMockApollo(requestHandlers),
       mocks: {
@@ -435,22 +433,29 @@ describe('TokenAccess component', () => {
     });
 
     describe('when Add group or project button is clicked', () => {
-      beforeEach(() => {
-        findToggleFormBtn().vm.$emit('click');
-      });
+      it('renders the namespace form when clicking "Add group or project option"', async () => {
+        expect(findNamespaceForm().exists()).toBe(false);
 
-      it('shows form', () => {
+        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT);
+        await nextTick();
+
         expect(findNamespaceForm().exists()).toBe(true);
       });
 
       it('closes form when form emits close event', async () => {
+        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT);
+        await nextTick();
+
         findNamespaceForm().vm.$emit('close');
         await nextTick();
 
         expect(findNamespaceForm().exists()).toBe(false);
       });
 
-      it('refetches groups and projects when form emits saved event', () => {
+      it('refetches groups and projects when form emits saved event', async () => {
+        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT);
+        await nextTick();
+
         findNamespaceForm().vm.$emit('saved');
 
         expect(inboundGroupsAndProjectsWithScopeResponseHandler).toHaveBeenCalledTimes(2);
@@ -458,26 +463,7 @@ describe('TokenAccess component', () => {
     });
   });
 
-  describe('when authenticationLogsMigrationForAllowlist feature flag is disabled', () => {
-    beforeEach(() =>
-      createComponent(
-        [
-          [
-            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-            inboundGroupsAndProjectsWithScopeResponseHandler,
-          ],
-        ],
-        { authenticationLogsMigrationForAllowlist: false, stubs: { CrudComponent } },
-      ),
-    );
-
-    it('renders toggle form button and hides actions dropdown', () => {
-      expect(findToggleFormBtn().exists()).toBe(true);
-      expect(findFormSelector().exists()).toBe(false);
-    });
-  });
-
-  describe('when authenticationLogsMigrationForAllowlist feature flag is enabled', () => {
+  describe('when importing entries from authorization log', () => {
     beforeEach(() =>
       createComponent(
         [
@@ -491,27 +477,12 @@ describe('TokenAccess component', () => {
           [getAuthLogCountQuery, authLogCountResponseHandler],
         ],
         {
-          authenticationLogsMigrationForAllowlist: true,
           stubs: { CrudComponent, GlDisclosureDropdown, GlDisclosureDropdownItem },
         },
       ),
     );
 
     describe('autopopulate entries', () => {
-      it('replaces toggle form button with actions dropdown', () => {
-        expect(findToggleFormBtn().exists()).toBe(false);
-        expect(findFormSelector().exists()).toBe(true);
-      });
-
-      it('renders the namespace form when clicking "Add group or project option"', async () => {
-        expect(findNamespaceForm().exists()).toBe(false);
-
-        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT);
-        await nextTick();
-
-        expect(findNamespaceForm().exists()).toBe(true);
-      });
-
       it('renders the autopopulate allowlist modal when clicking "All projects in authentication log"', async () => {
         expect(findAutopopulateAllowlistModal().props('showModal')).toBe(false);
 
@@ -589,7 +560,6 @@ describe('TokenAccess component', () => {
             [getAuthLogCountQuery, authLogCountResponseHandler],
           ],
           {
-            authenticationLogsMigrationForAllowlist: true,
             stubs: { CrudComponent, GlDisclosureDropdown, GlDisclosureDropdownItem },
           },
         );
@@ -618,7 +588,6 @@ describe('TokenAccess component', () => {
             [getAuthLogCountQuery, authLogCountResponseHandler],
           ],
           {
-            authenticationLogsMigrationForAllowlist: true,
             stubs: { CrudComponent, GlDisclosureDropdown, GlDisclosureDropdownItem },
           },
         );
@@ -721,7 +690,6 @@ describe('TokenAccess component', () => {
             [getAuthLogCountQuery, authLogCountResponseHandler],
           ],
           {
-            authenticationLogsMigrationForAllowlist: true,
             stubs: { CrudComponent, GlDisclosureDropdown, GlDisclosureDropdownItem },
           },
         );
@@ -749,7 +717,6 @@ describe('TokenAccess component', () => {
             [getAuthLogCountQuery, authLogCountResponseHandler],
           ],
           {
-            authenticationLogsMigrationForAllowlist: true,
             stubs: { CrudComponent, GlDisclosureDropdown, GlDisclosureDropdownItem },
           },
         );
@@ -797,7 +764,6 @@ describe('TokenAccess component', () => {
             [getAuthLogCountQuery, authLogZeroCountResponseHandler],
           ],
           {
-            authenticationLogsMigrationForAllowlist: true,
             stubs: { CrudComponent, GlDisclosureDropdown, GlDisclosureDropdownItem },
           },
         );
@@ -921,8 +887,9 @@ describe('TokenAccess component', () => {
 
     describe('when allowlist query is loading', () => {
       beforeEach(async () => {
-        findToggleFormBtn().vm.$emit('click');
+        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT);
         await nextTick();
+
         findNamespaceForm().vm.$emit('saved');
       });
 
@@ -986,7 +953,8 @@ describe('TokenAccess component', () => {
       beforeEach(() => findNamespaceForm().vm.$emit('close'));
 
       it('clears the selected namespace', async () => {
-        await findToggleFormBtn().vm.$emit('click');
+        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT);
+        await nextTick();
 
         expect(findNamespaceForm().props('namespace')).toBe(null);
       });

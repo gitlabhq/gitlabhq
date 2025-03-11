@@ -45,9 +45,9 @@ RSpec.describe Ci::PipelineSchedulesHelper, feature_category: :continuous_integr
       expect(helper.js_pipeline_schedules_form_data(project, pipeline_schedule)).to include({
         can_view_pipeline_editor: 'true',
         daily_limit: nil,
-        full_path: project.full_path,
         pipeline_editor_path: project_ci_pipeline_editor_path(project),
         project_id: project.id,
+        project_path: project.full_path,
         schedules_path: pipeline_schedules_path(project),
         settings_link: project_settings_ci_cd_path(project),
         timezone_data: timezones.to_json,

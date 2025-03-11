@@ -21,9 +21,9 @@ module QA
 
         def logger_source
           if ENV['TEST_ENV_NUMBER']
-            "QA Tests ENV-#{ENV['TEST_ENV_NUMBER']}"
+            "E2E Tests ENV-#{ENV['TEST_ENV_NUMBER']}"
           else
-            "QA Tests"
+            "E2E Tests"
           end
         end
 

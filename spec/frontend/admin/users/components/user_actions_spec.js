@@ -161,7 +161,9 @@ describe('AdminUserActions component', () => {
       const tooltip = getBinding(findEditButton().element, 'gl-tooltip');
 
       expect(findEditButton().text()).toBe('');
-      expect(findEditButton().attributes('aria-label')).toBe(I18N_USER_ACTIONS.edit);
+      expect(findEditButton().attributes('aria-label')).toBe(
+        I18N_USER_ACTIONS.editWithName('nikki'),
+      );
       expect(tooltip).toBeDefined();
       expect(tooltip.value).toBe(I18N_USER_ACTIONS.edit);
     });

@@ -1,0 +1,8 @@
+- settings_view = vscode_extension_marketplace_settings_view
+
+- return unless settings_view
+
+= render ::Layouts::SettingsBlockComponent.new(settings_view[:title], id: 'js-extension-marketplace-settings') do |component|
+  - component.with_description { settings_view[:description] }
+  - component.with_body do
+    #js-extension-marketplace-settings-app{ data: { view_model: settings_view[:view_model].to_json } }

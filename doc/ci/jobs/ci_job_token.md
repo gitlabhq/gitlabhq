@@ -140,7 +140,7 @@ You can also add a group or project to the allowlist [with the API](../../api/gr
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/478540) in GitLab 17.10. [Deployed behind the `:authentication_logs_migration_for_allowlist` feature flag](../../user/feature_flags.md), disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/478540) in GitLab 17.10.
 
 {{< /history >}}
 
@@ -165,7 +165,7 @@ it [compacts the allowlist](#allowlist-compaction) to stay under the 200 entry l
 
 {{< history >}}
 
-- Introduced in [GitLab 17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/498125). [Deployed behind the `:authentication_logs_migration_for_allowlist` feature flag](../../user/feature_flags.md), disabled by default.
+- Introduced in [GitLab 17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/498125).
 
 {{< /history >}}
 

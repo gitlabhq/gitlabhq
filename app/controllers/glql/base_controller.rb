@@ -13,14 +13,19 @@ module Glql
     # the request is throttled. One failure is allowed, but consecutive
     # failures within the time window trigger throttling.
     def execute
+      start_time = Gitlab::Metrics::System.monotonic_time
       super
-    rescue ActiveRecord::QueryAborted => error
-      increment_rate_limit_counter
+    rescue StandardError => error
+      # We catch all errors here so they are tracked by SLIs.
+      # But we only increment the rate limiter failure count for ActiveRecord::QueryAborted.
+      increment_rate_limit_counter if error.is_a?(ActiveRecord::QueryAborted)
 
-      # After incrementing the fail count with Gitlab::ApplicationRateLimiter
-      # we want to re-raise ActiveRecord::QueryAborted
-      # so that the existing error-handling flow continues on the frontend.
       raise error
+    ensure
+      increment_glql_sli(
+        duration_s: Gitlab::Metrics::System.monotonic_time - start_time,
+        error_type: error_type_from(error)
+      )
     end
 
     rescue_from GlqlQueryLockedError do |exception|
@@ -52,6 +57,39 @@ module Glql
 
     def query_sha
       @query_sha ||= Digest::SHA256.hexdigest(permitted_params[:query].to_s)
+    end
+
+    def increment_glql_sli(duration_s:, error_type:)
+      query_urgency = Gitlab::EndpointAttributes::Config::REQUEST_URGENCIES.fetch(:low)
+
+      labels = {
+        endpoint_id: ::Gitlab::ApplicationContext.current_context_attribute(:caller_id),
+        feature_category: ::Gitlab::ApplicationContext.current_context_attribute(:feature_category),
+        query_urgency: query_urgency.name
+      }
+
+      Gitlab::Metrics::GlqlSlis.record_error(
+        labels: labels.merge(error_type: error_type),
+        error: error_type.present?
+      )
+
+      return if error_type
+
+      Gitlab::Metrics::GlqlSlis.record_apdex(
+        labels: labels,
+        success: duration_s <= query_urgency.duration
+      )
+    end
+
+    def error_type_from(exception)
+      return unless exception
+
+      case exception
+      when ActiveRecord::QueryAborted
+        :query_aborted
+      else
+        :other
+      end
     end
   end
 end

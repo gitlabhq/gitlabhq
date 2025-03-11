@@ -18,14 +18,14 @@ export default () => {
     return false;
   }
 
-  const { fullPath, pipelinesPath, newSchedulePath, schedulesPath } = containerEl.dataset;
+  const { projectPath, pipelinesPath, newSchedulePath, schedulesPath } = containerEl.dataset;
 
   return new Vue({
     el: containerEl,
     name: 'PipelineSchedulesRoot',
     apolloProvider,
     provide: {
-      fullPath,
+      projectPath,
       pipelinesPath,
       newSchedulePath,
       schedulesPath,

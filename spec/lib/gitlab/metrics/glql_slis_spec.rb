@@ -2,21 +2,29 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Metrics::GlqlSlis, feature_category: :error_budgets do
-  before do
-    allow(Gitlab::Graphql::KnownOperations).to receive(:default)
-      .and_return(Gitlab::Graphql::KnownOperations.new(%w[foo bar]))
-  end
-
+RSpec.describe Gitlab::Metrics::GlqlSlis, :prometheus, feature_category: :markdown do
   describe '.initialize_slis!' do
+    let(:endpoint_id) { 'Glql::BaseController#execute' }
     let(:possible_glql_labels) do
-      ['graphql:foo', 'graphql:bar', 'graphql:unknown'].map do |endpoint_id|
-        {
-          endpoint_id: endpoint_id,
-          feature_category: nil,
-          query_urgency: ::Gitlab::EndpointAttributes::DEFAULT_URGENCY.name
-        }
-      end
+      [
+        { endpoint_id: endpoint_id, error_type: :query_aborted, feature_category: :code_review_workflow,
+          query_urgency: :low },
+        { endpoint_id: endpoint_id, error_type: :query_aborted, feature_category: :not_owned, query_urgency: :low },
+        { endpoint_id: endpoint_id, error_type: :query_aborted, feature_category: :portfolio_management,
+          query_urgency: :low },
+        { endpoint_id: endpoint_id, error_type: :query_aborted, feature_category: :team_planning, query_urgency: :low },
+        { endpoint_id: endpoint_id, error_type: :query_aborted, feature_category: :wiki, query_urgency: :low },
+        { endpoint_id: endpoint_id, error_type: :other, feature_category: :code_review_workflow, query_urgency: :low },
+        { endpoint_id: endpoint_id, error_type: :other, feature_category: :not_owned, query_urgency: :low },
+        { endpoint_id: endpoint_id, error_type: :other, feature_category: :portfolio_management, query_urgency: :low },
+        { endpoint_id: endpoint_id, error_type: :other, feature_category: :team_planning, query_urgency: :low },
+        { endpoint_id: endpoint_id, error_type: :other, feature_category: :wiki, query_urgency: :low },
+        { endpoint_id: endpoint_id, error_type: nil, feature_category: :code_review_workflow, query_urgency: :low },
+        { endpoint_id: endpoint_id, error_type: nil, feature_category: :not_owned, query_urgency: :low },
+        { endpoint_id: endpoint_id, error_type: nil, feature_category: :portfolio_management, query_urgency: :low },
+        { endpoint_id: endpoint_id, error_type: nil, feature_category: :team_planning, query_urgency: :low },
+        { endpoint_id: endpoint_id, error_type: nil, feature_category: :wiki, query_urgency: :low }
+      ]
     end
 
     it 'initializes Apdex SLIs for glql' do

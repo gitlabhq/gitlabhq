@@ -37,7 +37,7 @@ export default {
   },
   mixins: [PipelineVariablesPermissionsMixin],
   inject: [
-    'fullPath',
+    'projectPath',
     'projectId',
     'defaultBranch',
     'dailyLimit',
@@ -65,7 +65,7 @@ export default {
       query: getPipelineSchedulesQuery,
       variables() {
         return {
-          projectPath: this.fullPath,
+          projectPath: this.projectPath,
           ids: scheduleId,
         };
       },
@@ -202,7 +202,7 @@ export default {
               ref: this.scheduleRef,
               variables: this.preparedVariablesCreate,
               active: this.activated,
-              projectPath: this.fullPath,
+              projectPath: this.projectPath,
             },
           },
         });

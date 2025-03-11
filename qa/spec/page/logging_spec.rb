@@ -4,7 +4,7 @@ require 'capybara/dsl'
 
 RSpec.describe QA::Support::Page::Logging do
   let(:page) { double.as_null_object }
-  let(:logger) { Gitlab::QA::TestLogger.logger(level: ::Logger::DEBUG, source: 'QA Tests') }
+  let(:logger) { Gitlab::QA::TestLogger.logger(level: ::Logger::DEBUG, source: 'E2E Tests') }
   let(:page_class) { class_double('QA::Page::TestPage') }
 
   before do

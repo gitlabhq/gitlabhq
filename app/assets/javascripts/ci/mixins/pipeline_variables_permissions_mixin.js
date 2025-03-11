@@ -10,11 +10,7 @@ const ROLE_OWNER = 'owner';
 export default {
   USER_ROLES: Object.freeze([ROLE_DEVELOPER, ROLE_MAINTAINER, ROLE_OWNER]),
 
-  inject: {
-    projectPath: { default: '' },
-    fullPath: { default: '' },
-    userRole: { default: '' },
-  },
+  inject: ['projectPath', 'userRole'],
 
   data() {
     return {
@@ -28,7 +24,7 @@ export default {
       query: getPipelineVariablesMinimumOverrideRoleQuery,
       variables() {
         return {
-          fullPath: this.projectPath || this.fullPath,
+          fullPath: this.projectPath,
         };
       },
       update({ project }) {

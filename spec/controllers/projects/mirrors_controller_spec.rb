@@ -268,7 +268,7 @@ RSpec.describe Projects::MirrorsController, feature_category: :source_code_manag
 
     context 'no data in cache' do
       it 'requests the cache to be filled and returns a 204 response' do
-        expect(ExternalServiceReactiveCachingWorker).to receive(:perform_async).with(cache.class, cache.id).at_least(:once)
+        expect(ExternalServiceReactiveCachingWorker).to receive(:perform_async).with(cache.class.name, cache.id).at_least(:once)
 
         do_get(project)
 

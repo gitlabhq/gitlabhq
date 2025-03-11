@@ -302,7 +302,7 @@ RSpec.describe Ci::ListConfigVariablesService,
     it 'returns nil and enquques the worker to fill cache' do
       expect(ExternalServiceReactiveCachingWorker)
         .to receive(:perform_async)
-        .with(service.class, service.id, *reactive_cache_params)
+        .with(service.class.name, service.id, *reactive_cache_params)
 
       expect(result).to be_nil
     end

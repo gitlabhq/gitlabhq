@@ -682,6 +682,24 @@ module ApplicationSettingsHelper
       pending_user_count: pending_user_count
     }
   end
+
+  def vscode_extension_marketplace_settings_view
+    # NOTE: This is intentionally not scoped to a specific actor since it affects instance-level settings.
+    return unless Feature.enabled?(:vscode_extension_marketplace_settings, nil)
+
+    {
+      title: _('VS Code Extension Marketplace'),
+      description: vscode_extension_marketplace_settings_description,
+      view_model: {
+        initialSettings: @application_setting.vscode_extension_marketplace || {}
+      }
+    }
+  end
+
+  def vscode_extension_marketplace_settings_description
+    # NOTE: description is overridden in EE
+    _('Enable VS Code Extension Marketplace and configure the extensions registry for Web IDE.')
+  end
 end
 
 ApplicationSettingsHelper.prepend_mod_with('ApplicationSettingsHelper')

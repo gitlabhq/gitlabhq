@@ -66,24 +66,6 @@ describe('Pipeline Variables Permissions Mixin', () => {
   const findErrorState = () => wrapper.findByTestId('error-state');
 
   describe('on load', () => {
-    describe('provide data', () => {
-      beforeEach(() => {
-        minimumRoleHandler = jest.fn().mockResolvedValue(generateSettingsResponse());
-      });
-
-      it('uses `projectPath` for the query if provided', async () => {
-        await createComponent();
-        expect(minimumRoleHandler).toHaveBeenCalledWith({ fullPath: 'project/path' });
-      });
-
-      it('uses `fullPath` for the query if provided', async () => {
-        await createComponent({
-          provide: { fullPath: 'project/another/path', projectPath: undefined },
-        });
-        expect(minimumRoleHandler).toHaveBeenCalledWith({ fullPath: 'project/another/path' });
-      });
-    });
-
     describe('when settings query is successful', () => {
       beforeEach(async () => {
         minimumRoleHandler = jest.fn().mockResolvedValue(generateSettingsResponse());

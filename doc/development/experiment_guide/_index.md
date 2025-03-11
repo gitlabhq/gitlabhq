@@ -52,7 +52,7 @@ This uses [experiment](../feature_flags/_index.md#experiment-type) feature flags
 
 Some experiments may require you to add custom icons or illustrations to our codebase.
 This process is lengthy and at this stage, the outcome of the experiment uncertain.
-Therefore, you should postpone this effort until the [experiment cleanup process](https://handbook.gitlab.com/handbook/marketing/growth/engineering/experimentation/#experiment-cleanup-issue).
+Therefore, you should postpone this effort until the [experiment cleanup process](https://handbook.gitlab.com/handbook/engineering/development/growth/experimentation/#experiment-cleanup-issue).
 
 We recommend the following workflow:
 

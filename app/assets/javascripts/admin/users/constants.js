@@ -1,10 +1,11 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
 
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
-import { s__, __ } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 
 export const I18N_USER_ACTIONS = {
   edit: __('Edit'),
+  editWithName: (name) => sprintf(__('Edit user: %{user_name}'), { user_name: name }),
   userAdministration: s__('AdminUsers|User administration'),
   unlock: __('Unlock'),
   block: s__('AdminUsers|Block'),

@@ -91,7 +91,7 @@ describe('Delete branch modal', () => {
 
       expect(submitSpy).not.toHaveBeenCalled();
 
-      findDeleteButton().trigger('click');
+      findDeleteButton().vm.$emit('click');
 
       expect(findForm().attributes('action')).toBe(deletePath);
       expect(submitSpy).toHaveBeenCalled();
@@ -108,7 +108,7 @@ describe('Delete branch modal', () => {
     it('calls hide on the modal when cancel button is clicked', () => {
       expect(hideMock).not.toHaveBeenCalled();
 
-      findCancelButton().trigger('click');
+      findCancelButton().vm.$emit('click');
 
       expect(hideMock).toHaveBeenCalled();
     });
@@ -163,7 +163,7 @@ describe('Delete branch modal', () => {
 
       expect(submitSpy).not.toHaveBeenCalled();
 
-      findDeleteButton().trigger('click');
+      findDeleteButton().vm.$emit('click');
 
       expect(submitSpy).toHaveBeenCalled();
     });

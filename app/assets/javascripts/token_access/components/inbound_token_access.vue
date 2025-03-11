@@ -218,9 +218,6 @@ export default {
       const { groups, projects } = this.groupsAndProjectsWithAccess;
       return [...groups, ...projects];
     },
-    canAutopopulateAuthLog() {
-      return this.glFeatures.authenticationLogsMigrationForAllowlist;
-    },
     disclosureDropdownOptions() {
       return [
         {
@@ -492,11 +489,10 @@ export default {
     <crud-component
       :title="$options.i18n.cardHeaderTitle"
       :description="$options.i18n.cardHeaderDescription"
-      :toggle-text="!canAutopopulateAuthLog ? $options.i18n.addGroupOrProject : undefined"
       class="gl-mt-5"
       @hideForm="hideSelectedAction"
     >
-      <template v-if="canAutopopulateAuthLog" #actions="{ showForm }">
+      <template #actions="{ showForm }">
         <gl-collapsible-listbox
           v-model="selectedAction"
           :items="crudFormActions"

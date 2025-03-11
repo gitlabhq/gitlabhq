@@ -55,7 +55,7 @@ describe('Pipeline schedules form', () => {
   const dailyLimit = '';
 
   const defaultProvide = {
-    fullPath: 'gitlab-org/gitlab',
+    projectPath: 'gitlab-org/gitlab',
     projectId,
     defaultBranch,
     dailyLimit,

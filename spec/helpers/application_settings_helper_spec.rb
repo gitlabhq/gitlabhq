@@ -447,4 +447,37 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
       end
     end
   end
+
+  describe '#vscode_extension_marketplace_settings_view' do
+    let(:feature_flag) { true }
+    let(:application_setting) { build(:application_setting) }
+    let(:vscode_extension_marketplace) { { "enabled" => false } }
+
+    before do
+      stub_feature_flags(vscode_extension_marketplace_settings: feature_flag)
+
+      application_setting.vscode_extension_marketplace = vscode_extension_marketplace
+      helper.instance_variable_set(:@application_setting, application_setting)
+    end
+
+    context 'with flag on' do
+      it 'returns hash of view properties' do
+        expect(helper.vscode_extension_marketplace_settings_view).to eq({
+          title: _('VS Code Extension Marketplace'),
+          description: _('Enable VS Code Extension Marketplace and configure the extensions registry for Web IDE.'),
+          view_model: {
+            initialSettings: vscode_extension_marketplace
+          }
+        })
+      end
+    end
+
+    context 'with flag off' do
+      let(:feature_flag) { false }
+
+      it 'returns nil' do
+        expect(helper.vscode_extension_marketplace_settings_view).to be_nil
+      end
+    end
+  end
 end

@@ -153,7 +153,6 @@ For more details on monitoring during migrations, see the [Monitoring and Metric
 ### AI Features to Migrate
 
 - **Duo Chat Tools:**
-  - `ci_editor_assistant/prompts/anthropic.rb` - CI Editor
   - `gitlab_documentation/executor.rb` - GitLab Documentation
   - `epic_reader/prompts/anthropic.rb` - Epic Reader
   - `issue_reader/prompts/anthropic.rb` - Issue Reader

@@ -89,15 +89,18 @@ export default {
 <template>
   <div class="-gl-mx-2 -gl-my-2 gl-flex gl-justify-end" :data-testid="`user-actions-${user.id}`">
     <div v-if="hasEditAction" class="gl-p-2">
-      <gl-button v-if="showButtonLabels" v-bind="editButtonAttrs">{{
-        $options.i18n.edit
-      }}</gl-button>
+      <gl-button
+        v-if="showButtonLabels"
+        v-bind="editButtonAttrs"
+        :aria-label="$options.i18n.editWithName(user.username)"
+        >{{ $options.i18n.edit }}</gl-button
+      >
       <gl-button
         v-else
         v-gl-tooltip="$options.i18n.edit"
         icon="pencil-square"
         v-bind="editButtonAttrs"
-        :aria-label="$options.i18n.edit"
+        :aria-label="$options.i18n.editWithName(user.username)"
       />
     </div>
 

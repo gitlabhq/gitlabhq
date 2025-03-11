@@ -6,10 +6,10 @@ description: Create a custom workspace image to support any workspace you create
 title: 'Tutorial: Create a custom workspace image that supports arbitrary user IDs'
 ---
 
-In this tutorial, you'll learn how to create a custom workspace image that supports arbitrary user IDs.
-You can then use this custom image with any [workspace](_index.md) you create in GitLab.
+This tutorial guides you through creating a custom workspace image that supports arbitrary user IDs.
+Once complete, you can use this custom image with any [workspace](_index.md) you create in GitLab.
 
-To create a custom workspace image that supports arbitrary user IDs, you'll:
+To create a custom workspace image that supports arbitrary user IDs:
 
 1. [Create a base Dockerfile](#create-a-base-dockerfile).
 1. [Add support for arbitrary user IDs](#add-support-for-arbitrary-user-ids).
@@ -17,29 +17,35 @@ To create a custom workspace image that supports arbitrary user IDs, you'll:
 1. [Push the custom workspace image to the GitLab container registry](#push-the-custom-workspace-image-to-the-gitlab-container-registry).
 1. [Use the custom workspace image in GitLab](#use-the-custom-workspace-image-in-gitlab).
 
-## Prerequisites
+## Before you begin
 
-- A GitLab account with permission to create and push container images to the GitLab container registry
-- Docker installation
+You need the following:
+
+- A GitLab account with permission to create and push container images to the GitLab container
+  registry.
+- Docker installed on your local machine.
 
 ## Create a base Dockerfile
 
-To create a base Dockerfile for the container image, let's use the Python `3.11-slim-bullseye` image from Docker Hub:
+Let's start by creating a base Dockerfile for our container image. Use the Python
+`3.11-slim-bullseye` image from Docker Hub as our starting point:
 
 ```Dockerfile
 FROM python:3.11-slim-bullseye
 ```
 
-Next, you'll modify this base image.
+Great! You've created the foundation for your custom workspace image. Next, add the code
+that enables arbitrary user ID support.
 
 ## Add support for arbitrary user IDs
 
-To add support for arbitrary user IDs to the base image, let's:
+Next, you will add support for arbitrary user IDs to the base image.
+This ensures your workspace runs in GitLab.
 
-1. Add a new `gitlab-workspaces` user with a `5001` user ID.
-1. Set the necessary directory permissions.
+To add a new `gitlab-workspaces` user with an ID of `5001`, and assign them the necessary
+directory permissions, add the following code to your Dockerfile:
 
-```Dockerfile
+```dockerfile
 RUN useradd -l -u 5001 -G sudo -md /home/gitlab-workspaces -s /bin/bash -p gitlab-workspaces gitlab-workspaces
 
 ENV HOME=/home/gitlab-workspaces
@@ -51,27 +57,30 @@ RUN mkdir -p /home/gitlab-workspaces && chgrp -R 0 /home && chmod -R g=u /etc/pa
 USER 5001
 ```
 
-Now that the image supports arbitrary user IDs, it's time to build the custom workspace image.
-
 ## Build the custom workspace image
 
-To build the custom workspace image, run this command:
+With your Dockerfile complete, you're ready to build your custom workspace image:
 
-```shell
-docker build -t my-gitlab-workspace .
-```
+1. Run the following command in the directory where you created the Dockerfile:
 
-When the build is complete, you can test the image locally:
+   ```shell
+   docker build -t my-gitlab-workspace .
+   ```
 
-```shell
-docker run -ti my-gitlab-workspace sh
-```
+   This might take a few minutes depending on your internet connection and system speed.
 
-You should now have permission to run commands as the `gitlab-workspaces` user.
+1. After the build process completes, test the image locally:
+
+   ```shell
+   docker run -ti my-gitlab-workspace sh
+   ```
+
+You should now have permission to run commands as the `gitlab-workspaces` user. Perfect! Your image
+is working locally. Next, you will make it available in GitLab.
 
 ## Push the custom workspace image to the GitLab container registry
 
-To push the custom workspace image to the GitLab container registry:
+Push your custom workspace image to the GitLab container registry for use in your projects:
 
 1. Sign in to your GitLab account:
 
@@ -85,29 +94,40 @@ To push the custom workspace image to the GitLab container registry:
    docker tag my-gitlab-workspace registry.gitlab.com/your-namespace/my-gitlab-workspace:latest
    ```
 
+   Remember to replace `your-namespace` with your actual GitLab namespace.
+
 1. Push the image to the GitLab container registry:
 
    ```shell
    docker push registry.gitlab.com/your-namespace/my-gitlab-workspace:latest
    ```
 
-Now that you've pushed the custom workspace image to the GitLab container registry, you can use the image in GitLab.
+   This upload might take a while depending on your internet connection speed.
+
+Well done! Your custom workspace image is now safely stored in the GitLab container registry
+and ready to use.
 
 ## Use the custom workspace image in GitLab
 
-To use the custom workspace image in GitLab, in your project's `.devfile.yaml`, update the container image:
+For the final step, you will configure your project to use your custom workspace image:
 
-```yaml
-schemaVersion: 2.2.0
-components:
-  - name: tooling-container
-    attributes:
-      gl/inject-editor: true
-    container:
-      image: registry.gitlab.com/your-namespace/my-gitlab-workspace:latest
-```
+1. Update the container image in your project's `.devfile.yaml`:
 
-You're all set! You can now use this custom image with any [workspace](_index.md) you create in GitLab.
+   ```yaml
+   schemaVersion: 2.2.0
+   components:
+     - name: tooling-container
+       attributes:
+         gl/inject-editor: true
+       container:
+         image: registry.gitlab.com/your-namespace/my-gitlab-workspace:latest
+   ```
+
+   Remember to replace `your-namespace` with your actual GitLab namespace.
+
+Congratulations! You've successfully created and configured a custom workspace image that supports
+arbitrary user IDs. You can now use this custom image with any [workspace](_index.md) you create
+in GitLab.
 
 ## Related topics
 

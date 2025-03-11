@@ -240,6 +240,11 @@ module API
       optional :code_suggestions_api_rate_limit, type: Integer, desc: 'Maximum requests a user can make per minute to code suggestions endpoint'
       optional :resource_usage_limits, type: JSON, desc: 'Definition for resource usage limits enforced in Sidekiq workers'
       optional :ropc_without_client_credentials, type: Boolean, desc: 'Allows the use of Oauth ROPC flow without client credentials'
+      optional :vscode_extension_marketplace, type: Hash, desc: 'Settings for VS Code Extension Marketplace' do
+        optional :enabled, type: Boolean, desc: 'Enables VS Code Extension Marketplace for Web IDE and Workspaces'
+        optional :preset, type: String, desc: "The preset configuration of URL's for the VS Code Extension Marketplace"
+        optional :custom_values, type: Hash, desc: "VS Code Extension Marketplace URL's when preset is 'custom'"
+      end
 
       Gitlab::SSHPublicKey.supported_types.each do |type|
         optional :"#{type}_key_restriction",

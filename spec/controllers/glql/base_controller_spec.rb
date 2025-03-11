@@ -8,9 +8,19 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
 
   describe 'POST #execute' do
     let(:user) { create(:user, last_activity_on: 2.days.ago.to_date) }
+    let(:endpoint_id) { 'Glql::BaseController#execute' }
+    let(:qlql_sli_labels) do
+      { endpoint_id: endpoint_id, feature_category: 'not_owned', query_urgency: :low }
+    end
 
     before do
       sign_in(user)
+
+      # The application context is set by the ActionControllerStaticContext middleware
+      # in lib/gitlab/middleware/action_controller_static_context.rb.
+      # However, this middleware is not called in our controller specs,
+      # so we explicitly set the caller id here; otherwise, it returns nil.
+      Gitlab::ApplicationContext.push({ caller_id: endpoint_id })
 
       # Gitlab::ApplicationRateLimiter stores failed attempts in Redis to track the state
       # The format is the following 'application_rate_limiter:glql:<SHA>:<TIMESTAMP>'
@@ -19,7 +29,7 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
     end
 
     context 'when a GLQL query executes successfully' do
-      it 'returns successful response and trigger rate limiter' do
+      it 'returns successful response and does not trigger rate limiter' do
         execute_request
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -28,20 +38,51 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
         expect(Gitlab::ApplicationRateLimiter.peek(:glql, scope: query_sha)).to be_falsey
         expect(current_rate_limit_value(query_sha)).to be_nil
       end
+
+      it 'tracks SLI metrics for each successful glql query' do
+        expect(Gitlab::Metrics::GlqlSlis).to receive(:record_apdex).with({
+          labels: qlql_sli_labels,
+          success: true
+        })
+
+        expect(Gitlab::Metrics::GlqlSlis).to receive(:record_error).with({
+          labels: qlql_sli_labels.merge(error_type: nil),
+          error: false
+        })
+
+        execute_request
+      end
     end
 
     context 'when a single ActiveRecord::QueryAborted error occurs' do
-      it 're-raises ActiveRecord::QueryAborted but does not yet trigger rate limiter' do
-        expect(controller)
+      before do
+        allow(controller)
           .to receive(:execute_query)
           .once
           .and_raise(ActiveRecord::QueryCanceled)
+      end
 
+      it 're-raises ActiveRecord::QueryAborted but does not yet trigger rate limiter' do
         execute_request
 
         expect(response).to have_gitlab_http_status(:service_unavailable)
         expect(Gitlab::ApplicationRateLimiter.peek(:glql, scope: query_sha)).to be_falsey
         expect(current_rate_limit_value(query_sha)).to eq "1"
+      end
+
+      it 'does not track apdex for failed queries' do
+        expect(Gitlab::Metrics::GlqlSlis).not_to receive(:record_apdex)
+
+        execute_request
+      end
+
+      it 'tracks SLI metrics for failed glql query' do
+        expect(Gitlab::Metrics::GlqlSlis).to receive(:record_error).with({
+          labels: qlql_sli_labels.merge(error_type: :query_aborted),
+          error: true
+        })
+
+        execute_request
       end
     end
 
@@ -51,6 +92,12 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
           .to receive(:execute_query)
           .twice
           .and_raise(ActiveRecord::QueryCanceled)
+
+        # Tracks SLIs for each occurrence of ActiveRecord::QueryAborted
+        expect(Gitlab::Metrics::GlqlSlis).to receive(:record_error).with({
+          labels: qlql_sli_labels.merge(error_type: :query_aborted),
+          error: true
+        }).twice
 
         # 1st ActiveRecord::QueryAborted raised, error counter 1
         execute_request
@@ -75,13 +122,24 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
     end
 
     context 'when an error other than ActiveRecord::QueryAborted is raised' do
-      it 'handles the error but does not trigger rate limiter' do
-        expect(controller).to receive(:execute_query).and_raise(StandardError)
+      before do
+        allow(controller).to receive(:execute_query).and_raise(StandardError)
+      end
 
+      it 'handles the error but does not trigger rate limiter' do
         execute_request
 
         expect(Gitlab::ApplicationRateLimiter.peek(:glql, scope: query_sha)).to be_falsey
         expect(current_rate_limit_value(query_sha)).to be_nil
+      end
+
+      it 'tracks errors for other than :query_aborted type' do
+        expect(Gitlab::Metrics::GlqlSlis).to receive(:record_error).with({
+          labels: qlql_sli_labels.merge(error_type: :other),
+          error: true
+        })
+
+        execute_request
       end
     end
 

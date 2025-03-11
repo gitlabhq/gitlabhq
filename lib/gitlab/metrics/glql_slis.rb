@@ -8,6 +8,16 @@ module Gitlab
       puma_enabled!
 
       class << self
+        ERROR_TYPES = [:query_aborted, :other, nil].freeze
+        ENDPOINTS = ['Glql::BaseController#execute'].freeze
+        FEATURE_CATEGORIES = [
+          :code_review_workflow,
+          :not_owned,
+          :portfolio_management,
+          :team_planning,
+          :wiki
+        ].freeze
+
         def initialize_slis!
           glql_labels = possible_glql_labels
           Gitlab::Metrics::Sli::Apdex.initialize_sli(:glql, glql_labels)
@@ -27,12 +37,17 @@ module Gitlab
         def possible_glql_labels
           return [] unless Gitlab::Metrics::Environment.api?
 
-          ::Gitlab::Graphql::KnownOperations.default.operations.map do |op|
+          # This generates all possible label combinations for GLQL metrics
+          # by taking the product of the error types, feature categories, and endpoints.
+          combinations = ERROR_TYPES.product(FEATURE_CATEGORIES, ENDPOINTS)
+          low_urgency = Gitlab::EndpointAttributes::Config::REQUEST_URGENCIES.fetch(:low).name
+
+          combinations.map do |error_type, feature_category, endpoint_id|
             {
-              endpoint_id: op.to_caller_id,
-              # We'll be able to correlate feature_category with https://gitlab.com/gitlab-org/gitlab/-/issues/328535
-              feature_category: nil,
-              query_urgency: op.query_urgency.name
+              query_urgency: low_urgency,
+              error_type: error_type,
+              feature_category: feature_category,
+              endpoint_id: endpoint_id
             }
           end
         end

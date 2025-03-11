@@ -77,13 +77,11 @@ dast:
 
 ## Vulnerability detection
 
-Vulnerability detection is gradually being migrated from the default Zed Attack Proxy (ZAP) solution
-to the browser-based analyzer. For details of the vulnerability detection already migrated, see
-[browser-based vulnerability checks](../checks/_index.md).
+DAST detects vulnerabilities through our comprehensive [browser-based vulnerability checks](../checks/_index.md). These checks identify security issues in your web applications during scanning.
 
-The crawler runs the target website in a browser with DAST/ZAP configured as the proxy server. This
-ensures that all requests and responses made by the browser are passively scanned by DAST/ZAP. When
-running a full scan, active vulnerability checks executed by DAST/ZAP do not use a browser. This
+The crawler runs the target website in a browser with DAST configured as the proxy server. This
+ensures that all requests and responses made by the browser are passively scanned by DAST. When
+running a full scan, active vulnerability checks executed by DAST do not use a browser. This
 difference in how vulnerabilities are checked can cause issues that require certain features of the
 target website to be disabled to ensure the scan works as intended.
 
