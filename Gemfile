@@ -93,7 +93,7 @@ gem 'doorkeeper', '~> 5.8', '>= 5.8.1', feature_category: :system_access
 gem 'doorkeeper-openid_connect', '~> 1.8.10', feature_category: :system_access
 gem 'doorkeeper-device_authorization_grant', '~> 1.0.0', feature_category: :system_access
 gem 'rexml', '~> 3.3.2' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'ruby-saml', '~> 1.17.0', feature_category: :system_access
+gem 'ruby-saml', '~> 1.18.0', path: 'vendor/gems/ruby-saml', feature_category: :system_access
 gem 'omniauth', '~> 2.1.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'omniauth-auth0', '~> 3.1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'omniauth-azure-activedirectory-v2', '~> 2.0' # rubocop:todo Gemfile/MissingFeatureCategory
