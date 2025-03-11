@@ -17,7 +17,7 @@ module Gitlab
 
       class << self
         def format(...)
-          new(...).to_s
+          new(...).perform
         end
 
         def fetch_attachments(text)
@@ -53,17 +53,17 @@ module Gitlab
       # exists - Boolean that indicates the user exists in the GitLab database.
       # project - An instance of `Project`.
       def initialize(text, author = nil, exists = false, project: nil)
-        @text = text.to_s
+        @text = text
         @author = author
         @exists = exists
         @project = project
       end
 
-      def to_s
+      def perform
         return if text.blank?
 
         # Gitlab::EncodingHelper#clean remove `null` chars from the string
-        text = clean(format)
+        text = clean(formatted_text)
         text = convert_ref_links(text, project) if project.present?
         wrap_mentions_in_backticks(text)
       end
@@ -72,7 +72,7 @@ module Gitlab
 
       attr_reader :text, :author, :exists, :project
 
-      def format
+      def formatted_text
         login = author.respond_to?(:fetch) ? author.fetch(:login, nil) : author.try(:login)
         return "*Created by: #{login}*\n\n#{text}" if login.present? && !exists
 

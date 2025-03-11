@@ -9,16 +9,8 @@
 
 = render "projects/last_push"
 
-- if Feature.enabled?(:your_work_projects_vue, current_user)
-  - if show_dashboard_projects_welcome_page?
-    = render "zero_authorized_projects"
-  - else
-    = render 'dashboard/projects_head'
-    #js-your-work-projects-app{ data: { app_data: dashboard_projects_app_data } }
+- if show_dashboard_projects_welcome_page?
+  = render "zero_authorized_projects"
 - else
-  - if show_projects?(@projects, params)
-    = render 'dashboard/projects_head'
-    = render 'dashboard/projects_nav'
-    = render 'projects'
-  - else
-    = render "zero_authorized_projects"
+  = render 'dashboard/projects_head'
+  #js-your-work-projects-app{ data: { app_data: dashboard_projects_app_data } }

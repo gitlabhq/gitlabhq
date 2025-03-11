@@ -48,39 +48,18 @@ RSpec.describe 'Dashboard > User filters projects', :js, feature_category: :grou
     end
   end
 
-  context 'when feature flag your_work_projects_vue is enabled' do
-    it 'searches for projects' do
-      project2.add_developer(user)
-      visit member_dashboard_projects_path
-      wait_for_requests
+  it 'searches for projects' do
+    project2.add_developer(user)
+    visit member_dashboard_projects_path
+    wait_for_requests
 
-      expect(page).to have_content(project.name)
-      expect(page).to have_content(project2.name)
+    expect(page).to have_content(project.name)
+    expect(page).to have_content(project2.name)
 
-      search(project.name)
+    search(project.name)
 
-      expect(page).to have_content(project.name)
-      expect(page).not_to have_content(project2.name)
-    end
-  end
-
-  context 'when feature flag your_work_projects_vue is disabled' do
-    before do
-      stub_feature_flags(your_work_projects_vue: false)
-    end
-
-    it 'searches for projects' do
-      project2.add_developer(user)
-      visit dashboard_projects_path
-
-      expect(page).to have_content(project.name)
-      expect(page).to have_content(project2.name)
-
-      search(project.name)
-
-      expect(page).to have_content(project.name)
-      expect(page).not_to have_content(project2.name)
-    end
+    expect(page).to have_content(project.name)
+    expect(page).not_to have_content(project2.name)
   end
 
   def search(term)

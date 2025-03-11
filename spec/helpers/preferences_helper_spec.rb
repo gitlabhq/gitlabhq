@@ -10,34 +10,10 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
   end
 
   describe '#dashboard_value' do
-    context 'when feature flag your_work_projects_vue is enabled' do
-      it 'returns dashboard of current user' do
-        allow(user).to receive(:dashboard).and_return('your_activity')
+    it 'returns dashboard of current user' do
+      allow(user).to receive(:dashboard).and_return('your_activity')
 
-        expect(helper.dashboard_value).to eq('your_activity')
-      end
-    end
-
-    context 'when feature flag your_work_projects_vue is disabled' do
-      before do
-        stub_feature_flags(your_work_projects_vue: false)
-      end
-
-      context 'when dashboard of current user is member_projects' do
-        it 'returns projects' do
-          allow(user).to receive(:dashboard).and_return('member_projects')
-
-          expect(helper.dashboard_value).to eq('projects')
-        end
-      end
-
-      context 'when dashboard of current user is not member_projects' do
-        it 'returns projects' do
-          allow(user).to receive(:dashboard).and_return('your_activity')
-
-          expect(helper.dashboard_value).to eq('your_activity')
-        end
-      end
+      expect(helper.dashboard_value).to eq('your_activity')
     end
   end
 
@@ -58,43 +34,20 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
       expect { helper.dashboard_choices }.to raise_error(KeyError)
     end
 
-    context 'when feature flag your_work_projects_vue is enabled' do
-      it 'returns expected options' do
-        expect(helper.dashboard_choices).to match_array [
-          { text: "Your Contributed Projects (default)", value: 'projects' },
-          { text: "Starred Projects", value: 'stars' },
-          { text: "Member Projects", value: 'member_projects' },
-          { text: "Your Activity", value: 'your_activity' },
-          { text: "Your Projects' Activity", value: 'project_activity' },
-          { text: "Starred Projects' Activity", value: 'starred_project_activity' },
-          { text: "Followed Users' Activity", value: 'followed_user_activity' },
-          { text: "Your Groups", value: 'groups' },
-          { text: "Your To-Do List", value: 'todos' },
-          { text: "Assigned issues", value: 'issues' },
-          { text: "Assigned merge requests", value: 'merge_requests' }
-        ]
-      end
-    end
-
-    context 'when feature flag your_work_projects_vue is disabled' do
-      before do
-        stub_feature_flags(your_work_projects_vue: false)
-      end
-
-      it 'returns expected options' do
-        expect(helper.dashboard_choices).to match_array [
-          { text: "Your Projects (default)", value: 'projects' },
-          { text: "Starred Projects", value: 'stars' },
-          { text: "Your Activity", value: 'your_activity' },
-          { text: "Your Projects' Activity", value: 'project_activity' },
-          { text: "Starred Projects' Activity", value: 'starred_project_activity' },
-          { text: "Followed Users' Activity", value: 'followed_user_activity' },
-          { text: "Your Groups", value: 'groups' },
-          { text: "Your To-Do List", value: 'todos' },
-          { text: "Assigned issues", value: 'issues' },
-          { text: "Assigned merge requests", value: 'merge_requests' }
-        ]
-      end
+    it 'returns expected options' do
+      expect(helper.dashboard_choices).to match_array [
+        { text: "Your Contributed Projects (default)", value: 'projects' },
+        { text: "Starred Projects", value: 'stars' },
+        { text: "Member Projects", value: 'member_projects' },
+        { text: "Your Activity", value: 'your_activity' },
+        { text: "Your Projects' Activity", value: 'project_activity' },
+        { text: "Starred Projects' Activity", value: 'starred_project_activity' },
+        { text: "Followed Users' Activity", value: 'followed_user_activity' },
+        { text: "Your Groups", value: 'groups' },
+        { text: "Your To-Do List", value: 'todos' },
+        { text: "Assigned issues", value: 'issues' },
+        { text: "Assigned merge requests", value: 'merge_requests' }
+      ]
     end
   end
 

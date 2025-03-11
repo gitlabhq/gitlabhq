@@ -20,8 +20,8 @@ resource :dashboard, controller: 'dashboard', only: [] do
 
     resources :projects, only: [:index] do
       collection do
-        ## TODO: Migrate `starred` route to 'projects#index' when removing `:your_work_projects_vue` FF
-        ## https://gitlab.com/gitlab-org/gitlab/-/issues/465889
+        ## TODO: Migrate `starred` route to 'projects#index'
+        ## Tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/523698
         get :starred
         get :contributed, :personal, :member, :inactive, to: 'projects#index'
       end

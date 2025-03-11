@@ -48,16 +48,8 @@ module QA
           click_element('new-project-button', Page::Project::New)
         end
 
-        # The tab names of the HAML and Vue version of the UI differ slightly.
-        # The Vue version defaults to a "Contributed" tab where-as the HAML version
-        # defaults to a "Yours" tab. Here we conditionally click the "Member" tab
-        # if it exists (only on the Vue version). This allows the tests to
-        # pass in both versions.
-        # We can remove this conditional check when code behind the
-        # your_work_projects_vue feature flag becomes the default.
         def click_member_tab
-          text = 'Member'
-          click_link(text) if has_link?(text)
+          click_link('Member')
           wait_for_requests
         end
 

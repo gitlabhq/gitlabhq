@@ -13,23 +13,11 @@ class RootController < Dashboard::ProjectsController
 
   before_action :redirect_unlogged_user, if: -> { current_user.nil? }
   before_action :redirect_logged_user, if: -> { current_user.present? }
-  # We only need to load the projects when the user is logged in but did not
-  # configure a dashboard. In which case we render projects. We can do that straight
-  # from the #index action.
-  skip_before_action :projects
 
   CACHE_CONTROL_HEADER = 'no-store'
 
-  def index
-    # When your_work_projects_vue FF is enabled we load the projects via GraphQL query
-    # so we don't want to preload the projects at the controller level to avoid duplicate queries.
-    return if Feature.enabled?(:your_work_projects_vue, current_user)
-
-    # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/40260
-    Gitlab::GitalyClient.allow_n_plus_1_calls do
-      projects
-      super
-    end
+  def index # rubocop:disable Lint/UselessMethodDefinition -- we need to explicitly define this action for the `skip_before_action`
+    super
   end
 
   private
@@ -52,10 +40,8 @@ class RootController < Dashboard::ProjectsController
       flash.keep
       redirect_to(starred_dashboard_projects_path)
     when 'member_projects'
-      if Feature.enabled?(:your_work_projects_vue, current_user)
-        flash.keep
-        redirect_to(member_dashboard_projects_path)
-      end
+      flash.keep
+      redirect_to(member_dashboard_projects_path)
     when 'your_activity'
       redirect_to(activity_dashboard_path)
     when 'project_activity'

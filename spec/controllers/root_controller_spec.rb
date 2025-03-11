@@ -79,24 +79,10 @@ RSpec.describe RootController, feature_category: :shared do
           user.dashboard = 'member_projects'
         end
 
-        context 'when feature flag your_work_projects_vue is enabled' do
-          it 'redirects to their member projects list' do
-            get :index
+        it 'redirects to their member projects list' do
+          get :index
 
-            expect(response).to redirect_to member_dashboard_projects_path
-          end
-        end
-
-        context 'when feature flag your_work_projects_vue is disabled' do
-          before do
-            stub_feature_flags(your_work_projects_vue: false)
-          end
-
-          it 'does not redirect' do
-            get :index
-
-            expect(response).not_to redirect_to member_dashboard_projects_path
-          end
+          expect(response).to redirect_to member_dashboard_projects_path
         end
       end
 

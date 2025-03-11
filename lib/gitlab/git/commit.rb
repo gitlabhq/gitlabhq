@@ -364,7 +364,7 @@ module Gitlab
           Gitlab::AppLogger.info(
             event: 'mrdc_message_method_git',
             message:
-              "mrdc#message called via #{caller_locations.reject { |line| line.path.include?('/gems/') }.first(4)}"
+              "mrdc#message called via #{caller_locations.reject { |line| line.path.include?('/gems/') }.first(10)}"
           )
         end
 
