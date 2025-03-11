@@ -33,7 +33,7 @@ export default {
       const bars = [
         { name: s__('Pipeline|Successful'), data: [] },
         { name: s__('Pipeline|Failed'), data: [] },
-        { name: s__('Pipeline|Other'), data: [] },
+        { name: s__('Pipeline|Other (Cancelled, Skipped)'), data: [] },
       ];
 
       this.timeSeries.forEach(({ label, successCount, failedCount, otherCount }) => {

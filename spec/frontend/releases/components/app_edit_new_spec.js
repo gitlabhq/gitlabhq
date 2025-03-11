@@ -7,6 +7,7 @@ import { nextTick } from 'vue';
 import { GlDatepicker, GlFormCheckbox } from '@gitlab/ui';
 import originalOneReleaseForEditingQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release_for_editing.query.graphql.json';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import createMilestoneComboboxState from '~/milestones/stores/state';
 import { convertOneReleaseGraphQLResponse } from '~/releases/util';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -86,6 +87,25 @@ describe('Release edit/new component', () => {
       merge(
         {
           modules: {
+            milestoneCombobox: {
+              namespaced: true,
+              actions: {
+                setProjectId: jest.fn(),
+                setGroupId: jest.fn(),
+                setGroupMilestonesAvailable: jest.fn(),
+                setSelectedMilestones: jest.fn(),
+                clearSelectedMilestones: jest.fn(),
+                toggleMilestones: jest.fn(),
+                search: jest.fn(),
+                fetchMilestones: jest.fn(),
+                fetchProjectMilestones: jest.fn(),
+                fetchGroupMilestones: jest.fn(),
+                searchProjectMilestones: jest.fn(),
+                searchGroupMilestones: jest.fn(),
+              },
+              state: createMilestoneComboboxState(),
+              getters: { isLoading: jest.fn() },
+            },
             editNew: {
               namespaced: true,
               actions,
@@ -239,6 +259,7 @@ describe('Release edit/new component', () => {
         store: {
           modules: {
             editNew: {
+              namespaced: true,
               state: { isExistingRelease: false },
             },
           },
@@ -280,6 +301,7 @@ describe('Release edit/new component', () => {
           store: {
             modules: {
               editNew: {
+                namespaced: true,
                 getters: {
                   isValid: () => true,
                 },
@@ -300,6 +322,7 @@ describe('Release edit/new component', () => {
           store: {
             modules: {
               editNew: {
+                namespaced: true,
                 getters: {
                   isValid: () => false,
                 },
@@ -326,6 +349,7 @@ describe('Release edit/new component', () => {
           store: {
             modules: {
               editNew: {
+                namespaced: true,
                 state: {
                   isFetchingTagNotes: true,
                 },
@@ -355,6 +379,7 @@ describe('Release edit/new component', () => {
         store: {
           modules: {
             editNew: {
+              namespaced: true,
               state: {
                 isExistingRelease: false,
               },

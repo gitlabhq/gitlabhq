@@ -43,6 +43,20 @@ RSpec.shared_examples 'an access token GET API with access token params' do
     )
   end
 
+  context 'when filtering by revoked' do
+    it 'returns not-revoked tokens when revoked is false' do
+      get api_request, params: { revoked: false }
+
+      expect_paginated_array_response_contain_exactly(*all_token_ids.excluding(revoked_token1.id, revoked_token2.id))
+    end
+
+    it 'returns revoked tokens when revoked is true' do
+      get api_request, params: { revoked: true }
+
+      expect_paginated_array_response_contain_exactly(revoked_token1.id, revoked_token2.id)
+    end
+  end
+
   context 'when filtering by state' do
     it 'returns active tokens when state is active' do
       get api_request, params: { state: 'active' }
@@ -65,20 +79,6 @@ RSpec.shared_examples 'an access token GET API with access token params' do
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('state does not have a valid value')
-    end
-  end
-
-  context 'when filtering by revoked' do
-    it 'returns not-revoked tokens when revoked is false' do
-      get api_request, params: { revoked: false }
-
-      expect_paginated_array_response_contain_exactly(*all_token_ids.excluding(revoked_token1.id, revoked_token2.id))
-    end
-
-    it 'returns revoked tokens when revoked is true' do
-      get api_request, params: { revoked: true }
-
-      expect_paginated_array_response_contain_exactly(revoked_token1.id, revoked_token2.id)
     end
   end
 
@@ -107,6 +107,20 @@ RSpec.shared_examples 'an access token GET API with access token params' do
       get api_request, params: { last_used_after: 1.week.ago }
 
       expect_paginated_array_response_contain_exactly(last_used_2_days_ago_token.id)
+    end
+  end
+
+  context 'when filtering by expiration dates' do
+    it 'returns tokens that expire before specified date' do
+      get api_request, params: { expires_before: 1.year.ago + 1.day }
+
+      expect_paginated_array_response_contain_exactly(expired_token1.id, expired_token2.id)
+    end
+
+    it 'returns tokens that expire after specified date' do
+      get api_request, params: { expires_after: 1.year.ago, expires_before: 1.week.ago }
+
+      expect_paginated_array_response_contain_exactly(expired_token1.id, expired_token2.id)
     end
   end
 

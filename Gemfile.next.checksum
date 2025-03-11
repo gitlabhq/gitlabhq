@@ -696,7 +696,7 @@
 {"name":"sentry-ruby","version":"5.22.1","platform":"ruby","checksum":"ed77bdd76da7a4c6a3de43dc6d19d3c0412b2675b014a2654bc5bafd4d5b3289"},
 {"name":"sentry-sidekiq","version":"5.22.1","platform":"ruby","checksum":"bd7a3f915e58e13ea67251d9a458667fc4bee6dfbbd12614c47daa239e822a89"},
 {"name":"shellany","version":"0.0.1","platform":"ruby","checksum":"0e127a9132698766d7e752e82cdac8250b6adbd09e6c0a7fbbb6f61964fedee7"},
-{"name":"shoulda-matchers","version":"5.1.0","platform":"ruby","checksum":"a01d20589989e9653ab4a28c67d9db2b82bcf0a2496cf01d5e1a95a4aaaf5b07"},
+{"name":"shoulda-matchers","version":"6.4.0","platform":"ruby","checksum":"9055bb7f4bb342125fb860809798855c630e05ef5e75837b3168b8e6ee1608b0"},
 {"name":"sidekiq-cron","version":"1.12.0","platform":"ruby","checksum":"6663080a454088bd88773a0da3ae91e554b8a2e8b06cfc629529a83fd1a3096c"},
 {"name":"sigdump","version":"0.2.5","platform":"ruby","checksum":"bb706c1cce70458b285d2c3a57121e801ccb79f68be7f7377692eb40b5437242"},
 {"name":"signet","version":"0.18.0","platform":"ruby","checksum":"66cda8c2edc2dde25090b792e7e6fc9598c3c2bdd64ffacd89f1ffe3cb9cea3b"},

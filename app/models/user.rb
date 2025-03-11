@@ -1215,6 +1215,19 @@ class User < ApplicationRecord
     super if ::Gitlab::Database.read_write?
   end
 
+  # This is a copy of #forget_me! without the check for `expire_all_remember_me_on_sign_out`
+  # https://github.com/heartcombo/devise/blob/v4.9.4/lib/devise/models/rememberable.rb#L58-L63
+  #
+  # We need a separate method because we disabled that setting but we also need to be able to
+  # manually expire these tokens when a session is manually destroyed
+  def invalidate_all_remember_tokens!
+    return unless persisted?
+
+    self.remember_token = nil if respond_to?(:remember_token)
+    self.remember_created_at = nil
+    save(validate: false)
+  end
+
   # Override Devise Rememberable#remember_me?
   #
   # In Devise this method compares the remember me token received from the user session

@@ -180,6 +180,37 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
         end
       end
 
+      context 'filter with expires parameter' do
+        let_it_be(:token1) { create(:personal_access_token, expires_at: Date.new(2022, 01, 01)) }
+
+        context 'test expires_before' do
+          where(:expires_at, :status, :result_count, :result) do
+            '2022-01-02'          | :ok          | 1 | lazy { [token1.id] }
+            '2022-01-01'          | :ok          | 0 | lazy { [] }
+            '2022-01-01T12:30:24' | :ok          | 0 | lazy { [] }
+            'asdf'                | :bad_request | 1 | { "error" => "expires_before is invalid" }
+          end
+
+          with_them do
+            it_behaves_like 'response as expected', expires_before: params[:expires_at]
+          end
+        end
+
+        context 'test expires_after' do
+          where(:expires_at, :status, :result_count, :result) do
+            '2022-01-03'            | :ok          | 1 | lazy { [current_users_token.id] }
+            '2022-01-01'            | :ok          | 2 | lazy { [token1.id, current_users_token.id] }
+            '2022-01-01T12:30:26'   | :ok          | 2 | lazy { [token1.id, current_users_token.id] }
+            (DateTime.now + 1).to_s | :ok          | 1 | lazy { [current_users_token.id] }
+            'asdf'                  | :bad_request | 1 | { "error" => "expires_after is invalid" }
+          end
+
+          with_them do
+            it_behaves_like 'response as expected', expires_after: params[:expires_at]
+          end
+        end
+      end
+
       context 'filter with search parameter' do
         let_it_be(:token1) { create(:personal_access_token, name: 'test_1') }
         let_it_be(:token2) { create(:personal_access_token, name: 'test_2') }

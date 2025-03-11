@@ -43,13 +43,15 @@ export default {
     versionDescription() {
       if (this.latestVersion) {
         return sprintf(
-          s__('MlModelRegistry|Must be a semantic version. Latest version is %{latestVersion}'),
+          s__(
+            'MlExperimentTracking|Must be a semantic version. Latest version is %{latestVersion}',
+          ),
           {
             latestVersion: this.latestVersion,
           },
         );
       }
-      return s__('MlModelRegistry|Must be a semantic version.');
+      return s__('MlExperimentTracking|Must be a semantic version.');
     },
     autocompleteDataSources() {
       return gl.GfmAutoComplete?.dataSources;
@@ -123,26 +125,28 @@ export default {
     },
   },
   descriptionFormFieldProps: {
-    placeholder: s__('MlModelRegistry|Enter a model version description'),
+    placeholder: s__('MlExperimentTracking|Enter a model version description'),
     id: 'model-version-description',
     name: 'model-version-description',
   },
   i18n: {
-    actionPrimaryText: s__('MlModelRegistry|Promote'),
+    actionPrimaryText: s__('MlExperimentTracking|Promote'),
     actionSecondaryText: __('Cancel'),
-    versionDescription: s__('MlModelRegistry|Enter a semantic version.'),
-    versionValid: s__('MlModelRegistry|Version is valid semantic version.'),
-    versionInvalid: s__('MlModelRegistry|Version is not a valid semantic version.'),
-    versionPlaceholder: s__('MlModelRegistry|For example 1.0.0'),
-    descriptionPlaceholder: s__('MlModelRegistry|Enter some description'),
-    title: s__('MlModelRegistry|Promote run'),
-    description: s__('MlModelRegistry|Complete the form below to promote run to a model version.'),
-    optionalText: s__('MlModelRegistry|(Optional)'),
-    versionLabelText: s__('MlModelRegistry|Version'),
-    versionDescriptionText: s__('MlModelRegistry|Description'),
-    modelSelectionLabelText: s__('MlModelRegistry|Model'),
+    versionDescription: s__('MlExperimentTracking|Enter a semantic version.'),
+    versionValid: s__('MlExperimentTracking|Version is valid semantic version.'),
+    versionInvalid: s__('MlExperimentTracking|Version is not a valid semantic version.'),
+    versionPlaceholder: s__('MlExperimentTracking|For example 1.0.0'),
+    descriptionPlaceholder: s__('MlExperimentTracking|Enter some description'),
+    title: s__('MlExperimentTracking|Promote run'),
+    description: s__(
+      'MlExperimentTracking|Complete the form below to promote run to a model version.',
+    ),
+    optionalText: s__('MlExperimentTracking|(Optional)'),
+    versionLabelText: s__('MlExperimentTracking|Version'),
+    versionDescriptionText: s__('MlExperimentTracking|Description'),
+    modelSelectionLabelText: s__('MlExperimentTracking|Model'),
     modelDescription: s__(
-      'MlModelRegistry|Select the model that will contain the new version. The run will move to the default experiment of that model.',
+      'MlExperimentTracking|Select the model that will contain the new version. The run will move to the default experiment of that model.',
     ),
   },
 };

@@ -282,6 +282,8 @@ build_submodule:
     - unzip artifacts.zip
 ```
 
+To fetch artifacts from a job in the same pipeline, use the [`needs:artifacts`](../yaml/_index.md#needsartifacts) keyword.
+
 ## Browse the contents of the artifacts archive
 
 You can browse the contents of the artifacts from the UI without downloading the artifact locally,

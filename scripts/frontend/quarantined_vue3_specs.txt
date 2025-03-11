@@ -195,7 +195,6 @@ spec/frontend/projects/settings_service_desk/components/custom_email_form_spec.j
 spec/frontend/projects/settings_service_desk/components/service_desk_root_spec.js
 spec/frontend/projects/settings_service_desk/components/service_desk_setting_spec.js
 spec/frontend/ref/init_ambiguous_ref_modal_spec.js
-spec/frontend/releases/components/app_edit_new_spec.js
 spec/frontend/releases/components/asset_links_form_spec.js
 spec/frontend/repository/components/table/index_spec.js
 spec/frontend/repository/components/table/row_spec.js

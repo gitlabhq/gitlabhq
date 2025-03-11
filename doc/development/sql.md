@@ -435,14 +435,37 @@ scope2 = User.select(*columns).where(id: [10, 11, 12]) # uses SELECT users.*
 User.connection.execute(Gitlab::SQL::Union.new([scope1, scope2]).to_sql)
 ```
 
-## Ordering by Creation Date
+## Ordering by Creation Date (`created_at`)
 
-When ordering records based on the time they were created, you can order
-by the `id` column instead of ordering by `created_at`. Because IDs are always
-unique and incremented in the order that rows are created, doing so produces the
-exact same results. This also means there's no need to add an index on
-`created_at` to ensure consistent performance as `id` is already indexed by
-default.
+In short, you should prefer `ORDER BY id` over `ORDER BY created_at` unless you
+are sure it is going to cause problems for your feature.
+
+There is a common user facing desire to provide data that is sorted by
+`created_at`. It's common in paginated table views and paginated APIs to want
+to see the most recent first (or oldest first). This usually results in us
+wanting to add something like `ORDER BY created_at DESC LIMIT 20` to our
+queries. Adding this query would mean that we need to add an index on
+`created_at` (or composite index depending on the other filtering
+requirements). Adding indexes comes with
+[a cost](database/adding_database_indexes.md#maintenance-overhead).
+Furthermore, since `created_at` usually isn't a unique column then sorting
+and paginating over it would be unstable and we'd still need to add a
+[tie-breaker column to the sort](database/pagination_performance_guidelines.md#tie-breaker-column)
+(e.g. `ORDER BY created_at, id`) with an appropriate index for that.
+
+But, for the majority of features our users find that `ORDER BY id` is a good
+enough proxy for what they need. It's not technically always
+true that ordering by `id` is exactly the same as ordering by `created_at` but
+it is close enough and considering that `created_at` is almost never controlled
+directly by users (ie. it's an internal implementation detail), then there is
+rarely a case where the user actually cares about the difference between these
+2 columns.
+
+So there are at least 3 advantages to ordering by `id`:
+
+1. As a primary key, it is already indexed, which may be sufficient for simple queries that don't have other filtering or sorting parameters.
+1. If a composite index is required, indexes such as `btree (namespace_id, id)` are smaller than `btree (namespace_id, created_at, id)`.
+1. It is unique and thus stable for sorting and paginating.
 
 ## Use `WHERE EXISTS` instead of `WHERE IN`
 

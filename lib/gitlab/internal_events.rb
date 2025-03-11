@@ -25,6 +25,8 @@ module Gitlab
         track_analytics_event(event_name, send_snowplow_event, category: category,
           additional_properties: additional_properties, **kwargs)
 
+        return unless event_definition
+
         kwargs[:additional_properties] = additional_properties
         event_definition.extra_tracking_classes.each do |tracking_class|
           tracking_class.track_event(event_name, **kwargs)

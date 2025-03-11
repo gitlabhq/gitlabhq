@@ -163,3 +163,4 @@ how to write the phrase for each role.
 ## Related topics
 
 - [How to write task steps](../styleguide/_index.md#navigation)
+- [Before and after example](concept.md#example)

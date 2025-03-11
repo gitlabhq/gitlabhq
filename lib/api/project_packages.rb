@@ -139,6 +139,17 @@ module API
       delete ':id/packages/:package_id' do
         authorize_destroy_package!(user_project)
 
+        if Feature.enabled?(:packages_protected_packages_delete, user_project)
+          service_response =
+            Packages::Protection::CheckDeleteRuleExistenceService.new(
+              project: user_project,
+              current_user: current_user,
+              params: { package_name: package.name, package_type: package.package_type }
+            ).execute
+
+          forbidden!('Package is deletion protected.') if service_response[:protection_rule_exists?]
+        end
+
         destroy_conditionally!(package) do |package|
           ::Packages::MarkPackageForDestructionService.new(container: package, current_user: current_user).execute
         end

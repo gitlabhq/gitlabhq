@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe 'validate database config', feature_category: :cell do
   include StubENV
 
+  let(:dev_message) do
+    "\nMake sure your development environment is up to date.\nFor example, on GDK, run: gdk update\n"
+  end
+
   let(:rails_configuration) { Rails::Application::Configuration.new(Rails.root) }
   let(:valid_topology_service_client_config) do
     {
@@ -71,22 +75,32 @@ RSpec.describe 'validate database config', feature_category: :cell do
       end
 
       it 'raises an exception' do
-        expect { validate_config }.to raise_error("Cell ID is set but Cell is not enabled")
+        expect { validate_config }.to raise_error("Cell ID is set but Cell is not enabled.#{dev_message}")
       end
     end
   end
 
-  context 'when configuration is wrong' do
+  context 'when configuration is invalid' do
     context 'when cell is enabled by cell id is not set' do
       before do
         stub_config(cell: { enabled: true, id: nil, topology_service_client: valid_topology_service_client_config })
       end
 
       it 'raises exception about missing cell id' do
-        expect { validate_config }.to raise_error("Cell ID is not set to a valid positive integer")
+        expect { validate_config }.to raise_error("Cell ID is not set to a valid positive integer.#{dev_message}")
       end
 
       it_behaves_like 'with SKIP_CELL_CONFIG_VALIDATION=true'
+
+      context 'when not dev environment' do
+        before do
+          stub_rails_env('production')
+        end
+
+        it 'raises exception about missing cell id' do
+          expect { validate_config }.to raise_error("Cell ID is not set to a valid positive integer.")
+        end
+      end
     end
 
     context 'when cell is enabled by cell id is not valid' do
@@ -95,7 +109,7 @@ RSpec.describe 'validate database config', feature_category: :cell do
       end
 
       it 'raises exception about missing cell id' do
-        expect { validate_config }.to raise_error("Cell ID is not set to a valid positive integer")
+        expect { validate_config }.to raise_error("Cell ID is not set to a valid positive integer.#{dev_message}")
       end
 
       it_behaves_like 'with SKIP_CELL_CONFIG_VALIDATION=true'
@@ -107,7 +121,7 @@ RSpec.describe 'validate database config', feature_category: :cell do
       end
 
       it 'raises exception about missing topology service client config' do
-        expect { validate_config }.to raise_error("Topology Service setting 'address' is not set")
+        expect { validate_config }.to raise_error("Topology Service setting 'address' is not set.#{dev_message}")
       end
 
       it_behaves_like 'with SKIP_CELL_CONFIG_VALIDATION=true'

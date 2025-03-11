@@ -735,6 +735,94 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
             expect(response).to have_gitlab_http_status(:no_content)
           end
         end
+
+        context 'with package protection rule for different roles and package_name_patterns', :enable_admin_mode do
+          let_it_be(:pat_project_maintainer) { create(:personal_access_token, user: create(:user, maintainer_of: [project])) }
+          let_it_be(:pat_project_owner) { create(:personal_access_token, user: create(:user, owner_of: [project])) }
+          let_it_be(:pat_instance_admin) { create(:personal_access_token, :admin_mode, user: create(:admin)) }
+          let_it_be(:headers_pat_project_maintainer) { { Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER => pat_project_maintainer.token } }
+          let_it_be(:headers_pat_project_owner) { { Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER => pat_project_owner.token } }
+          let_it_be(:headers_pat_instance_admin) { { Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER => pat_instance_admin.token } }
+          let_it_be(:job_from_project_maintainer) { create(:ci_build, :running, user: pat_project_maintainer.user, project: project) }
+          let_it_be(:job_from_project_owner) { create(:ci_build, :running, user: pat_project_owner.user, project: project) }
+
+          let_it_be(:headers_job_token_from_maintainer) { { Gitlab::Auth::AuthFinders::JOB_TOKEN_HEADER => job_from_project_maintainer.token } }
+          let_it_be(:headers_job_token_from_owner) { { Gitlab::Auth::AuthFinders::JOB_TOKEN_HEADER => job_from_project_owner.token } }
+
+          let(:package_protection_rule) { create(:package_protection_rule, project: project) }
+
+          let(:package_name) { package1.name }
+          let(:package_name_no_match) { "#{package_name}_no_match" }
+
+          subject do
+            delete api(package_url), headers: headers
+            response
+          end
+
+          shared_examples 'deleting package protected' do
+            it_behaves_like 'returning response status', :forbidden
+            it do
+              subject
+
+              expect(json_response).to include('message' => "403 Forbidden - Package is deletion protected.")
+            end
+
+            it { expect { subject }.not_to change { ::Packages::Package.pending_destruction.count } }
+
+            context 'when feature flag :packages_protected_packages_delete disabled' do
+              before do
+                stub_feature_flags(packages_protected_packages_delete: false)
+              end
+
+              it_behaves_like 'deleting package'
+            end
+          end
+
+          shared_examples 'deleting package' do
+            it_behaves_like 'returning response status', :no_content
+            it { expect { subject }.to change { ::Packages::Package.pending_destruction.count }.by(1) }
+          end
+
+          where(:package_name_pattern, :minimum_access_level_for_delete, :headers, :shared_examples_name) do
+            ref(:package_name)          | :owner | ref(:headers_job_token_from_maintainer) | 'deleting package protected'
+            ref(:package_name)          | :owner | ref(:headers_job_token_from_owner)      | 'deleting package'
+            ref(:package_name)          | :owner | ref(:headers_pat_project_maintainer)    | 'deleting package protected'
+            ref(:package_name)          | :owner | ref(:headers_pat_project_owner)         | 'deleting package'
+            ref(:package_name)          | :owner | ref(:headers_pat_instance_admin)        | 'deleting package'
+
+            ref(:package_name)          | :admin | ref(:headers_job_token_from_owner)      | 'deleting package protected'
+            ref(:package_name)          | :admin | ref(:headers_pat_project_maintainer)    | 'deleting package protected'
+            ref(:package_name)          | :admin | ref(:headers_pat_project_owner)         | 'deleting package protected'
+            ref(:package_name)          | :admin | ref(:headers_pat_instance_admin)        | 'deleting package'
+
+            ref(:package_name_no_match) | :owner | ref(:headers_pat_project_owner)         | 'deleting package'
+          end
+
+          with_them do
+            before do
+              package_protection_rule.update!(
+                package_name_pattern: package_name_pattern,
+                package_type: package1.package_type,
+                minimum_access_level_for_delete: minimum_access_level_for_delete
+              )
+            end
+
+            it_behaves_like params[:shared_examples_name]
+          end
+
+          context 'for package with unsupported package type for package protection rule' do
+            let_it_be(:golang_package) { create(:golang_package, project: project, name: "#{project.root_namespace.path}/golang.org/x/pkg") }
+
+            let(:headers) { headers_pat_project_maintainer }
+
+            subject do
+              delete api("/projects/#{project.id}/packages/#{golang_package.id}"), headers: headers
+              response
+            end
+
+            it_behaves_like 'deleting package'
+          end
+        end
       end
 
       context 'with a maven package' do

@@ -10,6 +10,8 @@ module API
 
     feature_category :system_access
 
+    helpers ::API::Helpers::PersonalAccessTokensHelpers
+
     %w[project group].each do |source_type|
       resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Get list of all access tokens for the specified resource' do
@@ -20,15 +22,14 @@ module API
         end
         params do
           requires :id, types: [String, Integer], desc: "ID or URL-encoded path of the #{source_type}"
-          optional :state, type: String, desc: 'Filter tokens which are either active or inactive',
-            values: %w[active inactive], documentation: { example: 'active' }
+          use :access_token_params
         end
         get ":id/access_tokens" do
           resource = find_source(source_type, params[:id])
 
           next unauthorized! unless current_user.can?(:read_resource_access_tokens, resource)
 
-          tokens = PersonalAccessTokensFinder.new({ user: resource.bots, impersonation: false, state: params[:state] }).execute.preload_users
+          tokens = PersonalAccessTokensFinder.new(declared(params, include_missing: false).merge({ user: resource.bots, impersonation: false })).execute.preload_users
 
           resource.members.load
           present paginate(tokens), with: Entities::ResourceAccessToken, resource: resource

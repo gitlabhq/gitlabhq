@@ -36962,7 +36962,30 @@ msgstr ""
 msgid "MissingSSHKeyWarningLink|You won't be able to pull or push repositories via SSH until you add an SSH key to your profile"
 msgstr ""
 
+msgid "MlExperimentTracking|%d experiment"
+msgid_plural "MlExperimentTracking|%d experiments"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "MlExperimentTracking|(Optional)"
+msgstr ""
+
+msgid "MlExperimentTracking|Artifacts"
+msgstr ""
+
+msgid "MlExperimentTracking|CI Info"
+msgstr ""
+
+msgid "MlExperimentTracking|Complete the form below to promote run to a model version."
+msgstr ""
+
+msgid "MlExperimentTracking|Create"
+msgstr ""
+
 msgid "MlExperimentTracking|Create an experiment using MLflow"
+msgstr ""
+
+msgid "MlExperimentTracking|Create experiments using MLflow"
 msgstr ""
 
 msgid "MlExperimentTracking|Creating an experiment"
@@ -36989,7 +37012,22 @@ msgstr ""
 msgid "MlExperimentTracking|Deleting this run will delete the associated parameters, metrics, and metadata."
 msgstr ""
 
+msgid "MlExperimentTracking|Description"
+msgstr ""
+
+msgid "MlExperimentTracking|Details & Metadata"
+msgstr ""
+
 msgid "MlExperimentTracking|Download as CSV"
+msgstr ""
+
+msgid "MlExperimentTracking|Enter a model version description"
+msgstr ""
+
+msgid "MlExperimentTracking|Enter a semantic version."
+msgstr ""
+
+msgid "MlExperimentTracking|Enter some description"
 msgstr ""
 
 msgid "MlExperimentTracking|Experiment created %{timeAgo} by %{author}"
@@ -37007,7 +37045,13 @@ msgstr ""
 msgid "MlExperimentTracking|Failed to load experiment candidates with error: %{message}"
 msgstr ""
 
+msgid "MlExperimentTracking|Failed to load experiments with error: %{error}"
+msgstr ""
+
 msgid "MlExperimentTracking|Failed to remove run"
+msgstr ""
+
+msgid "MlExperimentTracking|For example 1.0.0"
 msgstr ""
 
 msgid "MlExperimentTracking|Get started with model experiments!"
@@ -37019,7 +37063,22 @@ msgstr ""
 msgid "MlExperimentTracking|Last activity"
 msgstr ""
 
+msgid "MlExperimentTracking|MLflow run ID"
+msgstr ""
+
+msgid "MlExperimentTracking|Metric"
+msgstr ""
+
+msgid "MlExperimentTracking|Model"
+msgstr ""
+
 msgid "MlExperimentTracking|Model experiments"
+msgstr ""
+
+msgid "MlExperimentTracking|Must be a semantic version."
+msgstr ""
+
+msgid "MlExperimentTracking|Must be a semantic version. Latest version is %{latestVersion}"
 msgstr ""
 
 msgid "MlExperimentTracking|Name"
@@ -37028,7 +37087,22 @@ msgstr ""
 msgid "MlExperimentTracking|No candidates associated with this experiment"
 msgstr ""
 
+msgid "MlExperimentTracking|No logged artifacts."
+msgstr ""
+
 msgid "MlExperimentTracking|No logged experiment metadata"
+msgstr ""
+
+msgid "MlExperimentTracking|No logged metadata"
+msgstr ""
+
+msgid "MlExperimentTracking|No logged metrics"
+msgstr ""
+
+msgid "MlExperimentTracking|No logged parameters"
+msgstr ""
+
+msgid "MlExperimentTracking|No results"
 msgstr ""
 
 msgid "MlExperimentTracking|Number of runs"
@@ -37037,10 +37111,22 @@ msgstr ""
 msgid "MlExperimentTracking|Overview"
 msgstr ""
 
+msgid "MlExperimentTracking|Parameters"
+msgstr ""
+
 msgid "MlExperimentTracking|Performance"
 msgstr ""
 
+msgid "MlExperimentTracking|Promote"
+msgstr ""
+
+msgid "MlExperimentTracking|Promote run"
+msgstr ""
+
 msgid "MlExperimentTracking|Run %{id}"
+msgstr ""
+
+msgid "MlExperimentTracking|Run not linked to a CI build"
 msgstr ""
 
 msgid "MlExperimentTracking|Run removed"
@@ -37049,7 +37135,19 @@ msgstr ""
 msgid "MlExperimentTracking|Runs"
 msgstr ""
 
+msgid "MlExperimentTracking|Select a model"
+msgstr ""
+
+msgid "MlExperimentTracking|Select the model that will contain the new version. The run will move to the default experiment of that model."
+msgstr ""
+
+msgid "MlExperimentTracking|Step %{step}"
+msgstr ""
+
 msgid "MlExperimentTracking|To learn more about MLflow client compatibility, see %{linkStart}the documentation%{linkEnd}."
+msgstr ""
+
+msgid "MlExperimentTracking|Triggered by"
 msgstr ""
 
 msgid "MlExperimentTracking|Use candidates to track performance, parameters, and metadata"
@@ -37061,13 +37159,17 @@ msgstr ""
 msgid "MlExperimentTracking|Value"
 msgstr ""
 
-msgid "MlExperimentTracking|by %{author}"
+msgid "MlExperimentTracking|Version"
 msgstr ""
 
-msgid "MlModelRegistry|%d experiment"
-msgid_plural "MlModelRegistry|%d experiments"
-msgstr[0] ""
-msgstr[1] ""
+msgid "MlExperimentTracking|Version is not a valid semantic version."
+msgstr ""
+
+msgid "MlExperimentTracking|Version is valid semantic version."
+msgstr ""
+
+msgid "MlExperimentTracking|by %{author}"
+msgstr ""
 
 msgid "MlModelRegistry|%d model"
 msgid_plural "MlModelRegistry|%d models"
@@ -37109,16 +37211,10 @@ msgstr ""
 msgid "MlModelRegistry|CI Info"
 msgstr ""
 
-msgid "MlModelRegistry|Complete the form below to promote run to a model version."
-msgstr ""
-
 msgid "MlModelRegistry|Create"
 msgstr ""
 
 msgid "MlModelRegistry|Create & import"
-msgstr ""
-
-msgid "MlModelRegistry|Create experiments using MLflow"
 msgstr ""
 
 msgid "MlModelRegistry|Create model"
@@ -37178,9 +37274,6 @@ msgstr ""
 msgid "MlModelRegistry|Description"
 msgstr ""
 
-msgid "MlModelRegistry|Details & Metadata"
-msgstr ""
-
 msgid "MlModelRegistry|Drop or %{linkStart}select%{linkEnd} artifacts to attach"
 msgstr ""
 
@@ -37221,9 +37314,6 @@ msgid "MlModelRegistry|Experiment"
 msgstr ""
 
 msgid "MlModelRegistry|Failed to delete model with error: %{message}"
-msgstr ""
-
-msgid "MlModelRegistry|Failed to load experiments with error: %{error}"
 msgstr ""
 
 msgid "MlModelRegistry|Failed to load model runs with error: %{message}"
@@ -37274,12 +37364,6 @@ msgstr ""
 msgid "MlModelRegistry|Metadata"
 msgstr ""
 
-msgid "MlModelRegistry|Metric"
-msgstr ""
-
-msgid "MlModelRegistry|Model"
-msgstr ""
-
 msgid "MlModelRegistry|Model card"
 msgstr ""
 
@@ -37325,9 +37409,6 @@ msgstr ""
 msgid "MlModelRegistry|No description available. To add a description, click \"Edit model\" above."
 msgstr ""
 
-msgid "MlModelRegistry|No logged artifacts."
-msgstr ""
-
 msgid "MlModelRegistry|No logged metadata"
 msgstr ""
 
@@ -37335,9 +37416,6 @@ msgid "MlModelRegistry|No logged metrics"
 msgstr ""
 
 msgid "MlModelRegistry|No logged parameters"
-msgstr ""
-
-msgid "MlModelRegistry|No results"
 msgstr ""
 
 msgid "MlModelRegistry|No runs associated with this model"
@@ -37350,12 +37428,6 @@ msgid "MlModelRegistry|Parameters"
 msgstr ""
 
 msgid "MlModelRegistry|Performance"
-msgstr ""
-
-msgid "MlModelRegistry|Promote"
-msgstr ""
-
-msgid "MlModelRegistry|Promote run"
 msgstr ""
 
 msgid "MlModelRegistry|Provide a subfolder name to organize your artifacts. Entering an existing subfolder's name will place artifacts in the existing folder"
@@ -37376,19 +37448,10 @@ msgstr ""
 msgid "MlModelRegistry|Save changes"
 msgstr ""
 
-msgid "MlModelRegistry|Select a model"
-msgstr ""
-
-msgid "MlModelRegistry|Select the model that will contain the new version. The run will move to the default experiment of that model."
-msgstr ""
-
 msgid "MlModelRegistry|Setting up the client"
 msgstr ""
 
 msgid "MlModelRegistry|Something went wrong while trying to delete the model version. Please try again later."
-msgstr ""
-
-msgid "MlModelRegistry|Step %{step}"
 msgstr ""
 
 msgid "MlModelRegistry|Subfolder"
@@ -43467,7 +43530,7 @@ msgstr ""
 msgid "Pipeline|Only the first 100 jobs per stage are displayed"
 msgstr ""
 
-msgid "Pipeline|Other"
+msgid "Pipeline|Other (Cancelled, Skipped)"
 msgstr ""
 
 msgid "Pipeline|Passed"

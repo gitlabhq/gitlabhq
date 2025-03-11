@@ -739,8 +739,13 @@ subcommand. However, `GIT_SUBMODULE_UPDATE_FLAGS` flags are appended after a few
 Git honors the last occurrence of a flag in the list of arguments, so manually
 providing them in `GIT_SUBMODULE_UPDATE_FLAGS` overrides these default flags.
 
-You can use this variable to fetch the latest remote `HEAD` instead of the tracked commit in the repository.
-You can also use it to speed up the checkout by fetching submodules in multiple parallel jobs.
+For example, you can use this variable to:
+
+- Fetch the latest remote `HEAD` instead of the tracked commit in the
+  repository (default) to automatically updated all submodules with the
+  `--remote` flag.
+- Speed up the checkout by fetching submodules in multiple parallel jobs with
+  the `--jobs 4` flag.
 
 ```yaml
 variables:
@@ -758,11 +763,34 @@ git submodule update --init --depth 50 --recursive --remote --jobs 4
 
 {{< alert type="warning" >}}
 
-You should be aware of the implications for the security, stability, and reproducibility of
-your builds when using the `--remote` flag. In most cases, it is better to explicitly track
-submodule commits as designed, and update them using an auto-remediation/dependency bot.
+You should be aware of the implications for the security, stability, and
+reproducibility of your builds when using the `--remote` flag. In most cases,
+it is better to explicitly track submodule commits as designed, and update them
+using an auto-remediation/dependency bot.
+
+The `--remote` flag is not required to check out submodules at their committed
+revisions. Use this flag only when you want to automatically updated submodules
+to their latest remote versions.
 
 {{< /alert >}}
+
+The behavior of `--remote` depends on your Git version. Some Git versions might
+fail, with the error below, when the branch in the superproject's `.gitmodules`
+differs from the default branch of the submodule repository:
+
+`fatal: Unable to find refs/remotes/origin/<branch> revision in submodule path '<submodule-path>'`
+
+The runner implements a "best effort" fallback that attempts to
+pull remote refs when the submodule update fails.
+
+If this fallback does not work with your Git version, try one of the following
+workarounds:
+
+- Update the submodule repository's default branch to match the branch set in
+  `.gitmodules` in the superproject.
+- Set `GIT_SUBMODULE_DEPTH` to `0`.
+- Update the submodules separately and remove the `--remote` flag from
+  `GIT_SUBMODULE_UPDATE_FLAGS`.
 
 ### Rewrite submodule URLs to HTTPS
 

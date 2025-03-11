@@ -18,6 +18,10 @@ module API
           documentation: { example: '2021-01-01' }
         optional :last_used_after, type: DateTime, desc: 'Filter tokens which were used after given datetime',
           documentation: { example: '2022-01-01' }
+        optional :expires_before, type: Date, desc: 'Filter tokens which expire before given datetime',
+          documentation: { example: '2022-01-01' }
+        optional :expires_after, type: Date, desc: 'Filter tokens which expire after given datetime',
+          documentation: { example: '2021-01-01' }
         optional :search, type: String, desc: 'Filters tokens by name', documentation: { example: 'token' }
         optional :sort, type: String, desc: 'Sort tokens', documentation: { example: 'created_at_desc' }
       end

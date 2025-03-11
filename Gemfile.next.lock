@@ -1784,7 +1784,7 @@ GEM
       sentry-ruby (~> 5.22.1)
       sidekiq (>= 3.0)
     shellany (0.0.1)
-    shoulda-matchers (5.1.0)
+    shoulda-matchers (6.4.0)
       activesupport (>= 5.2.0)
     sidekiq-cron (1.12.0)
       fugit (~> 1.8)
@@ -2346,7 +2346,7 @@ DEPENDENCIES
   sentry-rails (~> 5.22.0)
   sentry-ruby (~> 5.22.0)
   sentry-sidekiq (~> 5.22.0)
-  shoulda-matchers (~> 5.1.0)
+  shoulda-matchers (~> 6.4.0)
   sidekiq!
   sidekiq-cron (~> 1.12.0)
   sigdump (~> 0.2.4)

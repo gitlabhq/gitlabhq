@@ -42,6 +42,11 @@ module Packages
 
       scope :for_package_type, ->(package_type) { where(package_type: package_type) }
 
+      def self.for_delete_exists?(access_level:, package_name:, package_type:)
+        for_action_exists?(action: :delete, access_level: access_level, package_name: package_name,
+          package_type: package_type)
+      end
+
       def self.for_action_exists?(action:, access_level:, package_name:, package_type:)
         return false if [access_level, package_name, package_type].any?(&:blank?)
 

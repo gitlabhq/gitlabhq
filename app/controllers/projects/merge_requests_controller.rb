@@ -390,7 +390,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   private
 
   def set_issuables_index
-    return if ::Feature.enabled?(:vue_merge_request_list, current_user) && request.format.html?
+    return if request.format.html?
 
     super
   end

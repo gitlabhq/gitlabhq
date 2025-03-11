@@ -365,6 +365,7 @@ export default {
           :class="{
             'right-sidebar-expanded': isSidebarOpen,
             'right-sidebar-collapsed': !isSidebarOpen,
+            '!gl-bottom-8': displayStickyFooter,
           }"
           :artifact-help-url="artifactHelpUrl"
           data-testid="job-sidebar"

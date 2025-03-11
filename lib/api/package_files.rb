@@ -67,6 +67,17 @@ module API
 
         not_found! unless package
 
+        if Feature.enabled?(:packages_protected_packages_delete, user_project)
+          service_response =
+            Packages::Protection::CheckDeleteRuleExistenceService.new(
+              project: user_project,
+              current_user: current_user,
+              params: { package_name: package.name, package_type: package.package_type }
+            ).execute
+
+          forbidden!('Package is deletion protected.') if service_response[:protection_rule_exists?]
+        end
+
         package_file = package.installable_package_files
                               .find_by_id(params[:package_file_id])
 

@@ -40,12 +40,16 @@ export default {
       };
     },
     modelsCountLabel() {
-      return n__('MlModelRegistry|%d experiment', 'MlModelRegistry|%d experiments', this.count);
+      return n__(
+        'MlExperimentTracking|%d experiment',
+        'MlExperimentTracking|%d experiments',
+        this.count,
+      );
     },
   },
   i18n: {
-    createTitle: s__('MlModelRegistry|Create'),
-    importMlflow: s__('MlModelRegistry|Create experiments using MLflow'),
+    createTitle: s__('MlExperimentTracking|Create'),
+    importMlflow: s__('MlExperimentTracking|Create experiments using MLflow'),
   },
   mlflowModalId: MLFLOW_USAGE_MODAL_ID,
 };

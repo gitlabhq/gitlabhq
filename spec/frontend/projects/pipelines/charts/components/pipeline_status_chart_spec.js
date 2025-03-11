@@ -36,7 +36,7 @@ describe('PipelineStatusChart', () => {
       bars: [
         { data: [], name: 'Successful' },
         { data: [], name: 'Failed' },
-        { data: [], name: 'Other' },
+        { data: [], name: 'Other (Cancelled, Skipped)' },
       ],
       groupBy: [],
       customPalette: ['#619025', '#b93d71', '#617ae2'],
@@ -61,7 +61,7 @@ describe('PipelineStatusChart', () => {
     expect(findStackedColumnChart().props('bars')).toEqual([
       { data: [10, 11], name: 'Successful' },
       { data: [20, 21], name: 'Failed' },
-      { data: [30, 31], name: 'Other' },
+      { data: [30, 31], name: 'Other (Cancelled, Skipped)' },
     ]);
   });
 

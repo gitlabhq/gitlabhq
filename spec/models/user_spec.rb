@@ -2624,7 +2624,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe '#forget_me!' do
+  describe '#invalidate_all_remember_tokens!' do
     let(:user) { create(:user) }
 
     context 'when remember me application setting is disabled' do
@@ -2638,7 +2638,7 @@ RSpec.describe User, feature_category: :user_profile do
         expect(user.remember_created_at).not_to be_nil
 
         stub_application_setting(remember_me_enabled: false)
-        user.forget_me!
+        user.invalidate_all_remember_tokens!
 
         expect(user.remember_created_at).to be_nil
       end
