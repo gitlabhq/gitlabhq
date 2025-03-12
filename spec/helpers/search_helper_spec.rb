@@ -915,22 +915,31 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     end
 
     context 'when description present' do
-      using RSpec::Parameterized::TableSyntax
+      it 'calls simple_search_highlight_and_truncate' do
+        expect(self).to receive(:simple_search_highlight_and_truncate).with(description, 'test')
 
-      where(:description, :expected) do
-        'test'                                                                 | '<mark>test</mark>'
-        '<span style="color: blue;">this test should not be blue</span>'       | 'this <mark>test</mark> should not be blue'
-        '<a href="#" onclick="alert(\'XSS\')">Click Me test</a>'               | '<a href="#">Click Me <mark>test</mark></a>'
-        '<script type="text/javascript">alert(\'Another XSS\');</script> test' | ' <mark>test</mark>'
-        'Lorem test ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.' | 'Lorem <mark>test</mark> ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Don...'
-        '<img src="https://random.foo.com/test.png" width="128" height="128" />some image' | 'some image'
-        '<h2 data-sourcepos="11:1-11:26" dir="auto"><a id="user-content-additional-information" class="anchor" href="#additional-information" aria-hidden="true"></a>Additional information test:</h2><textarea data-update-url="/freepascal.org/fpc/source/-/issues/6163.json" dir="auto" data-testid="textarea" class="hidden js-task-list-field"></textarea>' | '<a class="anchor" href="#additional-information"></a>Additional information <mark>test</mark>:'
+        highlight_and_truncate
       end
+    end
+  end
 
-      with_them do
-        it 'sanitizes, truncates, and highlights the search term' do
-          expect(highlight_and_truncate).to eq(expected)
-        end
+  describe '#simple_search_highlight_and_truncate' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:text, :expected) do
+      'test' | '<mark>test</mark>'
+      'charset ëòä test' | 'charset ëòä <mark>test</mark>'
+      '<span style="color: blue;">this test should not be blue</span>' | 'this <mark>test</mark> should not be blue'
+      '<a href="#" onclick="alert(\'XSS\')">Click Me test</a>' | '<a href="#">Click Me <mark>test</mark></a>'
+      '<script type="text/javascript">alert(\'Another XSS\');</script> test' | ' <mark>test</mark>'
+      'Lorem test ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.' | 'Lorem <mark>test</mark> ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Don...'
+      '<img src="https://random.foo.com/test.png" width="128" height="128" />some image' | 'some image'
+      '<h2 data-sourcepos="11:1-11:26" dir="auto"><a id="user-content-additional-information" class="anchor" href="#additional-information" aria-hidden="true"></a>Additional information test:</h2><textarea data-update-url="/freepascal.org/fpc/source/-/issues/6163.json" dir="auto" data-testid="textarea" class="hidden js-task-list-field"></textarea>' | '<a class="anchor" href="#additional-information"></a>Additional information <mark>test</mark>:'
+    end
+
+    with_them do
+      it 'sanitizes, truncates, and highlights the search term' do
+        expect(simple_search_highlight_and_truncate(text, 'test')).to eq(expected)
       end
     end
   end
