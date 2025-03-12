@@ -61,6 +61,13 @@ RSpec.describe Packages::Protection::CreateRuleService, '#execute', feature_cate
       it_behaves_like 'an erroneous service response with side effect',
         message: "'unknown_package_type' is not a valid package_type"
     end
+
+    context 'when minimum_access_level_for_delete and minimum_access_level_for_push are blank' do
+      let(:params) { super().merge(minimum_access_level_for_delete: nil, minimum_access_level_for_push: nil) }
+
+      it_behaves_like 'an erroneous service response with side effect',
+        message: ['A rule must have at least a minimum access role for push or delete.']
+    end
   end
 
   context 'with existing PackageProtectionRule' do

@@ -126,10 +126,6 @@ export default {
   computed: {
     ...mapState(['isToggleStateButtonLoading']),
     ...mapGetters(['openState', 'getBlockedByIssues']),
-    ...mapGetters(['getNoteableData']),
-    isLocked() {
-      return this.getNoteableData.discussion_locked;
-    },
     isClosed() {
       return this.openState === STATUS_CLOSED;
     },
@@ -230,7 +226,6 @@ export default {
   },
   methods: {
     ...mapActions(['toggleStateButtonLoading']),
-    ...mapActions(['updateLockedAttribute']),
     toggleIssueState() {
       if (!this.isClosed && this.getBlockedByIssues?.length) {
         this.$refs.blockedByIssuesModal.show();

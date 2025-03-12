@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Lfs
-  class UnlockFileService < BaseService
+  class UnlockFileService < BaseFileLockService
     def execute
       unless can?(current_user, :push_code, project)
         raise Gitlab::GitAccess::ForbiddenError, _('You have no permissions')

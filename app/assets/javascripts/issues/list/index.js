@@ -46,8 +46,6 @@ export async function mountJiraIssuesListApp() {
     render(createComponent) {
       return createComponent(JiraIssuesImportStatusApp, {
         props: {
-          canEdit,
-          isJiraConfigured,
           issuesPath,
           projectPath,
         },

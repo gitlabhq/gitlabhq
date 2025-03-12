@@ -19,6 +19,7 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
       <<~QUERY
       packageProtectionRule {
         packageNamePattern
+        minimumAccessLevelForDelete
         minimumAccessLevelForPush
       }
       clientMutationId
@@ -31,11 +32,13 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
     {
       id: package_protection_rule.to_global_id,
       package_name_pattern: "#{package_protection_rule.package_name_pattern}-updated",
+      minimum_access_level_for_delete: 'ADMIN',
       minimum_access_level_for_push: 'MAINTAINER'
     }
   end
 
   let(:mutation_response) { graphql_mutation_response(:update_packages_protection_rule) }
+  let(:mutation_response_errors) { mutation_response['errors'] }
 
   subject { post_graphql_mutation(mutation, current_user: current_user) }
 
@@ -47,19 +50,21 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
 
       expect(mutation_response).to include(
         'packageProtectionRule' => {
-          'packageNamePattern' => input[:package_name_pattern],
-          'minimumAccessLevelForPush' => input[:minimum_access_level_for_push]
+          'packageNamePattern' => expected_attributes[:package_name_pattern],
+          'minimumAccessLevelForDelete' => expected_attributes[:minimum_access_level_for_delete]&.upcase,
+          'minimumAccessLevelForPush' => expected_attributes[:minimum_access_level_for_push]&.upcase
         }
       )
     end
 
-    it do
-      subject.tap do
-        expect(package_protection_rule.reload).to have_attributes(
-          package_name_pattern: input[:package_name_pattern],
-          minimum_access_level_for_push: input[:minimum_access_level_for_push].downcase
-        )
-      end
+    it 'updates attributes of existing package protection rule' do
+      expect { subject }.not_to change { ::Packages::Protection::Rule.count }
+
+      expect(package_protection_rule.reload).to have_attributes(
+        package_name_pattern: expected_attributes[:package_name_pattern],
+        minimum_access_level_for_delete: expected_attributes[:minimum_access_level_for_delete]&.downcase,
+        minimum_access_level_for_push: expected_attributes[:minimum_access_level_for_push]&.downcase
+      )
     end
   end
 
@@ -68,7 +73,33 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
     it { expect { subject }.not_to change { package_protection_rule.reload.updated_at } }
   end
 
-  it_behaves_like 'a successful response'
+  it_behaves_like 'a successful response' do
+    let(:expected_attributes) { input }
+  end
+
+  context 'when feature flag `packages_protected_packages_delete` is disabled' do
+    before do
+      package_protection_rule.update!(minimum_access_level_for_delete: nil)
+
+      stub_feature_flags(packages_protected_packages_delete: false)
+    end
+
+    it_behaves_like 'a successful response' do
+      let(:expected_attributes) do
+        input.merge(minimum_access_level_for_delete: package_protection_rule.minimum_access_level_for_delete)
+      end
+    end
+
+    context 'when minimum_access_level_for_push is nil' do
+      let(:input) { super().merge(minimum_access_level_for_push: nil) }
+
+      it 'includes error message in response' do
+        is_expected.tap do
+          expect(mutation_response_errors).to include(/at least a minimum access role for push or delete/)
+        end
+      end
+    end
+  end
 
   context 'with other existing package protection rule with same package_name_pattern' do
     let_it_be_with_reload(:other_existing_package_protection_rule) do
@@ -85,16 +116,20 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
     end
 
     it 'includes error message in response' do
-      is_expected.tap { expect(mutation_response['errors']).to eq ['Package name pattern has already been taken'] }
+      is_expected.tap { expect(mutation_response_errors).to eq ['Package name pattern has already been taken'] }
     end
   end
 
   context 'with invalid input param `minimumAccessLevelForPush`' do
-    let(:input) { super().merge(minimum_access_level_for_push: nil) }
+    let(:input) { super().merge(minimum_access_level_for_push: 'INVALID_ACCESS_LEVEL') }
 
-    it_behaves_like 'an erroneous response'
+    it { is_expected.tap { expect_graphql_errors_to_include(/invalid value for minimumAccessLevelForPush/) } }
+  end
 
-    it { is_expected.tap { expect_graphql_errors_to_include(/minimumAccessLevelForPush can't be blank/) } }
+  context 'with invalid input param `minimumAccessLevelForDelete`' do
+    let(:input) { super().merge(minimum_access_level_for_delete: 'INVALID_ACCESS_LEVEL') }
+
+    it { is_expected.tap { expect_graphql_errors_to_include(/invalid value for minimumAccessLevelForDelete/) } }
   end
 
   context 'with invalid input param `packageNamePattern`' do
@@ -103,6 +138,16 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
     it_behaves_like 'an erroneous response'
 
     it { is_expected.tap { expect_graphql_errors_to_include(/packageNamePattern can't be blank/) } }
+  end
+
+  context 'with blank input fields `minimumAccessLevelForPush` and `minimumAccessLevelForDelete`' do
+    let(:input) { super().merge(minimum_access_level_for_push: nil, minimum_access_level_for_delete: nil) }
+
+    it 'includes error message in response' do
+      is_expected.tap do
+        expect(mutation_response_errors).to include(/at least a minimum access role for push or delete/)
+      end
+    end
   end
 
   context 'when current_user does not have permission' do

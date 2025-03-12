@@ -17,7 +17,7 @@ export default {
     },
   },
   computed: {
-    ...mapState('details', ['loadingStacktrace', 'stacktraceData']),
+    ...mapState('details', ['loadingStacktrace']),
     ...mapGetters('details', ['stacktrace']),
   },
   mounted() {

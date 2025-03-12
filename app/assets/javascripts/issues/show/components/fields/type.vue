@@ -29,7 +29,7 @@ export default {
   },
   data() {
     return {
-      issueState: {},
+      issueState: {}, // eslint-disable-line vue/no-unused-properties
       selectedIssueType: '',
     };
   },

@@ -5,7 +5,6 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { getDateInPast } from '~/lib/utils/datetime_utility';
 import PipelineChartsNew from '~/projects/pipelines/charts/components/pipeline_charts_new.vue';
 import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
 import PipelineDurationChart from '~/projects/pipelines/charts/components/pipeline_duration_chart.vue';
@@ -21,7 +20,7 @@ jest.mock('~/alert');
 const projectPath = 'gitlab-org/gitlab';
 
 describe('~/projects/pipelines/charts/components/pipeline_charts_new.vue', () => {
-  useFakeDate();
+  useFakeDate('2022-02-15T08:30'); // a date with a time
 
   let wrapper;
   let getPipelineAnalyticsHandler;
@@ -66,12 +65,11 @@ describe('~/projects/pipelines/charts/components/pipeline_charts_new.vue', () =>
 
     it('is "Last 7 days" by default', () => {
       expect(findGlCollapsibleListbox().props('selected')).toBe(7);
-
       expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(1);
       expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith({
         fullPath: projectPath,
-        fromTime: getDateInPast(new Date(), 7),
-        toTime: new Date(),
+        fromTime: new Date('2022-02-08'),
+        toTime: new Date('2022-02-15'),
       });
     });
 
@@ -83,8 +81,8 @@ describe('~/projects/pipelines/charts/components/pipeline_charts_new.vue', () =>
       expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(2);
       expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith({
         fullPath: projectPath,
-        fromTime: getDateInPast(new Date(), 90),
-        toTime: new Date(),
+        fromTime: new Date('2021-11-17'),
+        toTime: new Date('2022-02-15'),
       });
     });
   });

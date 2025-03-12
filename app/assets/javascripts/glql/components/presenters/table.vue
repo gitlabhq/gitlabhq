@@ -59,7 +59,7 @@ export default {
 };
 </script>
 <template>
-  <div class="!gl-my-4">
+  <div class="gl-table-shadow !gl-my-4">
     <table ref="table" class="!gl-mb-2 !gl-mt-0 gl-overflow-y-hidden">
       <thead>
         <tr v-if="table">

@@ -18,11 +18,6 @@ export default {
     EditTimelineEvent,
   },
   props: {
-    timelineEventLoading: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     timelineEvents: {
       type: Array,
       required: true,

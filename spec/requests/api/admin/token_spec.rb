@@ -32,7 +32,7 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
   end
 
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, maintainers: [admin]) }
   let_it_be(:group) { create(:group) }
   let_it_be(:url) { '/admin/token' }
   let(:api_user) { admin }
@@ -52,7 +52,7 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
   let(:cluster_agent_token) { create(:cluster_agent_token, token_encrypted: nil) }
   let(:runner_authentication_token) { create(:ci_runner, registration_type: :authenticated_user) }
   let(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
-  let(:ci_trigger) { create(:ci_trigger) }
+  let_it_be(:ci_trigger) { create(:ci_trigger, project: project) }
   let(:ci_build) { create(:ci_build, status: :running) }
   let(:feature_flags_client) { create(:operations_feature_flags_client) }
 
@@ -197,6 +197,30 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
           expect { delete_token }.to change { user.reload.incoming_email_token }
 
           expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
+      context 'when the token is a ci pipeline trigger token' do
+        let(:plaintext) { ci_trigger.token }
+
+        it 'expires the trigger token' do
+          expect { delete_token }.to change { ci_trigger.reload.expired? }
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+
+        context 'when expiring the token fails' do
+          before do
+            errors = ActiveModel::Errors.new(ci_trigger).tap { |e| e.add(:base, 'Some error') }
+            allow(ci_trigger).to receive_messages(update: false, errors: errors)
+            allow(::Ci::Trigger).to receive(:find_by_token).with(plaintext).and_return(ci_trigger)
+          end
+
+          it_behaves_like 'returning response status', :bad_request
+
+          it 'returns the error message' do
+            delete_token
+            expect(response.body).to include('Some error')
+          end
         end
       end
 

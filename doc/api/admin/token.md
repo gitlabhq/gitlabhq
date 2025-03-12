@@ -122,6 +122,7 @@ Example response:
 - [OAuth application secrets added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179035) in GitLab 17.9.
 - [Incoming email tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180763) in GitLab 17.9.
 - [Feature flags client tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181096) in GitLab 17.9.
+- [Pipeline trigger tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181598) in GitLab 17.10  [with a flag](../../administration/feature_flags.md) named `token_api_expire_pipeline_triggers`. Disabled by default.
 
 {{< /history >}}
 
@@ -143,6 +144,7 @@ Revokes or resets a given token based on the token type. This endpoint supports 
 | [Group access tokens](../../security/tokens/_index.md#group-access-tokens)                   | Revoke             |
 | [Deploy tokens](../../user/project/deploy_tokens/_index.md)                                   | Revoke             |
 | [Cluster agent tokens](../../security/tokens/_index.md#gitlab-cluster-agent-tokens)          | Revoke             |
+| [Pipeline trigger tokens](../../ci/triggers/_index.md#create-a-pipeline-trigger-token)       | Revoke             |
 | [Feed tokens](../../security/tokens/_index.md#feed-token)                                    | Reset              |
 | [Runner authentication tokens](../../security/tokens/_index.md#runner-authentication-tokens) | Reset              |
 | [OAuth application secrets](../../integration/oauth_provider.md)                             | Reset              |

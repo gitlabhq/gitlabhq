@@ -84,8 +84,31 @@ export default {
         .get(this.terraformReportsPath)
         .then((res) => {
           const reports = Object.keys(res.data).map((key) => {
-            return res.data[key];
+            const report = res.data[key];
+            const creates = Number(report.create);
+            const updates = Number(report.update);
+            const deletes = Number(report.delete);
+
+            // The sum of NaN plus anything is NaN, so if any of these
+            // didn't parse via the Number() calls above, we'll get
+            // infinity here, indicating a failed report which we want
+            // to sort to the top to maximise visibility.
+            const sortIndex = creates + updates + deletes || Number.POSITIVE_INFINITY;
+
+            // Replace the string versions of the create/update/delete
+            // fields to avoid another case later
+            return {
+              ...report,
+              create: creates,
+              update: updates,
+              delete: deletes,
+              sortIndex,
+            };
           });
+
+          // Higher "sortIndex" means earlier in the list, therefore
+          // higher in the UI
+          reports.sort((a, b) => b.sortIndex - a.sortIndex);
 
           const formattedData = this.prepareReports(reports);
 
@@ -107,10 +130,7 @@ export default {
         });
     },
     createReportRow(report, iconName) {
-      const addNum = Number(report.create);
-      const changeNum = Number(report.update);
-      const deleteNum = Number(report.delete);
-      const validPlanValues = addNum + changeNum + deleteNum >= 0;
+      const validPlanValues = report.create + report.update + report.delete >= 0;
 
       const actions = [];
 
@@ -141,9 +161,9 @@ export default {
         }
 
         subtitle = sprintf(`%{small_start}${this.$options.i18n.reportChanges}%{small_end}`, {
-          addNum,
-          changeNum,
-          deleteNum,
+          addNum: report.create,
+          changeNum: report.update,
+          deleteNum: report.delete,
         });
       } else {
         if (report.job_name) {

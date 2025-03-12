@@ -40,16 +40,19 @@ GET /personal_access_tokens?user_id=1
 
 Supported attributes:
 
-| Attribute           | Type           | Required | Description         |
-|---------------------|----------------|----------|---------------------|
-| `created_after`     | datetime (ISO 8601) | No | If defined, returns tokens created after the specified time. |
-| `created_before`    | datetime (ISO 8601) | No | If defined, returns tokens created before the specified time. |
-| `last_used_after`   | datetime (ISO 8601) | No | If defined, returns tokens last used after the specified time. |
-| `last_used_before`  | datetime (ISO 8601) | No | If defined, returns tokens last used before the specified time. |
-| `revoked`           | boolean             | No | If `true`, only returns revoked tokens. |
-| `search`            | string              | No | If defined, returns tokens that include the specified value in the name. |
-| `state`             | string              | No | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
-| `user_id`           | integer or string   | No | If defined, returns tokens owned by the specified user. Non-administrators can only filter their own tokens. |
+| Attribute          | Type                | Required | Description |
+| ------------------ | ------------------- | -------- | ----------- |
+| `created_after`    | datetime (ISO 8601) | No       | If defined, returns tokens created after the specified time. |
+| `created_before`   | datetime (ISO 8601) | No       | If defined, returns tokens created before the specified time. |
+| `expires_after`    | date (ISO 8601)     | No       | If defined, returns tokens that expire after the specified time. |
+| `expires_before`   | date (ISO 8601)     | No       | If defined, returns tokens that expire before the specified time. |
+| `last_used_after`  | datetime (ISO 8601) | No       | If defined, returns tokens last used after the specified time. |
+| `last_used_before` | datetime (ISO 8601) | No       | If defined, returns tokens last used before the specified time. |
+| `revoked`          | boolean             | No       | If `true`, only returns revoked tokens. |
+| `search`           | string              | No       | If defined, returns tokens that include the specified value in the name. |
+| `sort`             | string              | No       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `name_asc`, `name_desc`. |
+| `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
+| `user_id`          | integer or string   | No       | If defined, returns tokens owned by the specified user. Non-administrators can only filter their own tokens. |
 
 Example request:
 

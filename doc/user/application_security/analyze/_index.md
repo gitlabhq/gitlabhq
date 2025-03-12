@@ -12,17 +12,16 @@ Analysis is the process of evaluating the details of a vulnerability to determin
 should be remediated. Vulnerabilities can be triaged in bulk but analysis must be done individually.
 Prioritize analysis of each vulnerability according to its severity and associated risk. As part of
 a risk management framework, analysis helps ensure resources are applied where they're most
-effective.
+effective. Use the data contained in the [security dashboard](../security_dashboard/_index.md) and the
+[vulnerability report](../vulnerability_report/_index.md) to prioritize your analysis.
 
-Use the data contained in the [security dashboard](../security_dashboard/_index.md) and the
-[vulnerability report](../vulnerability_report/_index.md) to help narrow your focus. According the
-vulnerability management lifecycle, only confirmed vulnerabilities need to be analyzed. To focus on
-only these, use the following filter criteria in the vulnerability report:
+## Scope
+
+The scope of the analysis phase is all those vulnerabilities that have been through the triage phase
+and confirmed as needing further action. To list these vulnerabilities, use the following filter
+criteria in the vulnerability report:
 
 - **Status:** Confirmed
-
-Use additional vulnerability report filters to narrow your focus further. For more details, see
-[Analysis strategies](#analysis-strategies).
 
 ## Risk analysis
 

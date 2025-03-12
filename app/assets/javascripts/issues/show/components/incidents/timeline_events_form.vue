@@ -83,7 +83,6 @@ export default {
     return {
       timelineText: this.previousNote,
       timelineTextIsDirty: this.isEditing,
-      placeholderDate,
       hourPickerInput: placeholderDate.getHours(),
       minutePickerInput: placeholderDate.getMinutes(),
       datePickerInput: placeholderDate,
@@ -130,6 +129,7 @@ export default {
     this.focusDate();
   },
   methods: {
+    // eslint-disable-next-line vue/no-unused-properties
     clear() {
       const newPlaceholderDate = getUtcShiftedDate();
       this.datePickerInput = newPlaceholderDate;

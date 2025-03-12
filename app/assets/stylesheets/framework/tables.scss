@@ -41,12 +41,12 @@ table {
       }
 
     }
-    
+
     thead tr {
       th {
-        @apply gl-bg-subtle;
+        @apply gl-bg-strong;
         border-bottom: 0;
-  
+
         &.wide {
           width: 55%;
         }

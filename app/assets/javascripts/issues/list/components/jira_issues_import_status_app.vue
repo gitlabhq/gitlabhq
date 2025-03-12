@@ -17,14 +17,6 @@ export default {
     GlLabel,
   },
   props: {
-    canEdit: {
-      type: Boolean,
-      required: true,
-    },
-    isJiraConfigured: {
-      type: Boolean,
-      required: true,
-    },
     issuesPath: {
       type: String,
       required: true,

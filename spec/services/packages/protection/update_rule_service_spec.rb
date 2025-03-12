@@ -14,8 +14,8 @@ RSpec.describe Packages::Protection::UpdateRuleService, '#execute', feature_cate
       :package_protection_rule,
       package_name_pattern: "#{package_protection_rule.package_name_pattern}-updated",
       package_type: 'npm',
-      minimum_access_level_for_push: 'owner',
-      minimum_access_level_for_delete: 'owner'
+      minimum_access_level_for_delete: 'admin',
+      minimum_access_level_for_push: 'owner'
     )
   end
 
@@ -70,6 +70,13 @@ RSpec.describe Packages::Protection::UpdateRuleService, '#execute', feature_cate
 
     it_behaves_like 'an erroneous service response with side effect',
       message: "'unknown_package_type' is not a valid package_type"
+  end
+
+  context 'when minimum_access_level_for_delete and minimum_access_level_for_push are blank' do
+    let(:params) { super().merge(minimum_access_level_for_delete: nil, minimum_access_level_for_push: nil) }
+
+    it_behaves_like 'an erroneous service response with side effect',
+      message: ['A rule must have at least a minimum access role for push or delete.']
   end
 
   context 'with empty params' do

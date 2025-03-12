@@ -169,7 +169,6 @@ describeSkipVue3(skipReason, () => {
 
     it('renders IssueCardTimeInfo component', () => {
       expect(findIssueCardTimeInfo().exists()).toBe(true);
-      expect(findIssueCardTimeInfo().props('isWorkItemList')).toBe(true);
     });
 
     it('renders IssueHealthStatus component', () => {

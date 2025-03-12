@@ -22,10 +22,6 @@ export default {
     LockedWarning,
   },
   props: {
-    endpoint: {
-      type: String,
-      required: true,
-    },
     formState: {
       type: Object,
       required: true,
@@ -58,11 +54,6 @@ export default {
     projectNamespace: {
       type: String,
       required: true,
-    },
-    canAttachFile: {
-      type: Boolean,
-      required: false,
-      default: true,
     },
     enableAutocomplete: {
       type: Boolean,
@@ -207,11 +198,10 @@ export default {
       v-model="formData.description"
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
-      :can-attach-file="canAttachFile"
       :enable-autocomplete="enableAutocomplete"
       @input="updateDescriptionDraft"
     />
 
-    <edit-actions :endpoint="endpoint" :form-state="formState" :issuable-type="issuableType" />
+    <edit-actions :form-state="formState" />
   </form>
 </template>

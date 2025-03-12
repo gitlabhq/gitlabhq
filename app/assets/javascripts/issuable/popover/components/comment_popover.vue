@@ -5,7 +5,6 @@ import { TYPENAME_NOTE } from '~/graphql_shared/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import noteQuery from '../queries/note.query.graphql';
-import { renderGFM } from '../../../behaviors/markdown/render_gfm';
 
 export default {
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
@@ -86,9 +85,6 @@ export default {
     },
   },
   methods: {
-    renderGFM() {
-      renderGFM(this.$refs.gfm);
-    },
     fallback() {
       this.show = false;
     },

@@ -29,15 +29,18 @@ GET projects/:id/access_tokens
 GET projects/:id/access_tokens?state=inactive
 ```
 
-| Attribute          | Type                | required | Description |
+| Attribute          | Type                | Required | Description |
 | ------------------ | ------------------- | -------- | ----------- |
 | `id`               | integer or string   | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a project. |
 | `created_after`    | datetime (ISO 8601) | No       | If defined, returns tokens created after the specified time. |
 | `created_before`   | datetime (ISO 8601) | No       | If defined, returns tokens created before the specified time. |
+| `expires_after`    | date (ISO 8601)     | No       | If defined, returns tokens that expire after the specified time. |
+| `expires_before`   | date (ISO 8601)     | No       | If defined, returns tokens that expire before the specified time. |
 | `last_used_after`  | datetime (ISO 8601) | No       | If defined, returns tokens last used after the specified time. |
 | `last_used_before` | datetime (ISO 8601) | No       | If defined, returns tokens last used before the specified time. |
 | `revoked`          | boolean             | No       | If `true`, only returns revoked tokens. |
 | `search`           | string              | No       | If defined, returns tokens that include the specified value in the name. |
+| `sort`             | string              | No       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `name_asc`, `name_desc`. |
 | `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
 
 ```shell

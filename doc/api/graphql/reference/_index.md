@@ -4370,7 +4370,8 @@ Input type: `CreatePackagesProtectionRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
+| <a id="mutationcreatepackagesprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`PackagesProtectionRuleAccessLevelForDelete`](#packagesprotectionruleaccesslevelfordelete) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
+| <a id="mutationcreatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
 | <a id="mutationcreatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String!`](#string) | Package name protected by the protection rule. For example, `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | <a id="mutationcreatepackagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example, `NPM`, `PYPI`. |
 | <a id="mutationcreatepackagesprotectionruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project where a protection rule is located. |
@@ -11517,6 +11518,7 @@ Input type: `UpdatePackagesProtectionRuleInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatepackagesprotectionruleid"></a>`id` | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | Global ID of the package protection rule to be updated. |
+| <a id="mutationupdatepackagesprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`PackagesProtectionRuleAccessLevelForDelete`](#packagesprotectionruleaccesslevelfordelete) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
 | <a id="mutationupdatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
 | <a id="mutationupdatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String`](#string) | Package name protected by the protection rule. For example, `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | <a id="mutationupdatepackagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example, `NPM`, `PYPI`. |
@@ -33079,7 +33081,8 @@ A packages protection rule designed to protect packages from being pushed by use
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="packagesprotectionruleid"></a>`id` | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | Global ID of the package protection rule. |
-| <a id="packagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
+| <a id="packagesprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`PackagesProtectionRuleAccessLevelForDelete`](#packagesprotectionruleaccesslevelfordelete) | **Introduced** in GitLab 17.10. **Status**: Experiment. Minimum GitLab access required to delete packages from the package registry. Valid values include `OWNER` or `ADMIN`. If the value is `nil`, the default minimum access level is `MAINTAINER`. Available only when feature flag `packages_protected_packages_delete` is enabled. |
+| <a id="packagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
 | <a id="packagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String!`](#string) | Package name protected by the protection rule. For example, `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | <a id="packagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example, `NPM`, `PYPI`. |
 
@@ -43360,6 +43363,15 @@ Access level of a package protection rule resource.
 | <a id="packagesprotectionruleaccessleveladmin"></a>`ADMIN` | Admin access. |
 | <a id="packagesprotectionruleaccesslevelmaintainer"></a>`MAINTAINER` | Maintainer access. |
 | <a id="packagesprotectionruleaccesslevelowner"></a>`OWNER` | Owner access. |
+
+### `PackagesProtectionRuleAccessLevelForDelete`
+
+Access level for the deletion of a package protection rule resource.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="packagesprotectionruleaccesslevelfordeleteadmin"></a>`ADMIN` | Admin access. Available only when feature flag `packages_protected_packages_delete` is enabled. |
+| <a id="packagesprotectionruleaccesslevelfordeleteowner"></a>`OWNER` | Owner access. Available only when feature flag `packages_protected_packages_delete` is enabled. |
 
 ### `PackagesProtectionRulePackageType`
 

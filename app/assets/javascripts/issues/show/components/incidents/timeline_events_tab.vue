@@ -82,7 +82,6 @@ export default {
     </div>
     <incident-timeline-events-list
       v-if="hasTimelineEvents"
-      :timeline-event-loading="timelineEventLoading"
       :timeline-events="timelineEvents"
       @hide-new-timeline-events-form="hideEventForm"
     />

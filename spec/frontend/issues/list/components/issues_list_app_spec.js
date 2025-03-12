@@ -610,7 +610,6 @@ describe('CE IssuesListApp component', () => {
             currentTabCount: 0,
             exportCsvPathWithQuery: defaultProvide.exportCsvPath,
             showCsvButtons: true,
-            showIssuableByEmail: false,
             showNewIssueDropdown: false,
           });
         });

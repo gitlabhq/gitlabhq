@@ -48,10 +48,13 @@ export default {
     pipelineAnalytics: {
       query: getPipelineAnalytics,
       variables() {
+        // Use UTC time and take beginning of day
+        const today = new Date(new Date().setUTCHours(0, 0, 0, 0));
+
         return {
           fullPath: this.projectPath,
-          fromTime: getDateInPast(new Date(), this.dateRange),
-          toTime: new Date(),
+          fromTime: getDateInPast(today, this.dateRange),
+          toTime: today,
         };
       },
       update(data) {

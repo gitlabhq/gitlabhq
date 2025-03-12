@@ -65119,6 +65119,9 @@ msgstr ""
 msgid "Vulnerability|View training"
 msgstr ""
 
+msgid "Vulnerability|Vulnerability identifiers"
+msgstr ""
+
 msgid "Vulnerability|Vulnerable class:"
 msgstr ""
 

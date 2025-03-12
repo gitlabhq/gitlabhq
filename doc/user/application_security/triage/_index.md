@@ -8,13 +8,28 @@ title: Triage
 Triage is the second phase of the vulnerability management lifecycle: detect, triage, analyze,
 remediate.
 
-Triage is the process of evaluating each vulnerability to decide which need attention now and which
-are not as critical. High-risk vulnerabilities are separated from medium or low risk threats.
+Triage is an ongoing process of evaluating each vulnerability to decide which need attention now and
+which are not as critical. High-risk vulnerabilities are separated from medium or low risk threats.
 It may not be possible or feasible to analyze and remediate every vulnerability. As part of a risk
-management framework, triage helps ensure resources are applied where they're most effective.
+management framework, triage helps ensure resources are applied where they're most effective. It's
+best to triage vulnerabilities often, so that the number of vulnerabilities per triage cycle is
+small and manageable.
 
-Triage is an ongoing process, not a one-time task. It's best to triage vulnerabilities often, so
-that the number of vulnerabilities per triage cycle is small and manageable.
+The objective of the triage phase is to either confirm or dismiss each vulnerability. A confirmed
+vulnerability continues to the analysis phase but a dismissed vulnerability does not.
+
+Use the data contained in the [security dashboard](../security_dashboard/_index.md) and the
+[vulnerability report](../vulnerability_report/_index.md) to help triage vulnerabilities efficiently
+and effectively.
+
+## Scope
+
+The scope of the triage phase is all those vulnerabilities that have not been triaged. To list these
+vulnerabilities, use the following filter criteria in the vulnerability report:
+
+- **Status:** Needs triage
+
+## Risk analysis
 
 You should conduct vulnerability triage according to a risk assessment framework.
 Depending on your industry or geographical location, compliance with a framework might be
@@ -36,10 +51,6 @@ After you triage a vulnerability you should change its status to either:
 When you dismiss a vulnerability you must provide a brief comment that states why it has been
 dismissed. Dismissed vulnerabilities are ignored if detected in subsequent scans. Vulnerability
 records are permanent but you can change a vulnerability's status at any time.
-
-Use the data contained in the [security dashboard](../security_dashboard/_index.md) and the
-[vulnerability report](../vulnerability_report/_index.md) to help triage vulnerabilities efficiently
-and effectively.
 
 ## Triage strategies
 
