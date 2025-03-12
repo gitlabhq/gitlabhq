@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.8.5 (2025-03-11)
+
+### Security (8 changes)
+
+- [Vendor GraphQL gem](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1d1019ef7f1f447b9438221ff734f07cb8cfc6f7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4840))
+- [Ruby-SAML updates](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f68b16e4319f01144c90b725e6ec62b3c2ca42bd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4829))
+- [Prevent custom role to activate group members](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a1d818293e11796c71553e2c5eaba4e2f358db79) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4834))
+- [approval_rules name is unbounded](https://gitlab.com/gitlab-org/security/gitlab/-/commit/89018f0df2df5c9b3c656a0981384ee3872a54e1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4837))
+- [Limit preview size](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9824f5746a38e95dbfa5d991b69c18ec3e5c1194) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4822))
+- [Maintainer can inject shell code in Google integration configurations that...](https://gitlab.com/gitlab-org/security/gitlab/-/commit/688e445b811a4ffa2e2a175effe4f211af57afe8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4825))
+- [Filter out internal notes if the recipient do not have access](https://gitlab.com/gitlab-org/security/gitlab/-/commit/117de613cd4025a41c93a25809dd4c5bd47df7b4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4814))
+- [Mask unencoded userinfo in project mirror errors](https://gitlab.com/gitlab-org/security/gitlab/-/commit/73a0c85541ef22125c52be1b4980ced1bfbc1dba) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4777))
+
 ## 17.8.4 (2025-02-26)
 
 ### Security (4 changes)

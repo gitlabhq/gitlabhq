@@ -126,7 +126,7 @@ class ProjectImportState < ApplicationRecord
 
   def mark_as_failed(error_message)
     original_errors = errors.dup
-    sanitized_message = Gitlab::UrlSanitizer.sanitize(error_message)
+    sanitized_message = sanitized_failure_message(error_message)
 
     fail_op
 
@@ -184,6 +184,10 @@ class ProjectImportState < ApplicationRecord
   # This can be removed when all 3rd party project importer user mapping feature flags are removed.
   def user_mapping_enabled?
     user_mapping_enabled || project.import_data&.user_mapping_enabled?
+  end
+
+  def sanitized_failure_message(error_message)
+    Gitlab::UrlSanitizer.sanitize(error_message)
   end
 end
 

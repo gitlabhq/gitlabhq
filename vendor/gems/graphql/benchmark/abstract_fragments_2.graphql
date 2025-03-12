@@ -1,0 +1,64 @@
+query AbstractFragments {
+  node(id: "1") {
+    ...Frag1
+  }
+}
+
+fragment Frag1 on Commentable {
+  id
+  __typename
+  ...Frag9
+  ...Frag2
+}
+
+fragment Frag2 on Commentable {
+  id
+  __typename
+  ...Frag9
+  ...Frag3
+}
+
+fragment Frag3 on Commentable {
+  id
+  __typename
+  ...Frag9
+  ...Frag4
+}
+
+fragment Frag4 on Commentable {
+  id
+  __typename
+  ...Frag9
+  ...Frag5
+}
+
+fragment Frag5 on Commentable {
+  id
+  __typename
+  ...Frag9
+  ...Frag6
+}
+
+fragment Frag6 on Commentable {
+  ...Frag7
+  ...Frag9
+  name
+  id
+  comments {
+    ...Frag8
+    ...Frag7
+    id
+  }
+}
+
+fragment Frag7 on Node {
+  id
+}
+
+fragment Frag8 on Comment {
+  body
+}
+
+fragment Frag9 on Named {
+  name
+}

@@ -623,7 +623,7 @@ Supported attributes:
 |-------------------------------------|-------------------|----------|-------------|
 | `id`                                | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/index.md#namespaced-paths). |
 | `approvals_required`                | integer           | Yes      | The number of required approvals for this rule. |
-| `name`                              | string            | Yes      | The name of the approval rule. |
+| `name`                              | string            | Yes      | The name of the approval rule. Limited to 1024 characters. |
 | `applies_to_all_protected_branches` | boolean           | No       | Whether to apply the rule to all protected branches. If set to `true`, ignores the value of `protected_branch_ids`. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
 | `group_ids`                         | Array             | No       | The IDs of groups as approvers. |
 | `protected_branch_ids`              | Array             | No       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |
@@ -760,7 +760,7 @@ Supported attributes:
 | `id`                                | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/index.md#namespaced-paths). |
 | `approvals_required`                | integer           | Yes      | The number of required approvals for this rule. |
 | `approval_rule_id`                  | integer           | Yes      | The ID of a approval rule. |
-| `name`                              | string            | Yes      | The name of the approval rule. |
+| `name`                              | string            | Yes      | The name of the approval rule. Limited to 1024 characters. |
 | `applies_to_all_protected_branches` | boolean           | No       | Whether to apply the rule to all protected branches. If set to `true`, it ignores the value of `protected_branch_ids`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
 | `group_ids`                         | Array             | No       | The IDs of groups as approvers. |
 | `protected_branch_ids`              | Array             | No       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |
@@ -1208,7 +1208,7 @@ Supported attributes:
 | `id`                       | integer or string | Yes | The ID or [URL-encoded path of a project](rest/index.md#namespaced-paths) |
 | `approvals_required`       | integer           | Yes | The number of required approvals for this rule.                              |
 | `merge_request_iid`        | integer           | Yes | The IID of the merge request.                                                |
-| `name`                     | string            | Yes | The name of the approval rule.                                               |
+| `name`                     | string            | Yes | The name of the approval rule. Limited to 1024 characters.                                              |
 | `approval_project_rule_id` | integer           | No | The ID of a project-level approval rule.                                     |
 | `group_ids`                | Array             | No | The IDs of groups as approvers.                                              |
 | `user_ids`                 | Array             | No | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, it adds both lists of users. |
@@ -1297,7 +1297,7 @@ Supported attributes:
 | `merge_request_iid`    | integer           | Yes      | The IID of a merge request. |
 | `approvals_required`   | integer           | No       | The number of required approvals for this rule. |
 | `group_ids`            | Array             | No       | The IDs of groups as approvers. |
-| `name`                 | string            | No       | The name of the approval rule. |
+| `name`                 | string            | No       | The name of the approval rule. Limited to 1024 characters. |
 | `remove_hidden_groups` | boolean           | No       | Whether to remove hidden groups. |
 | `user_ids`             | Array             | No       | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, it adds both lists of users. |
 | `usernames`            | string array      | No       | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, it adds both lists of users. |

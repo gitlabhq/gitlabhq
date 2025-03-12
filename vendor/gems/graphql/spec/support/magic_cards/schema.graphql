@@ -1,0 +1,33 @@
+type Card {
+  name: String!
+  printings: [Printing!]!
+  expansions: [Expansion!]!
+  colors: [Color!]!
+  convertedManaCost: Int!
+}
+
+type Expansion {
+  name: String!
+  symbol: String!
+  printings: [Printing!]!
+  cards: [Card!]!
+}
+
+type Printing {
+  card: Card!
+  expansion: Expansion!
+}
+
+enum Color {
+  RED
+  GREEN
+  BLACK
+  BLUE
+  WHITE
+  COLORLESS
+}
+
+type Query {
+  card(name: String!): Card
+  expansion(symbol: String!): Expansion
+}

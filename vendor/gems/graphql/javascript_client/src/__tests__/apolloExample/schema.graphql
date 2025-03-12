@@ -1,0 +1,11 @@
+type Query {
+  helloWorld: String!
+}
+
+type Mutation {
+  updateSomething(name: String!): UpdateSomethingPayload
+}
+
+type UpdateSomethingPayload {
+  name: String!
+}

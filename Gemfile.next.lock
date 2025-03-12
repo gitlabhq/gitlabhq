@@ -184,6 +184,14 @@ PATH
       grpc
 
 PATH
+  remote: vendor/gems/graphql
+  specs:
+    graphql (2.4.11)
+      base64
+      fiber-storage
+      logger
+
+PATH
   remote: vendor/gems/mail-smtp_pool
   specs:
     mail-smtp_pool (0.1.0)
@@ -218,6 +226,13 @@ PATH
       activesupport
       nokogiri (>= 1.4.4)
       omniauth (~> 2.0)
+
+PATH
+  remote: vendor/gems/ruby-saml
+  specs:
+    ruby-saml (1.18.0)
+      nokogiri (>= 1.13.10)
+      rexml
 
 PATH
   remote: vendor/gems/sidekiq-7.2.4
@@ -513,7 +528,7 @@ GEM
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
-    date (3.3.3)
+    date (3.4.1)
     dead_end (3.1.1)
     deb_version (1.0.2)
     debug_inspector (1.1.0)
@@ -953,9 +968,6 @@ GEM
       faraday (~> 2.0)
       graphql-client
     graphlyte (1.0.0)
-    graphql (2.4.8)
-      base64
-      fiber-storage
     graphql-client (0.23.0)
       activesupport (>= 3.0)
       graphql (>= 1.13.0)
@@ -1048,7 +1060,8 @@ GEM
     io-event (1.6.5)
     ipaddr (1.2.7)
     ipaddress (0.8.3)
-    irb (1.14.3)
+    irb (1.15.1)
+      pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     jaeger-client (1.1.0)
@@ -1459,6 +1472,8 @@ GEM
       google-protobuf (>= 3.25.3)
     plist (3.7.0)
     png_quantizator (0.2.1)
+    pp (0.6.2)
+      prettyprint
     premailer (1.23.0)
       addressable
       css_parser (>= 1.12.0)
@@ -1467,6 +1482,7 @@ GEM
       actionmailer (>= 3)
       net-smtp
       premailer (~> 1.7, >= 1.7.9)
+    prettyprint (0.2.0)
     prime (0.1.2)
       forwardable
       singleton
@@ -1489,7 +1505,7 @@ GEM
       pry (>= 0.13.0)
       tty-markdown
       tty-prompt
-    psych (5.2.2)
+    psych (5.2.3)
       date
       stringio
     public_suffix (6.0.1)
@@ -1573,7 +1589,7 @@ GEM
       msgpack (>= 0.4.3)
       optimist (>= 3.0.0)
     rchardet (1.8.0)
-    rdoc (6.10.0)
+    rdoc (6.12.0)
       psych (>= 4.0.0)
     re2 (2.7.0)
       mini_portile2 (~> 2.8.5)
@@ -1723,9 +1739,6 @@ GEM
     ruby-openai (3.7.0)
       httparty (>= 0.18.1)
     ruby-progressbar (1.11.0)
-    ruby-saml (1.17.0)
-      nokogiri (>= 1.13.10)
-      rexml
     ruby-statistics (3.0.0)
     ruby2_keywords (0.0.5)
     rubyntlm (0.6.3)
@@ -1841,7 +1854,7 @@ GEM
     state_machines-activerecord (0.8.0)
       activerecord (>= 5.1)
       state_machines-activemodel (>= 0.8.0)
-    stringio (3.1.2)
+    stringio (3.1.5)
     strings (0.2.1)
       strings-ansi (~> 0.2)
       unicode-display_width (>= 1.5, < 3.0)
@@ -2170,7 +2183,7 @@ DEPENDENCIES
   grape_logging (~> 1.8, >= 1.8.4)
   graphlient (~> 0.8.0)
   graphlyte (~> 1.0.0)
-  graphql (~> 2.4.1)
+  graphql (= 2.4.11)!
   graphql-docs (~> 5.0.0)
   grpc (= 1.63.0)
   gssapi (~> 1.3.1)
@@ -2323,7 +2336,7 @@ DEPENDENCIES
   ruby-magic (~> 0.6)
   ruby-openai (~> 3.7)
   ruby-progressbar (~> 1.10)
-  ruby-saml (~> 1.17.0)
+  ruby-saml (~> 1.18.0)!
   rubyzip (~> 2.3.2)
   rugged (~> 1.6)
   sanitize (~> 6.0.2)
