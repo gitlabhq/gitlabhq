@@ -1,0 +1,6 @@
+{
+  example1: getString(string: "\u0064") # should return "d"
+  example2: getString(string: "\\u0064") # should return "\\u0064"
+  # example3: getString(string: "\u006") # validation error
+  example4: getString(string: "\\u006") # should return "\\u006"
+}

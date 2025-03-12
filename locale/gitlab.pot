@@ -43153,6 +43153,9 @@ msgstr ""
 msgid "Please enter a name for the custom emoji."
 msgstr ""
 
+msgid "Please enter a name with less than %{number} characters."
+msgstr ""
+
 msgid "Please enter a non-negative number"
 msgstr ""
 
@@ -57624,6 +57627,9 @@ msgid "The authentication token."
 msgstr ""
 
 msgid "The base URL to the Harbor instance linked to the GitLab project. For example, `https://demo.goharbor.io`."
+msgstr ""
+
+msgid "The blob is too large to render"
 msgstr ""
 
 msgid "The branch for this project has no active pipeline configuration."

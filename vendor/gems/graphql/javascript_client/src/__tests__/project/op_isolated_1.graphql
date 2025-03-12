@@ -1,0 +1,12 @@
+query GetStuffIsolated {
+  ...FragIsolated
+  things {
+    existHere
+  }
+}
+
+fragment FragIsolated on Query {
+  evenMoreStuff {
+    stuffInside
+  }
+}

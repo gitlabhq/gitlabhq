@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.9.2 (2025-03-11)
+
+### Fixed (3 changes)
+
+- [Fix the pipe search for zoekt exact search mode](https://gitlab.com/gitlab-org/security/gitlab/-/commit/22030051963d488575df6a2cca19e1d4e0d82a2d) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183373))
+- [Prevent deletion of project_bot users with non-expiring access tokens](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0249d460f0f6b7f867e7a4171e0effae2e4e5135)
+- [Use correct project when fetching managed resources templates](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9bac9ffcd01abff2bf0d4d38829655e394dea3b3)
+
+### Security (8 changes)
+
+- [Vendor GraphQL gem](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e78a52dcafa4c7316e01d4dcd35a33ab9623f532) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4841))
+- [Ruby-SAML updates](https://gitlab.com/gitlab-org/security/gitlab/-/commit/780f136abbf4b27c18485e5c173aaa18acfcb644) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4828))
+- [Prevent custom role to activate group members](https://gitlab.com/gitlab-org/security/gitlab/-/commit/efbd1afae3cce6bb4e03e91ed82b7af27671977f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4833))
+- [approval_rules name is unbounded](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9a4e857ea3223fe56536a81f3d1fdadb833eca8d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4838))
+- [Limit preview size](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b2ce61725c9946766a2a964377fc756d87e8234e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4821))
+- [Maintainer can inject shell code in Google integration configurations that...](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7fd30226d79520b742abd9edc01055766f56c39b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4824))
+- [Filter out internal notes if the recipient do not have access](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a55e5b359912daa90ef07c73ebd66b4bb9b0e2c3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4815))
+- [Mask unencoded userinfo in project mirror errors](https://gitlab.com/gitlab-org/security/gitlab/-/commit/af6f445b66c3353652c47ad36b1c700c2c0572a1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4789))
+
 ## 17.9.1 (2025-02-26)
 
 ### Fixed (1 change)

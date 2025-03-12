@@ -1,0 +1,3 @@
+fragment Frag2 on Query {
+  ...Frag3
+}

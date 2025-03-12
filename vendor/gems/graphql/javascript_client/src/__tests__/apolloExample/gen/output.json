@@ -1,0 +1,108 @@
+{
+	"operations": [
+		{
+			"filePath": "file:///Users/rmosolgo/code/graphql-ruby/javascript_client/src/sync/__tests__/apolloExample/mutation.ts",
+			"operationName": "UpdateSomething",
+			"operationType": "mutation",
+			"rootType": "Mutation",
+			"variables": [
+				{
+					"name": "name",
+					"type": "String!"
+				}
+			],
+			"source": "mutation UpdateSomething($name: String!) {\n  updateSomething(name: $name) {\n    __typename\n    name\n  somethingElse @client\n }\n}",
+			"fields": [
+				{
+					"responseName": "updateSomething",
+					"fieldName": "updateSomething",
+					"type": "UpdateSomethingPayload",
+					"args": [
+						{
+							"name": "name",
+							"value": {
+								"kind": "Variable",
+								"variableName": "name"
+							},
+							"type": "String!"
+						}
+					],
+					"isConditional": false,
+					"isDeprecated": false,
+					"fields": [
+						{
+							"responseName": "__typename",
+							"fieldName": "__typename",
+							"type": "String!",
+							"isConditional": false
+						},
+						{
+							"responseName": "name",
+							"fieldName": "name",
+							"type": "String!",
+							"isConditional": false,
+							"isDeprecated": false
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				}
+			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
+			"fragmentsReferenced": [],
+			"sourceWithFragments": "mutation UpdateSomething($name: String!) {\n  updateSomething(name: $name) {\n    __typename\n    name\n  }\n}",
+			"operationId": "22cc98c61c1402c92b230b7c515e07eb793a5152c388b015e86df4652ec58156"
+		},
+		{
+			"filePath": "file:///Users/rmosolgo/code/graphql-ruby/javascript_client/src/sync/__tests__/apolloExample/query.ts",
+			"operationName": "getHelloWorld",
+			"operationType": "query",
+			"rootType": "Query",
+			"variables": [],
+			"source": "query getHelloWorld {\n  helloWorld\n  ...MoreFields\n}",
+			"fields": [
+				{
+					"responseName": "helloWorld",
+					"fieldName": "helloWorld",
+					"type": "String!",
+					"isConditional": false,
+					"isDeprecated": false
+				}
+			],
+			"fragmentSpreads": [
+				"MoreFields"
+			],
+			"inlineFragments": [],
+			"fragmentsReferenced": [
+				"MoreFields"
+			],
+			"sourceWithFragments": "query getHelloWorld {\n  helloWorld\n  ...MoreFields\n}\nfragment MoreFields on Query {\n  __typename\n}",
+			"operationId": "688df2ea182541c70a34c55ca056dc249014bf9f33c64eee527120c714e936fc"
+		}
+	],
+	"fragments": [
+		{
+			"typeCondition": "Query",
+			"possibleTypes": [
+				"Query"
+			],
+			"fragmentName": "MoreFields",
+			"filePath": "file:///Users/rmosolgo/code/graphql-ruby/javascript_client/src/sync/__tests__/apolloExample/fragment.ts",
+			"source": "fragment MoreFields on Query {\n  __typename\n}",
+			"fields": [
+				{
+					"responseName": "__typename",
+					"fieldName": "__typename",
+					"type": "String!",
+					"isConditional": false
+				}
+			],
+			"fragmentSpreads": [],
+			"inlineFragments": []
+		}
+	],
+	"typesUsed": [],
+	"unionTypes": [],
+	"interfaceTypes": []
+}

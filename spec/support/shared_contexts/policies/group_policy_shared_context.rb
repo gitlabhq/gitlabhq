@@ -108,6 +108,7 @@ RSpec.shared_context 'GroupPolicy context' do
       admin_integrations
       set_issue_updated_at
       set_issue_created_at
+      activate_group_member
     ]
   end
 

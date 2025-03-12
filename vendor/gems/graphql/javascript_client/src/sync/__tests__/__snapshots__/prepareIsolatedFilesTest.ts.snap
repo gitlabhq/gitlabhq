@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`builds out single operations 1`] = `
+[
+  {
+    "alias": "",
+    "body": "query GetStuffIsolated {
+  ...FragIsolated
+  things {
+    existHere
+  }
+}
+
+fragment FragIsolated on Query {
+  evenMoreStuff {
+    stuffInside
+  }
+}",
+    "name": "GetStuffIsolated",
+  },
+  {
+    "alias": "",
+    "body": "query GetStuffIsolated2 {
+  things {
+    existHere
+  }
+}",
+    "name": "GetStuffIsolated2",
+  },
+]
+`;
+
+exports[`with --add-typename builds out single operations with __typename fields 1`] = `
+[
+  {
+    "alias": "",
+    "body": "query GetStuffIsolated {
+  ...FragIsolated
+  things {
+    existHere
+    __typename
+  }
+}
+
+fragment FragIsolated on Query {
+  evenMoreStuff {
+    stuffInside
+    __typename
+  }
+}",
+    "name": "GetStuffIsolated",
+  },
+  {
+    "alias": "",
+    "body": "query GetStuffIsolated2 {
+  things {
+    existHere
+    __typename
+  }
+}",
+    "name": "GetStuffIsolated2",
+  },
+]
+`;

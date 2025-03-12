@@ -1,0 +1,143 @@
+<h1>ActionCable Test Page</h1>
+<button onClick="sub1.trigger({field: 'payload', arguments: { id: 'updates-1' }, value: val1++})">Trigger 1</button>
+<button onClick="sub2.trigger({field: 'payload', arguments: { id: 'updates-2' }, value: val2++})">Trigger 2</button>
+<p>ActionCable updates:</p>
+<ul id="updates-1">
+</ul>
+
+<ul id="updates-2">
+</ul>
+
+<button onClick="sub1.unsubscribe()">Unsubscribe 1</button>
+<button onClick="sub2.unsubscribe()">Unsubscribe 2</button>
+
+<hr>
+
+<p>Fingerprint test</p>
+
+<button onClick="subscribeWithFingerprint('1')">Subscribe with fingerprint 1</button>
+<ul id="fingerprint-updates-1">
+</ul>
+<button onClick="triggerWithFingerprint('1')">Trigger with fingerprint 1</button>
+<button onClick="serverSideUnsubscribeWithFingerprint('1')">Server-side unsubscribe with fingerprint 1</button>
+<button onClick="unsubscribeWithFingerprint('1')">Unsubscribe with fingerprint 1</button>
+<button onClick="serverSideUnsubscribeWithMessageWithFingerprint('1')">Unsubscribe with message with fingerprint 1</button>
+
+<br>
+
+<button onClick="subscribeWithFingerprint('2')">Subscribe with fingerprint 2</button>
+<ul id="fingerprint-updates-2">
+</ul>
+<button onClick="triggerWithFingerprint('2')">Trigger with fingerprint 2</button>
+<button onClick="unsubscribeWithFingerprint('2')">Unsubscribe with fingerprint 2</button>
+
+<div id="body-log">
+</div>
+<script>
+
+function appendItem(parentId, text) {
+  var list = document.getElementById(parentId)
+  var child = document.createElement("li")
+  child.id = parentId + "-" + text
+  child.innerText = text
+  list.appendChild(child)
+}
+
+var payloadString = "subscription($id: ID!) { payload(id: $id) { value } }"
+function handleResponse(elementId, data) {
+  console.log("handleResponse", elementId, data)
+  if (data.result.data) {
+    if (data.result.data.payload) {
+      var value = data.result.data.payload.value
+      appendItem(elementId, value)
+    } else {
+      appendItem(elementId, "connected")
+    }
+  }
+}
+var sub1 = App.subscribe({
+  query: payloadString,
+  variables: { "id": "updates-1" },
+  received: function(data) { handleResponse("updates-1", data) },
+})
+var val1 = 1
+var sub2 = App.subscribe({
+  query: payloadString,
+  variables: { "id": "updates-2" },
+  received: function(data) { handleResponse("updates-2", data) }
+})
+var val2 = 1
+
+var fingerprintSubscriptions = {}
+function subscribeWithFingerprint(key) {
+  App.logToBody("subscribing to " + key)
+  if (!fingerprintSubscriptions[key]) {
+    fingerprintSubscriptions[key] = []
+  }
+  var subs = fingerprintSubscriptions[key]
+  var number = subs.length + 1
+  var newSub = App.subscribe({
+    number: number,
+    query: "subscription fingerprint" + key + " { counterIncremented { newValue } }",
+    variables: {},
+    received: function(data) {
+      App.logToBody("received from " + key + " " + JSON.stringify(data))
+
+      if (data.result.data.counterIncremented) {
+        appendItem("fingerprint-updates-" + key, "update-" + number + "-value-" + data.result.data.counterIncremented.newValue)
+      } else {
+        appendItem("fingerprint-updates-" + key, "connected-" + number)
+      }
+    }
+  })
+  App.logToBody("Appending Subscription, key: " + key + ", number:" + number )
+  subs.push(newSub)
+}
+
+function triggerWithFingerprint(key) {
+  var subs = fingerprintSubscriptions[key]
+  if (!subs) {
+    App.logToBody("No Subscriptions found for Key: " + key + ", in: " + Object.keys(fingerprintSubscriptions))
+  }
+  var sub = subs[0]
+  if (!sub) {
+    App.logToBody("Empty subscriptions array for key: " + key + ", in: " + Object.keys(fingerprintSubscriptions))
+  }
+  App.logToBody("triggering " + key)
+  sub.trigger({field: "counterIncremented", arguments: {}, value: null})
+}
+
+function unsubscribeWithFingerprint(key) {
+  var subs = fingerprintSubscriptions[key]
+  subs && subs.forEach(function(sub) {
+    sub.unsubscribe()
+  })
+  fingerprintSubscriptions[key] = []
+}
+
+function serverSideUnsubscribeWithMessageWithFingerprint(key) {
+  var subs = fingerprintSubscriptions[key]
+  if (subs) {
+    var sub = subs[0]
+    if (sub) {
+      sub.trigger({field: "counterIncremented", arguments: {}, value: "server-unsubscribe-with-message"})
+      // Assume it's removed:
+      subs.shift()
+    }
+  }
+}
+
+function serverSideUnsubscribeWithFingerprint(key) {
+  App.logToBody("server-side unsubscribing " + key)
+  var subs = fingerprintSubscriptions[key]
+  if (subs) {
+    var sub = subs[0]
+    if (sub) {
+      sub.trigger({field: "counterIncremented", arguments: {}, value: "server-unsubscribe"})
+      // Assume it's removed:
+      subs.shift()
+    }
+  }
+}
+
+</script>
