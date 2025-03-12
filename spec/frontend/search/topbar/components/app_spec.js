@@ -229,4 +229,48 @@ describe('GlobalSearchTopbar', () => {
       });
     });
   });
+
+  describe('search computed property setter', () => {
+    describe.each`
+      FF                                    | scope       | searchType    | debounced
+      ${{ zoektMultimatchFrontend: true }}  | ${'blobs'}  | ${'zoekt'}    | ${true}
+      ${{ zoektMultimatchFrontend: false }} | ${'blobs'}  | ${'zoekt'}    | ${false}
+      ${{ zoektMultimatchFrontend: true }}  | ${'issues'} | ${'zoekt'}    | ${false}
+      ${{ zoektMultimatchFrontend: true }}  | ${'blobs'}  | ${'advanced'} | ${false}
+    `(
+      'when isMultiMatch is $debounced (FF: $FF, scope: $scope, searchType: $searchType)',
+      ({ FF, scope, searchType, debounced }) => {
+        beforeEach(() => {
+          getterSpies.currentScope = jest.fn(() => scope);
+          actionSpies.setQuery.mockClear();
+
+          createComponent({
+            featureFlag: FF,
+            initialState: { searchType },
+          });
+
+          wrapper.vm.debouncedSetQuery = jest.fn();
+        });
+
+        it(`${debounced ? 'calls debouncedSetQuery' : 'calls setQuery directly'}`, () => {
+          findGlSearchBox().vm.$emit('input', 'new search value');
+
+          if (debounced) {
+            expect(actionSpies.setQuery).not.toHaveBeenCalled();
+          } else {
+            expect(actionSpies.setQuery).toHaveBeenCalled();
+
+            const lastCallArgs = actionSpies.setQuery.mock.calls[0];
+            const payload = lastCallArgs[lastCallArgs.length - 1];
+            expect(payload).toEqual(
+              expect.objectContaining({
+                key: 'search',
+                value: 'new search value',
+              }),
+            );
+          }
+        });
+      },
+    );
+  });
 });

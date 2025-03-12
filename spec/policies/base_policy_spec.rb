@@ -65,6 +65,12 @@ RSpec.describe BasePolicy do
       end
     end
 
+    context 'with the admin bot user' do
+      let(:current_user) { ::Users::Internal.admin_bot }
+
+      it { is_expected.to be_allowed(ability) }
+    end
+
     context 'with anonymous' do
       let(:current_user) { nil }
 

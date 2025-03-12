@@ -9,14 +9,15 @@ module SearchHelpers
   end
 
   def submit_search(query)
-    # Forms directly on the search page
     if page.has_css?('.search-page-form')
       search_form = '.search-page-form'
-    # Open search modal from super sidebar
+
     else
       find_by_testid('super-sidebar-search-button').click
       search_form = '#super-sidebar-search-modal'
     end
+
+    wait_for_all_requests
 
     page.within(search_form) do
       field = find_field('search')

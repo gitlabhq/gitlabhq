@@ -63,8 +63,10 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       shared_examples 'for users' do
         let_it_be(:another_user) { create(:user, name: 'Jane Doe') }
         let(:term) { 'jane' }
+        let_it_be(:project) { create(:project, developers: user) }
 
         it 'returns users matching the term' do
+          project.add_developer(another_user)
           result = search_autocomplete_opts(term)
           expect(result.size).to eq(1)
           expect(result.first[:id]).to eq(another_user.id)
@@ -97,21 +99,29 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
             it 'includes users with matching public emails' do
               public_email_user
+              project.add_developer(public_email_user)
+
               expect(ids).to include(public_email_user.id)
             end
 
             it 'includes users in forbidden states' do
               banned_user
+              project.add_developer(banned_user)
+
               expect(ids).to include(banned_user.id)
             end
 
             it 'includes users without matching public emails but with matching private emails' do
               private_email_user
+              project.add_developer(private_email_user)
+
               expect(ids).to include(private_email_user.id)
             end
 
             it 'includes users matching on secondary email' do
               secondary_email
+              project.add_developer(user_with_other_email)
+
               expect(ids).to include(secondary_email.user_id)
             end
           end
@@ -123,21 +133,29 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
             it 'includes users with matching public emails' do
               public_email_user
+              project.add_developer(public_email_user)
+
               expect(ids).to include(public_email_user.id)
             end
 
             it 'does not include users in forbidden states' do
               banned_user
+              project.add_developer(banned_user)
+
               expect(ids).not_to include(banned_user.id)
             end
 
             it 'does not include users without matching public emails but with matching private emails' do
               private_email_user
+              project.add_developer(private_email_user)
+
               expect(ids).not_to include(private_email_user.id)
             end
 
             it 'does not include users matching on secondary email' do
               secondary_email
+              project.add_developer(secondary_email)
+
               expect(ids).not_to include(secondary_email.user_id)
             end
           end
@@ -145,6 +163,12 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
         context 'with limiting' do
           let_it_be(:users) { create_list(:user, 6, name: 'Jane Doe') }
+
+          before do
+            users.each do |user|
+              project.add_developer(user)
+            end
+          end
 
           it 'only returns the first 5 users' do
             result = search_autocomplete_opts(term)

@@ -7,7 +7,13 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
   include ListboxHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :repository, namespace: user.namespace) }
+  let_it_be_with_reload(:project) do
+    # This helps with some of the test flakiness.
+    project = create(:project, :repository, namespace: user.namespace)
+    project.repository.root_ref
+    project.repository.ls_files('master')
+    project
+  end
 
   context 'when signed in' do
     before do

@@ -29,7 +29,7 @@ To configure deployment of the PyPI package:
 1. Create a token under `Account Settings > Add API Tokens`.
 1. For the initial publish, select `Entire account (all projects)` scope. If the project already exists, scope the token to the specific project.
 1. Configure credentials:
-  
+
    Locally:
 
    ```shell
@@ -67,7 +67,31 @@ Deploying services to self-hosted environments poses challenges as services are 
 
 Self-hosted customers need to know which version of the service is compatible with their GitLab installation. Python services do not make use of [managed versioning](https://gitlab.com/gitlab-org/release/docs/-/tree/master/components/managed-versioning), so each service needs to handle its versioning and release cuts.
 
-Per convention, once GitLab creates a new release, it can tag the service repo with a new tag named `self-hosted-<gitlab-version>`. An image with that tag is created, as [seen on AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/.gitlab/ci/build.gitlab-ci.yml?ref_type=heads#L9). It's important that we have a version tag that matches GitLab versions, making it easier for users to deploy the full environment.
+If a service is accessible through cloud-connector, it must adhere to [GitLab Statement Support](https://about.gitlab.com/support/statement-of-support/#version-support), providing stable deployments for the current and previous 2 majors releases of GitLab.
+
+##### Tips
+
+###### Create versions that match GitLab release
+
+When supporting self-hosted deployment, it's important to have a version tag that matches GitLab versions, making it easier
+for users to configure the different components of their environment. Add a pipeline to GitLab the GitLab release process
+that tags the service repo with the same tag, which will then trigger a pipeline to create an image with the defined tag.
+
+Example: [a pipeline on GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/aigw-tagging.gitlab-ci.yml) creates a tag on AI Gateway
+that [releases a new image](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/.gitlab/ci/build.gitlab-ci.yml?ref_type=heads#L24).
+
+###### Multiple release deployments
+
+Supporting 3 major versions can lead to a confusing codebase due to too many code paths. An alternative to keep support while
+allowing code clean ups is to provide deployments for multiple versions of the service. For example, suppose GitLab is on
+version `19.5`, this would need three deployments of the service:
+
+- One for service version `17.11`, which provides support for all GitLab `17.x` versions
+- One for service version `18.11`, which provides support for all GitLab `18.x` versions
+- One for service version `19.5`, which provides support for GitLab versions `19.0`-`19.5`.
+
+Once version 18.0 is released, unused code from versions 17.x can be safely removed, since a legacy deployment will be present. 
+Then, once version 20.0 is released, and GitLab version 17.x is not supported anymore, the legacy deployment can also be removed.
 
 #### Publishing images
 

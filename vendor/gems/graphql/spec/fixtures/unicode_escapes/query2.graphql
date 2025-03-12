@@ -1,0 +1,6 @@
+query bug2 {
+  example1: getString(string: """\a""") # should be "\\a"
+  example2: getString(string: """\u006""") # should be "\\u006"
+  example3: getString(string: """\n""") # should be "\\n"
+  example4: getString(string: """\u0064""") # should be "\\u0064"
+}

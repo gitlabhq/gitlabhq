@@ -38,7 +38,6 @@ const presentersByFieldName = {
 const presentersByDisplayType = {
   list: ListPresenter,
   orderedList: ListPresenter,
-
   table: TablePresenter,
 };
 

@@ -207,7 +207,7 @@ Documentation of model changes and deprecations is crucial for tracking impact a
 
 ### Feature Team Migration Template
 
-Feature teams should use the following [template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/AI%20Model%20Rollout%20Plan.md?ref_type=heads) to implement model migrations. See an example from our [Claude 3.7 Sonnet Code Generation Rollout Plan](https://gitlab.com/gitlab-org/gitlab/-/issues/521044).
+Feature teams should use the [AI Model Rollout template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/AI%20Model%20Rollout.md) to implement model migrations. See an example from our [Claude 3.7 Sonnet Code Generation Rollout Plan](https://gitlab.com/gitlab-org/gitlab/-/issues/521044).
 
 ### Anthropic Model Migration Tasks
 

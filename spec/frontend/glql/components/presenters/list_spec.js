@@ -51,9 +51,9 @@ describe('ListPresenter', () => {
     expect(htmlPresenter1.props('data')).toBe(MOCK_ISSUES.nodes[0].description);
     expect(htmlPresenter2.props('data')).toBe(MOCK_ISSUES.nodes[1].description);
 
-    expect(listItem1.text()).toEqual('Issue 1 (#1) · @foobar ·  Open · This is a description');
+    expect(listItem1.text()).toEqual('Issue 1 (#1) @foobar ·  Open · This is a description');
     expect(listItem2.text()).toEqual(
-      'Issue 2 (#2 - closed) · @janedoe ·  Closed · This is another description',
+      'Issue 2 (#2 - closed) @janedoe ·  Closed · This is another description',
     );
   });
 

@@ -91,6 +91,7 @@ Values can include:
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/508956) in GitLab 17.7: Configuring the presentation layer using YAML front matter is deprecated.
+- Parameters `title` and `description` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183709) in GitLab 17.10.
 
 {{< /history >}}
 
@@ -113,7 +114,7 @@ Views can be embedded in the following areas:
 The syntax of views is a superset of YAML that consists of:
 
 - The `query` parameter: Expressions joined together with a logical operator, such as `and`.
-- Parameters related to the presentation layer, like `display`, `limit`, or `fields`.
+- Parameters related to the presentation layer, like `display`, `limit`, or `fields`, `title`, and `description`.
 
 A GLQL view is defined in Markdown as a code block, similar to other code blocks like Mermaid.
 
@@ -125,6 +126,8 @@ For example:
 ````yaml
 ```glql
 display: table
+title: GLQL table 🎉
+description: This view lists my open issues
 fields: title, state, health, epic, milestone, weight, updated
 limit: 5
 query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND state = opened
@@ -133,20 +136,22 @@ query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND state = op
 
 This query should render a table like the one below:
 
-![A table listing issues assigned to the current user](img/glql_table_v17_8.png)
+![A table listing issues assigned to the current user](img/glql_table_v17_10.png)
 
 #### Presentation syntax
 
 Aside from the `query` parameter, you can configure presentation details for your GLQL query using some
-more parameters.
+more optional parameters.
 
 Supported parameters:
 
-| Parameter | Default | Description |
-| --------- | ------- | ----------- |
-| `display` | `table` | How to display the data. Supported options: `table`, `list`, or `orderedList`. |
-| `limit`   | `100`   | How many items to display. The maximum value is `100`. |
-| `fields`  | `title` | A comma-separated list of [fields](fields.md). All fields allowed in columns of a GLQL view are supported. |
+| Parameter     | Default                     | Description |
+| ------------- | --------------------------- | ----------- |
+| `description` | None                        | An optional description to display below the title. |
+| `display`     | `table`                     | How to display the data. Supported options: `table`, `list`, or `orderedList`. |
+| `fields`      | `title`                     | A comma-separated list of [fields](fields.md). All fields allowed in columns of a GLQL view are supported. |
+| `limit`       | `100`                       | How many items to display. The maximum value is `100`. |
+| `title`       | `GLQL table` or `GLQL list` | A title displayed at the top of the GLQL view. |
 
 For example, to display first five issues assigned to current user in the `gitlab-org/gitlab`
 project as a list, displaying fields `title`, `health`, and `due`:

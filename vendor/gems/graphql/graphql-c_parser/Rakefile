@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+require "bundler/gem_helper"
+
+# use a custom tag to avoid conflicting with GraphQL-Ruby tags in the same git repo
+class CustomGemHelper < Bundler::GemHelper
+  def version_tag
+    "graphql-c_parser-v#{version}"
+  end
+end
+CustomGemHelper.install_tasks

@@ -13,6 +13,8 @@ class Projects::BlobController < Projects::ApplicationController
   include ProductAnalyticsTracking
   extend ::Gitlab::Utils::Override
 
+  MAX_PREVIEW_CONTENT = 512.kilobytes
+
   prepend_before_action :authenticate_user!, only: [:edit]
 
   around_action :allow_gitaly_ref_name_caching, only: [:show]
@@ -107,6 +109,11 @@ class Projects::BlobController < Projects::ApplicationController
 
   def preview
     @content = params[:content]
+
+    if @content.bytesize >= MAX_PREVIEW_CONTENT
+      return render json: { errors: ["Preview content too large"] }, status: :payload_too_large
+    end
+
     blob.load_all_data!
     diffy = Diffy::Diff.new(blob.data, @content, diff: '-U 3', include_diff_info: true)
     diff_lines = diffy.diff.scan(/.*\n/)[2..]

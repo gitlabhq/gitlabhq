@@ -109,7 +109,18 @@ module Gitlab
     def users
       return User.none unless Ability.allowed?(current_user, :read_users_list)
 
-      UsersFinder.new(current_user, { search: query, use_minimum_char_limit: false }).execute
+      params = { search: query, use_minimum_char_limit: false }
+
+      if current_user && filters[:autocomplete]
+        if Feature.enabled?(:users_search_scoped_to_authorized_namespaces_basic_search, current_user)
+          params[:by_membership] = true
+        elsif Feature.enabled?(:users_search_scoped_to_authorized_namespaces_basic_search_by_ids, current_user)
+          params[:group_member_source_ids] = current_user_authorized_group_ids
+          params[:project_member_source_ids] = current_user_authorized_project_ids
+        end
+      end
+
+      UsersFinder.new(current_user, params).execute
     end
 
     # highlighting is only performed by Elasticsearch backed results
@@ -264,6 +275,20 @@ module Gitlab
 
         params[:confidential] = filters[:confidential] if [true, false].include?(filters[:confidential])
       end
+    end
+
+    def current_user_authorized_group_ids
+      GroupsFinder
+        .new(current_user, { all_available: false })
+        .execute
+        .pluck("#{Group.table_name}.#{Group.primary_key}") # rubocop: disable CodeReuse/ActiveRecord -- need to find ids
+    end
+
+    def current_user_authorized_project_ids
+      ProjectsFinder
+        .new(current_user: current_user, params: { non_public: true })
+        .execute
+        .pluck_primary_key
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

@@ -49,7 +49,7 @@ Workflow:
 
 ## Prerequisites
 
-Before you can use Duo Workflow, you must:
+Before you can use Workflow, you must:
 
 - [Install Visual Studio Code](https://code.visualstudio.com/download) (VS Code).
 - [Set up the GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#setup). Minimum version 5.16.0.
@@ -63,7 +63,7 @@ Before you can use Duo Workflow, you must:
   - The repository you want to work with should be small or medium-sized.
     Workflow can be slow or fail for large repositories.
 
-To isolate GitLab Duo Workflow in a Docker container, you must complete the [Docker setup](docker_set_up.md). This is not the preferred method to run Duo Workflow.
+To isolate GitLab Duo Workflow in a Docker container, you must complete the [Docker setup](docker_set_up.md). This is not the preferred method to run Workflow.
 
 ## Use Workflow in VS Code
 

@@ -315,4 +315,17 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
       is_expected.to include '<span class="kc">true</span>'
     end
   end
+
+  describe 'math does not get rendered as link' do
+    [
+      "$[(a+b)c](d+e)$",
+      '$$[(a+b)c](d+e)$$',
+      '$`[(a+b)c](d+e)`$'
+    ].each do |input|
+      it "when using '#{input}' as input" do
+        result = described_class.call(input, project: nil)[:output]
+        expect(result.css('a').first).to be_nil
+      end
+    end
+  end
 end

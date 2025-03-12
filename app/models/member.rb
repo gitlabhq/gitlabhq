@@ -209,6 +209,8 @@ class Member < ApplicationRecord
   end
 
   scope :with_source_id, ->(source_id) { where(source_id: source_id) }
+  scope :with_source, ->(source) { where(source: source) }
+  scope :with_source_type, ->(source_type) { where(source_type: source_type) }
   scope :including_source, -> { includes(:source) }
   scope :including_user, -> { includes(:user) }
 

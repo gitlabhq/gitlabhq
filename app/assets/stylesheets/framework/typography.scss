@@ -118,7 +118,7 @@
     @apply gl-heading-1-fixed gl-mt-7 gl-pb-2 gl-border-b;
   }
 
-  h2 {
+  h2:not(:where(.crud-header) h2) {
     @apply gl-heading-2-fixed gl-mt-6 gl-pb-2 gl-border-b;
   }
 
@@ -203,13 +203,24 @@
 
   .gl-table-shadow {
     overflow-x: auto;
+    overflow-y: hidden;
     animation: gl-table-shadow $gl-easing-out-cubic;
     animation-timeline: scroll(self inline);
+    // Needs to stay white because we use mix-blend-mode
+    // to make it work in both light and darkmode.
+    background-color: var(--gl-color-neutral-0);
 
     table:not(.code) {
       display: table;
       overflow-x: initial;
       mix-blend-mode: multiply;
+      // strech is not available yet, so we have to rely
+      // on the vendor prefixed ones below
+      min-width: strech;
+      /* stylelint-disable-next-line value-no-vendor-prefix */
+      min-width: -webkit-fill-available;
+      /* stylelint-disable-next-line value-no-vendor-prefix */
+      min-width: -moz-available;
     }
   }
 

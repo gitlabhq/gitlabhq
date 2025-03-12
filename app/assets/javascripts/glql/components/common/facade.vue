@@ -31,7 +31,6 @@ export default {
   data() {
     return {
       loadOnClick: true,
-
       presenterPreview: null,
       presenterComponent: null,
       error: {

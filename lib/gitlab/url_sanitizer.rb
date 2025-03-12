@@ -4,16 +4,11 @@ module Gitlab
   class UrlSanitizer
     include Gitlab::Utils::StrongMemoize
 
+    MASK = '*****'
     ALLOWED_SCHEMES = %w[http https ssh git].freeze
     ALLOWED_WEB_SCHEMES = %w[http https].freeze
     SCHEMIFIED_SCHEME = 'glschemelessuri'
     SCHEMIFY_PLACEHOLDER = "#{SCHEMIFIED_SCHEME}://".freeze
-    # SCP style URLs have a format of [userinfo]@[host]:[path] with them not containing
-    # port arguments as that is passed along with a -P argument
-    SCP_REGEX = %r{
-      #{URI::REGEXP::PATTERN::USERINFO}@#{URI::REGEXP::PATTERN::HOST}:
-      (?!\b\d+\b) # use word boundaries to ensure no standalone digits after the colon
-    }x
     # URI::DEFAULT_PARSER.make_regexp will only match URLs with schemes or
     # relative URLs. This section will match schemeless URIs with userinfo
     # e.g. user:pass@gitlab.com but will not match scp-style URIs e.g.
@@ -23,14 +18,12 @@ module Gitlab
     # also match non-escaped userinfo e.g foo:b?r@gitlab.com which should be
     # encoded as foo:b%3Fr@gitlab.com
     URI_REGEXP = %r{
-    (?:
-       #{URI::DEFAULT_PARSER.make_regexp(ALLOWED_SCHEMES)}
-     |
-       (?# negative lookahead before the schemeless matcher ensures this isn't an SCP-style URL)
-       (?!#{SCP_REGEX})
-       (?:(?:(?!@)[%#{URI::REGEXP::PATTERN::UNRESERVED}#{URI::REGEXP::PATTERN::RESERVED}])+(?:@))
-       #{URI::REGEXP::PATTERN::HOSTPORT}
-    )
+      (?# negative lookahead for masked userinfo *****, *****:, *****:*****, or :*****)
+      (?!.*?(\*{5}$|\*{5}:$|\*{5}:\*{5}|:\*{5}))
+      #{URI::REGEXP::PATTERN::USERINFO}@
+      (?# negative lookahead to ensure this isn't an SCP-style URL)
+      (?!#{URI::REGEXP::PATTERN::HOST}:(?!\b\d+\b))
+      #{URI::REGEXP::PATTERN::HOSTPORT}
     }x
     # This expression is derived from `URI::REGEXP::PATTERN::USERINFO` but with the
     # addition of `{` and `}` in the list of allowed characters to account for the
@@ -39,13 +32,24 @@ module Gitlab
     # http://myuser:{masked_password}@{masked_domain}.com/{masked_hook}
     MASKED_USERINFO_REGEX = %r{(?:[\\-_.!~*'()a-zA-Z\d;:&=+$,{}]|%[a-fA-F\d]{2})*}
 
-    def self.sanitize(content)
+    def self.sanitize(content, user: nil, password: nil)
+      content = sanitize_unencoded(content, user: user, password: password)
       content.gsub(URI_REGEXP) do |url|
         new(url).masked_url
       rescue Addressable::URI::InvalidURIError
         ''
       end
     end
+
+    def self.sanitize_unencoded(content, user: nil, password: nil)
+      return content unless user.present? || password.present?
+
+      unencoded_basic_auth_regex =
+        %r{#{Regexp.escape(user.to_s)}:#{'?' if password.blank?}#{Regexp.escape(password.to_s)}@}
+      masked_basic_auth = "#{MASK if user.present?}#{%(:#{MASK}) if password.present?}@"
+      content.gsub(unencoded_basic_auth_regex, masked_basic_auth)
+    end
+    private_class_method :sanitize_unencoded
 
     def self.valid?(url, allowed_schemes: ALLOWED_SCHEMES)
       return false unless url.present?
@@ -97,8 +101,8 @@ module Gitlab
 
     def masked_url
       url = @url.dup
-      url.password = "*****" if url.password.present?
-      url.user = "*****" if url.user.present?
+      url.password = MASK if url.password.present?
+      url.user = MASK if url.user.present?
       reverse_schemify(url.to_s)
     end
     strong_memoize_attr :masked_url

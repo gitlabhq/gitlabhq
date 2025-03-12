@@ -1,0 +1,1026 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`sync operations Input files Merges fragments and operations across files 1`] = `
+[
+  {
+    "alias": "4568c28d403794e011363caf815ec827",
+    "body": "fragment Frag1 on Query {
+  moreStuff
+}
+
+query GetStuff {
+  ...Frag1
+}",
+    "name": "GetStuff",
+  },
+  {
+    "alias": "faf462be033e16dd2a56130d56a9192f",
+    "body": "fragment Frag1 on Query {
+  moreStuff
+}
+
+fragment Frag2 on Query {
+  ...Frag3
+}
+
+fragment Frag3 on Query {
+  evenMoreStuff
+}
+
+query GetStuff2 {
+  stuff
+  ...Frag1
+  ...Frag2
+}",
+    "name": "GetStuff2",
+  },
+  {
+    "alias": "aab385a1685772ad520fc70d468030fa",
+    "body": "fragment Frag2 on Query {
+  ...Frag3
+}
+
+fragment Frag3 on Query {
+  evenMoreStuff
+}
+
+fragment Frag4 on Query {
+  evenMoreStuff {
+    stuffInside
+  }
+}
+
+query GetStuff3 {
+  stuff {
+    withStuffInside
+  }
+  ...Frag2
+  ...Frag4
+}",
+    "name": "GetStuff3",
+  },
+  {
+    "alias": "b2cb0b317d071f9f38905fba21d73258",
+    "body": "query GetStuffIsolated {
+  ...FragIsolated
+  things {
+    existHere
+  }
+}
+
+fragment FragIsolated on Query {
+  evenMoreStuff {
+    stuffInside
+  }
+}",
+    "name": "GetStuffIsolated",
+  },
+  {
+    "alias": "6cdae165fd6dc5dc5900e5a2bba90cc2",
+    "body": "query GetStuffIsolated2 {
+  things {
+    existHere
+  }
+}",
+    "name": "GetStuffIsolated2",
+  },
+]
+`;
+
+exports[`sync operations Input files Uses mode: file to process each file separately 1`] = `
+[
+  {
+    "alias": "664225b943e29ea8c6aae40bbde8923a",
+    "body": "fragment Frag1 on Query {
+  moreStuff
+}",
+    "name": "",
+  },
+  {
+    "alias": "269bbe8bbe7f6a0b9dae7f98b45a9675",
+    "body": "fragment Frag2 on Query {
+  ...Frag3
+}",
+    "name": "",
+  },
+  {
+    "alias": "d12578840c6518c746b125ae2e7a8ab1",
+    "body": "fragment Frag3 on Query {
+  evenMoreStuff
+}",
+    "name": "",
+  },
+  {
+    "alias": "1a1b6154fb1db8bc6652edfbd7d9ac8a",
+    "body": "fragment Frag4 on Query {
+  evenMoreStuff {
+    stuffInside
+  }
+}",
+    "name": "",
+  },
+  {
+    "alias": "8ab1711fcbb7befc98d06ef7d155fd81",
+    "body": "query GetStuff {
+  ...Frag1
+}",
+    "name": "GetStuff",
+  },
+  {
+    "alias": "cf517696fbd9ec204cd402f48c831090",
+    "body": "query GetStuff2 {
+  stuff
+  ...Frag1
+  ...Frag2
+}",
+    "name": "GetStuff2",
+  },
+  {
+    "alias": "1e5290206d87a4da749118d84f7e2c65",
+    "body": "query GetStuff3 {
+  stuff {
+    withStuffInside
+  }
+  ...Frag2
+  ...Frag4
+}",
+    "name": "GetStuff3",
+  },
+  {
+    "alias": "b2cb0b317d071f9f38905fba21d73258",
+    "body": "query GetStuffIsolated {
+  ...FragIsolated
+  things {
+    existHere
+  }
+}
+
+fragment FragIsolated on Query {
+  evenMoreStuff {
+    stuffInside
+  }
+}",
+    "name": "GetStuffIsolated",
+  },
+  {
+    "alias": "6cdae165fd6dc5dc5900e5a2bba90cc2",
+    "body": "query GetStuffIsolated2 {
+  things {
+    existHere
+  }
+}",
+    "name": "GetStuffIsolated2",
+  },
+]
+`;
+
+exports[`sync operations Logging Can be quieted with quiet: true 1`] = `[]`;
+
+exports[`sync operations Logging Logs progress 1`] = `
+[
+  [
+    "Syncing 5 operations to [1mbogus[0m...",
+  ],
+  [
+    "Generating client module in [1msrc/OperationStoreClient.js[0m...",
+  ],
+  [
+    "[32m✓ Done![0m",
+  ],
+]
+`;
+
+exports[`sync operations Printing the result prints failure and sends the message to the promise 1`] = `
+[
+  [
+    "Syncing 5 operations to [1mhttp://example.com/stored_operations/sync[0m...",
+  ],
+  [
+    "[Sync] 2 Headers:",
+  ],
+  [
+    "[Sync]    Content-Type: application/json",
+  ],
+  [
+    "[Sync]    Content-Length: 1132",
+  ],
+  [
+    "[Sync] Data:",
+    "{"operations":[{"name":"GetStuff","body":"fragment Frag1 on Query {\\n  moreStuff\\n}\\n\\nquery GetStuff {\\n  ...Frag1\\n}","alias":"4568c28d403794e011363caf815ec827"},{"name":"GetStuff2","body":"fragment Frag1 on Query {\\n  moreStuff\\n}\\n\\nfragment Frag2 on Query {\\n  ...Frag3\\n}\\n\\nfragment Frag3 on Query {\\n  evenMoreStuff\\n}\\n\\nquery GetStuff2 {\\n  stuff\\n  ...Frag1\\n  ...Frag2\\n}","alias":"faf462be033e16dd2a56130d56a9192f"},{"name":"GetStuff3","body":"fragment Frag2 on Query {\\n  ...Frag3\\n}\\n\\nfragment Frag3 on Query {\\n  evenMoreStuff\\n}\\n\\nfragment Frag4 on Query {\\n  evenMoreStuff {\\n    stuffInside\\n  }\\n}\\n\\nquery GetStuff3 {\\n  stuff {\\n    withStuffInside\\n  }\\n  ...Frag2\\n  ...Frag4\\n}","alias":"aab385a1685772ad520fc70d468030fa"},{"name":"GetStuffIsolated","body":"query GetStuffIsolated {\\n  ...FragIsolated\\n  things {\\n    existHere\\n  }\\n}\\n\\nfragment FragIsolated on Query {\\n  evenMoreStuff {\\n    stuffInside\\n  }\\n}","alias":"b2cb0b317d071f9f38905fba21d73258"},{"name":"GetStuffIsolated2","body":"query GetStuffIsolated2 {\\n  things {\\n    existHere\\n  }\\n}","alias":"6cdae165fd6dc5dc5900e5a2bba90cc2"}]}",
+  ],
+  [
+    "[Sync] Response Headers: ",
+    "{"content-type":"application/json"}",
+  ],
+  [
+    "[Sync] Response Body: ",
+    "{"errors":{"4568c28d403794e011363caf815ec827":["something"]},"failed":["4568c28d403794e011363caf815ec827"],"added":["defg"],"not_modified":[]}",
+  ],
+  [
+    "  [2m0 added[0m",
+  ],
+  [
+    "  [2m0 not modified[0m",
+  ],
+  [
+    "  [31m1 failed[0m",
+  ],
+]
+`;
+
+exports[`sync operations Printing the result prints failure and sends the message to the promise 2`] = `
+[
+  [
+    "Sync failed, errors:",
+  ],
+  [
+    "  GetStuff:",
+  ],
+  [
+    "    [31m✘[0m something",
+  ],
+]
+`;
+
+exports[`sync operations Printing the result prints success 1`] = `
+[
+  [
+    "Syncing 5 operations to [1mhttp://example.com/stored_operations/sync[0m...",
+  ],
+  [
+    "[Sync] 2 Headers:",
+  ],
+  [
+    "[Sync]    Content-Type: application/json",
+  ],
+  [
+    "[Sync]    Content-Length: 1132",
+  ],
+  [
+    "[Sync] Data:",
+    "{"operations":[{"name":"GetStuff","body":"fragment Frag1 on Query {\\n  moreStuff\\n}\\n\\nquery GetStuff {\\n  ...Frag1\\n}","alias":"4568c28d403794e011363caf815ec827"},{"name":"GetStuff2","body":"fragment Frag1 on Query {\\n  moreStuff\\n}\\n\\nfragment Frag2 on Query {\\n  ...Frag3\\n}\\n\\nfragment Frag3 on Query {\\n  evenMoreStuff\\n}\\n\\nquery GetStuff2 {\\n  stuff\\n  ...Frag1\\n  ...Frag2\\n}","alias":"faf462be033e16dd2a56130d56a9192f"},{"name":"GetStuff3","body":"fragment Frag2 on Query {\\n  ...Frag3\\n}\\n\\nfragment Frag3 on Query {\\n  evenMoreStuff\\n}\\n\\nfragment Frag4 on Query {\\n  evenMoreStuff {\\n    stuffInside\\n  }\\n}\\n\\nquery GetStuff3 {\\n  stuff {\\n    withStuffInside\\n  }\\n  ...Frag2\\n  ...Frag4\\n}","alias":"aab385a1685772ad520fc70d468030fa"},{"name":"GetStuffIsolated","body":"query GetStuffIsolated {\\n  ...FragIsolated\\n  things {\\n    existHere\\n  }\\n}\\n\\nfragment FragIsolated on Query {\\n  evenMoreStuff {\\n    stuffInside\\n  }\\n}","alias":"b2cb0b317d071f9f38905fba21d73258"},{"name":"GetStuffIsolated2","body":"query GetStuffIsolated2 {\\n  things {\\n    existHere\\n  }\\n}","alias":"6cdae165fd6dc5dc5900e5a2bba90cc2"}]}",
+  ],
+]
+`;
+
+exports[`sync operations Printing the result prints success 2`] = `
+[
+  [
+    "[Sync] Response Headers: ",
+    "{"content-type":"application/json"}",
+  ],
+  [
+    "[Sync] Response Body: ",
+    "{"errors":{},"failed":[],"added":["defg"],"not_modified":["xyz","123"]}",
+  ],
+  [
+    "  [32m1 added[0m",
+  ],
+  [
+    "  [0m2 not modified[0m",
+  ],
+  [
+    "  [2m0 failed[0m",
+  ],
+  [
+    "Generating client module in [1msrc/OperationStoreClient.js[0m...",
+  ],
+  [
+    "[32m✓ Done![0m",
+  ],
+]
+`;
+
+exports[`sync operations Printing the result prints success 3`] = `[]`;
+
+exports[`sync operations Relay support Uses Apollo Android OperationOutput JSON files 1`] = `
+[
+  {
+    "alias": "aba626ea9bdf465954e89e5590eb2c1a",
+    "body": "mutation RemoveTodoMutation($input: RemoveTodoInput!) {
+  removeTodo(input: $input) {
+    deletedTodoId
+    user {
+      completedCount
+      totalCount
+      id
+    }
+  }
+}",
+  },
+  {
+    "alias": "67c2bc8aa3185a209d6651b4feb63c04",
+    "body": "query appQuery(
+  $userId: String
+) {
+  user(id: $userId) {
+    ...TodoApp_user
+    id
+  }
+}
+
+fragment TodoApp_user on User {
+  id
+  userId
+  totalCount
+  ...TodoListFooter_user
+  ...TodoList_user
+}
+
+fragment TodoListFooter_user on User {
+  id
+  userId
+  completedCount
+  todos(first: 2147483647) {
+    edges {
+      node {
+        id
+        complete
+        __typename
+      }
+      cursor
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+  totalCount
+}
+
+fragment TodoList_user on User {
+  todos(first: 2147483647) {
+    edges {
+      node {
+        id
+        complete
+        ...Todo_todo
+        __typename
+      }
+      cursor
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+  id
+  userId
+  totalCount
+  completedCount
+  ...Todo_user
+}
+
+fragment Todo_todo on Todo {
+  complete
+  id
+  text
+}
+
+fragment Todo_user on User {
+  id
+  userId
+  totalCount
+  completedCount
+}
+",
+  },
+  {
+    "alias": "db9904c31d91416f21d45fe3d153884c",
+    "body": "mutation MarkAllTodosMutation(
+  $input: MarkAllTodosInput!
+) {
+  markAllTodos(input: $input) {
+    changedTodos {
+      id
+      complete
+    }
+    user {
+      id
+      completedCount
+    }
+  }
+}
+",
+  },
+  {
+    "alias": "2eb8c9941fdb3117fdbc08d15fab62d0",
+    "body": "mutation AddTodoMutation(
+  $input: AddTodoInput!
+) {
+  addTodo(input: $input) {
+    todoEdge {
+      __typename
+      cursor
+      node {
+        complete
+        id
+        text
+      }
+    }
+    user {
+      id
+      totalCount
+    }
+  }
+}
+",
+  },
+  {
+    "alias": "d970fd7dbf118794415dec7324d463e3",
+    "body": "mutation RenameTodoMutation(
+  $input: RenameTodoInput!
+) {
+  renameTodo(input: $input) {
+    todo {
+      id
+      text
+    }
+  }
+}
+",
+  },
+  {
+    "alias": "a49217db31a8be3f4107763b957d5fca",
+    "body": "mutation RemoveCompletedTodosMutation(
+  $input: RemoveCompletedTodosInput!
+) {
+  removeCompletedTodos(input: $input) {
+    deletedTodoIds
+    user {
+      completedCount
+      totalCount
+      id
+    }
+  }
+}
+",
+  },
+  {
+    "alias": "d7dda774dcfa32fe0d9661e01cac9a4a",
+    "body": "mutation ChangeTodoStatusMutation(
+  $input: ChangeTodoStatusInput!
+) {
+  changeTodoStatus(input: $input) {
+    todo {
+      id
+      complete
+    }
+    user {
+      id
+      completedCount
+    }
+  }
+}
+",
+  },
+]
+`;
+
+exports[`sync operations Relay support Uses Apollo Codegen JSON files 1`] = `
+[
+  {
+    "alias": "22cc98c61c1402c92b230b7c515e07eb793a5152c388b015e86df4652ec58156",
+    "body": "mutation UpdateSomething($name: String!) {
+  updateSomething(name: $name) {
+    __typename
+    name
+  }
+}",
+    "name": "UpdateSomething",
+  },
+  {
+    "alias": "688df2ea182541c70a34c55ca056dc249014bf9f33c64eee527120c714e936fc",
+    "body": "query getHelloWorld {
+  helloWorld
+  ...MoreFields
+}
+fragment MoreFields on Query {
+  __typename
+}",
+    "name": "getHelloWorld",
+  },
+]
+`;
+
+exports[`sync operations Relay support Uses Relay generated .js files 1`] = `
+[
+  {
+    "alias": "353e010cb78d082b29cb63ee7e9027b3",
+    "body": "query AppFeedQuery {
+  feed(type: NEW, limit: 5) {
+    ...Feed
+  }
+}
+
+fragment Feed on Entry {
+  repository {
+    owner {
+      login
+    }
+    name
+  }
+  ...FeedEntry
+}
+
+fragment FeedEntry on Entry {
+  repository {
+    owner {
+      login
+    }
+    name
+    stargazers_count
+  }
+  postedBy {
+    login
+  }
+}
+",
+    "name": "AppFeedQuery",
+  },
+]
+`;
+
+exports[`sync operations Relay support Uses relay --persist-output JSON files 1`] = `
+[
+  {
+    "alias": "aba626ea9bdf465954e89e5590eb2c1a",
+    "body": "mutation RemoveTodoMutation(
+  $input: RemoveTodoInput!
+) {
+  removeTodo(input: $input) {
+    deletedTodoId
+    user {
+      completedCount
+      totalCount
+      id
+    }
+  }
+}
+",
+  },
+  {
+    "alias": "67c2bc8aa3185a209d6651b4feb63c04",
+    "body": "query appQuery(
+  $userId: String
+) {
+  user(id: $userId) {
+    ...TodoApp_user
+    id
+  }
+}
+
+fragment TodoApp_user on User {
+  id
+  userId
+  totalCount
+  ...TodoListFooter_user
+  ...TodoList_user
+}
+
+fragment TodoListFooter_user on User {
+  id
+  userId
+  completedCount
+  todos(first: 2147483647) {
+    edges {
+      node {
+        id
+        complete
+        __typename
+      }
+      cursor
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+  totalCount
+}
+
+fragment TodoList_user on User {
+  todos(first: 2147483647) {
+    edges {
+      node {
+        id
+        complete
+        ...Todo_todo
+        __typename
+      }
+      cursor
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+  id
+  userId
+  totalCount
+  completedCount
+  ...Todo_user
+}
+
+fragment Todo_todo on Todo {
+  complete
+  id
+  text
+}
+
+fragment Todo_user on User {
+  id
+  userId
+  totalCount
+  completedCount
+}
+",
+  },
+  {
+    "alias": "db9904c31d91416f21d45fe3d153884c",
+    "body": "mutation MarkAllTodosMutation(
+  $input: MarkAllTodosInput!
+) {
+  markAllTodos(input: $input) {
+    changedTodos {
+      id
+      complete
+    }
+    user {
+      id
+      completedCount
+    }
+  }
+}
+",
+  },
+  {
+    "alias": "2eb8c9941fdb3117fdbc08d15fab62d0",
+    "body": "mutation AddTodoMutation(
+  $input: AddTodoInput!
+) {
+  addTodo(input: $input) {
+    todoEdge {
+      __typename
+      cursor
+      node {
+        complete
+        id
+        text
+      }
+    }
+    user {
+      id
+      totalCount
+    }
+  }
+}
+",
+  },
+  {
+    "alias": "d970fd7dbf118794415dec7324d463e3",
+    "body": "mutation RenameTodoMutation(
+  $input: RenameTodoInput!
+) {
+  renameTodo(input: $input) {
+    todo {
+      id
+      text
+    }
+  }
+}
+",
+  },
+  {
+    "alias": "a49217db31a8be3f4107763b957d5fca",
+    "body": "mutation RemoveCompletedTodosMutation(
+  $input: RemoveCompletedTodosInput!
+) {
+  removeCompletedTodos(input: $input) {
+    deletedTodoIds
+    user {
+      completedCount
+      totalCount
+      id
+    }
+  }
+}
+",
+  },
+  {
+    "alias": "d7dda774dcfa32fe0d9661e01cac9a4a",
+    "body": "mutation ChangeTodoStatusMutation(
+  $input: ChangeTodoStatusInput!
+) {
+  changeTodoStatus(input: $input) {
+    todo {
+      id
+      complete
+    }
+    user {
+      id
+      completedCount
+    }
+  }
+}
+",
+  },
+]
+`;
+
+exports[`sync operations Sync output Can dump payload and outfile at the same time 1`] = `
+"{
+  "operations": [
+    {
+      "name": "GetStuff",
+      "body": "fragment Frag1 on Query {\\n  moreStuff\\n}\\n\\nquery GetStuff {\\n  ...Frag1\\n}",
+      "alias": "4568c28d403794e011363caf815ec827"
+    },
+    {
+      "name": "GetStuff2",
+      "body": "fragment Frag1 on Query {\\n  moreStuff\\n}\\n\\nfragment Frag2 on Query {\\n  ...Frag3\\n}\\n\\nfragment Frag3 on Query {\\n  evenMoreStuff\\n}\\n\\nquery GetStuff2 {\\n  stuff\\n  ...Frag1\\n  ...Frag2\\n}",
+      "alias": "faf462be033e16dd2a56130d56a9192f"
+    },
+    {
+      "name": "GetStuff3",
+      "body": "fragment Frag2 on Query {\\n  ...Frag3\\n}\\n\\nfragment Frag3 on Query {\\n  evenMoreStuff\\n}\\n\\nfragment Frag4 on Query {\\n  evenMoreStuff {\\n    stuffInside\\n  }\\n}\\n\\nquery GetStuff3 {\\n  stuff {\\n    withStuffInside\\n  }\\n  ...Frag2\\n  ...Frag4\\n}",
+      "alias": "aab385a1685772ad520fc70d468030fa"
+    },
+    {
+      "name": "GetStuffIsolated",
+      "body": "query GetStuffIsolated {\\n  ...FragIsolated\\n  things {\\n    existHere\\n  }\\n}\\n\\nfragment FragIsolated on Query {\\n  evenMoreStuff {\\n    stuffInside\\n  }\\n}",
+      "alias": "b2cb0b317d071f9f38905fba21d73258"
+    },
+    {
+      "name": "GetStuffIsolated2",
+      "body": "query GetStuffIsolated2 {\\n  things {\\n    existHere\\n  }\\n}",
+      "alias": "6cdae165fd6dc5dc5900e5a2bba90cc2"
+    }
+  ]
+}
+"
+`;
+
+exports[`sync operations custom file processing options Adds .graphql to the glob if needed 1`] = `
+[
+  {
+    "alias": "b8086942c2fbb6ac69b97cbade848033",
+    "body": "query GetStuff {
+  stuff
+}",
+    "name": "GetStuff",
+  },
+]
+`;
+
+exports[`sync operations custom file processing options Adds .graphql to the glob if needed 2`] = `
+[
+  {
+    "alias": "b8086942c2fbb6ac69b97cbade848033",
+    "body": "query GetStuff {
+  stuff
+}",
+    "name": "GetStuff",
+  },
+]
+`;
+
+exports[`sync operations custom file processing options Uses a custom hash function if provided 1`] = `
+[
+  {
+    "alias": "GETSTUFF",
+    "body": "query GetStuff {
+  stuff
+}",
+    "name": "GetStuff",
+  },
+]
+`;
+
+exports[`sync operations generating artifacts without syncing works with persisted query manifest 1`] = `
+"
+    /**
+     * Generated by graphql-ruby-client
+     *
+    */
+
+    /**
+     * Map local operation names to persisted keys on the server
+     * @return {Object}
+     * @private
+    */
+    var _aliases = {
+  "TestQuery1": "4a29162b05ee4d82ad02e8f50af4bf112f47181ec558a7100a",
+  "TestQuery2": "xyz-123"
+}
+
+    /**
+     * The client who synced these operations with the server
+     * @return {String}
+     * @private
+    */
+    var _client = "test-1"
+
+    var OperationStoreClient = {
+      /**
+       * Build a string for \`params[:operationId]\`
+       * @param {String} operationName
+       * @return {String} stored operation ID
+      */
+      getOperationId: function(operationName) {
+        return _client + "/" + OperationStoreClient.getPersistedQueryAlias(operationName)
+      },
+
+      /**
+       * Fetch a persisted alias from a local operation name
+       * @param {String} operationName
+       * @return {String} persisted alias
+      */
+      getPersistedQueryAlias: function(operationName) {
+        var persistedAlias = _aliases[operationName]
+        if (!persistedAlias) {
+          throw new Error("Failed to find persisted alias for operation name: " + operationName)
+        } else {
+          return persistedAlias
+        }
+      },
+
+      /**
+       * Satisfy the Apollo Link API.
+       * This link checks for an operation name, and if it's present,
+       * sets the HTTP context to _not_ include the query,
+       * and instead, include \`extensions.operationId\`.
+       * (This is inspired by apollo-link-persisted-queries.)
+      */
+      apolloLink: function(operation, forward) {
+        if (operation.operationName) {
+          const operationId = OperationStoreClient.getOperationId(operation.operationName)
+          operation.setContext({
+            http: {
+              includeQuery: false,
+              includeExtensions: true,
+            }
+          })
+          operation.extensions.operationId = operationId
+        }
+        return forward(operation)
+      },
+      /**
+       * Satisfy the Apollo middleware API.
+       * Replace the query with an operationId
+      */
+      apolloMiddleware: {
+        applyBatchMiddleware: function(options, next) {
+          options.requests.forEach(function(req) {
+            // Fetch the persisted alias for this operation
+            req.operationId = OperationStoreClient.getOperationId(req.operationName)
+            // Remove the now-unused query string
+            delete req.query
+            return req
+          })
+          // Continue the request
+          next()
+        },
+
+        applyMiddleware: function(options, next) {
+          var req = options.request
+          // Fetch the persisted alias for this operation
+          req.operationId = OperationStoreClient.getOperationId(req.operationName)
+          // Remove the now-unused query string
+          delete req.query
+          // Continue the request
+          next()
+        }
+      }
+    }
+
+    module.exports = OperationStoreClient
+    "
+`;
+
+exports[`sync operations generating artifacts without syncing works without a URL 1`] = `
+"
+    /**
+     * Generated by graphql-ruby-client
+     *
+    */
+
+    /**
+     * Map local operation names to persisted keys on the server
+     * @return {Object}
+     * @private
+    */
+    var _aliases = {
+  "GetStuff": "b8086942c2fbb6ac69b97cbade848033"
+}
+
+    /**
+     * The client who synced these operations with the server
+     * @return {String}
+     * @private
+    */
+    var _client = "test-1"
+
+    var OperationStoreClient = {
+      /**
+       * Build a string for \`params[:operationId]\`
+       * @param {String} operationName
+       * @return {String} stored operation ID
+      */
+      getOperationId: function(operationName) {
+        return _client + "/" + OperationStoreClient.getPersistedQueryAlias(operationName)
+      },
+
+      /**
+       * Fetch a persisted alias from a local operation name
+       * @param {String} operationName
+       * @return {String} persisted alias
+      */
+      getPersistedQueryAlias: function(operationName) {
+        var persistedAlias = _aliases[operationName]
+        if (!persistedAlias) {
+          throw new Error("Failed to find persisted alias for operation name: " + operationName)
+        } else {
+          return persistedAlias
+        }
+      },
+
+      /**
+       * Satisfy the Apollo Link API.
+       * This link checks for an operation name, and if it's present,
+       * sets the HTTP context to _not_ include the query,
+       * and instead, include \`extensions.operationId\`.
+       * (This is inspired by apollo-link-persisted-queries.)
+      */
+      apolloLink: function(operation, forward) {
+        if (operation.operationName) {
+          const operationId = OperationStoreClient.getOperationId(operation.operationName)
+          operation.setContext({
+            http: {
+              includeQuery: false,
+              includeExtensions: true,
+            }
+          })
+          operation.extensions.operationId = operationId
+        }
+        return forward(operation)
+      },
+      /**
+       * Satisfy the Apollo middleware API.
+       * Replace the query with an operationId
+      */
+      apolloMiddleware: {
+        applyBatchMiddleware: function(options, next) {
+          options.requests.forEach(function(req) {
+            // Fetch the persisted alias for this operation
+            req.operationId = OperationStoreClient.getOperationId(req.operationName)
+            // Remove the now-unused query string
+            delete req.query
+            return req
+          })
+          // Continue the request
+          next()
+        },
+
+        applyMiddleware: function(options, next) {
+          var req = options.request
+          // Fetch the persisted alias for this operation
+          req.operationId = OperationStoreClient.getOperationId(req.operationName)
+          // Remove the now-unused query string
+          delete req.query
+          // Continue the request
+          next()
+        }
+      }
+    }
+
+    module.exports = OperationStoreClient
+    "
+`;
+
+exports[`sync operations verbose Adds debug output 1`] = `
+[
+  [
+    "[Sync] glob: ",
+    "./src/__tests__/documents**/*.graphql*",
+  ],
+  [
+    "[Sync] 1 files:",
+  ],
+  [
+    "[Sync]   - src/__tests__/documents/doc1.graphql",
+  ],
+  [
+    "Syncing 1 operations to [1mbogus[0m...",
+  ],
+  [
+    "Verbose!",
+  ],
+  [
+    "Generating client module in [1msrc/OperationStoreClient.js[0m...",
+  ],
+  [
+    "[32m✓ Done![0m",
+  ],
+]
+`;

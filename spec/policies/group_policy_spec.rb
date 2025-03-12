@@ -1298,7 +1298,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
 
       context 'all other user types' do
-        User::USER_TYPES.except(:human, :project_bot, :placeholder, :import_user).each_value do |user_type|
+        User::USER_TYPES.except(:human, :project_bot, :admin_bot, :placeholder, :import_user).each_value do |user_type|
           context "with user_type #{user_type}" do
             before do
               current_user.update!(user_type: user_type)

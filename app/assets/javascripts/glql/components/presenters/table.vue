@@ -2,6 +2,7 @@
 import { GlIcon, GlLink, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import Sorter from '../../core/sorter';
 import ThResizable from '../common/th_resizable.vue';
 
@@ -13,6 +14,7 @@ export default {
     GlSprintf,
     GlSkeletonLoader,
     ThResizable,
+    CrudComponent,
   },
   inject: ['presenter'],
   props: {
@@ -39,11 +41,13 @@ export default {
       items,
       fields: this.config.fields,
       sorter: new Sorter(items),
-
       table: null,
     };
   },
   computed: {
+    title() {
+      return this.config.title || __('GLQL table');
+    },
     docsPath() {
       return `${helpPagePath('user/glql/_index')}#glql-views`;
     },
@@ -59,61 +63,71 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-table-shadow !gl-my-4">
-    <table ref="table" class="!gl-mb-2 !gl-mt-0 gl-overflow-y-hidden">
-      <thead>
-        <tr v-if="table">
-          <th-resizable v-for="(field, fieldIndex) in fields" :key="field.key" :table="table">
-            <div
-              :data-testid="`column-${fieldIndex}`"
-              class="gl-cursor-pointer"
-              @click="sorter.sortBy(field.key)"
+  <crud-component
+    :title="title"
+    :description="config.description"
+    :count="items.length"
+    is-collapsible
+    class="!gl-mt-5 gl-overflow-hidden"
+    body-class="!gl-m-[-1px] !gl-p-0"
+    footer-class="!gl-border-t-0"
+  >
+    <div class="gl-table-shadow">
+      <table ref="table" class="!gl-my-0 gl-overflow-y-hidden">
+        <thead class="gl-text-sm">
+          <tr v-if="table">
+            <th-resizable v-for="(field, fieldIndex) in fields" :key="field.key" :table="table">
+              <div
+                :data-testid="`column-${fieldIndex}`"
+                class="gl-cursor-pointer"
+                @click="sorter.sortBy(field.key)"
+              >
+                {{ field.label }}
+                <gl-icon
+                  v-if="sorter.options.fieldName === field.key"
+                  :name="sorter.options.ascending ? 'arrow-up' : 'arrow-down'"
+                />
+              </div>
+            </th-resizable>
+          </tr>
+        </thead>
+        <tbody class="!gl-bg-subtle">
+          <template v-if="isPreview">
+            <tr v-for="i in 5" :key="i">
+              <td v-for="field in fields" :key="field.key">
+                <gl-skeleton-loader :width="120" :lines="1" />
+              </td>
+            </tr>
+          </template>
+          <template v-else-if="items.length">
+            <tr
+              v-for="(item, itemIndex) in items"
+              :key="item.id"
+              :data-testid="`table-row-${itemIndex}`"
             >
-              {{ field.label }}
-              <gl-icon
-                v-if="sorter.options.fieldName === field.key"
-                :name="sorter.options.ascending ? 'arrow-up' : 'arrow-down'"
-              />
-            </div>
-          </th-resizable>
-        </tr>
-      </thead>
-      <tbody>
-        <template v-if="isPreview">
-          <tr v-for="i in 5" :key="i">
-            <td v-for="field in fields" :key="field.key">
-              <gl-skeleton-loader :width="120" :lines="1" />
+              <td v-for="field in fields" :key="field.key">
+                <component :is="presenter.forField(item, field.key)" />
+              </td>
+            </tr>
+          </template>
+          <tr v-else-if="!items.length">
+            <td :colspan="fields.length" class="gl-text-center">
+              {{ __('No data found for this query') }}
             </td>
           </tr>
-        </template>
-        <template v-else-if="items.length">
-          <tr
-            v-for="(item, itemIndex) in items"
-            :key="item.id"
-            :data-testid="`table-row-${itemIndex}`"
-          >
-            <td v-for="field in fields" :key="field.key">
-              <component :is="presenter.forField(item, field.key)" />
-            </td>
-          </tr>
-        </template>
-        <tr v-else-if="!items.length">
-          <td :colspan="fields.length" class="gl-text-center">
-            {{ __('No data found for this query') }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div
-      class="gl-mt-3 gl-flex gl-items-center gl-gap-1 gl-text-sm gl-text-subtle"
-      data-testid="footer"
-    >
-      <gl-icon class="gl-mb-1 gl-mr-1" :size="12" name="tanuki" />
-      <gl-sprintf :message="$options.i18n.generatedMessage">
-        <template #link="{ content }">
-          <gl-link :href="docsPath" target="_blank">{{ content }}</gl-link>
-        </template>
-      </gl-sprintf>
+        </tbody>
+      </table>
     </div>
-  </div>
+
+    <template #footer>
+      <div class="gl-flex gl-items-center gl-gap-1 gl-text-sm gl-text-subtle" data-testid="footer">
+        <gl-icon class="gl-mb-1 gl-mr-1" :size="12" name="tanuki" />
+        <gl-sprintf :message="$options.i18n.generatedMessage">
+          <template #link="{ content }">
+            <gl-link :href="docsPath" target="_blank">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
+      </div>
+    </template>
+  </crud-component>
 </template>

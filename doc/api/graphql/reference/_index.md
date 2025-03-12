@@ -33160,6 +33160,15 @@ Represents a file or directory in the project repository that has been locked.
 | <a id="pathlockid"></a>`id` | [`PathLockID!`](#pathlockid) | ID of the path lock. |
 | <a id="pathlockpath"></a>`path` | [`String`](#string) | Locked path. |
 | <a id="pathlockuser"></a>`user` | [`UserCore`](#usercore) | User that has locked this path. |
+| <a id="pathlockuserpermissions"></a>`userPermissions` | [`PathLockPermissions!`](#pathlockpermissions) | Permissions for the current user on the resource. |
+
+### `PathLockPermissions`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pathlockpermissionsdestroypathlock"></a>`destroyPathLock` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_path_lock` on this resource. |
 
 ### `PendingGroupMember`
 
@@ -36215,6 +36224,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectpermissionscreatemergerequestfrom"></a>`createMergeRequestFrom` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_merge_request_from` on this resource. |
 | <a id="projectpermissionscreatemergerequestin"></a>`createMergeRequestIn` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_merge_request_in` on this resource. |
 | <a id="projectpermissionscreatepages"></a>`createPages` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_pages` on this resource. |
+| <a id="projectpermissionscreatepathlock"></a>`createPathLock` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_path_lock` on this resource. |
 | <a id="projectpermissionscreatepipeline"></a>`createPipeline` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_pipeline` on this resource. |
 | <a id="projectpermissionscreatepipelineschedule"></a>`createPipelineSchedule` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_pipeline_schedule` on this resource. |
 | <a id="projectpermissionscreatesnippet"></a>`createSnippet` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_snippet` on this resource. |
@@ -36235,6 +36245,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectpermissionsreadenvironment"></a>`readEnvironment` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_environment` on this resource. |
 | <a id="projectpermissionsreadmergerequest"></a>`readMergeRequest` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_merge_request` on this resource. |
 | <a id="projectpermissionsreadpagescontent"></a>`readPagesContent` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_pages_content` on this resource. |
+| <a id="projectpermissionsreadpathlocks"></a>`readPathLocks` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_path_locks` on this resource. |
 | <a id="projectpermissionsreadproject"></a>`readProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_project` on this resource. |
 | <a id="projectpermissionsreadprojectmember"></a>`readProjectMember` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_project_member` on this resource. |
 | <a id="projectpermissionsreadwiki"></a>`readWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_wiki` on this resource. |

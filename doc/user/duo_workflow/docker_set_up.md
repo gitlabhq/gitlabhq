@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Duo Workflow
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Set up Docker for GitLab Duo Workflow
+title: Set up Docker for GitLab Duo Workflow (optional)
 ---
 
 {{< details >}}
@@ -22,6 +22,8 @@ This feature is considered [experimental](../../policy/development_stages_suppor
 Use the following guide to set up GitLab Duo Workflow with Docker.
 
 This is not the preferred method to run Workflow.
+If you have VS Code and at least version 5.16.0 of the GitLab Workflow extension for VS Code,
+you can use Workflow. For more information, see [the prerequisites](_index.md#prerequisites).
 
 ## Install Docker and set the socket file path
 

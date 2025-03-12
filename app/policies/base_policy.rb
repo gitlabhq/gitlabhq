@@ -5,6 +5,7 @@ class BasePolicy < DeclarativePolicy::Base
   with_options scope: :user, score: 0
   condition(:admin) do
     next false if @user&.from_ci_job_token?
+    next true if user_is_user? && @user.admin_bot?
 
     if Gitlab::CurrentSettings.admin_mode
       Gitlab::Auth::CurrentUserMode.new(@user).admin_mode?

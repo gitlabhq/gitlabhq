@@ -20,15 +20,6 @@ module Gitlab
             nodes
           end
 
-          def active?
-            # some scalar types (such as integers) do not respond to :authorized?
-            return false unless @type.respond_to?(:authorized?)
-
-            auth = @type.try(:authorization)
-
-            auth.nil? || auth.any?
-          end
-
           private
 
           def perform_before_authorize_action(nodes)
@@ -62,16 +53,31 @@ module Gitlab
           value
         end
 
-        def redact_connection(conn, context)
-          redactor = Redactor.new(@field.type.unwrap.node_type, context, @field.resolver)
-          return unless redactor.active?
+        private
 
+        def redact_connection(conn, context)
+          type = @field.type.unwrap.node_type
+          return unless has_authorization?(type)
+
+          redactor = Redactor.new(type, context, @field.resolver)
           conn.redactor = redactor if conn.respond_to?(:redactor=)
         end
 
         def redact_list(list, context)
-          redactor = Redactor.new(@field.type.unwrap, context, @field.resolver)
-          redactor.redact(list) if redactor.active?
+          type = @field.type.unwrap
+          return unless has_authorization?(type)
+
+          Redactor
+            .new(type, context, @field.resolver)
+            .redact(list)
+        end
+
+        def has_authorization?(type)
+          # some scalar types (such as integers) do not respond to :authorized?
+          return false unless type.respond_to?(:authorized?)
+
+          auth = type.try(:authorization)
+          auth.nil? || auth.any?
         end
 
         def set_skip_type_authorization(context)

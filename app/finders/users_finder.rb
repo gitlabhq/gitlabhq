@@ -55,6 +55,8 @@ class UsersFinder
     users = by_custom_attributes(users)
     users = by_non_internal(users)
     users = by_without_project_bots(users)
+    users = by_membership(users)
+    users = by_member_source_ids(users)
 
     order(users)
   end
@@ -178,6 +180,48 @@ class UsersFinder
     return users unless params[:without_project_bots]
 
     users.without_project_bot
+  end
+
+  def by_membership(users)
+    return users unless params[:by_membership]
+
+    group_members = Member
+      .non_request
+      .with_source(current_user.authorized_groups.self_and_ancestors)
+      .select(:user_id)
+      .to_sql
+
+    project_members = Member
+      .non_request
+      .with_source(current_user.authorized_projects)
+      .select(:user_id)
+      .to_sql
+
+    query = "users.id IN (#{group_members} UNION #{project_members})"
+    users.where(query) # rubocop: disable CodeReuse/ActiveRecord -- finder
+  end
+
+  def by_member_source_ids(users)
+    group_member_source_ids = params[:group_member_source_ids]
+    project_member_source_ids = params[:project_member_source_ids]
+
+    return users unless group_member_source_ids || project_member_source_ids
+
+    member_queries = []
+
+    if group_member_source_ids.present?
+      member_queries << Member.with_source_id(group_member_source_ids).with_source_type('Namespace')
+    end
+
+    if project_member_source_ids.present?
+      member_queries << Member.with_source_id(project_member_source_ids).with_source_type('Project')
+    end
+
+    return users if member_queries.empty?
+
+    member_query = member_queries.reduce(:or).non_request
+
+    users.id_in(member_query.select(:user_id))
   end
 
   def order(users)
