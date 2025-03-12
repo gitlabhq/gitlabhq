@@ -9,7 +9,9 @@ import {
   validateAdditionalProperties,
   getCustomAdditionalProperties,
   getBaseAdditionalProperties,
+  validateEvent,
 } from '~/tracking/utils';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
 import { REFERRER_TTL, URLS_CACHE_STORAGE_KEY } from '~/tracking/constants';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -217,6 +219,36 @@ describe('~/tracking/utils', () => {
       };
 
       expect(validateAdditionalProperties(additionalProperties)).toBe(undefined);
+    });
+  });
+
+  describe('validateEvent', () => {
+    let sentrySpy;
+
+    beforeEach(() => {
+      sentrySpy = jest.spyOn(Sentry, 'captureException');
+    });
+
+    afterEach(() => {
+      sentrySpy.mockRestore();
+    });
+
+    it('calls Sentry for event names with whitespace', () => {
+      validateEvent('event name');
+
+      expect(sentrySpy).toHaveBeenCalled();
+    });
+
+    it('does not call Sentry for event names eqaual to nil', () => {
+      validateEvent(null);
+
+      expect(sentrySpy).not.toHaveBeenCalled();
+    });
+
+    it('does not call Sentry for event names without whitespace', () => {
+      validateEvent('event-name');
+
+      expect(sentrySpy).not.toHaveBeenCalled();
     });
   });
 

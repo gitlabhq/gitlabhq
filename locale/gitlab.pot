@@ -52893,6 +52893,9 @@ msgstr ""
 msgid "SecurityOrchestration|Edit scan execution policy"
 msgstr ""
 
+msgid "SecurityOrchestration|Edit vulnerability management policy"
+msgstr ""
+
 msgid "SecurityOrchestration|Empty policy name"
 msgstr ""
 

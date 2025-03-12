@@ -11262,8 +11262,8 @@ Input type: `UpdateDependencyProxySettingsInput`
 | <a id="mutationupdatedependencyproxysettingsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatedependencyproxysettingsenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether the policy is enabled or disabled. |
 | <a id="mutationupdatedependencyproxysettingsgrouppath"></a>`groupPath` | [`ID!`](#id) | Group path for the group dependency proxy. |
-| <a id="mutationupdatedependencyproxysettingsidentity"></a>`identity` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
-| <a id="mutationupdatedependencyproxysettingssecret"></a>`secret` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
+| <a id="mutationupdatedependencyproxysettingsidentity"></a>`identity` | [`String`](#string) | Identity credential used to authenticate with Docker Hub when pulling images. Can be a username (for password or personal access token (PAT)) or organization name (for organization access token (OAT)). |
+| <a id="mutationupdatedependencyproxysettingssecret"></a>`secret` | [`String`](#string) | Secret credential used to authenticate with Docker Hub when pulling images. Can be a password, personal access token (PAT), or organization access token (OAT). |
 
 #### Fields
 
@@ -22746,7 +22746,6 @@ GitLab CI/CD configuration template.
 | <a id="clusteragentisreceptive"></a>`isReceptive` | [`Boolean`](#boolean) | Whether the cluster agent is receptive or not. |
 | <a id="clusteragentname"></a>`name` | [`String`](#string) | Name of the cluster agent. |
 | <a id="clusteragentproject"></a>`project` | [`Project`](#project) | Project the cluster agent is associated with. |
-| <a id="clusteragentremotedevelopmentagentconfig"></a>`remoteDevelopmentAgentConfig` {{< icon name="warning-solid" >}} | [`RemoteDevelopmentAgentConfig`](#remotedevelopmentagentconfig) | **Introduced** in GitLab 17.4. **Status**: Experiment. Remote development agent config for the cluster agent. |
 | <a id="clusteragenttokens"></a>`tokens` | [`ClusterAgentTokenConnection`](#clusteragenttokenconnection) | Tokens associated with the cluster agent. (see [Connections](#connections)) |
 | <a id="clusteragentupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp the cluster agent was updated. |
 | <a id="clusteragenturlconfigurations"></a>`urlConfigurations` | [`ClusterAgentUrlConfigurationConnection`](#clusteragenturlconfigurationconnection) | URL configurations for the cluster agent in case it is a receptive agent. (see [Connections](#connections)) |
@@ -24680,7 +24679,7 @@ Group-level Dependency Proxy settings.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="dependencyproxysettingenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the dependency proxy is enabled for the group. |
-| <a id="dependencyproxysettingidentity"></a>`identity` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.10. **Status**: Experiment. Identity credential used to authenticate with Docker Hub when pulling images. Can be a username (for password or PAT) or organization name (for OAT). Returns null if `dependency_proxy_containers_docker_hub_credentials` feature flag is disabled. |
+| <a id="dependencyproxysettingidentity"></a>`identity` | [`String`](#string) | Identity credential used to authenticate with Docker Hub when pulling images. Can be a username (for password or personal access token (PAT)) or organization name (for organization access token (OAT)). |
 
 ### `Deployment`
 
@@ -36833,28 +36832,6 @@ Represents the source code attached to a release in a particular format.
 | <a id="releasesourceformat"></a>`format` | [`String`](#string) | Format of the source. |
 | <a id="releasesourceurl"></a>`url` | [`String`](#string) | Download URL of the source. |
 
-### `RemoteDevelopmentAgentConfig`
-
-Represents a remote development agent configuration.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="remotedevelopmentagentconfigclusteragent"></a>`clusterAgent` | [`ClusterAgent!`](#clusteragent) | Cluster agent that the remote development agent config belongs to. |
-| <a id="remotedevelopmentagentconfigcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the remote development agent config was created. |
-| <a id="remotedevelopmentagentconfigdefaultmaxhoursbeforetermination"></a>`defaultMaxHoursBeforeTermination` | [`Int!`](#int) | Default max hours before worksapce termination of the remote development agent config. |
-| <a id="remotedevelopmentagentconfigdnszone"></a>`dnsZone` | [`String!`](#string) | DNS zone where workspaces are available. |
-| <a id="remotedevelopmentagentconfigenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether remote development is enabled for the GitLab agent. |
-| <a id="remotedevelopmentagentconfiggitlabworkspacesproxynamespace"></a>`gitlabWorkspacesProxyNamespace` | [`String!`](#string) | Namespace where gitlab-workspaces-proxy is installed. |
-| <a id="remotedevelopmentagentconfigid"></a>`id` | [`RemoteDevelopmentRemoteDevelopmentAgentConfigID!`](#remotedevelopmentremotedevelopmentagentconfigid) | Global ID of the remote development agent config. |
-| <a id="remotedevelopmentagentconfigmaxhoursbeforeterminationlimit"></a>`maxHoursBeforeTerminationLimit` | [`Int!`](#int) | Max hours before worksapce termination limit of the remote development agent config. |
-| <a id="remotedevelopmentagentconfignetworkpolicyenabled"></a>`networkPolicyEnabled` | [`Boolean!`](#boolean) | Whether the network policy of the remote development agent config is enabled. |
-| <a id="remotedevelopmentagentconfigprojectid"></a>`projectId` | [`ID`](#id) | ID of the project that the remote development agent config belongs to. |
-| <a id="remotedevelopmentagentconfigupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of the last update to any mutable remote development agent config property. |
-| <a id="remotedevelopmentagentconfigworkspacesperuserquota"></a>`workspacesPerUserQuota` | [`Int!`](#int) | Maximum number of workspaces per user. |
-| <a id="remotedevelopmentagentconfigworkspacesquota"></a>`workspacesQuota` | [`Int!`](#int) | Maximum number of workspaces for the GitLab agent. |
-
 ### `Repository`
 
 #### Fields
@@ -45606,12 +45583,6 @@ An example `ReleaseID` is: `"gid://gitlab/Release/1"`.
 A `ReleasesLinkID` is a global ID. It is encoded as a string.
 
 An example `ReleasesLinkID` is: `"gid://gitlab/Releases::Link/1"`.
-
-### `RemoteDevelopmentRemoteDevelopmentAgentConfigID`
-
-A `RemoteDevelopmentRemoteDevelopmentAgentConfigID` is a global ID. It is encoded as a string.
-
-An example `RemoteDevelopmentRemoteDevelopmentAgentConfigID` is: `"gid://gitlab/RemoteDevelopment::RemoteDevelopmentAgentConfig/1"`.
 
 ### `RemoteDevelopmentWorkspaceID`
 

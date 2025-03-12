@@ -18,17 +18,12 @@ RSpec.describe WebIde::Settings::SettingsInitializer, feature_category: :web_ide
         requested_setting_names: [
           :vscode_extension_marketplace,
           :vscode_extension_marketplace_metadata,
+          :vscode_extension_marketplace_home_url,
           :vscode_extension_marketplace_view_model
         ],
         settings: {
-          vscode_extension_marketplace: {
-            control_url: "",
-            item_url: "https://open-vsx.org/vscode/item",
-            nls_base_url: "",
-            publisher_url: "",
-            resource_url_template: 'https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}',
-            service_url: "https://open-vsx.org/vscode/gallery"
-          },
+          vscode_extension_marketplace: {},
+          vscode_extension_marketplace_home_url: "",
           vscode_extension_marketplace_metadata: {
             enabled: false,
             disabled_reason: :instance_disabled
@@ -41,6 +36,7 @@ RSpec.describe WebIde::Settings::SettingsInitializer, feature_category: :web_ide
         },
         setting_types: {
           vscode_extension_marketplace: Hash,
+          vscode_extension_marketplace_home_url: String,
           vscode_extension_marketplace_metadata: Hash,
           vscode_extension_marketplace_view_model: Hash
         },

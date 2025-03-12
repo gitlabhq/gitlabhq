@@ -17,6 +17,8 @@ module WebIde
         result =
           initial_result
             .map(SettingsInitializer.method(:init))
+            .map(ExtensionMarketplaceGenerator.method(:generate))
+            .map(ExtensionMarketplaceHomeUrlGenerator.method(:generate))
             .map(ExtensionMarketplaceMetadataGenerator.method(:generate))
             # NOTE: EnvVarOverrideProcessor is inserted here to easily override settings for local or temporary testing
             #       it should happen **before** validators.

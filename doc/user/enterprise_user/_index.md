@@ -49,6 +49,31 @@ If a group's verified domains are removed:
 
 If the organization moves its verified domains to another paid group, its enterprise users are [automatically claimed](#automatic-claims-of-enterprise-users) as enterprise users of that group.
 
+### Identifying unclaimed users
+
+If a user is not automatically claimed as an Enterprise User, their existing access will not be revoked. 
+A group with domain verification enabled can have both claimed and unclaimed users as members.
+
+The only difference between a member claimed as an Enterprise User and one that isn't is that a Group Owner cannot [manage unclaimed users](#manage-enterprise-users-in-a-namespace).
+
+### Identifying group members that have not been claimed as Enterprise users
+
+Groups that enable domain verification can have both claimed and unclaimed users as members.
+Unclaimed users retain their existing access, but are not managed by group Owners.
+
+See [Manage enterprise users in a namespace](#manage-enterprise-users-in-a-namespace).
+
+You can discover any unclaimed users in your group by accessing and analyzing your list of billable
+users at: `https://gitlab.com/groups/<group_id>/-/usage_quotas#seats-quota-tab`.
+
+From this list, unclaimed users one of the following:
+
+- No visible email address.
+- An email address that does not match your verified domain.
+
+To claim these users, they must update their primary email address to match the verified domain.
+These users are automatically claimed when the next scheduled claim worker runs.
+
 ## Enterprise user restrictions
 
 ### Primary email change

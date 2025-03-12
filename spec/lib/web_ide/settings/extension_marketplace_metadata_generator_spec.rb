@@ -46,25 +46,39 @@ RSpec.describe WebIde::Settings::ExtensionMarketplaceMetadataGenerator, feature_
     :opt_in_status,
     :flag_exists,
     :flag_enabled,
+    :app_settings_enabled,
     :expected_vscode_extension_marketplace_metadata
   ) do
     # @formatter:off - Turn off RubyMine autoformatting
 
-    # user exists | opt_in_status | flag exists | flag_enabled | expected_settings
-    false         | :undefined    | false       | :undefined   | { enabled: false, disabled_reason: :no_user }
-    false         | :undefined    | true        | true         | { enabled: false, disabled_reason: :no_user }
-    true          | :unset        | false       | :undefined   | { enabled: false, disabled_reason: :no_flag }
-    true          | :unset        | true        | false        | { enabled: false, disabled_reason: :instance_disabled }
-    true          | :unset        | true        | true         | { enabled: false, disabled_reason: :opt_in_unset }
-    true          | :disabled     | true        | true         | { enabled: false, disabled_reason: :opt_in_disabled }
-    true          | :enabled      | true        | true         | { enabled: true }
-    true          | :invalid      | true        | true         | RuntimeError
+    # rubocop:disable Layout/LineLength -- Parameterized rows overflow and its better than the alternative
+    # user exists | opt_in_status | flag exists | flag_enabled | app_settings_enabled | expected_settings
+    false         | :undefined    | false       | :undefined   | true                 | { enabled: false, disabled_reason: :no_user }
+    false         | :undefined    | true        | true         | true                 | { enabled: false, disabled_reason: :no_user }
+    true          | :unset        | false       | :undefined   | true                 | { enabled: false, disabled_reason: :no_flag }
+    true          | :unset        | true        | false        | true                 | { enabled: false, disabled_reason: :instance_disabled }
+    true          | :unset        | true        | true         | true                 | { enabled: false, disabled_reason: :opt_in_unset }
+    true          | :disabled     | true        | true         | true                 | { enabled: false, disabled_reason: :opt_in_disabled }
+    true          | :enabled      | true        | true         | false                | { enabled: false, disabled_reason: :instance_disabled }
+    true          | :enabled      | true        | true         | true                 | { enabled: true }
+    true          | :invalid      | true        | true         | true                 | RuntimeError
+    # rubocop:enable Layout/LineLength
 
     # @formatter:on
   end
 
   with_them do
-    let(:user_class) { stub_const('User', Class.new) }
+    let(:user_class) do
+      stub_const(
+        "User",
+        Class.new do
+          def flipper_id
+            "UserStub"
+          end
+        end
+      )
+    end
+
     let(:user) { user_class.new }
     let(:enums) { stub_const('Enums::WebIde::ExtensionsMarketplaceOptInStatus', Class.new) }
 
@@ -80,6 +94,9 @@ RSpec.describe WebIde::Settings::ExtensionMarketplaceMetadataGenerator, feature_
       # EE feature has to be stubbed since we run EE code through CE tests
       allow(user).to receive(:enterprise_user?).and_return(false)
       allow(enums).to receive(:statuses).and_return({ unset: :unset, enabled: :enabled, disabled: :disabled })
+      allow(::WebIde::ExtensionMarketplace).to receive(:feature_enabled_from_application_settings?)
+        .with(user: user)
+        .and_return(app_settings_enabled)
     end
 
     it_behaves_like "extension marketplace settings"

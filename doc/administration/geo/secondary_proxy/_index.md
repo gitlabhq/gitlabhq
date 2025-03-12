@@ -252,7 +252,7 @@ Disabling the proxying feature flag has the following general effects:
 - The secondary site does not proxy HTTP requests to the primary site. Instead, it attempts to serve them itself, or fail.
 - Git requests generally succeed. Git pushes are redirected or proxied to the primary site.
 - Other than Git requests, any HTTP request which may write data fails. Read requests generally succeed.
-- The secondary site UI shows a banner: ![Secondary Site UI Banner for Read-Only](img/secondary_proxy_read_only_v17.8.png)
+- The secondary site UI shows a banner: ![Secondary Site UI Banner for Read-Only](img/secondary_proxy_read_only_v17_8.png)
 
 | Feature / component                                 | Succeed                   | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | :-------------------------------------------------- | :------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

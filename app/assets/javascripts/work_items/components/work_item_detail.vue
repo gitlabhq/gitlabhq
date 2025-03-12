@@ -18,6 +18,9 @@ import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
+import { sanitize } from '~/lib/dompurify';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import {
   i18n,
@@ -461,6 +464,16 @@ export default {
     },
     shouldShowEditButton() {
       return !this.editMode && this.canUpdate;
+    },
+    editShortcutKey() {
+      return shouldDisableShortcuts() ? null : keysFor(ISSUABLE_EDIT_DESCRIPTION)[0];
+    },
+    editTooltip() {
+      const description = __('Edit title and description');
+      const key = this.editShortcutKey;
+      return shouldDisableShortcuts()
+        ? description
+        : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
     },
     modalCloseButtonClass() {
       return {
@@ -933,6 +946,8 @@ export default {
             <div class="gl-ml-auto gl-mt-1 gl-flex gl-gap-3 gl-self-start">
               <gl-button
                 v-if="shouldShowEditButton"
+                v-gl-tooltip.bottom.html
+                :title="editTooltip"
                 category="secondary"
                 data-testid="work-item-edit-form-button"
                 class="shortcut-edit-wi-description"

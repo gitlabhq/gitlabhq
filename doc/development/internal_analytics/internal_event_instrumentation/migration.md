@@ -55,6 +55,8 @@ scripts/internal_events/cli.rb
 
 The generator walks you through the required inputs step-by-step.
 
+If the migrated event has been previously used for tracking RedisHLL metrics, test the migration by using the `migrated internal event` [shared examples](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/shared_examples/controllers/internal_event_tracking_examples.rb) ([example usage](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182450/diffs)).
+
 ### Frontend
 
 If you are using the `Tracking` mixin in the Vue component, you can replace it with the `InternalEvents` mixin.

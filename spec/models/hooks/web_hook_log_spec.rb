@@ -292,10 +292,37 @@ RSpec.describe WebHookLog, feature_category: :webhooks do
   end
 
   describe 'routing table switch' do
+    shared_examples 'both tables are set up for partitioning' do
+      let(:tables_registered_for_sync) { Gitlab::Database::Partitioning.send(:registered_for_sync) }
+      it 'registers both web_hook_logs and web_hook_logs_daily for partitioning' do
+        expect(tables_registered_for_sync.map(&:table_name)).to include('web_hook_logs_daily', 'web_hook_logs')
+      end
+
+      it 'registers web_hook_logs for monthly partitioning' do
+        web_hook_logs_entries = tables_registered_for_sync.select { |model| model.table_name == 'web_hook_logs' }
+        expect(web_hook_logs_entries.count).to eq(1)
+        web_hook_logs_entry = web_hook_logs_entries.first
+        expect(web_hook_logs_entry.partitioning_strategy).to be_a(Gitlab::Database::Partitioning::Time::MonthlyStrategy)
+        expect(web_hook_logs_entry.partitioning_strategy.retain_for).to eq(1.month)
+      end
+
+      it 'registers web_hook_logs_daily for daily partitioning' do
+        web_hook_logs_daily_entries = tables_registered_for_sync
+                                        .select { |model| model.table_name == 'web_hook_logs_daily' }
+        expect(web_hook_logs_daily_entries.count).to eq(1)
+        web_hook_logs_daily_entry = web_hook_logs_daily_entries.first
+        expect(web_hook_logs_daily_entry.partitioning_strategy)
+          .to be_a(Gitlab::Database::Partitioning::Time::DailyStrategy)
+        expect(web_hook_logs_daily_entry.partitioning_strategy.retain_for).to eq(14.days)
+      end
+    end
+
     context 'with ff enabled' do
       it 'returns daily partitioned table' do
         expect(described_class.table_name).to eq('web_hook_logs_daily')
       end
+
+      it_behaves_like 'both tables are set up for partitioning'
     end
 
     context 'with ff disabled' do
@@ -306,6 +333,8 @@ RSpec.describe WebHookLog, feature_category: :webhooks do
       it 'returns monthly partitioned table' do
         expect(described_class.table_name).to eq('web_hook_logs')
       end
+
+      it_behaves_like 'both tables are set up for partitioning'
     end
   end
 end

@@ -1,7 +1,16 @@
 <script>
-import { GlButton, GlForm, GlLoadingIcon, GlCollapsibleListbox } from '@gitlab/ui';
+import {
+  GlButton,
+  GlForm,
+  GlLoadingIcon,
+  GlCollapsibleListbox,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { isEmpty, debounce } from 'lodash';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { sanitize } from '~/lib/dompurify';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { keysFor } from '~/behaviors/shortcuts/keybindings';
 
 import { s__, __, sprintf } from '~/locale';
 
@@ -18,6 +27,9 @@ export default {
     GlLoadingIcon,
     GlForm,
     GlCollapsibleListbox,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     canUpdate: {
@@ -108,6 +120,11 @@ export default {
       required: false,
       default: __('Search'),
     },
+    shortcut: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -130,6 +147,22 @@ export default {
       return !this.toggleDropdownText && !this.hasValue
         ? sprintf(__(`No %{label}`), { label: this.dropdownLabel.toLowerCase() })
         : this.toggleDropdownText;
+    },
+    disableShortcuts() {
+      return shouldDisableShortcuts() || Object.keys(this.shortcut).length === 0;
+    },
+    shortcutDescription() {
+      return this.disableShortcuts ? null : this.shortcut.description;
+    },
+    shortcutKey() {
+      return this.disableShortcuts ? null : keysFor(this.shortcut)[0];
+    },
+    tooltipText() {
+      const description = this.shortcutDescription;
+      const key = this.shortcutKey;
+      return this.disableShortcuts
+        ? null
+        : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
     },
   },
   watch: {
@@ -198,6 +231,8 @@ export default {
       <gl-loading-icon v-if="updateInProgress" />
       <gl-button
         v-if="canUpdate && !isEditing"
+        v-gl-tooltip.viewport.html
+        :title="tooltipText"
         data-testid="edit-button"
         category="tertiary"
         size="small"

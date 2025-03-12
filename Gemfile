@@ -596,7 +596,7 @@ group :test do
   gem 'test-prof', '~> 1.4.0', feature_category: :tooling
   gem 'rspec_junit_formatter', feature_category: :shared
   gem 'guard-rspec', feature_category: :shared
-  gem 'axe-core-rspec', '~> 4.9.0', feature_category: :tooling
+  gem 'axe-core-rspec', '~> 4.10.0', feature_category: :tooling
 
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false, feature_category: :shared

@@ -167,11 +167,26 @@ There are two ways to do this:
 - In the To-Do List, to the right of the to-do item, select **Mark as done** ({{< icon name="check" >}}).
 - In the upper-right corner of the resource (for example, issue or merge request), select **Mark as done** ({{< icon name="todo-done" >}}).
 
-### Mark all to-do items as done
+### Bulk edit to-do items
 
-You can mark all your to-do items as done at the same time.
+{{< history >}}
 
-In the To-Do List, in the upper-right corner, select **Mark all as done**.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16564) in GitLab 17.10.
+
+{{< /history >}}
+
+You can bulk edit your to-do items:
+
+- On the **To Do** tab: Mark to-do items as done or snooze them.
+- On the **Snoozed** tab: Mark to-do items as done or remove them.
+- On the **Done** tab: Restore to-do items.
+
+To bulk edit to-do items:
+
+1. In your To-Do List:
+   - To select individual items, to the left of each item you want to edit, select the checkbox.
+   - To select all items on the page, in the upper-left corner, select the **Select all** checkbox.
+1. In the upper-right corner, select the desired action.
 
 ## Snooze to-do items
 

@@ -10,6 +10,7 @@ import groupLabelsQuery from '~/sidebar/components/labels/labels_select_widget/g
 import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
+import { ISSUABLE_CHANGE_LABEL } from '~/behaviors/shortcuts/keybindings';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
@@ -72,6 +73,7 @@ export default {
       addLabelIds: [],
       labelsCache: [],
       labelsToShowAtTopOfTheListbox: [],
+      shortcut: ISSUABLE_CHANGE_LABEL,
     };
   },
   computed: {
@@ -334,6 +336,7 @@ export default {
     :toggle-dropdown-text="dropdownText"
     :header-text="__('Select labels')"
     :reset-button-label="__('Clear')"
+    :shortcut="shortcut"
     show-footer
     multi-select
     clear-search-on-item-select

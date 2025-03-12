@@ -188,6 +188,70 @@ build:
 
 You can also use [custom CI/CD variables](../../../ci/variables/_index.md#for-a-project) to store and access your personal access token or deploy token.
 
+### Authenticate with Docker Hub
+
+{{< history >}}
+
+- Support for Docker Hub credentials [added](https://gitlab.com/gitlab-org/gitlab/-/issues/331741) in GitLab 17.10.
+
+{{< /history >}}
+
+By default, the Dependency Proxy does not use credentials when pulling images from Docker Hub.
+You can configure Docker Hub authentication through the GraphQL API using your Docker Hub credentials or tokens.
+
+To authenticate with Docker Hub, you can use:
+
+- Your Docker Hub username and password.
+  - This method is not compatible with Docker Hub organizations that [enforce Single Sign-On (SSO)](https://docs.docker.com/security/faqs/single-sign-on/enforcement-faqs/#does-docker-sso-support-authenticating-through-the-command-line).
+- A Docker Hub [Personal Access Token](https://docs.docker.com/security/for-developers/access-tokens/).
+- A Docker Hub [Organization Access Token](https://docs.docker.com/security/for-admins/access-tokens/).
+
+UI support for configuring Docker Hub credentials for groups in self-managed instances is proposed in issue [521954](https://gitlab.com/gitlab-org/gitlab/-/issues/521954).
+
+#### Configure credentials using the GraphQL API
+
+To set Docker Hub credentials in the Dependency Proxy settings using the [GraphQL API](../../../api/graphql/_index.md):
+
+1. Go to GraphiQL:
+   - For GitLab.com, use [`https://gitlab.com/-/graphql-explorer`](https://gitlab.com/-/graphql-explorer).
+   - For GitLab Self-Managed, use `https://gitlab.example.com/-/graphql-explorer`.
+1. In GraphiQL, enter this mutation:
+
+   ```graphql
+   mutation {
+     updateDependencyProxySettings(input: {
+       enabled: true,
+         identity: "<identity>",
+         secret: "<secret>",
+         groupPath: "<group path>"
+     }) {
+       dependencyProxySetting {
+        enabled
+        identity
+       }
+       errors
+     }
+   }
+   ```
+
+   Where:
+   - `<identity>` is your username (for password or Personal Access Token) or organization name (for Organization Access Token).
+   - `<secret>` is your password, Personal Access Token, or Organization Access Token.
+   - `<group path>` is the path of the group where the Dependency Proxy is located.
+
+1. Select **Play**.
+1. Check for any errors in the results pane.
+
+#### Verify your credentials
+
+After you authenticate with the Dependency Proxy, verify your Docker Hub credentials by pulling a Docker image:
+
+```shell
+docker pull gitlab.example.com/groupname/dependency_proxy/containers/alpine:latest
+```
+
+If authentication is successful, you'll see activity in your [Docker Hub Usage dashboard](https://hub.docker.com/usage/pulls).
+
 ### Store a Docker image in dependency proxy cache
 
 To store a Docker image in dependency proxy storage:

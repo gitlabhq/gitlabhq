@@ -63,6 +63,52 @@ RSpec.shared_examples 'internal event tracking' do
   end
 end
 
+# Requires everything required by `internal event tracking`
+# Additionally, requires:
+# - migrated_metrics - an array of metrics' key_paths
+# - previous_event_name
+# - previous_event_value - the value that the previous event used for the HLLRedisCounter call. Usually user's id
+
+RSpec.shared_examples 'migrated internal event' do
+  it_behaves_like 'internal event tracking'
+
+  describe "event migration" do
+    around do |example|
+      reference_time = Time.utc(2020, 6, 1)
+      # use reference time to make the Redis key suffix always consistent
+      travel_to(reference_time) { example.run }
+    end
+
+    let(:redis_key_prefix) { "{#{Gitlab::UsageDataCounters::HLLRedisCounter::REDIS_SLOT}}_#{previous_event_name}-" }
+    let(:redis_key) { "#{redis_key_prefix}2020-23" }
+
+    it "saves the migrated event correctly" do
+      expect(Gitlab::Redis::HLL).to receive(:add).with(
+        key: redis_key,
+        value: previous_event_value,
+        expiry: Gitlab::UsageDataCounters::HLLRedisCounter::KEY_EXPIRY_LENGTH
+      )
+
+      subject
+    end
+
+    it "reads the migrated event's value using the old Redis key" do
+      migrated_metrics.each do |metric_key_path|
+        expect(Gitlab::Redis::HLL).to receive(:count) do |args|
+          expect(args[:keys]).to all(start_with(redis_key_prefix))
+        end
+
+        metric_definition = Gitlab::Usage::MetricDefinition.definitions[metric_key_path]
+        Gitlab::Usage::Metric.new(metric_definition).with_value
+      end
+    end
+
+    it "increments the migrated metrics" do
+      expect { subject }.to increment_usage_metrics(*migrated_metrics)
+    end
+  end
+end
+
 # Requires a context containing:
 # - subject
 # Optionally, the context can contain:

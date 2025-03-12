@@ -468,15 +468,6 @@ tests = [
   ## BEGIN Remote development GraphQL resolvers (in alphabetical order by resolver source file path)
   {
     explanation:
-      'Map Remote Development GraphQL cluster_agent/remote_development_agent_config_resolver.rb to request specs',
-    changed_file:
-      'ee/app/graphql/resolvers/remote_development/cluster_agent/remote_development_agent_config_resolver.rb',
-    expected: %w[
-      ee/spec/requests/api/graphql/remote_development/cluster_agent/remote_development_agent_config/with_no_args_spec.rb
-    ]
-  },
-  {
-    explanation:
       'Map Remote Development GraphQL cluster_agent/workspaces_resolver.rb to request specs',
     changed_file: 'ee/app/graphql/resolvers/remote_development/cluster_agent/workspaces_resolver.rb',
     expected: %w[

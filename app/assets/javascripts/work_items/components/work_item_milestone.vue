@@ -7,6 +7,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__, __ } from '~/locale';
 import { MILESTONE_STATE } from '~/sidebar/constants';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
+import { ISSUE_MR_CHANGE_MILESTONE } from '~/behaviors/shortcuts/keybindings';
 import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.graphql';
 import groupMilestonesQuery from '~/sidebar/queries/group_milestones.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -68,6 +69,7 @@ export default {
       updateInProgress: false,
       milestones: [],
       localMilestone: this.workItemMilestone,
+      shortcut: ISSUE_MR_CHANGE_MILESTONE,
     };
   },
   computed: {
@@ -235,6 +237,7 @@ export default {
     :toggle-dropdown-text="dropdownText"
     :header-text="__('Select milestone')"
     :reset-button-label="__('Clear')"
+    :shortcut="shortcut"
     data-testid="work-item-milestone"
     @dropdownShown="onDropdownShown"
     @searchStarted="search"

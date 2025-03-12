@@ -1141,6 +1141,7 @@ describe('WorkItemDetail component', () => {
 
       it('shows the edit button', () => {
         expect(findEditButton().exists()).toBe(true);
+        expect(findEditButton().attributes('title')).toContain('Edit title and description');
       });
 
       it('renders the work item title with edit component', () => {

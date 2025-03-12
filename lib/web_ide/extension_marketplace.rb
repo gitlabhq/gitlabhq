@@ -2,28 +2,43 @@
 
 module WebIde
   module ExtensionMarketplace
-    # This returns true if the extensions marketplace feature is available to any users
+    # Returns true if the extensions marketplace feature is enabled for any users
     #
     # @return [Boolean]
     def self.feature_enabled_for_any_user?
-      feature_flag_enabled_for_any_actor?(:web_ide_extensions_marketplace) &&
+      # note: Intentionally pass `nil` here since we don't have a user in scope
+      feature_enabled_from_application_settings?(user: nil) &&
+        feature_flag_enabled_for_any_actor?(:web_ide_extensions_marketplace) &&
         feature_flag_enabled_for_any_actor?(:vscode_web_ide)
     end
 
-    # This returns true if the extensions marketplace feature is available to the given user
+    # Returns true if the extensions marketplace feature is enabled for the given user
     #
     # @param user [User]
     # @return [Boolean]
     def self.feature_enabled?(user:)
-      Feature.enabled?(:web_ide_extensions_marketplace, user) &&
-        Feature.enabled?(:vscode_web_ide, user)
+      feature_enabled_from_application_settings?(user: user) &&
+        feature_enabled_from_flags?(user: user)
+    end
+
+    # Returns true if the ExtensionMarketplace feature is enabled from application settings
+    #
+    # @param user [User, nil] Current user for feature enablement context
+    # @return [Boolean]
+    def self.feature_enabled_from_application_settings?(user:)
+      return true unless should_use_application_settings?(user: user)
+
+      Gitlab::CurrentSettings.vscode_extension_marketplace&.fetch('enabled', false)
     end
 
     # This value is used when the end-user is accepting the third-party extension marketplace integration.
     #
+    # @param user [User] Current user for context
     # @return [String] URL of the VSCode Extension Marketplace home
-    def self.marketplace_home_url
-      "https://open-vsx.org"
+    def self.marketplace_home_url(user:)
+      Gitlab::SafeRequestStore.fetch(:vscode_extension_marketplace_home_url) do
+        Settings.get_single_setting(:vscode_extension_marketplace_home_url, user: user)
+      end
     end
 
     # @return [String] URL of the help page for the user preferences for Extensions Marketplace opt-in
@@ -43,7 +58,7 @@ module WebIde
       Settings.get_single_setting(
         :vscode_extension_marketplace_view_model,
         user: user,
-        vscode_extension_marketplace_feature_flag_enabled: feature_enabled?(user: user)
+        vscode_extension_marketplace_feature_flag_enabled: feature_enabled_from_flags?(user: user)
       )
     end
 
@@ -61,6 +76,28 @@ module WebIde
       feature && !feature.off?
     end
 
-    private_class_method :feature_flag_enabled_for_any_actor?
+    # Returns true if we should use `feature_enabled_from_application_settings?` to determine feature availability
+    #
+    # @param user [User, nil] Current user for feature enablement context
+    # @return [Boolean]
+    def self.should_use_application_settings?(user:)
+      if user
+        Feature.enabled?(:vscode_extension_marketplace_settings, user)
+      else
+        feature_flag_enabled_for_any_actor?(:vscode_extension_marketplace_settings)
+      end
+    end
+
+    # This returns true if the extensions marketplace flags are enabled
+    #
+    # @param user [User]
+    # @return [Boolean]
+    def self.feature_enabled_from_flags?(user:)
+      Feature.enabled?(:web_ide_extensions_marketplace, user) &&
+        Feature.enabled?(:vscode_web_ide, user)
+    end
+
+    private_class_method :feature_flag_enabled_for_any_actor?, :should_use_application_settings?,
+      :feature_enabled_from_flags?
   end
 end

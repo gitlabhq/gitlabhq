@@ -5,19 +5,42 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting the container registry
 ---
 
-Before diving in to the following sections, here's some basic troubleshooting:
+Before investigating specific issues, try these troubleshooting steps:
 
-1. Check to make sure that the system clock on your Docker client and GitLab server have
-   been synchronized (for example, via NTP).
+1. Verify that the system clock on your Docker client and GitLab server are synchronized (for example, through NTP).
 
-1. If you are using an S3-backed Registry, double check that the IAM
-   permissions and the S3 credentials (including region) are correct. See
-   [the sample IAM policy](https://distribution.github.io/distribution/storage-drivers/s3/)
-   for more details.
+1. For S3-backed registries, verify your IAM permissions and S3 credentials (including region) are correct.
+   For more information, see the [sample IAM policy](https://distribution.github.io/distribution/storage-drivers/s3/).
 
-1. Check the Registry logs (for example `/var/log/gitlab/registry/current`) and the GitLab production logs
-   for errors (for example `/var/log/gitlab/gitlab-rails/production.log`). You may be able to find clues
-   there.
+1. Check for errors in the registry logs (for example, `/var/log/gitlab/registry/current`) and the GitLab production logs
+   (for example, `/var/log/gitlab/gitlab-rails/production.log`).
+
+1. Review the NGINX configuration file for the container registry (for example, `/var/opt/gitlab/nginx/conf/gitlab-registry.conf`)
+   to confirm which port receives requests.
+
+1. Verify that requests are correctly forwarded to the container registry:
+
+   ```shell
+   curl --verbose --noproxy "*" https://<hostname>:<port>/v2/_catalog
+   ```
+
+   The response should include a line with `Www-Authenticate: Bearer` containing `service="container_registry"`. For example:
+
+   ```plaintext
+   < HTTP/1.1 401 Unauthorized
+   < Server: nginx
+   < Date: Fri, 07 Mar 2025 08:24:43 GMT
+   < Content-Type: application/json
+   < Content-Length: 162
+   < Connection: keep-alive
+   < Docker-Distribution-Api-Version: registry/2.0
+   < Www-Authenticate: Bearer realm="https://<hostname>/jwt/auth",service="container_registry",scope="registry:catalog:*"
+   < X-Content-Type-Options: nosniff
+   <
+   {"errors":[{"code":"UNAUTHORIZED","message":"authentication required","detail":
+   [{"Type":"registry","Class":"","Name":"catalog","ProjectPath":"","Action":"*"}]}]}
+   * Connection #0 to host <hostname> left intact
+   ```
 
 ## Using self-signed certificates with container registry
 

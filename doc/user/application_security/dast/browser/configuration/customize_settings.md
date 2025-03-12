@@ -181,7 +181,7 @@ each step in the process:
    1. Parse content and renders the initial page.
    1. Trigger the standard "document ready" event.
 
-  This phase uses either `DAST_PAGE_READY_AFTER_NAVIGATION_TIMEOUT` (for full page loads) or `DAST_PAGE_READY_AFTER_ACTION_TIMEOUT` (for in-page actions), which sets the maximum wait time for document loading.
+   This phase uses either `DAST_PAGE_READY_AFTER_NAVIGATION_TIMEOUT` (for full page loads) or `DAST_PAGE_READY_AFTER_ACTION_TIMEOUT` (for in-page actions), which sets the maximum wait time for document loading.
 
 1. **Client-Side rendering**: After initial loading, many single-page applications:
 
@@ -190,7 +190,7 @@ each step in the process:
    - Render a DOM and performs updates based on fetched data (`DAST_PAGE_DOM_READY_TIMEOUT`).
    - Display page loading indicators (`DAST_PAGE_IS_LOADING_ELEMENT`).
 
-  The scanner monitors these activities to determine when the page is ready for interaction.
+   The scanner monitors these activities to determine when the page is ready for interaction.
 
 The following chart illustrates the sequence timeouts used when crawling a page:
 

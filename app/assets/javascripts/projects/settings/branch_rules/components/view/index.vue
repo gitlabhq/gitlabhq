@@ -462,6 +462,20 @@ export default {
     <gl-loading-icon v-if="$apollo.loading" size="lg" />
     <div v-else-if="!branchRule && !isPredefinedRule">{{ $options.i18n.noData }}</div>
     <div v-else>
+      <access-levels-drawer
+        :is-open="isAllowedToMergeDrawerOpen || isAllowedToPushAndMergeDrawerOpen"
+        :roles="accessLevelsDrawerData.roles"
+        :users="accessLevelsDrawerData.users"
+        :groups="accessLevelsDrawerData.groups"
+        :deploy-keys="accessLevelsDrawerData.deployKeys"
+        :is-loading="isRuleUpdating"
+        :group-id="groupId"
+        :title="accessLevelsDrawerTitle"
+        :is-push-access-levels="isAllowedToPushAndMergeDrawerOpen"
+        @editRule="onEditAccessLevels"
+        @close="closeAccessLevelsDrawer"
+      />
+
       <crud-component :title="$options.i18n.ruleTarget" data-testid="rule-target-card">
         <template #actions>
           <gl-button
@@ -528,20 +542,6 @@ export default {
           :is-edit-available="canAdminProtectedBranches"
           data-testid="allowed-to-push-content"
           @edit="openAllowedToPushAndMergeDrawer"
-        />
-
-        <access-levels-drawer
-          :is-open="isAllowedToMergeDrawerOpen || isAllowedToPushAndMergeDrawerOpen"
-          :roles="accessLevelsDrawerData.roles"
-          :users="accessLevelsDrawerData.users"
-          :groups="accessLevelsDrawerData.groups"
-          :deploy-keys="accessLevelsDrawerData.deployKeys"
-          :is-loading="isRuleUpdating"
-          :group-id="groupId"
-          :title="accessLevelsDrawerTitle"
-          :is-push-access-levels="isAllowedToPushAndMergeDrawerOpen"
-          @editRule="onEditAccessLevels"
-          @close="closeAccessLevelsDrawer"
         />
 
         <!-- Force push -->

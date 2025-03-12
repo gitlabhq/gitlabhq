@@ -104,6 +104,12 @@ module Tooling
         end
         return if override_files_changes.flatten.none?
 
+        return if modified_spec_files.any? do |filename|
+          helper.changed_lines(filename).any? do |mod_line, _i|
+            /^\+.*it_behaves_like ('|")migrated internal event('|")/.match?(mod_line)
+          end
+        end
+
         warn "Redis keys overrides were added. Please consider cover keys merging with specs. See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/475191) for details"
       end
 
@@ -111,6 +117,10 @@ module Tooling
 
       def modified_config_files
         helper.modified_files.select { |f| f.include?('config/metrics') && f.end_with?('yml') }
+      end
+
+      def modified_spec_files
+        helper.modified_files.select { |f| f.include?('spec/') && f.end_with?('_spec.rb') }
       end
 
       def comment_removed_metric(filename, has_removed_url, has_removed_milestone)

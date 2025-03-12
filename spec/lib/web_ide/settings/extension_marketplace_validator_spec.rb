@@ -12,10 +12,7 @@ RSpec.describe WebIde::Settings::ExtensionMarketplaceValidator, feature_category
     {
       service_url: service_url,
       item_url: item_url,
-      resource_url_template: resource_url_template,
-      control_url: "",
-      nls_base_url: "",
-      publisher_url: ""
+      resource_url_template: resource_url_template
     }
   end
 

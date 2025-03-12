@@ -12,7 +12,6 @@ class DependencyProxy::GroupSetting < ApplicationRecord
   validates :identity, :secret, length: { maximum: 255 }
 
   def authorization_header
-    return {} unless Feature.enabled?(:dependency_proxy_containers_docker_hub_credentials, group)
     return {} unless identity? && secret?
 
     authorization = ActionController::HttpAuthentication::Basic.encode_credentials(identity, secret)

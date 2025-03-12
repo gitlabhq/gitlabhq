@@ -173,12 +173,14 @@ module PreferencesHelper
   end
 
   def build_extensions_marketplace_view(title:, message:)
-    extensions_marketplace_home = "%{linkStart}#{::WebIde::ExtensionMarketplace.marketplace_home_url}%{linkEnd}"
+    marketplace_home_url = ::WebIde::ExtensionMarketplace.marketplace_home_url(user: current_user)
+
+    extensions_marketplace_home = "%{linkStart}#{marketplace_home_url}%{linkEnd}"
     {
       name: 'extensions_marketplace',
       message: format(message, extensions_marketplace_home: extensions_marketplace_home),
       title: title,
-      message_url: WebIde::ExtensionMarketplace.marketplace_home_url,
+      message_url: marketplace_home_url,
       help_link: WebIde::ExtensionMarketplace.help_preferences_url
     }
   end

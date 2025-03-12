@@ -1,5 +1,6 @@
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import getStandardContext from './get_standard_context';
+import { validateEvent } from './utils';
 
 export function dispatchSnowplowEvent(
   category = document.body.dataset.page,
@@ -10,6 +11,8 @@ export function dispatchSnowplowEvent(
     /* eslint-disable-next-line @gitlab/require-i18n-strings */
     throw new Error('Tracking: no category provided for tracking.');
   }
+
+  validateEvent(action);
 
   const { label, property, extra = {} } = data;
   let { value } = data;

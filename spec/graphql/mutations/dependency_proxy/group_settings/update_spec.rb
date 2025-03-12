@@ -27,16 +27,6 @@ RSpec.describe Mutations::DependencyProxy::GroupSettings::Update, feature_catego
           errors: []
         )
       end
-
-      context 'with dependency_proxy_containers_docker_hub_credentials disabled' do
-        before do
-          stub_feature_flags(dependency_proxy_containers_docker_hub_credentials: false)
-        end
-
-        it_behaves_like 'updating the dependency proxy group settings attributes',
-          from: { enabled: true, identity: 'username', secret: 'secret' },
-          to: { enabled: false, identity: 'username', secret: 'secret' }
-      end
     end
 
     shared_examples 'denying access to dependency proxy group settings' do

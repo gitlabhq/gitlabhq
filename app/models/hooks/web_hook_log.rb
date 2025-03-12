@@ -19,7 +19,12 @@ class WebHookLog < ApplicationRecord
 
   self.primary_key = :id
 
-  partitioned_by :created_at, strategy: :monthly, retain_for: 1.month
+  # The partitioning definition here has been temporarily moved to config/initializers/postgres_partitioning.rb
+  # so that it does not interact with the changing WebHookLog.table_name as influenced by the
+  # ::Ci::Partitionable::Switch module.
+  # In config/initializers/postgres_partitioning.rb:
+  #   - web_hook_logs_daily is registered for daily partitioning for when the flag is ON
+  #   - web_hook_logs is registered for monthly partitioning for when the flag is OFF
 
   belongs_to :web_hook
 

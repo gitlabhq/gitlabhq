@@ -102,7 +102,7 @@ a copy on your computer, or wherever you want to store and work with the files.
 
 1. On your project's overview page, in the upper-right corner, select **Code**, then copy the URL for **Clone with SSH**.
 
-   ![Clone a project with SSH](img/clone_project_v14_9.png)
+   ![Red arrows indicate the 'Clone' button and the 'Clone with SSH' option in the upper-right corner of the page](img/clone_project_v14_9.png)
 
 1. Open a terminal on your computer and go to the directory
    where you want to clone the files.
@@ -215,7 +215,7 @@ those changes by making your first commit.
 
 Your branch is now available on GitLab and visible to other users in your project.
 
-![Branches dropdown list](img/branches_dropdown_v14_10.png)
+![In the upper-left corner of page, red arrows indicate the branch switching area and highlight the branch you created](img/branches_dropdown_v14_10.png)
 
 ### Merge your changes
 
@@ -260,7 +260,7 @@ Let's look in the UI and confirm your changes. Go to your project.
 - Above the `README.md` file, view the text in the **Last commit** column.
   Your commit message is displayed in this column:
 
-  ![Commit message](img/commit_message_v14_10.png)
+  ![Display the commit message in the 'Last commit' column and the update time in the 'Last update' column](img/commit_message_v14_10.png)
 
 Now you can return to the command line and change back to your personal branch
 (`git checkout example-tutorial-branch`). You can continue updating files or

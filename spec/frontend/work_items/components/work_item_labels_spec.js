@@ -13,6 +13,7 @@ import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutati
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
+import { ISSUABLE_CHANGE_LABEL } from '~/behaviors/shortcuts/keybindings';
 import {
   projectLabelsResponse,
   groupLabelsResponse,
@@ -145,6 +146,7 @@ describe('WorkItemLabels component', () => {
       multiSelect: true,
       showFooter: true,
       itemValue: [],
+      shortcut: ISSUABLE_CHANGE_LABEL,
     });
     expect(findAllLabels()).toHaveLength(0);
   });

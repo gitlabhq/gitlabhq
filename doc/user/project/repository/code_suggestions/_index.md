@@ -251,6 +251,23 @@ that explain what you want to build:
 - Code generation treats your code comments like chat.
 - Your code comments update the `user_instruction`, and then improve the next results you receive.
 
+### Using imported files as context
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514124) in GitLab 17.9 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_include_context_imports`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+Use the imported files in your IDE to provide context about your code project. Imported file context is supported for JavaScript and TypeScript files, including [`js`], [`jsx`], [`ts`], [`tsx`], and [`vue`] file types.
+
 ## Truncation of file content
 
 Because of LLM limits and performance reasons, the content of the currently

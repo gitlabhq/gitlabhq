@@ -51,10 +51,6 @@ RSpec.describe DependencyProxy::GroupSetting, type: :model, feature_category: :v
 
     subject { dependency_proxy_setting.authorization_header }
 
-    shared_examples 'empty authorization headers' do
-      it { is_expected.to eq({}) }
-    end
-
     context 'with identity and secret set' do
       let(:expected_headers) { { Authorization: 'Basic aTpz' } }
 
@@ -63,14 +59,6 @@ RSpec.describe DependencyProxy::GroupSetting, type: :model, feature_category: :v
       end
 
       it { is_expected.to eq(expected_headers) }
-
-      context 'when dependency_proxy_containers_docker_hub_credentials is disabled' do
-        before do
-          stub_feature_flags(dependency_proxy_containers_docker_hub_credentials: false)
-        end
-
-        it_behaves_like 'empty authorization headers'
-      end
     end
 
     context 'with identity and secret not set' do
@@ -78,15 +66,7 @@ RSpec.describe DependencyProxy::GroupSetting, type: :model, feature_category: :v
         dependency_proxy_setting.update!(identity: nil, secret: nil)
       end
 
-      it_behaves_like 'empty authorization headers'
-
-      context 'when dependency_proxy_containers_docker_hub_credentials is disabled' do
-        before do
-          stub_feature_flags(dependency_proxy_containers_docker_hub_credentials: false)
-        end
-
-        it_behaves_like 'empty authorization headers'
-      end
+      it { is_expected.to eq({}) }
     end
   end
 end

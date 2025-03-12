@@ -89,22 +89,6 @@ RSpec.describe 'getting dependency proxy settings for a group', feature_category
     end
 
     it_behaves_like 'dependency proxy group setting query'
-
-    context 'with dependency_proxy_containers_docker_hub_credentials disabled' do
-      before do
-        stub_feature_flags(dependency_proxy_containers_docker_hub_credentials: false)
-      end
-
-      it 'does not return the identity' do
-        group.add_owner(user)
-        post_query
-
-        expect(dependency_proxy_group_setting_response).to eq(
-          'enabled' => true,
-          'identity' => nil
-        )
-      end
-    end
   end
 
   context 'without the settings model created' do

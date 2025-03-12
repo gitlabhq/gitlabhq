@@ -67,7 +67,7 @@ Avoid these topic titles:
 The following topic was trying to be all things to all people. It provided information about groups
 and where to find them. It reiterated what was visible in the UI.
 
-![An example concept and task](img/example_1.png)
+![An example concept and task](img/example_1_v17_10.png)
 
 ### After
 
@@ -75,8 +75,8 @@ The information is easier to scan if you move it into concepts and [tasks](task.
 
 #### Concept
 
-![A concept example after it's been corrected](img/example_1_after_concept.png)
+![A concept example after it's been corrected](img/example_1_after_concept_v17_10.png)
 
 #### Task
 
-![A task example after it's been corrected](img/example_1_after_task.png)
+![A task example after it's been corrected](img/example_1_after_task_v17_10.png)

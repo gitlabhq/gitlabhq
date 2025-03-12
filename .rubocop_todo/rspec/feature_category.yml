@@ -150,7 +150,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/graphql/mutations/merge_requests/set_assignees_spec.rb'
     - 'ee/spec/graphql/mutations/merge_requests/set_reviewers_spec.rb'
     - 'ee/spec/graphql/mutations/projects/set_compliance_framework_spec.rb'
-    - 'ee/spec/graphql/mutations/projects/set_locked_spec.rb'
     - 'ee/spec/graphql/mutations/releases/update_spec.rb'
     - 'ee/spec/graphql/mutations/requirements_management/create_requirement_spec.rb'
     - 'ee/spec/graphql/mutations/requirements_management/export_requirements_spec.rb'

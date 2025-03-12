@@ -10,6 +10,7 @@ import UncollapsedAssigneeList from '~/sidebar/components/assignees/uncollapsed_
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import { s__, sprintf, __ } from '~/locale';
 import Tracking from '~/tracking';
+import { ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
@@ -79,6 +80,7 @@ export default {
       currentUser: null,
       updateInProgress: false,
       localUsers: [],
+      shortcut: ISSUE_MR_CHANGE_ASSIGNEE,
     };
   },
   apollo: {
@@ -337,6 +339,7 @@ export default {
     :header-text="headerText"
     :update-in-progress="updateInProgress"
     :reset-button-label="__('Clear')"
+    :shortcut="shortcut"
     clear-search-on-item-select
     data-testid="work-item-assignees"
     @dropdownShown="onDropdownShown"
