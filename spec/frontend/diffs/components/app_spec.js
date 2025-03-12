@@ -6,7 +6,6 @@ import VueApollo from 'vue-apollo';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { createTestingPinia } from '@pinia/testing';
-import api from '~/api';
 import getMRCodequalityAndSecurityReports from 'ee_else_ce/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -50,8 +49,6 @@ const COMMIT_URL = `${TEST_HOST}/COMMIT/OLD`;
 const UPDATED_COMMIT_URL = `${TEST_HOST}/COMMIT/NEW`;
 const ENDPOINT_BATCH_URL = `${TEST_HOST}/diff/endpointBatch`;
 const ENDPOINT_METADATA_URL = `${TEST_HOST}/diff/endpointMetadata`;
-
-jest.mock('~/api.js');
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -1184,7 +1181,6 @@ describe('diffs/components/app', () => {
       window.dispatchEvent(new Event('blur'));
 
       expect(trackEventSpy).not.toHaveBeenCalled();
-      expect(api.trackRedisCounterEvent).not.toHaveBeenCalled();
     });
 
     it('should track metrics if delta is between 0 and 1000ms', async () => {
@@ -1199,7 +1195,6 @@ describe('diffs/components/app', () => {
       window.dispatchEvent(new Event('blur'));
 
       expect(trackEventSpy).toHaveBeenCalledWith('i_code_review_user_searches_diff', {}, undefined);
-      expect(api.trackRedisCounterEvent).toHaveBeenCalledWith('diff_searches');
     });
 
     it('should not track metrics if delta is greater than or equal to 1000ms', async () => {
@@ -1214,7 +1209,6 @@ describe('diffs/components/app', () => {
       window.dispatchEvent(new Event('blur'));
 
       expect(trackEventSpy).not.toHaveBeenCalled();
-      expect(api.trackRedisCounterEvent).not.toHaveBeenCalled();
     });
 
     it('should not track metrics if delta is negative', async () => {
@@ -1229,7 +1223,6 @@ describe('diffs/components/app', () => {
       window.dispatchEvent(new Event('blur'));
 
       expect(trackEventSpy).not.toHaveBeenCalled();
-      expect(api.trackRedisCounterEvent).not.toHaveBeenCalled();
     });
   });
 });

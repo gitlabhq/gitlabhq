@@ -8,7 +8,6 @@ import { mapState as mapPiniaState, mapActions as mapPiniaActions } from 'pinia'
 import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import api from '~/api';
 import {
   keysFor,
   MR_PREVIOUS_FILE_IN_DIFF,
@@ -675,7 +674,6 @@ export default {
         this.disableVirtualScroller();
 
         this.trackEvent('i_code_review_user_searches_diff');
-        api.trackRedisCounterEvent('diff_searches');
       }
     },
     jumpToFile(step) {

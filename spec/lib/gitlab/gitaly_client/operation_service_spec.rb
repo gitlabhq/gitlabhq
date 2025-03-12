@@ -33,13 +33,31 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
 
     subject { client.user_create_branch(branch_name, user, start_point) }
 
-    it 'sends a user_create_branch message and returns a Gitlab::git::Branch' do
+    it 'sends a user_create_branch message and returns a Gitlab::Git::Branch' do
       expect_any_instance_of(Gitaly::OperationService::Stub)
-        .to receive(:user_create_branch).with(request, kind_of(Hash))
+        .to receive(:user_create_branch).with(request, hash_including({
+          metadata: hash_not_including("gitaly-client-context-bin")
+        }))
         .and_return(response)
 
       expect(subject.name).to eq(branch_name)
       expect(subject.dereferenced_target).to eq(commit)
+    end
+
+    context 'when skip_ci: true' do
+      subject { client.user_create_branch(branch_name, user, start_point, skip_ci: true) }
+
+      it 'passes skip-ci in gitaly_context' do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_create_branch).with(request, hash_including({
+            metadata: hash_including({
+              "gitaly-client-context-bin" => '{"skip-ci":true}'
+            })
+          }))
+          .and_return(response)
+
+        expect(subject.name).to eq(branch_name)
+      end
     end
 
     context 'with structured errors' do

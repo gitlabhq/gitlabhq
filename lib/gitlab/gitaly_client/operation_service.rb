@@ -66,15 +66,22 @@ module Gitlab
         end
       end
 
-      def user_create_branch(branch_name, user, start_point)
+      def user_create_branch(branch_name, user, start_point, skip_ci: false)
         request = Gitaly::UserCreateBranchRequest.new(
           repository: @gitaly_repo,
           branch_name: encode_binary(branch_name),
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
           start_point: encode_binary(start_point)
         )
+
+        params = { timeout: GitalyClient.long_timeout }
+
+        if skip_ci
+          params[:gitaly_context] = { 'skip-ci' => true }
+        end
+
         response = gitaly_client_call(@repository.storage, :operation_service,
-          :user_create_branch, request, timeout: GitalyClient.long_timeout)
+          :user_create_branch, request, **params)
 
         branch = response.branch
         return unless branch

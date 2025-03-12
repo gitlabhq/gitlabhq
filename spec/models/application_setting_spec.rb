@@ -38,6 +38,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.concurrent_bitbucket_server_import_jobs_limit).to eq(100) }
     it { expect(setting.nuget_skip_metadata_url_validation).to be(false) }
     it { expect(setting.silent_admin_exports_enabled).to be(false) }
+    it { expect(setting.autocomplete_users_limit).to eq(300) }
+    it { expect(setting.autocomplete_users_unauthenticated_limit).to eq(100) }
     it { expect(setting.group_api_limit).to eq(400) }
     it { expect(setting.group_invited_groups_api_limit).to eq(60) }
     it { expect(setting.group_projects_api_limit).to eq(600) }
@@ -337,6 +339,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       where(:attribute) do
         %i[
           helm_max_packages_count
+          autocomplete_users_limit
+          autocomplete_users_unauthenticated_limit
           bulk_import_concurrent_pipeline_batch_limit
           code_suggestions_api_rate_limit
           concurrent_bitbucket_import_jobs_limit

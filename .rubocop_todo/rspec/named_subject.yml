@@ -184,6 +184,7 @@ RSpec/NamedSubject:
     - 'ee/spec/helpers/ee/gitlab_routing_helper_spec.rb'
     - 'ee/spec/helpers/ee/groups/group_members_helper_spec.rb'
     - 'ee/spec/helpers/ee/groups_helper_spec.rb'
+    - 'ee/spec/helpers/ee/lock_helper_spec.rb'
     - 'ee/spec/helpers/ee/merge_requests_helper_spec.rb'
     - 'ee/spec/helpers/ee/operations_helper_spec.rb'
     - 'ee/spec/helpers/ee/projects/incidents_helper_spec.rb'

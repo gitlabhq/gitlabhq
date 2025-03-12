@@ -4,6 +4,7 @@ import { renderHtmlStreams } from '~/streaming/render_html_streams';
 import { toPolyfillReadable } from '~/streaming/polyfills';
 import { DiffFile } from '~/rapid_diffs/diff_file';
 import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 
 export const statuses = {
   idle: 'idle',
@@ -66,6 +67,16 @@ export const useDiffsList = defineStore('diffsList', {
           document.querySelector('#js-stream-container'),
           signal,
         );
+        performanceMarkAndMeasure({
+          mark: 'rapid-diffs-list-loaded',
+          measures: [
+            {
+              name: 'rapid-diffs-list-loading',
+              start: 'rapid-diffs-first-diff-file-shown',
+              end: 'rapid-diffs-list-loaded',
+            },
+          ],
+        });
       });
     },
     reloadDiffs(url) {

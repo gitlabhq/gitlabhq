@@ -10,6 +10,8 @@ import {
 } from '@gitlab/ui';
 import { isEmpty, maxBy, range } from 'lodash';
 import { __, s__, sprintf } from '~/locale';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_PACKAGES_PACKAGE } from '~/graphql_shared/constants';
 
 export default {
   name: 'CandidateDetail',
@@ -20,6 +22,8 @@ export default {
     GlTab,
     GlTabs,
     GlTableLite,
+    PackageFiles: () =>
+      import('~/packages_and_registries/package_registry/components/details/package_files.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -33,6 +37,19 @@ export default {
   computed: {
     info() {
       return this.candidate.info;
+    },
+    projectPath() {
+      return this.candidate.projectPath;
+    },
+    packageType() {
+      return 'ml_model';
+    },
+    packageId() {
+      if (!this.info?.pathToArtifact) return null;
+      return convertToGraphQLId(
+        TYPENAME_PACKAGES_PACKAGE,
+        this.info.pathToArtifact.split('/packages/')[1],
+      );
     },
     ciJob() {
       return this.info.ciJob;
@@ -179,13 +196,12 @@ export default {
         </section>
       </gl-tab>
       <gl-tab :title="$options.i18n.artifactsLabel" class="gl-pt-3" data-testid="artifacts">
-        <gl-link
+        <package-files
           v-if="info.pathToArtifact"
-          :href="info.pathToArtifact"
-          data-testid="artifacts-link"
-        >
-          {{ $options.i18n.artifactsLabel }}
-        </gl-link>
+          :project-path="projectPath"
+          :package-type="packageType"
+          :package-id="packageId"
+        />
         <div v-else class="gl-text-subtle">{{ $options.i18n.noArtifactsMessage }}</div>
       </gl-tab>
       <gl-tab :title="$options.i18n.performanceLabel" class="gl-pt-3" data-testid="metrics">

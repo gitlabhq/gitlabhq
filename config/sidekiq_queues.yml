@@ -863,6 +863,8 @@
   - 1
 - - security_create_security_policy_project
   - 1
+- - security_delete_approval_policy_rules
+  - 1
 - - security_delete_orchestration_configuration
   - 1
 - - security_delete_security_policy

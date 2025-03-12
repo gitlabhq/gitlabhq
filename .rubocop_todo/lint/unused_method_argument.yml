@@ -204,6 +204,7 @@ Lint/UnusedMethodArgument:
     - 'ee/app/graphql/types/security_orchestration/security_policy_source_type.rb'
     - 'ee/app/graphql/types/vulnerability_detail_type.rb'
     - 'ee/app/graphql/types/vulnerability_location_type.rb'
+    - 'ee/app/helpers/ee/lock_helper.rb'
     - 'ee/app/models/boards/epic_board.rb'
     - 'ee/app/models/burndown.rb'
     - 'ee/app/models/concerns/elastic/application_versioned_search.rb'

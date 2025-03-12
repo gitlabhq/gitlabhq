@@ -265,7 +265,7 @@ job:
     - name: echo_random
       step: gitlab.com/components/echo
       inputs:
-        message: "The random value is: ${{steps.generate_rand.random_value}}"
+        message: "The random value is: ${{steps.generate_rand.outputs.random_value}}"
 ```
 
 ### Environment variables

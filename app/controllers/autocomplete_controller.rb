@@ -6,7 +6,8 @@ class AutocompleteController < ApplicationController
   skip_before_action :authenticate_user!, only: [
     :users, :award_emojis, :merge_request_target_branches, :merge_request_source_branches
   ]
-  before_action :check_search_rate_limit!, only: [:users, :projects]
+  before_action :check_search_rate_limit!, only: :projects
+  before_action :check_autocomplete_users_rate_limit!, only: :users
 
   feature_category :user_profile, [:users, :user]
   feature_category :groups_and_projects, [:projects]
@@ -110,6 +111,16 @@ class AutocompleteController < ApplicationController
       render json: branches.map { |branch| { title: branch } }
     else
       render json: { error: _('At least one of group_id or project_id must be specified') }, status: :bad_request
+    end
+  end
+
+  def check_autocomplete_users_rate_limit!
+    return check_search_rate_limit! if Feature.disabled?(:autocomplete_users_rate_limit) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- cannot scope to user as it needs to handle unauthenticated requests
+
+    if current_user
+      check_rate_limit!(:autocomplete_users, scope: current_user)
+    else
+      check_rate_limit!(:autocomplete_users_unauthenticated, scope: request.ip)
     end
   end
 end

@@ -181,10 +181,18 @@ class GroupsController < Groups::ApplicationController
 
   def destroy
     Groups::DestroyService.new(@group, current_user).async_execute
+    message = format(_("Group '%{group_name}' is being deleted."), group_name: @group.full_name)
 
-    flash[:toast] = format(_("Group '%{group_name}' is being deleted."), group_name: @group.full_name)
+    respond_to do |format|
+      format.html do
+        flash[:toast] = message
+        redirect_to root_path, status: :found
+      end
 
-    redirect_to root_path, status: :found
+      format.json do
+        render json: { message: message }
+      end
+    end
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

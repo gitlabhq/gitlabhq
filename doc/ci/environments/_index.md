@@ -421,6 +421,18 @@ To stop an environment in the GitLab UI:
 1. Next to the environment you want to stop, select **Stop**.
 1. On the confirmation dialog, select **Stop environment**.
 
+### Default stopping behavior
+
+GitLab automatically stops environments when the associated branch is deleted or merged.
+This behavior persists even if no explicit `on_stop` CI/CD job is defined.
+
+However, [issue 428625](https://gitlab.com/gitlab-org/gitlab/-/issues/428625) proposes to change this behavior
+so that production and staging environments stop only if an explicit `on_stop` CI/CD job is defined.
+
+You can configure an environment's stopping behavior with the
+[`auto_stop_setting`](../../api/environments.md#update-an-existing-environment)
+parameter in the Environments API.
+
 ### Stop an environment when a branch is deleted
 
 You can configure environments to stop when a branch is deleted.

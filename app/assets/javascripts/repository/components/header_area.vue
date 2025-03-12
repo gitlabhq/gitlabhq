@@ -265,7 +265,7 @@ export default {
           :upload-path="uploadPath"
           :new-dir-path="newDirPath"
         />
-        <!-- EE lock directory -->
+        <!-- EE: = render_if_exists 'projects/tree/lock_link' -->
         <lock-directory-button v-if="!isRoot" :project-path="projectPath" :path="currentPath" />
         <gl-button
           v-gl-tooltip.html="findFileTooltip"

@@ -1639,6 +1639,9 @@ msgstr ""
 msgid "%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}v*%{code_tag_end} or %{code_tag_start}*-release%{code_tag_end} are supported."
 msgstr ""
 
+msgid "'%{group_name}' has been scheduled for deletion and will be deleted on %{date}."
+msgstr ""
+
 msgid "'%{group_name}' has been scheduled for removal on %{removal_time}."
 msgstr ""
 
@@ -7125,6 +7128,9 @@ msgstr ""
 msgid "Analytics|Invalid visualization configuration"
 msgstr ""
 
+msgid "Analytics|Last updated: %{recordedAt}"
+msgstr ""
+
 msgid "Analytics|Learn more about %{docsLinkStart}AI impact analytics%{docsLinkEnd} and %{subscriptionLinkStart}GitLab Duo seats%{subscriptionLinkEnd}."
 msgstr ""
 
@@ -7210,6 +7216,9 @@ msgid "Analytics|Updating visualization %{visualizationName}"
 msgstr ""
 
 msgid "Analytics|Usage breakdown"
+msgstr ""
+
+msgid "Analytics|Usage data is a cumulative count and is updated monthly."
 msgstr ""
 
 msgid "Analytics|Use ClickHouse for supported analytics reports. Available when %{link_start}ClickHouse is configured%{link_end}."
@@ -60019,6 +60028,9 @@ msgid "This page is hosted on GitLab pages but contains user-generated content a
 msgstr ""
 
 msgid "This page is unavailable because you are not allowed to read information across multiple projects."
+msgstr ""
+
+msgid "This parent does not exist or you don't have sufficient permission."
 msgstr ""
 
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}"

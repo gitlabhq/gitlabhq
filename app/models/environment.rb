@@ -571,6 +571,18 @@ class Environment < ApplicationRecord
     end
   end
 
+  def ensure_environment_tier
+    self.tier ||= guess_tier
+  end
+
+  def set_default_auto_stop_setting
+    self.auto_stop_setting = if Feature.enabled?(:new_default_for_auto_stop, project)
+                               production? || staging? ? :with_action : :always
+                             else
+                               :always
+                             end
+  end
+
   private
 
   def run_stop_action!(job, link_identity:)
@@ -615,10 +627,6 @@ class Environment < ApplicationRecord
 
   def generate_slug
     self.slug = Gitlab::Slug::Environment.new(name).generate
-  end
-
-  def ensure_environment_tier
-    self.tier ||= guess_tier
   end
 
   def merge_request_not_changed

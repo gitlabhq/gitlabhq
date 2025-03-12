@@ -20,7 +20,10 @@ module Environments
       end
 
       begin
-        environment = project.environments.create!(**params.slice(*ALLOWED_ATTRIBUTES))
+        environment = project.environments.new(**params.slice(*ALLOWED_ATTRIBUTES))
+        environment.ensure_environment_tier
+        environment.set_default_auto_stop_setting unless params[:auto_stop_setting]
+        environment.save!
         ServiceResponse.success(payload: { environment: environment })
       rescue ActiveRecord::RecordInvalid => err
         ServiceResponse.error(message: err.record.errors.full_messages, payload: { environment: nil })

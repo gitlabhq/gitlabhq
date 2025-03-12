@@ -151,7 +151,16 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         expect(json_response['slug']).to eq('mepmep')
         expect(json_response['tier']).to eq('staging')
         expect(json_response['external']).to be_nil
-        expect(json_response['auto_stop_setting']).to eq('always')
+        expect(json_response['auto_stop_setting']).to eq('with_action')
+      end
+
+      context 'when the tier is development' do
+        it 'creates an environment with auto_stop_setting set to always' do
+          post api("/projects/#{project.id}/environments", user), params: { name: "mepmep", tier: 'development' }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['auto_stop_setting']).to eq('always')
+        end
       end
 
       context 'when associating a cluster agent' do

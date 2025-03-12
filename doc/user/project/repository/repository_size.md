@@ -172,7 +172,9 @@ To remove blobs from your repository:
 1. Select **Yes, remove blobs**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the section labeled **Advanced**.
-1. Select **Run housekeeping**.
+1. Select **Run housekeeping**. Wait at least 30 minutes for the operation to complete.
+1. In the same **Settings > General > Advanced** section, select **Prune unreachable objects**.
+   This operation takes approximately 5-10 minutes to complete.
 
 #### Get a list of object IDs
 

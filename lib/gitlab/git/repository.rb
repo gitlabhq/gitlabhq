@@ -640,9 +640,9 @@ module Gitlab
         # TODO: implement this method
       end
 
-      def add_branch(branch_name, user:, target:)
+      def add_branch(branch_name, user:, target:, skip_ci: false)
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_create_branch(branch_name, user, target)
+          gitaly_operation_client.user_create_branch(branch_name, user, target, skip_ci: skip_ci)
         end
       end
 

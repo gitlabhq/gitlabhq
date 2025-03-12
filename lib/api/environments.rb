@@ -72,7 +72,7 @@ module API
         optional :kubernetes_namespace, type: String, desc: 'The Kubernetes namespace to associate with this environment'
         optional :flux_resource_path, type: String, desc: 'The Flux resource path to associate with this environment'
         optional :description, type: String, desc: 'The description of the environment'
-        optional :auto_stop_setting, type: String, default: "always", values: Environment.auto_stop_settings.keys, desc: 'The auto stop setting for the environment. Allowed values are `always` and `with_action`'
+        optional :auto_stop_setting, type: String, values: Environment.auto_stop_settings.keys, desc: 'The auto stop setting for the environment. Allowed values are `always` and `with_action`'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, job_token_policies: :admin_environments

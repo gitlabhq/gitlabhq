@@ -2325,4 +2325,48 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
       is_expected.to match_array([environment])
     end
   end
+
+  describe '#set_default_auto_stop_setting' do
+    let(:environment) { create(:environment, project: project) }
+
+    subject { environment.set_default_auto_stop_setting }
+
+    context 'when auto_stop_setting is not set' do
+      %w[production staging].each do |tier|
+        context "when #{tier} environment" do
+          let(:environment) { create(:environment, project: project, name: 'production', tier: :production) }
+
+          it 'sets auto_stop_setting to :with_action' do
+            expect { subject }.to change { environment.auto_stop_setting }.from('always').to('with_action')
+          end
+        end
+      end
+
+      %w[testing development other].each do |tier|
+        context "when #{tier} environment" do
+          let(:environment) { create(:environment, project: project, name: tier, tier: tier.to_sym) }
+
+          it 'sets auto_stop_setting to :always' do
+            expect { subject }.not_to change { environment.auto_stop_setting }
+          end
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(new_default_for_auto_stop: false)
+        end
+
+        %w[production staging testing development other].each do |tier|
+          context "when #{tier} environment" do
+            let(:environment) { create(:environment, project: project, name: tier, tier: tier.to_sym) }
+
+            it 'sets auto_stop_setting to :always' do
+              expect { subject }.not_to change { environment.auto_stop_setting }
+            end
+          end
+        end
+      end
+    end
+  end
 end

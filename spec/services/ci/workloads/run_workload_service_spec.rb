@@ -19,9 +19,13 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
     }
   end
 
+  let(:create_branch) { false }
+
   describe '#execute' do
     subject(:execute) do
-      described_class.new(project: project, current_user: user, source: source, workload: workload).execute
+      described_class
+        .new(project: project, current_user: user, source: source, workload: workload, create_branch: create_branch)
+        .execute
     end
 
     context 'when pipeline creation is success' do
@@ -53,6 +57,21 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
         expect(build.variables.map(&:key)).not_to include('A_PROJECT_VARIABLE')
         expect(build.variables.map(&:key)).not_to include('A_GROUP_VARIABLE')
         expect(build.variables.map(&:key)).not_to include('A_INSTANCE_VARIABLE')
+      end
+
+      context 'when create_branch: true' do
+        let(:create_branch) { true }
+
+        it 'creates a new branch with skip_ci and manually runs the pipeline for that branch' do
+          expect(project.repository).to receive(:add_branch)
+            .with(user, match(%r{^workloads/\w+}), project.default_branch_or_main, skip_ci: true)
+            .and_call_original
+
+          expect(execute).to be_success
+
+          pipeline = execute.payload
+          expect(pipeline.ref).to match(%r{workloads/\w+})
+        end
       end
     end
 

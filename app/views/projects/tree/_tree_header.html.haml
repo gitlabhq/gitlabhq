@@ -1,0 +1,21 @@
+.tree-ref-container.gl-flex.gl-flex-wrap.gl-gap-2.mb-2.mb-md-0
+  .tree-ref-holder.gl-max-w-26{ data: { testid: 'ref-dropdown-container' } }
+    #js-tree-ref-switcher{ data: { project_id: @project.id, ref_type: @ref_type.to_s, project_root_path: project_path(@project) } }
+
+  #js-repo-breadcrumb{ data: breadcrumb_data_attributes }
+
+#js-blob-controls
+.tree-controls
+  .gl-flex.gl-flex-wrap.gl-gap-3.gl-mb-3.sm:gl-mb-0
+    = render_if_exists 'projects/tree/lock_link'
+    = render 'projects/buttons/compare', project: @project, ref: @ref, root_ref: @repository&.root_ref
+
+    = render 'projects/find_file_link'
+    = render 'shared/web_ide_button', blob: nil, css_classes: 'gl-w-full sm:gl-w-auto'
+
+    .project-code-holder.gl-hidden.sm:gl-inline-block
+      = render "projects/buttons/code", dropdown_class: 'dropdown-menu-right', ref: @ref
+
+  .project-code-holder.gl-flex.gl-gap-3{ class: 'sm:!gl-hidden' }
+    = render 'projects/buttons/download', project: @project, ref: @ref
+    = render "shared/mobile_clone_panel", ref: @ref

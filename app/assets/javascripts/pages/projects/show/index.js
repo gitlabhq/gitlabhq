@@ -72,9 +72,10 @@ const initCodeDropdown = () => {
 
   const { sshUrl, httpUrl, kerberosUrl } = codeDropdownEl.dataset;
 
-  const CodeDropdownComponent = gon.features.directoryCodeDropdownUpdates
-    ? CompactCodeDropdown
-    : CodeDropdown;
+  const CodeDropdownComponent =
+    gon.features.directoryCodeDropdownUpdates && gon.features.blobRepositoryVueHeaderApp
+      ? CompactCodeDropdown
+      : CodeDropdown;
 
   return new Vue({
     el: codeDropdownEl,

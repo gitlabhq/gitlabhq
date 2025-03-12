@@ -3313,28 +3313,56 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     context '/set_parent command' do
       let_it_be(:parent) { create(:work_item, :issue, project: project) }
       let_it_be(:task_work_item) { create(:work_item, :task, project: project) }
-      let_it_be(:issue_work_item) { create(:work_item, :issue, project: project) }
       let_it_be(:parent_ref) { parent.to_reference(project) }
 
       context 'on a work item' do
-        let(:content) { "/set_parent #{parent_ref}" }
+        context 'when the parent reference is valid' do
+          let(:content) { "/set_parent #{parent_ref}" }
 
-        it 'returns success message' do
-          _, _, message = service.execute(content, task_work_item)
+          it 'returns success message' do
+            _, _, message = service.execute(content, task_work_item)
 
-          expect(message).to eq(_('Parent set successfully'))
+            expect(message).to eq(_('Parent set successfully'))
+          end
+
+          it 'sets correct update params' do
+            _, updates, _ = service.execute(content, task_work_item)
+
+            expect(updates).to eq(set_parent: parent)
+          end
+
+          context 'when the user does not have permission to read the work item' do
+            before do
+              allow(Ability).to receive(:allowed?).and_call_original
+              allow(Ability).to receive(:allowed?).with(current_user, :read_work_item, parent).and_return(false)
+            end
+
+            it 'does not assign the parent and returns an appropriate error' do
+              _, updates, message = service.execute(content, task_work_item)
+
+              expect(updates).to be_empty
+              expect(message).to eq("This parent does not exist or you don't have sufficient permission.")
+            end
+          end
         end
 
-        it 'sets correct update params' do
-          _, updates, _ = service.execute(content, task_work_item)
+        context 'when the parent reference is invalid' do
+          let(:content) { "/set_parent not_a_valid_parent" }
 
-          expect(updates).to eq(set_parent: parent)
+          it 'does not assign the parent and returns an appropriate error' do
+            _, updates, message = service.execute(content, task_work_item)
+
+            expect(updates).to be_empty
+            expect(message).to eq("This parent does not exist or you don't have sufficient permission.")
+          end
         end
 
         context 'when epics are disabled' do
           before do
             stub_licensed_features(epics: false)
           end
+
+          let_it_be(:issue_work_item) { create(:work_item, :issue, project: project) }
 
           it 'does not contain command for issue work item types' do
             expect(service.available_commands(issue_work_item)).not_to include(a_hash_including(name: :set_parent))

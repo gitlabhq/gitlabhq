@@ -95,14 +95,11 @@ module API
           success Entities::ResourceAccessTokenWithToken
         end
         params do
+          use :create_personal_access_token_params
           requires :id,
             type: String,
             desc: "The #{source_type} ID",
             documentation: { example: 2 }
-          requires :name,
-            type: String,
-            desc: "Resource access token name",
-            documentation: { example: 'test' }
           requires :scopes,
             type: Array[String],
             values: ::Gitlab::Auth.resource_bot_scopes.map(&:to_s),
@@ -113,10 +110,6 @@ module API
             desc: "The expiration date of the token",
             default: PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now,
             documentation: { example: '"2021-01-31' }
-          optional :description,
-            type: String,
-            desc: "Resource access token description",
-            documentation: { example: 'test description' }
           optional :access_level,
             type: Integer,
             values: ALLOWED_RESOURCE_ACCESS_LEVELS.values,

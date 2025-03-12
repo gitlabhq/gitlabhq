@@ -96,4 +96,36 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
       end
     end
   end
+
+  describe '#database_name' do
+    let(:migration_record) do
+      MigrationRecord.new(id: 1, finished_at: "2020-04-01 12:00:01", gitlab_schema: gitlab_schema)
+    end
+
+    subject(:database_name) { keep.database_name(migration_record) }
+
+    context 'when schema is gitlab_main_cell' do
+      let(:gitlab_schema) { 'gitlab_main_cell' }
+
+      it 'returns the database name' do
+        expect(database_name).to eq('main')
+      end
+    end
+
+    context 'when schema is gitlab_main' do
+      let(:gitlab_schema) { 'gitlab_main' }
+
+      it 'returns the database name' do
+        expect(database_name).to eq('main')
+      end
+    end
+
+    context 'when schema is gitlab_ci' do
+      let(:gitlab_schema) { 'gitlab_ci' }
+
+      it 'returns the database name' do
+        expect(database_name).to eq('ci')
+      end
+    end
+  end
 end

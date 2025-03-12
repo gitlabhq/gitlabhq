@@ -35,6 +35,14 @@ module Resolvers
       required: false,
       description: 'Filter projects by programming language name (case insensitive). For example: "css" or "ruby".'
 
+    argument :trending, GraphQL::Types::Boolean,
+      required: false,
+      description: "Return only projects that are trending."
+
+    argument :not_aimed_for_deletion, GraphQL::Types::Boolean,
+      required: false,
+      description: "Exclude projects that are marked for deletion."
+
     before_connection_authorization do |projects, current_user|
       ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
     end
@@ -69,7 +77,9 @@ module Resolvers
         full_paths: args[:full_paths],
         archived: args[:archived],
         min_access_level: args[:min_access_level],
-        language_name: args[:programming_language_name]
+        language_name: args[:programming_language_name],
+        trending: args[:trending],
+        not_aimed_for_deletion: args[:not_aimed_for_deletion]
       }
     end
 

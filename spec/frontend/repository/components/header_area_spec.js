@@ -80,15 +80,8 @@ describe('HeaderArea', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  describe('Ref selector', () => {
-    it('renders correctly', () => {
-      expect(findRefSelector().exists()).toBe(true);
-    });
-
-    it('renders correctly when branch names ending with .json', () => {
-      createComponent({ props: { refSelectorValue: 'ends-with.json' } });
-      expect(findRefSelector().exists()).toBe(true);
-    });
+  it('renders RefSelector', () => {
+    expect(findRefSelector().exists()).toBe(true);
   });
 
   it('renders Breadcrumbs component', () => {

@@ -4,6 +4,16 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "autocomplete_users_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of authenticated requests allowed to the GET /autocomplete/users endpoint."
+    },
+    "autocomplete_users_unauthenticated_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of unauthenticated requests allowed to the GET /autocomplete/users endpoint."
+    },
     "concurrent_bitbucket_import_jobs_limit": {
       "type": "integer",
       "minimum": 1,

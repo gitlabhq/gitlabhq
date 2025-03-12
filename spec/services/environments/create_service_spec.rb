@@ -14,7 +14,10 @@ RSpec.describe Environments::CreateService, feature_category: :environment_manag
   describe '#execute' do
     subject { service.execute }
 
-    let(:params) { { name: 'production', description: 'description', external_url: 'https://gitlab.com', tier: :production, auto_stop_setting: :always } }
+    let(:auto_stop_setting) { :always }
+    let(:env_name) { 'production' }
+    let(:tier) { nil }
+    let(:params) { { name: env_name, description: 'description', tier: tier, external_url: 'https://gitlab.com', auto_stop_setting: auto_stop_setting } }
 
     it 'creates an environment' do
       expect { subject }.to change { ::Environment.count }.by(1)
@@ -29,6 +32,119 @@ RSpec.describe Environments::CreateService, feature_category: :environment_manag
       expect(response.payload[:environment].external_url).to eq('https://gitlab.com')
       expect(response.payload[:environment].tier).to eq('production')
       expect(response.payload[:environment].auto_stop_setting).to eq('always')
+    end
+
+    context 'when tier is provided' do
+      let(:tier) { 'production' }
+      let(:env_name) { 'testing' }
+
+      it 'creates an environment' do
+        expect { subject }.to change { ::Environment.count }.by(1)
+      end
+
+      it 'returns successful response' do
+        response = subject
+
+        expect(response).to be_success
+        expect(response.payload[:environment].name).to eq('testing')
+        expect(response.payload[:environment].tier).to eq('production')
+        expect(response.payload[:environment].auto_stop_setting).to eq('always')
+      end
+    end
+
+    context 'when tier is not provided' do
+      context 'when environment name is production' do
+        let(:env_name) { 'production' }
+
+        it 'guesses tier to production' do
+          response = subject
+
+          expect(response).to be_success
+          expect(response.payload[:environment].name).to eq('production')
+          expect(response.payload[:environment].tier).to eq('production')
+        end
+      end
+
+      context 'when environment name is testing' do
+        let(:env_name) { 'testing' }
+
+        it 'guesses tier to testing' do
+          response = subject
+
+          expect(response).to be_success
+          expect(response.payload[:environment].name).to eq('testing')
+          expect(response.payload[:environment].tier).to eq('testing')
+        end
+      end
+    end
+
+    context 'when auto_stop_setting is not provided' do
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(new_default_for_auto_stop: false)
+        end
+
+        let(:tier) { 'production' }
+        let(:env_name) { 'production' }
+        let(:auto_stop_setting) { nil }
+
+        it 'creates an environment' do
+          expect { subject }.to change { ::Environment.count }.by(1)
+        end
+
+        it 'sets :always for auto_stop_setting' do
+          expect_next_instance_of(Environment) do |instance|
+            expect(instance).to receive(:set_default_auto_stop_setting).and_call_original
+          end
+
+          response = subject
+          expect(response).to be_success
+          expect(response.payload[:environment].name).to eq(env_name)
+          expect(response.payload[:environment].auto_stop_setting).to eq('always')
+        end
+      end
+
+      context 'when environment tier is production' do
+        let(:tier) { 'production' }
+        let(:env_name) { 'production' }
+        let(:auto_stop_setting) { nil }
+
+        it 'creates an environment' do
+          expect { subject }.to change { ::Environment.count }.by(1)
+        end
+
+        it 'sets :with_action for auto_stop_setting' do
+          expect_next_instance_of(Environment) do |instance|
+            expect(instance).to receive(:set_default_auto_stop_setting).and_call_original
+          end
+
+          response = subject
+          expect(response).to be_success
+          expect(response.payload[:environment].name).to eq(env_name)
+          expect(response.payload[:environment].auto_stop_setting).to eq('with_action')
+        end
+      end
+
+      context 'when environment tier is development' do
+        let(:tier) { 'development' }
+        let(:env_name) { 'development' }
+        let(:auto_stop_setting) { nil }
+
+        it 'creates an environment' do
+          expect { subject }.to change { ::Environment.count }.by(1)
+        end
+
+        it 'sets :always for auto_stop_setting' do
+          expect_next_instance_of(Environment) do |instance|
+            expect(instance).to receive(:set_default_auto_stop_setting).and_call_original
+          end
+
+          response = subject
+          expect(response).to be_success
+          expect(response.payload[:environment].name).to eq(env_name)
+          expect(response.payload[:environment].auto_stop_setting).to eq('always')
+        end
+      end
     end
 
     context 'with a cluster agent' do

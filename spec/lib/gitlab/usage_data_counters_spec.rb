@@ -13,10 +13,11 @@ RSpec.describe Gitlab::UsageDataCounters do
   describe '.count' do
     subject { described_class.count(event_name) }
 
-    let(:event_name) { 'diff_searches' }
+    let(:event_name) { 'i_code_review_merge_request_widget_code_quality_count_view' }
 
     it 'increases a searches counter' do
-      expect(Gitlab::UsageDataCounters::DiffsCounter).to receive(:count).with('searches')
+      expect(Gitlab::UsageDataCounters::MergeRequestWidgetExtensionCounter)
+        .to receive(:count).with('code_quality_count_view')
 
       subject
     end

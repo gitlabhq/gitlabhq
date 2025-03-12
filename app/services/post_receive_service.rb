@@ -16,7 +16,6 @@ class PostReceiveService
   def execute
     response = Gitlab::InternalPostReceive::Response.new
 
-    push_options = Gitlab::PushOptions.new(params[:push_options])
     mr_options = push_options.get(:merge_request)
 
     response.reference_counter_decreased = Gitlab::ReferenceCounter.new(params[:gl_repository]).decrease
@@ -53,6 +52,14 @@ class PostReceiveService
     end
 
     response
+  end
+
+  def push_options
+    @push_options ||= begin
+      options = params[:push_options] || []
+      options += [Gitlab::PushOptions::CI_SKIP] if !!params.dig(:gitaly_context, 'skip-ci')
+      Gitlab::PushOptions.new(options)
+    end
   end
 
   def process_mr_push_options(push_options, changes)

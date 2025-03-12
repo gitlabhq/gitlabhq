@@ -446,7 +446,11 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
     end
 
     context "POST #{source_type}s/:id/access_tokens" do
-      let(:params) { { name: "test", scopes: ["api"], expires_at: expires_at, access_level: access_level } }
+      let(:params) do
+        { name: "test", description: "description", scopes: ["api"], expires_at: expires_at,
+          access_level: access_level }
+      end
+
       let(:expires_at) { 1.month.from_now }
       let(:access_level) { 20 }
 
@@ -462,6 +466,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
               expect(response).to have_gitlab_http_status(:created)
               expect(json_response["name"]).to eq("test")
+              expect(json_response["description"]).to eq("description")
               expect(json_response["scopes"]).to eq(["api"])
               expect(json_response["access_level"]).to eq(20)
               expect(json_response["expires_at"]).to eq(expires_at.to_date.iso8601)

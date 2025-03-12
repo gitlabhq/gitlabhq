@@ -85,7 +85,7 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
 
   describe 'POST /usage_data/increment_counter' do
     let(:endpoint) { '/usage_data/increment_counter' }
-    let(:known_event) { "diff_searches" }
+    let(:known_event) { "i_code_review_merge_request_widget_code_quality_count_view" }
     let(:unknown_event) { 'unknown' }
 
     context 'without authentication' do
@@ -113,7 +113,7 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
 
       context 'with correct params' do
         it 'returns status :ok' do
-          expect(Gitlab::UsageDataCounters::BaseCounter).to receive(:count).with("searches")
+          expect(Gitlab::UsageDataCounters::BaseCounter).to receive(:count).with("code_quality_count_view")
 
           post api(endpoint, user), params: { event: known_event }
 

@@ -295,6 +295,28 @@ To uninstall an extension in the Web IDE:
 1. From the list of installed extensions, select the extension you want to uninstall.
 1. Select **Uninstall**.
 
+### Extension setup
+
+Web IDE extensions may require additional configuration to work with your projects.
+
+#### YAML language support extension
+
+To validate YAML files that match specified patterns, use
+the Red Hat [YAML](https://open-vsx.org/extension/redhat/vscode-yaml) extension.
+
+1. [Install the YAML extension](#install-an-extension).
+1. Configure your schema:
+
+   1. On the top menu bar, select **File > Preferences > Settings**, or press
+   <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> and enter `Preferences: Open Settings (JSON)`.
+   1. In the `settings.json` file, add your schema configuration. For local schema paths, add the following prefix: `gitlab-web-ide://~/`. For example:
+
+      ```json
+      "yaml.schemas": {
+         "gitlab-web-ide://~/<path-to-local-schema>.json": ["*.yaml", "*.yml"]
+      }
+      ```
+
 ## Related topics
 
 - [GitLab Duo Chat in the Web IDE](../../gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-the-web-ide)

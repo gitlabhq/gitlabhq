@@ -1166,6 +1166,22 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       end
     end
 
+    context 'with rate limit settings' do
+      context 'with users autocomplete rate limits' do
+        it 'updates the settings' do
+          put(
+            api("/application/settings", admin),
+            params: { autocomplete_users_limit: 4242,
+                      autocomplete_users_unauthenticated_limit: 42 }
+          )
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['autocomplete_users_limit']).to eq(4242)
+          expect(json_response['autocomplete_users_unauthenticated_limit']).to eq(42)
+        end
+      end
+    end
+
     context 'security txt settings' do
       let(:content) { "Contact: foo@acme.com" }
 

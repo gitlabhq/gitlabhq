@@ -246,6 +246,23 @@ describe('SecurityPolicySchemaExtension', () => {
           fileMatch: ['policy.yml'],
         });
       });
+
+      it('registers the schema even if `getModel` fails', async () => {
+        instance.getModel = jest.fn().mockImplementation(() => undefined);
+
+        await instance.registerSecurityPolicyEditorSchema({
+          namespacePath: mockNamespacePath,
+          namespaceType: 'project',
+          policyType: 'scan_execution_policy',
+        });
+
+        expect(registerSchema).toHaveBeenCalledTimes(1);
+        expect(registerSchema).toHaveBeenCalledWith({
+          uri: `${TEST_HOST}/${mockNamespacePath}/-/security/policies/schema`,
+          schema: mockScanExecutionPolicyProperties,
+          fileMatch: ['*.yaml'],
+        });
+      });
     });
   });
 

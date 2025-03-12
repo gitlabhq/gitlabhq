@@ -224,6 +224,10 @@ FactoryBot.define do
       archived { true }
     end
 
+    trait :not_aimed_for_deletion do
+      marked_for_deletion_at { nil }
+    end
+
     trait :hidden do
       hidden { true }
     end

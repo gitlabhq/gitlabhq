@@ -12,6 +12,8 @@ module API
         api_endpoint = env['api.endpoint']
         feature_category = api_endpoint.options[:for].try(:feature_category_for_app, api_endpoint).to_s
 
+        add_gitaly_context(params)
+
         if actor.user
           load_balancer_stick_request(::User, :user, actor.user.id)
           set_current_organization(user: actor.user)
@@ -40,8 +42,12 @@ module API
           container.lfs_http_url_to_repo
         end
 
+        def add_gitaly_context(params)
+          params[:gitaly_context] = gitaly_context(params)
+        end
+
         def link_scoped_user(params)
-          context = gitaly_context(params)
+          context = params[:gitaly_context]
 
           return unless context
 

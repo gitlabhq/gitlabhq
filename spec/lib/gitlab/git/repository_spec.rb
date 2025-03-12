@@ -2154,6 +2154,24 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
+  describe '#add_branch' do
+    let_it_be(:project) { create(:project, :repository) }
+    let(:repository) { project.repository.raw }
+    let(:branch_name) { "branch-to-create" }
+
+    before do
+      project.add_developer(user)
+    end
+
+    it "adds the branch and passes skip_ci to gitaly_operation_client" do
+      expect(repository.gitaly_operation_client).to receive(:user_create_branch)
+        .with(branch_name, user, 'HEAD', skip_ci: true)
+        .and_call_original
+
+      repository.add_branch(branch_name, user: user, target: 'HEAD', skip_ci: true)
+    end
+  end
+
   describe '#rm_branch' do
     let(:project) { create(:project, :repository) }
     let(:repository) { project.repository.raw }

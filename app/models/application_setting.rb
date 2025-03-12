@@ -573,6 +573,8 @@ class ApplicationSetting < ApplicationRecord
 
   with_options(numericality: { only_integer: true, greater_than: 0 }) do
     validates :ai_action_api_rate_limit,
+      :autocomplete_users_limit,
+      :autocomplete_users_unauthenticated_limit,
       :bulk_import_concurrent_pipeline_batch_limit,
       :code_suggestions_api_rate_limit,
       :concurrent_bitbucket_import_jobs_limit,
@@ -679,6 +681,8 @@ class ApplicationSetting < ApplicationRecord
   validates :resource_usage_limits, json_schema: { filename: 'resource_usage_limits' }
 
   jsonb_accessor :rate_limits,
+    autocomplete_users_limit: [:integer, { default: 300 }],
+    autocomplete_users_unauthenticated_limit: [:integer, { default: 100 }],
     concurrent_bitbucket_import_jobs_limit: [:integer, { default: 100 }],
     concurrent_bitbucket_server_import_jobs_limit: [:integer, { default: 100 }],
     concurrent_github_import_jobs_limit: [:integer, { default: 1000 }],

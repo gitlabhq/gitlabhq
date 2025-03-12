@@ -1799,7 +1799,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     it "calls Gitaly's OperationService" do
       expect_any_instance_of(Gitlab::GitalyClient::OperationService)
-        .to receive(:user_create_branch).with(branch_name, user, target)
+        .to receive(:user_create_branch).with(branch_name, user, target, skip_ci: false)
         .and_return(nil)
 
       subject
@@ -1830,6 +1830,41 @@ RSpec.describe Repository, feature_category: :source_code_management do
         expect(repository).not_to receive(:expire_branches_cache)
 
         repository.add_branch(user, branch_name, target, expire_cache: false)
+      end
+    end
+
+    context 'skip_ci' do
+      context 'when skip_ci: true' do
+        it 'passes skip-ci: true gitaly context' do
+          allow(::Gitlab::GitalyClient).to receive(:call).and_call_original
+
+          repository.add_branch(user, branch_name, target, skip_ci: true)
+
+          expect(::Gitlab::GitalyClient).to have_received(:call)
+            .with(anything, anything, :user_create_branch, anything, gitaly_context: { 'skip-ci' => true }, timeout: anything)
+        end
+      end
+
+      context 'when skip_ci: false' do
+        it 'does not pass gitaly_context' do
+          allow(::Gitlab::GitalyClient).to receive(:call).and_call_original
+
+          repository.add_branch(user, branch_name, target, skip_ci: false)
+
+          expect(::Gitlab::GitalyClient).to have_received(:call)
+            .with(anything, anything, :user_create_branch, anything, timeout: anything)
+        end
+      end
+
+      context 'when skip_ci not provided' do
+        it 'does not pass gitaly_context' do
+          allow(::Gitlab::GitalyClient).to receive(:call).and_call_original
+
+          repository.add_branch(user, branch_name, target)
+
+          expect(::Gitlab::GitalyClient).to have_received(:call)
+            .with(anything, anything, :user_create_branch, anything, timeout: anything)
+        end
       end
     end
   end

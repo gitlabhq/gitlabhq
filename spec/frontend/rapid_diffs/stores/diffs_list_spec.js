@@ -7,9 +7,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { toPolyfillReadable } from '~/streaming/polyfills';
 import { DiffFile } from '~/rapid_diffs/diff_file';
 import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
+import { performanceMarkAndMeasure } from '~/performance/utils';
 
 jest.mock('~/streaming/polyfills');
 jest.mock('~/streaming/render_html_streams');
+jest.mock('~/performance/utils');
 
 describe('Diffs list store', () => {
   let store;
@@ -100,6 +102,21 @@ describe('Diffs list store', () => {
       expect(global.fetch).toHaveBeenCalledWith(url, { signal });
       expect(renderHtmlStreams).toHaveBeenCalledWith([streamResponse.body], findStreamContainer(), {
         signal,
+      });
+    });
+
+    it('measures performance', async () => {
+      await store.streamRemainingDiffs('/stream');
+      await waitForPromises();
+      expect(performanceMarkAndMeasure).toHaveBeenCalledWith({
+        mark: 'rapid-diffs-list-loaded',
+        measures: [
+          {
+            name: 'rapid-diffs-list-loading',
+            start: 'rapid-diffs-first-diff-file-shown',
+            end: 'rapid-diffs-list-loaded',
+          },
+        ],
       });
     });
 

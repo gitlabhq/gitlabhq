@@ -259,8 +259,8 @@ class Repository
     end
   end
 
-  def add_branch(user, branch_name, ref, expire_cache: true)
-    branch = raw_repository.add_branch(branch_name, user: user, target: ref)
+  def add_branch(user, branch_name, ref, expire_cache: true, skip_ci: false)
+    branch = raw_repository.add_branch(branch_name, user: user, target: ref, skip_ci: skip_ci)
 
     after_create_branch(expire_cache: expire_cache)
 

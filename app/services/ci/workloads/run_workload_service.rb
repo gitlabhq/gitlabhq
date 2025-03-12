@@ -38,7 +38,7 @@ module Ci
         branch_name = "workloads/#{SecureRandom.hex[0..10]}"
         raise "Branch already exists" if @project.repository.branch_exists?(branch_name)
 
-        repo_branch = @project.repository.add_branch(@current_user, branch_name, default_branch)
+        repo_branch = @project.repository.add_branch(@current_user, branch_name, default_branch, skip_ci: true)
         raise "Error in git branch creation" unless repo_branch
 
         branch_name

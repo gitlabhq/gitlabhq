@@ -50,10 +50,14 @@ module Gitlab
         end
         command :set_parent, :epic do |parent_param|
           if quick_action_target.instance_of?(WorkItem)
-            first = extract_work_items(parent_param).first
+            parent = extract_work_items(parent_param).first
 
-            @updates[:set_parent] = first
-            @execution_message[:set_parent] = success_msg[:set_parent]
+            if parent && current_user.can?(:read_work_item, parent)
+              @updates[:set_parent] = parent
+              @execution_message[:set_parent] = success_msg[:set_parent]
+            else
+              @execution_message[:set_parent] = _("This parent does not exist or you don't have sufficient permission.")
+            end
           elsif quick_action_target.instance_of?(Issue)
             handle_set_epic(parent_param)
           end

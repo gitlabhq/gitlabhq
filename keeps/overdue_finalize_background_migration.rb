@@ -272,10 +272,10 @@ module Keeps
       )
     end
 
-    private
-
     def database_name(migration_record)
-      migration_record.gitlab_schema.split("_").last
+      gitlab_schema = migration_record.gitlab_schema
+      connection = Gitlab::Database.schemas_to_base_models[gitlab_schema].first.connection
+      Gitlab::Database.db_config_name(connection)
     end
   end
 end

@@ -31,6 +31,7 @@ module API
 
       helpers Helpers::UsersHelpers
       helpers Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
+      helpers ::API::Helpers::PersonalAccessTokensHelpers
 
       helpers do
         def custom_order_by_or_sort?
@@ -1085,11 +1086,9 @@ module API
             success Entities::PersonalAccessTokenWithToken
           end
           params do
-            requires :name, type: String, desc: 'The name of the personal access token'
+            use :create_personal_access_token_params
             requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: ::Gitlab::Auth.all_available_scopes.map(&:to_s),
               desc: 'The array of scopes of the personal access token'
-            optional :description, type: String, desc: 'The description of the personal access token'
-            optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
           end
           post feature_category: :system_access do
             response = ::PersonalAccessTokens::CreateService.new(
@@ -1111,6 +1110,8 @@ module API
         authenticate!
         set_current_organization
       end
+
+      helpers ::API::Helpers::PersonalAccessTokensHelpers
 
       # Enabling /user endpoint for the v3 version to allow oauth
       # authentication through this endpoint.
@@ -1534,14 +1535,12 @@ module API
           success Entities::PersonalAccessTokenWithToken
         end
         params do
-          requires :name, type: String, desc: 'The name of the personal access token'
+          use :create_personal_access_token_params
           # NOTE: for security reasons only the k8s_proxy scope is allowed at the moment.
           # See details in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131923#note_1571272897
           # and in https://gitlab.com/gitlab-org/gitlab/-/issues/425171
           requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: [::Gitlab::Auth::K8S_PROXY_SCOPE].map(&:to_s),
             desc: 'The array of scopes of the personal access token'
-          optional :description, type: String, desc: 'The description of the personal access token'
-          optional :expires_at, type: Date, default: -> { 1.day.from_now.to_date }, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
         end
         post feature_category: :system_access do
           response = ::PersonalAccessTokens::CreateService.new(

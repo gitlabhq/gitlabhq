@@ -164,4 +164,70 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
         .to contain_exactly(a_graphql_entity_for(project))
     end
   end
+
+  context 'when providing the trending argument' do
+    let_it_be(:trending_project1) { create(:project, :public, group: group) }
+    let_it_be(:trending_project2) { create(:project, :public, group: group) }
+    let_it_be(:test_project) { create(:project, :public, group: group) }
+
+    let(:filters) { { trending: true } }
+
+    before do
+      create(:trending_project, project: trending_project1)
+      create(:trending_project, project: trending_project2)
+
+      post_graphql(query, current_user: current_user)
+    end
+
+    it 'returns only trending projects' do
+      expect(graphql_data_at(:projects, :nodes))
+        .to contain_exactly(
+          a_graphql_entity_for(trending_project1),
+          a_graphql_entity_for(trending_project2)
+        )
+    end
+
+    it 'excludes non-trending projects' do
+      expect(graphql_data_at(:projects, :nodes)).not_to include(
+        a_graphql_entity_for(archived_project),
+        a_graphql_entity_for(test_project),
+        a_graphql_entity_for(other_project)
+      )
+    end
+  end
+
+  context 'when providing the not_aimed_for_deletion argument' do
+    let_it_be(:project_aimed_for_deletion1) do
+      create(:project, :public, marked_for_deletion_at: 1.day.ago, group: group)
+    end
+
+    let_it_be(:project_aimed_for_deletion2) do
+      create(:project, :public, marked_for_deletion_at: 3.days.ago, group: group)
+    end
+
+    let_it_be(:project_not_aimed_for_deletion) { create(:project, :public, group: group) }
+
+    let(:filters) { { not_aimed_for_deletion: true, archived: :INCLUDE } }
+
+    before do
+      post_graphql(query, current_user: current_user)
+    end
+
+    it 'returns only projects not aimed for deletion' do
+      expect(graphql_data_at(:projects, :nodes))
+        .to contain_exactly(
+          *projects.map { |project| a_graphql_entity_for(project) },
+          a_graphql_entity_for(other_project),
+          a_graphql_entity_for(archived_project),
+          a_graphql_entity_for(project_not_aimed_for_deletion)
+        )
+    end
+
+    it 'excludes projects marked for deletion' do
+      expect(graphql_data_at(:projects, :nodes)).not_to include(
+        a_graphql_entity_for(project_aimed_for_deletion1),
+        a_graphql_entity_for(project_aimed_for_deletion2)
+      )
+    end
+  end
 end

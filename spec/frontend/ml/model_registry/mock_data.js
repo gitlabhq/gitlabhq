@@ -18,7 +18,7 @@ export const newCandidate = (withModel = true) => ({
     iid: 'candidate_iid',
     eid: 'abcdefg',
     gid: 'gid://gitlab/Ml::Candidate/1',
-    pathToArtifact: 'path_to_artifact',
+    pathToArtifact: 'path_to_artifact/packages/12',
     experimentName: 'The Experiment',
     pathToExperiment: 'path/to/experiment',
     status: 'SUCCESS',

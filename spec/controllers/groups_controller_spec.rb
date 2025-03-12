@@ -545,12 +545,23 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
         sign_in(user)
       end
 
-      it 'schedules a group destroy and redirects to the root path' do
-        Sidekiq::Testing.fake! do
-          expect { delete :destroy, params: { id: group.to_param } }.to change(GroupDestroyWorker.jobs, :size).by(1)
+      context 'for a html request' do
+        it 'schedules a group destroy and redirects to the root path' do
+          Sidekiq::Testing.fake! do
+            expect { delete :destroy, params: { id: group.to_param } }.to change(GroupDestroyWorker.jobs, :size).by(1)
+          end
+          expect(flash[:toast]).to eq(format(_("Group '%{group_name}' is being deleted."), group_name: group.full_name))
+          expect(response).to redirect_to(root_path)
         end
-        expect(flash[:toast]).to eq(format(_("Group '%{group_name}' is being deleted."), group_name: group.full_name))
-        expect(response).to redirect_to(root_path)
+      end
+
+      context 'for a json request' do
+        it 'schedules a group destroy and returns message' do
+          Sidekiq::Testing.fake! do
+            expect { delete :destroy, format: :json, params: { id: group.to_param } }.to change(GroupDestroyWorker.jobs, :size).by(1)
+          end
+          expect(Gitlab::Json.parse(response.body)).to eq({ 'message' => "Group '#{group.full_name}' is being deleted." })
+        end
       end
     end
   end

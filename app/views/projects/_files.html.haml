@@ -8,7 +8,12 @@
 - add_page_specific_style 'page_bundles/projects'
 
 #tree-holder.tree-holder.clearfix.js-per-page.gl-mt-5{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
-  #js-repository-blob-header-app{ data: vue_tree_header_app_data(project, repository, ref, pipeline) }
+  - if Feature.enabled?(:blob_repository_vue_header_app, project)
+    #js-repository-blob-header-app{ data: vue_tree_header_app_data(project, repository, ref, pipeline) }
+
+  - else
+    .nav-block.gl-flex.gl-flex-col.sm:gl-flex-row.gl-items-stretch
+      = render 'projects/tree/tree_header', tree: @tree
 
   - if project.forked?
     #js-fork-info{ data: vue_fork_divergence_data(project, ref) }

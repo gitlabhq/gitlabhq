@@ -1,0 +1,8 @@
+- project = local_assigns.fetch(:project)
+- ref = local_assigns.fetch(:ref, nil)
+- root_ref = local_assigns.fetch(:root_ref, nil)
+- unless ref.blank? || root_ref == ref
+  - compare_path = project_compare_index_path(project, from: root_ref, to: ref)
+
+  = link_button_to compare_path, class: 'shortcuts-compare', rel: 'nofollow' do
+    = _('Compare')
