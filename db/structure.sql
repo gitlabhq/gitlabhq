@@ -790,6 +790,21 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION sync_redirect_routes_namespace_id() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."source_type" = 'Namespace' THEN
+  NEW."namespace_id" = NEW."source_id";
+ELSIF NEW."source_type" = 'Project' THEN
+  NEW."namespace_id" = (SELECT project_namespace_id FROM projects WHERE id = NEW.source_id);
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION table_sync_function_29bc99d6db() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -39222,6 +39237,8 @@ CREATE TRIGGER trigger_projects_parent_id_on_insert AFTER INSERT ON projects FOR
 CREATE TRIGGER trigger_projects_parent_id_on_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((old.namespace_id IS DISTINCT FROM new.namespace_id)) EXECUTE FUNCTION insert_projects_sync_event();
 
 CREATE TRIGGER trigger_sync_issues_dates_with_work_item_dates_sources AFTER INSERT OR UPDATE OF start_date, due_date ON work_item_dates_sources FOR EACH ROW EXECUTE FUNCTION sync_issues_dates_with_work_item_dates_sources();
+
+CREATE TRIGGER trigger_sync_redirect_routes_namespace_id BEFORE INSERT OR UPDATE ON redirect_routes FOR EACH ROW WHEN ((new.namespace_id IS NULL)) EXECUTE FUNCTION sync_redirect_routes_namespace_id();
 
 CREATE TRIGGER trigger_update_details_on_namespace_insert AFTER INSERT ON namespaces FOR EACH ROW WHEN (((new.type)::text <> 'Project'::text)) EXECUTE FUNCTION update_namespace_details_from_namespaces();
 

@@ -355,7 +355,7 @@
   }
 
   &:not(:last-child) {
-    border-bottom: 1px solid var(--gl-border-color-default);
+    @apply gl-border-b gl-border-b-section;
   }
 }
 
@@ -970,7 +970,7 @@
   }
 
   .note-discussion {
-    border-bottom: 1px solid var(--gray-100, $gray-100) !important;
+    @apply gl-border-b #{!important};
   }
 
   .discussion-collapsible {

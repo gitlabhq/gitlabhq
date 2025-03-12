@@ -34,33 +34,19 @@ With GitLab Ultimate, pipeline secret detection results are also processed so yo
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For other interactive reading and how-to demos, see the [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9).
 
-## Detected secrets
-
-Pipeline secret detection scans the repository's content for specific patterns. Each pattern matches
-a specific type of secret and is specified in a rule by using a TOML syntax. The default set of
-rules is maintained by GitLab. In the Ultimate tier, you can customize the default ruleset to suit
-your needs. For details, see [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets). To confirm
-which secrets are detected by pipeline secret detection, see
-[Detected secrets](../detected_secrets.md). To provide reliable, high-confidence results, pipeline
-secret detection only looks for passwords or other unstructured secrets in specific contexts like
-URLs.
-
-When a secret is detected a vulnerability is created for it. The vulnerability remains as "Still
-detected" even if the secret is removed from the scanned file and pipeline secret detection has been
-run again. This is because the secret remains in the Git repository's history. To remove a secret
-from the Git repository's history, see
-[Redact text from repository](../../../project/merge_requests/revert_changes.md#redact-text-from-repository).
-
 ## Coverage
 
 Pipeline secret detection scans different aspects of your code, depending on the situation. For all methods
-except "Default branch", pipeline secret detection scans commits, not the working tree. For example,
-pipeline secret detection can detect if a secret was added in one commit and removed in a later commit.
+except "Default branch", pipeline secret detection scans commits. Only the content of each diff is scanned.
+For example, pipeline secret detection can detect if a secret was added in one commit and removed in a later commit.
+Pipeline secret detection does not scan other strings, like commit messages.
 
-- Historical scan
+When run against the default branch, pipeline secret detection scans the Git working tree.
 
-  If the `SECRET_DETECTION_HISTORIC_SCAN` variable is set, the content of all
-  [branches](../../../project/repository/branches/_index.md) is scanned. Before scanning the
+- Historic scan
+
+  If the `SECRET_DETECTION_HISTORIC_SCAN` variable is set, every commit from each
+  [branch](../../../project/repository/branches/_index.md) is scanned. Before scanning the
   repository's content, pipeline secret detection runs the command `git fetch --all` to fetch the content of all
   branches.
 
@@ -68,7 +54,7 @@ pipeline secret detection can detect if a secret was added in one commit and rem
 
   If the `SECRET_DETECTION_LOG_OPTIONS` variable is set, the secrets analyzer fetches the entire
   history of the branch or reference the pipeline is being run for. Pipeline secret detection then runs,
-  scanning the commit range specified.
+  and scans each commit from the specified range.
 
 - Default branch
 
@@ -93,18 +79,18 @@ pipeline secret detection can detect if a secret was added in one commit and rem
   [merge request pipelines](../../../../ci/pipelines/merge_request_pipelines.md). Pipeline secret detection's
   results are only available after the pipeline is completed.
 
-## Full history pipeline secret detection
+### Full history pipeline secret detection
 
 By default, pipeline secret detection scans only the current state of the Git repository. Any secrets
-contained in the repository's history are not detected. To address this, pipeline secret detection can
-scan the Git repository's full history.
+contained in the repository's history are not detected. Run a historic scan to check for secrets from
+all commits and branches in the Git repository.
 
-You should do a full history scan only once, after enabling pipeline secret detection. A full history
+You should do a historic scan only once, after enabling pipeline secret detection. Historic scans
 can take a long time, especially for larger repositories with lengthy Git histories. After
 completing an initial full history scan, use only standard pipeline secret detection as part of your
 pipeline.
 
-## Advanced vulnerability tracking
+### Advanced vulnerability tracking
 
 {{< details >}}
 
@@ -125,11 +111,28 @@ Pipeline secret detection uses an advanced vulnerability tracking algorithm to m
 
 For more information, see the confidential project `https://gitlab.com/gitlab-org/security-products/post-analyzers/tracking-calculator`. The content of this project is available only to GitLab team members.
 
-### Unsupported workflows
+#### Unsupported workflows
 
 - The algorithm does not support the workflow where the existing finding lacks a tracking signature and does not share the same location as the newly detected finding.
 - For some rule types, such as cryptographic keys, pipeline secret detection identifies leaks by matching prefix of the secret rather than the entire secret value. In this scenario, the algorithm consolidates different secrets of the same rule type in a file into a single finding, rather than treating each distinct secret as a separate finding. For example, the [SSH Private Key rule type](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/d2919f65f1d8001755015b5d790af620676b97ea/gitleaks.toml#L138) matches only the `-----BEGIN OPENSSH PRIVATE KEY-----` prefix of a value to confirm the presence of a SSH private key. If there are two distinct SSH Private Keys within the same file, the algorithm considers both values as identical and reports only one finding instead of two.
 - The algorithm's scope is limited to a per-file basis, meaning that the same secret appearing in two different files is treated as two distinct findings.
+
+### Detected secrets
+
+Pipeline secret detection scans the repository's content for specific patterns. Each pattern matches
+a specific type of secret and is specified in a rule by using a TOML syntax. The default set of
+rules is maintained by GitLab. In the Ultimate tier, you can customize the default ruleset to suit
+your needs. For details, see [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets). To confirm
+which secrets are detected by pipeline secret detection, see
+[Detected secrets](../detected_secrets.md). To provide reliable, high-confidence results, pipeline
+secret detection only looks for passwords or other unstructured secrets in specific contexts like
+URLs.
+
+When a secret is detected a vulnerability is created for it. The vulnerability remains as "Still
+detected" even if the secret is removed from the scanned file and pipeline secret detection has been
+run again. This is because the secret remains in the Git repository's history. To remove a secret
+from the Git repository's history, see
+[Redact text from repository](../../../project/merge_requests/revert_changes.md#redact-text-from-repository).
 
 ## Enable the analyzer
 

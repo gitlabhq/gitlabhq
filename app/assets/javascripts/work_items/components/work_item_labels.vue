@@ -344,12 +344,13 @@ export default {
     @updateSelected="updateLabel"
   >
     <template #list-item="{ item }">
-      <span
-        :style="{ background: item.color }"
-        :class="{ 'gl-border gl-border-white': isSelected(item.value) }"
-        class="gl-rounded -gl-mt-1 gl-mr-1 gl-inline-block gl-h-3 gl-w-5 gl-align-middle"
-      ></span>
-      {{ item.text }}
+      <div class="gl-flex gl-items-center gl-gap-3 gl-break-anywhere">
+        <span
+          :style="{ background: item.color }"
+          class="gl-border gl-h-3 gl-w-5 gl-shrink-0 gl-rounded-base gl-border-white"
+        ></span>
+        {{ item.text }}
+      </div>
     </template>
     <template #readonly>
       <div class="gl-mt-1 gl-flex gl-flex-wrap gl-gap-2">
