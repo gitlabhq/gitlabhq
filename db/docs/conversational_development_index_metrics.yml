@@ -7,8 +7,7 @@ feature_categories:
 description: Contains data for calculating DevOps score.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/26dde5f55f1dac2e6bea4f7e1dfa51c72dc756cb
 milestone: '9.3'
-gitlab_schema: gitlab_main_cell
-exempt_from_sharding: true
+gitlab_schema: gitlab_main_cell_local
 notes: Exempted because Cell local table storing instance DevOps metrics calculated
   from service ping
 table_size: small

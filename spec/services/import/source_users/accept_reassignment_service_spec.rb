@@ -27,6 +27,20 @@ RSpec.describe Import::SourceUsers::AcceptReassignmentService, feature_category:
       service.execute
     end
 
+    it 'tracks the reassignment event' do
+      expect { service.execute }
+        .to trigger_internal_events('accept_placeholder_user_reassignment')
+        .with(
+          namespace: import_source_user.namespace,
+          user: current_user,
+          additional_properties: {
+            label: Gitlab::GlobalAnonymousId.user_id(import_source_user.placeholder_user),
+            property: Gitlab::GlobalAnonymousId.user_id(import_source_user.reassign_to_user),
+            import_type: import_source_user.import_type
+          }
+        )
+    end
+
     shared_examples 'current user does not have permission to accept reassignment' do
       it 'returns error no permissions' do
         result = service.execute
@@ -68,11 +82,21 @@ RSpec.describe Import::SourceUsers::AcceptReassignmentService, feature_category:
 
     context 'when the source user is not awaiting approval' do
       let(:import_source_user) { create(:import_source_user, :reassignment_in_progress) }
+      let(:result) { service.execute }
 
       it 'returns transition error' do
         expect(Import::ReassignPlaceholderUserRecordsWorker).not_to receive(:perform_async)
-
-        result = service.execute
+        expect { result }
+          .to trigger_internal_events('fail_placeholder_user_reassignment')
+          .with(
+            namespace: import_source_user.namespace,
+            user: current_user,
+            additional_properties: {
+              label: Gitlab::GlobalAnonymousId.user_id(import_source_user.placeholder_user),
+              property: Gitlab::GlobalAnonymousId.user_id(import_source_user.reassign_to_user),
+              import_type: import_source_user.import_type
+            }
+          )
 
         expect(result).to be_error
         expect(result.message).to include('Status cannot transition via "accept"')

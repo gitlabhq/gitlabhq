@@ -1,0 +1,13 @@
+---
+table_name: user_group_member_roles
+classes:
+- Authz::UserGroupMemberRole
+feature_categories:
+- permissions
+description: Stores member role assigned to a user in a group
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/513033
+milestone: '17.10'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces
+table_size: small

@@ -7,7 +7,5 @@ feature_categories:
 description: Represents a zoekt replica for a root namespace
 introduced_by_url:
 milestone: '17.2'
-gitlab_schema: gitlab_main_cell
-sharding_key:
-  namespace_id: namespaces
+gitlab_schema: gitlab_main_cell_local
 table_size: small

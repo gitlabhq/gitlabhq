@@ -75,3 +75,4 @@
 - UserGroupsCounter
 - Ai::FeatureSettings::FeatureSettingFinder
 - Autocomplete::VulnerabilitiesAutocompleteFinder
+- Sbom::DependencyPathsFinder

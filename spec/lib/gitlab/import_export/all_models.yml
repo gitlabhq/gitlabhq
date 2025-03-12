@@ -1212,6 +1212,8 @@ vulnerabilities:
   - state_transitions
   - notes
   - user_mentions
+  - sbom_occurrences_vulnerabilities
+  - sbom_occurrences
 vulnerability_finding:
   - scanner
   - primary_identifier

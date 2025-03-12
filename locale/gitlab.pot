@@ -14922,7 +14922,7 @@ msgstr ""
 msgid "ComplianceFrameworks|Action"
 msgstr ""
 
-msgid "ComplianceFrameworks|Add another control"
+msgid "ComplianceFrameworks|Add a GitLab Control"
 msgstr ""
 
 msgid "ComplianceFrameworks|Add framework"
@@ -15018,6 +15018,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Error fetching compliance requirements controls data. Please refresh the page."
 msgstr ""
 
+msgid "ComplianceFrameworks|External"
+msgstr ""
+
 msgid "ComplianceFrameworks|Go to the %{linkStart}compliance center / project page%{linkEnd} to apply projects for this framework."
 msgstr ""
 
@@ -15100,6 +15103,9 @@ msgid "ComplianceFrameworks|Saved changes to compliance framework"
 msgstr ""
 
 msgid "ComplianceFrameworks|Select policies to enforce on all projects scoped to this framework."
+msgstr ""
+
+msgid "ComplianceFrameworks|Send via:"
 msgstr ""
 
 msgid "ComplianceFrameworks|Set as default"

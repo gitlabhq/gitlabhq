@@ -1,0 +1,23 @@
+---
+description: Tracks when a placeholder user is kept as a placeholder and not reassigned to an existing user
+internal_events: true
+action: keep_as_placeholder_user
+identifiers:
+- namespace
+- user
+additional_properties:
+  label:
+    description: id of the placeholder user
+  property:
+    description: nil (for related placeholder events, this is the reassigned user id)
+  import_type:
+    description: the import source e.g. gitlab_migration, github, bitbucket
+product_group: import_and_integrate
+product_categories:
+- importers
+milestone: '17.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182679
+tiers:
+- free
+- premium
+- ultimate

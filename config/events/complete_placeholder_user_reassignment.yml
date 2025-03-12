@@ -1,0 +1,22 @@
+---
+description: Tracks when a placeholder user reassignment is completed
+internal_events: true
+action: complete_placeholder_user_reassignment
+identifiers:
+- namespace
+additional_properties:
+  label:
+    description: id of the placeholder user
+  property:
+    description: id of the user that replaced the placeholder
+  import_type:
+    description: the import source e.g. gitlab_migration, github, bitbucket
+product_group: import_and_integrate
+product_categories:
+- importers
+milestone: '17.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182679
+tiers:
+- free
+- premium
+- ultimate

@@ -392,6 +392,8 @@ func configureRoutes(u *upstream) {
 		u.route("POST",
 			newRoute(apiPattern+`v4/projects/import-relation`, "api_projects_import_relation", railsBackend), mimeMultipartUploader),
 		u.route("POST",
+			newRoute(apiGroupPattern+`/placeholder_reassignments`, "api_group_placeholder_assignment", railsBackend), mimeMultipartUploader),
+		u.route("POST",
 			newRoute(groupPattern+`-/group_members/bulk_reassignment_file`, "group_placeholder_assignment", railsBackend), mimeMultipartUploader),
 		// Project Import via UI upload acceleration
 		u.route("POST",

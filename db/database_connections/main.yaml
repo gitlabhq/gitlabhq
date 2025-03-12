@@ -5,10 +5,12 @@ gitlab_schemas:
   - gitlab_shared
   - gitlab_main
   - gitlab_main_cell
+  - gitlab_main_cell_local
   - gitlab_pm
   - gitlab_main_clusterwide
 lock_gitlab_schemas:
   - gitlab_ci
+  - gitlab_ci_cell_local
   - gitlab_sec
 # Note that we use ActiveRecord::Base here and not ApplicationRecord.
 # This is deliberate, as:

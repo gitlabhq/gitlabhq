@@ -89,8 +89,8 @@
   table.tree-table {
     @apply dark:gl-bg-neutral-900 gl-mb-0;
 
-    thead tr th {
-      @apply gl-border-t-0;
+    thead tr th[scope="col"] {
+      @apply gl-bg-subtle dark:gl-bg-neutral-800 gl-border-t-0;
     }
 
     tbody tr {
@@ -99,10 +99,6 @@
       td,
       th {
         line-height: 21px;
-      }
-
-      th[scope="col"] {
-        @apply gl-bg-subtle dark:gl-bg-neutral-800 gl-border-0;
       }
 
       td, th {
@@ -133,20 +129,20 @@
           td, th {
             @apply gl-border-b-0;
             box-shadow: inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
-  
+
             &:first-child {
               box-shadow: inset 1px 0 0 0 var(--gl-action-selected-border-color-default),
                 inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
               border-bottom-left-radius: calc(#{$gl-border-radius-base} - 1px);
             }
-  
+
             &:last-child {
               box-shadow: inset -1px 0 0 0 var(--gl-action-selected-border-color-default),
                 inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
               border-bottom-right-radius: calc(#{$gl-border-radius-base} - 1px);
             }
           }
-        } 
+        }
       }
 
       &.selected {

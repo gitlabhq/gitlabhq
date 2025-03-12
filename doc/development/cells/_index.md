@@ -9,7 +9,7 @@ For background of GitLab Cells, refer to the [design document](https://handbook.
 
 ## Choose either the `gitlab_main_cell` or `gitlab_main_clusterwide` schema
 
-Depending on the use case, your feature may be [cell-local or clusterwide](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/#how-do-i-decide-whether-to-move-my-feature-to-the-cluster-cell-or-organization-level) and hence the tables used for the feature should also use the appropriate schema.
+Depending on the use case, your feature may be [organization-level, or clusterwide](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/#how-do-i-decide-whether-to-move-my-feature-to-the-cluster-cell-or-organization-level) and hence the tables used for the feature should also use the appropriate schema.
 
 When you choose the appropriate [schema](../database/multiple_databases.md#gitlab-schema) for tables, consider the following guidelines as part of the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture:
 
@@ -31,15 +31,15 @@ After a schema has been assigned, the merge request pipeline might fail due to o
 - [Cross-database transactions](../database/multiple_databases.md#fixing-cross-database-transactions)
 - [Cross-database foreign keys](../database/multiple_databases.md#foreign-keys-that-cross-databases)
 
-## Defining a sharding key for all cell-local tables
+## Defining a sharding key for all organizational tables
 
-All tables with the following `gitlab_schema` are considered "cell-local":
+All tables with the following `gitlab_schema` are considered organization level:
 
 - `gitlab_main_cell`
 - `gitlab_ci`
 - `gitlab_sec`
 
-All newly created cell-local tables are required to have a `sharding_key`
+All newly created organization-level tables are required to have a `sharding_key`
 defined in the corresponding `db/docs/` file for that table.
 
 The purpose of the sharding key is documented in the

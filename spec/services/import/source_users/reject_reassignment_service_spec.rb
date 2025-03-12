@@ -10,6 +10,8 @@ RSpec.describe Import::SourceUsers::RejectReassignmentService, feature_category:
     described_class.new(import_source_user, current_user: current_user, reassignment_token: reassignment_token)
   end
 
+  let(:result) { service.execute }
+
   describe '#execute' do
     let(:message_delivery) { instance_double(ActionMailer::MessageDelivery) }
 
@@ -20,7 +22,18 @@ RSpec.describe Import::SourceUsers::RejectReassignmentService, feature_category:
 
     it 'returns success' do
       expect(Notify).to receive_message_chain(:import_source_user_rejected, :deliver_now)
-      expect(service.execute).to be_success
+      expect { result }
+        .to trigger_internal_events('reject_placeholder_user_reassignment')
+        .with(
+          namespace: import_source_user.namespace,
+          user: current_user,
+          additional_properties: {
+            label: Gitlab::GlobalAnonymousId.user_id(import_source_user.placeholder_user),
+            property: Gitlab::GlobalAnonymousId.user_id(import_source_user.reassign_to_user),
+            import_type: import_source_user.import_type
+          }
+        )
+      expect(result).to be_success
     end
 
     it 'sets the source user to rejected' do
@@ -30,8 +43,6 @@ RSpec.describe Import::SourceUsers::RejectReassignmentService, feature_category:
 
     shared_examples 'current user does not have permission to reject reassignment' do
       it 'returns error no permissions' do
-        result = service.execute
-
         expect(Notify).not_to receive(:import_source_user_rejected)
 
         expect(result).to be_error
@@ -61,8 +72,6 @@ RSpec.describe Import::SourceUsers::RejectReassignmentService, feature_category:
       let(:import_source_user) { create(:import_source_user, :reassignment_in_progress) }
 
       it 'returns error invalid status' do
-        result = service.execute
-
         expect(result).to be_error
         expect(result.message).to eq("Import source user has an invalid status for this operation")
       end
@@ -76,8 +85,6 @@ RSpec.describe Import::SourceUsers::RejectReassignmentService, feature_category:
       end
 
       it 'returns an error' do
-        result = service.execute
-
         expect(result).to be_error
         expect(result.message).to eq(['Error'])
       end

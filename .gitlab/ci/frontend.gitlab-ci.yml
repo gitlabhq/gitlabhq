@@ -11,7 +11,7 @@
     - .default-retry
     - .default-before_script
     - .assets-compile-cache
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-rust-${RUST_VERSION}-node-${NODE_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}
   variables:
     SETUP_DB: "false"
     WEBPACK_VENDOR_DLL: "true"
@@ -176,7 +176,7 @@ retrieve-frontend-fixtures:
         exit 0
       fi
     - !reference [.base-script, script]
-    - rspec_parallelized_job
+    - run_with_custom_exit_code rspec_parallelized_job
   artifacts:
     name: frontend-fixtures
     expire_in: 31d
@@ -236,7 +236,7 @@ graphql-schema-dump:
   stage: fixtures
   needs: []
   script:
-    - bundle exec rake gitlab:graphql:schema:dump
+    - run_with_custom_exit_code bundle exec rake gitlab:graphql:schema:dump
   artifacts:
     expire_in: 30 days
     name: graphql-schema
@@ -256,7 +256,7 @@ upload-graphql-schema-dump:
     - .with-graphql-schema-dump-needs
   script:
     - source scripts/gitlab_component_helpers.sh
-    - create_and_upload_graphql_schema_package
+    - run_with_custom_exit_code create_and_upload_graphql_schema_package
 
 
 .frontend-test-base:

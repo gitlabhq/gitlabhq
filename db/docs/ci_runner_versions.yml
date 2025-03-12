@@ -7,6 +7,5 @@ feature_categories:
 description: Information about used Ci::Runner versions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90982
 milestone: '15.2'
-gitlab_schema: gitlab_ci
-exempt_from_sharding: true
+gitlab_schema: gitlab_ci_cell_local
 table_size: small

@@ -8,7 +8,6 @@ description: A set of cost factors per runner which are applied to ci job durati
   based on project type.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111977
 milestone: '15.10'
-gitlab_schema: gitlab_ci
-exempt_from_sharding: true
+gitlab_schema: gitlab_ci_cell_local
 notes: Exempted because Cell-local table storing cost information for instance runners
 table_size: small

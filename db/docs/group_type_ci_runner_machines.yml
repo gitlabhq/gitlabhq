@@ -1,14 +1,14 @@
 ---
-table_name: instance_type_ci_runner_machines_687967fa8a
+table_name: group_type_ci_runner_machines
 classes:
 - Ci::RunnerManager
 feature_categories:
 - runner
 - fleet_visibility
-- hosted_runners
-description: Information about runner managers associated to instance Ci::Runner models
+description: Information about runner managers associated to group Ci::Runner models
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168131
 milestone: '17.6'
 gitlab_schema: gitlab_ci
-exempt_from_sharding: true
+sharding_key:
+  sharding_key_id: namespaces
 table_size: small

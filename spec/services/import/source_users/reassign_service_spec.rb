@@ -8,13 +8,23 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
   let(:current_user) { user }
   let(:assignee_user) { create(:user) }
   let(:service) { described_class.new(import_source_user, assignee_user, current_user: current_user) }
+  let(:result) { service.execute }
 
   describe '#execute' do
     context 'when reassignment is successful' do
       it 'returns success' do
         expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_later)
-
-        result = service.execute
+        expect { result }
+          .to trigger_internal_events('propose_placeholder_user_reassignment')
+          .with(
+            namespace: import_source_user.namespace,
+            user: current_user,
+            additional_properties: {
+              label: Gitlab::GlobalAnonymousId.user_id(import_source_user.placeholder_user),
+              property: Gitlab::GlobalAnonymousId.user_id(assignee_user),
+              import_type: import_source_user.import_type
+            }
+          )
 
         expect(result).to be_success
         expect(result.payload.reload).to eq(import_source_user)
@@ -27,8 +37,6 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
     shared_examples 'an error response' do |desc, error:|
       it "returns #{desc} error" do
         expect(Notify).not_to receive(:import_source_user_reassign)
-
-        result = service.execute
 
         expect(result).to be_error
         expect(result.message).to eq(error)
@@ -105,8 +113,19 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
 
         it 'assigns the user' do
           expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_later)
+          expect { result }
+          .to trigger_internal_events('propose_placeholder_user_reassignment')
+          .with(
+            namespace: import_source_user.namespace,
+            user: current_user,
+            additional_properties: {
+              label: Gitlab::GlobalAnonymousId.user_id(import_source_user.placeholder_user),
+              property: Gitlab::GlobalAnonymousId.user_id(assignee_user),
+              import_type: import_source_user.import_type
+            }
+          )
 
-          expect(service.execute).to be_success
+          expect(result).to be_success
         end
       end
     end
@@ -119,6 +138,20 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
       end
 
       it_behaves_like 'an error response', 'active record', error: ['Error']
+
+      it 'tracks a reassignment event' do
+        expect { result }
+          .to trigger_internal_events('fail_placeholder_user_reassignment')
+          .with(
+            namespace: import_source_user.namespace,
+            user: current_user,
+            additional_properties: {
+              label: Gitlab::GlobalAnonymousId.user_id(import_source_user.placeholder_user),
+              property: Gitlab::GlobalAnonymousId.user_id(assignee_user),
+              import_type: import_source_user.import_type
+            }
+          )
+      end
     end
   end
 end

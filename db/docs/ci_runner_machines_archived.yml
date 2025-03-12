@@ -1,0 +1,11 @@
+---
+table_name: ci_runner_machines_archived
+classes: []
+feature_categories:
+- fleet_visibility
+description: Information about runner managers associated to Ci::Runner models
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107801
+milestone: '15.8'
+gitlab_schema: gitlab_ci
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/460084
+table_size: small

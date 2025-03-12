@@ -1,0 +1,10 @@
+name: gitlab_ci_cell_local
+description: Schema for all Cell-local CI tables, ex. ci_cost_settings, etc.
+allow_cross_joins:
+  - gitlab_shared
+  - gitlab_ci
+allow_cross_transactions:
+  - gitlab_internal
+  - gitlab_shared
+  - gitlab_ci
+require_sharding_key: false

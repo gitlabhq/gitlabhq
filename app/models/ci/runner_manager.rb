@@ -10,6 +10,7 @@ module Ci
 
     # For legacy reasons, the table name is ci_runner_machines in the database
     self.table_name = 'ci_runner_machines'
+    self.primary_key = :id
 
     AVAILABLE_STATUSES = %w[online offline never_contacted stale].freeze
     AVAILABLE_STATUSES_INCL_DEPRECATED = AVAILABLE_STATUSES

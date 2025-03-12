@@ -17,12 +17,14 @@ RSpec.describe 'gitlab:db:decomposition:rollback:bump_ci_sequences', :silence_st
 
   let(:main_sequence_name) { 'issues_id_seq' }
   let(:ci_sequence_name) { 'ci_build_needs_id_seq' }
+  let(:ci_cell_local_sequence_name) { 'ci_instance_variables_id_seq' }
 
   # This is just to make sure that all of the sequences start with `is_called=True`
   # which means that the next call to nextval() is going to increment the sequence.
   # To give predictable test results.
   before do
     ApplicationRecord.connection.select_value("select nextval($1)", nil, [ci_sequence_name])
+    ApplicationRecord.connection.select_value("select nextval($1)", nil, [ci_cell_local_sequence_name])
   end
 
   context 'when passing wrong argument' do
@@ -47,6 +49,9 @@ RSpec.describe 'gitlab:db:decomposition:rollback:bump_ci_sequences', :silence_st
         run_rake_task('gitlab:db:decomposition:rollback:bump_ci_sequences', '15')
       end.to change {
         last_value_of_sequence(ApplicationRecord.connection, ci_sequence_name)
+      }.by(16) # the +1 is because the sequence has is_called = true
+      .and change {
+        last_value_of_sequence(ApplicationRecord.connection, ci_cell_local_sequence_name)
       }.by(16) # the +1 is because the sequence has is_called = true
     end
 
@@ -78,6 +83,9 @@ RSpec.describe 'gitlab:db:decomposition:rollback:bump_ci_sequences', :silence_st
       .and change {
         last_value_of_sequence(ApplicationRecord.connection, ci_sequence_name)
       }.by(11) # the +1 is because the sequence has is_called = true
+      .and change {
+        last_value_of_sequence(ApplicationRecord.connection, ci_cell_local_sequence_name)
+      }.by(11) # the +1 is because the sequence has is_called = true
     end
   end
 
@@ -91,6 +99,9 @@ RSpec.describe 'gitlab:db:decomposition:rollback:bump_ci_sequences', :silence_st
         run_rake_task('gitlab:db:decomposition:rollback:bump_ci_sequences', '10')
       end.to change {
         last_value_of_sequence(Ci::ApplicationRecord.connection, ci_sequence_name)
+      }.by(0)
+      .and change {
+        last_value_of_sequence(Ci::ApplicationRecord.connection, ci_cell_local_sequence_name)
       }.by(0)
     end
   end

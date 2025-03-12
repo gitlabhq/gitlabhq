@@ -25,6 +25,8 @@ module Import
           )
         end
 
+        track_internal_event('keep_all_as_placeholder_user', namespace: namespace, user: current_user)
+
         ServiceResponse.success(payload: updated_source_user_count)
       end
 

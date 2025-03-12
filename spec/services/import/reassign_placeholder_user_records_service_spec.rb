@@ -126,7 +126,16 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
     shared_examples 'a successful reassignment' do
       it 'completes the reassignment' do
-        service.execute
+        expect { service.execute }
+          .to trigger_internal_events('complete_placeholder_user_reassignment')
+          .with(
+            namespace: namespace,
+            additional_properties: {
+              label: Gitlab::GlobalAnonymousId.user_id(source_user.placeholder_user),
+              property: Gitlab::GlobalAnonymousId.user_id(source_user.reassign_to_user),
+              import_type: source_user.import_type
+            }
+          )
 
         expect(source_user.reload).to be_completed
       end

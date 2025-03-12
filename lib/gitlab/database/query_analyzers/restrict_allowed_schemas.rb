@@ -18,9 +18,11 @@ module Gitlab
           gitlab_shared: nil,
           gitlab_internal: nil,
 
-          # Pods specific changes
+          # Cells specific changes
           gitlab_main_clusterwide: :gitlab_main,
-          gitlab_main_cell: :gitlab_main
+          gitlab_main_cell: :gitlab_main,
+          gitlab_main_cell_local: :gitlab_main,
+          gitlab_ci_cell_local: :gitlab_ci
         }.freeze
 
         class << self

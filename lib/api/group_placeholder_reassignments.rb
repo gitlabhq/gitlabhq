@@ -2,6 +2,12 @@
 
 module API
   class GroupPlaceholderReassignments < ::API::Base
+    helpers do
+      def csv_upload_params
+        declared_params(include_missing: false)
+      end
+    end
+
     before do
       authenticate!
       not_found! unless Feature.enabled?(:importer_user_mapping_reassignment_csv, current_user)
@@ -31,6 +37,53 @@ module API
           csv_response.payload
         else
           unprocessable_entity!(csv_response.message)
+        end
+      end
+
+      desc 'Workhorse authorization for the reassignment CSV file' do
+        detail 'This feature was introduced in GitLab 17.10'
+      end
+      post ':id/placeholder_reassignments/authorize' do
+        require_gitlab_workhorse!
+
+        status 200
+        content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
+
+        ::Import::PlaceholderReassignmentsUploader.workhorse_authorize(
+          has_length: false,
+          maximum_size: Gitlab::CurrentSettings.max_attachment_size.megabytes
+        )
+      end
+
+      params do
+        requires :file,
+          type: ::API::Validations::Types::WorkhorseFile,
+          desc: 'The CSV file containing the reassignments',
+          documentation: { type: 'file' }
+      end
+      post ':id/placeholder_reassignments' do
+        require_gitlab_workhorse!
+
+        unless csv_upload_params[:file].original_filename.ends_with?('.csv')
+          unprocessable_entity!(s_('UserMapping|You must upload a CSV file with a .csv file extension.'))
+        end
+
+        uploader = UploadService.new(
+          user_group,
+          csv_upload_params[:file],
+          ::Import::PlaceholderReassignmentsUploader
+        ).execute
+
+        result = Import::SourceUsers::BulkReassignFromCsvService.new(
+          current_user,
+          user_group,
+          uploader.upload
+        ).async_execute
+
+        if result.success?
+          { message: s_('UserMapping|The file is being processed and you will receive an email when completed.') }
+        else
+          unprocessable_entity!(result.message)
         end
       end
     end

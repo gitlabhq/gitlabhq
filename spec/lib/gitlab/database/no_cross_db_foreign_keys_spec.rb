@@ -10,7 +10,21 @@ RSpec.describe 'cross-database foreign keys' do
   # The issue corresponding to the loose foreign key conversion
   # should be added as a comment along with the name of the column.
   let!(:allowed_cross_database_foreign_keys) do
-    []
+    [
+      'snippet_repositories.shard_id',                           # Remove after https://gitlab.com/gitlab-org/gitlab/-/issues/515383 is resolved
+      'project_repositories.shard_id',                           # Remove after https://gitlab.com/gitlab-org/gitlab/-/issues/515383 is resolved
+      'group_wiki_repositories.shard_id',                        # Remove after https://gitlab.com/gitlab-org/gitlab/-/issues/515383 is resolved
+      'pool_repositories.shard_id',                              # Remove after https://gitlab.com/gitlab-org/gitlab/-/issues/515383 is resolved
+      'geo_node_namespace_links.namespace_id',
+      'zoekt_indices.zoekt_enabled_namespace_id',
+      'zoekt_repositories.project_id',
+      'zoekt_replicas.zoekt_enabled_namespace_id',
+      'zoekt_replicas.namespace_id',
+      'system_access_microsoft_applications.namespace_id',
+      'ci_cost_settings.runner_id',                              # The fk_rails_6a70651f75 FK needs to be dropped
+      'ci_runner_taggings.tag_id',                               # https://gitlab.com/gitlab-org/gitlab/-/issues/467664
+      'ci_runner_taggings_instance_type.tag_id'                  # https://gitlab.com/gitlab-org/gitlab/-/issues/467664
+    ]
   end
 
   def foreign_keys_for(table_name)
@@ -27,15 +41,23 @@ RSpec.describe 'cross-database foreign keys' do
 
   it 'onlies have allowed list of cross-database foreign keys', :aggregate_failures do
     all_tables = ApplicationRecord.connection.data_sources
+    allowlist = allowed_cross_database_foreign_keys.dup
 
     all_tables.each do |table|
       foreign_keys_for(table).each do |fk|
-        if is_cross_db?(fk)
-          column = "#{fk.from_table}.#{fk.column}"
-          expect(allowed_cross_database_foreign_keys).to include(column), "Found extra cross-database foreign key #{column} referencing #{fk.to_table} with constraint name #{fk.name}. When a foreign key references another database you must use a Loose Foreign Key instead https://docs.gitlab.com/ee/development/database/loose_foreign_keys.html ."
-        end
+        next unless is_cross_db?(fk)
+
+        column = "#{fk.from_table}.#{fk.column}"
+        allowlist.delete(column)
+
+        expect(allowed_cross_database_foreign_keys).to include(column), "Found extra cross-database foreign key #{column} referencing #{fk.to_table} with constraint name #{fk.name}. When a foreign key references another database you must use a Loose Foreign Key instead https://docs.gitlab.com/ee/development/database/loose_foreign_keys.html ."
       end
     end
+
+    formatted_allowlist = allowlist.map { |item| "- #{item}" }.join("\n")
+    expect(allowlist).to be_empty, "The following items must be allowed_cross_database_foreign_keys` list," \
+      "as it no longer appears as cross-database foreign key:\n" \
+      "#{formatted_allowlist}"
   end
 
   it 'only allows existing foreign keys to be present in the exempted list', :aggregate_failures do

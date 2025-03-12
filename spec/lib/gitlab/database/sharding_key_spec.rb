@@ -96,6 +96,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     {
       # instance runners are exempted from sharding, but Ci::Build is prepared to handle missing runners
       "p_ci_builds" => %w[ci_runners],
+      # instance runners are exempted from sharding, but Ci::RunnerManagerBuild is prepared to handle missing
+      # runner managers
+      "p_ci_runner_machine_builds" => %w[ci_runner_machines],
       # instance runners are exempted from sharding, but Ci::Minutes::InstanceRunnerMonthlyUsage is prepared to handle
       # missing runners
       "ci_instance_runner_monthly_usages" => %w[ci_runners],

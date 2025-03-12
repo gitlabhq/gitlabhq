@@ -53,10 +53,19 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
                                         }
     end
 
-    it 'logs placeholder user creation' do
+    it 'logs and tracks placeholder user creation' do
       allow(::Import::Framework::Logger).to receive(:info)
 
-      service.execute
+      expect { service.execute }
+        .to trigger_internal_events('create_placeholder_user')
+        .with(
+          namespace: namespace,
+          additional_properties: {
+            label: satisfy { |value| value == Gitlab::GlobalAnonymousId.user_id(User.last) },
+            property: nil,
+            import_type: source_user.import_type
+          }
+        )
 
       expect(::Import::Framework::Logger).to have_received(:info).with(
         hash_including(

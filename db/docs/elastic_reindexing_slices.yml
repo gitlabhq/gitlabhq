@@ -8,8 +8,7 @@ description: Used to track status of Zero downtime reindexing tasks in Elasticse
   or OpenSearch
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55681
 milestone: '13.12'
-gitlab_schema: gitlab_main_cell
-exempt_from_sharding: true
+gitlab_schema: gitlab_main_cell_local
 notes: Exempted because data is specific to each cell's Elasticsearch cluster, no
   customer data
 table_size: small

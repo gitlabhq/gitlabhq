@@ -1,0 +1,10 @@
+---
+table_name: excluded_merge_requests
+feature_categories:
+- code_review_workflow
+description: Store MR ids for exclusion during migrations
+introduced_by_url:
+milestone: '17.10'
+gitlab_schema: gitlab_main_cell
+exempt_from_sharding: true
+table_size: small

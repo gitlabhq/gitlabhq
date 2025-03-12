@@ -7,7 +7,6 @@ feature_categories:
 description: Contains periodically snapshotted database record counts.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62797
 milestone: '14.0'
-gitlab_schema: gitlab_main_cell
-exempt_from_sharding: true
+gitlab_schema: gitlab_main_cell_local
 notes: Exempted because Cell local table storing instance level-aggregations
 table_size: small

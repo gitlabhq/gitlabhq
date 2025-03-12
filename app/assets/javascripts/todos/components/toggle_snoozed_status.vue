@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
 import Tracking from '~/tracking';
@@ -12,6 +12,9 @@ export default {
   components: {
     GlButton,
     SnoozeTimePicker,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin()],
   props: {

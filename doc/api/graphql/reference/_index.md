@@ -47272,6 +47272,7 @@ Attributes for defining a CI/CD variable.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="compliancerequirementinputcompliancerequirementscontrols"></a>`complianceRequirementsControls` | [`[ComplianceRequirementsControlInput!]`](#compliancerequirementscontrolinput) | Compliance controls of the compliance requirement. |
 | <a id="compliancerequirementinputdescription"></a>`description` | [`String`](#string) | New description for the compliance requirement. |
 | <a id="compliancerequirementinputname"></a>`name` | [`String`](#string) | New name for the compliance requirement. |
 

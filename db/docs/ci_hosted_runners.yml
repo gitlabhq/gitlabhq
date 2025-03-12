@@ -3,10 +3,9 @@ table_name: ci_hosted_runners
 classes:
 - Ci::HostedRunner
 feature_categories:
-- hosted_runners 
+- hosted_runners
 description: Stores dedicated hosted runners, which are instance level runners managed by GitLab
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181447
 milestone: '17.10'
-gitlab_schema: gitlab_ci
+gitlab_schema: gitlab_ci_cell_local
 table_size: small
-exempt_from_sharding: true # dedicated only

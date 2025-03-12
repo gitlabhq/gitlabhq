@@ -134,7 +134,9 @@ module QA
           response = yield
 
           if response.code == HTTP_STATUS_TOO_MANY_REQUESTS
-            wait_seconds = response.headers[:retry_after].to_i
+            response_wait = response.headers[:retry_after].to_i
+            wait_seconds = response_wait <= 0 ? 60 : response_wait
+
             QA::Runtime::Logger.warn("Received 429 - Too many requests. Waiting for #{wait_seconds} seconds.")
 
             sleep wait_seconds

@@ -9,6 +9,7 @@ feature_categories:
 description: Routing table for CI runner managers
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168131
 milestone: '17.6'
-gitlab_schema: gitlab_ci
-exempt_from_sharding: true
+gitlab_schema: gitlab_ci_cell_local
 table_size: small
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182859
+removed_in_milestone: '17.10'

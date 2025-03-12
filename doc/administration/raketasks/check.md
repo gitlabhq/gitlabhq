@@ -311,10 +311,18 @@ To reset broken tokens:
 1. Identify the broken tokens. For example `runners_token`.
 1. To reset broken tokens, run `gitlab:doctor:reset_encrypted_tokens` with `VERBOSE=true MODEL_NAMES=Model1,Model2 TOKEN_NAMES=broken_token1,broken_token2`. For example:
 
-   ```shell
-   VERBOSE=true MODEL_NAMES=Project,Group TOKEN_NAMES=runners_token bundle exec rake gitlab:doctor:reset_encrypted_tokens
-   ```
+   - Linux package installations:
+ 
+     ```shell
+     VERBOSE=true MODEL_NAMES=Project,Group TOKEN_NAMES=runners_token gitlab-rake gitlab:doctor:reset_encrypted_tokens
+     ```
 
+   - Self-compiled installations:
+
+     ```shell
+     bundle exec rake gitlab:doctor:reset_encrypted_tokens RAILS_ENV=production VERBOSE=true MODEL_NAMES=Project,Group TOKEN_NAMES=runners_token
+     ```
+    
    You will see every action this task would try to perform:
 
    ```plain
@@ -338,9 +346,17 @@ To reset broken tokens:
 
 1. If you are confident that this operation resets the correct tokens, disable dry-run mode and run the operation again:
 
-   ```shell
-   DRY_RUN=false VERBOSE=true MODEL_NAMES=Project,Group TOKEN_NAMES=runners_token bundle exec rake gitlab:doctor:reset_encrypted_tokens
-   ```
+   - Linux package installations:
+
+     ```shell
+     DRY_RUN=false VERBOSE=true MODEL_NAMES=Project,Group TOKEN_NAMES=runners_token gitlab-rake gitlab:doctor:reset_encrypted_tokens
+     ```
+
+   - Self-compiled installations:
+
+     ```shell
+     bundle exec rake gitlab:doctor:reset_encrypted_tokens RAILS_ENV=production DRY_RUN=false VERBOSE=true MODEL_NAMES=Project,Group TOKEN_NAMES=runners_token 
+     ```
 
 ## Troubleshooting
 
