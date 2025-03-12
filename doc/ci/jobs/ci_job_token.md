@@ -486,6 +486,25 @@ is more than 100, download the CSV file to view the log.
 
 New authentications to a project can take up to 5 minutes to appear in the authentication log.
 
+## Use legacy format for CI/CD tokens
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/514860) in GitLab 17.10.
+
+{{< /history >}}
+
+Beginning in GitLab 18.0, CI/CD job tokens use the JWT standard by default. All new projects created after February 21, 2025 on GitLab.com or from 17.10 on GitLab Self-Managed use this standard. Existing projects can continue to use the legacy format by configuring the top-level group for their project. This setting is only available until the GitLab 18.3 release.
+
+To use the legacy format for your CI/CD tokens:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. Turn off **Enable JWT format for CI/CD job tokens**.
+
+Your CI/CD tokens now use the legacy format. If you want to use the JWT format again later, you can re-enable this setting.
+
 ## Troubleshooting
 
 CI job token failures are usually shown as responses like `404 Not Found` or similar:

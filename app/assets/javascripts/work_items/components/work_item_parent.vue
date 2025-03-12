@@ -34,6 +34,7 @@ export default {
     workItemsFetchError: s__(
       'WorkItem|Something went wrong while fetching items. Please try again.',
     ),
+    searchPlaceholder: s__('WorkItem|Search or paste URL'),
   },
   components: {
     GlLink,
@@ -314,6 +315,7 @@ export default {
     :update-in-progress="updateInProgress"
     :reset-button-label="$options.i18n.unAssign"
     :toggle-dropdown-text="listboxText"
+    :search-placeholder="$options.i18n.searchPlaceholder"
     data-testid="work-item-parent"
     @dropdownShown="onListboxShown"
     @dropdownHidden="onListboxHide"

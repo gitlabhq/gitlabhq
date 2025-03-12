@@ -2177,7 +2177,7 @@ In other cases:
 
 </div>
 
-In GitLab 18.0, CI/CD job tokens are moving to the JWT standard by default. All new projects will use this standard, but existing projects will continue to use the legacy format. Existing projects can switch to the JWT standard before the GitLab 18.0 release.
+In GitLab 18.0, CI/CD job tokens are moving to the JWT standard by default. All new projects will use this standard, but existing projects will continue to use the legacy format. Existing projects can switch to the JWT standard before the GitLab 18.0 release. If you experience issues, you can still [use the legacy format for your CI/CD tokens](https://docs.gitlab.com/ci/jobs/ci_job_token#use-legacy-format-for-cicd-tokens) until the GitLab 18.3 release.
 
 In GitLab 18.3, all CI/CD job tokens must use the JWT standard. Before this release, you can temporarily revert your tokens back to the legacy job token format.
 

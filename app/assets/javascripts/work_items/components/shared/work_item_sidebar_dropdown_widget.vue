@@ -103,6 +103,11 @@ export default {
       required: false,
       default: undefined,
     },
+    searchPlaceholder: {
+      type: String,
+      required: false,
+      default: __('Search'),
+    },
   },
   data() {
     return {
@@ -229,6 +234,7 @@ export default {
           :searching="loading"
           :header-text="headerText"
           :toggle-text="toggleText"
+          :search-placeholder="searchPlaceholder"
           :no-results-text="$options.i18n.noMatchingResults"
           :items="listItems"
           :selected="localSelectedItem"

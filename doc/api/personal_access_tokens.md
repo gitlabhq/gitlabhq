@@ -242,10 +242,10 @@ curl --request POST \
 
 When you rotate or revoke a token, GitLab automatically tracks the relationship between the old and
 new tokens. Each time a new token is generated, a connection is made to the previous token. These
-connected tokens form a token family. Only the newest token can authenticate requests.
+connected tokens form a token family.
 
-If an old token is ever used to authenticate a request, the request fails and GitLab immediately
-revokes the newest token in the family.
+If you attempt to use the API to rotate an access token that was already revoked, any active tokens from the same
+token family are revoked.
 
 This feature helps secure GitLab if an old token is ever leaked or stolen. By tracking token
 relationships and automatically revoking access when old tokens are used, attackers cannot exploit

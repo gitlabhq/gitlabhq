@@ -7,4 +7,6 @@
 - content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco')
 
+%h1.gl-sr-only= page_title
+
 #js-pipeline-editor{ data: js_pipeline_editor_data(@project) }

@@ -182,7 +182,8 @@ curl --request POST \
 
 Rotates a group access token. This immediately revokes the previous token and creates a new token. Generally, this endpoint rotates a specific group access token by authenticating with a personal access token. You can also use a group access token to rotate itself. For more information, see [Self-rotate](#self-rotate).
 
-If you attempt to use the revoked token later, GitLab immediately revokes the new token. For more information, see [Automatic reuse detection](personal_access_tokens.md#automatic-reuse-detection).
+If you attempt to use this endpoint to rotate a token that was previously revoked, any active tokens from the same
+token family are revoked. For more information, see [Automatic reuse detection](personal_access_tokens.md#automatic-reuse-detection).
 
 Prerequisites:
 

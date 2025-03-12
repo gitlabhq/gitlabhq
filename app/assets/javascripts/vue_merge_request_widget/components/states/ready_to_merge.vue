@@ -578,7 +578,7 @@ export default {
       } catch (error) {
         createAlert({
           message: error.response?.data?.message || __('Failed to rebase. Please try again.'),
-          variant: 'error',
+          variant: 'danger',
         });
       } finally {
         this.isRebaseInProgress = false;
