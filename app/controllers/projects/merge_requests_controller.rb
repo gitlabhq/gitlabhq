@@ -13,7 +13,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include Gitlab::Cache::Helpers
   include MergeRequestsHelper
   include ParseCommitDate
-  include DiffsStreamResource
+  include RapidDiffsResource
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
@@ -692,6 +692,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     flash[:alert] = format(
       _("This merge request has reached the maximum limit of %{limit} versions and cannot be updated further. " \
         "Close this merge request and create a new one instead."), limit: MergeRequest::DIFF_VERSION_LIMIT)
+  end
+
+  def diffs_resource
+    @merge_request.latest_diffs
   end
 end
 

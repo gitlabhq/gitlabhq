@@ -210,17 +210,16 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
 
       context 'when organization has multiple projects' do
         let_it_be(:stale_project) do
-          create(:project, organization: organization, last_activity_at: Date.yesterday)
+          create(:project, :public, organization: organization, last_activity_at: 3.days.ago)
+            .tap { |project| create(:project_member, :developer, user:, project:) }
         end
 
         let_it_be(:recently_updated_project) do
-          create(:project, organization: organization, last_activity_at: Date.current)
+          create(:project, :public, organization: organization, last_activity_at: Date.current)
+            .tap { |project| create(:project_member, :developer, user:, project:) }
         end
 
         before_all do
-          stale_project.add_developer(user)
-          recently_updated_project.add_developer(user)
-
           sign_in(user)
         end
 

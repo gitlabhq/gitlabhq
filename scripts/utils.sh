@@ -546,8 +546,10 @@ function run_with_custom_exit_code() {
   set +e # temporarily disable exit on error to prevent premature exit
 
   # runs command passed in as argument, save standard error and standard output
-  output=$("$@" 2>&1)
+  output=$(set -e; "$@" 2>&1)
   initial_exit_code=$?
+
+  echo "initial_exit_code: $initial_exit_code"
 
   local trace_file="stdout_stderr_log.out"
 

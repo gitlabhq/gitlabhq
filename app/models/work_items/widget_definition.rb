@@ -42,7 +42,7 @@ module WorkItems
       development: 23,
       crm_contacts: 24,
       email_participants: 25,
-      status: 26,
+      status: 26, # EE-only
       linked_resources: 27,
       custom_fields: 28, # EE-only
       error_tracking: 29,

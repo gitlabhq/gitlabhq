@@ -367,7 +367,7 @@ On GitLab Self-Managed, by default the `fallback_behavior` field is available. T
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498624) support for use in pipeline execution policies in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `unblock_rules_using_pipeline_execution_policies`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498624) support for use in pipeline execution policies in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `unblock_rules_using_pipeline_execution_policies`. Enabled by default.
 
 {{< /history >}}
 

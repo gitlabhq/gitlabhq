@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe DiffsStreamResource, type: :controller, feature_category: :source_code_management do
+RSpec.describe RapidDiffsResource, type: :controller, feature_category: :source_code_management do
   subject(:controller) do
     Class.new(ApplicationController) do
-      include DiffsStreamResource
+      include RapidDiffsResource
 
       def call_diffs_stream_resource_url(resource, offset, diff_view)
         diffs_stream_resource_url(resource, offset, diff_view)
@@ -13,6 +13,10 @@ RSpec.describe DiffsStreamResource, type: :controller, feature_category: :source
 
       def call_diffs_stream_url(resource, offset, diff_view)
         diffs_stream_url(resource, offset, diff_view)
+      end
+
+      def call_diffs_resource
+        diffs_resource
       end
     end
   end
@@ -38,6 +42,14 @@ RSpec.describe DiffsStreamResource, type: :controller, feature_category: :source
       it 'returns nil' do
         expect(controller.new.call_diffs_stream_url(commit, offset, diff_view)).to be_nil
       end
+    end
+  end
+
+  describe '#diffs_resource' do
+    it 'raises NotImplementedError' do
+      expect do
+        controller.new.call_diffs_resource
+      end.to raise_error(NotImplementedError)
     end
   end
 end

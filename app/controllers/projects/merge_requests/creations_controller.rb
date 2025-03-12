@@ -5,6 +5,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   include DiffHelper
   include RendersCommits
   include ProductAnalyticsTracking
+  include RapidDiffsResource
 
   skip_before_action :merge_request
   before_action :authorize_create_merge_request_from!
@@ -103,6 +104,10 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   def target_projects
     render json: ProjectSerializer.new.represent(get_target_projects)
+  end
+
+  def diffs_resource
+    @merge_request&.compare&.diffs
   end
 
   private

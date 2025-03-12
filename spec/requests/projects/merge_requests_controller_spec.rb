@@ -286,6 +286,28 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     end
   end
 
+  describe 'GET #diff_files_metadata' do
+    before do
+      project.add_developer(user)
+      login_as(user)
+    end
+
+    let(:send_request) { get diff_files_metadata_project_merge_request_path(project, merge_request) }
+
+    include_examples 'diff files metadata'
+
+    context 'when merge_request_diff does not exist' do
+      let(:merge_request) { create(:merge_request, :skip_diff_creation, author: user) }
+      let(:project) { merge_request.project }
+
+      it 'returns an empty array' do
+        send_request
+
+        expect(json_response['diff_files']).to be_empty
+      end
+    end
+  end
+
   describe 'PUT #update' do
     before do
       project.add_developer(user)

@@ -901,6 +901,12 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  def latest_diffs
+    diff = diffable_merge_ref? ? merge_head_diff : merge_request_diff
+
+    diff.diffs(diff_options)
+  end
+
   def diffs(diff_options = {})
     if compare
       # When saving MR diffs, `expanded` is implicitly added (because we need

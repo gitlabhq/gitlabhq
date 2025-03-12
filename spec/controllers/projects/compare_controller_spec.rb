@@ -771,5 +771,32 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    describe 'Get #diff_files_metadata' do
+      let(:params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          from: from,
+          to: to
+        }
+      end
+
+      let(:send_request) { get :diff_files_metadata, params: params }
+
+      context 'with valid params' do
+        let(:from) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
+        let(:to) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
+
+        include_examples 'diff files metadata'
+      end
+
+      context 'with invalid params' do
+        let(:from) { '0123456789' }
+        let(:to) { '987654321' }
+
+        include_examples 'missing diff files metadata'
+      end
+    end
   end
 end

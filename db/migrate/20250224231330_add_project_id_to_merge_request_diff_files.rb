@@ -16,7 +16,13 @@ class AddProjectIdToMergeRequestDiffFiles < Gitlab::Database::Migration[2.2]
       add_column SOURCE_TABLE, :project_id, :bigint, if_not_exists: true
     end
 
-    add_concurrent_foreign_key SOURCE_TABLE, :projects, column: :project_id, on_delete: :cascade
+    # This caused the incident https://gitlab.com/gitlab-com/gl-infra/production/-/issues/19474
+    # We must first add the index before adding a foreign key. We also explicitly removed it in
+    # db/post_migrate/20250312061803_remove_project_id_fk_from_merge_request_diff_files.rb to clean up any installations
+    # that ran this.
+    #
+    # no-op:
+    # add_concurrent_foreign_key SOURCE_TABLE, :projects, column: :project_id, on_delete: :cascade
   end
 
   def down

@@ -27148,7 +27148,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupcustomfieldsactive"></a>`active` | [`Boolean`](#boolean) | Filter for active fields. If `false`, excludes active fields. If `true`, returns only active fields. |
 | <a id="groupcustomfieldsfieldtype"></a>`fieldType` | [`CustomFieldType`](#customfieldtype) | Filter for selected field type. |
 | <a id="groupcustomfieldssearch"></a>`search` | [`String`](#string) | Search query for custom field name. |
-| <a id="groupcustomfieldsworkitemtypeids"></a>`workItemTypeIds` | [`[WorkItemsTypeID!]`](#workitemstypeid) | Filter custom fields associated to any of the given work item types. If empty, returns custom fields not associated to any work item type. |
+| <a id="groupcustomfieldsworkitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID`](#workitemstypeid) | Filter custom fields associated to the given work item type. |
 
 ##### `Group.customizableDashboardVisualizations`
 
@@ -32174,7 +32174,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespacecustomfieldsactive"></a>`active` | [`Boolean`](#boolean) | Filter for active fields. If `false`, excludes active fields. If `true`, returns only active fields. |
 | <a id="namespacecustomfieldsfieldtype"></a>`fieldType` | [`CustomFieldType`](#customfieldtype) | Filter for selected field type. |
 | <a id="namespacecustomfieldssearch"></a>`search` | [`String`](#string) | Search query for custom field name. |
-| <a id="namespacecustomfieldsworkitemtypeids"></a>`workItemTypeIds` | [`[WorkItemsTypeID!]`](#workitemstypeid) | Filter custom fields associated to any of the given work item types. If empty, returns custom fields not associated to any work item type. |
+| <a id="namespacecustomfieldsworkitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID`](#workitemstypeid) | Filter custom fields associated to the given work item type. |
 
 ##### `Namespace.importSourceUsers`
 

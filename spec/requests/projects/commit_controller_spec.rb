@@ -94,6 +94,34 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
     end
   end
 
+  describe 'GET #diff_files_metadata' do
+    let(:params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: sha
+      }
+    end
+
+    let(:send_request) { get diff_files_metadata_namespace_project_commit_path(params) }
+
+    before do
+      sign_in(user)
+    end
+
+    context 'with valid params' do
+      let(:sha) { '7d3b0f7cff5f37573aea97cebfd5692ea1689924' }
+
+      include_examples 'diff files metadata'
+    end
+
+    context 'with invalid params' do
+      let(:sha) { '0123456789' }
+
+      include_examples 'missing diff files metadata'
+    end
+  end
+
   describe 'GET #diff_files' do
     let(:master_pickable_sha) { '7d3b0f7cff5f37573aea97cebfd5692ea1689924' }
     let(:format) { :html }

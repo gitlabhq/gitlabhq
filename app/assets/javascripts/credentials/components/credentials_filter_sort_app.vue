@@ -56,6 +56,7 @@ export default {
 <template>
   <div class="gl-flex gl-flex-col gl-gap-3 md:gl-flex-row">
     <gl-filtered-search
+      class="gl-min-w-0 gl-grow"
       :value="tokens"
       :placeholder="s__('CredentialsInventory|Search or filter credentials...')"
       :available-tokens="availableTokens"
@@ -66,7 +67,7 @@ export default {
     <gl-sorting
       v-if="!hasKey"
       block
-      dropdown-class="gl-w-full"
+      dropdown-class="gl-w-full !gl-flex"
       :is-ascending="sorting.isAsc"
       :sort-by="sorting.value"
       :sort-options="$options.SORT_OPTIONS"

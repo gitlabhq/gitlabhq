@@ -805,10 +805,6 @@ module Types
       connection: true,
       description: "List of the project's Pages Deployments."
 
-    field :allowed_statuses, Types::WorkItems::Widgets::StatusType.connection_type,
-      null: true, description: 'Allowed statuses for the project.',
-      experiment: { milestone: '17.8' }, resolver: Resolvers::WorkItems::Widgets::StatusResolver
-
     field :pages_force_https, GraphQL::Types::Boolean,
       null: false,
       description: "Project's Pages site redirects unsecured connections to HTTPS."

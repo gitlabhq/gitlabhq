@@ -47,10 +47,15 @@ docs-lint markdown:
   needs: []
   script:
     - source ./scripts/utils.sh
-    - yarn_install_script
-    - install_gitlab_gem
-    - scripts/lint-doc.sh
-    - scripts/lint/check_mermaid.mjs
+    - |
+      function docs_lint_markdown() {
+        yarn_install_script
+        install_gitlab_gem
+        scripts/lint-doc.sh
+        scripts/lint/check_mermaid.mjs
+      }
+
+      run_with_custom_exit_code docs_lint_markdown
 
 docs code_quality:
   extends:
@@ -97,8 +102,10 @@ docs-lint links:
     - .docs-markdown-lint-image
   stage: lint
   needs: []
+  before_script:
+    - source scripts/utils.sh
   script:
-    - lychee --offline --no-progress --include-fragments doc
+    - run_with_custom_exit_code lychee --offline --no-progress --include-fragments doc
 
 docs-lint deprecations-and-removals:
   variables:
@@ -111,8 +118,13 @@ docs-lint deprecations-and-removals:
   stage: lint
   needs: []
   script:
-    - bundle exec rake gitlab:docs:check_deprecations
-    - bundle exec rake gitlab:docs:check_windows
+    - |
+      function docs_lint_deprecations_and_removals() {
+        bundle exec rake gitlab:docs:check_deprecations
+        bundle exec rake gitlab:docs:check_windows
+      }
+
+      run_with_custom_exit_code docs_lint_deprecations_and_removals
 
 docs-lint redirects:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
@@ -121,5 +133,7 @@ docs-lint redirects:
     - .default-retry
     - .docs:rules:redirect-check
   needs: []
+  before_script:
+    - source scripts/utils.sh
   script:
-    - ./scripts/lint-docs-redirects.rb
+    - run_with_custom_exit_code ./scripts/lint-docs-redirects.rb
