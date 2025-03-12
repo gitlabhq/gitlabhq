@@ -12,7 +12,11 @@ import { ToolbarExtension } from '~/editor/extensions/source_editor_toolbar_ext'
 import SourceEditor from '~/editor/source_editor';
 import axios from '~/lib/utils/axios_utils';
 import { TEST_HOST } from 'helpers/test_constants';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_OK,
+  HTTP_STATUS_PAYLOAD_TOO_LARGE,
+} from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import Api from '~/api';
@@ -255,6 +259,38 @@ describe('Blob Editing', () => {
           captureError: true,
         }),
       );
+    });
+  });
+
+  describe('handles error during preview', () => {
+    const endpoint = `${TEST_HOST}/preview`;
+
+    const setupSpec = async () => {
+      await initEditor();
+      const findPreviewLink = () => document.querySelector('a[href="#preview"]');
+      findPreviewLink().dataset.previewUrl = endpoint;
+      findPreviewLink().click();
+      await waitForPromises();
+    };
+
+    it('creates an alert for file size limit exceeded', async () => {
+      mock.onPost(endpoint).reply(HTTP_STATUS_PAYLOAD_TOO_LARGE);
+      await setupSpec();
+
+      expect(createAlert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'The blob is too large to render',
+        }),
+      );
+    });
+
+    it('creates a generic alert for other errors', async () => {
+      mock.onPost(endpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+      await setupSpec();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'An error occurred previewing the blob',
+      });
     });
   });
 });

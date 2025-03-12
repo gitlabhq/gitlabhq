@@ -3051,7 +3051,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/uploads_transfer_spec.rb'
     - 'spec/lib/gitlab/url_blockers/domain_allowlist_entry_spec.rb'
     - 'spec/lib/gitlab/url_builder_spec.rb'
-    - 'spec/lib/gitlab/url_sanitizer_spec.rb'
     - 'spec/lib/gitlab/usage/metric_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/aggregates/sources/postgres_hll_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/instrumentations/active_user_count_metric_spec.rb'

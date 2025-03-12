@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`merging a project builds out separate operations 1`] = `
+[
+  {
+    "alias": "",
+    "body": "query GetStuff2 {
+  stuff
+  ...Frag1
+  ...Frag2
+}
+
+fragment Frag1 on Query {
+  moreStuff
+}
+
+fragment Frag2 on Query {
+  ...Frag3
+}
+
+fragment Frag3 on Query {
+  evenMoreStuff
+}",
+    "name": "GetStuff2",
+  },
+  {
+    "alias": "",
+    "body": "query GetStuff {
+  ...Frag1
+}
+
+fragment Frag1 on Query {
+  moreStuff
+}",
+    "name": "GetStuff",
+  },
+]
+`;
+
+exports[`merging a project with --add-typename builds out operation with __typename fields 1`] = `
+[
+  {
+    "alias": "",
+    "body": "query GetStuff3 {
+  stuff {
+    withStuffInside
+    __typename
+  }
+  ...Frag2
+  ...Frag4
+}
+
+fragment Frag2 on Query {
+  ...Frag3
+}
+
+fragment Frag3 on Query {
+  evenMoreStuff
+}
+
+fragment Frag4 on Query {
+  evenMoreStuff {
+    stuffInside
+    __typename
+  }
+}",
+    "name": "GetStuff3",
+  },
+]
+`;

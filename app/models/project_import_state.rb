@@ -115,7 +115,7 @@ class ProjectImportState < ApplicationRecord
 
   def mark_as_failed(error_message)
     original_errors = errors.dup
-    sanitized_message = Gitlab::UrlSanitizer.sanitize(error_message)
+    sanitized_message = sanitized_failure_message(error_message)
 
     fail_op
 
@@ -146,6 +146,12 @@ class ProjectImportState < ApplicationRecord
   def started?
     # import? does SQL work so only run it if it looks like there's an import running
     status == 'started' && project.import?
+  end
+
+  private
+
+  def sanitized_failure_message(error_message)
+    Gitlab::UrlSanitizer.sanitize(error_message)
   end
 end
 

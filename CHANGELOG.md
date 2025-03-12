@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.7.7 (2025-03-11)
+
+### Security (8 changes)
+
+- [Vendor GraphQL gem](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1c7e70de86d4bdd9395c9bcda9f816a608d78a3d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4839))
+- [Ruby-SAML updates](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8ac8f914d289f182de00be49d10f15e7db7bd7a3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4830))
+- [Prevent custom role to activate group members](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1c01e25b256b30a8edca3024909c9b1df56adb59) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4835))
+- [approval_rules name is unbounded](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1db850c51fcd8ceab50bced39165464c0943a45b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4836))
+- [Limit preview size](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0ca0f0bad8d2d470b10491fa672e3134cb0d5acf) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4823))
+- [Maintainer can inject shell code in Google integration configurations that...](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f22e6beb143b983e2bd76c08beff215816a52079) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4826))
+- [Filter out internal notes if the recipient do not have access](https://gitlab.com/gitlab-org/security/gitlab/-/commit/17181360562c5f5b9c4907eb8f8d3aad12b7748b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4813))
+- [Mask unencoded userinfo in project mirror errors](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a7a51b42149a2db1c39a948604c2296c61b1ddb9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4778))
+
 ## 17.7.6 (2025-02-26)
 
 ### Fixed (1 change)

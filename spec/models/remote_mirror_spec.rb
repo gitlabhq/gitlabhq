@@ -188,8 +188,8 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
   end
 
   describe '#mark_as_failed!' do
-    let(:remote_mirror) { create(:remote_mirror) }
-    let(:error_message) { 'http://user:pass@test.com/root/repoC.git/' }
+    let(:remote_mirror) { create(:remote_mirror, credentials: { user: 'user @ # !', password: 'password @ # !' }) }
+    let(:error_message) { "http://#{remote_mirror.user}:#{remote_mirror.password}@test.com/root/repoC.git/" }
     let(:sanitized_error_message) { 'http://*****:*****@test.com/root/repoC.git/' }
 
     subject do
