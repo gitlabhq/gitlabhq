@@ -155,7 +155,14 @@ export const updateNewWorkItemCache = (input, cache) => {
       'merge_request_to_resolve_discussions_of',
     );
 
-    if (isQueryDataValid && autosaveKey && !isWorkItemToResolveDiscussion) {
+    const isNewIssueForVulnerability = getParameterByName('vulnerability_id');
+
+    if (
+      isQueryDataValid &&
+      autosaveKey &&
+      !isWorkItemToResolveDiscussion &&
+      !isNewIssueForVulnerability
+    ) {
       updateDraft(autosaveKey, JSON.stringify(newData));
     }
   } catch (e) {

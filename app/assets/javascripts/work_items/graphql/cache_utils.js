@@ -335,6 +335,8 @@ export const setNewWorkItemCache = async (
   const availableWidgets = widgetDefinitions?.flatMap((i) => i.type) || [];
   const currentUserId = convertToGraphQLId(TYPENAME_USER, gon?.current_user_id);
   const baseURL = getBaseURL();
+  const isValidWorkItemTitle = workItemTitle.trim().length > 0;
+  const isValidWorkItemDescription = workItemDescription.trim().length > 0;
 
   const widgets = [];
 
@@ -349,7 +351,7 @@ export const setNewWorkItemCache = async (
 
   widgets.push({
     type: WIDGET_TYPE_DESCRIPTION,
-    description: workItemDescription || draftDescription,
+    description: isValidWorkItemDescription ? workItemDescription : draftDescription,
     descriptionHtml: '',
     lastEditedAt: null,
     lastEditedBy: null,
@@ -559,7 +561,7 @@ export const setNewWorkItemCache = async (
           id: newWorkItemId(workItemType),
           iid: NEW_WORK_ITEM_IID,
           archived: false,
-          title: workItemTitle || draftTitle,
+          title: isValidWorkItemTitle ? workItemTitle : draftTitle,
           state: 'OPEN',
           description: null,
           confidential: false,

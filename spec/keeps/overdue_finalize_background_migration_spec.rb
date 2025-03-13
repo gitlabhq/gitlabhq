@@ -124,7 +124,7 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
       let(:gitlab_schema) { 'gitlab_ci' }
 
       it 'returns the database name' do
-        expect(database_name).to eq('ci')
+        expect(database_name).to eq(database_exists?(:ci) ? 'ci' : 'main')
       end
     end
   end

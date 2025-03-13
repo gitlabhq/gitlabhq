@@ -48,6 +48,7 @@ the consent of one of the technical writers.
 
 To add a topic to the global navigation:
 
+1. Check that the topic is published on <https://docs.gitlab.com>.
 1. In the [`navigation.yaml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/navigation.yaml)
    file, add the item.
 1. Assign the MR to a technical writer for review and merge.
@@ -221,5 +222,6 @@ its styles, keep them grouped for better development among the team.
 
 ## Testing
 
-We run various checks on `navigation.yaml` in [`check-navigation.sh`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/main/scripts/check-navigation.sh),
+We run various checks on `navigation.yaml` in
+[`check-navigation.sh`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/scripts/check-navigation.sh),
 which runs as a pipeline job when the YAML file is updated.

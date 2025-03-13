@@ -3316,8 +3316,8 @@ class Project < ApplicationRecord
   end
 
   def work_item_status_feature_available?
-    (group&.work_item_status_feature_available? || Feature.enabled?(:work_item_status, type: :wip)) &&
-      licensed_feature_available?(:work_item_custom_status)
+    (group&.work_item_status_feature_available? || Feature.enabled?(:work_item_status_feature_flag, type: :wip)) &&
+      licensed_feature_available?(:work_item_status)
   end
 
   def glql_integration_feature_flag_enabled?

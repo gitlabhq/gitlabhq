@@ -11,6 +11,7 @@ export const TODO_TARGET_TYPE_ALERT = 'ALERT';
 export const TODO_TARGET_TYPE_EPIC = 'EPIC';
 export const TODO_TARGET_TYPE_SSH_KEY = 'KEY';
 export const TODO_TARGET_TYPE_PIPELINE = 'PIPELINE';
+export const TODO_TARGET_TYPE_WIKI_PAGE = 'WIKIPAGEMETA';
 
 export const TODO_ACTION_TYPE_ASSIGNED = 'assigned';
 export const TODO_ACTION_TYPE_MENTIONED = 'mentioned';

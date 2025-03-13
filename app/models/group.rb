@@ -1005,8 +1005,8 @@ class Group < Namespace
   end
 
   def work_item_status_feature_available?
-    feature_flag_enabled_for_self_or_ancestor?(:work_item_status, type: :wip) &&
-      licensed_feature_available?(:work_item_custom_status)
+    feature_flag_enabled_for_self_or_ancestor?(:work_item_status_feature_flag, type: :wip) &&
+      licensed_feature_available?(:work_item_status)
   end
 
   def continue_indented_text_feature_flag_enabled?
