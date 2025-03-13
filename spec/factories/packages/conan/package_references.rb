@@ -9,7 +9,7 @@ FactoryBot.define do
       {
         settings: { os: 'Linux', arch: 'x86_64' },
         requires: ['libA/1.0@user/testing'],
-        options: { fPIC: true },
+        options: { fPIC: 'True' },
         otherProperties: 'some_value'
       }
     end

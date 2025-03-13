@@ -213,5 +213,68 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
         expect { response }.not_to change { Packages::Conan::PackageReference.count }
       end
     end
+
+    context 'queueing the conan package file processing worker' do
+      before do
+        allow(::Packages::Conan::ProcessPackageFileWorker).to receive(:perform_async)
+      end
+
+      let(:params) do
+        {
+          file_name: file_name,
+          'file.md5': '12345',
+          'file.sha1': '54321',
+          'file.size': '128',
+          'file.type': 'txt',
+          recipe_revision: '0',
+          package_revision: '0',
+          conan_package_reference: '123456789',
+          conan_file_type: :package_file
+        }.with_indifferent_access
+      end
+
+      context 'when the filename is conaninfo.txt' do
+        let(:file_name) { 'conaninfo.txt' }
+
+        let(:file) do
+          fixture_file_upload('spec/fixtures/packages/conan/package_files/conaninfo.txt', 'text/plain')
+        end
+
+        context 'when the feature flag is enabled' do
+          before do
+            stub_feature_flags(parse_conan_metadata_on_upload: true)
+          end
+
+          it 'queues the Conan package file processing worker' do
+            expect(response).to be_success
+            expect(::Packages::Conan::ProcessPackageFileWorker).to have_received(:perform_async)
+              .with(response[:package_file].id)
+          end
+        end
+
+        context 'when the feature flag is disabled' do
+          before do
+            stub_feature_flags(parse_conan_metadata_on_upload: false)
+          end
+
+          it 'does not queue the Conan package file processing worker' do
+            expect(response).to be_success
+            expect(::Packages::Conan::ProcessPackageFileWorker).not_to have_received(:perform_async)
+          end
+        end
+      end
+
+      context 'when the filename is not conaninfo.txt' do
+        include_context 'with temp file setup'
+
+        let(:file_name) { 'not_conaninfo.txt' }
+
+        it 'does not queue the Conan package file processing worker' do
+          expect(::Packages::Conan::ProcessPackageFileWorker).not_to receive(:perform_async)
+
+          response
+        end
+      end
+    end
   end
 end

@@ -65,6 +65,8 @@ module WebHooks
       validates :interpolated_url, public_url: true, if: ->(hook) { hook.url_variables? && hook.errors.empty? }
       validates :custom_headers, json_schema: { filename: 'web_hooks_custom_headers' }
       validates :custom_webhook_template, length: { maximum: 4096 }
+      validates :name, length: { maximum: 255 }
+      validates :description, length: { maximum: 2048 }
 
       enum :branch_filter_strategy, {
         wildcard: 0,

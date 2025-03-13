@@ -22,7 +22,7 @@ alerts integrations by navigating to **Settings > Monitor**
 in your project's sidebar menu, and expanding the **Alerts** section. The list displays
 the integration name, type, and status (enabled or disabled):
 
-![Current Integrations](img/integrations_list_v13_5.png)
+![Table showing configured alerts details](img/integrations_list_v13_5.png)
 
 ## Configuration
 

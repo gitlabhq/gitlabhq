@@ -84,11 +84,16 @@ FactoryBot.define do
           end
         end
 
-        file_fixture { 'spec/fixtures/packages/conan/package_files/conaninfo.txt' }
+        transient do
+          conaninfo_fixture { 'conaninfo.txt' }
+          fixture_path { "spec/fixtures/packages/conan/package_files/#{conaninfo_fixture}" }
+        end
+
+        file_fixture { fixture_path }
         file_name { 'conaninfo.txt' }
         file_sha1 { 'be93151dc23ac34a82752444556fe79b32c7a1ad' }
         file_md5 { '12345abcde' }
-        size { 400.kilobytes }
+        size { File.size(fixture_path) }
       end
 
       trait(:conan_package) do

@@ -34,6 +34,10 @@ module Packages
           package_file.save!
         end
 
+        if package_file.file_name == ::Packages::Conan::FileMetadatum::CONANINFO_TXT && Feature.enabled?(:parse_conan_metadata_on_upload, Project.actor_from_id(package_file.project_id))
+          ::Packages::Conan::ProcessPackageFileWorker.perform_async(package_file.id)
+        end
+
         ServiceResponse.success(payload: { package_file: package_file })
       rescue ActiveRecord::RecordInvalid => e
         ServiceResponse.error(message: e.message, reason: :invalid_package_file)

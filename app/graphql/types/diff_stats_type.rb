@@ -9,9 +9,9 @@ module Types
     description 'Changes to a single file'
 
     field :additions, GraphQL::Types::Int, null: false,
-      description: 'Number of lines added to this file.'
+      description: 'Number of lines added to the file.'
     field :deletions, GraphQL::Types::Int, null: false,
-      description: 'Number of lines deleted from this file.'
+      description: 'Number of lines deleted from the file.'
     field :path, GraphQL::Types::String, null: false,
       description: 'File path, relative to repository root.'
 

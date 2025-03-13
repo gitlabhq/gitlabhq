@@ -118,12 +118,12 @@ RSpec.describe Packages::Conan::PackageReference, type: :model, feature_category
       end
 
       context 'with invalid conan info' do
-        let(:info) { { invalid_field: 'some_value' } }
+        let(:info) { { settings: 'incorrect_value' } }
 
         it 'is invalid', :aggregate_failures do
           expect(package_reference).not_to be_valid
           expect(package_reference.errors[:info]).to include(
-            'object at root is missing required properties: settings, requires, options')
+            'value at `/settings` is not an object')
         end
       end
 

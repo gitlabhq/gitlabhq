@@ -2134,6 +2134,16 @@
   :tags:
   - :cronjob_child
   :queue_namespace: :package_cleanup
+- :name: package_repositories:packages_conan_process_package_file
+  :worker_name: Packages::Conan::ProcessPackageFileWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :package_repositories
 - :name: package_repositories:packages_debian_generate_distribution
   :worker_name: Packages::Debian::GenerateDistributionWorker
   :feature_category: :package_registry

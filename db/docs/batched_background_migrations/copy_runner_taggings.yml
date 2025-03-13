@@ -4,5 +4,5 @@ description: Copy taggings data for the ci_runners table into the new sharded ci
 feature_category: runner
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175578
 milestone: '17.8'
-queued_migration_version: 20241219100359
+queued_migration_version: 20250103092422
 finalized_by: 20250114135714

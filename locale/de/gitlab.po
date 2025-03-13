@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: de\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-12 12:33\n"
+"PO-Revision-Date: 2025-03-13 12:57\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} bis %{end}"
@@ -196,8 +196,8 @@ msgstr[1] "%d Zeichen über dem Limit"
 
 msgid "%d character over limit."
 msgid_plural "%d characters over limit."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d Zeichen über dem Limit."
+msgstr[1] "%d Zeichen über dem Limit."
 
 msgid "%d character remaining"
 msgid_plural "%d characters remaining"
@@ -1551,15 +1551,6 @@ msgstr "%{total} verbleibendes Ticketgewicht"
 
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
 msgstr "%{total} Warnungen gefunden: erste %{warningsDisplayed} werden angezeigt"
-
-msgid "%{type} '%{name}' has been successfully restored."
-msgstr "%{type} „%{name}“ wurde erfolgreich wiederhergestellt"
-
-msgid "%{type} '%{name}' is being deleted."
-msgstr "%{type} „%{name}“ wird gelöscht."
-
-msgid "%{type} '%{name}' will be deleted on %{date}."
-msgstr "%{type} „%{name}“ wird am %{date} gelöscht."
 
 msgid "%{type} must be a %{help_link}"
 msgstr "%{type} muss ein %{help_link} sein"
@@ -3805,7 +3796,10 @@ msgstr ""
 msgid "AdherenceReport|Learn more about the changes in our %{linkStart}documentation%{linkEnd}."
 msgstr ""
 
-msgid "AdherenceReport|We've updated the Adherence Report with new features to enhance your compliance workflow."
+msgid "AdherenceReport|Show old report"
+msgstr ""
+
+msgid "AdherenceReport|We've updated the adherence report with new features to enhance your compliance workflow."
 msgstr ""
 
 msgid "Adjust how frequently the GitLab UI polls for updates."
@@ -4185,6 +4179,9 @@ msgstr ""
 
 msgid "AdminSelfHostedModels|Model uses an API token"
 msgstr "Modell verwendet ein API-Token"
+
+msgid "AdminSelfHostedModels|More features are available in beta. You can %{linkStart}turn on AI-powered beta features%{linkEnd}."
+msgstr ""
 
 msgid "AdminSelfHostedModels|More models are available in beta. You can %{linkStart}turn on self-hosted model beta features%{linkEnd}."
 msgstr ""
@@ -5450,7 +5447,7 @@ msgid "AiPowered|Assign seats"
 msgstr "Plätze zuweisen"
 
 msgid "AiPowered|Beta Self-hosted models"
-msgstr ""
+msgstr "Beta – Selbstgehostete Modelle"
 
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr ""
@@ -5558,7 +5555,7 @@ msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
 msgstr ""
 
 msgid "AiPowered|Use beta self-hosted models features"
-msgstr ""
+msgstr "Betafunktionen für selbstgehostete Modelle verwenden"
 
 msgid "AiPowered|View GitLab Duo settings"
 msgstr "Einstellungen"
@@ -9128,7 +9125,7 @@ msgid "Batch size"
 msgstr "Batchgröße"
 
 msgid "Batch size of namespaces for initial indexing"
-msgstr ""
+msgstr "Batchgröße von Namensräumen für die anfängliche Indexierung"
 
 msgid "Batched Job|Background migrations"
 msgstr "Hintergrundmigrationen"
@@ -10882,11 +10879,14 @@ msgstr "%{count} Platzhalter-Benutzer(inne)n, die Benutzer(inne)n zugeordnet si
 msgid "BulkImport|%{count} placeholder users not matched to users."
 msgstr "%{count} Platzhalter-Benutzer(inne)n, die nicht mit Benutzer(inne)n übereinstimmen."
 
+msgid "BulkImport|%{count} placeholder users skipped."
+msgstr ""
+
 msgid "BulkImport|%{feature} (require v%{version})"
 msgstr "%{feature} (benötigt v%{version})"
 
 msgid "BulkImport|A CSV file containing a list of placeholder reassignment errors has been attached to this email."
-msgstr ""
+msgstr "Dieser E-Mail wurde eine CSV-Datei mit einer Liste der Fehler bei der Neuzuweisung von Platzhaltern angehängt."
 
 msgid "BulkImport|All items assigned to placeholder users were reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file."
 msgstr "Alle Elemente, die Platzhalter-Benutzer(inne)n zugewiesen wurden, wurden gemäß der hochgeladenen CSV-Datei erneut Benutzer(inne)n in %{strong_open}%{group}%{strong_close} zugewiesen."
@@ -11296,7 +11296,7 @@ msgid "CICD|An error occurred while adding the authentication log entries. Pleas
 msgstr ""
 
 msgid "CICD|An error occurred while removing the auto-added log entries. Please try again."
-msgstr ""
+msgstr "Beim Entfernen der automatisch hinzugefügten Protokolleinträge ist ein Fehler aufgetreten. Bitte versuche es erneut."
 
 msgid "CICD|Are you sure you want to remove %{namespace} from the job token allowlist?"
 msgstr "Möchtest du wirklich %{namespace} aus der Job-Token-Zulassungsliste entfernen?"
@@ -11314,7 +11314,7 @@ msgid "CICD|Authentication log entries were successfully added to the allowlist.
 msgstr ""
 
 msgid "CICD|Authentication log entries were successfully removed from the allowlist."
-msgstr ""
+msgstr "Die Authentifizierungsprotokolleinträge wurden erfolgreich aus der Zulassungsliste entfernt."
 
 msgid "CICD|Authorized groups and projects"
 msgstr "Autorisierte Gruppen und Projekte"
@@ -11419,16 +11419,16 @@ msgid "CICD|Prevent CI/CD job tokens from this project from being used to access
 msgstr "Verhindere, dass CI/CD-Job-Token aus diesem Projekt für den Zugriff auf andere Projekte verwendet werden, es sei denn, das andere Projekt wird der Zulassungsliste hinzugefügt. Diese Funktion zu deaktivieren stellt ein Sicherheitsrisiko dar, da nicht autorisierte Projekte versuchen könnten, ein aktives Token abzurufen und auf die API zuzugreifen. %{linkStart}Mehr erfahren%{linkEnd}."
 
 msgid "CICD|Remove all auto-added allowlist entries"
-msgstr ""
+msgstr "Alle automatisch hinzugefügten Zulassungslisteneinträge entfernen"
 
 msgid "CICD|Remove group or project"
 msgstr "Gruppe oder Projekt entfernen"
 
 msgid "CICD|Removing auto-added allowlist entries. Please wait while the action completes."
-msgstr ""
+msgstr "Automatisch hinzugefügte Zulassungslisteneinträge werden entfernt. Bitte warte, bis der Vorgang abgeschlossen ist."
 
 msgid "CICD|Removing these entries could cause authentication failures or disrupt pipelines."
-msgstr ""
+msgstr "Das Entfernen dieser Einträge kann zu Authentifizierungsfehlern oder Störungen der Pipelines führen."
 
 msgid "CICD|Select the groups and projects authorized to use a CI/CD job token to authenticate requests to this project. %{linkStart}Learn more%{linkEnd}."
 msgstr "Wähle die Gruppen und Projekte aus, die autorisiert sind, ein CI/CD-Job-Token zur Authentifizierung von Anfragen an dieses Projekt zu verwenden. %{linkStart}Mehr erfahren%{linkEnd}."
@@ -11461,7 +11461,7 @@ msgid "CICD|There was a problem fetching authorization logs count."
 msgstr ""
 
 msgid "CICD|This action removes all groups and projects that were auto-added from the authentication log."
-msgstr ""
+msgstr "Diese Aktion entfernt alle Gruppen und Projekte, die automatisch aus dem Authentifizierungsprotokoll hinzugefügt wurden."
 
 msgid "CICD|Unprotected branches will not have access to the cache from protected branches."
 msgstr "Ungeschützte Branches haben keinen Zugriff auf den Cache aus geschützten Branches."
@@ -12594,7 +12594,7 @@ msgid "CiVariables|Pipeline variable access role successfully updated."
 msgstr ""
 
 msgid "CiVariables|Pipeline variable minimum override role successfully updated."
-msgstr ""
+msgstr "Niedrigste Überschreibungsrolle für die Verwendung von Pipeline-Variablen erfolgreich aktualisiert."
 
 msgid "CiVariables|Pipeline variables cannot be used."
 msgstr ""
@@ -13665,10 +13665,10 @@ msgid "ClusterIntegration|Advanced options on this Kubernetes cluster’s integr
 msgstr "Erweiterte Optionen für die Integration dieses Kubernetes-Clusters"
 
 msgid "ClusterIntegration|Agent name"
-msgstr ""
+msgstr "Agentenname"
 
 msgid "ClusterIntegration|Agent setup failed"
-msgstr ""
+msgstr "Agenteneinrichtung fehlgeschlagen"
 
 msgid "ClusterIntegration|Allow GitLab to manage namespaces and service accounts for this cluster."
 msgstr "Erlaube GitLab, Namensräume und Dienstkonten für diesen Cluster zu verwalten."
@@ -13749,7 +13749,7 @@ msgid "ClusterIntegration|Create a Kubernetes cluster"
 msgstr "Kubernetes-Cluster erstellen"
 
 msgid "ClusterIntegration|Create agent and migrate"
-msgstr ""
+msgstr "Agent erstellen und migrieren"
 
 msgid "ClusterIntegration|Deploy each environment to its own namespace. Otherwise, environments within a project share a project-wide namespace. Note that anyone who can trigger a deployment of a namespace can read its secrets. If modified, existing environments will use their current namespaces until the cluster cache is cleared."
 msgstr "Stelle jede Umgebung in einem eigenem Namensraum bereit. Andernfalls teilen sich Umgebungen innerhalb eines Projekts einen projektweiten Namensraum. Beachte, dass jeder, der die Bereitstellung eines Namensraums auslösen kann, dessen Geheimnisse lesen kann. Falls geändert, verwenden bestehende Umgebungen ihre aktuellen Namensräume, bis der Cluster-Cache geleert wird."
@@ -13767,7 +13767,7 @@ msgid "ClusterIntegration|Enable this setting if using role-based access control
 msgstr "Aktiviere diese Einstellung, wenn rollenbasierte Zugriffskontrolle (RBAC) verwendet werden soll."
 
 msgid "ClusterIntegration|Enter a unique name for your new GitLab Agent. This name will be used to identify the agent in your project."
-msgstr ""
+msgstr "Gib einen eindeutigen Namen für deinen neuen GitLab-Agenten ein. Dieser Name wird zur Identifizierung des Agenten in deinem Projekt verwendet."
 
 msgid "ClusterIntegration|Enter details about your cluster. %{linkStart}How do I use a certificate to connect to my cluster?%{linkEnd}"
 msgstr "Trage Details zu deinem Cluster ein. %{linkStart}Wie verwendet man ein Zertifikat, um sich mit seinem Cluster zu verbinden?%{linkEnd}"
@@ -13812,13 +13812,13 @@ msgid "ClusterIntegration|HTTP Error"
 msgstr "HTTP Fehler"
 
 msgid "ClusterIntegration|How do I migrate to the GitLab agent?"
-msgstr ""
+msgstr "Wie führe ich eine Umstellung auf den GitLab-Agenten durch?"
 
 msgid "ClusterIntegration|If you do not wish to delete all associated GitLab resources, you can simply remove the integration."
 msgstr "Wenn du nicht alle verknüpften GitLab Ressourcen löschen möchtest, kannst du die Integration einfach entfernen."
 
 msgid "ClusterIntegration|Installing agent in progress."
-msgstr ""
+msgstr "Agenteninstallation läuft."
 
 msgid "ClusterIntegration|Instance cluster"
 msgstr "Instanz-Cluster"
@@ -13830,7 +13830,7 @@ msgid "ClusterIntegration|Integration enabled"
 msgstr "Integration aktiviert"
 
 msgid "ClusterIntegration|Invalid configuration project"
-msgstr ""
+msgstr "Ungültiges Konfigurationsprojekt"
 
 msgid "ClusterIntegration|Kubernetes cluster is being created..."
 msgstr "Kubernetes Cluster wird erstellt..."
@@ -13851,7 +13851,7 @@ msgid "ClusterIntegration|Learn more about instance Kubernetes clusters"
 msgstr "Mehr über Instanz-Kubernetes-Cluster erfahren"
 
 msgid "ClusterIntegration|Learn more about migrating to GitLab Agent"
-msgstr ""
+msgstr "Erfahre mehr über die Umstellung auf den GitLab-Agenten"
 
 msgid "ClusterIntegration|Make sure your API endpoint is correct"
 msgstr "Stelle sicher, dass dein API-Endpunkt korrekt ist"
@@ -13863,7 +13863,7 @@ msgid "ClusterIntegration|Migrate"
 msgstr ""
 
 msgid "ClusterIntegration|Migrate to GitLab Agent for Kubernetes"
-msgstr ""
+msgstr "Umstellung auf den GitLab-Agenten für Kubernetes"
 
 msgid "ClusterIntegration|Migrating cluster - failed: \"%{error}\""
 msgstr ""
@@ -13875,7 +13875,7 @@ msgid "ClusterIntegration|Namespace per environment"
 msgstr "Namensraum nach Umgebung"
 
 msgid "ClusterIntegration|New agent name"
-msgstr ""
+msgstr "Neuer Agentenname"
 
 msgid "ClusterIntegration|Node calculations use the Kubernetes Metrics API. Make sure your cluster has metrics installed"
 msgstr "Knotenberechnungen verwenden die Kubernetes Metrics API. Stelle sicher, dass dein Cluster Metriken installiert hat"
@@ -13884,7 +13884,7 @@ msgid "ClusterIntegration|Project cluster"
 msgstr "Projektcluster"
 
 msgid "ClusterIntegration|Project name"
-msgstr ""
+msgstr "Projektname"
 
 msgid "ClusterIntegration|Project namespace (optional, unique)"
 msgstr "Projekt-Namensraum (optional, einzigartig)"
@@ -13923,7 +13923,7 @@ msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
 msgstr "Betrachte und ändere die Details deines Kubernetes-Clusters"
 
 msgid "ClusterIntegration|Select a project for the GitLab Agent."
-msgstr ""
+msgstr "Wähle eine Projekt für den GitLab-Agenten aus."
 
 msgid "ClusterIntegration|Service Token"
 msgstr "Service Token"
@@ -13944,10 +13944,10 @@ msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review 
 msgstr "Eine Domäne anzugeben, ermöglicht die automatische Nutzung von Auto-Review-Anwendungen und Bereitstellungsphasen für %{linkStart}Auto DevOps%{linkEnd}. Die Domäne sollte über eine DNS-Wildcard verfügen, die mit der Domäne übereinstimmt. "
 
 msgid "ClusterIntegration|Step 1. Connect the agent"
-msgstr ""
+msgstr "Schritt 1: Agent verbinden"
 
 msgid "ClusterIntegration|The %{agent_docs_link_start}GitLab Agent for Kubernetes %{agent_docs_link_end} offers improved security, reliability, and functionality. Follow the steps below to create a new agent and migrate your existing certificate-based integration. The process is automated, but you still need to %{install_docs_link_start}install the agent%{install_docs_link_end} in your cluster."
-msgstr ""
+msgstr "Der %{agent_docs_link_start}GitLab-Agent für Kubernetes %{agent_docs_link_end} bietet verbesserte Sicherheit, Zuverlässigkeit und Funktionalität. Befolge die folgenden Schritte, um einen neuen Agenten zu erstellen und deine bestehende zertifikatsbasierte Integration umzustellen. Der Vorgang ist automatisiert. Du musst den Agenten jedoch trotzdem %{install_docs_link_start}in deinem Cluster installieren%{install_docs_link_end}."
 
 msgid "ClusterIntegration|The Kubernetes certificate used to authenticate to the cluster."
 msgstr "Das Kubernetes Zertifikat, mit dem sich beim Cluster authentifiziert wird."
@@ -13956,10 +13956,10 @@ msgid "ClusterIntegration|The URL used to access the Kubernetes API."
 msgstr "Die URL, die für den Zugriff auf das Kubernetes-API verwendet wird."
 
 msgid "ClusterIntegration|The agent connection is set up."
-msgstr ""
+msgstr "Die Agentenverbindung ist eingerichtet."
 
 msgid "ClusterIntegration|The agent was not installed in the cluster."
-msgstr ""
+msgstr "Der Agent war nicht im Cluster installiert."
 
 msgid "ClusterIntegration|The certificate-based Kubernetes integration is deprecated and will be removed in the future. You should %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}. For more information, see the %{deprecationLinkStart}deprecation epic%{deprecationLinkEnd}, or contact GitLab support."
 msgstr "Die zertifikatbasierte Kubernetes-Integration ist veraltet und wird in Zukunft entfernt. Du solltest %{linkStart}zum GitLab-Agent für Kubernetes migrieren%{linkEnd}. Weitere Informationen findest du im %{deprecationLinkStart}Deprecation-Epic%{deprecationLinkEnd} oder wende dich an den GitLab-Support."
@@ -15308,6 +15308,9 @@ msgstr "Dir wird das Compliance-Center für %{project} angezeigt. Um Information
 
 msgid "ComplianceReport|and %{count} more"
 msgstr "und %{count} mehr"
+
+msgid "ComplianceStandardsAdherenceV2|New Report Placeholder"
+msgstr ""
 
 msgid "ComplianceStandardsAdherence| Standards adherence export"
 msgstr "Export des Berichts zur Einhaltung von Normen"
@@ -16880,6 +16883,9 @@ msgstr "Dateiinhalte kopieren"
 
 msgid "Copy file path"
 msgstr "Dateipfad kopieren"
+
+msgid "Copy file permalink"
+msgstr ""
 
 msgid "Copy image URL"
 msgstr "Bild-URL kopieren"
@@ -20053,7 +20059,7 @@ msgid "Dependencies|Unknown path"
 msgstr "Unbekannter Pfad"
 
 msgid "Dependencies|View dependency paths"
-msgstr ""
+msgstr "Abhängigkeitspfade anzeigen"
 
 msgid "Dependencies|Vulnerabilities"
 msgstr "Sicherheitslücken"
@@ -20074,7 +20080,7 @@ msgid "Dependency list"
 msgstr "Liste der Abhängigkeiten"
 
 msgid "DependencyListExport|License Identifiers"
-msgstr ""
+msgstr "Lizenzkennungen"
 
 msgid "DependencyListExport|Location"
 msgstr ""
@@ -20086,16 +20092,16 @@ msgid "DependencyListExport|Packager"
 msgstr "Packer"
 
 msgid "DependencyListExport|Project"
-msgstr ""
+msgstr "Projekt"
 
 msgid "DependencyListExport|Version"
 msgstr ""
 
 msgid "DependencyListExport|Vulnerabilities Detected"
-msgstr ""
+msgstr "Sicherheitslücken erkannt"
 
 msgid "DependencyListExport|Vulnerability IDs"
-msgstr ""
+msgstr "Sicherheitslücken-IDs"
 
 msgid "DependencyProxy|%{docLinkStart}See the documentation%{docLinkEnd} for other ways to store Docker images in Dependency Proxy cache."
 msgstr "%{docLinkStart}In der Dokumentation%{docLinkEnd} findest du weitere Möglichkeiten, Docker-Images im Abhängigkeits-Proxy-Cache zu speichern."
@@ -24793,6 +24799,9 @@ msgstr "Fehler beim Laden"
 msgid "Failed to load Roadmap"
 msgstr "Roadmap konnte nicht geladen werden"
 
+msgid "Failed to load additional diffs information. Try reloading the page."
+msgstr ""
+
 msgid "Failed to load assignees. Please try again."
 msgstr "Die Beauftragten konnten nicht geladen werden. Bitte versuche es erneut."
 
@@ -24947,7 +24956,7 @@ msgid "Failed to update branch!"
 msgstr "Aktualisieren des Branches fehlgeschlagen!"
 
 msgid "Failed to update compliance control status. Error: %{error_message}"
-msgstr ""
+msgstr "Aktualisierung der Kontrolle zum Konformitätsstatus fehlgeschlagen. Fehler: %{error_message}"
 
 msgid "Failed to update compliance requirement"
 msgstr "Aktualisierung der Konformitätsanforderung fehlgeschlagen"
@@ -25389,7 +25398,7 @@ msgid "Filter by test cases that are currently open."
 msgstr "Filtere nach Testfällen, die derzeit offen sind."
 
 msgid "Filter list for %{title}"
-msgstr ""
+msgstr "Liste filtern nach %{title}"
 
 msgid "Filter parameters are not valid. Make sure that the end date is after the start date."
 msgstr "Filterparameter sind nicht gültig. Stelle sicher, dass das Enddatum nach dem Startdatum liegt."
@@ -25887,6 +25896,12 @@ msgstr "Die Funktion `labels` kann nur maximal 10 Parameter verwenden."
 
 msgid "GCP region configured"
 msgstr "GCP-Region konfiguriert"
+
+msgid "GLQL list"
+msgstr ""
+
+msgid "GLQL table"
+msgstr ""
 
 msgid "GLQL view timed out. Add more filters to reduce the number of results."
 msgstr ""
@@ -28135,6 +28150,9 @@ msgstr "Gruppe „%{group_name}“ wird gelöscht."
 msgid "Group '%{group_name}' was successfully updated."
 msgstr "Gruppe '%{group_name}' wurde erfolgreich aktualisiert."
 
+msgid "Group '%{group_name}' will be deleted on %{date}."
+msgstr ""
+
 msgid "Group Git LFS status:"
 msgstr "Gruppen-Git-LFS-Status:"
 
@@ -28693,6 +28711,9 @@ msgstr "Übersichts-Hintergrundaggregation für das Dashboard für Wertschöpfun
 msgid "GroupSettings|Enable sending email notifications for this group and all its subgroups and projects"
 msgstr "Senden von E-Mail-Benachrichtigungen für diese Gruppe sowie alle ihre Untergruppen und Projekte aktivieren"
 
+msgid "GroupSettings|Enforce DPoP authentication for manage API endpoints for group"
+msgstr ""
+
 msgid "GroupSettings|Enforce SSH Certificates"
 msgstr "SSH-Zertifikate erzwingen"
 
@@ -28725,6 +28746,9 @@ msgstr "Gruppenpfad darf nicht länger als %{length} Zeichen sein."
 
 msgid "GroupSettings|How do I manage group SSH certificates?"
 msgstr "Wie verwalte ich Gruppen-SSH-Zertifikate?"
+
+msgid "GroupSettings|If enabled, DPoP authentication will be enforced for manage API endpoints for this group."
+msgstr ""
 
 msgid "GroupSettings|If enabled, enterprise user accounts will not be able to use personal access tokens. %{learn_more_link}."
 msgstr ""
@@ -43839,6 +43863,9 @@ msgstr "Bitte gib einen Namen für die Kommentarvorlage ein."
 msgid "Please enter a name for the custom emoji."
 msgstr "Bitte gib einen Namen für das benutzerdefinierte Emoji ein."
 
+msgid "Please enter a name with less than %{number} characters."
+msgstr ""
+
 msgid "Please enter a non-negative number"
 msgstr "Bitte gib eine positive Zahl ein"
 
@@ -48544,7 +48571,7 @@ msgid "Remove email participants"
 msgstr "E-Mail-Teilnehmer(innen) entfernen"
 
 msgid "Remove entries"
-msgstr ""
+msgstr "Einträge löschen"
 
 msgid "Remove favicon"
 msgstr "Favicon entfernen"
@@ -52562,6 +52589,24 @@ msgstr "Beispiel: glpat-1234567890"
 msgid "SecurityExclusions|ex: spec/**/*.rb"
 msgstr "Beispiel: spec/**/*.rb"
 
+msgid "SecurityInventory|CS"
+msgstr ""
+
+msgid "SecurityInventory|DAST"
+msgstr ""
+
+msgid "SecurityInventory|DS"
+msgstr ""
+
+msgid "SecurityInventory|IaC"
+msgstr ""
+
+msgid "SecurityInventory|SAST"
+msgstr ""
+
+msgid "SecurityInventory|SD"
+msgstr ""
+
 msgid "SecurityInventory|Security inventory"
 msgstr ""
 
@@ -52892,6 +52937,9 @@ msgstr "Richtlinienprojekt bearbeiten"
 
 msgid "SecurityOrchestration|Edit scan execution policy"
 msgstr "Richtlinie zur Scanausführung bearbeiten"
+
+msgid "SecurityOrchestration|Edit vulnerability management policy"
+msgstr ""
 
 msgid "SecurityOrchestration|Empty policy name"
 msgstr "Leerer Richtlinienname"
@@ -53270,7 +53318,7 @@ msgstr "Der Scan wählt automatisch einen Runner zur Ausführung aus, da keine T
 msgid "SecurityOrchestration|Schedule a new"
 msgstr ""
 
-msgid "SecurityOrchestration|Schedule a pipeline on a %{cadenceSelector} cadence for branches"
+msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
 msgstr ""
 
 msgid "SecurityOrchestration|Scope"
@@ -53630,6 +53678,9 @@ msgstr "sind falsch positiv"
 msgid "SecurityOrchestration|are not false positives"
 msgstr "sind nicht falsch positiv"
 
+msgid "SecurityOrchestration|at the following times: %{cadenceSelector}, start at %{start}, run for: %{duration}, and timezone is %{timezoneSelector}"
+msgstr ""
+
 msgid "SecurityOrchestration|branch"
 msgstr "Branch"
 
@@ -53796,7 +53847,7 @@ msgid "SecurityReports|All projects"
 msgstr "Alle Projekte"
 
 msgid "SecurityReports|All report types"
-msgstr ""
+msgstr "Alle Berichtstypen"
 
 msgid "SecurityReports|All scanners"
 msgstr ""
@@ -54093,7 +54144,7 @@ msgid "SecurityReports|Select dismissal reason"
 msgstr "Ablehnungsgrund auswählen"
 
 msgid "SecurityReports|Select project"
-msgstr ""
+msgstr "Projekt auswählen"
 
 msgid "SecurityReports|Select severity"
 msgstr ""
@@ -54497,7 +54548,7 @@ msgid "Selected commits"
 msgstr "Ausgewählte Commits"
 
 msgid "Selected database"
-msgstr ""
+msgstr "Ausgewählte Datenbank"
 
 msgid "Selected for all items."
 msgstr "Für alle Elemente ausgewählt."
@@ -58529,6 +58580,9 @@ msgstr "Das Authentifizierungstoken."
 msgid "The base URL to the Harbor instance linked to the GitLab project. For example, `https://demo.goharbor.io`."
 msgstr "Die Basis-URL zur Harbor-Instanz, die mit dem GitLab-Projekt verknüpft ist. Zum Beispiel „https://demo.goharbor.io“."
 
+msgid "The blob is too large to render"
+msgstr ""
+
 msgid "The branch for this project has no active pipeline configuration."
 msgstr "Der Branch für dieses Projekt enthält keine aktive Pipeline-Konfiguration."
 
@@ -59296,7 +59350,7 @@ msgid "There was a problem fetching the keep latest artifacts setting."
 msgstr "Es gab ein Problem beim Abrufen der Einstellung „Neueste Artefakte beibehalten“."
 
 msgid "There was a problem fetching the latest minimum override role."
-msgstr ""
+msgstr "Beim Abrufen des neuesten niedrigsten Überschreibungsrolle ist ein Fehler aufgetreten."
 
 msgid "There was a problem fetching the pipeline summary."
 msgstr "Beim Abrufen der Pipeline-Zusammenfassung ist ein Fehler aufgetreten."
@@ -59317,7 +59371,7 @@ msgid "There was a problem updating the keep latest artifacts setting."
 msgstr "Es gab ein Problem beim Aktualisieren der Einstellung „Neueste Artefakte beibehalten“."
 
 msgid "There was a problem updating the minimum override setting."
-msgstr ""
+msgstr "Beim Aktualisieren der Einstellung zur niedrigsten Überschreibung ist ein Problem aufgetreten."
 
 msgid "There was an error fetching configuration for charts"
 msgstr "Beim Abrufen der Konfiguration für Diagramme ist ein Fehler aufgetreten"
@@ -60980,7 +61034,7 @@ msgid "Todos|For one hour"
 msgstr "Für eine Stunde"
 
 msgid "Todos|Getting started with GitLab Duo"
-msgstr ""
+msgstr "Erste Schritte mit GitLab Duo"
 
 msgid "Todos|Give yourself a pat on the back!"
 msgstr "Klopf dir selbst auf die Schulter!"
@@ -61125,8 +61179,8 @@ msgstr "Ausgesetzt"
 
 msgid "Todos|Snoozed 1 to-do"
 msgid_plural "Todos|Snoozed %d to-dos"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 ausgesetzte Aufgabe"
+msgstr[1] "%d ausgesetzte Aufgaben"
 
 msgid "Todos|Snoozed until %{date}"
 msgstr "Ausgesetzt bis zum %{date}"
@@ -61197,6 +61251,9 @@ msgstr "Wenn Aufgabenelemente erledigt sind, werden diese hier angezeigt."
 msgid "Todos|When to-do items are snoozed, they will appear here."
 msgstr "Wenn Aufgabenelemente ausgesetzt sind, werden diese hier angezeigt."
 
+msgid "Todos|Wiki page"
+msgstr ""
+
 msgid "Todos|Work item"
 msgstr "Arbeitsaufgabe"
 
@@ -61204,10 +61261,10 @@ msgid "Todos|You"
 msgstr "Du"
 
 msgid "Todos|You now have access to AI-powered features. Boost your productivity with Code Suggestions and GitLab Duo Chat"
-msgstr ""
+msgstr "Du hast jetzt Zugriff auf KI-gestützte Funktionen. Steigere deine Produktivität mit Codevorschlägen und GitLab Duo Chat."
 
 msgid "Todos|You now have access to AI-powered features. Boost your productivity with Code Suggestions, GitLab Duo Chat, Vulnerability Explanation, and more"
-msgstr ""
+msgstr "Du hast jetzt Zugriff auf KI-gestützte Funktionen. Steigere deine Produktivität mit Codevorschlägen, GitLab Duo Chat, Erklärungen von Sicherheitslücken und mehr."
 
 msgid "Todos|Your SSH key has expired"
 msgstr ""
@@ -62256,7 +62313,7 @@ msgid "Unauthenticated web rate limit period in seconds"
 msgstr "Limitzeitraum für nicht authentifizierte Webrate in Sekunden"
 
 msgid "Unauthorized"
-msgstr ""
+msgstr "Nicht autorisiert"
 
 msgid "Unauthorized to access the cluster agent in this project"
 msgstr "Du hast keinen Zugriff auf den Cluster-Agent in diesem Projekt."
@@ -65084,7 +65141,7 @@ msgid "Vulnerability|The CVSS (Common Vulnerability Scoring System) is a standar
 msgstr ""
 
 msgid "Vulnerability|The Exploit Prediction Scoring System model produces a percentage value between 0 and 100 that represents the likelihood that a vulnerability will be exploited in the next 30 days."
-msgstr ""
+msgstr "Das Modell des Exploit Prediction Scoring System erstellt einen Prozentwert zwischen 0 und 100, der darstellt, wie wahrscheinlich es ist, dass eine Sicherheitslücke in den nächsten 30 Tagen ausgenutzt werden wird."
 
 msgid "Vulnerability|The scanner determined this vulnerability to be a false positive. Verify the evaluation before changing its status. %{linkStart}Learn more about false positive detection.%{linkEnd}"
 msgstr "Der Scanner hat festgestellt, dass es sich bei dieser Sicherheitslücke um ein falsches Positivum handelt. Überprüfe die Bewertung, bevor du ihren Status änderst. %{linkStart}Erfahre mehr über die Erkennung von falschen Positiven.%{linkEnd}"
@@ -65118,6 +65175,9 @@ msgstr ""
 
 msgid "Vulnerability|View training"
 msgstr "Schulung anzeigen"
+
+msgid "Vulnerability|Vulnerability identifiers"
+msgstr ""
 
 msgid "Vulnerability|Vulnerable class:"
 msgstr "Gefährdete Klasse:"
@@ -70938,10 +70998,10 @@ msgid "v%{version} published %{timeAgo}"
 msgstr "v%{version} veröffentlicht %{timeAgo}"
 
 msgid "value \"%{sort}\" is not available on %{namespace}"
-msgstr ""
+msgstr "Wert „%{sort}“ ist in %{namespace} nicht verfügbar"
 
 msgid "value \"%{sort}\" is not available on %{namespace} for work items type %{wit}"
-msgstr ""
+msgstr "Wert „%{sort}“ ist in %{namespace} für den Arbeitsaufgabentyp %{wit} nicht verfügbar"
 
 msgid "value at %{data_pointer} should use only one of: %{requirements}"
 msgstr "Der Wert bei %{data_pointer} sollte nur eines der folgenden verwenden: %{requirements}"

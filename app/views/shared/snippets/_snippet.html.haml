@@ -26,12 +26,11 @@
             = _('created %{timeAgo} by %{author}').html_safe % { timeAgo: created_at, author: author }
 
     .sm:gl-flex.gl-flex-col.gl-items-end{ data: { testid: 'snippet-file-count-content', qa_snippet_files: snippet.statistics&.file_count } }
-      .gl-flex.gl-gap-4.gl-items-center
+      .gl-flex.gl-gap-3.gl-items-center
         - if notes_count > 0
-          %span.has-tooltip{ title: _('Comments') }
-            = sprite_icon('comments')
+          = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'comments', button_options: { class: 'has-tooltip !gl-bg-transparent !gl-p-0', title: _('Comments'), aria: { label: _('Comments') } }) do
             = notes_count
         = snippet_file_count(snippet)
-        %span.has-tooltip{ title: visibility_level_label(snippet.visibility_level), data: { testid: 'snippet-visibility-content', qa_snippet_visibility: visibility_level_label(snippet.visibility_level) } }
+        = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, button_options: { class: 'has-tooltip !gl-bg-transparent !gl-p-0', title: _(visibility_level_label(snippet.visibility_level)), aria: { label: _(snippet.visibility_level) }, data: { testid: 'snippet-visibility-content', qa_snippet_visibility: visibility_level_label(snippet.visibility_level) } }) do
           = visibility_level_icon(snippet.visibility_level)
       .gl-whitespace-nowrap.gl-text-sm.gl-text-subtle= _('updated %{timeAgo}').html_safe % { timeAgo: time_ago_with_tooltip(snippet.updated_at, placement: 'bottom') }

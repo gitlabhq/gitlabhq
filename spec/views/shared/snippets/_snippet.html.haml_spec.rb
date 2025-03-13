@@ -20,8 +20,8 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
 
       render 'shared/snippets/snippet', snippet: snippet
 
-      expect(rendered).to have_selector("span.file_count", text: '3')
-      expect(rendered).to have_selector("span.file_count[title=\"3 files\"]")
+      expect(rendered).to have_selector(".file_count", text: '3')
+      expect(rendered).to have_selector(".file_count[title=\"3 files\"]")
     end
 
     it 'renders correct file count and tooltip when file_count is 1' do
@@ -29,8 +29,8 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
 
       render 'shared/snippets/snippet', snippet: snippet
 
-      expect(rendered).to have_selector("span.file_count", text: '1')
-      expect(rendered).to have_selector("span.file_count[title=\"1 file\"]")
+      expect(rendered).to have_selector(".file_count", text: '1')
+      expect(rendered).to have_selector(".file_count[title=\"1 file\"]")
     end
 
     it 'does not render file count when file count is 0' do
@@ -38,7 +38,7 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
 
       render 'shared/snippets/snippet', snippet: snippet
 
-      expect(rendered).not_to have_selector('span.file_count')
+      expect(rendered).not_to have_selector('.file_count')
     end
   end
 
@@ -48,7 +48,7 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
 
       render 'shared/snippets/snippet', snippet: snippet
 
-      expect(rendered).not_to have_selector('span.file_count')
+      expect(rendered).not_to have_selector('.file_count')
     end
   end
 
@@ -63,7 +63,7 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
       end
 
       it 'does not render tooltip' do
-        expect(rendered).not_to have_selector("span.has-tooltip[title='This snippet is hidden because its author has been banned']")
+        expect(rendered).not_to have_selector(".has-tooltip[title='This snippet is hidden because its author has been banned']")
       end
     end
 
@@ -80,7 +80,7 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
       end
 
       it 'renders tooltip' do
-        expect(rendered).to have_selector("span.has-tooltip[title='This snippet is hidden because its author has been banned']")
+        expect(rendered).to have_selector(".has-tooltip[title='This snippet is hidden because its author has been banned']")
       end
     end
   end

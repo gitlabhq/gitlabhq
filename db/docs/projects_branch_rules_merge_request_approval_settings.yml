@@ -1,0 +1,13 @@
+---
+table_name: projects_branch_rules_merge_request_approval_settings
+classes:
+  - Projects::BranchRules::MergeRequestApprovalSetting
+feature_categories:
+  - source_code_management
+description: Contains merge request approval settings for a protected branch
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183679
+milestone: '17.10'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+table_size: small

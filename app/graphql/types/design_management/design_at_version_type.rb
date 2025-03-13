@@ -18,7 +18,7 @@ module Types
       field :version,
         Types::DesignManagement::VersionType,
         null: false,
-        description: 'Version this design-at-versions is pinned to.'
+        description: 'Version the design-at-versions is pinned to.'
 
       field :design,
         Types::DesignManagement::DesignType,

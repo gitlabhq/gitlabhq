@@ -177,3 +177,9 @@ export const PACKAGE_DELETE_HELP_PAGE_PATH = helpPagePath(
 
 export const DOCKER_MEDIA_TYPE = 'application/vnd.docker.distribution.manifest.list.v2+json';
 export const OCI_MEDIA_TYPE = 'application/vnd.oci.image.index.v1+json';
+
+export const MinimumAccessLevelText = {
+  ADMIN: s__('AdminUsers|Administrator'),
+  MAINTAINER: __('Maintainer'),
+  OWNER: __('Owner'),
+};

@@ -48029,6 +48029,9 @@ msgstr ""
 msgid "Rate the review"
 msgstr ""
 
+msgid "Rate this response %{separator} %{codeStart}%{botUser}%{codeEnd} in reply for more questions"
+msgstr ""
+
 msgid "Raw blob request rate limit per minute"
 msgstr ""
 

@@ -1,0 +1,9 @@
+---
+name: use_primary_and_secondary_stores_for_sessions
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/data-access/durability/team/-/issues/28
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175735
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/509337
+milestone: '17.9'
+group: group::durability
+type: gitlab_com_derisk
+default_enabled: false

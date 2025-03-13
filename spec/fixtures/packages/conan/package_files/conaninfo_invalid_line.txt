@@ -1,0 +1,7 @@
+[settings]
+    arch=x86_64
+    test=
+    another_test=123
+
+[recipe_hash]
+    abc123def456

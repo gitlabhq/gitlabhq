@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-12 12:32\n"
+"PO-Revision-Date: 2025-03-13 12:56\n"
 
 msgid " %{start} to %{end}"
 msgstr "从%{start}到%{end}"
@@ -1401,15 +1401,6 @@ msgstr "%{total}剩余议题权重"
 
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
 msgstr "找到%{total}个警告: 显示前 %{warningsDisplayed}"
-
-msgid "%{type} '%{name}' has been successfully restored."
-msgstr ""
-
-msgid "%{type} '%{name}' is being deleted."
-msgstr "正在删除的 %{type} '%{name}'。"
-
-msgid "%{type} '%{name}' will be deleted on %{date}."
-msgstr "将于 %{date} 删除的 %{type} '%{name}'。"
 
 msgid "%{type} must be a %{help_link}"
 msgstr "%{type} 必须是一个%{help_link}"
@@ -3628,7 +3619,10 @@ msgstr ""
 msgid "AdherenceReport|Learn more about the changes in our %{linkStart}documentation%{linkEnd}."
 msgstr ""
 
-msgid "AdherenceReport|We've updated the Adherence Report with new features to enhance your compliance workflow."
+msgid "AdherenceReport|Show old report"
+msgstr ""
+
+msgid "AdherenceReport|We've updated the adherence report with new features to enhance your compliance workflow."
 msgstr ""
 
 msgid "Adjust how frequently the GitLab UI polls for updates."
@@ -4008,6 +4002,9 @@ msgstr "模型标识符必须以 &quot;%{bedrockIdentifierPrefix}&quot; 开头"
 
 msgid "AdminSelfHostedModels|Model uses an API token"
 msgstr "模型使用 API 令牌"
+
+msgid "AdminSelfHostedModels|More features are available in beta. You can %{linkStart}turn on AI-powered beta features%{linkEnd}."
+msgstr ""
 
 msgid "AdminSelfHostedModels|More models are available in beta. You can %{linkStart}turn on self-hosted model beta features%{linkEnd}."
 msgstr "更多模型可在 Beta 中使用。您可以 %{linkStart}启用自托管模型 Beta 功能%{linkEnd}。"
@@ -10672,6 +10669,9 @@ msgstr "%{count} 个占位用户匹配到用户。"
 msgid "BulkImport|%{count} placeholder users not matched to users."
 msgstr "%{count} 个占位用户未匹配到用户。"
 
+msgid "BulkImport|%{count} placeholder users skipped."
+msgstr ""
+
 msgid "BulkImport|%{feature} (require v%{version})"
 msgstr "%{feature}（需要 v%{version}）"
 
@@ -15092,6 +15092,9 @@ msgstr "您可以查看 %{project} 的合规中心。要查看所有项目的相
 msgid "ComplianceReport|and %{count} more"
 msgstr "和 %{count} 更多"
 
+msgid "ComplianceStandardsAdherenceV2|New Report Placeholder"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence| Standards adherence export"
 msgstr "遵守标准导出"
 
@@ -16660,6 +16663,9 @@ msgstr "复制文件内容"
 
 msgid "Copy file path"
 msgstr "复制文件路径"
+
+msgid "Copy file permalink"
+msgstr ""
 
 msgid "Copy image URL"
 msgstr "复制图像 URL"
@@ -24538,6 +24544,9 @@ msgstr "加载失败"
 msgid "Failed to load Roadmap"
 msgstr "加载路线图失败"
 
+msgid "Failed to load additional diffs information. Try reloading the page."
+msgstr ""
+
 msgid "Failed to load assignees. Please try again."
 msgstr "加载指派人失败。请重试。"
 
@@ -25629,6 +25638,12 @@ msgstr "函数 `labels` 只能接受最多 10 个参数。"
 
 msgid "GCP region configured"
 msgstr "已配置 GCP 区域"
+
+msgid "GLQL list"
+msgstr ""
+
+msgid "GLQL table"
+msgstr ""
 
 msgid "GLQL view timed out. Add more filters to reduce the number of results."
 msgstr ""
@@ -27871,6 +27886,9 @@ msgstr "群组 '%{group_name}' 正在删除。"
 msgid "Group '%{group_name}' was successfully updated."
 msgstr "群组 %{group_name} 已成功更新。"
 
+msgid "Group '%{group_name}' will be deleted on %{date}."
+msgstr ""
+
 msgid "Group Git LFS status:"
 msgstr "群组Git LFS状态："
 
@@ -28429,6 +28447,9 @@ msgstr "启用价值流仪表盘的后台聚合"
 msgid "GroupSettings|Enable sending email notifications for this group and all its subgroups and projects"
 msgstr "为这个群组以及其下所有项目和子群组启用电子邮件通知。"
 
+msgid "GroupSettings|Enforce DPoP authentication for manage API endpoints for group"
+msgstr ""
+
 msgid "GroupSettings|Enforce SSH Certificates"
 msgstr "启用 SSH 证书"
 
@@ -28461,6 +28482,9 @@ msgstr "群组路径不能超过%{length}个字符。"
 
 msgid "GroupSettings|How do I manage group SSH certificates?"
 msgstr "如何管理群组SSH证书？"
+
+msgid "GroupSettings|If enabled, DPoP authentication will be enforced for manage API endpoints for this group."
+msgstr ""
 
 msgid "GroupSettings|If enabled, enterprise user accounts will not be able to use personal access tokens. %{learn_more_link}."
 msgstr ""
@@ -43526,6 +43550,9 @@ msgstr "请输入评论模板的名称。"
 msgid "Please enter a name for the custom emoji."
 msgstr "请输入自定义表情符号的名称。"
 
+msgid "Please enter a name with less than %{number} characters."
+msgstr ""
+
 msgid "Please enter a non-negative number"
 msgstr "请输入一个非负数"
 
@@ -52206,6 +52233,24 @@ msgstr "示例：glpat-1234567890"
 msgid "SecurityExclusions|ex: spec/**/*.rb"
 msgstr "示例：spec/**/*.rb"
 
+msgid "SecurityInventory|CS"
+msgstr ""
+
+msgid "SecurityInventory|DAST"
+msgstr ""
+
+msgid "SecurityInventory|DS"
+msgstr ""
+
+msgid "SecurityInventory|IaC"
+msgstr ""
+
+msgid "SecurityInventory|SAST"
+msgstr ""
+
+msgid "SecurityInventory|SD"
+msgstr ""
+
 msgid "SecurityInventory|Security inventory"
 msgstr ""
 
@@ -52534,6 +52579,9 @@ msgstr "编辑策略项目"
 
 msgid "SecurityOrchestration|Edit scan execution policy"
 msgstr "编辑扫描执行策略"
+
+msgid "SecurityOrchestration|Edit vulnerability management policy"
+msgstr ""
 
 msgid "SecurityOrchestration|Empty policy name"
 msgstr "空策略名称"
@@ -52911,7 +52959,7 @@ msgstr "扫描将自动选择要运行的 runner，因为 runner 上不存在任
 msgid "SecurityOrchestration|Schedule a new"
 msgstr ""
 
-msgid "SecurityOrchestration|Schedule a pipeline on a %{cadenceSelector} cadence for branches"
+msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
 msgstr ""
 
 msgid "SecurityOrchestration|Scope"
@@ -53270,6 +53318,9 @@ msgstr "误报"
 
 msgid "SecurityOrchestration|are not false positives"
 msgstr "不是误报"
+
+msgid "SecurityOrchestration|at the following times: %{cadenceSelector}, start at %{start}, run for: %{duration}, and timezone is %{timezoneSelector}"
+msgstr ""
 
 msgid "SecurityOrchestration|branch"
 msgstr "分支"
@@ -58161,6 +58212,9 @@ msgstr "身份验证令牌。"
 msgid "The base URL to the Harbor instance linked to the GitLab project. For example, `https://demo.goharbor.io`."
 msgstr "链接到极狐GitLab 项目的 Harbor 实例的基本 URL。例如，“https://demo.goharbor.io”。"
 
+msgid "The blob is too large to render"
+msgstr ""
+
 msgid "The branch for this project has no active pipeline configuration."
 msgstr "此项目的分支没有活跃的流水线配置。"
 
@@ -60793,6 +60847,9 @@ msgstr ""
 
 msgid "Todos|When to-do items are snoozed, they will appear here."
 msgstr "当待办事项被 snoozed 时，它们将出现在这里。"
+
+msgid "Todos|Wiki page"
+msgstr ""
 
 msgid "Todos|Work item"
 msgstr "工作项"
@@ -64701,6 +64758,9 @@ msgstr ""
 
 msgid "Vulnerability|View training"
 msgstr "查看培训"
+
+msgid "Vulnerability|Vulnerability identifiers"
+msgstr ""
 
 msgid "Vulnerability|Vulnerable class:"
 msgstr "漏洞类别："

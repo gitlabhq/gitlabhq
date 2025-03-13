@@ -177,7 +177,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
           subject.perform!
 
           expect(pipeline.config_source).to eq 'repository_source'
-          expect(pipeline.pipeline_config.content).to eq(config_content_result)
+          expect(pipeline.pipeline_config).to be_nil
           expect(command.config_content).to eq(config_content_result)
           expect(command.pipeline_config.internal_include_prepended?).to eq(true)
           expect(command.pipeline_config.inputs_for_pipeline_creation).to eq({})
@@ -244,7 +244,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
           subject.perform!
 
           expect(pipeline.config_source).to eq 'parameter_source'
-          expect(pipeline.pipeline_config.content).to eq(content)
+          expect(pipeline.pipeline_config).to be_nil
           expect(command.config_content).to eq(content)
           expect(command.pipeline_config.internal_include_prepended?).to eq(false)
           expect(command.pipeline_config.inputs_for_pipeline_creation).to eq(inputs)

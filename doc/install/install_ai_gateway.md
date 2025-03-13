@@ -52,12 +52,12 @@ Using the `:latest` tag is **not recommended** as it can cause incompatibility i
    ```
 
    Replace `<ai-gateway-tag>` with the version that matches your GitLab instance. For example, if your GitLab version is `v17.9.0`, use `self-hosted-v17.9.0-ee`.
-   From the container host, accessing `http://localhost:5052/docs` should open the AI gateway API documentation.
+   From the container host, accessing `http://localhost:5052` should return `{"error":"No authorization header presented"}`.
 
-1. Ensure that port `5052` is forwarded to the container from the host and configure the AI gateway URL through the Rails console:
+1. Ensure that port `5052` is forwarded to the container from the host and configure the AI gateway URL through the [Rails console](../administration/operations/rails_console.md):
 
    ```ruby
-   Ai::Setting.instance.update!(ai_gateway_url: 'http://localhost:5052')
+   Ai::Setting.instance.update!(ai_gateway_url: 'http://ai-gateway-host.example.com:5052')
    ```
 
    You should configure the URL this way because the URL is stored in the database, and you can then manage it through the Admin area. Although the `AI_GATEWAY_URL` environment variable is still supported for legacy reasons, using the database setting is preferred for better configuration management.

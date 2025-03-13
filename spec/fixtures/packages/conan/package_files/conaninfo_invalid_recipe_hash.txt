@@ -1,0 +1,9 @@
+[settings]
+    arch=x86_64
+
+[recipe_hash]
+    abc123def456
+    another_hash_line_not_allowed
+
+[env]
+    CC=clang-10

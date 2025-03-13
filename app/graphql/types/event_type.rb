@@ -14,7 +14,7 @@ module Types
       null: false
 
     field :author, Types::UserType,
-      description: 'Author of this event.',
+      description: 'Author of the event.',
       null: false
 
     field :action, Types::EventActionEnum,
@@ -22,19 +22,19 @@ module Types
       null: false
 
     field :created_at, Types::TimeType,
-      description: 'When this event was created.',
+      description: 'When the event was created.',
       null: false
 
     field :updated_at, Types::TimeType,
-      description: 'When this event was updated.',
+      description: 'When the event was updated.',
       null: false
 
     field :project, Types::ProjectType,
-      description: 'Project of this event.',
+      description: 'Project of the event.',
       null: true
 
     field :target, Types::Users::EventTargetType,
-      description: 'The target of the event',
+      description: 'Target of the event.',
       calls_gitaly: true
 
     def author

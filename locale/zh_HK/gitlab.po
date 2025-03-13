@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-HK\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-12 12:32\n"
+"PO-Revision-Date: 2025-03-13 12:56\n"
 
 msgid " %{start} to %{end}"
 msgstr ""
@@ -1400,15 +1400,6 @@ msgid "%{total} remaining issue weight"
 msgstr ""
 
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
-msgstr ""
-
-msgid "%{type} '%{name}' has been successfully restored."
-msgstr ""
-
-msgid "%{type} '%{name}' is being deleted."
-msgstr ""
-
-msgid "%{type} '%{name}' will be deleted on %{date}."
 msgstr ""
 
 msgid "%{type} must be a %{help_link}"
@@ -3628,7 +3619,10 @@ msgstr ""
 msgid "AdherenceReport|Learn more about the changes in our %{linkStart}documentation%{linkEnd}."
 msgstr ""
 
-msgid "AdherenceReport|We've updated the Adherence Report with new features to enhance your compliance workflow."
+msgid "AdherenceReport|Show old report"
+msgstr ""
+
+msgid "AdherenceReport|We've updated the adherence report with new features to enhance your compliance workflow."
 msgstr ""
 
 msgid "Adjust how frequently the GitLab UI polls for updates."
@@ -4007,6 +4001,9 @@ msgid "AdminSelfHostedModels|Model identifier must start with \"%{bedrockIdentif
 msgstr ""
 
 msgid "AdminSelfHostedModels|Model uses an API token"
+msgstr ""
+
+msgid "AdminSelfHostedModels|More features are available in beta. You can %{linkStart}turn on AI-powered beta features%{linkEnd}."
 msgstr ""
 
 msgid "AdminSelfHostedModels|More models are available in beta. You can %{linkStart}turn on self-hosted model beta features%{linkEnd}."
@@ -10672,6 +10669,9 @@ msgstr ""
 msgid "BulkImport|%{count} placeholder users not matched to users."
 msgstr ""
 
+msgid "BulkImport|%{count} placeholder users skipped."
+msgstr ""
+
 msgid "BulkImport|%{feature} (require v%{version})"
 msgstr ""
 
@@ -15092,6 +15092,9 @@ msgstr ""
 msgid "ComplianceReport|and %{count} more"
 msgstr ""
 
+msgid "ComplianceStandardsAdherenceV2|New Report Placeholder"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence| Standards adherence export"
 msgstr ""
 
@@ -16659,6 +16662,9 @@ msgid "Copy file contents"
 msgstr ""
 
 msgid "Copy file path"
+msgstr ""
+
+msgid "Copy file permalink"
 msgstr ""
 
 msgid "Copy image URL"
@@ -24538,6 +24544,9 @@ msgstr ""
 msgid "Failed to load Roadmap"
 msgstr ""
 
+msgid "Failed to load additional diffs information. Try reloading the page."
+msgstr ""
+
 msgid "Failed to load assignees. Please try again."
 msgstr ""
 
@@ -25628,6 +25637,12 @@ msgid "Function `labels` can only take a maximum of 10 parameters."
 msgstr ""
 
 msgid "GCP region configured"
+msgstr ""
+
+msgid "GLQL list"
+msgstr ""
+
+msgid "GLQL table"
 msgstr ""
 
 msgid "GLQL view timed out. Add more filters to reduce the number of results."
@@ -27871,6 +27886,9 @@ msgstr ""
 msgid "Group '%{group_name}' was successfully updated."
 msgstr ""
 
+msgid "Group '%{group_name}' will be deleted on %{date}."
+msgstr ""
+
 msgid "Group Git LFS status:"
 msgstr ""
 
@@ -28429,6 +28447,9 @@ msgstr ""
 msgid "GroupSettings|Enable sending email notifications for this group and all its subgroups and projects"
 msgstr ""
 
+msgid "GroupSettings|Enforce DPoP authentication for manage API endpoints for group"
+msgstr ""
+
 msgid "GroupSettings|Enforce SSH Certificates"
 msgstr ""
 
@@ -28460,6 +28481,9 @@ msgid "GroupSettings|Group path cannot be longer than %{length} characters."
 msgstr ""
 
 msgid "GroupSettings|How do I manage group SSH certificates?"
+msgstr ""
+
+msgid "GroupSettings|If enabled, DPoP authentication will be enforced for manage API endpoints for this group."
 msgstr ""
 
 msgid "GroupSettings|If enabled, enterprise user accounts will not be able to use personal access tokens. %{learn_more_link}."
@@ -43526,6 +43550,9 @@ msgstr ""
 msgid "Please enter a name for the custom emoji."
 msgstr ""
 
+msgid "Please enter a name with less than %{number} characters."
+msgstr ""
+
 msgid "Please enter a non-negative number"
 msgstr ""
 
@@ -52206,6 +52233,24 @@ msgstr ""
 msgid "SecurityExclusions|ex: spec/**/*.rb"
 msgstr ""
 
+msgid "SecurityInventory|CS"
+msgstr ""
+
+msgid "SecurityInventory|DAST"
+msgstr ""
+
+msgid "SecurityInventory|DS"
+msgstr ""
+
+msgid "SecurityInventory|IaC"
+msgstr ""
+
+msgid "SecurityInventory|SAST"
+msgstr ""
+
+msgid "SecurityInventory|SD"
+msgstr ""
+
 msgid "SecurityInventory|Security inventory"
 msgstr ""
 
@@ -52533,6 +52578,9 @@ msgid "SecurityOrchestration|Edit policy project"
 msgstr ""
 
 msgid "SecurityOrchestration|Edit scan execution policy"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit vulnerability management policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Empty policy name"
@@ -52911,7 +52959,7 @@ msgstr ""
 msgid "SecurityOrchestration|Schedule a new"
 msgstr ""
 
-msgid "SecurityOrchestration|Schedule a pipeline on a %{cadenceSelector} cadence for branches"
+msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
 msgstr ""
 
 msgid "SecurityOrchestration|Scope"
@@ -53269,6 +53317,9 @@ msgid "SecurityOrchestration|are false positives"
 msgstr ""
 
 msgid "SecurityOrchestration|are not false positives"
+msgstr ""
+
+msgid "SecurityOrchestration|at the following times: %{cadenceSelector}, start at %{start}, run for: %{duration}, and timezone is %{timezoneSelector}"
 msgstr ""
 
 msgid "SecurityOrchestration|branch"
@@ -58161,6 +58212,9 @@ msgstr ""
 msgid "The base URL to the Harbor instance linked to the GitLab project. For example, `https://demo.goharbor.io`."
 msgstr ""
 
+msgid "The blob is too large to render"
+msgstr ""
+
 msgid "The branch for this project has no active pipeline configuration."
 msgstr ""
 
@@ -60792,6 +60846,9 @@ msgid "Todos|When to-do items are done, they will appear here."
 msgstr ""
 
 msgid "Todos|When to-do items are snoozed, they will appear here."
+msgstr ""
+
+msgid "Todos|Wiki page"
 msgstr ""
 
 msgid "Todos|Work item"
@@ -64700,6 +64757,9 @@ msgid "Vulnerability|View dependency paths"
 msgstr ""
 
 msgid "Vulnerability|View training"
+msgstr ""
+
+msgid "Vulnerability|Vulnerability identifiers"
 msgstr ""
 
 msgid "Vulnerability|Vulnerable class:"

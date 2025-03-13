@@ -16,6 +16,8 @@ RSpec.describe 'User creates snippet', :js, feature_category: :source_code_manag
   let(:snippet_title_field) { 'snippet-title' }
 
   before do
+    create(:organization, :default)
+
     sign_in(user)
 
     visit new_snippet_path

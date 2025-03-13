@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ru\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-12 12:34\n"
+"PO-Revision-Date: 2025-03-13 12:58\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} по %{end}"
@@ -1018,7 +1018,7 @@ msgid "%{count} of %{total}"
 msgstr "%{count} из %{total}"
 
 msgid "%{count} open"
-msgstr "%{count} открыто"
+msgstr "Открыто: %{count}"
 
 msgid "%{count} project"
 msgid_plural "%{count} projects"
@@ -1851,15 +1851,6 @@ msgstr "Оставшийся вес обсуждений %{total}"
 
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
 msgstr "Найдено %{total} предупреждений, показаны первые %{warningsDisplayed}."
-
-msgid "%{type} '%{name}' has been successfully restored."
-msgstr ""
-
-msgid "%{type} '%{name}' is being deleted."
-msgstr ""
-
-msgid "%{type} '%{name}' will be deleted on %{date}."
-msgstr ""
 
 msgid "%{type} must be a %{help_link}"
 msgstr ""
@@ -4159,8 +4150,11 @@ msgstr "Есть вопросы или идеи по новым улучшени
 msgid "AdherenceReport|Learn more about the changes in our %{linkStart}documentation%{linkEnd}."
 msgstr "Подробнее об изменениях в нашей %{linkStart}документации%{linkEnd}."
 
-msgid "AdherenceReport|We've updated the Adherence Report with new features to enhance your compliance workflow."
-msgstr "Мы обновили отчёт об обеспечении соблюдения норм, добавив новые функции для улучшения вашего рабочего процесса."
+msgid "AdherenceReport|Show old report"
+msgstr ""
+
+msgid "AdherenceReport|We've updated the adherence report with new features to enhance your compliance workflow."
+msgstr ""
 
 msgid "Adjust how frequently the GitLab UI polls for updates."
 msgstr "Настройте частоту опроса обновлений в интерфейсе GitLab."
@@ -4539,6 +4533,9 @@ msgstr "Идентификатор модели должен начинатьс�
 
 msgid "AdminSelfHostedModels|Model uses an API token"
 msgstr "Модель использует токен API"
+
+msgid "AdminSelfHostedModels|More features are available in beta. You can %{linkStart}turn on AI-powered beta features%{linkEnd}."
+msgstr ""
 
 msgid "AdminSelfHostedModels|More models are available in beta. You can %{linkStart}turn on self-hosted model beta features%{linkEnd}."
 msgstr "Больше моделей доступно в бета-версии. Вы можете %{linkStart}включить бета-функции для самостоятельно размещённых моделей%{linkEnd}."
@@ -5030,7 +5027,7 @@ msgid "AdminSettings|The URL of your Cube instance."
 msgstr ""
 
 msgid "AdminSettings|The default domain to use for Auto Review Apps and Auto Deploy stages in all projects."
-msgstr "Домен по умолчанию для использования в приложениях Auto Review и этапах Auto Deploy во всех проектах"
+msgstr "Домен по умолчанию для автоматических приложений для рецензии и этапов автоматического развёртывания во всех проектах."
 
 msgid "AdminSettings|The host of your data collector instance."
 msgstr ""
@@ -11302,6 +11299,9 @@ msgstr ""
 msgid "BulkImport|%{count} placeholder users not matched to users."
 msgstr ""
 
+msgid "BulkImport|%{count} placeholder users skipped."
+msgstr ""
+
 msgid "BulkImport|%{feature} (require v%{version})"
 msgstr ""
 
@@ -14080,10 +14080,10 @@ msgid "ClusterIntegration|Add Kubernetes cluster"
 msgstr "Добавить кластер Kubernetes"
 
 msgid "ClusterIntegration|Adding a Kubernetes cluster to your group will automatically share the cluster across all your projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster."
-msgstr "Добавление кластера Kubernetes в вашу группу автоматически разделит кластер во всех ваших проектах. Используйте приложения для просмотра, развертывайте приложения и легко запускайте свои сборочные линии для всех проектов с использованием одного и того же кластера."
+msgstr "Добавление кластера Kubernetes в вашу группу автоматически сделает его доступным для всех ваших проектов. Используйте приложения для рецензии, развёртывайте приложения и легко запускайте конвейеры для всех проектов с использованием одного кластера."
 
 msgid "ClusterIntegration|Adding a Kubernetes cluster will automatically share the cluster across all projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster."
-msgstr "Добавление кластера Kubernetes автоматически разделит кластер между всеми проектами. Используйте приложения для рецензирования, развертывайте приложения и легко запускайте сборочные линии для всех проектов, использующих один и тот же кластер."
+msgstr "Добавление кластера Kubernetes автоматически сделает его доступным для всех проектов. Используйте приложения для рецензии, развёртывайте приложения и легко запускайте конвейеры для всех проектов с использованием одного кластера."
 
 msgid "ClusterIntegration|Adding an integration to your group will share the cluster across all your projects."
 msgstr "Добавление интеграции в вашу группу позволит использовать кластер во всех ваших проектах."
@@ -14371,7 +14371,7 @@ msgid "ClusterIntegration|Something went wrong while creating your Kubernetes cl
 msgstr "Произошла ошибка при создании вашего кластера Kubernetes."
 
 msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{linkStart}Auto DevOps.%{linkEnd} The domain should have a wildcard DNS configured matching the domain. "
-msgstr "Указание домена позволит вам использовать Автоматические приложения для рецензирования и этапы Автоматического развёртывания для %{linkStart}Auto DevOps.%{linkEnd} Домен должен иметь настроенную DNS-запись с шаблоном, соответствующим этому домену. "
+msgstr "Указание домена позволит вам использовать автоматические приложения для рецензии и автоматические этапы развёртывания для %{linkStart}Auto DevOps.%{linkEnd} Домен должен иметь настроенную DNS-запись с шаблоном, соответствующим этому домену. "
 
 msgid "ClusterIntegration|Step 1. Connect the agent"
 msgstr "Шаг 1. Подключите агента"
@@ -14443,10 +14443,10 @@ msgid "ClusterIntegration|Unknown Error"
 msgstr "Неизвестная ошибка"
 
 msgid "ClusterIntegration|Use GitLab to deploy to your cluster, run jobs, use review apps, and more."
-msgstr "Используйте GitLab для развертывания в ваш кластер, выполнения заданий, использования приложений для рецензирования и многого другого."
+msgstr "Используйте GitLab для развёртывания в кластер, запуска заданий, использования автоматических приложений для рецензии и других задач."
 
 msgid "ClusterIntegration|Use the %{linkStart}GitLab agent%{linkEnd} to safely connect your Kubernetes clusters to GitLab. You can deploy your applications, run your pipelines, use Review Apps, and much more."
-msgstr "Используйте %{linkStart}GitLab Agent%{linkEnd} для безопасного подключения кластеров Kubernetes к GitLab. Вы можете разворачивать приложения, запускать сборочные линии, использовать Приложения для ревизий и многое другое."
+msgstr "Используйте %{linkStart}агент GitLab%{linkEnd} для безопасного подключения кластеров Kubernetes к GitLab. Вы можете разворачивать приложения, запускать конвейеры, использовать автоматические приложения для рецензии и многое другое."
 
 msgid "ClusterIntegration|Using AutoDevOps with multiple clusters? %{help_link_start}Read this first.%{help_link_end}"
 msgstr ""
@@ -14786,7 +14786,7 @@ msgid "Collapse issues"
 msgstr ""
 
 msgid "Collapse jobs"
-msgstr ""
+msgstr "Свернуть задания"
 
 msgid "Collapse merge checks"
 msgstr "Свернуть проверки перед слиянием"
@@ -15741,6 +15741,9 @@ msgid "ComplianceReport|You are viewing the compliance centre for %{project}. To
 msgstr ""
 
 msgid "ComplianceReport|and %{count} more"
+msgstr ""
+
+msgid "ComplianceStandardsAdherenceV2|New Report Placeholder"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence| Standards adherence export"
@@ -17320,6 +17323,9 @@ msgstr "Скопировать содержимое файла"
 
 msgid "Copy file path"
 msgstr "Скопировать путь к файлу"
+
+msgid "Copy file permalink"
+msgstr "Скопировать постоянную ссылку на файл"
 
 msgid "Copy image URL"
 msgstr "Скопировать URL изображения"
@@ -21031,10 +21037,10 @@ msgstr "Развертывания"
 
 msgid "Deployments|%{deployments} environment impacted."
 msgid_plural "Deployments|%{deployments} environments impacted."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Затронуто %{deployments} окружение."
+msgstr[1] "Затронуто %{deployments} окружения."
+msgstr[2] "Затронуто %{deployments} окружений."
+msgstr[3] "Затронуто %{deployments} окружений."
 
 msgid "Deployments|Add an %{codeStart}environment:name%{codeEnd} to your CI/CD jobs to register a deployment action. %{linkStart}Learn more about environments.%{linkEnd}"
 msgstr "Добавьте %{codeStart}environment:name%{codeEnd} в ваши задания CI/CD, чтобы зарегистрировать действие развертывания. %{linkStart}Подробнее об окружениях%{linkEnd}."
@@ -22451,7 +22457,7 @@ msgid "DuoEnterpriseDiscover|AI-powered vulnerability explanation and resolution
 msgstr ""
 
 msgid "DuoEnterpriseDiscover|Advanced troubleshooting"
-msgstr ""
+msgstr "Расширенное устранение неполадок"
 
 msgid "DuoEnterpriseDiscover|Boost productivity with smart code assistance"
 msgstr ""
@@ -23355,40 +23361,40 @@ msgid "Enable wiki tab in global search results"
 msgstr "Включить вкладку вики в результатах глобального поиска"
 
 msgid "EnableReviewApp|Add a job in your CI/CD configuration that:"
-msgstr ""
+msgstr "Добавьте задание в вашу конфигурацию CI/CD, которое:"
 
 msgid "EnableReviewApp|Copy snippet"
-msgstr ""
+msgstr "Скопировать сниппет"
 
 msgid "EnableReviewApp|Have access to infrastructure that can host and deploy the review apps."
-msgstr ""
+msgstr "Иметь доступ к инфраструктуре, которая может размещать и развёртывать приложения для рецензии."
 
 msgid "EnableReviewApp|Install and configure a runner to do the deployment."
-msgstr ""
+msgstr "Установить и настроить средство выполнения для развёртывания."
 
 msgid "EnableReviewApp|Make sure your project has an environment configured with the target URL set to your website URL. If not, create a new one before continuing."
-msgstr ""
+msgstr "Убедитесь, что в вашем проекте настроено окружение с целевым URL, равным URL вашего сайта. Если такого окружения нет, создайте новое окружение прежде чем продолжить."
 
 msgid "EnableReviewApp|Only runs for feature branches or merge requests."
 msgstr "Работает только для функциональных веток или запросов на слияние."
 
 msgid "EnableReviewApp|Recommended: Set up a job that manually stops the Review Apps."
-msgstr ""
+msgstr "Рекомендуется настроить задание, которое вручную останавливает приложения для рецензии."
 
 msgid "EnableReviewApp|Review apps are dynamic environments that you can use to provide a live preview of changes made in a feature branch."
-msgstr "Приложения для рецензирования — это динамичные среды, которые можно использовать для предоставления живого предпросмотра изменений, внесенных в функциональную ветку."
+msgstr "Приложения для рецензии — это динамичные окружения, которые можно использовать для предоставления живого предварительного просмотра изменений, сделанных в ветке с новой функцией."
 
 msgid "EnableReviewApp|To configure a dynamic review app, you must:"
-msgstr ""
+msgstr "Для настройки динамического приложения для рецензии необходимо:"
 
 msgid "EnableReviewApp|Uses a predefined CI/CD variable like %{codeStart}$(CI_COMMIT_REF_SLUG)%{codeEnd} to dynamically create the review app environments. For example, for a configuration using merge request pipelines:"
-msgstr ""
+msgstr "Использует предопределённую переменную CI/CD, такую как %{codeStart}$(CI_COMMIT_REF_SLUG)%{codeEnd}, для динамического создания окружений приложения для рецензии. Например, для конфигурации с конвейерами для запросов на слияние:"
 
 msgid "EnableReviewApp|Using a static site?"
-msgstr ""
+msgstr "Используете статичный сайт?"
 
 msgid "EnableReviewApp|View more example projects"
-msgstr ""
+msgstr "Посмотреть другие примеры проектов"
 
 msgid "Enabled"
 msgstr "Включено"
@@ -23727,10 +23733,10 @@ msgid "Environments|Edit environment"
 msgstr ""
 
 msgid "Environments|Enable Review Apps"
-msgstr ""
+msgstr "Включение приложений для рецензии"
 
 msgid "Environments|Enable review apps"
-msgstr ""
+msgstr "Включить приложения для рецензии"
 
 msgid "Environments|Environment"
 msgstr "Окружение"
@@ -23739,7 +23745,7 @@ msgid "Environments|Environments"
 msgstr "Окружения"
 
 msgid "Environments|Environments are places where code gets deployed, such as staging or production. You can create an environment in the UI or in your .gitlab-ci.yml file. You can also enable review apps, which assist with providing an environment to showcase product changes. %{linkStart}Learn more%{linkEnd} about environments."
-msgstr "Окружения — это места, куда развертывается код, такие как staging или production. Вы можете создать окружение в интерфейсе или в вашем файле .gitlab-ci.yml. Также можно включить приложения для рецензирования, которые помогают предоставить окружение для демонстрации изменений в продукте. %{linkStart}Подробнее об окружениях%{linkEnd}."
+msgstr "Окружения — это места, куда развёртывается код, такие как staging или production. Вы можете создать окружение через интерфейс или в вашем файле .gitlab-ci.yml. Также можно включить приложения для рецензии, которые помогают предоставить окружение для демонстрации изменений в продукте. %{linkStart}Подробнее%{linkEnd} об окружениях."
 
 msgid "Environments|Get started with environments"
 msgstr ""
@@ -24015,7 +24021,7 @@ msgid "Environment|View details."
 msgstr ""
 
 msgid "Environment|You don't have permission to view all the namespaces in the cluster. If a namespace is not shown, you can still enter its name to select it."
-msgstr ""
+msgstr "У вас нет прав для просмотра всех пространств имён в кластере. Если пространство имён не отображается, вы всё равно можете ввести его название, чтобы выбрать его."
 
 msgid "Epic"
 msgstr "Цель"
@@ -24837,7 +24843,7 @@ msgid "Expand issues"
 msgstr ""
 
 msgid "Expand jobs"
-msgstr ""
+msgstr "Развернуть задания"
 
 msgid "Expand merge checks"
 msgstr "Развернуть проверки перед слиянием"
@@ -25302,6 +25308,9 @@ msgstr ""
 
 msgid "Failed to load Roadmap"
 msgstr "Не удалось загрузить план развития"
+
+msgid "Failed to load additional diffs information. Try reloading the page."
+msgstr ""
 
 msgid "Failed to load assignees. Please try again."
 msgstr "Не удалось загрузить исполнителей. Повторите попытку."
@@ -26402,6 +26411,12 @@ msgid "Function `labels` can only take a maximum of 10 parameters."
 msgstr ""
 
 msgid "GCP region configured"
+msgstr ""
+
+msgid "GLQL list"
+msgstr ""
+
+msgid "GLQL table"
 msgstr ""
 
 msgid "GLQL view timed out. Add more filters to reduce the number of results."
@@ -28663,6 +28678,9 @@ msgstr ""
 msgid "Group '%{group_name}' was successfully updated."
 msgstr ""
 
+msgid "Group '%{group_name}' will be deleted on %{date}."
+msgstr ""
+
 msgid "Group Git LFS status:"
 msgstr ""
 
@@ -29221,6 +29239,9 @@ msgstr ""
 msgid "GroupSettings|Enable sending email notifications for this group and all its subgroups and projects"
 msgstr "Включить отправку уведомлений по электронной почте для этой группы, а также для всех её подгрупп и проектов"
 
+msgid "GroupSettings|Enforce DPoP authentication for manage API endpoints for group"
+msgstr ""
+
 msgid "GroupSettings|Enforce SSH Certificates"
 msgstr "Принудительное использование сертификатов SSH"
 
@@ -29252,6 +29273,9 @@ msgid "GroupSettings|Group path cannot be longer than %{length} characters."
 msgstr ""
 
 msgid "GroupSettings|How do I manage group SSH certificates?"
+msgstr ""
+
+msgid "GroupSettings|If enabled, DPoP authentication will be enforced for manage API endpoints for this group."
 msgstr ""
 
 msgid "GroupSettings|If enabled, enterprise user accounts will not be able to use personal access tokens. %{learn_more_link}."
@@ -32974,7 +32998,7 @@ msgid "Iterations|Error loading iteration cadences."
 msgstr ""
 
 msgid "Iterations|Incomplete issues will be added to the next iteration at %{strongStart}midnight, %{timezone}%{strongEnd}."
-msgstr ""
+msgstr "Незавершённые обсуждения будут добавлены в следующую итерацию в %{strongStart}полночь, %{timezone}%{strongEnd}."
 
 msgid "Iterations|Iteration cadence"
 msgstr ""
@@ -33784,13 +33808,13 @@ msgid "Jobs older than the configured time are considered expired and are archiv
 msgstr "Задания старше настроенного времени считаются просроченными и архивируются. Заархивированные задания больше нельзя повторить. Оставьте пустым, чтобы никогда не архивировать задания автоматически. Единицей измерения по умолчанию являются дни, но вы можете использовать и другие единицы измерения, например %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}2 years%{code_close}. Минимальное значение 1 день."
 
 msgid "Jobs|All"
-msgstr ""
+msgstr "Все"
 
 msgid "Jobs|Are you sure you want to proceed?"
-msgstr ""
+msgstr "Вы уверены, что хотите продолжить?"
 
 msgid "Jobs|Are you sure you want to retry this job?"
-msgstr ""
+msgstr "Вы уверены, что хотите повторить это задание?"
 
 msgid "Jobs|Create CI/CD configuration file"
 msgstr ""
@@ -33823,7 +33847,7 @@ msgid "Jobs|There was a problem fetching the failed jobs."
 msgstr ""
 
 msgid "Jobs|Troubleshoot"
-msgstr ""
+msgstr "Устранение неполадок"
 
 msgid "Jobs|Use jobs to automate your tasks"
 msgstr "Используйте задания для автоматизации ваших задач"
@@ -39058,7 +39082,7 @@ msgid "New public deploy key"
 msgstr "Новый открытый ключ развертывания"
 
 msgid "New related %{issueType}"
-msgstr ""
+msgstr "Создать и связать %{issueType}"
 
 msgid "New release"
 msgstr "Новый релиз"
@@ -44465,6 +44489,9 @@ msgstr "Пожалуйста, введите название для шабло�
 msgid "Please enter a name for the custom emoji."
 msgstr "Пожалуйста, введите название для пользовательского эмодзи."
 
+msgid "Please enter a name with less than %{number} characters."
+msgstr ""
+
 msgid "Please enter a non-negative number"
 msgstr "Пожалуйста, введите неотрицательное число"
 
@@ -44577,7 +44604,7 @@ msgid "Please use an email address or domain you control."
 msgstr ""
 
 msgid "Please use this form to report to the administrator users who create spam issues, comments or behave inappropriately. A member of the abuse team will review your report as soon as possible."
-msgstr ""
+msgstr "Используйте эту форму для сообщения администратору о пользователях, которые создают спам-обсуждения, комментарии или ведут себя неподобающим образом. Участник команды по борьбе с нарушениями рассмотрит ваш отчёт как можно скорее."
 
 msgid "Please wait a few moments while we load the file history for this line."
 msgstr ""
@@ -50225,7 +50252,7 @@ msgid "Review"
 msgstr "Рецензия"
 
 msgid "Review App|View app"
-msgstr ""
+msgstr "Просмотр приложения"
 
 msgid "Review App|View latest app"
 msgstr "Просмотр последнего приложения"
@@ -53274,6 +53301,24 @@ msgstr ""
 msgid "SecurityExclusions|ex: spec/**/*.rb"
 msgstr ""
 
+msgid "SecurityInventory|CS"
+msgstr ""
+
+msgid "SecurityInventory|DAST"
+msgstr ""
+
+msgid "SecurityInventory|DS"
+msgstr ""
+
+msgid "SecurityInventory|IaC"
+msgstr ""
+
+msgid "SecurityInventory|SAST"
+msgstr ""
+
+msgid "SecurityInventory|SD"
+msgstr ""
+
 msgid "SecurityInventory|Security inventory"
 msgstr "Инвентаризация безопасности"
 
@@ -53608,6 +53653,9 @@ msgstr "Редактировать проект политики"
 
 msgid "SecurityOrchestration|Edit scan execution policy"
 msgstr ""
+
+msgid "SecurityOrchestration|Edit vulnerability management policy"
+msgstr "Редактирование политики управления уязвимостями"
 
 msgid "SecurityOrchestration|Empty policy name"
 msgstr ""
@@ -53988,8 +54036,8 @@ msgstr ""
 msgid "SecurityOrchestration|Schedule a new"
 msgstr "Запланировать новый"
 
-msgid "SecurityOrchestration|Schedule a pipeline on a %{cadenceSelector} cadence for branches"
-msgstr "Запланировать конвейер с периодичностью %{cadenceSelector} для веток"
+msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
+msgstr ""
 
 msgid "SecurityOrchestration|Scope"
 msgstr ""
@@ -54347,6 +54395,9 @@ msgstr "являются ложными срабатываниями"
 
 msgid "SecurityOrchestration|are not false positives"
 msgstr "не являются ложными срабатываниями"
+
+msgid "SecurityOrchestration|at the following times: %{cadenceSelector}, start at %{start}, run for: %{duration}, and timezone is %{timezoneSelector}"
+msgstr ""
 
 msgid "SecurityOrchestration|branch"
 msgstr ""
@@ -59091,7 +59142,7 @@ msgid "TestReports|Job artifacts are expired"
 msgstr "Срок действия артефактов задания истек"
 
 msgid "TestReports|Jobs"
-msgstr ""
+msgstr "Задания"
 
 msgid "TestReports|Learn how to upload pipeline test reports"
 msgstr ""
@@ -59263,6 +59314,9 @@ msgid "The authentication token."
 msgstr "Токен аутентификации."
 
 msgid "The base URL to the Harbor instance linked to the GitLab project. For example, `https://demo.goharbor.io`."
+msgstr ""
+
+msgid "The blob is too large to render"
 msgstr ""
 
 msgid "The branch for this project has no active pipeline configuration."
@@ -60675,7 +60729,7 @@ msgid "This job is an out-of-date deployment to %{environmentLink}. View the %{d
 msgstr "Это задание является устаревшим развёртыванием в %{environmentLink}. Смотрите %{deploymentLink}."
 
 msgid "This job is archived. Only the complete pipeline can be retried."
-msgstr ""
+msgstr "Это задание архивировано. Можно повторно запустить только весь конвейер."
 
 msgid "This job is creating a deployment to %{environmentLink} using cluster %{clusterNameOrLink} and namespace %{kubernetesNamespace}."
 msgstr ""
@@ -62002,6 +62056,9 @@ msgstr ""
 
 msgid "Todos|When to-do items are snoozed, they will appear here."
 msgstr "Когда задачи будут отложены, они отобразятся здесь."
+
+msgid "Todos|Wiki page"
+msgstr ""
 
 msgid "Todos|Work item"
 msgstr ""
@@ -64453,7 +64510,7 @@ msgid "UserMapping|Reassignments in %{group} rejected"
 msgstr ""
 
 msgid "UserMapping|Reassignments in %{group} waiting for review"
-msgstr ""
+msgstr "Переназначения в группе %{group} ожидают рассмотрения"
 
 msgid "UserMapping|Reject"
 msgstr ""
@@ -64462,10 +64519,10 @@ msgid "UserMapping|Rejected"
 msgstr ""
 
 msgid "UserMapping|Review and complete the CSV file."
-msgstr ""
+msgstr "Рассмотрите и завершите работу с файлом CSV."
 
 msgid "UserMapping|Review reassignment details"
-msgstr ""
+msgstr "Рассмотрите детали переназначения"
 
 msgid "UserMapping|Search placeholder users"
 msgstr ""
@@ -65109,10 +65166,10 @@ msgid "VersionCheck|Additionally, there is an available stable patch for your cu
 msgstr "Кроме того, доступен стабильный патч в вашей текущей минорной версии GitLab: %{latestStableVersionOfMinor}"
 
 msgid "VersionCheck|Important notice - Critical patch release"
-msgstr "Важное уведомление – Выпуск критического патча"
+msgstr "Важное уведомление — патч с исправлением критичных проблем"
 
 msgid "VersionCheck|Learn more about this critical patch release."
-msgstr "Подробнее об этом выпуске критического патча."
+msgstr "Подробнее об этом патче с исправлением критичных проблем."
 
 msgid "VersionCheck|Remind me again in 3 days"
 msgstr "Напомнить через 3 дня"
@@ -65163,7 +65220,7 @@ msgid "View all activity"
 msgstr "Просмотреть всю активность"
 
 msgid "View all environments."
-msgstr ""
+msgstr "Просмотреть все окружения."
 
 msgid "View all issues"
 msgstr ""
@@ -65952,6 +66009,9 @@ msgstr "Просмотреть пути зависимостей"
 
 msgid "Vulnerability|View training"
 msgstr ""
+
+msgid "Vulnerability|Vulnerability identifiers"
+msgstr "Идентификаторы уязвимостей"
 
 msgid "Vulnerability|Vulnerable class:"
 msgstr ""
@@ -67415,7 +67475,7 @@ msgid "WorkItem|New related %{workItemType}"
 msgstr "Создать и связать %{workItemType}"
 
 msgid "WorkItem|New related item"
-msgstr ""
+msgstr "Новый связанный элемент"
 
 msgid "WorkItem|New task"
 msgstr "Новую задачу"
@@ -71391,7 +71451,7 @@ msgid "organizations can only be added to root groups and groups configured as C
 msgstr ""
 
 msgid "overdue"
-msgstr ""
+msgstr "просрочено"
 
 msgid "packages"
 msgstr ""

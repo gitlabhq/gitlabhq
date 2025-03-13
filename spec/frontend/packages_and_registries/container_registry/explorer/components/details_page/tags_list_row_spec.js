@@ -221,7 +221,7 @@ describe('tags list row', () => {
       expect(popoverText).toContain('This tag is protected');
       expect(popoverText).toContain('Minimum role to push:');
       expect(popoverText).toContain('Minimum role to delete:');
-      expect(popoverText).toContain('MAINTAINER');
+      expect(popoverText).toContain('Maintainer');
     });
   });
 

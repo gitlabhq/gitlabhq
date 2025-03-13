@@ -25,6 +25,10 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
 
     let(:snippet) { subject.payload[:snippet] }
 
+    before do
+      create(:organization, :default)
+    end
+
     shared_examples 'a service that creates a snippet' do
       it 'creates a snippet with the provided attributes' do
         expect(snippet.title).to eq(opts[:title])

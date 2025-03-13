@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-12 12:33\n"
+"PO-Revision-Date: 2025-03-13 12:57\n"
 
 msgid " %{start} to %{end}"
 msgstr "%{start}から%{end}まで"
@@ -1401,15 +1401,6 @@ msgstr "%{total}残りイシューの重さ"
 
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
 msgstr "%{total}件の警告が見つかりました:最初の%{warningsDisplayed}を表示"
-
-msgid "%{type} '%{name}' has been successfully restored."
-msgstr "%{type}「%{name}」が正常に復元されました。"
-
-msgid "%{type} '%{name}' is being deleted."
-msgstr "%{type}「%{name}」を削除中です。"
-
-msgid "%{type} '%{name}' will be deleted on %{date}."
-msgstr "%{type} 「%{name}」は、%{date}に削除されます。"
 
 msgid "%{type} must be a %{help_link}"
 msgstr "%{type}は%{help_link}でなければなりません"
@@ -3628,7 +3619,10 @@ msgstr ""
 msgid "AdherenceReport|Learn more about the changes in our %{linkStart}documentation%{linkEnd}."
 msgstr ""
 
-msgid "AdherenceReport|We've updated the Adherence Report with new features to enhance your compliance workflow."
+msgid "AdherenceReport|Show old report"
+msgstr ""
+
+msgid "AdherenceReport|We've updated the adherence report with new features to enhance your compliance workflow."
 msgstr ""
 
 msgid "Adjust how frequently the GitLab UI polls for updates."
@@ -4008,6 +4002,9 @@ msgstr "モデル識別子は「%{bedrockIdentifierPrefix}」で始めてくだ�
 
 msgid "AdminSelfHostedModels|Model uses an API token"
 msgstr "モデルはAPIトークンを使用します"
+
+msgid "AdminSelfHostedModels|More features are available in beta. You can %{linkStart}turn on AI-powered beta features%{linkEnd}."
+msgstr ""
 
 msgid "AdminSelfHostedModels|More models are available in beta. You can %{linkStart}turn on self-hosted model beta features%{linkEnd}."
 msgstr "Beta版ではさらに多くのモデルが利用できます。%{linkStart}セルフホストモデルのBeta版の機能を有効%{linkEnd}にできます。"
@@ -10672,6 +10669,9 @@ msgstr "%{count}人のプレースホルダーユーザーがユーザーに一�
 msgid "BulkImport|%{count} placeholder users not matched to users."
 msgstr "%{count}人のプレースホルダーユーザーがユーザーに一致していません。"
 
+msgid "BulkImport|%{count} placeholder users skipped."
+msgstr ""
+
 msgid "BulkImport|%{feature} (require v%{version})"
 msgstr "%{feature} (v%{version} が必要)"
 
@@ -15092,6 +15092,9 @@ msgstr ""
 msgid "ComplianceReport|and %{count} more"
 msgstr "さらに%{count}件以上"
 
+msgid "ComplianceStandardsAdherenceV2|New Report Placeholder"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence| Standards adherence export"
 msgstr "基準遵守のエクスポート"
 
@@ -16660,6 +16663,9 @@ msgstr "ファイルの内容をコピー"
 
 msgid "Copy file path"
 msgstr "ファイルのパスをコピー"
+
+msgid "Copy file permalink"
+msgstr ""
 
 msgid "Copy image URL"
 msgstr "イメージのURLをコピー"
@@ -24538,6 +24544,9 @@ msgstr "読み込みに失敗しました"
 msgid "Failed to load Roadmap"
 msgstr "ロードマップのロードに失敗しました"
 
+msgid "Failed to load additional diffs information. Try reloading the page."
+msgstr ""
+
 msgid "Failed to load assignees. Please try again."
 msgstr "担当者のロードに失敗しました。もう一度やり直してください。"
 
@@ -25629,6 +25638,12 @@ msgstr "関数「labels」は最大10個のパラメータしか取ることが�
 
 msgid "GCP region configured"
 msgstr "GCPリージョンが設定されました"
+
+msgid "GLQL list"
+msgstr ""
+
+msgid "GLQL table"
+msgstr ""
 
 msgid "GLQL view timed out. Add more filters to reduce the number of results."
 msgstr ""
@@ -27871,6 +27886,9 @@ msgstr "グループ「%{group_name}」を削除中です。"
 msgid "Group '%{group_name}' was successfully updated."
 msgstr "グループ '%{group_name}' は正常に更新されました。"
 
+msgid "Group '%{group_name}' will be deleted on %{date}."
+msgstr ""
+
 msgid "Group Git LFS status:"
 msgstr "グループGit LFSの状態:"
 
@@ -28429,6 +28447,9 @@ msgstr "バリューストリームダッシュボードの概要画面のバッ
 msgid "GroupSettings|Enable sending email notifications for this group and all its subgroups and projects"
 msgstr "このグループとそのすべてのサブグループとプロジェクトのメール通知を有効にする"
 
+msgid "GroupSettings|Enforce DPoP authentication for manage API endpoints for group"
+msgstr ""
+
 msgid "GroupSettings|Enforce SSH Certificates"
 msgstr "SSH証明書の適用"
 
@@ -28461,6 +28482,9 @@ msgstr "グループパスは%{length}文字以下で設定する必要があり
 
 msgid "GroupSettings|How do I manage group SSH certificates?"
 msgstr "グループのSSH証明書はどのように管理しますか?"
+
+msgid "GroupSettings|If enabled, DPoP authentication will be enforced for manage API endpoints for this group."
+msgstr ""
 
 msgid "GroupSettings|If enabled, enterprise user accounts will not be able to use personal access tokens. %{learn_more_link}."
 msgstr ""
@@ -43526,6 +43550,9 @@ msgstr "コメントテンプレートの名前を入力してください。"
 msgid "Please enter a name for the custom emoji."
 msgstr "カスタム絵文字の名前を入力してください。"
 
+msgid "Please enter a name with less than %{number} characters."
+msgstr ""
+
 msgid "Please enter a non-negative number"
 msgstr "負でない数値を入力してください"
 
@@ -52206,6 +52233,24 @@ msgstr "ex：glpat-1234567890"
 msgid "SecurityExclusions|ex: spec/**/*.rb"
 msgstr "ex：spec/**/*.rb"
 
+msgid "SecurityInventory|CS"
+msgstr ""
+
+msgid "SecurityInventory|DAST"
+msgstr ""
+
+msgid "SecurityInventory|DS"
+msgstr ""
+
+msgid "SecurityInventory|IaC"
+msgstr ""
+
+msgid "SecurityInventory|SAST"
+msgstr ""
+
+msgid "SecurityInventory|SD"
+msgstr ""
+
 msgid "SecurityInventory|Security inventory"
 msgstr ""
 
@@ -52534,6 +52579,9 @@ msgstr "ポリシープロジェクトを編集"
 
 msgid "SecurityOrchestration|Edit scan execution policy"
 msgstr "スキャン実行ポリシーの編集"
+
+msgid "SecurityOrchestration|Edit vulnerability management policy"
+msgstr ""
 
 msgid "SecurityOrchestration|Empty policy name"
 msgstr "ポリシー名の項目が空です"
@@ -52911,7 +52959,7 @@ msgstr "Runnerにはタグが存在しないため、実行するRunnerが自動
 msgid "SecurityOrchestration|Schedule a new"
 msgstr ""
 
-msgid "SecurityOrchestration|Schedule a pipeline on a %{cadenceSelector} cadence for branches"
+msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
 msgstr ""
 
 msgid "SecurityOrchestration|Scope"
@@ -53270,6 +53318,9 @@ msgstr "誤検出です"
 
 msgid "SecurityOrchestration|are not false positives"
 msgstr "誤検出ではありません"
+
+msgid "SecurityOrchestration|at the following times: %{cadenceSelector}, start at %{start}, run for: %{duration}, and timezone is %{timezoneSelector}"
+msgstr ""
 
 msgid "SecurityOrchestration|branch"
 msgstr "ブランチ"
@@ -58161,6 +58212,9 @@ msgstr "認証トークン"
 msgid "The base URL to the Harbor instance linked to the GitLab project. For example, `https://demo.goharbor.io`."
 msgstr "GitLabプロジェクトにリンクしているHarborインスタンスのベースURL。例えば `https://demo.goharbor.io` 。"
 
+msgid "The blob is too large to render"
+msgstr ""
+
 msgid "The branch for this project has no active pipeline configuration."
 msgstr "このプロジェクトのこのブランチにアクティブなパイプライン設定がありません。"
 
@@ -60792,6 +60846,9 @@ msgid "Todos|When to-do items are done, they will appear here."
 msgstr "To-Doアイテムが完了になったとき、ここに表示されます。"
 
 msgid "Todos|When to-do items are snoozed, they will appear here."
+msgstr ""
+
+msgid "Todos|Wiki page"
 msgstr ""
 
 msgid "Todos|Work item"
@@ -64701,6 +64758,9 @@ msgstr ""
 
 msgid "Vulnerability|View training"
 msgstr "トレーニングを表示"
+
+msgid "Vulnerability|Vulnerability identifiers"
+msgstr ""
 
 msgid "Vulnerability|Vulnerable class:"
 msgstr "脆弱クラス:"

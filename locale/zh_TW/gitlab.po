@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-12 12:32\n"
+"PO-Revision-Date: 2025-03-13 12:56\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} 到 %{end}"
@@ -1401,15 +1401,6 @@ msgstr "%{total} 剩餘議題權重"
 
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
 msgstr "發現 %{total} 個警告訊息：正在顯示開頭的 %{warningsDisplayed} 個警告訊息"
-
-msgid "%{type} '%{name}' has been successfully restored."
-msgstr ""
-
-msgid "%{type} '%{name}' is being deleted."
-msgstr "%{type} '%{name}' 已刪除。"
-
-msgid "%{type} '%{name}' will be deleted on %{date}."
-msgstr "%{type} '%{name}' 將在 %{date} 被刪除。"
 
 msgid "%{type} must be a %{help_link}"
 msgstr "%{type} 必須為 %{help_link}"
@@ -3628,7 +3619,10 @@ msgstr ""
 msgid "AdherenceReport|Learn more about the changes in our %{linkStart}documentation%{linkEnd}."
 msgstr ""
 
-msgid "AdherenceReport|We've updated the Adherence Report with new features to enhance your compliance workflow."
+msgid "AdherenceReport|Show old report"
+msgstr ""
+
+msgid "AdherenceReport|We've updated the adherence report with new features to enhance your compliance workflow."
 msgstr ""
 
 msgid "Adjust how frequently the GitLab UI polls for updates."
@@ -4007,6 +4001,9 @@ msgid "AdminSelfHostedModels|Model identifier must start with \"%{bedrockIdentif
 msgstr ""
 
 msgid "AdminSelfHostedModels|Model uses an API token"
+msgstr ""
+
+msgid "AdminSelfHostedModels|More features are available in beta. You can %{linkStart}turn on AI-powered beta features%{linkEnd}."
 msgstr ""
 
 msgid "AdminSelfHostedModels|More models are available in beta. You can %{linkStart}turn on self-hosted model beta features%{linkEnd}."
@@ -10672,6 +10669,9 @@ msgstr "%{count} 個與使用者相符的佔位使用者。"
 msgid "BulkImport|%{count} placeholder users not matched to users."
 msgstr "%{count} 個與使用者不相符的佔位使用者。"
 
+msgid "BulkImport|%{count} placeholder users skipped."
+msgstr ""
+
 msgid "BulkImport|%{feature} (require v%{version})"
 msgstr "%{feature}（需要 v%{version}）"
 
@@ -15092,6 +15092,9 @@ msgstr ""
 msgid "ComplianceReport|and %{count} more"
 msgstr ""
 
+msgid "ComplianceStandardsAdherenceV2|New Report Placeholder"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence| Standards adherence export"
 msgstr "標準遵守匯出"
 
@@ -16660,6 +16663,9 @@ msgstr "複製文件內容"
 
 msgid "Copy file path"
 msgstr "複製文件路徑"
+
+msgid "Copy file permalink"
+msgstr ""
 
 msgid "Copy image URL"
 msgstr "複製映像檔URL"
@@ -24538,6 +24544,9 @@ msgstr "載入失敗"
 msgid "Failed to load Roadmap"
 msgstr "無法載入路線圖"
 
+msgid "Failed to load additional diffs information. Try reloading the page."
+msgstr ""
+
 msgid "Failed to load assignees. Please try again."
 msgstr "載入指派人失敗。請重試。"
 
@@ -25629,6 +25638,12 @@ msgstr ""
 
 msgid "GCP region configured"
 msgstr "已配置 GCP 區域"
+
+msgid "GLQL list"
+msgstr ""
+
+msgid "GLQL table"
+msgstr ""
 
 msgid "GLQL view timed out. Add more filters to reduce the number of results."
 msgstr ""
@@ -27871,6 +27886,9 @@ msgstr "「%{group_name}」群組正在刪除。"
 msgid "Group '%{group_name}' was successfully updated."
 msgstr "已成功更新「%{group_name}」群組。"
 
+msgid "Group '%{group_name}' will be deleted on %{date}."
+msgstr ""
+
 msgid "Group Git LFS status:"
 msgstr "群組Git LFS狀態："
 
@@ -28429,6 +28447,9 @@ msgstr "為價值流儀表板啟用概觀背景聚合"
 msgid "GroupSettings|Enable sending email notifications for this group and all its subgroups and projects"
 msgstr "啟用為該群組及其所有子群組和專案發送電子郵件通知"
 
+msgid "GroupSettings|Enforce DPoP authentication for manage API endpoints for group"
+msgstr ""
+
 msgid "GroupSettings|Enforce SSH Certificates"
 msgstr "強制執行 SSH 憑證"
 
@@ -28461,6 +28482,9 @@ msgstr "群組路徑不能超過 %{length} 個字元。"
 
 msgid "GroupSettings|How do I manage group SSH certificates?"
 msgstr "如何管理群組 SSH 憑證？"
+
+msgid "GroupSettings|If enabled, DPoP authentication will be enforced for manage API endpoints for this group."
+msgstr ""
 
 msgid "GroupSettings|If enabled, enterprise user accounts will not be able to use personal access tokens. %{learn_more_link}."
 msgstr ""
@@ -43526,6 +43550,9 @@ msgstr "請輸入評論範本的名稱。"
 msgid "Please enter a name for the custom emoji."
 msgstr "請輸入自定義表情符號的名稱。"
 
+msgid "Please enter a name with less than %{number} characters."
+msgstr ""
+
 msgid "Please enter a non-negative number"
 msgstr "請輸入一個非負數"
 
@@ -52206,6 +52233,24 @@ msgstr ""
 msgid "SecurityExclusions|ex: spec/**/*.rb"
 msgstr ""
 
+msgid "SecurityInventory|CS"
+msgstr ""
+
+msgid "SecurityInventory|DAST"
+msgstr ""
+
+msgid "SecurityInventory|DS"
+msgstr ""
+
+msgid "SecurityInventory|IaC"
+msgstr ""
+
+msgid "SecurityInventory|SAST"
+msgstr ""
+
+msgid "SecurityInventory|SD"
+msgstr ""
+
 msgid "SecurityInventory|Security inventory"
 msgstr ""
 
@@ -52534,6 +52579,9 @@ msgstr "編輯政策專案"
 
 msgid "SecurityOrchestration|Edit scan execution policy"
 msgstr "編輯掃描執行政策"
+
+msgid "SecurityOrchestration|Edit vulnerability management policy"
+msgstr ""
 
 msgid "SecurityOrchestration|Empty policy name"
 msgstr "空政策名稱"
@@ -52911,7 +52959,7 @@ msgstr "掃描將自動選擇一個執行器 (Runner) 執行，因為 Runner 上
 msgid "SecurityOrchestration|Schedule a new"
 msgstr ""
 
-msgid "SecurityOrchestration|Schedule a pipeline on a %{cadenceSelector} cadence for branches"
+msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
 msgstr ""
 
 msgid "SecurityOrchestration|Scope"
@@ -53270,6 +53318,9 @@ msgstr "誤報"
 
 msgid "SecurityOrchestration|are not false positives"
 msgstr "非誤報"
+
+msgid "SecurityOrchestration|at the following times: %{cadenceSelector}, start at %{start}, run for: %{duration}, and timezone is %{timezoneSelector}"
+msgstr ""
 
 msgid "SecurityOrchestration|branch"
 msgstr "分支"
@@ -58161,6 +58212,9 @@ msgstr "身份驗證令牌。"
 msgid "The base URL to the Harbor instance linked to the GitLab project. For example, `https://demo.goharbor.io`."
 msgstr "連結到 GitLab 專案的 Harbor 執行個體基本 URL，例如，「https://demo.goharbor.io」。"
 
+msgid "The blob is too large to render"
+msgstr ""
+
 msgid "The branch for this project has no active pipeline configuration."
 msgstr "此專案的分支沒有啟用的流水線設定。"
 
@@ -60792,6 +60846,9 @@ msgid "Todos|When to-do items are done, they will appear here."
 msgstr ""
 
 msgid "Todos|When to-do items are snoozed, they will appear here."
+msgstr ""
+
+msgid "Todos|Wiki page"
 msgstr ""
 
 msgid "Todos|Work item"
@@ -64701,6 +64758,9 @@ msgstr ""
 
 msgid "Vulnerability|View training"
 msgstr "查看培訓"
+
+msgid "Vulnerability|Vulnerability identifiers"
+msgstr ""
 
 msgid "Vulnerability|Vulnerable class:"
 msgstr "漏洞類別："

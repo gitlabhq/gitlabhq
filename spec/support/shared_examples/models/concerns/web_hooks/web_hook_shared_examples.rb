@@ -18,6 +18,8 @@ RSpec.shared_examples 'a webhook' do |factory:, auto_disabling: true|
   describe 'validations' do
     it { is_expected.to validate_presence_of(:url) }
     it { is_expected.to validate_length_of(:custom_webhook_template).is_at_most(4096) }
+    it { is_expected.to validate_length_of(:name).is_at_most(255) }
+    it { is_expected.to validate_length_of(:description).is_at_most(2048) }
 
     describe 'url_variables' do
       it { is_expected.to allow_value({}).for(:url_variables) }

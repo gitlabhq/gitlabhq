@@ -33,6 +33,7 @@ import {
   SIGNATURE_BADGE_TOOLTIP,
   DOCKER_MEDIA_TYPE,
   OCI_MEDIA_TYPE,
+  MinimumAccessLevelText,
 } from '../../constants/index';
 import SignatureDetailsModal from './signature_details_modal.vue';
 
@@ -172,10 +173,10 @@ export default {
       return `${this.tag.name}_badge`;
     },
     accessLevelForDelete() {
-      return this.tag.protection?.minimumAccessLevelForDelete;
+      return MinimumAccessLevelText[this.tag.protection?.minimumAccessLevelForDelete];
     },
     accessLevelForPush() {
-      return this.tag.protection?.minimumAccessLevelForPush;
+      return MinimumAccessLevelText[this.tag.protection?.minimumAccessLevelForPush];
     },
   },
 };
@@ -216,10 +217,16 @@ export default {
             <strong>{{ s__('ContainerRegistry|This tag is protected') }}</strong>
             <br />
             <br />
-            <strong>{{ s__('ContainerRegistry|Minimum role to push: ') }}</strong>
-            {{ accessLevelForPush }}
-            <strong>{{ s__('ContainerRegistry|Minimum role to delete: ') }}</strong>
-            {{ accessLevelForDelete }}
+            <ul class="gl-m-0 gl-list-none gl-p-0">
+              <li>
+                <strong>{{ s__('ContainerRegistry|Minimum role to push: ') }}</strong>
+                {{ accessLevelForPush }}
+              </li>
+              <li>
+                <strong>{{ s__('ContainerRegistry|Minimum role to delete: ') }}</strong>
+                {{ accessLevelForDelete }}
+              </li>
+            </ul>
           </gl-popover>
         </template>
 

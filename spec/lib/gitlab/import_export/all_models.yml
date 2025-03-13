@@ -551,6 +551,7 @@ protected_branches:
 - external_status_checks
 - required_code_owners_sections
 - squash_option
+- merge_request_approval_setting
 protected_tags:
 - project
 - create_access_levels

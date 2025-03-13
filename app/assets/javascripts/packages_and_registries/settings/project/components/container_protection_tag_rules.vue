@@ -319,23 +319,25 @@ export default {
         </template>
 
         <template #cell(rowActions)="{ item }">
-          <gl-button
-            v-gl-tooltip
-            category="tertiary"
-            icon="pencil"
-            :title="$options.i18n.editIconButton"
-            :aria-label="$options.i18n.editIconButton"
-            @click="openEditFormDrawer(item)"
-          />
-          <gl-button
-            v-gl-tooltip
-            v-gl-modal="$options.modal.id"
-            category="tertiary"
-            icon="remove"
-            :title="$options.i18n.deleteIconButton"
-            :aria-label="$options.i18n.deleteIconButton"
-            @click="showProtectionRuleDeletionConfirmModal(item)"
-          />
+          <div class="gl-flex gl-justify-end">
+            <gl-button
+              v-gl-tooltip
+              category="tertiary"
+              icon="pencil"
+              :title="$options.i18n.editIconButton"
+              :aria-label="$options.i18n.editIconButton"
+              @click="openEditFormDrawer(item)"
+            />
+            <gl-button
+              v-gl-tooltip
+              v-gl-modal="$options.modal.id"
+              category="tertiary"
+              icon="remove"
+              :title="$options.i18n.deleteIconButton"
+              :aria-label="$options.i18n.deleteIconButton"
+              @click="showProtectionRuleDeletionConfirmModal(item)"
+            />
+          </div>
         </template>
       </gl-table>
       <p v-else data-testid="empty-text" class="gl-text-subtle">

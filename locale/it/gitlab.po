@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: it\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-12 12:33\n"
+"PO-Revision-Date: 2025-03-13 12:57\n"
 
 msgid " %{start} to %{end}"
 msgstr " Dal giorno %{start} al giorno %{end}"
@@ -1551,15 +1551,6 @@ msgstr ""
 
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
 msgstr ""
-
-msgid "%{type} '%{name}' has been successfully restored."
-msgstr "%{type} \"%{name}'\" è stato ripristinato correttamente."
-
-msgid "%{type} '%{name}' is being deleted."
-msgstr "%{type} \"%{name}\" è in fase di eliminazione."
-
-msgid "%{type} '%{name}' will be deleted on %{date}."
-msgstr "%{type} \"%{name}\" verrà eliminato il giorno %{date}."
 
 msgid "%{type} must be a %{help_link}"
 msgstr ""
@@ -3805,8 +3796,11 @@ msgstr "Hai domande o idee sui nuovi miglioramenti che abbiamo apportato? %{link
 msgid "AdherenceReport|Learn more about the changes in our %{linkStart}documentation%{linkEnd}."
 msgstr "Per ulteriori informazioni sulle modifiche, consulta la nostra %{linkStart}documentazione%{linkEnd}."
 
-msgid "AdherenceReport|We've updated the Adherence Report with new features to enhance your compliance workflow."
-msgstr "Abbiamo aggiornato il report sull'aderenza con nuove funzionalità per migliorare il flusso di lavoro di conformità."
+msgid "AdherenceReport|Show old report"
+msgstr ""
+
+msgid "AdherenceReport|We've updated the adherence report with new features to enhance your compliance workflow."
+msgstr ""
 
 msgid "Adjust how frequently the GitLab UI polls for updates."
 msgstr ""
@@ -4185,6 +4179,9 @@ msgstr "L'identificatore del modello deve iniziare con \"%{bedrockIdentifierPref
 
 msgid "AdminSelfHostedModels|Model uses an API token"
 msgstr "Il modello utilizza un token API"
+
+msgid "AdminSelfHostedModels|More features are available in beta. You can %{linkStart}turn on AI-powered beta features%{linkEnd}."
+msgstr ""
 
 msgid "AdminSelfHostedModels|More models are available in beta. You can %{linkStart}turn on self-hosted model beta features%{linkEnd}."
 msgstr "Sono disponibili altri modelli in versione beta. Puoi %{linkStart}attivare le funzionalità beta del modello in self-hosting%{linkEnd}."
@@ -10882,6 +10879,9 @@ msgstr "%{count} utenti segnaposto corrispondenti agli utenti."
 msgid "BulkImport|%{count} placeholder users not matched to users."
 msgstr "%{count} utenti segnaposto non corrispondenti agli utenti."
 
+msgid "BulkImport|%{count} placeholder users skipped."
+msgstr ""
+
 msgid "BulkImport|%{feature} (require v%{version})"
 msgstr ""
 
@@ -15309,6 +15309,9 @@ msgstr "Stai visualizzando il centro di conformità per %{project}. Per vedere l
 msgid "ComplianceReport|and %{count} more"
 msgstr "e altri %{count}"
 
+msgid "ComplianceStandardsAdherenceV2|New Report Placeholder"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence| Standards adherence export"
 msgstr "Esportazione del report di adesione agli standard"
 
@@ -16880,6 +16883,9 @@ msgstr "Copia contenuto file"
 
 msgid "Copy file path"
 msgstr "Copia percorso file"
+
+msgid "Copy file permalink"
+msgstr ""
 
 msgid "Copy image URL"
 msgstr "Copia URL dell'immagine"
@@ -24793,6 +24799,9 @@ msgstr "Impossibile caricare"
 msgid "Failed to load Roadmap"
 msgstr "Impossibile caricare la roadmap"
 
+msgid "Failed to load additional diffs information. Try reloading the page."
+msgstr ""
+
 msgid "Failed to load assignees. Please try again."
 msgstr "Impossibile caricare gli assegnatari. Riprova."
 
@@ -25887,6 +25896,12 @@ msgstr "La funzione \"label\" può accettare al massimo 10 parametri."
 
 msgid "GCP region configured"
 msgstr "Regione GCP configurata"
+
+msgid "GLQL list"
+msgstr ""
+
+msgid "GLQL table"
+msgstr ""
 
 msgid "GLQL view timed out. Add more filters to reduce the number of results."
 msgstr "Timeout della vista GLQL. Aggiungi altri filtri per ridurre il numero di risultati."
@@ -28135,6 +28150,9 @@ msgstr "Il gruppo \"%{group_name}\" è in fase di eliminazione."
 msgid "Group '%{group_name}' was successfully updated."
 msgstr "Il gruppo \"%{group_name}\" è stato aggiornato correttamente."
 
+msgid "Group '%{group_name}' will be deleted on %{date}."
+msgstr ""
+
 msgid "Group Git LFS status:"
 msgstr ""
 
@@ -28693,6 +28711,9 @@ msgstr "Abilita l'aggregazione in background della panoramica per la dashboard d
 msgid "GroupSettings|Enable sending email notifications for this group and all its subgroups and projects"
 msgstr "Abilita invio di notifiche via email per questo gruppo e tutti i suoi sottogruppi e progetti"
 
+msgid "GroupSettings|Enforce DPoP authentication for manage API endpoints for group"
+msgstr ""
+
 msgid "GroupSettings|Enforce SSH Certificates"
 msgstr "Forza l'applicazione dei certificati SSH"
 
@@ -28725,6 +28746,9 @@ msgstr "Il percorso del gruppo non può essere più lungo di %{length} caratteri
 
 msgid "GroupSettings|How do I manage group SSH certificates?"
 msgstr "Come possono gestire i certificati SSH di un gruppo?"
+
+msgid "GroupSettings|If enabled, DPoP authentication will be enforced for manage API endpoints for this group."
+msgstr ""
 
 msgid "GroupSettings|If enabled, enterprise user accounts will not be able to use personal access tokens. %{learn_more_link}."
 msgstr "Se questa opzione è abilitata, gli account utente Enterprise non potranno utilizzare token di accesso personali. %{learn_more_link}."
@@ -43839,6 +43863,9 @@ msgstr "Inserisci un nome per il modello di commento."
 msgid "Please enter a name for the custom emoji."
 msgstr "Inserisci un nome per l'emoji personalizzata."
 
+msgid "Please enter a name with less than %{number} characters."
+msgstr ""
+
 msgid "Please enter a non-negative number"
 msgstr "Inserisci un numero non negativo"
 
@@ -52562,6 +52589,24 @@ msgstr "ad esempio: glpat-1234567890"
 msgid "SecurityExclusions|ex: spec/**/*.rb"
 msgstr "ad esempio: spec/**/*.rb"
 
+msgid "SecurityInventory|CS"
+msgstr ""
+
+msgid "SecurityInventory|DAST"
+msgstr ""
+
+msgid "SecurityInventory|DS"
+msgstr ""
+
+msgid "SecurityInventory|IaC"
+msgstr ""
+
+msgid "SecurityInventory|SAST"
+msgstr ""
+
+msgid "SecurityInventory|SD"
+msgstr ""
+
 msgid "SecurityInventory|Security inventory"
 msgstr "Inventario di sicurezza"
 
@@ -52892,6 +52937,9 @@ msgstr "Modifica progetto dei criteri"
 
 msgid "SecurityOrchestration|Edit scan execution policy"
 msgstr "Modifica il criterio di esecuzione dell'analisi"
+
+msgid "SecurityOrchestration|Edit vulnerability management policy"
+msgstr ""
 
 msgid "SecurityOrchestration|Empty policy name"
 msgstr "Nome criterio vuoto"
@@ -53270,8 +53318,8 @@ msgstr "L'analisi sceglierà automaticamente un runner da eseguire perché non e
 msgid "SecurityOrchestration|Schedule a new"
 msgstr "Programma nuova"
 
-msgid "SecurityOrchestration|Schedule a pipeline on a %{cadenceSelector} cadence for branches"
-msgstr "Programma una pipeline su una cadenza %{cadenceSelector} per i rami"
+msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
+msgstr ""
 
 msgid "SecurityOrchestration|Scope"
 msgstr "Ambito"
@@ -53629,6 +53677,9 @@ msgstr "sono falsi positivi"
 
 msgid "SecurityOrchestration|are not false positives"
 msgstr "non sono falsi positivi"
+
+msgid "SecurityOrchestration|at the following times: %{cadenceSelector}, start at %{start}, run for: %{duration}, and timezone is %{timezoneSelector}"
+msgstr ""
 
 msgid "SecurityOrchestration|branch"
 msgstr "ramo"
@@ -58529,6 +58580,9 @@ msgstr "Il token di autenticazione."
 msgid "The base URL to the Harbor instance linked to the GitLab project. For example, `https://demo.goharbor.io`."
 msgstr "L'URL di base dell'istanza Harbor collegata al progetto GitLab. Ad esempio, \"https://demo.goharbor.io\"."
 
+msgid "The blob is too large to render"
+msgstr ""
+
 msgid "The branch for this project has no active pipeline configuration."
 msgstr "Il ramo per questo progetto non ha alcuna configurazione di pipeline attiva."
 
@@ -61196,6 +61250,9 @@ msgstr "Al completamento, le attività da svolgere vengono visualizzate qui."
 
 msgid "Todos|When to-do items are snoozed, they will appear here."
 msgstr "Quando vengono posticipate le attività da svolgere, vengono visualizzate qui."
+
+msgid "Todos|Wiki page"
+msgstr ""
 
 msgid "Todos|Work item"
 msgstr "Elemento di lavoro"
@@ -65118,6 +65175,9 @@ msgstr "Visualizzza percorsi delle dipendenze"
 
 msgid "Vulnerability|View training"
 msgstr "Visualizza formazione"
+
+msgid "Vulnerability|Vulnerability identifiers"
+msgstr ""
 
 msgid "Vulnerability|Vulnerable class:"
 msgstr "Classe vulnerabile:"

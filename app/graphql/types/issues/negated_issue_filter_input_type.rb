@@ -19,10 +19,10 @@ module Types
         description: 'List of IIDs of issues to exclude. For example, `[1, 2]`.'
       argument :label_name, [GraphQL::Types::String],
         required: false,
-        description: 'Labels not applied to this issue.'
+        description: 'Labels not applied to the issue.'
       argument :milestone_title, [GraphQL::Types::String],
         required: false,
-        description: 'Milestone not applied to this issue.'
+        description: 'Milestone not applied to the issue.'
       argument :milestone_wildcard_id, ::Types::NegatedMilestoneWildcardIdEnum,
         required: false,
         description: 'Filter by negated milestone wildcard values.'

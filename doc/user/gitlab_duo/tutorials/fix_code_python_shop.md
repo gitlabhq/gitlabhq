@@ -691,10 +691,10 @@ wheels/
 {{< /tab >}}
 
 {{< tab title="README.md" >}}
-
+<!-- markdownlint-disable MD029 -->
 A comprehensive `README` file with setup and usage instructions.
 
-```markdown
+````markdown
 # Bookstore Inventory Management System
 
 A Python web application for managing bookstore inventory, built with Flask and SQLite.
@@ -721,20 +721,20 @@ A Python web application for managing bookstore inventory, built with Flask and 
    cd python-shop-app
    ```
 
-1. Create and activate a virtual environment:
+2. Create and activate a virtual environment:
 
    ```shell
    python -m venv myenv
    source myenv/bin/activate  # On Windows: myenv\Scripts\activate
    ```
 
-1. Install dependencies:
+3. Install dependencies:
 
    ```shell
    pip install -r requirements.txt
    ```
 
-1. Set up environment variables:
+4. Set up environment variables:
 
    Copy `.env.example` to `.env` and modify as needed.
 
@@ -746,7 +746,7 @@ A Python web application for managing bookstore inventory, built with Flask and 
    flask run
    ```
 
-1. The API will be available at `http://localhost:5000/`
+2. The API will be available at `http://localhost:5000/`
 
 ## API Endpoints
 
@@ -763,7 +763,8 @@ Run tests with `pytest`:
 ```python
 python -m pytest
 ```
-
+````
+<!-- markdownlint-enable MD029 -->
 {{< /tab >}}
 
 {{< tab title="requirements.txt" >}}
