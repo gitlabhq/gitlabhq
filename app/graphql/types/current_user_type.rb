@@ -33,6 +33,15 @@ module Types
       null: true,
       experiment: { milestone: '17.10' },
       description: 'User preferences for the given work item type and namespace.'
+
+    field :activity,
+      Users::ActivityStreamType,
+      description: 'Recent user activity.',
+      experiment: { milestone: '17.10' }
+
+    def activity
+      object if Feature.enabled?(:activity_stream_graphql, current_user)
+    end
   end
   # rubocop:enable Graphql/AuthorizeTypes
 end

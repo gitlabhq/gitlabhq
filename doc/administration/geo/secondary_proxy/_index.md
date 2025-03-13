@@ -243,8 +243,6 @@ To request acceleration of a feature, check if an issue already exists in [epic 
 
 Secondary site HTTP proxying is enabled by default on a secondary site when it uses a unified URL, meaning, it is configured with the same `external_url` as the primary site. Disabling proxying in this case tends not to be helpful due to completely different behavior being served at the same URL, depending on routing.
 
-Secondary site HTTP proxying is enabled by default on a secondary site when it uses a unified URL, meaning, it is configured with the same `external_url` as the primary site. Disabling proxying in this case tends not to be helpful due to completely different behavior being served at the same URL, depending on routing.
-
 ### What happens if you disable secondary proxying
 
 Disabling the proxying feature flag has the following general effects:

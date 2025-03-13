@@ -21,7 +21,7 @@ export default {
       import('ee_component/dora/components/change_failure_rate_charts.vue'),
     ProjectQualitySummary: () => import('ee_component/project_quality_summary/app.vue'),
   },
-  piplelinesTabEvent: 'p_analytics_ci_cd_pipelines',
+  pipelinesTabEvent: 'p_analytics_ci_cd_pipelines',
   deploymentFrequencyTabEvent: 'p_analytics_ci_cd_deployment_frequency',
   leadTimeTabEvent: 'p_analytics_ci_cd_lead_time',
   timeToRestoreServiceTabEvent: 'visit_ci_cd_time_to_restore_service_tab',
@@ -94,7 +94,7 @@ export default {
       <gl-tab
         :title="__('Pipelines')"
         data-testid="pipelines-tab"
-        @click="trackEvent($options.piplelinesTabEvent)"
+        @click="trackEvent($options.pipelinesTabEvent)"
       >
         <component :is="pipelineChartsComponent" />
       </gl-tab>

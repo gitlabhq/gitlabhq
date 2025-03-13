@@ -38,14 +38,15 @@ or the [Support team](https://about.gitlab.com/support/).
 
 The zero-downtime upgrade process has the following requirements:
 
-- Zero-downtime upgrades are only supported on multi-node GitLab environments built with the Linux package that have Load Balancing and HA mechanisms configured as follows:
+- Zero-downtime upgrades are only supported on multi-node GitLab environments built with the Linux package that have Load Balancing and available HA mechanisms configured as follows:
   - External Load Balancer configured for Rails nodes with health checks enabled against the [Readiness](../administration/monitoring/health_check.md#readiness) (`/-/readiness`) endpoint.
   - Internal Load Balancer configured for any PgBouncer and Praefect components with TCP health checks enabled.
-  - HA mechanisms configured for the Consul, Postgres and Redis components if present.
-    - Any of these components that are not deployed in a HA fashion will need to be upgraded separately with downtime.
+  - HA mechanisms configured for the Consul, Postgres, Redis components if present.
+    - Any of these components that are not deployed in a HA fashion need to be upgraded separately with downtime.
+    - For databases, the [Linux package only supports HA for the main GitLab database](https://gitlab.com/groups/gitlab-org/-/epics/7814). For any other databases, such as the [Praefect database](#praefect-gitaly-cluster), a third party database solution is required to achieve HA and subsequently to avoid downtime.
 - **You can only upgrade one minor release at a time**. So from `16.1` to `16.2`, not to `16.3`. If you skip releases, database modifications may be run in the wrong sequence [and leave the database schema in a broken state](https://gitlab.com/gitlab-org/gitlab/-/issues/321542).
 - You have to use [post-deployment migrations](../development/database/post_deployment_migrations.md).
-- [Zero-downtime upgrades are not available with the GitLab Charts](https://docs.gitlab.com/charts/installation/upgrade.html) but are with [GitLab Operator](https://docs.gitlab.com/operator/gitlab_upgrades.html).
+- [Zero-downtime upgrades are not available with the GitLab Charts](https://docs.gitlab.com/charts/installation/upgrade.html). Support is available with the [GitLab Operator](https://docs.gitlab.com/operator/gitlab_upgrades.html) but there are [known limitations](https://docs.gitlab.com/operator/#known-issues) with this deployment method and as such it's not covered in this guide at this time.
 
 In addition to the above, please be aware of the following considerations:
 
@@ -59,9 +60,10 @@ In addition to the above, please be aware of the following considerations:
   - Certain major or minor releases may require a set of background migrations to be finished. While this doesn't require downtime (if the above conditions are met), it's required that you [wait for background migrations to complete](background_migrations.md) between each major or minor release upgrade.
   - The time necessary to complete these migrations can be reduced by increasing the number of Sidekiq workers that can process jobs in the
     `background_migration` queue. To see the size of this queue, [check for background migrations before upgrading](background_migrations.md).
+- Zero downtime upgrades can be performed for [Gitaly](#gitaly) when it's set up in its Cluster or Sharded setups due to a graceful reload mechanism. For the [Praefect (Gitaly Cluster)](#praefect-gitaly-cluster) component it can also be directly upgraded without downtime, however the GitLab Linux package does not offer HA and subsequently Zero Downtime support for it's database - A third party database solution is required to avoid downtime.
 - [PostgreSQL major version upgrades](../administration/postgresql/replication_and_failover.md#near-zero-downtime-upgrade-of-postgresql-in-a-patroni-cluster) are a separate process and not covered by zero-downtime upgrades (smaller upgrades are covered).
-- Zero-downtime upgrades are supported for any GitLab components you've deployed with the GitLab Linux package. If you've deployed select components through a supported third party service, such as PostgreSQL in AWS RDS or Redis in GCP Memorystore, upgrades for those services will need to be performed separately as per their standard processes.
-- As a general guideline, the larger amount of data you have, the more time it will take for the upgrade to complete. In testing, any database smaller than 10 GB shouldn't generally take longer than an hour, but your mileage may vary.
+- Zero-downtime upgrades are supported for the noted GitLab components you've deployed with the GitLab Linux package. If you've deployed select components through a supported third party service, such as PostgreSQL in AWS RDS or Redis in GCP Memorystore, upgrades for those services need to be performed separately as per their standard processes.
+- As a general guideline, the larger amount of data you have, the more time is needed for the upgrade to complete. In testing, any database smaller than 10 GB shouldn't generally take longer than an hour, but your mileage may vary.
 
 {{< alert type="note" >}}
 
@@ -153,7 +155,7 @@ This process applies to both Gitaly Sharded and Cluster setups. Run through the 
    sudo gitlab-ctl restart consul node-exporter logrotate
    ```
 
-### Praefect
+#### Praefect (Gitaly Cluster)
 
 For Gitaly Cluster setups, you must deploy and upgrade Praefect in a similar way by using a graceful reload.
 
@@ -162,6 +164,12 @@ For Gitaly Cluster setups, you must deploy and upgrade Praefect in a similar way
 The upgrade process attempts to do a graceful handover to a new Praefect process.
 Existing long-running Git requests that were started before the upgrade may eventually be dropped as this handover occurs.
 In the future this functionality may be changed, [refer to this Epic](https://gitlab.com/groups/gitlab-org/-/epics/10328) for more information.
+
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
+This section focuses exclusively on the Praefect component, not its [required PostgreSQL database](../administration/gitaly/praefect.md#postgresql). The [GitLab Linux package does not offer HA](https://gitlab.com/groups/gitlab-org/-/epics/7814) and subsequently Zero Downtime support for the Praefect database. A third party database solution is required to avoid downtime.
 
 {{< /alert >}}
 

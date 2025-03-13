@@ -72,9 +72,9 @@ module.exports = {
       fileName: './config/webpack.config.js',
     },
     cache: {
-      // Use Yarn's cache directory
       folder: './tmp/cache/depcruise-cache',
-      strategy: 'content',
+      // NOTE: if we want to store cache on CI, set the value to 'content'
+      strategy: 'metadata',
       // With compression the cache is around 2MB
       // Without Compression, cache is 20 times larger
       compress: true,

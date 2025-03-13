@@ -131,7 +131,9 @@ export default {
         @click="$emit('edit')"
         >{{ __('Edit') }}
       </gl-button>
-      <gl-link v-else :href="headerLinkHref">{{ headerLinkTitle }}</gl-link>
+      <gl-link v-else-if="headerLinkHref && headerLinkTitle" :href="headerLinkHref">{{
+        headerLinkTitle
+      }}</gl-link>
     </template>
     <span
       v-if="showEmptyState && !$scopedSlots.content"

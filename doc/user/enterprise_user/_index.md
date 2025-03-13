@@ -51,7 +51,7 @@ If the organization moves its verified domains to another paid group, its enterp
 
 ### Identifying unclaimed users
 
-If a user is not automatically claimed as an Enterprise User, their existing access will not be revoked. 
+If a user is not automatically claimed as an Enterprise User, their existing access will not be revoked.
 A group with domain verification enabled can have both claimed and unclaimed users as members.
 
 The only difference between a member claimed as an Enterprise User and one that isn't is that a Group Owner cannot [manage unclaimed users](#manage-enterprise-users-in-a-namespace).

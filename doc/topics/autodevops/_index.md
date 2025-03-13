@@ -12,9 +12,9 @@ title: Auto DevOps
 
 {{< /details >}}
 
-Auto DevOps turns your code into production-ready applications without the usual configuration overhead. 
-The entire DevOps lifecycle is pre-configured using industry best practices. Start with the defaults 
-to ship quickly, then customize when you need more control. No complex configuration files or deep 
+Auto DevOps turns your code into production-ready applications without the usual configuration overhead.
+The entire DevOps lifecycle is pre-configured using industry best practices. Start with the defaults
+to ship quickly, then customize when you need more control. No complex configuration files or deep
 DevOps expertise is required.
 
 With Auto DevOps you get:

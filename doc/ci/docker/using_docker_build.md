@@ -971,14 +971,14 @@ environment where custom or private certificates are used (for example, Zscaler 
 error pulling image configuration: download failed after attempts=6: tls: failed to verify certificate: x509: certificate signed by unknown authority
 ```
 
-This error occurs because Docker commands in a Docker-in-Docker environment 
+This error occurs because Docker commands in a Docker-in-Docker environment
 use two separate containers:
 
 - The **build container** runs the Docker client (`/usr/bin/docker`) and executes your job's script commands.
 - The **service container** (often named `svc`) runs the Docker daemon that processes most Docker commands.
 
-When your organization uses custom certificates, both containers need these certificates. 
-Without proper certificate configuration in both containers, Docker operations that connect to external 
+When your organization uses custom certificates, both containers need these certificates.
+Without proper certificate configuration in both containers, Docker operations that connect to external
 registries or services will fail with certificate errors.
 
 To resolve this issue:

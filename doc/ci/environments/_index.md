@@ -479,9 +479,9 @@ the `stop` trigger is automatically enabled.
 In the following example, the `deploy_review` job calls a `stop_review` job to clean up and stop
 the environment.
 
-- When the [**Pipelines must succeed**](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge) setting is turned on, 
-  you can configure the [`allow_failure: true`](../yaml/_index.md#allow_failure) 
-keyword on the `stop_review` job to prevent it from 
+- When the [**Pipelines must succeed**](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge) setting is turned on,
+  you can configure the [`allow_failure: true`](../yaml/_index.md#allow_failure)
+keyword on the `stop_review` job to prevent it from
   blocking your pipelines and merge requests.
 
 ```yaml

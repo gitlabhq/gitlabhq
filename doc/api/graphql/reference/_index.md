@@ -19826,6 +19826,33 @@ Representation of a GitLab user.
 | <a id="achievementupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the achievement was last updated. |
 | <a id="achievementuserachievements"></a>`userAchievements` {{< icon name="warning-solid" >}} | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in GitLab 15.10. **Status**: Experiment. Recipients for the achievement. |
 
+### `ActivityStream`
+
+Activity streams associated with a user.
+
+#### Fields with arguments
+
+##### `ActivityStream.followedUsersActivity`
+
+Activity from users followed by the current user.
+
+{{< details >}}
+**Introduced** in GitLab 17.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`EventConnection`](#eventconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="activitystreamfollowedusersactivitytarget"></a>`target` | [`EventTarget!`](#eventtarget) | Event target. |
+
 ### `AddOnPurchase`
 
 Represents AddOn purchase for Namespace.
@@ -23621,6 +23648,7 @@ The currently authenticated GitLab user.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="currentuseractive"></a>`active` | [`Boolean`](#boolean) | Indicates if the user is active. |
+| <a id="currentuseractivity"></a>`activity` {{< icon name="warning-solid" >}} | [`ActivityStream`](#activitystream) | **Introduced** in GitLab 17.10. **Status**: Experiment. Recent user activity. |
 | <a id="currentuseravatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
 | <a id="currentuserbio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="currentuserbot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
@@ -26061,6 +26089,8 @@ Representing an event.
 | <a id="eventauthor"></a>`author` | [`UserCore!`](#usercore) | Author of this event. |
 | <a id="eventcreatedat"></a>`createdAt` | [`Time!`](#time) | When this event was created. |
 | <a id="eventid"></a>`id` | [`ID!`](#id) | ID of the event. |
+| <a id="eventproject"></a>`project` | [`Project`](#project) | Project of this event. |
+| <a id="eventtarget"></a>`target` | [`EventTargetType`](#eventtargettype) | The target of the event. |
 | <a id="eventupdatedat"></a>`updatedAt` | [`Time!`](#time) | When this event was updated. |
 
 ### `ExternalAuditEventDestination`
@@ -42251,6 +42281,22 @@ Event action.
 | <a id="eventactionreopened"></a>`REOPENED` | Reopened action. |
 | <a id="eventactionupdated"></a>`UPDATED` | Updated action. |
 
+### `EventTarget`
+
+Event target.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="eventtargetall"></a>`ALL` | All events. |
+| <a id="eventtargetcomments"></a>`COMMENTS` | Comments events. |
+| <a id="eventtargetdesigns"></a>`DESIGNS` | Designs events. |
+| <a id="eventtargetepic"></a>`EPIC` | Epic events. |
+| <a id="eventtargetissue"></a>`ISSUE` | Issue events. |
+| <a id="eventtargetmerged"></a>`MERGED` | Merged events. |
+| <a id="eventtargetpush"></a>`PUSH` | Push events. |
+| <a id="eventtargetteam"></a>`TEAM` | Team events. |
+| <a id="eventtargetwiki"></a>`WIKI` | Wiki events. |
+
 ### `ExclusionScannerEnum`
 
 Enum for the security scanners used with exclusions.
@@ -45842,6 +45888,22 @@ Represents metadata associated with a dependency link.
 One of:
 
 - [`NugetDependencyLinkMetadata`](#nugetdependencylinkmetadata)
+
+#### `EventTargetType`
+
+Represents an object that can be the subject of an event.
+
+One of:
+
+- [`Design`](#design)
+- [`Issue`](#issue)
+- [`MergeRequest`](#mergerequest)
+- [`Milestone`](#milestone)
+- [`Note`](#note)
+- [`Project`](#project)
+- [`Snippet`](#snippet)
+- [`UserCore`](#usercore)
+- [`WikiPage`](#wikipage)
 
 #### `ExpressionValue`
 

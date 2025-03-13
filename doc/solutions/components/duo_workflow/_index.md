@@ -6,9 +6,9 @@ title: GitLab AI Solution Components
 ---
 
 This documentation section covers a variety of Solution components developed and provided by GitLab.
-To download and run these solution components, request your account team for invitation code. 
+To download and run these solution components, request your account team for invitation code.
 
-The use of any Solution component is subject to the [GitLab Subscription Agreement](https://handbook.gitlab.com/handbook/legal/subscription-agreement/) (the "Agreement") and constitutes Free Software as defined within the Agreement. 
+The use of any Solution component is subject to the [GitLab Subscription Agreement](https://handbook.gitlab.com/handbook/legal/subscription-agreement/) (the "Agreement") and constitutes Free Software as defined within the Agreement.
 
 ## GitLab Duo Workflow
 

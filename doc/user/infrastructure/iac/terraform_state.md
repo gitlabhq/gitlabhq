@@ -19,9 +19,9 @@ title: GitLab-managed Terraform/OpenTofu state
 
 {{< /history >}}
 
-Managing infrastructure state files across teams requires both security and reliability. GitLab-managed 
+Managing infrastructure state files across teams requires both security and reliability. GitLab-managed
 OpenTofu state eliminates the typical challenges of state management.
-With minimal configuration, your OpenTofu states become a natural extension of your GitLab project. 
+With minimal configuration, your OpenTofu states become a natural extension of your GitLab project.
 This integration keeps your infrastructure definitions, code, and state all in one secure location.
 
 With GitLab-managed OpenTofu state, you:

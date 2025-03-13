@@ -109,7 +109,7 @@ If you already have a security policy project but don't have dependency and/or l
 1. Make sure to:
    - Maintain the existing YAML structure
    - Place these sections at the same level as other top-level sections
-   - Set `user_approvers_ids` and/or `group_approvers_ids` and/or `role_approvers` (only one is needed) 
+   - Set `user_approvers_ids` and/or `group_approvers_ids` and/or `role_approvers` (only one is needed)
      - Replace `YOUR_USER_ID_HERE` or `YOUR_GROUP_ID_HERE` with appropriate user/group IDs (ensure you paste the user/group IDs e.g. 1234567 and NOT the usernames)
    - Replace `YOUR_PROJECT_ID_HERE` if you'd like to exclude any projects from the policy (ensure you paste the project IDs e.g. 1234 and NOT the project names/paths)
    - Set `approvals_required: 1` to the number of approvals you want to require

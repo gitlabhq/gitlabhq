@@ -76,7 +76,7 @@ To set up publishing through GitLab CI/CD:
 
 ### Example CI/CD configuration
 
-Below is an example `.gitlab-ci.yml` configuration for publishing an NPM package. This codeblock isn't meant to be used as-is and will require changes depending on your configuration. This means that you will need to modify the example below to include the location of your npmjs publishing token. 
+Below is an example `.gitlab-ci.yml` configuration for publishing an NPM package. This codeblock isn't meant to be used as-is and will require changes depending on your configuration. This means that you will need to modify the example below to include the location of your npmjs publishing token.
 
 ```yaml
 stages:

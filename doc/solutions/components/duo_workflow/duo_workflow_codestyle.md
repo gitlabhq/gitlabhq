@@ -20,14 +20,14 @@ title: Duo Workflow Use Case for Applying Coding Style
 1. Obtain the invitation code from your account team.
 1. Download the solution component from [the solution component webstore](https://cloud.gitlab-accelerator-marketplace.com) by using your invitation code.
 
-## Duo Workflow Use Case: Improve Java Application with Style Guide 
+## Duo Workflow Use Case: Improve Java Application with Style Guide
 
-The document describes GitLab Duo Workflow Solution with prompt and context library. The purpose of the solution is to improve appliction coding based on defined style. 
+The document describes GitLab Duo Workflow Solution with prompt and context library. The purpose of the solution is to improve appliction coding based on defined style.
 
-This solution provides a GitLab issue as the prompt and the style guide as the context, designed to automate Java style guidelines to codebases using GitLab Duo Workflow. The prompt and context library enables Duo Workflow to: 
+This solution provides a GitLab issue as the prompt and the style guide as the context, designed to automate Java style guidelines to codebases using GitLab Duo Workflow. The prompt and context library enables Duo Workflow to:
 
-1. Access centralized style guide content stored in GitLab repository, 
-1. Understand domain-specific coding standards, and 
+1. Access centralized style guide content stored in GitLab repository,
+1. Understand domain-specific coding standards, and
 1. Apply consistent formatting to Java code while preserving functionality.
 
 For detailed information about GitLab Duo Workflow, review [the document here](../../../user/duo_workflow/_index.md).
@@ -57,7 +57,7 @@ To run the agentic workflow to review and apply style to your application, you n
 
 1. **Set up the prompt and contet library** by cloning `Enterprise Code Quality Standards` project
 1. **Create a GitLab issue** `Review and Apply Style` with the prompt content from the library file `.gitlab/workflows/java-style-workflow.md`
-1. **In the issue** `Review and Apply Style` configure the workflow variables as detailed in the [Configuration section](#configuration-guide) 
+1. **In the issue** `Review and Apply Style` configure the workflow variables as detailed in the [Configuration section](#configuration-guide)
 1. **In your VS code** with the project `Enterprise Code Quality Standards`, start the Duo Workflow with a simple [workflow prompt](#example-duo-workflow-prompt)
 1. **Work with the Duo Workflow** by reviewing the proposed plan and automated tasks, if needed add further input to the workflow
 1. **Review and commit** the styled code changes to your repository
@@ -77,7 +77,7 @@ This simple prompt is powerful because it instructs Duo Workflow to:
 
 ## Configuration Guide
 
-The prompt is defined in the `.gitlab/workflows/java-style-workflow.md` file in the solution package. This file serves as your template for creating GitLab issues that instruct the workflow agent to build out the plan to automate the style guide review on your application and apply the changes. 
+The prompt is defined in the `.gitlab/workflows/java-style-workflow.md` file in the solution package. This file serves as your template for creating GitLab issues that instruct the workflow agent to build out the plan to automate the style guide review on your application and apply the changes.
 
 In the first section of `.gitlab/workflows/java-style-workflow.md`, it defines variables you need to configure for the prompt.
 
@@ -121,7 +121,7 @@ TARGET_FILES=asset-management-api/src/main/java/com/royal/reserve/bank/asset/man
 
 ### Important Notes About AI-Generated Code
 
-**⚠️ Important Disclaimer**: 
+**⚠️ Important Disclaimer**:
 
 GitLab Workflow uses Agentic AI which is non-deterministic, meaning:
 
@@ -195,12 +195,12 @@ The AI assistant first creates an execution plan with specific tools:
 1. Access the Java style guidelines by retrieving content from Enterprise Java Standards project using `run_read_only_git_command` on `https://gitlab.com/gl-demo-ultimate-zhenderson/sandbox/enterprise-java-standards.git` for file `coding-style/java/guidelines/java-coding-standards.md`, supported by: `run_read_only_git_command`
 1. Read and analyze the current content of `AssetManagementService.java` using the `read_file` tool to understand its structure and identify areas that need style updates, supported by `read_file`
 1. Search for any similar files in the project using find_files to ensure consistent style application across related service classes, supported by `find_files`
-1. Edit AssetManagementService.java using the edit_file tool to apply the style guidelines, focusing on: 
+1. Edit AssetManagementService.java using the edit_file tool to apply the style guidelines, focusing on:
 
-   - Package and import organization 
-   - Class and method documentation 
-   - Code indentation and spacing 
-   - Annotation placement 
+   - Package and import organization
+   - Class and method documentation
+   - Code indentation and spacing
+   - Annotation placement
    - Method parameter formatting, supported by `edit_file`
 
 1. Verify all Lombok annotations (@Service, @RequiredArgsConstructor, @Slf4j) are properly formatted according to the style guide using grep_files to check annotation patterns across the codebase, supported by `grep_files`

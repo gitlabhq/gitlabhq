@@ -246,7 +246,7 @@ To copy the API token, select **Copy**.
 To migrate from one Jira site to another in GitLab and maintain your Jira issues integration:
 
 1. Follow the steps in [configure the integration](#configure-the-integration).
-1. Enter the new Jira site URL (for example, `https://myjirasite.atlassian.net`). 
+1. Enter the new Jira site URL (for example, `https://myjirasite.atlassian.net`).
 
 To update existing Jira issue references in GitLab to use the new Jira site URL, you must
 [invalidate the Markdown cache](../../administration/invalidate_markdown_cache.md#invalidate-the-cache).

@@ -74,7 +74,7 @@ Below are some examples of common Kibana filters.
 
 [See example filter](https://log.gprd.gitlab.net/app/r/s/cWkK1).
 
-As mentioned [above](#logs-of-each-graphql-query), `json.meta.caller_id` appears as `graphql:<operation_name>` for queries that 
+As mentioned [above](#logs-of-each-graphql-query), `json.meta.caller_id` appears as `graphql:<operation_name>` for queries that
 came from the GitLab frontend, otherwise as `graphql:unknown`. This filter be used to identify internal versus external queries.
 
 1. Combine the [subcomponent filter](#logs-of-each-graphql-query) with the following Kibana filter:

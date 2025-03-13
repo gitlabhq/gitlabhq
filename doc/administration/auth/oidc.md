@@ -156,7 +156,7 @@ The OpenID Connect provider provides you with a client's details and secret for 
      but you can override these icons by specifying this parameter. GitLab accepts both
      local paths and absolute URLs.
      GitLab includes icons for most major social login platforms,
-     but you can override these icons by specifying an external URL or 
+     but you can override these icons by specifying an external URL or
      an absolute or relative path to your own icon file.
      - For local absolute paths, configure the provider settings as `icon: <path>/<to>/<your-icon>`.
        - Store the icon file in `/opt/gitlab/embedded/service/gitlab-rails/public/<path>/<to>/<your-icon>`.

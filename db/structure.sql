@@ -24660,6 +24660,7 @@ CREATE TABLE workspaces (
     workspaces_agent_config_version integer NOT NULL,
     desired_config_generator_version integer,
     project_ref text,
+    actual_state_updated_at timestamp with time zone DEFAULT '1970-01-01 00:00:00+00'::timestamp with time zone NOT NULL,
     CONSTRAINT check_15543fb0fa CHECK ((char_length(name) <= 64)),
     CONSTRAINT check_157d5f955c CHECK ((char_length(namespace) <= 64)),
     CONSTRAINT check_2b401b0034 CHECK ((char_length(deployment_resource_version) <= 64)),

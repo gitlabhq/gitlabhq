@@ -1,3 +1,4 @@
+import { GlLoadingIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { Mousetrap } from '~/lib/mousetrap';
@@ -111,10 +112,16 @@ describe('WorkItemSidebarWidget component', () => {
     });
 
     describe('when updating', () => {
-      it('renders Edit button as disabled', () => {
+      beforeEach(() => {
         createComponent({ canUpdate: true, isUpdating: true });
+      });
 
+      it('renders Edit button as disabled', () => {
         expect(findEditButton().props('disabled')).toBe(true);
+      });
+
+      it('shows loading icon', () => {
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       });
     });
   });

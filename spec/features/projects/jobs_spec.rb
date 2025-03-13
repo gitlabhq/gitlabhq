@@ -659,8 +659,8 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         context 'when deployment does not have a deployable' do
           let!(:second_deployment) { create(:deployment, :success, environment: environment, deployable: nil) }
 
-          it 'has an empty href' do
-            expect(find_by_testid('job-deployment-link')['href']).to be_empty
+          it 'has a href of #' do
+            expect(page).to have_selector('[data-testid="job-deployment-link"][href="#"]')
           end
         end
       end

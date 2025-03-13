@@ -120,11 +120,17 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
       end
     end
 
-    context 'when schema is gitlab_ci' do
-      let(:gitlab_schema) { 'gitlab_ci' }
+    context 'when using multiple databases' do
+      before do
+        skip_if_shared_database(:ci)
+      end
 
-      it 'returns the database name' do
-        expect(database_name).to eq(database_exists?(:ci) ? 'ci' : 'main')
+      context 'when schema is gitlab_ci' do
+        let(:gitlab_schema) { 'gitlab_ci' }
+
+        it 'returns the database name' do
+          expect(database_name).to eq('ci')
+        end
       end
     end
   end

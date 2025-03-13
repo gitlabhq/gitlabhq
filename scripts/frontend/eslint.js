@@ -7,7 +7,7 @@ To see the full list of circular dependencies, run the command ${chalk.bold.cyan
 If you have fixed existing circular dependencies or find false positives, you can add/remove them from the
 exclusions list in the 'config/dependency-cruiser.js' file.\n
 ${chalk.italic('If the above command fails because of memory issues, increase the memory by prepending it with the following')}
-${chalk.bold.cyan('NODE_OPTIONS="--max_old_space_size=4096"')}
+${chalk.bold.cyan('NODE_OPTIONS="--max-old-space-size=4096"')}
 `);
 };
 

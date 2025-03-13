@@ -37,8 +37,19 @@ generate them from a cron-based Sidekiq job:
 - For Geo related metrics, check `Geo::MetricsUpdateService`.
 - For other "global" / instance-wide metrics, check: `Metrics::GlobalMetricsUpdateService`.
 
-When exporting data from Sidekiq in an installation with more than one Sidekiq instance,
-you are not guaranteed that the same exporter will always be queried.
+{{< alert type="warning" >}}
 
-You can read more and understand the caveats in [issue 406583](https://gitlab.com/gitlab-org/gitlab/-/issues/406583),
+When exporting metrics from Sidekiq in a multi-instance deployment:
+
+- The same exporter is not guaranteed to be queried consistently.
+- This is especially problematic for gauge metrics, as each Sidekiq worker will continue reporting the last recorded value
+until that specific worker runs the metric collection code again.
+- This can lead to inconsistent or stale metrics data across your monitoring system.
+
+For more reliable metrics collection, consider creating the exporter as a custom exporter
+in [`gitlab-exporter`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter/)
+
+{{< /alert >}}
+
+For more details, see [issue 406583](https://gitlab.com/gitlab-org/gitlab/-/issues/406583),
 where we also discuss a possible solution using a push-gateway.

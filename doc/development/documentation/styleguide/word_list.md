@@ -1103,6 +1103,16 @@ unless we've gone through a legal review and have been told to promote the partn
 
 This guidance follows the [Use of Third-party Trademarks](https://handbook.gitlab.com/handbook/legal/policies/product-third-party-trademarks-guidelines/#dos--donts-for-use-of-third-party-trademarks-in-gitlab).
 
+## GitLab AI vendor model
+
+Use **GitLab AI vendor model** to refer to a [language model](#language-model-large-language-model)
+that is hosted by GitLab, and that customers access through the GitLab-hosted
+[AI gateway](#ai-gateway).
+
+Do not use this term when the [language model is hosted by a customer](#self-hosted-model),
+or when the customer is using the [GitLab Duo Self-Hosted](#gitlab-duo-self-hosted)
+feature.
+
 ## GitLab Dedicated
 
 Use **GitLab Dedicated** to refer to the product offering. It refers to a GitLab instance that's hosted and managed by GitLab for customers.

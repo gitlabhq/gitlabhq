@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'sets work item parent' do
+  after do
+    noteable.reload
+  end
+
   it 'leaves the note empty' do
     expect(execute(note)).to be_empty
   end

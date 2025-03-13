@@ -116,6 +116,52 @@ Example response:
 }
 ```
 
+## Update a service account user
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182607/) in GitLab 17.10.
+
+{{< /history >}}
+
+Updates a service account user in a given top-level group.
+
+{{< alert type="note" >}}
+
+This endpoint only works on top-level groups.
+
+{{< /alert >}}
+
+```plaintext
+PATCH /groups/:id/service_accounts/:user_id
+```
+
+Parameters:
+
+| Attribute  | Type           | Required | Description                                                     |
+|:-----------|:---------------|:---------|:----------------------------------------------------------------|
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `user_id`  | integer        | yes      | The ID of the service account user.                              |
+| `name`     | string         | no       | Name of the user.                                               |
+| `username` | string         | no       | Username of the user.                                           |
+
+Example request:
+
+```shell
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts/57" --data "name=Updated Service Account"
+```
+
+Example response:
+
+```json
+{
+  "id": 57,
+  "username": "service_account_group_345_6018816a18e515214e0c34c2b33523fc",
+  "name": "Updated Service Account",
+  "email": "service_account_group_345_<random_hash>@noreply.gitlab.example.com"
+}
+```
+
 ## Delete a service account user
 
 {{< history >}}

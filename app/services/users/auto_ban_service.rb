@@ -1,33 +1,39 @@
 # frozen_string_literal: true
 
 module Users
-  class AutoBanService < BaseService
+  class AutoBanService
+    Error = Class.new(StandardError)
+
     def initialize(user:, reason:)
       @user = user
       @reason = reason
     end
 
     def execute
-      if user.ban
-        record_custom_attribute
-        ban_duplicate_users
-        success
-      else
-        messages = user.errors.full_messages
-        error(messages.uniq.join('. '))
-      end
+      ban_user
     end
 
     def execute!
-      user.ban!
-      record_custom_attribute
-      ban_duplicate_users
-      success
+      result = ban_user
+
+      raise Error, result[:message] if result[:status] == :error
     end
 
     private
 
     attr_reader :user, :reason
+
+    def ban_user
+      result = ::Users::BanService.new(admin_bot).execute(user)
+
+      record_custom_attribute if result[:status] == :success
+
+      result
+    end
+
+    def admin_bot
+      Users::Internal.admin_bot
+    end
 
     def ban_duplicate_users
       AntiAbuse::BanDuplicateUsersWorker.perform_async(user.id)

@@ -77,7 +77,7 @@ end
 We must not make breaking changes to our REST API v4, even in major GitLab releases. See [what is a breaking change](#what-is-a-breaking-change) and [what is not a breaking change](#what-is-not-a-breaking-change).
 
 Our REST API maintains its own versioning independent of GitLab versioning.
-The current REST API version is `4`. Because [we commit to follow semantic versioning for our REST API](../api/rest/_index.md), we cannot make breaking changes to it. A major version change for our REST API (most likely, `5`) is currently not planned, or scheduled. 
+The current REST API version is `4`. Because [we commit to follow semantic versioning for our REST API](../api/rest/_index.md), we cannot make breaking changes to it. A major version change for our REST API (most likely, `5`) is currently not planned, or scheduled.
 
 The exception is API features that are [marked as experimental or beta](#experimental-beta-and-generally-available-features). These features can be removed or changed at any time.
 

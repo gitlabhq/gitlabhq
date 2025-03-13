@@ -20,6 +20,7 @@ import {
 } from '../constants';
 import getPipelineCountByStatus from '../graphql/queries/get_pipeline_count_by_status.query.graphql';
 import getProjectPipelineStatistics from '../graphql/queries/get_project_pipeline_statistics.query.graphql';
+import DashboardHeader from './dashboard_header.vue';
 import StatisticsList from './statistics_list.vue';
 
 const defaultAnalyticsValues = {
@@ -51,6 +52,7 @@ export default {
     GlColumnChart,
     GlChartSeriesLabel,
     GlSkeletonLoader,
+    DashboardHeader,
     StatisticsList,
     CiCdAnalyticsCharts,
   },
@@ -316,9 +318,9 @@ export default {
     <gl-alert v-if="showFailureAlert" :variant="failure.variant" @dismiss="hideAlert">{{
       failure.text
     }}</gl-alert>
-    <div class="gl-mb-3">
-      <h4>{{ s__('PipelineCharts|CI/CD Analytics') }}</h4>
-    </div>
+    <dashboard-header>
+      {{ s__('PipelineCharts|Pipelines') }}
+    </dashboard-header>
     <gl-skeleton-loader v-if="loading" :lines="5" />
     <statistics-list v-else :counts="formattedCounts" />
     <h4>{{ __('Pipelines charts') }}</h4>

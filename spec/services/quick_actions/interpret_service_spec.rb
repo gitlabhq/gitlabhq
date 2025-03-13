@@ -3316,7 +3316,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       let_it_be(:parent_ref) { parent.to_reference(project) }
 
       context 'on a work item' do
-        context 'when the parent reference is valid' do
+        context 'with a valid parent reference' do
           let(:content) { "/set_parent #{parent_ref}" }
 
           it 'returns success message' do
@@ -3342,11 +3342,54 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
               expect(updates).to be_empty
               expect(message).to eq("This parent does not exist or you don't have sufficient permission.")
+              expect(task_work_item.reload.work_item_parent).to be_nil
+            end
+          end
+
+          context 'when the parent is already set to the same work item' do
+            let_it_be(:task_work_item_with_parent) do
+              create(:work_item, :task, project: project, work_item_parent: parent)
+            end
+
+            it 'does not assign the parent and returns an appropriate error' do
+              _, updates, message = service.execute(content, task_work_item_with_parent)
+
+              expect(updates).to be_empty
+              expect(message).to eq("Work item #{task_work_item_with_parent.to_reference} has already been added to " \
+                "parent #{parent.to_reference}.")
+              expect(task_work_item_with_parent.reload.work_item_parent).to eq parent
+            end
+          end
+
+          context 'when the child is not confidential but the parent is confidential' do
+            let_it_be(:confidential_parent) { create(:work_item, :issue, :confidential, project: project) }
+            let(:content) { "/set_parent #{confidential_parent.to_reference(project)}" }
+
+            it 'does not assign the parent and returns an appropriate error' do
+              _, updates, message = service.execute(content, task_work_item)
+
+              expect(updates).to be_empty
+              expect(message).to eq("Cannot assign a confidential parent to a non-confidential work item. Make the " \
+                "work item confidential and try again")
+              expect(task_work_item.reload.work_item_parent).to be_nil
+            end
+          end
+
+          context 'when the child and parent are incompatible types' do
+            let(:other_task_work_item) { create(:work_item, :task, project: project) }
+            let(:content) { "/set_parent #{other_task_work_item.to_reference(project)}" }
+
+            it 'does not assign the parent and returns an appropriate error' do
+              _, updates, message = service.execute(content, task_work_item)
+
+              expect(updates).to be_empty
+              expect(message).to eq("Cannot assign this work item type to parent type")
+              expect(task_work_item.reload.work_item_parent).to be_nil
             end
           end
         end
 
-        context 'when the parent reference is invalid' do
+        context 'with an invalid parent reference' do
           let(:content) { "/set_parent not_a_valid_parent" }
 
           it 'does not assign the parent and returns an appropriate error' do

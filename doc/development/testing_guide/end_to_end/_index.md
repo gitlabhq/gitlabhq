@@ -119,7 +119,7 @@ There is a risk in skipping end-to-end tests. Use caution and discretion when ap
 
 #### Dynamic parallel job scaling
 
-To maintain consistent pipeline run times, the CI/CD job count for each particular E2E test suite is scaled dynamically based on total run time of tests in the suite. 
+To maintain consistent pipeline run times, the CI/CD job count for each particular E2E test suite is scaled dynamically based on total run time of tests in the suite.
 The [`generate_e2e_pipelines`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/tasks/ci.rake?ref_type=heads) Rake task creates CI/CD YAML files that:
 
 - Create the correct number of parallel jobs.

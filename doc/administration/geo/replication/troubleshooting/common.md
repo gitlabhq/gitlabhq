@@ -429,7 +429,7 @@ This situation can occur:
      ```
 
   1. Reconfigure GitLab:
-   
+
      ```shell
      sudo gitlab-ctl reconfigure
      ```

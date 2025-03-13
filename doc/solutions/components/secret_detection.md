@@ -23,7 +23,7 @@ title: Secret Detection
 
 - GitLab Ultimate tier
 - Administrator access to your GitLab instance or group
-- [Secret Detection](../../user/application_security/secret_detection/_index.md) enabled for your projects 
+- [Secret Detection](../../user/application_security/secret_detection/_index.md) enabled for your projects
 
 ## Configure Secret Detection Custom Rules
 
@@ -91,7 +91,7 @@ To set the access and authentication, follow these steps:
 
 This guide covers the steps to configure the policy to run secret detection for all projects using centralized custom ruleset.
 
-### Configure Secret Detection Policy 
+### Configure Secret Detection Policy
 
 To run secret detection automatically in the pipeline as the enforced global policy, set up the policy at the highest level, in this case the top group level. Follow the steps outlined below to create the new secret detection policy.
 
@@ -102,11 +102,11 @@ To run secret detection automatically in the pipeline as the enforced global pol
 1. Set the **Policy scope** by selecting either "All projects in this group" (and optionally set exceptions) or "Specific projects" (and select the projects from the dropdown).
 1. Under the **Actions** section, select "Dependency scanning" instead of "Secret Detection" (default).
 1. Under the **Conditions** section, you can optionally change "Triggers:" to "Schedules:" if you want to run the scan on a schedule instead of at every commit.
-1. Setup access to the custom ruleset: add CI variables with the value of the bot user, group variable and the URL of the custom ruleset project. 
+1. Setup access to the custom ruleset: add CI variables with the value of the bot user, group variable and the URL of the custom ruleset project.
 
-   Since the custom ruleset is hosted in a different project and considered as the remote ruleset, the `SECRET_DETECTION_RULESET_GIT_REFERENCE` must be used. 
+   Since the custom ruleset is hosted in a different project and considered as the remote ruleset, the `SECRET_DETECTION_RULESET_GIT_REFERENCE` must be used.
 
-   ```yaml   
+   ```yaml
    variables:
      SECRET_DETECTION_RULESET_GIT_REFERENCE: "group_[group_id]_bot_[random_number]:$SECRET_DETECTION_GROUP_TOKEN@[custom ruleset project URL]"
      SECRET_DETECTION_HISTORIC_SCAN: "true"
@@ -121,7 +121,7 @@ For detailed information about this CI variable, see [this document for details]
 
 Upon creating the policy, for reference, here is the complete policy configuration:
 
-```yaml 
+```yaml
 ---
 scan_execution_policy:
 - name: Scan Execution for Secret Detection with Custom Rules

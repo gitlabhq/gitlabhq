@@ -2012,7 +2012,6 @@ class Project < ApplicationRecord
     # seven_days interval but we have a setting to allow webhook execution
     # for thirty_days and sixty_days interval too.
     if hooks_scope == :resource_access_token_hooks &&
-        ::Feature.enabled?(:extended_expiry_webhook_execution_setting, self.namespace) &&
         data[:interval] != :seven_days &&
         !self.extended_prat_expiry_webhooks_execute?
 

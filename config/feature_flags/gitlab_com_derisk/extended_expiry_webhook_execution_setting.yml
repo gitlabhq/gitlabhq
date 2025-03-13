@@ -1,9 +1,0 @@
----
-name: extended_expiry_webhook_execution_setting
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499732
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178266
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/513684
-milestone: '17.9'
-group: group::authentication
-type: gitlab_com_derisk
-default_enabled: false

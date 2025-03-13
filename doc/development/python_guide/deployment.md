@@ -90,7 +90,7 @@ version `19.5`, this would need three deployments of the service:
 - One for service version `18.11`, which provides support for all GitLab `18.x` versions
 - One for service version `19.5`, which provides support for GitLab versions `19.0`-`19.5`.
 
-Once version 18.0 is released, unused code from versions 17.x can be safely removed, since a legacy deployment will be present. 
+Once version 18.0 is released, unused code from versions 17.x can be safely removed, since a legacy deployment will be present.
 Then, once version 20.0 is released, and GitLab version 17.x is not supported anymore, the legacy deployment can also be removed.
 
 #### Publishing images

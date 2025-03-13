@@ -11694,6 +11694,12 @@ msgstr ""
 msgid "Cannot assign a confidential epic to a non-confidential issue. Make the issue confidential and try again"
 msgstr ""
 
+msgid "Cannot assign a confidential parent to a non-confidential work item. Make the work item confidential and try again"
+msgstr ""
+
+msgid "Cannot assign this work item type to parent type"
+msgstr ""
+
 msgid "Cannot be merged automatically"
 msgstr ""
 
@@ -42621,9 +42627,6 @@ msgstr ""
 msgid "PipelineCharts|An unknown error occurred while processing CI/CD analytics."
 msgstr ""
 
-msgid "PipelineCharts|CI/CD Analytics"
-msgstr ""
-
 msgid "PipelineCharts|Failure rate"
 msgstr ""
 
@@ -48239,6 +48242,9 @@ msgid "RegistrationFeatures|send emails to users"
 msgstr ""
 
 msgid "RegistrationFeatures|use this feature"
+msgstr ""
+
+msgid "Registration|There are no seats left on your GitLab instance. Please contact your GitLab administrator."
 msgstr ""
 
 msgid "Registries enqueued to be resynced"
@@ -54673,6 +54679,9 @@ msgstr ""
 msgid "Service account token expiration"
 msgstr ""
 
+msgid "Service account was successfully updated."
+msgstr ""
+
 msgid "Service accounts"
 msgstr ""
 
@@ -54713,6 +54722,9 @@ msgid "ServiceAccount|User does not have permission to create a service account.
 msgstr ""
 
 msgid "ServiceAccount|User does not have permission to delete a service account."
+msgstr ""
+
+msgid "ServiceAccount|You are not authorized to update service accounts in this namespace."
 msgstr ""
 
 msgid "ServiceDesk|%{customEmail} with SMTP host %{smtpAddress} is %{badgeStart}verified%{badgeEnd}"
@@ -63362,6 +63374,9 @@ msgstr[1] ""
 msgid "User is blocked"
 msgstr ""
 
+msgid "User is not a service account"
+msgstr ""
+
 msgid "User is not allowed to resolve thread"
 msgstr ""
 
@@ -66165,6 +66180,9 @@ msgid "Work in progress limit"
 msgstr ""
 
 msgid "Work in progress limit: %{wipLimit}"
+msgstr ""
+
+msgid "Work item %{work_item_reference} has already been added to parent %{parent_reference}."
 msgstr ""
 
 msgid "Work item not supported"

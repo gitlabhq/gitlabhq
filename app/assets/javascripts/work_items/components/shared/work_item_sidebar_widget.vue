@@ -1,11 +1,12 @@
 <script>
-import { GlButton, GlOutsideDirective as Outside } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlOutsideDirective as Outside } from '@gitlab/ui';
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, SIDEBAR_CLOSE_WIDGET } from '~/behaviors/shortcuts/keybindings';
 
 export default {
   components: {
     GlButton,
+    GlLoadingIcon,
   },
   directives: {
     Outside,
@@ -56,6 +57,7 @@ export default {
       <h3 class="gl-heading-5 gl-mb-0">
         <slot name="title"></slot>
       </h3>
+      <gl-loading-icon v-if="isUpdating" />
       <gl-button
         v-if="canUpdate && !isEditing"
         key="edit-button"

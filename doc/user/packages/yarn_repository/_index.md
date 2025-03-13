@@ -129,7 +129,7 @@ in your package project root directory where `package.json` is found:
 For example, to trigger only on any tag push:
 
    In Yarn 1:
-   
+
    ```yaml
    image: node:lts
 

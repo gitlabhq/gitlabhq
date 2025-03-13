@@ -34,13 +34,14 @@ exports[`packages_list_app renders 1`] = `
           class="gl-mb-0 gl-mt-4 gl-text-subtle"
         >
           Learn how to
-          <b-link-stub
+          <a
             class="gl-link"
             href="/help/user/packages/terraform_module_registry/_index"
+            rel="noopener noreferrer"
             target="_blank"
           >
             publish and share your packages
-          </b-link-stub>
+          </a>
           with GitLab.
         </p>
         <div

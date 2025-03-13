@@ -10,6 +10,7 @@ import {
   DATE_RANGE_LAST_180_DAYS,
 } from '../constants';
 import getPipelineAnalytics from '../graphql/queries/get_pipeline_analytics.query.graphql';
+import DashboardHeader from './dashboard_header.vue';
 import StatisticsList from './statistics_list.vue';
 import PipelineDurationChart from './pipeline_duration_chart.vue';
 import PipelineStatusChart from './pipeline_status_chart.vue';
@@ -18,6 +19,7 @@ export default {
   components: {
     GlCollapsibleListbox,
     GlFormGroup,
+    DashboardHeader,
     StatisticsList,
     PipelineDurationChart,
     PipelineStatusChart,
@@ -106,7 +108,9 @@ export default {
 </script>
 <template>
   <div>
-    <h2>{{ s__('PipelineCharts|Pipelines') }}</h2>
+    <dashboard-header>
+      {{ s__('PipelineCharts|Pipelines') }}
+    </dashboard-header>
     <div class="gl-mb-4 gl-bg-subtle gl-p-4 gl-pb-2">
       <gl-form-group :label="__('Date range')" label-for="date-range">
         <gl-collapsible-listbox

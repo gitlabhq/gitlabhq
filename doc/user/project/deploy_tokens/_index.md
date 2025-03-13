@@ -12,7 +12,7 @@ title: Deploy tokens
 
 {{< /details >}}
 
-Deploy tokens provide secure access to GitLab resources without tying permissions to individual user accounts. Use them with Git operations, container registries, and package registries, giving your deployment 
+Deploy tokens provide secure access to GitLab resources without tying permissions to individual user accounts. Use them with Git operations, container registries, and package registries, giving your deployment
 automation access to exactly what it needs.
 
 With deploy tokens, you have:

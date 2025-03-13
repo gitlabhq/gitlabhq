@@ -6453,16 +6453,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         it_behaves_like 'webhook is added to execution list'
       end
 
-      context 'when feature flag is disabled' do
-        let(:data) { { interval: :thirty_days } }
-
-        before do
-          stub_feature_flags(extended_expiry_webhook_execution_setting: false)
-        end
-
-        it_behaves_like 'webhook is added to execution list'
-      end
-
       context 'when setting extended_prat_expiry_webhooks_execute is disabled' do
         before do
           project.update!(extended_prat_expiry_webhooks_execute: false)

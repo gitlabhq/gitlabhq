@@ -129,12 +129,7 @@ module PersonalAccessTokens
               # project bot does not have more than 1 token
               expiring_user_token = project_bot.personal_access_tokens.first
 
-              # If feature flag is not enabled webhooks will only execute if interval is seven_days
-              resource_namespace = bot_resource_namepace(project_bot.resource_bot_resource)
-              if Feature.enabled?(:extended_expiry_webhook_execution_setting, resource_namespace) ||
-                  interval == :seven_days
-                execute_web_hooks(project_bot, expiring_user_token, { interval: interval })
-              end
+              execute_web_hooks(project_bot, expiring_user_token, { interval: interval })
 
               interval_days = PersonalAccessToken.notification_interval(interval)
               deliver_bot_notifications(project_bot, expiring_user_token.name, days_to_expire: interval_days)
@@ -221,13 +216,5 @@ module PersonalAccessTokens
       NotificationService.new
     end
     strong_memoize_attr :notification_service
-
-    def bot_resource_namepace(resource)
-      if resource.is_a?(Project)
-        resource.namespace
-      else
-        resource
-      end
-    end
   end
 end

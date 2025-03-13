@@ -62,7 +62,7 @@ In both situations, you are redirected to the sign-in page and see the following
 {{< alert type="note" >}}
 
 Your account can have more than one verified email address, and any email address
-associated with your account can be verified. However, only the primary email address 
+associated with your account can be verified. However, only the primary email address
 can be used to sign in once the password is reset.
 
 {{< /alert >}}

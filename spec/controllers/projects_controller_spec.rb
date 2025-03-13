@@ -953,28 +953,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           expect(project.emails_disabled?).to eq(!result)
           expect(project.extended_prat_expiry_webhooks_execute?).to eq(result)
         end
-
-        context 'when extended_expiry_webhook_execution_setting feature flag is false' do
-          before do
-            stub_feature_flags(extended_expiry_webhook_execution_setting: false)
-          end
-
-          it "does not update extended_expiry_webhook_execution_setting" do
-            put :update, params: {
-              namespace_id: project.namespace,
-              id: project.path,
-              project: {
-                project_setting_attributes: {
-                  extended_prat_expiry_webhooks_execute: boolean_value
-                }
-              }
-            }
-
-            project.reload
-
-            expect(project.extended_prat_expiry_webhooks_execute?).to be false
-          end
-        end
       end
     end
 

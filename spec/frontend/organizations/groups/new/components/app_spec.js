@@ -79,13 +79,11 @@ describe('OrganizationGroupsNewApp', () => {
     expect(findAllParagraphs().at(0).text()).toMatchInterpolatedText(
       'Groups allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects.',
     );
-    expect(findAllLinks().at(0).attributes('href')).toBe(helpPagePath('user/group/index'));
+    expect(findAllLinks().at(0).props('href')).toBe(helpPagePath('user/group/index'));
     expect(findAllParagraphs().at(1).text()).toContain(
       'Groups can also be nested by creating subgroups.',
     );
-    expect(findAllLinks().at(1).attributes('href')).toBe(
-      helpPagePath('user/group/subgroups/index'),
-    );
+    expect(findAllLinks().at(1).props('href')).toBe(helpPagePath('user/group/subgroups/index'));
   });
 
   it('renders form and passes correct props', () => {

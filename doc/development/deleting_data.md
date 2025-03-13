@@ -26,7 +26,7 @@ Specifically, avoid invoking the following classes:
 
 ### For projects
 
-Instead of using `Projects::DestroyService`, use `Projects::MarkForDeletionService`. 
+Instead of using `Projects::DestroyService`, use `Projects::MarkForDeletionService`.
 
 ```ruby
 Projects::MarkForDeletionService.new(project, current_user).execute
@@ -34,7 +34,7 @@ Projects::MarkForDeletionService.new(project, current_user).execute
 
 ### For groups
 
-Instead of using `Groups::DestroyService`, use `Groups::MarkForDeletionService`. 
+Instead of using `Groups::DestroyService`, use `Groups::MarkForDeletionService`.
 
 ```ruby
 Groups::MarkForDeletionService.new(group, current_user).execute

@@ -68,6 +68,17 @@
     "Submodule",
     "TreeEntry"
   ],
+  "EventTargetType": [
+    "Design",
+    "Issue",
+    "MergeRequest",
+    "Milestone",
+    "Note",
+    "Project",
+    "Snippet",
+    "UserCore",
+    "WikiPage"
+  ],
   "Eventable": [
     "BoardEpic",
     "Epic"

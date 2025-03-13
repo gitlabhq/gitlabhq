@@ -55,8 +55,6 @@ class ProjectsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items, !!@project&.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, !!@project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, !!@project&.work_items_alpha_feature_flag_enabled?)
-    # FF to enable setting to allow webhook execution on 30D and 60D notification delivery too
-    push_frontend_feature_flag(:extended_expiry_webhook_execution_setting, @project&.namespace)
   end
 
   layout :determine_layout
@@ -472,10 +470,7 @@ class ProjectsController < Projects::ApplicationController
       emails_enabled
     ]
 
-    if ::Feature.enabled?(:extended_expiry_webhook_execution_setting, @project&.namespace) &&
-        can?(current_user, :admin_project, project)
-      attributes << :extended_prat_expiry_webhooks_execute
-    end
+    attributes << :extended_prat_expiry_webhooks_execute if can?(current_user, :admin_project, project)
 
     attributes
   end

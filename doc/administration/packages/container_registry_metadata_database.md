@@ -394,7 +394,7 @@ to see how to monitor the progress and health of the online garbage collector.
 The container registry supports two types of migrations:
 
 - **Regular schema migrations**: Changes to the database structure that must run before deploying new application code. These should be fast (no more than a few minutes) to avoid deployment delays.
-      
+
 - **Post-deployment migrations**: Changes to the database structure that can run while the application is running. Used for longer operations like creating indexes on large tables, avoiding startup delays and extended upgrade downtimes.
 
 By default, the registry applies both regular schema and post-deployment migrations simultaneously. To reduce downtime during upgrades, you can skip post-deployment migrations and apply them manually after the application starts.

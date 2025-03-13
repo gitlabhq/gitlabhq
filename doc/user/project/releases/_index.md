@@ -12,7 +12,7 @@ title: Releases
 
 {{< /details >}}
 
-Create a release to package your project at critical milestones. Releases combine code, binaries, documentation, 
+Create a release to package your project at critical milestones. Releases combine code, binaries, documentation,
 and release notes into a complete snapshot of your project.
 When a release is created, GitLab automatically tags your code, archives a snapshot, and generates
 audit-ready evidence. This creates a permanent record that's perfect for compliance requirements and
