@@ -5,6 +5,8 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 title: 'Tutorial: Make your first Git commit'
 ---
 
+<!-- vale gitlab_base.FutureTense = NO -->
+
 This tutorial will teach you a little bit about how Git works. It walks
 you through the steps of creating your own project, editing a file, and
 committing changes to a Git repository from the command line.

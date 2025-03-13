@@ -27,7 +27,6 @@ describe('formatGraphQLProjects', () => {
 
     expect(firstFormattedProject).toMatchObject({
       id: getIdFromGraphQLId(firstMockProject.id),
-      name: firstMockProject.nameWithNamespace,
       nameWithNamespace: firstMockProject.nameWithNamespace,
       avatarLabel: firstMockProject.nameWithNamespace,
       mergeRequestsAccessLevel: firstMockProject.mergeRequestsAccessLevel.stringValue,

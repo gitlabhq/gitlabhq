@@ -12,6 +12,8 @@ title: 'Tutorial: Set up your organization'
 
 {{< /details >}}
 
+<!-- vale gitlab_base.FutureTense = NO -->
+
 In GitLab, you set up and manage your company's GitLab organization by:
 
 - Creating groups, subgroups, and projects.

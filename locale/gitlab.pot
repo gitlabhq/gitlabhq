@@ -1552,15 +1552,6 @@ msgstr ""
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
 msgstr ""
 
-msgid "%{type} '%{name}' has been successfully restored."
-msgstr ""
-
-msgid "%{type} '%{name}' is being deleted."
-msgstr ""
-
-msgid "%{type} '%{name}' will be deleted on %{date}."
-msgstr ""
-
 msgid "%{type} must be a %{help_link}"
 msgstr ""
 
@@ -28144,6 +28135,9 @@ msgstr ""
 msgid "Group '%{group_name}' was successfully updated."
 msgstr ""
 
+msgid "Group '%{group_name}' will be deleted on %{date}."
+msgstr ""
+
 msgid "Group Git LFS status:"
 msgstr ""
 
@@ -52574,6 +52568,24 @@ msgstr ""
 msgid "SecurityExclusions|ex: spec/**/*.rb"
 msgstr ""
 
+msgid "SecurityInventory|CS"
+msgstr ""
+
+msgid "SecurityInventory|DAST"
+msgstr ""
+
+msgid "SecurityInventory|DS"
+msgstr ""
+
+msgid "SecurityInventory|IaC"
+msgstr ""
+
+msgid "SecurityInventory|SAST"
+msgstr ""
+
+msgid "SecurityInventory|SD"
+msgstr ""
+
 msgid "SecurityInventory|Security inventory"
 msgstr ""
 
@@ -53285,7 +53297,7 @@ msgstr ""
 msgid "SecurityOrchestration|Schedule a new"
 msgstr ""
 
-msgid "SecurityOrchestration|Schedule a pipeline on a %{cadenceSelector} cadence for branches"
+msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
 msgstr ""
 
 msgid "SecurityOrchestration|Scope"
@@ -53643,6 +53655,9 @@ msgid "SecurityOrchestration|are false positives"
 msgstr ""
 
 msgid "SecurityOrchestration|are not false positives"
+msgstr ""
+
+msgid "SecurityOrchestration|at the following times: %{cadenceSelector}, start at %{start}, run for: %{duration}, and timezone is %{timezoneSelector}"
 msgstr ""
 
 msgid "SecurityOrchestration|branch"

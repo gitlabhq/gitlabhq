@@ -43,6 +43,8 @@ Tutorials should be in this format:
 title: Title (starts with "Tutorial:" followed by an active verb, like "Tutorial: Create a website")
 ---
 
+<!-- vale gitlab_base.FutureTense = NO -->
+
 A paragraph that explains what the tutorial does, and the expected outcome.
 
 To create a website:
@@ -109,6 +111,7 @@ you can:
 - Add encouraging or congratulatory phrases after tasks.
 - Use future tense from time to time, especially when you're introducing
   steps. For example, `Next, you will associate your issues with your epics`.
+  Disable the Vale rule `gitlab_base.FutureTense` to avoid false positives.
 - Be more conversational. For example, `This task might take a while to complete`.
 
 ## Metadata

@@ -4,7 +4,6 @@ import { debounce } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { s__ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { SEARCH_ICON } from '../../constants';
 
 export default {
   name: 'FilterDropdown',
@@ -36,11 +35,6 @@ export default {
       required: false,
       default: '',
     },
-    icon: {
-      type: String,
-      required: false,
-      default: SEARCH_ICON,
-    },
     hasApiSearch: {
       type: Boolean,
       required: false,
@@ -62,15 +56,6 @@ export default {
     };
   },
   computed: {
-    extendedToggleButtonClass() {
-      return [
-        {
-          '!gl-shadow-inner-1-red-500': this.hasError,
-          'gl-font-monospace': Boolean(this.selectedItem),
-        },
-        'gl-mb-0',
-      ];
-    },
     isSearching() {
       return this.query.length > 0;
     },
@@ -122,53 +107,55 @@ export default {
 </script>
 
 <template>
-  <div>
-    <gl-collapsible-listbox
-      class="ref-selector gl-w-full gl-overflow-hidden"
-      block
-      searchable
-      resetable
-      :selected="selectedItem"
-      :header-text="headerText"
-      :items="dropdownItems"
-      :no-results-text="noResultsText"
-      :searching="isLoading"
-      :search-placeholder="searchText"
-      :toggle-class="extendedToggleButtonClass"
-      :toggle-text="searchText"
-      :icon="icon"
-      :loading="isLoading"
-      :reset-button-label="s__('GlobalSearch|Reset')"
-      :is-check-centered="true"
-      v-bind="$attrs"
-      v-on="$listeners"
-      @hidden="onHide"
-      @search="onSearchBoxInput"
-      @select="selectRef"
-      @reset="$emit('reset')"
-    >
-      <template #list-item="{ item }">
-        <span class="gl-flex gl-items-center">
+  <gl-collapsible-listbox
+    class="ref-selector gl-w-full gl-overflow-hidden"
+    block
+    searchable
+    resetable
+    :selected="selectedItem"
+    :header-text="headerText"
+    :items="dropdownItems"
+    :no-results-text="noResultsText"
+    :searching="isLoading"
+    :search-placeholder="searchText"
+    toggle-class="gl-mb-0"
+    :toggle-text="searchText"
+    :loading="isLoading"
+    :reset-button-label="s__('GlobalSearch|Reset')"
+    :is-check-centered="true"
+    v-bind="$attrs"
+    v-on="$listeners"
+    @hidden="onHide"
+    @search="onSearchBoxInput"
+    @select="selectRef"
+    @reset="$emit('reset')"
+  >
+    <template #list-item="{ item }">
+      <span v-if="item.username" class="gl-flex gl-items-center">
+        <div class="gl-relative gl-mr-3">
           <gl-avatar
             :size="32"
-            :entity-name="item.value"
             :src="item.avatar_url"
+            :entity-name="item.value"
             :alt="item.value"
-            class="gl-mr-3"
           />
-          <span>{{ item.text }}</span>
-        </span>
-      </template>
-      <template #footer>
-        <div
-          v-if="hasError"
-          data-testid="branch-dropdown-error"
-          class="gl-mx-4 gl-my-3 gl-flex gl-items-start gl-text-red-500"
-        >
-          <gl-icon name="error" class="gl-mr-2 gl-mt-2 gl-shrink-0" />
-          <span class="gl-max-w-full gl-break-all">{{ error }}</span>
         </div>
-      </template>
-    </gl-collapsible-listbox>
-  </div>
+        <span class="gl-flex gl-flex-col">
+          <span class="gl-whitespace-nowrap gl-font-bold">{{ item.name }}</span>
+          <span class="gl-text-subtle"> @{{ item.username }}</span>
+        </span>
+      </span>
+      <span v-else>{{ item.text }}</span>
+    </template>
+    <template #footer>
+      <div
+        v-if="hasError"
+        data-testid="branch-dropdown-error"
+        class="gl-mx-4 gl-my-3 gl-flex gl-items-start gl-text-danger"
+      >
+        <gl-icon name="error" class="gl-mr-2 gl-mt-2 gl-shrink-0" />
+        <span class="gl-max-w-full gl-break-all">{{ error }}</span>
+      </div>
+    </template>
+  </gl-collapsible-listbox>
 </template>

@@ -19,6 +19,8 @@ title: 'Tutorial: Use the left sidebar to navigate GitLab'
 
 {{< /history >}}
 
+<!-- vale gitlab_base.FutureTense = NO -->
+
 Follow this tutorial to learn how to use the new left sidebar to navigate the UI.
 
 ## Layout of the left sidebar

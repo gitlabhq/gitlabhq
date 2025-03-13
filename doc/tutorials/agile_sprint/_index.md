@@ -5,6 +5,8 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 title: 'Tutorial: Use GitLab to run an Agile iteration'
 ---
 
+<!-- vale gitlab_base.FutureTense = NO -->
+
 To run an Agile development iteration in GitLab, you use multiple GitLab features
 that work together.
 

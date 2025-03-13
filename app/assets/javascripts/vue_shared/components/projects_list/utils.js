@@ -19,7 +19,7 @@ export const availableGraphQLProjectActions = ({ userPermissions }) => {
 export const renderDeleteSuccessToast = (project) => {
   toast(
     sprintf(__("Project '%{project_name}' is being deleted."), {
-      project_name: project.name,
+      project_name: project.nameWithNamespace,
     }),
   );
 };

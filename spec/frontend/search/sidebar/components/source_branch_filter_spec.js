@@ -70,9 +70,8 @@ describe('Source branch filter', () => {
       expect(findGlFormCheckbox().attributes('checked')).toBe('true');
     });
 
-    it('displays the correct placeholder text and icon', () => {
+    it('displays the correct placeholder text', () => {
       expect(findBranchDropdown().props('searchText')).toBe('feature');
-      expect(findBranchDropdown().props('icon')).toBe('branch');
     });
   });
 

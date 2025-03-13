@@ -13,6 +13,8 @@ title: 'Tutorial: Set up product analytics in a GitLab Pages website project'
 
 {{< /details >}}
 
+<!-- vale gitlab_base.FutureTense = NO -->
+
 Understanding how your users engage with your website or application is important for making data-driven decisions.
 By identifying the most and least used features by your users, your team can decide where and how to spend their time effectively.
 

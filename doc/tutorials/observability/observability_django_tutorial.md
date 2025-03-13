@@ -16,6 +16,7 @@ For more information, see the history of the [**Distributed tracing** feature](.
 In this tutorial, we'll show you how to create, configure, instrument, and monitor a Django application using GitLab observability features.
 
 <!-- vale gitlab_base.SentenceSpacing = NO -->
+<!-- vale gitlab_base.FutureTense = NO -->
 
 ## Before you begin
 

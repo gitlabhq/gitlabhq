@@ -93,9 +93,8 @@ describe('Author filter', () => {
         );
       });
 
-      it('displays the correct placeholder text and icon', () => {
+      it('displays the correct placeholder text', () => {
         expect(findFilterDropdown().props('searchText')).toBe('Administrator');
-        expect(findFilterDropdown().props('icon')).toBe('user');
       });
     },
   );

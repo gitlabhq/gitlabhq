@@ -1117,10 +1117,7 @@ When you enable commit signing in Gitaly:
 
 - GitLab signs all commits made through the UI.
 - The signature verifies the committer's identity, not the author's identity.
-- GitLab uses these default values for the committer:
-
-  - Email: `noreply@gitlab.com`
-  - Name: `GitLab`
+- You can configure Gitaly to reflect that a commit has been committed by your instance by setting `committer_email` and `committer_name`. For example, on GitLab.com these configuration options are set to `noreply@gitlab.com` and `GitLab`.
 
 `rotated_signing_keys` is a list of keys to use for verification only. Gitaly tries to verify a web commit using the configured `signing_key`, and then uses
 the rotated keys one by one until it succeeds. Set the `rotated_signing_keys` option when either:

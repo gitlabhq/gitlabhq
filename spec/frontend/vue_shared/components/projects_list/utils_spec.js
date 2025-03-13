@@ -38,7 +38,7 @@ describe('renderDeleteSuccessToast', () => {
   it('calls toast correctly', () => {
     renderDeleteSuccessToast(project);
 
-    expect(toast).toHaveBeenCalledWith(`Project '${project.name}' is being deleted.`);
+    expect(toast).toHaveBeenCalledWith(`Project '${project.nameWithNamespace}' is being deleted.`);
   });
 });
 

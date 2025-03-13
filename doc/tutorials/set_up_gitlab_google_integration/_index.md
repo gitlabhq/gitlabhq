@@ -5,6 +5,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Tutorial: Set up the Google Cloud integration'
 ---
 
+<!-- vale gitlab_base.FutureTense = NO -->
+
 This tutorial shows you how to integrate Google Cloud with GitLab,
 so that you can deploy directly to Google Cloud.
 

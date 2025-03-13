@@ -3,6 +3,7 @@
 module BulkImports
   class UserContributionsExportWorker
     include ApplicationWorker
+    include Gitlab::Utils::StrongMemoize
 
     idempotent!
     data_consistency :sticky
@@ -31,6 +32,7 @@ module BulkImports
     def no_exports?
       portable.bulk_import_exports.empty?
     end
+    strong_memoize_attr :no_exports?
 
     def job_stuck_without_exports?
       has_been_enqueued_longer_limit = enqueued_at < EXPORT_TIMEOUT.ago
@@ -38,9 +40,18 @@ module BulkImports
     end
 
     def exports_still_processing?
+      # The earlier check '#job_stuck_without_exports?' means the export has not hung with no exports at this point
+      return true if no_exports?
+
       started_exports = portable.bulk_import_exports.for_status(BulkImports::Export::STARTED)
 
-      started_exports.any?(&:relation_has_user_contributions?) || no_exports?
+      started_exports.any? do |export|
+        # Skip over exports that would never have user contributions to export
+        next unless export.relation_has_user_contributions?
+
+        # Check that export isn't stale
+        export.updated_at > EXPORT_TIMEOUT.ago
+      end
     end
 
     def re_enqueue
