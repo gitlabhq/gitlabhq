@@ -53,14 +53,31 @@ The following Rake tasks are available for use with GitLab:
 
 To list all available Rake tasks:
 
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
 ```shell
-# Omnibus GitLab
 sudo gitlab-rake -vT
+```
 
-# GitLab Helm chart
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+```shell
 gitlab-rake -vT
+```
 
-# Installations from source
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake -vT RAILS_ENV=production
 ```
+
+{{< /tab >}}
+
+{{< /tabs >}}

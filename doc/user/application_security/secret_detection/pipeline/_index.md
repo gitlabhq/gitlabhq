@@ -34,6 +34,21 @@ With GitLab Ultimate, pipeline secret detection results are also processed so yo
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For other interactive reading and how-to demos, see the [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9).
 
+## Availability
+
+Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/).
+
+| Capability                                                                                           | In Free & Premium      | In Ultimate            |
+|:-----------------------------------------------------------------------------------------------------|:-----------------------|:-----------------------|
+| [Customize analyzer settings](configure.md#customize-analyzer-settings)                                          | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| Download [output](#output)                                                                           | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| See new findings in the merge request widget                                                         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| View identified secrets in the pipelines' **Security** tab                                           | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Manage vulnerabilities](../../vulnerability_report/_index.md)                                        | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Access the Security Dashboard](../../security_dashboard/_index.md)                                   | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets)                                          | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Enable security policies](../../policies/_index.md)                                                  | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+
 ## Coverage
 
 Pipeline secret detection scans different aspects of your code, depending on the situation. For all methods

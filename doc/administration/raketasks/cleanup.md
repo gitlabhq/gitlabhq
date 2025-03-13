@@ -25,17 +25,27 @@ have finished, which otherwise may lead to data loss.
 
 When you remove LFS files from a repository's history, they become orphaned and continue to consume
 disk space. With this Rake task, you can remove invalid references from the database, which
-allows garbage collection of LFS files.
+allows garbage collection of LFS files. For example:
 
-For example:
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
-# omnibus-gitlab
 sudo gitlab-rake gitlab:cleanup:orphan_lfs_file_references PROJECT_PATH="gitlab-org/gitlab-foss"
+```
 
-# installation from source
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
 bundle exec rake gitlab:cleanup:orphan_lfs_file_references RAILS_ENV=production PROJECT_PATH="gitlab-org/gitlab-foss"
 ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 You can also specify the project with `PROJECT_ID` instead of `PROJECT_PATH`.
 
@@ -59,15 +69,27 @@ later (once a day). If you need to garbage collect them immediately, run
 ### Remove unreferenced LFS files immediately
 
 Unreferenced LFS files are removed on a daily basis but you can remove them immediately if
-you need to. For example:
+you need to. To remove unreferenced LFS files immediately:
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
-# omnibus-gitlab
 sudo gitlab-rake gitlab:cleanup:orphan_lfs_files
+```
 
-# installation from source
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
 bundle exec rake gitlab:cleanup:orphan_lfs_files
 ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 Example output:
 
@@ -84,15 +106,27 @@ Clean up project upload files if they don't exist in GitLab database.
 
 Clean up local project upload files if they don't exist in GitLab database. The
 task attempts to fix the file if it can find its project, otherwise it moves the
-file to a lost and found directory.
+file to a lost and found directory. To clean up project upload files from file system:
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
-# omnibus-gitlab
 sudo gitlab-rake gitlab:cleanup:project_uploads
+```
 
-# installation from source
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
 bundle exec rake gitlab:cleanup:project_uploads RAILS_ENV=production
 ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 Example output:
 
@@ -114,19 +148,33 @@ I, [2018-07-27T12:08:33.755624 #89817]  INFO -- : Did fix /opt/gitlab/embedded/s
 I, [2018-07-27T12:08:33.760257 #89817]  INFO -- : Did move to lost and found /opt/gitlab/embedded/service/gitlab-rails/public/uploads/foo/bar/1dd6f0f7eefd2acc4c2233f89a0f7b0b/image.png -> /opt/gitlab/embedded/service/gitlab-rails/public/uploads/-/project-lost-found/foo/bar/1dd6f0f7eefd2acc4c2233f89a0f7b0b/image.png
 ```
 
-If using object storage, run the [All-in-one Rake task](../raketasks/uploads/migrate.md#all-in-one-rake-task) to ensure all uploads are migrated to object storage and there are no files on disk in the uploads folder.
+If using object storage, run the [All-in-one Rake task](../raketasks/uploads/migrate.md#all-in-one-rake-task) to ensure
+all uploads are migrated to object storage and there are no files on disk in the uploads folder.
 
 ### Clean up project upload files from object storage
 
 Move object store upload files to a lost and found directory if they don't exist in GitLab database.
+To clean up project upload files from object storage:
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
-# omnibus-gitlab
 sudo gitlab-rake gitlab:cleanup:remote_upload_files
+```
 
-# installation from source
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
 bundle exec rake gitlab:cleanup:remote_upload_files RAILS_ENV=production
 ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 Example output:
 
@@ -201,13 +249,27 @@ level with `NICENESS`. Below are the valid levels, but consult
 
 ## Remove expired ActiveSession lookup keys
 
-```shell
-# omnibus-gitlab
-sudo gitlab-rake gitlab:cleanup:sessions:active_sessions_lookup_keys
+To remove expired ActiveSession lookup keys:
 
-# installation from source
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+```shell
+sudo gitlab-rake gitlab:cleanup:sessions:active_sessions_lookup_keys
+```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
 bundle exec rake gitlab:cleanup:sessions:active_sessions_lookup_keys RAILS_ENV=production
 ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Container registry garbage collection
 

@@ -3796,7 +3796,10 @@ msgstr ""
 msgid "AdherenceReport|Learn more about the changes in our %{linkStart}documentation%{linkEnd}."
 msgstr ""
 
-msgid "AdherenceReport|We've updated the Adherence Report with new features to enhance your compliance workflow."
+msgid "AdherenceReport|Show old report"
+msgstr ""
+
+msgid "AdherenceReport|We've updated the adherence report with new features to enhance your compliance workflow."
 msgstr ""
 
 msgid "Adjust how frequently the GitLab UI polls for updates."
@@ -15298,6 +15301,9 @@ msgid "ComplianceReport|You are viewing the compliance centre for %{project}. To
 msgstr ""
 
 msgid "ComplianceReport|and %{count} more"
+msgstr ""
+
+msgid "ComplianceStandardsAdherenceV2|New Report Placeholder"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence| Standards adherence export"

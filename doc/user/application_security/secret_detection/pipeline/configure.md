@@ -14,22 +14,7 @@ title: Customize pipeline secret detection
 
 {{< /details >}}
 
-Depending on your subscription tier and configuration method, you can change how pipeline secret detection works.
-
-## Availability
-
-Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/).
-
-| Capability                                                                                           | In Free & Premium      | In Ultimate            |
-|:-----------------------------------------------------------------------------------------------------|:-----------------------|:-----------------------|
-| [Customize analyzer settings](#customize-analyzer-settings)                                          | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| Download [output](_index.md#output)                                                                           | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
-| See new findings in the merge request widget                                                         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| View identified secrets in the pipelines' **Security** tab                                           | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Manage vulnerabilities](../../vulnerability_report/_index.md)                                        | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Access the Security Dashboard](../../security_dashboard/_index.md)                                   | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Customize analyzer rulesets](#customize-analyzer-rulesets)                                          | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Enable security policies](../../policies/_index.md)                                                  | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+Depending on your [subscription tier](_index.md#availability) and configuration method, you can change how pipeline secret detection works.
 
 ## Customize analyzer settings
 
@@ -108,6 +93,25 @@ secret_detection:
   variables:
     SECRET_DETECTION_HISTORIC_SCAN: "true"
 ```
+
+### Available CI/CD variables
+
+Change the behavior of pipeline secret detection by defining available CI/CD variables:
+
+| CI/CD variable                    | Default value | Description |
+|-----------------------------------|---------------|-------------|
+| `SECRET_DETECTION_EXCLUDED_PATHS` | ""            | Exclude vulnerabilities from output based on the paths. The paths are a comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. Detected secrets previously added to the vulnerability report are not removed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
+| `SECRET_DETECTION_HISTORIC_SCAN`  | false         | Flag to enable a historic Gitleaks scan. |
+| `SECRET_DETECTION_IMAGE_SUFFIX`   | "" | Suffix added to the image name. If set to `-fips`, `FIPS-enabled` images are used for scan. See [Use FIPS-enabled images](_index.md#fips-enabled-images) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355519) in GitLab 14.10. |
+| `SECRET_DETECTION_LOG_OPTIONS`  | ""         | [`git log`](https://git-scm.com/docs/git-log) options used to define commit ranges. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350660) in GitLab 15.1.|
+
+In previous GitLab versions, the following variables were also available:
+
+| CI/CD variable                    | Default value | Description |
+|-----------------------------------|---------------|-------------|
+| `SECRET_DETECTION_COMMIT_FROM`    | -             | The commit a Gitleaks scan starts at. [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/243564) in GitLab 13.5. Replaced with `SECRET_DETECTION_COMMITS`. |
+| `SECRET_DETECTION_COMMIT_TO`      | -             | The commit a Gitleaks scan ends at. [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/243564) in GitLab 13.5. Replaced with `SECRET_DETECTION_COMMITS`. |
+| `SECRET_DETECTION_COMMITS`        | -             | The list of commits that Gitleaks should scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/243564) in GitLab 13.5. [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/352565) in GitLab 15.0. |
 
 ## Customize analyzer rulesets
 
@@ -640,25 +644,6 @@ for all use cases. If you configure your ruleset to detect complex strings, you 
 create a large number of false positives, or fail to capture certain patterns.
 
 {{< /alert >}}
-
-## Available CI/CD variables
-
-Pipeline secret detection can be customized by defining available CI/CD variables:
-
-| CI/CD variable                    | Default value | Description |
-|-----------------------------------|---------------|-------------|
-| `SECRET_DETECTION_EXCLUDED_PATHS` | ""            | Exclude vulnerabilities from output based on the paths. The paths are a comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. Detected secrets previously added to the vulnerability report are not removed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
-| `SECRET_DETECTION_HISTORIC_SCAN`  | false         | Flag to enable a historic Gitleaks scan. |
-| `SECRET_DETECTION_IMAGE_SUFFIX`   | "" | Suffix added to the image name. If set to `-fips`, `FIPS-enabled` images are used for scan. See [Use FIPS-enabled images](_index.md#fips-enabled-images) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355519) in GitLab 14.10. |
-| `SECRET_DETECTION_LOG_OPTIONS`  | ""         | [`git log`](https://git-scm.com/docs/git-log) options used to define commit ranges. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350660) in GitLab 15.1.|
-
-In previous GitLab versions, the following variables were also available:
-
-| CI/CD variable                    | Default value | Description |
-|-----------------------------------|---------------|-------------|
-| `SECRET_DETECTION_COMMIT_FROM`    | -             | The commit a Gitleaks scan starts at. [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/243564) in GitLab 13.5. Replaced with `SECRET_DETECTION_COMMITS`. |
-| `SECRET_DETECTION_COMMIT_TO`      | -             | The commit a Gitleaks scan ends at. [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/243564) in GitLab 13.5. Replaced with `SECRET_DETECTION_COMMITS`. |
-| `SECRET_DETECTION_COMMITS`        | -             | The list of commits that Gitleaks should scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/243564) in GitLab 13.5. [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/352565) in GitLab 15.0. |
 
 ## Offline configuration
 

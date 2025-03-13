@@ -5,6 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Job artifact troubleshooting for administrators
 ---
 
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
 When administering job artifacts, you might encounter the following issues.
 
 ## Job artifacts using too much disk space
@@ -508,6 +515,56 @@ Rerun the deletion with shorter durations as needed, for example `3.months.ago`,
 
 The method `erase_erasable_artifacts!` is synchronous, and upon execution the artifacts are immediately removed;
 they are not scheduled by a background queue.
+
+### Deleting artifacts does not immediately reclaim disk space
+
+When artifacts are deleted, the process occurs in two phases:
+
+1. **Marked as ready for deletion**: `Ci::JobArtifact` records are removed from the database and
+   converted to `Ci::DeletedObject` records with a future `pick_up_at` timestamp.
+1. **Remove from storage**: The artifact files remain on disk until the `Ci::ScheduleDeleteObjectsCronWorker` worker
+   processes the `Ci::DeletedObject` records and physically removes the files.
+
+The removal is deliberately limited to prevent overwhelming system resources:
+
+- The worker runs once per hour, at the 16-minute mark.
+- It processes objects in batches with a maximum of 20 concurrent jobs.
+- Each deleted object has a `pick_up_at` timestamp that determines when it becomes
+  eligible for physical deletion
+
+For large-scale deletions, the physical cleanup can take a significant amount of time
+before disk space is fully reclaimed. Cleanup could take several days for very large deletions.
+
+If you need to reclaim disk space quickly, you can expedite artifact deletion.
+
+#### Expedite artifact removal
+
+If you need to reclaim disk space quickly after deleting a large number of artifacts,
+you can bypass the standard scheduling limitations and expedite the deletion process.
+
+{{< alert type="warning" >}}
+
+These commands put significant load on your system if you are deleting a large number of artifacts.
+
+{{< /alert >}}
+
+```ruby
+# Set the pick_up_date to the current time on all artifacts
+# This will mark them for immediate deletion
+Ci::DeletedObject.update_all(pick_up_at: Time.current)
+
+# Get the count of artifacts marked for deletion
+Ci::DeletedObject.where("pick_up_at < ?", Time.current)
+
+# Delete the artifacts from disk
+while Ci::DeletedObject.where("pick_up_at < ?", Time.current).count > 0
+  Ci::DeleteObjectsService.new.execute 
+  sleep(10) 
+end
+
+# Get the count of artifacts marked for deletion (should now be zero)
+Ci::DeletedObject.count
+```
 
 ### Delete old pipelines
 
