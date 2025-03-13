@@ -69,10 +69,6 @@ RSpec.describe 'Merge request > User sees threads', :js, feature_category: :code
       end
     end
 
-    before do
-      visit project_merge_request_path(project, merge_request)
-    end
-
     # TODO: https://gitlab.com/gitlab-org/gitlab-foss/issues/48034
     # context 'a regular commit comment' do
     #   let(:note) { create(:note_on_commit, project: project) }
@@ -81,7 +77,11 @@ RSpec.describe 'Merge request > User sees threads', :js, feature_category: :code
     # end
 
     context 'a commit diff comment' do
-      let(:note) { create(:diff_note_on_commit, project: project) }
+      let!(:note) { create(:diff_note_on_commit, project: project) }
+
+      before do
+        visit project_merge_request_path(project, merge_request)
+      end
 
       it_behaves_like 'a functional discussion'
 
@@ -91,11 +91,14 @@ RSpec.describe 'Merge request > User sees threads', :js, feature_category: :code
     end
 
     context 'a commit non-diff discussion' do
-      let(:note) { create(:discussion_note_on_commit, project: project) }
+      let!(:note) { create(:discussion_note_on_commit, project: project) }
+
+      before do
+        visit project_merge_request_path(project, merge_request)
+      end
 
       it 'displays correct header' do
         page.within(find("#note_#{note.id}", match: :first)) do
-          refresh # Trigger a refresh of notes.
           wait_for_requests
           expect(page).to have_content "commented on commit #{note.commit_id[0...7]}"
         end

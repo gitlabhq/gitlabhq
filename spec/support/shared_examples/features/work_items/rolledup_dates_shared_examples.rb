@@ -3,8 +3,7 @@
 RSpec.shared_examples 'work items rolled up dates' do
   include WorkItemFeedbackHelpers
 
-  let(:work_item_rolledup_dates_selector) { '[data-testid="work-item-rolledup-dates"]' }
-  let(:work_item_start_due_dates_selector) { '[data-testid="work-item-start-due-dates"]' }
+  let(:work_item_due_dates_selector) { '[data-testid="work-item-due-dates"]' }
   let(:work_item_milestone_selector) { '[data-testid="work-item-milestone"]' }
 
   def expect_sync_to_epic
@@ -21,7 +20,7 @@ RSpec.shared_examples 'work items rolled up dates' do
     expect(dates_source.due_date_sourcing_work_item_id).to eq(epic.due_date_sourcing_epic&.issue_id)
   end
 
-  it_behaves_like 'work items rolled up dates in drawer'
+  it_behaves_like 'work items due dates in drawer'
 
   context 'when feature flag is enabled' do
     before do
@@ -57,7 +56,7 @@ RSpec.shared_examples 'work items rolled up dates' do
         end
 
         within_testid('work-item-drawer') do
-          find_and_click_edit work_item_rolledup_dates_selector
+          find_and_click_edit work_item_due_dates_selector
           # set empty value before the value to ensure
           # the current value don't mess with the new value input
           fill_in 'Start', with: ""
@@ -126,7 +125,7 @@ RSpec.shared_examples 'work items rolled up dates' do
         it 'rolled up child dates' do
           add_existing_child(child_work_item, :epic)
 
-          within work_item_rolledup_dates_selector do
+          within work_item_due_dates_selector do
             expect(page).to have_text("Start: #{child_work_item.start_date.to_fs(:medium)}")
             expect(page).to have_text("Due: #{child_work_item.due_date.to_fs(:medium)}")
           end
@@ -143,14 +142,14 @@ RSpec.shared_examples 'work items rolled up dates' do
           child_title = 'A child issue'
           add_new_child(title: child_title, start_date: '2020-12-01', due_date: '2020-12-02')
 
-          within work_item_rolledup_dates_selector do
+          within work_item_due_dates_selector do
             expect(page).to have_text("Start: Dec 1, 2020")
             expect(page).to have_text("Due: Dec 2, 2020")
           end
 
           update_child_date(title: child_title, start_date: '2021-01-03', due_date: '2021-01-05')
 
-          within work_item_rolledup_dates_selector do
+          within work_item_due_dates_selector do
             expect(page).to have_text('Start: Jan 3, 2021')
             expect(page).to have_text('Due: Jan 5, 2021')
           end
@@ -167,7 +166,7 @@ RSpec.shared_examples 'work items rolled up dates' do
           add_new_child(title: 'child issue 1', start_date: '2020-11-01', due_date: '2020-12-02')
           add_new_child(title: 'child issue 2', start_date: '2020-12-01', due_date: '2021-01-02')
 
-          within work_item_rolledup_dates_selector do
+          within work_item_due_dates_selector do
             expect(page).to have_text('Start: Nov 1, 2020')
             expect(page).to have_text('Due: Jan 2, 2021')
           end
@@ -179,7 +178,7 @@ RSpec.shared_examples 'work items rolled up dates' do
 
           page.refresh
           wait_for_all_requests
-          within work_item_rolledup_dates_selector do
+          within work_item_due_dates_selector do
             expect(page).to have_text('Start: Dec 1, 2020')
             expect(page).to have_text('Due: Jan 2, 2021')
           end
@@ -191,7 +190,7 @@ RSpec.shared_examples 'work items rolled up dates' do
 
           page.refresh
           wait_for_all_requests
-          within work_item_rolledup_dates_selector do
+          within work_item_due_dates_selector do
             expect(page).to have_text('Start: None')
             expect(page).to have_text('Due: None')
           end
@@ -226,7 +225,7 @@ RSpec.shared_examples 'work items rolled up dates' do
 
           add_existing_child(child_work_item, :issue)
 
-          within work_item_rolledup_dates_selector do
+          within work_item_due_dates_selector do
             expect(page).to have_text("Start: #{milestone.start_date.to_fs(:medium)}")
             expect(page).to have_text("Due: #{milestone.due_date.to_fs(:medium)}")
           end
@@ -238,7 +237,7 @@ RSpec.shared_examples 'work items rolled up dates' do
           it 'rolled up child dates' do
             add_existing_child(child_work_item, :issue)
 
-            within work_item_rolledup_dates_selector do
+            within work_item_due_dates_selector do
               expect(page).to have_text("Start: #{milestone.start_date.to_fs(:medium)}")
               expect(page).to have_text("Due: #{milestone.due_date.to_fs(:medium)}")
             end
@@ -254,7 +253,7 @@ RSpec.shared_examples 'work items rolled up dates' do
             visit work_items_path
             wait_for_all_requests
 
-            within work_item_rolledup_dates_selector do
+            within work_item_due_dates_selector do
               expect(page).to have_text("Start: Nov 16, 2016")
               expect(page).to have_text("Due: Dec 16, 2016")
             end

@@ -56,12 +56,14 @@ module Import
         stats = results.payload[:stats]
         successes = stats[:matched]
         failures = stats[:failed]
+        skips = stats[:skipped]
 
         Notify.bulk_import_csv_user_mapping(
           current_user.id,
           group.id,
           success_count: successes,
           failed_count: failures,
+          skipped_count: skips,
           failures_csv_data: results.payload[:failures_csv_data]
         ).deliver_later
       end

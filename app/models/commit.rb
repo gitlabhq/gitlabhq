@@ -554,12 +554,6 @@ class Commit
     "commit:#{sha}"
   end
 
-  def broadcast_notes_changed
-    super
-
-    broadcast_notes_changed_for_related_mrs
-  end
-
   def readable_by?(user)
     Ability.allowed?(user, :read_commit, self)
   end
@@ -618,10 +612,6 @@ class Commit
       refs = repository.refs_by_oid(oid: id, ref_patterns: [ref_prefix], limit: limit)
       refs.map { |n| n.delete_prefix(ref_prefix) }
     end
-  end
-
-  def broadcast_notes_changed_for_related_mrs
-    MergeRequest.includes(target_project: :namespace).by_commit_sha(id).find_each(&:broadcast_notes_changed)
   end
 
   def commit_reference(from, referable_commit_id, full: false)

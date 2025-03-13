@@ -26,12 +26,12 @@ import workItemParticipantsQuery from '../graphql/work_item_participants.query.g
 import workItemAllowedParentTypesQuery from '../graphql/work_item_allowed_parent_types.query.graphql';
 
 import WorkItemAssignees from './work_item_assignees.vue';
-import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemLabels from './work_item_labels.vue';
 import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemParent from './work_item_parent.vue';
 import WorkItemTimeTracking from './work_item_time_tracking.vue';
 import WorkItemCrmContacts from './work_item_crm_contacts.vue';
+import WorkItemDueDates from './work_item_due_dates.vue';
 
 export default {
   ListType,
@@ -40,18 +40,16 @@ export default {
     WorkItemLabels,
     WorkItemMilestone,
     WorkItemAssignees,
-    WorkItemDueDate,
     WorkItemParent,
     WorkItemTimeTracking,
     WorkItemCrmContacts,
+    WorkItemDueDates,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
     WorkItemHealthStatus: () =>
       import('ee_component/work_items/components/work_item_health_status.vue'),
     WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
-    WorkItemRolledupDates: () =>
-      import('ee_component/work_items/components/work_item_rolledup_dates.vue'),
     WorkItemCustomFields: () =>
       import('ee_component/work_items/components/work_item_custom_fields.vue'),
   },
@@ -145,7 +143,7 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_START_AND_DUE_DATE);
     },
     canWorkItemRollUp() {
-      return this.workItemStartAndDueDate?.rollUp;
+      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC;
     },
     workItemWeight() {
       return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
@@ -247,8 +245,8 @@ export default {
       :work-item-type="workItemType"
       @error="$emit('error', $event)"
     />
-    <work-item-rolledup-dates
-      v-if="canWorkItemRollUp && showRolledupDates"
+    <work-item-due-dates
+      v-if="workItemStartAndDueDate"
       class="work-item-attributes-item"
       :can-update="canUpdateMetadata"
       :full-path="fullPath"
@@ -288,17 +286,6 @@ export default {
       @iterationUpdated="
         $emit('attributesUpdated', { type: $options.ListType.iteration, ids: [$event] })
       "
-    />
-    <work-item-due-date
-      v-if="workItemStartAndDueDate && !showRolledupDates"
-      class="work-item-attributes-item"
-      :can-update="canUpdateMetadata"
-      :due-date="workItemStartAndDueDate.dueDate"
-      :start-date="workItemStartAndDueDate.startDate"
-      :work-item-type="workItemType"
-      :full-path="fullPath"
-      :work-item="workItem"
-      @error="$emit('error', $event)"
     />
     <work-item-progress
       v-if="workItemProgress"

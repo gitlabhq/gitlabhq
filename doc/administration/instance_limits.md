@@ -193,6 +193,27 @@ Search requests that exceed the search rate limit per minute return the followin
 This endpoint has been requested too many times. Try again later.
 ```
 
+### Autocomplete users rate limit
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368926) in GitLab 17.10 [with a flag](../administration/feature_flags.md) named `autocomplete_users_rate_limit`. Disabled by default.
+
+{{< /history >}}
+
+This setting limits autocomplete users requests as follows:
+
+| Limit                | Default (requests per minute) |
+|----------------------|-------------------------------|
+| Authenticated user   | 300                           |
+| Unauthenticated user | 100                           |
+
+Autocomplete requests that exceed the autocomplete rate limit per minute return the following error:
+
+```plaintext
+This endpoint has been requested too many times. Try again later.
+```
+
 ### Pipeline creation rate limit
 
 {{< history >}}

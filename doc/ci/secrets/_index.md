@@ -152,15 +152,17 @@ job_using_vault:
       aud: https://vault.example.com
   secrets:
     DATABASE_PASSWORD:
-      vault: production/db/password@ops  # translates to secret `ops/data/production/db`, field `password`
+      vault: production/db/password@ops
       token: $VAULT_ID_TOKEN
 ```
 
 In this example:
 
-- `production/db` - The secret.
-- `password` The field.
-- `ops` - The path where the secrets engine is mounted.
+- `production/db` is the path to the secret.
+- `password` is the field.
+- `ops` is the path where the secrets engine is mounted.
+- `production/db/password@ops` translates to a path of `ops/data/production/db`.
+- Authentication is with `$VAULT_ID_TOKEN`.
 
 After GitLab fetches the secret from Vault, the value is saved in a temporary file.
 The path to this file is stored in a CI/CD variable named `DATABASE_PASSWORD`,
@@ -262,7 +264,9 @@ IP address range, and number of uses. The full list of options is available in
 [Vault's documentation on creating roles](https://developer.hashicorp.com/vault/api-docs/auth/jwt#create-role)
 for the JSON web token method.
 
-## Using a self-signed Vault server
+## Troubleshooting
+
+### Self-signed certificate error: `certificate signed by unknown authority`
 
 When the Vault server is using a self-signed certificate, you see the following error in the job logs:
 
@@ -291,7 +295,10 @@ You have two options to solve this error:
            value: "/home/gitlab-runner/.gitlab-runner/certs/<VAULT_CERTIFICATE>"
        ```
 
-## Troubleshooting
+If you are running vault server in development mode locally with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit),
+you might also get this error. You can manually ask the system to trust the self signed certificate of Vault server.
+This [sample tutorial](https://iboysoft.com/tips/how-to-trust-a-certificate-on-mac.html)
+explains how to do this on macOS.
 
 ### `resolving secrets: secret not found: MY_SECRET` error
 

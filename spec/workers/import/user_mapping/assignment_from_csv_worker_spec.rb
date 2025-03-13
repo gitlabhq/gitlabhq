@@ -72,6 +72,7 @@ RSpec.describe Import::UserMapping::AssignmentFromCsvWorker, feature_category: :
       group.id,
       success_count: 2,
       failed_count: 1,
+      skipped_count: 10,
       failures_csv_data: "A,B\n1,2\n"
     ).and_call_original
 

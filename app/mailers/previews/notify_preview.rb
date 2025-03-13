@@ -400,7 +400,8 @@ class NotifyPreview < ActionMailer::Preview
       user.id,
       group.id,
       success_count: 94125,
-      failed_count: 0
+      failed_count: 0,
+      skipped_count: 50
     )
   end
 
@@ -409,7 +410,8 @@ class NotifyPreview < ActionMailer::Preview
       user.id,
       group.id,
       success_count: 71249,
-      failed_count: 824
+      failed_count: 824,
+      skipped_count: 152
     )
   end
 

@@ -210,7 +210,7 @@
     // to make it work in both light and darkmode.
     background-color: var(--gl-color-neutral-0);
 
-    table:not(.code) {
+    > table:not(.code) {
       display: table;
       overflow-x: initial;
       mix-blend-mode: multiply;

@@ -64,6 +64,10 @@ You can set these rate limits in the **Admin** area of your instance:
 - [Users API rate limits](../administration/settings/rate_limit_on_users_api.md)
 - [Organizations API rate limits](../administration/settings/rate_limit_on_organizations_api.md)
 
+You can set these rate limits using the [ApplicationSettings API](../api/settings.md):
+
+- [Autocomplete users rate limit](../administration/instance_limits.md#autocomplete-users-rate-limit)
+
 You can set these rate limits using the Rails console:
 
 - [Webhook rate limit](../administration/instance_limits.md#webhook-rate-limit)
@@ -186,7 +190,7 @@ The **rate limit** is 1,000 notifications per 24 hours per project or group per 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.6.
+- Introduced in GitLab 17.6.
 
 {{< /history >}}
 

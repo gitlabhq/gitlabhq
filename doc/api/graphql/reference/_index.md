@@ -40920,13 +40920,13 @@ Providers for AI features that can be configured.
 
 ### `AiFeatures`
 
-AI features that can be configured in the settings.
+AI features that can be configured through the Duo self-hosted feature settings.
 
 | Value | Description |
 | ----- | ----------- |
 | <a id="aifeaturescode_completions"></a>`CODE_COMPLETIONS` | Code completion feature setting. |
 | <a id="aifeaturescode_generations"></a>`CODE_GENERATIONS` | Code generation feature setting. |
-| <a id="aifeaturesduo_chat"></a>`DUO_CHAT` | Duo chat feature setting. |
+| <a id="aifeaturesduo_chat"></a>`DUO_CHAT` | Duo Chat feature setting. |
 | <a id="aifeaturesduo_chat_explain_code"></a>`DUO_CHAT_EXPLAIN_CODE` | Duo chat explain code feature setting. |
 | <a id="aifeaturesduo_chat_fix_code"></a>`DUO_CHAT_FIX_CODE` | Duo chat fix code feature setting. |
 | <a id="aifeaturesduo_chat_refactor_code"></a>`DUO_CHAT_REFACTOR_CODE` | Duo chat refactor code feature setting. |

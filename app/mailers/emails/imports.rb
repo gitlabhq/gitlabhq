@@ -52,11 +52,20 @@ module Emails
       )
     end
 
-    def bulk_import_csv_user_mapping(user_id, group_id, success_count:, failed_count: 0, failures_csv_data: nil)
+    def bulk_import_csv_user_mapping(
+      user_id,
+      group_id,
+      success_count:,
+      failed_count: 0,
+      skipped_count: 0,
+      failures_csv_data: nil
+    )
       user = User.find(user_id)
       @group = Group.find(group_id)
       @success_count = success_count
       @failed_count = failed_count
+      @skipped_count = skipped_count
+
       @has_errors = failed_count > 0
       @title = if @has_errors
                  s_('BulkImport|Placeholder reassignments completed with errors')

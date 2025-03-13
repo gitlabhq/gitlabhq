@@ -3,6 +3,8 @@
 class SwitchRecordChangeTrackingToPCiRunnerMachinesTable < Gitlab::Database::Migration[2.2]
   include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
+  disable_ddl_transaction!
+
   milestone '17.10'
 
   PARTITIONED_TABLE = :ci_runner_machines

@@ -212,6 +212,7 @@ class MergeRequestDiff < ApplicationRecord
   # All diff information is collected from repository after object is created.
   # It allows you to override variables like head_commit_sha before getting diff.
   after_create :save_git_content, unless: :importing?
+  after_create_commit :set_patch_id_sha, unless: :importing?
   after_create_commit :set_as_latest_diff, unless: :importing?
   after_create_commit :trigger_diff_generated_subscription, unless: :importing?
 
@@ -230,7 +231,6 @@ class MergeRequestDiff < ApplicationRecord
   # and save it to the database as serialized data
   def save_git_content
     ensure_commit_shas
-    set_patch_id_sha
 
     save_commits
     save_diffs
@@ -249,10 +249,12 @@ class MergeRequestDiff < ApplicationRecord
     return unless base_commit_sha && head_commit_sha
     return if base_commit_sha == head_commit_sha
 
-    self.patch_id_sha = project.repository&.get_patch_id(
+    patch_id_sha = project.repository&.get_patch_id(
       base_commit_sha,
       head_commit_sha
     )
+
+    update_column(:patch_id_sha, patch_id_sha)
   end
 
   def get_patch_id_sha
@@ -262,7 +264,6 @@ class MergeRequestDiff < ApplicationRecord
 
     return unless patch_id_sha.present?
 
-    save
     patch_id_sha
   end
 

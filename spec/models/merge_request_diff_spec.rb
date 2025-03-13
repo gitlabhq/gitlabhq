@@ -55,7 +55,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     it { expect(subject.head_commit_sha).to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0') }
     it { expect(subject.base_commit_sha).to eq('ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
     it { expect(subject.start_commit_sha).to eq('0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
-    it { expect(subject.patch_id_sha).to eq('f14ae956369247901117b8b7d237c9dc605898c5') }
+    it { expect(subject.reload.patch_id_sha).to eq('f14ae956369247901117b8b7d237c9dc605898c5') }
 
     it 'creates commits with empty messages' do
       expect(subject.commits).to all(have_attributes(message: ''))
@@ -872,6 +872,10 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     describe '#get_patch_id_sha' do
       let(:mr_diff) { create(:merge_request).merge_request_diff }
 
+      before do
+        mr_diff.reload
+      end
+
       context 'when the patch_id exists on the model' do
         it 'returns the patch_id' do
           expect(mr_diff.patch_id_sha).not_to be_nil
@@ -887,7 +891,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           mr_diff.update!(patch_id_sha: nil)
 
           expect(mr_diff.get_patch_id_sha).to eq(patch_id)
-          expect(mr_diff.reload.patch_id_sha).to eq(patch_id)
+          expect(mr_diff.patch_id_sha).to eq(patch_id)
         end
 
         context 'when base_sha is nil' do
@@ -897,7 +901,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           end
 
           it 'returns nil' do
-            expect(mr_diff.reload.get_patch_id_sha).to be_nil
+            expect(mr_diff.get_patch_id_sha).to be_nil
           end
         end
 
@@ -908,7 +912,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           end
 
           it 'returns nil' do
-            expect(mr_diff.reload.get_patch_id_sha).to be_nil
+            expect(mr_diff.get_patch_id_sha).to be_nil
           end
         end
 
@@ -920,7 +924,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           end
 
           it 'returns nil' do
-            expect(mr_diff.reload.get_patch_id_sha).to be_nil
+            expect(mr_diff.get_patch_id_sha).to be_nil
           end
         end
       end

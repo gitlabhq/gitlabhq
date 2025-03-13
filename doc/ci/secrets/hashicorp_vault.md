@@ -319,7 +319,8 @@ In GitLab, create the following [CI/CD variables](../variables/_index.md#for-a-p
 to provide details about your Vault server:
 
 - `VAULT_SERVER_URL` - The URL of your Vault server, for example `https://vault.example.com:8200`.
-- `VAULT_AUTH_ROLE` - Optional. The role to use when attempting to authenticate. If no role is specified,
+- `VAULT_AUTH_ROLE` - Optional. Name of the Vault JWT Auth role to use when attempting to authenticate. In this tutorial,
+  we already created two roles with the names `myproject-staging` and `myproject-production`. If no role is specified,
   Vault uses the [default role](https://developer.hashicorp.com/vault/api-docs/auth/jwt#default_role)
   specified when the authentication method was configured.
 - `VAULT_AUTH_PATH` - Optional. The path where the authentication method is mounted.
@@ -340,7 +341,7 @@ job_with_secrets:
       aud: https://vault.example.com
   secrets:
     STAGING_DB_PASSWORD:
-      vault: secret/myproject/staging/db/password@secrets # authenticates using $VAULT_ID_TOKEN
+      vault: myproject/staging/db/password@secret  # translates to a path of 'secret/myproject/staging/db' and field 'password'. Authenticates using $VAULT_ID_TOKEN.
   script:
     - access-staging-db.sh --token $STAGING_DB_PASSWORD
 ```
@@ -348,9 +349,9 @@ job_with_secrets:
 In this example:
 
 - `id_tokens` - The JSON Web Token (JWT) used for OIDC authentication. The `aud` claim
-  is set to match the `bound_audiences` parameter of the Vault JWT authentication method.
-- `@secrets` - The vault name, where your Secrets Engines are enabled.
-- `secret/myproject/staging/db` - The path location of the secret in Vault.
+  is set to match the `bound_audiences` parameter of the `role` used for the Vault JWT authentication method.
+- `@secret` - The vault name, where your Secrets Engines are enabled.
+- `myproject/staging/db` - The path location of the secret in Vault.
 - `password` The field to be fetched in the referenced secret.
 
 If more than one ID token is defined, use the `token` keyword to specify which token should be used. For example:
@@ -423,3 +424,18 @@ The secrets provider can not be found. Check your CI/CD variables and try again.
 The job can't be created because the required variable is not defined:
 
 - `VAULT_SERVER_URL`
+
+### `api error: status code 400: missing role` error
+
+You might receive a `missing role` error when attempting to start a job configured to access HashiCorp Vault.
+The error could be because the `VAULT_AUTH_ROLE` variable is not defined, so the job cannot authenticate
+with the vault server.
+
+### `audience claim does not match any expected audience` error
+
+If there is a mismatch between values of `aud:` claim of the ID token specified in the YAML file
+and the `bound_audiences` parameter of the `role` used for JWT authentication, you can get this error:
+
+`invalid audience (aud) claim: audience claim does not match any expected audience`
+
+Make sure these values are the same.

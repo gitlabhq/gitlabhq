@@ -1,0 +1,21 @@
+---
+key_path: counts.count_total_invocations_of_internal_events
+description: Count of number of times internal events was invoked
+product_group: analytics_instrumentation
+product_categories:
+- application_instrumentation
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184038
+time_frame:
+- 28d
+- 7d
+data_source: system
+instrumentation_class: SumNumberOfInternalEventInvocationsMetric
+data_category: optional
+tiers:
+- free
+- premium
+- ultimate

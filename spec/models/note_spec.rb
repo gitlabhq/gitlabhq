@@ -1691,16 +1691,6 @@ RSpec.describe Note, feature_category: :team_planning do
           note.save!
         end
       end
-
-      context 'when adding a note to a commit on the MR' do
-        let(:note) { build(:note_on_commit, commit_id: merge_request.commits.first.id, project: merge_request.project) }
-
-        it 'broadcasts an Action Cable event for the MR' do
-          expect(Noteable::NotesChannel).to receive(:broadcast_to).with(merge_request, event: 'updated')
-
-          note.save!
-        end
-      end
     end
   end
 
