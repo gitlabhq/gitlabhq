@@ -14,6 +14,7 @@ import {
 import { queueRedisHllEvents } from '~/diffs/utils/queue_events';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import vuexStore from '~/mr_notes/stores';
 
 const defaultState = {
   updateUserEndpoint: '/update',
@@ -39,6 +40,31 @@ describe('Diffs view store', () => {
     setActivePinia(pinia);
     store = useDiffsView();
     useDiffsList().reloadDiffs.mockResolvedValue();
+    jest.spyOn(vuexStore, 'dispatch').mockResolvedValue();
+  });
+
+  describe('#loadMetadata', () => {
+    it('uses Vuex store to load metadata', () => {
+      const spy = jest.spyOn(vuexStore, 'dispatch');
+      store.metadataEndpoint = '/metadata';
+      store.loadMetadata();
+      expect(vuexStore.state.diffs.endpointMetadata).toBe('/metadata');
+      expect(vuexStore.state.diffs.diffViewType).toBe('inline');
+      expect(vuexStore.state.diffs.showWhitespace).toBe(true);
+      expect(spy).toHaveBeenCalledWith('diffs/fetchDiffFilesMeta');
+    });
+
+    it('copies values from Vuex store for diff stats', async () => {
+      vuexStore.state.diffs.addedLines = 1;
+      vuexStore.state.diffs.removedLines = 2;
+      vuexStore.state.diffs.realSize = '3';
+      await store.loadMetadata();
+      expect(store.diffStats).toStrictEqual({
+        addedLines: 1,
+        removedLines: 2,
+        diffsCount: 3,
+      });
+    });
   });
 
   describe('#updateDiffView', () => {

@@ -155,10 +155,8 @@ module PgFullTextSearchable
         end
       end
 
-      tsquery_terms = tsquery_terms.uniq if Feature.enabled?(:tsquery_deduplicate_search_terms, Feature.current_request)
-
+      tsquery_terms = tsquery_terms.uniq
       tsquery = tsquery_terms.join(' & ')
-
       Arel::Nodes.build_quoted(tsquery)
     end
   end

@@ -23231,6 +23231,17 @@ A software dependency used by a project.
 | <a id="componentid"></a>`id` | [`SbomComponentID!`](#sbomcomponentid) | ID of the dependency. |
 | <a id="componentname"></a>`name` | [`String!`](#string) | Name of the dependency. |
 
+### `ComponentVersion`
+
+A software dependency version used by a project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="componentversionid"></a>`id` | [`SbomComponentVersionID!`](#sbomcomponentversionid) | ID of the dependency version. |
+| <a id="componentversionversion"></a>`version` | [`String!`](#string) | Version of the dependency. |
+
 ### `ComposerMetadata`
 
 Composer metadata.
@@ -34392,6 +34403,23 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectcompliancestandardsadherencefilters"></a>`filters` | [`ComplianceStandardsProjectAdherenceInput`](#compliancestandardsprojectadherenceinput) | Filters applied when retrieving compliance standards adherence. |
+
+##### `Project.componentVersions`
+
+Find software dependency versions by component.
+
+{{< details >}}
+**Introduced** in GitLab 17.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`[ComponentVersion!]!`](#componentversion).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcomponentversionscomponentid"></a>`componentId` | [`SbomComponentID!`](#sbomcomponentid) | Global ID of the SBoM component. |
 
 ##### `Project.components`
 
@@ -45618,6 +45646,12 @@ An example `RemoteDevelopmentWorkspacesAgentConfigID` is: `"gid://gitlab/RemoteD
 A `SbomComponentID` is a global ID. It is encoded as a string.
 
 An example `SbomComponentID` is: `"gid://gitlab/Sbom::Component/1"`.
+
+### `SbomComponentVersionID`
+
+A `SbomComponentVersionID` is a global ID. It is encoded as a string.
+
+An example `SbomComponentVersionID` is: `"gid://gitlab/Sbom::ComponentVersion/1"`.
 
 ### `SbomOccurrenceID`
 

@@ -32,6 +32,35 @@ RSpec.describe API::API, feature_category: :system_access do
   end
 
   describe 'DPoP authentication' do
+    shared_examples "checks for dpop token" do
+      let(:dpop_proof) { generate_dpop_proof_for(user) }
+
+      context 'with a missing DPoP token' do
+        it 'returns 401' do
+          get api(request_path, personal_access_token: personal_access_token)
+          expect(json_response["error_description"]).to eq("DPoP validation error: DPoP header is missing")
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+
+      context 'with a valid DPoP token' do
+        it 'returns 200' do
+          get(api(request_path, personal_access_token: personal_access_token), headers: { "dpop" => dpop_proof.proof })
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'with a malformed DPoP token' do
+        it 'returns 401' do
+          get(api(request_path, personal_access_token: personal_access_token), headers: { "dpop" => 'invalid' })
+          # rubocop:disable Layout/LineLength -- We need the entire error message
+          expect(json_response["error_description"]).to eq("DPoP validation error: Malformed JWT, unable to decode. Not enough or too many segments")
+          # rubocop:enable Layout/LineLength
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+    end
+
     context 'when :dpop_authentication FF is disabled' do
       let(:user) { create(:user) }
 
@@ -58,10 +87,10 @@ RSpec.describe API::API, feature_category: :system_access do
       end
 
       context 'when DPoP is enabled for the user' do
-        let_it_be(:user) { create(:user, dpop_enabled: true) }
-        let_it_be(:personal_access_token) { create(:personal_access_token, user: user, scopes: [:api]) }
-        let_it_be(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:api]) }
-        let_it_be(:dpop_proof) { generate_dpop_proof_for(user) }
+        let(:user) { create(:user, dpop_enabled: true) }
+        let(:personal_access_token) { create(:personal_access_token, user: user, scopes: [:api]) }
+        let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:api]) }
+        let(:request_path) { "/groups" }
 
         context 'when API is called with an OAuth token' do
           it 'does not invoke DPoP' do
@@ -70,30 +99,7 @@ RSpec.describe API::API, feature_category: :system_access do
           end
         end
 
-        context 'with a missing DPoP token' do
-          it 'returns 401' do
-            get api('/groups', personal_access_token: personal_access_token)
-            expect(json_response["error_description"]).to eq("DPoP validation error: DPoP header is missing")
-            expect(response).to have_gitlab_http_status(:unauthorized)
-          end
-        end
-
-        context 'with a valid DPoP token' do
-          it 'returns 200' do
-            get(api('/groups', personal_access_token: personal_access_token), headers: { "dpop" => dpop_proof.proof })
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-        end
-
-        context 'with a malformed DPoP token' do
-          it 'returns 401' do
-            get(api('/groups', personal_access_token: personal_access_token), headers: { "dpop" => 'invalid' })
-            # rubocop:disable Layout/LineLength -- We need the entire error message
-            expect(json_response["error_description"]).to eq("DPoP validation error: Malformed JWT, unable to decode. Not enough or too many segments")
-            # rubocop:enable Layout/LineLength
-            expect(response).to have_gitlab_http_status(:unauthorized)
-          end
-        end
+        it_behaves_like "checks for dpop token"
       end
     end
   end

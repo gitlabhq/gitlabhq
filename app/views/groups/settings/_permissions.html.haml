@@ -40,6 +40,7 @@
     = render_if_exists 'groups/settings/service_access_tokens_expiration_enforced', f: f, group: @group
     = render_if_exists 'groups/settings/enforce_ssh_certificates', f: f, group: @group
     = render_if_exists 'groups/settings/extended_grat_expiry_webhook_execute', f: f, group: @group
+    = render_if_exists 'groups/settings/require_dpop_for_manage_api_endpoints', f: f, group: @group
     = render 'groups/settings/two_factor_auth', f: f, group: @group
     = render_if_exists 'groups/personal_access_token_expiration_policy', f: f, group: @group
     = render 'groups/settings/membership', f: f, group: @group

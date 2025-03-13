@@ -314,7 +314,10 @@ Example response:
 
 ## Delete a registry repository tag
 
-Delete a registry repository tag.
+Delete a container registry repository tag.
+
+The endpoint returns a 403 error if the tag matches any protection rules in the project.
+For more information about tag protection rules, see [Protected container tags](../user/packages/container_registry/protected_container_tags.md).
 
 ```plaintext
 DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name
@@ -331,8 +334,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags/v10.0.0"
 ```
 
-This action doesn't delete blobs. To delete them and recycle disk space,
-[run the garbage collection](../administration/packages/container_registry.md#container-registry-garbage-collection).
+This operation does not delete blobs. To reclaim disk space, [run garbage collection](../administration/packages/container_registry.md#container-registry-garbage-collection).
 
 ## Delete registry repository tags in bulk
 
@@ -370,9 +372,9 @@ if successful, and performs the following operations:
 - It schedules the asynchronous job to be executed in the background.
 
 These operations are executed asynchronously and can take time to get executed.
-You can run this at most once an hour for a given container repository. This
-action doesn't delete blobs. To delete them and recycle disk space,
-[run the garbage collection](../administration/packages/container_registry.md#container-registry-garbage-collection).
+You can run this at most once an hour for a given container repository.
+
+This operation does not delete blobs. To reclaim disk space, [run garbage collection](../administration/packages/container_registry.md#container-registry-garbage-collection).
 
 {{< alert type="warning" >}}
 

@@ -171,6 +171,7 @@ module API
         failure [
           { code: 400, message: 'Bad Request' },
           { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not Found' }
         ]
         tags %w[container_registry]
@@ -190,8 +191,10 @@ module API
           track_package_event('delete_tag', :container, project: user_project, namespace: user_project.namespace)
 
           status :ok
+        elsif result[:message] == ::Projects::ContainerRepository::Gitlab::DeleteTagsService::PROTECTED_TAGS_ERROR_MESSAGE
+          forbidden!(result[:message])
         else
-          status :bad_request
+          bad_request!
         end
       end
     end

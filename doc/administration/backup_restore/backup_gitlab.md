@@ -856,9 +856,9 @@ It is not possible to [skip the tar creation](#skipping-tar-creation) when using
 
 {{< /alert >}}
 
-You can let the backup script upload (using the [Fog library](https://fog.io/))
+You can let the backup script upload (using the [Fog library](https://fog.github.io/))
 the `.tar` file it creates. In the following example, we use Amazon S3 for
-storage, but Fog also lets you use [other storage providers](https://fog.io/storage/).
+storage, but Fog also lets you use [other storage providers](https://fog.github.io/storage/).
 GitLab also [imports cloud drivers](https://gitlab.com/gitlab-org/gitlab/-/blob/da46c9655962df7d49caef0e2b9f6bbe88462a02/Gemfile#L113)
 for AWS, Google, and Aliyun. A local driver is
 [also available](#upload-to-locally-mounted-shares).
@@ -1011,7 +1011,7 @@ For self-compiled installations:
      backup:
        # snip
        upload:
-         # Fog storage connection settings, see https://fog.io/storage/ .
+         # Fog storage connection settings, see https://fog.github.io/storage/ .
          connection:
            provider: AWS
            region: eu-west-1
@@ -1254,7 +1254,7 @@ remaining after the failed upload attempt.
    ```yaml
    backup:
      upload:
-       # Fog storage connection settings, see https://fog.io/storage/ .
+       # Fog storage connection settings, see https://fog.github.io/storage/ .
        connection:
          provider: Local
          local_root: '/mnt/backups'

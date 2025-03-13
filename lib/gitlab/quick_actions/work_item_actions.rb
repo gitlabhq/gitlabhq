@@ -38,12 +38,7 @@ module Gitlab
         types WorkItem, Issue
         params 'Parent #iid, reference or URL'
         condition do
-          case quick_action_target
-          when ::WorkItem
-            supports_parent? && can_admin_link?
-          when ::Issue
-            can_user_link_issue_to_epic?
-          end
+          quick_action_target.supports_parent? && can_admin_set_relation?
         end
         conditional_aliases_autocompletion :epic do
           show_epic_alias?
@@ -71,7 +66,7 @@ module Gitlab
           )
         end
         types WorkItem
-        condition { work_item_parent.present? && can_admin_link? }
+        condition { work_item_parent.present? && can_admin_set_relation? }
         command :remove_parent do
           @updates[:remove_parent] = true
           @execution_message[:remove_parent] = success_msg[:remove_parent]
@@ -186,15 +181,6 @@ module Gitlab
         quick_action_target.work_item_parent
       end
 
-      def supports_parent?
-        target_item = quick_action_target
-
-        return false if target_item.work_item_type&.issue? &&
-          !(target_item.project || target_item.namespace)&.licensed_feature_available?(:epics)
-
-        ::WorkItems::HierarchyRestriction.find_by_child_type_id(target_item.work_item_type_id).present?
-      end
-
       def supports_children?
         ::WorkItems::HierarchyRestriction.find_by_parent_type_id(quick_action_target.work_item_type_id).present?
       end
@@ -205,6 +191,10 @@ module Gitlab
 
       def can_admin_link?
         current_user.can?(:admin_issue_link, quick_action_target)
+      end
+
+      def can_admin_set_relation?
+        current_user.can?(:admin_issue_relation, quick_action_target)
       end
 
       # rubocop:disable Gitlab/ModuleWithInstanceVariables -- @updates is already defined and part of
@@ -222,9 +212,6 @@ module Gitlab
 
       # overridden in EE
       def show_epic_alias?; end
-
-      # overridden in EE
-      def can_user_link_issue_to_epic?; end
     end
   end
 end

@@ -2248,7 +2248,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
   end
 
-  describe '#registration_available?' do
+  describe '#registration_available?', :freeze_time do
     subject { runner.registration_available? }
 
     let(:runner) { build(:ci_runner, *runner_traits, registration_type: registration_type) }

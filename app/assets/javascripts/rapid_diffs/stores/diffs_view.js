@@ -11,6 +11,7 @@ import { queueRedisHllEvents } from '~/diffs/utils/queue_events';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
+import store from '~/mr_notes/stores';
 
 export const useDiffsView = defineStore('diffsView', {
   state() {
@@ -20,9 +21,24 @@ export const useDiffsView = defineStore('diffsView', {
       singleFileMode: false,
       updateUserEndpoint: undefined,
       streamUrl: undefined,
+      metadataEndpoint: undefined,
+      diffStats: null,
     };
   },
   actions: {
+    async loadMetadata() {
+      // TODO: refactor this to our own Pinia stores
+      store.state.diffs.endpointMetadata = this.metadataEndpoint;
+      store.state.diffs.diffViewType = this.viewType;
+      store.state.diffs.showWhitespace = this.showWhitespace;
+      await store.dispatch('diffs/fetchDiffFilesMeta');
+      this.diffStats = {
+        addedLines: store.state.diffs.addedLines,
+        removedLines: store.state.diffs.removedLines,
+        // we will be using a number for that after refactoring
+        diffsCount: parseInt(store.state.diffs.realSize, 10),
+      };
+    },
     updateDiffView() {
       if (this.singleFileMode) {
         // TODO: implement single file mode
@@ -47,6 +63,7 @@ export const useDiffsView = defineStore('diffsView', {
         // we don't have to wait for the setting to be saved since whitespace param is passed explicitly
         axios.put(this.updateUserEndpoint, { show_whitespace_in_diffs: value });
       }
+      this.loadMetadata();
       this.updateDiffView();
     },
   },

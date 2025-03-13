@@ -151,6 +151,9 @@ class Group < Namespace
   delegate :project_runner_token_expiration_interval, :project_runner_token_expiration_interval=, :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
   delegate :force_pages_access_control, :force_pages_access_control=, to: :namespace_settings, allow_nil: true
 
+  delegate :require_dpop_for_manage_api_endpoints, :require_dpop_for_manage_api_endpoints=, to: :namespace_settings
+  delegate :require_dpop_for_manage_api_endpoints?, to: :namespace_settings
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :group_feature, update_only: true
 

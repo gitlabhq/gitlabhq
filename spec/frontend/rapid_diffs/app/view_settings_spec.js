@@ -20,6 +20,9 @@ jest.mock('~/diffs/components/diff_app_controls.vue', () => ({
         'data-show-whitespace': JSON.stringify(this.showWhitespace),
         'data-diff-view-type': JSON.stringify(this.diffViewType),
         'data-is-loading': JSON.stringify(this.isLoading),
+        'data-added-lines': JSON.stringify(this.addedLines),
+        'data-removed-lines': JSON.stringify(this.removedLines),
+        'data-diffs-count': JSON.stringify(this.diffsCount),
       },
     });
   },
@@ -68,6 +71,11 @@ describe('View settings', () => {
 
   it('sets diff app controls props', () => {
     useDiffsList().loadedFiles = { foo: true };
+    useDiffsView().diffStats = {
+      addedLines: 1,
+      removedLines: 2,
+      diffsCount: 3,
+    };
     initViewSettings({ pinia, streamUrl });
     const el = getDiffAppControls();
     const getProp = (prop) => JSON.parse(el.dataset[prop]);
@@ -75,6 +83,9 @@ describe('View settings', () => {
     expect(getProp('showWhitespace')).toBe(true);
     expect(getProp('diffViewType')).toBe('parallel');
     expect(getProp('isLoading')).toBe(false);
+    expect(getProp('addedLines')).toBe(1);
+    expect(getProp('removedLines')).toBe(2);
+    expect(getProp('diffsCount')).toBe(3);
   });
 
   it('triggers collapse all files', () => {

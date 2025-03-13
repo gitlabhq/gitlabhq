@@ -5,6 +5,9 @@ import { DiffFileMounted } from '~/rapid_diffs/diff_file_mounted';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { initFileBrowser } from '~/rapid_diffs/app/init_file_browser';
 import { StreamingError } from '~/rapid_diffs/streaming_error';
+import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
+import { createAlert } from '~/alert';
+import { __ } from '~/locale';
 
 // This facade interface joins together all the bits and pieces of Rapid Diffs: DiffFile, Settings, File browser, etc.
 // It's a unified entrypoint for Rapid Diffs and all external communications should happen through this interface.
@@ -15,9 +18,20 @@ class RapidDiffsFacade {
 
   init() {
     this.#registerCustomElements();
-    const appElement = document.querySelector('[data-rapid-diffs]');
-    initViewSettings({ pinia, streamUrl: appElement.dataset.reloadStreamUrl });
-    initFileBrowser();
+    const { reloadStreamUrl, metadataEndpoint } =
+      document.querySelector('[data-rapid-diffs]').dataset;
+    useDiffsView(pinia).metadataEndpoint = metadataEndpoint;
+    useDiffsView(pinia)
+      .loadMetadata()
+      .then(() => {
+        initFileBrowser();
+      })
+      .catch(() => {
+        createAlert({
+          message: __('Failed to load additional diffs information. Try reloading the page.'),
+        });
+      });
+    initViewSettings({ pinia, streamUrl: reloadStreamUrl });
   }
 
   // eslint-disable-next-line class-methods-use-this

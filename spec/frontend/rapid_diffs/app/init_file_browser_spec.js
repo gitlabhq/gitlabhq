@@ -1,5 +1,4 @@
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
-import store from '~/mr_notes/stores';
 import { initFileBrowser } from '~/rapid_diffs/app/init_file_browser';
 import createEventHub from '~/helpers/event_hub_factory';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -22,13 +21,9 @@ jest.mock('~/rapid_diffs/app/file_browser.vue', () => ({
 }));
 
 describe('Init file browser', () => {
-  let dispatch;
-
-  const getMountElement = () => document.querySelector('[data-file-browser]');
   const getFileBrowser = () => document.querySelector('[data-file-browser-component]');
 
   beforeEach(() => {
-    dispatch = jest.spyOn(store, 'dispatch').mockResolvedValue();
     window.mrTabs = { eventHub: createEventHub() };
     setHTMLFixture(
       `
@@ -46,14 +41,9 @@ describe('Init file browser', () => {
     resetHTMLFixture();
   });
 
-  it('sets metadata endpoint', () => {
+  it('mounts the component', () => {
     initFileBrowser();
-    expect(store.state.diffs.endpointMetadata).toBe(getMountElement().dataset.metadataEndpoint);
-  });
-
-  it('fetches metadata', () => {
-    initFileBrowser();
-    expect(dispatch).toHaveBeenCalledWith('diffs/fetchDiffFilesMeta');
+    expect(getFileBrowser()).not.toBe(null);
   });
 
   it('handles file clicks', async () => {

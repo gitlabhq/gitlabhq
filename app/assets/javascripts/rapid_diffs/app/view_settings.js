@@ -21,7 +21,13 @@ const initSettingsApp = (el, pinia) => {
     pinia,
     computed: {
       ...mapState(useDiffsList, ['isLoading', 'isEmpty']),
-      ...mapState(useDiffsView, ['showWhitespace', 'viewType', 'fileByFileMode', 'singleFileMode']),
+      ...mapState(useDiffsView, [
+        'showWhitespace',
+        'viewType',
+        'fileByFileMode',
+        'singleFileMode',
+        'diffStats',
+      ]),
     },
     methods: {
       ...mapActions(useDiffsView, ['updateViewType', 'updateShowWhitespace']),
@@ -34,6 +40,9 @@ const initSettingsApp = (el, pinia) => {
           diffViewType: this.viewType,
           viewDiffsFileByFile: this.singleFileMode,
           isLoading: this.isLoading,
+          addedLines: this.diffStats?.addedLines,
+          removedLines: this.diffStats?.removedLines,
+          diffsCount: this.diffStats?.diffsCount,
         },
         on: {
           updateDiffViewType: this.updateViewType,

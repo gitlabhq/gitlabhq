@@ -84,6 +84,12 @@ module API
 
       private
 
+      def group_manage_endpoint?(user)
+        return false unless Feature.enabled?(:manage_pat_by_group_owners_ready, user)
+
+        request.path.match?(%r{/groups/(\d+)/manage/})
+      end
+
       def bypass_session_for_admin_mode?(user)
         return false unless user.is_a?(User) && Gitlab::CurrentSettings.admin_mode
 
@@ -125,7 +131,9 @@ module API
 
         ::Auth::DpopAuthenticationService.new(current_user: user,
           personal_access_token_plaintext: token,
-          request: current_request).execute
+          request: current_request).execute(
+            enforce_dpop_authentication: group_manage_endpoint?(user),
+            group_id: params[:id])
       end
 
       def user_allowed_or_deploy_token?(user)

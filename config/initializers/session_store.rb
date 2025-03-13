@@ -42,8 +42,6 @@ cookie_key = if Rails.env.development?
 
 ::Redis::Store::Factory.prepend(Gitlab::Patch::RedisStoreFactory)
 
-ENV['USE_REDIS_CACHE_STORE_AS_SESSION_STORE'] = 'true' if Rails.env.test? || Rails.env.development?
-
 session_store_class, options = Gitlab::Sessions::StoreBuilder.new(cookie_key, session_cookie_token_prefix).prepare
 
 Rails.application.configure do

@@ -11,8 +11,9 @@ module Auth # rubocop:disable Gitlab/BoundedContexts -- following the same struc
       @request = request
     end
 
-    def execute
-      return ServiceResponse.success unless current_user.dpop_enabled
+    def execute(enforce_dpop_authentication: false, group_id: nil)
+      return ServiceResponse.success unless
+        (enforce_dpop_authentication && dpop_enforced_for_group_endpoints?(group_id)) || current_user.dpop_enabled
 
       dpop_token = Gitlab::Auth::DpopToken.new(data: extract_dpop_from_request!(request))
 
@@ -25,6 +26,12 @@ module Auth # rubocop:disable Gitlab/BoundedContexts -- following the same struc
     private
 
     attr_reader :current_user, :personal_access_token_plaintext, :request
+
+    def dpop_enforced_for_group_endpoints?(group_id)
+      return false if group_id.nil?
+
+      Group.find(group_id)&.require_dpop_for_manage_api_endpoints
+    end
 
     def extract_dpop_from_request!(request)
       dpop_token = request.headers.fetch('dpop') { raise Gitlab::Auth::DpopValidationError, 'DPoP header is missing' }

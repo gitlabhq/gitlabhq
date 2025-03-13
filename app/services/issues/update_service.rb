@@ -132,7 +132,7 @@ module Issues
         namespace_id: work_item.namespace_id,
         previous_work_item_parent_id: old_associations[:work_item_parent_id],
         updated_attributes: work_item.previous_changes&.keys&.map(&:to_s),
-        updated_widgets: @widget_params&.keys&.map(&:to_s)
+        updated_widgets: @widget_params&.compact_blank&.keys&.map(&:to_s)
       }.tap(&:compact_blank!))
 
       work_item.run_after_commit_or_now do

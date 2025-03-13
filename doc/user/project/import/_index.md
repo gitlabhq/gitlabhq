@@ -393,6 +393,10 @@ after you've uploaded the completed CSV file.
 **Source user name** and **Source username** identify the source user
 and are not used after you've uploaded the CSV file.
 
+You do not have to update every row of the CSV file.
+Only rows with **GitLab username** or **GitLab public email** are processed.
+All other rows are skipped.
+
 To request reassignment of contributions and memberships by using a CSV file:
 
 1. On the left sidebar, select **Search or go to** and find your group.
@@ -400,13 +404,24 @@ To request reassignment of contributions and memberships by using a CSV file:
 1. Select the **Placeholders** tab.
 1. Select **Reassign with CSV**.
 1. Download the prefilled CSV template.
-1. In **GitLab username** or **GitLab public email**, enter the username or email address
+1. In **GitLab username** or **GitLab public email**, enter the username or public email address
    of the GitLab user on the destination instance.
-   You can use only public email addresses for reassignment.
+   Instance administrators can reassign users with any confirmed email address.
 1. Upload the completed CSV file.
 1. Select **Reassign**.
 
-Users receive an email to review and accept any contributions reassigned to them.
+You can assign only contributions from a single placeholder user
+to each active non-bot user on the destination instance.
+Users receive an email to review and [accept any contributions](#accept-contribution-reassignment) you've reassigned to them.
+You can [cancel the reassignment request](#cancel-reassignment-request) before the user reviews it.
+
+After you reassign contributions, GitLab sends you an email with the number of:
+
+- Successfully processed rows
+- Unsuccessfully processed rows
+- Skipped rows
+
+If any rows have not been successfully processed, the email has a CSV file with more detailed results.
 
 #### Keep as placeholder
 

@@ -13,6 +13,7 @@
       - 'credentials_inventory'
       - 'devise'
       - 'doorkeeper'
+      - 'enterprise_user'
       - 'feed_token'
       - 'ip_allowlist'
       - 'kerberos'

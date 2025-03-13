@@ -4,13 +4,8 @@ import { pinia } from '~/pinia/instance';
 import { DiffFile } from '~/rapid_diffs/diff_file';
 import FileBrowser from './file_browser.vue';
 
-export async function initFileBrowser() {
+export function initFileBrowser() {
   const el = document.querySelector('[data-file-browser]');
-  const { metadataEndpoint } = el.dataset;
-
-  store.state.diffs.endpointMetadata = metadataEndpoint;
-  await store.dispatch('diffs/fetchDiffFilesMeta');
-
   // eslint-disable-next-line no-new
   new Vue({
     el,

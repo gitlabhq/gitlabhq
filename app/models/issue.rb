@@ -630,6 +630,9 @@ class Issue < ApplicationRecord
     true
   end
 
+  # Overriden in EE
+  def supports_parent?; end
+
   def as_json(options = {})
     super(options).tap do |json|
       if options.key?(:labels)

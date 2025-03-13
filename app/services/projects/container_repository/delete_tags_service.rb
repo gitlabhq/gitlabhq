@@ -28,7 +28,10 @@ module Projects
 
       def delete_service
         if @container_repository.client.supports_tag_delete?
-          ::Projects::ContainerRepository::Gitlab::DeleteTagsService.new(@container_repository, @tag_names)
+          ::Projects::ContainerRepository::Gitlab::DeleteTagsService.new(
+            current_user: @current_user,
+            container_repository: @container_repository,
+            tag_names: @tag_names)
         else
           ::Projects::ContainerRepository::ThirdParty::DeleteTagsService.new(@container_repository, @tag_names)
         end

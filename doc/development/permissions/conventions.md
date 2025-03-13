@@ -40,6 +40,7 @@ We recognize that this set of actions is limited and not applicable to every fea
 - `create` is preferred over `build` or `import`
 - `read` is preferred over `access`
 - `push` is preferred over `upload`
+- `delete` is preferred over `destroy`
 
 #### Exceptions
 

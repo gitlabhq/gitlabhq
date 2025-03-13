@@ -1026,4 +1026,24 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       end
     end
   end
+
+  describe '#supports_parent?' do
+    context 'when the work item type is an issue' do
+      let_it_be(:issue_work_item) { create(:work_item, :issue) }
+
+      it 'returns false' do
+        expect(issue_work_item).not_to receive(:hierarchy_supports_parent?)
+        expect(issue_work_item.supports_parent?).to be false
+      end
+    end
+
+    context 'when the work item type is not an issue' do
+      let_it_be(:task_work_item) { create(:work_item, :task) }
+
+      it 'defers to hierarchy_supports_parent?' do
+        expect(task_work_item).to receive(:hierarchy_supports_parent?).and_call_original
+        expect(task_work_item.supports_parent?).to be true
+      end
+    end
+  end
 end

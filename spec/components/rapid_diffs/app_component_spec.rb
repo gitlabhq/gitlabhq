@@ -21,6 +21,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     app = page.find('[data-rapid-diffs]')
     expect(app).not_to be_nil
     expect(app['data-reload-stream-url']).to eq(reload_stream_url)
+    expect(app['data-metadata-endpoint']).to eq(metadata_endpoint)
   end
 
   it "renders view settings" do
@@ -36,7 +37,6 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     render_component
     container = page.find("[data-file-browser]")
     expect(container).not_to be_nil
-    expect(container['data-metadata-endpoint']).to eq(metadata_endpoint)
   end
 
   it "sets sidebar width" do

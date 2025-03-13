@@ -37,37 +37,6 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
         end
       end
 
-      context 'when applying quick actions' do
-        let(:work_item) { service_result[:work_item] }
-        let(:opts) do
-          {
-            title: 'My work item',
-            work_item_type: work_item_type,
-            description: '/shrug'
-          }
-        end
-
-        context 'when work item type is not the default Issue' do
-          let(:work_item_type) { create(:work_item_type, :task, namespace: group) }
-
-          it 'saves the work item without applying the quick action' do
-            expect(service_result).to be_success
-            expect(work_item).to be_persisted
-            expect(work_item.description).to eq('/shrug')
-          end
-        end
-
-        context 'when work item type is the default Issue' do
-          let(:work_item_type) { WorkItems::Type.default_by_type(:issue) }
-
-          it 'saves the work item and applies the quick action' do
-            expect(service_result).to be_success
-            expect(work_item).to be_persisted
-            expect(work_item.description).to eq('¯\＿(ツ)＿/¯')
-          end
-        end
-      end
-
       context 'when params are valid' do
         it 'created instance is a WorkItem' do
           expect(Issuable::CommonSystemNotesService).to receive_message_chain(:new, :execute)
@@ -214,4 +183,45 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
 
   it_behaves_like 'creates work item in container', :project
   it_behaves_like 'creates work item in container', :project_namespace
+
+  context 'when applying quick actions' do
+    let(:service) do
+      described_class.new(
+        container: project,
+        current_user: user,
+        params: params,
+        widget_params: widget_params
+      )
+    end
+
+    let(:issuable) { service.execute[:work_item] }
+
+    it_behaves_like 'issuable record that supports quick actions'
+    it_behaves_like 'issuable record that supports quick actions', with_widgets: true
+
+    context 'when applying work item quick actions using legacy params' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:user) { project.creator }
+
+      let_it_be(:task) { create(:work_item, :task, project: project) }
+
+      let(:params) do
+        {
+          title: 'Awesome work_item',
+          description: "please fix\n/add_child #{task.to_reference}"
+        }
+      end
+
+      let(:widget_params) { {} }
+
+      it 'applies the quick action' do
+        service_result = service.execute
+
+        expect(service_result[:status]).to be(:success)
+        expect(service_result[:work_item].work_item_children).to contain_exactly(
+          task
+        )
+      end
+    end
+  end
 end

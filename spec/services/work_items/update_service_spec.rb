@@ -73,30 +73,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           lock_version
           updated_at
           updated_by_id
+        ],
+        widgets: %w[
+          description_widget
         ]
-
-      context 'when work item type is not the default Issue' do
-        before do
-          task_type = WorkItems::Type.default_by_type(:task)
-          work_item.update_columns(work_item_type_id: task_type.id)
-        end
-
-        it 'does not apply the quick action' do
-          expect do
-            update_work_item
-          end.to change(work_item, :description).to('/shrug')
-        end
-      end
-
-      context 'when work item type is the default Issue' do
-        let(:issue) { create(:work_item, description: '') }
-
-        it 'applies the quick action' do
-          expect do
-            update_work_item
-          end.to change(work_item, :description).to('¯\＿(ツ)＿/¯')
-        end
-      end
 
       it_behaves_like 'issuable record that supports quick actions' do
         let(:opts) { params }
@@ -126,25 +106,6 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         let(:work_item) { create(:work_item, project: project, description: old_description) }
         let(:opts) { params }
         let(:updated_issuable) { update_work_item[:work_item] }
-      end
-
-      context 'when work item type is not default issue' do
-        # when quick actions are passed in `description` param those are not interpreted and just saved into description
-        # as plain text
-        #
-        # it_behaves_like 'issuable record that does not supports quick actions' do
-        #   let(:opts) { params }
-        #   let(:current_user) { user }
-        #   let(:work_item) { create(:work_item, :task, project: project, description: "some random description") }
-        #   let(:issuable) { update_work_item[:work_item] }
-        # end
-
-        it_behaves_like 'issuable record that supports quick actions', with_widgets: true do
-          let(:opts) { params }
-          let(:current_user) { user }
-          let(:work_item) { create(:work_item, :task, project: project, description: "some random description") }
-          let(:issuable) { update_work_item[:work_item] }
-        end
       end
 
       context 'when work item labels, assignees & milestone widgets are disabled' do
@@ -215,6 +176,9 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           lock_version
           updated_at
           updated_by_id
+        ],
+        widgets: %w[
+          description_widget
         ]
 
       it 'does not trigger issuable_title_updated graphql subscription' do
@@ -263,6 +227,9 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           lock_version
           updated_at
           updated_by_id
+        ],
+        widgets: %w[
+          description_widget
         ]
 
       it 'triggers GraphQL description updated subscription' do

@@ -24799,6 +24799,9 @@ msgstr ""
 msgid "Failed to load Roadmap"
 msgstr ""
 
+msgid "Failed to load additional diffs information. Try reloading the page."
+msgstr ""
+
 msgid "Failed to load assignees. Please try again."
 msgstr ""
 
@@ -28708,6 +28711,9 @@ msgstr ""
 msgid "GroupSettings|Enable sending email notifications for this group and all its subgroups and projects"
 msgstr ""
 
+msgid "GroupSettings|Enforce DPoP authentication for manage API endpoints for group"
+msgstr ""
+
 msgid "GroupSettings|Enforce SSH Certificates"
 msgstr ""
 
@@ -28739,6 +28745,9 @@ msgid "GroupSettings|Group path cannot be longer than %{length} characters."
 msgstr ""
 
 msgid "GroupSettings|How do I manage group SSH certificates?"
+msgstr ""
+
+msgid "GroupSettings|If enabled, DPoP authentication will be enforced for manage API endpoints for this group."
 msgstr ""
 
 msgid "GroupSettings|If enabled, enterprise user accounts will not be able to use personal access tokens. %{learn_more_link}."

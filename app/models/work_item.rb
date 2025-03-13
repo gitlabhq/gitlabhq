@@ -247,6 +247,12 @@ class WorkItem < Issue
     work_item_type.supports_time_tracking?(resource_parent)
   end
 
+  def supports_parent?
+    return false if work_item_type.issue?
+
+    hierarchy_supports_parent?
+  end
+
   def due_date
     dates_source&.due_date || read_attribute(:due_date)
   end
@@ -379,6 +385,10 @@ class WorkItem < Issue
          (issue_links.source_id = issues.id AND issue_links.target_id = #{id}#{type_condition})
          OR
          (issue_links.target_id = issues.id AND issue_links.source_id = #{id}#{type_condition})")
+  end
+
+  def hierarchy_supports_parent?
+    ::WorkItems::HierarchyRestriction.find_by_child_type_id(work_item_type_id).present?
   end
 end
 

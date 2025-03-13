@@ -472,6 +472,19 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
 
         it_behaves_like 'sets work item parent'
       end
+
+      context 'when user has no access to the work_item' do
+        before do
+          allow(maintainer).to receive(:can?).and_call_original
+          allow(maintainer).to receive(:can?).with(:admin_issue_relation, noteable).and_return(false)
+        end
+
+        let(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
+
+        it 'does not assign the parent' do
+          expect { execute(note) }.not_to change { noteable.reload.work_item_parent }
+        end
+      end
     end
 
     describe '/remove_parent' do
@@ -493,6 +506,19 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
 
         expect(noteable.valid?).to be_truthy
         expect(noteable.work_item_parent).to eq(nil)
+      end
+
+      context 'when user has no access to the work_item' do
+        before do
+          allow(maintainer).to receive(:can?).and_call_original
+          allow(maintainer).to receive(:can?).with(:admin_issue_relation, noteable).and_return(false)
+        end
+
+        let(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
+
+        it 'does not assign the parent' do
+          expect { execute(note) }.not_to change { noteable.reload.work_item_parent }
+        end
       end
     end
 
