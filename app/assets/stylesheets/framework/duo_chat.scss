@@ -3,4 +3,9 @@
 
 #duo-chat {
   z-index: #{$zindex-modal-backdrop - 1};
+
+  h1, h2, h3, h4 {
+    font-size: $gl-font-size-large;
+  }
+
 }

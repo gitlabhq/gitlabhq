@@ -1450,15 +1450,13 @@ Be aware of the limitations [when using models in migrations](#using-application
 
 In most circumstances, prefer migrating data in **batches** when modifying data in the database.
 
-We introduced a new helper [`each_batch_range`](https://gitlab.com/gitlab-org/gitlab/-/blob/cd3e0a5cddcb464cb9b8c6e3275839cf57dfa6e2/lib/gitlab/database/dynamic_model_helpers.rb#L28-32) which facilitates the process of iterating over a collection in a performant way. The default size of the batch is defined in the `BATCH_SIZE` constant.
+Use the helper [`each_batch_range`](https://gitlab.com/gitlab-org/gitlab/blob/d430ac7e5b994a4328d648302f85e8d47ed41e11/lib/gitlab/database/migration_helpers.rb#L52-52) which facilitates the process of iterating over a collection in a performant way. The default size of the batch is defined in the `BATCH_SIZE` constant.
 
 See the following example to get an idea.
 
 **Purging data in batch:**
 
 ```ruby
-include ::Gitlab::Database::DynamicModelHelpers
-
 disable_ddl_transaction!
 
 def up
@@ -1479,7 +1477,7 @@ end
 - The second argument calls a lambda which fetches the relevant dataset selected (the default is set to `.all`): `scope: ->(table) { table.ref_protected }`.
 - The third argument is the batch size (the default is set in the `BATCH_SIZE` constant): `of: BATCH_SIZE`.
 
-Here is an [example MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62195) illustrating how to use our new helper.
+Here is an [example MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171528) illustrating how to use the helper.
 
 ## Using application code in migrations (discouraged)
 

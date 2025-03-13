@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: npm package publishing guidelines
 ---
-
-# npm package publishing guidelines
 
 GitLab uses npm packages as a means to improve code reuse and modularity in and across projects.
 This document outlines the best practices and guidelines for securely publishing npm packages to npmjs.com.

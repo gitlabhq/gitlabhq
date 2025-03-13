@@ -261,6 +261,13 @@ The following languages and dependency managers are supported by Dependency Scan
       <td><code>Podfile.lock</code></td>
       <td>N</td>
     </tr>
+    <tr>
+      <td>Dart<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-10">10</a></b></sup></td>
+      <td>All versions</td>
+      <td><a href="https://pub.dev/">Pub</a></td>
+      <td><code>pubspec.lock</code></td>
+      <td>N</td>
+    </tr>
   </tbody>
 </table>
 
@@ -320,6 +327,12 @@ The following languages and dependency managers are supported by Dependency Scan
     <a id="notes-regarding-supported-languages-and-package-managers-9"></a>
     <p>
       Only SBOM, without advisories. See <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/468764">spike on CocoaPods advisories research</a>.
+    </p>
+  </li>
+  <li>
+    <a id="notes-regarding-supported-languages-and-package-managers-10"></a>
+    <p>
+      No license detection yet. See <a href="https://gitlab.com/groups/gitlab-org/-/epics/17037">epic on Dart license detection</a>.
     </p>
   </li>
 </ol>

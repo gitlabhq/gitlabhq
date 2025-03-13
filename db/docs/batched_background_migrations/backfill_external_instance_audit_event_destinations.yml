@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillExternalInstanceAuditEventDestinations
+description: Backfill the audit_events_instance_external_audit_event_destinations table to audit_events_instance_external_streaming_destinations
+feature_category: audit_events
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184035
+milestone: '17.10'
+queued_migration_version: 20250310161242
+finalized_by: # version of the migration that finalized this BBM

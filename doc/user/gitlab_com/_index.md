@@ -618,3 +618,24 @@ GitLab.com runs [Sidekiq](https://sidekiq.org) as an [external process](../../ad
 for Ruby job scheduling.
 
 The current settings are in the [GitLab.com Kubernetes pod configuration](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/blob/master/releases/gitlab/values/gprd.yaml.gotmpl).
+
+## Merge request limits
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `merge_requests_diffs_limit`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+GitLab limits each merge request to 1000 [diff versions](../project/merge_requests/versions.md).
+Merge requests that reach this limit cannot be updated further. Instead,
+close the affected merge request and create a new merge request.

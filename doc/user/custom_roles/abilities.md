@@ -110,7 +110,7 @@ Any dependencies are noted in the `Description` column for each permission.
 
 | Permission | Description | API Attribute | Scope | Introduced |
 |:-----------|:------------|:--------------|:------|:-----------|
-| Manage vulnerabilities | Edit the vulnerability object, including the status and linking an issue. Includes the `read_vulnerability` permission actions. | [`admin_vulnerability`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534) | Group,<br> Project | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/412536) |
+| Manage vulnerabilities | Edit the status, linked issue, and severity of a vulnerability object. Also requires the `read_vulnerability` permission. | [`admin_vulnerability`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534) | Group,<br> Project | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/412536) |
 | View dependency list | Allows read-only access to the dependencies and licenses. | [`read_dependency`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126247) | Group,<br> Project | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/415255) |
 | View vulnerability reports and dashboards | Read vulnerability reports and security dashboards. | [`read_vulnerability`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120704) | Group,<br> Project | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/399119) |
 

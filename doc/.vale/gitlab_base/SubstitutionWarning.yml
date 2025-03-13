@@ -69,6 +69,7 @@ swap:
   pop-up window: "dialog"
   pop-up: "dialog"
   popup: "dialog"
+  re-index: "reindex"
   repo: "repository"
   root group: "top-level group"
   signed in user: "authenticated user"

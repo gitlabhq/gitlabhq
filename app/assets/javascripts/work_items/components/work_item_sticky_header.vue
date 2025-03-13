@@ -155,7 +155,7 @@ export default {
             v-if="canUpdate"
             category="secondary"
             data-testid="work-item-edit-button-sticky"
-            class="shortcut-edit-wi-description"
+            class="shortcut-edit-wi-description gl-shrink-0"
             @click="$emit('toggleEditMode')"
           >
             {{ __('Edit') }}

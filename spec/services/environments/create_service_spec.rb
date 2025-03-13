@@ -151,7 +151,6 @@ RSpec.describe Environments::CreateService, feature_category: :environment_manag
       let_it_be(:agent_management_project) { create(:project) }
       let_it_be(:cluster_agent) { create(:cluster_agent, project: agent_management_project) }
 
-      let!(:authorization) { create(:agent_user_access_project_authorization, project: project, agent: cluster_agent) }
       let(:params) do
         {
           name: 'production',
@@ -161,24 +160,49 @@ RSpec.describe Environments::CreateService, feature_category: :environment_manag
         }
       end
 
-      it 'returns successful response' do
-        response = subject
-
-        expect(response).to be_success
-        expect(response.payload[:environment].cluster_agent).to eq(cluster_agent)
-        expect(response.payload[:environment].kubernetes_namespace).to eq('default')
-        expect(response.payload[:environment].flux_resource_path).to eq('path/to/flux/resource')
-      end
-
-      context 'when user does not have permission to read the agent' do
+      context 'when skip_agent_auth is true' do
+        let(:params) { { name: 'production', skip_agent_auth: true } }
         let!(:authorization) { nil }
 
-        it 'returns an error' do
+        it 'creates an environment without checking the cluster agent authorization' do
+          expect { subject }.to change { ::Environment.count }.by(1)
+        end
+
+        it 'returns successful response' do
           response = subject
 
-          expect(response).to be_error
-          expect(response.message).to eq('Unauthorized to access the cluster agent in this project')
-          expect(response.payload[:environment]).to be_nil
+          expect(response).to be_success
+          expect(response.payload[:environment].name).to eq('production')
+          expect(response.payload[:environment].cluster_agent).to be_nil
+        end
+      end
+
+      context 'when skip_agent_auth is nil' do
+        context 'when user has permission to read the agent' do
+          let!(:authorization) do
+            create(:agent_user_access_project_authorization, project: project, agent: cluster_agent)
+          end
+
+          it 'returns successful response' do
+            response = subject
+
+            expect(response).to be_success
+            expect(response.payload[:environment].cluster_agent).to eq(cluster_agent)
+            expect(response.payload[:environment].kubernetes_namespace).to eq('default')
+            expect(response.payload[:environment].flux_resource_path).to eq('path/to/flux/resource')
+          end
+        end
+
+        context 'when user does not have permission to read the agent' do
+          let!(:authorization) { nil }
+
+          it 'returns an error' do
+            response = subject
+
+            expect(response).to be_error
+            expect(response.message).to eq('Unauthorized to access the cluster agent in this project')
+            expect(response.payload[:environment]).to be_nil
+          end
         end
       end
     end

@@ -65,7 +65,7 @@ To see earlier revisions of a specific line:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514684) in GitLab 17.10 [with a flag](../../../../administration/feature_flags.md) named `blame_ignore_revs`. Disabled by default.
-
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/514325) in GitLab 17.10.
 {{< /history >}}
 
 {{< alert type="flag" >}}

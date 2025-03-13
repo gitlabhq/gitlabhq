@@ -2039,6 +2039,10 @@ See also [recommended steps](_index.md#recommended-steps).
 
 Use **register** instead of **sign up** when talking about creating an account.
 
+## reindex
+
+Use **reindex** instead of **re-index** when talking about search.
+
 ## remove
 
 Use **remove** when an object continues to exist. For example, you can remove an issue from an epic, but the issue still exists.

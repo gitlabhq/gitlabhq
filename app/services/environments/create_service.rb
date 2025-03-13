@@ -13,7 +13,13 @@ module Environments
         )
       end
 
-      if unauthorized_cluster_agent?
+      # Note: We skip checking the cluster agent authorization if the `skip_agent_auth`
+      # parameter is present. This allows creating environments that reference a cluster agent
+      # before the agent has connected for the first time.
+      # This is necessary to support the bootstrapping workflow, where environments
+      # are created before the agent has connected for the first time.
+      # See https://gitlab.com/gitlab-org/cli/-/issues/7786 for context.
+      if params[:skip_agent_auth].blank? && unauthorized_cluster_agent?
         return ServiceResponse.error(
           message: _('Unauthorized to access the cluster agent in this project'),
           payload: { environment: nil })

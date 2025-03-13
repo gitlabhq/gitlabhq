@@ -83,7 +83,7 @@ More [complex Elasticsearch API calls](https://www.elastic.co/guide/en/elasticse
 If the results:
 
 - Sync up, check that you are using [supported syntax](../../../user/search/advanced_search.md#syntax). Advanced search does not support [exact substring matching](https://gitlab.com/gitlab-org/gitlab/-/issues/325234).
-- Do not match up, this indicates a problem with the documents generated from the project. It is best to [re-index that project](../../advanced_search/elasticsearch.md#indexing-a-range-of-projects-or-a-specific-project).
+- Do not match up, this indicates a problem with the documents generated from the project. It is best to [reindex that project](../../advanced_search/elasticsearch.md#indexing-a-range-of-projects-or-a-specific-project).
 
 {{< alert type="note" >}}
 
@@ -123,7 +123,7 @@ to perform bulk operations. See also the error ["429 (Too Many Requests)"](#inde
 ## Indexing fails with `strict_dynamic_mapping_exception`
 
 Indexing might fail if all [advanced search migrations were not finished before doing a major upgrade](../../advanced_search/elasticsearch.md#all-migrations-must-be-finished-before-doing-a-major-upgrade).
-A large Sidekiq backlog might accompany this error. To fix the indexing failures, you must re-index the database, repositories, and wikis.
+A large Sidekiq backlog might accompany this error. To fix the indexing failures, you must reindex the database, repositories, and wikis.
 
 1. Pause indexing so Sidekiq can catch up:
 

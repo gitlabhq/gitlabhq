@@ -88,6 +88,7 @@ module API
           params[:cluster_agent] = agent
         end
 
+        params[:skip_agent_auth] = true
         response = ::Environments::CreateService.new(user_project, current_user, params).execute
 
         if response.success?
