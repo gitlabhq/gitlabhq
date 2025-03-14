@@ -8,14 +8,6 @@ description: Join table between packages_packages and packages_dependencies
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20549
 milestone: '12.6'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: package_id
-        table: packages_packages
-        sharding_key: project_id
-        belongs_to: package
-desired_sharding_key_migration_job_name: BackfillPackagesDependencyLinksProjectId
 table_size: medium
+sharding_key:
+  project_id: projects

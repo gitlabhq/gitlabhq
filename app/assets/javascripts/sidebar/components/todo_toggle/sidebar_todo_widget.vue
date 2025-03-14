@@ -212,7 +212,7 @@ export default {
       class="hide-collapsed"
       @click.stop.prevent="toggleTodo"
     >
-      <gl-animated-todo-icon :is-on="hasTodo" />
+      <gl-animated-todo-icon :is-on="hasTodo" :class="{ '!gl-text-status-info': hasTodo }" />
     </todo-button>
     <todo-button
       v-else
@@ -229,13 +229,12 @@ export default {
       v-if="isClassicSidebar && !isMergeRequest"
       v-gl-tooltip.left.viewport
       :title="tootltipTitle"
-      :selected="hasTodo"
       category="tertiary"
       type="reset"
       class="sidebar-collapsed-icon sidebar-collapsed-container !gl-rounded-none !gl-shadow-none"
       @click.stop.prevent="toggleTodo"
     >
-      <gl-animated-todo-icon :is-on="hasTodo" />
+      <gl-animated-todo-icon :is-on="hasTodo" :class="{ '!gl-text-status-info': hasTodo }" />
     </gl-button>
   </div>
 </template>

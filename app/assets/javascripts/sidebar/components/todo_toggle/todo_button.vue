@@ -47,7 +47,6 @@ export default {
     v-bind="$attrs"
     :aria-label="buttonLabel"
     :class="{ 'btn-icon': isIconButton }"
-    :selected="isTodo"
     @click="onToggle($event)"
   >
     <slot>{{ buttonLabel }}</slot>

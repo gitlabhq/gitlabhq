@@ -25,8 +25,8 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             labels_manage_path: project_labels_path(project),
             register_path: new_user_registration_path(redirect_to_referer: 'yes'),
             sign_in_path: user_session_path(redirect_to_referer: 'yes'),
-            new_comment_template_paths:
-              [{ text: "Your comment templates", href: profile_comment_templates_path }].to_json,
+            new_comment_template_paths: include({ text: "Your comment templates",
+                                                  href: profile_comment_templates_path }.to_json),
             report_abuse_path: add_category_abuse_reports_path,
             default_branch: project.default_branch_or_main,
             initial_sort: current_user&.user_preference&.issues_sort,

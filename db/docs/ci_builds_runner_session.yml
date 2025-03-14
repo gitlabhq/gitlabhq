@@ -9,15 +9,6 @@ description: Store build-related runner session. Data is removed after the respe
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6208
 milestone: '11.1'
 gitlab_schema: gitlab_ci
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: build_id
-        table: p_ci_builds
-        sharding_key: project_id
-        belongs_to: build
-        foreign_key_name: fk_rails_70707857d3_p
-desired_sharding_key_migration_job_name: BackfillCiBuildsRunnerSessionProjectId
 table_size: small
+sharding_key:
+  project_id: projects

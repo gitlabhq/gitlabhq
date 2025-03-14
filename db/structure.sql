@@ -10526,7 +10526,8 @@ CREATE TABLE ci_builds_runner_session (
     "authorization" character varying,
     build_id bigint NOT NULL,
     partition_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_2eb15fa9f3 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ci_builds_runner_session_id_seq
@@ -11685,7 +11686,8 @@ CREATE TABLE ci_unit_test_failures (
     unit_test_id bigint NOT NULL,
     build_id bigint NOT NULL,
     partition_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_5e4c2d7261 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ci_unit_test_failures_id_seq
@@ -18506,7 +18508,8 @@ CREATE TABLE packages_dependency_links (
     package_id bigint NOT NULL,
     dependency_id bigint NOT NULL,
     dependency_type smallint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_dea82eaa8e CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE packages_dependency_links_id_seq

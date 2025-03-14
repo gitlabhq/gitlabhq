@@ -4,7 +4,6 @@ import { uniqueId } from 'lodash';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { DOCS_URL_IN_EE_DIR } from '~/lib/utils/url_utility';
 import getUserPreferences from '../graphql/user_preferences.query.graphql';
 import setUseWorkItemsView from '../graphql/set_use_work_items_view.mutation.graphql';
 
@@ -21,7 +20,7 @@ export default {
       currentUser: {
         userPreferences: {},
       },
-      feedbackIssue: `${DOCS_URL_IN_EE_DIR}/user/project/issues/issue_work_items.html`,
+      feedbackIssue: `https://gitlab.com/gitlab-org/gitlab/-/issues/523713`,
     };
   },
   apollo: {
@@ -69,10 +68,11 @@ export default {
   badgeId: uniqueId(),
   i18n: {
     previewWorkItems: __(
-      'Preview the new issues experience, with real time updates and refreshed design.',
+      'We’ve introduced improvements to issues and epics, such as the ability to view full details from lists and boards, new features, and a refreshed design. Have questions or thoughts on the changes?',
     ),
-    leaveFeedback: __('Learn more'),
-    newIssueLook: __('New issue look'),
+    leaveFeedback: __('Provide feedback on the experience'),
+    badgeTitle: __('New look'),
+    popoverTitle: __('New look (Beta)'),
   },
 };
 </script>
@@ -80,7 +80,7 @@ export default {
 <template>
   <div class="gl-flex gl-content-center">
     <gl-badge :id="$options.badgeId" variant="info" icon="information-o" href="#"
-      >{{ $options.i18n.newIssueLook }}: {{ onOff }}</gl-badge
+      >{{ $options.i18n.badgeTitle }}: {{ onOff }}</gl-badge
     >
     <gl-popover
       :target="$options.badgeId"
@@ -88,7 +88,7 @@ export default {
       triggers="focus click manual blur"
       placement="bottom"
       show-close-button
-      :title="$options.i18n.newIssueLook"
+      :title="$options.i18n.popoverTitle"
     >
       <gl-toggle
         :value="currentUser.userPreferences.useWorkItemsView"
@@ -99,7 +99,8 @@ export default {
       <div class="gl-pt-2">
         {{ $options.i18n.previewWorkItems }}
       </div>
-      <gl-link target="_blank" :href="feedbackIssue">{{ $options.i18n.leaveFeedback }}</gl-link>
+      <gl-link target="_blank" :href="feedbackIssue">{{ $options.i18n.leaveFeedback }}</gl-link
+      >.
     </gl-popover>
   </div>
 </template>

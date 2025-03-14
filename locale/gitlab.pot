@@ -38465,9 +38465,6 @@ msgid_plural "New issues"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "New issue look"
-msgstr ""
-
 msgid "New issue title"
 msgstr ""
 
@@ -38478,6 +38475,12 @@ msgid "New label"
 msgstr ""
 
 msgid "New list"
+msgstr ""
+
+msgid "New look"
+msgstr ""
+
+msgid "New look (Beta)"
 msgstr ""
 
 msgid "New merge request"
@@ -44451,9 +44454,6 @@ msgid "Preview size limit exceeded, changes collapsed."
 msgstr ""
 
 msgid "Preview suppressed by a .gitattributes entry or the file's encoding is unsupported."
-msgstr ""
-
-msgid "Preview the new issues experience, with real time updates and refreshed design."
 msgstr ""
 
 msgid "Previous commit"
@@ -65801,6 +65801,9 @@ msgid "Welcome to the new merge request homepage! This page gives you a centrali
 msgstr ""
 
 msgid "Welcome, %{name}!"
+msgstr ""
+
+msgid "We’ve introduced improvements to issues and epics, such as the ability to view full details from lists and boards, new features, and a refreshed design. Have questions or thoughts on the changes?"
 msgstr ""
 
 msgid "We’ve introduced some improvements to the epic page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?"

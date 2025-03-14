@@ -224,27 +224,31 @@ export default {
       ref="tooltip"
       v-gl-tooltip.hover.top
       category="secondary"
-      :selected="subscribed"
       data-testid="subscribe-button"
       class="hide-collapsed"
       :title="notificationTooltip"
       :class="{ 'gl-ml-2': isIssuable, 'btn-icon': isNotificationsTodosButtons }"
       @click="toggleSubscribed"
     >
-      <gl-animated-notification-icon :is-on="!subscribed" />
+      <gl-animated-notification-icon
+        :is-on="!subscribed"
+        :class="{ '!gl-text-status-info': subscribed }"
+      />
     </gl-button>
     <gl-button
       v-if="!isMergeRequest"
       ref="tooltip"
       v-gl-tooltip.left.viewport
       category="tertiary"
-      :selected="subscribed"
       data-testid="subscribe-button"
       :title="notificationTooltip"
       class="sidebar-collapsed-icon sidebar-collapsed-container !gl-rounded-none !gl-border-0"
       @click="toggleSubscribed"
     >
-      <gl-animated-notification-icon :is-on="!subscribed" />
+      <gl-animated-notification-icon
+        :is-on="!subscribed"
+        :class="{ '!gl-text-status-info': subscribed }"
+      />
     </gl-button>
   </div>
   <sidebar-editable-item
