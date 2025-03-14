@@ -304,6 +304,8 @@ module Ci
       end
 
       after_transition do |pipeline, transition|
+        GraphqlTriggers.ci_pipeline_status_updated(pipeline)
+
         next if transition.loopback?
 
         pipeline.run_after_commit do

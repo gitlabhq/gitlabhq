@@ -35676,16 +35676,19 @@ msgstr ""
 msgid "MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}"
 msgstr ""
 
+msgid "MemberRole|%{adminCount} Admin"
+msgstr ""
+
 msgid "MemberRole|%{count} of %{total} permissions added"
 msgstr ""
 
 msgid "MemberRole|%{count} of %{total} permissions selected"
 msgstr ""
 
-msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}"
+msgid "MemberRole|%{defaultCount} Default %{customCount} Custom"
 msgstr ""
 
-msgid "MemberRole|%{rolesStart}Roles:%{rolesEnd} %{customCount} Custom %{defaultCount} Default"
+msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}"
 msgstr ""
 
 msgid "MemberRole|Access level"
@@ -35725,6 +35728,12 @@ msgid "MemberRole|Could not update role."
 msgstr ""
 
 msgid "MemberRole|Create role"
+msgstr ""
+
+msgid "MemberRole|Custom admin role"
+msgstr ""
+
+msgid "MemberRole|Custom member role"
 msgstr ""
 
 msgid "MemberRole|Custom permissions"

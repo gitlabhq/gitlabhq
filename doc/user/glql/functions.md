@@ -8,8 +8,8 @@ title: GLQL functions
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
 {{< /details >}}
 
@@ -17,8 +17,9 @@ title: GLQL functions
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14767) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `glql_integration`. Disabled by default.
 - Enabled on GitLab.com in GitLab 17.4 for a subset of groups and projects.
-- `iteration` and `cadence` fields [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/gitlab-query-language/-/issues/74) in GitLab 17.6.
-
+- Promoted to [beta](../../policy/development_stages_support.md#beta) status in GitLab 17.10.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/476990) from experiment to beta in GitLab 17.10.
+- Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 17.10.
 {{< /history >}}
 
 {{< alert type="flag" >}}

@@ -6,4 +6,4 @@ feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/14767
 milestone: '17.3'
 type: development
 group: group::knowledge
-default_enabled: false
+default_enabled: true

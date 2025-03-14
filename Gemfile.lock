@@ -786,7 +786,7 @@ GEM
       oauth2 (>= 1.4.4, < 3)
       redis (>= 5, < 6)
       redis-namespace (>= 1.8.2)
-    gitlab-markup (1.10.0)
+    gitlab-markup (2.0.0)
     gitlab-net-dns (0.10.0)
     gitlab-sdk (0.3.1)
       activesupport (>= 5.2.0)
@@ -2120,7 +2120,7 @@ DEPENDENCIES
   gitlab-labkit (~> 0.37.0)
   gitlab-license (~> 2.6)
   gitlab-mail_room (~> 0.0.24)
-  gitlab-markup (~> 1.10.0)
+  gitlab-markup (~> 2.0.0)
   gitlab-net-dns (~> 0.10.0)
   gitlab-rspec!
   gitlab-rspec_flaky!

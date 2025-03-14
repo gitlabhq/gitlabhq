@@ -79,6 +79,8 @@
   - 1
 - - authorized_keys
   - 2
+- - authorized_project_update:authorized_project_update_enqueue_group_members_refresh_authorized_projects
+  - 1
 - - authorized_project_update:authorized_project_update_project_recalculate
   - 1
 - - authorized_project_update:authorized_project_update_project_recalculate_per_user

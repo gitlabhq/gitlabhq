@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 module GraphqlTriggers
+  def self.ci_pipeline_status_updated(pipeline)
+    return unless Feature.enabled?(:ci_pipeline_status_realtime, pipeline.project)
+
+    GitlabSchema.subscriptions.trigger(:ci_pipeline_status_updated, { pipeline_id: pipeline.to_gid }, pipeline)
+  end
+
   def self.issuable_assignees_updated(issuable)
     GitlabSchema.subscriptions.trigger(:issuable_assignees_updated, { issuable_id: issuable.to_gid }, issuable)
   end

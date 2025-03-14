@@ -1,0 +1,9 @@
+---
+name: project_authorizations_update_in_background
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/523919
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183920
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/523975
+milestone: '17.10'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false

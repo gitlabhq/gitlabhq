@@ -132,6 +132,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'ApprovalRules::ExternalApprovalRulePayloadWorker' => 3,
         'ApproveBlockedPendingApprovalUsersWorker' => 3,
         'AuthorizedKeysWorker' => 3,
+        'AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker' => 3,
         'AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker' => 3,
         'AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker' => 3,
         'AuthorizedProjectUpdate::UserRefreshFromReplicaWorker' => 3,

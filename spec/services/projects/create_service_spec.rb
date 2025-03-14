@@ -223,6 +223,38 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
           root_namespace_id: group.parent_id
         )
     end
+
+    describe 'project authorizations refresh' do
+      let_it_be(:group) { create(:group, owners: user) }
+
+      subject(:create_proj) { create_project(user, opts.merge(namespace_id: group.id)) }
+
+      it 'enqueues a EnqueueGroupMembersRefreshAuthorizedProjectsWorker job' do
+        expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker)
+          .to receive(:perform_async).with(group.id)
+
+        create_proj
+      end
+
+      context 'when project_authorizations_update_in_background feature flag is disabled' do
+        before do
+          stub_feature_flags(project_authorizations_update_in_background: false)
+        end
+
+        it 'calls refresh_members_authorized_projects on the project\'s group with correct params' do
+          expect_next_instances_of(Project, 4) do |instance|
+            allow(group).to receive(:refresh_members_authorized_projects)
+            allow(instance).to receive(:group).and_return(group)
+          end
+
+          create_proj
+
+          expect(group).to have_received(:refresh_members_authorized_projects).with(
+            priority: ::UserProjectAccessChangedService::LOW_PRIORITY
+          )
+        end
+      end
+    end
   end
 
   context "admin creates project with other user's namespace_id" do

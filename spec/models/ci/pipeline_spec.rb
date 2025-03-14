@@ -2250,6 +2250,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
+    describe 'pipeline status update subscription trigger' do
+      %w[run! succeed! drop! skip! cancel! block! delay!].each do |action|
+        context "when pipeline receives #{action} event" do
+          it 'triggers GraphQL subscription ciPipelineStatusUpdated' do
+            expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
+
+            pipeline.public_send(action)
+          end
+        end
+      end
+    end
+
     def create_build(name, *traits, queued_at: current, started_from: 0, **opts)
       create(
         :ci_build, *traits,

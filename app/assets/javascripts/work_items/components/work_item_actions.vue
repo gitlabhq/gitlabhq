@@ -639,9 +639,7 @@ export default {
           variant="danger"
           @action="handleDelete"
         >
-          <template #list-item>
-            <span class="gl-text-danger">{{ i18n.deleteWorkItem }}</span>
-          </template>
+          <template #list-item>{{ i18n.deleteWorkItem }}</template>
         </gl-disclosure-dropdown-item>
       </template>
     </gl-disclosure-dropdown>

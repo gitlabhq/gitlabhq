@@ -54,9 +54,9 @@ export default {
     leaveItem() {
       return {
         text: this.$options.i18n.leaveBtnTitle,
+        variant: 'danger',
         action: this.onLeaveGroup,
         extraAttrs: {
-          class: '!gl-text-danger',
           'data-testid': `leave-group-${this.group.id}-btn`,
         },
       };

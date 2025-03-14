@@ -84,13 +84,6 @@ You also need to take into consideration the underlying network topology, making
 sure you have redundant connectivity between all Database and GitLab instances
 to avoid the network becoming a single point of failure.
 
-{{< alert type="note" >}}
-
-PostgreSQL 12 is shipped with Linux package installations. Clustering for PostgreSQL 12 is supported only with
-Patroni, and thus Patroni becomes mandatory for replication and failover. See the [Patroni](#patroni) section for further details.
-
-{{< /alert >}}
-
 ### Database node
 
 Each database node runs four services:

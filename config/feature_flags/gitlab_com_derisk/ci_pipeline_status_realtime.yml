@@ -1,0 +1,9 @@
+---
+name: ci_pipeline_status_realtime
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/516247
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183867
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/524707
+milestone: '17.10'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

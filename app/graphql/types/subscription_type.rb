@@ -4,6 +4,11 @@ module Types
   class SubscriptionType < ::Types::BaseObject
     graphql_name 'Subscription'
 
+    field :ci_pipeline_status_updated,
+      subscription: Subscriptions::Ci::Pipelines::StatusUpdated, null: true,
+      description: 'Triggered when a pipeline status is updated.',
+      experiment: { milestone: '17.10' }
+
     field :issuable_assignees_updated,
       subscription: Subscriptions::IssuableUpdated, null: true,
       description: 'Triggered when the assignees of an issuable are updated.'

@@ -13,6 +13,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :activity_pub
+- :name: authorized_project_update:authorized_project_update_enqueue_group_members_refresh_authorized_projects
+  :worker_name: AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker
+  :feature_category: :permissions
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :authorized_project_update
 - :name: authorized_project_update:authorized_project_update_project_recalculate
   :worker_name: AuthorizedProjectUpdate::ProjectRecalculateWorker
   :feature_category: :permissions
