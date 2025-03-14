@@ -23,7 +23,7 @@ import {
   PLACEHOLDER_STATUS_REASSIGNING,
   PLACEHOLDER_USER_STATUS,
   PLACEHOLDER_SORT_STATUS_ASC,
-  PLACEHOLDER_SORT_SOURCE_NAME_DESC,
+  PLACEHOLDER_SORT_ID_DESC,
   PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER,
 } from '~/import_entities/import_groups/constants';
 import { mockSourceUsersQueryResponse, mockSourceUsers, pagination } from '../mock_data';
@@ -190,15 +190,15 @@ describe('PlaceholdersTabApp', () => {
         );
       });
 
-      it('updates URL on new sort', async () => {
-        findFilteredSearchBar().vm.$emit('onSort', 'SOURCE_NAME_DESC');
+      it('updates URL when a new sort is passed', async () => {
+        findFilteredSearchBar().vm.$emit('onSort', 'CREATED_AT_DESC');
         await nextTick();
 
-        expect(findUnassignedTable().props('querySort')).toBe(PLACEHOLDER_SORT_SOURCE_NAME_DESC);
+        expect(findUnassignedTable().props('querySort')).toBe(PLACEHOLDER_SORT_ID_DESC);
         expect(window.location.search).toBe(
-          `?tab=placeholders&subtab=awaiting&status=failed&search=foo&sort=SOURCE_NAME_DESC`,
+          `?tab=placeholders&subtab=awaiting&status=failed&search=foo&sort=CREATED_AT_DESC`,
         );
-        expect(findFilteredSearchBar().props('initialSortBy')).toBe('SOURCE_NAME_DESC');
+        expect(findFilteredSearchBar().props('initialSortBy')).toBe('CREATED_AT_DESC');
       });
     });
 

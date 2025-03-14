@@ -344,6 +344,10 @@ RSpec.configure do |config|
 
       # we need the `cleanup_data_source_work_item_data` disabled by default to prevent deletion of some data
       stub_feature_flags(cleanup_data_source_work_item_data: false)
+
+      # Since we are very early in the Vue migration, there isn't much value in testing when the feature flag is enabled
+      # Please see https://gitlab.com/gitlab-org/gitlab/-/issues/523493 for tracking revisiting this.
+      stub_feature_flags(your_work_groups_vue: false)
     else
       unstub_all_feature_flags
     end

@@ -3901,6 +3901,9 @@ msgstr ""
 msgid "AdminArea|Active users"
 msgstr ""
 
+msgid "AdminArea|Add new message"
+msgstr ""
+
 msgid "AdminArea|Are you sure?"
 msgstr ""
 
@@ -3968,6 +3971,9 @@ msgid "AdminArea|Manage applications for your instance that can use GitLab as an
 msgstr ""
 
 msgid "AdminArea|Manage applications for your instance that can use GitLab as an OAuth provider."
+msgstr ""
+
+msgid "AdminArea|Messages"
 msgstr ""
 
 msgid "AdminArea|Minimal access"
@@ -17253,6 +17259,9 @@ msgstr ""
 msgid "Create a new repository"
 msgstr ""
 
+msgid "Create a new targeted message"
+msgstr ""
+
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr ""
 
@@ -17647,6 +17656,9 @@ msgid "Created On"
 msgstr ""
 
 msgid "Created a branch and a merge request to resolve this issue."
+msgstr ""
+
+msgid "Created at"
 msgstr ""
 
 msgid "Created branch '%{branch_name}' and a merge request to resolve this issue."
@@ -24676,6 +24688,9 @@ msgstr ""
 msgid "Failed to assign a user because no user was found."
 msgstr ""
 
+msgid "Failed to assign namespaces due to error processing CSV: %{error_message}"
+msgstr ""
+
 msgid "Failed to assign the framework to the project"
 msgstr ""
 
@@ -24731,6 +24746,9 @@ msgid "Failed to create repository"
 msgstr ""
 
 msgid "Failed to create resources"
+msgstr ""
+
+msgid "Failed to create targeted message."
 msgstr ""
 
 msgid "Failed to create wiki"
@@ -34803,6 +34821,9 @@ msgstr ""
 msgid "Local"
 msgstr ""
 
+msgid "Local time is displayed."
+msgstr ""
+
 msgid "Localization"
 msgstr ""
 
@@ -38505,6 +38526,9 @@ msgid "New subgroup"
 msgstr ""
 
 msgid "New tag"
+msgstr ""
+
+msgid "New targeted message"
 msgstr ""
 
 msgid "New test case"
@@ -54388,6 +54412,9 @@ msgstr ""
 msgid "Select a role"
 msgstr ""
 
+msgid "Select a target type"
+msgstr ""
+
 msgid "Select a template repository"
 msgstr ""
 
@@ -58021,6 +58048,9 @@ msgstr ""
 msgid "Target Path"
 msgstr ""
 
+msgid "Target Type"
+msgstr ""
+
 msgid "Target branch"
 msgstr ""
 
@@ -58039,7 +58069,16 @@ msgstr ""
 msgid "Target roles"
 msgstr ""
 
+msgid "Target type"
+msgstr ""
+
 msgid "Target-Branch"
+msgstr ""
+
+msgid "Targeted Messages"
+msgstr ""
+
+msgid "Targeted message was successfully created."
 msgstr ""
 
 msgid "Task"
@@ -58767,6 +58806,9 @@ msgid "The following items will NOT be exported:"
 msgstr ""
 
 msgid "The following items will be exported:"
+msgstr ""
+
+msgid "The following namespace ids were invalid and have been ignored: %{invalid_ids_message}"
 msgstr ""
 
 msgid "The following personal access token was revoked by an administrator, %{username}."
@@ -62741,6 +62783,9 @@ msgid "Upload New File"
 msgstr ""
 
 msgid "Upload a certificate for your domain with all intermediates"
+msgstr ""
+
+msgid "Upload a csv file for targeted namespaces"
 msgstr ""
 
 msgid "Upload a private key for your certificate"
@@ -66806,6 +66851,9 @@ msgid "WorkItem|Some fields are not present in %{workItemType}. If you change ty
 msgstr ""
 
 msgid "WorkItem|Some fields could not be loaded. Refresh the page to try again."
+msgstr ""
+
+msgid "WorkItem|Some values are not present in %{groupName} and will be removed."
 msgstr ""
 
 msgid "WorkItem|Someone edited the description at the same time you did. If you save it will overwrite their changes. Please confirm you'd like to save your edits."

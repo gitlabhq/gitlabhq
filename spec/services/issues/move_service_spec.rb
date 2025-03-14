@@ -163,6 +163,16 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
         end
       end
 
+      context 'sends notifications to participants' do
+        it 'notifies participants' do
+          expect_next_instance_of(NotificationService) do |notification|
+            expect(notification).to receive_message_chain(:async, :issue_moved)
+          end
+
+          move_service.execute(old_issue, new_project)
+        end
+      end
+
       context 'issue with children' do
         let_it_be(:task1) { create(:issue, :task, project: old_issue.project) }
         let_it_be(:task2) { create(:issue, :task, project: old_issue.project) }

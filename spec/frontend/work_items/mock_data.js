@@ -116,6 +116,7 @@ export const mockMilestone = {
   startDate: '2022-10-17',
   dueDate: '2022-10-24',
   webPath: '123',
+  projectMilestone: true,
 };
 
 export const mockAwardEmojiThumbsUp = {
@@ -1860,6 +1861,7 @@ export const getIssueDetailsResponse = ({ confidential = false } = {}) => ({
       },
       milestone: {
         id: 'gid://gitlab/Milestone/28',
+        projectMilestone: false,
         __typename: 'Milestone',
       },
       __typename: 'Issue',
@@ -3725,6 +3727,7 @@ export const projectMilestonesResponse = {
             expired: false,
             __typename: 'Milestone',
             state: 'active',
+            projectMilestone: false,
           },
           {
             id: 'gid://gitlab/Milestone/4',
@@ -3734,6 +3737,7 @@ export const projectMilestonesResponse = {
             expired: false,
             __typename: 'Milestone',
             state: 'active',
+            projectMilestone: false,
           },
         ],
         __typename: 'MilestoneConnection',

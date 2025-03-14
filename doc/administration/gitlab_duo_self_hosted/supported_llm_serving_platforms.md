@@ -66,7 +66,7 @@ Example response:
       "created": 1739421415,
       "owned_by": "vllm",
       "root": "mistralai/Mixtral-8x22B-Instruct-v0.1",
-      // Additional fields
+      // Additional fields removed for readability
     }
   ]
 }

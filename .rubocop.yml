@@ -1263,3 +1263,16 @@ Tailwind/StringInterpolation:
 Cop/ActiveRecordDependent:
   Include:
     - ee/app/models/**/*.rb
+
+Gitlab/Rails/AttrEncrypted:
+  Enabled: true
+  Include:
+  - '{,ee/,jh/}app/models/**/*.rb'
+  - 'db/migrate/*.rb'
+  - '{,ee/,jh/}/lib/(ee/)?gitlab/background_migration/*.rb'
+
+Migration/PreventAddingAttrEncryptedColumns:
+  Enabled: true
+  Include:
+    - 'db/migrate/*.rb'
+  EnforcedSince: 20250311000000

@@ -28,7 +28,6 @@ Gitlab/ServiceResponse:
     - 'app/services/packages/mark_package_for_destruction_service.rb'
     - 'app/services/packages/rubygems/dependency_resolver_service.rb'
     - 'app/services/snippets/base_service.rb'
-    - 'app/services/snippets/bulk_destroy_service.rb'
     - 'app/services/snippets/destroy_service.rb'
     - 'app/services/timelogs/base_service.rb'
     - 'app/services/work_items/create_and_link_service.rb'

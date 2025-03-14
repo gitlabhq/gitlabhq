@@ -28,7 +28,7 @@ Review apps:
 - Are fully integrated with the [GitLab DevOps LifeCycle](https://about.gitlab.com/stages-devops-lifecycle/).
 - Allow you to deploy your changes wherever you want.
 
-![review apps workflow](img/continuous-delivery-review-apps_v11_4.svg)
+![Master and topic branches leading from review apps to production](img/continuous-delivery-review-apps_v11_4.svg)
 
 In the previous example:
 
@@ -44,7 +44,7 @@ Access to the review app is made available as a link on the [merge request](../.
 
 The following is an example of a merge request with an environment set dynamically.
 
-![review app in merge request](img/review_apps_preview_in_mr_v16_0.png)
+![Merged result pipeline status with link to review app](img/review_apps_preview_in_mr_v16_0.png)
 
 In this example, a branch was:
 
@@ -187,7 +187,7 @@ After you have the route mapping set up, it takes effect in the following locati
   - The list shows the first 5 matched items from the route map, but you can filter them if more
     than 5 are available.
 
-    ![View app file list in merge request widget](img/view_on_mr_widget_v11_5.png)
+    ![Merge request widget with matched items and filter bar](img/view_on_mr_widget_v11_5.png)
 
 - In the diff for a comparison or commit, by selecting **View** ({{< icon name="external-link" >}}) next to the file.
 

@@ -64,6 +64,21 @@ RSpec.shared_examples 'cloneable and moveable work item' do
 
     expect(original_work_item.reload.state_id).to eq(expected_original_work_item_state)
   end
+
+  it 'notifies participants' do
+    email_notification = case described_class.name
+                         when 'WorkItems::DataSync::MoveService'
+                           :issue_moved
+                         when 'WorkItems::DataSync::CloneService'
+                           :issue_cloned
+                         end
+
+    expect_next_instance_of(NotificationService) do |notification|
+      expect(notification).to receive_message_chain(:async, email_notification.to_sym)
+    end
+
+    service.execute
+  end
 end
 
 RSpec.shared_examples 'cloneable and moveable widget data' do

@@ -28835,6 +28835,7 @@ IDE settings and feature flags.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="importsourceusercreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the source user was created. |
 | <a id="importsourceuserid"></a>`id` | [`ImportSourceUserID!`](#importsourceuserid) | Global ID of the mapping of a user on source instance to a user on destination instance. |
 | <a id="importsourceuserimporttype"></a>`importType` | [`ImportSource!`](#importsource) | Name of the importer. |
 | <a id="importsourceuserplaceholderuser"></a>`placeholderUser` | [`UserCore`](#usercore) | Placeholder user associated with the import source user. |
@@ -43983,6 +43984,8 @@ Values for sorting the mapping of users on source instance to users on destinati
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="sourceusersortid_asc"></a>`ID_ASC` | ID of the source user by ascending order. |
+| <a id="sourceusersortid_desc"></a>`ID_DESC` | ID of the source user by descending order. |
 | <a id="sourceusersortsource_name_asc"></a>`SOURCE_NAME_ASC` | Instance source name by ascending order. |
 | <a id="sourceusersortsource_name_desc"></a>`SOURCE_NAME_DESC` | Instance source name by descending order. |
 | <a id="sourceusersortstatus_asc"></a>`STATUS_ASC` | Status of the mapping by ascending order. |

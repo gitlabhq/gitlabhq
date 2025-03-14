@@ -12,7 +12,11 @@ import WorkItemChangeTypeModal from '~/work_items/components/work_item_change_ty
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import convertWorkItemMutation from '~/work_items/graphql/work_item_convert.mutation.graphql';
 import getWorkItemDesignListQuery from '~/work_items/components/design_management/graphql/design_collection.query.graphql';
-import { WORK_ITEM_TYPE_VALUE_TASK, WORK_ITEM_TYPE_VALUE_ISSUE } from '~/work_items/constants';
+import {
+  WORK_ITEM_TYPE_VALUE_TASK,
+  WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_ENUM_EPIC,
+} from '~/work_items/constants';
 
 import {
   convertWorkItemMutationResponse,
@@ -64,10 +68,12 @@ describe('WorkItemChangeTypeModal component', () => {
   const createComponent = ({
     hasParent = false,
     hasChildren = false,
+    workItemsAlpha = false,
     widgets = [],
     workItemType = WORK_ITEM_TYPE_VALUE_TASK,
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
     designQueryHandler = noDesignQueryHandler,
+    allowedWorkItemTypesEE = [],
   } = {}) => {
     wrapper = mountExtended(WorkItemChangeTypeModal, {
       apolloProvider: createMockApollo([
@@ -84,7 +90,12 @@ describe('WorkItemChangeTypeModal component', () => {
         widgets,
         workItemType,
         allowedChildTypes: [{ name: WORK_ITEM_TYPE_VALUE_TASK }],
-        allowedWorkItemTypesEE: [],
+        allowedWorkItemTypesEE,
+      },
+      provide: {
+        glFeatures: {
+          workItemsAlpha,
+        },
       },
       stubs: {
         GlModal: stubComponent(GlModal, {
@@ -98,6 +109,8 @@ describe('WorkItemChangeTypeModal component', () => {
   const findChangeTypeModal = () => wrapper.findComponent(GlModal);
   const findGlFormSelect = () => wrapper.findComponent(GlFormSelect);
   const findWarningAlert = () => wrapper.findByTestId('change-type-warning-message');
+  const findNoValuePresentAlert = () =>
+    wrapper.findByTestId('change-type-no-value-present-message');
 
   beforeEach(async () => {
     createComponent();
@@ -186,6 +199,29 @@ describe('WorkItemChangeTypeModal component', () => {
 
       expect(findWarningAlert().text()).toContain('Contacts');
       expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(false);
+    });
+
+    it('shows no value present message if value of the widget is not present on conversion', async () => {
+      const allowedWorkItemTypesEE = [
+        {
+          text: 'Epic (Promote to group)',
+          value: WORK_ITEM_TYPE_ENUM_EPIC,
+        },
+      ];
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        widgets: [workItemChangeTypeWidgets.MILESTONE],
+        workItemsAlpha: true,
+        allowedWorkItemTypesEE,
+      });
+
+      await waitForPromises();
+
+      findGlFormSelect().vm.$emit('change', WORK_ITEM_TYPE_ENUM_EPIC);
+
+      await nextTick();
+
+      expect(findNoValuePresentAlert().text()).toContain('Milestone: v4.0');
     });
   });
 

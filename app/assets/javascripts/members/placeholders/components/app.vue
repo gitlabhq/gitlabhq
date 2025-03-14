@@ -28,6 +28,10 @@ import {
   PLACEHOLDER_USER_STATUS,
   PLACEHOLDER_USER_UNASSIGNED_STATUS_OPTIONS,
   PLACEHOLDER_USER_REASSIGNED_STATUS_OPTIONS,
+  PLACEHOLDER_SORT_ID_ASC,
+  PLACEHOLDER_SORT_ID_DESC,
+  PLACEHOLDER_SORT_CREATED_AT_ASC,
+  PLACEHOLDER_SORT_CREATED_AT_DESC,
   PLACEHOLDER_SORT_STATUS_DESC,
   PLACEHOLDER_SORT_STATUS_ASC,
   PLACEHOLDER_SORT_SOURCE_NAME_ASC,
@@ -50,6 +54,10 @@ import KeepAllAsPlaceholderModal from './keep_all_as_placeholder_modal.vue';
 
 const UPLOAD_CSV_PLACEHOLDERS_MODAL_ID = 'upload-placeholders-csv-modal';
 const KEEP_ALL_AS_PLACEHOLDER_MODAL_ID = 'keep-all-as-placeholder-modal';
+const mapCreatedAtToID = {
+  [PLACEHOLDER_SORT_CREATED_AT_ASC]: PLACEHOLDER_SORT_ID_ASC,
+  [PLACEHOLDER_SORT_CREATED_AT_DESC]: PLACEHOLDER_SORT_ID_DESC,
+};
 
 export default {
   name: 'PlaceholdersTabApp',
@@ -152,6 +160,14 @@ export default {
           sortDirection: {
             descending: PLACEHOLDER_SORT_SOURCE_NAME_DESC,
             ascending: PLACEHOLDER_SORT_SOURCE_NAME_ASC,
+          },
+        },
+        {
+          id: 3,
+          title: __('Created at'),
+          sortDirection: {
+            descending: PLACEHOLDER_SORT_CREATED_AT_DESC,
+            ascending: PLACEHOLDER_SORT_CREATED_AT_ASC,
           },
         },
       ];
@@ -280,6 +296,14 @@ export default {
     onSort(sort) {
       this.sort = sort;
     },
+    /**
+     * Maps created_at sort values to id sort values for backend queries.
+     * This preserves user-friendly created_at url params
+     * while using more efficient id-based sorting on the backend.
+     */
+    mapSortValue(sort) {
+      return mapCreatedAtToID[sort] || sort;
+    },
   },
   helpUrl: helpPagePath('user/project/import/_index', {
     anchor: 'security-considerations',
@@ -335,7 +359,7 @@ export default {
           data-testid="placeholders-table-unassigned"
           :query-statuses="unassignedUserStatuses"
           :query-search="filterParams.search"
-          :query-sort="sort"
+          :query-sort="mapSortValue(sort)"
           @confirm="onConfirm"
         />
       </gl-tab>
@@ -365,7 +389,7 @@ export default {
           data-testid="placeholders-table-reassigned"
           :query-statuses="reassignedUserStatuses"
           :query-search="filterParams.search"
-          :query-sort="sort"
+          :query-sort="mapSortValue(sort)"
           reassigned
         />
       </gl-tab>

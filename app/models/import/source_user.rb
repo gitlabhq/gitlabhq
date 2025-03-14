@@ -11,7 +11,9 @@ module Import
       source_name_asc: { order_by: 'source_name', sort: 'asc' },
       source_name_desc: { order_by: 'source_name', sort: 'desc' },
       status_asc: { order_by: 'status', sort: 'asc' },
-      status_desc: { order_by: 'status', sort: 'desc' }
+      status_desc: { order_by: 'status', sort: 'desc' },
+      id_asc: { order_by: 'id', sort: 'asc' },
+      id_desc: { order_by: 'id', sort: 'desc' }
     }.freeze
 
     belongs_to :placeholder_user, class_name: 'User', optional: true

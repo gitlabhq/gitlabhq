@@ -70,6 +70,9 @@ export const findHierarchyWidgetAncestors = (workItem) =>
 export const findDesignWidget = (widgets) =>
   widgets?.find((widget) => widget.type === WIDGET_TYPE_DESIGNS);
 
+export const findMilestoneWidget = (widgets) =>
+  widgets?.find((widget) => widget.type === WIDGET_TYPE_MILESTONE);
+
 export const convertTypeEnumToName = (workItemTypeEnum) =>
   Object.keys(WORK_ITEM_TYPE_VALUE_MAP).find(
     (value) => WORK_ITEM_TYPE_VALUE_MAP[value] === workItemTypeEnum,
@@ -103,6 +106,12 @@ export const findHierarchyWidgetDefinition = (workItem) =>
   workItem.workItemType.widgetDefinitions?.find(
     (widgetDefinition) => widgetDefinition.type === WIDGET_TYPE_HIERARCHY,
   );
+
+export const getParentGroupName = (namespaceFullName) => {
+  const parts = namespaceFullName.split('/');
+  // Gets the second-to-last item in the reference path
+  return parts.length > 1 ? parts[parts.length - 2].trim() : '';
+};
 
 const autocompleteSourcesPath = ({ autocompleteType, fullPath, iid, workItemTypeId, isGroup }) => {
   const domain = gon.relative_url_root || '';

@@ -442,8 +442,8 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
       });
 
       const fluxReconcileUpdateData = {
-        path: '/metadata/annotations/reconcile.fluxcd.io~1requestedAt',
-        value: new Date(),
+        path: '/metadata/annotations',
+        value: { 'reconcile.fluxcd.io/requestedAt': new Date() },
       };
 
       describe.each`
@@ -532,6 +532,50 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
           });
         });
       });
+
+      it.each`
+        condition                                             | annotations                       | updateData
+        ${'annotations if they are not present'}              | ${{}}                             | ${fluxReconcileUpdateData}
+        ${'requestedAt field if the annotations are present'} | ${{ 'some-annotation': 'value' }} | ${{ path: '/metadata/annotations/reconcile.fluxcd.io~1requestedAt', value: new Date() }}
+      `(
+        'updates $condition when receives flux-reconcile event',
+        async ({ annotations, updateData }) => {
+          const kustomization = {
+            ...fluxKustomization,
+            metadata: { ...fluxKustomization.metadata, annotations },
+          };
+          fluxKustomizationQuery = jest.fn().mockReturnValue(kustomization);
+
+          wrapper = createWrapper({
+            apolloProvider: createApolloProvider(),
+            fluxResourcePath: kustomizationResourcePath,
+          });
+          await waitForPromises();
+
+          findKubernetesStatusBar().vm.$emit('show-flux-resource-details', fluxKustomization);
+          await nextTick();
+          findWorkloadDetailsDrawer().vm.$emit('flux-reconcile', fluxKustomization);
+          await waitForPromises();
+
+          const body = JSON.stringify([
+            {
+              op: 'replace',
+              ...updateData,
+            },
+          ]);
+
+          expect(updateFluxResourceMutationMock).toHaveBeenCalledWith(
+            {},
+            {
+              configuration,
+              fluxResourcePath: kustomizationResourcePath,
+              data: body,
+            },
+            expect.anything(),
+            expect.anything(),
+          );
+        },
+      );
     });
 
     describe('pod delete modal', () => {

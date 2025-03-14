@@ -3,7 +3,8 @@ import { GlModal, GlFormGroup, GlFormSelect, GlAlert } from '@gitlab/ui';
 import { differenceBy } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __, s__, sprintf } from '~/locale';
-import { findDesignWidget } from '~/work_items/utils';
+import { findDesignWidget, findMilestoneWidget, getParentGroupName } from '~/work_items/utils';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
 import {
@@ -14,6 +15,7 @@ import {
   sprintfWorkItem,
   WORK_ITEM_WIDGETS_NAME_MAP,
   WIDGET_TYPE_DESIGNS,
+  WIDGET_TYPE_MILESTONE,
 } from '../constants';
 
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -27,6 +29,7 @@ export default {
     GlFormSelect,
     GlAlert,
   },
+  mixins: [glFeatureFlagMixin()],
   actionCancel: {
     text: __('Cancel'),
   },
@@ -95,6 +98,7 @@ export default {
       selectedWorkItemType: null,
       workItemTypes: [],
       warningMessage: '',
+      valueNotPresentWarning: '',
       changeTypeDisabled: true,
       hasDesigns: false,
       typeFieldNote: '',
@@ -159,8 +163,17 @@ export default {
         ...this.allowedWorkItemTypesEE,
       ];
     },
+    workItemsAlphaEnabled() {
+      return this.glFeatures.workItemsAlpha;
+    },
+    isSelectedWorkItemTypeEpic() {
+      return this.selectedWorkItemType?.value === WORK_ITEM_TYPE_ENUM_EPIC;
+    },
+    milestoneWidget() {
+      return findMilestoneWidget(this.widgets)?.milestone;
+    },
     selectedWorkItemTypeWidgetDefinitions() {
-      return this.selectedWorkItemType?.value === WORK_ITEM_TYPE_ENUM_EPIC
+      return this.isSelectedWorkItemTypeEpic
         ? this.getEpicWidgetDefinitions({ workItemTypes: this.workItemTypes })
         : this.getWidgetDefinitions(this.selectedWorkItemType?.text);
     },
@@ -174,7 +187,7 @@ export default {
         'type',
       );
     },
-    widgetsWithExistingData() {
+    widgetsWithExistingDataList() {
       // Filter the widgets based on the presence or absence of data
       const widgetsWithExistingDataList = this.widgetDifference.filter((item) => {
         // Find the widget object
@@ -210,10 +223,44 @@ export default {
         });
       }
 
-      return widgetsWithExistingDataList.map((item) => ({
-        ...item,
-        name: WORK_ITEM_WIDGETS_NAME_MAP[item.type],
-      }));
+      return widgetsWithExistingDataList;
+    },
+    widgetsWithExistingData() {
+      return this.widgetsWithExistingDataList.reduce((widgets, item) => {
+        // Skip adding milestone to widget difference if upgrading to epic
+        if (
+          this.workItemsAlphaEnabled &&
+          this.isSelectedWorkItemTypeEpic &&
+          item.type === WIDGET_TYPE_MILESTONE
+        ) {
+          return widgets;
+        }
+        widgets.push({
+          ...item,
+          name: WORK_ITEM_WIDGETS_NAME_MAP[item.type],
+        });
+        return widgets;
+      }, []);
+    },
+    noValuePresentWidgets() {
+      return this.widgetsWithExistingDataList.reduce((acc, item) => {
+        if (
+          this.workItemsAlphaEnabled &&
+          this.isSelectedWorkItemTypeEpic &&
+          this.milestoneWidget?.projectMilestone &&
+          item.type === WIDGET_TYPE_MILESTONE
+        ) {
+          const itemType = WORK_ITEM_WIDGETS_NAME_MAP[item.type];
+          const itemText = `${itemType}: ${this.milestoneWidget.title}`;
+          acc.push({
+            ...item,
+            name: itemType,
+            title: this.milestoneWidget.title,
+            text: itemText,
+          });
+        }
+        return acc;
+      }, []);
     },
     hasWidgetDifference() {
       if (this.hasParent || this.hasChildren) {
@@ -248,7 +295,7 @@ export default {
   },
   methods: {
     changeType() {
-      if (this.selectedWorkItemType.value === WORK_ITEM_TYPE_ENUM_EPIC) {
+      if (this.isSelectedWorkItemTypeEpic) {
         this.$emit('promoteToEpic');
       } else {
         this.convertType();
@@ -307,13 +354,14 @@ export default {
     validateWorkItemType() {
       this.changeTypeDisabled = false;
       this.warningMessage = '';
+      this.valueNotPresentWarning = '';
 
       if (this.hasParent) {
         this.warningMessage = sprintfWorkItem(
           s__(
             'WorkItem|Parent item type %{parentWorkItemType} is not supported on %{workItemType}. Remove the parent item to change type.',
           ),
-          this.selectedWorkItemType.value === WORK_ITEM_TYPE_ENUM_EPIC
+          this.isSelectedWorkItemTypeEpic
             ? WORK_ITEM_TYPE_VALUE_EPIC
             : this.selectedWorkItemType.text,
           this.parentWorkItemType,
@@ -330,7 +378,7 @@ export default {
           ),
           {
             workItemType: capitalizeFirstCharacter(
-              this.selectedWorkItemType.value === WORK_ITEM_TYPE_ENUM_EPIC
+              this.isSelectedWorkItemTypeEpic
                 ? WORK_ITEM_TYPE_VALUE_EPIC.toLocaleLowerCase()
                 : this.selectedWorkItemType.text.toLocaleLowerCase(),
             ),
@@ -342,13 +390,22 @@ export default {
         return;
       }
 
+      if (this.noValuePresentWidgets.length) {
+        this.valueNotPresentWarning = sprintf(
+          s__('WorkItem|Some values are not present in %{groupName} and will be removed.'),
+          {
+            groupName: getParentGroupName(this.namespaceFullName),
+          },
+        );
+      }
+
       // Compare the widget definitions of both types
       if (this.hasWidgetDifference) {
         this.warningMessage = sprintfWorkItem(
           s__(
             'WorkItem|Some fields are not present in %{workItemType}. If you change type now, this information will be lost.',
           ),
-          this.selectedWorkItemType.value === WORK_ITEM_TYPE_ENUM_EPIC
+          this.isSelectedWorkItemTypeEpic
             ? WORK_ITEM_TYPE_VALUE_EPIC
             : this.selectedWorkItemType.text,
         );
@@ -367,6 +424,7 @@ export default {
     },
     resetModal() {
       this.warningMessage = '';
+      this.valueNotPresentWarning = '';
       this.selectedWorkItemType = null;
       this.changeTypeDisabled = true;
       this.typeFieldNote = '';
@@ -412,6 +470,20 @@ export default {
       <ul v-if="hasWidgetDifference" class="gl-mb-0">
         <li v-for="widget in widgetsWithExistingData" :key="widget.type">
           {{ widget.name }}
+        </li>
+      </ul>
+    </gl-alert>
+    <gl-alert
+      v-if="valueNotPresentWarning && !isWorkItemTypesQueryLoading"
+      data-testid="change-type-no-value-present-message"
+      class="gl-mt-3"
+      variant="warning"
+      :dismissible="false"
+    >
+      {{ valueNotPresentWarning }}
+      <ul v-if="noValuePresentWidgets.length" class="gl-mb-0">
+        <li v-for="widget in noValuePresentWidgets" :key="widget.type">
+          {{ widget.text }}
         </li>
       </ul>
     </gl-alert>

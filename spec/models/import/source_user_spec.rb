@@ -275,17 +275,32 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
 
   describe '.sort_by_attribute' do
     let_it_be(:namespace) { create(:namespace) }
-    let_it_be(:source_user_1) { create(:import_source_user, namespace: namespace, status: 4, source_name: 'd') }
-    let_it_be(:source_user_2) { create(:import_source_user, namespace: namespace, status: 3, source_name: 'c') }
+
+    let_it_be(:source_user_1) do
+      create(:import_source_user, namespace: namespace, status: 4, source_name: 'd',
+        created_at: '2024-12-03T10:42:20.000Z')
+    end
+
+    let_it_be(:source_user_2) do
+      create(:import_source_user, namespace: namespace, status: 3, source_name: 'c',
+        created_at: '2024-12-03T22:42:20.000Z')
+    end
+
     let_it_be(:source_user_3) do
       create(
-        :import_source_user, :with_reassign_to_user,
-        namespace: namespace, status: 1, source_name: 'a', reassignment_token: SecureRandom.hex
+        :import_source_user,
+        :with_reassign_to_user,
+        namespace: namespace,
+        status: 1,
+        source_name: 'a',
+        created_at: '2025-01-23T19:42:20.000Z',
+        reassignment_token: SecureRandom.hex
       )
     end
 
     let_it_be(:source_user_4) do
-      create(:import_source_user, :with_reassign_to_user, namespace: namespace, status: 2, source_name: 'b')
+      create(:import_source_user, :with_reassign_to_user, namespace: namespace, status: 2, source_name: 'b',
+        created_at: '2025-01-20T19:42:20.000Z')
     end
 
     let(:sort_by_attribute) { described_class.sort_by_attribute(method).pluck(attribute) }
@@ -326,8 +341,36 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       end
     end
 
-    context 'with an unexpected method' do
+    context 'with method id_asc' do
       let(:method) { 'id_asc' }
+      let(:attribute) { :id }
+
+      it 'order by id_asc ascending' do
+        expect(sort_by_attribute).to eq([
+          source_user_1.id,
+          source_user_2.id,
+          source_user_3.id,
+          source_user_4.id
+        ])
+      end
+    end
+
+    context 'with method id_desc' do
+      let(:method) { 'id_desc' }
+      let(:attribute) { :id }
+
+      it 'order by id_desc descending' do
+        expect(sort_by_attribute).to eq([
+          source_user_4.id,
+          source_user_3.id,
+          source_user_2.id,
+          source_user_1.id
+        ])
+      end
+    end
+
+    context 'with an unexpected method' do
+      let(:method) { 'unknown_sort' }
       let(:attribute) { :source_name }
 
       it 'order by source_name_asc ascending' do

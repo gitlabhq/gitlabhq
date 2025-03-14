@@ -37,6 +37,7 @@ import {
   canRouterNav,
   formatSelectOptionForCustomField,
   preserveDetailsState,
+  getParentGroupName,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
@@ -401,6 +402,13 @@ describe('formatSelectOptionForCustomField', () => {
     };
 
     expect(formatSelectOptionForCustomField(data)).toEqual(result);
+  });
+});
+
+describe('getParentGroupName', () => {
+  it('returns parent group name from namespace', () => {
+    const namespaceFullName = 'Flightjs / Flight';
+    expect(getParentGroupName(namespaceFullName)).toEqual('Flightjs');
   });
 });
 

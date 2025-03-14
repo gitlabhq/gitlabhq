@@ -67,7 +67,7 @@ The following example is a `gitlab.rb` configuration for Linux package installat
 ```ruby
 gitlab_rails['ldap_servers'] = {
   'main' => {
-    # Additional LDAP settings
+    # Additional LDAP settings removed for readability
     'duo_add_on_groups' => ['duo_users', 'admins'],
   }
 }

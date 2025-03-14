@@ -174,6 +174,7 @@ export default {
                       ...this.localMilestone,
                       webPath: this.localMilestone.webUrl,
                       startDate: '',
+                      projectMilestone: false,
                     }
                   : null,
                 workItemType: this.workItemType,

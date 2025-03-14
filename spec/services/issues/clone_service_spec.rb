@@ -160,6 +160,16 @@ RSpec.describe Issues::CloneService, feature_category: :team_planning do
         end
       end
 
+      context 'sends notifications to participants' do
+        it 'notifies participants' do
+          expect_next_instance_of(NotificationService) do |notification|
+            expect(notification).to receive_message_chain(:async, :issue_cloned)
+          end
+
+          clone_service.execute(old_issue, new_project)
+        end
+      end
+
       context 'issue with system notes and resource events' do
         before do
           create(:note, :system, noteable: old_issue, project: old_project)
