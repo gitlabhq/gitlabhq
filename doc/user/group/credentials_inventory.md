@@ -48,8 +48,6 @@ To revoke personal access tokens for enterprise users in your group:
 
 The access token is revoked and the user is notified by email.
 
-![The credentials inventory page listing personal access tokens.](img/group_credentials_inventory_personal_access_tokens_v17_5.png)
-
 ## Delete SSH keys
 
 To delete SSH keys for enterprise users in your group:
@@ -60,8 +58,6 @@ To delete SSH keys for enterprise users in your group:
 1. Next to the SSH key, select **Delete**.
 
 The SSH key is deleted and the user is notified.
-
-![The credentials inventory page listing SSH keys.](img/group_credentials_inventory_ssh_keys_v17_5.png)
 
 ## Revoke project or group access tokens
 

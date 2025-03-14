@@ -648,7 +648,13 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
   describe '.simple_sorts' do
     it 'includes overridden keys' do
-      expect(described_class.simple_sorts.keys).to include(*%w[expires_at_asc_id_desc])
+      expect(described_class.simple_sorts.keys).to include(*%w[expires_asc expires_at_asc_id_desc expires_desc last_used_asc last_used_desc])
+    end
+
+    it 'returns a valid ActiveRecord::Relation for each sort' do
+      described_class.simple_sorts.each_value do |blk|
+        expect(blk.call).to be_a(ActiveRecord::Relation)
+      end
     end
   end
 
@@ -677,6 +683,36 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
       it 'returns ordered list in combination of expires_at ascending and id descending' do
         expect(described_class.order_expires_at_asc_id_desc).to eq [earlier_token_2, earlier_token, later_token]
+      end
+    end
+
+    describe '.order_expires_at_desc_id_desc' do
+      let_it_be(:earlier_token_2) { create(:personal_access_token, expires_at: 2.days.ago) }
+
+      it 'returns ordered list in combination of expires_at descending and id descending' do
+        expect(described_class.order_expires_at_desc_id_desc).to eq [later_token, earlier_token_2, earlier_token]
+      end
+    end
+  end
+
+  describe 'ordering by last_used_at' do
+    let_it_be(:two_days_ago) { 2.days.ago }
+    let_it_be(:earlier_token) { create(:personal_access_token, last_used_at: two_days_ago) }
+    let_it_be(:later_token) { create(:personal_access_token, last_used_at: 1.day.ago) }
+
+    describe '.order_last_used_at_asc_id_desc' do
+      let_it_be(:earlier_token_2) { create(:personal_access_token, last_used_at: two_days_ago) }
+
+      it 'returns ordered list in combination of last_used_at ascending and id descending' do
+        expect(described_class.order_last_used_at_asc_id_desc).to eq [earlier_token_2, earlier_token, later_token]
+      end
+    end
+
+    describe '.order_last_used_at_desc_id_desc' do
+      let_it_be(:earlier_token_2) { create(:personal_access_token, last_used_at: 2.days.ago) }
+
+      it 'returns ordered list in combination of expires_at descending and id descending' do
+        expect(described_class.order_last_used_at_desc_id_desc).to eq [later_token, earlier_token_2, earlier_token]
       end
     end
   end

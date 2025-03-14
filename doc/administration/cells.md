@@ -30,6 +30,12 @@ This page explains how to configure the GitLab Rails console for cell functional
 
 ## Configuration
 
+To configure your GitLab instance as a Cell instance:
+
+{{< tabs >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
 The cells related configuration in `config/gitlab.yml` is in this format:
 
 ```yaml
@@ -44,6 +50,67 @@ The cells related configuration in `config/gitlab.yml` is in this format:
       certificate_file: /home/git/gitlab/config/topology-service-cert.pem
       private_key_file: /home/git/gitlab/config/topology-service-key.pem
 ```
+
+{{< /tab >}}
+
+{{< tab title="Linux Package (Omnibus)" >}}
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following lines:
+
+   ```ruby
+   gitlab_rails['cell'] = {
+     enabled: true,
+     id: 1,
+     database: {
+       skip_sequence_alteration: false
+     },
+     topology_service_client: {
+       enabled: true,
+       address: 'topology-service.gitlab.example.com:443',
+       ca_file: 'path/to/your/ca/.pem',
+       certificate_file: 'path/to/your/cert/.pem',
+       private_key_file: 'path/to/your/key/.pem'
+     }
+   }
+   ```
+
+1. Reconfigure and restart GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   sudo gitlab-ctl restart
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart" >}}
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+       cell:
+         enabled: true
+         id: 1
+       database:
+         skipSequenceAlteration: false
+       topologyServiceClient:
+         address: "topology-service.gitlab.example.com:443"
+         caFile: "path/to/your/ca/.pem"
+         privateKeyFile: "path/to/your/key/.pem"
+         certificateFile: "path/to/your/certificate/.pem"
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 | Configuration                              | Default value                                         | Description                                                                                                                                                                                                                                                                                                                    |
 |--------------------------------------------|-------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

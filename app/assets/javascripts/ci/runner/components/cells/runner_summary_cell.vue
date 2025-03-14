@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
-import { sprintf, __, formatNumber } from '~/locale';
+import { formatNumber } from '~/locale';
 
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -54,16 +54,6 @@ export default {
     },
     additionalIpAddressCount() {
       return this.managersCount - 1;
-    },
-    createdBy() {
-      return this.runner?.createdBy;
-    },
-    createdByImgAlt() {
-      const name = this.createdBy?.name;
-      if (name) {
-        return sprintf(__("%{name}'s avatar"), { name });
-      }
-      return null;
     },
   },
   methods: {

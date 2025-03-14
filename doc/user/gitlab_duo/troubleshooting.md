@@ -10,6 +10,12 @@ When working with GitLab Duo, you might encounter issues.
 Start by [running a health check](setup.md#run-a-health-check-for-gitlab-duo)
 to determine if your instance meets the requirements to use GitLab Duo.
 
+For more information on troubleshooting GitLab Duo, see:
+
+- [Troubleshooting Code Suggestions](../project/repository/code_suggestions/troubleshooting.md).
+- [GitLab Duo Chat troubleshooting](../gitlab_duo_chat/troubleshooting.md).
+- [Troubleshooting GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/troubleshooting.md).
+
 If the health check does not resolve your problem, review these troubleshooting steps.
 
 ## GitLab Duo features do not work on self-managed

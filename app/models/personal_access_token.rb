@@ -65,6 +65,9 @@ class PersonalAccessToken < ApplicationRecord
   scope :for_organization, ->(organization) { where(organization_id: organization) }
   scope :preload_users, -> { preload(:user) }
   scope :order_expires_at_asc_id_desc, -> { reorder(expires_at: :asc, id: :desc) }
+  scope :order_expires_at_desc_id_desc, -> { reorder(expires_at: :desc, id: :desc) }
+  scope :order_last_used_at_asc_id_desc, -> { reorder(last_used_at: :asc, id: :desc) }
+  scope :order_last_used_at_desc_id_desc, -> { reorder(last_used_at: :desc, id: :desc) }
   scope :project_access_token, -> { includes(:user).references(:user).merge(User.project_bot) }
   scope :owner_is_human, -> { includes(:user).references(:user).merge(User.human) }
   scope :last_used_before, ->(date) { where("last_used_at <= ?", date) }
@@ -95,7 +98,11 @@ class PersonalAccessToken < ApplicationRecord
   def self.simple_sorts
     super.merge(
       {
-        'expires_at_asc_id_desc' => -> { order_expires_at_asc_id_desc }
+        'expires_asc' => -> { order_expires_at_asc_id_desc },
+        'expires_at_asc_id_desc' => -> { order_expires_at_asc_id_desc }, # Keep for backward compatibility
+        'expires_desc' => -> { order_expires_at_desc_id_desc },
+        'last_used_asc' => -> { order_last_used_at_asc_id_desc },
+        'last_used_desc' => -> { order_last_used_at_desc_id_desc }
       }
     )
   end

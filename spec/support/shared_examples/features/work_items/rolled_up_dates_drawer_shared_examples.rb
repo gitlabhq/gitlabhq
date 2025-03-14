@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'work items due dates in drawer' do
-  include WorkItemFeedbackHelpers
-
   let(:work_item_due_dates_selector) { '[data-testid="work-item-due-dates"]' }
   let(:work_item_start_due_dates_selector) { '[data-testid="work-item-start-due-dates"]' }
   let(:work_item_milestone_selector) { '[data-testid="work-item-milestone"]' }
@@ -13,8 +11,6 @@ RSpec.shared_examples 'work items due dates in drawer' do
 
       page.refresh
       wait_for_all_requests
-
-      close_work_item_feedback_popover_if_present
     end
 
     it 'passes axe automated accessibility testing in closed state' do

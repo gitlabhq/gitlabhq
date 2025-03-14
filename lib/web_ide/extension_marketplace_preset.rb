@@ -16,7 +16,7 @@ module WebIde
         # See https://open-vsx.org/swagger-ui/index.html?urls.primaryName=VSCode%20Adapter for OpenVSX Swagger API
         service_url: "https://open-vsx.org/vscode/gallery",
         item_url: "https://open-vsx.org/vscode/item",
-        resource_url_template: "https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}"
+        resource_url_template: "https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{versionRaw}/{path}"
       )
     end
 

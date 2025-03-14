@@ -24,7 +24,12 @@ RSpec.describe WebIde::SettingsSync, feature_category: :web_ide do
           },
           expectation: 'c6620244fe72864fa8d8'
         },
-        "default vscode settings" => {
+        "default vscode settings (openvsx)" => {
+          enabled: true,
+          vscode_settings: ::WebIde::ExtensionMarketplacePreset.open_vsx.values,
+          expectation: '2e0d3e8c1107f9ccc5ea'
+        },
+        "default vscode settings (openvsx compat without versionRaw)" => {
           enabled: true,
           vscode_settings: {
             service_url: 'https://open-vsx.org/vscode/gallery',
@@ -33,7 +38,7 @@ RSpec.describe WebIde::SettingsSync, feature_category: :web_ide do
           },
           expectation: '2e0d3e8c1107f9ccc5ea'
         },
-        "default vscode settings (compatability)" => {
+        "default vscode settings (openvsx compat with vscode/asset)" => {
           enabled: true,
           vscode_settings: {
             service_url: 'https://open-vsx.org/vscode/gallery',
@@ -42,7 +47,7 @@ RSpec.describe WebIde::SettingsSync, feature_category: :web_ide do
           },
           expectation: '2e0d3e8c1107f9ccc5ea'
         },
-        "default vscode settings (compatability after bug fix)" => {
+        "default vscode settings (openvsx compat without resource_url_template)" => {
           # This is the default vscode settings that creates the same
           # hash as default_vscode_settings to avoid breaking-changes.
           # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178491

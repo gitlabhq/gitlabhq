@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Work items list filters', :js, feature_category: :team_planning do
-  include WorkItemFeedbackHelpers
   include FilteredSearchHelpers
 
   let_it_be(:user1) { create(:user) }
@@ -48,8 +47,6 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
     before do
       sign_in(user1)
       visit group_work_items_path(group)
-
-      close_work_item_feedback_popover_if_present
     end
 
     describe 'assignee' do

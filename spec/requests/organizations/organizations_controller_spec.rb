@@ -208,30 +208,30 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
         end
       end
 
-      context 'when organization has multiple projects',
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/524222' do
-        let_it_be(:stale_project) do
-          create(:project, :public, organization: organization, last_activity_at: 3.days.ago)
-            .tap { |project| create(:project_member, :developer, user:, project:) }
-        end
-
-        let_it_be(:recently_updated_project) do
-          create(:project, :public, organization: organization, last_activity_at: Date.current)
-            .tap { |project| create(:project_member, :developer, user:, project:) }
-        end
+      context 'when organization has multiple projects' do
+        let_it_be(:stale_project) { create(:project, organization: organization, developers: [user]) }
+        let_it_be(:recently_updated_project) { create(:project, organization: organization, developers: [user]) }
 
         before_all do
+          stale_project.update!(last_activity_at: 3.days.ago)
+
           sign_in(user)
         end
 
-        it 'returns events from the projects with the most recent activities' do
+        it 'returns events from the projects with the most recent activities', :aggregate_failures do
           stub_const("#{described_class}::DEFAULT_RESOURCE_LIMIT", 1)
 
           get activity_organization_path(organization, format: :json)
 
+          resource_parent_path = json_response['events'].first["resource_parent"]["full_path"]
+
           expect(json_response['events'].size).to eq(1)
-          expect(json_response['events'].first["resource_parent"]["full_path"])
-            .to eq(recently_updated_project.full_path)
+          expect(resource_parent_path).to eq(recently_updated_project.full_path), <<~ERROR.squish
+            Expected project with path #{recently_updated_project.full_path}
+            (last_activity_at: #{recently_updated_project.last_activity_at}),
+            but got #{resource_parent_path || 'nil'}.
+            Stale project: #{stale_project.full_path} last_activity_at: #{stale_project.last_activity_at}).
+          ERROR
         end
       end
 

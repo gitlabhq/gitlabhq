@@ -86,6 +86,7 @@ export default {
     },
 
     // Component API
+    // eslint-disable-next-line vue/no-unused-properties
     refetch() {
       // Refresh all of the counts here, can be called by parent component
       this.$refs[TAB_COUNT_REF].forEach((countComponent) => {

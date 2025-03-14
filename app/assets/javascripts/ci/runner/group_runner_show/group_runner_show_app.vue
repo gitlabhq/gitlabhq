@@ -55,14 +55,6 @@ export default {
       },
     },
   },
-  computed: {
-    canUpdate() {
-      return this.runner.userPermissions?.updateRunner;
-    },
-    canDelete() {
-      return this.runner.userPermissions?.deleteRunner;
-    },
-  },
   methods: {
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });

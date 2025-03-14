@@ -19,7 +19,7 @@ RSpec.describe WebIde::ExtensionMarketplacePreset, feature_category: :web_ide do
         values: {
           service_url: "https://open-vsx.org/vscode/gallery",
           item_url: "https://open-vsx.org/vscode/item",
-          resource_url_template: "https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}"
+          resource_url_template: "https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{versionRaw}/{path}"
         }
       )
     end

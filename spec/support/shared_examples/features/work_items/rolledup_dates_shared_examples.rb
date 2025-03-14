@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'work items rolled up dates' do
-  include WorkItemFeedbackHelpers
-
   let(:work_item_due_dates_selector) { '[data-testid="work-item-due-dates"]' }
   let(:work_item_milestone_selector) { '[data-testid="work-item-milestone"]' }
 
@@ -28,8 +26,6 @@ RSpec.shared_examples 'work items rolled up dates' do
 
       page.refresh
       wait_for_all_requests
-
-      close_work_item_feedback_popover_if_present
     end
 
     context 'when using inheritable dates', :sidekiq_inline do

@@ -20,7 +20,7 @@ local setup. You can:
 - Create new files and directories.
 - Upload and replace files.
 - Create branches and tags for version control.
-- [Lock files](../file_lock.md#lock-a-file-or-a-directory) to prevent concurrent editing conflicts.
+- [Lock files](../file_lock.md#lock-a-file-or-directory) to prevent concurrent editing conflicts.
 - Contribute to projects without setting up Git locally.
 
 GitLab uses your [primary email address](../../profile/_index.md#change-the-email-displayed-on-your-commits)

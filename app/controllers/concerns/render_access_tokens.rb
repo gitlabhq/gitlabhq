@@ -4,7 +4,7 @@ module RenderAccessTokens
   extend ActiveSupport::Concern
 
   def active_access_tokens
-    tokens = finder(state: 'active', sort: 'expires_at_asc_id_desc').execute.preload_users
+    tokens = finder(state: 'active', sort: 'expires_asc').execute.preload_users
     size = tokens.size
 
     tokens = tokens.page(page)

@@ -24,11 +24,6 @@ export default {
     },
   },
   emits: ['deleted'],
-  data() {
-    return {
-      deleting: false,
-    };
-  },
   computed: {
     buttonContent() {
       if (this.compact) {

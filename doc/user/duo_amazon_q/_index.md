@@ -125,12 +125,24 @@ Amazon Q can reply to these comments with suggested fixes.
 
 Amazon Q proposes fixes for the issue in the comment.
 
-### Create test coverage
+### Generate unit tests
 
 Generate new unit tests while you're having your merge request reviewed.
 Amazon Q surfaces any missing unit test coverage in the proposed code changes.
 
-To create test coverage:
+To generate unit tests for all code changes:
+
+1. Open your merge request.
+1. On the **Overview** tab, in a comment, type `/q test`.
+1. Select **Comment**.
+
+Amazon Q populates a comment with the suggested tests.
+
+### Create test coverage for selected lines
+
+Generate new unit tests for specific lines of code in your merge request.
+
+To create test coverage for selected lines:
 
 1. Open your merge request.
 1. On the **Changes** tab, select the lines you want to test.

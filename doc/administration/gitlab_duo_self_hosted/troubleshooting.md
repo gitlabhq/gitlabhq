@@ -40,6 +40,12 @@ Before you begin troubleshooting, you should:
 
   Now, requests and responses from GitLab to the AI gateway are logged to [`llm.log`](../logs/_index.md#llmlog)
 
+For more information on troubleshooting GitLab Duo, see:
+
+- [Troubleshooting GitLab Duo](../../user/gitlab_duo/troubleshooting.md).
+- [Troubleshooting Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md).
+- [GitLab Duo Chat troubleshooting](../../user/gitlab_duo_chat/troubleshooting.md).
+
 ## Use debugging scripts
 
 We provide two debugging scripts to help administrators verify their self-hosted model configuration.

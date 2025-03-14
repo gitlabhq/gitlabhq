@@ -151,7 +151,7 @@ module ReactiveCaching
     def enqueuing_update(*args)
       yield
 
-      worker_class.perform_in(self.class.reactive_cache_refresh_interval, self.class, id, *args)
+      worker_class.perform_in(self.class.reactive_cache_refresh_interval, self.class.name, id, *args)
     end
 
     def worker_class

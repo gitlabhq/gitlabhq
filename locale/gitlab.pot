@@ -6263,6 +6263,9 @@ msgstr ""
 msgid "AmazonQ|Create unit tests for selected lines of code in Java or Python files (Beta)"
 msgstr ""
 
+msgid "AmazonQ|Create unit tests for this merge request (Beta)"
+msgstr ""
+
 msgid "AmazonQ|Delete the IAM identity provider created for AI gateway."
 msgstr ""
 

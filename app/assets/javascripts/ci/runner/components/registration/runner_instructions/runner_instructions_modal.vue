@@ -126,9 +126,12 @@ export default {
     this.refocusSelectedPlatformButton();
   },
   methods: {
+    // show() can be invoked by parent components to show the modal
+    // eslint-disable-next-line vue/no-unused-properties
     show() {
       this.$refs.modal.show();
     },
+    // close() can be invoked by parent components to close the modal
     close() {
       this.$refs.modal.close();
     },

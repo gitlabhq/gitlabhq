@@ -1,13 +1,18 @@
 import $ from 'jquery';
 import { nextTick } from 'vue';
 import { GlToggle, GlButton } from '@gitlab/ui';
+import { createWrapper as createVueTestWrapper } from '@vue/test-utils';
 import HeaderComponent from '~/vue_shared/components/markdown/header.vue';
 import HeaderDividerComponent from '~/vue_shared/components/markdown/header_divider.vue';
 import CommentTemplatesModal from '~/vue_shared/components/markdown/comment_templates_modal.vue';
 import ToolbarButton from '~/vue_shared/components/markdown/toolbar_button.vue';
 import ToolbarTableButton from '~/content_editor/components/toolbar_table_button.vue';
 import DrawioToolbarButton from '~/vue_shared/components/markdown/drawio_toolbar_button.vue';
-import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import {
+  mountExtended,
+  shallowMountExtended,
+  extendedWrapper,
+} from 'helpers/vue_test_utils_helper';
 import { updateText } from '~/lib/utils/text_markdown';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
@@ -352,24 +357,38 @@ describe('Markdown field header component', () => {
 
   describe('find and replace', () => {
     let form;
+    let formWrapper;
 
     const createParentForm = () => {
       form = document.createElement('form');
       const field = document.createElement('div');
       const root = document.createElement('div');
+      const textarea = document.createElement('textarea');
+      textarea.value = 'lorem ipsum dolor sit amet <img src="prompt">';
       field.classList = 'js-vue-markdown-field';
+      form.classList = 'md-area';
+      form.appendChild(textarea);
       form.appendChild(field);
       field.appendChild(root);
       document.body.appendChild(form);
+      formWrapper = extendedWrapper(createVueTestWrapper(form));
       return root;
     };
+
+    const findFindInput = () => wrapper.findByTestId('find-btn');
+    const findCloneDiv = () => formWrapper.findByTestId('find-and-replace-clone');
 
     const showFindAndReplace = async () => {
       $(document).triggerHandler('markdown-editor:find-and-replace:show', [$('form')]);
       await nextTick();
     };
 
-    const findFindInput = () => wrapper.findByTestId('find-btn');
+    const closeFindAndReplace = async () => {
+      const preventDefault = jest.fn();
+      findFindInput().vm.$emit('keydown', { preventDefault, key: 'Escape' });
+      await nextTick();
+      expect(preventDefault).not.toHaveBeenCalled();
+    };
 
     beforeEach(() => {
       createWrapper({ attachTo: createParentForm() });
@@ -403,11 +422,49 @@ describe('Markdown field header component', () => {
 
     it('closes the find-and-replace bar when Escape key is pressed', async () => {
       await showFindAndReplace();
-      const preventDefault = jest.fn();
-      findFindInput().vm.$emit('keydown', { preventDefault, key: 'Escape' });
-      await nextTick();
-      expect(preventDefault).not.toHaveBeenCalled();
+      expect(wrapper.findByTestId('find-and-replace').exists()).toBe(true);
+      await closeFindAndReplace();
       expect(wrapper.findByTestId('find-and-replace').exists()).toBe(false);
+    });
+
+    it('embeds a clone to div to color highlighted text', async () => {
+      await showFindAndReplace();
+
+      findFindInput().vm.$emit('keyup', { target: { value: 'my-text' } });
+
+      await nextTick();
+      expect(findCloneDiv().exists()).toBe(true);
+
+      // Wait till the highlighting is complete
+      await nextTick();
+
+      // Check that closing the find and replace removes the clone div
+      await closeFindAndReplace();
+      expect(findCloneDiv().exists()).toBe(false);
+    });
+
+    it('highlights text when text matches', async () => {
+      await showFindAndReplace();
+
+      // Text that does not match
+      await findFindInput().vm.$emit('keyup', { target: { value: 'my-text' } });
+
+      expect(formWrapper.element.querySelector('.js-highlight')).toBe(null);
+
+      // Text that matches
+      await findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
+
+      expect(formWrapper.element.querySelector('.js-highlight').innerHTML).toBe('lorem');
+    });
+
+    it('is not vulnerable to XSS', async () => {
+      await showFindAndReplace();
+      await findFindInput().vm.$emit('keyup', { target: { value: 'prompt' } });
+      await nextTick();
+
+      expect(findCloneDiv().element.innerHTML).toBe(
+        'lorem ipsum dolor sit amet &lt;img src="<span class="js-highlight" style="background-color: orange; display: inline-block;">prompt</span>"&gt;',
+      );
     });
   });
 });

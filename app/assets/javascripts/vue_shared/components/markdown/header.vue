@@ -117,10 +117,10 @@ export default {
     return {
       tag: '> ',
       suggestPopoverVisible: false,
-      shouldShowFindAndReplaceBar: false,
       findAndReplace: {
         find: '',
         replace: '',
+        shouldShowBar: false,
       },
       modifierKey,
       shiftKey: modifierKey === '⌘' ? '⇧' : 'Shift+',
@@ -181,14 +181,14 @@ export default {
   mounted() {
     $(document).on('markdown-preview:show.vue', this.showMarkdownPreview);
     $(document).on('markdown-preview:hide.vue', this.hideMarkdownPreview);
-    $(document).on('markdown-editor:find-and-replace:show', this.showFindAndReplaceBar);
+    $(document).on('markdown-editor:find-and-replace:show', this.findAndReplace_show);
 
     this.updateSuggestPopoverVisibility();
   },
   beforeDestroy() {
     $(document).off('markdown-preview:show.vue', this.showMarkdownPreview);
     $(document).off('markdown-preview:hide.vue', this.hideMarkdownPreview);
-    $(document).off('markdown-editor:find-and-replace:show', this.showFindAndReplaceBar);
+    $(document).off('markdown-editor:find-and-replace:show', this.findAndReplace_show);
   },
   methods: {
     async updateSuggestPopoverVisibility() {
@@ -233,8 +233,12 @@ export default {
         })
         .catch(() => {});
     },
+    getCurrentTextArea() {
+      return this.$el.closest('.md-area')?.querySelector('textarea');
+    },
     insertIntoTextarea(text) {
-      const textArea = this.$el.closest('.md-area')?.querySelector('textarea');
+      const textArea = this.getCurrentTextArea();
+
       if (textArea) {
         updateText({
           textArea,
@@ -289,20 +293,112 @@ export default {
         this.$el.closest('.md-area')?.querySelector('textarea')?.focus();
       }, 500);
     },
-    showFindAndReplaceBar(_, form) {
+    findAndReplace_show(_, form) {
       if (!this.isValid(form)) return;
 
-      this.shouldShowFindAndReplaceBar = true;
+      this.findAndReplace.shouldShowBar = true;
     },
-    handleKeyDown(e) {
+    findAndReplace_handleKeyDown(e) {
       if (e.key === 'Enter') {
         e.preventDefault();
+      } else if (e.key === 'Escape') {
+        this.findAndReplace.shouldShowBar = false;
+        this.getCurrentTextArea()?.removeEventListener('scroll', this.findAndReplace_syncScroll);
+        this.cloneDiv?.parentElement.removeChild(this.cloneDiv);
+        this.cloneDiv = undefined;
+      }
+    },
+    findAndReplace_handleKeyUp(e) {
+      this.findAndReplace_highlightMatchingText(e.target.value);
+    },
+    findAndReplace_syncScroll() {
+      const textArea = this.getCurrentTextArea();
+      this.cloneDiv.scrollTop = textArea.scrollTop;
+    },
+    findAndReplace_safeReplace(textArea, textToFind) {
+      const regex = new RegExp(`(${textToFind})`, 'g');
+      const segments = textArea.value.split(regex);
+
+      // Clear previous contents
+      this.cloneDiv.innerHTML = '';
+
+      segments.forEach((segment) => {
+        // If the segment matches the text we're highlighting
+        if (segment === textToFind) {
+          const span = document.createElement('span');
+          span.classList.add('js-highlight');
+          span.style.backgroundColor = 'orange';
+          span.style.display = 'inline-block';
+          span.textContent = segment; // Use textContent for safe text insertion
+          this.cloneDiv.appendChild(span);
+        } else {
+          // Otherwise, just append the plain text
+          const textNode = document.createTextNode(segment);
+          this.cloneDiv.appendChild(textNode);
+        }
+      });
+    },
+    async findAndReplace_highlightMatchingText(text) {
+      const textArea = this.getCurrentTextArea();
+
+      if (!textArea) {
         return;
       }
 
-      if (e.key === 'Escape') {
-        this.shouldShowFindAndReplaceBar = false;
+      // Make sure we got the right zIndex
+      textArea.style.position = 'relative';
+      textArea.style.zIndex = 2;
+
+      await this.findAndReplace_attachCloneDivIfNotExists(textArea);
+
+      this.findAndReplace_safeReplace(textArea, text);
+    },
+    async findAndReplace_attachCloneDivIfNotExists(textArea) {
+      if (this.cloneDiv) {
+        return;
       }
+
+      this.cloneDiv = document.createElement('div');
+      this.cloneDiv.dataset.testid = 'find-and-replace-clone';
+      this.cloneDiv.textContent = textArea.value;
+
+      const computedStyle = window.getComputedStyle(textArea);
+      const propsToCopy = [
+        'width',
+        'height',
+        'padding',
+        'border',
+        'font-family',
+        'font-size',
+        'line-height',
+        'background-color',
+        'color',
+        'overflow',
+        'white-space',
+        'word-wrap',
+        'resize',
+        'margin',
+      ];
+
+      propsToCopy.forEach((prop) => {
+        this.cloneDiv.style[prop] = computedStyle[prop];
+      });
+
+      // Additional required styles for div
+      this.cloneDiv.style.whiteSpace = 'pre-wrap';
+      this.cloneDiv.style.overflowY = 'auto';
+      this.cloneDiv.style.position = 'absolute';
+      this.cloneDiv.style.zIndex = 1;
+      this.cloneDiv.style.color = 'transparent';
+
+      textArea.addEventListener('scroll', this.findAndReplace_syncScroll);
+
+      textArea.parentElement.insertBefore(this.cloneDiv, textArea);
+
+      await this.$nextTick();
+
+      // Required to align the clone div
+      this.cloneDiv.scrollTop = textArea.scrollTop;
     },
   },
   shortcuts: {
@@ -620,8 +716,8 @@ export default {
       </div>
     </div>
     <div
-      v-if="shouldShowFindAndReplaceBar"
-      class="gl-border gl-absolute gl-right-0 gl-z-1 gl-flex gl-w-34 gl-rounded-bl-base gl-border-r-0 gl-bg-section gl-p-3 gl-shadow-sm"
+      v-if="findAndReplace.shouldShowBar"
+      class="gl-border gl-absolute gl-right-0 gl-z-3 gl-flex gl-w-34 gl-rounded-bl-base gl-border-r-0 gl-bg-section gl-p-3 gl-shadow-sm"
       data-testid="find-and-replace"
     >
       <gl-form-input
@@ -629,7 +725,8 @@ export default {
         :placeholder="__('Find')"
         autofocus
         data-testid="find-btn"
-        @keydown="handleKeyDown"
+        @keydown="findAndReplace_handleKeyDown"
+        @keyup="findAndReplace_handleKeyUp"
       />
     </div>
   </div>

@@ -11,8 +11,10 @@ module WebIde
         # 2e0d3e8c1107f9ccc5ea is the hash of "web_ide_https://open-vsx.org/vscode/gallery_https://open-vsx.org/vscode/item_"
         # e36c431c0e2e1ee82c86 is the hash of "web_ide_https://open-vsx.org/vscode/gallery_https://open-vsx.org/vscode/item_https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}"
         # 55b10685e181429abe78 is the hash of "web_ide_https://open-vsx.org/vscode/gallery_https://open-vsx.org/vscode/item_https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}"
+        # 372ad9a36594931b612d is the hash of "web_ide_https://open-vsx.org/vscode/gallery_https://open-vsx.org/vscode/item_https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{versionRaw}/{path}"
         "e36c431c0e2e1ee82c86" => "2e0d3e8c1107f9ccc5ea",
-        "55b10685e181429abe78" => "2e0d3e8c1107f9ccc5ea"
+        "55b10685e181429abe78" => "2e0d3e8c1107f9ccc5ea",
+        "372ad9a36594931b612d" => "2e0d3e8c1107f9ccc5ea"
       }.freeze
 
       def settings_context_hash(extension_marketplace_settings:)
