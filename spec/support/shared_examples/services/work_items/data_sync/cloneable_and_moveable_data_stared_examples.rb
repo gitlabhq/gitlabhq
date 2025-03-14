@@ -53,7 +53,7 @@ RSpec.shared_examples 'cloneable and moveable work item' do
     expect(new_work_item).to be_persisted
     expect(new_work_item).to have_attributes(original_work_item_attrs)
 
-    if new_work_item.work_item_type.epic?
+    if new_work_item.group_epic_work_item?
       expect(new_work_item.reload.sync_object).to be_persisted
       expect(new_work_item.sync_object.title).to eq(original_work_item.sync_object.title)
     end

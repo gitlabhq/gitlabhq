@@ -92,7 +92,7 @@ test:
 
 build:
   stage: build
-  image: node:18
+  image: node:22
   script:
     - npm ci
     - npm run build

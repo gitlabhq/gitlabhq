@@ -228,6 +228,7 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     it_behaves_like 'alert bot'
     it_behaves_like 'support bot with service desk disabled'
     it_behaves_like 'support bot with service desk enabled'
+    it_behaves_like 'prevents access to project-level {issues|work_items} with type Epic', :issue
 
     context 'with confidential issues' do
       let(:confidential_issue) { create(:issue, :confidential, project: project, assignees: [assignee], author: author) }
@@ -546,6 +547,7 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
 
     it_behaves_like 'alert bot'
     it_behaves_like 'support bot with service desk enabled'
+    it_behaves_like 'prevents access to project-level {issues|work_items} with type Epic', :issue
 
     context 'when issues are private' do
       before_all do

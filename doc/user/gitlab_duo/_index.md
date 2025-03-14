@@ -27,6 +27,22 @@ GitLab is [transparent](https://handbook.gitlab.com/handbook/values/#transparenc
 As GitLab Duo features mature, the documentation will be updated to clearly state
 how and where you can access these features.
 
+## Implementing GitLab Duo
+
+You can implement GitLab Duo in the following ways:
+
+- On GitLab.com, use the default GitLab AI vendor models and the cloud-based AI
+  gateway that is hosted by GitLab.
+- On GitLab Self-Managed:
+
+  - [Use the default option of GitLab AI vendor models and the cloud-based AI gateway that is hosted by GitLab](setup.md).
+  - Use [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)
+    to self-host the AI gateway and language models. You can use GitLab AI vendor models or a
+    supported language model. This provides full control over your data and
+    security. GitLab Duo Code Suggestions and Chat are supported.
+    <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/TQoO3sFnb28?si=w_gFAYLYIzPEbhEl)
+    <!-- Video published on 2025-02-20 -->
+
 ## Working across the entire software development lifecycle
 
 To improve your workflow across the entire software development lifecycle, try these features:
@@ -35,10 +51,6 @@ To improve your workflow across the entire software development lifecycle, try t
   and learn about GitLab by asking your questions in a chat window.
   <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY)
   <!-- Video published on 2024-04-18 -->
-- [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md): Host the language models that power AI features in GitLab.
-  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/TQoO3sFnb28?si=w_gFAYLYIzPEbhEl)
-  <!-- Video published on 2025-02-20 -->
-  Code Suggestions and Chat are supported. Use GitLab model vendors or self-host a supported language model.
 - [GitLab Duo Workflow](../duo_workflow/_index.md): Automate tasks and help increase productivity in your development workflow.
 - [AI Impact Dashboard](../analytics/ai_impact_analytics.md): Measure the AI effectiveness and impact on SDLC metrics.
 

@@ -309,6 +309,7 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
             source_user: source_user,
             access_level: 30,
             expires_at: '2020-01-01T00:00:00Z',
+            ignore_duplicate_errors: true,
             group: portable.is_a?(Group) ? portable : nil,
             project: portable.is_a?(Project) ? portable : nil) do |service|
               expect(service).to receive(:execute).and_return(ServiceResponse.success)

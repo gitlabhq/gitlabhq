@@ -817,6 +817,14 @@ class Issue < ApplicationRecord
     project.autoclose_referenced_issues
   end
 
+  def epic_work_item?
+    work_item_type&.epic?
+  end
+
+  def group_epic_work_item?
+    epic_work_item? && group_level?
+  end
+
   private
 
   def project_level_readable_by?(user)

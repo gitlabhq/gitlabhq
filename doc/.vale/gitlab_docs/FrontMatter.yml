@@ -37,13 +37,18 @@ script: |
       hasError = true
     }
 
-    // First check if we have a title key at all
-    hasTitleKey := text.re_match("(?m)^[tT]itle:", frontmatter)
-    // Then check if it has content (anything but whitespace) after the colon
-    hasValidTitle := text.re_match("(?m)^[tT]itle:[^\\n]*[^\\s][^\\n]*$", frontmatter)
+    // Check if the page has redirect_to (these pages don't need titles)
+    hasRedirectTo := text.re_match("(?m)^redirect_to:", frontmatter)
 
-    if !hasError && (!hasTitleKey || !hasValidTitle) {
-      hasError = true
+    if !hasRedirectTo {
+      // First check if we have a title key at all
+      hasTitleKey := text.re_match("(?m)^[tT]itle:", frontmatter)
+      // Then check if it has content (anything but whitespace) after the colon
+      hasValidTitle := text.re_match("(?m)^[tT]itle:[^\\n]*[^\\s][^\\n]*$", frontmatter)
+
+      if !hasError && (!hasTitleKey || !hasValidTitle) {
+        hasError = true
+      }
     }
   }
 

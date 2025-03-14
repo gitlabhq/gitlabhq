@@ -19,8 +19,14 @@ After your organization purchases a subscription, an administrator must assign s
 You likely received an email that notified you of your seat.
 
 The AI-powered features you have access to use language models to help streamline
-your workflow. If you're on GitLab Self-Managed, your administrator can choose to use
-GitLab models, or self-host their own models.
+your workflow:
+
+- If you're on GitLab.com, you use default GitLab AI vendor models.
+- If you're on GitLab Self-Managed, your administrator can either:
+  - [Use default GitLab AI vendor models](../gitlab_duo/setup.md).
+  - Self-host the AI gateway and language models with
+    [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)
+    and choose from among supported models.
 
 If you have issues accessing GitLab Duo features, ask your administrator.
 They can check the health of the installation.
@@ -30,7 +36,8 @@ For more information, see:
 - [Assign seats to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 - [Features included in Duo Pro and Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
 - [List of GitLab Duo features and their language models](../gitlab_duo/_index.md).
-- [Self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md).
+- [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md).
+- [GitLab Duo features supported by GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md#supported-gitlab-duo-features).
 - [Health check details](../gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo).
 
 ## Step 2: Try GitLab Duo Chat in the UI

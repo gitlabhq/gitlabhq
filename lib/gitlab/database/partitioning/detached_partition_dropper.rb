@@ -3,6 +3,8 @@ module Gitlab
   module Database
     module Partitioning
       class DetachedPartitionDropper
+        PROCESSING_DELAY = 1.minute
+
         def perform
           Gitlab::AppLogger.info(message: "Checking for previously detached partitions to drop")
 
@@ -12,6 +14,8 @@ module Gitlab
             else
               drop_partition(detached_partition)
             end
+
+            sleep(PROCESSING_DELAY)
           rescue StandardError => e
             Gitlab::AppLogger.error(message: "Failed to drop previously detached partition",
               partition_name: detached_partition.table_name,

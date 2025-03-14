@@ -13,6 +13,12 @@ class IssuePolicy < IssuablePolicy
     false
   end
 
+  # Not available in FOSS.
+  # This method is Overridden in EE
+  def project_work_item_epics_available?
+    false
+  end
+
   # rubocop:disable Cop/UserAdmin -- specifically check the admin attribute
   desc "User can read confidential issues"
   condition(:can_read_confidential) do
@@ -47,15 +53,20 @@ class IssuePolicy < IssuablePolicy
     end
   end
 
-  # group level issues license for now is equivalent to epics license. We'll have to migrate epics license to
-  # work items context once epics are fully migrated to work items.
-  condition(:group_level_issues_license_available) do
-    epics_license_available?
-  end
-
   # this is temporarily needed until we rollout implementation of move and clone for all work item types
   condition(:supports_move_and_clone, scope: :subject) do
     @subject.supports_move_and_clone?
+  end
+
+  condition(:work_item_type_available, scope: :subject) do
+    if group_issue?
+      # For now all work item types at group-level require the epics licensed feature
+      epics_license_available?
+    elsif @subject.epic_work_item?
+      project_work_item_epics_available?
+    else
+      true
+    end
   end
 
   rule { group_issue & can?(:read_group) }.policy do
@@ -168,9 +179,9 @@ class IssuePolicy < IssuablePolicy
     prevent :destroy_issue
   end
 
-  # IMPORTANT: keep the prevent rules as last rules defined in the policy, as these are based on
+  # IMPORTANT: keep the prevention rules as last rules defined in the policy, as these are based on
   # all abilities defined up to this point.
-  rule { group_issue & ~group_level_issues_license_available }.policy do
+  rule { ~work_item_type_available }.policy do
     prevent(*::IssuePolicy.ability_map.map.keys)
   end
 end

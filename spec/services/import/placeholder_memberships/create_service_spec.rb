@@ -10,6 +10,7 @@ RSpec.describe Import::PlaceholderMemberships::CreateService, feature_category: 
 
     let(:access_level) { Gitlab::Access::GUEST }
     let(:expires_at) { Date.today.next_month }
+    let(:ignore_duplicate_errors) { false }
 
     subject(:result) do
       described_class.new(
@@ -17,7 +18,8 @@ RSpec.describe Import::PlaceholderMemberships::CreateService, feature_category: 
         access_level: access_level,
         expires_at: expires_at,
         group: group,
-        project: project
+        project: project,
+        ignore_duplicate_errors: ignore_duplicate_errors
       ).execute
     end
 
@@ -35,6 +37,37 @@ RSpec.describe Import::PlaceholderMemberships::CreateService, feature_category: 
           group: be_nil,
           project: project
         )
+      end
+
+      context 'when placeholder membership already exists' do
+        let_it_be(:existing_membership) do
+          create(:import_placeholder_membership, source_user: source_user, project: project)
+        end
+
+        context "when ignoring duplicate membership errors" do
+          let(:ignore_duplicate_errors) { true }
+
+          it 'does not create a member, logs information, and returns success' do
+            expect_next_instance_of(::Import::Framework::Logger) do |logger|
+              expect(logger).to receive(:info).with(
+                message: 'Project or group has already been taken. Skipping placeholder membership creation',
+                reference: be_a(Import::Placeholders::Membership)
+              )
+            end
+
+            expect { result }.not_to change { Import::Placeholders::Membership.count }
+            expect(result).to be_success
+          end
+        end
+
+        context "when observing duplicate membership errors" do
+          it 'returns an error' do
+            expect { result }.not_to change { Import::Placeholders::Membership.count }
+            expect(result).to be_error
+            expect(result.http_status).to eq(:bad_request)
+            expect(result.message).to include('Project has already been taken')
+          end
+        end
       end
     end
 

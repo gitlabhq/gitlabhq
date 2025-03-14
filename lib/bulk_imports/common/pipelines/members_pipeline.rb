@@ -62,7 +62,7 @@ module BulkImports
         end
 
         def create_placeholder_membership(data)
-          result = Import::PlaceholderMemberships::CreateService.new(**data).execute
+          result = Import::PlaceholderMemberships::CreateService.new(**data, ignore_duplicate_errors: true).execute
 
           return unless result.error?
 
