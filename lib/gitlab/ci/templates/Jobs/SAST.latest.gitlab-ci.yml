@@ -152,7 +152,7 @@ gitlab-enrich-cdx-results:
   stage: .post
   extends: .static-reachability-rules
   variables:
-    GLAS_STATIC_REACHABILITY_MATCHER_VERSION: "v1.0.1"
+    GLAS_STATIC_REACHABILITY_MATCHER_VERSION: "v1.0.3"
     GLAS_REPORT: $GITLAB_ADVANCED_SAST_SCA_FILENAME
     SCA_TO_SARIF_PROJECT_ID: 60962090
     DEPENDENCY_SCANNING_PATTERN: "**/gl-sbom-*-*.cdx.json"

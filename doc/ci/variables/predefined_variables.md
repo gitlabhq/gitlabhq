@@ -167,9 +167,10 @@ Predefined variables become available at three different phases of pipeline exec
 
 ## Predefined variables for merge request pipelines
 
-These variables are available before GitLab creates the pipeline (Pre-pipeline).
-These variables can be used with `include:rules` to control which configuration files
-to use when creating the pipeline.
+These variables are available before GitLab creates the pipeline
+(Pre-pipeline). These variables can be used with
+[`include:rules`](../../ci/yaml/includes.md#use-rules-with-include)
+and as environment variables in jobs.
 
 The pipeline must be a [merge request pipeline](../pipelines/merge_request_pipelines.md),
 and the merge request must be open.
@@ -177,16 +178,16 @@ and the merge request must be open.
 | Variable                                    | Description |
 |---------------------------------------------|-------------|
 | `CI_MERGE_REQUEST_APPROVED`                 | Approval status of the merge request. `true` when [merge request approvals](../../user/project/merge_requests/approvals/_index.md) is available and the merge request has been approved. |
-| `CI_MERGE_REQUEST_ASSIGNEES`                | Comma-separated list of usernames of assignees for the merge request. |
+| `CI_MERGE_REQUEST_ASSIGNEES`                | Comma-separated list of usernames of assignees for the merge request. Only available if the merge request has at least one assignee. |
 | `CI_MERGE_REQUEST_DIFF_BASE_SHA`            | The base SHA of the merge request diff. |
 | `CI_MERGE_REQUEST_DIFF_ID`                  | The version of the merge request diff. |
 | `CI_MERGE_REQUEST_EVENT_TYPE`               | The event type of the merge request. Can be `detached`, `merged_result` or `merge_train`. |
 | `CI_MERGE_REQUEST_DESCRIPTION`              | The description of the merge request. If the description is more than 2700 characters long, only the first 2700 characters are stored in the variable. Introduced in GitLab 16.7. |
-| `CI_MERGE_REQUEST_DESCRIPTION_IS_TRUNCATED` | `true` if `CI_MERGE_REQUEST_DESCRIPTION` is truncated down to 2700 characters because the description of the merge request is too long. Introduced in GitLab 16.8. |
+| `CI_MERGE_REQUEST_DESCRIPTION_IS_TRUNCATED` | `true` if `CI_MERGE_REQUEST_DESCRIPTION` is truncated down to 2700 characters because the description of the merge request is too long, otherwise `false`. Introduced in GitLab 16.8. |
 | `CI_MERGE_REQUEST_ID`                       | The instance-level ID of the merge request. The ID is unique across all projects on the GitLab instance. |
 | `CI_MERGE_REQUEST_IID`                      | The project-level IID (internal ID) of the merge request. This ID is unique for the current project, and is the number used in the merge request URL, page title, and other visible locations. |
-| `CI_MERGE_REQUEST_LABELS`                   | Comma-separated label names of the merge request. |
-| `CI_MERGE_REQUEST_MILESTONE`                | The milestone title of the merge request. |
+| `CI_MERGE_REQUEST_LABELS`                   | Comma-separated label names of the merge request. Only available if the merge request has at least one label. |
+| `CI_MERGE_REQUEST_MILESTONE`                | The milestone title of the merge request. Only available if the merge request has a milestone set. |
 | `CI_MERGE_REQUEST_PROJECT_ID`               | The ID of the project of the merge request. |
 | `CI_MERGE_REQUEST_PROJECT_PATH`             | The path of the project of the merge request. For example `namespace/awesome-project`. |
 | `CI_MERGE_REQUEST_PROJECT_URL`              | The URL of the project of the merge request. For example, `http://192.168.10.15:3000/namespace/awesome-project`. |

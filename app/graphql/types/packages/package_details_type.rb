@@ -33,7 +33,7 @@ module Types
       field :pypi_url, GraphQL::Types::String, null: true, description: 'Url of the PyPi project endpoint.'
 
       field :last_downloaded_at, Types::TimeType, null: true,
-        description: 'Last time that a file of this package was downloaded.'
+        description: 'Last time that a file of the package was downloaded.'
 
       field :public_package, GraphQL::Types::Boolean, null: true,
         description: 'Indicates if there is public access to the package.'

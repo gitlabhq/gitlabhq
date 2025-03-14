@@ -51,11 +51,11 @@ module Types
       method: :hidden_due_to_author_ban?
 
     field :created_at, Types::TimeType,
-      description: 'Timestamp this snippet was created.',
+      description: 'Timestamp the snippet was created.',
       null: false
 
     field :updated_at, Types::TimeType,
-      description: 'Timestamp this snippet was updated.',
+      description: 'Timestamp the snippet was updated.',
       null: false
 
     field :web_url, type: GraphQL::Types::String,

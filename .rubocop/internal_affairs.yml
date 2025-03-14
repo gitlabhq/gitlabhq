@@ -1,0 +1,11 @@
+---
+inherit_from:
+  - '../.rubocop.yml'
+
+InternalAffairs:
+  Enabled: true
+
+# This cop only checks for directives defined in `config/default.yml`
+# whic does not apply here.
+InternalAffairs/UndefinedConfig:
+  Enabled: false

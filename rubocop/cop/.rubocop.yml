@@ -1,0 +1,3 @@
+---
+inherit_from:
+  - '../../.rubocop/internal_affairs.yml'

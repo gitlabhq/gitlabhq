@@ -1,0 +1,23 @@
+diff --git a/node_modules/vue-test-utils-compat/dist/vue-test-utils-compat.cjs.js b/node_modules/vue-test-utils-compat/dist/vue-test-utils-compat.cjs.js
+index 65fccb5..5a698da 100644
+--- a/node_modules/vue-test-utils-compat/dist/vue-test-utils-compat.cjs.js
++++ b/node_modules/vue-test-utils-compat/dist/vue-test-utils-compat.cjs.js
+@@ -281,8 +281,16 @@ function normalizeScopedSlots(scopedSlots, scopedSlotsThis) {
+   return Object.fromEntries(
+     Object.entries(scopedSlots).map(([k, v]) => {
+       let normalizedValue = v;
+-      if (typeof v === "string" && !v.startsWith("<template")) {
+-        normalizedValue = `<template #default="props">${v}</template>`;
++      if (typeof v === "string") {
++        // TODO: Remove this patch once
++        // https://gitlab.com/xanf/vue-test-utils-compat/-/merge_requests/8
++        // is merged and released.
++        if (v.trim().startsWith("<template")) {
++          // Use as-is
++        } else {
++          // Use VTU@1's "props" binding name instead of VTU@2's "params"
++          normalizedValue = `<template #default="props">${v}</template>`;
++        }
+       } else if (typeof v === "function") {
+         normalizedValue = (...args) => v.call(scopedSlotsThis, ...args);
+       } else {

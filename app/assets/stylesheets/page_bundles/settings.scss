@@ -44,6 +44,7 @@
   }
 
   .settings-toggle svg {
+    @include gl-prefers-reduced-motion-transition;
     @apply gl-transition;
   }
 
@@ -90,6 +91,7 @@
 }
 
 .settings-content {
+  @include gl-prefers-reduced-motion-animation;
   // #416312: Fix white space at bottom of page
   position: relative;
   max-height: 1px;
@@ -101,6 +103,7 @@
   margin-bottom: $gl-spacing-scale-5;
 
   .settings.expanded & {
+    @include gl-prefers-reduced-motion-animation;
     max-height: none;
     overflow-y: visible;
     animation: expandMaxHeight 300ms ease-in;

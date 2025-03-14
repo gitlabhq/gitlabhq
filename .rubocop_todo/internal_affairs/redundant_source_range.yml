@@ -1,0 +1,15 @@
+---
+# Cop supports --autocorrect.
+InternalAffairs/RedundantSourceRange:
+  Details: grace period
+  Exclude:
+    - 'rubocop/cop/gitlab/const_get_inherit_false.rb'
+    - 'rubocop/cop/gitlab/documentation_links/link.rb'
+    - 'rubocop/cop/gitlab/http_v2.rb'
+    - 'rubocop/cop/gitlab/httparty.rb'
+    - 'rubocop/cop/gitlab/json.rb'
+    - 'rubocop/cop/inject_enterprise_edition_module.rb'
+    - 'rubocop/cop/project_path_helper.rb'
+    - 'rubocop/cop/rspec/before_all.rb'
+    - 'rubocop/cop/rspec/factory_bot/inline_association.rb'
+    - 'rubocop/cop/rspec/have_gitlab_http_status.rb'

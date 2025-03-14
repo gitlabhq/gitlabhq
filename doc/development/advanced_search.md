@@ -1004,14 +1004,20 @@ Requires `source_branch` field. Query with `source_branch` or `not_source_branch
 }
 ```
 
-##### `by_group_level_authorization`
+##### `by_search_level_and_group_membership`
 
 Requires `current_user`, `group_ids`, `traversal_id`, `search_level` fields. Query with `search_level` and
-filter on `namespace_visibility_level` based on permissions user has for each group.
+filter on `namespace_visibility_level` based on permissions user has for each group. 
 
 {{< alert type="note" >}}
 
-Examples are shown for a logged in user. The JSON may be different for users with authorizations, admins, external, or anonymous users
+This filter can be used in place of `by_search_level_and_membership` if the data being searched does not contain the `project_id` field. 
+
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
+Examples are shown for an authenticated user. The JSON may be different for users with authorizations, admins, external, or anonymous users
 
 {{< /alert >}}
 

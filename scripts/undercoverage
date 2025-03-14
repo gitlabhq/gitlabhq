@@ -26,9 +26,17 @@ coverage_file_path = 'coverage/lcov/gitlab.lcov'
 # By default undercover includes Ruby related files and only excludes common paths
 # like test, spec, *_spec.rb
 exclude_file_globs = Undercover::Options::DEFAULT_FILE_EXCLUDE_GLOBS.dup
+
 # We need to exclude more folders:
-exclude_file_globs.concat %w[ee/spec/* jh/spec/*] # These are specs too
-exclude_file_globs.concat %w[qa/* gems/* vendor/*] # These have own specs
+# EE/JH counterparts for default globs
+extension_globs = Undercover::Options::DEFAULT_FILE_EXCLUDE_GLOBS.flat_map do |glob|
+  %W[jh/#{glob} ee/#{glob}] unless glob.start_with?('*')
+end.compact
+
+exclude_file_globs.concat extension_globs
+
+# These have own specs
+exclude_file_globs.concat %w[qa/* gems/* vendor/*]
 
 result = if File.exist?(coverage_file_path)
            Undercover::CLI.run(%W[-c #{compare_base} --exclude-files #{exclude_file_globs.join(',')}])

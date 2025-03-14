@@ -7,12 +7,16 @@ module QA
       #
       # git config --global receive.advertisepushoptions true
 
+      let(:project) { create(:project, :with_readme) }
       let(:branch) { "push-options-test-#{SecureRandom.hex(8)}" }
-      let(:target_branch) { create(:branch, name: "push-options-test-target-#{SecureRandom.hex(8)}", project: project) }
       let(:title) { "MR push options test #{SecureRandom.hex(8)}" }
       let(:commit_message) { 'Add README.md' }
-      let(:project) { create(:project, :with_readme) }
       let(:description) { "This is a test of MR push options" }
+
+      let(:target_branch) do
+        create(:branch, name: "push-options-test-target-#{SecureRandom.hex(8)}", project: project,
+          ref: project.default_branch)
+      end
 
       before do
         Resource::Repository::ProjectPush.fabricate! do |push|

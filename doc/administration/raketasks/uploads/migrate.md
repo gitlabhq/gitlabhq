@@ -36,17 +36,25 @@ These [individual Rake tasks](#individual-rake-tasks) are described in the next 
 
 To migrate all uploads from local storage to object storage, run:
 
-- Linux package installations:
+{{< tabs >}}
 
-  ```shell
-  gitlab-rake "gitlab:uploads:migrate:all"
-  ```
+{{< tab title="Linux package (Omnibus)" >}}
 
-- Self-compiled installations:
+```shell
+gitlab-rake "gitlab:uploads:migrate:all"
+```
 
-  ```shell
-  sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:migrate:all
-  ```
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:migrate:all
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 You can optionally track progress and verify that all uploads migrated successfully using the
 [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
@@ -189,19 +197,27 @@ tasks to migrate files falling under each of these categories one by one.
 For details on these Rake tasks, refer to [Individual Rake tasks](#individual-rake-tasks).
 Keep in mind the task name in this case is `gitlab:uploads:migrate_to_local`.
 
-To migrate uploads from object storage to local storage, run the following Rake task:
+To migrate uploads from object storage to local storage:
 
-- Linux package installations:
+{{< tabs >}}
 
-  ```shell
-  gitlab-rake "gitlab:uploads:migrate_to_local:all"
-  ```
+{{< tab title="Linux package (Omnibus)" >}}
 
-- Self-compiled installations:
+```shell
+gitlab-rake "gitlab:uploads:migrate_to_local:all"
+```
 
-  ```shell
-  sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:migrate_to_local:all
-  ```
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:migrate_to_local:all
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 After running the Rake task, you can disable object storage by undoing the changes described
 in the instructions to [configure object storage](../../uploads.md#using-object-storage).

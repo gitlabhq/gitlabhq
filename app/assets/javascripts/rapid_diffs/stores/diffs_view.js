@@ -35,6 +35,11 @@ export const useDiffsView = defineStore('diffsView', {
       this.diffStats = {
         addedLines: store.state.diffs.addedLines,
         removedLines: store.state.diffs.removedLines,
+        size: store.state.diffs.size,
+        realSize: store.state.diffs.realSize,
+        plainDiffPath: store.state.diffs.plainDiffPath,
+        emailPatchPath: store.state.diffs.emailPatchPath,
+        renderOverflowWarning: store.state.diffs.renderOverflowWarning,
         // we will be using a number for that after refactoring
         diffsCount: parseInt(store.state.diffs.realSize, 10),
       };

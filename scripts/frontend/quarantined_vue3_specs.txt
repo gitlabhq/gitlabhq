@@ -31,7 +31,6 @@ ee/spec/frontend/dependencies/components/app_spec.js
 ee/spec/frontend/dependencies/components/dependency_location_spec.js
 ee/spec/frontend/dependencies/components/dependency_path_viewer_spec.js
 ee/spec/frontend/dependencies/components/filtered_search/tokens/component_token_spec.js
-ee/spec/frontend/geo_sites/components/details/secondary_site/geo_site_replication_details_responsive_spec.js
 ee/spec/frontend/geo_sites/index_spec.js
 ee/spec/frontend/groups/settings/components/comma_separated_list_token_selector_spec.js
 ee/spec/frontend/integrations/edit/components/jira_issue_creation_vulnerabilities_spec.js
@@ -67,7 +66,6 @@ ee/spec/frontend/roles_and_permissions/components/role_selector_spec.js
 ee/spec/frontend/security_configuration/components/app_spec.js
 ee/spec/frontend/security_configuration/components/dynamic_fields_spec.js
 ee/spec/frontend/security_configuration/dast_profiles/components/dast_profiles_list_spec.js
-ee/spec/frontend/security_configuration/dast_profiles/dast_profile_selector/site_profile_selector_spec.js
 ee/spec/frontend/security_dashboard/components/shared/filters/querystring_sync_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_details_graphql/details_section_spec.js
 ee/spec/frontend/security_dashboard/components/shared/vulnerability_report/vulnerability_list_graphql_spec.js
@@ -229,7 +227,6 @@ spec/frontend/vue_shared/components/file_tree_spec.js
 spec/frontend/vue_shared/components/filtered_search_bar/tokens/date_token_spec.js
 spec/frontend/vue_shared/components/markdown/markdown_editor_spec.js
 spec/frontend/vue_shared/components/metric_images/metric_image_details_modal_spec.js
-spec/frontend/vue_shared/components/page_heading_spec.js
 spec/frontend/vue_shared/components/pagination_bar/pagination_bar_spec.js
 spec/frontend/vue_shared/components/project_selector/project_selector_spec.js
 spec/frontend/vue_shared/components/registry/code_instruction_spec.js

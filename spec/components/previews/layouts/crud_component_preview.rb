@@ -7,6 +7,7 @@ module Layouts
     # @param count number
     # @param icon text
     # @param toggle_text text
+    # @param is_collapsible
     # rubocop:disable Metrics/ParameterLists -- allow all params
     def default(
       title: 'CRUD Component title',
@@ -19,7 +20,8 @@ module Layouts
       body: 'Body slot',
       form: 'Form slot',
       footer: 'Footer slot',
-      pagination: 'Pagination slot'
+      pagination: 'Pagination slot',
+      is_collapsible: false
     )
       render(::Layouts::CrudComponent.new(
         title,
@@ -27,7 +29,8 @@ module Layouts
         count: count,
         icon: icon,
         icon_class: icon_class,
-        toggle_text: toggle_text)) do |c|
+        toggle_text: toggle_text,
+        is_collapsible: is_collapsible)) do |c|
         c.with_description { description }
         c.with_actions { actions }
         c.with_body { body }

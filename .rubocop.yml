@@ -5,6 +5,8 @@ inherit_gem:
 require:
   - ./rubocop/rubocop
   - rubocop-rspec
+  # Always load these cop even if disabled by default so RuboCop knows about rules in TODOs.
+  - rubocop/cop/internal_affairs
 
 inherit_from:
   <% unless ENV['REVEAL_RUBOCOP_TODO'] == '1' %>
@@ -73,6 +75,10 @@ Rails/Pluck:
     - 'tooling/danger/**/*'
   # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94047#note_1179689274
   AutoCorrect: false
+
+# Disabled by default and enabled via `.rubocop/internal_affairs.yml`.
+InternalAffairs:
+  Enabled: false
 
 RSpec:
   Language:

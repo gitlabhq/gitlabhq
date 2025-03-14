@@ -6,12 +6,14 @@ import { DiffFile } from '~/rapid_diffs/diff_file';
 import { DiffFileMounted } from '~/rapid_diffs/diff_file_mounted';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { pinia } from '~/pinia/instance';
+import { initHiddenFilesWarning } from '~/rapid_diffs/app/init_hidden_files_warning';
 import { initFileBrowser } from '~/rapid_diffs/app/init_file_browser';
 import { StreamingError } from '~/rapid_diffs/streaming_error';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 
 jest.mock('~/mr_notes/stores');
 jest.mock('~/rapid_diffs/app/view_settings');
+jest.mock('~/rapid_diffs/app/init_hidden_files_warning');
 jest.mock('~/rapid_diffs/app/init_file_browser');
 
 describe('Rapid Diffs App', () => {
@@ -49,6 +51,7 @@ describe('Rapid Diffs App', () => {
     expect(window.customElements.get('diff-file-mounted')).toBe(DiffFileMounted);
     expect(window.customElements.get('streaming-error')).toBe(StreamingError);
     await res();
+    expect(initHiddenFilesWarning).toHaveBeenCalled();
     expect(initFileBrowser).toHaveBeenCalled();
   });
 

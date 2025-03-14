@@ -7,6 +7,7 @@
 module WorkItems
   class WorkItemsFinder < IssuesFinder
     include Gitlab::Utils::StrongMemoize
+    include TimeFrameFilter
 
     def klass
       WorkItem
@@ -20,6 +21,10 @@ module WorkItems
 
     def filter_items(items)
       items = super(items)
+
+      # We require namespace_level_work_items to be true here, since we need the namespace_ids CTE provided by the
+      # by_parent method for performance reasons see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181904
+      items = by_timeframe(items) if include_namespace_level_work_items?
 
       by_widgets(items)
     end

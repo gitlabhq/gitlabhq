@@ -16,10 +16,8 @@ RSpec.describe 'Database schema',
 
   let(:ignored_indexes_on_fks_map) do
     {
-      ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
       ci_build_trace_metadata: [%w[partition_id build_id], %w[partition_id trace_artifact_id]], # the index on build_id is enough
       ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
-      ci_build_needs: %w[project_id], # we will create async index, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163429#note_2065627176
       ci_daily_build_group_report_results: [%w[partition_id last_pipeline_id]], # index on last_pipeline_id is sufficient
       ci_pipeline_artifacts: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
       ci_pipeline_chat_data: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
@@ -31,7 +29,6 @@ RSpec.describe 'Database schema',
       ci_sources_pipelines: [%w[source_partition_id source_pipeline_id], %w[partition_id pipeline_id]],
       ci_sources_projects: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
       ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
-      notes: %w[namespace_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
       p_ci_build_trace_metadata: [%w[partition_id build_id], %w[partition_id trace_artifact_id]], # the index on build_id is enough
       p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
       p_ci_builds_execution_configs: [%w[partition_id pipeline_id]], # the index on pipeline_id is enough
@@ -39,7 +36,6 @@ RSpec.describe 'Database schema',
       p_ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
       p_ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
       slack_integrations_scopes: [%w[slack_api_scope_id]],
-      snippets: %w[organization_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
       users: [%w[accepted_term_id]],
       subscription_add_on_purchases: [["subscription_add_on_id"]] # index handled via composite index with namespace_id
     }.with_indifferent_access.freeze
@@ -178,7 +174,7 @@ RSpec.describe 'Database schema',
       merge_request_diff_commits_b5377a7a34: %w[merge_request_diff_id commit_author_id committer_id project_id],
       namespaces: %w[owner_id parent_id],
       namespace_descendants: %w[namespace_id],
-      notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id confirmed_by_id discussion_id namespace_id],
+      notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id confirmed_by_id discussion_id],
       notification_settings: %w[source_id],
       oauth_access_grants: %w[resource_owner_id application_id],
       oauth_access_tokens: %w[resource_owner_id application_id],

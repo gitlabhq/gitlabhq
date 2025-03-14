@@ -1,0 +1,21 @@
+---
+# Cop supports --autocorrect.
+InternalAffairs/NodeTypePredicate:
+  Details: grace period
+  Exclude:
+    - 'rubocop/cop/avoid_break_from_strong_memoize.rb'
+    - 'rubocop/cop/avoid_keyword_arguments_in_sidekiq_workers.rb'
+    - 'rubocop/cop/avoid_return_from_blocks.rb'
+    - 'rubocop/cop/graphql/descriptions.rb'
+    - 'rubocop/cop/migration/add_limit_to_text_columns.rb'
+    - 'rubocop/cop/migration/add_reference.rb'
+    - 'rubocop/cop/migration/background_migration_missing_active_concern.rb'
+    - 'rubocop/cop/migration/datetime.rb'
+    - 'rubocop/cop/migration/prevent_adding_columns.rb'
+    - 'rubocop/cop/migration/prevent_strings.rb'
+    - 'rubocop/cop/migration/refer_to_index_by_name.rb'
+    - 'rubocop/cop/prefer_class_methods_over_module.rb'
+    - 'rubocop/cop/project_path_helper.rb'
+    - 'rubocop/cop/rspec/have_gitlab_http_status.rb'
+    - 'rubocop/cop/static_translation_definition.rb'
+    - 'rubocop/cop/usage_data/distinct_count_by_large_foreign_key.rb'

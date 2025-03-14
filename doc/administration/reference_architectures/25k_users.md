@@ -165,7 +165,7 @@ Before starting, see the [requirements](_index.md#requirements) for reference ar
 
 ## Testing methodology
 
-The 500 RPS / 2k user reference architecture is designed to accommodate most common workflows. The [Framework](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/framework/) team regularly conducts smoke and performance testing against the following endpoint throughput targets:
+The 500 RPS / 25k user reference architecture is designed to accommodate most common workflows. The [Framework](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/framework/) team regularly conducts smoke and performance testing against the following endpoint throughput targets:
 
 | Endpoint type | Target throughput |
 | ------------- | ----------------- |

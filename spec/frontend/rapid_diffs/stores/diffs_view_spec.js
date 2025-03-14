@@ -58,11 +58,20 @@ describe('Diffs view store', () => {
       vuexStore.state.diffs.addedLines = 1;
       vuexStore.state.diffs.removedLines = 2;
       vuexStore.state.diffs.realSize = '3';
+      vuexStore.state.diffs.size = 2;
+      vuexStore.state.diffs.plainDiffPath = 'plain/diffs';
+      vuexStore.state.diffs.emailPatchPath = 'email/patch';
+      vuexStore.state.diffs.renderOverflowWarning = true;
       await store.loadMetadata();
       expect(store.diffStats).toStrictEqual({
         addedLines: 1,
         removedLines: 2,
         diffsCount: 3,
+        realSize: '3',
+        size: 2,
+        plainDiffPath: 'plain/diffs',
+        emailPatchPath: 'email/patch',
+        renderOverflowWarning: true,
       });
     });
   });

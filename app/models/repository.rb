@@ -238,16 +238,20 @@ class Repository
   def has_ambiguous_refs?
     return false unless branch_names.present? && tag_names.present?
 
-    with_slash, no_slash = (branch_names + tag_names).partition { |ref| ref.include?('/') }
+    with_slash = []
+    no_slash = []
+    (branch_names + tag_names).each do |ref|
+      slash_index = ref.index('/')
+      if slash_index.present?
+        with_slash << ref.first(slash_index)
+      else
+        no_slash << ref
+      end
+    end
 
     return false if with_slash.empty?
 
-    prefixes = no_slash.map { |ref| Regexp.escape(ref) }.join('|')
-    prefix_regex = %r{^(#{prefixes})/}
-
-    with_slash.any? do |ref|
-      prefix_regex.match?(ref)
-    end
+    with_slash.intersect?(no_slash)
   end
   cache_method :has_ambiguous_refs?
 

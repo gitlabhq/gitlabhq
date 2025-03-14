@@ -31,6 +31,20 @@ class WorkItem < Issue
     includes(:author, :work_item_type, project: :project_feature)
   }
 
+  scope :within_timeframe, ->(start_date, due_date) do
+    date_filtered_issue_ids = ::WorkItems::DatesSource
+                                .select('issue_id')
+                                .where('start_date IS NOT NULL OR due_date IS NOT NULL')
+                                # Require the namespace_ids CTE from by_parent to be present when filtering by timeframe
+                                # for performance reasons.
+                                # see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181904
+                                .where('namespace_id IN (SELECT id FROM namespace_ids)')
+                                .where('start_date IS NULL OR start_date <= ?', due_date)
+                                .where('due_date IS NULL OR due_date >= ?', start_date)
+
+    joins("INNER JOIN (#{date_filtered_issue_ids.to_sql}) AS filtered_dates ON issues.id = filtered_dates.issue_id")
+  end
+
   class << self
     def find_by_namespace_and_iid!(namespace, iid)
       find_by!(namespace: namespace, iid: iid)

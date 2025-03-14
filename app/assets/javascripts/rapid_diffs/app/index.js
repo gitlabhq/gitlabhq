@@ -6,6 +6,7 @@ import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { initFileBrowser } from '~/rapid_diffs/app/init_file_browser';
 import { StreamingError } from '~/rapid_diffs/streaming_error';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
+import { initHiddenFilesWarning } from '~/rapid_diffs/app/init_hidden_files_warning';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 
@@ -24,6 +25,7 @@ class RapidDiffsFacade {
     useDiffsView(pinia)
       .loadMetadata()
       .then(() => {
+        initHiddenFilesWarning();
         initFileBrowser();
       })
       .catch(() => {

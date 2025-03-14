@@ -143,7 +143,7 @@ module Types
 
     field :max_access_level, Types::AccessLevelType,
       null: false,
-      description: 'The maximum access level of the current user in the project.'
+      description: 'Maximum access level of the current user in the project.'
 
     field :merge_requests_ff_only_enabled, GraphQL::Types::Boolean,
       null: true,
@@ -568,7 +568,7 @@ module Types
 
     field :label, Types::LabelType,
       null: true,
-      description: 'Label available on this project.' do
+      description: 'Label available on the project.' do
       argument :title, GraphQL::Types::String,
         required: true,
         description: 'Title of the label.'
@@ -682,7 +682,7 @@ module Types
 
     field :forked_from, Types::ProjectType,
       null: true,
-      description: 'Project this project was forked from.',
+      description: 'Project the project was forked from.',
       method: :forked_from_project
 
     field :branch_rules, Types::Projects::BranchRuleType.connection_type,
@@ -777,7 +777,7 @@ module Types
 
     field :protectable_branches,
       [GraphQL::Types::String],
-      description: 'List of unprotected branches, ignoring any wildcard branch rules',
+      description: 'List of unprotected branches, ignoring any wildcard branch rules.',
       null: true,
       calls_gitaly: true,
       experiment: { milestone: '16.9' },
@@ -797,7 +797,7 @@ module Types
       authorize: :admin_project do
         argument :title_query, GraphQL::Types::String,
           required: false,
-          description: 'Term by which to search deploy key titles'
+          description: 'Term by which to search deploy key titles.'
       end
 
     field :pages_deployments, Types::PagesDeploymentType.connection_type, null: true,

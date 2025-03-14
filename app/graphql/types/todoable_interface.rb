@@ -9,12 +9,12 @@ module Types
     field :web_url,
       GraphQL::Types::String,
       null: true,
-      description: 'URL of this object.'
+      description: 'URL of the object.'
 
     field :name,
       GraphQL::Types::String,
       null: true,
-      description: 'Name or title of this object.'
+      description: 'Name or title of the object.'
 
     def self.resolve_type(object, context)
       case object

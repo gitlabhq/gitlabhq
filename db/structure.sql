@@ -10,6 +10,19 @@ CREATE EXTENSION IF NOT EXISTS btree_gist;
 
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
+CREATE FUNCTION assign_ci_runner_machines_id_value() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."id" IS NOT NULL THEN
+  RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
+END IF;
+NEW."id" := nextval('ci_runner_machines_id_seq'::regclass);
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION assign_ci_runner_taggings_id_value() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -18,6 +31,19 @@ IF NEW."id" IS NOT NULL THEN
   RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
 END IF;
 NEW."id" := nextval('ci_runner_taggings_id_seq'::regclass);
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION assign_ci_runners_id_value() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."id" IS NOT NULL THEN
+  RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
+END IF;
+NEW."id" := nextval('ci_runners_id_seq'::regclass);
 RETURN NEW;
 
 END
@@ -14686,7 +14712,7 @@ CREATE SEQUENCE group_ssh_certificates_id_seq
 ALTER SEQUENCE group_ssh_certificates_id_seq OWNED BY group_ssh_certificates.id;
 
 CREATE TABLE group_type_ci_runner_machines (
-    id bigint DEFAULT nextval('ci_runner_machines_id_seq'::regclass) NOT NULL,
+    id bigint NOT NULL,
     runner_id bigint NOT NULL,
     sharding_key_id bigint,
     created_at timestamp with time zone NOT NULL,
@@ -14713,7 +14739,7 @@ CREATE TABLE group_type_ci_runner_machines (
 );
 
 CREATE TABLE group_type_ci_runners (
-    id bigint DEFAULT nextval('ci_runners_id_seq'::regclass) NOT NULL,
+    id bigint NOT NULL,
     creator_id bigint,
     sharding_key_id bigint,
     created_at timestamp with time zone,
@@ -15283,7 +15309,7 @@ CREATE SEQUENCE instance_integrations_id_seq
 ALTER SEQUENCE instance_integrations_id_seq OWNED BY instance_integrations.id;
 
 CREATE TABLE instance_type_ci_runner_machines (
-    id bigint DEFAULT nextval('ci_runner_machines_id_seq'::regclass) NOT NULL,
+    id bigint NOT NULL,
     runner_id bigint NOT NULL,
     sharding_key_id bigint,
     created_at timestamp with time zone NOT NULL,
@@ -15310,7 +15336,7 @@ CREATE TABLE instance_type_ci_runner_machines (
 );
 
 CREATE TABLE instance_type_ci_runners (
-    id bigint DEFAULT nextval('ci_runners_id_seq'::regclass) NOT NULL,
+    id bigint NOT NULL,
     creator_id bigint,
     sharding_key_id bigint,
     created_at timestamp with time zone,
@@ -20558,7 +20584,7 @@ CREATE SEQUENCE project_topics_id_seq
 ALTER SEQUENCE project_topics_id_seq OWNED BY project_topics.id;
 
 CREATE TABLE project_type_ci_runner_machines (
-    id bigint DEFAULT nextval('ci_runner_machines_id_seq'::regclass) NOT NULL,
+    id bigint NOT NULL,
     runner_id bigint NOT NULL,
     sharding_key_id bigint,
     created_at timestamp with time zone NOT NULL,
@@ -20585,7 +20611,7 @@ CREATE TABLE project_type_ci_runner_machines (
 );
 
 CREATE TABLE project_type_ci_runners (
-    id bigint DEFAULT nextval('ci_runners_id_seq'::regclass) NOT NULL,
+    id bigint NOT NULL,
     creator_id bigint,
     sharding_key_id bigint,
     created_at timestamp with time zone,
@@ -25805,13 +25831,9 @@ ALTER TABLE ONLY ci_resource_groups ALTER COLUMN id SET DEFAULT nextval('ci_reso
 
 ALTER TABLE ONLY ci_resources ALTER COLUMN id SET DEFAULT nextval('ci_resources_id_seq'::regclass);
 
-ALTER TABLE ONLY ci_runner_machines ALTER COLUMN id SET DEFAULT nextval('ci_runner_machines_id_seq'::regclass);
-
 ALTER TABLE ONLY ci_runner_namespaces ALTER COLUMN id SET DEFAULT nextval('ci_runner_namespaces_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_runner_projects ALTER COLUMN id SET DEFAULT nextval('ci_runner_projects_id_seq'::regclass);
-
-ALTER TABLE ONLY ci_runners ALTER COLUMN id SET DEFAULT nextval('ci_runners_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_running_builds ALTER COLUMN id SET DEFAULT nextval('ci_running_builds_id_seq'::regclass);
 
@@ -38907,7 +38929,11 @@ ALTER INDEX p_ci_builds_token_encrypted_partition_id_idx ATTACH PARTITION unique
 
 CREATE TRIGGER ai_conversation_threads_loose_fk_trigger AFTER DELETE ON ai_conversation_threads REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER assign_ci_runner_machines_id_trigger BEFORE INSERT ON ci_runner_machines FOR EACH ROW EXECUTE FUNCTION assign_ci_runner_machines_id_value();
+
 CREATE TRIGGER assign_ci_runner_taggings_id_trigger BEFORE INSERT ON ci_runner_taggings FOR EACH ROW EXECUTE FUNCTION assign_ci_runner_taggings_id_value();
+
+CREATE TRIGGER assign_ci_runners_id_trigger BEFORE INSERT ON ci_runners FOR EACH ROW EXECUTE FUNCTION assign_ci_runners_id_value();
 
 CREATE TRIGGER assign_p_ci_build_tags_id_trigger BEFORE INSERT ON p_ci_build_tags FOR EACH ROW EXECUTE FUNCTION assign_p_ci_build_tags_id_value();
 

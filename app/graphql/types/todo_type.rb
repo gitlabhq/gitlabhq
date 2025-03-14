@@ -16,15 +16,15 @@ module Types
       null: false
 
     field :project, Types::ProjectType,
-      description: 'Project this to-do item is associated with.',
+      description: 'Project the to-do item is associated with.',
       null: true
 
     field :group, 'Types::GroupType',
-      description: 'Group this to-do item is associated with.',
+      description: 'Group the to-do item is associated with.',
       null: true
 
     field :author, Types::UserType,
-      description: 'Author of this to-do item.',
+      description: 'Author of the to-do item.',
       null: false
 
     field :action, Types::TodoActionEnum,
@@ -38,7 +38,7 @@ module Types
       null: false
 
     field :target_entity, Types::TodoableInterface,
-      description: 'Target of the to-do item',
+      description: 'Target of the to-do item.',
       calls_gitaly: true,
       null: true
 
@@ -60,11 +60,11 @@ module Types
       null: false
 
     field :created_at, Types::TimeType,
-      description: 'Timestamp this to-do item was created.',
+      description: 'Timestamp the to-do item was created.',
       null: false
 
     field :note, Types::Notes::NoteType,
-      description: 'Note which created this to-do item.',
+      description: 'Note which created the to-do item.',
       null: true
 
     field :member_access_type, GraphQL::Types::String,
@@ -72,7 +72,7 @@ module Types
       null: true
 
     field :snoozed_until, Types::TimeType,
-      description: 'The time until when the todo is snoozed.',
+      description: 'Time until when the todo is snoozed.',
       null: true
 
     def project

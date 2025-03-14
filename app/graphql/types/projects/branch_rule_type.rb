@@ -22,24 +22,24 @@ module Types
         null: false,
         method: :default_branch?,
         calls_gitaly: true,
-        description: "Check if this branch rule protects the project's default branch."
+        description: "Check if the branch rule protects the project's default branch."
 
       field :is_protected,
         type: GraphQL::Types::Boolean,
         null: false,
         method: :protected?,
-        description: "Check if this branch rule protects access for the branch."
+        description: "Check if the branch rule protects access for the branch."
 
       field :matching_branches_count,
         type: GraphQL::Types::Int,
         null: false,
         calls_gitaly: true,
-        description: 'Number of existing branches that match this branch rule.'
+        description: 'Number of existing branches that match the branch rule.'
 
       field :branch_protection,
         type: Types::BranchRules::BranchProtectionType,
         null: true,
-        description: 'Branch protections configured for this branch rule.'
+        description: 'Branch protections configured for the branch rule.'
 
       field :created_at,
         Types::TimeType,
