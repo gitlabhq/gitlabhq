@@ -266,7 +266,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-Use the imported files in your IDE to provide context about your code project. Imported file context is supported for JavaScript and TypeScript files, including [`js`], [`jsx`], [`ts`], [`tsx`], and [`vue`] file types.
+Use the imported files in your IDE to provide context about your code project. Imported file context is supported for JavaScript and TypeScript files, including `.js`, `.jsx`, `.ts`, `.tsx`, and `.vue` file types.
 
 ## Truncation of file content
 

@@ -10,6 +10,7 @@ import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { n__, s__, sprintf } from '~/locale';
+import ModelsTable from '~/ml/model_registry/components/models_table.vue';
 import EmptyState from '../components/model_list_empty_state.vue';
 import { BASE_SORT_FIELDS, MLFLOW_USAGE_MODAL_ID } from '../constants';
 import getModelsQuery from '../graphql/queries/get_models.query.graphql';
@@ -94,6 +95,9 @@ export default {
     };
   },
   computed: {
+    modelsTableComponent() {
+      return ModelsTable;
+    },
     pageInfo() {
       return this.models?.pageInfo ?? {};
     },
@@ -198,7 +202,8 @@ export default {
     <searchable-table
       show-search
       :page-info="pageInfo"
-      :models="items"
+      :items="items"
+      :table="modelsTableComponent"
       :error-message="errorMessage"
       :is-loading="isLoading"
       :sortable-fields="$options.sortableFields"

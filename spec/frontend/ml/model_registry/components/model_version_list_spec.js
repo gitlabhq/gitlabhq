@@ -8,6 +8,7 @@ import ModelVersionList from '~/ml/model_registry/components/model_version_list.
 import SearchableTable from '~/ml/model_registry/components/searchable_table.vue';
 import getModelVersionsQuery from '~/ml/model_registry/graphql/queries/get_model_versions.query.graphql';
 import EmptyState from '~/ml/model_registry/components/model_list_empty_state.vue';
+import ModelVersionsTable from '~/ml/model_registry/components/model_versions_table.vue';
 
 import {
   emptyModelVersionsQuery,
@@ -117,16 +118,20 @@ describe('ModelVersionList', () => {
       await waitForPromises();
     });
 
+    it('passes ModelVersionTable to table prop', () => {
+      expect(findSearchableTable().props('table')).toBe(ModelVersionsTable);
+    });
+
     it('calls query only once on setup', () => {
       expect(resolver).toHaveBeenCalledTimes(1);
     });
 
     it('Passes items to table', () => {
-      expect(findSearchableTable().props('modelVersions')).toEqual(graphqlModelVersions);
+      expect(findSearchableTable().props('items')).toEqual(graphqlModelVersions);
     });
 
     it('displays version rows', () => {
-      expect(findSearchableTable().props('modelVersions')).toHaveLength(2);
+      expect(findSearchableTable().props('items')).toHaveLength(2);
     });
 
     it('search is displayed', () => {

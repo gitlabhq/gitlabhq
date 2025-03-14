@@ -1,4 +1,4 @@
-import { GlDisclosureDropdown, GlModal, GlToggle, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlModal, GlDisclosureDropdownItem } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/namespace_work_item_types.query.graphql.json';
@@ -62,24 +62,33 @@ describe('WorkItemActions component', () => {
   const findSubmitAsSpamItem = () => wrapper.findByTestId('submit-as-spam-item');
   const findNewRelatedItemButton = () => wrapper.findByTestId('new-related-work-item');
   const findChangeTypeButton = () => wrapper.findByTestId('change-type-action');
+  const findTruncationToggle = () => wrapper.findByTestId('truncation-toggle-action');
+  const findSidebarToggle = () => wrapper.findByTestId('sidebar-toggle-action');
   const findReportAbuseModal = () => wrapper.findComponent(WorkItemAbuseModal);
   const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
   const findWorkItemChangeTypeModal = () => wrapper.findComponent(WorkItemChangeTypeModal);
   const findMoreDropdown = () => wrapper.findByTestId('work-item-actions-dropdown');
   const findMoreDropdownTooltip = () => getBinding(findMoreDropdown().element, 'gl-tooltip');
-  const findDropdownItems = () => wrapper.findAll('[data-testid="work-item-actions-dropdown"] > *');
+  const findDropdownItems = () =>
+    wrapper.findAll(
+      '[data-testid="work-item-actions-dropdown"] > *, [data-testid="work-item-actions-dropdown"] .gl-new-dropdown-item',
+    );
+
   const findDropdownItemsActual = () =>
     findDropdownItems().wrappers.map((x) => {
       if (x.element.tagName === 'GL-DROPDOWN-DIVIDER-STUB') {
         return { divider: true };
       }
 
+      if (x.element.tagName === 'GL-DISCLOSURE-DROPDOWN-GROUP-STUB') {
+        return { group: true };
+      }
       return {
         testId: x.attributes('data-testid'),
         text: x.text(),
       };
     });
-  const findNotificationsToggle = () => wrapper.findComponent(GlToggle);
+  const findNotificationsToggle = () => wrapper.findByTestId('notifications-toggle');
   const findMoveButton = () => wrapper.findByTestId('move-action');
   const findMoveModal = () => wrapper.findComponent(MoveWorkItemModal);
 
@@ -170,6 +179,8 @@ describe('WorkItemActions component', () => {
         canCreateRelatedItem,
         parentId,
         projectId,
+        showSidebar: true,
+        truncationEnabled: true,
       },
       mocks: {
         $toast,
@@ -272,6 +283,17 @@ describe('WorkItemActions component', () => {
       {
         testId: 'delete-action',
         text: 'Delete issue',
+      },
+      {
+        group: true,
+      },
+      {
+        testId: 'truncation-toggle-action',
+        text: '',
+      },
+      {
+        testId: 'sidebar-toggle-action',
+        text: 'Hide sidebar',
       },
     ]);
   });
@@ -813,6 +835,26 @@ describe('WorkItemActions component', () => {
       await nextTick();
 
       expect(findMoveModal().props('visible')).toBe(false);
+    });
+  });
+  describe('view options', () => {
+    it('toggles truncation enabled', () => {
+      createComponent({ workItemType: 'Task' });
+
+      expect(findTruncationToggle().exists()).toBe(true);
+
+      findTruncationToggle().vm.$emit('action');
+
+      expect(wrapper.emitted('toggleTruncationEnabled')).toEqual([[]]);
+    });
+
+    it('toggles sidebar visibility', () => {
+      createComponent({ workItemType: 'Task' });
+
+      expect(findSidebarToggle().exists()).toBe(true);
+
+      findSidebarToggle().vm.$emit('action');
+      expect(wrapper.emitted('toggleSidebar')).toEqual([[]]);
     });
   });
 });

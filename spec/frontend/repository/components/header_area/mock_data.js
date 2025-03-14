@@ -21,3 +21,42 @@ export const zeroOpenMRQueryResult = jest.fn().mockResolvedValue({
     },
   },
 });
+
+const mockMergeRequests = [
+  {
+    id: '111',
+    iid: '123',
+    title: 'MR 1',
+    createdAt: '2020-07-07T00:00:00Z',
+    assignees: { nodes: [{ name: 'root' }] },
+    project: {
+      id: '1',
+      fullPath: 'full/path/to/project',
+    },
+    sourceBranch: 'main',
+  },
+  {
+    id: '222',
+    iid: '456',
+    title: 'MR 2',
+    createdAt: '2020-07-09T00:00:00Z',
+    assignees: { nodes: [{ name: 'homer' }] },
+    project: {
+      id: '1',
+      fullPath: 'full/path/to/project',
+    },
+    sourceBranch: 'main',
+  },
+];
+
+export const openMRsDetailResult = jest.fn().mockResolvedValue({
+  data: {
+    project: {
+      id: '1',
+      mergeRequests: {
+        nodes: mockMergeRequests,
+        count: 2,
+      },
+    },
+  },
+});

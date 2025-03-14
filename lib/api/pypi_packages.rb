@@ -131,8 +131,7 @@ module API
         end
 
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
-        route_setting :authorization, job_token_policies: :read_packages,
-          allow_public_access_for_enabled_project_features: :package_registry
+        route_setting :authorization, skip_job_token_policies: true
         get 'files/:sha256/*file_identifier' do
           group = find_authorized_group!
           authorize_read_package!(group)
@@ -141,7 +140,6 @@ module API
           package = Packages::Pypi::PackageFinder.new(current_user, group, { filename: filename, sha256: params[:sha256] }).execute
           package_file = ::Packages::PackageFileFinder.new(package, filename, with_file_name_like: false).execute
 
-          authorize_job_token_policies!(package.project)
           track_package_event('pull_package', :pypi, namespace: group, project: package.project)
 
           present_package_file!(package_file, supports_direct_download: true)

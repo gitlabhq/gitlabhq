@@ -2180,6 +2180,9 @@
                     "depend"
                   ]
                 },
+                "inputs": {
+                  "$ref": "#/definitions/inputs"
+                },
                 "forward": {
                   "description": "Specify what to forward to the downstream pipeline.",
                   "type": "object",

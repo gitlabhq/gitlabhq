@@ -1,8 +1,10 @@
 <script>
 import {
   GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
   GlDropdownDivider,
+  GlIcon,
   GlLoadingIcon,
   GlModal,
   GlModalDirective,
@@ -61,6 +63,8 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
     GlDropdownDivider,
+    GlDisclosureDropdownGroup,
+    GlIcon,
     GlLoadingIcon,
     GlModal,
     GlToggle,
@@ -220,6 +224,14 @@ export default {
       required: false,
       default: '',
     },
+    showSidebar: {
+      type: Boolean,
+      required: true,
+    },
+    truncationEnabled: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -359,6 +371,9 @@ export default {
     },
     showMoveButton() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_ISSUE && this.canMove;
+    },
+    toggleSidebarLabel() {
+      return this.showSidebar ? s__('WorkItem|Hide sidebar') : s__('WorkItem|Show sidebar');
     },
   },
   methods: {
@@ -526,6 +541,7 @@ export default {
               :value="subscribedToNotifications"
               :label="$options.i18n.notifications"
               label-position="left"
+              data-testid="notifications-toggle"
               class="work-item-dropdown-toggle gl-justify-between"
               @change="toggleNotifications($event)"
             />
@@ -639,9 +655,45 @@ export default {
           variant="danger"
           @action="handleDelete"
         >
-          <template #list-item>{{ i18n.deleteWorkItem }}</template>
+          <template #list-item>
+            <span class="gl-text-danger">{{ i18n.deleteWorkItem }}</span>
+          </template>
         </gl-disclosure-dropdown-item>
       </template>
+
+      <gl-disclosure-dropdown-group bordered>
+        <template #group-label>
+          {{ __('View options') }}
+          <gl-icon
+            v-gl-tooltip
+            name="information-o"
+            class="gl-ml-2"
+            variant="link"
+            :title="s__('WorkItem|Change appearance for all issues, epics, and tasks')"
+          />
+        </template>
+        <gl-disclosure-dropdown-item
+          class="gl-flex gl-w-full gl-justify-end"
+          data-testid="truncation-toggle-action"
+          @action="$emit('toggleTruncationEnabled')"
+        >
+          <template #list-item>
+            <gl-toggle
+              :value="truncationEnabled"
+              :label="s__('WorkItem|Truncate descriptions')"
+              label-position="left"
+              class="work-item-dropdown-toggle gl-justify-between"
+            />
+          </template>
+        </gl-disclosure-dropdown-item>
+        <gl-disclosure-dropdown-item
+          data-testid="sidebar-toggle-action"
+          class="work-item-container-xs-hidden gl-hidden md:gl-block"
+          @action="$emit('toggleSidebar')"
+        >
+          <template #list-item>{{ toggleSidebarLabel }}</template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown-group>
     </gl-disclosure-dropdown>
 
     <gl-modal

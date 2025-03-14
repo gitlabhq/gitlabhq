@@ -45,6 +45,8 @@ describe('WorkItemStickyHeader', () => {
         workItemState: STATE_OPEN,
         isGroup: false,
         parentId,
+        showSidebar: true,
+        enableTruncation: true,
       },
       provide: {
         glFeatures: {

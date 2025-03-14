@@ -5,9 +5,6 @@ import { GRAPHQL_PAGE_SIZE, LIST_KEY_CREATED_AT } from '~/ml/model_registry/cons
 import { queryToObject, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import LoadOrErrorOrShow from '~/ml/model_registry/components/load_or_error_or_show.vue';
-import ModelsTable from '~/ml/model_registry/components/models_table.vue';
-import ModelVersionsTable from '~/ml/model_registry/components/model_versions_table.vue';
-import CandidatesTable from '~/ml/model_registry/components/candidates_table.vue';
 
 export default {
   name: 'SearchableTable',
@@ -15,25 +12,17 @@ export default {
     RegistrySearch,
     LoadOrErrorOrShow,
     GlKeysetPagination,
-    ModelsTable,
-    ModelVersionsTable,
-    CandidatesTable,
   },
   directives: {
     GlTooltip,
   },
   props: {
-    modelVersions: {
-      type: Array,
-      required: false,
-      default: () => [],
+    table: {
+      type: Object,
+      required: true,
+      default: null,
     },
-    models: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    candidates: {
+    items: {
       type: Array,
       required: false,
       default: () => [],
@@ -154,13 +143,7 @@ export default {
       @filter:clear="filters = []"
     />
     <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
-      <model-versions-table
-        v-if="modelVersions.length"
-        :items="modelVersions"
-        @model-versions-update="submitFilters"
-      />
-      <models-table v-else-if="models.length" :items="models" @models-update="submitFilters" />
-      <candidates-table v-else-if="candidates.length" :items="candidates" />
+      <component :is="table" v-if="items.length" :items="items" data-testid="dynamicTable" />
       <slot v-else name="empty-state"></slot>
       <gl-keyset-pagination
         v-if="pageInfo.hasPreviousPage || pageInfo.hasNextPage"

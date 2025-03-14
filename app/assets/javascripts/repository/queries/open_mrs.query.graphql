@@ -1,0 +1,36 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+query getOpenMrsForBlobPath(
+  $projectPath: ID!
+  $targetBranch: [String!]
+  $blobPath: String!
+  $createdAfter: Time!
+) {
+  project(fullPath: $projectPath) {
+    id
+    mergeRequests(
+      state: opened
+      targetBranches: $targetBranch
+      blobPath: $blobPath
+      createdAfter: $createdAfter
+    ) {
+      nodes {
+        id
+        iid
+        title
+        createdAt
+        assignees {
+          nodes {
+            ...User
+          }
+        }
+        project {
+          id
+          fullPath
+        }
+        sourceBranch
+      }
+      count
+    }
+  }
+}

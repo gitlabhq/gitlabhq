@@ -39,10 +39,9 @@ export default {
   },
   mixins: [trackingMixin],
   props: {
-    disableTruncation: {
+    enableTruncation: {
       type: Boolean,
-      required: false,
-      default: false,
+      required: true,
     },
     isGroup: {
       type: Boolean,
@@ -107,7 +106,7 @@ export default {
       return this.descriptionHtml?.trim() === '';
     },
     isTruncated() {
-      return this.truncated && !this.disableTruncation;
+      return this.truncated && this.enableTruncation;
     },
   },
   watch: {

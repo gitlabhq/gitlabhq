@@ -261,7 +261,7 @@
   border-top: 1px solid var(--gl-border-color-default);
   @apply gl-transition-padding;
 
-  @media (max-width: map-get($grid-breakpoints, sm)-1) {
+  @media (max-width: map-get($grid-breakpoints, xl)) {
     padding-left: 0;
     padding-right: 0;
   }
@@ -273,8 +273,10 @@
   margin-left: $super-sidebar-width + 0.5rem;
   margin-right: auto;
 
-  @media (max-width: map-get($grid-breakpoints, sm)-1) {
+  @media (max-width: map-get($grid-breakpoints, xl)) {
     margin: 0 auto;
+    margin-left: 0;
+    margin-right: auto;
   }
 }
 

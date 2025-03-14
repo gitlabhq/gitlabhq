@@ -483,10 +483,10 @@ The default location where images are stored in self-compiled installations is
 
 ### Use object storage
 
-If you want to store your images on object storage, you can change the storage
-driver for the container registry.
+If you want to store your container registry images in object storage instead of the local file system,
+you can configure one of the supported storage drivers.
 
-[Read more about using object storage with GitLab](../object_storage.md).
+For more information, see [Object storage](../object_storage.md).
 
 {{< alert type="warning" >}}
 
@@ -496,98 +496,154 @@ desired.
 
 {{< /alert >}}
 
-#### Configure `s3` and `gcs` storage drivers for Linux package installations
+#### Configure object storage for Linux package installations
 
-The following configuration steps are for the `s3` and `gcs` storage drivers. Other [storage drivers](#configure-storage-for-the-container-registry) are supported.
+To configure object storage for your container registry:
 
-To configure the `s3` storage driver for a Linux package installation:
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   registry['storage'] = {
-     's3' => {
-       'accesskey' => 's3-access-key',
-       'secretkey' => 's3-secret-key-for-access-key',
-       'bucket' => 'your-s3-bucket',
-       'region' => 'your-s3-region',
-       'regionendpoint' => 'your-s3-regionendpoint'
-     }
-   }
-   ```
-
-   To avoid using static credentials, use an
-   [IAM role](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html)
-   and omit `accesskey` and `secretkey`. Make sure that your IAM profile follows
-   [the permissions documented by Docker](https://distribution.github.io/distribution/storage-drivers/s3/#s3-permission-scopes).
-
-   ```ruby
-   registry['storage'] = {
-     's3' => {
-       'bucket' => 'your-s3-bucket',
-       'region' => 'your-s3-region'
-     }
-   }
-   ```
-
-   If using with an [AWS S3 VPC endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html),
-   then set `regionendpoint` to your VPC endpoint address and set `pathstyle` to false:
-
-   ```ruby
-   registry['storage'] = {
-     's3' => {
-       'accesskey' => 's3-access-key',
-       'secretkey' => 's3-secret-key-for-access-key',
-       'bucket' => 'your-s3-bucket',
-       'region' => 'your-s3-region',
-       'regionendpoint' => 'your-s3-vpc-endpoint',
-       'pathstyle' => false
-     }
-   }
-   ```
-
-   - `regionendpoint` is only required when configuring an S3 compatible service such as MinIO, or
-     when using an AWS S3 VPC Endpoint.
-   - `your-s3-bucket` should be the name of a bucket that exists, and can't include subdirectories.
-   - `pathstyle` should be set to true to use `host/bucket_name/object` style paths instead of
-     `bucket_name.host/object`. [Set to false for AWS S3](https://aws.amazon.com/blogs/aws/amazon-s3-path-deprecation-plan-the-rest-of-the-story/).
-
-   You can set a rate limit on connections to S3 to avoid 503 errors from the S3 API. To do this,
-   set `maxrequestspersecond` to a number within the [S3 request rate threshold](https://repost.aws/knowledge-center/http-5xx-errors-s3):
-
-   ```ruby
-   registry['storage'] = {
-     's3' => {
-       'accesskey' => 's3-access-key',
-       'secretkey' => 's3-secret-key-for-access-key',
-       'bucket' => 'your-s3-bucket',
-       'region' => 'your-s3-region',
-       'regionendpoint' => 'your-s3-regionendpoint',
-       'maxrequestspersecond' => 100
-     }
-   }
-   ```
-
+1. Choose the storage driver you want to use.
+1. Edit `/etc/gitlab/gitlab.rb` with the appropriate configuration.
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-To configure the `gcs` storage driver for a Linux package installation:
+{{< tabs >}}
 
-1. Edit `/etc/gitlab/gitlab.rb`:
+{{< tab title="S3" >}}
 
-   ```ruby
-   registry['storage'] = {
-     'gcs' => {
-       'bucket' => 'BUCKET_NAME',
-       'keyfile' => 'PATH/TO/KEYFILE',
-       # If you have the bucket shared with other apps beyond the registry, uncomment the following:
-       # 'rootdirectory' => '/gcs/object/name/prefix'
-     }
-   }
-   ```
+The S3 storage driver integrates with Amazon S3 or any S3-compatible object storage service.
 
-   GitLab supports all available parameters.
+<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+{{< alert type="warning" >}}
+
+The S3 storage driver that uses AWS SDK v1 was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523095) in GitLab 17.10 and is planned for removal in GitLab 18.0.
+Use the `s3_v2` driver instead when it becomes available in May 2025. This change is a breaking change.
+
+{{< /alert >}}
+
+<!--- end_remove -->
+
+```ruby
+# Deprecated: Will be removed in GitLab 18.0
+registry['storage'] = {
+  's3' => {
+    'accesskey' => 's3-access-key',
+    'secretkey' => 's3-secret-key-for-access-key',
+    'bucket' => 'your-s3-bucket',
+    'region' => 'your-s3-region',
+    'regionendpoint' => 'your-s3-regionendpoint'
+  }
+}
+
+# Recommended: s3_v2 driver
+registry['storage'] = {
+  's3_v2' => {
+    'accesskey' => 's3-access-key',
+    'secretkey' => 's3-secret-key-for-access-key',
+    'bucket' => 'your-s3-bucket',
+    'region' => 'your-s3-region',
+    'regionendpoint' => 'your-s3-regionendpoint'
+  }
+}
+```
+
+The `s3_v2` driver only supports Signature Version 4 for authentication.
+
+To avoid using static credentials, use an IAM role and omit `accesskey` and `secretkey`.
+Make sure that your IAM profile follows the [permissions documented by Docker](https://docs.docker.com/registry/storage-drivers/s3/).
+
+For S3 VPC endpoints:
+
+```ruby
+registry['storage'] = {
+  's3' => {
+    'accesskey' => 's3-access-key',
+    'secretkey' => 's3-secret-key-for-access-key',
+    'bucket' => 'your-s3-bucket',
+    'region' => 'your-s3-region',
+    'regionendpoint' => 'your-s3-vpc-endpoint',
+    'pathstyle' => false
+  }
+}
+```
+
+- `regionendpoint` is only required when configuring an S3 compatible service such as MinIO, or when using an AWS S3 VPC Endpoint.
+- `your-s3-bucket` should be the name of a bucket that exists, and can't include subdirectories.
+- `pathstyle` should be set to `true` to use host/bucket_name/object style paths instead of bucket_name.host/object. Set to `false` for AWS S3.
+
+You can set a rate limit on connections to S3 to avoid 503 errors from the S3 API:
+
+```ruby
+registry['storage'] = {
+  's3' => {
+    'accesskey' => 's3-access-key',
+    'secretkey' => 's3-secret-key-for-access-key',
+    'bucket' => 'your-s3-bucket',
+    'region' => 'your-s3-region',
+    'regionendpoint' => 'your-s3-regionendpoint',
+    'maxrequestspersecond' => 100
+  }
+}
+```
+
+{{< /tab >}}
+
+{{< tab title="Azure" >}}
+
+The Azure storage driver integrates with Microsoft Azure Blob Storage.
+
+{{< alert type="warning" >}}
+
+The legacy Azure storage driver was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523096) in GitLab 17.10 and is planned for removal in GitLab 19.0.
+Use the `azure_v2` driver instead. This change is a breaking change.
+
+{{< /alert >}}
+
+```ruby
+# Deprecated: Will be removed in GitLab 19.0
+registry['storage'] = {
+  'azure' => {
+    'accountname' => '<your_storage_account_name>',
+    'accountkey' => '<base64_encoded_account_key>',
+    'container' => '<container_name>'
+  }
+}
+
+# Recommended: azure_v2 driver
+registry['storage'] = {
+  'azure_v2' => {
+    'credentials_type' => 'client_secret',
+    'tenant_id' => '<your_tenant_id>',
+    'client_id' => '<your_client_id>',
+    'secret' => '<your_secret>',
+    'container' => '<your_container>',
+    'accountname' => '<your_account_name>'
+  }
+}
+```
+
+By default, the Azure storage driver uses the `core.windows.net realm`. You can set another value for realm in the Azure section (for example, `core.usgovcloudapi.net` for Azure Government Cloud).
+
+{{< /tab >}}
+
+{{< tab title="GCS" >}}
+
+The GCS storage driver integrates with Google Cloud Storage.
+
+```ruby
+registry['storage'] = {
+  'gcs' => {
+    'bucket' => 'BUCKET_NAME',
+    'keyfile' => 'PATH/TO/KEYFILE',
+    # If you have the bucket shared with other apps beyond the registry, uncomment the following:
+    # 'rootdirectory' => '/gcs/object/name/prefix'
+  }
+}
+```
+
+GitLab supports all [available parameters](https://docs.docker.com/registry/storage-drivers/gcs/).
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 #### Self-compiled installations
 

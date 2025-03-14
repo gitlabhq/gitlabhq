@@ -43,6 +43,10 @@ $work-item-overview-gap-width: 2rem;
     display: block !important;
   }
 
+  .work-item-container-xs-hidden {
+    display: none !important;
+  }
+
   .work-item-attributes-wrapper {
     position: static !important;
     overflow-y: initial !important;
@@ -51,7 +55,7 @@ $work-item-overview-gap-width: 2rem;
   }
 }
 
-.work-item-overview {
+.work-item-overview:not(.sidebar-hidden) {
   @include media-breakpoint-up(md) {
     display: grid;
     // allow the main content area to shrink

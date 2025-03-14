@@ -1728,6 +1728,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_363d0fd35f2c() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "packages_dependency_links"
+  WHERE "packages_dependency_links"."id" = NEW."dependency_link_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_3691f9f6a69f() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -18614,6 +18630,7 @@ ALTER SEQUENCE packages_npm_metadata_caches_id_seq OWNED BY packages_npm_metadat
 CREATE TABLE packages_nuget_dependency_link_metadata (
     dependency_link_id bigint NOT NULL,
     target_framework text NOT NULL,
+    project_id bigint,
     CONSTRAINT packages_nuget_dependency_link_metadata_target_framework_constr CHECK ((char_length(target_framework) <= 255))
 );
 
@@ -34921,6 +34938,8 @@ CREATE INDEX index_packages_npm_metadata_on_package_json_deprecate_exist ON pack
 
 CREATE INDEX index_packages_npm_metadata_on_project_id ON packages_npm_metadata USING btree (project_id);
 
+CREATE INDEX index_packages_nuget_dependency_link_metadata_on_project_id ON packages_nuget_dependency_link_metadata USING btree (project_id);
+
 CREATE INDEX index_packages_nuget_dl_metadata_on_dependency_link_id ON packages_nuget_dependency_link_metadata USING btree (dependency_link_id);
 
 CREATE INDEX index_packages_nuget_metadata_on_project_id ON packages_nuget_metadata USING btree (project_id);
@@ -39097,6 +39116,8 @@ CREATE TRIGGER trigger_30209d0fba3e BEFORE INSERT OR UPDATE ON alert_management_
 
 CREATE TRIGGER trigger_309294c3b889 BEFORE INSERT OR UPDATE ON snippet_statistics FOR EACH ROW EXECUTE FUNCTION trigger_309294c3b889();
 
+CREATE TRIGGER trigger_363d0fd35f2c BEFORE INSERT OR UPDATE ON packages_nuget_dependency_link_metadata FOR EACH ROW EXECUTE FUNCTION trigger_363d0fd35f2c();
+
 CREATE TRIGGER trigger_36cb404f9a02 BEFORE INSERT OR UPDATE ON bulk_import_failures FOR EACH ROW EXECUTE FUNCTION trigger_36cb404f9a02();
 
 CREATE TRIGGER trigger_388de55cd36c BEFORE INSERT OR UPDATE ON ci_builds_runner_session FOR EACH ROW EXECUTE FUNCTION trigger_388de55cd36c();
@@ -40861,6 +40882,9 @@ ALTER TABLE ONLY ml_experiments
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_ae440388cc FOREIGN KEY (latest_closed_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY packages_nuget_dependency_link_metadata
+    ADD CONSTRAINT fk_ae9b989220 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests_approval_rules_projects
     ADD CONSTRAINT fk_af4078336f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

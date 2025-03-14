@@ -9,15 +9,13 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
     let(:target_job) { create(:ci_build, :running, user: job_user) }
     let(:allowed_policies) { Array(policies) }
     let(:default_permissions) { false }
+    let(:skip_allowlist_creation) { false }
     let!(:features_state) do
       source_project.project_feature.attributes
         .slice(*::ProjectFeature::FEATURES.map { |feature| "#{feature}_access_level" })
     end
 
-    before do
-      # Make all project features private
-      enable_project_features(source_project, nil)
-
+    let!(:allowlist) do
       create(:ci_job_token_project_scope_link,
         source_project: source_project,
         target_project: target_job.project,
@@ -25,6 +23,11 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
         job_token_policies: allowed_policies,
         default_permissions: default_permissions
       )
+    end
+
+    before do
+      # Make all project features private
+      enable_project_features(source_project, nil)
     end
 
     after do
@@ -38,6 +41,22 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
     end
 
     it { is_expected.to have_gitlab_http_status(expected_success_status) }
+
+    context 'when the target project is not allowlisted and job token policies are disabled' do
+      # We only want to enforce job token permissions for endpoints which are enforced by allowlists.
+      # This test makes sure that endpoints for which we want to enable job token permissions
+      # are denied access when an allowlist entry is missing.
+      let(:allowlist) { nil }
+
+      before do
+        stub_feature_flags(add_policies_to_ci_job_token: false)
+      end
+
+      it 'denies access' do
+        expect(do_request).to have_gitlab_http_status(:forbidden)
+          .or have_gitlab_http_status(:not_found)
+      end
+    end
 
     context 'when the policies are not allowed' do
       let(:allowed_policies) { [] }

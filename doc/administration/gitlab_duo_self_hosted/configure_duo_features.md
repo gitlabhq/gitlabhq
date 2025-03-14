@@ -80,7 +80,7 @@ To configure a self-hosted model:
 
 1. Select **Create self-hosted model**.
 
-## Configure self-hosted beta models
+## Configure self-hosted beta models and features
 
 Prerequisites:
 
@@ -88,17 +88,17 @@ Prerequisites:
 - You must have an Ultimate license.
 - You must have a Duo Enterprise license add-on.
 
-To enable self-hosted [beta](../../policy/development_stages_support.md#beta) models:
+To enable self-hosted [beta](../../policy/development_stages_support.md#beta) models and features:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
 1. In the **GitLab Duo** section, select **Change configuration**.
-1. Under **Self-hosted AI models**, select **Use beta self-hosted models features**.
+1. Under **Self-hosted AI models**, select the **Use beta models and features in GitLab Duo Self-Hosted** checkbox.
 1. Select **Save changes**.
 
 {{< alert type="note" >}}
 
-Turning on beta self-hosted models features also accepts the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+Turning on beta self-hosted models and features also accepts the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 {{< /alert >}}
 

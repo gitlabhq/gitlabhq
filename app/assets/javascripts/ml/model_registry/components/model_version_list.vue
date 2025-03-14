@@ -1,6 +1,7 @@
 <script>
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, sprintf } from '~/locale';
+import ModelVersionsTable from '~/ml/model_registry/components/model_versions_table.vue';
 import getModelVersionsQuery from '../graphql/queries/get_model_versions.query.graphql';
 import {
   GRAPHQL_PAGE_SIZE,
@@ -50,6 +51,9 @@ export default {
     },
   },
   computed: {
+    modelVersionsTableComponent() {
+      return ModelVersionsTable;
+    },
     isLoading() {
       return this.$apollo.queries.modelVersions.loading;
     },
@@ -111,7 +115,8 @@ export default {
   <searchable-table
     :show-search="showSearch"
     :page-info="pageInfo"
-    :model-versions="versions"
+    :items="versions"
+    :table="modelVersionsTableComponent"
     :error-message="errorMessage"
     :is-loading="isLoading"
     :sortable-fields="$options.sortableFields"

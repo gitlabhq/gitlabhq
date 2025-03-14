@@ -282,7 +282,7 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
 
         it { is_expected.to be(false) }
 
-        it_behaves_like 'not capturing job token policies'
+        it_behaves_like 'capturing job token policies'
       end
     end
 

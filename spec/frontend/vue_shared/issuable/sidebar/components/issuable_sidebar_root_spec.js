@@ -73,7 +73,7 @@ describe('IssuableSidebarRoot', () => {
 
     describe('when collapsing the sidebar', () => {
       it('updates "collapsed_gutter" cookie value and layout classes', async () => {
-        await findToggleSidebarButton().trigger('click');
+        await findToggleSidebarButton().vm.$emit('click');
 
         expect(Cookies.set).toHaveBeenCalledWith(USER_COLLAPSED_GUTTER_COOKIE, true, {
           expires: 365,

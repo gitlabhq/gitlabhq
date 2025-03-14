@@ -13,6 +13,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __ } from '~/locale';
 import { getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -102,6 +103,8 @@ export default {
   },
   isLoggedIn: isLoggedIn(),
   VALID_DESIGN_FILE_MIMETYPE,
+  SHOW_SIDEBAR_STORAGE_KEY: 'work_item_show_sidebar',
+  ENABLE_TRUNCATION_STORAGE_KEY: 'work_item_truncate_descriptions',
   components: {
     DesignDropzone,
     DesignWidget,
@@ -110,6 +113,7 @@ export default {
     GlButton,
     GlEmptyState,
     GlIntersectionObserver,
+    LocalStorageSync,
     WorkItemActions,
     TodosToggle,
     WorkItemNotificationsWidget,
@@ -201,6 +205,8 @@ export default {
       isDragDataValid: false,
       isAddingNotes: false,
       info: getParameterByName('resolves_discussion'),
+      showSidebar: true,
+      truncationEnabled: true,
     };
   },
   apollo: {
@@ -560,6 +566,8 @@ export default {
         widgets: this.widgets,
         allowedChildTypes: this.allowedChildTypes,
         namespaceFullName: this.namespaceFullName,
+        showSidebar: this.showSidebar,
+        truncationEnabled: this.truncationEnabled,
       };
     },
   },
@@ -830,6 +838,12 @@ export default {
       this.info = undefined;
       updateHistory({ url: removeParams(['resolves_discussion']) });
     },
+    handleToggleSidebar() {
+      this.showSidebar = !this.showSidebar;
+    },
+    handleTruncationEnabled() {
+      this.truncationEnabled = !this.truncationEnabled;
+    },
   },
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORKSPACE_PROJECT,
@@ -864,6 +878,8 @@ export default {
       :parent-id="parentWorkItemId"
       :namespace-full-name="namespaceFullName"
       :has-children="hasChildren"
+      :show-sidebar="showSidebar"
+      :truncation-enabled="truncationEnabled"
       @hideStickyHeader="hideStickyHeader"
       @showStickyHeader="showStickyHeader"
       @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
@@ -888,6 +904,8 @@ export default {
           @workItemTypeChanged="workItemTypeChanged"
           @toggleReportAbuseModal="toggleReportAbuseModal"
           @workItemCreated="handleWorkItemCreated"
+          @toggleSidebar="handleToggleSidebar"
+          @toggleTruncationEnabled="handleTruncationEnabled"
         />
       </template>
     </work-item-sticky-header>
@@ -982,6 +1000,8 @@ export default {
                 @workItemTypeChanged="workItemTypeChanged"
                 @toggleReportAbuseModal="toggleReportAbuseModal"
                 @workItemCreated="handleWorkItemCreated"
+                @toggleSidebar="handleToggleSidebar"
+                @toggleTruncationEnabled="handleTruncationEnabled"
               />
             </div>
             <gl-button
@@ -1006,15 +1026,37 @@ export default {
               @updateWorkItem="updateWorkItem"
               @updateDraft="updateDraft('title', $event)"
             />
-            <work-item-created-updated
-              v-if="!editMode"
-              :full-path="workItemFullPath"
-              :work-item-iid="iid"
-              :update-in-progress="updateInProgress"
-            />
+            <div class="gl-flex gl-items-center gl-gap-3">
+              <work-item-created-updated
+                v-if="!editMode"
+                :full-path="workItemFullPath"
+                :work-item-iid="iid"
+                :update-in-progress="updateInProgress"
+                class="gl-grow"
+              />
+              <div v-if="!showSidebar" class="work-item-container-xs-hidden gl-hidden md:gl-block">
+                <gl-button
+                  size="small"
+                  category="secondary"
+                  data-testid="work-item-show-sidebar-button"
+                  icon="sidebar-right"
+                  @click="handleToggleSidebar"
+                >
+                  {{ s__('WorkItem|Show sidebar') }}
+                </gl-button>
+              </div>
+            </div>
           </div>
-          <div data-testid="work-item-overview" class="work-item-overview">
+          <div
+            data-testid="work-item-overview"
+            class="work-item-overview"
+            :class="{ 'sidebar-hidden': !showSidebar }"
+          >
             <section>
+              <local-storage-sync
+                v-model="truncationEnabled"
+                :storage-key="$options.ENABLE_TRUNCATION_STORAGE_KEY"
+              />
               <work-item-description
                 v-if="hasDescriptionWidget"
                 :edit-mode="editMode"
@@ -1024,6 +1066,7 @@ export default {
                 :update-in-progress="updateInProgress"
                 :without-heading-anchors="isDrawer"
                 :hide-fullscreen-markdown-button="isDrawer"
+                :truncation-enabled="truncationEnabled"
                 @updateWorkItem="updateWorkItem"
                 @updateDraft="updateDraft('description', $event)"
                 @cancelEditing="cancelEditing"
@@ -1065,10 +1108,14 @@ export default {
                 </div>
               </div>
             </section>
+            <local-storage-sync
+              v-model="showSidebar"
+              :storage-key="$options.SHOW_SIDEBAR_STORAGE_KEY"
+            />
             <aside
               data-testid="work-item-overview-right-sidebar"
               class="work-item-overview-right-sidebar"
-              :class="{ 'is-modal': isModal }"
+              :class="{ 'is-modal': isModal, 'md:gl-hidden': !showSidebar }"
             >
               <work-item-attributes-wrapper
                 :class="{ 'gl-top-11': isDrawer }"

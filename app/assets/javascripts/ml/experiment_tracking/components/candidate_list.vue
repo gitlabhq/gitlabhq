@@ -6,6 +6,7 @@ import { s__, __, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import getExperimentCandidates from '~/ml/experiment_tracking/graphql/queries/get_experiment_candidates.query.graphql';
 import SearchableTable from '~/ml/model_registry/components/searchable_table.vue';
+import CandidatesTable from '~/ml/model_registry/components/candidates_table.vue';
 
 const GRAPHQL_PAGE_SIZE = 30;
 
@@ -48,6 +49,9 @@ export default {
     },
   },
   computed: {
+    candidatesTableComponent() {
+      return CandidatesTable;
+    },
     isLoading() {
       return this.$apollo.queries.candidates.loading;
     },
@@ -92,7 +96,8 @@ export default {
 </script>
 <template>
   <searchable-table
-    :candidates="items"
+    :items="items"
+    :table="candidatesTableComponent"
     :page-info="pageInfo"
     :error-message="errorMessage"
     :is-loading="isLoading"

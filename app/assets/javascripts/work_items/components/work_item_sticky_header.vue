@@ -93,6 +93,14 @@ export default {
       required: false,
       default: false,
     },
+    showSidebar: {
+      type: Boolean,
+      required: true,
+    },
+    truncationEnabled: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     canUpdate() {

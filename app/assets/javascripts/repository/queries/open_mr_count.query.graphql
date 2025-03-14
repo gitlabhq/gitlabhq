@@ -1,4 +1,4 @@
-query getOpenMrCountsForBlobPath(
+query getOpenMrCountForBlobPath(
   $projectPath: ID!
   $targetBranch: [String!]
   $blobPath: String!

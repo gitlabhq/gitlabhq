@@ -7,6 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
 import SearchableTable from '~/ml/model_registry/components/searchable_table.vue';
+import CandidatesTable from '~/ml/model_registry/components/candidates_table.vue';
 import getModelCandidatesQuery from '~/ml/model_registry/graphql/queries/get_model_candidates.query.graphql';
 import { GRAPHQL_PAGE_SIZE } from '~/ml/model_registry/constants';
 import {
@@ -95,16 +96,16 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
       expect(findEmptyState().exists()).toBe(false);
     });
 
+    it('passes CandidatesTable to table prop', () => {
+      expect(findSearchableTable().props('table')).toBe(CandidatesTable);
+    });
+
     it('Passes items to list', () => {
-      expect(findSearchableTable().props('candidates')).toEqual(graphqlCandidates);
+      expect(findSearchableTable().props('items')).toEqual(graphqlCandidates);
     });
 
     it('displays package version rows', () => {
-      expect(findSearchableTable().props('candidates')).toHaveLength(graphqlCandidates.length);
-    });
-
-    it('binds the correct props', () => {
-      expect(findSearchableTable().props('candidates')).toEqual(graphqlCandidates);
+      expect(findSearchableTable().props('items')).toHaveLength(graphqlCandidates.length);
     });
   });
 

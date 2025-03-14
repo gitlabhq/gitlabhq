@@ -3,6 +3,7 @@ import { GlEmptyState, GlButton } from '@gitlab/ui';
 import emptySvgUrl from '@gitlab/svgs/dist/illustrations/status/status-new-md.svg';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __, sprintf } from '~/locale';
+import CandidatesTable from '~/ml/model_registry/components/candidates_table.vue';
 import getModelCandidatesQuery from '../graphql/queries/get_model_candidates.query.graphql';
 import { GRAPHQL_PAGE_SIZE, CANDIDATES_DOCS_PATH } from '../constants';
 import SearchableTable from './searchable_table.vue';
@@ -46,6 +47,9 @@ export default {
     },
   },
   computed: {
+    candidatesTableComponent() {
+      return CandidatesTable;
+    },
     isLoading() {
       return this.$apollo.queries.candidates.loading;
     },
@@ -88,7 +92,8 @@ export default {
 </script>
 <template>
   <searchable-table
-    :candidates="items"
+    :table="candidatesTableComponent"
+    :items="items"
     :page-info="pageInfo"
     :error-message="errorMessage"
     :is-loading="isLoading"

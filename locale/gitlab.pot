@@ -785,9 +785,6 @@ msgstr ""
 msgid "%{count} of %{total}"
 msgstr ""
 
-msgid "%{count} open"
-msgstr ""
-
 msgid "%{count} project"
 msgid_plural "%{count} projects"
 msgstr[0] ""
@@ -5452,9 +5449,6 @@ msgstr ""
 msgid "AiPowered|Assign seats"
 msgstr ""
 
-msgid "AiPowered|Beta Self-hosted models"
-msgstr ""
-
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr ""
 
@@ -5482,7 +5476,7 @@ msgstr ""
 msgid "AiPowered|Enable AI logs"
 msgstr ""
 
-msgid "AiPowered|Enabling this feature is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
+msgid "AiPowered|Enabling self-hosted beta models and features is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr ""
 
 msgid "AiPowered|End date: %{endDate}"
@@ -5542,7 +5536,7 @@ msgstr ""
 msgid "AiPowered|Seat assignment for GitLab Duo has moved"
 msgstr ""
 
-msgid "AiPowered|Self-hosted AI models"
+msgid "AiPowered|Self-hosted beta models and features"
 msgstr ""
 
 msgid "AiPowered|Setting unavailable"
@@ -5560,7 +5554,7 @@ msgstr ""
 msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
 msgstr ""
 
-msgid "AiPowered|Use beta self-hosted models features"
+msgid "AiPowered|Use beta models and features in GitLab Duo Self-Hosted"
 msgstr ""
 
 msgid "AiPowered|View GitLab Duo settings"
@@ -26177,6 +26171,9 @@ msgstr ""
 msgid "Geo|Filter by name"
 msgstr ""
 
+msgid "Geo|Geo Replication - %{node_name}"
+msgstr ""
+
 msgid "Geo|Geo Settings"
 msgstr ""
 
@@ -40783,6 +40780,15 @@ msgid "OpenAPI Specification file URL"
 msgstr ""
 
 msgid "OpenAPI Specification file path or URL"
+msgstr ""
+
+msgid "OpenMrBadge|%{count} open"
+msgstr ""
+
+msgid "OpenMrBadge|Open"
+msgstr ""
+
+msgid "OpenMrBadge|Opened"
 msgstr ""
 
 msgid "OpenSSL version 3"
@@ -66445,6 +66451,9 @@ msgstr ""
 msgid "WorkItem|Cancel"
 msgstr ""
 
+msgid "WorkItem|Change appearance for all issues, epics, and tasks"
+msgstr ""
+
 msgid "WorkItem|Change type"
 msgstr ""
 
@@ -66626,6 +66635,9 @@ msgid "WorkItem|Health status"
 msgstr ""
 
 msgid "WorkItem|Hide empty"
+msgstr ""
+
+msgid "WorkItem|Hide sidebar"
 msgstr ""
 
 msgid "WorkItem|History only"
@@ -66886,6 +66898,9 @@ msgstr ""
 msgid "WorkItem|Show labels"
 msgstr ""
 
+msgid "WorkItem|Show sidebar"
+msgstr ""
+
 msgid "WorkItem|Similar items"
 msgstr ""
 
@@ -67051,6 +67066,9 @@ msgstr ""
 msgid "WorkItem|Toggle details"
 msgstr ""
 
+msgid "WorkItem|Truncate descriptions"
+msgstr ""
+
 msgid "WorkItem|Turn off confidentiality"
 msgstr ""
 
@@ -67183,7 +67201,7 @@ msgstr ""
 msgid "Workspaces|A devfile defines the development environment for a GitLab project. A workspace must have a valid devfile in the Git reference you use."
 msgstr ""
 
-msgid "Workspaces|A devfile is a file that detines a development environment by specifying the necessary tools, languages, runtimes, and other components for a GitLab project."
+msgid "Workspaces|A devfile is a file that defines a development environment by specifying the necessary tools, languages, runtimes, and other components for a GitLab project."
 msgstr ""
 
 msgid "Workspaces|A workspace is a virtual sandbox environment for your code in GitLab."

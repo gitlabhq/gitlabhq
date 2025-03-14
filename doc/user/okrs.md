@@ -118,6 +118,47 @@ To edit an OKR:
 1. Optional. To edit the description, select the edit icon ({{< icon name="pencil" >}}), make your changes, and
    select **Save**.
 
+## Prevent truncating descriptions with "Read more"
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181184) in GitLab 17.10.
+
+{{< /history >}}
+
+If an OKR description is long, GitLab displays only part of it.
+To see the whole description, you must select **Read more**.
+This truncation makes it easier to find other elements on the page without scrolling through lengthy text.
+
+To change whether descriptions are truncated:
+
+1. On an objective or key result, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **View options**.
+1. Toggle **Truncate descriptions** according to your preference.
+
+This setting is remembered and affects all issues, tasks, epics, objectives, and key results.
+
+## Hide the right sidebar
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181184) in GitLab 17.10.
+
+{{< /history >}}
+
+Attributes are shown in a sidebar to the right of the description when space allows.
+To hide the sidebar and increase space for the description:
+
+1. On an objective or key result, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **View options**.
+1. Select **Hide sidebar**.
+
+This setting is remembered and affects all issues, tasks, epics, objectives, and key results.
+
+To show the sidebar again:
+
+- Repeat the previous steps and select **Show sidebar**.
+
 ## View OKR system notes
 
 {{< history >}}

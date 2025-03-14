@@ -74,6 +74,32 @@ The [GitLab Runner Docker Machine executor](https://docs.gitlab.com/runner/execu
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### Azure storage driver for the container registry
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.10</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523096).
+
+</div>
+
+The legacy Azure storage driver for the container registry is deprecated in GitLab 17.10 and will be removed in GitLab 19.0. If you use Azure object storage for your container registry, you'll need to update your configuration to use the new `azure_v2` driver.
+
+The `azure_v2` storage driver provides improved reliability, better performance, and uses a more maintainable codebase compared to the legacy driver. These improvements help prevent performance issues as your registry usage scales.
+
+To migrate to the `azure_v2` driver:
+
+1. Update your registry configuration file to use the `azure_v2` driver instead of the legacy `azure` driver.
+1. Adjust your configuration settings as needed for the new driver.
+1. Test the new configuration in a non-production environment before deploying to production.
+
+For more information about updating your storage driver configuration, see [use object storage](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### Behavior change for protected variables and multi-project pipelines
 
 <div class="deprecation-notes">

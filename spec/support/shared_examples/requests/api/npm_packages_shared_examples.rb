@@ -131,9 +131,14 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
     end
   end
 
-  it_behaves_like 'enforcing job token policies', :read_packages,
-    allow_public_access_for_enabled_project_features: :package_registry do
-    let(:headers) { build_token_auth_header(target_job.token) }
+  context 'with a project namespace' do
+    # The `if: scope == :project` modifier doesn't work as expected, so do this instead.
+    if scope == :project
+      it_behaves_like 'enforcing job token policies', :read_packages,
+        allow_public_access_for_enabled_project_features: :package_registry do
+        let(:headers) { build_token_auth_header(target_job.token) }
+      end
+    end
   end
 
   context 'with a group namespace' do

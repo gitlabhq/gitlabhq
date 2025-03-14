@@ -504,6 +504,58 @@ Prerequisites:
 Learn how to change the default [issue closing pattern](../../../administration/issue_closing_pattern.md)
 of your installation.
 
+## Prevent truncating descriptions with "Read more"
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181184) in GitLab 17.10.
+
+{{< /history >}}
+
+<!-- When issues as work items are GA and feature flag `work_items_view_preference` is removed, remove the prerequisite below. -->
+
+If an issue description is long, GitLab displays only part of it.
+To see the whole description, you must select **Read more**.
+This truncation makes it easier to find other elements on the page without scrolling through lengthy text.
+
+Prerequisites:
+
+- Your administrator must have [enabled the new look for issues](issue_work_items.md).
+
+To change whether descriptions are truncated:
+
+1. On an issue, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
+1. Toggle **Truncate descriptions** according to your preference.
+
+This setting is remembered and affects all issues, tasks, epics, objectives, and key results.
+
+## Hide the right sidebar
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181184) in GitLab 17.10.
+
+{{< /history >}}
+
+<!-- When issues as work items are GA and feature flag `work_items_view_preference` is removed, remove the prerequisite below. -->
+
+Issue attributes are shown in a sidebar to the right of the description when space allows.
+
+Prerequisites:
+
+- Your administrator must have [enabled the new look for issues](issue_work_items.md).
+
+To hide the sidebar and increase space for the description:
+
+1. On an issue, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **Hide sidebar**.
+
+This setting is remembered and affects all issues, tasks, epics, objectives, and key results.
+
+To show the sidebar again:
+
+- Repeat the previous steps and select **Show sidebar**.
+
 ## Change the issue type
 
 {{< history >}}

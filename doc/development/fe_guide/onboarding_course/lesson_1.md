@@ -170,7 +170,7 @@ When writing a merge request there are some important things to be aware of:
 - The MRs that you create on GitLab are available to the public. This means you can add a link to MRs you are particularly proud of to your portfolio page when looking for a job.
 - Since an MR is a technical document, you should try to implement a technical writing style.
   If you don’t know what that is, here is a highly recommended short course from [Google on Technical writing](https://developers.google.com/tech-writing/one).
-  If you are also contributing to the documentation at GitLab, there is a [Technical Writing Fundamentals course available here from GitLab](https://handbook.gitlab.com/handbook/product/ux/technical-writing/fundamentals/).
+  If you are also contributing to the documentation at GitLab, there is a [Technical Writing Fundamentals course available here from GitLab](https://university.gitlab.com/courses/gitlab-technical-writing-fundamentals).
 
 ## Live coding
 

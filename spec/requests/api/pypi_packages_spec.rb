@@ -537,7 +537,6 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
     describe 'GET /api/v4/groups/:id/-/packages/pypi/files/:sha256/*file_identifier' do
       let(:url) { "/groups/#{group.id}/-/packages/pypi/files/#{package.package_files.first.file_sha256}/#{package_name}-1.0.0.tar.gz" }
 
-      it_behaves_like 'enforcing read_packages job token policy'
       it_behaves_like 'pypi file download endpoint'
       it_behaves_like 'rejects PyPI access with unknown group id'
       it_behaves_like 'a pypi user namespace endpoint'

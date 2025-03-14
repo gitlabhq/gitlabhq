@@ -135,6 +135,7 @@ describe('WorkItemDetail component', () => {
     wrapper.findComponent(WorkItemCreateBranchMergeRequestSplitButton);
   const findDesignDropzone = () => wrapper.findComponent(DesignDropzone);
   const findWorkItemDetailInfo = () => wrapper.findByTestId('info-alert');
+  const findShowSidebarButton = () => wrapper.findByTestId('work-item-show-sidebar-button');
 
   const mockDragEvent = ({ types = ['Files'], files = [], items = [] }) => {
     return { dataTransfer: { types, files, items } };
@@ -157,6 +158,7 @@ describe('WorkItemDetail component', () => {
     workspacePermissionsHandler = workspacePermissionsAllowedHandler,
     uploadDesignMutationHandler = uploadSuccessDesignMutationHandler,
     hasLinkedItemsEpicsFeature = true,
+    showSidebar = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo([
@@ -181,6 +183,7 @@ describe('WorkItemDetail component', () => {
         return {
           updateInProgress,
           error,
+          showSidebar,
         };
       },
       provide: {
@@ -1229,6 +1232,27 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
 
       expect(findWorkItemDetailInfo().text()).toBe('Resolved all discussions.');
+    });
+  });
+
+  describe('shows sidebar based on view options', () => {
+    it('when sidebar is shown based on view options', async () => {
+      createComponent({ showSidebar: true });
+      await waitForPromises();
+      expect(findShowSidebarButton().exists()).toBe(false);
+      expect(findRightSidebar().classes()).not.toContain('md:gl-hidden');
+    });
+    it('when sidebar is hidden based on view options', async () => {
+      createComponent({ showSidebar: false });
+      await waitForPromises();
+      expect(findShowSidebarButton().exists()).toBe(true);
+      expect(findRightSidebar().classes()).toContain('md:gl-hidden');
+    });
+    it('when show sidebar button is used', async () => {
+      createComponent({ showSidebar: false });
+      await waitForPromises();
+      findShowSidebarButton().vm.$emit('click');
+      expect(findRightSidebar().isVisible()).toBe(true);
     });
   });
 });

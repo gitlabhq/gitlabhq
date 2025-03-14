@@ -105,12 +105,17 @@ export default {
       required: false,
       default: false,
     },
+    truncationEnabled: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
     return {
       workItem: {},
-      disableTruncation: false,
+      wasEdited: false,
       isEditing: this.editMode,
       isSubmitting: false,
       isSubmittingWithKeydown: false,
@@ -239,6 +244,12 @@ export default {
         ? `/groups/${this.fullPath}/-/uploads`
         : `/${this.fullPath}/uploads`;
     },
+    enableTruncation() {
+      /* truncationEnabled uses the local storage based setting,
+         wasEdited is a localized override for when user actions on this work item
+         should result in a full description shown. */
+      return this.truncationEnabled && !this.wasEdited;
+    },
   },
   watch: {
     updateInProgress(newValue) {
@@ -338,7 +349,7 @@ export default {
     },
     async startEditing() {
       this.isEditing = true;
-      this.disableTruncation = true;
+      this.wasEdited = true;
 
       this.descriptionText = this.createFlow
         ? this.workItemDescription?.description
@@ -396,7 +407,7 @@ export default {
       updateDraft(this.autosaveKey, this.descriptionText);
     },
     handleDescriptionTextUpdated(newText) {
-      this.disableTruncation = true;
+      this.wasEdited = true;
       this.descriptionText = newText;
       this.$emit('updateDraft', this.descriptionText);
       this.updateWorkItem();
@@ -574,7 +585,7 @@ export default {
       :work-item-id="workItemId"
       :work-item-type="workItemType"
       :can-edit="canEdit"
-      :disable-truncation="disableTruncation"
+      :enable-truncation="enableTruncation"
       :is-group="isGroup"
       :is-updating="isSubmitting"
       :without-heading-anchors="withoutHeadingAnchors"

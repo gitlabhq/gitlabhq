@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger, feature_category: :pipeline_c
     end
   end
 
-  context 'when trigger is a hash - cross-project' do
+  context 'when trigger is for a cross-project pipeline' do
     context 'when project is a string' do
       context 'when project is a non-empty string' do
         let(:config) { { project: 'some/project' } }
@@ -88,6 +88,36 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger, feature_category: :pipeline_c
         it 'returns a trigger configuration hash' do
           expect(subject.value)
             .to eq(project: 'some/project', branch: 'feature')
+        end
+      end
+    end
+
+    context 'when inputs are provided' do
+      let(:config) { { project: 'some/project', inputs: { security_scan: false } } }
+
+      describe '#valid?' do
+        it { is_expected.to be_valid }
+      end
+
+      describe '#value' do
+        it 'returns a trigger configuration hash' do
+          expect(subject.value)
+            .to eq(project: 'some/project', inputs: { security_scan: false })
+        end
+      end
+
+      context 'when they are not a hash' do
+        let(:config) { { project: 'some/project', inputs: 'string' } }
+
+        describe '#valid?' do
+          it { is_expected.not_to be_valid }
+        end
+
+        describe '#errors' do
+          it 'returns an error about unknown config key' do
+            expect(subject.errors.first)
+              .to match(/cross project trigger inputs should be a hash/)
+          end
         end
       end
     end
@@ -156,7 +186,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger, feature_category: :pipeline_c
     end
   end
 
-  context 'when trigger is a hash - parent-child' do
+  context 'when trigger is for a parent-child pipeline' do
     context 'with simple include' do
       let(:config) { { include: 'path/to/config.yml' } }
 

@@ -325,8 +325,9 @@ module Ci
         },
         execute_params: {
           ignore_skip_ci: true,
-          bridge: self
-        }
+          bridge: self,
+          inputs: options&.dig(:trigger, :inputs)
+        }.compact
       }
     end
 

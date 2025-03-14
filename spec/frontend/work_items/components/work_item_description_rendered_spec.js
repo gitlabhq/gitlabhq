@@ -32,7 +32,7 @@ describe('WorkItemDescriptionRendered', () => {
     isGroup = false,
     workItemType = 'ISSUE',
     withoutHeadingAnchors = false,
-    disableTruncation = false,
+    enableTruncation = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDescriptionRendered, {
       propsData: {
@@ -42,7 +42,7 @@ describe('WorkItemDescriptionRendered', () => {
         isGroup,
         workItemType,
         withoutHeadingAnchors,
-        disableTruncation,
+        enableTruncation,
       },
       provide: {
         fullPath: 'full/path',
