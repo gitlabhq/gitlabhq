@@ -129,7 +129,10 @@ describe('Tracking', () => {
 
       initDefaultTrackers();
       expect(enableFormTracking).toHaveBeenCalledWith(window.snowplowOptions.formTrackingConfig);
-      expect(snowplowSpy).toHaveBeenCalledWith('enableLinkClickTracking');
+      expect(snowplowSpy).toHaveBeenCalledWith('enableLinkClickTracking', {
+        pseudoClicks: true,
+        context: [standardContext],
+      });
     });
 
     it('binds the document event handling', () => {
@@ -230,6 +233,35 @@ describe('Tracking', () => {
       expect(setAnonymousUrlsSpy.mock.invocationCallOrder[0]).toBeLessThan(
         snowplowSpy.mock.invocationCallOrder[0],
       );
+    });
+  });
+
+  describe('when there are experiment contexts', () => {
+    const experimentContexts = [
+      {
+        schema: TRACKING_CONTEXT_SCHEMA,
+        data: { experiment: 'experiment1', variant: 'control' },
+      },
+      {
+        schema: TRACKING_CONTEXT_SCHEMA,
+        data: { experiment: 'experiment_two', variant: 'candidate' },
+      },
+    ];
+
+    beforeEach(() => {
+      getAllExperimentContexts.mockReturnValue(experimentContexts);
+      window.snowplowOptions = {
+        ...window.snowplowOptions,
+        linkClickTracking: true,
+      };
+    });
+
+    it('includes contexts in link click tracking', () => {
+      initDefaultTrackers();
+      expect(snowplowSpy).toHaveBeenCalledWith('enableLinkClickTracking', {
+        pseudoClicks: true,
+        context: [standardContext, ...experimentContexts],
+      });
     });
   });
 });

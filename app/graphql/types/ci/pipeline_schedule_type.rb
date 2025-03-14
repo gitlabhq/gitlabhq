@@ -40,6 +40,12 @@ module Types
         description: 'Edit path of the pipeline schedule.',
         authorize: :update_pipeline_schedule
 
+      field :inputs,
+        Types::Ci::Inputs::FieldType.connection_type,
+        null: true,
+        description: 'Inputs configured for the pipeline schedule.',
+        experiment: { milestone: '17.10' }
+
       field :variables,
         Types::Ci::PipelineScheduleVariableType.connection_type,
         null: true,

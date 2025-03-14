@@ -1,13 +1,16 @@
 <script>
-import { GlTableLite } from '@gitlab/ui';
+import { GlIcon, GlTableLite } from '@gitlab/ui';
 import { __ } from '~/locale';
+import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import DynamicValueRenderer from './dynamic_value_renderer.vue';
 
 export default {
   name: 'PipelineInputsTable',
   components: {
     DynamicValueRenderer,
+    GlIcon,
     GlTableLite,
+    Markdown,
   },
   fields: [
     {
@@ -17,6 +20,7 @@ export default {
     {
       key: 'description',
       label: __('Description'),
+      tdAttr: { 'data-testid': 'input-description-cell' },
     },
     {
       key: 'type',
@@ -25,7 +29,7 @@ export default {
     {
       key: 'default',
       label: __('Value'),
-      thAttr: { 'data-testid': 'input-values-th' },
+      tdClass: 'gl-max-w-26',
     },
   ],
   props: {
@@ -37,8 +41,11 @@ export default {
   emits: ['update'],
   methods: {
     handleValueUpdated({ item, value }) {
-      const updatedInput = { ...item, value };
+      const updatedInput = { ...item, default: value };
       this.$emit('update', updatedInput);
+    },
+    hasDescription(description) {
+      return description?.length;
     },
   },
 };
@@ -59,7 +66,8 @@ export default {
       </span>
     </template>
     <template #cell(description)="{ item }">
-      {{ item.description || '-' }}
+      <markdown v-if="hasDescription(item.description)" :markdown="item.description" />
+      <gl-icon v-else name="dash" :size="12" />
     </template>
     <template #cell(default)="{ item }">
       <dynamic-value-renderer :item="item" @update="handleValueUpdated" />

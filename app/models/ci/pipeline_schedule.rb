@@ -43,6 +43,7 @@ module Ci
     validates :ref, presence: { unless: :importing? }
     validates :description, presence: true
     validates :variables, nested_attributes_duplicates: true
+    validates :inputs, nested_attributes_duplicates: { child_attributes: %i[name] }
 
     strip_attributes! :cron
 
@@ -52,6 +53,7 @@ module Ci
     scope :owned_by, ->(user) { where(owner: user) }
     scope :for_project, ->(project_id) { where(project_id: project_id) }
 
+    accepts_nested_attributes_for :inputs, allow_destroy: true
     accepts_nested_attributes_for :variables, allow_destroy: true
 
     alias_attribute :real_next_run, :next_run_at

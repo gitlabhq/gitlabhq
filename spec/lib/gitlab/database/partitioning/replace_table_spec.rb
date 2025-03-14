@@ -105,6 +105,21 @@ RSpec.describe Gitlab::Database::Partitioning::ReplaceTable, '#perform' do
     end
   end
 
+  context 'when the source table is not owned by current user' do
+    let(:original_table_owner) { 'random_table_owner' }
+
+    before do
+      connection.execute(<<~SQL)
+        CREATE USER #{original_table_owner};
+        ALTER TABLE #{original_table} OWNER TO #{original_table_owner}
+      SQL
+    end
+
+    it 'replaces the current table, archiving the old' do
+      expect_table_to_be_replaced { replace_table }
+    end
+  end
+
   def partitions_for_parent_table(table)
     Gitlab::Database::PostgresPartition.for_parent_table(table)
   end

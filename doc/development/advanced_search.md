@@ -1180,7 +1180,7 @@ Examples are shown for an authenticated user. The JSON may be different for user
 
 ##### `by_search_level_and_membership`
 
-Requires `project_id` and `traversal_id` fields. Supports feature `*_access_level` fields. Query with `search_level`
+Requires `project_id`, `traversal_id` and project visibility (defaulting to `visibility_level` but can set with the `project_visibility_level_field` option) fields. Supports feature `*_access_level` fields. Query with `search_level`
  and optionally `project_ids`, `group_ids`, `features`, and `current_user` in options.
 
 Filtering is applied for:

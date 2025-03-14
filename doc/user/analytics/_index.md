@@ -68,7 +68,7 @@ Use these features to gain insights into security vulnerabilities and metrics.
 | ------- | ----------- | ------------- | ----------- | -------------- |
 | [Security Dashboards](../application_security/security_dashboard/_index.md) | Collection of metrics, ratings, and charts for vulnerabilities detected by security scanners. | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
 
-## Glossary
+## Metric glossary
 
 The following glossary provides definitions for common development metrics used in analytics features,
 and explains how they are measured in GitLab.
@@ -80,3 +80,5 @@ and explains how they are measured in GitLab.
 | Mean Time to Merge (MTTM) | The average lifespan of a merge request. | From when a merge request is created until it is merged. Excludes merge requests that are closed or unmerged. For more information, see [merge request analytics](merge_request_analytics.md). |
 | Mean Time to Recover / Repair / Resolution / Resolve / Restore (MTTR) | The average duration that a bug is not fixed in production. | From when a bug is deployed to production until the bug fix is deployed. |
 | Velocity | The total issue burden completed in a specific period of time. The burden is usually measured in points or weight, often per sprint. | Total points or weight of issues closed in a specific period of time. For example, "30 points per sprint". |
+
+For more definitions, see also the [Value Streams Dashboard metrics and drill-down reports](value_streams_dashboard.md#dashboard-metrics-and-drill-down-reports).

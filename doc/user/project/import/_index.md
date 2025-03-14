@@ -201,6 +201,8 @@ To maintain a connection with a user on a source instance, placeholder users hav
 - A source user's name (`source_name`) to help with reassignment of contributions.
 - A source user's username (`source_username`) to facilitate group owners during the reassignment of the contribution.
 - An import type (`import_type`) to distinguish which importer created the placeholder.
+- A timestamp of when the source user was created (`created_at`) in local time for migration tracking
+  ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/507297) in GitLab 17.10).
 
 To preserve historical context, the placeholder user name and username are derived from the source user name and username:
 

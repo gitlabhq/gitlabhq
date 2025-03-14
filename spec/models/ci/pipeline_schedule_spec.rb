@@ -51,6 +51,15 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
       expect(pipeline_schedule).not_to be_valid
     end
 
+    it 'does not allow duplicate inputs' do
+      schedule = build(:ci_pipeline_schedule)
+
+      schedule.inputs = build_list(:ci_pipeline_schedule_input, 2, name: 'test_input')
+
+      expect(schedule).not_to be_valid
+      expect(schedule.errors.full_messages).to contain_exactly('Inputs have duplicate values (test_input)')
+    end
+
     context 'when an short ref record is being updated' do
       let(:new_description) { 'some description' }
       let(:ref) { 'other' }

@@ -119,9 +119,9 @@ module Gitlab
         def detach_one_partition(partition)
           assert_partition_detachable!(partition)
 
-          connection.execute partition.to_detach_sql
-
           schedule_detached_partition_cleanup(partition)
+
+          connection.execute partition.to_detach_sql
 
           Gitlab::AppLogger.info(
             message: "Detached Partition",
@@ -263,10 +263,12 @@ module Gitlab
         end
 
         def above_threshold?(identifier)
-          Gitlab::Database::PostgresPartition
-            .for_identifier(identifier)
-            .above_threshold(MAX_PARTITION_SIZE)
-            .exists?
+          Gitlab::Database::SharedModel.using_connection(connection) do
+            Gitlab::Database::PostgresPartition
+              .for_identifier(identifier)
+              .above_threshold(MAX_PARTITION_SIZE)
+              .exists?
+          end
         end
 
         def identifier(partition)

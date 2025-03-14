@@ -1,5 +1,5 @@
+<!-- eslint-disable @gitlab/require-i18n-strings -->
 <script>
-import { __ } from '~/locale';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import PipelineInputsTable from './pipeline_inputs_table.vue';
 
@@ -13,36 +13,40 @@ export default {
     return {
       inputs: [
         {
-          name: 'username',
-          description: __('This is a username.'),
-          type: 'string',
-          value: 'test',
-        },
-        {
-          name: 'priority',
-          description: '',
-          type: 'string',
-          options: ['1', '2', '3'],
-          value: '2',
-        },
-        {
-          name: 'thisOrThat',
-          description: __('testing a boolean'),
-          type: 'boolean',
-          value: 'false',
+          name: 'environment',
+          description: 'Target **deployment** environment',
+          type: 'STRING',
           required: true,
+          regex: '^(production|staging|development)$',
+          default: 'development',
+          options: ['production', 'staging', 'development'],
         },
         {
-          name: 'lalala',
-          description: __('This is something else.'),
-          type: 'number',
-          value: 0,
+          name: 'api_version',
+          description: 'API version format (e.g. v1, v2.1)',
+          type: 'STRING',
+          required: true,
+          regex: '^v\\d+(\\.\\d+)?$',
+          default: 'v1',
+          options: null,
         },
         {
-          name: 'userID',
-          description: __('This is an ID.'),
-          type: 'array',
-          value: [{ hello: '2' }, '4', '6'],
+          name: 'debug_mode',
+          description: '',
+          type: 'BOOLEAN',
+          required: false,
+          regex: null,
+          default: false,
+          options: null,
+        },
+        {
+          name: 'replicas',
+          description: 'Number of replicas to deploy',
+          type: 'NUMBER',
+          required: true,
+          regex: '^[1-9][0-9]*$',
+          default: 1,
+          options: null,
         },
       ],
     };

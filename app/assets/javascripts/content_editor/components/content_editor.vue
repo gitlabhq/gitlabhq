@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
 import { isEqual } from 'lodash';
 import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
@@ -21,12 +21,11 @@ import MediaBubbleMenu from './bubble_menus/media_bubble_menu.vue';
 import ReferenceBubbleMenu from './bubble_menus/reference_bubble_menu.vue';
 import TableBubbleMenu from './bubble_menus/table_bubble_menu.vue';
 import FormattingToolbar from './formatting_toolbar.vue';
-import LoadingIndicator from './loading_indicator.vue';
 
 export default {
   components: {
     GlButton,
-    LoadingIndicator,
+    GlLoadingIcon,
     ContentEditorAlert,
     ContentEditorProvider,
     TiptapEditorContent,
@@ -263,7 +262,12 @@ export default {
 </script>
 <template>
   <content-editor-provider :content-editor="contentEditor">
-    <div class="md-area gl-overflow-hidden">
+    <div class="md-area gl-relative gl-overflow-hidden">
+      <gl-loading-icon
+        v-if="isLoading"
+        size="lg"
+        class="gl-absolute gl-bottom-0 gl-top-0 gl-z-1 gl-flex gl-w-full gl-items-center gl-justify-center gl-bg-alpha-light-36 dark:gl-bg-alpha-dark-40"
+      />
       <editor-state-observer
         @docUpdate="notifyChange"
         @focus="onFocus"
@@ -289,7 +293,6 @@ export default {
           data-testid="content_editor_editablebox"
           :editor="contentEditor.tiptapEditor"
         />
-        <loading-indicator v-if="isLoading" />
 
         <alert-bubble-menu />
         <code-block-bubble-menu />

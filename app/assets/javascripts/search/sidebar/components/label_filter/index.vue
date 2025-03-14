@@ -141,7 +141,7 @@ export default {
       />
     </div>
 
-    <span :id="$options.SEARCH_INPUT_DESCRIPTION" role="region" class="gl-sr-only">
+    <span :id="$options.SEARCH_INPUT_DESCRIPTION" class="gl-sr-only">
       {{ $options.i18n.DESCRIBE_LABEL_FILTER_INPUT }}
     </span>
     <gl-collapsible-listbox

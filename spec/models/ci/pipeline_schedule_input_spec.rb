@@ -21,6 +21,18 @@ RSpec.describe Ci::PipelineScheduleInput, feature_category: :continuous_integrat
     it { is_expected.to belong_to(:pipeline_schedule) }
   end
 
+  describe 'before_validation callback' do
+    it "sets the input's project_id to the project_id of the pipeline schedule" do
+      input = build(:ci_pipeline_schedule_input, pipeline_schedule: pipeline_schedule, project: nil)
+
+      expect(input.project_id).to be_nil
+
+      input.valid?
+
+      expect(input.project_id).to eq(pipeline_schedule.project_id)
+    end
+  end
+
   describe 'validations' do
     describe 'name' do
       it { is_expected.to validate_presence_of(:name) }

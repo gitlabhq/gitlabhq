@@ -29,6 +29,7 @@ RSpec.describe Types::Ci::PipelineScheduleType, feature_category: :continuous_in
       cronTimezone
       ref
       variables
+      inputs
       createdAt
       updatedAt
     ]

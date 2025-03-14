@@ -42321,6 +42321,9 @@ msgstr ""
 msgid "Paths with rate limiting for POST requests"
 msgstr ""
 
+msgid "Pattern"
+msgstr ""
+
 msgid "Pause"
 msgstr ""
 
@@ -59190,6 +59193,12 @@ msgstr ""
 msgid "The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated"
 msgstr ""
 
+msgid "The value must contain only numbers."
+msgstr ""
+
+msgid "The value must match the defined regular expression."
+msgstr ""
+
 msgid "The value of the provided variable exceeds the %{count} character limit"
 msgstr ""
 
@@ -59934,25 +59943,19 @@ msgstr ""
 msgid "This is a security log of authentication events involving your account."
 msgstr ""
 
-msgid "This is a username."
-msgstr ""
-
-msgid "This is an ID."
-msgstr ""
-
 msgid "This is an archived project. Repository and other project resources are read-only."
 msgstr ""
 
 msgid "This is an experimental feature developed by GitLab Incubation Engineering."
 msgstr ""
 
+msgid "This is mandatory and must be defined."
+msgstr ""
+
 msgid "This is really just a warning"
 msgstr ""
 
 msgid "This is some information. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "This is something else."
 msgstr ""
 
 msgid "This is the highest peak of users on your installation since the license started."
@@ -71005,9 +71008,6 @@ msgid "terraform states"
 msgstr ""
 
 msgid "test case"
-msgstr ""
-
-msgid "testing a boolean"
 msgstr ""
 
 msgid "the correct format."

@@ -1,6 +1,7 @@
 <script>
-import { GlCollapsibleListbox, GlFormInput } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlFormInput, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
+import validation, { initForm } from '~/vue_shared/directives/validation';
 
 /**
  * DynamicValueRenderer
@@ -17,10 +18,31 @@ import { __ } from '~/locale';
  */
 
 const INPUT_TYPES = {
-  ARRAY: 'array',
-  BOOLEAN: 'boolean',
-  NUMBER: 'number',
-  STRING: 'string',
+  ARRAY: 'ARRAY',
+  BOOLEAN: 'BOOLEAN',
+  NUMBER: 'NUMBER',
+  STRING: 'STRING',
+};
+
+const feedbackMap = {
+  valueMissing: {
+    isInvalid: (el) => el.validity?.valueMissing,
+    message: __('This is mandatory and must be defined.'),
+  },
+  numberTypeMismatch: {
+    isInvalid: (el) => {
+      return (
+        el.dataset.fieldType === INPUT_TYPES.NUMBER &&
+        el.value &&
+        !Number.isFinite(Number(el.value))
+      );
+    },
+    message: __('The value must contain only numbers.'),
+  },
+  regexMismatch: {
+    isInvalid: (el) => el.validity?.patternMismatch,
+    message: __('The value must match the defined regular expression.'),
+  },
 };
 
 export default {
@@ -29,6 +51,10 @@ export default {
     GlCollapsibleListbox,
     GlFormInput,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+    validation: validation(feedbackMap),
+  },
   props: {
     item: {
       type: Object,
@@ -36,35 +62,32 @@ export default {
     },
   },
   emits: ['update'],
+  data() {
+    return {
+      form: initForm({
+        fields: {
+          [this.item.name]: {
+            value: this.item.default,
+            required: this.item.required || false,
+          },
+        },
+        showValidation: true,
+      }),
+    };
+  },
   computed: {
     inputValue: {
       get() {
-        // For arrays, convert to JSON string
-        if (this.item.type === INPUT_TYPES.ARRAY && Array.isArray(this.item.value)) {
-          return JSON.stringify(this.item.value);
-        }
-        return this.item.value;
+        return this.convertToDisplayValue(this.item.default);
       },
       set(newValue) {
-        // For arrays, try JSON parse first, then comma-split as fallback
-        if (this.item.type === INPUT_TYPES.ARRAY && typeof newValue === 'string') {
-          try {
-            // Try JSON parse for complex arrays
-            const parsed = JSON.parse(newValue);
-            this.$emit('update', {
-              item: this.item,
-              value: Array.isArray(parsed) ? parsed : [parsed],
-            });
-          } catch {
-            // Fallback to comma-split for simple input
-            this.$emit('update', {
-              item: this.item,
-              value: newValue.split(',').map((item) => item.trim()),
-            });
-          }
-        } else {
-          this.$emit('update', { item: this.item, value: newValue });
-        }
+        if (newValue === this.convertToDisplayValue(this.item.default)) return;
+
+        const value = this.convertToType(newValue);
+        this.$emit('update', {
+          item: this.item,
+          value,
+        });
       },
     },
     dropdownOptions() {
@@ -74,29 +97,99 @@ export default {
           { value: 'false', text: 'false' },
         ];
       }
-      return this.item.options.map((option) => ({ value: option, text: option })) || [];
+      return this.item.options?.map((option) => ({ value: option, text: option })) || [];
+    },
+    hasValidationFeedback() {
+      return Boolean(this.validationFeedback);
     },
     headerText() {
       return this.item.type === INPUT_TYPES.BOOLEAN ? __('Value') : __('Options');
     },
-    inputType() {
-      return this.item.type === INPUT_TYPES.NUMBER ? 'number' : 'text';
+    invalidTooltipTitle() {
+      const field = this.form.fields[this.item.name];
+
+      if (this.item.regex && field?.feedback === feedbackMap.regexMismatch.message) {
+        return `${__('Pattern')}: ${this.item.regex}`;
+      }
+
+      return '';
     },
     isDropdown() {
       return this.item.type === INPUT_TYPES.BOOLEAN || Boolean(this.item.options?.length);
+    },
+    validationFeedback() {
+      const field = this.form.fields[this.item.name];
+      return field?.feedback || '';
+    },
+  },
+  methods: {
+    convertToDisplayValue(value) {
+      if (!value) {
+        return this.item.type === INPUT_TYPES.BOOLEAN ? 'false' : '';
+      }
+
+      switch (this.item.type) {
+        case INPUT_TYPES.BOOLEAN:
+          return value.toString();
+        case INPUT_TYPES.ARRAY:
+          return Array.isArray(value) ? JSON.stringify(value) : value;
+        default:
+          return value;
+      }
+    },
+    convertToType(value) {
+      switch (this.item.type) {
+        case INPUT_TYPES.BOOLEAN:
+          return value === 'true';
+        case INPUT_TYPES.NUMBER:
+          return Number(value);
+        case INPUT_TYPES.ARRAY:
+          try {
+            // Try JSON parse for complex arrays
+            const parsed = JSON.parse(value);
+            return Array.isArray(parsed) ? parsed : [parsed];
+          } catch {
+            // Fallback to comma-split for simple input
+            return value.split(',').map((item) => item.trim());
+          }
+        default:
+          return value;
+      }
     },
   },
 };
 </script>
 
 <template>
-  <gl-collapsible-listbox
-    v-if="isDropdown"
-    v-model="inputValue"
-    block
-    :aria-label="item.name"
-    :header-text="headerText"
-    :items="dropdownOptions"
-  />
-  <gl-form-input v-else v-model="inputValue" :aria-label="item.name" :type="inputType" />
+  <div>
+    <gl-collapsible-listbox
+      v-if="isDropdown"
+      v-model="inputValue"
+      block
+      :aria-label="item.name"
+      :header-text="headerText"
+      :items="dropdownOptions"
+    />
+    <template v-else>
+      <gl-form-input
+        v-model="inputValue"
+        v-validation:[form.showValidation]
+        :aria-label="item.name"
+        :data-field-type="item.type"
+        :name="item.name"
+        :pattern="item.regex"
+        :required="item.required"
+        :state="form.fields[item.name].state"
+        data-testid="value-input"
+      />
+      <div
+        v-if="hasValidationFeedback"
+        v-gl-tooltip="invalidTooltipTitle"
+        class="gl-mt-4 gl-text-danger"
+        data-testid="validation-feedback"
+      >
+        {{ validationFeedback }}
+      </div>
+    </template>
+  </div>
 </template>

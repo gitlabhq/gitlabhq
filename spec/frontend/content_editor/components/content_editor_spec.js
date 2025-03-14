@@ -1,4 +1,4 @@
-import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlLink, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
 import { EditorContent, Editor } from '@tiptap/vue-2';
 import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
@@ -16,7 +16,6 @@ import LinkBubbleMenu from '~/content_editor/components/bubble_menus/link_bubble
 import MediaBubbleMenu from '~/content_editor/components/bubble_menus/media_bubble_menu.vue';
 import ReferenceBubbleMenu from '~/content_editor/components/bubble_menus/reference_bubble_menu.vue';
 import FormattingToolbar from '~/content_editor/components/formatting_toolbar.vue';
-import LoadingIndicator from '~/content_editor/components/loading_indicator.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { KEYDOWN_EVENT } from '~/content_editor/constants';
 import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
@@ -32,7 +31,7 @@ describe('ContentEditor', () => {
   const findEditorElement = () => wrapper.findByTestId('content-editor');
   const findEditorContent = () => wrapper.findComponent(EditorContent);
   const findEditorStateObserver = () => wrapper.findComponent(EditorStateObserver);
-  const findLoadingIndicator = () => wrapper.findComponent(LoadingIndicator);
+  const findLoadingIndicator = () => wrapper.findComponent(GlLoadingIcon);
   const findContentEditorAlert = () => wrapper.findComponent(ContentEditorAlert);
   const createWrapper = ({ markdown, autofocus, ...props } = {}) => {
     wrapper = shallowMountExtended(ContentEditor, {

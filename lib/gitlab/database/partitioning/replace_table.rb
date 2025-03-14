@@ -53,6 +53,13 @@ module Gitlab
           statements << alter_column_default(replacement_table, primary_key_column,
             expression: "nextval('#{quote_table_name(sequence)}'::regclass)")
 
+          # If a different user owns the old table, the conversion process will fail to reassign the sequence
+          # ownership to the new parent table (as it will be owned by the current user).
+          # Force the old table to be owned by the same user as the replacement table user in that case.
+          if table_owner(original_table) != table_owner(replacement_table)
+            statements << set_table_owner_statement(original_table, table_owner(replacement_table))
+          end
+
           statements << alter_sequence_owned_by(sequence, replacement_table, primary_key_column)
 
           rename_table_objects(statements, original_table, replaced_table, original_primary_key, replaced_primary_key)
@@ -106,6 +113,18 @@ module Gitlab
           <<~SQL
             ALTER TABLE #{quote_table_name(table_name)}
             RENAME CONSTRAINT #{quote_column_name(old_name)} TO #{quote_column_name(new_name)}
+          SQL
+        end
+
+        def set_table_owner_statement(table_name, new_owner)
+          <<~SQL.chomp
+            ALTER TABLE #{quote_table_name(table_name)} OWNER TO #{new_owner}
+          SQL
+        end
+
+        def table_owner(table_name)
+          connection.select_value(<<~SQL, nil, [table_name])
+            SELECT tableowner FROM pg_tables WHERE tablename = $1
           SQL
         end
       end

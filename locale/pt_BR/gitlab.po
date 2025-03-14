@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-13 12:57\n"
+"PO-Revision-Date: 2025-03-14 12:58\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} até %{end}"
@@ -3901,6 +3901,9 @@ msgstr "%{billable_users_link_start}Saiba mais%{billable_users_link_end} sobre o
 msgid "AdminArea|Active users"
 msgstr "Usuários ativos"
 
+msgid "AdminArea|Add new message"
+msgstr ""
+
 msgid "AdminArea|Are you sure?"
 msgstr "Tem certeza?"
 
@@ -3968,6 +3971,9 @@ msgid "AdminArea|Manage applications for your instance that can use GitLab as an
 msgstr "Gerencie aplicativos para sua instância que podem usar o GitLab como um %{docs_link_start}provedor OAuth%{docs_link_end}."
 
 msgid "AdminArea|Manage applications for your instance that can use GitLab as an OAuth provider."
+msgstr ""
+
+msgid "AdminArea|Messages"
 msgstr ""
 
 msgid "AdminArea|Minimal access"
@@ -11694,6 +11700,12 @@ msgstr "Cancelando visualização"
 msgid "Cannot assign a confidential epic to a non-confidential issue. Make the issue confidential and try again"
 msgstr "Não é possível atribuir um épico confidencial a um problema não confidencial. Torne o problema confidencial e tente novamente"
 
+msgid "Cannot assign a confidential parent to a non-confidential work item. Make the work item confidential and try again"
+msgstr ""
+
+msgid "Cannot assign this work item type to parent type"
+msgstr ""
+
 msgid "Cannot be merged automatically"
 msgstr "Não pode ser mesclado automaticamente"
 
@@ -17247,6 +17259,9 @@ msgstr "Criar um novo lançamento"
 msgid "Create a new repository"
 msgstr "Criar um novo repositório"
 
+msgid "Create a new targeted message"
+msgstr ""
+
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr "Crie um token de acesso pessoal em sua conta para realizar pulls ou pushes via %{protocol}."
 
@@ -17642,6 +17657,9 @@ msgstr "Criado em"
 
 msgid "Created a branch and a merge request to resolve this issue."
 msgstr "Foi criado uma ramificação e uma solicitação de mesclagem para resolver essa issue."
+
+msgid "Created at"
+msgstr ""
 
 msgid "Created branch '%{branch_name}' and a merge request to resolve this issue."
 msgstr "Foi criado a ramificação '%{branch_name}' e uma solicitação de mesclagem para resolver essa issue."
@@ -24670,6 +24688,9 @@ msgstr "Falha ao atribuir um revisor porque nenhum usuário foi especificado."
 msgid "Failed to assign a user because no user was found."
 msgstr "Falha ao atribuir um usuário porque nenhum usuário foi encontrado."
 
+msgid "Failed to assign namespaces due to error processing CSV: %{error_message}"
+msgstr ""
+
 msgid "Failed to assign the framework to the project"
 msgstr "Falha ao atribuir a estrutura ao projeto"
 
@@ -24726,6 +24747,9 @@ msgstr "Falha ao criar repositório"
 
 msgid "Failed to create resources"
 msgstr "Falha ao criar recursos"
+
+msgid "Failed to create targeted message."
+msgstr ""
 
 msgid "Failed to create wiki"
 msgstr "Falha ao criar wiki"
@@ -29473,9 +29497,6 @@ msgstr "Ocultar comentários neste arquivo"
 
 msgid "Hide details"
 msgstr "Ocultar detalhes"
-
-msgid "Hide empty"
-msgstr ""
 
 msgid "Hide file browser"
 msgstr "Ocultar navegador de arquivos"
@@ -34797,6 +34818,9 @@ msgstr "Carregando…"
 msgid "Local"
 msgstr ""
 
+msgid "Local time is displayed."
+msgstr ""
+
 msgid "Localization"
 msgstr "Localização"
 
@@ -35649,17 +35673,20 @@ msgstr "%{member_name} convidou você para se cadastrar no GitLab"
 msgid "MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}"
 msgstr "Convite para participar do %{project_or_group} %{project_or_group_name}"
 
+msgid "MemberRole|%{adminCount} Admin"
+msgstr ""
+
 msgid "MemberRole|%{count} of %{total} permissions added"
 msgstr "%{count} de %{total} permissões adicionadas"
 
 msgid "MemberRole|%{count} of %{total} permissions selected"
 msgstr "%{count} de %{total} permissões selecionadas"
 
+msgid "MemberRole|%{defaultCount} Default %{customCount} Custom"
+msgstr ""
+
 msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}"
 msgstr "%{requirement} deve ser ativado para ativar %{permission}"
-
-msgid "MemberRole|%{rolesStart}Roles:%{rolesEnd} %{customCount} Custom %{defaultCount} Default"
-msgstr "%{rolesStart}Funções:%{rolesEnd} %{customCount} Personalizada %{defaultCount} Padrão"
 
 msgid "MemberRole|Access level"
 msgstr "Nível de acesso"
@@ -35699,6 +35726,12 @@ msgstr ""
 
 msgid "MemberRole|Create role"
 msgstr "Criar função"
+
+msgid "MemberRole|Custom admin role"
+msgstr ""
+
+msgid "MemberRole|Custom member role"
+msgstr ""
 
 msgid "MemberRole|Custom permissions"
 msgstr "Permissões personalizadas"
@@ -38429,9 +38462,6 @@ msgid_plural "New issues"
 msgstr[0] "Nova issue"
 msgstr[1] "Novas issues"
 
-msgid "New issue look"
-msgstr "Aparência da nova issue"
-
 msgid "New issue title"
 msgstr "Novo título de tíquete"
 
@@ -38443,6 +38473,12 @@ msgstr "Nova etiqueta"
 
 msgid "New list"
 msgstr "Nova lista"
+
+msgid "New look"
+msgstr ""
+
+msgid "New look (Beta)"
+msgstr ""
 
 msgid "New merge request"
 msgstr "Nova solicitação de merge"
@@ -38500,6 +38536,9 @@ msgstr "Novo subgrupo"
 
 msgid "New tag"
 msgstr "Nova tag"
+
+msgid "New targeted message"
+msgstr ""
 
 msgid "New test case"
 msgstr "Novo caso de teste"
@@ -38619,9 +38658,6 @@ msgid "No %{title} have been added."
 msgstr ""
 
 msgid "No AI gateway available."
-msgstr ""
-
-msgid "No Author"
 msgstr ""
 
 msgid "No Epic"
@@ -38782,9 +38818,6 @@ msgstr ""
 
 msgid "No issues found"
 msgstr "Nenhuma issue encontrada"
-
-msgid "No items"
-msgstr ""
 
 msgid "No iteration"
 msgstr "Nenhuma iteração"
@@ -42621,9 +42654,6 @@ msgstr ""
 msgid "PipelineCharts|An unknown error occurred while processing CI/CD analytics."
 msgstr "Ocorreu um erro desconhecido ao processar a análise de CI/CD."
 
-msgid "PipelineCharts|CI/CD Analytics"
-msgstr "Análise de CI/CD"
-
 msgid "PipelineCharts|Failure rate"
 msgstr "Taxa de falha"
 
@@ -44416,9 +44446,6 @@ msgstr "O limite de tamanho da pré-visualização foi excedido, as mudanças es
 
 msgid "Preview suppressed by a .gitattributes entry or the file's encoding is unsupported."
 msgstr "Pré-visualização suprimida por uma entrada .gitattributes ou a codificação do arquivo não é compatível."
-
-msgid "Preview the new issues experience, with real time updates and refreshed design."
-msgstr "Pré-visualize a nova experiência de issues, com atualizações em tempo real e design atualizado."
 
 msgid "Previous commit"
 msgstr "Commit anterior"
@@ -48026,6 +48053,9 @@ msgstr "Os limites de taxa podem ajudar a reduzir o volume de solicitações (co
 msgid "Rate the review"
 msgstr ""
 
+msgid "Rate this response %{separator} %{codeStart}%{botUser}%{codeEnd} in reply for more questions"
+msgstr ""
+
 msgid "Raw blob request rate limit per minute"
 msgstr "Limite de taxa de solicitação de blob bruta por minuto"
 
@@ -48240,6 +48270,9 @@ msgstr "enviar e-mails para usuários"
 
 msgid "RegistrationFeatures|use this feature"
 msgstr "use este recurso"
+
+msgid "Registration|There are no seats left on your GitLab instance. Please contact your GitLab administrator."
+msgstr ""
 
 msgid "Registries enqueued to be resynced"
 msgstr "Registros enfileirados para serem ressincronizados"
@@ -54379,6 +54412,9 @@ msgstr "Selecione um repositório contendo modelos para arquivos comuns."
 msgid "Select a role"
 msgstr "Selecione uma função"
 
+msgid "Select a target type"
+msgstr ""
+
 msgid "Select a template repository"
 msgstr "Selecione um repositório de modelos"
 
@@ -54673,6 +54709,9 @@ msgstr "Conta de serviço gerada com sucesso"
 msgid "Service account token expiration"
 msgstr "Expiração do token da conta de serviço"
 
+msgid "Service account was successfully updated."
+msgstr ""
+
 msgid "Service accounts"
 msgstr "Contas de serviço"
 
@@ -54714,6 +54753,9 @@ msgstr "O usuário não tem permissão para criar uma conta de serviço."
 
 msgid "ServiceAccount|User does not have permission to delete a service account."
 msgstr "O usuário não tem permissão para excluir uma conta de serviço."
+
+msgid "ServiceAccount|You are not authorized to update service accounts in this namespace."
+msgstr ""
 
 msgid "ServiceDesk|%{customEmail} with SMTP host %{smtpAddress} is %{badgeStart}verified%{badgeEnd}"
 msgstr "%{customEmail} com o host SMTP %{smtpAddress} está %{badgeStart}verificado%{badgeEnd}"
@@ -55414,9 +55456,6 @@ msgstr "Mostrar status atual da indexação"
 msgid "Show details"
 msgstr "Mostrar detalhes"
 
-msgid "Show empty"
-msgstr ""
-
 msgid "Show file browser"
 msgstr "Mostrar navegador de arquivos"
 
@@ -55964,8 +56003,14 @@ msgstr "Nome do arquivo (por exemplo, test.rb)"
 msgid "Snippets|Files"
 msgstr "Arquivos"
 
+msgid "Snippets|New snippet"
+msgstr ""
+
 msgid "Snippets|Snippet actions"
 msgstr "Ações de snippet"
+
+msgid "Snippets|Snippets"
+msgstr ""
 
 msgid "Snippets|Snippets are limited to %{total} files."
 msgstr "Os snippets são limitados a %{total} arquivos."
@@ -58006,6 +58051,9 @@ msgstr "Branch de destino"
 msgid "Target Path"
 msgstr "Caminho alvo"
 
+msgid "Target Type"
+msgstr ""
+
 msgid "Target branch"
 msgstr "Branch de destino"
 
@@ -58024,8 +58072,17 @@ msgstr "O projeto de destino não pode ser igual ao projeto de origem"
 msgid "Target roles"
 msgstr "Funções alvo"
 
+msgid "Target type"
+msgstr ""
+
 msgid "Target-Branch"
 msgstr "Branch de destino"
+
+msgid "Targeted Messages"
+msgstr ""
+
+msgid "Targeted message was successfully created."
+msgstr ""
 
 msgid "Task"
 msgstr "Tarefa"
@@ -58753,6 +58810,9 @@ msgstr "Os seguintes itens NÃO serão exportados:"
 
 msgid "The following items will be exported:"
 msgstr "Os seguintes itens serão exportados:"
+
+msgid "The following namespace ids were invalid and have been ignored: %{invalid_ids_message}"
+msgstr ""
 
 msgid "The following personal access token was revoked by an administrator, %{username}."
 msgstr "O token de acesso pessoal a seguir foi revogado por um administrador, %{username}."
@@ -62728,6 +62788,9 @@ msgstr "Enviar um novo arquivo por upload"
 msgid "Upload a certificate for your domain with all intermediates"
 msgstr "Enviar por upload um certificado para o seu domínio com todos os intermediários"
 
+msgid "Upload a csv file for targeted namespaces"
+msgstr ""
+
 msgid "Upload a private key for your certificate"
 msgstr "Enviar por upload uma chave privada para o seu certificado"
 
@@ -63361,6 +63424,9 @@ msgstr[1] "Usuários na assinatura"
 
 msgid "User is blocked"
 msgstr "O usuário está bloqueado"
+
+msgid "User is not a service account"
+msgstr ""
 
 msgid "User is not allowed to resolve thread"
 msgstr "O usuário não tem permissão para resolver o tópico"
@@ -65731,6 +65797,9 @@ msgstr "Conheça a nova página inicial de solicitações de mesclagem! Nessa p�
 msgid "Welcome, %{name}!"
 msgstr "Bem-vindo, %{name}!"
 
+msgid "We’ve introduced improvements to issues and epics, such as the ability to view full details from lists and boards, new features, and a refreshed design. Have questions or thoughts on the changes?"
+msgstr ""
+
 msgid "We’ve introduced some improvements to the epic page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?"
 msgstr "Introduzimos algumas melhorias na página épica, como atualizações em tempo real, recursos adicionais e um design renovado. Tem alguma pergunta ou opinião sobre as mudanças?"
 
@@ -66167,6 +66236,9 @@ msgstr "Limite de trabalho em andamento"
 msgid "Work in progress limit: %{wipLimit}"
 msgstr "Limite de trabalho em andamento: %{wipLimit}"
 
+msgid "Work item %{work_item_reference} has already been added to parent %{parent_reference}."
+msgstr ""
+
 msgid "Work item not supported"
 msgstr ""
 
@@ -66343,8 +66415,20 @@ msgstr ""
 msgid "WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed."
 msgstr "Tem certeza de que deseja excluir %{workItemType}? Esta ação não pode ser revertida."
 
+msgid "WorkItem|Assignee"
+msgstr ""
+
 msgid "WorkItem|Assignees"
 msgstr "Responsáveis"
+
+msgid "WorkItem|At risk"
+msgstr ""
+
+msgid "WorkItem|Author"
+msgstr ""
+
+msgid "WorkItem|Back"
+msgstr ""
 
 msgid "WorkItem|Blocked by"
 msgstr "Bloqueado por"
@@ -66529,7 +66613,16 @@ msgstr "Fixo"
 msgid "WorkItem|Forest green"
 msgstr ""
 
+msgid "WorkItem|Group by"
+msgstr ""
+
+msgid "WorkItem|Health Status"
+msgstr ""
+
 msgid "WorkItem|Health status"
+msgstr ""
+
+msgid "WorkItem|Hide empty"
 msgstr ""
 
 msgid "WorkItem|History only"
@@ -66558,6 +66651,9 @@ msgstr "Resultado principal"
 
 msgid "WorkItem|Key result"
 msgstr "Principal resultado"
+
+msgid "WorkItem|Label"
+msgstr ""
 
 msgid "WorkItem|Labels"
 msgstr "Etiquetas"
@@ -66613,6 +66709,9 @@ msgstr "Selecionar vários"
 msgid "WorkItem|Must be a valid hex code"
 msgstr ""
 
+msgid "WorkItem|Needs attention"
+msgstr ""
+
 msgid "WorkItem|New"
 msgstr ""
 
@@ -66645,6 +66744,9 @@ msgstr ""
 
 msgid "WorkItem|No child items are currently open."
 msgstr "Nenhum item filho está aberto no momento."
+
+msgid "WorkItem|No items"
+msgstr ""
 
 msgid "WorkItem|No iteration"
 msgstr "Sem iteração"
@@ -66681,6 +66783,9 @@ msgstr "Número"
 
 msgid "WorkItem|Objective"
 msgstr "Objetivo"
+
+msgid "WorkItem|On track"
+msgstr ""
 
 msgid "WorkItem|One or more items cannot be shown. If you're using SAML authentication, this could mean your session has expired."
 msgstr ""
@@ -66772,6 +66877,9 @@ msgstr "Mostrar todos os ancestrais"
 msgid "WorkItem|Show closed items"
 msgstr "Mostrar itens fechados"
 
+msgid "WorkItem|Show empty"
+msgstr ""
+
 msgid "WorkItem|Show labels"
 msgstr "Mostrar etiquetas"
 
@@ -66785,6 +66893,9 @@ msgid "WorkItem|Some fields are not present in %{workItemType}. If you change ty
 msgstr "Alguns campos não estão presentes em %{workItemType}. Se você mudar de tipo agora, essas informações serão perdidas."
 
 msgid "WorkItem|Some fields could not be loaded. Refresh the page to try again."
+msgstr ""
+
+msgid "WorkItem|Some values are not present in %{groupName} and will be removed."
 msgstr ""
 
 msgid "WorkItem|Someone edited the description at the same time you did. If you save it will overwrite their changes. Please confirm you'd like to save your edits."

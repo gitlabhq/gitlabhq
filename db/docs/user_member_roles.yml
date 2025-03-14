@@ -3,9 +3,9 @@ table_name: user_member_roles
 classes:
 - Users::UserMemberRole
 feature_categories:
-- groups_and_projects
+- permissions
 description: Stores association between users and member roles
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171581
 milestone: '17.6'
 gitlab_schema: gitlab_main_clusterwide
 table_size: small

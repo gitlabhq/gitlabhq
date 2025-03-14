@@ -74,15 +74,35 @@ module AutoExplain
 
             pg.exec('SET statement_timeout TO 0;')
 
+            # Use UNION ALL to handle queries differently based on query_id:
+            # - Apply DISTINCT for non-zero query_ids for efficient database-level deduplication
+            # - Process all query_id=0 cases separately to ensure nothing is missed
             pg.send_query(<<~SQL.squish)
-              SELECT DISTINCT ON (m.query_id)
-                  m.message->>'Query Text' as query, m.message->'Plan' as plan
-              FROM (
-              SELECT substring(message from '\{.*$')::jsonb AS message, query_id
-              FROM pglog
-              WHERE message LIKE '%{%'
-              ) m
-              ORDER BY m.query_id;
+              WITH base_data AS (
+                  SELECT
+                      substring(message from '\{.*$')::jsonb AS message,
+                      query_id
+                  FROM pglog
+                  WHERE message LIKE '%{%'
+              )
+              (
+                  SELECT DISTINCT ON (query_id)
+                      m.query_id,
+                      m.message->>'Query Text' as query,
+                      m.message->'Plan' as plan
+                  FROM base_data m
+                  WHERE m.query_id != 0
+              )
+              UNION ALL
+              (
+                  SELECT
+                      m.query_id,
+                      m.message->>'Query Text' as query,
+                      m.message->'Plan' as plan
+                  FROM base_data m
+                  WHERE m.query_id = 0
+              )
+              ORDER BY query_id;
             SQL
 
             pg.set_single_row_mode
@@ -94,6 +114,7 @@ module AutoExplain
               plan = Gitlab::Json.parse(row['plan'])
 
               output = {
+                query_id: row['query_id'],
                 query: query,
                 plan: plan,
                 fingerprint: fingerprint,

@@ -7,6 +7,8 @@ module Ci
     belongs_to :pipeline_schedule
     belongs_to :project
 
+    before_validation :assign_project_id, on: :create
+
     validates :name, presence: true, length: { maximum: 255 }, uniqueness: { scope: :pipeline_schedule_id }
     validates :value, presence: true
 
@@ -22,6 +24,10 @@ module Ci
       return if Gitlab::Json.encode(value).size <= MAX_VALUE_SIZE
 
       errors.add(:value, "exceeds max serialized size: #{MAX_VALUE_SIZE} characters")
+    end
+
+    def assign_project_id
+      self.project_id = pipeline_schedule&.project_id
     end
   end
 end

@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-13 12:56\n"
+"PO-Revision-Date: 2025-03-14 12:56\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} 到 %{end}"
@@ -3724,6 +3724,9 @@ msgstr "%{billable_users_link_start}了解更多%{billable_users_link_end}有關
 msgid "AdminArea|Active users"
 msgstr "啟用的使用者"
 
+msgid "AdminArea|Add new message"
+msgstr ""
+
 msgid "AdminArea|Are you sure?"
 msgstr "您確定嗎?"
 
@@ -3791,6 +3794,9 @@ msgid "AdminArea|Manage applications for your instance that can use GitLab as an
 msgstr "為您的執行個體管理您的應用系統使用 GitLab 為 %{docs_link_start}OAuth 提供者%{docs_link_end}."
 
 msgid "AdminArea|Manage applications for your instance that can use GitLab as an OAuth provider."
+msgstr ""
+
+msgid "AdminArea|Messages"
 msgstr ""
 
 msgid "AdminArea|Minimal access"
@@ -11483,6 +11489,12 @@ msgstr "取消預覽"
 msgid "Cannot assign a confidential epic to a non-confidential issue. Make the issue confidential and try again"
 msgstr "無法將機密史詩 (epic) 分配給非機密議題，請將此議題設置機密並重試"
 
+msgid "Cannot assign a confidential parent to a non-confidential work item. Make the work item confidential and try again"
+msgstr ""
+
+msgid "Cannot assign this work item type to parent type"
+msgstr ""
+
 msgid "Cannot be merged automatically"
 msgstr "無法自動合併"
 
@@ -17027,6 +17039,9 @@ msgstr "建立新版本發布"
 msgid "Create a new repository"
 msgstr "建立一個新版本庫"
 
+msgid "Create a new targeted message"
+msgstr ""
+
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr "在帳號上建立個人存取令牌，並以此 %{protocol} 來 pull 或 push。"
 
@@ -17422,6 +17437,9 @@ msgstr "已建立於"
 
 msgid "Created a branch and a merge request to resolve this issue."
 msgstr "已建立了一個分支和一個合併請求來解決此議題。"
+
+msgid "Created at"
+msgstr ""
 
 msgid "Created branch '%{branch_name}' and a merge request to resolve this issue."
 msgstr "已建立分支「%{branch_name}」與合併請求來解決此議題。"
@@ -24415,6 +24433,9 @@ msgstr "由於沒有指定使用者，無法分配審核者。"
 msgid "Failed to assign a user because no user was found."
 msgstr "由於未找到使用者，因此無法指派使用者。"
 
+msgid "Failed to assign namespaces due to error processing CSV: %{error_message}"
+msgstr ""
+
 msgid "Failed to assign the framework to the project"
 msgstr "無法將框架指派給專案"
 
@@ -24471,6 +24492,9 @@ msgstr "建立版本庫失敗"
 
 msgid "Failed to create resources"
 msgstr "建立資源失敗"
+
+msgid "Failed to create targeted message."
+msgstr ""
 
 msgid "Failed to create wiki"
 msgstr "建立Wiki失敗"
@@ -29207,9 +29231,6 @@ msgstr "隱藏在此檔案的留言"
 
 msgid "Hide details"
 msgstr "隱藏詳細資料"
-
-msgid "Hide empty"
-msgstr ""
 
 msgid "Hide file browser"
 msgstr "隱藏文件瀏覽器"
@@ -34508,6 +34529,9 @@ msgstr "正在載入..."
 msgid "Local"
 msgstr "本地"
 
+msgid "Local time is displayed."
+msgstr ""
+
 msgid "Localization"
 msgstr "界面顯示語系"
 
@@ -35360,17 +35384,20 @@ msgstr "%{member_name}邀請您使用GitLab"
 msgid "MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}"
 msgstr "邀請加入 %{project_or_group} %{project_or_group_name}"
 
+msgid "MemberRole|%{adminCount} Admin"
+msgstr ""
+
 msgid "MemberRole|%{count} of %{total} permissions added"
 msgstr ""
 
 msgid "MemberRole|%{count} of %{total} permissions selected"
 msgstr "已選擇 %{total} 個權限中的 %{count} 個"
 
+msgid "MemberRole|%{defaultCount} Default %{customCount} Custom"
+msgstr ""
+
 msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}"
 msgstr "必須啟用 %{requirement} 才能啟用 %{permission}"
-
-msgid "MemberRole|%{rolesStart}Roles:%{rolesEnd} %{customCount} Custom %{defaultCount} Default"
-msgstr ""
 
 msgid "MemberRole|Access level"
 msgstr ""
@@ -35410,6 +35437,12 @@ msgstr "無法更新角色。"
 
 msgid "MemberRole|Create role"
 msgstr "建立角色"
+
+msgid "MemberRole|Custom admin role"
+msgstr ""
+
+msgid "MemberRole|Custom member role"
+msgstr ""
 
 msgid "MemberRole|Custom permissions"
 msgstr "自訂權限"
@@ -38127,9 +38160,6 @@ msgid "New issue"
 msgid_plural "New issues"
 msgstr[0] "新議題"
 
-msgid "New issue look"
-msgstr ""
-
 msgid "New issue title"
 msgstr "新議題標題"
 
@@ -38141,6 +38171,12 @@ msgstr "新增標記"
 
 msgid "New list"
 msgstr "新增列表"
+
+msgid "New look"
+msgstr ""
+
+msgid "New look (Beta)"
+msgstr ""
 
 msgid "New merge request"
 msgstr "新建合併請求"
@@ -38198,6 +38234,9 @@ msgstr "新建子群組"
 
 msgid "New tag"
 msgstr "新建標籤"
+
+msgid "New targeted message"
+msgstr ""
 
 msgid "New test case"
 msgstr "新增測試案例"
@@ -38318,9 +38357,6 @@ msgstr "沒有 %{title} 被加入。"
 
 msgid "No AI gateway available."
 msgstr "沒有可用的 AI 閘道"
-
-msgid "No Author"
-msgstr ""
 
 msgid "No Epic"
 msgstr "無史詩 (Epic)"
@@ -38480,9 +38516,6 @@ msgstr ""
 
 msgid "No issues found"
 msgstr "未發現議題"
-
-msgid "No items"
-msgstr ""
 
 msgid "No iteration"
 msgstr "無迭代"
@@ -42308,9 +42341,6 @@ msgstr ""
 msgid "PipelineCharts|An unknown error occurred while processing CI/CD analytics."
 msgstr "處理CI/CD分析時發生未知錯誤。"
 
-msgid "PipelineCharts|CI/CD Analytics"
-msgstr "CI/CD 分析"
-
 msgid "PipelineCharts|Failure rate"
 msgstr ""
 
@@ -44101,9 +44131,6 @@ msgid "Preview size limit exceeded, changes collapsed."
 msgstr ""
 
 msgid "Preview suppressed by a .gitattributes entry or the file's encoding is unsupported."
-msgstr ""
-
-msgid "Preview the new issues experience, with real time updates and refreshed design."
 msgstr ""
 
 msgid "Previous commit"
@@ -47709,6 +47736,9 @@ msgstr "速率限制有助於減少請求量（例如來自爬蟲或濫用機器
 msgid "Rate the review"
 msgstr ""
 
+msgid "Rate this response %{separator} %{codeStart}%{botUser}%{codeEnd} in reply for more questions"
+msgstr ""
+
 msgid "Raw blob request rate limit per minute"
 msgstr "每分鐘原始Blob請求速率限制"
 
@@ -47922,6 +47952,9 @@ msgstr "向使用者發送電子郵件"
 
 msgid "RegistrationFeatures|use this feature"
 msgstr "使用此功能"
+
+msgid "Registration|There are no seats left on your GitLab instance. Please contact your GitLab administrator."
+msgstr ""
 
 msgid "Registries enqueued to be resynced"
 msgstr "註冊表已排隊等待重新同步"
@@ -54019,6 +54052,9 @@ msgstr "選擇一個包含常見文件範本的版本庫。"
 msgid "Select a role"
 msgstr "選擇一個角色"
 
+msgid "Select a target type"
+msgstr ""
+
 msgid "Select a template repository"
 msgstr "選擇一個範本版本庫"
 
@@ -54313,6 +54349,9 @@ msgstr "服務帳號產生成功"
 msgid "Service account token expiration"
 msgstr "服務帳號令牌過期"
 
+msgid "Service account was successfully updated."
+msgstr ""
+
 msgid "Service accounts"
 msgstr "服務帳號"
 
@@ -54354,6 +54393,9 @@ msgstr "使用者沒有權限建立服務帳號。"
 
 msgid "ServiceAccount|User does not have permission to delete a service account."
 msgstr "使用者沒有權限刪除服務帳戶"
+
+msgid "ServiceAccount|You are not authorized to update service accounts in this namespace."
+msgstr ""
 
 msgid "ServiceDesk|%{customEmail} with SMTP host %{smtpAddress} is %{badgeStart}verified%{badgeEnd}"
 msgstr "%{customEmail} 與 SMTP 主機 %{smtpAddress} 已驗證 %{badgeStart}%{badgeEnd}"
@@ -55054,9 +55096,6 @@ msgstr "顯示索引的目前狀態"
 msgid "Show details"
 msgstr "顯示詳情"
 
-msgid "Show empty"
-msgstr ""
-
 msgid "Show file browser"
 msgstr "顯示文件瀏覽器"
 
@@ -55602,8 +55641,14 @@ msgstr "檔案名稱（例如 test.rb）"
 msgid "Snippets|Files"
 msgstr "文件"
 
+msgid "Snippets|New snippet"
+msgstr ""
+
 msgid "Snippets|Snippet actions"
 msgstr "片段操作"
+
+msgid "Snippets|Snippets"
+msgstr ""
 
 msgid "Snippets|Snippets are limited to %{total} files."
 msgstr "片段被限制為 %{total} 個文件。"
@@ -57643,6 +57688,9 @@ msgstr "目標分支"
 msgid "Target Path"
 msgstr "目標路徑"
 
+msgid "Target Type"
+msgstr ""
+
 msgid "Target branch"
 msgstr "目標分支"
 
@@ -57661,8 +57709,17 @@ msgstr "目標專案能等於來源專案"
 msgid "Target roles"
 msgstr "目標角色"
 
+msgid "Target type"
+msgstr ""
+
 msgid "Target-Branch"
 msgstr "目標分支"
+
+msgid "Targeted Messages"
+msgstr ""
+
+msgid "Targeted message was successfully created."
+msgstr ""
 
 msgid "Task"
 msgstr "任務"
@@ -58385,6 +58442,9 @@ msgstr "以下項目將不會被匯出："
 
 msgid "The following items will be exported:"
 msgstr "以下項目將會被匯出："
+
+msgid "The following namespace ids were invalid and have been ignored: %{invalid_ids_message}"
+msgstr ""
 
 msgid "The following personal access token was revoked by an administrator, %{username}."
 msgstr ""
@@ -62320,6 +62380,9 @@ msgstr "上傳新文件"
 msgid "Upload a certificate for your domain with all intermediates"
 msgstr "透過儲存介質上傳您的網域憑證"
 
+msgid "Upload a csv file for targeted namespaces"
+msgstr ""
+
 msgid "Upload a private key for your certificate"
 msgstr "為您的憑證上傳一個私鑰"
 
@@ -62951,6 +63014,9 @@ msgstr[0] "訂閱中的使用者"
 
 msgid "User is blocked"
 msgstr "使用者已被封鎖"
+
+msgid "User is not a service account"
+msgstr ""
 
 msgid "User is not allowed to resolve thread"
 msgstr "使用者不被允許解決主題"
@@ -65314,6 +65380,9 @@ msgstr ""
 msgid "Welcome, %{name}!"
 msgstr "歡迎， %{name}！"
 
+msgid "We’ve introduced improvements to issues and epics, such as the ability to view full details from lists and boards, new features, and a refreshed design. Have questions or thoughts on the changes?"
+msgstr ""
+
 msgid "We’ve introduced some improvements to the epic page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?"
 msgstr "我們對這個重要頁面進行了一些改進，例如實時更新、額外功能和更新設計，對這些變化有疑問或想法嗎？"
 
@@ -65748,6 +65817,9 @@ msgstr "WIP 限制"
 msgid "Work in progress limit: %{wipLimit}"
 msgstr "進度限制：%{wipLimit}"
 
+msgid "Work item %{work_item_reference} has already been added to parent %{parent_reference}."
+msgstr ""
+
 msgid "Work item not supported"
 msgstr ""
 
@@ -65920,7 +65992,19 @@ msgstr "您確定要關閉這個被封鎖的 %{workItemType} 嗎？"
 msgid "WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed."
 msgstr "您確定要刪除 %{workItemType} 嗎？該操作無法撤消。"
 
+msgid "WorkItem|Assignee"
+msgstr ""
+
 msgid "WorkItem|Assignees"
+msgstr ""
+
+msgid "WorkItem|At risk"
+msgstr ""
+
+msgid "WorkItem|Author"
+msgstr ""
+
+msgid "WorkItem|Back"
 msgstr ""
 
 msgid "WorkItem|Blocked by"
@@ -66106,7 +66190,16 @@ msgstr "已修正"
 msgid "WorkItem|Forest green"
 msgstr "森林綠"
 
+msgid "WorkItem|Group by"
+msgstr ""
+
+msgid "WorkItem|Health Status"
+msgstr ""
+
 msgid "WorkItem|Health status"
+msgstr ""
+
+msgid "WorkItem|Hide empty"
 msgstr ""
 
 msgid "WorkItem|History only"
@@ -66135,6 +66228,9 @@ msgstr "關鍵結果"
 
 msgid "WorkItem|Key result"
 msgstr "關鍵結果"
+
+msgid "WorkItem|Label"
+msgstr ""
 
 msgid "WorkItem|Labels"
 msgstr ""
@@ -66190,6 +66286,9 @@ msgstr ""
 msgid "WorkItem|Must be a valid hex code"
 msgstr "必須是有效的十六進位碼"
 
+msgid "WorkItem|Needs attention"
+msgstr ""
+
 msgid "WorkItem|New"
 msgstr ""
 
@@ -66221,6 +66320,9 @@ msgid "WorkItem|No child items are currently assigned. Use child items to break 
 msgstr ""
 
 msgid "WorkItem|No child items are currently open."
+msgstr ""
+
+msgid "WorkItem|No items"
 msgstr ""
 
 msgid "WorkItem|No iteration"
@@ -66258,6 +66360,9 @@ msgstr ""
 
 msgid "WorkItem|Objective"
 msgstr "目標"
+
+msgid "WorkItem|On track"
+msgstr ""
 
 msgid "WorkItem|One or more items cannot be shown. If you're using SAML authentication, this could mean your session has expired."
 msgstr ""
@@ -66349,6 +66454,9 @@ msgstr "顯示所有先祖(ancestors)"
 msgid "WorkItem|Show closed items"
 msgstr ""
 
+msgid "WorkItem|Show empty"
+msgstr ""
+
 msgid "WorkItem|Show labels"
 msgstr "顯示標記"
 
@@ -66362,6 +66470,9 @@ msgid "WorkItem|Some fields are not present in %{workItemType}. If you change ty
 msgstr ""
 
 msgid "WorkItem|Some fields could not be loaded. Refresh the page to try again."
+msgstr ""
+
+msgid "WorkItem|Some values are not present in %{groupName} and will be removed."
 msgstr ""
 
 msgid "WorkItem|Someone edited the description at the same time you did. If you save it will overwrite their changes. Please confirm you'd like to save your edits."

@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ro\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-03-13 12:57\n"
+"PO-Revision-Date: 2025-03-14 12:58\n"
 
 msgid " %{start} to %{end}"
 msgstr " de la %{start} până la %{end}"
@@ -4078,6 +4078,9 @@ msgstr "%{billable_users_link_start}Aflați mai multe%{billable_users_link_end} 
 msgid "AdminArea|Active users"
 msgstr "Utilizatori activi"
 
+msgid "AdminArea|Add new message"
+msgstr ""
+
 msgid "AdminArea|Are you sure?"
 msgstr ""
 
@@ -4145,6 +4148,9 @@ msgid "AdminArea|Manage applications for your instance that can use GitLab as an
 msgstr "Gestionați-vă aplicațiile din instanța dvs. care pot folosi GitLab ca %{docs_link_start}furnizor OAuth%{docs_link_end}."
 
 msgid "AdminArea|Manage applications for your instance that can use GitLab as an OAuth provider."
+msgstr ""
+
+msgid "AdminArea|Messages"
 msgstr ""
 
 msgid "AdminArea|Minimal access"
@@ -11905,6 +11911,12 @@ msgstr "Anulare previzualizare"
 msgid "Cannot assign a confidential epic to a non-confidential issue. Make the issue confidential and try again"
 msgstr "Nu se poate atribui o epocă de tip confidențial unei probleme neconfidențiale. Faceți problema confidențială și încercați din nou."
 
+msgid "Cannot assign a confidential parent to a non-confidential work item. Make the work item confidential and try again"
+msgstr ""
+
+msgid "Cannot assign this work item type to parent type"
+msgstr ""
+
 msgid "Cannot be merged automatically"
 msgstr "Nu poate fi îmbinat automat"
 
@@ -17467,6 +17479,9 @@ msgstr ""
 msgid "Create a new repository"
 msgstr "Creați un nou repozitoriu"
 
+msgid "Create a new targeted message"
+msgstr ""
+
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr "Create un token de acces personal în contul dvs. pentru a utiliza pull sau push prin %{protocol}."
 
@@ -17862,6 +17877,9 @@ msgstr "Creat pe"
 
 msgid "Created a branch and a merge request to resolve this issue."
 msgstr "Am creat o ramură și un merge request pentru a rezolva această problemă."
+
+msgid "Created at"
+msgstr ""
 
 msgid "Created branch '%{branch_name}' and a merge request to resolve this issue."
 msgstr "S-a creat ramura „%{branch_name}” și un merge request pentru a rezolva această problemă."
@@ -24925,6 +24943,9 @@ msgstr "Nu s-a reușit atribuirea unui revizor deoarece nu a fost specificat nic
 msgid "Failed to assign a user because no user was found."
 msgstr "Nu s-a reușit atribuirea unui utilizator deoarece nu a fost găsit niciun utilizator."
 
+msgid "Failed to assign namespaces due to error processing CSV: %{error_message}"
+msgstr ""
+
 msgid "Failed to assign the framework to the project"
 msgstr ""
 
@@ -24981,6 +25002,9 @@ msgstr "Nu s-a reușit crearea repozitoriului"
 
 msgid "Failed to create resources"
 msgstr "Nu s-a reușit crearea resurselor"
+
+msgid "Failed to create targeted message."
+msgstr ""
 
 msgid "Failed to create wiki"
 msgstr "Nu s-a reușit crearea wiki-ului"
@@ -29739,9 +29763,6 @@ msgstr "Ascundeți comentariile la acest fișier"
 
 msgid "Hide details"
 msgstr "Ascundeți detaliile"
-
-msgid "Hide empty"
-msgstr ""
 
 msgid "Hide file browser"
 msgstr "Ascundeți browserul de fișiere"
@@ -35086,6 +35107,9 @@ msgstr "Se încarcă…"
 msgid "Local"
 msgstr ""
 
+msgid "Local time is displayed."
+msgstr ""
+
 msgid "Localization"
 msgstr "Localizare"
 
@@ -35938,16 +35962,19 @@ msgstr "%{member_name} v-a invitat să vă alăturați la GitLab"
 msgid "MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}"
 msgstr "Invitație de aderare la %{project_or_group} %{project_or_group_name}"
 
+msgid "MemberRole|%{adminCount} Admin"
+msgstr ""
+
 msgid "MemberRole|%{count} of %{total} permissions added"
 msgstr ""
 
 msgid "MemberRole|%{count} of %{total} permissions selected"
 msgstr ""
 
-msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}"
+msgid "MemberRole|%{defaultCount} Default %{customCount} Custom"
 msgstr ""
 
-msgid "MemberRole|%{rolesStart}Roles:%{rolesEnd} %{customCount} Custom %{defaultCount} Default"
+msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}"
 msgstr ""
 
 msgid "MemberRole|Access level"
@@ -35987,6 +36014,12 @@ msgid "MemberRole|Could not update role."
 msgstr ""
 
 msgid "MemberRole|Create role"
+msgstr ""
+
+msgid "MemberRole|Custom admin role"
+msgstr ""
+
+msgid "MemberRole|Custom member role"
 msgstr ""
 
 msgid "MemberRole|Custom permissions"
@@ -38731,9 +38764,6 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-msgid "New issue look"
-msgstr ""
-
 msgid "New issue title"
 msgstr "Titlul noii probleme"
 
@@ -38745,6 +38775,12 @@ msgstr "Etichetă nouă"
 
 msgid "New list"
 msgstr "Listă nouă"
+
+msgid "New look"
+msgstr ""
+
+msgid "New look (Beta)"
+msgstr ""
 
 msgid "New merge request"
 msgstr "Merge request nou"
@@ -38802,6 +38838,9 @@ msgstr "Subgrup nou"
 
 msgid "New tag"
 msgstr "Etichetă nouă"
+
+msgid "New targeted message"
+msgstr ""
 
 msgid "New test case"
 msgstr "Caz de testare nou"
@@ -38921,9 +38960,6 @@ msgid "No %{title} have been added."
 msgstr ""
 
 msgid "No AI gateway available."
-msgstr ""
-
-msgid "No Author"
 msgstr ""
 
 msgid "No Epic"
@@ -39084,9 +39120,6 @@ msgstr ""
 
 msgid "No issues found"
 msgstr "Nu s-au găsit probleme"
-
-msgid "No items"
-msgstr ""
 
 msgid "No iteration"
 msgstr "Nicio iterație"
@@ -42934,9 +42967,6 @@ msgstr ""
 msgid "PipelineCharts|An unknown error occurred while processing CI/CD analytics."
 msgstr "A apărut o eroare necunoscută în timpul procesării analizelor CI/CD."
 
-msgid "PipelineCharts|CI/CD Analytics"
-msgstr "Analize CI/CD"
-
 msgid "PipelineCharts|Failure rate"
 msgstr ""
 
@@ -44729,9 +44759,6 @@ msgid "Preview size limit exceeded, changes collapsed."
 msgstr ""
 
 msgid "Preview suppressed by a .gitattributes entry or the file's encoding is unsupported."
-msgstr ""
-
-msgid "Preview the new issues experience, with real time updates and refreshed design."
 msgstr ""
 
 msgid "Previous commit"
@@ -48343,6 +48370,9 @@ msgstr "Limitele de viteză pot ajuta la reducerea volumului de solicitări (de 
 msgid "Rate the review"
 msgstr ""
 
+msgid "Rate this response %{separator} %{codeStart}%{botUser}%{codeEnd} in reply for more questions"
+msgstr ""
+
 msgid "Raw blob request rate limit per minute"
 msgstr "Limita ratei de solicitare a blob-urilor brute pe minut"
 
@@ -48558,6 +48588,9 @@ msgstr "trimiteți e-mailuri către utilizatori"
 
 msgid "RegistrationFeatures|use this feature"
 msgstr "utilizați această funcție"
+
+msgid "Registration|There are no seats left on your GitLab instance. Please contact your GitLab administrator."
+msgstr ""
 
 msgid "Registries enqueued to be resynced"
 msgstr ""
@@ -54739,6 +54772,9 @@ msgstr "Selectați un repozitoriu care conține șabloane pentru fișiere comune
 msgid "Select a role"
 msgstr "Selectați un rol"
 
+msgid "Select a target type"
+msgstr ""
+
 msgid "Select a template repository"
 msgstr "Selectați un repozitoriu de șabloane"
 
@@ -55033,6 +55069,9 @@ msgstr "Cont de serviciu generat cu succes"
 msgid "Service account token expiration"
 msgstr ""
 
+msgid "Service account was successfully updated."
+msgstr ""
+
 msgid "Service accounts"
 msgstr "Conturi de servicii"
 
@@ -55073,6 +55112,9 @@ msgid "ServiceAccount|User does not have permission to create a service account.
 msgstr ""
 
 msgid "ServiceAccount|User does not have permission to delete a service account."
+msgstr ""
+
+msgid "ServiceAccount|You are not authorized to update service accounts in this namespace."
 msgstr ""
 
 msgid "ServiceDesk|%{customEmail} with SMTP host %{smtpAddress} is %{badgeStart}verified%{badgeEnd}"
@@ -55774,9 +55816,6 @@ msgstr ""
 msgid "Show details"
 msgstr "Afișați detaliile"
 
-msgid "Show empty"
-msgstr ""
-
 msgid "Show file browser"
 msgstr "Afișați browserul de fișiere"
 
@@ -56326,7 +56365,13 @@ msgstr ""
 msgid "Snippets|Files"
 msgstr "Fișiere"
 
+msgid "Snippets|New snippet"
+msgstr ""
+
 msgid "Snippets|Snippet actions"
+msgstr ""
+
+msgid "Snippets|Snippets"
 msgstr ""
 
 msgid "Snippets|Snippets are limited to %{total} files."
@@ -58369,6 +58414,9 @@ msgstr "Ramura țintă"
 msgid "Target Path"
 msgstr "Calea de destinație"
 
+msgid "Target Type"
+msgstr ""
+
 msgid "Target branch"
 msgstr "Ramura țintă"
 
@@ -58387,8 +58435,17 @@ msgstr ""
 msgid "Target roles"
 msgstr "Roluri țintă"
 
+msgid "Target type"
+msgstr ""
+
 msgid "Target-Branch"
 msgstr "Ramura-țintă"
+
+msgid "Targeted Messages"
+msgstr ""
+
+msgid "Targeted message was successfully created."
+msgstr ""
 
 msgid "Task"
 msgstr "Sarcină"
@@ -59121,6 +59178,9 @@ msgstr "Următoarele elemente NU vor fi exportate:"
 
 msgid "The following items will be exported:"
 msgstr "Următoarele elemente vor fi exportate:"
+
+msgid "The following namespace ids were invalid and have been ignored: %{invalid_ids_message}"
+msgstr ""
 
 msgid "The following personal access token was revoked by an administrator, %{username}."
 msgstr ""
@@ -63136,6 +63196,9 @@ msgstr "Încărcați un fișier nou"
 msgid "Upload a certificate for your domain with all intermediates"
 msgstr "Încărcați un certificat pentru domeniul dvs cu toți intermediarii"
 
+msgid "Upload a csv file for targeted namespaces"
+msgstr ""
+
 msgid "Upload a private key for your certificate"
 msgstr "Încărcați o cheie privată pentru certificatul d-voastră"
 
@@ -63771,6 +63834,9 @@ msgstr[2] ""
 
 msgid "User is blocked"
 msgstr "Utilizatorul este blocat"
+
+msgid "User is not a service account"
+msgstr ""
 
 msgid "User is not allowed to resolve thread"
 msgstr "Utilizatorul nu are voie să rezolve subiectul"
@@ -66148,6 +66214,9 @@ msgstr ""
 msgid "Welcome, %{name}!"
 msgstr "Bine ați venit, %{name}!"
 
+msgid "We’ve introduced improvements to issues and epics, such as the ability to view full details from lists and boards, new features, and a refreshed design. Have questions or thoughts on the changes?"
+msgstr ""
+
 msgid "We’ve introduced some improvements to the epic page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?"
 msgstr ""
 
@@ -66586,6 +66655,9 @@ msgstr ""
 msgid "Work in progress limit: %{wipLimit}"
 msgstr ""
 
+msgid "Work item %{work_item_reference} has already been added to parent %{parent_reference}."
+msgstr ""
+
 msgid "Work item not supported"
 msgstr ""
 
@@ -66766,7 +66838,19 @@ msgstr ""
 msgid "WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed."
 msgstr "Sunteți sigur că doriți să ștergeți acest %{workItemType}? Această acțiune este ireversibilă."
 
+msgid "WorkItem|Assignee"
+msgstr ""
+
 msgid "WorkItem|Assignees"
+msgstr ""
+
+msgid "WorkItem|At risk"
+msgstr ""
+
+msgid "WorkItem|Author"
+msgstr ""
+
+msgid "WorkItem|Back"
 msgstr ""
 
 msgid "WorkItem|Blocked by"
@@ -66952,7 +67036,16 @@ msgstr ""
 msgid "WorkItem|Forest green"
 msgstr ""
 
+msgid "WorkItem|Group by"
+msgstr ""
+
+msgid "WorkItem|Health Status"
+msgstr ""
+
 msgid "WorkItem|Health status"
+msgstr ""
+
+msgid "WorkItem|Hide empty"
 msgstr ""
 
 msgid "WorkItem|History only"
@@ -66980,6 +67073,9 @@ msgid "WorkItem|Key Result"
 msgstr ""
 
 msgid "WorkItem|Key result"
+msgstr ""
+
+msgid "WorkItem|Label"
 msgstr ""
 
 msgid "WorkItem|Labels"
@@ -67036,6 +67132,9 @@ msgstr ""
 msgid "WorkItem|Must be a valid hex code"
 msgstr ""
 
+msgid "WorkItem|Needs attention"
+msgstr ""
+
 msgid "WorkItem|New"
 msgstr ""
 
@@ -67067,6 +67166,9 @@ msgid "WorkItem|No child items are currently assigned. Use child items to break 
 msgstr ""
 
 msgid "WorkItem|No child items are currently open."
+msgstr ""
+
+msgid "WorkItem|No items"
 msgstr ""
 
 msgid "WorkItem|No iteration"
@@ -67103,6 +67205,9 @@ msgid "WorkItem|Number"
 msgstr ""
 
 msgid "WorkItem|Objective"
+msgstr ""
+
+msgid "WorkItem|On track"
 msgstr ""
 
 msgid "WorkItem|One or more items cannot be shown. If you're using SAML authentication, this could mean your session has expired."
@@ -67195,6 +67300,9 @@ msgstr ""
 msgid "WorkItem|Show closed items"
 msgstr ""
 
+msgid "WorkItem|Show empty"
+msgstr ""
+
 msgid "WorkItem|Show labels"
 msgstr ""
 
@@ -67208,6 +67316,9 @@ msgid "WorkItem|Some fields are not present in %{workItemType}. If you change ty
 msgstr ""
 
 msgid "WorkItem|Some fields could not be loaded. Refresh the page to try again."
+msgstr ""
+
+msgid "WorkItem|Some values are not present in %{groupName} and will be removed."
 msgstr ""
 
 msgid "WorkItem|Someone edited the description at the same time you did. If you save it will overwrite their changes. Please confirm you'd like to save your edits."

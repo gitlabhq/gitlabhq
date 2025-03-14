@@ -8798,6 +8798,7 @@ Input type: `PipelineScheduleCreateInput`
 | <a id="mutationpipelineschedulecreatecron"></a>`cron` | [`String!`](#string) | Cron expression of the pipeline schedule. |
 | <a id="mutationpipelineschedulecreatecrontimezone"></a>`cronTimezone` | [`String`](#string) | Cron time zone supported by ActiveSupport::TimeZone. For example: "Pacific Time (US & Canada)" (default: "UTC"). |
 | <a id="mutationpipelineschedulecreatedescription"></a>`description` | [`String!`](#string) | Description of the pipeline schedule. |
+| <a id="mutationpipelineschedulecreateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInputType!]`](#ciinputsinputtype) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
 | <a id="mutationpipelineschedulecreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the pipeline schedule is associated with. |
 | <a id="mutationpipelineschedulecreateref"></a>`ref` | [`String!`](#string) | Ref of the pipeline schedule. |
 | <a id="mutationpipelineschedulecreatevariables"></a>`variables` | [`[PipelineScheduleVariableInput!]`](#pipelineschedulevariableinput) | Variables for the pipeline schedule. |
@@ -13717,6 +13718,29 @@ The edge type for [`CiGroupVariable`](#cigroupvariable).
 | ---- | ---- | ----------- |
 | <a id="cigroupvariableedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cigroupvariableedgenode"></a>`node` | [`CiGroupVariable`](#cigroupvariable) | The item at the end of the edge. |
+
+#### `CiInputsFieldConnection`
+
+The connection type for [`CiInputsField`](#ciinputsfield).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciinputsfieldconnectionedges"></a>`edges` | [`[CiInputsFieldEdge]`](#ciinputsfieldedge) | A list of edges. |
+| <a id="ciinputsfieldconnectionnodes"></a>`nodes` | [`[CiInputsField]`](#ciinputsfield) | A list of nodes. |
+| <a id="ciinputsfieldconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiInputsFieldEdge`
+
+The edge type for [`CiInputsField`](#ciinputsfield).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciinputsfieldedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="ciinputsfieldedgenode"></a>`node` | [`CiInputsField`](#ciinputsfield) | The item at the end of the edge. |
 
 #### `CiInstanceVariableConnection`
 
@@ -22140,6 +22164,17 @@ Input for pipeline creation.
 | <a id="ciinputspecregex"></a>`regex` | [`String`](#string) | Regular expression pattern that the input value must match if provided. |
 | <a id="ciinputspecrequired"></a>`required` | [`Boolean!`](#boolean) | Indicates whether the input is required. |
 | <a id="ciinputspectype"></a>`type` | [`CiInputType!`](#ciinputtype) | Input data type. |
+
+### `CiInputsField`
+
+CI input saved for a pipeline schedule.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciinputsfieldname"></a>`name` | [`String!`](#string) | Name of the input. |
+| <a id="ciinputsfieldvalue"></a>`value` | [`CiInputsValueInputType`](#ciinputsvalueinputtype) | Value of the input. |
 
 ### `CiInstanceVariable`
 
@@ -33619,6 +33654,7 @@ Represents a pipeline schedule.
 | <a id="pipelinescheduleeditpath"></a>`editPath` | [`String`](#string) | Edit path of the pipeline schedule. |
 | <a id="pipelineschedulefortag"></a>`forTag` | [`Boolean!`](#boolean) | Indicates if a pipelines schedule belongs to a tag. |
 | <a id="pipelinescheduleid"></a>`id` | [`ID!`](#id) | ID of the pipeline schedule. |
+| <a id="pipelinescheduleinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`CiInputsFieldConnection`](#ciinputsfieldconnection) | **Introduced** in GitLab 17.10. **Status**: Experiment. Inputs configured for the pipeline schedule. |
 | <a id="pipelineschedulelastpipeline"></a>`lastPipeline` | [`Pipeline`](#pipeline) | Last pipeline object. |
 | <a id="pipelineschedulenextrunat"></a>`nextRunAt` | [`Time`](#time) | Time when the next pipeline will run. |
 | <a id="pipelinescheduleowner"></a>`owner` | [`UserCore`](#usercore) | Owner of the pipeline schedule. |
@@ -40321,7 +40357,7 @@ Represents a custom fields widget definition.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetdefinitioncustomfieldscustomfields"></a>`customFields` {{< icon name="warning-solid" >}} | [`[CustomField!]`](#customfield) | **Introduced** in GitLab 17.10. **Status**: Experiment. Custom fields available for the work item type. Available only when feature flag `custom_fields_feature` is enabled. |
+| <a id="workitemwidgetdefinitioncustomfieldscustomfieldvalues"></a>`customFieldValues` {{< icon name="warning-solid" >}} | [`[WorkItemCustomFieldValue!]`](#workitemcustomfieldvalue) | **Introduced** in GitLab 17.10. **Status**: Experiment. Custom field values associated to the work item. |
 | <a id="workitemwidgetdefinitioncustomfieldstype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetDefinitionGeneric`
