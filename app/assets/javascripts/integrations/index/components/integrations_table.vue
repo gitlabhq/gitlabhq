@@ -59,8 +59,8 @@ export default {
       fields.push(
         {
           key: 'active',
-          label: __('Active'),
-          thClass: 'gl-w-7 gl-sr-only',
+          label: '',
+          thClass: 'gl-w-7',
           tdClass: '!gl-border-b-0 !gl-align-middle',
         },
         {
@@ -125,6 +125,10 @@ export default {
     tbody-tr-class="gl-cursor-pointer hover:!gl-bg-strong"
     @row-clicked="navigateToItemSettings"
   >
+    <template #head(active)>
+      <span class="gl-sr-only">{{ __('Active') }}</span>
+    </template>
+
     <template #cell(active)="{ item }">
       <gl-icon
         v-if="item.configured"
