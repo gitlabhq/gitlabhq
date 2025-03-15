@@ -90,6 +90,7 @@ export default {
       },
       errorTitle: null,
       error: null,
+      pipelineInputs: [],
       pipelineVariables: [],
       warnings: [],
       totalWarnings: 0,
@@ -145,6 +146,7 @@ export default {
               projectPath: this.projectPath,
               ref: this.refShortName,
               variables: this.pipelineVariables,
+              ...(this.isPipelineInputsFeatureAvailable && { inputs: this.pipelineInputs }),
             },
           },
         });
@@ -172,6 +174,9 @@ export default {
 
       // always re-enable submit button
       this.submitted = false;
+    },
+    handleInputsUpdated(updatedInputs) {
+      this.pipelineInputs = updatedInputs;
     },
     handleVariablesUpdated(updatedVariables) {
       this.pipelineVariables = updatedVariables;
@@ -254,7 +259,10 @@ export default {
           @loadingError="onRefsLoadingError"
         />
       </gl-form-group>
-      <pipeline-inputs-form v-if="isPipelineInputsFeatureAvailable" />
+      <pipeline-inputs-form
+        v-if="isPipelineInputsFeatureAvailable"
+        @update-inputs="handleInputsUpdated"
+      />
       <pipeline-variables-form
         v-if="canViewPipelineVariables"
         :file-params="fileParams"

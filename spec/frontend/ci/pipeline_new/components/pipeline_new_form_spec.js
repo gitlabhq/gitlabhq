@@ -69,6 +69,11 @@ describe('Pipeline New Form', () => {
   const findPipelineConfigButton = () => wrapper.findByTestId('ci-cd-pipeline-configuration');
   const findWarningAlert = () => wrapper.findByTestId('run-pipeline-warning-alert');
 
+  const submitForm = async () => {
+    findForm().vm.$emit('submit', dummySubmitEvent);
+    await waitForPromises();
+  };
+
   const selectBranch = async (branch) => {
     findRefsDropdown().vm.$emit('input', {
       shortName: branch,
@@ -119,6 +124,9 @@ describe('Pipeline New Form', () => {
   });
 
   describe('Feature flag', () => {
+    beforeEach(() => {
+      pipelineCreateMutationHandler.mockResolvedValue(mockPipelineCreateMutationResponse);
+    });
     describe('when the ciInputsForPipelines flag is disabled', () => {
       beforeEach(async () => {
         createComponentWithApollo();
@@ -127,6 +135,18 @@ describe('Pipeline New Form', () => {
 
       it('does not display the pipeline inputs form component', () => {
         expect(findPipelineInputsForm().exists()).toBe(false);
+      });
+
+      it('does not include inputs in the mutation variables', async () => {
+        await submitForm();
+
+        expect(pipelineCreateMutationHandler).toHaveBeenCalledWith({
+          input: {
+            ref: 'main',
+            projectPath: defaultProvide.projectPath,
+            variables: [],
+          },
+        });
       });
     });
 
@@ -138,6 +158,19 @@ describe('Pipeline New Form', () => {
 
       it('displays the pipeline inputs form component', () => {
         expect(findPipelineInputsForm().exists()).toBe(true);
+      });
+
+      it('includes inputs in the mutation variables', async () => {
+        await submitForm();
+
+        expect(pipelineCreateMutationHandler).toHaveBeenCalledWith({
+          input: {
+            ref: 'main',
+            projectPath: defaultProvide.projectPath,
+            inputs: [],
+            variables: [],
+          },
+        });
       });
     });
   });
@@ -154,6 +187,20 @@ describe('Pipeline New Form', () => {
         shortName: 'branch-1',
         fullName: 'refs/heads/branch-1',
       });
+    });
+  });
+
+  describe('Pipeline inputs form', () => {
+    beforeEach(async () => {
+      await createComponentWithApollo({ ciInputsForPipelines: true });
+    });
+
+    it('updates inputs when inputs-updated event is emitted', async () => {
+      const updatedInputs = [{ name: 'TEST_INPUT', value: 'test_value' }];
+      findPipelineInputsForm().vm.$emit('update-inputs', updatedInputs);
+      await waitForPromises();
+
+      expect(wrapper.vm.pipelineInputs).toEqual(updatedInputs);
     });
   });
 
@@ -177,8 +224,7 @@ describe('Pipeline New Form', () => {
 
         const variables = [{ key: 'TEST_VAR', value: 'test_value' }];
         findPipelineVariablesForm().vm.$emit('variables-updated', variables);
-        findForm().vm.$emit('submit', dummySubmitEvent);
-        await waitForPromises();
+        await submitForm();
 
         expect(pipelineCreateMutationHandler).toHaveBeenCalledWith({
           input: {
@@ -244,16 +290,14 @@ describe('Pipeline New Form', () => {
 
     it('fires the mutation when the submit button is clicked', async () => {
       await createComponentWithApollo();
-      findForm().vm.$emit('submit', dummySubmitEvent);
-      await waitForPromises();
+      await submitForm();
 
       expect(pipelineCreateMutationHandler).toHaveBeenCalled();
     });
 
     it('creates pipeline with ref and variables', async () => {
       await createComponentWithApollo();
-      findForm().vm.$emit('submit', dummySubmitEvent);
-      await waitForPromises();
+      await submitForm();
 
       expect(pipelineCreateMutationHandler).toHaveBeenCalledWith({
         input: {
@@ -267,8 +311,7 @@ describe('Pipeline New Form', () => {
     it('navigates to the created pipeline', async () => {
       const pipelinePath = mockPipelineCreateMutationResponse.data.pipelineCreate.pipeline.path;
       await createComponentWithApollo();
-      findForm().vm.$emit('submit', dummySubmitEvent);
-      await waitForPromises();
+      await submitForm();
 
       expect(visitUrl).toHaveBeenCalledWith(pipelinePath);
     });
@@ -301,8 +344,7 @@ describe('Pipeline New Form', () => {
       beforeEach(async () => {
         pipelineCreateMutationHandler.mockResolvedValue(mockPipelineCreateMutationErrorResponse);
         await createComponentWithApollo();
-        findForm().vm.$emit('submit', dummySubmitEvent);
-        await waitForPromises();
+        await submitForm();
       });
 
       it('shows error alert', () => {
@@ -338,8 +380,7 @@ describe('Pipeline New Form', () => {
         mock
           .onPost(defaultProps.pipelinesPath)
           .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, 'something went wrong');
-        findForm().vm.$emit('submit', dummySubmitEvent);
-        await waitForPromises();
+        await submitForm();
       });
 
       it('re-enables the submit button', () => {

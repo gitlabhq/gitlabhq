@@ -9,6 +9,7 @@ export default {
     CrudComponent,
     PipelineInputsTable,
   },
+  emits: ['update-inputs'],
   data() {
     return {
       inputs: [
@@ -52,10 +53,17 @@ export default {
     };
   },
   methods: {
-    handleInputUpdated(updatedInput) {
+    handleInputsUpdated(updatedInput) {
       this.inputs = this.inputs.map((input) =>
         input.name === updatedInput.name ? updatedInput : input,
       );
+
+      const nameValuePairs = this.inputs.map((input) => ({
+        name: input.name,
+        value: input.default,
+      }));
+
+      this.$emit('update-inputs', nameValuePairs);
     },
   },
 };
@@ -68,6 +76,6 @@ export default {
     :title="s__('Pipelines|Inputs')"
     icon="code"
   >
-    <pipeline-inputs-table :inputs="inputs" @update="handleInputUpdated" />
+    <pipeline-inputs-table :inputs="inputs" @update="handleInputsUpdated" />
   </crud-component>
 </template>

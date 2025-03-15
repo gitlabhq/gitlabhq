@@ -85,7 +85,7 @@ describe('ListPresenter', () => {
   });
 
   it('shows a "No data" message if the list of items provided is empty', () => {
-    createWrapper({ data: { nodes: [] }, config: { fields: MOCK_FIELDS } });
+    createWrapper({ data: { nodes: [] }, config: { fields: MOCK_FIELDS } }, mountExtended);
 
     expect(wrapper.text()).toContain('No data found for this query');
   });

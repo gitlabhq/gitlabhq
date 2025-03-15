@@ -93,11 +93,14 @@ describe('PipelineInputsTable', () => {
   });
 
   describe('event handling', () => {
-    it('emits update event when a DynamicValueRenderer emits an update', async () => {
+    it('processes change and emits update event when a DynamicValueRenderer emits an update', async () => {
       createComponent();
       const updatedItem = defaultProps.inputs[0];
       const newValue = 'new value';
-      await findDynamicValueRenderer().vm.$emit('update', { item: updatedItem, value: newValue });
+      await findDynamicValueRenderer().vm.$emit('update', {
+        item: updatedItem,
+        value: newValue,
+      });
 
       expect(wrapper.emitted().update).toHaveLength(1);
       expect(wrapper.emitted().update[0][0]).toEqual({

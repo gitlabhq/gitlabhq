@@ -76,8 +76,8 @@ To use Workflow in VS Code:
    - On macOS: <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>
    - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>P</kbd>.
 1. Type `GitLab Duo Workflow` and select **GitLab: Show Duo Workflow**.
-1. To create a workflow, select **New workflow**.
-1. For **Task description**, specify a junior-level code task in detail.
+1. In the text box, specify a code task in detail.
+   - For assistance writing your prompt, see [use case examples](use_cases.md) and [best practices](best_practices.md).
    - Workflow is aware of all files available to Git in the project branch.
    - You can also give Workflow [additional context](#the-context-workflow-is-aware-of).
    - Workflow cannot access external sources or the web.

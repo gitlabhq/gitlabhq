@@ -26,7 +26,7 @@ To avoid false positives you can exclude from secret detection:
 
 - A path.
 - A raw value.
-- A rule from the [default ruleset](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-secret_detection/lib/gitleaks.toml)
+- A rule from the [default ruleset](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules)
 
 You can define multiple exclusions for a project.
 

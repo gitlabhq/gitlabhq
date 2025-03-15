@@ -59,3 +59,10 @@ When writing and reviewing code, follow our Style Guides. Code authors and revie
 to these areas:
 
 [Work item](https://gitlab.com/gitlab-org/gitlab/-/issues/507548).
+
+### Backward Compatibility Requirements
+
+When maintaining customer-facing services, maintainers must ensure backward compatibility across supported GitLab versions.
+Please, refer to the GitLab [Statement of Support](https://about.gitlab.com/support/statement-of-support/#version-support)
+and Python [deployment guidelines](deployment.md#versioning).
+Before merging changes, verify that they maintain compatibility with all supported versions to prevent disruption for users on different GitLab releases.

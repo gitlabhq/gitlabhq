@@ -69,7 +69,7 @@ export default {
     :count="items.length"
     is-collapsible
     class="!gl-mt-5 gl-overflow-hidden"
-    body-class="!gl-m-[-1px] !gl-p-0"
+    :body-class="{ '!gl-m-[-1px] !gl-p-0': items.length || isPreview }"
     footer-class="!gl-border-t-0"
   >
     <div class="gl-table-shadow">
@@ -110,14 +110,13 @@ export default {
               </td>
             </tr>
           </template>
-          <tr v-else-if="!items.length">
-            <td :colspan="fields.length" class="gl-text-center">
-              {{ __('No data found for this query') }}
-            </td>
-          </tr>
         </tbody>
       </table>
     </div>
+
+    <template v-if="!items.length && !isPreview" #empty>
+      {{ __('No data found for this query.') }}
+    </template>
 
     <template #footer>
       <div class="gl-flex gl-items-center gl-gap-1 gl-text-sm gl-text-subtle" data-testid="footer">

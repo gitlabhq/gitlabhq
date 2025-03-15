@@ -54,7 +54,7 @@ module QA
         Flow::Project.enable_catalog_resource_feature(component_project)
 
         add_ci_file(component_project, 'templates/new-component.yml', component_content)
-        component_project.create_release(tag)
+        component_project.create_release(tag, legacy_catalog_publish: true)
         QA::Runtime::Logger.info("Waiting for #{component_project.name}'s release #{tag} to be available")
         Support::Waiter.wait_until { component_project.has_release?(tag) }
 

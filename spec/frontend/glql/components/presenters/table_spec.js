@@ -89,7 +89,7 @@ describe('TablePresenter', () => {
   });
 
   it('shows a "No data" message if the list of items provided is empty', async () => {
-    await createWrapper({ data: { nodes: [] }, config: { fields: MOCK_FIELDS } });
+    await createWrapper({ data: { nodes: [] }, config: { fields: MOCK_FIELDS } }, mountExtended);
 
     expect(wrapper.text()).toContain('No data found for this query');
   });

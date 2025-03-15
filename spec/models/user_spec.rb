@@ -4217,6 +4217,22 @@ RSpec.describe User, feature_category: :user_profile do
         original_email
       )
     end
+
+    it 'does not perform a database query for confirmed emails if the emails are loaded' do
+      user.emails.reload
+
+      expect(user.emails).to be_loaded
+
+      recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        expect(user.verified_emails).to contain_exactly(
+          user.email,
+          user.private_commit_email,
+          confirmed_email.email
+        )
+      end
+
+      expect(recorder.count).to be_zero
+    end
   end
 
   describe '#verified_detumbled_emails' do

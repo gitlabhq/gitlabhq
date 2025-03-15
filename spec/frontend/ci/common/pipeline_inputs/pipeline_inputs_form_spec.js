@@ -52,18 +52,7 @@ describe('PipelineInputsForm', () => {
     });
 
     describe('event handling', () => {
-      it('updates inputs when input is modified', () => {
-        const firstInput = wrapper.vm.inputs[0];
-        const updatedInput = { ...firstInput, value: 'newValue' };
-
-        wrapper.vm.handleInputUpdated(updatedInput);
-
-        expect(wrapper.vm.inputs.find((input) => input.name === firstInput.name).value).toBe(
-          'newValue',
-        );
-      });
-
-      it('processes update events from the table component', async () => {
+      it('processes and emits update events from the table component', async () => {
         const updatedInput = { ...wrapper.vm.inputs[0], value: 'updated-value' };
         findInputsTable().vm.$emit('update', updatedInput);
         await nextTick();
@@ -71,6 +60,13 @@ describe('PipelineInputsForm', () => {
         expect(wrapper.vm.inputs.find((input) => input.name === updatedInput.name).value).toBe(
           'updated-value',
         );
+        expect(wrapper.emitted()['update-inputs']).toHaveLength(1);
+
+        const expectedEmittedValue = wrapper.vm.inputs.map((input) => ({
+          name: input.name,
+          value: input.default,
+        }));
+        expect(wrapper.emitted()['update-inputs'][0][0]).toEqual(expectedEmittedValue);
       });
     });
   });

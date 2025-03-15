@@ -89,10 +89,11 @@ export default {
           </gl-intersperse>
         </li>
       </template>
-      <div v-else-if="!items.length" :dismissible="false" variant="tip" class="!gl-my-2">
-        {{ __('No data found for this query') }}
-      </div>
     </component>
+
+    <template v-if="!items.length && !isPreview" #empty>
+      {{ __('No data found for this query.') }}
+    </template>
 
     <template #footer>
       <div class="gl-flex gl-items-center gl-gap-1 gl-text-sm gl-text-subtle" data-testid="footer">

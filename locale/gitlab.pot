@@ -38768,7 +38768,7 @@ msgstr ""
 msgid "No data available"
 msgstr ""
 
-msgid "No data found for this query"
+msgid "No data found for this query."
 msgstr ""
 
 msgid "No deployments found"

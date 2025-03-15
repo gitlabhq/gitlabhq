@@ -1815,7 +1815,9 @@ class User < ApplicationRecord
     verified_emails = []
     verified_emails << email if primary_email_verified?
     verified_emails << private_commit_email if include_private_email
-    verified_emails.concat(emails.confirmed.pluck(:email))
+    verified_emails.concat(
+      emails.loaded? ? emails.select(&:confirmed?).pluck(:email) : emails.confirmed.pluck(:email)
+    )
     verified_emails.uniq
   end
 
