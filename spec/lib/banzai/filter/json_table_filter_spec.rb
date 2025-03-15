@@ -7,7 +7,7 @@ RSpec.describe Banzai::Filter::JsonTableFilter, feature_category: :markdown do
 
   let_it_be(:table_with_fields) do
     <<~TEXT
-      <pre data-canonical-lang="json" data-lang-params="table">
+      <pre data-canonical-lang="json" data-lang-params="table another_param">
       <code>
       {
         "fields": [

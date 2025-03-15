@@ -563,6 +563,5 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/safe_zip/extract_params.rb'
     - 'lib/sidebars/projects/menus/analytics_menu.rb'
     - 'lib/sidebars/projects/menus/issues_menu.rb'
-    - 'lib/sidebars/projects/menus/work_items_menu.rb'
     - 'lib/unnested_in_filters/rewriter.rb'
     - 'tooling/graphql/docs/helper.rb'

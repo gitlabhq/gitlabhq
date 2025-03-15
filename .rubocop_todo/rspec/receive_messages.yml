@@ -26,7 +26,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/helpers/ee/issuables_helper_spec.rb'
     - 'ee/spec/helpers/ee/issues_helper_spec.rb'
     - 'ee/spec/helpers/ee/lock_helper_spec.rb'
-    - 'ee/spec/helpers/ee/namespaces_helper_spec.rb'
     - 'ee/spec/helpers/ee/registrations_helper_spec.rb'
     - 'ee/spec/helpers/ee/subscribable_banner_helper_spec.rb'
     - 'ee/spec/helpers/ee/users/callouts_helper_spec.rb'

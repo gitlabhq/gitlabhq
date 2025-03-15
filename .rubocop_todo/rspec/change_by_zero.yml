@@ -33,7 +33,6 @@ RSpec/ChangeByZero:
     - 'ee/spec/services/registrations/import_namespace_create_service_spec.rb'
     - 'ee/spec/services/registrations/standard_namespace_create_service_spec.rb'
     - 'ee/spec/services/sbom/ingestion/tasks/ingest_sources_spec.rb'
-    - 'ee/spec/services/search/zoekt/indexing_task_service_spec.rb'
     - 'ee/spec/services/security/ingestion/tasks/ingest_cvs_security_scanners_spec.rb'
     - 'ee/spec/services/security/orchestration/create_bot_service_spec.rb'
     - 'ee/spec/services/vulnerabilities/manually_create_service_spec.rb'

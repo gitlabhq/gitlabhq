@@ -509,7 +509,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/ci/runner_releases.rb'
     - 'lib/gitlab/ci/runner_upgrade_check.rb'
     - 'lib/gitlab/ci/status/composite.rb'
-    - 'lib/gitlab/ci/trace.rb'
     - 'lib/gitlab/ci/trace/chunked_io.rb'
     - 'lib/gitlab/ci/trace/metrics.rb'
     - 'lib/gitlab/ci/variables/builder.rb'

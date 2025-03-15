@@ -36,7 +36,7 @@ export function renderGFM(element) {
     '.js-render-kroki[hidden]',
     '.js-render-math',
     '.js-render-mermaid',
-    '[data-canonical-lang="json"][data-lang-params="table"]',
+    '[data-canonical-lang="json"][data-lang-params~="table"]',
     'table[data-table-fields]',
     '[data-canonical-lang="glql"]',
     '.gfm-project_member',

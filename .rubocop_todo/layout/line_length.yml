@@ -2836,7 +2836,6 @@ Layout/LineLength:
     - 'spec/graphql/types/packages/package_sort_enum_spec.rb'
     - 'spec/graphql/types/packages/package_type_enum_spec.rb'
     - 'spec/graphql/types/projects/service_type_spec.rb'
-    - 'spec/graphql/types/query_type_spec.rb'
     - 'spec/graphql/types/snippets/blob_viewer_type_spec.rb'
     - 'spec/graphql/types/terraform/state_version_type_spec.rb'
     - 'spec/graphql/types/tree/blob_type_spec.rb'

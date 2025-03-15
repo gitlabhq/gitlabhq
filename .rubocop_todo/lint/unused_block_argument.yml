@@ -355,6 +355,4 @@ Lint/UnusedBlockArgument:
     - 'spec/support/shared_examples/services/boards/issues_move_service_shared_examples.rb'
     - 'spec/support/shared_examples/uploaders/object_storage_shared_examples.rb'
     - 'spec/support/shared_examples/workers/concerns/reenqueuer_shared_examples.rb'
-    - 'spec/tooling/lib/tooling/find_codeowners_spec.rb'
     - 'spec/workers/projects/git_garbage_collect_worker_spec.rb'
-    - 'tooling/lib/tooling/find_codeowners.rb'

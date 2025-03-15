@@ -108,7 +108,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'ee/lib/ee/api/settings.rb'
     - 'ee/lib/ee/gitlab/geo_git_access.rb'
     - 'ee/lib/ee/gitlab/git_access.rb'
-    - 'ee/lib/gitlab/elastic/client.rb'
     - 'ee/lib/gitlab/geo/replication/blob_downloader.rb'
     - 'ee/lib/gitlab/geo/replicator.rb'
     - 'ee/lib/gitlab/llm/tanuki_bot.rb'

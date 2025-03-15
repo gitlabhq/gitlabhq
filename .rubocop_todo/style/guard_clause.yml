@@ -374,7 +374,6 @@ Style/GuardClause:
     - 'lib/gitlab/ci/reports/codequality_reports_comparer.rb'
     - 'lib/gitlab/ci/runner/backoff.rb'
     - 'lib/gitlab/ci/runner_upgrade_check.rb'
-    - 'lib/gitlab/ci/trace.rb'
     - 'lib/gitlab/ci/trace/archive.rb'
     - 'lib/gitlab/ci/trace/stream.rb'
     - 'lib/gitlab/ci/yaml_processor.rb'

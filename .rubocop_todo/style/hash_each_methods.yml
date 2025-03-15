@@ -123,7 +123,5 @@ Style/HashEachMethods:
     - 'spec/support/shared_examples/metrics/active_record_subscriber_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/npm_packages_shared_examples.rb'
     - 'spec/support/shared_examples/services/packages_shared_examples.rb'
-    - 'spec/tooling/lib/tooling/find_codeowners_spec.rb'
     - 'tooling/danger/analytics_instrumentation.rb'
     - 'tooling/graphql/docs/helper.rb'
-    - 'tooling/lib/tooling/find_codeowners.rb'
