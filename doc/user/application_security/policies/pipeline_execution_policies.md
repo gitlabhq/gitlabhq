@@ -300,6 +300,8 @@ You define the order in which a custom policy stage is injected into the project
 The project and policy pipeline stages are represented as a Directed Acyclic Graph (DAG), where nodes are stages and edges represent dependencies. When combining pipelines, the individual DAGs are merged into a single, larger DAG. Afterward, a topological sorting is performed, which determines the order in which stages from all pipelines should be executed. This sorting ensures that all dependencies are respected in the final order.
 If there are conflicting dependencies, the pipeline fails to run. To fix this, ensure that stages used across the project and policies are aligned.
 
+If a stage isn't explicitly defined in the policy pipeline configuration, the pipeline uses the default stages `stages: [build, test, deploy]`. If these stages are included, but listed in a different order, the pipeline fails with a `Cyclic dependencies detected when enforcing policies` error.
+
 The following examples demonstrate this behavior. All examples assume the following project CI/CD configuration:
 
 ```yaml
