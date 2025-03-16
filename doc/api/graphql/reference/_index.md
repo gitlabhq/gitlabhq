@@ -7396,7 +7396,7 @@ Input type: `IterationCadenceCreateInput`
 | <a id="mutationiterationcadencecreateautomatic"></a>`automatic` | [`Boolean!`](#boolean) | Whether the iteration cadence should automatically generate upcoming iterations. |
 | <a id="mutationiterationcadencecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationiterationcadencecreatedescription"></a>`description` | [`String`](#string) | Description of the iteration cadence. Maximum length is 5000 characters. |
-| <a id="mutationiterationcadencecreatedurationinweeks"></a>`durationInWeeks` | [`Int`](#int) | Duration in weeks of the iterations within this cadence. |
+| <a id="mutationiterationcadencecreatedurationinweeks"></a>`durationInWeeks` | [`Int`](#int) | Duration in weeks of the iterations within the cadence. |
 | <a id="mutationiterationcadencecreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group where the iteration cadence is created. |
 | <a id="mutationiterationcadencecreateiterationsinadvance"></a>`iterationsInAdvance` | [`Int`](#int) | Upcoming iterations to be created when iteration cadence is set to automatic. |
 | <a id="mutationiterationcadencecreaterollover"></a>`rollOver` | [`Boolean`](#boolean) | Whether the iteration cadence should roll over issues to the next iteration or not. |
@@ -7442,7 +7442,7 @@ Input type: `IterationCadenceUpdateInput`
 | <a id="mutationiterationcadenceupdateautomatic"></a>`automatic` | [`Boolean`](#boolean) | Whether the iteration cadence should automatically generate upcoming iterations. |
 | <a id="mutationiterationcadenceupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationiterationcadenceupdatedescription"></a>`description` | [`String`](#string) | Description of the iteration cadence. Maximum length is 5000 characters. |
-| <a id="mutationiterationcadenceupdatedurationinweeks"></a>`durationInWeeks` | [`Int`](#int) | Duration in weeks of the iterations within this cadence. |
+| <a id="mutationiterationcadenceupdatedurationinweeks"></a>`durationInWeeks` | [`Int`](#int) | Duration in weeks of the iterations within the cadence. |
 | <a id="mutationiterationcadenceupdateid"></a>`id` | [`IterationsCadenceID!`](#iterationscadenceid) | Global ID of the iteration cadence. |
 | <a id="mutationiterationcadenceupdateiterationsinadvance"></a>`iterationsInAdvance` | [`Int`](#int) | Upcoming iterations to be created when iteration cadence is set to automatic. |
 | <a id="mutationiterationcadenceupdaterollover"></a>`rollOver` | [`Boolean`](#boolean) | Whether the iteration cadence should roll over issues to the next iteration or not. |
@@ -8373,7 +8373,7 @@ Input type: `NamespaceCiCdSettingsUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationnamespacecicdsettingsupdateallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean`](#boolean) | Indicates if stale runners directly belonging to this namespace should be periodically pruned. |
+| <a id="mutationnamespacecicdsettingsupdateallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean`](#boolean) | Indicates if stale runners directly belonging to the namespace should be periodically pruned. |
 | <a id="mutationnamespacecicdsettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationnamespacecicdsettingsupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace the settings belong to. |
 
@@ -20778,7 +20778,7 @@ Represents the approval policy.
 | <a id="approvalpolicydeprecatedproperties"></a>`deprecatedProperties` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. All deprecated properties in the policy. |
 | <a id="approvalpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="approvalpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
-| <a id="approvalpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
+| <a id="approvalpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the policy is enabled. |
 | <a id="approvalpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
 | <a id="approvalpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | <a id="approvalpolicyroleapprovers"></a>`roleApprovers` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
@@ -20796,7 +20796,7 @@ Describes a project approval rule regarding who can approve merge requests.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="approvalprojectruleapprovalsrequired"></a>`approvalsRequired` | [`Int`](#int) | Number of required approvals. |
-| <a id="approvalprojectruleeligibleapprovers"></a>`eligibleApprovers` | [`UserCoreConnection`](#usercoreconnection) | List of users eligible to approve merge requests for this approval rule. (see [Connections](#connections)) |
+| <a id="approvalprojectruleeligibleapprovers"></a>`eligibleApprovers` | [`UserCoreConnection`](#usercoreconnection) | List of users eligible to approve merge requests for the approval rule. (see [Connections](#connections)) |
 | <a id="approvalprojectruleid"></a>`id` | [`GlobalID!`](#globalid) | ID of the rule. |
 | <a id="approvalprojectrulename"></a>`name` | [`String`](#string) | Name of the rule. |
 | <a id="approvalprojectruletype"></a>`type` | [`ApprovalRuleType`](#approvalruletype) | Type of the rule. |
@@ -21520,9 +21520,9 @@ Represents an epic on an issue board.
 | <a id="boardepicauthor"></a>`author` | [`UserCore!`](#usercore) | Author of the epic. |
 | <a id="boardepicawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of emoji reactions associated with the epic. (see [Connections](#connections)) |
 | <a id="boardepicblocked"></a>`blocked` | [`Boolean`](#boolean) | Indicates the epic is blocked. |
-| <a id="boardepicblockedbycount"></a>`blockedByCount` | [`Int`](#int) | Count of epics blocking this epic. |
-| <a id="boardepicblockedbyepics"></a>`blockedByEpics` | [`EpicConnection`](#epicconnection) | Epics blocking this epic. (see [Connections](#connections)) |
-| <a id="boardepicblockingcount"></a>`blockingCount` | [`Int`](#int) | Count of epics that this epic is blocking. |
+| <a id="boardepicblockedbycount"></a>`blockedByCount` | [`Int`](#int) | Count of epics blocking the epic. |
+| <a id="boardepicblockedbyepics"></a>`blockedByEpics` | [`EpicConnection`](#epicconnection) | Epics blocking the epic. (see [Connections](#connections)) |
+| <a id="boardepicblockingcount"></a>`blockingCount` | [`Int`](#int) | Count of epics that the epic is blocking. |
 | <a id="boardepicclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the epic was closed. |
 | <a id="boardepiccolor"></a>`color` | [`String`](#string) | Color of the epic. |
 | <a id="boardepiccommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on the noteable. (see [Connections](#connections)) |
@@ -21593,8 +21593,8 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="boardepicancestorsauthorusername"></a>`authorUsername` | [`String`](#string) | Filter epics by author. |
 | <a id="boardepicancestorsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
-| <a id="boardepicancestorscreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
-| <a id="boardepicancestorscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
+| <a id="boardepicancestorscreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after the date. |
+| <a id="boardepicancestorscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before the date. |
 | <a id="boardepicancestorscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
 | <a id="boardepicancestorsiid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="boardepicancestorsiidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
@@ -21613,8 +21613,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="boardepicancestorssubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Epics the current user is subscribed to. |
 | <a id="boardepicancestorstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="boardepicancestorstoplevelhierarchyonly"></a>`topLevelHierarchyOnly` | [`Boolean`](#boolean) | Filter epics with a top-level hierarchy. |
-| <a id="boardepicancestorsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after this date. |
-| <a id="boardepicancestorsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before this date. |
+| <a id="boardepicancestorsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after the date. |
+| <a id="boardepicancestorsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before the date. |
 
 ##### `BoardEpic.children`
 
@@ -21632,8 +21632,8 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="boardepicchildrenauthorusername"></a>`authorUsername` | [`String`](#string) | Filter epics by author. |
 | <a id="boardepicchildrenconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
-| <a id="boardepicchildrencreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
-| <a id="boardepicchildrencreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
+| <a id="boardepicchildrencreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after the date. |
+| <a id="boardepicchildrencreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before the date. |
 | <a id="boardepicchildrencustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
 | <a id="boardepicchildreniid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="boardepicchildreniidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
@@ -21652,8 +21652,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="boardepicchildrensubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Epics the current user is subscribed to. |
 | <a id="boardepicchildrentimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="boardepicchildrentoplevelhierarchyonly"></a>`topLevelHierarchyOnly` | [`Boolean`](#boolean) | Filter epics with a top-level hierarchy. |
-| <a id="boardepicchildrenupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after this date. |
-| <a id="boardepicchildrenupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before this date. |
+| <a id="boardepicchildrenupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after the date. |
+| <a id="boardepicchildrenupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before the date. |
 
 ##### `BoardEpic.currentUserTodos`
 
@@ -21809,10 +21809,10 @@ Branch rules configured for a rule target.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="branchruleapprovalrules"></a>`approvalRules` | [`ApprovalProjectRuleConnection`](#approvalprojectruleconnection) | Merge request approval rules configured for this branch rule. (see [Connections](#connections)) |
+| <a id="branchruleapprovalrules"></a>`approvalRules` | [`ApprovalProjectRuleConnection`](#approvalprojectruleconnection) | Merge request approval rules configured for the branch rule. (see [Connections](#connections)) |
 | <a id="branchrulebranchprotection"></a>`branchProtection` | [`BranchProtection`](#branchprotection) | Branch protections configured for the branch rule. |
 | <a id="branchrulecreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the branch rule was created. |
-| <a id="branchruleexternalstatuschecks"></a>`externalStatusChecks` | [`ExternalStatusCheckConnection`](#externalstatuscheckconnection) | External status checks configured for this branch rule. (see [Connections](#connections)) |
+| <a id="branchruleexternalstatuschecks"></a>`externalStatusChecks` | [`ExternalStatusCheckConnection`](#externalstatuscheckconnection) | External status checks configured for the branch rule. (see [Connections](#connections)) |
 | <a id="branchruleid"></a>`id` | [`ProjectsBranchRuleID`](#projectsbranchruleid) | ID of the branch rule. |
 | <a id="branchruleisdefault"></a>`isDefault` | [`Boolean!`](#boolean) | Check if the branch rule protects the project's default branch. |
 | <a id="branchruleisprotected"></a>`isProtected` | [`Boolean!`](#boolean) | Check if the branch rule protects access for the branch. |
@@ -21829,11 +21829,11 @@ Represents the total number of issues and their weights for a particular day.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="burnupchartdailytotalscompletedcount"></a>`completedCount` | [`Int!`](#int) | Number of closed issues as of this day. |
-| <a id="burnupchartdailytotalscompletedweight"></a>`completedWeight` | [`Int!`](#int) | Total weight of closed issues as of this day. |
+| <a id="burnupchartdailytotalscompletedcount"></a>`completedCount` | [`Int!`](#int) | Number of closed issues as of the day. |
+| <a id="burnupchartdailytotalscompletedweight"></a>`completedWeight` | [`Int!`](#int) | Total weight of closed issues as of the day. |
 | <a id="burnupchartdailytotalsdate"></a>`date` | [`ISO8601Date!`](#iso8601date) | Date for burnup totals. |
-| <a id="burnupchartdailytotalsscopecount"></a>`scopeCount` | [`Int!`](#int) | Number of issues as of this day. |
-| <a id="burnupchartdailytotalsscopeweight"></a>`scopeWeight` | [`Int!`](#int) | Total weight of issues as of this day. |
+| <a id="burnupchartdailytotalsscopecount"></a>`scopeCount` | [`Int!`](#int) | Number of issues as of the day. |
+| <a id="burnupchartdailytotalsscopeweight"></a>`scopeWeight` | [`Int!`](#int) | Total weight of issues as of the day. |
 
 ### `CarPermissions`
 
@@ -25559,9 +25559,9 @@ Represents an epic.
 | <a id="epicauthor"></a>`author` | [`UserCore!`](#usercore) | Author of the epic. |
 | <a id="epicawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of emoji reactions associated with the epic. (see [Connections](#connections)) |
 | <a id="epicblocked"></a>`blocked` | [`Boolean`](#boolean) | Indicates the epic is blocked. |
-| <a id="epicblockedbycount"></a>`blockedByCount` | [`Int`](#int) | Count of epics blocking this epic. |
-| <a id="epicblockedbyepics"></a>`blockedByEpics` | [`EpicConnection`](#epicconnection) | Epics blocking this epic. (see [Connections](#connections)) |
-| <a id="epicblockingcount"></a>`blockingCount` | [`Int`](#int) | Count of epics that this epic is blocking. |
+| <a id="epicblockedbycount"></a>`blockedByCount` | [`Int`](#int) | Count of epics blocking the epic. |
+| <a id="epicblockedbyepics"></a>`blockedByEpics` | [`EpicConnection`](#epicconnection) | Epics blocking the epic. (see [Connections](#connections)) |
+| <a id="epicblockingcount"></a>`blockingCount` | [`Int`](#int) | Count of epics that the epic is blocking. |
 | <a id="epicclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the epic was closed. |
 | <a id="epiccolor"></a>`color` | [`String`](#string) | Color of the epic. |
 | <a id="epiccommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on the noteable. (see [Connections](#connections)) |
@@ -25631,8 +25631,8 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="epicancestorsauthorusername"></a>`authorUsername` | [`String`](#string) | Filter epics by author. |
 | <a id="epicancestorsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
-| <a id="epicancestorscreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
-| <a id="epicancestorscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
+| <a id="epicancestorscreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after the date. |
+| <a id="epicancestorscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before the date. |
 | <a id="epicancestorscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
 | <a id="epicancestorsiid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="epicancestorsiidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
@@ -25651,8 +25651,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="epicancestorssubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Epics the current user is subscribed to. |
 | <a id="epicancestorstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="epicancestorstoplevelhierarchyonly"></a>`topLevelHierarchyOnly` | [`Boolean`](#boolean) | Filter epics with a top-level hierarchy. |
-| <a id="epicancestorsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after this date. |
-| <a id="epicancestorsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before this date. |
+| <a id="epicancestorsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after the date. |
+| <a id="epicancestorsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before the date. |
 
 ##### `Epic.children`
 
@@ -25670,8 +25670,8 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="epicchildrenauthorusername"></a>`authorUsername` | [`String`](#string) | Filter epics by author. |
 | <a id="epicchildrenconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
-| <a id="epicchildrencreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
-| <a id="epicchildrencreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
+| <a id="epicchildrencreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after the date. |
+| <a id="epicchildrencreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before the date. |
 | <a id="epicchildrencustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
 | <a id="epicchildreniid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="epicchildreniidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
@@ -25690,8 +25690,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="epicchildrensubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Epics the current user is subscribed to. |
 | <a id="epicchildrentimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="epicchildrentoplevelhierarchyonly"></a>`topLevelHierarchyOnly` | [`Boolean`](#boolean) | Filter epics with a top-level hierarchy. |
-| <a id="epicchildrenupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after this date. |
-| <a id="epicchildrenupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before this date. |
+| <a id="epicchildrenupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after the date. |
+| <a id="epicchildrenupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before the date. |
 
 ##### `Epic.currentUserTodos`
 
@@ -25813,7 +25813,7 @@ Total weight of open and closed descendant issues.
 | <a id="epicdescendantweightsclosedissues"></a>`closedIssues` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated** in GitLab 16.6. Use `closedIssuesTotal`. |
 | <a id="epicdescendantweightsclosedissuestotal"></a>`closedIssuesTotal` | [`BigInt`](#bigint) | Total weight of completed (closed) issues in this epic, including epic descendants, encoded as a string. |
 | <a id="epicdescendantweightsopenedissues"></a>`openedIssues` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated** in GitLab 16.6. Use `OpenedIssuesTotal`. |
-| <a id="epicdescendantweightsopenedissuestotal"></a>`openedIssuesTotal` | [`BigInt`](#bigint) | Total weight of opened issues in this epic, including epic descendants, encoded as a string. |
+| <a id="epicdescendantweightsopenedissuestotal"></a>`openedIssuesTotal` | [`BigInt`](#bigint) | Total weight of opened issues in the epic, including epic descendants, encoded as a string. |
 
 ### `EpicHealthStatus`
 
@@ -26019,7 +26019,7 @@ Represents an epic board list.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="epiclistcollapsed"></a>`collapsed` | [`Boolean`](#boolean) | Indicates if this list is collapsed for this user. |
+| <a id="epiclistcollapsed"></a>`collapsed` | [`Boolean`](#boolean) | Indicates if the list is collapsed for the user. |
 | <a id="epiclistid"></a>`id` | [`BoardsEpicListID!`](#boardsepiclistid) | Global ID of the board list. |
 | <a id="epiclistlabel"></a>`label` | [`Label`](#label) | Label of the list. |
 | <a id="epiclistlisttype"></a>`listType` | [`String!`](#string) | Type of the list. |
@@ -26231,21 +26231,21 @@ Details of the fork project compared to its upstream project.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodecontainerrepositoriesmaxcapacity"></a>`containerRepositoriesMaxCapacity` | [`Int`](#int) | Maximum concurrency of container repository sync for this secondary node. |
-| <a id="geonodeenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether this Geo node is enabled. |
-| <a id="geonodefilesmaxcapacity"></a>`filesMaxCapacity` | [`Int`](#int) | Maximum concurrency of LFS/attachment backfill for this secondary node. |
-| <a id="geonodeid"></a>`id` | [`ID!`](#id) | ID of this GeoNode. |
+| <a id="geonodecontainerrepositoriesmaxcapacity"></a>`containerRepositoriesMaxCapacity` | [`Int`](#int) | Maximum concurrency of container repository sync for the secondary node. |
+| <a id="geonodeenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether the Geo node is enabled. |
+| <a id="geonodefilesmaxcapacity"></a>`filesMaxCapacity` | [`Int`](#int) | Maximum concurrency of LFS/attachment backfill for the secondary node. |
+| <a id="geonodeid"></a>`id` | [`ID!`](#id) | ID of the GeoNode. |
 | <a id="geonodeinternalurl"></a>`internalUrl` | [`String`](#string) | URL defined on the primary node secondary nodes should use to contact it. |
 | <a id="geonodeminimumreverificationinterval"></a>`minimumReverificationInterval` | [`Int`](#int) | Interval (in days) in which the repository verification is valid. After expiry, it is reverted. |
-| <a id="geonodename"></a>`name` | [`String`](#string) | Unique identifier for this Geo node. |
-| <a id="geonodeprimary"></a>`primary` | [`Boolean`](#boolean) | Indicates whether this Geo node is the primary. |
-| <a id="geonodereposmaxcapacity"></a>`reposMaxCapacity` | [`Int`](#int) | Maximum concurrency of repository backfill for this secondary node. |
+| <a id="geonodename"></a>`name` | [`String`](#string) | Unique identifier for the Geo node. |
+| <a id="geonodeprimary"></a>`primary` | [`Boolean`](#boolean) | Indicates whether the Geo node is the primary. |
+| <a id="geonodereposmaxcapacity"></a>`reposMaxCapacity` | [`Int`](#int) | Maximum concurrency of repository backfill for the secondary node. |
 | <a id="geonodeselectivesyncnamespaces"></a>`selectiveSyncNamespaces` | [`NamespaceConnection`](#namespaceconnection) | Namespaces that should be synced, if `selective_sync_type` == `namespaces`. (see [Connections](#connections)) |
 | <a id="geonodeselectivesyncshards"></a>`selectiveSyncShards` | [`[String!]`](#string) | Repository storages whose projects should be synced, if `selective_sync_type` == `shards`. |
 | <a id="geonodeselectivesynctype"></a>`selectiveSyncType` | [`String`](#string) | Indicates if syncing is limited to only specific groups, or shards. |
-| <a id="geonodesyncobjectstorage"></a>`syncObjectStorage` | [`Boolean`](#boolean) | Indicates if this secondary node will replicate blobs in Object Storage. |
-| <a id="geonodeurl"></a>`url` | [`String`](#string) | User-facing URL for this Geo node. |
-| <a id="geonodeverificationmaxcapacity"></a>`verificationMaxCapacity` | [`Int`](#int) | Maximum concurrency of repository verification for this secondary node. |
+| <a id="geonodesyncobjectstorage"></a>`syncObjectStorage` | [`Boolean`](#boolean) | Indicates if the secondary node will replicate blobs in Object Storage. |
+| <a id="geonodeurl"></a>`url` | [`String`](#string) | User-facing URL for the Geo node. |
+| <a id="geonodeverificationmaxcapacity"></a>`verificationMaxCapacity` | [`Int`](#int) | Maximum concurrency of repository verification for the secondary node. |
 
 #### Fields with arguments
 
@@ -27367,8 +27367,8 @@ Returns [`Epic`](#epic).
 | ---- | ---- | ----------- |
 | <a id="groupepicauthorusername"></a>`authorUsername` | [`String`](#string) | Filter epics by author. |
 | <a id="groupepicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
-| <a id="groupepiccreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
-| <a id="groupepiccreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
+| <a id="groupepiccreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after the date. |
+| <a id="groupepiccreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before the date. |
 | <a id="groupepiccustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
 | <a id="groupepiciid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="groupepiciidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
@@ -27387,8 +27387,8 @@ Returns [`Epic`](#epic).
 | <a id="groupepicsubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Epics the current user is subscribed to. |
 | <a id="groupepictimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="groupepictoplevelhierarchyonly"></a>`topLevelHierarchyOnly` | [`Boolean`](#boolean) | Filter epics with a top-level hierarchy. |
-| <a id="groupepicupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after this date. |
-| <a id="groupepicupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before this date. |
+| <a id="groupepicupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after the date. |
+| <a id="groupepicupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before the date. |
 
 ##### `Group.epicBoard`
 
@@ -27428,8 +27428,8 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupepicsauthorusername"></a>`authorUsername` | [`String`](#string) | Filter epics by author. |
 | <a id="groupepicsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
-| <a id="groupepicscreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
-| <a id="groupepicscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
+| <a id="groupepicscreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after the date. |
+| <a id="groupepicscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before the date. |
 | <a id="groupepicscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
 | <a id="groupepicsiid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="groupepicsiidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
@@ -27448,8 +27448,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupepicssubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Epics the current user is subscribed to. |
 | <a id="groupepicstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="groupepicstoplevelhierarchyonly"></a>`topLevelHierarchyOnly` | [`Boolean`](#boolean) | Filter epics with a top-level hierarchy. |
-| <a id="groupepicsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after this date. |
-| <a id="groupepicsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before this date. |
+| <a id="groupepicsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after the date. |
+| <a id="groupepicsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before the date. |
 
 ##### `Group.gitlabSubscriptionsPreviewBillableUserChange`
 
@@ -27585,7 +27585,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupiterationcadencesactive"></a>`active` | [`Boolean`](#boolean) | Whether the iteration cadence is active. |
 | <a id="groupiterationcadencesautomatic"></a>`automatic` | [`Boolean`](#boolean) | Whether the iteration cadence should automatically generate upcoming iterations. |
-| <a id="groupiterationcadencesdurationinweeks"></a>`durationInWeeks` | [`Int`](#int) | Duration in weeks of the iterations within this cadence. |
+| <a id="groupiterationcadencesdurationinweeks"></a>`durationInWeeks` | [`Int`](#int) | Duration in weeks of the iterations within the cadence. |
 | <a id="groupiterationcadencesid"></a>`id` | [`IterationsCadenceID`](#iterationscadenceid) | Global ID of the iteration cadence to look up. |
 | <a id="groupiterationcadencesincludeancestorgroups"></a>`includeAncestorGroups` | [`Boolean`](#boolean) | Whether to include ancestor groups to search iterations cadences in. |
 | <a id="groupiterationcadencestitle"></a>`title` | [`String`](#string) | Fuzzy search by title. |
@@ -28656,7 +28656,7 @@ Represents the source of a security policy belonging to a group.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupsecuritypolicysourceinherited"></a>`inherited` | [`Boolean!`](#boolean) | Indicates whether this policy is inherited from parent group. |
+| <a id="groupsecuritypolicysourceinherited"></a>`inherited` | [`Boolean!`](#boolean) | Indicates whether the policy is inherited from parent group. |
 | <a id="groupsecuritypolicysourcenamespace"></a>`namespace` | [`Namespace`](#namespace) | Project the policy is associated with. |
 
 ### `GroupStats`
@@ -29445,7 +29445,7 @@ Represents an iteration cadence.
 | <a id="iterationcadenceactive"></a>`active` | [`Boolean`](#boolean) | Whether the iteration cadence is active. |
 | <a id="iterationcadenceautomatic"></a>`automatic` | [`Boolean`](#boolean) | Whether the iteration cadence should automatically generate upcoming iterations. |
 | <a id="iterationcadencedescription"></a>`description` | [`String`](#string) | Description of the iteration cadence. Maximum length is 5000 characters. |
-| <a id="iterationcadencedurationinweeks"></a>`durationInWeeks` | [`Int`](#int) | Duration in weeks of the iterations within this cadence. |
+| <a id="iterationcadencedurationinweeks"></a>`durationInWeeks` | [`Int`](#int) | Duration in weeks of the iterations within the cadence. |
 | <a id="iterationcadenceid"></a>`id` | [`IterationsCadenceID!`](#iterationscadenceid) | Global ID of the iteration cadence. |
 | <a id="iterationcadenceiterationsinadvance"></a>`iterationsInAdvance` | [`Int`](#int) | Upcoming iterations to be created when iteration cadence is set to automatic. |
 | <a id="iterationcadencerollover"></a>`rollOver` | [`Boolean!`](#boolean) | Whether the iteration cadence should roll over issues to the next iteration or not. |
@@ -32531,7 +32531,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="namespacecicdsettingallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean`](#boolean) | Indicates if stale runners directly belonging to this namespace should be periodically pruned. |
+| <a id="namespacecicdsettingallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean`](#boolean) | Indicates if stale runners directly belonging to the namespace should be periodically pruned. |
 | <a id="namespacecicdsettingnamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace the CI/CD settings belong to. |
 
 ### `NamespaceCommitEmail`
@@ -33244,7 +33244,7 @@ Represents a file or directory in the project repository that has been locked.
 | ---- | ---- | ----------- |
 | <a id="pathlockid"></a>`id` | [`PathLockID!`](#pathlockid) | ID of the path lock. |
 | <a id="pathlockpath"></a>`path` | [`String`](#string) | Locked path. |
-| <a id="pathlockuser"></a>`user` | [`UserCore`](#usercore) | User that has locked this path. |
+| <a id="pathlockuser"></a>`user` | [`UserCore`](#usercore) | User that has locked the path. |
 | <a id="pathlockuserpermissions"></a>`userPermissions` | [`PathLockPermissions!`](#pathlockpermissions) | Permissions for the current user on the resource. |
 
 ### `PathLockPermissions`
@@ -33603,7 +33603,7 @@ Represents the pipeline execution policy.
 | ---- | ---- | ----------- |
 | <a id="pipelineexecutionpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="pipelineexecutionpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
-| <a id="pipelineexecutionpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
+| <a id="pipelineexecutionpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the policy is enabled. |
 | <a id="pipelineexecutionpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
 | <a id="pipelineexecutionpolicypolicyblobfilepath"></a>`policyBlobFilePath` | [`String!`](#string) | Path to the policy file in the project. |
 | <a id="pipelineexecutionpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
@@ -35049,7 +35049,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectiterationcadencesactive"></a>`active` | [`Boolean`](#boolean) | Whether the iteration cadence is active. |
 | <a id="projectiterationcadencesautomatic"></a>`automatic` | [`Boolean`](#boolean) | Whether the iteration cadence should automatically generate upcoming iterations. |
-| <a id="projectiterationcadencesdurationinweeks"></a>`durationInWeeks` | [`Int`](#int) | Duration in weeks of the iterations within this cadence. |
+| <a id="projectiterationcadencesdurationinweeks"></a>`durationInWeeks` | [`Int`](#int) | Duration in weeks of the iterations within the cadence. |
 | <a id="projectiterationcadencesid"></a>`id` | [`IterationsCadenceID`](#iterationscadenceid) | Global ID of the iteration cadence to look up. |
 | <a id="projectiterationcadencesincludeancestorgroups"></a>`includeAncestorGroups` | [`Boolean`](#boolean) | Whether to include ancestor groups to search iterations cadences in. |
 | <a id="projectiterationcadencestitle"></a>`title` | [`String`](#string) | Fuzzy search by title. |
@@ -37385,7 +37385,7 @@ Represents the scan execution policy.
 | <a id="scanexecutionpolicydeprecatedproperties"></a>`deprecatedProperties` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Introduced** in GitLab 17.3. **Status**: Experiment. All deprecated properties in the policy. |
 | <a id="scanexecutionpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="scanexecutionpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
-| <a id="scanexecutionpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
+| <a id="scanexecutionpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the policy is enabled. |
 | <a id="scanexecutionpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
 | <a id="scanexecutionpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | <a id="scanexecutionpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
@@ -37406,7 +37406,7 @@ Represents the scan result policy.
 | <a id="scanresultpolicydeprecatedproperties"></a>`deprecatedProperties` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. All deprecated properties in the policy. |
 | <a id="scanresultpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="scanresultpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
-| <a id="scanresultpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
+| <a id="scanresultpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the policy is enabled. |
 | <a id="scanresultpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
 | <a id="scanresultpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | <a id="scanresultpolicyroleapprovers"></a>`roleApprovers` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
@@ -39017,7 +39017,7 @@ fields relate to interactions between the two entities.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="usermergerequestinteractionapplicableapprovalrules"></a>`applicableApprovalRules` | [`[ApprovalRule!]`](#approvalrule) | Approval rules that apply to this user for this merge request. |
+| <a id="usermergerequestinteractionapplicableapprovalrules"></a>`applicableApprovalRules` | [`[ApprovalRule!]`](#approvalrule) | Approval rules that apply to the user for the merge request. |
 | <a id="usermergerequestinteractionapproved"></a>`approved` | [`Boolean!`](#boolean) | Whether the user has approved the merge request. |
 | <a id="usermergerequestinteractioncanmerge"></a>`canMerge` | [`Boolean!`](#boolean) | Whether the user can merge the merge request. |
 | <a id="usermergerequestinteractioncanupdate"></a>`canUpdate` | [`Boolean!`](#boolean) | Whether the user can update the merge request. |
@@ -39268,8 +39268,8 @@ Represents a vulnerability.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="vulnerabilityairesolutionavailable"></a>`aiResolutionAvailable` | [`Boolean`](#boolean) | Indicates whether this type of vulnerability can be resolved with AI. |
-| <a id="vulnerabilityairesolutionenabled"></a>`aiResolutionEnabled` | [`Boolean`](#boolean) | Indicates whether this specific vulnerability can be resolved with AI. |
+| <a id="vulnerabilityairesolutionavailable"></a>`aiResolutionAvailable` | [`Boolean`](#boolean) | Indicates whether the type of vulnerability can be resolved with AI. |
+| <a id="vulnerabilityairesolutionenabled"></a>`aiResolutionEnabled` | [`Boolean`](#boolean) | Indicates whether the specific vulnerability can be resolved with AI. |
 | <a id="vulnerabilitycommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on the noteable. (see [Connections](#connections)) |
 | <a id="vulnerabilityconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to confirmed. |
 | <a id="vulnerabilityconfirmedby"></a>`confirmedBy` | [`UserCore`](#usercore) | User that confirmed the vulnerability. |
@@ -39285,7 +39285,7 @@ Represents a vulnerability.
 | <a id="vulnerabilitydismissedby"></a>`dismissedBy` | [`UserCore`](#usercore) | User that dismissed the vulnerability. |
 | <a id="vulnerabilityexternalissuelinks"></a>`externalIssueLinks` | [`VulnerabilityExternalIssueLinkConnection!`](#vulnerabilityexternalissuelinkconnection) | List of external issue links related to the vulnerability. (see [Connections](#connections)) |
 | <a id="vulnerabilityfalsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. |
-| <a id="vulnerabilityhasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Indicates whether there is a remediation available for this vulnerability. |
+| <a id="vulnerabilityhasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Indicates whether there is a remediation available for the vulnerability. |
 | <a id="vulnerabilityid"></a>`id` | [`ID!`](#id) | GraphQL ID of the vulnerability. |
 | <a id="vulnerabilityidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerability. |
 | <a id="vulnerabilitylinks"></a>`links` | [`[VulnerabilityLink!]!`](#vulnerabilitylink) | List of links associated with the vulnerability. |
@@ -39817,7 +39817,7 @@ Represents the vulnerability management policy.
 | ---- | ---- | ----------- |
 | <a id="vulnerabilitymanagementpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="vulnerabilitymanagementpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
-| <a id="vulnerabilitymanagementpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
+| <a id="vulnerabilitymanagementpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the policy is enabled. |
 | <a id="vulnerabilitymanagementpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
 | <a id="vulnerabilitymanagementpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | <a id="vulnerabilitymanagementpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
@@ -39990,9 +39990,9 @@ Represents vulnerability letter grades with associated projects.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="vulnerableprojectsbygradecount"></a>`count` | [`Int!`](#int) | Number of projects within this grade. |
+| <a id="vulnerableprojectsbygradecount"></a>`count` | [`Int!`](#int) | Number of projects within the grade. |
 | <a id="vulnerableprojectsbygradegrade"></a>`grade` | [`VulnerabilityGrade!`](#vulnerabilitygrade) | Grade based on the highest severity vulnerability present. |
-| <a id="vulnerableprojectsbygradeprojects"></a>`projects` | [`ProjectConnection!`](#projectconnection) | Projects within this grade. (see [Connections](#connections)) |
+| <a id="vulnerableprojectsbygradeprojects"></a>`projects` | [`ProjectConnection!`](#projectconnection) | Projects within the grade. (see [Connections](#connections)) |
 
 ### `WikiPage`
 
@@ -46500,7 +46500,7 @@ Implementations:
 | ---- | ---- | ----------- |
 | <a id="orchestrationpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="orchestrationpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
-| <a id="orchestrationpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
+| <a id="orchestrationpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the policy is enabled. |
 | <a id="orchestrationpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
 | <a id="orchestrationpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | <a id="orchestrationpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
@@ -47413,7 +47413,7 @@ Attributes for defining a CI/CD variable.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="complianceframeworkinputcolor"></a>`color` | [`String`](#string) | New color representation of the compliance framework in hex format. e.g. #FCA121. |
-| <a id="complianceframeworkinputdefault"></a>`default` | [`Boolean`](#boolean) | Set this compliance framework as the default framework for the group. |
+| <a id="complianceframeworkinputdefault"></a>`default` | [`Boolean`](#boolean) | Set the compliance framework as the default framework for the group. |
 | <a id="complianceframeworkinputdescription"></a>`description` | [`String`](#string) | New description for the compliance framework. |
 | <a id="complianceframeworkinputname"></a>`name` | [`String`](#string) | New name for the compliance framework. |
 | <a id="complianceframeworkinputpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** Use pipeline execution policies instead. Deprecated in GitLab 17.4. |
