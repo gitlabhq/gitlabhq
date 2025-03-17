@@ -181,7 +181,7 @@ This flag is not recommended for use.
 
 An issue in GitLab 16.1 and 16.2 caused [`@final` artifacts to not be deleted from object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/419920).
 
-Administrators of GitLab instances that ran GitLab 16.1 or 16.2 for some time could see an increase 
+Administrators of GitLab instances that ran GitLab 16.1 or 16.2 for some time could see an increase
 in object storage used by artifacts. Follow this procedure to check for and remove these artifacts.
 
 Removing the files is a two stage process:
@@ -306,7 +306,7 @@ gitlab-rake gitlab:cleanup:delete_orphan_job_artifact_final_objects
 
 {{< /tabs >}}
 
-The following applies to all types of GitLab deployment: 
+The following applies to all types of GitLab deployment:
 
 - Specify the input filename using the `FILENAME` variable. By default the script looks for:
   `/opt/gitlab/embedded/service/gitlab-rails/tmp/orphan_job_artifact_final_objects.csv`

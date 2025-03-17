@@ -6,4 +6,5 @@
 config:
   default: false
   no-trailing-spaces: true
+noInlineConfig: true
 fix: true

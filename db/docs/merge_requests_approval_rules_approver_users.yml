@@ -1,9 +1,9 @@
 ---
 table_name: merge_requests_approval_rules_approver_users
 classes:
-  - MergeRequests::ApprovalRulesApproverUser
+- MergeRequests::ApprovalRulesApproverUser
 feature_categories:
-  - code_review_workflow
+- code_review_workflow
 description: Stores approver users for approval rules v2
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179877
 milestone: '17.10'
@@ -11,3 +11,4 @@ gitlab_schema: gitlab_main_cell
 sharding_key:
   group_id: namespaces
   project_id: projects
+table_size: small

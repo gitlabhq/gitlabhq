@@ -17,5 +17,5 @@ desired_sharding_key:
         table: deployments
         sharding_key: project_id
         belongs_to: deployment
-table_size: medium
+table_size: small
 desired_sharding_key_migration_job_name: BackfillDeploymentMergeRequestsProjectId

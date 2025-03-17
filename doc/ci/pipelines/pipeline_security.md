@@ -49,13 +49,12 @@ Variable values:
 
 Information suitable for storage in a variable should be data that can be exposed without risk of exploitation (non-sensitive).
 
-Sensitive data should be stored in a secrets management solution. If there is low
-sensitivity data that you want to store in a CI/CD variable, be sure to always:
+Sensitive data should be stored in a secrets management solution. If you don't have
+a secrets management solution and want to store sensitive data in a CI/CD variable, be sure to always:
 
-- [Mask the variables](../variables/_index.md#mask-a-cicd-variable)
-  or [Mask and hide the variable](../variables/_index.md#hide-a-cicd-variable).
+- [Mask the variables](../variables/_index.md#mask-a-cicd-variable).
+- [Hide the variables](../variables/_index.md#hide-a-cicd-variable).
 - [Protect the variables](../variables/_index.md#protect-a-cicd-variable) when possible.
-- [Hide the variables](../variables/_index.md#hide-a-cicd-variable) when possible.
 
 ## Pipeline Integrity
 

@@ -1,12 +1,13 @@
 ---
 table_name: merge_requests_approval_rules_groups
 classes:
-  - MergeRequests::ApprovalRulesGroup
+- MergeRequests::ApprovalRulesGroup
 feature_categories:
-  - code_review_workflow
+- code_review_workflow
 description: Stores relationship between approval rules v2 and groups
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179861
 milestone: '17.9'
 gitlab_schema: gitlab_main_cell
 sharding_key:
   group_id: namespaces
+table_size: small
