@@ -47,6 +47,7 @@ const defaultCountValues = {
 };
 
 export default {
+  name: 'PipelinesDashboard',
   components: {
     GlAlert,
     GlColumnChart,

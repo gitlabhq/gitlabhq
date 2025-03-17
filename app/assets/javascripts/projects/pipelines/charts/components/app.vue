@@ -1,31 +1,19 @@
 <script>
 import { GlTabs, GlTab } from '@gitlab/ui';
 import { mergeUrlParams, updateHistory, getParameterValues } from '~/lib/utils/url_utility';
+import { __, s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import PipelineCharts from './pipeline_charts.vue';
-import PipelineChartsNew from './pipeline_charts_new.vue';
+import PipelinesDashboard from './pipelines_dashboard.vue';
+import PipelinesDashboardClickhouse from './pipelines_dashboard_clickhouse.vue';
+
+const URL_PARAM_KEY = 'chart';
 
 export default {
   components: {
     GlTabs,
     GlTab,
-    PipelineCharts,
-    PipelineChartsNew,
-    DeploymentFrequencyCharts: () =>
-      import('ee_component/dora/components/deployment_frequency_charts.vue'),
-    LeadTimeCharts: () => import('ee_component/dora/components/lead_time_charts.vue'),
-    TimeToRestoreServiceCharts: () =>
-      import('ee_component/dora/components/time_to_restore_service_charts.vue'),
-    ChangeFailureRateCharts: () =>
-      import('ee_component/dora/components/change_failure_rate_charts.vue'),
-    ProjectQualitySummary: () => import('ee_component/project_quality_summary/app.vue'),
   },
-  pipelinesTabEvent: 'p_analytics_ci_cd_pipelines',
-  deploymentFrequencyTabEvent: 'p_analytics_ci_cd_deployment_frequency',
-  leadTimeTabEvent: 'p_analytics_ci_cd_lead_time',
-  timeToRestoreServiceTabEvent: 'visit_ci_cd_time_to_restore_service_tab',
-  changeFailureRateTabEvent: 'visit_ci_cd_failure_rate_tab',
   mixins: [InternalEvents.mixin(), glFeatureFlagsMixin()],
   inject: {
     shouldRenderDoraCharts: {
@@ -38,50 +26,83 @@ export default {
     },
   },
   data() {
+    const tabs = [
+      {
+        key: 'pipelines',
+        event: 'p_analytics_ci_cd_pipelines',
+        title: __('Pipelines'),
+        componentIs: this.glFeatures?.ciImprovedProjectPipelineAnalytics
+          ? PipelinesDashboardClickhouse
+          : PipelinesDashboard,
+        lazy: true,
+      },
+    ];
+
+    if (this.shouldRenderDoraCharts) {
+      tabs.push(
+        {
+          key: 'deployment-frequency',
+          event: 'p_analytics_ci_cd_deployment_frequency',
+          title: __('Deployment frequency'),
+          componentIs: () => import('ee_component/dora/components/deployment_frequency_charts.vue'),
+          lazy: true,
+        },
+        {
+          key: 'lead-time',
+          event: 'p_analytics_ci_cd_lead_time',
+          title: __('Lead time'),
+          componentIs: () => import('ee_component/dora/components/lead_time_charts.vue'),
+          lazy: true,
+        },
+        {
+          key: 'time-to-restore-service',
+          event: 'visit_ci_cd_time_to_restore_service_tab',
+          title: s__('DORA4Metrics|Time to restore service'),
+          componentIs: () =>
+            import('ee_component/dora/components/time_to_restore_service_charts.vue'),
+          lazy: true,
+        },
+        {
+          key: 'change-failure-rate',
+          event: 'visit_ci_cd_failure_rate_tab',
+          title: s__('DORA4Metrics|Change failure rate'),
+          componentIs: () => import('ee_component/dora/components/change_failure_rate_charts.vue'),
+          lazy: true,
+        },
+      );
+    }
+
+    if (this.shouldRenderQualitySummary) {
+      tabs.push({
+        key: 'project-quality',
+        title: s__('QualitySummary|Project quality'),
+        componentIs: () => import('ee_component/project_quality_summary/app.vue'),
+        lazy: true,
+      });
+    }
+
     return {
-      selectedTab: 0,
+      activeTabIndex: 0,
+      tabs,
     };
   },
-  computed: {
-    charts() {
-      const chartsToShow = ['pipelines'];
-
-      if (this.shouldRenderDoraCharts) {
-        chartsToShow.push(
-          'deployment-frequency',
-          'lead-time',
-          'time-to-restore-service',
-          'change-failure-rate',
-        );
-      }
-
-      if (this.shouldRenderQualitySummary) {
-        chartsToShow.push('project-quality');
-      }
-
-      return chartsToShow;
-    },
-    pipelineChartsComponent() {
-      if (this.glFeatures?.ciImprovedProjectPipelineAnalytics) {
-        return PipelineChartsNew;
-      }
-      return PipelineCharts;
-    },
-  },
   created() {
-    this.selectTab();
-    window.addEventListener('popstate', this.selectTab);
+    this.syncActiveTab();
+    window.addEventListener('popstate', this.syncActiveTab);
   },
   methods: {
-    selectTab() {
-      const [chart] = getParameterValues('chart') || this.charts;
-      const tab = this.charts.indexOf(chart);
-      this.selectedTab = tab >= 0 ? tab : 0;
+    syncActiveTab() {
+      const paramValue = getParameterValues(URL_PARAM_KEY)?.[0];
+      const selectedIndex = this.tabs.map((tab) => tab.key).indexOf(paramValue);
+      this.activeTabIndex = selectedIndex >= 0 ? selectedIndex : 0;
     },
-    onTabChange(index) {
-      if (index !== this.selectedTab) {
-        this.selectedTab = index;
-        const path = mergeUrlParams({ chart: this.charts[index] }, window.location.pathname);
+    onTabInput(index) {
+      if (index !== this.activeTabIndex) {
+        const tab = this.tabs[index];
+        const path = mergeUrlParams({ [URL_PARAM_KEY]: tab.key }, window.location.pathname);
+
+        this.activeTabIndex = index;
+        tab.lazy = false; // mount the tab permanently after it is shown
         updateHistory({ url: path, title: window.title });
       }
     },
@@ -90,48 +111,17 @@ export default {
 </script>
 <template>
   <div>
-    <gl-tabs v-if="charts.length > 1" :value="selectedTab" @input="onTabChange">
+    <gl-tabs v-if="tabs.length > 1" :value="activeTabIndex" @input="onTabInput">
       <gl-tab
-        :title="__('Pipelines')"
-        data-testid="pipelines-tab"
-        @click="trackEvent($options.pipelinesTabEvent)"
+        v-for="tab in tabs"
+        :key="tab.key"
+        :title="tab.title"
+        :lazy="tab.lazy"
+        @click="tab.event && trackEvent(tab.event)"
       >
-        <component :is="pipelineChartsComponent" />
-      </gl-tab>
-      <template v-if="shouldRenderDoraCharts">
-        <gl-tab
-          :title="__('Deployment frequency')"
-          data-testid="deployment-frequency-tab"
-          @click="trackEvent($options.deploymentFrequencyTabEvent)"
-        >
-          <deployment-frequency-charts />
-        </gl-tab>
-        <gl-tab
-          :title="__('Lead time')"
-          data-testid="lead-time-tab"
-          @click="trackEvent($options.leadTimeTabEvent)"
-        >
-          <lead-time-charts />
-        </gl-tab>
-        <gl-tab
-          :title="s__('DORA4Metrics|Time to restore service')"
-          data-testid="time-to-restore-service-tab"
-          @click="trackEvent($options.timeToRestoreServiceTabEvent)"
-        >
-          <time-to-restore-service-charts />
-        </gl-tab>
-        <gl-tab
-          :title="s__('DORA4Metrics|Change failure rate')"
-          data-testid="change-failure-rate-tab"
-          @click="trackEvent($options.changeFailureRateTabEvent)"
-        >
-          <change-failure-rate-charts />
-        </gl-tab>
-      </template>
-      <gl-tab v-if="shouldRenderQualitySummary" :title="s__('QualitySummary|Project quality')">
-        <project-quality-summary />
+        <component :is="tab.componentIs" />
       </gl-tab>
     </gl-tabs>
-    <component :is="pipelineChartsComponent" v-else />
+    <component :is="tabs[0].componentIs" v-else />
   </div>
 </template>

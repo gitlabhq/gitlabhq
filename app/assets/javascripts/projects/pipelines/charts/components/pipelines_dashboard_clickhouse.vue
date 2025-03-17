@@ -16,6 +16,7 @@ import PipelineDurationChart from './pipeline_duration_chart.vue';
 import PipelineStatusChart from './pipeline_status_chart.vue';
 
 export default {
+  name: 'PipelinesDashboardClickhouse',
   components: {
     GlCollapsibleListbox,
     GlFormGroup,

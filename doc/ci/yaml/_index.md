@@ -5650,7 +5650,11 @@ trigger-multi-project-pipeline:
 Use `trigger:include` to declare that a job is a "trigger job" which starts a
 [child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines).
 
-Use `trigger:include:artifact` to trigger a [dynamic child pipeline](../pipelines/downstream_pipelines.md#dynamic-child-pipelines).
+Additionally, use:
+
+- `trigger:include:artifact` to trigger a [dynamic child pipeline](../pipelines/downstream_pipelines.md#dynamic-child-pipelines).
+- `trigger:include:inputs` to set the [inputs](inputs.md) when the downstream pipeline configuration
+  uses [`spec:inputs`](#specinputs).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -5743,6 +5747,26 @@ successfully complete before starting.
   jobs in later stages do not start until the trigger job completes.
 - If the downstream pipeline has a failed job, but the job uses [`allow_failure: true`](#allow_failure),
   the downstream pipeline is considered successful and the trigger job shows **success**.
+
+#### `trigger:inputs`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519963) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Disabled by default.
+
+{{</history >}}
+
+Use `trigger:inputs` to set the [inputs](inputs.md) when the downstream pipeline configuration
+uses [`spec:inputs`](#specinputs).
+
+**Example of `trigger:inputs`**:
+
+```yaml
+trigger:
+  - project: 'my-group/my-project'
+    inputs:
+      website: "My website"
+```
 
 #### `trigger:forward`
 

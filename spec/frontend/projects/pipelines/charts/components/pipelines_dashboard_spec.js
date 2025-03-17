@@ -4,7 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import PipelineCharts from '~/projects/pipelines/charts/components/pipeline_charts.vue';
+import PipelinesDashboard from '~/projects/pipelines/charts/components/pipelines_dashboard.vue';
 import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
 import getPipelineCountByStatus from '~/projects/pipelines/charts/graphql/queries/get_pipeline_count_by_status.query.graphql';
 import getProjectPipelineStatistics from '~/projects/pipelines/charts/graphql/queries/get_project_pipeline_statistics.query.graphql';
@@ -14,7 +14,7 @@ import { mockPipelineCount, mockPipelineStatistics } from '../mock_data';
 const projectPath = 'gitlab-org/gitlab';
 Vue.use(VueApollo);
 
-describe('~/projects/pipelines/charts/components/pipeline_charts.vue', () => {
+describe('PipelinesDashboard', () => {
   let wrapper;
 
   function createMockApolloProvider() {
@@ -27,7 +27,7 @@ describe('~/projects/pipelines/charts/components/pipeline_charts.vue', () => {
   }
 
   beforeEach(async () => {
-    wrapper = shallowMount(PipelineCharts, {
+    wrapper = shallowMount(PipelinesDashboard, {
       provide: {
         projectPath,
       },

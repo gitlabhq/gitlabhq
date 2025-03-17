@@ -1213,6 +1213,7 @@ ee:
             - :iterations_cadence
       - protected_branches:
         - :unprotect_access_levels
+        - :squash_option
       - protected_environments:
         - :deploy_access_levels
       - :security_setting
@@ -1356,6 +1357,9 @@ ee:
     latest_finding_pipeline:
       - :iid
     vulnerability_read:
+      - :project_id
+    squash_option:
+      - :squash_option
       - :project_id
   excluded_attributes:
     project:

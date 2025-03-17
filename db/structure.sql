@@ -10460,7 +10460,8 @@ CREATE TABLE ci_build_trace_chunks (
     lock_version integer DEFAULT 0 NOT NULL,
     build_id bigint NOT NULL,
     partition_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_b374316678 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ci_build_trace_chunks_id_seq

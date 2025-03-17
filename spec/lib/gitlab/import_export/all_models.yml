@@ -569,6 +569,8 @@ create_access_levels:
 - protected_tag
 - group
 - deploy_key
+squash_option:
+- protected_branch
 container_repositories:
 - project
 - name

@@ -5,7 +5,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import PipelineChartsNew from '~/projects/pipelines/charts/components/pipeline_charts_new.vue';
+import PipelinesDashboardClickhouse from '~/projects/pipelines/charts/components/pipelines_dashboard_clickhouse.vue';
 import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
 import PipelineDurationChart from '~/projects/pipelines/charts/components/pipeline_duration_chart.vue';
 import PipelineStatusChart from '~/projects/pipelines/charts/components/pipeline_status_chart.vue';
@@ -19,7 +19,7 @@ jest.mock('~/alert');
 
 const projectPath = 'gitlab-org/gitlab';
 
-describe('~/projects/pipelines/charts/components/pipeline_charts_new.vue', () => {
+describe('PipelinesDashboardClickhouse', () => {
   useFakeDate('2022-02-15T08:30'); // a date with a time
 
   let wrapper;
@@ -32,7 +32,7 @@ describe('~/projects/pipelines/charts/components/pipeline_charts_new.vue', () =>
   const findAllSingleStats = () => wrapper.findAllComponents(GlSingleStat);
 
   const createComponent = ({ mountFn = shallowMount } = {}) => {
-    wrapper = mountFn(PipelineChartsNew, {
+    wrapper = mountFn(PipelinesDashboardClickhouse, {
       provide: {
         projectPath,
       },
