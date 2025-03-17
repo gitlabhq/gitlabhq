@@ -48,8 +48,8 @@ module Snippets
       can?(current_user, :admin_snippet, snippet)
     end
 
-    def service_response_error(message, http_status)
-      ServiceResponse.error(message: message, http_status: http_status)
+    def service_response_error(message, reason)
+      ServiceResponse.error(message: message, reason: reason)
     end
   end
 end

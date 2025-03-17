@@ -215,8 +215,6 @@ spec/frontend/todos/components/filtered_search_tokens/project_token_spec.js
 spec/frontend/tooltips/components/tooltips_spec.js
 spec/frontend/tooltips/index_spec.js
 spec/frontend/vue_alerts_spec.js
-spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_spec.js
-spec/frontend/vue_merge_request_widget/components/states/merge_failed_pipeline_confirmation_dialog_spec.js
 spec/frontend/vue_merge_request_widget/components/states/mr_widget_ready_to_merge_spec.js
 spec/frontend/vue_popovers_spec.js
 spec/frontend/vue_shared/components/confirm_modal_spec.js

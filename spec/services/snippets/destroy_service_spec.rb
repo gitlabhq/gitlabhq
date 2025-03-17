@@ -15,6 +15,7 @@ RSpec.describe Snippets::DestroyService, feature_category: :source_code_manageme
 
       it 'returns a ServiceResponse error' do
         expect(subject).to be_error
+        expect(subject.reason).to eq(404)
       end
     end
 
@@ -28,6 +29,17 @@ RSpec.describe Snippets::DestroyService, feature_category: :source_code_manageme
       end
     end
 
+    shared_examples 'an unauthorized destroy' do
+      it 'does not delete the snippet' do
+        expect { subject }.not_to change { Snippet.count }
+      end
+
+      it 'returns ServiceResponse error' do
+        expect(subject).to be_error
+        expect(subject.reason).to eq(403)
+      end
+    end
+
     shared_examples 'an unsuccessful destroy' do
       it 'does not delete the snippet' do
         expect { subject }.not_to change { Snippet.count }
@@ -35,6 +47,7 @@ RSpec.describe Snippets::DestroyService, feature_category: :source_code_manageme
 
       it 'returns ServiceResponse error' do
         expect(subject).to be_error
+        expect(subject.reason).to eq(400)
       end
     end
 
@@ -116,7 +129,7 @@ RSpec.describe Snippets::DestroyService, feature_category: :source_code_manageme
       context 'when user is not able to admin_project_snippet' do
         let(:author) { other_user }
 
-        it_behaves_like 'an unsuccessful destroy'
+        it_behaves_like 'an unauthorized destroy'
       end
     end
 
@@ -139,7 +152,7 @@ RSpec.describe Snippets::DestroyService, feature_category: :source_code_manageme
       context 'when user is not able to admin_personal_snippet' do
         let(:author) { other_user }
 
-        it_behaves_like 'an unsuccessful destroy'
+        it_behaves_like 'an unauthorized destroy'
       end
     end
 

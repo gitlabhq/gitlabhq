@@ -1225,6 +1225,9 @@ msgstr ""
 msgid "%{project_path} is a project that you can use to add a README to your GitLab profile. Create a public project and initialize the repository with a README to get started. %{help_link_start}Learn more%{help_link_end}."
 msgstr ""
 
+msgid "%{projectsCount}, %{subGroupsCount}"
+msgstr ""
+
 msgid "%{project} has %{number} fork"
 msgid_plural "%{project} has %{number} forks"
 msgstr[0] ""
@@ -48140,6 +48143,9 @@ msgstr ""
 msgid "Ready to get started with GitLab? Follow these steps to get familiar with us:"
 msgstr ""
 
+msgid "Ready to merge"
+msgstr ""
+
 msgid "Ready to merge by members who can write to the target branch."
 msgstr ""
 
@@ -52664,6 +52670,9 @@ msgstr ""
 msgid "SecurityExclusions|ex: spec/**/*.rb"
 msgstr ""
 
+msgid "SecurityInventory|Add project to this group to start tracking their security posture."
+msgstr ""
+
 msgid "SecurityInventory|CS"
 msgstr ""
 
@@ -52676,6 +52685,12 @@ msgstr ""
 msgid "SecurityInventory|IaC"
 msgstr ""
 
+msgid "SecurityInventory|Manage security configuration"
+msgstr ""
+
+msgid "SecurityInventory|No projects found."
+msgstr ""
+
 msgid "SecurityInventory|SAST"
 msgstr ""
 
@@ -52686,6 +52701,9 @@ msgid "SecurityInventory|Security inventory"
 msgstr ""
 
 msgid "SecurityInventory|View security coverage and vulnerabilities for all the projects in this group. Data is refreshed and may be upto 24 hours behind."
+msgstr ""
+
+msgid "SecurityInventory||An error occurred while fetching subgroups and projects. Please try again."
 msgstr ""
 
 msgid "SecurityOrchestration| and "
@@ -61504,6 +61522,9 @@ msgid "Too many users found. Quick actions are limited to at most %{max_count} u
 msgstr ""
 
 msgid "Tool"
+msgstr ""
+
+msgid "Tool Coverage"
 msgstr ""
 
 msgid "Topic %{source_topic} was successfully merged into topic %{target_topic}."

@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlPopover, GlSkeletonLoader } from '@gitlab/ui';
+import { GlIcon, GlBadge, GlPopover, GlSkeletonLoader } from '@gitlab/ui';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import { __ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -8,6 +8,7 @@ import query from '../queries/merge_request.query.graphql';
 
 export default {
   components: {
+    GlIcon,
     GlBadge,
     GlPopover,
     GlSkeletonLoader,
@@ -108,7 +109,8 @@ export default {
       <h5 v-if="!$apollo.queries.mergeRequest.loading" class="my-2">{{ title }}</h5>
       <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
       <div class="gl-text-subtle">
-        {{ `${namespacePath}!${iid}` }}
+        <gl-icon name="merge-request" />
+        <span class="gl-text-subtle">{{ `${namespacePath}!${iid}` }}</span>
       </div>
       <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
     </div>

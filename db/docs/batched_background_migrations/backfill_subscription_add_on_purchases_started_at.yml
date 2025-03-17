@@ -5,4 +5,4 @@ feature_category: subscription_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174626
 milestone: '17.7'
 queued_migration_version: 20241203172717
-finalized_by: 20241203172717
+finalized_by: 20250312151614

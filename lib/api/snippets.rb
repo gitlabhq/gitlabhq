@@ -225,7 +225,7 @@ module API
           response = service.execute
 
           if response.error?
-            render_api_error!({ error: response.message }, response.http_status)
+            render_api_error!({ error: response.message }, response.reason)
           end
         end
       end

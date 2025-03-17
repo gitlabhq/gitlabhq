@@ -546,6 +546,24 @@ RSpec.describe API::Snippets, :aggregate_failures, factory_default: :keep, featu
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
 
+    context "when destruction fails" do
+      let(:error_message) { "some service error message" }
+      let(:error_response) { ServiceResponse.error(message: error_message, reason: :bad_request) }
+
+      before do
+        allow_next_instance_of(::Snippets::DestroyService) do |service|
+          allow(service).to receive(:execute).and_return(error_response)
+        end
+      end
+
+      it 'returns an error when DestroyService fails' do
+        delete api("/snippets/#{public_snippet.id}", personal_access_token: user_token)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq({ "error" => error_message })
+      end
+    end
+
     it_behaves_like '412 response' do
       let(:request) { api("/snippets/#{public_snippet.id}", personal_access_token: user_token) }
     end

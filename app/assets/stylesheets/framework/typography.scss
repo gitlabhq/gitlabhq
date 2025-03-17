@@ -573,10 +573,11 @@
     $anchor-offset: 20px;
 
     a.anchor {
-      float: left;
       margin-left: calc(-1 * $anchor-offset);
       text-decoration: none;
       outline: none;
+      position: absolute;
+      width: $anchor-offset;
 
       &::after {
         @include gl-dark-invert-keep-hue;
@@ -587,15 +588,11 @@
 
     &:hover > a.anchor::after {
       visibility: visible;
-      position: absolute;
-      width: $anchor-offset;
     }
 
     > a.anchor:focus::after {
       visibility: visible;
       outline: auto;
-      position: absolute;
-      width: $anchor-offset;
     }
   }
 

@@ -8,7 +8,7 @@ title: GitLab for Slack app administration
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 

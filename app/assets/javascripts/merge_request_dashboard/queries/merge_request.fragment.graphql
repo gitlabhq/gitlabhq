@@ -56,5 +56,8 @@ fragment MergeRequestDashboardFragment on MergeRequest {
   mergedAt
   createdAt
   updatedAt
+  mergeabilityChecks @include(if: $includeMergeabilityChecks) {
+    status
+  }
   ...MergeRequestApprovalFragment
 }

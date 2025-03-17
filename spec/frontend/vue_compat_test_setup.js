@@ -122,7 +122,9 @@ if (global.document) {
     MountingPortal: {
       template: '<h1>MOUNTING-PORTAL</h1>',
     },
-    Wormhole: {},
+    Wormhole: {
+      hasTarget: jest.fn(),
+    },
   }));
 
   VTU.config.global.renderStubDefaultSlot = true;
