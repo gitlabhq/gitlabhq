@@ -334,6 +334,155 @@ RSpec.describe ContainerRegistry::Protection::Rule, type: :model, feature_catego
     end
   end
 
+  describe '.for_action_exists?' do
+    let_it_be(:project1) { create(:project) }
+    let_it_be(:project_no_crpr) { create(:project) }
+
+    let_it_be(:protection_rule_for_developer) do
+      create(:container_registry_protection_rule,
+        project: project1,
+        repository_path_pattern: "#{project1.full_path}/stage*",
+        minimum_access_level_for_delete: :owner,
+        minimum_access_level_for_push: :maintainer
+      )
+    end
+
+    let_it_be(:protection_rule_for_maintainer) do
+      create(:container_registry_protection_rule,
+        project: project1,
+        repository_path_pattern: "#{project1.full_path}/prod*",
+        minimum_access_level_for_delete: :owner,
+        minimum_access_level_for_push: :owner
+      )
+    end
+
+    let_it_be(:protection_rule_for_owner) do
+      create(:container_registry_protection_rule,
+        project: project1,
+        repository_path_pattern: "#{project1.full_path}/release*",
+        minimum_access_level_for_delete: :admin,
+        minimum_access_level_for_push: :admin
+      )
+    end
+
+    # Creating an identical container protection rule for the same project
+    # to ensure that overlapping rules are considered properly
+    let_it_be(:protection_rule_overlapping_for_developer) do
+      create(:container_registry_protection_rule,
+        project: project1,
+        repository_path_pattern: "#{project1.full_path}/stage-sha*",
+        minimum_access_level_for_delete: :owner,
+        minimum_access_level_for_push: :maintainer
+      )
+    end
+
+    let_it_be(:protection_rule_only_deletion_protection) do
+      create(:container_registry_protection_rule,
+        repository_path_pattern: "#{project1.full_path}/only-delete-protected*",
+        project: project1,
+        minimum_access_level_for_delete: :admin,
+        minimum_access_level_for_push: nil
+      )
+    end
+
+    let_it_be(:protection_rule_only_push_protection) do
+      create(:container_registry_protection_rule,
+        repository_path_pattern: "#{project1.full_path}/only-push-protected*",
+        project: project1,
+        minimum_access_level_for_delete: nil,
+        minimum_access_level_for_push: :admin
+      )
+    end
+
+    subject(:for_action_exists_result) do
+      project
+        .container_registry_protection_rules
+        .for_action_exists?(
+          action: action,
+          access_level: access_level,
+          repository_path: repository_path
+        )
+    end
+
+    # rubocop:disable Layout/LineLength -- Avoid formatting to ensure one-line table syntax
+    where(:project, :action, :access_level, :repository_path, :protected?) do
+      ref(:project1)        | :push   | Gitlab::Access::REPORTER   | lazy { "#{project.full_path}/stage-sha-1234" }        | true
+      ref(:project1)        | :push   | Gitlab::Access::DEVELOPER  | lazy { "#{project.full_path}/stage-sha-1234" }        | true
+      ref(:project1)        | :push   | Gitlab::Access::MAINTAINER | lazy { "#{project.full_path}/stage-sha-1234" }        | false
+      ref(:project1)        | :push   | Gitlab::Access::OWNER      | lazy { "#{project.full_path}/stage-sha-1234" }        | false
+      ref(:project1)        | :push   | Gitlab::Access::ADMIN      | lazy { "#{project.full_path}/stage-sha-1234" }        | false
+      ref(:project1)        | :delete | Gitlab::Access::DEVELOPER  | lazy { "#{project.full_path}/stage-sha-1234" }        | true
+      ref(:project1)        | :delete | Gitlab::Access::MAINTAINER | lazy { "#{project.full_path}/stage-sha-1234" }        | true
+      ref(:project1)        | :delete | Gitlab::Access::OWNER      | lazy { "#{project.full_path}/stage-sha-1234" }        | false
+      ref(:project1)        | :delete | Gitlab::Access::ADMIN      | lazy { "#{project.full_path}/stage-sha-1234" }        | false
+
+      ref(:project1)        | :push   | Gitlab::Access::MAINTAINER | lazy { "#{project.full_path}/prod-sha-1234" }         | true
+      ref(:project1)        | :push   | Gitlab::Access::OWNER      | lazy { "#{project.full_path}/prod-sha-1234" }         | false
+      ref(:project1)        | :push   | Gitlab::Access::ADMIN      | lazy { "#{project.full_path}/prod-sha-1234" }         | false
+      ref(:project1)        | :delete | Gitlab::Access::MAINTAINER | lazy { "#{project.full_path}/prod-sha-1234" }         | true
+      ref(:project1)        | :delete | Gitlab::Access::OWNER      | lazy { "#{project.full_path}/prod-sha-1234" }         | false
+      ref(:project1)        | :delete | Gitlab::Access::ADMIN      | lazy { "#{project.full_path}/prod-sha-1234" }         | false
+
+      ref(:project1)        | :push   | Gitlab::Access::MAINTAINER | lazy { "#{project.full_path}/release-v1" }            | true
+      ref(:project1)        | :push   | Gitlab::Access::OWNER      | lazy { "#{project.full_path}/release-v1" }            | true
+      ref(:project1)        | :push   | Gitlab::Access::ADMIN      | lazy { "#{project.full_path}/release-v1" }            | false
+      ref(:project1)        | :delete | Gitlab::Access::MAINTAINER | lazy { "#{project.full_path}/release-v1" }            | true
+      ref(:project1)        | :delete | Gitlab::Access::OWNER      | lazy { "#{project.full_path}/release-v1" }            | true
+      ref(:project1)        | :delete | Gitlab::Access::ADMIN      | lazy { "#{project.full_path}/release-v1" }            | false
+
+      ref(:project1)        | :push   | Gitlab::Access::DEVELOPER  | lazy { "#{project.full_path}/only-delete-protected" } | false
+      ref(:project1)        | :push   | Gitlab::Access::MAINTAINER | lazy { "#{project.full_path}/only-delete-protected" } | false
+      ref(:project1)        | :push   | Gitlab::Access::OWNER      | lazy { "#{project.full_path}/only-delete-protected" } | false
+      ref(:project1)        | :push   | Gitlab::Access::ADMIN      | lazy { "#{project.full_path}/only-delete-protected" } | false
+      ref(:project1)        | :push   | Gitlab::Access::DEVELOPER  | lazy { "#{project.full_path}/only-push-protected" }   | true
+      ref(:project1)        | :push   | Gitlab::Access::MAINTAINER | lazy { "#{project.full_path}/only-push-protected" }   | true
+      ref(:project1)        | :push   | Gitlab::Access::OWNER      | lazy { "#{project.full_path}/only-push-protected" }   | true
+      ref(:project1)        | :push   | Gitlab::Access::ADMIN      | lazy { "#{project.full_path}/only-push-protected" }   | false
+      ref(:project1)        | :delete | Gitlab::Access::DEVELOPER  | lazy { "#{project.full_path}/only-delete-protected" } | true
+      ref(:project1)        | :delete | Gitlab::Access::MAINTAINER | lazy { "#{project.full_path}/only-delete-protected" } | true
+      ref(:project1)        | :delete | Gitlab::Access::OWNER      | lazy { "#{project.full_path}/only-delete-protected" } | true
+      ref(:project1)        | :delete | Gitlab::Access::ADMIN      | lazy { "#{project.full_path}/only-delete-protected" } | false
+      ref(:project1)        | :delete | Gitlab::Access::DEVELOPER  | lazy { "#{project.full_path}/only-push-protected" }   | false
+      ref(:project1)        | :delete | Gitlab::Access::MAINTAINER | lazy { "#{project.full_path}/only-push-protected" }   | false
+      ref(:project1)        | :delete | Gitlab::Access::OWNER      | lazy { "#{project.full_path}/only-push-protected" }   | false
+      ref(:project1)        | :delete | Gitlab::Access::ADMIN      | lazy { "#{project.full_path}/only-push-protected" }   | false
+
+      # For non-matching containers
+      ref(:project1)        | :push   | Gitlab::Access::DEVELOPER  | lazy { "#{project.full_path}/any-suffix" }            | false
+      ref(:project1)        | :push   | Gitlab::Access::NO_ACCESS  | lazy { "#{project.full_path}/prod" }                  | true
+      ref(:project1)        | :delete | Gitlab::Access::DEVELOPER  | lazy { "#{project.full_path}/any-suffix" }            | false
+      ref(:project1)        | :delete | Gitlab::Access::NO_ACCESS  | lazy { "#{project.full_path}/prod" }                  | true
+
+      # Edge cases
+      ref(:project1)        | :push   | nil                        | lazy { "#{project.full_path}/stage-sha-1234" }        | false
+      ref(:project1)        | :push   | Gitlab::Access::DEVELOPER  | nil                                                   | false
+      ref(:project1)        | :push   | Gitlab::Access::DEVELOPER  | ''                                                    | false
+      ref(:project1)        | :push   | nil                        | nil                                                   | false
+
+      # For projects that have no container protection rules
+      ref(:project_no_crpr) | :push   | Gitlab::Access::DEVELOPER  | lazy { "#{project.full_path}/prod" }                  | false
+      ref(:project_no_crpr) | :push   | Gitlab::Access::OWNER      | lazy { "#{project.full_path}/prod" }                  | false
+      ref(:project_no_crpr) | :delete | Gitlab::Access::DEVELOPER  | lazy { "#{project.full_path}/prod" }                  | false
+      ref(:project_no_crpr) | :delete | Gitlab::Access::OWNER      | lazy { "#{project.full_path}/prod" }                  | false
+    end
+    # rubocop:enable Layout/LineLength
+
+    with_them do
+      it { is_expected.to eq protected? }
+    end
+
+    context 'for invalid action' do
+      let(:project) { project1 }
+      let(:action) { :invalid_action }
+      let(:access_level) { Gitlab::Access::DEVELOPER }
+      let(:repository_path) { "#{project.full_path}/stage-sha-1234" }
+
+      it 'raises an error' do
+        expect { for_action_exists_result }.to raise_error ArgumentError, 'action must be :push or :delete'
+      end
+    end
+  end
+
   describe '.for_push_exists_for_projects_and_repository_paths' do
     let_it_be(:project1) { create(:project) }
     let_it_be(:project1_crpr) { create(:container_registry_protection_rule, project: project1) }

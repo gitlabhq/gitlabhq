@@ -79,13 +79,13 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :cell do
       context 'and namespace is not found' do
         let(:group_path) { 'not_found' }
 
-        it { is_expected.to be(nil) }
+        it { is_expected.to be_nil }
       end
 
       context 'and namespace_id is empty string' do
         let(:params) { super().merge(namespace_id: '') }
 
-        it { is_expected.to be(nil) }
+        it { is_expected.to be_nil }
 
         it 'does not execute query' do
           expect { current_organization }.to match_query_count(0)
@@ -103,7 +103,7 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :cell do
       context 'and namespace is not found' do
         let(:group_path) { 'not_found' }
 
-        it { is_expected.to be(nil) }
+        it { is_expected.to be_nil }
       end
     end
 
@@ -120,12 +120,12 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :cell do
         context 'and namespace is not found' do
           let(:group_path) { non_existing_record_id }
 
-          it { is_expected.to be(nil) }
+          it { is_expected.to be_nil }
         end
       end
 
       context 'and controller is not groups' do
-        it { is_expected.to be(nil) }
+        it { is_expected.to be_nil }
       end
     end
 

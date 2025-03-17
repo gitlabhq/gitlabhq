@@ -50,7 +50,7 @@ RSpec.describe Gitlab::ProjectTemplate, feature_category: :source_code_managemen
     context 'when there is no match' do
       let(:query) { 'no-match' }
 
-      it { is_expected.to be(nil) }
+      it { is_expected.to be_nil }
     end
   end
 

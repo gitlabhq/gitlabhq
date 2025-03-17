@@ -26,8 +26,12 @@ If you plan to allow user activity on your secondary sites during the upgrade,
 do not pause replication for a [zero-downtime upgrade](../../../update/zero_downtime.md). While paused, the secondary site gets more and more out-of-date.
 One known effect is that more and more Git fetches get redirected or proxied to the primary site. There may be additional unknown effects.
 
+For example, pausing a secondary site with a separate URL may break sign-in at the secondary site's URL. You land on the primary site's root URL, without a new session on the secondary site's URL.
+
+## Pause and resume
+
 Pausing and resuming replication is done through a command-line tool from a specific node in the secondary site. Depending on your database architecture,
-this will target either the `postgresql` or `patroni`service:
+this targets either the `postgresql` or `patroni` service:
 
 - If you are using a single node for all services on your secondary site, you must run the commands on this single node.
 - If you have a standalone PostgreSQL node on your secondary site, you must run the commands on this standalone PostgreSQL node.

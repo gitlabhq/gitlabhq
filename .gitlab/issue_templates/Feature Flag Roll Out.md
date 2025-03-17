@@ -154,6 +154,7 @@ or use the checklist below in this same issue.
 
 /label <group-label>
 /label ~"feature flag"
+/relate <feature-issue-link>
 <!-- Uncomment the appropriate type label
 /label ~"type::feature" ~"feature::addition"
 /label ~"type::maintenance"

@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Email::IncomingEmail, feature_category: :service_desk do
     end
 
     it 'does not match emails with extra bits' do
-      expect(described_class.key_from_address('somereplies+somekey@example.com.someotherdomain.com')).to be nil
+      expect(described_class.key_from_address('somereplies+somekey@example.com.someotherdomain.com')).to be_nil
     end
 
     context 'when a custom wildcard address is used' do

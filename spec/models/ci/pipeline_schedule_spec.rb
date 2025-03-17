@@ -6,7 +6,7 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
   let_it_be_with_reload(:project) { create_default(:project, :repository) }
   let_it_be(:repository) { project.repository }
 
-  subject { build(:ci_pipeline_schedule, project: project) }
+  subject(:schedule) { build(:ci_pipeline_schedule, project: project) }
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:owner) }
@@ -58,6 +58,13 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
 
       expect(schedule).not_to be_valid
       expect(schedule.errors.full_messages).to contain_exactly('Inputs have duplicate values (test_input)')
+    end
+
+    it 'limits the number of inputs' do
+      schedule.inputs = build_list(:ci_pipeline_schedule_input, 21)
+
+      expect(schedule).not_to be_valid
+      expect(schedule.errors.full_messages).to contain_exactly('Inputs exceeds the limit of 20.')
     end
 
     context 'when an short ref record is being updated' do

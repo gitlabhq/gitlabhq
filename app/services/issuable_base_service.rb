@@ -359,11 +359,13 @@ class IssuableBaseService < ::BaseContainerService
 
   def transaction_create(issuable)
     issuable.save.tap do |saved|
-      if saved
-        @callbacks.each(&:after_create)
-        @callbacks.each(&:after_save)
-      end
+      run_after_create_callbacks(issuable) if saved
     end
+  end
+
+  def run_after_create_callbacks(_issuable)
+    @callbacks.each(&:after_create)
+    @callbacks.each(&:after_save)
   end
 
   def update_task(issuable)

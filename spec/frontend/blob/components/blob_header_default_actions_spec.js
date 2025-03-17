@@ -11,7 +11,6 @@ import { Blob, mockEnvironmentName, mockEnvironmentPath } from './mock_data';
 
 describe('Blob Header Default Actions', () => {
   let wrapper;
-  let btnGroup;
   let buttons;
 
   const blobHash = 'foo-bar';
@@ -20,6 +19,9 @@ describe('Blob Header Default Actions', () => {
     wrapper = shallowMountExtended(BlobHeaderActions, {
       provide: {
         blobHash,
+        glFeatures: {
+          blobOverflowMenu: false,
+        },
         ...provided,
       },
       propsData: {
@@ -31,17 +33,17 @@ describe('Blob Header Default Actions', () => {
 
   beforeEach(() => {
     createComponent();
-    btnGroup = wrapper.findComponent(GlButtonGroup);
     buttons = wrapper.findAllComponents(GlButton);
   });
 
   describe('renders', () => {
+    const findButtonGroup = () => wrapper.findComponent(GlButtonGroup);
     const findCopyButton = () => wrapper.findByTestId('copy-contents-button');
     const findViewRawButton = () => wrapper.findByTestId('viewRawButton');
     const findDownloadButton = () => wrapper.findByTestId('download-button');
 
     it('gl-button-group component', () => {
-      expect(btnGroup.exists()).toBe(true);
+      expect(findButtonGroup().exists()).toBe(true);
     });
 
     it('exactly 3 buttons with predefined actions', () => {
@@ -131,6 +133,16 @@ describe('Blob Header Default Actions', () => {
       });
 
       expect(findEnvironmentButton().props('icon')).toBe('external-link');
+    });
+  });
+
+  describe('when blob_overflow_menu is enabled', () => {
+    it('hides default actions for mobile layout', () => {
+      createComponent({}, { glFeatures: { blobOverflowMenu: true } });
+
+      expect(wrapper.findComponent(GlButtonGroup).attributes('class')).toBe(
+        'gl-hidden sm:gl-inline-flex',
+      );
     });
   });
 });

@@ -153,7 +153,7 @@ RSpec.describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab
       end
 
       it 'responds correctly to no due date value' do
-        expect(milestone_hash2[:due_date]).to be nil
+        expect(milestone_hash2[:due_date]).to be_nil
       end
 
       it 'includes the created timestamp' do

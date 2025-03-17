@@ -20,6 +20,7 @@ import {
   WIDGET_TYPE_CRM_CONTACTS,
   WORK_ITEM_TYPE_VALUE_EPIC,
   WORK_ITEM_TYPE_VALUE_MAP,
+  WIDGET_TYPE_CUSTOM_FIELDS,
 } from '../constants';
 import { findHierarchyWidgetDefinition } from '../utils';
 import workItemParticipantsQuery from '../graphql/work_item_participants.query.graphql';
@@ -190,8 +191,11 @@ export default {
     workItemCrmContacts() {
       return this.isWidgetPresent(WIDGET_TYPE_CRM_CONTACTS) && this.glFeatures.workItemsAlpha;
     },
+    customFields() {
+      return this.isWidgetPresent(WIDGET_TYPE_CUSTOM_FIELDS)?.customFieldValues;
+    },
     showWorkItemCustomFields() {
-      return this.glFeatures.customFieldsFeature;
+      return this.glFeatures.customFieldsFeature && this.customFields;
     },
   },
   methods: {
@@ -317,6 +321,7 @@ export default {
       v-if="showWorkItemCustomFields"
       :work-item-id="workItem.id"
       :work-item-type="workItemType"
+      :custom-fields="customFields"
       :full-path="fullPath"
       :can-update="canUpdateMetadata"
       :is-group="isGroup"

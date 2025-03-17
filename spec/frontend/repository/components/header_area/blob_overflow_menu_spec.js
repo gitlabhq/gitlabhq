@@ -52,6 +52,7 @@ describe('Blob Overflow Menu', () => {
       },
       propsData: {
         projectPath,
+        userPermissions: blobControlsDataMock.userPermissions,
         ...propsData,
       },
       stub: {

@@ -60,12 +60,22 @@ export const useDiffsList = defineStore('diffsList', {
     streamRemainingDiffs(url) {
       return this.withDebouncedAbortController(async ({ signal }, previousController) => {
         this.status = statuses.fetching;
-        const { body } = await fetch(url, { signal });
+        let request;
+        let streamSignal = signal;
+        if (window.gl.rapidDiffsPreload) {
+          const { controller, streamRequest } = window.gl.rapidDiffsPreload;
+          this.loadingController = controller;
+          request = streamRequest;
+          streamSignal = controller.signal;
+        } else {
+          request = fetch(url, { signal });
+        }
+        const { body } = await request;
         if (previousController) previousController.abort();
         await this.renderDiffsStream(
           toPolyfillReadable(body),
           document.querySelector('#js-stream-container'),
-          signal,
+          streamSignal,
         );
         performanceMarkAndMeasure({
           mark: 'rapid-diffs-list-loaded',

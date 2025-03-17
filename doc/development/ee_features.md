@@ -1202,10 +1202,13 @@ end
 ### Code in `spec/`
 
 When you're testing EE-only features, avoid adding examples to the
-existing CE specs. Also do not change existing CE examples, since they
-should remain working as-is when EE is running without a license.
+existing CE specs. Instead, place EE specs in the `ee/spec` folder.
 
-Instead place EE specs in the `ee/spec` folder.
+By default, CE specs run with EE code loaded as they should remain
+working as-is when EE is running without a license.
+
+These specs also need to pass when EE code is removed. You can run
+the tests without EE code by [simulating a CE instance](#simulate-a-ce-instance-with-a-licensed-gdk).
 
 ### Code in `spec/factories`
 

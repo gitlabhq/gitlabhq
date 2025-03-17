@@ -1,3 +1,15 @@
+- if @preload
+  - helpers.add_page_startup_api_call @metadata_endpoint
+  - if @stream_url
+    - helpers.content_for :startup_js do
+      = javascript_tag nonce: content_security_policy_nonce do
+        :plain
+          var controller = new AbortController();
+          window.gl.rapidDiffsPreload = {
+            controller: controller,
+            streamRequest: fetch('#{Gitlab::UrlSanitizer.sanitize(@stream_url)}', { signal: controller.signal })
+          }
+
 .rd-app{ data: { rapid_diffs: true, reload_stream_url: @reload_stream_url, metadata_endpoint: @metadata_endpoint } }
   .rd-app-header
     .rd-app-settings

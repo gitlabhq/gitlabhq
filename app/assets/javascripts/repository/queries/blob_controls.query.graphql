@@ -2,6 +2,13 @@ query getBlobControls($projectPath: ID!, $filePath: String!, $ref: String!, $ref
   project(fullPath: $projectPath) {
     __typename
     id
+    userPermissions {
+      __typename
+      pushCode
+      downloadCode
+      createMergeRequestIn
+      forkProject
+    }
     repository {
       __typename
       empty
@@ -27,6 +34,10 @@ query getBlobControls($projectPath: ID!, $filePath: String!, $ref: String!, $ref
           canModifyBlob
           canModifyBlobWithWebIde
           forkAndViewPath
+          editBlobPath
+          ideEditPath
+          pipelineEditorPath
+          gitpodBlobUrl
           simpleViewer {
             __typename
             fileType

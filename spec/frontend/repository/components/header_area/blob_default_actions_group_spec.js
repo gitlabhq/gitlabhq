@@ -17,7 +17,7 @@ describe('Blob Default Actions Group', () => {
         blobHash: mockBlobHash,
         activeViewerType: 'simple',
         hasRenderError: false,
-        isBinary: false,
+        isBinaryFileType: false,
         isEmpty: false,
         canDownloadCode: true,
         overrideCopy: false,
@@ -78,8 +78,8 @@ describe('Blob Default Actions Group', () => {
     });
   });
 
-  it('does not render the Copy and view Raw button if isBinary is set to true', () => {
-    createComponent({ isBinary: true });
+  it('does not render the Copy and view Raw button if isBinaryFileType is set to true', () => {
+    createComponent({ isBinaryFileType: true });
 
     expect(findCopyFileContentItem()).toBeUndefined();
     expect(findViewRawItem()).toBeUndefined();

@@ -37,11 +37,15 @@ export default {
     };
   },
   props: {
+    userPermissions: {
+      type: Object,
+      required: true,
+    },
     projectPath: {
       type: String,
       required: true,
     },
-    isBinary: {
+    isBinaryFileType: {
       type: Boolean,
       required: false,
       default: false,
@@ -73,7 +77,6 @@ export default {
       },
       update({ project }) {
         this.pathLocks = project?.pathLocks || DEFAULT_BLOB_INFO.pathLocks;
-        this.userPermissions = project?.userPermissions;
       },
       error() {
         createAlert({ message: this.$options.i18n.fetchError });
@@ -82,7 +85,6 @@ export default {
   },
   data() {
     return {
-      userPermissions: DEFAULT_BLOB_INFO.userPermissions,
       pathLocks: DEFAULT_BLOB_INFO.pathLocks,
       isLoggedIn: isLoggedIn(),
     };
@@ -126,6 +128,7 @@ export default {
     data-testid="default-actions-container"
     :toggle-text="$options.i18n.dropdownLabel"
     text-sr-only
+    class="gl-mr-0"
     category="tertiary"
   >
     <permalink-dropdown-item :permalink-path="blobInfo.permalinkPath" />
@@ -141,7 +144,7 @@ export default {
     <blob-default-actions-group
       :active-viewer-type="activeViewerType"
       :has-render-error="hasRenderError"
-      :is-binary="isBinary"
+      :is-binary-file-type="isBinaryFileType"
       :is-empty="isEmptyRepository"
       :override-copy="overrideCopy"
       @copy="onCopy"

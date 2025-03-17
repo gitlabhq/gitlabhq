@@ -116,6 +116,14 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
     let(:method) { :delete }
     let(:url) { "/projects/#{project.id}/registry/repositories/#{root_repository.id}" }
 
+    shared_examples 'destroying the container repository' do
+      it 'marks the repository as delete_scheduled' do
+        expect { subject }.to change { root_repository.reload.status }.from(nil).to('delete_scheduled')
+
+        expect(response).to have_gitlab_http_status(:accepted)
+      end
+    end
+
     ['using API user', 'using job token'].each do |context|
       context context do
         include_context context
@@ -127,6 +135,8 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
         context 'for maintainer' do
           let(:api_user) { maintainer }
 
+          it_behaves_like 'destroying the container repository'
+
           it 'marks the repository as delete_scheduled' do
             expect { subject }.to change { root_repository.reload.status }.from(nil).to('delete_scheduled')
 
@@ -137,6 +147,71 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
     end
 
     include_examples 'rejected job token scopes'
+
+    context 'with delete protection rule', :enable_admin_mode do
+      using RSpec::Parameterized::TableSyntax
+
+      include_context 'using API user'
+
+      let_it_be(:owner) { create(:user, owner_of: [project, project2]) }
+      let_it_be(:instance_admin) { create(:admin) }
+
+      let_it_be_with_reload(:container_registry_protection_rule) do
+        create(:container_registry_protection_rule, project: project)
+      end
+
+      let(:params) { { admin_mode: admin_mode } }
+
+      before do
+        container_registry_protection_rule.update!(
+          repository_path_pattern: root_repository.path,
+          minimum_access_level_for_delete: minimum_access_level_for_delete
+        )
+      end
+
+      shared_examples 'protected deletion of container repository' do
+        it 'returns the expected status' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        it 'returns error message' do
+          subject
+
+          expect(json_response).to include('message' => '403 Forbidden - Deleting protected container repository forbidden.')
+        end
+
+        context 'when feature flag :container_registry_protected_containers_delete is disabled' do
+          before do
+            stub_feature_flags(container_registry_protected_containers_delete: false)
+          end
+
+          it_behaves_like 'destroying the container repository'
+        end
+      end
+
+      where(:minimum_access_level_for_delete, :api_user, :admin_mode, :expected_shared_example) do
+        nil         | ref(:maintainer)     | false | 'destroying the container repository'
+        nil         | ref(:owner)          | false | 'destroying the container repository'
+
+        :maintainer | ref(:maintainer)     | false | 'destroying the container repository'
+        :maintainer | ref(:owner)          | false | 'destroying the container repository'
+        :maintainer | ref(:instance_admin) | true  | 'destroying the container repository'
+
+        :owner      | ref(:maintainer)     | false | 'protected deletion of container repository'
+        :owner      | ref(:owner)          | false | 'destroying the container repository'
+        :owner      | ref(:instance_admin) | true  | 'destroying the container repository'
+
+        :admin      | ref(:maintainer)     | false | 'protected deletion of container repository'
+        :admin      | ref(:owner)          | false | 'protected deletion of container repository'
+        :admin      | ref(:instance_admin) | true  | 'destroying the container repository'
+      end
+
+      with_them do
+        it_behaves_like params[:expected_shared_example]
+      end
+    end
   end
 
   describe 'GET /projects/:id/registry/repositories/:repository_id/tags' do

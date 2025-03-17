@@ -105,6 +105,21 @@ describe('Diffs list store', () => {
       });
     });
 
+    it('uses preload request', async () => {
+      const body = {};
+      const signal = {};
+      const streamRequest = Promise.resolve({ body });
+      window.gl.rapidDiffsPreload = { controller: { signal }, streamRequest };
+      const url = '/stream';
+      store.streamRemainingDiffs(url);
+      await waitForPromises();
+      expect(global.fetch).not.toHaveBeenCalled();
+      expect(renderHtmlStreams).toHaveBeenCalledWith([body], findStreamContainer(), {
+        signal,
+      });
+      window.gl.rapidDiffsPreload = undefined;
+    });
+
     it('measures performance', async () => {
       await store.streamRemainingDiffs('/stream');
       await waitForPromises();

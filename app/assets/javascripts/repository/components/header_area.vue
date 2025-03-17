@@ -369,7 +369,12 @@ export default {
       </div>
 
       <!-- Blob controls -->
-      <blob-controls :project-path="projectPath" :ref-type="getRefType" :is-binary="isBinary" />
+      <blob-controls
+        :project-path="projectPath"
+        :project-id-as-number="projectIdAsNumber"
+        :ref-type="getRefType"
+        :is-binary="isBinary"
+      />
     </div>
   </section>
 </template>

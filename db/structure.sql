@@ -17018,7 +17018,8 @@ CREATE TABLE ml_candidate_params (
     project_id bigint,
     CONSTRAINT check_093034d049 CHECK ((char_length(name) <= 250)),
     CONSTRAINT check_28a3c29e43 CHECK ((char_length(value) <= 250)),
-    CONSTRAINT check_7a0505ca91 CHECK ((candidate_id IS NOT NULL))
+    CONSTRAINT check_7a0505ca91 CHECK ((candidate_id IS NOT NULL)),
+    CONSTRAINT check_b42534522f CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ml_candidate_params_id_seq
@@ -27908,6 +27909,9 @@ ALTER TABLE security_scans
 
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
+
+ALTER TABLE packages_package_files
+    ADD CONSTRAINT check_43773f06dc CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY instance_type_ci_runners
     ADD CONSTRAINT check_5c34a3c1db UNIQUE (id);

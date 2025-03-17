@@ -42,6 +42,17 @@ module ContainerRegistry
           .exists?
       end
 
+      def self.for_action_exists?(action:, access_level:, repository_path:)
+        return false if [access_level, repository_path].any?(&:blank?)
+        raise ArgumentError, 'action must be :push or :delete' unless %i[push delete].include?(action)
+
+        minimum_access_level_column = "minimum_access_level_for_#{action}"
+
+        for_repository_path(repository_path)
+          .where(":access_level < #{minimum_access_level_column}", access_level: access_level)
+          .exists?
+      end
+
       ##
       # Accepts a list of projects and repository paths and returns a result set
       # indicating whether the repository path is protected.

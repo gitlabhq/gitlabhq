@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Identifier do
   describe '#identify' do
     context 'without an identifier' do
       it 'returns nil' do
-        expect(identifier.identify('')).to be nil
+        expect(identifier.identify('')).to be_nil
       end
     end
 

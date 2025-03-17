@@ -2,6 +2,7 @@
 import { GlButton, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import { setUrlParams, relativePathToAbsolute, getBaseURL } from '~/lib/utils/url_utility';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   BTN_COPY_CONTENTS_TITLE,
   BTN_DOWNLOAD_TITLE,
@@ -18,6 +19,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: {
     blobHash: {
       default: '',
@@ -103,7 +105,10 @@ export default {
 };
 </script>
 <template>
-  <gl-button-group data-testid="default-actions-container">
+  <gl-button-group
+    :class="{ 'gl-hidden sm:gl-inline-flex': glFeatures.blobOverflowMenu }"
+    data-testid="default-actions-container"
+  >
     <gl-button
       v-if="!isEmpty && showCopyButton"
       v-gl-tooltip.hover

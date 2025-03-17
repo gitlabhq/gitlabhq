@@ -62,6 +62,19 @@ module API
       end
       delete ':id/registry/repositories/:repository_id', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
         authorize_admin_container_image!
+
+        if Feature.enabled?(:container_registry_protected_containers_delete, user_project&.root_ancestor) &&
+            !current_user.can_admin_all_resources?
+
+          service_response = ContainerRegistry::Protection::CheckRuleExistenceService.for_delete(
+            current_user: current_user,
+            project: repository.project,
+            params: { repository_path: repository.path.to_s }
+          ).execute
+
+          forbidden!('Deleting protected container repository forbidden.') if service_response[:protection_rule_exists?]
+        end
+
         repository.delete_scheduled!
 
         track_package_event('delete_repository', :container, project: user_project, namespace: user_project.namespace)

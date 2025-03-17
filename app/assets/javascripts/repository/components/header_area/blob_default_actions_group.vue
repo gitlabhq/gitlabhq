@@ -36,7 +36,7 @@ export default {
       type: Boolean,
       required: true,
     },
-    isBinary: {
+    isBinaryFileType: {
       type: Boolean,
       required: true,
     },
@@ -90,7 +90,7 @@ export default {
       };
     },
     showCopyButton() {
-      return !this.hasRenderError && !this.isBinary;
+      return !this.hasRenderError && !this.isBinaryFileType;
     },
     copyDisabled() {
       return this.activeViewerType === 'rich';
@@ -130,7 +130,7 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown-group bordered>
+  <gl-disclosure-dropdown-group bordered class="sm:gl-hidden">
     <gl-disclosure-dropdown-item
       v-if="showCopyButton"
       data-testid="copy-item"
@@ -138,7 +138,11 @@ export default {
       class="js-copy-blob-source-btn"
       @action="onCopy"
     />
-    <gl-disclosure-dropdown-item v-if="!isBinary" data-testid="open-raw-item" :item="openRawItem" />
+    <gl-disclosure-dropdown-item
+      v-if="!isBinaryFileType"
+      data-testid="open-raw-item"
+      :item="openRawItem"
+    />
     <gl-disclosure-dropdown-item
       v-if="!isEmpty && canDownloadCode"
       data-test="download-item"

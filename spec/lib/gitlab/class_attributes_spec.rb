@@ -55,8 +55,8 @@ RSpec.describe Gitlab::ClassAttributes do
   end
 
   it "triggers after hooks after set class values" do
-    expect(klass.counter_1).to be(nil)
-    expect(klass.counter_2).to be(nil)
+    expect(klass.counter_1).to be_nil
+    expect(klass.counter_2).to be_nil
 
     klass.set_attribute(:foo, :bar)
     klass.set_attribute(:foo, :bar)

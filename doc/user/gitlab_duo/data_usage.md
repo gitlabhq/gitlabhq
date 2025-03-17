@@ -88,3 +88,8 @@ Your code goes through a pre-scan security workflow when using GitLab Duo:
 
 1. Your code is scanned for sensitive information using Gitleaks.
 1. Any detected secrets are automatically removed from the request.
+
+## GitLab Duo Self-Hosted
+
+When you are using [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)
+and the self-hosted AI gateway, you do not share any data with GitLab.

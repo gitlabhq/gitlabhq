@@ -67,7 +67,7 @@ Note the following:
   - `.pipeline-policy-post` at the very end of the pipeline, after the `.post` stage.
 - Injecting jobs in any of the reserved stages is guaranteed to always work. Execution policy jobs can also be assigned to any standard (build, test, deploy) or user-declared stages. However, in this case, the jobs may be ignored depending on the project pipeline configuration.
 - It is not possible to assign jobs to reserved stages outside of a pipeline execution policy.
-- Regardless of the `needs` keyword, all jobs in a pipeline must wait until the `.pipeline-policy-pre` stage is complete before they start processing.
+- Regardless of the `needs` keyword, jobs in a pipeline do not begin until the `.pipeline-policy-pre` stage completes. To run non-blocking jobs at the beginning of the pipeline, add a custom stage that runs before the `.pre` stage. For example: `stages: [custom-non-blocking-stage, .pre]`.
 - Choose unique job names for pipeline execution policies. Some CI/CD configurations are based on job names, which can lead to unwanted results if a job name exists multiple times in the same pipeline. For example, the `needs` keyword makes one job dependent on another. If the are multiple jobs with the name `example`, a job that `needs` the `example` job name depend on only one of the `example` job instance at random.
 - Pipeline execution policies remain in effect even if the project lacks a CI/CD configuration file.
 - The order of the policies matters for the applied suffix.

@@ -153,11 +153,10 @@ class GroupSeeder
         epic_params = {
           title: FFaker::Lorem.sentence(6),
           description: FFaker::Lorem.paragraphs(3).join("\n\n"),
-          author: author,
-          group: group
+          author: author
         }
 
-        ::Epics::CreateService.new(group: group, current_user: author, params: epic_params).execute
+        ::WorkItems::LegacyEpics::CreateService.new(group: group, current_user: author, params: epic_params).execute
       end
     end
   end

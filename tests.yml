@@ -146,6 +146,10 @@ mapping:
       - 'ee/spec/requests/api/graphql/remote_development/namespace/remote_development_cluster_agents/*_spec.rb'
       - 'ee/spec/requests/api/graphql/remote_development/namespace/workspaces_cluster_agents/*_spec.rb'
 
+  - source: 'ee/app/graphql/resolvers/remote_development/organization/cluster_agents_resolver\.rb'
+    test:
+      - 'ee/spec/requests/api/graphql/remote_development/organization/workspaces_cluster_agents/*_spec.rb'
+
   - source: 'ee/app/graphql/resolvers/remote_development/workspaces_resolver\.rb'
     test:
       - 'ee/spec/requests/api/graphql/remote_development/current_user/workspaces/*_spec.rb'

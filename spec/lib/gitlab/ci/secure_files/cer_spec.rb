@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Ci::SecureFiles::Cer do
 
     describe '#certificate_data' do
       it 'assigns the error message and returns nil' do
-        expect(invalid_certificate.certificate_data).to be nil
+        expect(invalid_certificate.certificate_data).to be_nil
         expect(invalid_certificate.error).to eq('PEM_read_bio_X509: no start line (Expecting: CERTIFICATE)')
       end
     end

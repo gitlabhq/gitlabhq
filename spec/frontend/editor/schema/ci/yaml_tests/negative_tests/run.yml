@@ -78,3 +78,27 @@ run_with_missing_git_url:
         git:
           dir: reverse
           rev: v1
+
+run_with_missing_oci_registry:
+  run:
+    - name: my_step
+      step:
+        oci:
+          repository: my-project/image
+          tag: 5.0.0
+
+run_with_missing_oci_repository:
+  run:
+    - name: my_step
+      step:
+        oci:
+          registry: registry.gitlab.com
+          tag: 5.0.0
+
+run_with_missing_oci_tag:
+  run:
+    - name: my_step
+      step:
+        oci:
+          registry: registry.gitlab.com
+          repository: my-project/image
