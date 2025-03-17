@@ -3129,11 +3129,9 @@ RSpec.describe User, feature_category: :user_profile do
 
           expect { user.ban }
             .to change { todo_users.map(&:todos_pending_count).uniq }.from([1]).to([0])
-                .and not_change { todo_users.map(&:todos_done_count) }
 
           expect { user.unban }
           .to change { todo_users.map(&:todos_pending_count).uniq }.from([0]).to([1])
-              .and not_change { todo_users.map(&:todos_done_count) }
         end
       end
 

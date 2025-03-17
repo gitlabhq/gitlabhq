@@ -28,7 +28,6 @@ RSpec.describe Todos::Destroy::DestroyedIssuableService, feature_category: :team
       it 'invalidates todos cache counts of todo users', :use_clean_rails_redis_caching do
         expect { subject }
           .to change { pending_todo.user.todos_pending_count }.from(1).to(0)
-                .and change { done_todo.user.todos_done_count }.from(1).to(0)
       end
     end
 

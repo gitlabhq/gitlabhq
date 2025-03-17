@@ -11,11 +11,12 @@
 # - additional_properties
 # - event_attribute_overrides - is used when its necessary to override the attributes available in parent context.
 #
-# These legacy options are now deprecated:
+# [Legacy] If present in the context, the following will be respected by the shared example but are discouraged:
 # - label
 # - property
 # - value
-# Prefer using additional_properties instead.
+# [Recommended] Prefer including these attributes via additional_properties instead.
+#   ex) let(:additional_properties) { { label: "value" } }
 
 RSpec.shared_examples 'internal event tracking' do
   let(:all_metrics) do

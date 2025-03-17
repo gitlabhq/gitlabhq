@@ -187,7 +187,7 @@ class Namespace < ApplicationRecord
   delegate :math_rendering_limits_enabled?,
     :lock_math_rendering_limits_enabled?,
     to: :namespace_settings
-  delegate :add_creator, :pending_delete, :pending_delete=, :deleted_at, :deleted_at=,
+  delegate :add_creator, :deleted_at, :deleted_at=,
     to: :namespace_details
   delegate :resource_access_token_notify_inherited,
     :resource_access_token_notify_inherited=,

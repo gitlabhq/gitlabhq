@@ -264,19 +264,12 @@ class Todo < ApplicationRecord
       distinct.pluck(:user_id)
     end
 
-    # Count todos grouped by user_id and state, using an UNION query
-    # so we can utilize the partial indexes for each state.
-    def count_grouped_by_user_id_and_state
-      grouped_count = select(:user_id, 'count(id) AS count').group(:user_id)
-
-      done = grouped_count.where(state: :done).select("'done' AS state")
-      pending = grouped_count.where(state: :pending).select("'pending' AS state")
-      union = unscoped.from_union([done, pending], remove_duplicates: false)
-        .select(:user_id, :count, :state)
-
-      connection.select_all(union).each_with_object({}) do |row, counts|
-        counts[[row['user_id'], row['state']]] = row['count']
-      end
+    # Count pending todos grouped by user_id and state
+    # so we can utilize the index on state / user id.
+    def pending_count_by_user_id
+      where(state: :pending)
+        .group(:user_id)
+        .count(:id)
     end
   end
 

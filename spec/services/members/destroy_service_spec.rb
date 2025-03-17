@@ -78,7 +78,6 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
       expect(member_user.assigned_open_merge_requests_count).to be(1)
       expect(member_user.assigned_open_issues_count).to be(1)
       expect(member_user.todos_pending_count).to be(1)
-      expect(member_user.todos_done_count).to be(1)
 
       service = described_class.new(current_user)
 
@@ -91,7 +90,6 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
       expect(member_user.assigned_open_merge_requests_count).to be(0)
       expect(member_user.assigned_open_issues_count).to be(0)
       expect(member_user.todos_pending_count).to be(0)
-      expect(member_user.todos_done_count).to be(0)
 
       unless opts[:unassign_issuables]
         expect(member_user.assigned_merge_requests.opened.count).to be(1)

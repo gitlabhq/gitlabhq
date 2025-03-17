@@ -31579,6 +31579,8 @@ CREATE UNIQUE INDEX i_pm_package_versions_on_package_id_and_version ON pm_packag
 
 CREATE UNIQUE INDEX i_pm_packages_purl_type_and_name ON pm_packages USING btree (purl_type, name);
 
+CREATE INDEX i_project_requirement_statuses_on_namespace_id_updated_at_id ON project_requirement_compliance_statuses USING btree (namespace_id, updated_at DESC, id DESC);
+
 CREATE INDEX i_protected_branch_unprotect_access_levels_protected_branch_nam ON protected_branch_unprotect_access_levels USING btree (protected_branch_namespace_id);
 
 CREATE INDEX i_protected_branch_unprotect_access_levels_protected_branch_pro ON protected_branch_unprotect_access_levels USING btree (protected_branch_project_id);
@@ -31904,8 +31906,6 @@ CREATE INDEX idx_project_control_statuses_on_requirement_id ON project_control_c
 CREATE INDEX idx_project_repository_check_partial ON projects USING btree (repository_storage, created_at) WHERE (last_repository_check_at IS NULL);
 
 CREATE INDEX idx_project_requirement_statuses_on_framework_id ON project_requirement_compliance_statuses USING btree (compliance_framework_id);
-
-CREATE INDEX idx_project_requirement_statuses_on_namespace_id ON project_requirement_compliance_statuses USING btree (namespace_id);
 
 CREATE INDEX idx_projects_api_created_at_id_for_archived ON projects USING btree (created_at, id) WHERE ((archived = true) AND (pending_delete = false) AND (hidden = false));
 

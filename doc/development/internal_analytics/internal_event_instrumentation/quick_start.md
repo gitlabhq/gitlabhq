@@ -234,13 +234,17 @@ it_behaves_like 'internal event tracking' do
 end
 ```
 
-These legacy options are now deprecated:
+If present in the context, the following legacy options will be respected by the shared example but are discouraged:
 
 - `label`
 - `property`
 - `value`
 
-Prefer using `additional_properties` instead.
+Prefer including these attributes via `additional_properties` instead.
+
+```ruby
+let(:additional_properties) { { label: "value" } }
+```
 
 #### Composable matchers
 

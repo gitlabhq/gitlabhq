@@ -647,7 +647,7 @@ RSpec.describe Todo, feature_category: :notifications do
     end
   end
 
-  describe '.group_by_user_id_and_state' do
+  describe '.pending_count_by_user_id' do
     before do
       create(:todo, user: user, state: :pending)
       create(:todo, user: user, state: :pending)
@@ -656,7 +656,7 @@ RSpec.describe Todo, feature_category: :notifications do
     end
 
     specify do
-      expect(described_class.count_grouped_by_user_id_and_state).to eq({ [user.id, "done"] => 1, [user.id, "pending"] => 2, [user2.id, "pending"] => 1 })
+      expect(described_class.pending_count_by_user_id).to eq({ user.id => 2, user2.id => 1 })
     end
   end
 

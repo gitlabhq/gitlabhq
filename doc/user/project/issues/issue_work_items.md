@@ -17,7 +17,7 @@ title: Test a new look for issues
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9584) in GitLab 17.5 [with a flag](../../../administration/feature_flags.md) named `work_items_view_preference`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
 - Feature flag named `work_items_view_preference` enabled on GitLab.com in GitLab 17.9 for a subset of users.
-- Feature flag named `work_items_view_preference` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184496) on GitLab Self-Managed and GitLab Dedicated in 17.10.
+- Feature flag named `work_items_view_preference` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184496) on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in 17.10.
 
 {{< /history >}}
 

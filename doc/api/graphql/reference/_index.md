@@ -17818,6 +17818,29 @@ The edge type for [`PipelineTrigger`](#pipelinetrigger).
 | <a id="pipelinetriggeredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="pipelinetriggeredgenode"></a>`node` | [`PipelineTrigger`](#pipelinetrigger) | The item at the end of the edge. |
 
+#### `ProjectComplianceRequirementStatusConnection`
+
+The connection type for [`ProjectComplianceRequirementStatus`](#projectcompliancerequirementstatus).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcompliancerequirementstatusconnectionedges"></a>`edges` | [`[ProjectComplianceRequirementStatusEdge]`](#projectcompliancerequirementstatusedge) | A list of edges. |
+| <a id="projectcompliancerequirementstatusconnectionnodes"></a>`nodes` | [`[ProjectComplianceRequirementStatus]`](#projectcompliancerequirementstatus) | A list of nodes. |
+| <a id="projectcompliancerequirementstatusconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ProjectComplianceRequirementStatusEdge`
+
+The edge type for [`ProjectComplianceRequirementStatus`](#projectcompliancerequirementstatus).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcompliancerequirementstatusedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="projectcompliancerequirementstatusedgenode"></a>`node` | [`ProjectComplianceRequirementStatus`](#projectcompliancerequirementstatus) | The item at the end of the edge. |
+
 #### `ProjectConnection`
 
 The connection type for [`Project`](#project).
@@ -26805,6 +26828,7 @@ GPG signature for a signed commit.
 | <a id="grouppendingmembers"></a>`pendingMembers` {{< icon name="warning-solid" >}} | [`PendingMemberInterfaceConnection`](#pendingmemberinterfaceconnection) | **Introduced** in GitLab 16.6. **Status**: Experiment. A pending membership of a user within this group. |
 | <a id="grouppermanentdeletiondate"></a>`permanentDeletionDate` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Date when group will be deleted if delayed group deletion is enabled. |
 | <a id="groupproductanalyticsstoredeventslimit"></a>`productAnalyticsStoredEventsLimit` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 16.9. **Status**: Experiment. Number of product analytics events namespace is permitted to store per cycle. |
+| <a id="groupprojectcompliancerequirementsstatus"></a>`projectComplianceRequirementsStatus` {{< icon name="warning-solid" >}} | [`ProjectComplianceRequirementStatusConnection`](#projectcompliancerequirementstatusconnection) | **Introduced** in GitLab 17.10. **Status**: Experiment. Compliance standards adherence for the projects in a group and its subgroups. |
 | <a id="groupprojectcreationlevel"></a>`projectCreationLevel` | [`String`](#string) | Permission level required to create projects in the group. |
 | <a id="groupprojectscount"></a>`projectsCount` | [`Int!`](#int) | Count of direct projects in the group. |
 | <a id="grouprecentissueboards"></a>`recentIssueBoards` | [`BoardConnection`](#boardconnection) | List of recently visited boards of the group. Maximum size is 4. (see [Connections](#connections)) |
@@ -36253,6 +36277,23 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectcicdsettingpipelinevariablesminimumoverriderole"></a>`pipelineVariablesMinimumOverrideRole` | [`String!`](#string) | Minimum role required to set variables when creating a pipeline or running a job. |
 | <a id="projectcicdsettingproject"></a>`project` | [`Project`](#project) | Project the CI/CD settings belong to. |
 | <a id="projectcicdsettingpushrepositoryforjobtokenallowed"></a>`pushRepositoryForJobTokenAllowed` | [`Boolean`](#boolean) | Indicates the ability to push to the original project repository using a job token. |
+
+### `ProjectComplianceRequirementStatus`
+
+Compliance requirement status for a project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcompliancerequirementstatuscomplianceframework"></a>`complianceFramework` | [`ComplianceFramework!`](#complianceframework) | Framework of the compliance status. |
+| <a id="projectcompliancerequirementstatuscompliancerequirement"></a>`complianceRequirement` | [`ComplianceRequirement!`](#compliancerequirement) | Requirement of the compliance status. |
+| <a id="projectcompliancerequirementstatusfailcount"></a>`failCount` | [`Int!`](#int) | Total no. of failed compliance controls for the requirement. |
+| <a id="projectcompliancerequirementstatusid"></a>`id` | [`ID!`](#id) | Compliance requirement status ID. |
+| <a id="projectcompliancerequirementstatuspasscount"></a>`passCount` | [`Int!`](#int) | Total no. of passed compliance controls for the requirement. |
+| <a id="projectcompliancerequirementstatuspendingcount"></a>`pendingCount` | [`Int!`](#int) | Total no. of pending compliance controls for the requirement. |
+| <a id="projectcompliancerequirementstatusproject"></a>`project` | [`Project!`](#project) | Project of the compliance status. |
+| <a id="projectcompliancerequirementstatusupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the requirement status was last updated. |
 
 ### `ProjectDataTransfer`
 
