@@ -456,7 +456,7 @@ class Note < ApplicationRecord
   # Since we used `updated_at` as `last_edited_at`, it could be touched by transforming / resolving a note.
   # This makes sure it is only marked as edited when the note body is updated.
   def edited?
-    return false if updated_by.blank?
+    return false if read_attribute(:last_edited_at).blank? && updated_by.blank?
 
     super
   end

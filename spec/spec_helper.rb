@@ -382,7 +382,7 @@ RSpec.configure do |config|
     # See also spec/support/helpers/admin_mode_helpers.rb
     if example.metadata[:enable_admin_mode] && !example.metadata[:do_not_mock_admin_mode]
       allow_any_instance_of(Gitlab::Auth::CurrentUserMode).to receive(:admin_mode?) do |current_user_mode|
-        current_user_mode.send(:user)&.admin?
+        current_user_mode.send(:user)&.can_access_admin_area?
       end
     end
 

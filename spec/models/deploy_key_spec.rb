@@ -164,6 +164,12 @@ RSpec.describe DeployKey, :mailer, feature_category: :continuous_delivery do
         it { expect(subject.can?(:push_code, project)).to be false }
       end
     end
+
+    describe '#can_access_admin_area?' do
+      it 'returns false' do
+        expect(subject.can_access_admin_area?).to be_falsey
+      end
+    end
   end
 
   describe '#audit_details' do

@@ -71,10 +71,7 @@ module SidebarsHelper
         admin_mode_active: current_user_mode.admin_mode?,
         enter_admin_mode_url: new_admin_session_path,
         leave_admin_mode_url: destroy_admin_session_path,
-        # Usually, using current_user.admin? is discouraged because it does not
-        # check for admin mode, but since here we want to check admin? and admin mode
-        # separately, we'll have to ignore the cop rule.
-        user_is_admin: user.admin? # rubocop: disable Cop/UserAdmin
+        user_is_admin: user.can_access_admin_area?
       },
       avatar_url: user.avatar_url,
       has_link_to_profile: current_user_menu?(:profile),

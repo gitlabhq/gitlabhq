@@ -8,7 +8,7 @@ class BasePolicy < DeclarativePolicy::Base
     next true if user_is_user? && @user.admin_bot?
 
     if Gitlab::CurrentSettings.admin_mode
-      Gitlab::Auth::CurrentUserMode.new(@user).admin_mode?
+      @user&.admin? && Gitlab::Auth::CurrentUserMode.new(@user).admin_mode?
     else
       @user&.admin?
     end

@@ -19,7 +19,7 @@ design files, videos, and other non-text content.
 GitLab supports two different types of file locking:
 
 - [Exclusive file locks](../../topics/git/file_management.md#file-locks): Applied through the
-  command line with Git LFS and `.gitattributes`.
+  command line with Git LFS and [`.gitattributes`](../../user/project/repository/files/git_attributes.md).
   These locks prevent modifications to locked files on any branch.
 - [Default branch file and directory locks](#default-branch-file-and-directory-locks): Applied
   through the GitLab UI. These locks prevent modifications to files and directories on the
@@ -27,7 +27,7 @@ GitLab supports two different types of file locking:
 
 ## Permissions
 
-You can create file locks if you have at least the Developer role for the project.
+You must have at least the Developer role for the project to create, view, or manage file locks.
 For more information, see [Roles and permissions](../../user/permissions.md).
 
 ## Default branch file and directory locks
@@ -60,6 +60,10 @@ to be aware of in-flight work without restricting their workflow on other branch
 
 ## Lock a file or directory
 
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
 To lock a file or directory:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -74,17 +78,41 @@ for locked files, see [issue 4623](https://gitlab.com/gitlab-org/gitlab/-/issues
 
 ## View and remove locks
 
-Locks can be removed by:
-
-- The user who created the lock.
-- Any user with at least the Maintainer role for the project.
-
-To view and manage file locks:
+To view locked files:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Locked files**.
 
-This list displays all files locked either through Git LFS exclusive locks or the GitLab UI.
+The **Locked files** page displays all files locked with either Git LFS exclusive locks or the GitLab UI.
+
+Prerequisites:
+
+- You must be the user who created the lock.
+- You must have at least the Maintainer role for the project.
+
+To remove a lock:
+
+{{< tabs >}}
+
+{{< tab title="From a file" >}}
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Go to the file you want to unlock.
+1. Select **Unlock**.
+1. On the confirmation dialog, select **Unlock**.
+
+{{< /tab >}}
+
+{{< tab title="From the Locked file page" >}}
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Locked files**.
+1. To the right of the file you want to unlock, select **Unlock**.
+1. On the confirmation dialog, select **OK**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Related topics
 

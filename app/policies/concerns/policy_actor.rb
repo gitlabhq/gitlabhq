@@ -21,6 +21,10 @@ module PolicyActor
     false
   end
 
+  def can_access_admin_area?
+    false
+  end
+
   def external?
     false
   end

@@ -28,8 +28,6 @@ if (!process.env.DISABLE_EXCLUSIONS) {
     // Merge request widget & tabs
     'app/assets/javascripts/vue_merge_request_widget/components/checks/constants.js',
     'app/assets/javascripts/merge_request_tabs.js',
-    // CI pipeline
-    'app/assets/javascripts/ci/pipeline_details/graph/components/graph_component.vue',
     // Nested Group projects list
     'app/assets/javascripts/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list_item.vue',
   ]);
@@ -65,6 +63,7 @@ module.exports = {
      See https://github.com/sverweij/dependency-cruiser/blob/main/doc/options-reference.md#exclude-exclude-dependencies-from-being-cruised
     */
     exclude: {
+      dynamic: true,
       path: [],
     },
     // NOTE: This option is required to resolve aliases from the webpack config

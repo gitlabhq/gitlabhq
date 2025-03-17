@@ -2605,6 +2605,10 @@ class User < ApplicationRecord
     support_pin_data&.fetch(:expires_at, nil)
   end
 
+  def can_access_admin_area?
+    admin?
+  end
+
   protected
 
   # override, from Devise::Validatable

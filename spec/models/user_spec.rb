@@ -6069,6 +6069,20 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#can_access_admin_area?' do
+    it 'returns false for regular user' do
+      user = build_stubbed(:user)
+
+      expect(user.can_access_admin_area?).to be_falsy
+    end
+
+    it 'returns true for admin user' do
+      user = build_stubbed(:user, :admin)
+
+      expect(user.can_access_admin_area?).to be_truthy
+    end
+  end
+
   shared_examples 'organization owner' do
     let!(:org_user) { create(:organization_user, organization: organization, user: user, access_level: access_level) }
 

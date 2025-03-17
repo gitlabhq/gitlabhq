@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # rubocop:disable RSpec/VerifiedDoubles
 
 require 'fast_spec_helper'
@@ -21,7 +22,8 @@ RSpec.describe Trigger, feature_category: :tooling do
       'GITLAB_USER_NAME' => 'gitlab_user_name',
       'GITLAB_USER_LOGIN' => 'gitlab_user_login',
       'QA_IMAGE' => 'qa_image',
-      'DOCS_PROJECT_API_TOKEN' => nil
+      'DOCS_PROJECT_API_TOKEN' => nil,
+      'CNG_SKIP_REDUNDANT_JOBS' => "false"
     }
   end
 
@@ -456,6 +458,25 @@ RSpec.describe Trigger, feature_category: :tooling do
               expect(subject.variables[version_file]).to eq(expected_version)
             end
           end
+        end
+      end
+
+      describe "#extra_variables" do
+        before do
+          stub_env('CI_PROJECT_PATH_SLUG', 'project-path')
+          stub_env('ARCH_LIST', 'amd64,arm64')
+        end
+
+        it 'includes extra variables' do
+          expect(subject.variables).to include({
+            "FULL_RUBY_VERSION" => RUBY_VERSION,
+            "SKIP_JOB_REGEX" => "/final-images-listing/",
+            "DEBIAN_IMAGE" => "debian:bookworm-slim",
+            "ALPINE_IMAGE" => "alpine:3.20",
+            "CONTAINER_VERSION_SUFFIX" => "project-path",
+            "CACHE_BUSTER" => "false",
+            "ARCH_LIST" => 'amd64,arm64'
+          })
         end
       end
     end

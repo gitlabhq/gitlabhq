@@ -35,6 +35,7 @@ workflow:
     - .e2e-test-base
     - .cng-qa-cache # cng-cache includes additional cached helm chart
   needs:
+    - build-cng-env
     - build-cng
   tags:
     - e2e

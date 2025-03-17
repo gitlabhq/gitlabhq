@@ -85,6 +85,16 @@ RSpec.describe BasePolicy do
           .to change { policy.allowed?(ability) }.from(false).to(true)
       end
     end
+
+    context 'with a limited admin user', :enable_admin_mode do
+      let(:current_user) { build_stubbed(:user) }
+
+      before do
+        allow(current_user).to receive(:can_access_admin_area?).and_return(true)
+      end
+
+      it { is_expected.not_to be_allowed(ability) }
+    end
   end
 
   describe 'read_dedicated_hosted_runner_usage' do

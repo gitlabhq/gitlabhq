@@ -726,6 +726,56 @@ RSpec.describe Note, feature_category: :team_planning do
     end
   end
 
+  describe '#last_edited_by' do
+    let_it_be(:note, reload: true) do
+      create_timestamp = 1.day.ago
+      create(:note, created_at: create_timestamp, updated_at: create_timestamp)
+    end
+
+    let(:editor) { note.author }
+
+    context 'when the note is not edited' do
+      it 'returns nil' do
+        expect(note.last_edited_by).to be_nil
+      end
+    end
+
+    def update_note(note, **attributes)
+      # Update updated_at manually because of ThrottledTouch concern
+      note.update!(attributes.merge(updated_at: Time.current))
+    end
+
+    context 'with an edited note' do
+      before do
+        update_note(note, last_edited_at: Time.current, updated_by: editor)
+      end
+
+      it 'returns the updated_by user' do
+        expect(note.last_edited_by).to eq(editor)
+      end
+    end
+
+    context 'with an edited note by a deleted user' do
+      before do
+        update_note(note, last_edited_at: Time.current, updated_by: nil)
+      end
+
+      it 'returns the ghost user' do
+        expect(note.last_edited_by).to eq(Users::Internal.ghost)
+      end
+    end
+
+    context 'with a legacy edited note where last_edited_at is not set' do
+      before do
+        update_note(note, updated_by: editor)
+      end
+
+      it 'returns the updated_by user' do
+        expect(note.last_edited_by).to eq(editor)
+      end
+    end
+  end
+
   describe '#confidential?' do
     context 'when note is not confidential' do
       context 'when include_noteable is set to true' do

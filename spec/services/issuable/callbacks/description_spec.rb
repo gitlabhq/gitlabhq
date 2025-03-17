@@ -18,7 +18,9 @@ RSpec.describe Issuable::Callbacks::Description, feature_category: :portfolio_ma
       project: project,
       description: 'old description',
       last_edited_at: Date.yesterday,
-      last_edited_by: random_user
+      last_edited_by: random_user,
+      created_at: 3.days.ago,
+      updated_at: 3.days.ago
     )
   end
 

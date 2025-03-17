@@ -2378,7 +2378,7 @@
     - !reference [".rails:rules:ee-gitlab-duo-chat-base", rules]
     - <<: *if-merge-request
       changes: *backend-patterns
-      when: manual
+      when: never
       allow_failure: true
 
 .rails:rules:ee-gitlab-duo-chat-always:
@@ -2392,7 +2392,7 @@
     - !reference [".rails:rules:ee-gitlab-duo-chat-optional", rules]
     - <<: *if-default-branch-refs
       changes: *setup-test-env-patterns
-      when: manual
+      when: never
       allow_failure: true
 
 .rails:rules:db:check-schema:

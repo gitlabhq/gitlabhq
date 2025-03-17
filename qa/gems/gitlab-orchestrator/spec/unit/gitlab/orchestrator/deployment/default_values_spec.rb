@@ -8,6 +8,7 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
   let(:gitaly_version) { "7aa06a578d76bdc294ee8e9acb4f063e7d9f1d5f" }
   let(:kas_version) { "7aa06a578d76bdc294ee8e9acb4f063e7d9f1d5f" }
   let(:shell_version) { "14.0.5" }
+  let(:image_tags) { {} }
 
   let(:env) do
     {
@@ -17,10 +18,21 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
     }
   end
 
+  let(:memoized_variables) do
+    [
+      :@ci_project_dir,
+      :@gitaly_version,
+      :@kas_version,
+      :@toolbox_version,
+      :@webservice_version,
+      :@workhorse_version,
+      :@gitlab_shell_version,
+      :@sidekiq_version
+    ]
+  end
+
   before do
-    described_class.instance_variable_set(:@ci_project_dir, nil)
-    described_class.instance_variable_set(:@gitaly_version, nil)
-    described_class.instance_variable_set(:@kas_version, nil)
+    memoized_variables.each { |variable| described_class.instance_variable_set(variable, nil) }
 
     allow(File).to receive(:read).with(File.join(ci_project_dir, "GITALY_SERVER_VERSION")).and_return(gitaly_version)
     allow(File).to receive(:read).with(File.join(ci_project_dir, "GITLAB_SHELL_VERSION")).and_return(shell_version)
@@ -28,7 +40,7 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
   end
 
   around do |example|
-    ClimateControl.modify(env) { example.run }
+    ClimateControl.modify({ **env, **image_tags }) { example.run }
   end
 
   it "returns correct common values" do
@@ -89,6 +101,32 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
     it "correctly sets image tags for components with semver version" do
       expect(described_class.component_ci_versions["gitlab.gitaly.image.tag"]).to eq("v#{gitaly_version}")
       expect(described_class.component_ci_versions["gitlab.kas.image.tag"]).to eq("v#{kas_version}")
+    end
+  end
+
+  context "with explicitly provided image tags" do
+    let(:image_tags) do
+      {
+        "GITALY_TAG" => "13b6c124a0fe566c7e3db4477600e0f004ab69bc",
+        "GITLAB_SHELL_TAG" => "e6daa09dbb6ded5529224acdd1fd24000866aaaf",
+        "GITLAB_TOOLBOX_TAG" => "e6ce8d7f67c0787c706d5968a1f84c5e2d4f2368",
+        "GITLAB_SIDEKIQ_TAG" => "1088d209ac5dd8d245b00946de0760eb8fc9a181",
+        "GITLAB_WEBSERVICE_TAG" => "b0ccc088a766801c8db9e7c564ad28472f33916c",
+        "GITLAB_WORKHORSE_TAG" => "4a3990fb621ba6f6b7ddf36089868b24e22bb598",
+        "GITLAB_KAS_TAG" => "03faf0a4227405febb714c4eaa78e4f16f5d0a37"
+      }
+    end
+
+    it "uses explicitly provided image tags" do
+      expect(described_class.component_ci_versions).to include({
+        "gitlab.gitaly.image.tag" => image_tags["GITALY_TAG"],
+        "gitlab.gitlab-shell.image.tag" => image_tags["GITLAB_SHELL_TAG"],
+        "gitlab.toolbox.image.tag" => image_tags["GITLAB_TOOLBOX_TAG"],
+        "gitlab.sidekiq.image.tag" => image_tags["GITLAB_SIDEKIQ_TAG"],
+        "gitlab.webservice.image.tag" => image_tags["GITLAB_WEBSERVICE_TAG"],
+        "gitlab.webservice.workhorse.tag" => image_tags["GITLAB_WORKHORSE_TAG"],
+        "gitlab.kas.image.tag" => image_tags["GITLAB_KAS_TAG"]
+      })
     end
   end
 end

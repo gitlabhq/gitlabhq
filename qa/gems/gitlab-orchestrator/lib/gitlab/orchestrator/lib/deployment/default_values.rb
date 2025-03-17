@@ -45,29 +45,29 @@ module Gitlab
 
           # Key value pairs for ci specific component version values
           #
-          # This is defined as key value pairs to allow constructing example cli args for easier reproducability
+          # This is defined as key value pairs to allow constructing example cli args for easier reproducibility
           #
           # @return [Hash]
           def component_ci_versions
             {
               "gitlab.gitaly.image.repository" => "#{IMAGE_REPOSITORY}/gitaly",
-              "gitlab.gitaly.image.tag" => semver?(gitaly_version) ? "v#{gitaly_version}" : gitaly_version,
+              "gitlab.gitaly.image.tag" => with_semver_prefix(gitaly_version),
               "gitlab.gitlab-shell.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-shell",
-              "gitlab.gitlab-shell.image.tag" => "v#{gitlab_shell_version}",
+              "gitlab.gitlab-shell.image.tag" => with_semver_prefix(gitlab_shell_version),
               "gitlab.migrations.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-toolbox-ee",
-              "gitlab.migrations.image.tag" => commit_sha,
+              "gitlab.migrations.image.tag" => toolbox_version,
               "gitlab.toolbox.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-toolbox-ee",
-              "gitlab.toolbox.image.tag" => commit_sha,
+              "gitlab.toolbox.image.tag" => toolbox_version,
               "gitlab.sidekiq.annotations.commit" => commit_short_sha,
               "gitlab.sidekiq.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-sidekiq-ee",
-              "gitlab.sidekiq.image.tag" => commit_sha,
+              "gitlab.sidekiq.image.tag" => sidekiq_version,
               "gitlab.webservice.annotations.commit" => commit_short_sha,
               "gitlab.webservice.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-webservice-ee",
-              "gitlab.webservice.image.tag" => commit_sha,
+              "gitlab.webservice.image.tag" => webservice_version,
               "gitlab.webservice.workhorse.image" => "#{IMAGE_REPOSITORY}/gitlab-workhorse-ee",
-              "gitlab.webservice.workhorse.tag" => commit_sha,
+              "gitlab.webservice.workhorse.tag" => workhorse_version,
               "gitlab.kas.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-kas",
-              "gitlab.kas.image.tag" => semver?(kas_version) ? "v#{kas_version}" : kas_version
+              "gitlab.kas.image.tag" => with_semver_prefix(kas_version)
             }
           end
 
@@ -77,8 +77,10 @@ module Gitlab
           #
           # @param [String] version
           # @return [Boolean]
-          def semver?(version)
-            version.match?(/^[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?(-ee)?$/)
+          def with_semver_prefix(version)
+            return version unless version.match?(/^[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?(-ee)?$/)
+
+            "v#{version}"
           end
         end
       end

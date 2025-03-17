@@ -91,7 +91,7 @@ module Gitlab
         def optionally_run_in_admin_mode(user)
           raise NonSidekiqEnvironmentError unless Gitlab::Runtime.sidekiq?
 
-          return yield unless Gitlab::CurrentSettings.admin_mode && user.admin?
+          return yield unless Gitlab::CurrentSettings.admin_mode && user.can_access_admin_area?
 
           bypass_session!(user.id) do
             with_current_admin(user) do
@@ -110,7 +110,7 @@ module Gitlab
         return false unless user
 
         Gitlab::SafeRequestStore.fetch(admin_mode_rs_key) do
-          user.admin? && (privileged_runtime? || session_with_admin_mode?)
+          user.can_access_admin_area? && (privileged_runtime? || session_with_admin_mode?)
         end
       end
 
@@ -118,12 +118,12 @@ module Gitlab
         return false unless user
 
         Gitlab::SafeRequestStore.fetch(admin_mode_requested_rs_key) do
-          user.admin? && admin_mode_requested_in_grace_period?
+          user.can_access_admin_area? && admin_mode_requested_in_grace_period?
         end
       end
 
       def enable_admin_mode!(password: nil, skip_password_validation: false)
-        return false unless user&.admin?
+        return false unless user&.can_access_admin_area?
         return false unless skip_password_validation || user&.valid_password?(password)
 
         raise NotRequestedError unless admin_mode_requested?
@@ -139,7 +139,7 @@ module Gitlab
       end
 
       def disable_admin_mode!
-        return unless user&.admin?
+        return unless user&.can_access_admin_area?
 
         reset_request_store_cache_entries
 
@@ -148,7 +148,7 @@ module Gitlab
       end
 
       def request_admin_mode!
-        return unless user&.admin?
+        return unless user&.can_access_admin_area?
 
         reset_request_store_cache_entries
 
