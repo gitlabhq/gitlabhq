@@ -462,11 +462,14 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
 
     context 'with flag on' do
       it 'returns hash of view properties' do
-        expect(helper.vscode_extension_marketplace_settings_view).to eq({
+        expect(helper.vscode_extension_marketplace_settings_view).to match({
           title: _('VS Code Extension Marketplace'),
           description: _('Enable VS Code Extension Marketplace and configure the extensions registry for Web IDE.'),
           view_model: {
-            initialSettings: vscode_extension_marketplace
+            initialSettings: vscode_extension_marketplace,
+            presets: [
+              hash_including("key" => "open_vsx")
+            ]
           }
         })
       end

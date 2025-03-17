@@ -587,7 +587,8 @@ module ApplicationSettingsHelper
       :global_search_users_enabled,
       :global_search_issues_enabled,
       :global_search_merge_requests_enabled,
-      :vscode_extension_marketplace
+      :vscode_extension_marketplace,
+      :vscode_extension_marketplace_enabled
     ].tap do |settings|
       unless Gitlab.com?
         settings << :resource_usage_limits
@@ -689,10 +690,15 @@ module ApplicationSettingsHelper
     # NOTE: This is intentionally not scoped to a specific actor since it affects instance-level settings.
     return unless Feature.enabled?(:vscode_extension_marketplace_settings, nil)
 
+    presets = ::WebIde::ExtensionMarketplacePreset.all.map do |preset|
+      preset.to_h.deep_transform_keys { |key| key.to_s.camelize(:lower) }
+    end
+
     {
       title: _('VS Code Extension Marketplace'),
       description: vscode_extension_marketplace_settings_description,
       view_model: {
+        presets: presets,
         initialSettings: @application_setting.vscode_extension_marketplace || {}
       }
     }

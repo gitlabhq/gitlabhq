@@ -1,18 +1,29 @@
 import { nextTick } from 'vue';
-import { GlAlert, GlButton, GlForm, GlFormFields, GlFormTextarea } from '@gitlab/ui';
+import { GlAlert, GlAccordion, GlAccordionItem, GlToggle } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import { logError } from '~/lib/logger';
 import SettingsApp from '~/vscode_extension_marketplace/components/settings_app.vue';
+import SettingsForm from '~/vscode_extension_marketplace/components/settings_form.vue';
 import toast from '~/vue_shared/plugins/global_toast';
+import { PRESETS } from '../mock_data';
 
 jest.mock('~/lib/logger');
 jest.mock('~/vue_shared/plugins/global_toast');
 jest.mock('lodash/uniqueId', () => (x) => `${x}testUnique`);
 
-const TEST_NEW_SETTINGS = { enabled: false, preset: 'open_vsx' };
-const EXPECTED_FORM_ID = 'extension-marketplace-settings-form-testUnique';
+const TEST_NEW_SETTINGS = { preset: 'open_vsx' };
+const TEST_INIT_SETTINGS = {
+  enabled: true,
+  preset: 'custom',
+  custom_values: {
+    item_url: 'abc',
+    service_url: 'def',
+    resource_url_template: 'ghi',
+  },
+};
 
 describe('~/vscode_extension_marketplace/components/settings_app.vue', () => {
   let wrapper;
@@ -22,18 +33,16 @@ describe('~/vscode_extension_marketplace/components/settings_app.vue', () => {
   const createComponent = (props = {}) => {
     wrapper = shallowMount(SettingsApp, {
       propsData: {
+        presets: PRESETS,
         ...props,
-      },
-      stubs: {
-        GlFormFields,
       },
     });
   };
 
-  const findForm = () => wrapper.findComponent(GlForm);
-  const findFormFields = () => wrapper.findComponent(GlFormFields);
-  const findTextarea = () => wrapper.findComponent(GlFormTextarea);
-  const findSaveButton = () => wrapper.findComponent(GlButton);
+  const findAccordion = () => wrapper.findComponent(GlAccordion);
+  const findAccordionItem = () => findAccordion().findComponent(GlAccordionItem);
+  const findSettingsForm = () => findAccordionItem().findComponent(SettingsForm);
+  const findToggle = () => wrapper.findComponent(GlToggle);
   const findErrorAlert = () => wrapper.findComponent(GlAlert);
   const findErrorAlertItems = () =>
     findErrorAlert()
@@ -58,63 +67,67 @@ describe('~/vscode_extension_marketplace/components/settings_app.vue', () => {
       createComponent();
     });
 
-    it('renders form', () => {
-      expect(findForm().attributes('id')).toBe(EXPECTED_FORM_ID);
+    it('renders toggle', () => {
+      expect(findToggle().props()).toMatchObject({
+        value: false,
+        isLoading: false,
+        label: 'Enable Extension Marketplace',
+        help: 'Enable the VS Code extension marketplace for all users.',
+        labelPosition: 'top',
+      });
     });
 
-    it('renders form fields', () => {
-      expect(findFormFields().props()).toMatchObject({
-        formId: EXPECTED_FORM_ID,
-        values: {
-          settings: {},
+    it('renders accordion and accordion item', () => {
+      expect(findAccordion().props()).toMatchObject({
+        headerLevel: 3,
+      });
+
+      expect(findAccordionItem().props()).toMatchObject({
+        title: 'Extension registry settings',
+      });
+    });
+
+    it('renders inner form', () => {
+      expect(findSettingsForm().props()).toEqual({
+        initialSettings: {},
+        presets: PRESETS,
+        submitButtonAttrs: {
+          'aria-describedby': 'extension-marketplace-settings-error-alert',
+          loading: false,
         },
-        fields: SettingsApp.FIELDS,
       });
-    });
-
-    it('renders settings textarea', () => {
-      expect(findTextarea().attributes()).toMatchObject({
-        id: 'gl-form-field-testUnique',
-        value: '{}',
-      });
-    });
-
-    it('renders save button', () => {
-      expect(findSaveButton().attributes()).toMatchObject({
-        type: 'submit',
-        variant: 'confirm',
-        category: 'primary',
-        'aria-describedby': 'extensions-marketplace-settings-error-alert',
-      });
-      expect(findSaveButton().props('loading')).toBe(false);
-      expect(findSaveButton().text()).toBe('Save changes');
     });
   });
 
-  describe('when submitted', () => {
-    beforeEach(async () => {
+  describe('when enablement toggle is changed', () => {
+    beforeEach(() => {
       createComponent();
 
-      findTextarea().vm.$emit('input', JSON.stringify(TEST_NEW_SETTINGS));
-      await nextTick();
-
-      findFormFields().vm.$emit('submit');
+      findToggle().vm.$emit('change', true);
     });
 
     it('triggers loading', () => {
-      expect(findSaveButton().props('loading')).toBe(true);
+      expect(findSettingsForm().props('submitButtonAttrs')).toEqual({
+        'aria-describedby': 'extension-marketplace-settings-error-alert',
+        loading: true,
+      });
+
+      expect(findToggle().props()).toMatchObject({
+        value: false,
+        isLoading: true,
+      });
     });
 
     it('makes submit request', () => {
       expect(submitSpy).toHaveBeenCalledTimes(1);
       expect(submitSpy).toHaveBeenCalledWith({
-        vscode_extension_marketplace: TEST_NEW_SETTINGS,
+        vscode_extension_marketplace_enabled: true,
       });
     });
 
     it('while loading, prevents extra submit', () => {
-      findFormFields().vm.$emit('submit');
-      findFormFields().vm.$emit('submit');
+      findToggle().vm.$emit('change', true);
+      findToggle().vm.$emit('change', true);
 
       expect(submitSpy).toHaveBeenCalledTimes(1);
     });
@@ -126,11 +139,47 @@ describe('~/vscode_extension_marketplace/components/settings_app.vue', () => {
 
       expect(toast).toHaveBeenCalledTimes(1);
       expect(toast).toHaveBeenCalledWith('Extension marketplace settings updated.');
-      expect(findSaveButton().props('loading')).toBe(false);
+      expect(findToggle().props('isLoading')).toBe(false);
     });
 
     it('does not show error alert', () => {
       expect(findErrorAlert().exists()).toBe(false);
+    });
+  });
+
+  describe('with initial settings', () => {
+    beforeEach(() => {
+      createComponent({
+        initialSettings: TEST_INIT_SETTINGS,
+      });
+    });
+
+    it('initializes settings in toggle', () => {
+      expect(findToggle().props('value')).toBe(true);
+    });
+
+    it('initializes settings in form', () => {
+      expect(findSettingsForm().props('initialSettings')).toBe(TEST_INIT_SETTINGS);
+    });
+
+    it('when submitted, submits settings', async () => {
+      expect(submitSpy).not.toHaveBeenCalled();
+
+      findSettingsForm().vm.$emit('submit', TEST_NEW_SETTINGS);
+      await waitForPromises();
+
+      expect(submitSpy).toHaveBeenCalledTimes(1);
+      expect(submitSpy).toHaveBeenCalledWith({
+        vscode_extension_marketplace: {
+          enabled: true,
+          preset: 'open_vsx',
+          custom_values: {
+            item_url: 'abc',
+            service_url: 'def',
+            resource_url_template: 'ghi',
+          },
+        },
+      });
     });
   });
 
@@ -140,7 +189,7 @@ describe('~/vscode_extension_marketplace/components/settings_app.vue', () => {
 
       createComponent();
 
-      findFormFields().vm.$emit('submit');
+      findSettingsForm().vm.$emit('submit', {});
     });
 
     it('shows error message', async () => {
@@ -149,7 +198,7 @@ describe('~/vscode_extension_marketplace/components/settings_app.vue', () => {
       await axios.waitForAll();
 
       expect(findErrorAlert().exists()).toBe(true);
-      expect(findErrorAlert().attributes('id')).toBe('extensions-marketplace-settings-error-alert');
+      expect(findErrorAlert().attributes('id')).toBe('extension-marketplace-settings-error-alert');
       expect(findErrorAlert().props('dismissible')).toBe(false);
       expect(findErrorAlert().text()).toBe(
         'Failed to update extension marketplace settings. An unknown error occurred. Please try again.',
@@ -168,20 +217,12 @@ describe('~/vscode_extension_marketplace/components/settings_app.vue', () => {
       );
     });
 
-    it('updates state on textarea', async () => {
-      expect(findTextarea().attributes('state')).toBe('true');
-
-      await axios.waitForAll();
-
-      expect(findTextarea().attributes('state')).toBeUndefined();
-    });
-
     it('hides error message with another submit', async () => {
       await axios.waitForAll();
 
       expect(findErrorAlert().exists()).toBe(true);
 
-      findFormFields().vm.$emit('submit');
+      findSettingsForm().vm.$emit('submit', TEST_NEW_SETTINGS);
       await nextTick();
 
       expect(findErrorAlert().exists()).toBe(false);
@@ -197,7 +238,7 @@ describe('~/vscode_extension_marketplace/components/settings_app.vue', () => {
 
       createComponent();
 
-      findFormFields().vm.$emit('submit');
+      findSettingsForm().vm.$emit('submit', TEST_NEW_SETTINGS);
     });
 
     it('shows error message', async () => {
@@ -211,18 +252,6 @@ describe('~/vscode_extension_marketplace/components/settings_app.vue', () => {
         'vscode_extension_marketplace : LOREM',
         'vscode_extension_marketplace : IPSUM',
       ]);
-    });
-  });
-
-  describe('with initialSettings', () => {
-    beforeEach(() => {
-      createComponent({
-        initialSettings: TEST_NEW_SETTINGS,
-      });
-    });
-
-    it('initializes the form with given settings', () => {
-      expect(findTextarea().props('value')).toBe(JSON.stringify(TEST_NEW_SETTINGS, null, 2));
     });
   });
 });

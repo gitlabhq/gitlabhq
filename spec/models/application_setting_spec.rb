@@ -70,7 +70,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.global_search_merge_requests_enabled).to be(true) }
     it { expect(setting.global_search_snippet_titles_enabled).to be(true) }
     it { expect(setting.global_search_users_enabled).to be(true) }
-    it { expect(setting.vscode_extension_marketplace).to eq({}) }
+    it { expect(setting.vscode_extension_marketplace).to eq({ "enabled" => false }) }
+    it { expect(setting.vscode_extension_marketplace_enabled?).to be(false) }
 
     it do
       expect(setting.sign_in_restrictions).to eq({
@@ -1776,7 +1777,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
   end
 
-  describe 'vscode_extension_marketplace' do
+  describe '#vscode_extension_marketplace' do
     let(:invalid_custom) { { enabled: false, preset: "custom", custom_values: {} } }
     let(:valid_open_vsx) { { enabled: true, preset: "open_vsx" } }
     let(:valid_custom) do
@@ -1800,6 +1801,24 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value({ enabled: false, preset: "foo" }).for(:vscode_extension_marketplace) }
     it { is_expected.not_to allow_value({ enabled: true, preset: "custom" }).for(:vscode_extension_marketplace) }
     it { is_expected.not_to allow_value(invalid_custom).for(:vscode_extension_marketplace) }
+  end
+
+  describe '#vscode_extension_marketplace_enabled' do
+    it 'is updated when underlying vscode_extension_marketplace changes' do
+      expect(setting.vscode_extension_marketplace_enabled).to be(false)
+
+      setting.vscode_extension_marketplace = { enabled: true, preset: "open_vsx" }
+
+      expect(setting.vscode_extension_marketplace_enabled).to be(true)
+    end
+
+    it 'updates the underlying vscode_extension_marketplace when changed' do
+      setting.vscode_extension_marketplace = { enabled: true, preset: "open_vsx" }
+
+      setting.vscode_extension_marketplace_enabled = false
+
+      expect(setting.vscode_extension_marketplace).to eq({ "enabled" => false, "preset" => "open_vsx" })
+    end
   end
 
   describe '#static_objects_external_storage_auth_token=', :aggregate_failures do

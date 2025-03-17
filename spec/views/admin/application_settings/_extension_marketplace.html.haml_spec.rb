@@ -31,7 +31,22 @@ RSpec.describe 'admin/application_settings/_extension_marketplace', feature_cate
 
     it 'renders data-view-model for vue app' do
       vue_app = page.at('#js-extension-marketplace-settings-app')
-      expected_json = { initialSettings: {} }.to_json
+      expected_presets = ::WebIde::ExtensionMarketplacePreset.all.map do |x|
+        {
+          key: x.key,
+          name: x.name,
+          values: {
+            serviceUrl: x.values[:service_url],
+            itemUrl: x.values[:item_url],
+            resourceUrlTemplate: x.values[:resource_url_template]
+          }
+        }
+      end
+
+      expected_json = {
+        presets: expected_presets,
+        initialSettings: { enabled: false }
+      }.to_json
 
       expect(vue_app).not_to be_nil
       expect(vue_app['data-view-model']).to eq(expected_json)
