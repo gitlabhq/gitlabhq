@@ -659,7 +659,12 @@ class Member < ApplicationRecord
   end
 
   def send_request
-    notification_service.new_access_request(self)
+    if notifiable?(:subscription)
+      source.access_request_approvers_to_be_notified.each do |recipient|
+        Members::AccessRequestedMailer.with(member: self, recipient: recipient.user).email.deliver_later
+      end
+    end
+
     todo_service.create_member_access_request_todos(self)
   end
 

@@ -214,8 +214,6 @@ Layout/ClassStructure:
     - 'ee/app/services/package_metadata/ingestion/advisory/affected_package_ingestion_task.rb'
     - 'ee/app/services/package_metadata/ingestion/compressed_package/license_ingestion_task.rb'
     - 'ee/app/services/package_metadata/ingestion/compressed_package/package_ingestion_task.rb'
-    - 'ee/app/services/path_locks/lock_service.rb'
-    - 'ee/app/services/path_locks/unlock_service.rb'
     - 'ee/app/services/search/zoekt/task_serializer_service.rb'
     - 'ee/app/services/security/ingestion/tasks/update_vulnerability_uuids.rb'
     - 'ee/app/services/security/security_orchestration_policies/on_demand_scan_pipeline_configuration_service.rb'

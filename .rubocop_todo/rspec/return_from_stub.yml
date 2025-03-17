@@ -136,7 +136,6 @@ RSpec/ReturnFromStub:
     - 'spec/requests/api/groups_spec.rb'
     - 'spec/requests/api/internal/base_spec.rb'
     - 'spec/requests/api/merge_requests_spec.rb'
-    - 'spec/requests/api/project_container_repositories_spec.rb'
     - 'spec/requests/health_controller_spec.rb'
     - 'spec/requests/lfs_http_spec.rb'
     - 'spec/requests/users_controller_spec.rb'

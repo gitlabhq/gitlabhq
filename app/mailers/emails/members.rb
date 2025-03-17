@@ -11,19 +11,6 @@ module Emails
       helper_method :experiment
     end
 
-    def member_access_requested_email(member_source_type, member_id, recipient_id)
-      @member_source_type = member_source_type
-      @member_id = member_id
-
-      return unless member_exists?
-
-      user = User.find(recipient_id)
-
-      email_with_layout(
-        to: user.notification_email_for(notification_group),
-        subject: subject("Request to join the #{member_source.human_name} #{member_source.model_name.singular}"))
-    end
-
     def member_access_granted_email(member_source_type, member_id)
       @member_source_type = member_source_type
       @member_id = member_id

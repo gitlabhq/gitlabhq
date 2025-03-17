@@ -1,0 +1,18 @@
+---
+key_path: counts.ci_runner_manager_custom_executors
+description: Counts the number of custom CI runner manager executors
+product_group: runner
+product_categories:
+  - runner
+value_type: number
+status: active
+milestone: "17.10"
+instrumentation_class: CountCiRunnerManagerCustomExecutorsMetric
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184308
+time_frame: all
+data_source: database
+data_category: optional
+tiers:
+  - free
+  - premium
+  - ultimate

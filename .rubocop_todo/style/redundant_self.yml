@@ -194,8 +194,6 @@ Style/RedundantSelf:
     - 'ee/lib/gitlab/auth/group_saml/user.rb'
     - 'ee/lib/gitlab/auth/smartcard.rb'
     - 'ee/lib/gitlab/ci/reports/license_scanning/report.rb'
-    - 'ee/lib/gitlab/elastic/client.rb'
-    - 'ee/lib/gitlab/elastic/helper.rb'
     - 'ee/lib/gitlab/geo.rb'
     - 'ee/lib/gitlab/geo/oauth/login_state.rb'
     - 'ee/lib/gitlab/geo/oauth/logout_state.rb'

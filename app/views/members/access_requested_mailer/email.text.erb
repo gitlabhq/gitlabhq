@@ -1,3 +1,3 @@
 <%= sanitize_name(member.user.name) %> (<%= user_url(member.user) %>) requested <%= member.human_access %> access to the <%= member_source.human_name %> <%= member_source.model_name.singular %>.
 
-<%= polymorphic_url([member_source, :members]) %>
+<%= polymorphic_url([member_source, "#{target_type}_members".to_sym]) %>

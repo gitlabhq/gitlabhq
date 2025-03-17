@@ -39,7 +39,6 @@ RSpec/ExcessiveDocstringSpacing:
     - 'spec/features/integrations_settings_spec.rb'
     - 'spec/features/milestones/user_sees_breadcrumb_links_spec.rb'
     - 'spec/features/projects/releases/user_views_releases_spec.rb'
-    - 'spec/graphql/features/authorization_spec.rb'
     - 'spec/graphql/mutations/achievements/revoke_spec.rb'
     - 'spec/graphql/resolvers/users_resolver_spec.rb'
     - 'spec/helpers/clusters_helper_spec.rb'

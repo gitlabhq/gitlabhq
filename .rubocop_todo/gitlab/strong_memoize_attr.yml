@@ -108,7 +108,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/models/tree.rb'
     - 'app/models/user.rb'
     - 'app/models/wiki_page.rb'
-    - 'app/models/work_item.rb'
     - 'app/policies/application_setting/term_policy.rb'
     - 'app/policies/note_policy.rb'
     - 'app/presenters/blobs/unfold_presenter.rb'

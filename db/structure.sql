@@ -16996,7 +16996,8 @@ CREATE TABLE ml_candidate_metrics (
     tracked_at bigint,
     project_id bigint,
     CONSTRAINT check_3bb4a3fbd9 CHECK ((char_length(name) <= 250)),
-    CONSTRAINT check_d7dfd3de26 CHECK ((candidate_id IS NOT NULL))
+    CONSTRAINT check_d7dfd3de26 CHECK ((candidate_id IS NOT NULL)),
+    CONSTRAINT check_e0012be52e CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ml_candidate_metrics_id_seq
@@ -32057,6 +32058,10 @@ CREATE INDEX idx_zoekt_repositories_on_zoekt_index_id_and_size_bytes ON zoekt_re
 
 CREATE INDEX idx_zoekt_repositories_on_zoekt_index_id_and_state ON zoekt_repositories USING btree (zoekt_index_id, state);
 
+CREATE INDEX index_ci_runner_machines_on_executor_type ON ONLY ci_runner_machines USING btree (executor_type);
+
+CREATE INDEX index_012094097c ON instance_type_ci_runner_machines USING btree (executor_type);
+
 CREATE INDEX index_p_ci_builds_on_execution_config_id ON ONLY p_ci_builds USING btree (execution_config_id) WHERE (execution_config_id IS NOT NULL);
 
 CREATE INDEX index_0928d9f200 ON ci_builds USING btree (execution_config_id) WHERE (execution_config_id IS NOT NULL);
@@ -32064,6 +32069,8 @@ CREATE INDEX index_0928d9f200 ON ci_builds USING btree (execution_config_id) WHE
 CREATE INDEX tmp_p_ci_builds_trigger_request_id_idx ON ONLY p_ci_builds USING btree (trigger_request_id) WHERE (trigger_request_id IS NOT NULL);
 
 CREATE INDEX index_437b1804fb ON ci_builds USING btree (trigger_request_id) WHERE (trigger_request_id IS NOT NULL);
+
+CREATE INDEX index_aa3b4fe8c6 ON group_type_ci_runner_machines USING btree (executor_type);
 
 CREATE INDEX index_abuse_events_on_abuse_report_id ON abuse_events USING btree (abuse_report_id);
 
@@ -33256,6 +33263,8 @@ CREATE INDEX index_customer_relations_contacts_on_organization_id ON customer_re
 CREATE UNIQUE INDEX index_customer_relations_contacts_on_unique_email_per_group ON customer_relations_contacts USING btree (group_id, lower(email), id);
 
 CREATE UNIQUE INDEX index_cycle_analytics_stage_event_hashes_on_org_id_sha_256 ON analytics_cycle_analytics_stage_event_hashes USING btree (organization_id, hash_sha256);
+
+CREATE INDEX index_d58435d85e ON project_type_ci_runner_machines USING btree (executor_type);
 
 CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON ci_daily_build_group_report_results USING btree (project_id, ref_path, date, group_name);
 
@@ -38733,9 +38742,13 @@ ALTER INDEX p_ci_job_artifacts_job_id_file_type_partition_id_idx ATTACH PARTITIO
 
 ALTER INDEX p_ci_pipelines_ci_ref_id_id_idx ATTACH PARTITION idx_ci_pipelines_artifacts_locked;
 
+ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_012094097c;
+
 ALTER INDEX index_p_ci_builds_on_execution_config_id ATTACH PARTITION index_0928d9f200;
 
 ALTER INDEX tmp_p_ci_builds_trigger_request_id_idx ATTACH PARTITION index_437b1804fb;
+
+ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_aa3b4fe8c6;
 
 ALTER INDEX p_ci_pipelines_trigger_id_idx ATTACH PARTITION index_ac3541b851;
 
@@ -38856,6 +38869,8 @@ ALTER INDEX p_ci_stages_pipeline_id_position_idx ATTACH PARTITION index_ci_stage
 ALTER INDEX p_ci_stages_pipeline_id_name_partition_id_idx ATTACH PARTITION index_ci_stages_on_pipeline_id_name_partition_id_unique;
 
 ALTER INDEX p_ci_stages_project_id_idx ATTACH PARTITION index_ci_stages_on_project_id;
+
+ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_d58435d85e;
 
 ALTER INDEX p_ci_builds_user_id_name_idx ATTACH PARTITION index_partial_ci_builds_on_user_id_name_parser_features;
 

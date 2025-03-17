@@ -1109,14 +1109,10 @@ RSpec.describe Member, feature_category: :groups_and_projects do
   end
 
   describe '#request?' do
-    shared_examples 'calls notification service and todo service' do
+    shared_examples 'calls todo service' do
       subject { create(source_type, requested_at: Time.current.utc) }
 
       specify do
-        expect_next_instance_of(NotificationService) do |instance|
-          expect(instance).to receive(:new_access_request)
-        end
-
         expect_next_instance_of(TodoService) do |instance|
           expect(instance).to receive(:create_member_access_request_todos)
         end
@@ -1127,8 +1123,74 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
     context 'when requests for project and group are raised' do
       %i[project_member group_member].each do |source_type|
-        it_behaves_like 'calls notification service and todo service' do
+        it_behaves_like 'calls todo service' do
           let_it_be(:source_type) { source_type }
+        end
+      end
+    end
+
+    context 'for request emails' do
+      let_it_be(:new_approver) { create(:user) }
+
+      before do
+        allow(Members::AccessRequestedMailer).to receive(:with).and_call_original
+      end
+
+      context 'for a project' do
+        let_it_be(:project) { create(:project, :public, maintainers: new_approver) }
+        let_it_be(:recipient) { project.add_maintainer(project.first_owner).user }
+
+        before_all do
+          project.add_maintainer(new_approver)
+        end
+
+        it 'enqueues emails for all approvers' do
+          expect do
+            member = create(:project_member, source: project, requested_at: Time.current)
+            expect(Members::AccessRequestedMailer).to have_received(:with).with(member: member, recipient: recipient)
+            expect(Members::AccessRequestedMailer).to have_received(:with).with(member: member, recipient: new_approver)
+          end.to have_enqueued_mail(Members::AccessRequestedMailer, :email).exactly(:twice)
+        end
+
+        context 'and not eligible for notification' do
+          before do
+            allow_next_instance_of(ProjectMember) do |instance|
+              allow(instance).to receive(:notifiable?).with(:subscription).and_return(false)
+            end
+          end
+
+          it 'does not enqueue emails' do
+            expect do
+              create(:project_member, source: project, requested_at: Time.current)
+            end.not_to have_enqueued_mail(Members::AccessRequestedMailer, :email)
+          end
+        end
+      end
+
+      context 'for a group' do
+        let_it_be(:recipient) { create(:user) }
+        let_it_be(:group) { create(:group, :public, owners: [recipient, new_approver]) }
+
+        it 'enqueues emails for all approvers' do
+          expect do
+            member = create(:group_member, source: group, requested_at: Time.current)
+            expect(Members::AccessRequestedMailer).to have_received(:with).with(member: member, recipient: recipient)
+            expect(Members::AccessRequestedMailer).to have_received(:with).with(member: member, recipient: new_approver)
+          end.to have_enqueued_mail(Members::AccessRequestedMailer, :email).exactly(:twice)
+        end
+
+        context 'and not eligible for notification' do
+          before do
+            allow_next_instance_of(GroupMember) do |instance|
+              allow(instance).to receive(:notifiable?).with(:subscription).and_return(false)
+            end
+          end
+
+          it 'does not enqueue emails' do
+            expect do
+              create(:group_member, source: group, requested_at: Time.current)
+            end.not_to have_enqueued_mail(Members::AccessRequestedMailer, :email)
+          end
         end
       end
     end

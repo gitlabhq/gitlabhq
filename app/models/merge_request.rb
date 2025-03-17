@@ -1592,7 +1592,7 @@ class MergeRequest < ApplicationRecord
   def closes_issues(current_user = self.author)
     if target_branch == project.default_branch
       messages = [title, description]
-      messages.concat(commits.map(&:safe_message)) if merge_request_diff.persisted?
+      messages.concat(commits(load_from_gitaly: Feature.enabled?(:more_commits_from_gitaly, target_project)).map(&:safe_message)) if merge_request_diff.persisted?
 
       Gitlab::ClosingIssueExtractor.new(project, current_user)
         .closed_by_message(messages.join("\n"))
@@ -1699,7 +1699,7 @@ class MergeRequest < ApplicationRecord
   # Returns the oldest multi-line commit
   def first_multiline_commit
     strong_memoize(:first_multiline_commit) do
-      recent_commits.without_merge_commits.reverse_each.find(&:description?)
+      recent_commits(load_from_gitaly: Feature.enabled?(:more_commits_from_gitaly, target_project)).without_merge_commits.reverse_each.find(&:description?)
     end
   end
 

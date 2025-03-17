@@ -346,11 +346,15 @@ module Types
     end
 
     def commits
-      object.commits.commits
+      object.commits(
+        load_from_gitaly: Feature.enabled?(:more_commits_from_gitaly, object.target_project)
+      ).commits
     end
 
     def commits_without_merge_commits
-      object.commits.without_merge_commits
+      object.commits(
+        load_from_gitaly: Feature.enabled?(:more_commits_from_gitaly, object.target_project)
+      ).without_merge_commits
     end
 
     def security_auto_fix

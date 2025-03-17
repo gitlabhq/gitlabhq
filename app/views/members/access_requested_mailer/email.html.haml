@@ -1,0 +1,13 @@
+- user = member.user
+- member_link = link_to user.name, user_url(user), class: :highlight
+- member_role = content_tag :span, member.human_access, class: :highlight
+- target_source_link = link_to member_source.human_name, polymorphic_url([member_source, "#{target_type}_members".to_sym]), class: :highlight
+
+%tr
+  %td.text-content
+    %p
+      = safe_format(s_('Notify|%{member_link} requested %{member_role} access to the %{target_source_link} %{target_type}.'),
+        member_link: member_link,
+        member_role: member_role,
+        target_source_link: target_source_link,
+        target_type: target_type)

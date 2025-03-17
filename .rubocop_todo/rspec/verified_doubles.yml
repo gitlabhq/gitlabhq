@@ -150,7 +150,6 @@ RSpec/VerifiedDoubles:
     - 'ee/spec/services/status_page/publish_service_spec.rb'
     - 'ee/spec/services/status_page/trigger_publish_service_spec.rb'
     - 'ee/spec/services/system_note_service_spec.rb'
-    - 'ee/spec/services/vulnerability_exports/export_service_spec.rb'
     - 'ee/spec/services/vulnerability_external_issue_links/create_service_spec.rb'
     - 'ee/spec/support/helpers/ee/ldap_helpers.rb'
     - 'ee/spec/support/shared_examples/controllers/analytics/cycle_analytics/shared_stage_shared_examples.rb'

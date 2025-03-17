@@ -53,37 +53,4 @@ RSpec.describe MembersHelper do
     it { expect(leave_confirmation_message(project)).to eq "Are you sure you want to leave the \"#{project.full_name}\" project?" }
     it { expect(leave_confirmation_message(group)).to eq "Are you sure you want to leave the \"#{group.name}\" group?" }
   end
-
-  describe '#member_request_access_link' do
-    let(:project) { create(:project) }
-    let(:group) { create(:group) }
-    let(:project_member) { create(:project_member, :reporter, project: project) }
-    let(:group_member) { create(:group_member, :reporter, group: group) }
-
-    it 'returns request link for project members' do
-      user = project_member.user
-      source = project_member.source
-      link = member_request_access_link(project_member)
-
-      user_link = link_to user.name, user, class: :highlight
-      access_level = content_tag :span, project_member.human_access, class: :highlight
-      source_link = link_to source.human_name, polymorphic_url([project_member.source, :members]), class: :highlight
-      source_type = source.model_name.singular
-
-      expect(link).to eq "#{user_link} requested #{access_level} access to the #{source_link} #{source_type}."
-    end
-
-    it 'returns the request link for group members' do
-      user = group_member.user
-      source = group_member.source
-      link = member_request_access_link(group_member)
-
-      user_link = link_to user.name, user, class: :highlight
-      access_level = content_tag :span, group_member.human_access, class: :highlight
-      source_link = link_to source.human_name, polymorphic_url([group_member.source, :members]), class: :highlight
-      source_type = source.model_name.singular
-
-      expect(link).to eq "#{user_link} requested #{access_level} access to the #{source_link} #{source_type}."
-    end
-  end
 end

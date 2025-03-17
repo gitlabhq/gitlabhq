@@ -353,7 +353,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def first_commit
-    if Feature.enabled?(:optimized_commit_storage, project)
+    if Feature.enabled?(:more_commits_from_gitaly, project)
       commits(load_from_gitaly: true).last
     else
       commits.last
@@ -361,7 +361,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def last_commit
-    if Feature.enabled?(:optimized_commit_storage, project)
+    if Feature.enabled?(:more_commits_from_gitaly, project)
       commits(load_from_gitaly: true).first
     else
       commits.first

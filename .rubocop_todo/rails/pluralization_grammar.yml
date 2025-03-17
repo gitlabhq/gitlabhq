@@ -1,5 +1,0 @@
----
-# Cop supports --autocorrect.
-Rails/PluralizationGrammar:
-  Exclude:
-    - 'db/post_migrate/20240726054350_update_ci_max_total_yaml_size_bytes_default.rb'

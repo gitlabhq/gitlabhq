@@ -30,8 +30,7 @@ This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
-GitLab Query Language (GLQL) is an [experimental](../../policy/development_stages_support.md) attempt
-to create a single query language for all of GitLab.
+GitLab Query Language (GLQL) is an attempt to create a single query language for all of GitLab.
 Use it to filter and embed content from anywhere in the platform, using familiar syntax.
 
 Embed queries in Markdown code blocks.
@@ -42,7 +41,7 @@ To test GLQL views:
 - On GitLab Self-Managed, ask your administrator to enable the `glql_integration` feature flag on your instance.
 - On GitLab.com, contact your account representative.
 
-Share your feedback in [epic 14939](https://gitlab.com/groups/gitlab-org/-/epics/14939).
+Share your feedback in the [GLQL beta feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509791).
 
 ## Query syntax
 

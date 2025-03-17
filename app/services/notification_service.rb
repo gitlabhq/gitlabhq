@@ -503,17 +503,6 @@ class NotificationService
     mailer.user_deactivated_email(name, email).deliver_later
   end
 
-  # Members
-  def new_access_request(member)
-    return true unless member.notifiable?(:subscription)
-
-    recipients = member.source.access_request_approvers_to_be_notified
-
-    return true if recipients.empty?
-
-    recipients.each { |recipient| deliver_access_request_email(recipient, member) }
-  end
-
   def new_member(member)
     notifiable_options = case member.source
                          when Group
@@ -995,10 +984,6 @@ class NotificationService
 
   def notifiable_users(...)
     NotificationRecipients::BuildService.notifiable_users(...)
-  end
-
-  def deliver_access_request_email(recipient, member)
-    mailer.member_access_requested_email(member.real_source_type, member.id, recipient.user.id).deliver_later
   end
 
   def warn_skipping_notifications(user, object)

@@ -6,7 +6,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'app/controllers/concerns/preferred_language_switcher.rb'
     - 'app/controllers/concerns/request_payload_logger.rb'
     - 'app/controllers/explore/projects_controller.rb'
-    - 'app/controllers/groups_controller.rb'
     - 'app/controllers/projects/settings/integrations_controller.rb'
     - 'app/controllers/repositories/git_http_controller.rb'
     - 'app/controllers/search_controller.rb'

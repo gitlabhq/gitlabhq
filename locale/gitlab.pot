@@ -54445,6 +54445,9 @@ msgstr ""
 msgid "Select a country or region"
 msgstr ""
 
+msgid "Select a day"
+msgstr ""
+
 msgid "Select a file from the left sidebar to begin editing. Afterwards, you'll be able to commit your changes."
 msgstr ""
 

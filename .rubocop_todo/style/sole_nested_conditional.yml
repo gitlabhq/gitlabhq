@@ -17,7 +17,6 @@ Style/SoleNestedConditional:
     - 'app/services/projects/hashed_storage/migration_service.rb'
     - 'ee/app/finders/ee/snippets_finder.rb'
     - 'ee/app/services/ee/issue_links/create_service.rb'
-    - 'ee/app/services/ee/lfs/unlock_file_service.rb'
     - 'ee/app/services/epics/tree_reorder_service.rb'
     - 'ee/app/services/vulnerability_feedback/create_service.rb'
     - 'ee/lib/ee/gitlab/auth/o_auth/auth_hash.rb'

@@ -1819,6 +1819,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
     context 'when commits_from_gitaly and optimized_commit_storage feature flags are disabled' do
       before do
+        stub_feature_flags(more_commits_from_gitaly: false)
         stub_feature_flags(commits_from_gitaly: false)
         stub_feature_flags(optimized_commit_storage: false)
       end

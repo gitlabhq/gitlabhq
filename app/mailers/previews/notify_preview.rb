@@ -175,10 +175,6 @@ class NotifyPreview < ActionMailer::Preview
     Notify.member_access_granted_email(member.source_type, member.id).message
   end
 
-  def member_access_requested_email
-    Notify.member_access_requested_email(member.source_type, member.id, user.id).message
-  end
-
   def member_about_to_expire_email
     cleanup do
       member = project.add_member(user, Gitlab::Access::GUEST, expires_at: 7.days.from_now.to_date)

@@ -127,7 +127,6 @@ Style/SuperArguments:
     - 'ee/lib/gitlab/ci/reports/license_scanning/license.rb'
     - 'ee/lib/gitlab/llm/chain/utils/chat_authorizer.rb'
     - 'ee/lib/google_cloud/artifact_registry/client.rb'
-    - 'keeps/delete_obsolete_advanced_search_migrations.rb'
     - 'lib/api/api_guard.rb'
     - 'lib/api/entities/project_with_access.rb'
     - 'lib/backup/targets/database.rb'

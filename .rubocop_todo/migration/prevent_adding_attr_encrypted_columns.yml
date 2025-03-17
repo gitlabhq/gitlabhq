@@ -1,5 +1,4 @@
 ---
-# Cop supports --autocorrect.
 Migration/PreventAddingAttrEncryptedColumns:
   Details: grace period
   Exclude:

@@ -1278,9 +1278,9 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       expect(diff_with_commits.first_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.last.sha)
     end
 
-    context 'when "optimized_commit_storage" feature flag is disabled' do
+    context 'when "more_commits_from_gitaly" feature flag is disabled' do
       before do
-        stub_feature_flags(optimized_commit_storage: false)
+        stub_feature_flags(more_commits_from_gitaly: false)
       end
 
       it 'returns first commit' do
@@ -1294,9 +1294,9 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       expect(diff_with_commits.last_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.first.sha)
     end
 
-    context 'when "optimized_commit_storage" feature flag is disabled' do
+    context 'when "more_commits_from_gitaly" feature flag is disabled' do
       before do
-        stub_feature_flags(optimized_commit_storage: false)
+        stub_feature_flags(more_commits_from_gitaly: false)
       end
 
       it 'returns last commit' do

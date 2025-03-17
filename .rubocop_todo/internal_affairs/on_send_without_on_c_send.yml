@@ -46,6 +46,7 @@ InternalAffairs/OnSendWithoutOnCSend:
     - 'rubocop/cop/gitlab/license_available_usage.rb'
     - 'rubocop/cop/gitlab/mark_used_feature_flags.rb'
     - 'rubocop/cop/gitlab/no_find_in_workers.rb'
+    - 'rubocop/cop/gitlab/rails/attr_encrypted.rb'
     - 'rubocop/cop/gitlab/rails/safe_format.rb'
     - 'rubocop/cop/gitlab/rails_logger.rb'
     - 'rubocop/cop/gitlab/rspec/avoid_setup.rb'

@@ -5,7 +5,6 @@ Gitlab/DocumentationLinks/HardcodedUrl:
     - 'app/graphql/types/merge_request_type.rb'
     - 'app/graphql/types/notes/diff_position_input_type.rb'
     - 'app/graphql/types/query_complexity_type.rb'
-    - 'app/presenters/dev_ops_report/metric_presenter.rb'
     - 'app/serializers/build_details_entity.rb'
     - 'app/services/security/ci_configuration/container_scanning_create_service.rb'
     - 'app/services/security/ci_configuration/dependency_scanning_create_service.rb'
