@@ -4,7 +4,11 @@ require 'spec_helper'
 
 RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_access do
   describe '#execute' do
-    let_it_be(:token, reload: true) { create(:personal_access_token, expires_at: Time.zone.today + 30.days) }
+    let_it_be(:current_user) { create(:user, :with_namespace) }
+    let_it_be(:token, reload: true) do
+      create(:personal_access_token, user: current_user, expires_at: Time.zone.today + 30.days)
+    end
+
     let(:params) { {} }
 
     subject(:response) { described_class.new(token.user, token, nil, params).execute }
@@ -18,12 +22,22 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
         expect(new_token.token).not_to eq(token.token)
         expect(new_token.expires_at).to eq(Time.zone.today + 1.week)
         expect(new_token.user).to eq(token.user)
+        expect(new_token.user.namespace).to eq(token.user.namespace)
         expect(new_token.organization).to eq(token.organization)
         expect(new_token.description).to eq(token.description)
       end
     end
 
     it_behaves_like "rotates token successfully"
+
+    it_behaves_like 'internal event tracking' do
+      let(:event) { 'rotate_pat' }
+      let(:category) { described_class.name }
+      let(:user) { token.user }
+      let(:namespace) { token.user.namespace }
+      let(:project) { nil }
+      subject(:track_event) { response }
+    end
 
     it 'revokes the previous token' do
       expect { response }.to change { token.reload.revoked? }.from(false).to(true)

@@ -344,7 +344,7 @@ GEM
     asciidoctor-plantuml (0.0.16)
       asciidoctor (>= 2.0.17, < 3.0.0)
     ast (2.4.2)
-    async (2.23.0)
+    async (2.23.1)
       console (~> 1.29)
       fiber-annotation
       io-event (~> 1.9)

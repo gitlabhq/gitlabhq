@@ -130,7 +130,9 @@ GitLab.com and GitLab Self-Managed.
 For information on the other method available for GitLab Self-Managed with disabled feature flags,
 see the documentation for each importer.
 
-User contribution mapping is not supported when you import projects to a personal namespace.
+User contribution mapping is not supported when you import projects to a [personal namespace](../../../user/namespace/_index.md#types-of-namespaces).
+When you import to a personal namespace, all contributions are assigned to
+a single non-functional user called `Import User` and they cannot be reassigned.
 
 Any memberships and contributions you import are first mapped to [placeholder users](#placeholder-users).
 These placeholders are created on the destination instance even if
@@ -183,7 +185,9 @@ A placeholder user is created for each user on the source instance, except in th
 - You are importing a project from [Gitea](gitea.md) and the user has been deleted on Gitea before the import.
   Contributions from these "ghost users" are mapped to the user who imported the project and not to a placeholder user.
 - You have exceeded your [placeholder user limit](#placeholder-user-limits). Contributions from any new users after exceeding your limit are
-  mapped to a single import user.
+  mapped to a single non-functional user called `Import User`.
+- You are importing to a [personal namespace](../../../user/namespace/_index.md#types-of-namespaces).
+  Contributions are assigned to a single non-functional user called `Import User`.
 
 #### Placeholder user attributes
 
@@ -268,7 +272,7 @@ These contributions include:
 
 You cannot determine the number of placeholder users you need in advance.
 When the placeholder user limit is reached, the import does not fail.
-Instead, all contributions are assigned to a bot user called `Import User`.
+Instead, all contributions are assigned to a single non-functional user called `Import User`.
 
 Every change creates a system note, which is not affected by the placeholder user limit.
 
@@ -372,7 +376,6 @@ Before a user accepts the reassignment, you can [cancel the request](#cancel-rea
 
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 

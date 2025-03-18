@@ -3,8 +3,8 @@
 require 'spec_helper'
 RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_access do
   describe '#execute' do
-    let_it_be(:token, reload: true) { create(:personal_access_token) }
-    let(:current_user) { create(:user) }
+    let_it_be_with_reload(:token) { create(:personal_access_token) }
+    let_it_be(:current_user) { create(:user) }
     let(:project) { create(:project, group: create(:group)) }
     let(:error_message) { 'Not eligible to rotate token with access level higher than the user' }
 
@@ -19,6 +19,14 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
         expect(new_token.token).not_to eq(token.token)
         expect(new_token.expires_at).to eq(1.week.from_now.to_date)
         expect(new_token.user).to eq(token.user)
+      end
+
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'rotate_prat' }
+        let(:category) { described_class.name }
+        let(:user) { token.user }
+        let(:namespace) { project.namespace }
+        subject(:track_event) { response }
       end
     end
 

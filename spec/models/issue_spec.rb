@@ -474,32 +474,6 @@ RSpec.describe Issue, feature_category: :team_planning do
         expect(described_class.with_issue_type(%w[issue incident]))
           .to contain_exactly(issue, incident)
       end
-
-      it 'joins the work_item_types table for filtering with issues.work_item_type_id column' do
-        expect do
-          described_class.with_issue_type([:issue, :incident]).to_a
-        end.to make_queries_matching(
-          %r{
-            INNER\sJOIN\s"work_item_types"\sON\s"work_item_types"\."id"\s=\s"issues"\."work_item_type_id"
-            \sWHERE\s"work_item_types"\."base_type"\sIN\s\(0,\s1\)
-          }x
-        )
-      end
-    end
-
-    context 'when a single issue_type is provided' do
-      it 'uses an optimized query for a single work item type using issues.work_item_type_id column' do
-        expect do
-          described_class.with_issue_type([:incident]).to_a
-        end.to make_queries_matching(
-          %r{
-            WHERE\s\("issues"\."work_item_type_id"\s=
-            \s\(SELECT\s"work_item_types"\."id"\sFROM\s"work_item_types"
-            \sWHERE\s"work_item_types"\."base_type"\s=\s1
-            \sLIMIT\s1\)\)
-          }x
-        )
-      end
     end
 
     context 'when no types are provided' do
@@ -522,17 +496,6 @@ RSpec.describe Issue, feature_category: :team_planning do
     it 'returns issues without the given issue types' do
       expect(described_class.without_issue_type(%w[issue incident]))
         .to contain_exactly(task)
-    end
-
-    it 'uses the work_item_types table and issues.work_item_type_id for filtering' do
-      expect do
-        described_class.without_issue_type(:issue).to_a
-      end.to make_queries_matching(
-        %r{
-          INNER\sJOIN\s"work_item_types"\sON\s"work_item_types"\."id"\s=\s"issues"\."work_item_type_id"
-          \sWHERE\s"work_item_types"\."base_type"\s!=\s0
-        }x
-      )
     end
   end
 

@@ -31,12 +31,32 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
     end
   end
 
-  let_it_be(:admin) { create(:admin) }
-  let_it_be(:project) { create(:project, maintainers: [admin]) }
+  shared_examples 'post_successful_interval_event_tracking' do
+    it_behaves_like 'internal event tracking' do
+      let(:event) { 'use_admin_token_api' }
+      let(:user) { api_user }
+      let(:namespace) { api_user.namespace }
+      let(:project) { nil }
+      subject(:track_event) { post_token }
+    end
+  end
+
+  shared_examples 'delete_successful_interval_event_tracking' do
+    it_behaves_like 'internal event tracking' do
+      let(:event) { 'use_admin_token_api' }
+      let(:user) { api_user }
+      let(:namespace) { api_user.namespace }
+      let(:project) { nil }
+      subject(:track_event) { delete_token }
+    end
+  end
+
+  let_it_be(:admin) { create(:admin, :with_namespace) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group) }
   let_it_be(:url) { '/admin/token' }
   let(:api_user) { admin }
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :with_namespace) }
 
   let_it_be(:project_bot) { create(:user, :project_bot) }
   let_it_be(:group_bot) { create(:user, :project_bot) }
@@ -69,7 +89,7 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
             [ref(:personal_access_token), lazy { personal_access_token.token }],
             [ref(:group_deploy_token), lazy { group_deploy_token.token }],
             [ref(:project_deploy_token), lazy { project_deploy_token.token }],
-            [ref(:user), lazy { user.feed_token }],
+            [ref(:user), lazy { user.reload.feed_token }],
             [ref(:user), lazy { user.incoming_email_token }],
             [ref(:oauth_application), lazy { oauth_application.plaintext_secret }],
             [ref(:cluster_agent_token), lazy { cluster_agent_token.token }],
@@ -87,6 +107,8 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['id']).to eq(token.id)
           end
+
+          it_behaves_like 'post_successful_interval_event_tracking'
         end
       end
 
@@ -100,6 +122,8 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['job']['id']).to eq(ci_build.id)
         end
+
+        it_behaves_like 'post_successful_interval_event_tracking'
       end
 
       context 'with _gitlab_session' do
@@ -120,6 +144,8 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['id']).to eq(user.id)
           end
+
+          it_behaves_like 'post_successful_interval_event_tracking'
         end
 
         context 'with an unknown session' do
@@ -166,10 +192,16 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
               expect(response).to have_gitlab_http_status(:no_content)
               expect(token.reload.revoked?).to be_truthy
             end
+
+            it_behaves_like 'delete_successful_interval_event_tracking'
           end
         end
 
         context 'when the token can be reset' do
+          before do
+            user.reload
+          end
+
           where(:token, :plaintext_attribute, :changed_attribute) do
             [
               [ref(:user), :feed_token, :feed_token],
@@ -186,6 +218,8 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
 
               expect(response).to have_gitlab_http_status(:no_content)
             end
+
+            it_behaves_like 'delete_successful_interval_event_tracking'
           end
         end
       end
@@ -198,6 +232,8 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
 
           expect(response).to have_gitlab_http_status(:no_content)
         end
+
+        it_behaves_like 'delete_successful_interval_event_tracking'
       end
 
       context 'when the token is a ci pipeline trigger token' do

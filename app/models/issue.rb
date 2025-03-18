@@ -211,19 +211,18 @@ class Issue < ApplicationRecord
     )
   }
   scope :with_issue_type, ->(types) {
-    types = Array(types)
+    type_ids = Array(types).filter_map do |type|
+      WorkItems::Type::BASE_TYPES.dig(type.to_sym, :id)
+    end
 
-    # Using != 1 since we also want the guard clause to handle empty arrays
-    return joins(:work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
-
-    # This optimization helps the planer use the correct indexes when filtering by a single type
-    where(
-      '"issues"."work_item_type_id" = (?)',
-      WorkItems::Type.by_type(types.first).select(:id).limit(1)
-    )
+    where(work_item_type_id: type_ids)
   }
   scope :without_issue_type, ->(types) {
-    joins(:work_item_type).where.not(work_item_types: { base_type: types })
+    type_ids = Array(types).filter_map do |type|
+      WorkItems::Type::BASE_TYPES.dig(type.to_sym, :id)
+    end
+
+    where.not(work_item_type_id: type_ids)
   }
 
   scope :public_only, -> { where(confidential: false) }

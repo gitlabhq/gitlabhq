@@ -35883,6 +35883,9 @@ msgstr ""
 msgid "MemberRole|Role details"
 msgstr ""
 
+msgid "MemberRole|Role is assigned to one or more admins. Remove role from all admins, then delete role."
+msgstr ""
+
 msgid "MemberRole|Role is assigned to one or more group members. Remove role from all group members, then delete role."
 msgstr ""
 

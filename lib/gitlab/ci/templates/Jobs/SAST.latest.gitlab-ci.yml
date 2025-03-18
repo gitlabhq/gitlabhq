@@ -252,12 +252,8 @@ semgrep-sast:
         - '**/*.kt'
         - '**/*.properties'
         - '**/application*.yml'
-        - '**/management*.yml'
-        - '**/actuator*.yml'
         - '**/bootstrap*.yml'
         - '**/application*.yaml'
-        - '**/management*.yaml'
-        - '**/actuator*.yaml'
         - '**/bootstrap*.yaml'
     ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
@@ -294,12 +290,8 @@ semgrep-sast:
         - '**/*.kt'
         - '**/*.properties'
         - '**/application*.yml'
-        - '**/management*.yml'
-        - '**/actuator*.yml'
         - '**/bootstrap*.yml'
         - '**/application*.yaml'
-        - '**/management*.yaml'
-        - '**/actuator*.yaml'
         - '**/bootstrap*.yaml'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
       when: never
@@ -328,12 +320,8 @@ semgrep-sast:
         - '**/*.kt'
         - '**/*.properties'
         - '**/application*.yml'
-        - '**/management*.yml'
-        - '**/actuator*.yml'
         - '**/bootstrap*.yml'
         - '**/application*.yaml'
-        - '**/management*.yaml'
-        - '**/actuator*.yaml'
         - '**/bootstrap*.yaml'
     ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
     - if: $CI_COMMIT_BRANCH &&
@@ -370,12 +358,8 @@ semgrep-sast:
         - '**/*.kt'
         - '**/*.properties'
         - '**/application*.yml'
-        - '**/management*.yml'
-        - '**/actuator*.yml'
         - '**/bootstrap*.yml'
         - '**/application*.yaml'
-        - '**/management*.yaml'
-        - '**/actuator*.yaml'
         - '**/bootstrap*.yaml'
 
 sobelow-sast:

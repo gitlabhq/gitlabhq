@@ -10448,7 +10448,8 @@ CREATE TABLE ci_build_pending_states (
     trace_checksum bytea,
     trace_bytesize bigint,
     partition_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_20b28e5e16 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ci_build_pending_states_id_seq

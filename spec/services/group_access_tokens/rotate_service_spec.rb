@@ -21,6 +21,15 @@ RSpec.describe GroupAccessTokens::RotateService, feature_category: :system_acces
         expect(new_token.user).to eq(token.user)
         expect(bot_user_membership.reload.expires_at).to be_nil
       end
+
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'rotate_grat' }
+        let(:category) { described_class.name }
+        let(:user) { token.user }
+        let(:namespace) { group }
+        let(:project) { nil }
+        subject(:track_event) { response }
+      end
     end
 
     shared_examples_for 'fails to rotate the token' do

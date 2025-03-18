@@ -383,12 +383,17 @@ module QA
             break true unless find_element('merge-button').disabled?
 
             # If the widget shows "Merge blocked: new changes were just added" we can refresh the page and check again
-            next false if has_element?('head-mismatch-content', wait: 1)
+            next false if merge_blocked_by_new_changes?
 
             QA::Runtime::Logger.debug("MR widget text: \"#{mr_widget_text}\"")
 
             false
           end
+        end
+
+        # Returns true when widget shows "Merge blocked: new changes were just added"
+        def merge_blocked_by_new_changes?
+          has_element?('head-mismatch-content', wait: 1)
         end
 
         def rebase!
@@ -421,6 +426,7 @@ module QA
         def try_to_merge!(wait_for_no_auto_merge: true)
           wait_until_ready_to_merge
           wait_until { !find_element('merge-button').text.include?('auto-merge') } if wait_for_no_auto_merge # rubocop:disable Rails/NegateInclude -- Wait for text auto-merge to change
+          wait_until { !merge_blocked_by_new_changes? }
 
           click_element('merge-button')
         end

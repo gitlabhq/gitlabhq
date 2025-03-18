@@ -1,0 +1,23 @@
+---
+key_path: redis_hll_counters.count_distinct_user_id_from_rotate_grat
+description: Count of unique users who rotated a group access token
+product_group: authentication
+product_categories:
+- system_access
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184008
+time_frame:
+- 28d
+- 7d
+data_source: internal_events
+data_category: optional
+tiers:
+- free
+- premium
+- ultimate
+events:
+- name: rotate_grat
+  unique: user.id

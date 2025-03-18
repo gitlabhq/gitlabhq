@@ -2,6 +2,8 @@
 
 module PersonalAccessTokens
   class RotateService
+    include Gitlab::InternalEventsTracking
+
     EXPIRATION_PERIOD = 1.week
 
     def initialize(current_user, token, resource = nil, params = {})
@@ -26,6 +28,8 @@ module PersonalAccessTokens
         response = create_access_token
 
         raise ActiveRecord::Rollback unless response.success?
+
+        track_rotation_event
       end
 
       response
@@ -106,6 +110,15 @@ module PersonalAccessTokens
 
     def default_expiration_date
       EXPIRATION_PERIOD.from_now.to_date
+    end
+
+    def track_rotation_event
+      track_internal_event(
+        "rotate_pat",
+        user: target_user,
+        namespace: target_user.namespace,
+        project: nil
+      )
     end
   end
 end
